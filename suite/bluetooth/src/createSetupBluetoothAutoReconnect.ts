@@ -1,23 +1,13 @@
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
-
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
-import { type WithServices } from '@trezor/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
 import { type BackgroundScan } from './bluetoothBackgroundScan';
-import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
-import { type BluetoothDep } from './createBluetooth';
+import { type BluetoothConnectDevice } from './createBluetoothConnectDevice';
 import { type DesktopBluetoothState } from './desktopBluetoothReducer';
-
-type BluetoothReconnectThunkDispatch = ThunkDispatch<
-    unknown,
-    WithServices<BluetoothDep>,
-    UnknownAction
->;
 
 type SetupBluetoothAutoReconnectDeps = {
     getKnownDevices: () => DesktopBluetoothDevice[];
@@ -26,8 +16,8 @@ type SetupBluetoothAutoReconnectDeps = {
     getAutoConnectPolicy: () => DesktopBluetoothState['autoConnectPolicy'];
     getTrezorDevices: () => TrezorDevice[];
     getFirmware: () => FirmwareUpdateState;
-    dispatch: BluetoothReconnectThunkDispatch;
     backgroundScan: BackgroundScan;
+    connectDevice: BluetoothConnectDevice;
 };
 
 type SetupBluetoothAutoReconnect = () => Promise<void>;
@@ -94,7 +84,7 @@ const attemptDeviceConnect = async (
     // }
 
     if (isConnectable) {
-        await deps.dispatch(bluetoothConnectDeviceThunk({ deviceId: device.id }));
+        await deps.connectDevice(device.id);
     }
 };
 

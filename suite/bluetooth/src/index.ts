@@ -7,9 +7,6 @@ export * from './desktopBluetoothSelectors';
 
 export { bluetoothAdapterEventThunk } from './bluetoothAdapterEventThunk';
 export { forgetAllBluetoothDevicesThunk } from './forgetAllBluetoothDevicesThunk';
-export { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
-export { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
-export { bluetoothOnDeviceConnectedThunk } from './bluetoothOnDeviceConnectedThunk';
 export { removeNonResponsiveNearbyDevicesThunk } from './removeNonResponsiveNearbyDevicesThunk';
 export { unpairCurrentBondThunk, forgetBluetoothDeviceThunk } from './bluetoothEraseBondsThunk';
 

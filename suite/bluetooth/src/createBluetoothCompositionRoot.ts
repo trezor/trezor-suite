@@ -9,6 +9,7 @@ import {
 import {
     selectAdapterStatus,
     selectAutoConnectPolicy,
+    selectKnownDeviceByDeviceId,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
 import { selectDevices } from '@suite-common/device';
@@ -19,7 +20,10 @@ import { type WithServices } from '@trezor/redux-utils';
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createBackgroundScan } from './bluetoothBackgroundScan';
 import { type Bluetooth, type BluetoothDep } from './createBluetooth';
+import { createBluetoothConnectDevice } from './createBluetoothConnectDevice';
+import { createBluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { createBluetoothInit } from './createBluetoothInit';
+import { createBluetoothOnDeviceConnected } from './createBluetoothOnDeviceConnected';
 import { createBluetoothStartScan } from './createBluetoothStartScan';
 import { createBluetoothStopScan } from './createBluetoothStopScan';
 import { createOpenSystemSettings } from './createOpenSystemSettings';
@@ -62,6 +66,20 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         openSystemSettings,
     });
 
+    const connectDevice = createBluetoothConnectDevice({
+        dispatch: deps.dispatch,
+    });
+
+    const disconnectDevice = createBluetoothDisconnectDevice({
+        dispatch: deps.dispatch,
+        backgroundScan,
+    });
+
+    const onDeviceConnected = createBluetoothOnDeviceConnected({
+        getKnownDeviceByDeviceId: toGetter(deps.getState, selectKnownDeviceByDeviceId),
+        disconnectDevice,
+    });
+
     const setupBluetoothAutoReconnect = createSetupBluetoothAutoReconnect({
         getKnownDevices,
         getConnectingDeviceIds: toGetter(deps.getState, selectConnectingDevices),
@@ -69,8 +87,8 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         getAutoConnectPolicy: toGetter(deps.getState, selectAutoConnectPolicy),
         getTrezorDevices: toGetter(deps.getState, selectDevices),
         getFirmware: toGetter(deps.getState, selectFirmware),
-        dispatch: deps.dispatch,
         backgroundScan,
+        connectDevice,
     });
 
     const bluetoothInit = createBluetoothInit({
@@ -86,5 +104,8 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         openSystemSettings,
         startScan,
         stopScan,
+        connectDevice,
+        onDeviceConnected,
+        disconnectDevice,
     };
 };

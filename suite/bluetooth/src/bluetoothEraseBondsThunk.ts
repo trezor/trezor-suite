@@ -6,21 +6,27 @@ import {
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
+import { type BluetoothDep } from './createBluetooth';
 import { setIsUnpairingDevice } from './desktopBluetoothReducer';
 
-export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDeviceThunkParams, void>(
+type ForgetBluetoothDeviceThunkDeps = WithServices<BluetoothDep>;
+
+export const forgetBluetoothDeviceThunk = createThunk<
+    void,
+    ForgetBluetoothDeviceThunkParams,
+    { extra: ForgetBluetoothDeviceThunkDeps }
+>(
     `${BLUETOOTH_PREFIX}/forgetBluetoothDevice`,
     async (
         { bluetoothId, skipDisconnect, skipToggleModalConnection, isOsUnpairingFinished },
-        { dispatch },
+        { dispatch, extra },
     ) => {
         dispatch(setIsUnpairingDevice({ isUnpairing: true }));
         if (!skipDisconnect) {
-            await dispatch(bluetoothDisconnectDeviceThunk({ id: bluetoothId }));
+            await extra.services.bluetooth.disconnectDevice(bluetoothId);
         }
         const resultForget = await bluetoothIpc.forgetDevice(bluetoothId);
         dispatch(setIsUnpairingDevice({ isUnpairing: false }));

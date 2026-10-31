@@ -1,7 +1,8 @@
-import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
+import { type Dispatch } from '@reduxjs/toolkit';
+
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { type BluetoothDeviceId, type Device } from '@trezor/connect';
-import { createThunk } from '@trezor/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
@@ -10,29 +11,26 @@ import {
     stopConnectingBluetoothDevice,
 } from './desktopBluetoothReducer';
 
-type BluetoothConnectDeviceThunkResult = {
-    success: boolean;
+type BluetoothConnectDeviceDeps = {
+    dispatch: Dispatch;
 };
 
-export const bluetoothConnectDeviceThunk = createThunk<
-    BluetoothConnectDeviceThunkResult,
-    { deviceId: BluetoothDeviceId },
-    void
->(
-    `${BLUETOOTH_PREFIX}/bluetoothConnectDeviceThunk`,
-    async ({ deviceId }, { fulfillWithValue, dispatch }) => {
-        dispatch(startConnectingBluetoothDevice({ deviceId }));
+export type BluetoothConnectDevice = (deviceId: BluetoothDeviceId) => Promise<{ success: boolean }>;
 
+export const createBluetoothConnectDevice =
+    (deps: BluetoothConnectDeviceDeps): BluetoothConnectDevice =>
+    async deviceId => {
+        deps.dispatch(startConnectingBluetoothDevice({ deviceId }));
         const result = await bluetoothIpc.connectDevice(deviceId);
 
         if (!result.success) {
             const errorMessage = result.error.message;
             // handling for this error: https://github.com/trezor/trezor-suite/blob/837cdf89c70cca80fd5dabb910e9a8509de7c3b1/packages/transport-bluetooth/src/server/platform/linux.rs#L253
             if (errorMessage === 'BluetoothSettingsMissing') {
-                dispatch(stopConnectingBluetoothDevice({ deviceId }));
-                dispatch(setBluetoothDeviceNeedsManualPairing(true));
+                deps.dispatch(stopConnectingBluetoothDevice({ deviceId }));
+                deps.dispatch(setBluetoothDeviceNeedsManualPairing(true));
 
-                return fulfillWithValue({ success: result.success });
+                return { success: result.success };
             }
 
             // This can fail, but we are silent about this as the device may not be there anymore
@@ -44,10 +42,10 @@ export const bluetoothConnectDeviceThunk = createThunk<
                 errorMessage.includes('Operation already in progress') ||
                 errorMessage.includes('Peer removed pairing information');
             if (isUnpaired) {
-                dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(true));
-                dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceId }));
+                deps.dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(true));
+                deps.dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceId }));
             } else {
-                dispatch(
+                deps.dispatch(
                     notificationsActions.addToast({
                         type: 'error',
                         error: errorMessage,
@@ -55,9 +53,9 @@ export const bluetoothConnectDeviceThunk = createThunk<
                 );
             }
 
-            dispatch(stopConnectingBluetoothDevice({ deviceId }));
+            deps.dispatch(stopConnectingBluetoothDevice({ deviceId }));
 
-            return fulfillWithValue({ success: result.success });
+            return { success: result.success };
         }
 
         // wait for device handshake in @trezor/connect
@@ -82,8 +80,7 @@ export const bluetoothConnectDeviceThunk = createThunk<
             TrezorConnect.on('device-disconnect', closeViewAfterConnection);
         });
 
-        dispatch(stopConnectingBluetoothDevice({ deviceId }));
+        deps.dispatch(stopConnectingBluetoothDevice({ deviceId }));
 
-        return fulfillWithValue({ success: result.success });
-    },
-);
+        return { success: result.success };
+    };
