@@ -1,5 +1,8 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     AccountDetailStackRoutes,
@@ -12,10 +15,110 @@ import {
 import { type SendOutputsFormValues } from './sendOutputsFormSchema';
 import {
     constructFormDraft,
+    getSendFeeStatus,
     getSendFlowExitDestination,
     getSendMaxAmount,
     navigateOutOfSendFlowAction,
 } from './utils';
+
+describe('selected Send fee and network reserve', () => {
+    const finalFee: GeneralPrecomposedTransactionFinal = {
+        type: 'final',
+        fee: '1000000000000000',
+        feePerByte: '1',
+        totalSpent: '999500000000000000',
+        bytes: 0,
+        inputs: [],
+        outputs: [],
+        outputsPermutation: [],
+    };
+
+    it.each([
+        ['Normal enters the reserve', '1000000000000000', '0.9985', false, '0.998'],
+        ['Low preserves the exact reserve', '500000000000000', '0.9985', true, '0.9985'],
+        ['one wei enters the reserve', '500000000000000', '0.998500000000000001', false, '0.9985'],
+        ['Custom uses its actual fee', '1500000000000000', '0.998', false, '0.9975'],
+    ] as const)('%s', (_description, fee, amount, isFeeReady, maxAmountForReserve) => {
+        expect(
+            getSendFeeStatus({
+                feeLevel: { ...finalFee, fee },
+                symbol: asNetworkSymbol('base'),
+                availableBalance: '1000000000000000000',
+                networkReserve: '0.001',
+                amount,
+            }),
+        ).toEqual({ isFeeReady, maxAmountForReserve });
+    });
+
+    it.each([
+        ['High', '2000000000000000', '0.997'],
+        ['Custom', '2500000000000000', '0.9965'],
+    ] as const)(
+        'allows Send Max with %s when the Normal-filled amount exceeds the selected maximum',
+        (_description, fee, max) => {
+            expect(
+                getSendFeeStatus({
+                    feeLevel: { ...finalFee, fee, max, totalSpent: '999000000000000000' },
+                    symbol: asNetworkSymbol('base'),
+                    availableBalance: '1000000000000000000',
+                    networkReserve: '0.001',
+                    amount: '0.998',
+                }).isFeeReady,
+            ).toBe(true);
+        },
+    );
+
+    it('blocks a composed Send Max amount that enters the reserve even if the form amount fits', () => {
+        expect(
+            getSendFeeStatus({
+                feeLevel: {
+                    ...finalFee,
+                    max: '0.998000000000000001',
+                    totalSpent: '999000000000000001',
+                },
+                symbol: asNetworkSymbol('base'),
+                availableBalance: '1000000000000000000',
+                networkReserve: '0.001',
+                amount: '0.99',
+            }).isFeeReady,
+        ).toBe(false);
+    });
+
+    it('allows the amount when the reserve is switched off', () => {
+        expect(
+            getSendFeeStatus({
+                feeLevel: finalFee,
+                symbol: asNetworkSymbol('base'),
+                availableBalance: '1000000000000000000',
+                amount: '0.9985',
+            }).isFeeReady,
+        ).toBe(true);
+    });
+
+    it('uses lamports for a Solana selected fee', () => {
+        expect(
+            getSendFeeStatus({
+                feeLevel: { ...finalFee, fee: '1000000' },
+                symbol: asNetworkSymbol('sol'),
+                availableBalance: '1000000000',
+                networkReserve: '0.001',
+                amount: '0.9985',
+            }),
+        ).toEqual({ isFeeReady: false, maxAmountForReserve: '0.998' });
+    });
+
+    it('keeps review blocked without a final selected transaction', () => {
+        expect(
+            getSendFeeStatus({
+                feeLevel: { type: 'error', error: 'AMOUNT_IS_NOT_ENOUGH' },
+                symbol: asNetworkSymbol('base'),
+                availableBalance: '1000000000000000000',
+                networkReserve: '0.001',
+                amount: '0.9985',
+            }).isFeeReady,
+        ).toBe(false);
+    });
+});
 
 describe(getSendMaxAmount.name, () => {
     test.each([
