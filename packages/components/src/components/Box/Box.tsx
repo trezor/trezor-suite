@@ -101,7 +101,7 @@ const Container = styled.div<
 
 export type BoxProps = Pick<
     HTMLProps<HTMLElement>,
-    'onClick' | 'onMouseEnter' | 'onMouseLeave' | 'tabIndex'
+    'onClick' | 'onMouseEnter' | 'onMouseLeave' | 'tabIndex' | 'type' | 'aria-label'
 > &
     AllowedFrameProps & {
         children?: React.ReactNode;
@@ -129,12 +129,14 @@ export const Box = ({
     'data-testid': dataTestId,
     'data-component': dataComponent = 'Box',
     'aria-hidden': ariaHidden,
+    'aria-label': ariaLabel,
     as = 'div',
     onClick,
     onMouseEnter,
     onMouseLeave,
     tabIndex,
     ref,
+    type,
     ...rest
 }: BoxProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedBoxFrameProps);
@@ -145,6 +147,7 @@ export const Box = ({
             data-testid={dataTestId}
             data-component={dataComponent}
             aria-hidden={ariaHidden}
+            aria-label={ariaLabel}
             $borderWidth={borderWidth}
             $borderOffset={borderOffset}
             $backgroundColor={backgroundColor}
@@ -156,6 +159,7 @@ export const Box = ({
             $shadow={shadow}
             tabIndex={tabIndex}
             ref={ref}
+            type={type}
             {...frameProps}
         >
             {children}

@@ -10350,9 +10350,293 @@ export const messages = defineMessages({
         id: 'TR_DESKTOP_APP_PROMO_GET',
         defaultMessage: 'Get the Trezor Suite desktop app',
     },
+    TR_REFER_A_FRIEND: {
+        id: 'TR_REFER_A_FRIEND',
+        defaultMessage: 'Refer-A-Friend',
+    },
     TR_DASHBOARD_REFERRAL_BUTTON: {
         id: 'TR_DASHBOARD_REFERRAL_BUTTON',
         defaultMessage: 'Earn $20 per referral',
+    },
+    TR_REFERRAL_SWITCH_TO_STANDARD_WALLET: {
+        id: 'TR_REFERRAL_SWITCH_TO_STANDARD_WALLET',
+        defaultMessage: 'Switch to your standard wallet to see your referral link and rewards.',
+    },
+    TR_REFERRAL_UNAVAILABLE: {
+        id: 'TR_REFERRAL_UNAVAILABLE',
+        defaultMessage: 'Refer-A-Friend is currently unavailable.',
+    },
+    TR_QUICK_ACTION_DEBUG_EXPERIMENTAL_SETTINGS: {
+        id: 'TR_QUICK_ACTION_DEBUG_EXPERIMENTAL_SETTINGS',
+        defaultMessage: 'Debug and experimental settings',
+    },
+    TR_QUICK_ACTION_UPDATE_STATUS: {
+        id: 'TR_QUICK_ACTION_UPDATE_STATUS',
+        defaultMessage: 'Update status',
+    },
+    TR_REFERRAL_INVITATION_TITLE: {
+        id: 'TR_REFERRAL_INVITATION_TITLE',
+        defaultMessage: 'Invite friends, earn rewards',
+    },
+    TR_REFERRAL_CONNECT_DESCRIPTION: {
+        id: 'TR_REFERRAL_CONNECT_DESCRIPTION',
+        defaultMessage: 'Connect your Trezor to see your rewards.',
+    },
+    TR_REFERRAL_INVITATION_DESCRIPTION: {
+        id: 'TR_REFERRAL_INVITATION_DESCRIPTION',
+        defaultMessage: 'Get {rewardAmount} for each friend you invite.',
+    },
+    TR_REFERRAL_JOIN_PROGRAM: {
+        id: 'TR_REFERRAL_JOIN_PROGRAM',
+        defaultMessage: 'Join program',
+    },
+    TR_REFERRAL_CARD_YOU_GET: {
+        id: 'TR_REFERRAL_CARD_YOU_GET',
+        defaultMessage: 'You get',
+    },
+    TR_REFERRAL_CARD_VOUCHER: {
+        id: 'TR_REFERRAL_CARD_VOUCHER',
+        defaultMessage: '{rewardAmount} voucher',
+    },
+    TR_REFERRAL_CARD_THEY_GET: {
+        id: 'TR_REFERRAL_CARD_THEY_GET',
+        defaultMessage: 'They get',
+    },
+    TR_REFERRAL_CARD_FRIEND_DISCOUNT: {
+        id: 'TR_REFERRAL_CARD_FRIEND_DISCOUNT',
+        defaultMessage: '{friendDiscountPercentage}% off',
+    },
+    TR_REFERRAL_CARD_FRIEND_DISCOUNT_TOOLTIP: {
+        id: 'TR_REFERRAL_CARD_FRIEND_DISCOUNT_TOOLTIP',
+        defaultMessage:
+            'Your friends get {friendDiscountPercentage}% off their orders of {minimumOrderAmount} or more.',
+    },
+    TR_REFERRAL_TERMS: {
+        id: 'TR_REFERRAL_TERMS',
+        defaultMessage:
+            'By joining you agree to the <privacyPolicy>Privacy Policy</privacyPolicy>, the <programTerms>Refer a Friend Program Terms & Conditions</programTerms>, and the <generalTerms>General Terms of Use</generalTerms>.',
+    },
+    TR_REFERRAL_HOW_IT_WORKS: {
+        id: 'TR_REFERRAL_HOW_IT_WORKS',
+        defaultMessage: 'How it works',
+    },
+    TR_REFERRAL_GET_LINK: {
+        id: 'TR_REFERRAL_GET_LINK',
+        defaultMessage: 'Get your link',
+    },
+    TR_REFERRAL_GET_LINK_DESCRIPTION: {
+        id: 'TR_REFERRAL_GET_LINK_DESCRIPTION',
+        defaultMessage: 'Join the program and receive your unique referral link.',
+    },
+    TR_REFERRAL_INVITE_FRIENDS: {
+        id: 'TR_REFERRAL_INVITE_FRIENDS',
+        defaultMessage: 'Invite your friends',
+    },
+    TR_REFERRAL_INVITE_FRIENDS_DESCRIPTION: {
+        id: 'TR_REFERRAL_INVITE_FRIENDS_DESCRIPTION',
+        defaultMessage: 'Share your link in a message, an email, or a post.',
+    },
+    TR_REFERRAL_SPEND_REWARDS: {
+        id: 'TR_REFERRAL_SPEND_REWARDS',
+        defaultMessage: 'Spend on the Trezor Shop',
+    },
+    TR_REFERRAL_SPEND_REWARDS_DESCRIPTION: {
+        id: 'TR_REFERRAL_SPEND_REWARDS_DESCRIPTION',
+        defaultMessage: 'Earn {rewardAmount} vouchers to spend on Trezor products.',
+    },
+    TR_REFERRAL_FAQ_TITLE: {
+        id: 'TR_REFERRAL_FAQ_TITLE',
+        defaultMessage: 'Frequently asked questions',
+    },
+    TR_REFERRAL_FAQ_PROGRAM: {
+        id: 'TR_REFERRAL_FAQ_PROGRAM',
+        defaultMessage: 'What is the Refer a Friend program?',
+    },
+    TR_REFERRAL_FAQ_PROGRAM_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_PROGRAM_ANSWER',
+        defaultMessage:
+            'Invite friends to the Trezor Shop. When a friend places an order of {minimumOrderAmount} or more using your referral link, they get {friendDiscountPercentage}% off and you receive a {rewardAmount} reward in Suite.',
+    },
+    TR_REFERRAL_FAQ_JOIN: {
+        id: 'TR_REFERRAL_FAQ_JOIN',
+        defaultMessage: 'How do I join?',
+    },
+    TR_REFERRAL_FAQ_JOIN_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_JOIN_ANSWER',
+        defaultMessage:
+            'When the program is available, connect and unlock your Trezor in the standard wallet, then select Join program. No email or other personal details are required.',
+    },
+    TR_REFERRAL_FAQ_LEAVE: {
+        id: 'TR_REFERRAL_FAQ_LEAVE',
+        defaultMessage: 'How do I leave the program?',
+    },
+    TR_REFERRAL_FAQ_LEAVE_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_LEAVE_ANSWER',
+        defaultMessage:
+            'If you would like to leave the Refer-A-Friend program <leaveProgram>click here.</leaveProgram>',
+    },
+    TR_REFERRAL_LEAVE_TITLE: {
+        id: 'TR_REFERRAL_LEAVE_TITLE',
+        defaultMessage: 'Leave Refer-A-Friend',
+    },
+    TR_REFERRAL_LEAVE_DESCRIPTION: {
+        id: 'TR_REFERRAL_LEAVE_DESCRIPTION',
+        defaultMessage:
+            "Your referral link will stop working and you'll lose any pending rewards. Your existing vouchers will still work at checkout until they expire, but they won't appear in Trezor Suite.",
+    },
+    TR_REFERRAL_LEAVE_VOUCHER_WARNING: {
+        id: 'TR_REFERRAL_LEAVE_VOUCHER_WARNING',
+        defaultMessage: 'Make a copy of your voucher codes before you leave.',
+    },
+    TR_REFERRAL_LEAVE_PROGRAM: {
+        id: 'TR_REFERRAL_LEAVE_PROGRAM',
+        defaultMessage: 'Leave program',
+    },
+    TR_REFERRAL_SHARE_DESCRIPTION: {
+        id: 'TR_REFERRAL_SHARE_DESCRIPTION',
+        defaultMessage:
+            'Share this link. Your friends get {friendDiscountPercentage}% off orders of {minimumOrderAmount} or more, and you get a {rewardAmount} voucher.',
+    },
+    TR_REFERRAL_LINK: {
+        id: 'TR_REFERRAL_LINK',
+        defaultMessage: 'Referral link',
+    },
+    TR_REFERRAL_COPY_LINK: {
+        id: 'TR_REFERRAL_COPY_LINK',
+        defaultMessage: 'Copy link',
+    },
+    TR_REFERRAL_COPY_FAILED: {
+        id: 'TR_REFERRAL_COPY_FAILED',
+        defaultMessage: "Couldn't copy. Please try again.",
+    },
+    TR_REFERRAL_LIMIT_REACHED: {
+        id: 'TR_REFERRAL_LIMIT_REACHED',
+        defaultMessage:
+            'You’ve reached the limit of {annualReferralLimit} referrals or {annualRewardLimit} in rewards for the last 12 months. Your link will work again on {nextResetDate}. Until then, friends won’t get {friendDiscountPercentage}% off and you won’t earn rewards.',
+    },
+    TR_REFERRAL_YOUR_REWARDS: {
+        id: 'TR_REFERRAL_YOUR_REWARDS',
+        defaultMessage: 'Your rewards',
+    },
+    TR_REFERRAL_CONDITIONS: {
+        id: 'TR_REFERRAL_CONDITIONS',
+        defaultMessage: 'Conditions',
+    },
+    TR_REFERRAL_REWARDS_CONDITIONS: {
+        id: 'TR_REFERRAL_REWARDS_CONDITIONS',
+        defaultMessage:
+            "Vouchers are ready within {rewardWaitingPeriodDays} days of your friend's confirmed order",
+    },
+    TR_REFERRAL_TOTAL_EARNED: {
+        id: 'TR_REFERRAL_TOTAL_EARNED',
+        defaultMessage: 'Total earned',
+    },
+    TR_REFERRAL_VOUCHERS: {
+        id: 'TR_REFERRAL_VOUCHERS',
+        defaultMessage: 'Vouchers',
+    },
+    TR_REFERRAL_REFERRALS: {
+        id: 'TR_REFERRAL_REFERRALS',
+        defaultMessage: 'Referrals',
+    },
+    TR_REFERRAL_NO_REWARDS: {
+        id: 'TR_REFERRAL_NO_REWARDS',
+        defaultMessage: 'No rewards',
+    },
+    TR_REFERRAL_REWARDS_WILL_APPEAR: {
+        id: 'TR_REFERRAL_REWARDS_WILL_APPEAR',
+        defaultMessage: 'Your rewards will appear here',
+    },
+    TR_REFERRAL_VOUCHER_NUMBER: {
+        id: 'TR_REFERRAL_VOUCHER_NUMBER',
+        defaultMessage: 'Voucher #{number}',
+    },
+    TR_REFERRAL_VOUCHER_READY: {
+        id: 'TR_REFERRAL_VOUCHER_READY',
+        defaultMessage: 'Ready',
+    },
+    TR_REFERRAL_VOUCHER_PENDING: {
+        id: 'TR_REFERRAL_VOUCHER_PENDING',
+        defaultMessage: 'Pending',
+    },
+    TR_REFERRAL_VOUCHER_USED: {
+        id: 'TR_REFERRAL_VOUCHER_USED',
+        defaultMessage: 'Used',
+    },
+    TR_REFERRAL_VOUCHER_CANCELED: {
+        id: 'TR_REFERRAL_VOUCHER_CANCELED',
+        defaultMessage: 'Canceled',
+    },
+    TR_REFERRAL_VOUCHER_EXPIRED: {
+        id: 'TR_REFERRAL_VOUCHER_EXPIRED',
+        defaultMessage: 'Expired',
+    },
+    TR_REFERRAL_VOUCHER_AVAILABLE_IN: {
+        id: 'TR_REFERRAL_VOUCHER_AVAILABLE_IN',
+        defaultMessage: 'Available in {days} days',
+    },
+    TR_REFERRAL_VOUCHER_EXPIRATION: {
+        id: 'TR_REFERRAL_VOUCHER_EXPIRATION',
+        defaultMessage: 'Expiration date {date}',
+    },
+    TR_REFERRAL_VOUCHER_EXPIRED_ON: {
+        id: 'TR_REFERRAL_VOUCHER_EXPIRED_ON',
+        defaultMessage: 'Expired on {date}',
+    },
+    TR_REFERRAL_FAQ_SHARE: {
+        id: 'TR_REFERRAL_FAQ_SHARE',
+        defaultMessage: 'How do I refer a friend?',
+    },
+    TR_REFERRAL_FAQ_SHARE_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_SHARE_ANSWER',
+        defaultMessage:
+            'After joining, share your referral link with friends in a message, an email, or a post. You earn a reward when they use your link to place a qualifying order.',
+    },
+    TR_REFERRAL_FAQ_LIMIT: {
+        id: 'TR_REFERRAL_FAQ_LIMIT',
+        defaultMessage: 'Is there a limit to how many friends I can refer?',
+    },
+    TR_REFERRAL_FAQ_LIMIT_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_LIMIT_ANSWER',
+        defaultMessage:
+            'You can make up to {annualReferralLimit} referrals and earn up to {annualRewardLimit} in Trezor Shop vouchers within a 12-month period. Every order placed using your link counts, even if it’s later canceled or returned. Once you reach either limit, your friends won’t get {friendDiscountPercentage}% off and you won’t earn rewards until the date shown on this page.',
+    },
+    TR_REFERRAL_FAQ_REDEEM: {
+        id: 'TR_REFERRAL_FAQ_REDEEM',
+        defaultMessage: 'How can I use my {rewardAmount} reward?',
+    },
+    TR_REFERRAL_FAQ_REDEEM_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_REDEEM_ANSWER',
+        defaultMessage:
+            'Your rewards appear here in Suite. When a reward is ready, use its voucher code at checkout on the Trezor Shop.',
+    },
+    TR_REFERRAL_FAQ_COMBINE: {
+        id: 'TR_REFERRAL_FAQ_COMBINE',
+        defaultMessage:
+            'Can my friend combine the {friendDiscountPercentage}% with other promotions?',
+    },
+    TR_REFERRAL_FAQ_COMBINE_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_COMBINE_ANSWER',
+        defaultMessage:
+            'The referral discount cannot be combined with other promotions or discount codes.',
+    },
+    TR_REFERRAL_FAQ_SUPPORT: {
+        id: 'TR_REFERRAL_FAQ_SUPPORT',
+        defaultMessage: "My reward isn't working. What should I do?",
+    },
+    TR_REFERRAL_FAQ_SUPPORT_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_SUPPORT_ANSWER',
+        defaultMessage:
+            'Check the voucher code and its status in Suite. If the issue persists, contact Trezor Support.',
+    },
+    TR_REFERRAL_FAQ_OLD_PROGRAM: {
+        id: 'TR_REFERRAL_FAQ_OLD_PROGRAM',
+        defaultMessage: 'I was in the old Refer a Friend program. What do I do?',
+    },
+    TR_REFERRAL_FAQ_OLD_PROGRAM_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_OLD_PROGRAM_ANSWER',
+        defaultMessage:
+            'Join again here when the new program is available to receive a new referral link.',
     },
     TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',

@@ -136,6 +136,10 @@ export const isPrerequisiteGloballyExcluded = ({
         return true;
     }
 
+    if (router.app === 'refer-a-friend') {
+        return true;
+    }
+
     // Neither does the apps embedding showcase, which only renders external sites.
     if (router.app === 'apps-embedding') {
         return true;
