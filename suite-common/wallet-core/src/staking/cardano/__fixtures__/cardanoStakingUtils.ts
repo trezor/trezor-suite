@@ -369,6 +369,28 @@ export const normalizeCardanoDrepId = [
     { description: 'arbitrary text', drepId: 'not-a-drep', result: null },
 ];
 
+export const isCardanoDrepIdCip129 = [
+    { description: 'CIP-129 key hash', drepId: DREP_CIP129_KEY_HASH, result: true },
+    { description: 'CIP-129 script hash', drepId: DREP_CIP129_SCRIPT_HASH, result: true },
+    { description: 'an all-uppercase CIP-129 id', drepId: DREP_UPPERCASE, result: true },
+    {
+        description: 'the Everstake DRep constant',
+        drepId: CARDANO_EVERSTAKE_DREP.bech32,
+        result: true,
+    },
+    { description: 'legacy CIP-105 key hash', drepId: DREP_CIP105_KEY_HASH, result: false },
+    { description: 'amended CIP-105 key hash', drepId: DREP_VKH_KEY_HASH, result: false },
+    { description: 'CIP-105 script hash', drepId: DREP_CIP105_SCRIPT_HASH, result: false },
+    {
+        description: 'an uppercase legacy CIP-105 key hash',
+        drepId: DREP_CIP105_KEY_HASH.toUpperCase(),
+        result: false,
+    },
+    { description: 'an unsupported header byte', drepId: DREP_CC_HOT_HEADER, result: false },
+    { description: 'the always-abstain id', drepId: PREDEFINED_DREP_ID, result: false },
+    { description: 'an empty string', drepId: '', result: false },
+];
+
 export const areCardanoDrepIdsEqual = [
     {
         description: 'legacy and canonical key hash',
