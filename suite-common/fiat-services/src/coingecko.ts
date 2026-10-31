@@ -5,7 +5,7 @@ import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 import stellar from '@trezor/network-stellar/runtime';
 
 import { fetchUrl } from './fetch';
-import { RateLimiter } from './limiter';
+import { RateLimiter, type RequestPriority } from './limiter';
 
 // a proxy for https://api.coingecko.com/api/v3
 const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';
@@ -40,6 +40,7 @@ const rateLimiter = new RateLimiter(1_000, 15_000);
 type FetchCoinGeckoOptions = {
     skipCache?: boolean;
     signal?: AbortSignal;
+    priority?: RequestPriority;
 };
 
 const fetchCoinGecko = async (url: string, options: FetchCoinGeckoOptions = {}) => {
@@ -54,6 +55,7 @@ const fetchCoinGecko = async (url: string, options: FetchCoinGeckoOptions = {}) 
             res = await rateLimiter.limit(
                 fetchSignal => fetchUrl(url, { signal: fetchSignal }),
                 options.signal,
+                { priority: options.priority },
             );
         }
         if (!res.ok) {
@@ -137,6 +139,7 @@ export const fetchCoinGeckoMarketChart = async ({
     for (const coinUrl of coinUrls) {
         const response = (await fetchCoinGecko(`${coinUrl}/market_chart?${urlParams}`, {
             signal,
+            priority: 'high',
         })) as CoinGeckoMarketChartResponse | undefined;
         const prices = response?.prices;
 
