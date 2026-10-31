@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
-import { BigNumber } from '@trezor/utils';
 
 import { useFormatApy } from 'src/hooks/earn/useFormatApy';
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
@@ -27,19 +27,14 @@ export const StakingBannerView = ({ accounts, onExplore, onClose }: StakingBanne
 
     const displaySymbol = getDisplaySymbol(account.symbol);
 
-    const potentialRewards = useMemo(
-        () =>
-            CryptoAmountFormatter.format(getPotentialStakingRewards(accounts, rate).toFixed(), {
-                symbol: account.symbol,
-                isBalance: true,
-                withSymbol: false,
-                isEllipsisAppended: false,
-                maxDisplayedDecimals: 8,
-            }),
-        [accounts, rate, account.symbol, CryptoAmountFormatter],
-    );
-
-    const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
+    const rewards = useMemo(() => getPotentialStakingRewards(accounts, rate), [accounts, rate]);
+    const potentialRewards = CryptoAmountFormatter.format(rewards.toFixed(), {
+        symbol: account.symbol,
+        isBalance: true,
+        withSymbol: false,
+        isEllipsisAppended: false,
+        maxDisplayedDecimals: 8,
+    });
 
     return (
         <Banner
@@ -52,10 +47,15 @@ export const StakingBannerView = ({ accounts, onExplore, onClose }: StakingBanne
                 />
             }
             description={
-                hasPotentialRewards ? (
+                rewards.gt(0) ? (
                     <Translation
                         id="TR_STAKING_BANNER_DETAIL_TEXT"
-                        values={{ potentialRewards, displaySymbol }}
+                        values={{
+                            potentialRewards: (
+                                <HiddenPlaceholder>{potentialRewards}</HiddenPlaceholder>
+                            ),
+                            displaySymbol,
+                        }}
                     />
                 ) : (
                     <Translation

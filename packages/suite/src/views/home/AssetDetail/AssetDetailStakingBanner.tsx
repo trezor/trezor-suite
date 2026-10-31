@@ -1,56 +1,34 @@
-import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetContractAddress,
+    selectWalletAssetSymbol,
     selectWalletAssetUnstakedAccounts,
 } from '@suite-common/assets';
-import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
+import { type WalletAssetKey, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 
-import { EarnEthBannerView } from 'src/components/wallet/StakingBanner/EarnEthBannerView';
-import { StakingBannerView } from 'src/components/wallet/StakingBanner/StakingBannerView';
-import {
-    type StakingBannerAccounts,
-    isStakingBannerAccounts,
-    useStakingBanner,
-} from 'src/components/wallet/StakingBanner/useStakingBanner';
+import { isStakingBannerAccounts } from 'src/components/wallet/StakingBanner/useStakingBanner';
 import { useSelector } from 'src/hooks/suite';
 
-type AssetDetailAccountsStakingBannerProps = {
-    accounts: StakingBannerAccounts;
-};
+import { AssetDetailAccountsStakingBanner } from './AssetDetailAccountsStakingBanner';
 
-const AssetDetailAccountsStakingBanner = ({ accounts }: AssetDetailAccountsStakingBannerProps) => {
-    const { dispatch } = useServices(injectDispatch);
-    const { kind, earnEthApy, close } = useStakingBanner(accounts);
-
-    const goToEarn = () => dispatch(gotoThunk({ routeName: 'suite-earn' }));
-
-    if (kind === undefined) {
-        return null;
-    }
-
-    return kind === 'earnEth' ? (
-        <EarnEthBannerView
-            networkSymbol={accounts[0].symbol}
-            apy={earnEthApy}
-            onExplore={goToEarn}
-            onClose={close}
-        />
-    ) : (
-        <StakingBannerView accounts={accounts} onExplore={goToEarn} onClose={close} />
-    );
-};
+const NO_ACCOUNTS: readonly Account[] = [];
 
 type AssetDetailStakingBannerProps = {
     assetKey: WalletAssetKey;
 };
 
 export const AssetDetailStakingBanner = ({ assetKey }: AssetDetailStakingBannerProps) => {
+    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const accounts = useSelector(state => selectWalletAssetUnstakedAccounts(state, assetKey));
+    const canStake =
+        symbol !== undefined &&
+        contractAddress === undefined &&
+        isSupportedStakingNetworkSymbol(symbol);
+    const accounts = useSelector(state =>
+        canStake ? selectWalletAssetUnstakedAccounts(state, assetKey) : NO_ACCOUNTS,
+    );
 
-    if (contractAddress !== undefined || !isStakingBannerAccounts(accounts)) {
+    if (!isStakingBannerAccounts(accounts)) {
         return null;
     }
 
