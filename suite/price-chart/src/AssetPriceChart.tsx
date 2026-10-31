@@ -1,17 +1,15 @@
 import { Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectAssetPriceChartRange } from '@suite/flags';
+import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
-import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
-import { useAssetPriceHistoryQuery } from '@suite-common/price-chart';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { isErc4626 } from '@suite-common/wallet-utils';
 import { Skeleton } from '@trezor/components';
 
 import { CHART_HEIGHT, ChartFrame } from './ChartFrame';
+import { ChartNote } from './ChartNote';
+import { useAssetPriceChartState } from './useAssetPriceChartState';
 
 const AssetPriceGraph = lazy(() =>
     import('./AssetPriceGraph').then(module => ({ default: module.AssetPriceGraph })),
@@ -23,24 +21,30 @@ export type AssetPriceChartProps = {
 };
 
 export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChartProps) => {
-    const fiatCurrency = useSelector(selectBaseCurrency);
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
-    const token = useSelector((state: AssetsRootState) =>
-        selectAssetTokenInfo(state, networkSymbol, tokenContract),
-    );
-    const range = useSelector(selectAssetPriceChartRange);
-    const { data: points, isLoading } = useAssetPriceHistoryQuery({
-        ticker: {
-            symbol: networkSymbol,
-            tokenAddress: tokenContract,
-            protocols: isErc4626(token) ? ['erc4626'] : undefined,
-        },
-        fiatCurrency,
-        range,
+    const { points, isLoading, isError, isUnavailable, isEmpty } = useAssetPriceChartState({
+        networkSymbol,
+        tokenContract,
     });
 
-    if (points === null) {
+    if (isUnavailable) {
         return null;
+    }
+
+    if (isError) {
+        return (
+            <ChartNote data-testid="@price-chart/error">
+                <Translation id="TR_PRICE_CHART_LOAD_ERROR" />
+            </ChartNote>
+        );
+    }
+
+    if (isEmpty) {
+        return (
+            <ChartNote data-testid="@price-chart/empty">
+                <Translation id="TR_PRICE_CHART_NO_HISTORY" />
+            </ChartNote>
+        );
     }
 
     const skeleton = (
@@ -49,12 +53,8 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
         </ChartFrame>
     );
 
-    if (isLoading || points === undefined) {
+    if (isLoading || points === undefined || points === null) {
         return skeleton;
-    }
-
-    if (points.length === 0) {
-        return null;
     }
 
     return (
