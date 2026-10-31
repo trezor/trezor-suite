@@ -5,7 +5,7 @@ import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 import stellar from '@trezor/network-stellar/runtime';
 
 import { fetchUrl } from './fetch';
-import { RateLimiter } from './limiter';
+import { RateLimiter, type RequestPriority } from './limiter';
 
 // a proxy for https://api.coingecko.com/api/v3
 const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';
@@ -40,6 +40,7 @@ const rateLimiter = new RateLimiter(1_000, 15_000);
 type FetchCoinGeckoOptions = {
     skipCache?: boolean;
     signal?: AbortSignal;
+    priority?: RequestPriority;
 };
 
 const NOT_FOUND_STATUS = 404;
@@ -47,7 +48,9 @@ const NOT_FOUND_STATUS = 404;
 const requestCoinGecko = (url: string, options: FetchCoinGeckoOptions = {}): Promise<Response> =>
     options.skipCache
         ? fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' }, signal: options.signal })
-        : rateLimiter.limit(fetchSignal => fetchUrl(url, { signal: fetchSignal }), options.signal);
+        : rateLimiter.limit(fetchSignal => fetchUrl(url, { signal: fetchSignal }), options.signal, {
+              priority: options.priority,
+          });
 
 const fetchCoinGecko = async (url: string, options: FetchCoinGeckoOptions = {}) => {
     try {
@@ -133,7 +136,10 @@ export const fetchCoinGeckoMarketChart = async ({
     let failedStatus: number | null = null;
 
     for (const coinUrl of coinUrls) {
-        const res = await requestCoinGecko(`${coinUrl}/market_chart?${urlParams}`, { signal });
+        const res = await requestCoinGecko(`${coinUrl}/market_chart?${urlParams}`, {
+            signal,
+            priority: 'high',
+        });
 
         if (res.status === NOT_FOUND_STATUS) {
             continue;
