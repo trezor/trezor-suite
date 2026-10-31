@@ -20,6 +20,7 @@
         "test:discovery": "yarn g:tsx ./tools/discovery-test.ts",
         "test:anonymity": "yarn g:tsx ./tools/anonymity-test.ts",
         "test:benchmark": "yarn g:tsx ./tools/benchmark-test.ts",
+        "test:regtest": "yarn g:tsx ./tools/regtest-round-test.ts",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
