@@ -23,7 +23,7 @@ import { type FeesFormValues, feesFormValidationSchema } from '../../feesFormSch
 import { selectFeeLevels } from '../../selectors';
 import { getFeeValue } from '../../utils';
 
-const getDefaultFeeLimit = (
+export const getDefaultFeeLimit = (
     networkType: NetworkType | undefined,
     referenceFee: PrecomposedTransactionFinal | undefined,
 ): string | undefined => {

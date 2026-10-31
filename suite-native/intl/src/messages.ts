@@ -4961,7 +4961,7 @@ export const messages = {
         precomposedTransaction: {
             errors: {
                 amountNotEnoughCurrencyFee:
-                    'Insufficient {networkDisplaySymbol} to cover the transaction fee',
+                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee.',
                 amountIsNotEnough: "You don't have enough funds.",
                 amountIsTooLow: 'Amount is too low.',
                 amountIsLessThanReserve: 'Recipient account requires minimum reserve to activate.',
@@ -4971,7 +4971,7 @@ export const messages = {
                 remainingBalanceLessThanRent:
                     'After sending this amount, your account will have SOL remaining lower than the rent.',
                 amountNotEnoughCurrencyFeeWithEthAmount:
-                    'Insufficient {networkDisplaySymbol} to cover the transaction fee',
+                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee.',
             },
         },
     },

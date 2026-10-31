@@ -108,9 +108,7 @@ export const useComposeEarnFees = ({
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
     const selectedFee = formDraft?.selectedFee;
     const selectedFeeLevel = selectedFee ? feeLevels[selectedFee] : undefined;
-    const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const { isFeeUnavailable } = getFeeAvailability({
-        fee,
         feeLevels,
         selectedFee,
         isLoading: areFeesLoading || isComposingFeeLevels,
