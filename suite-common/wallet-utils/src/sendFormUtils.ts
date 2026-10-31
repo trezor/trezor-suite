@@ -308,12 +308,62 @@ export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransacti
     return tx.feePerByte;
 };
 
-export const getLowestFeeFromLevels = (levels: FeeLevel[]): BigNumber =>
+export const getLowestFeeFromLevels = (
+    levels: FeeLevel[],
+    field: 'feePerUnit' | 'maxFeePerGas' = 'feePerUnit',
+): BigNumber =>
     BigNumber.minimum(
         ...levels
             .filter(({ label }) => label !== 'custom')
-            .map(({ feePerUnit }) => BigNumber(feePerUnit)),
+            .flatMap(level => {
+                const value = level[field];
+
+                return value === undefined ? [] : [BigNumber(value)];
+            }),
     );
+
+export type CustomFeeFields = {
+    feePerUnit: string;
+    maxFeePerGas?: string;
+};
+
+// EIP-1559 levels all share one legacy feePerUnit, so only maxFeePerGas tells the tiers apart.
+export const isCustomFeeBelowLowestLevel = (
+    { feePerUnit, maxFeePerGas }: CustomFeeFields,
+    levels: FeeLevel[],
+): boolean =>
+    isEip1559(levels.at(0))
+        ? BigNumber(maxFeePerGas ?? NaN).isLessThan(getLowestFeeFromLevels(levels, 'maxFeePerGas'))
+        : BigNumber(feePerUnit).isLessThan(getLowestFeeFromLevels(levels));
+
+// All levels of one EIP-1559 estimate share the block's base fee.
+export const getBaseFeePerGasFromLevels = (levels: FeeLevel[]): string | undefined =>
+    levels.at(0)?.baseFeePerGas;
+
+// EIP-1559 block validity requires max_fee_per_gas >= base_fee_per_gas; below it, no inclusion.
+export const isMaxFeePerGasBelowBaseFee = (maxFeePerGas: string, baseFeePerGas: string): boolean =>
+    BigNumber(maxFeePerGas).isLessThan(baseFeePerGas);
+
+export type CustomFeeWarning = 'belowBaseFee' | 'belowLowestLevel';
+
+// Below the base fee nothing can include the transaction, which outranks merely being cheap.
+export const getCustomFeeWarning = (
+    fields: CustomFeeFields,
+    levels: FeeLevel[],
+): CustomFeeWarning | undefined => {
+    const baseFeePerGas = getBaseFeePerGasFromLevels(levels);
+    const { maxFeePerGas } = fields;
+
+    if (
+        maxFeePerGas !== undefined &&
+        baseFeePerGas !== undefined &&
+        isMaxFeePerGasBelowBaseFee(maxFeePerGas, baseFeePerGas)
+    ) {
+        return 'belowBaseFee';
+    }
+
+    return isCustomFeeBelowLowestLevel(fields, levels) ? 'belowLowestLevel' : undefined;
+};
 
 // Find all validation errors set while composing a transaction
 export const findComposeErrors = <T extends FieldValues>(
