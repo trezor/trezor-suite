@@ -66,11 +66,42 @@ const renderCard = (account: Account = createAccount()) => {
 };
 
 const convertedMessage = messages.TR_STAKING_DREP_ID_CONVERTED.defaultMessage;
+const legacyFormatMessage = messages.TR_STAKING_DREP_ID_LEGACY_FORMAT.defaultMessage;
+const convertButtonText = messages.TR_STAKING_CONVERT_DREP_ID.defaultMessage;
 const currentDelegateMessage = messages.TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE.defaultMessage;
 
 describe('VotingPreferenceCard DRep input', () => {
     it.each([LEGACY_DREP_ID, LEGACY_DREP_ID.toUpperCase()])(
-        'preserves the current script credential when pasting its legacy id: %s',
+        'keeps a pasted legacy id until the user converts it: %s',
+        async value => {
+            const { user, input } = renderCard();
+            await user.click(input);
+            await user.paste(value);
+
+            expect(input).toHaveValue(value);
+            expect(screen.getByText(legacyFormatMessage)).toBeVisible();
+            expect(screen.queryByText(convertedMessage)).toBeNull();
+
+            await user.click(screen.getByRole('button', { name: convertButtonText }));
+
+            expect(input).toHaveValue(KEY_DREP_ID);
+            expect(screen.getByText(convertedMessage)).toBeVisible();
+            expect(screen.queryByText(legacyFormatMessage)).toBeNull();
+        },
+    );
+
+    it('hides the conversion feedback once the converted id is edited', async () => {
+        const { user, input } = renderCard();
+        await user.click(input);
+        await user.paste(LEGACY_DREP_ID);
+        await user.click(screen.getByRole('button', { name: convertButtonText }));
+        await user.type(input, '{Backspace}');
+
+        expect(screen.queryByText(convertedMessage)).toBeNull();
+    });
+
+    it.each([LEGACY_DREP_ID, LEGACY_DREP_ID.toUpperCase()])(
+        'recognizes the current script delegate pasted in its legacy spelling: %s',
         async value => {
             const { user, input } = renderCard(
                 createAccount({ drep_id: LEGACY_DREP_ID, has_script: true }),
@@ -78,9 +109,9 @@ describe('VotingPreferenceCard DRep input', () => {
             await user.click(input);
             await user.paste(value);
 
-            expect(input).toHaveValue(SCRIPT_DREP_ID);
+            expect(input).toHaveValue(value);
             expect(screen.getByText(currentDelegateMessage)).toBeVisible();
-            expect(screen.queryByText(convertedMessage)).toBeNull();
+            expect(screen.queryByRole('button', { name: convertButtonText })).toBeNull();
         },
     );
 
@@ -93,17 +124,18 @@ describe('VotingPreferenceCard DRep input', () => {
 
         expect(input).toHaveValue(KEY_DREP_ID);
         expect(screen.queryByText(currentDelegateMessage)).toBeNull();
-        expect(screen.queryByText(convertedMessage)).toBeNull();
+        expect(screen.queryByText(legacyFormatMessage)).toBeNull();
     });
 
     it.each([KEY_DREP_ID, SCRIPT_DREP_ID])(
-        'does not describe case folding of a canonical id as a format conversion: %s',
+        'leaves an uppercase canonical id as typed: %s',
         async canonicalId => {
             const { user, input } = renderCard();
             await user.click(input);
             await user.paste(canonicalId.toUpperCase());
 
-            expect(input).toHaveValue(canonicalId);
+            expect(input).toHaveValue(canonicalId.toUpperCase());
+            expect(screen.queryByText(legacyFormatMessage)).toBeNull();
             expect(screen.queryByText(convertedMessage)).toBeNull();
         },
     );
@@ -118,15 +150,6 @@ describe('VotingPreferenceCard DRep input', () => {
 
         expect(input).toHaveValue(mixedCaseId);
         expect(screen.getByText(messages.TR_STAKING_INVALID_DREP_ID.defaultMessage)).toBeVisible();
-        expect(screen.queryByText(convertedMessage)).toBeNull();
-    });
-
-    it('still shows format conversion feedback for an uppercase legacy id', async () => {
-        const { user, input } = renderCard();
-        await user.click(input);
-        await user.paste(LEGACY_DREP_ID.toUpperCase());
-
-        expect(input).toHaveValue(KEY_DREP_ID);
-        expect(screen.getByText(convertedMessage)).toBeVisible();
+        expect(screen.queryByRole('button', { name: convertButtonText })).toBeNull();
     });
 });

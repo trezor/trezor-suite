@@ -3,10 +3,10 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { Translation } from '@suite/intl';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import {
+    isCardanoDrepIdCip129,
     selectAreFeesLoading,
     selectHasRunningDiscovery,
     selectVotingDelegationOption,
-    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -60,7 +60,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
 
     const isDrepValid =
         selectedVotingDelegation.type !== 'another_drep' ||
-        validateCardanoDrep(selectedVotingDelegation.drepId);
+        isCardanoDrepIdCip129(selectedVotingDelegation.drepId);
 
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors

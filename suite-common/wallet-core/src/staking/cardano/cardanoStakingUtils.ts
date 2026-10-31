@@ -121,6 +121,9 @@ export const normalizeCardanoDrepId = (drepId: string) => {
     return credential === null ? null : encodeCardanoDrepIdCip129(credential);
 };
 
+export const isCardanoDrepIdCip129 = (drepId: string) =>
+    normalizeCardanoDrepId(drepId) === drepId.toLowerCase();
+
 export const areCardanoDrepIdsEqual = (drepIdA?: string | null, drepIdB?: string | null) => {
     if (!drepIdA || !drepIdB) return false;
     if (drepIdA === drepIdB) return true;
