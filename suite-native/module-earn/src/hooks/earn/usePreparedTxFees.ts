@@ -28,6 +28,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
 import { useComposeErrorHandler } from './useComposeErrorHandler';
+import { type EarnFeeFlow, useEarnFeeAnalytics } from './useEarnFeeAnalytics';
 import {
     type YieldDepositFeeToken,
     buildYieldDepositFeeDraftState,
@@ -62,6 +63,7 @@ type BaseActionContext<TComposed extends ComposedTxBase> = {
 
 type UsePreparedTxFeesParams<TComposed extends ComposedTxBase, TReason extends string> = {
     amount: string | undefined;
+    analyticsFlow?: EarnFeeFlow;
     /**
      * Composes the base transaction for the debounced amount. Must not throw — map failures to
      * the `error` result. Every error is surfaced as a retryable alert; a failure that only
@@ -97,6 +99,7 @@ export const usePreparedTxFees = <
     TReason extends string = never,
 >({
     amount,
+    analyticsFlow,
     composeTransaction,
     formDraftKey,
     hasInvalidContext,
@@ -368,6 +371,16 @@ export const usePreparedTxFees = <
 
     const hasEstimationError =
         hasFeeEstimationError || (!!baseActionContext && !feeDraftState && !isCurrentFeePreparing);
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey: formDraftKey,
+        flow: analyticsFlow,
+        networkSymbol: symbol,
+        isEnabled: canCompose && !!amount,
+        hasEstimationError,
+        isFeeUnavailable,
+        isReady: isFeeReady,
+        retry: handleRetryFeeEstimation,
+    });
 
     return {
         formDraft,
@@ -377,7 +390,7 @@ export const usePreparedTxFees = <
         isFeeReady,
         isFeeUnavailable,
         preparedTx,
-        retryFeeEstimation: handleRetryFeeEstimation,
+        retryFeeEstimation: retryWithAnalytics,
         selectedFee,
     };
 };
