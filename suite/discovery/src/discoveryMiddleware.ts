@@ -6,15 +6,11 @@ import {
     selectShouldDisplayDeviceCompromised,
 } from '@suite/authenticity-checks';
 import { type LocksRootState } from '@suite/locks';
-import { type RouterRootState, routerAppChanged } from '@suite/router';
-import { connectPopupCallInnerThunk } from '@suite-common/connect-popup';
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { type ThpRootState, selectThpAutoconnectStep, thpActions } from '@suite-common/thp';
+import { type RouterRootState } from '@suite/router';
+import { selectSelectedDevice } from '@suite-common/device';
+import { type ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
 import {
     type WalletCoreCompoundRootState,
-    accountsActions,
-    changeNetworks,
     observeSelectedDeviceThunk,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
@@ -25,6 +21,7 @@ import {
     selectIsDeviceReadyToStartDiscovery,
     selectShouldRouterAppStartDiscovery,
 } from './conditions';
+import { getDiscoveryTrigger } from './getDiscoveryTrigger';
 
 type DiscoveryMiddlewareState = AuthenticityChecksRootState &
     LocksRootState &
@@ -69,34 +66,23 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     // 5. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
     //    *after* device acquisition, and also needs device interaction to complete (would block discovery).
     const isTHPAutoconnectModal = selectThpAutoconnectStep(getState()) === 'AutoconnectInfo';
-    const isTHPAutoconnectFinished = thpActions.finishAutoconnectFlow.match(action);
     if (isTHPAutoconnectModal) return action;
 
     /*
-     Start discovery only on the following actions:
+     Start discovery only on the actions that map to a trigger:
     */
-    if (
-        isDeviceBecomingAcquired ||
-        isDeviceBecomingConnected ||
-        isTHPAutoconnectFinished || // now that the THP Autoconnect was finished, resume the delayed discovery
-        routerAppChanged.match(action) || // may no longer be one of the apps where discovery is disabled
-        deviceActions.dismissFirmwareAuthenticityCheck.match(action) || // may no longer be device compromised
-        // dismissDiscoveryEntropyCheck is intentionally not a trigger, the dismissing component ejects all wallets
-        connectPopupCallInnerThunk.fulfilled.match(action) ||
-        deviceActions.selectDevice.match(action) ||
-        changeNetworks.match(action) ||
-        accountsActions.updateAccount.match(action) || // empty account can become nonempty
-        accountsActions.changeAccountVisibility.match(action) ||
-        // interactive device checks are finished
-        persistentDeviceDataActions.setManualDeviceCheckSuccess.match(action) ||
-        persistentDeviceDataActions.setDeviceAuthenticityResult.match(action)
-    ) {
-        // 6. Nothing to discover (discovery would be no-op). It's intentionally inside the action matcher condition
-        // so it won't be called on every action, because the selector is expensive and not viable for memoization.
-        const shouldRediscover = selectShouldRediscover(getState(), device);
-        if (!shouldRediscover) return action;
-        dispatch(startOrRestartDiscoveryThunk());
-    }
+    const trigger = getDiscoveryTrigger({
+        action,
+        isDeviceBecomingAcquired,
+        isDeviceBecomingConnected,
+    });
+    if (trigger === undefined) return action;
+
+    // 6. Nothing to discover (discovery would be no-op). It's intentionally checked only after the action matched
+    // a trigger, so it won't be called on every action, because the selector is expensive and not viable for memoization.
+    const shouldRediscover = selectShouldRediscover(getState(), device);
+    if (!shouldRediscover) return action;
+    dispatch(startOrRestartDiscoveryThunk({ trigger }));
 
     return action;
 });

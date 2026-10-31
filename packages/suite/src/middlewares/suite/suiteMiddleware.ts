@@ -162,7 +162,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
             }
         } else if (updateOnlineStatus.match(action) && action.payload) {
             // Restart discovery to reconnect to backends when user goes offline -> online.
-            dispatch(startOrRestartDiscoveryThunk());
+            dispatch(startOrRestartDiscoveryThunk({ trigger: 'reconnect' }));
         }
         if (isActionDeviceRelated(action)) {
             // keep suite reducer synchronized with other reducers (selected device)

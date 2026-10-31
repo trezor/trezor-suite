@@ -32,11 +32,14 @@ describe('Discovery Reducer', () => {
         const timestamp = Date.now();
         jest.spyOn(Date, 'now').mockImplementation(() => timestamp);
 
-        store.dispatch(discoveryActions.startDiscovery(TEST_DEVICE_PATH));
+        store.dispatch(
+            discoveryActions.startDiscovery(TEST_DEVICE_PATH, { trigger: 'device-connect' }),
+        );
 
         expect(store.getState().wallet.discovery).toEqual({
             [TEST_DEVICE_PATH]: {
                 status: 'starting',
+                trigger: 'device-connect',
                 isAddingHiddenWallet: undefined,
                 isAddingExistingWallet: undefined,
                 startTimestamp: timestamp,
@@ -54,6 +57,7 @@ describe('Discovery Reducer', () => {
 
         store.dispatch(
             discoveryActions.startDiscovery(TEST_DEVICE_PATH, {
+                trigger: 'add-wallet',
                 isAddingHiddenWallet: true,
                 isAddingExistingWallet: true,
             }),
@@ -62,6 +66,7 @@ describe('Discovery Reducer', () => {
         expect(store.getState().wallet.discovery).toEqual({
             [TEST_DEVICE_PATH]: {
                 status: 'starting',
+                trigger: 'add-wallet',
                 isAddingHiddenWallet: true,
                 isAddingExistingWallet: true,
                 startTimestamp: timestamp,
@@ -141,6 +146,34 @@ describe('Discovery Reducer', () => {
             hasLoadedAnyNonEmptyAccount: true,
             passphraseSubmitted: undefined,
         });
+    });
+
+    it('keeps the trigger of the run across status updates', () => {
+        const store = initStore({
+            preloadedState: {
+                wallet: {
+                    discovery: {
+                        [TEST_DEVICE_PATH]: {
+                            status: 'starting',
+                            startTimestamp: 1000,
+                            trigger: 'retry',
+                        },
+                    },
+                },
+            },
+        });
+
+        store.dispatch(
+            discoveryActions.updateDiscovery(
+                { status: 'progress', total: 10, progress: 5 },
+                TEST_DEVICE_PATH,
+            ),
+        );
+        store.dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, TEST_DEVICE_PATH));
+
+        expect(store.getState().wallet.discovery[TEST_DEVICE_PATH]).toEqual(
+            expect.objectContaining({ status: 'complete', trigger: 'retry' }),
+        );
     });
 
     it('should handle updateDiscovery action with passphraseSubmitted flag', () => {

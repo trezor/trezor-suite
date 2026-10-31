@@ -5,7 +5,12 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type DiscoveryStatus,
+    type DiscoveryTrigger,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { type StaticSessionId, asDeviceUniquePath } from '@trezor/connect';
@@ -26,8 +31,13 @@ type ChangeCoinVisibilityParams = {
     shouldBeVisible: boolean;
 };
 
+type RunAdditionalDiscoveryParams = {
+    staticSessionId: StaticSessionId;
+    trigger: DiscoveryTrigger;
+};
+
 const mockChangeCoinVisibility = jest.fn<Promise<void>, [ChangeCoinVisibilityParams]>();
-const mockRunAdditionalDiscovery = jest.fn<Promise<void>, [StaticSessionId]>();
+const mockRunAdditionalDiscovery = jest.fn<Promise<void>, [RunAdditionalDiscoveryParams]>();
 const mockCancelDiscovery = jest.fn<void, [TrezorDevice]>();
 
 jest.mock('../settings/walletSettingsThunks', () => {
@@ -51,7 +61,7 @@ jest.mock('./discoveryThunks', () => {
         ...actualModule,
         runAdditionalDiscoveryThunk: createThunk(
             '@test/runAdditionalDiscovery',
-            (staticSessionId: StaticSessionId) => mockRunAdditionalDiscovery(staticSessionId),
+            (params: RunAdditionalDiscoveryParams) => mockRunAdditionalDiscovery(params),
         ),
         cancelDiscoveryThunk: createThunk('@test/cancelDiscovery', (device: TrezorDevice) =>
             mockCancelDiscovery(device),
@@ -145,7 +155,7 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
             return Promise.resolve();
         });
 
-        const { result } = await runThunk(state);
+        const { actions, result } = await runThunk(state);
 
         expect(result).toEqual({ success: true, payload: { discoveredAccountCount: 1 } });
         expect(mockChangeCoinVisibility).toHaveBeenCalledTimes(1);
@@ -153,7 +163,69 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
             symbol: networkSymbol,
             shouldBeVisible: true,
         });
-        expect(mockRunAdditionalDiscovery).toHaveBeenCalledWith(staticSessionId);
+        expect(mockRunAdditionalDiscovery).toHaveBeenCalledWith({
+            staticSessionId,
+            trigger: 'add-account',
+        });
+        expect(actions).toContainEqual(
+            discoveryActions.startDiscovery(devicePath, {
+                trigger: 'add-account',
+                isAddingHiddenWallet: false,
+                isAddingExistingWallet: false,
+            }),
+        );
+    });
+
+    it('marks the final status of a run that already failed as silent while rolling back', async () => {
+        const state = createState();
+        const failedDiscovery: DiscoveryStatus = {
+            status: 'failed',
+            error: 'Backend disconnected',
+            errorCode: 'Backend_Disconnected',
+        };
+        mockRunAdditionalDiscovery.mockImplementation(() => {
+            state.wallet.discovery[devicePath] = failedDiscovery;
+
+            return Promise.resolve();
+        });
+
+        const { actions, result } = await runThunk(state);
+
+        expect(result).toEqual({
+            success: false,
+            error: { message: 'Backend disconnected', wasCancelled: false },
+        });
+        expect(actions).toContainEqual(
+            discoveryActions.updateDiscovery(failedDiscovery, devicePath, { isSilent: true }),
+        );
+    });
+
+    it('reports the failure of a rejected discovery with its error code', async () => {
+        const state = createState({ enabledNetworks: [networkSymbol] });
+        mockRunAdditionalDiscovery.mockImplementation(() => {
+            state.wallet.discovery[devicePath] = { status: 'progress', total: 1, progress: 0 };
+
+            return Promise.reject(
+                Object.assign(new Error('Device disconnected'), { code: 'Device_Disconnected' }),
+            );
+        });
+
+        const { actions, result } = await runThunk(state);
+
+        expect(result).toEqual({
+            success: false,
+            error: { message: 'Device disconnected', wasCancelled: false },
+        });
+        expect(actions).toContainEqual(
+            discoveryActions.updateDiscovery(
+                {
+                    status: 'failed',
+                    error: 'Device disconnected',
+                    errorCode: 'Device_Disconnected',
+                },
+                devicePath,
+            ),
+        );
     });
 
     it('restores network visibility when activation fails', async () => {
@@ -181,7 +253,11 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
         ]);
         expect(actions).toContainEqual(
             discoveryActions.updateDiscovery(
-                { status: 'failed', error: 'Network activation failed' },
+                {
+                    status: 'failed',
+                    error: 'Network activation failed',
+                    errorCode: 'Failure_UnknownCode',
+                },
                 devicePath,
             ),
         );

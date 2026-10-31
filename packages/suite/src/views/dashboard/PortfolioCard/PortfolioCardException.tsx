@@ -177,7 +177,7 @@ export const PortfolioCardException = ({
                         />
                     }
                     cta={{
-                        action: () => dispatch(startOrRestartDiscoveryThunk()),
+                        action: () => dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' })),
                         icon: RepeatIcon,
                     }}
                     dataTestBase={exception.type}
@@ -201,7 +201,7 @@ export const PortfolioCardException = ({
                             );
                             if (!result?.success) return;
                             // restart discovery
-                            dispatch(startOrRestartDiscoveryThunk());
+                            dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' }));
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
                         icon: PlusIcon,

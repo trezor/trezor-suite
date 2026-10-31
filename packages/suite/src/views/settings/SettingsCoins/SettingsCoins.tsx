@@ -187,7 +187,7 @@ export const SettingsCoins = () => {
                 origin: 'network-settings',
             },
         });
-        dispatch(startOrRestartDiscoveryThunk());
+        dispatch(startOrRestartDiscoveryThunk({ trigger: 'coin-toggle' }));
     };
 
     return (

@@ -45,6 +45,7 @@ export const WalletList = ({ onSelectDevice }: WalletListProps) => {
         dispatch(
             startDiscoveryThunk({
                 device: selectedDevice,
+                trigger: 'add-wallet',
                 isAddingHiddenWallet: false,
                 isAddingExistingWallet: false,
             }),

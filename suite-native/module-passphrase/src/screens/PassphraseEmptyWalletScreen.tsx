@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    cancelDiscoveryThunk,
+    cancelDiscoveryForRestartThunk,
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -38,10 +38,11 @@ export const PassphraseEmptyWalletScreen = () => {
 
     const handleTryAgain = () => {
         if (device) {
-            dispatch(cancelDiscoveryThunk(device));
+            dispatch(cancelDiscoveryForRestartThunk(device));
             dispatch(
                 startDiscoveryThunk({
                     device,
+                    trigger: 'add-wallet',
                     isAddingHiddenWallet: true,
                     isAddingExistingWallet: false,
                 }),

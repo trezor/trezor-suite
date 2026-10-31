@@ -44,6 +44,8 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
         builder.addCase(discoveryActions.startDiscovery, (state, { payload }) => {
             state[payload.path] = {
                 status: 'starting',
+                trigger: payload.trigger,
+                callId: payload.callId,
                 isAddingHiddenWallet: payload.isAddingHiddenWallet,
                 isAddingExistingWallet: payload.isAddingExistingWallet,
                 useScopedCallIds: payload.useScopedCallIds,

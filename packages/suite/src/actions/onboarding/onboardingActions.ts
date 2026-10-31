@@ -156,7 +156,7 @@ const goToSuiteThunk =
         // there must be a device to progress with onboarding
         if (device?.features === undefined) return;
 
-        dispatch(startDiscoveryThunk({ device }));
+        dispatch(startDiscoveryThunk({ device, trigger: 'onboarding' }));
         const reportAnalytics = () => {
             const { analytics } = extra.services;
             const { startTime, ...onboardingAttributes } = onboardingAnalytics;

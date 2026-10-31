@@ -1,6 +1,23 @@
 import type { DeviceUniquePath, StaticSessionId, UiEventBundleProgress } from '@trezor/connect';
 
+export type DiscoveryTrigger =
+    | 'device-connect'
+    | 'device-switch'
+    | 'device-check'
+    | 'resume'
+    | 'coin-toggle'
+    | 'account-update'
+    | 'add-wallet'
+    | 'add-account'
+    | 'retry'
+    | 'reconnect'
+    | 'onboarding';
+
+export type DiscoveryOutcome =
+    'complete' | 'failed' | 'cancelled' | 'passphrase-mismatch' | 'passphrase-duplicate';
+
 type CommonDiscoveryStatus = {
+    trigger?: DiscoveryTrigger;
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
     hasLoadedAnyNonEmptyAccount?: boolean; // NOTE: used to indicate the the discovery started loading actual accounts
@@ -8,6 +25,7 @@ type CommonDiscoveryStatus = {
     startTimestamp?: number;
     passphraseSubmitted?: boolean;
     useScopedCallIds?: boolean;
+    callId?: string;
 };
 
 export type DiscoveryStatus = CommonDiscoveryStatus &
