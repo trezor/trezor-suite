@@ -64,7 +64,7 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
     }, [getValues]);
 
     // Use the hook to get fee-related values
-    const { feeValue, isFeeLoading, isSubmittable, isErrorBoxVisible } = useCustomFee({
+    const { feeValue, isFeeLoading, isSubmittable, errorMessage, feeLevels } = useCustomFee({
         accountKey,
         formState: formDraft,
     });
@@ -105,11 +105,11 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
                 ref={bottomSheetRef}
                 accountKey={accountKey}
                 onClose={closeModal}
-                onCustomFeeSet={onCustomFeeSet}
+                onCustomFeeSet={params => onCustomFeeSet({ ...params, customFeeLevels: feeLevels })}
                 feeValue={feeValue}
                 isFeeLoading={isFeeLoading}
                 isSubmittable={isSubmittable}
-                isErrorBoxVisible={isErrorBoxVisible}
+                errorMessage={errorMessage}
             />
         </Box>
     );

@@ -20,10 +20,8 @@ import type {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
-import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
-import { transactionManagementActions } from './sendFormSlice';
 import { type FeeLevelsMaxAmount, type UpdateFeeLimitThunkParams } from './types';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
@@ -181,13 +179,6 @@ export const calculateCustomFeeLevelThunk = createThunk<
             );
         }
 
-        const feeLevels = response.payload;
-        dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
-
-        if (!isFinalPrecomposedTransaction(feeLevels.custom)) {
-            return rejectWithValue('Unable to compose custom fee level.');
-        }
-
-        return fulfillWithValue(feeLevels);
+        return fulfillWithValue(response.payload);
     },
 );
