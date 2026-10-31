@@ -29,6 +29,11 @@ const mockUseAssetPriceHistoryQuery = jest.mocked(useAssetPriceHistoryQuery);
 const historyQuery = (data: AssetPricePoint[] | null | undefined, isLoading = false) =>
     ({ data, isLoading }) as ReturnType<typeof useAssetPriceHistoryQuery>;
 
+const failedHistoryQuery = () =>
+    ({ data: undefined, isLoading: false, isError: true }) as ReturnType<
+        typeof useAssetPriceHistoryQuery
+    >;
+
 const PRICE_HISTORY: AssetPricePoint[] = [
     { timestamp: 1700000000000, price: 2900 },
     { timestamp: 1700086400000, price: 3000 },
@@ -159,15 +164,37 @@ describe('the market price on the asset screen', () => {
 
             expect(screen.getByTestId('@price-chart/skeleton')).toBeInTheDocument();
             expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
+            expect(screen.getByTestId('@price-chart/range')).toBeInTheDocument();
         });
 
-        it('is left out for an asset without a price history, leaving the price alone', () => {
+        it('says the history failed to load and keeps the range picker, so another range can be picked', () => {
+            mockUseAssetPriceHistoryQuery.mockReturnValue(failedHistoryQuery());
+
+            renderMarketPrice(getInitialState({ ethRate: 3000 }));
+
+            expect(screen.getByTestId('@price-chart/error')).toBeInTheDocument();
+            expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
+            expect(screen.getByTestId('@price-chart/range')).toBeInTheDocument();
+        });
+
+        it('says there is no history for the period and keeps the range picker, so another range can be picked', () => {
+            mockUseAssetPriceHistoryQuery.mockReturnValue(historyQuery([]));
+
+            renderMarketPrice(getInitialState({ ethRate: 3000 }));
+
+            expect(screen.getByTestId('@price-chart/empty')).toBeInTheDocument();
+            expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
+            expect(screen.getByTestId('@price-chart/range')).toBeInTheDocument();
+        });
+
+        it('is left out with its range picker for an asset without a price history, leaving the price alone', () => {
             mockUseAssetPriceHistoryQuery.mockReturnValue(historyQuery(null));
 
             renderMarketPrice(getInitialState({ ethRate: 3000 }));
 
             expect(screen.getByTestId('@asset-detail/market-price')).toHaveTextContent('$3,000');
             expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('@price-chart/range')).not.toBeInTheDocument();
         });
     });
 });
