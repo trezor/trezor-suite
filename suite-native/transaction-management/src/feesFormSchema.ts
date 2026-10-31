@@ -92,61 +92,75 @@ export const feesFormValidationSchema = yup.object({
             return true;
         })
         .required(),
-    customFeeLimit: yup.string().test(
-        'fee-limit-too-low',
-        'Value is too low.',
+    customFeeLimit: yup
+        .string()
+        .when(['feeLevel', '$symbol'], {
+            is: (feeLevel: string, symbol: NetworkSymbol | undefined) =>
+                feeLevel === 'custom' &&
+                !!symbol &&
+                ['ethereum', 'tron'].includes(getNetwork(symbol).networkType),
+            then: schema => schema.required(),
+        })
+        .test(
+            'fee-limit-too-low',
+            'Value is too low.',
 
-        function (value) {
-            if (!value) return true;
-            const { symbol, minimalFeeLimit, translate } = this.options.context as FeesFormContext;
+            function (value) {
+                if (!value) return true;
+                const { symbol, minimalFeeLimit, translate } = this.options
+                    .context as FeesFormContext;
 
-            if (!symbol) return true;
+                if (!symbol) return true;
 
-            const { networkType } = getNetwork(symbol);
+                const { networkType } = getNetwork(symbol);
 
-            if (networkType !== 'ethereum' && networkType !== 'tron') return true;
+                if (networkType !== 'ethereum' && networkType !== 'tron') return true;
 
-            const feeLimit = new BigNumber(value);
-            if (
-                networkType === 'ethereum' &&
-                (!feeLimit.isFinite() || !feeLimit.isInteger() || feeLimit.lte(0))
-            ) {
-                return this.createError({
-                    message: translate!(
-                        'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.invalid',
-                    ),
-                });
-            }
+                const feeLimit = new BigNumber(value);
+                if (
+                    networkType === 'ethereum' &&
+                    (!feeLimit.isFinite() || !feeLimit.isInteger() || feeLimit.lte(0))
+                ) {
+                    return this.createError({
+                        message: translate!(
+                            'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.invalid',
+                        ),
+                    });
+                }
 
-            if (!minimalFeeLimit) {
-                return this.createError({
-                    message: translate!(
-                        'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.unavailable',
-                    ),
-                });
-            }
+                if (!minimalFeeLimit) {
+                    return this.createError({
+                        message: translate!(
+                            'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.unavailable',
+                        ),
+                    });
+                }
 
-            if (feeLimit.isLessThan(minimalFeeLimit)) {
-                return this.createError({
-                    message:
-                        networkType === 'tron'
-                            ? translate!(
-                                  'transactionManagement.fees.tron.feeLimitBelowRecommended',
-                                  { minFeeLimit: minimalFeeLimit },
-                              )
-                            : translate!(
-                                  'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
-                                  { minGasLimit: minimalFeeLimit },
-                              ),
-                });
-            }
+                if (feeLimit.isLessThan(minimalFeeLimit)) {
+                    return this.createError({
+                        message:
+                            networkType === 'tron'
+                                ? translate!(
+                                      'transactionManagement.fees.tron.feeLimitBelowRecommended',
+                                      { minFeeLimit: minimalFeeLimit },
+                                  )
+                                : translate!(
+                                      'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
+                                      { minGasLimit: minimalFeeLimit },
+                                  ),
+                    });
+                }
 
-            return true;
-        },
-    ),
+                return true;
+            },
+        ),
     // EIP1559 only validations
     customMaxFeePerGas: yup
         .string()
+        .when(['feeLevel', '$isEip1559Fee'], {
+            is: (feeLevel: string, isEip1559Fee: boolean) => feeLevel === 'custom' && isEip1559Fee,
+            then: schema => schema.required(),
+        })
         .test('too-many-decimals', 'Too many decimals.', function (value) {
             if (!value) return true;
 
@@ -211,6 +225,10 @@ export const feesFormValidationSchema = yup.object({
         ),
     customMaxPriorityFeePerGas: yup
         .string()
+        .when(['feeLevel', '$isEip1559Fee'], {
+            is: (feeLevel: string, isEip1559Fee: boolean) => feeLevel === 'custom' && isEip1559Fee,
+            then: schema => schema.required(),
+        })
         .test('too-many-decimals', 'Too many decimals.', function (value) {
             const { translate, ...context } = this.options.context as FeesFormContext;
             if (!validateFeeDecimalLength(value, context)) {
