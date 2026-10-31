@@ -1,0 +1,100 @@
+import { type CoreEventMessage } from '@trezor/connect-common/src/events';
+import { AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
+import { initLog } from '@trezor/connect-common/src/utils/debug';
+
+import { type Params, Popup } from './abstract';
+
+// Channel without a peer: nothing is ever delivered, so a handshake only
+// settles through the manager's own abortHandshake()/reset() paths.
+class MockChannel extends AbstractMessageChannel<CoreEventMessage> {
+    constructor() {
+        super({
+            sendFn: () => {},
+            channel: { here: '@trezor/connect-web', peer: '@trezor/connect-popup' },
+        });
+    }
+
+    connect(): void {
+        this.isConnected = true;
+    }
+
+    disconnect(): void {
+        this.isConnected = false;
+    }
+}
+
+class TestPopup extends Popup {
+    openCount = 0;
+
+    protected createChannel(): AbstractMessageChannel<CoreEventMessage> {
+        return new MockChannel();
+    }
+
+    protected open(): Promise<void> {
+        this.openCount += 1;
+
+        return Promise.resolve();
+    }
+
+    protected closePopup(): void {}
+
+    protected isOpen(): Promise<boolean> {
+        return Promise.resolve(false);
+    }
+
+    protected onReset(): void {}
+
+    failOpen(reason: string): void {
+        this.handleOpenFailure(reason);
+    }
+}
+
+const createParams = (): Params => ({
+    popupSrc: 'https://suite.trezor.io/connect-popup',
+    manifest: { appName: 'Test app', appUrl: 'https://app.example', email: 'dev@example.com' },
+    version: '1.0.0',
+    logger: initLog('test'),
+});
+
+const getHandshakePromise = (popup: Popup) => {
+    const { handshakePromise } = popup;
+    if (!handshakePromise) throw new Error('handshakePromise is not set');
+
+    return handshakePromise;
+};
+
+describe('Popup.handleOpenFailure', () => {
+    it('rejects the pending handshake with the failure reason and unlocks the manager', async () => {
+        const popup = new TestPopup(createParams());
+        const abortHandshake = jest.spyOn(popup.channel, 'abortHandshake');
+        await popup.focusOrCreate();
+        const { promise: handshake } = getHandshakePromise(popup);
+
+        popup.failOpen('handshake-timeout');
+
+        await expect(handshake).rejects.toThrow('handshake-timeout');
+        expect(abortHandshake).toHaveBeenCalledWith('handshake-timeout');
+
+        // Unlocked: the next focusOrCreate() opens again instead of focusing.
+        await popup.focusOrCreate();
+        expect(popup.openCount).toBe(2);
+    });
+
+    // Regression: WebPopup used to report one failed open() twice. The second
+    // report rejected the handshakePromise that reset() had just recreated
+    // (reset() early-returns because `locked` is already false), so the next
+    // call() failed with the stale reason.
+    it('keeps a usable handshakePromise when the same open() failure is reported twice', async () => {
+        const popup = new TestPopup(createParams());
+        await popup.focusOrCreate();
+
+        popup.failOpen('handshake-timeout');
+        popup.failOpen('handshake-timeout');
+
+        // The next call() resolves it via POPUP.CORE_LOADED; a permanently
+        // rejected deferred would ignore resolve() and fail this.
+        const handshakePromise = getHandshakePromise(popup);
+        handshakePromise.resolve();
+        await expect(handshakePromise.promise).resolves.toBeUndefined();
+    });
+});
