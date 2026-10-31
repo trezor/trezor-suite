@@ -31,7 +31,8 @@ export const CustomFeeContent = ({
                     value={feeValue}
                     isLoading={isFeeLoading}
                     symbol={symbol}
-                    isDiscreetText={false}
+                    // Show the fiat cost while the user adjusts the custom fee.
+                    discreetMode="disabled"
                 />
                 <ExactCryptoAmountFormatter
                     value={feeValue}
@@ -39,7 +40,8 @@ export const CustomFeeContent = ({
                     variant="body-md"
                     isLoading={isFeeLoading}
                     isBalance={false}
-                    isDiscreetText={false}
+                    // Show the exact crypto cost while the user adjusts the custom fee.
+                    discreetMode="disabled"
                 />
             </VStack>
         </HStack>

@@ -47,6 +47,7 @@
         "type-fest": "5.5.0"
     },
     "devDependencies": {
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils": "workspace:*",
+        "@suite-native/test-utils-store": "workspace:*"
     }
 }

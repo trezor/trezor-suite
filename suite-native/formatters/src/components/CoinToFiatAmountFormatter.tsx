@@ -5,7 +5,7 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
-import { type FormatterProps } from '../types';
+import { type DiscreetMode, type FormatterProps } from '../types';
 import { CryptoToFiatAmountFormatter } from './CryptoToFiatAmountFormatter';
 import { TokenToFiatAmountFormatter } from './TokenToFiatAmountFormatter';
 
@@ -14,8 +14,7 @@ type CoinToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         isBalance?: boolean;
-        isDiscreetText?: boolean;
-        isForcedDiscreetMode?: boolean;
+        discreetMode?: DiscreetMode;
         decimals?: number;
     };
 

@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { redactNumericalSubstring } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
@@ -17,7 +18,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
-import { Badge, Box, DiscreetText, HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import { Badge, Box, Discreet, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { type TypedTokenTransfer } from '@suite-native/tokens';
@@ -142,7 +143,16 @@ export const TransactionListItemContainer = ({
     const coinSymbol = isPhishingTransaction ? undefined : symbol;
     const contractAddress = isPhishingTransaction ? undefined : tokenTransfer?.contract;
 
-    const DateTextComponent = isPhishingTransaction ? DiscreetText : Text;
+    const formattedDate = DateTimeFormatter.format(transactionBlockTime);
+    const date =
+        isPhishingTransaction && formattedDate
+            ? redactNumericalSubstring(formattedDate)
+            : formattedDate;
+    const dateText = (
+        <Text variant="body-sm" color="contentSecondary">
+            {date}
+        </Text>
+    );
 
     return (
         <PressableOpacity
@@ -185,13 +195,17 @@ export const TransactionListItemContainer = ({
                             {hasTokens && <Badge label={tokensLabel} size="small" />}
                         </HStack>
 
-                        <DateTextComponent
-                            isForcedDiscreetMode={isPhishingTransaction}
-                            variant="body-sm"
-                            color="contentSecondary"
-                        >
-                            {DateTimeFormatter.format(transactionBlockTime)}
-                        </DateTextComponent>
+                        {isPhishingTransaction
+                            ? date && (
+                                  <Discreet
+                                      isForcedDiscreetMode
+                                      placeholderVariant="body-sm"
+                                      color="contentSecondary"
+                                  >
+                                      {dateText}
+                                  </Discreet>
+                              )
+                            : dateText}
                     </Box>
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>

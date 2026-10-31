@@ -2,11 +2,12 @@ import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
-import { useDiscreetMode } from '@suite-common/discreet-mode';
+import { DISCREET_PLACEHOLDER, useDiscreetMode } from '@suite-common/discreet-mode';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     Box,
-    DiscreetCanvas,
+    Discreet,
+    Text,
     TouchableSwitchRow,
     TouchableSwitchRowDescription,
     VStack,
@@ -15,23 +16,14 @@ import { selectIsBiometricsEnabled, useBiometricsSettings } from '@suite-native/
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
-import { useNativeStyles } from '@trezor/styles-native';
 
-const DiscreetTextExample = () => {
-    const { utils } = useNativeStyles();
-    const { fontSize, lineHeight } = utils.typography['body-sm'];
-
-    return (
-        <Box style={{ height: lineHeight, width: 30 }}>
-            <DiscreetCanvas
-                text="$100"
-                color="contentSecondary"
-                fontSize={fontSize}
-                lineHeight={lineHeight}
-            />
-        </Box>
-    );
-};
+const DiscreetTextExample = () => (
+    <Discreet isForcedDiscreetMode color="contentSecondary" placeholderVariant="body-sm">
+        <Text variant="body-sm" color="contentSecondary">
+            {DISCREET_PLACEHOLDER}
+        </Text>
+    </Discreet>
+);
 
 const DiscreetModeSwitchRow = () => {
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();

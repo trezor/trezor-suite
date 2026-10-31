@@ -66,4 +66,17 @@ describe('PortfolioBalance', () => {
         expect(screen.getByTestId('@home/portfolio-assets/total-balance')).toBeTruthy();
         expect(screen.getByText('71,000')).toBeTruthy();
     });
+
+    it('conceals and redacts the total when privacy mode is enabled', async () => {
+        await renderWithStoreProvider(<PortfolioBalance />, {
+            preloadedState: {
+                ...createPreloadedState({ rates: RATES }),
+                discreetMode: { isActive: true },
+            },
+        });
+
+        expect(screen.queryByText('71,000', { includeHiddenElements: true })).toBeNull();
+        expect(screen.getByText('###', { includeHiddenElements: true })).not.toBeVisible();
+        expect(screen.getByText('$', { includeHiddenElements: true })).not.toBeVisible();
+    });
 });

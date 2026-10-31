@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { DISCREET_PLACEHOLDER, useShouldRedactNumbers } from '@suite-common/discreet-mode';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 
 import { type CurrencyAmountParts, getCurrencyAmountParts } from '../utils/currencyAmountParts';
@@ -21,12 +22,17 @@ export const useCurrencyAmountParts = ({
 }: UseCurrencyAmountPartsParams): CurrencyAmountParts => {
     const currency = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
+    const shouldRedactNumbers = useShouldRedactNumbers({ strict: false });
 
-    return getCurrencyAmountParts({
+    const parts = getCurrencyAmountParts({
         value,
         locale,
         currency,
         isSatsValue: isBaseCurrencyInSats && currency === 'btc',
         isExact,
     });
+
+    return shouldRedactNumbers
+        ? { ...parts, wholeNumber: DISCREET_PLACEHOLDER, decimalNumber: '' }
+        : parts;
 };

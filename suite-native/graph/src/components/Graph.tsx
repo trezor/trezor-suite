@@ -3,6 +3,7 @@ import { PixelRatio } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
 
+import { useDiscreetMode } from '@suite-common/discreet-mode';
 import {
     type FiatGraphPoint,
     type GroupedBalanceMovementEvent,
@@ -87,6 +88,8 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
     const [delayedLoading, setDelayedLoading] = useState(false);
     const [graphWidth, setGraphWidth] = useState(0);
 
+    const { isDiscreetMode } = useDiscreetMode();
+
     const arePointsEmpty = points.length <= 1;
 
     const areLabelsHidden = loading || !!error || arePointsEmpty;
@@ -140,30 +143,38 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
             style={applyStyle(graphWrapperStyle)}
             onLayout={event => setGraphWidth(event.nativeEvent.layout.width)}
         >
-            <LineGraph<GroupedBalanceMovementEventPayload>
-                style={applyStyle(graphStyle, { loading, error })}
-                points={points}
-                color={colors.borderBrand}
-                animated={animated}
-                verticalPadding={20}
-                enablePanGesture
-                SelectionDot={SelectionDotWithLine}
-                TopAxisLabel={axisLabels?.TopAxisLabel}
-                BottomAxisLabel={axisLabels?.BottomAxisLabel}
-                onPointSelected={onPointSelected as any /* because of ExtendedGraphPoint */}
-                onGestureEnd={onGestureEnd}
-                onGestureStart={onGestureStart}
-                panGestureDelay={panGestureDelay}
-                events={events}
-                EventComponent={TransactionEvent}
-                EventTooltipComponent={TransactionEventTooltip}
-                onEventHover={triggerHaptics}
-                lineThickness={getAccessibilityLineThickness()}
-                loading={delayedLoading}
-                loadingLineColor={colors.borderNeutral}
-                blurOverlay={showBlurredGraph}
-                showPlaceholder={arePointsEmpty}
-            />
+            <Box
+                width="100%"
+                pointerEvents={isDiscreetMode ? 'none' : 'auto'}
+                accessibilityElementsHidden={isDiscreetMode}
+                importantForAccessibility={isDiscreetMode ? 'no-hide-descendants' : 'auto'}
+            >
+                <LineGraph<GroupedBalanceMovementEventPayload>
+                    style={applyStyle(graphStyle, { loading, error })}
+                    points={points}
+                    color={colors.borderBrand}
+                    animated={animated || isDiscreetMode}
+                    verticalPadding={20}
+                    enablePanGesture={!isDiscreetMode}
+                    SelectionDot={SelectionDotWithLine}
+                    TopAxisLabel={axisLabels?.TopAxisLabel}
+                    BottomAxisLabel={axisLabels?.BottomAxisLabel}
+                    onPointSelected={onPointSelected as any /* because of ExtendedGraphPoint */}
+                    onGestureEnd={onGestureEnd}
+                    onGestureStart={onGestureStart}
+                    panGestureDelay={panGestureDelay}
+                    events={events}
+                    EventComponent={TransactionEvent}
+                    EventTooltipComponent={TransactionEventTooltip}
+                    onEventHover={triggerHaptics}
+                    lineThickness={getAccessibilityLineThickness()}
+                    loading={delayedLoading}
+                    loadingLineColor={colors.borderNeutral}
+                    blurOverlay={showBlurredGraph || isDiscreetMode}
+                    enforceIntensity={isDiscreetMode ? 8 : undefined}
+                    showPlaceholder={arePointsEmpty}
+                />
+            </Box>
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>
                     <Loader

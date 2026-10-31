@@ -25,6 +25,7 @@
         },
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        { "path": "../test-utils-store" }
     ]
 }

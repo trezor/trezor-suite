@@ -85,7 +85,8 @@ export const TokenTransferListItemValues = ({
                     ellipsizeMode="tail"
                     historicRate={historicRate}
                     useHistoricRate
-                    isForcedDiscreetMode={isPhishingTransaction}
+                    // Conceal phishing-token values even when global discreet mode is off.
+                    discreetMode={isPhishingTransaction ? 'enforced' : 'auto'}
                     style={applyStyle(failedTxStyle, { isFailedTx })}
                 />
             )}

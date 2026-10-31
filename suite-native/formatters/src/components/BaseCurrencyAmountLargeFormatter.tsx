@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { type BaseCurrencyAmount as BaseCurrencyAmountValue } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -9,7 +7,6 @@ import { AmountText } from './AmountText';
 import { BaseCurrencyAmount, type FormattedBaseCurrencyAmount } from './BaseCurrencyAmount';
 
 type BalanceFormatterProps = FormatterProps<BaseCurrencyAmountValue | null> & {
-    isForcedDiscreetMode?: boolean;
     testID?: string;
 };
 
@@ -20,7 +17,6 @@ const wholeNumberStyle = prepareNativeStyle(utils => ({
 }));
 
 type BaseCurrencyAmountLargeContentProps = FormattedBaseCurrencyAmount & {
-    isForcedDiscreetMode?: boolean;
     testID?: string;
 };
 
@@ -29,7 +25,6 @@ const BaseCurrencyAmountLargeContent = ({
     wholeNumber,
     decimalNumber,
     isCryptoCurrency,
-    isForcedDiscreetMode,
     testID,
 }: BaseCurrencyAmountLargeContentProps) => {
     const { applyStyle } = useNativeStyles();
@@ -39,15 +34,11 @@ const BaseCurrencyAmountLargeContent = ({
             <AmountText
                 value={wholeNumber}
                 variant="headline-lg"
-                isDiscreetText
-                isForcedDiscreetMode={isForcedDiscreetMode}
                 style={applyStyle(wholeNumberStyle)}
             />
             <AmountText
                 value={decimalNumber}
                 variant={isCryptoCurrency ? 'headline-lg' : 'headline-sm'}
-                isDiscreetText
-                isForcedDiscreetMode={isForcedDiscreetMode}
                 style={isCryptoCurrency ? applyStyle(wholeNumberStyle) : undefined}
             />
         </Box>
@@ -72,18 +63,8 @@ const BaseCurrencyAmountLargeContent = ({
     );
 };
 
-export const BaseCurrencyAmountLargeFormatter = ({
-    value,
-    isForcedDiscreetMode,
-    testID,
-}: BalanceFormatterProps) => (
+export const BaseCurrencyAmountLargeFormatter = ({ value, testID }: BalanceFormatterProps) => (
     <BaseCurrencyAmount value={value}>
-        {formattedAmount => (
-            <BaseCurrencyAmountLargeContent
-                {...formattedAmount}
-                isForcedDiscreetMode={isForcedDiscreetMode}
-                testID={testID}
-            />
-        )}
+        {formattedAmount => <BaseCurrencyAmountLargeContent {...formattedAmount} testID={testID} />}
     </BaseCurrencyAmount>
 );

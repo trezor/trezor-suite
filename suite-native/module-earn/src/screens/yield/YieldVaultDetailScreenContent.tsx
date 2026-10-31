@@ -20,7 +20,7 @@ import {
     Box,
     Button,
     Card,
-    DiscreetText,
+    Discreet,
     DiscreetTextTrigger,
     HStack,
     Text,
@@ -32,7 +32,7 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -72,9 +72,8 @@ export const YieldVaultDetailScreenContent = ({
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const { analytics } = useServices(injectNativeAnalytics);
-    const { translate } = useTranslate();
 
-    const { CryptoAmountFormatter: cryptoAmountFormatter, PercentageFormatter } = useFormatters();
+    const { CryptoAmountFormatter, PercentageFormatter } = useFormatters();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
 
@@ -122,18 +121,23 @@ export const YieldVaultDetailScreenContent = ({
             .times(vault.rewardRate.total)
             .toString();
 
-        const formattedDepositedAmount = cryptoAmountFormatter.format(depositedPosition.balance, {
-            symbol: wrappedNativeSymbol
-                ? toTokenSymbol(wrappedNativeSymbol)
-                : depositedPosition.tokenSymbol,
-            withSymbol: true,
-            isBalance: true,
-            formatStyle: 'compact-balance',
-            tokenDecimals: depositedPosition.decimals,
-        });
+        const formattedDepositedAmount = (
+            <CryptoAmountFormatter
+                value={depositedPosition.balance}
+                symbol={
+                    wrappedNativeSymbol
+                        ? toTokenSymbol(wrappedNativeSymbol)
+                        : depositedPosition.tokenSymbol
+                }
+                withSymbol
+                isBalance
+                formatStyle="compact-balance"
+                tokenDecimals={depositedPosition.decimals}
+            />
+        );
 
         return { yearlyRewards: yearlyRewardsValue, formattedDepositedAmount };
-    }, [depositedPosition, wrappedNativeSymbol, cryptoAmountFormatter, vault]);
+    }, [depositedPosition, wrappedNativeSymbol, CryptoAmountFormatter, vault]);
 
     const potentialRewards = useMemo(() => {
         if (
@@ -152,17 +156,19 @@ export const YieldVaultDetailScreenContent = ({
             matchedTokenBalance: token.balance,
         });
 
-        const formattedAdditionalDepositAmount = cryptoAmountFormatter.format(
-            additionalDepositAmount,
-            {
-                symbol: wrappedNativeSymbol
-                    ? toTokenSymbol(wrappedNativeSymbol)
-                    : depositedPosition.tokenSymbol,
-                withSymbol: true,
-                isBalance: true,
-                formatStyle: 'compact-balance',
-                tokenDecimals: depositedPosition.decimals,
-            },
+        const formattedAdditionalDepositAmount = (
+            <CryptoAmountFormatter
+                value={additionalDepositAmount}
+                symbol={
+                    wrappedNativeSymbol
+                        ? toTokenSymbol(wrappedNativeSymbol)
+                        : depositedPosition.tokenSymbol
+                }
+                withSymbol
+                isBalance
+                formatStyle="compact-balance"
+                tokenDecimals={depositedPosition.decimals}
+            />
         );
 
         const potentialRewardsValue = new BigNumber(depositedPosition.balance)
@@ -174,7 +180,7 @@ export const YieldVaultDetailScreenContent = ({
             potentialRewards: potentialRewardsValue,
             formattedAdditionalDepositAmount,
         };
-    }, [account, vault, token, depositedPosition, cryptoAmountFormatter, wrappedNativeSymbol]);
+    }, [account, vault, token, depositedPosition, CryptoAmountFormatter, wrappedNativeSymbol]);
 
     const onDepositPress = useCallback(() => {
         if (!vault?.token.address) {
@@ -331,11 +337,17 @@ export const YieldVaultDetailScreenContent = ({
                                 variant="headline-sm"
                             />
 
-                            <DiscreetText variant="body-md" color="contentSecondary">
-                                {translate('earn.yearlyRewardsDeposited', {
-                                    amountWithSymbol: yearlyRewards.formattedDepositedAmount,
-                                })}
-                            </DiscreetText>
+                            <Discreet placeholderVariant="body-md" color="contentSecondary">
+                                <Text variant="body-md" color="contentSecondary">
+                                    <Translation
+                                        id="earn.yearlyRewardsDeposited"
+                                        values={{
+                                            amountWithSymbol:
+                                                yearlyRewards.formattedDepositedAmount,
+                                        }}
+                                    />
+                                </Text>
+                            </Discreet>
                         </VStack>
                     )}
 
@@ -357,12 +369,17 @@ export const YieldVaultDetailScreenContent = ({
                                 variant="headline-sm"
                             />
 
-                            <DiscreetText variant="body-md" color="contentSecondary">
-                                {translate('earn.potentialRewardsIfYouAdd', {
-                                    amountWithSymbol:
-                                        potentialRewards.formattedAdditionalDepositAmount,
-                                })}
-                            </DiscreetText>
+                            <Discreet placeholderVariant="body-md" color="contentSecondary">
+                                <Text variant="body-md" color="contentSecondary">
+                                    <Translation
+                                        id="earn.potentialRewardsIfYouAdd"
+                                        values={{
+                                            amountWithSymbol:
+                                                potentialRewards.formattedAdditionalDepositAmount,
+                                        }}
+                                    />
+                                </Text>
+                            </Discreet>
                         </VStack>
                     )}
 

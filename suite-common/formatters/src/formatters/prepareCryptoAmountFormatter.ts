@@ -1,6 +1,6 @@
 import { pipe } from '@mobily/ts-belt';
 
-import { redactNumericalSubstring } from '@suite-common/discreet-mode';
+import { DISCREET_PLACEHOLDER } from '@suite-common/discreet-mode';
 import { LANGUAGES, type Locale } from '@suite-common/locale';
 import {
     type NetworkSymbol,
@@ -205,8 +205,15 @@ const appendSymbol = ({ value, config, formatterContext }: AppendSymbolParams) =
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
     makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
-        (value, formatterContext, shouldRedactNumbers) =>
-            pipe(
+        (value, formatterContext, shouldRedactNumbers) => {
+            if (shouldRedactNumbers) {
+                // Unit conversion, truncation and localization cannot affect the fixed placeholder.
+                // Skip numeric formatting so compact suffixes and ellipsis cannot reveal the amount.
+                // Symbol formatting still respects BTC/sats settings and withSymbol.
+                return appendSymbol({ value: DISCREET_PLACEHOLDER, config, formatterContext });
+            }
+
+            return pipe(
                 normalizeCryptoAmountForDisplay({ value, config, formatterContext }),
                 ({ value: normalizedAmount, areSubunitsDisplayed }) =>
                     formatCryptoAmountForDisplay({
@@ -217,10 +224,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
                     }),
                 formattedAmount =>
                     appendSymbol({ value: formattedAmount, config, formatterContext }),
-                valueWithSymbol =>
-                    shouldRedactNumbers
-                        ? redactNumericalSubstring(valueWithSymbol)
-                        : valueWithSymbol,
-            ),
+            );
+        },
         'CryptoAmountFormatter',
     );

@@ -55,7 +55,8 @@ export const SolExternalStakingBanner = ({
                                 symbol={networkSymbol}
                                 variant="body-sm"
                                 color="contentSecondary"
-                                isDiscreetText={false}
+                                // Keep the fiat equivalent readable alongside the external stake amount in this notice.
+                                discreetMode="disabled"
                                 isBalance
                             />
                         ),

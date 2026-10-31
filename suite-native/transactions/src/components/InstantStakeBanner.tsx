@@ -1,5 +1,10 @@
 import { useSelector } from 'react-redux';
 
+import {
+    redactNumericalSubstring,
+    useDiscreetMode,
+    useShouldRedactNumbers,
+} from '@suite-common/discreet-mode';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -8,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Box, DiscreetText } from '@suite-native/atoms';
+import { Box, Discreet, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -29,6 +34,8 @@ const bannerStyle = prepareNativeStyle(utils => ({
 export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBannerProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
+    const { isDiscreetMode } = useDiscreetMode();
+    const shouldRedactNumbers = useShouldRedactNumbers({ strict: false });
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -48,7 +55,11 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
 
     if (!internalTransfer || !stakeType || stakeType === 'change-delegate') return null;
 
-    const amount = formatNetworkAmount(internalTransfer.amount ?? '0', symbol, false);
+    const formattedAmount = formatNetworkAmount(internalTransfer.amount ?? '0', symbol, false);
+    const amount =
+        isDiscreetMode || shouldRedactNumbers
+            ? redactNumericalSubstring(formattedAmount)
+            : formattedAmount;
     const displaySymbol = getNetworkDisplaySymbol(symbol);
 
     const labelMap = {
@@ -61,9 +72,11 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
 
     return (
         <Box style={applyStyle(bannerStyle)}>
-            <DiscreetText variant="body-sm" color="contentPrimary">
-                {label}
-            </DiscreetText>
+            <Discreet placeholderVariant="body-sm" color="contentPrimary">
+                <Text variant="body-sm" color="contentPrimary">
+                    {label}
+                </Text>
+            </Discreet>
         </Box>
     );
 };

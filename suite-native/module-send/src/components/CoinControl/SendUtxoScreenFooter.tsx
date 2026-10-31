@@ -66,7 +66,8 @@ export const SendUtxoScreenFooter = ({
                             color={missingToAmount ? 'contentSecondary' : 'contentPrimary'}
                             value={selectedTotal}
                             symbol={symbol}
-                            isDiscreetText={false}
+                            // In the send form, users must always see real values, even when privacy mode is enabled.
+                            discreetMode="disabled"
                         />
                     </HStack>
                     {missingToAmount && (
@@ -80,7 +81,8 @@ export const SendUtxoScreenFooter = ({
                                     value={missingToAmount}
                                     symbol={symbol}
                                     isBalance={false}
-                                    isDiscreetText={false}
+                                    // In the send form, users must always see real values, even when privacy mode is enabled.
+                                    discreetMode="disabled"
                                 />
                             </HStack>
                         </AnimatedView>
