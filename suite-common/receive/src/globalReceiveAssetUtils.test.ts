@@ -4,7 +4,7 @@ import {
     type TradingAssetOption,
     getCryptoId,
 } from '@suite-common/trading';
-import { asNetworkSymbol, getMainnets } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getMainnets, getNetwork } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber, getIndexOrThrow } from '@trezor/utils';
 
@@ -481,6 +481,50 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
         expect(assets.filter(asset => !asset.isNativeToken).map(asset => asset.name)).toEqual([
             'USD Coin',
         ]);
+    });
+
+    it('keeps one receive option when distinct Cardano assets share a trading ID', () => {
+        const cardano = getNetwork('ada');
+        const policyId = 'a'.repeat(56);
+        const assets = buildGlobalReceiveAssetOptions({
+            networks: [cardano],
+            definitions: [
+                {
+                    assetPlatformId: cardano.coingeckoId,
+                    address: `${policyId}01`,
+                    symbol: 'one',
+                    name: 'First',
+                    marketCap: 2,
+                },
+                {
+                    assetPlatformId: cardano.coingeckoId,
+                    address: `${policyId}02`,
+                    symbol: 'two',
+                    name: 'Second',
+                    marketCap: 1,
+                },
+            ],
+        });
+
+        expect(assets.filter(asset => !asset.isNativeToken).map(asset => asset.name)).toEqual([
+            'First',
+        ]);
+    });
+
+    it('keeps every receive option beyond the representative-icon limit', () => {
+        const definitions: RankedTokenStructure = Array.from({ length: 6 }, (_, index) => ({
+            assetPlatformId: 'ethereum',
+            address: `0x${index}`,
+            symbol: `token${index}`,
+            name: `Token ${index}`,
+            marketCap: 6 - index,
+        }));
+        const assets = buildGlobalReceiveAssetOptions({
+            networks: [getNetwork('eth')],
+            definitions,
+        });
+
+        expect(assets).toHaveLength(7);
     });
 
     it('uses token IDs compatible with the local balance lookup', () => {
