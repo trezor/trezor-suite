@@ -12,6 +12,7 @@ export type TransientProps<T extends Record<string, any>> = {
 };
 
 export const makePropsTransient = <T extends Record<string, any>>(props: T): TransientProps<T> =>
+    // eslint-disable-next-line no-restricted-syntax -- the `$`-prefixed key remapping over a generic `T` cannot be inferred from the entries.
     Object.fromEntries(
         Object.entries(props).map(([key, value]) => [`$${key}`, value]),
     ) as TransientProps<T>;

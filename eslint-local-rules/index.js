@@ -10,6 +10,7 @@ const { enforceE2eTestStreamRule } = require('./enforce-e2e-test-stream/rule');
 const { enforceDiFactoryContractsRule } = require('./named-contracts/di/rule');
 const { enforceThunkContractsRule } = require('./named-contracts/thunks/rule');
 const { enforceNamedParameterTypesRule } = require('./named-parameter-types/rule');
+const { noAnyObjectFromEntriesRule } = require('./no-any-object-from-entries/rule');
 const { noOverrideDsComponentRule } = require('./no-override-ds-component/rule');
 const { noPackageDeepImportsRule } = require('./no-package-deep-imports/rule');
 const { noSuiteImportsInSuiteCommonRule } = require('./no-suite-imports-in-suite-common/rule');
@@ -23,6 +24,7 @@ module.exports = {
     'enforce-named-parameter-types': enforceNamedParameterTypesRule,
     'enforce-thunk-contracts': enforceThunkContractsRule,
     'enforce-thunk-names': enforceThunkNamesRule,
+    'no-any-object-from-entries': noAnyObjectFromEntriesRule,
     'no-override-ds-component': noOverrideDsComponentRule,
     'no-package-deep-imports': noPackageDeepImportsRule,
     'no-suite-imports-in-suite-common': noSuiteImportsInSuiteCommonRule,

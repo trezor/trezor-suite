@@ -7,6 +7,7 @@ import {
 } from '@suite-common/trading';
 import { type Translate, useTranslate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
+import { typedObjectFromEntries } from '@trezor/utils';
 
 const getColumnLabel = (translate: Translate, column: TradingHistoryCsvColumn): string => {
     switch (column) {
@@ -48,12 +49,11 @@ export const useTradingHistoryCsvColumnLabels = (): TradingHistoryCsvColumnLabel
 
     return useMemo(
         () =>
-            Object.fromEntries(
-                TRADING_HISTORY_CSV_COLUMNS.map((column): [TradingHistoryCsvColumn, string] => [
-                    column,
-                    getColumnLabel(translate, column),
-                ]),
-            ) as TradingHistoryCsvColumnLabels,
+            typedObjectFromEntries(
+                TRADING_HISTORY_CSV_COLUMNS.map(
+                    column => [column, getColumnLabel(translate, column)] as const,
+                ),
+            ),
         [translate],
     );
 };
