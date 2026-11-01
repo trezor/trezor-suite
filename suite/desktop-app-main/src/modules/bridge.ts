@@ -8,6 +8,7 @@ import { scheduleAction } from '@trezor/utils';
 import { ipcMain } from '../ipcMain';
 import type { Dependencies } from './module';
 import { isMainWindowUsable } from '../libs/isMainWindowUsable';
+import { isLegacyBridgeRunning } from '../libs/legacyBridge';
 import { hasSwitch } from '../libs/process-switches';
 import { ThreadProxy } from '../libs/thread-proxy';
 import { b2t } from '../libs/utils';
@@ -241,6 +242,13 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter, logger }: Depe
         }
 
         return await toggleBridge();
+    });
+
+    ipcMain.handle('bridge/is-legacy-running', async () => {
+        const isRunning = await isLegacyBridgeRunning();
+        logger.info(SERVICE_NAME, `Legacy bridge running: ${b2t(isRunning)}`);
+
+        return { success: true, payload: isRunning };
     });
 
     ipcMain.handle('bridge/get-status', async () => {

@@ -54,6 +54,7 @@ export const createWebDesktopApi = (): DesktopApi => ({
     toggleBridge: unavailableAsync('toggleBridge'),
     changeBridgeSettings: unavailableAsync('changeBridgeSettings'),
     getBridgeSettings: unavailableAsync('getBridgeSettings'),
+    isLegacyBridgeRunning: unavailableAsync('isLegacyBridgeRunning'),
     changeTraySettings: unavailableAsync('changeTraySettings'),
     getTraySettings: unavailableAsync('getTraySettings'),
     connectPopupEnabled: unavailableAsync('connectPopupEnabled'),
