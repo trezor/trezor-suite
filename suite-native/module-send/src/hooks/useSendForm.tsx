@@ -65,9 +65,10 @@ import {
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectStore } from '@trezor/redux-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport-common';
 
+import { cancelSendAmountPrefills, prefillSendAmount } from '../prefillSendAmount';
 import { selectDestinationTagFromDraft } from '../selectors';
 import {
     type SendOutputsFormValues,
@@ -122,10 +123,11 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         variant: 'B',
     });
     const { translate } = useTranslate();
-    const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
+    const { addressValidator, getNamedAddressSupport, dispatch, store } = useServices(
         injectAddressValidator,
         injectGetNamedAddressSupport,
         injectDispatch,
+        injectStore,
     );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
@@ -332,7 +334,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useEffect(() => {
         dispatch(transactionManagementActions.clearFeeLevels());
-    }, [accountKey, dispatch, tokenContract]);
+
+        return () => cancelSendAmountPrefills(control);
+    }, [accountKey, control, dispatch, tokenContract]);
 
     useEffect(() => {
         const prefillValuesFromStoredDraft = () => {
@@ -613,6 +617,14 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     return {
         handleSubmitSendForm,
+        prefillAmount: (initialAmount: string) =>
+            prefillSendAmount({
+                form,
+                store,
+                accountKey,
+                recipientIndex: 0,
+                amount: initialAmount,
+            }),
         form,
         network,
         amount,
