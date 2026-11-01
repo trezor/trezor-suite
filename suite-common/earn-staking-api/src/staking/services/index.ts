@@ -1,5 +1,6 @@
 import { createHttpClient } from '@suite-common/http-client';
 
+import { getSuiteInfo } from './getSuiteInfo';
 import { resilientStakingBatchResponse } from './resilientStakingBatchResponse';
 import {
     reportStakingTxIdsResponse,
@@ -92,7 +93,7 @@ export const getSolanaRewardsTotal: (
     schema: stakingSolanaRewardsTotalResponse,
 });
 
-export const reportStakingTxIds: (
+const postStakingTxIdsReport: (
     options: RequestOptions & { body: ReportStakingTxIds },
 ) => Promise<unknown> = earnHttpClient('/report', {
     method: 'POST',
@@ -100,3 +101,11 @@ export const reportStakingTxIds: (
     timeout: 60_000,
     reject: response => !response.ok,
 });
+
+type ReportStakingTxIdsOptions = RequestOptions & { body: Omit<ReportStakingTxIds, 'suite'> };
+
+export const reportStakingTxIds = ({
+    body,
+    ...options
+}: ReportStakingTxIdsOptions): Promise<unknown> =>
+    postStakingTxIdsReport({ ...options, body: { ...body, suite: getSuiteInfo() } });
