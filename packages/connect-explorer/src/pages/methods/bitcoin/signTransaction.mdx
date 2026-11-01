@@ -174,6 +174,62 @@ TrezorConnect.signTransaction({
 });
 ```
 
+###### SPENDWITNESS multisig (P2WSH)
+
+2-of-3 multisig on testnet, signed by the cosigner at `m/48'/1'/1'/2'`. Every input and change output lists all cosigners' account xpubs with the same `address_n` (chain, index).
+
+```javascript
+const xpubs = [
+    'tpubDEGquuorgFNbDrg8vepq1HnaV2mgQu9TcSBgBYfXw4AX8VMgkWqvkxHNuJmiah8iVnA3Hgj4cSvaGAXEnq814yC6hMEreckLsd7zyLL3o76', // m/48'/1'/0'/2'
+    'tpubDF4tYm8PaDydfctGdTEwCFDagcnGqGtHoghSYk6QvRzYdYMH38YnT2U1bn7GDcgrBmaCDsHhAe5YrEMYQDiuZD2TRMCm68MbPW55uSgMBgh', // m/48'/1'/1'/2'
+    'tpubDEhpbishBroZbRLEsdnrgTuuDfv2wgEqBWjqciUgbgDZLjoHFPHrtmwbCSJY2itRdwbbWrqifbJM6cNGKM2gD3WvVTxoicHjW7xw8R5pFoa', // m/48'/1'/2'/2'
+];
+const multisig = (address_n, signatures = ['', '', '']) => ({
+    pubkeys: xpubs.map(node => ({ node, address_n })),
+    signatures,
+    m: 2,
+    pubkeys_order: 1, // LEXICOGRAPHIC, see below
+});
+
+TrezorConnect.signTransaction({
+    inputs: [
+        {
+            address_n: "m/48'/1'/1'/2'/0/1",
+            prev_hash: '8cb1081b77ac196c7c98470c70c3f35d3183a1fe215077b0615635b47b85681e',
+            prev_index: 0,
+            amount: '100000',
+            script_type: 'SPENDWITNESS',
+            multisig: multisig([0, 1]),
+        },
+    ],
+    outputs: [
+        {
+            address: 'tb1qnw97gdeq0256e92v0scyj757gxrhmmaq525xn32gnc2egfk80l3qhhypuc',
+            amount: '40000',
+            script_type: 'PAYTOADDRESS',
+        },
+        {
+            // change back to the same multisig wallet
+            address_n: "m/48'/1'/1'/2'/1/4",
+            amount: '59000',
+            script_type: 'PAYTOWITNESS',
+            multisig: multisig([1, 4]),
+        },
+    ],
+    coin: 'test',
+});
+```
+
+The second cosigner (`m/48'/1'/2'/2'`) sends the same call with its own `address_n` and the first signature in `signatures`. For `0/1` the sorted key order is `m/48'/1'/0'/2'`, `m/48'/1'/2'/2'`, `m/48'/1'/1'/2'`, so the first signature goes to index 2:
+
+```javascript
+multisig: multisig([0, 1], ['', '', firstSignature]), // firstSignature = payload.signatures[0] of the first call
+```
+
+- `pubkeys_order: 1` (`LEXICOGRAPHIC`) sorts the keys as in BIP-67, so the order of `pubkeys` does not matter and addresses match a `wsh(sortedmulti(...))` descriptor. The default `0` (`PRESERVED`) uses the keys in the given order (`wsh(multi(...))`). Needs firmware 2.8.7 / 1.13.0. Older firmware ignores the field without an error and derives different addresses, so check one address with [getAddress](/methods/bitcoin/getAddress) first.
+- `signatures` has one entry per key in script order (after sorting with `LEXICOGRAPHIC`), not in the order of `pubkeys`. The signing device's own entry must be `''`: Trezor Model T and Safe devices fail with `Invalid multisig parameters` otherwise, Trezor Model One overwrites it. Other entries are not checked, so a cosigner's signature in the wrong slot can produce a transaction that does not validate.
+- Each entry is a DER signature as returned in `payload.signatures`, without the sighash byte. Signatures from a PSBT (`partial_sigs`) end with the sighash byte; remove it.
+
 ###### PAYTOADDRESS with refTxs (transaction data provided from custom backend)
 
 ```javascript
