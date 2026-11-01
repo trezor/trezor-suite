@@ -76,6 +76,34 @@ runs:
             lines.push('');
           }
 
+          if (result.quarantine_check) {
+            const check = result.quarantine_check;
+            // Code spans prevent mentions and preserve names containing Markdown or backticks.
+            const code = value => {
+              const runs = value.match(/`+/g) || [];
+              const delimiter = '`'.repeat(Math.max(0, ...runs.map(run => run.length)) + 1);
+              return `${delimiter} ${value.replace(/[\r\n]+/g, ' ')} ${delimiter}`;
+            };
+            if (check.tests.length > 0) {
+              lines.push(`⚠️ **Relevant tests currently in quarantine (${check.tests.length})**`);
+              lines.push('');
+              for (const test of check.tests) {
+                lines.push(`- ${code(test.test)} — ${code(test.spec)} (${test.project})`);
+              }
+              lines.push('');
+              lines.push('_Active quarantine in recommended test files; this is not a record of tests skipped in this PR run._');
+              lines.push('');
+            }
+            if (check.unavailableProjects.length > 0) {
+              lines.push(`_Quarantine check unavailable for: ${check.unavailableProjects.join(', ')}._`);
+              lines.push('');
+            }
+            if (check.unresolvedActions > 0) {
+              lines.push(`_Quarantine check incomplete: ${check.unresolvedActions} active rule(s) could not be resolved to test files._`);
+              lines.push('');
+            }
+          }
+
           if (result.uncovered_changes && result.uncovered_changes.length > 0) {
             lines.push(`⚠️ **Changes with no test coverage (${result.uncovered_changes.length})**`);
             result.uncovered_changes.forEach(f => lines.push(`- \`${f}\``));
