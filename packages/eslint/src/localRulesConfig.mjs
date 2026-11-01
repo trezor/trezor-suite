@@ -1,6 +1,6 @@
 import pluginLocalRules from 'eslint-plugin-local-rules';
 
-import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { areTypeAwareRulesConfigured } from './ruleSets.mjs';
 import { allRoots } from './workspaceRoots.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
@@ -58,6 +58,7 @@ export const localRulesConfig = [
                 'error',
                 { packageNames: ['@trezor/components', '@trezor/product-components'] },
             ],
+            'local-rules/no-unlimited-disable': 'error',
         },
     },
     {
@@ -127,7 +128,7 @@ export const localRulesConfig = [
             'local-rules/enforce-thunk-names': 'error',
         },
     },
-    ...(areExpensiveChecksEnabled
+    ...(areTypeAwareRulesConfigured
         ? [
               {
                   files: Object.values(allRoots).map(root => `${root}/**/src/**/*.{ts,tsx}`),

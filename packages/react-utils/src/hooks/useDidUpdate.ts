@@ -9,5 +9,5 @@ export const useDidUpdate = (callback: () => void, dependencies: any[]) => {
         } else {
             isMounted.current = true;
         }
-    }, dependencies); // eslint-disable-line
+    }, dependencies); // eslint-disable-line react-hooks/exhaustive-deps
 };

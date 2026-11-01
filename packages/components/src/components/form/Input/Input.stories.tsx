@@ -57,7 +57,7 @@ export default meta;
 
 export const Input: StoryObj<InputProps> = {
     render: ({ ...args }) => {
-        // eslint-disable-next-line
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [{ value }, updateArgs] = useArgs();
         const handleValue = (e: ChangeEvent<HTMLInputElement>) => {
             updateArgs({ value: e.target.value });
