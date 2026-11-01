@@ -4,6 +4,10 @@ name: "[Test] LLM Exploratory Tester"
 # packages/e2e-utils/.env (gitignored) and run:
 # TARGET=<pr-url> DEVICE_MODEL=T3T1 yarn workspace @trezor/e2e-utils llm-exploratory-tester
 # Optional: LLM_EXPLORATORY_TESTER_MODEL=z-ai/glm-5v-turbo
+# Desktop: LLM_EXPLORATORY_TESTER_PLATFORM=desktop (requires a display).
+# Build both parts first; development bundles need a server and violate production CSP:
+# TEST_BUILD=true yarn workspace @suite/desktop-app build:app
+# TEST_BUILD=true yarn workspace @suite/desktop-app build:ui
 
 on:
   workflow_dispatch:
@@ -16,6 +20,11 @@ on:
         description: "PR or issue URL (https://github.com/trezor/trezor-suite/pull/…)"
         required: true
         type: string
+      platform:
+        description: "Suite platform (desktop requires the target PR’s Linux E2E build)"
+        default: web
+        type: choice
+        options: [web, desktop]
       device_model:
         description: "Trezor emulator model"
         required: false
@@ -38,12 +47,17 @@ on:
     types: [opened, ready_for_review, reopened]
 
 permissions:
+  actions: read # Download desktop artifacts from another workflow run.
   contents: read
   issues: read
   pull-requests: write
 
 concurrency:
-  group: ${{ inputs.target || github.event.pull_request.html_url }}
+  # Replace older runs for the same target and platform.
+  # Web and desktop runs can run together. Automatic PR runs use web.
+  group: >-
+    target=${{ inputs.target || github.event.pull_request.html_url }}
+    platform=${{ inputs.platform || 'web' }}
   cancel-in-progress: true
 
 jobs:
@@ -112,14 +126,15 @@ jobs:
 
   llm-exploratory-tester:
     needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    if: needs.gate.outputs.run == 'true'
     env:
       COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
       TARGET: ${{ inputs.target || github.event.pull_request.html_url }}
       DEVICE_MODEL: ${{ inputs.device_model || 'T3W1' }}
       LLM_EXPLORATORY_TESTER_MODEL: ${{ inputs.model }}
+      LLM_EXPLORATORY_TESTER_PLATFORM: ${{ inputs.platform || 'web' }}
 
     steps:
       # Manual dispatch picks the branch. Do not run this workflow from an
@@ -129,6 +144,17 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           ref: ${{ github.event_name == 'pull_request' && 'develop' || '' }}
+
+      - name: Find existing desktop build
+        if: inputs.platform == 'desktop'
+        id: desktop
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          script: |
+            const { resolveDesktopBuild } = require('./packages/e2e-utils/src/llmExploratoryTester/resolveDesktopBuild.ts');
+            await resolveDesktopBuild({ github, context, core });
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
@@ -141,8 +167,25 @@ jobs:
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils @trezor/suite-e2e
 
+      - name: Install Playwright dependencies
+        run: yarn workspace @trezor/suite-e2e exec playwright install-deps chromium
+
       - name: Install Playwright Chromium
-        run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
+        if: inputs.platform != 'desktop'
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium
+
+      - name: Download desktop build
+        if: inputs.platform == 'desktop'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: desktop-app-build-e2e
+          run-id: ${{ steps.desktop.outputs.run-id }}
+          github-token: ${{ github.token }}
+          path: artifact-download
+
+      - name: Extract desktop build
+        if: inputs.platform == 'desktop'
+        run: tar -xzf artifact-download/app-build.tar.gz -C suite/desktop-app
 
       # trezor-user-env also serves the trezor-emulator MCP on :9003
       # (started by src/main.py in the pinned image, host networking).
@@ -155,7 +198,7 @@ jobs:
           AGENT_GITHUB_ACTION: true
           LLM_EXPLORATORY_TESTER_PASSPHRASE: ${{ secrets.LLM_EXPLORATORY_TESTER_PASSPHRASE }}
           OPENROUTER_API_KEY: ${{ secrets.E2E_EXPLORATORY_TESTER_API_KEY }}
-        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester
+        run: xvfb-run -a yarn workspace @trezor/e2e-utils llm-exploratory-tester
 
       # Surface the verdict on the job page; the run step's exit code already
       # fails the job on a fail verdict, this makes the reason visible.
@@ -164,7 +207,7 @@ jobs:
         run: |
           RESULT=packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json
           cat >> "$GITHUB_STEP_SUMMARY" <<EOF
-          ## LLM Exploratory Tester: $(jq -r '.result' "$RESULT")
+          ## LLM Exploratory Tester ($LLM_EXPLORATORY_TESTER_PLATFORM): $(jq -r '.result' "$RESULT")
 
           $(jq -r '.summary' "$RESULT")
 

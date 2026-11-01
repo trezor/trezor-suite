@@ -16,6 +16,7 @@ const exposeStoreArgument = '--expose-store';
 
 export type LaunchSuiteParams = {
     keepUserData?: boolean;
+    skipVideoRecording?: boolean;
     bridgeDaemon?: 'with-ui' | 'without-ui';
     exposeConnectWs?: boolean;
     offlineMode?: boolean;
@@ -96,6 +97,14 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
     }
 
+    let recordVideo;
+    if (!params.skipVideoRecording) {
+        recordVideo = {
+            dir: params.artefactFolder,
+            size: params.viewport,
+        };
+    }
+
     const electronApp = await electron.launch({
         cwd: appDir,
         args: buildArgs(params),
@@ -105,7 +114,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         },
         colorScheme: params.colorScheme,
         locale: params.locale,
-        recordVideo: { dir: params.artefactFolder, size: params.viewport },
+        recordVideo,
     });
 
     setupLoggingToFile(electronApp, params);
