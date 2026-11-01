@@ -1,7 +1,8 @@
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
+import { type AddressValidatorDep, injectAddressValidator } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
@@ -15,6 +16,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
 import { getUnusedAddressFromAccount } from '../../utils';
+import { isReceiveAddressCoherent } from '../../utils/exchange/receiveAddressCoherence';
 import { resolveExchangeTradeError } from '../../utils/exchange/resolveExchangeTradeError';
 import { logErrorThunk } from '../common/logErrorThunk';
 
@@ -33,10 +35,12 @@ export type ConfirmExchangeTradeThunkProps = {
 
 export type ConfirmExchangeTradeThunkState = TradingRootState;
 
+export type ConfirmExchangeTradeThunkDeps = WithServices<{ networks: AddressValidatorDep }>;
+
 export const confirmExchangeTradeThunk = createThunk<
     ExchangeTrade | undefined,
     ConfirmExchangeTradeThunkProps,
-    { state: ConfirmExchangeTradeThunkState }
+    { state: ConfirmExchangeTradeThunkState; extra: ConfirmExchangeTradeThunkDeps }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmTrade`,
     async (
@@ -51,10 +55,29 @@ export const confirmExchangeTradeThunk = createThunk<
             processResponseData,
             nextStep,
         },
-        { dispatch, getState, signal },
+        { dispatch, getState, signal, extra },
     ) => {
         const getCoinSymbol = (cryptoId: CryptoId) =>
             selectTradingCoinSymbolByCryptoId(getState(), cryptoId);
+
+        const isReceiveAddressMismatch = (
+            address: string | undefined,
+            cryptoId: CryptoId | undefined,
+        ) =>
+            !isTradeSubmitted &&
+            !isReceiveAddressCoherent({
+                addressValidator: injectAddressValidator(extra.services).addressValidator,
+                receiveAddress: address,
+                receiveCryptoId: cryptoId,
+            });
+
+        const logReceiveAddressMismatch = () =>
+            dispatch(
+                logErrorThunk({
+                    errorMessage: 'Receive address does not match the receive network',
+                    tradingType: 'exchange',
+                }),
+            );
 
         triggerAnalyticsTradeConfirmation();
 
@@ -69,6 +92,12 @@ export const confirmExchangeTradeThunk = createThunk<
         }
 
         if (!trade || !refundAddress || !trade.quoteId) {
+            return undefined;
+        }
+
+        if (isReceiveAddressMismatch(receiveAddress, trade.receive)) {
+            logReceiveAddressMismatch();
+
             return undefined;
         }
 
@@ -151,6 +180,17 @@ export const confirmExchangeTradeThunk = createThunk<
                     tradingType: 'exchange',
                 }),
             );
+
+            return undefined;
+        }
+
+        if (
+            isReceiveAddressMismatch(
+                response.receiveAddress ?? receiveAddress,
+                response.receive ?? trade.receive,
+            )
+        ) {
+            logReceiveAddressMismatch();
 
             return undefined;
         }
