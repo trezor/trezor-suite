@@ -66,6 +66,24 @@ export default [
         result: initialState,
     },
     {
+        description:
+            'Disconnect device, auto-start-before-quit modal is opened and should not be closed',
+        initialState: {
+            context: MODAL_CONTEXT_USER,
+            payload: { type: 'auto-start-before-quit' as const },
+        },
+        actions: [
+            {
+                type: DEVICE.DISCONNECT,
+                payload: CONNECT_DEVICE,
+            },
+        ],
+        result: {
+            context: MODAL_CONTEXT_USER,
+            payload: { type: 'auto-start-before-quit' },
+        },
+    },
+    {
         description: 'Disconnect device, modal is opened and should not be closed',
         initialState: {
             context: MODAL_CONTEXT_DEVICE,
@@ -245,6 +263,35 @@ export default [
             context: MODAL_CONTEXT_USER,
             payload: { type: 'application-log' },
             preserve: true,
+        },
+    },
+    {
+        description: 'UI_EVENTS.CLOSE_UI_WINDOW closes user context modal',
+        initialState: {
+            context: MODAL_CONTEXT_USER,
+            payload: { type: 'application-log' as const },
+        },
+        actions: [
+            {
+                type: UI_EVENTS.CLOSE_UI_WINDOW,
+            },
+        ],
+        result: initialState,
+    },
+    {
+        description: 'UI_EVENTS.CLOSE_UI_WINDOW keeps auto-start-before-quit modal open',
+        initialState: {
+            context: MODAL_CONTEXT_USER,
+            payload: { type: 'auto-start-before-quit' as const },
+        },
+        actions: [
+            {
+                type: UI_EVENTS.CLOSE_UI_WINDOW,
+            },
+        ],
+        result: {
+            context: MODAL_CONTEXT_USER,
+            payload: { type: 'auto-start-before-quit' },
         },
     },
     {
