@@ -82,6 +82,10 @@ const initialState: State = {
     context: MODAL_CONTEXT_NONE,
 };
 
+// The main process waits for this modal's answer before quitting; closing it from outside stalls the quit.
+const isAutoStartBeforeQuitModal = (state: State): boolean =>
+    state.context === MODAL_CONTEXT_USER && state.payload.type === 'auto-start-before-quit';
+
 export const modalReducer = (state: State = initialState, action: UnknownAction): State => {
     const requestId = typeof action.requestId === 'string' ? action.requestId : undefined;
 
@@ -89,7 +93,7 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
     if (deviceActions.deviceDisconnect.match(action)) {
         if (
             (state.context === MODAL_CONTEXT_DEVICE && action.payload.path === state.device.path) ||
-            state.context === MODAL_CONTEXT_USER
+            (state.context === MODAL_CONTEXT_USER && !isAutoStartBeforeQuitModal(state))
         ) {
             return initialState;
         }
@@ -204,7 +208,7 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
             return initialState;
         }
 
-        return state.preserve ? state : initialState;
+        return state.preserve || isAutoStartBeforeQuitModal(state) ? state : initialState;
     }
 
     if (preserveModal.match(action)) {
