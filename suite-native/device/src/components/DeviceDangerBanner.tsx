@@ -1,19 +1,36 @@
 import { useAtomValue } from 'jotai';
 
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type Color } from '@trezor/theme';
 
+import { type DeviceDangerBannerIntent, deviceDangerBannerAtom } from '../deviceAtoms';
 import { DeviceDangerBannerExtension, bannerContentPresets } from './DeviceDangerBannerExtension';
-import { type DeviceDangerBannerVariant, deviceDangerBannerAtom } from '../deviceAtoms';
 
-const containerStyle = prepareNativeStyle<{ bannerVariant: DeviceDangerBannerVariant }>(
-    (utils, { bannerVariant }) => ({
-        backgroundColor:
-            bannerVariant === 'other-error'
-                ? utils.colors.elementFillWarningBold
-                : utils.colors.elementFillCriticalSoft,
+type DeviceDangerBannerAppearance = {
+    backgroundColor: Color;
+    iconName: IconName;
+    iconColor: Color;
+};
+
+const bannerAppearanceByIntent = {
+    critical: {
+        backgroundColor: 'elementFillCriticalSoft',
+        iconName: 'warningCircle',
+        iconColor: 'contentPrimary',
+    },
+    warning: {
+        backgroundColor: 'elementFillWarningSoft',
+        iconName: 'warning',
+        iconColor: 'contentWarning',
+    },
+} as const satisfies Record<DeviceDangerBannerIntent, DeviceDangerBannerAppearance>;
+
+const containerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
+    (utils, { backgroundColor }) => ({
+        backgroundColor: utils.colors[backgroundColor],
         // MessageSystemBanner critical variant has the same bgColor, so the margin serves to separate them visually
         marginBottom: utils.spacings.sp1,
     }),
@@ -39,7 +56,8 @@ export const DeviceDangerBanner = ({ topSafeAreaInset }: DeviceCompromisedBanner
     const { applyStyle } = useNativeStyles();
 
     if (!deviceDanger) return null;
-    const { cause, variant } = deviceDanger;
+    const { cause, variant, intent } = deviceDanger;
+    const { backgroundColor, iconName, iconColor } = bannerAppearanceByIntent[intent];
 
     const titleTranslationId: TxKeyPath =
         variant === 'other-error'
@@ -47,10 +65,10 @@ export const DeviceDangerBanner = ({ topSafeAreaInset }: DeviceCompromisedBanner
             : bannerContentPresets[cause].title;
 
     return (
-        <Box style={applyStyle(containerStyle, { bannerVariant: variant })}>
+        <Box style={applyStyle(containerStyle, { backgroundColor })}>
             <VStack spacing="sp2" style={applyStyle(contentStyle, { topSafeAreaInset })}>
                 <HStack alignItems="center">
-                    <Icon name="warningCircle" size="mediumLarge" />
+                    <Icon name={iconName} color={iconColor} size="mediumLarge" />
                     <Text variant="body-md-strong">
                         <Translation id={titleTranslationId} />
                     </Text>
