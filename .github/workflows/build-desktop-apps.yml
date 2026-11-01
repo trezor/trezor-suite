@@ -85,7 +85,7 @@ jobs:
       (github.event_name != 'workflow_dispatch' || inputs.linux || inputs.mac)
     name: Build suite-desktop-${{ matrix.platform }}
     needs: build-and-cache-renderer
-    runs-on: ${{ matrix.platform == 'mac' && 'macos-14' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.platform == 'mac' && 'macos-15' || 'ubuntu-latest' }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
