@@ -97,7 +97,7 @@ jobs:
             body+="\n- Linux ARM: ${{ steps.versions.outputs.arm_next }} (${{ steps.check_arm.outputs.arm_url }})"
           fi
           body+="\n\n### :eyes: Review instructions\n\n"
-          body+="Works fully only on macOS. On Linux, remove all mentions of `lipo` and check at least Linux+Windows binaries.\n\`\`\`\n"
+          body+="Works fully only on macOS. On Linux, remove all mentions of \`lipo\` and check at least Linux+Windows binaries.\n\`\`\`\n"
           body+="git fetch origin chore/update-tor-binaries\n"
           body+="git checkout chore/update-tor-binaries\n"
           body+="git checkout HEAD~1\n"
