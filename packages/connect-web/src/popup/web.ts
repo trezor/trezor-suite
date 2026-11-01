@@ -30,7 +30,7 @@ export class WebPopup extends Popup {
     protected async open(): Promise<void> {
         const url = this.buildPopupUrl(this.popupSrc);
         const query = `connect-popup-req=${this.channelId}`;
-        const debug = this.logger.enabled ? '&debug=1' : '';
+        const debug = this.logger.isEnabled() ? '&debug=1' : '';
         const popupUrl = `${url}/bootstrap.html?${query}${debug}`;
         const popupOrigin = getOrigin(this.popupSrc);
 
