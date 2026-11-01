@@ -92,7 +92,8 @@ jobs:
 
       # The tester hits dev.suite.sldev.cz/suite-web/<branch>/web, deployed by
       # test-suite-web-desktop-e2e-pr.yml on push. Wait until that build has
-      # finished for this exact head SHA so we do not test a stale preview.
+      # finished for the current PR head, following new commits while waiting
+      # and when rerunning an older workflow run.
       - name: Wait for web preview
         id: preview
         if: steps.jev.outputs.pick == 'run'
@@ -100,13 +101,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           until [ "$status" = completed ]; do
             sleep 30
+            HEAD_SHA=$(gh pr view "$PR_NUMBER" --json headRefOid --jq .headRefOid)
             read -r status conclusion < <(gh api -X GET "repos/$GH_REPO/commits/$HEAD_SHA/check-runs" \
               -f check_name='build-web / build-web' --jq '.check_runs[0] | "\(.status) \(.conclusion)"')
-            echo "build-web: $status $conclusion"
+            echo "build-web ($HEAD_SHA): $status $conclusion"
           done
           [ "$conclusion" = success ]
 
