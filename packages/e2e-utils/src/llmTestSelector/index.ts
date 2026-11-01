@@ -49,6 +49,8 @@ interface ClaudeCliEnvelope {
 
 interface OpenRouterCompletion {
     id?: string;
+    model?: string;
+    provider?: string;
     choices?: {
         finish_reason?: string;
         native_finish_reason?: string;
@@ -71,9 +73,8 @@ const DEFAULT_LLM_ANALYSIS_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/llm-analysis.json
 const DEFAULT_BASE_REF = 'origin/develop';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const OPENROUTER_MODEL = 'moonshotai/kimi-k2.7-code';
-// Keep requests on the model author's endpoints, allowed by the account's privacy settings.
-const OPENROUTER_PROVIDER_ORDER = ['moonshotai'];
+// OpenRouter falls through to the next model when the previous one errors or is rate limited.
+const OPENROUTER_MODELS = ['z-ai/glm-5.3-flash', 'moonshotai/kimi-k2.7-code'];
 const OPENROUTER_MAX_TOKENS = 49152;
 
 const ALLOWED_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.css', '.json']);
@@ -133,8 +134,9 @@ const printUsage = (): void => {
             '',
             'Options:',
             '  --api-key, -k <key>        OpenRouter API key. Overrides the OPENROUTER_API_KEY',
-            '                             env variable. When provided, uses OpenRouter (Kimi',
-            '                             K2.7 Code) instead of the local Claude Code CLI.',
+            '                             env variable. When provided, uses OpenRouter (GLM 5.3',
+            '                             Flash, Kimi K2.7 Code fallback) instead of the local',
+            '                             Claude Code CLI.',
             `  --coverage-map <file>      Path to the coverage index JSON. Default: ${DEFAULT_INDEX_FILE}`,
             `  --llm-analysis <file>      Path to the LLM analysis JSON. Default: ${DEFAULT_LLM_ANALYSIS_FILE}`,
             '  --head-ref <ref>           Git ref for the PR head. Default: HEAD. Use pr-head',
@@ -526,7 +528,7 @@ const selectTestsViaCli = ({
     });
 
 // ---------------------------------------------------------------------------
-// LLM invocation — OpenRouter API (Kimi K2.7 Code)
+// LLM invocation — OpenRouter API (GLM 5.3 Flash, Kimi K2.7 Code fallback)
 // ---------------------------------------------------------------------------
 
 // Forced tool_choice errors on this model ("incompatible with thinking enabled") — auto + this instruction is the reliable alternative.
@@ -597,6 +599,8 @@ class OpenRouterHttpError extends Error {
     }
 }
 
+class OpenRouterUnparseableBodyError extends Error {}
+
 const logDiagnostic = (fields: Record<string, unknown>): void => {
     warn(`SELECTOR_DIAG ${JSON.stringify(fields)}`);
 };
@@ -617,9 +621,8 @@ const selectTestsViaApi = async (
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                model: OPENROUTER_MODEL,
+                models: OPENROUTER_MODELS,
                 max_tokens: OPENROUTER_MAX_TOKENS,
-                provider: { order: OPENROUTER_PROVIDER_ORDER, allow_fallbacks: false },
                 tools: [RECOMMEND_TESTS_TOOL],
                 tool_choice: 'auto',
                 messages: [
@@ -671,13 +674,15 @@ const selectTestsViaApi = async (
             bodyTail: rawBody.slice(-300),
             promptChars,
         });
-        throw new Error(
+        throw new OpenRouterUnparseableBodyError(
             `OpenRouter returned HTTP 200 with an unparseable body (${Buffer.byteLength(rawBody, 'utf8')} bytes) — the response was truncated mid-generation.`,
         );
     }
 
     // The generation id is the only handle for reconciling a call against OpenRouter billing.
-    log(`OpenRouter generation id: ${completion.id ?? '(absent)'}`);
+    log(
+        `OpenRouter generation id: ${completion.id ?? '(absent)'}, model: ${completion.model ?? '(absent)'}, provider: ${completion.provider ?? '(absent)'}`,
+    );
 
     const choice = completion.choices?.[0];
 
@@ -742,23 +747,42 @@ const buildAttempts = () => [
     {},
 ];
 
-// Rate limits and 5xx are rejected at the gateway in under a second, so retrying them is nearly free
 const isRetryableError = (err: unknown): boolean =>
     err instanceof OpenRouterHttpError && (err.status === 429 || err.status >= 500);
 
-const selectTestsViaApiWithRetry = (
-    promptParts: PromptParts,
-    apiKey: string,
+const retryGatewayErrors = (
+    action: () => Promise<Omit<SelectionResult, 'changed_files'>>,
 ): Promise<Omit<SelectionResult, 'changed_files'>> =>
-    scheduleAction(() => selectTestsViaApi(promptParts, apiKey), {
+    scheduleAction(action, {
         attempts: buildAttempts(),
         // Returning the error stops the loop and rethrows it; returning nothing waits and retries.
         attemptFailureHandler: err => {
-            if (!isRetryableError(err)) return err;
+            if (!isRetryableError(err)) {
+                return err;
+            }
 
             warn(`OpenRouter attempt failed, retrying: ${err.message.split('\n')[0]}`);
         },
     });
+
+const selectTestsViaApiWithRetry = async (
+    promptParts: PromptParts,
+    apiKey: string,
+): Promise<Omit<SelectionResult, 'changed_files'>> => {
+    const select = () => selectTestsViaApi(promptParts, apiKey);
+
+    try {
+        return await retryGatewayErrors(select);
+    } catch (err) {
+        if (!(err instanceof OpenRouterUnparseableBodyError)) {
+            throw err;
+        }
+
+        warn('OpenRouter returned an unparseable body, retrying once');
+
+        return retryGatewayErrors(select);
+    }
+};
 
 const isInsufficientCreditsError = (err: unknown): boolean =>
     err instanceof OpenRouterHttpError && err.status === 402;
@@ -927,7 +951,7 @@ const main = async () => {
         filteredAnalysis,
     );
 
-    log(apiKey ? 'Calling OpenRouter (Kimi K2.7 Code)...' : 'Calling local Claude Code CLI...');
+    log(apiKey ? 'Calling OpenRouter (GLM 5.3 Flash)...' : 'Calling local Claude Code CLI...');
 
     let llmResult: Omit<SelectionResult, 'changed_files'>;
     try {
