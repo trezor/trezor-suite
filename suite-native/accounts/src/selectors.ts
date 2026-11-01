@@ -41,8 +41,6 @@ import {
     type RatesByKey,
     type TokenAddress,
     type TokenInfoBranded,
-    areBaseCurrencyAmountsEqual,
-    asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
 import {
@@ -54,13 +52,14 @@ import {
     isErc4626,
     isStakingSymbol,
     sortTokensByName,
+    toBaseCurrencyDisplayAmount,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
 import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-native/labeling';
 import type { SettingsSliceRootState } from '@suite-native/settings';
-import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
+import { isNetworkWithTokens } from '@suite-native/tokens';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import {
@@ -272,35 +271,9 @@ export const selectAccountFiatBalance = createMemoizedSelector(
             shouldIncludeTokens,
         });
 
-        return totalBalance ? asBaseCurrencyAmount(totalBalance) : BASE_CURRENCY_ZERO;
-    },
-    {
-        memoizeOptions: {
-            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
-            // when the amount is unchanged so useSelector consumers don't rerender.
-            resultEqualityCheck: areBaseCurrencyAmountsEqual,
-        },
-    },
-);
-
-export const selectAccountTokenFiatBalance = createMemoizedSelector(
-    [selectCurrentFiatRates, selectBaseCurrency, selectAccountByKey, selectAccountTokenInfo],
-    (fiatRates, localCurrency, account, tokenInfo) => {
-        if (!account || !fiatRates || !tokenInfo) return BASE_CURRENCY_ZERO;
-        const { contract, balance } = tokenInfo;
-        const fiatRateKey = getFiatRateKey(account.symbol, localCurrency, contract);
-        const rate = fiatRates[fiatRateKey]?.rate;
-
-        if (!rate || !balance) return BASE_CURRENCY_ZERO;
-
-        return toFiatCurrency({ amount: balance, rate }) ?? BASE_CURRENCY_ZERO;
-    },
-    {
-        memoizeOptions: {
-            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
-            // when the amount is unchanged so useSelector consumers don't rerender.
-            resultEqualityCheck: areBaseCurrencyAmountsEqual,
-        },
+        return totalBalance
+            ? toBaseCurrencyDisplayAmount({ value: totalBalance, baseCurrencyCode: localCurrency })
+            : BASE_CURRENCY_ZERO;
     },
 );
 
