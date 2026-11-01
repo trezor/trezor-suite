@@ -3,7 +3,7 @@ name: "[Bot] Set Release iteration on Close/Merge PR & Issue"
 on:
   issues:
     types: [closed]
-  pull_request_target:
+  pull_request:
     types: [closed]
 
 env:
