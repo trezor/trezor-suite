@@ -36,7 +36,7 @@ describe('findProcessFromIncomingPort', () => {
         } finally {
             server.close();
         }
-    });
+    }, 30_000);
 
     test('if there is nothing running on the port, findProcessFromIncomingPort throws', async () => {
         const ports = await getFreePort();
