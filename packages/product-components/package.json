@@ -18,7 +18,6 @@
     },
     "dependencies": {
         "@suite-common/locale": "workspace:*",
-        "@suite-common/toast-notifications": "workspace:*",
         "@trezor/asset-utils": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",

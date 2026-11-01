@@ -229,6 +229,7 @@
         { "path": "../../suite/tor-web" },
         { "path": "../../suite/trading" },
         { "path": "../../suite/transfer-uri" },
+        { "path": "../../suite/transaction" },
         { "path": "../../suite/tx-simulation" },
         { "path": "../../suite/ui-animations" },
         { "path": "../../suite/wallet" },

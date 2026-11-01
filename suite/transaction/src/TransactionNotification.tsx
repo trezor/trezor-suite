@@ -8,7 +8,7 @@ import { TransactionIcon } from './TransactionIcon';
 import {
     type TransactionNotificationToken,
     type TransactionNotificationType,
-} from './notificationsTypes';
+} from './notificationTypes';
 
 export type TransactionNotificationProps = {
     message: ReactNode;
