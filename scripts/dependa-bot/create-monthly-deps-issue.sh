@@ -64,17 +64,32 @@ ISSUE_URL=$(gh issue create \
 
 echo "Created issue: $ISSUE_URL"
 
+PROJECT_ID=$(gh project view 58 --owner trezor --format json --jq '.id')
+
 # Add issue to Suite project and capture item ID
-ITEM_ID=$(gh project item-add 58 \
+if ! ITEM_ID=$(gh project item-add 58 \
     --owner trezor \
     --url "$ISSUE_URL" \
     --format json \
-    --jq '.id')
+    --jq '.id'); then
+    # The project's auto-add workflow can add the issue before item-add does.
+    # shellcheck disable=SC2016
+    ITEM_ID=$(gh api graphql \
+        -f query='query($url: URI!) {
+            resource(url: $url) {
+                ... on Issue {
+                    projectItems(first: 20) { nodes { id project { id } } }
+                }
+            }
+        }' \
+        -f url="$ISSUE_URL" \
+        --jq ".data.resource.projectItems.nodes[] | select(.project.id == \"$PROJECT_ID\") | .id")
+fi
+: "${ITEM_ID:?Issue $ISSUE_URL is not on project 58}"
 
 echo "Added to project (item: $ITEM_ID)"
 
 # Set Team and Release project fields
-PROJECT_ID=$(gh project view 58 --owner trezor --format json --jq '.id')
 FIELDS_JSON=$(gh project field-list 58 --owner trezor --format json)
 
 TEAM_FIELD_ID=$(echo "$FIELDS_JSON" | jq -r '.fields[] | select(.name == "Team") | .id')
