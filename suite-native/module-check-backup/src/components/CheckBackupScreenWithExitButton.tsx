@@ -14,7 +14,7 @@ import {
     ScreenHeader,
     type ScreenProps,
     type StackToStackCompositeNavigationProps,
-    useOverrideBackNavigation,
+    useNavigationRemoveGuard,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
@@ -59,8 +59,8 @@ export const useHandleCheckBackupExitButtonPress = () => {
 export const CheckBackupScreenWithExitButton = ({ children, ...screenProps }: ScreenProps) => {
     const handleExitButtonPress = useHandleCheckBackupExitButtonPress();
 
-    useOverrideBackNavigation({
-        onNavigateBack: handleExitButtonPress,
+    useNavigationRemoveGuard({
+        onBlocked: handleExitButtonPress,
     });
 
     return (

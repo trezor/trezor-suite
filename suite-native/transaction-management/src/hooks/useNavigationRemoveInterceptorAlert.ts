@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 
-import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
+import {
+    DEFAULT_BACK_NAVIGATION_ACTIONS,
+    useNavigationRemoveGuard,
+    useOnNavigationRemove,
+} from '@suite-native/navigation';
 
 import {
     type StayOnScreenAlertOptions,
@@ -22,10 +26,6 @@ export const useNavigationRemoveInterceptorAlert = ({
 }: UseNavigationRemoveInterceptorAlertProps) => {
     const { showStayOnScreenAlert, hideStayOnScreenAlert } = useShowStayOnScreenAlert();
 
-    const onAllowedRemove = useCallback(() => {
-        hideStayOnScreenAlert();
-    }, [hideStayOnScreenAlert]);
-
     const onPreventedRemove = useCallback(() => {
         showStayOnScreenAlert({
             onRemoveConfirmed,
@@ -34,9 +34,17 @@ export const useNavigationRemoveInterceptorAlert = ({
         });
     }, [alertOptions, onRemoveConfirmed, onStayConfirmed, showStayOnScreenAlert]);
 
-    useNavigationRemoveActionInterceptor({
+    useOnNavigationRemove({
         isEnabled: shouldPrevent,
-        onInterceptedAction: onPreventedRemove,
-        onAllowedAction: onAllowedRemove,
+        onRemoveAttempt: action => {
+            if (!DEFAULT_BACK_NAVIGATION_ACTIONS.includes(action.type)) {
+                hideStayOnScreenAlert();
+            }
+        },
+    });
+
+    useNavigationRemoveGuard({
+        isEnabled: shouldPrevent,
+        onBlocked: onPreventedRemove,
     });
 };

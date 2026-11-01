@@ -1,19 +1,13 @@
-import { renderHookWithBasicProvider, waitFor } from '@suite-native/test-utils';
+import { useNavigationRemoveGuard } from '@suite-native/navigation';
+import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { useTransactionReviewBackInterceptor } from './useTransactionReviewBackInterceptor';
 
 const mockShowCancellationAlert = jest.fn();
-const mockUseNavigationRemoveActionInterceptor = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
     ...jest.requireActual('@suite-native/navigation'),
-    useNavigationRemoveActionInterceptor: (props: {
-        isEnabled: boolean;
-        onInterceptedAction: () => void;
-    }) => {
-        mockUseNavigationRemoveActionInterceptor(props);
-        props.onInterceptedAction();
-    },
+    useNavigationRemoveGuard: jest.fn(),
 }));
 
 jest.mock('@suite-native/transaction-management', () => ({
@@ -22,56 +16,47 @@ jest.mock('@suite-native/transaction-management', () => ({
 }));
 
 describe('useTransactionReviewBackInterceptor', () => {
-    const renderInterceptor = ({
+    const renderInterceptor = async ({
         isEnabled,
         onReviewCanceled = jest.fn(),
-    }: { isEnabled?: boolean; onReviewCanceled?: () => void } = {}) =>
-        renderHookWithBasicProvider(() =>
+    }: { isEnabled?: boolean; onReviewCanceled?: () => void } = {}) => {
+        await renderHookWithBasicProvider(() =>
             useTransactionReviewBackInterceptor({ isEnabled, onReviewCanceled }),
         );
 
+        return jest.mocked(useNavigationRemoveGuard).mock.calls.at(-1)?.[0];
+    };
+
     beforeEach(() => {
         jest.clearAllMocks();
-        mockShowCancellationAlert.mockResolvedValue({ wasReviewCanceled: true });
     });
 
-    it('should show the cancellation alert on an intercepted back action', async () => {
-        await renderInterceptor();
+    it.each([true, false])(
+        'only calls onReviewCanceled when the cancellation is confirmed: %s',
+        async wasReviewCanceled => {
+            const onReviewCanceled = jest.fn();
+            const continueNavigation = jest.fn();
+            mockShowCancellationAlert.mockResolvedValue({ wasReviewCanceled });
 
-        expect(mockShowCancellationAlert).toHaveBeenCalledTimes(1);
-    });
+            const options = await renderInterceptor({ onReviewCanceled });
 
-    it('should call onReviewCanceled when the review was canceled', async () => {
-        const onReviewCanceled = jest.fn();
+            await options?.onBlocked?.({ action: { type: 'POP' }, continueNavigation });
 
-        await renderInterceptor({ onReviewCanceled });
-
-        await waitFor(() => expect(onReviewCanceled).toHaveBeenCalledTimes(1));
-    });
-
-    it('should not call onReviewCanceled when the user continues the review', async () => {
-        const onReviewCanceled = jest.fn();
-        mockShowCancellationAlert.mockResolvedValue({ wasReviewCanceled: false });
-
-        await renderInterceptor({ onReviewCanceled });
-
-        await Promise.resolve();
-        expect(onReviewCanceled).not.toHaveBeenCalled();
-    });
+            expect(mockShowCancellationAlert).toHaveBeenCalledTimes(1);
+            expect(onReviewCanceled).toHaveBeenCalledTimes(wasReviewCanceled ? 1 : 0);
+            expect(continueNavigation).not.toHaveBeenCalled();
+        },
+    );
 
     it('should be enabled by default', async () => {
-        await renderInterceptor();
+        const options = await renderInterceptor();
 
-        expect(mockUseNavigationRemoveActionInterceptor).toHaveBeenCalledWith(
-            expect.objectContaining({ isEnabled: true }),
-        );
+        expect(options?.isEnabled).toBe(true);
     });
 
-    it('should forward an explicit disable to the navigation interceptor', async () => {
-        await renderInterceptor({ isEnabled: false });
+    it('should forward an explicit disable to the navigation guard', async () => {
+        const options = await renderInterceptor({ isEnabled: false });
 
-        expect(mockUseNavigationRemoveActionInterceptor).toHaveBeenCalledWith(
-            expect.objectContaining({ isEnabled: false }),
-        );
+        expect(options?.isEnabled).toBe(false);
     });
 });
