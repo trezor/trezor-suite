@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { useWatch } from '@suite-native/forms';
-import { useAmountInputTransformers } from '@suite-native/helpers';
+import { useFiatAmountMaxDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
 
@@ -15,7 +15,7 @@ const FIAT_AMOUNT_TEST_ID = '@trading/sell/fiat-amount-input';
 export const SellFiatAmountInput = () => {
     const { translate } = useTranslate();
     const { control } = useSellFormContext();
-    const { fiatAmountTransformer } = useAmountInputTransformers(undefined);
+    const maxDecimals = useFiatAmountMaxDecimals(MAX_FIAT_DECIMALS);
     const isLoading = useSelector(selectTradingSellIsLoading);
     const inputControls = useSellInputFormControls('fiatStringAmount');
 
@@ -25,8 +25,7 @@ export const SellFiatAmountInput = () => {
         <AmountInput
             {...inputControls}
             accessibilityLabel={translate('moduleTrading.selectFiat.sell.amountLabel')}
-            inputTransformer={fiatAmountTransformer}
-            maxDecimals={MAX_FIAT_DECIMALS}
+            maxDecimals={maxDecimals}
             testID={FIAT_AMOUNT_TEST_ID}
             isLoading={isLoading && amountInCrypto}
             loadingAccessibilityLabel={translate('moduleTrading.tradingScreen.quotesLoadingLabel')}

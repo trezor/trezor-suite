@@ -4,9 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
 import { useWatch } from '@suite-native/forms';
-import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
-import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { noop } from '@trezor/utils';
 
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
@@ -19,12 +17,7 @@ export const ExchangeReceiveAmountInput = () => {
     const { showAlert } = useAlert();
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const { control } = useExchangeFormContext();
-    const [asset, amount] = useWatch({
-        control,
-        name: ['receiveAsset', 'receiveCryptoAmount'],
-    });
-    const symbol = getSymbolFromTradeableAsset(asset);
-    const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
+    const amount = useWatch({ control, name: 'receiveCryptoAmount' });
 
     const showNotAvailableAlert = useCallback(() => {
         showAlert({
@@ -42,7 +35,6 @@ export const ExchangeReceiveAmountInput = () => {
             value={amount}
             accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
             editable={false}
-            inputTransformer={cryptoAmountTransformer}
             onPress={showNotAvailableAlert}
             loadingAccessibilityLabel={translate('moduleTrading.tradingScreen.quotesLoadingLabel')}
             onChangeText={noop}

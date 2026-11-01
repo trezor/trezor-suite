@@ -2,7 +2,6 @@ import { type Ref } from 'react';
 import { type Insets, type TextInput } from 'react-native';
 
 import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
-import { decimalTransformer } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { nativeSpacings } from '@trezor/theme';
 
@@ -56,7 +55,6 @@ export const TradingBaseCurrencyAmountInput = ({
             placeholder={placeholder}
             hasError={hasError}
             editable={isEditable}
-            inputTransformer={decimalTransformer}
             maxDecimals={baseCurrencyDecimals}
             maxLength={AMOUNT_MAX_LENGTH}
             onChangeText={onChangeText}
