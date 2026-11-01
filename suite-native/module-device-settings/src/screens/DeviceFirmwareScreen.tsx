@@ -5,6 +5,7 @@ import { selectIsDeviceBackupRequired, selectIsFirmwareUpgradable } from '@suite
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { selectShouldForceFirmwareUpdate } from '@suite-native/device';
 import {
     ConfirmBottomSheet,
     FirmwareLanguageCard,
@@ -43,6 +44,7 @@ export const DeviceFirmwareScreen = ({
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isFirmwareUpdateEnabled = useSelector(selectIsFirmwareUpdateFeatureEnabled);
+    const shouldForceFirmwareUpdate = useSelector(selectShouldForceFirmwareUpdate);
 
     const withModalClose = (callback: () => void) => () => {
         closeModal();
@@ -91,11 +93,11 @@ export const DeviceFirmwareScreen = ({
             }
         >
             <VStack spacing="sp16">
-                <FirmwareVersionCard isUpdateRequired={false}>
+                <FirmwareVersionCard isUpdateRequired={shouldForceFirmwareUpdate}>
                     {isFirmwareUpgradable && (
                         <Button
                             onPress={handleConfirmButtonPress}
-                            intent="info"
+                            intent={shouldForceFirmwareUpdate ? 'critical' : 'info'}
                             priority="primary"
                             isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                             isLoading={isDiscoveryRunning}
