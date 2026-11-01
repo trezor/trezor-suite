@@ -70,15 +70,6 @@ export const electronTeardown = async (
     testInfo: TestInfo,
     electronConf: ElectronConf,
 ) => {
-    // Save the CDP context trace to a path registered in TestTracing._temporaryTraceFiles.
-    // TestTracing.stopIfNeeded() (called automatically by Playwright) will merge it with
-    // the test-runner step trace (test.trace) into a single trace.zip attachment.
-    const tracingPath =
-        (testInfo as any)._tracing.maybeGenerateNextTraceRecordingPath() ??
-        `${testInfo.outputDir}/trace.electron.zip`;
-    if (!suite.window.isClosed()) {
-        await suite.window.context().tracing.stop({ path: tracingPath });
-    }
     testInfo.attachments.push({
         name: 'electron-logs.txt',
         path: `${testInfo.outputDir}/electron-logs.txt`,
@@ -97,7 +88,9 @@ export const electronTeardown = async (
             `${testInfo.outputDir}/electron-logs.txt`,
             `${new Date().toISOString()} - [autostart-debug] test: ${message}\n`,
         );
-    debugLog('electronApp.close() called');
+    const quitDelay = (Number(testInfo.title.match(/#(\d+)$/)?.[1] ?? 0) % 5) * 50;
+    await new Promise(resolve => setTimeout(resolve, quitDelay));
+    debugLog(`electronApp.close() called after ${quitDelay} ms delay`);
     const closePromise = suite.electronApp.close();
     // Handle modal that asks to enable auto-start
     if (electronConf.exposeConnectWs) {
