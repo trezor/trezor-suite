@@ -19,6 +19,7 @@ export const DiscoveryEntropyCheckFailModalContent = () => {
     const { handleClose: closeScreen } = useCloseDeviceCompromisedScreen();
 
     // Should always be true, but if not, fail-closed by not allowing to dismiss the failed check.
+    // Unlike useCloseFirmwareChecksFailScreen, initialized status plays no role here (this check can only fires on discovery = always initialized).
     const deviceId = device?.id;
     const canClose = typeof deviceId === 'string' && deviceId.length > 0; // matches `getIsDeviceIdValid`
 
