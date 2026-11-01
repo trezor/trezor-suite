@@ -25,16 +25,23 @@ jobs:
         run: |
           content=$(cat $UPDATE_FILE)
 
+          crx_exists () {
+            curl --fail --silent --head "https://tor.bravesoftware.com/release/$1/extension_$2.crx" | grep "content-type: application/x-chrome-extension" > /dev/null
+          }
+
           newer_version () {
             local version=$(echo "$content" | grep "^$1=" | cut -d= -f2)
             local major=$(echo "$version" | cut -d_ -f1-2)_
             local patch=$(echo "$version" | cut -d_ -f3)
             local next=$((patch+1))
+            while crx_exists "$2" "${major}$((next+1))"; do
+              next=$((next+1))
+            done
             echo "${major}${next}"
           }
 
-          crx_next=$(newer_version CRX_VER)
-          arm_next=$(newer_version CRX_LINUX_ARM_VER)
+          crx_next=$(newer_version CRX_VER cldoidikboihgcjfkhdeidbpclkineef)
+          arm_next=$(newer_version CRX_LINUX_ARM_VER monolafkoghdlanndjfeebmdfkbklejg)
 
           echo "crx_next=$crx_next" >> $GITHUB_OUTPUT
           echo "arm_next=$arm_next" >> $GITHUB_OUTPUT
