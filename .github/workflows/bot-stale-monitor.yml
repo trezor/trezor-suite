@@ -15,7 +15,7 @@ jobs:
       - name: Run stale issues and PRs monitor
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 #v9
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_STALE_REMINDER }}
+          SLACK_WEBHOOK_STALE_REMINDER: ${{ secrets.SLACK_WEBHOOK_STALE_REMINDER }}
           STALE_DAYS: "2"
           TARGET_OWNER: "trezor"
           TARGET_REPO: "trezor-suite"
