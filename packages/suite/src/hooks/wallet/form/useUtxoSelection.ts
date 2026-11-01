@@ -60,6 +60,10 @@ export const useUtxoSelection = ({
     const anonymityWarningChecked = !!watch('anonymityWarningChecked');
     // manually selected UTXOs
     const selectedUtxos = watch('selectedUtxos', []);
+    const selectedUtxoOutpoints = useMemo(
+        () => new Set(selectedUtxos.map(getUtxoOutpoint)),
+        [selectedUtxos],
+    );
 
     // watch changes of account utxos AND utxos registered in coinjoin Round,
     // exclude spent/registered utxos from the subset of selectedUtxos
@@ -126,9 +130,7 @@ export const useUtxoSelection = ({
     // is there at least one UTXO and are all UTXOs in the top category selected?
     const allUtxosSelected =
         !!topCategory.length &&
-        !!topCategory?.every((utxo: AccountUtxo) =>
-            selectedUtxos.some(selected => isSameUtxo(selected, utxo)),
-        );
+        topCategory.every(utxo => selectedUtxoOutpoints.has(getUtxoOutpoint(utxo)));
 
     // transaction composed for the fee level chosen by the user
     const composedLevel = composedLevels?.[selectedFee || 'normal'];
@@ -228,6 +230,7 @@ export const useUtxoSelection = ({
         isLowAnonymityUtxoSelected,
         lowAnonymityUtxos,
         selectedUtxos,
+        selectedUtxoOutpoints,
         spendableUtxos,
         coinjoinRegisteredUtxos,
         utxoSorting,
