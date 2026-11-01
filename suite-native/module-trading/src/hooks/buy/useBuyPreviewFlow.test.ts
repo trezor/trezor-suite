@@ -16,11 +16,10 @@ import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState;
 
-const mockPopToTop = jest.fn();
+const mockCloseTradingFlow = jest.fn();
 
-jest.mock('@react-navigation/native', () => ({
-    ...jest.requireActual('@react-navigation/native'),
-    useNavigation: () => ({ popToTop: mockPopToTop }),
+jest.mock('../general/useCloseTradingFlow', () => ({
+    useCloseTradingFlow: () => mockCloseTradingFlow,
 }));
 
 const mockOpenBrowserForFormData = jest.fn();
@@ -163,7 +162,7 @@ describe('useBuyPreviewFlow', () => {
     });
 
     describe('handleTradeResponse', () => {
-        it('opens browser, pops to top, clears Redux state, and opens trade detail when tradeForm is present', async () => {
+        it('opens browser, closes the trading flow, clears Redux state, and opens trade detail when tradeForm is present', async () => {
             const store = getInitializedStore({ withFullState: true });
             const { result } = await renderHook(store);
 
@@ -181,7 +180,7 @@ describe('useBuyPreviewFlow', () => {
             });
 
             expect(mockOpenBrowserForFormData).toHaveBeenCalledTimes(1);
-            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
             expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
             expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('order-123');
         });
@@ -194,7 +193,7 @@ describe('useBuyPreviewFlow', () => {
                 result.current.confirmTrade();
             });
 
-            mockPopToTop.mockImplementationOnce(() => {
+            mockCloseTradingFlow.mockImplementationOnce(() => {
                 expect(store.getState().wallet.trading.formResetRequestedFor).toBe('buy');
             });
 
@@ -204,7 +203,7 @@ describe('useBuyPreviewFlow', () => {
                 });
             });
 
-            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
             expect(store.getState().wallet.trading.formResetRequestedFor).toBe('buy');
         });
 
@@ -216,7 +215,7 @@ describe('useBuyPreviewFlow', () => {
                 result.current.confirmTrade();
             });
 
-            mockPopToTop.mockImplementationOnce(() => {
+            mockCloseTradingFlow.mockImplementationOnce(() => {
                 expect(store.getState().wallet.trading.buy.selectedQuote).toBeDefined();
                 expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBeUndefined();
             });
@@ -249,7 +248,7 @@ describe('useBuyPreviewFlow', () => {
             });
 
             expect(mockOpenBrowserForFormData).not.toHaveBeenCalled();
-            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
             expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
             expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('order-123');
         });

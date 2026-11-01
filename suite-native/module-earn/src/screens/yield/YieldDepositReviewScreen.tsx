@@ -11,7 +11,6 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { YieldDepositReviewContent } from '../../components/yield/YieldDepositReviewContent';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
@@ -77,9 +76,5 @@ export const YieldDepositReviewScreen = () => {
         return null;
     }
 
-    return (
-        <EarnDeviceConnectionGuard>
-            <YieldDepositReviewContent flowData={flowData} flowKey={flowKey} preview={preview} />
-        </EarnDeviceConnectionGuard>
-    );
+    return <YieldDepositReviewContent flowData={flowData} flowKey={flowKey} preview={preview} />;
 };

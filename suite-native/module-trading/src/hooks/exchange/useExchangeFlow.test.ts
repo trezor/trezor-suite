@@ -7,7 +7,7 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { RootStackRoutes } from '@suite-native/navigation';
+import { TradingFlowStackRoutes } from '@suite-native/navigation';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
@@ -397,7 +397,7 @@ describe('useExchangeFlow', () => {
 
             await renderUseExchangeFlow({ store });
 
-            expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingConfirming, {
+            expect(mockNavigate).toHaveBeenCalledWith(TradingFlowStackRoutes.TradingConfirming, {
                 flowType: 'approve',
             });
         });
@@ -423,7 +423,7 @@ describe('useExchangeFlow', () => {
 
             await renderUseExchangeFlow({ store, flowType: 'revoke' });
 
-            expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingConfirming, {
+            expect(mockNavigate).toHaveBeenCalledWith(TradingFlowStackRoutes.TradingConfirming, {
                 flowType: 'revoke',
             });
         });
@@ -449,7 +449,7 @@ describe('useExchangeFlow', () => {
 
             await renderUseExchangeFlow({ store, flowType: 'revoke-and-approve' });
 
-            expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingConfirming, {
+            expect(mockNavigate).toHaveBeenCalledWith(TradingFlowStackRoutes.TradingConfirming, {
                 flowType: 'revoke-and-approve',
             });
         });
@@ -460,7 +460,7 @@ describe('useExchangeFlow', () => {
             await renderUseExchangeFlow({ store });
 
             expect(mockNavigate).not.toHaveBeenCalledWith(
-                RootStackRoutes.TradingConfirming,
+                TradingFlowStackRoutes.TradingConfirming,
                 expect.anything(),
             );
         });

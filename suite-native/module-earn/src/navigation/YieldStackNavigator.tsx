@@ -7,6 +7,7 @@ import {
     useDisableIOSGesture,
 } from '@suite-native/navigation';
 
+import { EarnDeviceConnectionGuard } from '../components/earn/EarnDeviceConnectionGuard';
 import { HowYieldWorksScreen } from '../screens/yield/HowYieldWorksScreen';
 import { YieldClaimCompleteScreen } from '../screens/yield/YieldClaimCompleteScreen';
 import { YieldClaimReviewScreen } from '../screens/yield/YieldClaimReviewScreen';
@@ -53,11 +54,6 @@ export const YieldStackNavigator = () => {
                 component={YieldClaimScreen}
             />
             <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldClaimReview }}
-                name={YieldStackRoutes.YieldClaimReview}
-                component={YieldClaimReviewScreen}
-            />
-            <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldClaimComplete }}
                 name={YieldStackRoutes.YieldClaimComplete}
                 component={YieldClaimCompleteScreen}
@@ -66,11 +62,6 @@ export const YieldStackNavigator = () => {
                 options={{ title: YieldStackRoutes.YieldDepositWrap }}
                 name={YieldStackRoutes.YieldDepositWrap}
                 component={YieldDepositWrapScreen}
-            />
-            <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldDepositWrapReview }}
-                name={YieldStackRoutes.YieldDepositWrapReview}
-                component={YieldDepositWrapReviewScreen}
             />
             <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldDepositApproval }}
@@ -98,26 +89,6 @@ export const YieldStackNavigator = () => {
                 component={YieldWithdrawScreen}
             />
             <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldDepositApprovalReview }}
-                name={YieldStackRoutes.YieldDepositApprovalReview}
-                component={YieldDepositApprovalTransactionDataReviewScreen}
-            />
-            <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldDepositRevokeReview }}
-                name={YieldStackRoutes.YieldDepositRevokeReview}
-                component={YieldDepositApprovalTransactionDataReviewScreen}
-            />
-            <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldDepositReview }}
-                name={YieldStackRoutes.YieldDepositReview}
-                component={YieldDepositReviewScreen}
-            />
-            <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldWithdrawReview }}
-                name={YieldStackRoutes.YieldWithdrawReview}
-                component={YieldWithdrawReviewScreen}
-            />
-            <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldDepositComplete }}
                 name={YieldStackRoutes.YieldDepositComplete}
                 component={YieldDepositCompleteScreen}
@@ -128,15 +99,51 @@ export const YieldStackNavigator = () => {
                 component={YieldWithdrawUnwrapScreen}
             />
             <YieldStack.Screen
-                options={{ title: YieldStackRoutes.YieldWithdrawUnwrapReview }}
-                name={YieldStackRoutes.YieldWithdrawUnwrapReview}
-                component={YieldWithdrawUnwrapReviewScreen}
-            />
-            <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldWithdrawComplete }}
                 name={YieldStackRoutes.YieldWithdrawComplete}
                 component={YieldWithdrawCompleteScreen}
             />
+            <YieldStack.Group
+                screenLayout={({ children }) => (
+                    <EarnDeviceConnectionGuard>{children}</EarnDeviceConnectionGuard>
+                )}
+            >
+                <YieldStack.Screen
+                    options={{ title: YieldStackRoutes.YieldClaimReview }}
+                    name={YieldStackRoutes.YieldClaimReview}
+                    component={YieldClaimReviewScreen}
+                />
+                <YieldStack.Screen
+                    options={{ title: YieldStackRoutes.YieldDepositWrapReview }}
+                    name={YieldStackRoutes.YieldDepositWrapReview}
+                    component={YieldDepositWrapReviewScreen}
+                />
+                <YieldStack.Screen
+                    options={{ title: YieldStackRoutes.YieldDepositApprovalReview }}
+                    name={YieldStackRoutes.YieldDepositApprovalReview}
+                    component={YieldDepositApprovalTransactionDataReviewScreen}
+                />
+                <YieldStack.Screen
+                    options={{ title: YieldStackRoutes.YieldDepositRevokeReview }}
+                    name={YieldStackRoutes.YieldDepositRevokeReview}
+                    component={YieldDepositApprovalTransactionDataReviewScreen}
+                />
+                <YieldStack.Screen
+                    options={{ title: YieldStackRoutes.YieldDepositReview }}
+                    name={YieldStackRoutes.YieldDepositReview}
+                    component={YieldDepositReviewScreen}
+                />
+                <YieldStack.Screen
+                    options={{ title: YieldStackRoutes.YieldWithdrawReview }}
+                    name={YieldStackRoutes.YieldWithdrawReview}
+                    component={YieldWithdrawReviewScreen}
+                />
+                <YieldStack.Screen
+                    options={{ title: YieldStackRoutes.YieldWithdrawUnwrapReview }}
+                    name={YieldStackRoutes.YieldWithdrawUnwrapReview}
+                    component={YieldWithdrawUnwrapReviewScreen}
+                />
+            </YieldStack.Group>
         </YieldStack.Navigator>
     );
 };

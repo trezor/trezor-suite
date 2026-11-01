@@ -44,21 +44,7 @@ export enum RootStackRoutes {
     StellarManageTokenStack = 'StellarManageTokenStack',
     FeatureFeedbackModal = 'FeatureFeedbackModal',
     UnstakeFlow = 'UnstakeFlow',
-    TradingExchangePreview = 'TradingExchangePreview',
-    TradingExchangeApproval = 'TradingExchangeApproval',
-    TradingExchangeRevoke = 'TradingExchangeRevoke',
-    TradingSellPreview = 'TradingSellPreview',
-    TradingSellCompletion = 'TradingSellCompletion',
-    TradingConfirming = 'TradingConfirming',
-    TradingSellTransactionReview = 'TradingSellTransactionReview',
-    TradingExchangeTransactionReview = 'TradingExchangeTransactionReview',
-    TradingMyAsset = 'TradingMyAsset',
-    TradingTradeableAsset = 'TradingTradeableAsset',
-    ReceiveAccounts = 'ReceiveAccounts',
-    TradingReceiveAddress = 'TradingReceiveAddress',
-    TradingHistory = 'TradingHistory',
-    TradingHistoryDetail = 'TradingHistoryDetail',
-    TradingBuyPreview = 'TradingBuyPreview',
+    TradingFlowStack = 'TradingFlowStack',
     ActivityCenterStack = 'ActivityCenterStack',
 }
 
@@ -354,6 +340,24 @@ export enum SettingsStackRoutes {
 
 export enum TradingStackRoutes {
     Trading = 'Trading',
+}
+
+export enum TradingFlowStackRoutes {
+    TradingExchangePreview = 'TradingExchangePreview',
+    TradingExchangeApproval = 'TradingExchangeApproval',
+    TradingExchangeRevoke = 'TradingExchangeRevoke',
+    TradingSellPreview = 'TradingSellPreview',
+    TradingSellCompletion = 'TradingSellCompletion',
+    TradingConfirming = 'TradingConfirming',
+    TradingSellTransactionReview = 'TradingSellTransactionReview',
+    TradingExchangeTransactionReview = 'TradingExchangeTransactionReview',
+    TradingMyAsset = 'TradingMyAsset',
+    TradingTradeableAsset = 'TradingTradeableAsset',
+    ReceiveAccounts = 'ReceiveAccounts',
+    TradingReceiveAddress = 'TradingReceiveAddress',
+    TradingHistory = 'TradingHistory',
+    TradingHistoryDetail = 'TradingHistoryDetail',
+    TradingBuyPreview = 'TradingBuyPreview',
 }
 
 export enum TransactionDetailStackRoutes {
