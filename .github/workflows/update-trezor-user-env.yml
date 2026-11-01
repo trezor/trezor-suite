@@ -59,6 +59,10 @@ jobs:
           grep -rl "ghcr.io/trezor/trezor-user-env:${old}" . --include='*.yml' --include='*.yaml' --include='*.sh' | while read -r file; do
             sed -i "s|ghcr.io/trezor/trezor-user-env:${old}|ghcr.io/trezor/trezor-user-env:${new}|g" "$file"
           done
+          # The WSL rootfs of the Windows e2e is tagged like the image; keep it on the same commit.
+          grep -rlE "ghcr.io/trezor/trezor-user-env-rootfs:[0-9a-f]{40}" . --include='*.yml' | while read -r file; do
+            sed -i -E "s|ghcr.io/trezor/trezor-user-env-rootfs:[0-9a-f]{40}|ghcr.io/trezor/trezor-user-env-rootfs:${new}|g" "$file"
+          done
 
       - name: Generate GitHub App token
         if: steps.check.outputs.needs_update == 'true'
