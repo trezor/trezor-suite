@@ -80,8 +80,12 @@ jobs:
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
         run: yarn test:unit:all --exclude='@suite-native/*' -- --silent
+        env:
+          TMPDIR: ${{ runner.temp }}
       - name: Unit Tests - Native
         run: yarn test:unit:all --exclude='@trezor/*,@suite/*,@suite-common/*' -- --silent
+        env:
+          TMPDIR: ${{ runner.temp }}
 
   test-fuzz:
     # Randomized property/fuzz tests are excluded from the unit suite and run
