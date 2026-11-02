@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -24,6 +24,7 @@ export const SendAccountsScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProps>();
+    const { params } = useRoute<RouteProp<SendStackParamList, SendStackRoutes.SendAccounts>>();
 
     const handleSelectAccount: OnSelectAccount = ({ account, hasAnyKnownTokens }) => {
         analytics.report({
@@ -58,6 +59,7 @@ export const SendAccountsScreen = () => {
             <AccountsListWithFilter
                 title={<Translation id="moduleSend.accountsList.title" />}
                 onSelectAccount={handleSelectAccount}
+                networksFilter={params?.networksFilter}
                 closeActionType="close"
                 closeAction={handleClose}
                 networkFilterType="send"

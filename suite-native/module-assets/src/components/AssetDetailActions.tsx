@@ -1,14 +1,73 @@
+import { useSelector } from 'react-redux';
+
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+
+import {
+    type HomeAssetTableState,
+    selectWalletAssetKey,
+    selectWalletAssetName,
+    selectWalletAssetTokenSymbol,
+} from '@suite-common/assets';
+import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
 import { Box, Button, HStack, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useToast } from '@suite-native/toasts';
+import {
+    type AssetsStackParamList,
+    type AssetsStackRoutes,
+    ReceiveStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    SendStackRoutes,
+    type StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+
+type NavigationProps = StackToStackCompositeNavigationProps<
+    AssetsStackParamList,
+    AssetsStackRoutes.AssetDetail,
+    RootStackParamList
+>;
 
 export const AssetDetailActions = () => {
-    const { showToast } = useToast();
+    const navigation = useNavigation<NavigationProps>();
+    const { networkSymbol, tokenContract } =
+        useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
+    const assetKey = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetKey(state, networkSymbol, tokenContract),
+    );
+    const assetName = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetName(state, assetKey),
+    );
+    const tokenSymbol = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetTokenSymbol(state, assetKey),
+    );
 
-    const handleActionPress = () => {
-        showToast({
-            intent: 'neutral',
-            message: 'Coming soon',
+    const handleReceivePress = () => {
+        if (assetName === undefined) {
+            return;
+        }
+
+        const asset = buildGlobalReceiveAssetOption({
+            symbol: networkSymbol,
+            contractAddress: tokenContract,
+            tokenSymbol,
+            name: assetName,
+        });
+
+        navigation.navigate(RootStackRoutes.ReceiveStack, {
+            screen: ReceiveStackRoutes.ReceiveAccounts,
+            params: {
+                asset,
+                closeActionType: 'back',
+            },
+        });
+    };
+
+    const handleSendPress = () => {
+        navigation.navigate(RootStackRoutes.SendStack, {
+            screen: SendStackRoutes.SendAccounts,
+            params: {
+                networksFilter: [networkSymbol],
+            },
         });
     };
 
@@ -19,7 +78,7 @@ export const AssetDetailActions = () => {
                 <Button
                     flex={1}
                     iconRight="arrowLineDown"
-                    onPress={handleActionPress}
+                    onPress={handleReceivePress}
                     testID="@assets/asset-detail/receive-button"
                 >
                     <Translation id="transactions.receive" />
@@ -28,7 +87,7 @@ export const AssetDetailActions = () => {
                     flex={1}
                     priority="secondary"
                     iconRight="arrowLineUp"
-                    onPress={handleActionPress}
+                    onPress={handleSendPress}
                     testID="@assets/asset-detail/send-button"
                 >
                     <Translation id="transactions.send" />
