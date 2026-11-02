@@ -29,7 +29,9 @@ export const FiatChangeAmount = ({ change, isExact = false }: FiatChangeAmountPr
         <Row gap={0} alignItems="center">
             {!change.isZero() && <Sign value={change} />}
             <Text typographyStyle="body-md">
-                {shouldRedactNumbers ? redactNumericalSubstring(changed) : changed}
+                {shouldRedactNumbers && changed !== null
+                    ? redactNumericalSubstring(changed)
+                    : changed}
             </Text>
         </Row>
     );
