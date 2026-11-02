@@ -1,3 +1,4 @@
+import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row, Text } from '@trezor/components';
@@ -14,6 +15,7 @@ type FiatChangeAmountProps = {
 
 export const FiatChangeAmount = ({ change, isExact = false }: FiatChangeAmountProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
+    const shouldRedactNumbers = useShouldRedactNumbers({ strict: false });
     const absoluteChange = asBaseCurrencyAmount(change.abs());
     const exactDecimals = Math.max(MIN_EXACT_DECIMALS, absoluteChange.decimalPlaces() ?? 0);
     const changed = BaseCurrencyAmountFormatter.format(
@@ -26,7 +28,9 @@ export const FiatChangeAmount = ({ change, isExact = false }: FiatChangeAmountPr
     return (
         <Row gap={0} alignItems="center">
             {!change.isZero() && <Sign value={change} />}
-            <Text typographyStyle="body-md">{changed}</Text>
+            <Text typographyStyle="body-md">
+                {shouldRedactNumbers ? redactNumericalSubstring(changed) : changed}
+            </Text>
         </Row>
     );
 };
