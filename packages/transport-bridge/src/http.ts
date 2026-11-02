@@ -80,6 +80,17 @@ const validateProtocolMessageBody =
 
 const ADDRESS = new URL('http://127.0.0.1');
 
+const DEFAULT_ALLOWED_ORIGIN_SUFFIXES = [
+    'sldev.cz',
+    'trezor.io',
+    'localhost',
+    // When using Tor it will send string "null" as default, and it will not allow calling to localhost.
+    // To allow it to be sent, you can go to about:config and set the attributes below:
+    // "network.http.referer.hideOnionSource - false"
+    // "network.proxy.allow_hijacking_localhost - false"
+    'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+];
+
 export class TrezordNode {
     version = '3.2.1';
     bundledVersion?: string;
@@ -267,16 +278,7 @@ export class TrezordNode {
                 } else {
                     const isOriginAllowed = checkOrigin({
                         request: req,
-                        allowedOrigin: [
-                            'sldev.cz',
-                            'trezor.io',
-                            'localhost',
-                            // When using Tor it will send string "null" as default, and it will not allow calling to localhost.
-                            // To allow it to be sent, you can go to about:config and set the attributes below:
-                            // "network.http.referer.hideOnionSource - false"
-                            // "network.proxy.allow_hijacking_localhost - false"
-                            'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
-                        ],
+                        allowedOrigin: DEFAULT_ALLOWED_ORIGIN_SUFFIXES,
                         pathname: req.url,
                         logger: context.logger,
                     });
