@@ -272,7 +272,15 @@ describe('canRememberPermissions', () => {
                 manifest,
             },
         ],
-        ['an mcp client', { type: CALL_SOURCE_MCP, origin: 'http://127.0.0.1', manifest }],
+        [
+            'an mcp client whose process was resolved',
+            {
+                type: CALL_SOURCE_MCP,
+                origin: 'mcp://localhost',
+                process: { name: 'App', fullPath: '/usr/bin/app', warning: false },
+                manifest,
+            },
+        ],
     ])('remembers permissions for %s', (_, source) => {
         expect(canRememberPermissions(source)).toBe(true);
     });
@@ -285,6 +293,21 @@ describe('canRememberPermissions', () => {
         [
             'the origin null that every sandboxed or local page sends',
             { type: CALL_SOURCE_WEB, origin: 'null', manifest },
+        ],
+        [
+            // Every MCP caller shares the one constant origin, so one without a process would
+            // inherit the grant of the next caller Suite could not identify either.
+            'an mcp client whose process stayed unresolved',
+            { type: CALL_SOURCE_MCP, origin: 'mcp://localhost', manifest },
+        ],
+        [
+            'an mcp client whose process has no path to be told apart by',
+            {
+                type: CALL_SOURCE_MCP,
+                origin: 'mcp://localhost',
+                process: { name: 'Claude Code', fullPath: '', warning: true },
+                manifest,
+            },
         ],
     ])('does not remember permissions for %s', (_, source) => {
         expect(canRememberPermissions(source)).toBe(false);

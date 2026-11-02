@@ -45,7 +45,11 @@ jest.mock('../libs/process-icon', () => ({
     getProcessIcon: jest.fn().mockResolvedValue(undefined),
 }));
 
+import { CALL_SOURCE_MCP } from '@suite-common/connect-popup';
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
+
 import { init } from './mcp-server';
+import { addMessage } from '../libs/connect-popup-messages';
 
 const TEST_TOKEN = 'test-token-abc123';
 
@@ -65,16 +69,33 @@ const createMockStore = (overrides?: Partial<McpSettings>) => {
     };
 };
 
-const createMockMainWindowProxy = (hasWindow = true) => ({
-    getInstance: jest.fn(() =>
-        hasWindow
-            ? {
-                  webContents: { send: jest.fn() },
-                  isDestroyed: () => false,
-              }
-            : undefined,
-    ),
-});
+const createMockMainWindowProxy = (hasWindow = true) => {
+    // One window for the whole proxy, so a test can see what was sent to the renderer.
+    const mainWindow = {
+        webContents: { send: jest.fn() },
+        isDestroyed: () => false,
+    };
+
+    return {
+        mainWindow,
+        getInstance: jest.fn(() => (hasWindow ? mainWindow : undefined)),
+    };
+};
+
+/** The payload of the `connect-popup/call` sent to the renderer, once it arrives. */
+const sentPopupCall = async (send: jest.Mock) => {
+    for (let attempt = 0; attempt < 100; attempt++) {
+        const call = send.mock.calls.find(([channel]) => channel === 'connect-popup/call');
+        if (call) {
+            return call[1];
+        }
+        await new Promise(resolve => {
+            setTimeout(resolve, 10);
+        });
+    }
+
+    throw new Error('Nothing was sent to the renderer');
+};
 
 /**
  * Start an MCP server on a free port and return the port + cleanup function.
@@ -176,6 +197,33 @@ const jsonRpcNotification = (method: string, params?: Record<string, unknown>) =
     method,
     params,
 });
+
+/** Initializes a session and returns the payload of the first popup call it makes. */
+const initializeAndCallPopup = async (
+    server: Awaited<ReturnType<typeof startMcpServer>>,
+    initializeParams?: Record<string, unknown>,
+) => {
+    const initRes = await mcpFetch(server.port, jsonRpc('initialize', initializeParams));
+    const call = mcpFetch(
+        server.port,
+        jsonRpc(
+            'tools/call',
+            { name: 'trezor_get_account_info', arguments: { coin: 'btc', path: "m/84'/0'/0'" } },
+            2,
+        ),
+        { sessionId: initRes.headers.get('mcp-session-id') },
+    );
+
+    const popupCall = await sentPopupCall(server.mainWindowProxy.mainWindow.webContents.send);
+    // Answer the forwarded call, so that the request completes with the server.
+    (addMessage as jest.Mock).mock.results.at(-1)?.value.resolve({
+        success: false,
+        error: 'Not needed by this test',
+    });
+    await call;
+
+    return popupCall;
+};
 
 describe('MCP server', () => {
     let cleanup: (() => void) | undefined;
@@ -423,6 +471,90 @@ describe('MCP server', () => {
             const res = await mcpFetch(server.port, jsonRpc('initialize', undefined, 2));
 
             expect(res.status).toBe(200);
+        });
+
+        it('does not key the client by the name it declared when its process was not found', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: 'Claude Code' },
+            });
+
+            // `fullPath` is what permissions are remembered by, and the declared name is not a
+            // path the client can be identified by, so it is forwarded as the name only.
+            expect(popupCall).toEqual(
+                expect.objectContaining({
+                    sourceType: CALL_SOURCE_MCP,
+                    process: { name: 'Claude Code', fullPath: '', warning: true },
+                }),
+            );
+        });
+
+        it('ignores a declared name that is not a string', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, { clientInfo: { name: {} } });
+
+            // The name is a React child in the consent prompt, where an object would throw.
+            expect(popupCall.process).toBeUndefined();
+            expect(popupCall.manifest.appName).toBe('MCP Agent');
+        });
+
+        it('reduces a declared name with control characters to a single line', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: '  Claude\n\tCode\u202E ' },
+            });
+
+            // The name labels the caller in the consent prompt, so it may not break its layout
+            // or reorder the text around it.
+            expect(popupCall.process).toEqual({
+                name: 'Claude Code',
+                fullPath: '',
+                warning: true,
+            });
+            expect(popupCall.manifest.appName).toBe('Claude Code');
+        });
+
+        it('does not end a capped declared name with the space the cut landed on', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: `${'a'.repeat(99)} ${'b'.repeat(10)}` },
+            });
+
+            expect(popupCall.manifest.appName).toBe('a'.repeat(99));
+        });
+
+        it('does not let a new session inherit the identity of the one it replaces', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'Trusted',
+                fullPath: '/usr/bin/trusted',
+            });
+            const identified = await initializeAndCallPopup(server, {
+                clientInfo: { name: 'Trusted' },
+            });
+            expect(identified.process).toEqual(
+                expect.objectContaining({ fullPath: '/usr/bin/trusted' }),
+            );
+
+            // A client is not required to send DELETE, so a second one just initializes again.
+            server.mainWindowProxy.mainWindow.webContents.send.mockClear();
+            (addMessage as jest.Mock).mockClear();
+            const unidentified = await initializeAndCallPopup(server);
+
+            // Permissions are remembered by `process.fullPath`, so inheriting the previous
+            // process would let this client pass for the identified one.
+            expect(unidentified.process).toBeUndefined();
+            expect(unidentified.manifest.appName).toBe('MCP Agent');
         });
 
         it('allows re-initialization after DELETE', async () => {
