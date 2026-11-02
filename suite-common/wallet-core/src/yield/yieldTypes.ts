@@ -1,7 +1,7 @@
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import type { EvmHexString } from '@suite-common/schemas/src/evm';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { Account } from '@suite-common/wallet-types';
+import type { Account, AllowanceTransactionType } from '@suite-common/wallet-types';
 
 export const YIELD_FLOW_TYPES = ['deposit', 'withdraw', 'redeem', 'claim'] as const;
 export const YIELD_FLOW_STEPS = ['wrap', 'approve', 'action', 'unwrap', 'complete'] as const;
@@ -80,11 +80,12 @@ export type YieldApproveModalState = {
     amount: string;
     contractAddress: string;
     spender: string;
-    txType: Extract<YieldPendingTransactionState['type'], 'approve' | 'revoke'>;
+    txType: AllowanceTransactionType;
 };
 
 export type YieldPendingTransactionState = {
-    type: 'approve' | 'revoke' | 'deposit' | 'withdraw' | 'redeem' | 'claim' | 'wrap' | 'unwrap';
+    type:
+        AllowanceTransactionType | 'deposit' | 'withdraw' | 'redeem' | 'claim' | 'wrap' | 'unwrap';
     txid: string;
     amount: string;
     fee?: string;

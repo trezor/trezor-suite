@@ -1,4 +1,3 @@
-import { UINT256_MAX } from '@suite-common/suite-constants';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type EvmTransactionPurpose,
@@ -8,11 +7,7 @@ import {
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
 import { Calldata, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
-import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
-
-import { asAmountSubunit, asAmountUnit } from './AmountTypes';
-import { unitsToSubunits } from './amountUtils';
 
 export const isEip1559 = (
     tx: Record<string, any> | null | undefined,
@@ -217,61 +212,4 @@ export const ensureHexPrefix = (hex?: string): string => {
     if (!hex) return '';
 
     return hex.startsWith('0x') ? hex : `0x${hex}`;
-};
-
-interface BuildTransactionDataParams {
-    amount: string;
-    spender: string;
-}
-
-// TODO: drop this wrapper and migrate callers to `Calldata.evm.erc20.approve.encode` directly.
-export const buildApprovalTransactionData = ({
-    amount: rawAmount,
-    spender: rawSpender,
-}: BuildTransactionDataParams): string => {
-    const result = Calldata.evm.erc20.approve.encode({
-        spender: rawSpender,
-        amount: new BigNumber(rawAmount),
-    });
-
-    if (!result.isValid || !result.data) {
-        throw new Error(result.errors[0]?.code ?? 'INVALID_APPROVAL_PARAMS');
-    }
-
-    return result.data;
-};
-
-interface GetAllowanceAmountParams {
-    rawAmount: string;
-    approvalType: 'MINIMAL' | 'INFINITE' | 'ZERO' | 'PRESET';
-    token: TokenInfo;
-}
-
-export const getAllowanceAmount = ({
-    rawAmount,
-    approvalType,
-    token,
-}: GetAllowanceAmountParams) => {
-    const inputAmount = unitsToSubunits({
-        value: asAmountUnit(new BigNumber(rawAmount)),
-        decimals: token.decimals,
-    });
-
-    const getAmount = () => {
-        switch (approvalType) {
-            case 'INFINITE':
-                return asAmountSubunit(new BigNumber(UINT256_MAX)).toString();
-            case 'ZERO':
-                return '0';
-            case 'MINIMAL':
-            case 'PRESET':
-                return inputAmount.toString();
-            default:
-                exhaustive(approvalType);
-        }
-    };
-
-    const allowanceAmount = getAmount();
-
-    return { inputAmount, allowanceAmount };
 };

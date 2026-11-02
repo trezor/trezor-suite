@@ -10,7 +10,11 @@ import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type InitYieldAllowanceThunkState, initYieldAllowanceThunk } from './yieldApprovalThunks';
+import {
+    type InitYieldAllowanceThunkState,
+    initYieldAllowanceThunk,
+    submitYieldApproveThunk,
+} from './yieldApprovalThunks';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
 import {
     getYieldSessionKey,
@@ -30,6 +34,7 @@ const FLOW_KEY = 'account-key:yield-id:0xtoken';
 const OWNER_ADDRESS = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
 const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const VAULT_ADDRESS = '0xd63070114470f685b75B74D60EEc7c1113d33a3D';
+const USDT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
 
 const account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),
@@ -56,9 +61,21 @@ const flowData = {
     },
 } as unknown as YieldFlowResolvedData;
 
+const usdtFlowData = {
+    ...flowData,
+    token: {
+        networkSymbol: 'eth',
+        symbol: 'usdt',
+        decimals: 6,
+        contractAddress: USDT_ADDRESS,
+        balance: '100',
+    },
+} as unknown as YieldFlowResolvedData;
+
 // 0.2 WETH in subunits (18 decimals) — the amount the user just wrapped.
 const WRAPPED_AMOUNT = '0.2';
 const toSubunits = (weth: string) => asAmountSubunit(new BigNumber(weth).shiftedBy(18));
+const toUsdtSubunits = (usdt: string) => asAmountSubunit(new BigNumber(usdt).shiftedBy(6));
 
 const analytics = mockAnalytics<AnalyticsSharedEvents>();
 
@@ -339,5 +356,112 @@ describe('initYieldAllowanceThunk', () => {
         expect(getApproval(store).allowanceAmount).toBeNull();
         expect(getStep(store)).toBe('approve');
         expect(analytics.report).not.toHaveBeenCalled();
+    });
+});
+
+describe('submitYieldApproveThunk', () => {
+    const AMOUNT = '0.2';
+
+    const seedDepositAtApprove = (
+        store: TestCompositionStore<InitYieldAllowanceThunkState, WithServices<AnalyticsDep>>,
+    ) => {
+        store.dispatch(yieldActions.initSession({ flowType: 'deposit', flowKey: FLOW_KEY }));
+        expect(getStep(store)).toBe('approve');
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('completes the approve step when the allowance already covers the amount', async () => {
+        jest.mocked(fetchAllowance).mockResolvedValue(toSubunits('0.3'));
+        const store = initStore();
+        seedDepositAtApprove(store);
+
+        await store
+            .dispatch(
+                submitYieldApproveThunk({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    flowData,
+                    amount: AMOUNT,
+                }),
+            )
+            .unwrap();
+
+        expect(getStep(store)).toBe('action');
+        expect(getApproval(store).modalState).toBeNull();
+        expect(getApproval(store).isRevokeRequired).toBe(false);
+        expect(getApproval(store).isSubmitting).toBe(false);
+    });
+
+    it('opens the approve modal when there is no allowance yet', async () => {
+        jest.mocked(fetchAllowance).mockResolvedValue(toSubunits('0'));
+        const store = initStore();
+        seedDepositAtApprove(store);
+
+        await store
+            .dispatch(
+                submitYieldApproveThunk({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    flowData,
+                    amount: AMOUNT,
+                }),
+            )
+            .unwrap();
+
+        expect(getStep(store)).toBe('approve');
+        expect(getApproval(store).modalState).toEqual({
+            amount: AMOUNT,
+            contractAddress: WETH_ADDRESS,
+            spender: VAULT_ADDRESS,
+            txType: 'approve',
+        });
+        expect(getApproval(store).isRevokeRequired).toBe(false);
+        expect(getApproval(store).isSubmitting).toBe(false);
+    });
+
+    it('opens the approve modal to raise a too-low allowance of a token that can grow it', async () => {
+        jest.mocked(fetchAllowance).mockResolvedValue(toSubunits('0.1'));
+        const store = initStore();
+        seedDepositAtApprove(store);
+
+        await store
+            .dispatch(
+                submitYieldApproveThunk({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    flowData,
+                    amount: AMOUNT,
+                }),
+            )
+            .unwrap();
+
+        expect(getStep(store)).toBe('approve');
+        expect(getApproval(store).modalState?.txType).toBe('approve');
+        expect(getApproval(store).isRevokeRequired).toBe(false);
+    });
+
+    it('requires a revoke first when a too-low allowance belongs to a token needing a reset', async () => {
+        jest.mocked(fetchAllowance).mockResolvedValue(toUsdtSubunits('0.1'));
+        const store = initStore();
+        seedDepositAtApprove(store);
+
+        await store
+            .dispatch(
+                submitYieldApproveThunk({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    flowData: usdtFlowData,
+                    amount: AMOUNT,
+                }),
+            )
+            .unwrap();
+
+        expect(getStep(store)).toBe('approve');
+        expect(getApproval(store).isRevokeRequired).toBe(true);
+        expect(getApproval(store).modalState).toBeNull();
+        expect(getApproval(store).isSubmitting).toBe(false);
     });
 });

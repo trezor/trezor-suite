@@ -21,11 +21,6 @@ export * from './hooks/useTradingRefetchScheduler';
 export * from './hooks/useDexExchangeTxSimulation';
 export * from './hooks/usePreferredCurrencyUsdThreshold';
 export * from './hooks/useBoundTradingAccount';
-export {
-    type TransactionStatus,
-    type UseAllowanceTxTrackingParams,
-    useAllowanceTxTracking,
-} from './hooks/useAllowanceTxTracking';
 export * from './tradeApi';
 export * from './reducers/buyReducer';
 export * from './reducers/exchangeReducer';
