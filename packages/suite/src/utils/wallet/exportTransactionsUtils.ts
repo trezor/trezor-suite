@@ -26,7 +26,14 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type TransactionTarget } from '@trezor/connect';
-import { BigNumber, isNotNull, localizeNumber } from '@trezor/utils';
+import {
+    BigNumber,
+    CSV_NEWLINE,
+    CSV_SEPARATOR,
+    isNotNull,
+    localizeNumber,
+    sanitizeCsvValue,
+} from '@trezor/utils';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { outputLabel?: string })[];
@@ -56,10 +63,6 @@ type Fields = {
     fiat: string;
     other: string;
 };
-
-const CSV_NEWLINE = '\n';
-const CSV_SEPARATOR = ',';
-const CSV_LEADING_CHARACTERS_TO_ESCAPE_REGEX = /^[\s\uFEFF]*[=+\-@＝＋－＠]/u;
 
 // Docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/format
 const dateFormat = {
@@ -305,16 +308,6 @@ const prepareContent = (
             return [...targets, ...tokens, ...internalTransfers, ...cardanoStaking];
         })
         .filter(isNotNull);
-};
-
-export const sanitizeCsvValue = (value: string): string => {
-    const sanitizedValue = CSV_LEADING_CHARACTERS_TO_ESCAPE_REGEX.test(value) ? `'${value}` : value;
-
-    if (sanitizedValue.includes(CSV_SEPARATOR)) {
-        return `"${sanitizedValue.replace(/"/g, '""')}"`;
-    }
-
-    return sanitizedValue;
 };
 
 const prepareCsv = (
