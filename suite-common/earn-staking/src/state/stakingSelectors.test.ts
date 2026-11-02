@@ -33,14 +33,16 @@ const solPosition = mockStakingPosition({
 });
 
 const state: StakingRootState = {
-    staking: mockStakingState({
-        platform: 'mobile',
-        descriptors: [eth, sol],
-        positions: { [accountKey]: [ethPosition, solPosition] },
-    }),
+    earn: {
+        staking: mockStakingState({
+            platform: 'mobile',
+            descriptors: [eth, sol],
+            positions: { [accountKey]: [ethPosition, solPosition] },
+        }),
+    },
 };
 
-const empty: StakingRootState = { staking: mockStakingState({ descriptors: [] }) };
+const empty: StakingRootState = { earn: { staking: mockStakingState({ descriptors: [] }) } };
 
 describe('staking selectors', () => {
     it('selects the platform', () => {

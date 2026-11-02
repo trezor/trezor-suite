@@ -84,7 +84,7 @@ describe('refreshStakingProductInfoThunk', () => {
         accounts: readonly Account[] = [ethAccount, solAccount, btcAccount],
         enabledNetworks: NetworkSymbol[] = [asNetworkSymbol('eth')],
     ): RefreshStakingProductInfoThunkState => ({
-        staking: mockStakingState({ descriptors: [eth, sol] }),
+        earn: { staking: mockStakingState({ descriptors: [eth, sol] }) },
         wallet: {
             accounts: [...accounts],
             settings: { ...initialWalletSettingsState, enabledNetworks },
@@ -212,7 +212,7 @@ describe('syncStakingPositionsThunk', () => {
     const createState = (
         accounts: readonly Account[] = [ethAccount, btcAccount],
     ): SyncStakingPositionsThunkState => ({
-        staking: mockStakingState({ descriptors: [eth, sol] }),
+        earn: { staking: mockStakingState({ descriptors: [eth, sol] }) },
         wallet: { accounts: [...accounts] },
     });
 
@@ -289,7 +289,7 @@ describe('syncStakingPositionsThunk', () => {
 
 describe('syncAllStakingPositionsThunk', () => {
     const state: SyncStakingPositionsThunkState = {
-        staking: mockStakingState({ descriptors: [eth, sol] }),
+        earn: { staking: mockStakingState({ descriptors: [eth, sol] }) },
         wallet: { accounts: [ethAccount, solAccount, btcAccount] },
     };
 

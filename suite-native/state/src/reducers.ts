@@ -113,6 +113,7 @@ const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 const receiveReducer = prepareReceiveReducer(extraDependencies);
 const bluetoothReducer = prepareBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
+const earnReducer = combineReducers({ staking: stakingReducer });
 
 type PrepareRootReducersDeps = MMKVStorageDep & {
     getSupportedNetworks: () => readonly NetworkSymbol[];
@@ -552,7 +553,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             thp: thpPersistedReducer,
             tokenDefinitions: tokenDefinitionsReducer,
             wallet: walletPersistedReducer,
-            staking: stakingReducer,
+            earn: earnReducer,
             walletConnect: walletConnectReducer,
             suiteSyncQuotaManager: quotaManagerPersistedReducer,
         } as const),

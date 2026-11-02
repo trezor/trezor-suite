@@ -25,7 +25,7 @@ export type StakingState = {
 };
 
 export type StakingRootState = {
-    staking: StakingState;
+    earn: { staking: StakingState };
 };
 
 export const stakingInitialState: StakingState = {

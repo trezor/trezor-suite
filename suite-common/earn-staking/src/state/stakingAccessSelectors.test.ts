@@ -61,7 +61,7 @@ type StateParams = {
 
 const createState = ({ platform = 'desktop', disabled = [], viewOnly = false }: StateParams = {}) =>
     ({
-        staking: mockStakingState({ platform, descriptors: [manage, subset, readOnly] }),
+        earn: { staking: mockStakingState({ platform, descriptors: [manage, subset, readOnly] }) },
         messageSystem: disabled.length > 0 ? disableFeatures(disabled) : messageSystemInitialState,
         device: {
             ...deviceInitialState,
@@ -80,7 +80,7 @@ describe('selectStakingProductAccess', () => {
     });
 
     it('hides every product before the platform is registered', () => {
-        const state = { ...createState(), staking: stakingInitialState };
+        const state = { ...createState(), earn: { staking: stakingInitialState } };
 
         expect(selectStakingProductAccess(state, manage.id).access).toBe('hidden');
     });
