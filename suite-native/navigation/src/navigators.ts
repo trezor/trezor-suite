@@ -273,7 +273,11 @@ export type ReceiveAddressVerificationStackParamList = {
 };
 
 export type SendStackParamList = {
-    [SendStackRoutes.SendAccounts]: undefined;
+    [SendStackRoutes.SendAccounts]:
+        | {
+              networksFilter?: NetworkSymbol[];
+          }
+        | undefined;
     [SendStackRoutes.SendOutputs]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
