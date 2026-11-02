@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/finprom",
+    "name": "@suite/regions",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -13,7 +13,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/geolocation": "workspace:*",
-        "@suite-common/message-system": "workspace:*"
+        "@suite-common/locale": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/regions": "workspace:*",
+        "@suite/settings": "workspace:*"
     }
 }

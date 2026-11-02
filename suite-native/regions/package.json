@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/finprom",
+    "name": "@suite-native/regions",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -15,8 +15,8 @@
         "test:unit:watch": "yarn g:jest:native --watch"
     },
     "dependencies": {
-        "@suite-common/finprom": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/regions": "workspace:*",
         "@suite-native/intl": "workspace:*"
     }
 }

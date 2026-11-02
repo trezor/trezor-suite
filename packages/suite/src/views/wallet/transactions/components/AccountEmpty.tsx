@@ -1,6 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import {
@@ -25,7 +25,7 @@ interface AccountEmptyProps {
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
 
     const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
     // Trading is unavailable for the Privacy (SLIP-25) account type, see HeaderActions.
@@ -96,7 +96,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                 isTokensNetwork ? (
                     <Translation
                         id={
-                            isFinpromRestricted
+                            isRegionRestricted
                                 ? 'TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_RECEIVE_DESCRIPTION'
                                 : 'TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION'
                         }
@@ -105,7 +105,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                 ) : (
                     <Translation
                         id={
-                            isFinpromRestricted
+                            isRegionRestricted
                                 ? 'TR_ACCOUNT_IS_EMPTY_RECEIVE_DESCRIPTION'
                                 : 'TR_ACCOUNT_IS_EMPTY_DESCRIPTION'
                         }
@@ -116,7 +116,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             icon={ArrowsLeftRightIcon}
             iconVariant="neutral"
             actions={
-                isFinpromRestricted || !isTradingAvailable
+                isRegionRestricted || !isTradingAvailable
                     ? [receiveAction]
                     : [buyAction, receiveAction]
             }

@@ -93,15 +93,15 @@ const previousAccountKey = mockAccountKey({ descriptor: 'previousaccount' });
 type RenderEmbedParams = {
     type: TradingType;
     onTypeChange?: (type: TradingType) => void;
-    isFinpromRestricted?: boolean;
+    isRegionRestricted?: boolean;
 };
 
-const renderEmbed = ({ type, onTypeChange, isFinpromRestricted = false }: RenderEmbedParams) => {
+const renderEmbed = ({ type, onTypeChange, isRegionRestricted = false }: RenderEmbedParams) => {
     const preloadedState = {
         ...mockInitialAppState,
         messageSystem: mockMessageSystemStateWithFeatureFlags(
-            { [Feature.finprom.presenceRestriction]: isFinpromRestricted },
-            { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+            { [Feature.regions.presenceRestriction]: isRegionRestricted },
+            { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
         ),
         wallet: {
             ...mockInitialAppState.wallet,
@@ -186,7 +186,7 @@ describe('TradingFormEmbed', () => {
 
     it('renders nothing and leaves the trading state untouched when restricted', () => {
         const onTypeChange = mock<(type: TradingType) => void>();
-        const store = renderEmbed({ type: 'buy', onTypeChange, isFinpromRestricted: true });
+        const store = renderEmbed({ type: 'buy', onTypeChange, isRegionRestricted: true });
 
         expect(screen.queryByTestId('trading-form-wrapper/buy')).not.toBeInTheDocument();
         expect(screen.queryByTestId('@trading/menu/wallet-trading-buy')).not.toBeInTheDocument();

@@ -24,11 +24,11 @@ const RESTRICTED_CONTENT: Localization = {
 };
 
 type RenderGuardParams = {
-    isFinpromRestricted: boolean;
+    isRegionRestricted: boolean;
     content?: Localization;
 };
 
-const renderGuard = ({ isFinpromRestricted, content }: RenderGuardParams) =>
+const renderGuard = ({ isRegionRestricted, content }: RenderGuardParams) =>
     renderWithStoreProvider(
         <TradingRestrictedGuard>
             <Text>trading screen</Text>
@@ -36,8 +36,8 @@ const renderGuard = ({ isFinpromRestricted, content }: RenderGuardParams) =>
         {
             preloadedState: {
                 messageSystem: mockMessageSystemStateWithFeatureFlags(
-                    { [Feature.finprom.presenceRestriction]: isFinpromRestricted },
-                    { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+                    { [Feature.regions.presenceRestriction]: isRegionRestricted },
+                    { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
                     content,
                 ),
             },
@@ -47,7 +47,7 @@ const renderGuard = ({ isFinpromRestricted, content }: RenderGuardParams) =>
 describe('TradingRestrictedGuard', () => {
     it('shows the message content instead of the trading screen when restricted', async () => {
         const { getByText, queryByText } = await renderGuard({
-            isFinpromRestricted: true,
+            isRegionRestricted: true,
             content: RESTRICTED_CONTENT,
         });
 
@@ -56,14 +56,14 @@ describe('TradingRestrictedGuard', () => {
     });
 
     it('falls back to the built-in text when the message has no content', async () => {
-        const { getByText, queryByText } = await renderGuard({ isFinpromRestricted: true });
+        const { getByText, queryByText } = await renderGuard({ isRegionRestricted: true });
 
         expect(getByText(getTranslation('tradingAtoms.error.restrictedTitle'))).toBeOnTheScreen();
         expect(queryByText('trading screen')).toBeNull();
     });
 
     it('shows the trading screen when not restricted', async () => {
-        const { getByText } = await renderGuard({ isFinpromRestricted: false });
+        const { getByText } = await renderGuard({ isRegionRestricted: false });
 
         expect(getByText('trading screen')).toBeOnTheScreen();
     });

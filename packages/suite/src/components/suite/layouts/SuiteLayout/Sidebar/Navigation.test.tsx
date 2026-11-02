@@ -54,7 +54,7 @@ type RenderNavigationParams = {
     isCollapsed?: boolean;
     seenNewContentIndicators?: FlagsState['seenNewContentIndicators'];
     notifications?: AppState['notifications'];
-    isFinpromRestricted?: boolean;
+    isRegionRestricted?: boolean;
 };
 
 const renderNavigation = ({
@@ -64,14 +64,14 @@ const renderNavigation = ({
     // Empty object simulates an existing user, which hasn't seen any content, migrating to a new version.
     seenNewContentIndicators = {},
     notifications = [],
-    isFinpromRestricted = false,
+    isRegionRestricted = false,
 }: RenderNavigationParams = {}) => {
     const preloadedState: AppState = {
         ...mockInitialAppState,
-        messageSystem: isFinpromRestricted
+        messageSystem: isRegionRestricted
             ? mockMessageSystemStateWithFeatureFlags(
-                  { [Feature.finprom.presenceRestriction]: true },
-                  { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+                  { [Feature.regions.presenceRestriction]: true },
+                  { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
               )
             : mockInitialAppState.messageSystem,
         flags: { ...flagsInitialState, seenNewContentIndicators },
@@ -369,9 +369,9 @@ describe('Navigation new-content indicators', () => {
     );
 });
 
-describe('Navigation FinProm restriction', () => {
-    it('hides Swap and keeps Earn when FinProm is restricted', () => {
-        renderNavigation({ isFinpromRestricted: true });
+describe('Navigation region restriction', () => {
+    it('hides Swap and keeps Earn when the region is restricted', () => {
+        renderNavigation({ isRegionRestricted: true });
 
         expect(screen.queryByTestId(swapButton)).not.toBeInTheDocument();
         expect(screen.getByTestId(earnButton)).toBeInTheDocument();

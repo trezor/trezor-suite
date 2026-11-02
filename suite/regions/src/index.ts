@@ -1,0 +1,1 @@
+export { selectIsRegionRestricted } from './regionsSelectors';

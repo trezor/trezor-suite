@@ -1,6 +1,6 @@
 import { selectIsDebugModeActive } from '@suite/debug';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
 import {
     Box,
@@ -225,7 +225,7 @@ const ShortcutSectionBlock = ({ titleId, items }: ShortcutSection) => (
 export const GuideShortcuts = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const isPassphraseProtectionEnabled = useSelector(selectIsDeviceProtectedByPassphrase);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const { dispatch } = useServices(injectDispatch);
 
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
@@ -246,7 +246,7 @@ export const GuideShortcuts = () => {
                 <Column>
                     <ShortcutSectionBlock {...securitySectionWithLockApp} />
                     <ShortcutSectionBlock {...walletsSectionWithPassphrase} />
-                    <ShortcutSectionBlock {...getNavigationSection(!isFinpromRestricted)} />
+                    <ShortcutSectionBlock {...getNavigationSection(!isRegionRestricted)} />
                     <ShortcutSectionBlock {...generalSection} />
                     <ShortcutSectionBlock {...otherSection} />
                     {isDebugModeActive && <ShortcutSectionBlock {...debugSection} />}

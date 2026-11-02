@@ -13,20 +13,20 @@ jest.mock('@react-navigation/native', () => ({
 
 const accountKey = 'eth-account-key' as AccountKey;
 
-const renderNoBalanceActions = (isFinpromRestricted: boolean) =>
+const renderNoBalanceActions = (isRegionRestricted: boolean) =>
     renderHookWithStoreProvider(() => useEarnNoBalanceActions({ accountKey }), {
         preloadedState: {
             device: deviceInitialState,
             messageSystem: mockMessageSystemStateWithFeatureFlags(
-                { [Feature.finprom.presenceRestriction]: isFinpromRestricted },
-                { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+                { [Feature.regions.presenceRestriction]: isRegionRestricted },
+                { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
             ),
             wallet: { trading: { residence: { wasOnboardingVisited: false } } },
         },
     });
 
 describe(useEarnNoBalanceActions.name, () => {
-    it('offers no buy or swap action when FinProm is restricted', async () => {
+    it('offers no buy or swap action when the region is restricted', async () => {
         const { result } = await renderNoBalanceActions(true);
 
         expect(result.current.handleBuyPress).toBeUndefined();
@@ -34,7 +34,7 @@ describe(useEarnNoBalanceActions.name, () => {
         expect(result.current.handleReceivePress).toBeDefined();
     });
 
-    it('offers buy and swap actions when FinProm is not restricted', async () => {
+    it('offers buy and swap actions when the region is not restricted', async () => {
         const { result } = await renderNoBalanceActions(false);
 
         expect(result.current.handleBuyPress).toBeDefined();

@@ -1,6 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type AssetFiatBalance } from '@suite-common/assets';
@@ -107,7 +107,7 @@ export const AssetCard = ({
 
     const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
 
     const isStakingActive = useSelector(state =>
         selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
@@ -216,7 +216,7 @@ export const AssetCard = ({
                                     </AssetActionButton>
                                 )}
 
-                                {!isFinpromRestricted && (
+                                {!isRegionRestricted && (
                                     <AssetActionButton
                                         symbol={symbol}
                                         routeName="wallet-trading-buy"

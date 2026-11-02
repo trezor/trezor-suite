@@ -2,8 +2,8 @@ import { type ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { ContextMessage } from '@suite/message-system';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { Context } from '@suite-common/message-system';
 import { type TradingType, useBoundTradingAccount } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
@@ -37,10 +37,10 @@ const TradingFormEmbedForm = ({ type, account }: Omit<TradingFormEmbedProps, 'on
 
 export const TradingFormEmbed = ({ type, account, onTypeChange }: TradingFormEmbedProps) => {
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const { isDisabled, content } = useMessageSystemTrading(type);
 
-    if (isDisabled || isFinpromRestricted) {
+    if (isDisabled || isRegionRestricted) {
         return null;
     }
 

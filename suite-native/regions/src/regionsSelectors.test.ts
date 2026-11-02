@@ -2,18 +2,18 @@ import { Feature } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type AppLocaleOption, type LocaleCode, localeInitialState } from '@suite-native/intl';
 
-import { selectIsFinpromRestricted } from './finpromSelectors';
+import { selectIsRegionRestricted } from './regionsSelectors';
 
-describe(selectIsFinpromRestricted.name, () => {
+describe(selectIsRegionRestricted.name, () => {
     it.each([
         ['restricted: in-app Czech with CZ listed', 'cs-CZ', 'en-US', ['CZ'], true],
         ['not restricted: in-app English with CZ listed', 'en-US', 'cs-CZ', ['CZ'], false],
         ['restricted: system Czech with CZ listed', 'system', 'cs-CZ', ['CZ'], true],
         [
-            'not restricted: system en-GB resolves to en-US app language with GB listed',
+            'not restricted: system en-AU resolves to en-US app language with AU listed',
             'system',
-            'en-GB',
-            ['GB'],
+            'en-AU',
+            ['AU'],
             false,
         ],
     ] as const satisfies [string, AppLocaleOption, LocaleCode, readonly string[], boolean][])(
@@ -21,13 +21,13 @@ describe(selectIsFinpromRestricted.name, () => {
         (_description, appLocaleCode, systemLocaleCode, countries, expected) => {
             const state = {
                 messageSystem: mockMessageSystemStateWithFeatureFlags(
-                    { [Feature.finprom.presenceRestriction]: true },
-                    { [Feature.finprom.presenceRestriction]: { countries } },
+                    { [Feature.regions.presenceRestriction]: true },
+                    { [Feature.regions.presenceRestriction]: { countries } },
                 ),
                 locale: { ...localeInitialState, appLocaleCode, systemLocaleCode },
             };
 
-            expect(selectIsFinpromRestricted(state)).toBe(expected);
+            expect(selectIsRegionRestricted(state)).toBe(expected);
         },
     );
 });

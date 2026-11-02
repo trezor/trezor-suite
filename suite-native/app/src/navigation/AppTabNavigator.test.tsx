@@ -80,11 +80,11 @@ describe('AppTabNavigator', () => {
         expect(getByTestId('@screen/Trading')).toBeTruthy();
     });
 
-    it('should not render Trade tab when FinProm is restricted', async () => {
+    it('should not render Trade tab when the region is restricted', async () => {
         const { queryByText } = await renderTabs({
             messageSystem: mockMessageSystemStateWithFeatureFlags(
-                { [Feature.finprom.presenceRestriction]: true },
-                { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+                { [Feature.regions.presenceRestriction]: true },
+                { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
             ),
         });
 

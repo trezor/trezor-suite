@@ -2,10 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/finprom" },
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/regions" },
         { "path": "../intl" }
     ]
 }

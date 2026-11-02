@@ -10,7 +10,7 @@ describe(getPlaceholderCountryFromLocale.name, () => {
         ['en', null],
         ['', null],
         ['en-ZZ', null],
-        ['en-gb', 'GB'],
+        ['en-au', 'AU'],
     ] as const satisfies [string, CountryCode | null][])('%s → %s', (locale, expected) => {
         expect(getPlaceholderCountryFromLocale(locale)).toBe(expected);
     });

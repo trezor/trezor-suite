@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsAppsEmbeddingAvailable } from '@suite/apps-embedding-demo';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import {
     NewContentIndicatorId,
     markNewContentIndicatorAsSeen,
     selectIsNewContentIndicatorVisible,
 } from '@suite/flags';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { type Route, isTradingRoute, selectRouteName } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
@@ -75,7 +75,7 @@ export const Navigation = ({ children }: NavigationProps) => {
         variant: 'B',
     });
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const isAppsEmbeddingAvailable = useSelector(selectIsAppsEmbeddingAvailable);
 
     const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
@@ -188,7 +188,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     routes: [startRoute],
                     shortcut: ['MOD', 'ALT', 'KEY_0'],
                 },
-                ...(!isBtcOnly && !isFinpromRestricted
+                ...(!isBtcOnly && !isRegionRestricted
                     ? [
                           {
                               nameId: 'TR_TRADING_SWAP',
@@ -251,7 +251,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                 isHomeTableActive,
                 startRoute,
                 isBtcOnly,
-                isFinpromRestricted,
+                isRegionRestricted,
                 isAppsEmbeddingAvailable,
                 isTradingOpen,
                 handleSwapNavigation,

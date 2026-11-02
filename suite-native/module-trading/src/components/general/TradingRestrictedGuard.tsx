@@ -6,9 +6,9 @@ import {
     type MessageSystemRootState,
     selectFeatureMessageContent,
 } from '@suite-common/message-system';
-import { selectIsFinpromRestricted } from '@suite-native/finprom';
 import { Translation, selectLocale } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { selectIsRegionRestricted } from '@suite-native/regions';
 import { WarningCard } from '@suite-native/trading-atoms';
 
 export type TradingRestrictedGuardProps = {
@@ -16,13 +16,13 @@ export type TradingRestrictedGuardProps = {
 };
 
 export const TradingRestrictedGuard = ({ children }: TradingRestrictedGuardProps) => {
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const locale = useSelector(selectLocale);
     const content = useSelector((state: MessageSystemRootState) =>
-        selectFeatureMessageContent(state, Feature.finprom.presenceRestriction, locale),
+        selectFeatureMessageContent(state, Feature.regions.presenceRestriction, locale),
     );
 
-    if (isFinpromRestricted) {
+    if (isRegionRestricted) {
         return (
             <Screen header={<ScreenHeader closeActionType="back" />}>
                 <WarningCard

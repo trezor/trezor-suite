@@ -188,7 +188,6 @@
         {
             "path": "../../suite/feature-feedback"
         },
-        { "path": "../../suite/finprom" },
         {
             "path": "../../suite/firmware-upgrade"
         },
@@ -217,6 +216,7 @@
         { "path": "../../suite/price-chart" },
         { "path": "../../suite/receive" },
         { "path": "../../suite/recovery" },
+        { "path": "../../suite/regions" },
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../../suite/settings" },

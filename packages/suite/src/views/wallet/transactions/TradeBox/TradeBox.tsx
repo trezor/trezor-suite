@@ -1,6 +1,6 @@
 import { useDevice } from '@suite/device';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
@@ -27,7 +27,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { device } = useDevice();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
     const { hasEarnOption, yieldBadge } = useTradeBoxEarnOptions(account);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
 
     return (
         <DashboardSection>
@@ -101,7 +101,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 <Translation id="TR_EARN" />
                             </TradeBoxActionButton>
                         )}
-                        {!isFinpromRestricted && (
+                        {!isRegionRestricted && (
                             <>
                                 <TradeBoxActionButton account={account} type="buy">
                                     <Translation id="TR_NAV_BUY" />
@@ -115,7 +115,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 </TradeBoxActionButton>
                             </>
                         )}
-                        {!hasBitcoinOnlyFirmware(device) && !isFinpromRestricted && (
+                        {!hasBitcoinOnlyFirmware(device) && !isRegionRestricted && (
                             <TradeBoxActionButton
                                 account={account}
                                 type="exchange"
