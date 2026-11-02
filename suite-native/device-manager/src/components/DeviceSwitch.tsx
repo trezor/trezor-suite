@@ -25,6 +25,7 @@ const switchStyle = prepareNativeStyle<SwitchStyleProps>((utils, { isDeviceManag
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.r16,
     backgroundColor: utils.colors.surfaceFillAction,
+    opacity: isDeviceManagerVisible ? 0 : 1,
     ...utils.boxShadows.small,
 
     extends: {

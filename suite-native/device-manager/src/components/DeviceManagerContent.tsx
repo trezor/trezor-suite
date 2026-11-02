@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { useWindowDimensions } from 'react-native';
-import { LinearTransition } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -19,7 +17,7 @@ import {
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { AnimatedScrollView, AnimatedVStack, VStack } from '@suite-native/atoms';
+import { AnimatedBox, AnimatedScrollView, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import {
     type AppTabsParamList,
@@ -37,28 +35,31 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
 import { ConnectButton } from './ConnectButton';
 import { DeviceList } from './DeviceList';
-import { DeviceManagerModal, MANAGER_MODAL_BOTTOM_RADIUS } from './DeviceManagerModal';
+import { DeviceManagerModal } from './DeviceManagerModal';
 import { DeviceSettingsButton } from './DeviceSettingsButton';
 import { DevicesToggleButton } from './DevicesToggleButton';
 import { WalletList } from './WalletList';
 import { useDeviceManager } from '../hooks/useDeviceManager';
 
-const CONTENT_MAX_HEIGHT_RATIO = 0.8;
-const HEADER_HEIGHT = 86;
-
-const scrollViewStyle = prepareNativeStyle<{ maxHeight: number }>((utils, { maxHeight }) => ({
+const scrollViewStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp12,
     flexGrow: 0,
-    maxHeight,
-    borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
-    borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
+    flexShrink: 1,
 }));
+
+const deviceListWrapperStyle = prepareNativeStyle(() => ({
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+}));
+
+const DEVICE_LIST_ANIMATION_DURATION = 200;
 
 type NavigationProp = TabNavigationProp<AppTabsParamList, AppTabsRoutes.HomeStack>;
 
 export const DeviceManagerContent = () => {
-    const { applyStyle, utils } = useNativeStyles();
-    const { height: windowHeight } = useWindowDimensions();
+    const { applyStyle } = useNativeStyles();
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
@@ -78,7 +79,6 @@ export const DeviceManagerContent = () => {
 
     const toggleIsChangeDeviceRequested = () =>
         setIsChangeDeviceRequested(!isChangeDeviceRequested);
-    const insets = useSafeAreaInsets();
 
     const handleSelectDevice = (selectedDevice: TrezorDevice) => {
         const isOnEarnScreenRoute = checkIsRouteAnyOf([EarnStackRoutes.Earn], currentRoute.name);
@@ -104,10 +104,6 @@ export const DeviceManagerContent = () => {
         });
     };
 
-    // based on DeviceManagerModal header height and top offset
-    const scrollViewTopOffset = insets.top + utils.spacings.sp24 + HEADER_HEIGHT;
-    const scrollViewMaxHeight = windowHeight * CONTENT_MAX_HEIGHT_RATIO - scrollViewTopOffset;
-
     // Kept visible (but disabled) while discovery runs so the button doesn't vanish mid-discovery,
     // mirroring the desktop switch-device behavior.
     const isAddHiddenWalletButtonVisible =
@@ -118,10 +114,18 @@ export const DeviceManagerContent = () => {
 
     const isDeviceListVisible =
         (isChangeDeviceRequested || isPortfolioTrackerDevice) && unselectedDevices.length > 0;
+    const isWalletListVisible = !isPortfolioTrackerDevice && !shouldFactoryResetBeVisible;
+    const deviceListHeight = useSharedValue(0);
+    const deviceListAnimatedStyle = useAnimatedStyle(() => ({
+        height: withTiming(isDeviceListVisible ? deviceListHeight.get() : 0, {
+            duration: DEVICE_LIST_ANIMATION_DURATION,
+        }),
+        overflow: 'hidden',
+    }));
 
     return (
         <DeviceManagerModal
-            isDeviceListVisible={isDeviceListVisible}
+            hasContent={isDeviceListVisible || isWalletListVisible}
             footer={<ConnectButton onSelectDevice={handleSelectDevice} />}
             customSwitchRightView={
                 !isPortfolioTrackerDevice && (
@@ -134,18 +138,34 @@ export const DeviceManagerContent = () => {
             onClose={() => setIsChangeDeviceRequested(false)}
         >
             <AnimatedScrollView
-                style={applyStyle(scrollViewStyle, { maxHeight: scrollViewMaxHeight })}
+                style={applyStyle(scrollViewStyle)}
                 alwaysBounceVertical={false}
                 showsVerticalScrollIndicator={false}
-                layout={LinearTransition}
             >
-                <VStack spacing="sp24">
-                    {isDeviceListVisible && <DeviceList onSelectDevice={handleSelectDevice} />}
-                    {!isPortfolioTrackerDevice && !shouldFactoryResetBeVisible && (
-                        <AnimatedVStack
-                            layout={LinearTransition}
-                            marginTop={!isDeviceListVisible ? 'sp12' : undefined}
+                <VStack spacing={0}>
+                    <AnimatedBox
+                        accessibilityElementsHidden={!isDeviceListVisible}
+                        importantForAccessibility={
+                            isDeviceListVisible ? 'auto' : 'no-hide-descendants'
+                        }
+                        pointerEvents={isDeviceListVisible ? 'auto' : 'none'}
+                        style={deviceListAnimatedStyle}
+                    >
+                        <VStack
+                            onLayout={event => {
+                                deviceListHeight.set(event.nativeEvent.layout.height);
+                            }}
+                            paddingBottom={isWalletListVisible ? 'sp12' : undefined}
+                            style={applyStyle(deviceListWrapperStyle)}
                         >
+                            <DeviceList
+                                onSelectDevice={handleSelectDevice}
+                                hasBottomBorder={isWalletListVisible}
+                            />
+                        </VStack>
+                    </AnimatedBox>
+                    {isWalletListVisible && (
+                        <VStack marginTop="sp12">
                             {deviceStaticSessionId && (
                                 <WalletList onSelectDevice={handleSelectDevice} />
                             )}
@@ -155,7 +175,7 @@ export const DeviceManagerContent = () => {
                                     <AddHiddenWalletButton isDisabled={hasRunningDiscovery} />
                                 )}
                             </VStack>
-                        </AnimatedVStack>
+                        </VStack>
                     )}
                 </VStack>
             </AnimatedScrollView>
