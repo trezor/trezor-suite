@@ -4,6 +4,7 @@ import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { EdgeFades, type SubTabItem, SubTabs } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { DEFAULT_TRADING_TYPE } from '@suite-native/trading-consts';
 import { useServices } from '@trezor/dependency-injection';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -55,7 +56,7 @@ export const HeaderTabs = () => {
             payload: {
                 action: 'navigate',
                 type: tab,
-                from: `trade/${activeTab ?? 'buy'}`,
+                from: `trade/${activeTab ?? DEFAULT_TRADING_TYPE}`,
             },
         });
     };
