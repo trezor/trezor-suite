@@ -4,7 +4,7 @@ import {
     mockSolanaStakingAccount,
 } from '@suite-common/wallet-types/mocks';
 
-import { getSolanaDeactivatedRentReserves } from './solanaStakingLimitUtils';
+import { getSolanaDeactivatedAccountCount } from './solanaStakingLimitUtils';
 import {
     type SolanaUnstakeAmountBounds,
     getSolanaUnstakeAmountBounds,
@@ -30,7 +30,7 @@ const readSolanaStakingDetails = (account: AccountWithNetworkType<'solana'>) => 
             account.key,
         ),
         currentStatus: getStakingAccountCurrentStatus(account),
-        deactivatedRentReserves: getSolanaDeactivatedRentReserves(account),
+        deactivatedAccountCount: getSolanaDeactivatedAccountCount(account),
         unstakeAmountBounds: UNSTAKE_AMOUNTS.map(amount =>
             getSolanaUnstakeAmountBounds(account, amount),
         ),
@@ -53,7 +53,7 @@ const NOT_STAKED_DETAILS: SolanaStakingDetails = {
     hasExternalStakingAccounts: false,
     externalStakingAccountsTotalStaked: '0',
     currentStatus: null,
-    deactivatedRentReserves: [],
+    deactivatedAccountCount: 0,
     unstakeAmountBounds: NO_BOUNDS,
 };
 
@@ -78,7 +78,7 @@ describe('solana staking details characterization', () => {
             expected: {
                 ...NOT_STAKED_DETAILS,
                 hasStaked: true,
-                deactivatedRentReserves: ['2282880'],
+                deactivatedAccountCount: 1,
             },
         },
         {
@@ -87,7 +87,7 @@ describe('solana staking details characterization', () => {
                 ...NOT_STAKED_DETAILS,
                 hasStaked: true,
                 currentStatus: 'inactive',
-                deactivatedRentReserves: ['2282880'],
+                deactivatedAccountCount: 1,
                 unstakeAmountBounds: SPLIT_BELOW_MINIMUM_BOUNDS,
             },
         },
