@@ -10,7 +10,7 @@ export const mockStakingProvider = (
     id: stakingProviderIdSchema.parse('everstake'),
     name: 'Everstake',
     status: 'active',
-    links: { website: 'https://everstake.one' },
+    links: { website: 'https://everstake.com' },
     identities: {
         [asNetworkSymbol('eth')]: ['Everstake'],
         [asNetworkSymbol('sol')]: ['9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF'],

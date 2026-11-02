@@ -31,11 +31,11 @@ export const stakingProviderSchema = z.discriminatedUnion('status', [
     }),
     stakingProviderBaseSchema.extend({
         status: z.literal('retired'),
-        links: stakingProviderLinksSchema,
+        links: stakingProviderLinksSchema.optional(),
     }),
     stakingProviderBaseSchema.extend({
         status: z.literal('curated'),
-        links: stakingProviderLinksSchema,
+        links: stakingProviderLinksSchema.optional(),
     }),
     stakingProviderBaseSchema.extend({ status: z.literal('external') }),
 ]);

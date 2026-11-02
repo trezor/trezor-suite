@@ -2,4 +2,6 @@
 
 The staking products: providers, network kits, the per-network product factories and `createStakingProductsCompositionRoot`, which builds the adapters the product repository registers. Products implement the contracts from `@suite-common/earn-staking-common` and receive everything an app owns, such as Connect and staking API data, as injected dependencies.
 
+`src/providers` is the provider registry: every provider as parsed `stakingProviderSchema` data with its status, links and on-chain identities per network symbol, plus `getStakingProvider` and `findStakingProviderByIdentity`. The identities are this package's own copies; nothing here imports the legacy constants in `wallet-config` or the network packages, which stay until the cleanup removes them.
+
 Only the two application composition roots, in `@trezor/suite` and `@suite-native/state`, depend on this package. Everything else reaches products through the injected product repository from `@suite-common/earn-staking`. `forbiddenDeps.config.ts` enforces both directions, and `@trezor/eslint` keeps the import out of every file but the composition roots themselves.

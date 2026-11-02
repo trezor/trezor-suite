@@ -11556,6 +11556,7 @@ __metadata:
   resolution: "@suite-common/earn-staking-products@workspace:suite-common/earn-staking-products"
   dependencies:
     "@suite-common/earn-staking-common": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
     "@trezor/requirements": "workspace:*"
   languageName: unknown
   linkType: soft
