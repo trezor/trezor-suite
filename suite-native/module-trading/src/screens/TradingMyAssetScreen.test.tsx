@@ -7,8 +7,8 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     AppTabsRoutes,
     RootStackRoutes,
-    type TradingFlowStackParamList,
-    TradingFlowStackRoutes,
+    type TradingStackParamList,
+    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
@@ -39,7 +39,7 @@ const sections = [
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
-    useRoute: () => ({ name: TradingFlowStackRoutes.TradingMyAsset }),
+    useRoute: () => ({ name: TradingStackRoutes.TradingMyAsset }),
 }));
 
 jest.mock('@suite-native/trading-state', () => ({
@@ -54,9 +54,9 @@ jest.mock('@suite-common/trading', () => ({
 
 const createRoute = (
     tradingType: 'sell' | 'exchange',
-): RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingMyAsset> => ({
-    key: TradingFlowStackRoutes.TradingMyAsset,
-    name: TradingFlowStackRoutes.TradingMyAsset,
+): RouteProp<TradingStackParamList, TradingStackRoutes.TradingMyAsset> => ({
+    key: TradingStackRoutes.TradingMyAsset,
+    name: TradingStackRoutes.TradingMyAsset,
     params: { tradingType },
 });
 

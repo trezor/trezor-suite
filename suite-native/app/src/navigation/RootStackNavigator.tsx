@@ -53,7 +53,7 @@ import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { SignAndVerifyScreen, SignAndVerifyStackNavigator } from '@suite-native/module-sign-verify';
 import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
-import { TradingFlowStackNavigator } from '@suite-native/module-trading';
+import { TradingStackNavigator } from '@suite-native/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
 import {
     type RootStackParamList,
@@ -175,8 +175,8 @@ export const RootStackNavigator = () => {
                 component={StakingClaimReviewScreen}
             />
             <RootStack.Screen
-                name={RootStackRoutes.TradingFlowStack}
-                component={TradingFlowStackNavigator}
+                name={RootStackRoutes.TradingStack}
+                component={TradingStackNavigator}
             />
             <RootStack.Screen name={RootStackRoutes.DevUtils} component={DevUtilsScreen} />
             <RootStack.Screen

@@ -8,12 +8,9 @@ import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { type TradingType } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Divider } from '@suite-native/atoms';
-import { TradingFlowStackRoutes } from '@suite-native/navigation';
+import { TradingStackRoutes } from '@suite-native/navigation';
 import { type SectionListData, useSectionList } from '@suite-native/trading-atoms';
-import {
-    type ReceiveAccount,
-    type TradingFlowStackNavigationProp,
-} from '@suite-native/trading-types';
+import { type ReceiveAccount, type TradingStackNavigationProp } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountListFooter } from './AccountListFooter';
@@ -22,7 +19,7 @@ import { NoAccountsComponent } from './NoAccountsComponent';
 import { useCloseTradingFlow } from '../../../hooks/general/useCloseTradingFlow';
 import { useTradingReceiveAccountSelection } from '../../../hooks/general/useTradingReceiveAccountSelection';
 
-type NavigationProp = TradingFlowStackNavigationProp<TradingFlowStackRoutes.ReceiveAccounts>;
+type NavigationProp = TradingStackNavigationProp<TradingStackRoutes.ReceiveAccounts>;
 
 export type AccountsListProps = {
     data: SectionListData<ReceiveAccount>;
@@ -56,7 +53,7 @@ export const AccountList = ({ data, symbol, onAddAccountTap, tradingType }: Acco
 
     const onItemSelect = (receiveAccount: ReceiveAccount) => {
         if (receiveAccount.account.addresses) {
-            navigation.navigate(TradingFlowStackRoutes.TradingReceiveAddress, {
+            navigation.navigate(TradingStackRoutes.TradingReceiveAddress, {
                 accountKey: receiveAccount.account.key,
                 tradingType,
             });

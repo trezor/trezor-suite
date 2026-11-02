@@ -139,7 +139,7 @@ describe('SellSendAssetPicker', () => {
 
         await userEvent.press(getByLabelText('Select asset'));
 
-        expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingStack', {
             screen: 'TradingMyAsset',
             params: { tradingType: 'sell' },
         });
@@ -152,7 +152,7 @@ describe('SellSendAssetPicker', () => {
             getByLabelText(getTranslation('moduleTrading.tradingScreen.baseCurrencyAmountLabel')),
         );
 
-        expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingStack', {
             screen: 'TradingMyAsset',
             params: { tradingType: 'sell' },
         });

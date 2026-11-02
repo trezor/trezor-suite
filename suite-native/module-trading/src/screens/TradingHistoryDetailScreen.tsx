@@ -1,14 +1,14 @@
 import { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { VStack } from '@suite-native/atoms';
-import { DynamicScreenHeader, Screen, type TradingFlowStackRoutes } from '@suite-native/navigation';
+import { DynamicScreenHeader, Screen, type TradingStackRoutes } from '@suite-native/navigation';
 import {
     TradingHistoryDetail,
     TradingHistoryDetailCompactHeader,
     TradingHistoryDetailHeader,
 } from '@suite-native/trading-history';
 import { Footer } from '@suite-native/trading-provider-utils';
-import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
+import { type TradingStackScreenProps } from '@suite-native/trading-types';
 
 import { TradingHistoryDetailWatcher } from '../components/general/TradingHistoryDetailWatcher';
 
@@ -18,7 +18,7 @@ export const TradingHistoryDetailScreen = ({
     route: {
         params: { orderId },
     },
-}: TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingHistoryDetail>) => (
+}: TradingStackScreenProps<TradingStackRoutes.TradingHistoryDetail>) => (
     <Screen
         header={
             <DynamicScreenHeader

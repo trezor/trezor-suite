@@ -8,9 +8,9 @@ import {
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    type TradingFlowStackRoutes,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
-import { type MyAsset, type TradingFlowStackScreenProps } from '@suite-native/trading-types';
+import { type MyAsset, type TradingStackScreenProps } from '@suite-native/trading-types';
 
 import { MyAssetList, type MyAssetListProps } from '../components/general/MyAssetList/MyAssetList';
 import { useMyAssetsFilteredData } from '../hooks/general/useMyAssetsFilteredData';
@@ -38,8 +38,7 @@ const TradingMyAssetList = ({ onAssetSelect, testID, tradingType }: TradingMyAss
     );
 };
 
-export type TradingMyAssetScreenProps =
-    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingMyAsset>;
+export type TradingMyAssetScreenProps = TradingStackScreenProps<TradingStackRoutes.TradingMyAsset>;
 
 export const TradingMyAssetScreen = ({ navigation, route }: TradingMyAssetScreenProps) => {
     const { tradingType } = route.params;

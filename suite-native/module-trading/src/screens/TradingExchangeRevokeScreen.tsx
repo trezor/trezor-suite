@@ -15,11 +15,11 @@ import {
     DynamicScreenHeader,
     Screen,
     ScreenHeader,
-    type TradingFlowStackRoutes,
+    type TradingStackRoutes,
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
-import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
+import { type TradingStackScreenProps } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -29,7 +29,7 @@ import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 
 type TradingExchangeRevokeScreenProps =
-    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingExchangeRevoke>;
+    TradingStackScreenProps<TradingStackRoutes.TradingExchangeRevoke>;
 
 export const TradingExchangeRevokeScreen = ({
     route: { params },

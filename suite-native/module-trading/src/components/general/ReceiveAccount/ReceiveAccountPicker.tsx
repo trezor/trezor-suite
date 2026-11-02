@@ -15,7 +15,7 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type TabToStackCompositeNavigationProp,
-    TradingFlowStackRoutes,
+    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { OverviewRow } from '@suite-native/trading-atoms';
 import { type ReceiveAccount } from '@suite-native/trading-types';
@@ -106,8 +106,8 @@ export const ReceiveAccountPicker = ({
     }
 
     const openAccountPicker = () =>
-        navigation.navigate(RootStackRoutes.TradingFlowStack, {
-            screen: TradingFlowStackRoutes.ReceiveAccounts,
+        navigation.navigate(RootStackRoutes.TradingStack, {
+            screen: TradingStackRoutes.ReceiveAccounts,
             params: { symbol, tradingType },
         });
 

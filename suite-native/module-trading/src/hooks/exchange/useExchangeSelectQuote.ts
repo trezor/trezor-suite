@@ -21,7 +21,7 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type TabToStackCompositeNavigationProp,
-    TradingFlowStackRoutes,
+    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -85,8 +85,8 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const selectReceiveAccount = () => {
         const selectedNetworkSymbol = getSymbolFromTradeableAsset(receiveAsset);
         if (selectedNetworkSymbol) {
-            navigation.navigate(RootStackRoutes.TradingFlowStack, {
-                screen: TradingFlowStackRoutes.ReceiveAccounts,
+            navigation.navigate(RootStackRoutes.TradingStack, {
+                screen: TradingStackRoutes.ReceiveAccounts,
                 params: {
                     symbol: selectedNetworkSymbol,
                     tradingType: 'exchange',
@@ -130,30 +130,30 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             switch (approvalStatus) {
                 case 'approved':
                 case 'not_needed':
-                    return navigation.navigate(RootStackRoutes.TradingFlowStack, {
-                        screen: TradingFlowStackRoutes.TradingExchangePreview,
+                    return navigation.navigate(RootStackRoutes.TradingStack, {
+                        screen: TradingStackRoutes.TradingExchangePreview,
                         params: {},
                     });
 
                 case 'needs_increase':
-                    return navigation.navigate(RootStackRoutes.TradingFlowStack, {
-                        screen: TradingFlowStackRoutes.TradingExchangeApproval,
+                    return navigation.navigate(RootStackRoutes.TradingStack, {
+                        screen: TradingStackRoutes.TradingExchangeApproval,
                         params: {
                             shouldIncreaseLimit: true,
                         },
                     });
 
                 case 'needs_revoke':
-                    return navigation.navigate(RootStackRoutes.TradingFlowStack, {
-                        screen: TradingFlowStackRoutes.TradingExchangeRevoke,
+                    return navigation.navigate(RootStackRoutes.TradingStack, {
+                        screen: TradingStackRoutes.TradingExchangeRevoke,
                         params: {
                             shouldIncreaseLimit: true,
                         },
                     });
 
                 case 'needs_approval':
-                    return navigation.navigate(RootStackRoutes.TradingFlowStack, {
-                        screen: TradingFlowStackRoutes.TradingExchangeApproval,
+                    return navigation.navigate(RootStackRoutes.TradingStack, {
+                        screen: TradingStackRoutes.TradingExchangeApproval,
                         params: {},
                     });
 
@@ -179,8 +179,8 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                 case 'approved':
                     dispatch(tradingExchangeActions.saveSelectedQuote(selectedQuote));
 
-                    return navigation.navigate(RootStackRoutes.TradingFlowStack, {
-                        screen: TradingFlowStackRoutes.TradingExchangeRevoke,
+                    return navigation.navigate(RootStackRoutes.TradingStack, {
+                        screen: TradingStackRoutes.TradingExchangeRevoke,
                         params: {
                             shouldIncreaseLimit: false,
                         },

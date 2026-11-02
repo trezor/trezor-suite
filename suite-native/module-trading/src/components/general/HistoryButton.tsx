@@ -13,7 +13,7 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type TabToStackCompositeNavigationProp,
-    TradingFlowStackRoutes,
+    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectActiveTradingType, selectIsAmountInputActive } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -50,8 +50,8 @@ export const HistoryButton = () => {
     const shouldHideButton = useSelector(selectIsAmountInputActive);
 
     const handleOnPress = () =>
-        navigation.navigate(RootStackRoutes.TradingFlowStack, {
-            screen: TradingFlowStackRoutes.TradingHistory,
+        navigation.navigate(RootStackRoutes.TradingStack, {
+            screen: TradingStackRoutes.TradingHistory,
         });
 
     if (totalTrades === 0 || shouldHideButton) {

@@ -109,7 +109,7 @@ describe('BuyReceiveAccountPicker', () => {
         );
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
-        expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingStack', {
             screen: 'ReceiveAccounts',
             params: {
                 symbol: 'btc',

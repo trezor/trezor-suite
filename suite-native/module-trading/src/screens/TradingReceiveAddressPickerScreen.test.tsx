@@ -3,7 +3,7 @@ import { type RouteProp, useNavigation } from '@react-navigation/native';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import type { TradingFlowStackParamList, TradingFlowStackRoutes } from '@suite-native/navigation';
+import type { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { fireEvent, renderWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import { MOCK_ACCOUNT_DEVICE_SESSION_ID, btc1NormalAccount } from '@suite-native/trading-fixtures';
 import {
@@ -24,7 +24,7 @@ jest.mock('../hooks/general/useCloseTradingFlow', () => ({
     useCloseTradingFlow: () => mockCloseTradingFlow,
 }));
 const navigationGoBack = jest.fn();
-let mockRouteParams: TradingFlowStackParamList[TradingFlowStackRoutes.TradingReceiveAddress] = {
+let mockRouteParams: TradingStackParamList[TradingStackRoutes.TradingReceiveAddress] = {
     accountKey: btc1NormalAccount.key,
     tradingType: 'buy',
 };
@@ -35,7 +35,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: mockRouteParams,
-        }) as RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingReceiveAddress>,
+        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingReceiveAddress>,
 }));
 
 jest.mock('@trezor/react-utils', () => ({

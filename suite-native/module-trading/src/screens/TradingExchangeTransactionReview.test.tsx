@@ -6,11 +6,11 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
     type ExchangeFlowType,
-    type TradingFlowStackParamList,
-    type TradingFlowStackRoutes,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { type TradingRootState } from '@suite-native/trading-state';
-import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
+import { type TradingStackScreenProps } from '@suite-native/trading-types';
 
 import { TradingExchangeTransactionReviewScreen } from './TradingExchangeTransactionReviewScreen';
 import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
@@ -100,10 +100,7 @@ const createExchangeRouteParams = (
 const createExchangeRoute = (params: ReturnType<typeof createExchangeRouteParams>) =>
     ({
         params,
-    }) as RouteProp<
-        TradingFlowStackParamList,
-        TradingFlowStackRoutes.TradingExchangeTransactionReview
-    >;
+    }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangeTransactionReview>;
 
 describe('TradingExchangeTransactionReviewScreenTest', () => {
     let store: Store<State>;
@@ -118,7 +115,7 @@ describe('TradingExchangeTransactionReviewScreenTest', () => {
 
     describe('TradingExchangeTransactionReviewScreen', () => {
         const renderScreen = async (
-            route: TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingExchangeTransactionReview>['route'],
+            route: TradingStackScreenProps<TradingStackRoutes.TradingExchangeTransactionReview>['route'],
         ) => {
             const result = await renderWithTradingProvider(
                 <TradingExchangeTransactionReviewScreen

@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    type TradingFlowStackParamList,
-    TradingFlowStackRoutes,
+    type TradingStackParamList,
+    TradingStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
@@ -24,96 +24,96 @@ import { TradingSellPreviewScreen } from '../screens/TradingSellPreviewScreen';
 import { TradingSellTransactionReviewScreen } from '../screens/TradingSellTransactionReviewScreen';
 import { TradingTradeableAssetScreen } from '../screens/TradingTradeableAssetScreen';
 
-const TradingFlowStack = createNativeStackNavigator<TradingFlowStackParamList>();
+const TradingStack = createNativeStackNavigator<TradingStackParamList>();
 
-export const TradingFlowStackNavigator = () => (
-    <TradingFlowStack.Navigator
+export const TradingStackNavigator = () => (
+    <TradingStack.Navigator
         screenOptions={stackNavigationOptionsConfig}
         screenLayout={({ children }) => <TradingRestrictedGuard>{children}</TradingRestrictedGuard>}
     >
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.TradingSellPreview }}
-            name={TradingFlowStackRoutes.TradingSellPreview}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingSellPreview }}
+            name={TradingStackRoutes.TradingSellPreview}
             component={TradingSellPreviewScreen}
         />
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.TradingSellTransactionReview }}
-            name={TradingFlowStackRoutes.TradingSellTransactionReview}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingSellTransactionReview }}
+            name={TradingStackRoutes.TradingSellTransactionReview}
             component={TradingSellTransactionReviewScreen}
         />
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.TradingExchangeTransactionReview }}
-            name={TradingFlowStackRoutes.TradingExchangeTransactionReview}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingExchangeTransactionReview }}
+            name={TradingStackRoutes.TradingExchangeTransactionReview}
             component={TradingExchangeTransactionReviewScreen}
         />
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.TradingMyAsset }}
-            name={TradingFlowStackRoutes.TradingMyAsset}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingMyAsset }}
+            name={TradingStackRoutes.TradingMyAsset}
             component={TradingMyAssetScreen}
         />
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.TradingTradeableAsset }}
-            name={TradingFlowStackRoutes.TradingTradeableAsset}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingTradeableAsset }}
+            name={TradingStackRoutes.TradingTradeableAsset}
             component={TradingTradeableAssetScreen}
         />
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.ReceiveAccounts }}
-            name={TradingFlowStackRoutes.ReceiveAccounts}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.ReceiveAccounts }}
+            name={TradingStackRoutes.ReceiveAccounts}
             component={TradingReceiveAccountsPickerScreen}
         />
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.TradingReceiveAddress }}
-            name={TradingFlowStackRoutes.TradingReceiveAddress}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingReceiveAddress }}
+            name={TradingStackRoutes.TradingReceiveAddress}
             component={TradingReceiveAddressPickerScreen}
         />
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.TradingHistory }}
-            name={TradingFlowStackRoutes.TradingHistory}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingHistory }}
+            name={TradingStackRoutes.TradingHistory}
             component={TradingHistoryScreen}
         />
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.TradingHistoryDetail }}
-            name={TradingFlowStackRoutes.TradingHistoryDetail}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingHistoryDetail }}
+            name={TradingStackRoutes.TradingHistoryDetail}
             component={TradingHistoryDetailScreen}
         />
-        <TradingFlowStack.Screen
-            options={{ title: TradingFlowStackRoutes.TradingBuyPreview }}
-            name={TradingFlowStackRoutes.TradingBuyPreview}
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingBuyPreview }}
+            name={TradingStackRoutes.TradingBuyPreview}
             component={TradingBuyPreviewScreen}
         />
         {/* Trading screens that require a connected device as well as the restricted guard */}
-        <TradingFlowStack.Group
+        <TradingStack.Group
             screenLayout={({ children }) => (
                 <TradingRestrictedGuard>
                     <TradingDeviceConnectionGuard>{children}</TradingDeviceConnectionGuard>
                 </TradingRestrictedGuard>
             )}
         >
-            <TradingFlowStack.Screen
-                options={{ title: TradingFlowStackRoutes.TradingExchangePreview }}
-                name={TradingFlowStackRoutes.TradingExchangePreview}
+            <TradingStack.Screen
+                options={{ title: TradingStackRoutes.TradingExchangePreview }}
+                name={TradingStackRoutes.TradingExchangePreview}
                 component={TradingExchangePreviewScreen}
             />
-            <TradingFlowStack.Screen
-                options={{ title: TradingFlowStackRoutes.TradingExchangeApproval }}
-                name={TradingFlowStackRoutes.TradingExchangeApproval}
+            <TradingStack.Screen
+                options={{ title: TradingStackRoutes.TradingExchangeApproval }}
+                name={TradingStackRoutes.TradingExchangeApproval}
                 component={TradingExchangeApprovalScreen}
             />
-            <TradingFlowStack.Screen
-                options={{ title: TradingFlowStackRoutes.TradingExchangeRevoke }}
-                name={TradingFlowStackRoutes.TradingExchangeRevoke}
+            <TradingStack.Screen
+                options={{ title: TradingStackRoutes.TradingExchangeRevoke }}
+                name={TradingStackRoutes.TradingExchangeRevoke}
                 component={TradingExchangeRevokeScreen}
             />
-            <TradingFlowStack.Screen
-                options={{ title: TradingFlowStackRoutes.TradingConfirming }}
-                name={TradingFlowStackRoutes.TradingConfirming}
+            <TradingStack.Screen
+                options={{ title: TradingStackRoutes.TradingConfirming }}
+                name={TradingStackRoutes.TradingConfirming}
                 component={TradingConfirmingScreen}
             />
-            <TradingFlowStack.Screen
-                options={{ title: TradingFlowStackRoutes.TradingSellCompletion }}
-                name={TradingFlowStackRoutes.TradingSellCompletion}
+            <TradingStack.Screen
+                options={{ title: TradingStackRoutes.TradingSellCompletion }}
+                name={TradingStackRoutes.TradingSellCompletion}
                 component={TradingSellCompletionScreen}
             />
-        </TradingFlowStack.Group>
-    </TradingFlowStack.Navigator>
+        </TradingStack.Group>
+    </TradingStack.Navigator>
 );

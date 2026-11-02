@@ -6,19 +6,19 @@ import {
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    type TradingFlowStackRoutes,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import {
     selectBuyTradeableAssets,
     selectExchangeBuyTradeableAssets,
 } from '@suite-native/trading-state';
-import { type TradeableAsset, type TradingFlowStackScreenProps } from '@suite-native/trading-types';
+import { type TradeableAsset, type TradingStackScreenProps } from '@suite-native/trading-types';
 
 import { TradeableAssetList } from '../components/general/TradeableAssetList/TradeableAssetList';
 import { useTradingTradeableAssetsFilteredData } from '../hooks/general/useTradingTradeableAssetsFilteredData';
 
 export type TradingTradeableAssetScreenProps =
-    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingTradeableAsset>;
+    TradingStackScreenProps<TradingStackRoutes.TradingTradeableAsset>;
 
 type TradeableAssetScreenListProps = {
     onAssetSelect: (asset: TradeableAsset) => void;
