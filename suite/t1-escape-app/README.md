@@ -91,7 +91,7 @@ One run of the page goes through every coin the firmware can sign for, on one de
 
 The page signs transactions and watches the network; it never hands a transaction to a node. For every transaction the user signs, the transfers screen shows the signed transaction as hex with a Copy button, its transaction id, and three numbered steps:
 
-1. Check the transaction in an independent decoder before broadcasting it: `https://live.blockcypher.com/btc/decodetx/` for Bitcoin, `https://tools.deth.net/tx-decoder` for Ethereum and Ethereum Classic. The page says what to compare (the destination address and the amount; for Ethereum also that the sender is the old address and that the chain id is 1 or 61) and that the pasted hex becomes known to that site.
+1. Optionally, check the transaction in an independent decoder before broadcasting it: `https://live.blockcypher.com/btc/decodetx/` for Bitcoin, `https://tools.deth.net/tx-decoder` for Ethereum and Ethereum Classic. The page says what to compare (the destination address and the amount; for Ethereum also that the sender is the old address and that the chain id is 1 or 61) and that the pasted hex becomes known to that site.
 2. Broadcast it on the Trezor explorer, in blockbook's "Send Raw Transaction" form: `https://btc.trezor.io/sendtx`, `https://eth.trezor.io/sendtx` or `https://etc.trezor.io/sendtx`.
 3. Come back. The page asks the network every half minute, and at once when "Check the network now" is pressed. The explorer page of the transaction (`/tx/<txid>` on the same host) is linked as well; it works once the transaction is broadcast.
 

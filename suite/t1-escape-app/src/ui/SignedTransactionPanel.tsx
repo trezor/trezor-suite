@@ -66,8 +66,9 @@ export const SignedTransactionPanel = ({
         ) : (
             <NumberedList>
                 <NumberedList.Item number={1}>
-                    Check the transaction in an independent decoder before you broadcast it: paste
-                    the hex at <Link href={links.decoder}>{formatUrl(links.decoder)}</Link>.{' '}
+                    OPTIONAL: Check the transaction in an independent decoder before you broadcast
+                    it: paste the hex at{' '}
+                    <Link href={links.decoder}>{formatUrl(links.decoder)}</Link>.{' '}
                     {decoderComparison} The hex you paste there becomes known to that site.
                 </NumberedList.Item>
                 <NumberedList.Item number={2}>

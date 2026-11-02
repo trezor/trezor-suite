@@ -121,10 +121,10 @@ export const TransfersStep = ({
                     </Paragraph>
                     <Paragraph>
                         This page never sends anything to the network. For each transaction you sign
-                        on the Trezor, it shows the signed transaction as hex. You check the hex in
-                        an independent decoder, broadcast it on the Trezor explorer, come back here
-                        and wait for the confirmation. Links and steps appear under each transaction
-                        once it is signed.
+                        on the Trezor, it shows the signed transaction as hex. Optionally, check the
+                        hex in an independent decoder. Then broadcast it on the Trezor explorer,
+                        come back here and wait for the confirmation. Links and steps appear under
+                        each transaction once it is signed.
                     </Paragraph>
                     {!isAnythingSigned && (
                         <Button
