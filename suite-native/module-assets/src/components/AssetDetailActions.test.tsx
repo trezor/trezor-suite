@@ -89,6 +89,7 @@ describe('AssetDetailActions', () => {
             screen: SendStackRoutes.SendAccounts,
             params: {
                 networksFilter: [mockNetworkSymbol],
+                tokenContract: mockTokenContract,
             },
         });
     });

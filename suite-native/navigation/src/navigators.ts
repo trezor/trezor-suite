@@ -275,6 +275,8 @@ export type SendStackParamList = {
     [SendStackRoutes.SendAccounts]:
         | {
               networksFilter?: NetworkSymbol[];
+              tokenContract?: TokenAddress;
+              isAssetPreselected?: boolean;
           }
         | undefined;
     [SendStackRoutes.SendOutputs]: {
