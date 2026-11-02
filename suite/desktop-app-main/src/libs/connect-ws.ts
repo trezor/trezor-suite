@@ -11,6 +11,7 @@ import {
     type PopupClosedMessage,
     type PopupHandshake,
 } from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common';
 import { parseManifest, parseVersion } from '@trezor/connect-common/src/data/connectSettings';
 import { isLinux } from '@trezor/env-utils';
 import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
@@ -26,6 +27,15 @@ const HANDSHAKE_TIMEOUT_MS = 10000;
 export const MAX_CONCURRENT_CONNECTIONS = 50;
 export const MAX_CONNECTIONS_PER_ORIGIN = 5;
 const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+
+// A failed call that the main process answers on its own, in the shape the renderer answers with:
+// Connect 10 clients read `error`, Connect 9 clients show `payload.error` and decide about their
+// fallback by `payload.code`.
+const stringifyCallFailure = (id: string, code: ERRORS.ErrorCode, message: string) => {
+    const error = ERRORS.serializeError(ERRORS.TypedError(code, message));
+
+    return JSON.stringify({ id, success: false, error, payload: { ...error, error: message } });
+};
 
 // Per-connection id used to namespace the process-global response store. Each client numbers
 // its requests on its own, so two connections can have a call with the same id in flight.
@@ -238,11 +248,11 @@ export const exposeConnectWs = ({
                     if (!isLinux()) {
                         // we ignore missing process on linux because of AppImage/Flatpak sandboxing
                         ws.send(
-                            JSON.stringify({
-                                id: message.id,
-                                success: false,
-                                payload: { error: 'Calling process could not be identified' },
-                            }),
+                            stringifyCallFailure(
+                                message.id,
+                                'Method_NotAllowed',
+                                'Calling process could not be identified',
+                            ),
                         );
 
                         return;
@@ -273,11 +283,11 @@ export const exposeConnectWs = ({
                 if (connectionPendingMessages.has(storeId)) {
                     logger.error(LOG_PREFIX, `duplicate in-flight id ${message.id}`);
                     ws.send(
-                        JSON.stringify({
-                            id: message.id,
-                            success: false,
-                            payload: { error: 'Duplicate in-flight request id' },
-                        }),
+                        stringifyCallFailure(
+                            message.id,
+                            'Method_InvalidParameter',
+                            'Duplicate in-flight request id',
+                        ),
                     );
 
                     return;
@@ -307,13 +317,11 @@ export const exposeConnectWs = ({
                         deleteMessage(storeId);
                         connectionPendingMessages.delete(storeId);
                         ws.send(
-                            JSON.stringify({
-                                id: message.id,
-                                success: false,
-                                payload: {
-                                    error: 'Main window not available',
-                                },
-                            }),
+                            stringifyCallFailure(
+                                message.id,
+                                'Failure_UnknownCode',
+                                'Main window not available',
+                            ),
                         );
 
                         return;
