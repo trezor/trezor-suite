@@ -14,9 +14,12 @@ import type { StakingRootState } from './stakingReducer';
 
 const isDefined = <T>(value: T | undefined): value is T => value !== undefined;
 
-export const selectStakingPlatform = (state: StakingRootState) => state.staking.platform;
+const selectStakingState = (state: StakingRootState) => state.earn.staking;
 
-const selectStakingProducts = (state: StakingRootState) => state.staking.products;
+export const selectStakingPlatform = (state: StakingRootState) =>
+    selectStakingState(state).platform;
+
+const selectStakingProducts = (state: StakingRootState) => selectStakingState(state).products;
 
 const selectSymbolParam = (_state: StakingRootState, symbol: NetworkSymbol) => symbol;
 
@@ -35,13 +38,13 @@ export const selectStakingProductDescriptorsBySymbol = createWeakMapSelector(
 export const selectStakingProductDescriptor = (
     state: StakingRootState,
     productId: StakingProductId,
-): StakingProductDescriptor | null => state.staking.products[productId] ?? null;
+): StakingProductDescriptor | null => selectStakingState(state).products[productId] ?? null;
 
 export const selectIsStakingSupportedSymbol = (state: StakingRootState, symbol: NetworkSymbol) =>
     selectStakingProductDescriptorsBySymbol(state, symbol).length > 0;
 
 const selectAccountPositions = (state: StakingRootState, accountKey: AccountKey) =>
-    state.staking.positions[accountKey];
+    selectStakingState(state).positions[accountKey];
 
 export const selectStakingPositionsByAccount = createWeakMapSelector(
     [selectAccountPositions],
@@ -55,7 +58,7 @@ export const selectStakingPosition = (
     state: StakingRootState,
     accountKey: AccountKey,
     productId: StakingProductId,
-): StakingPosition | null => state.staking.positions[accountKey]?.[productId] ?? null;
+): StakingPosition | null => selectStakingState(state).positions[accountKey]?.[productId] ?? null;
 
 const sumBalance = (
     positions: readonly StakingPosition[],

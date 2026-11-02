@@ -61,7 +61,7 @@ const initStore = (adapterOverrides: Partial<StakingProductAdapter> = {}) => {
         },
         middleware: [prepareStakingMiddleware(() => getExtra())],
         reducer: {
-            staking: stakingReducer,
+            earn: combineReducers({ staking: stakingReducer }),
             wallet: combineReducers({
                 accounts: (state = [ethAccount, btcAccount]) => state,
                 settings: (state = initialWalletSettingsState) => state,

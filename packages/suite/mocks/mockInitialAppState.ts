@@ -77,7 +77,7 @@ export const mockInitialAppState: AppState = {
     receive: receiveInitialState,
     persistentDeviceData: persistentDeviceDataInitialState,
     wallet: walletReducers(undefined, { type: '@@INIT' }),
-    staking: stakingInitialState,
+    earn: { staking: stakingInitialState },
     desktopUpdate: desktopUpdateInitialState,
     router: {
         loaded: true,

@@ -56,7 +56,7 @@ import type { FullAppState } from '../src/createReduxStore';
 
 export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullAppState => ({
     networks: null,
-    staking: stakingInitialState,
+    earn: { staking: stakingInitialState },
     analytics: analyticsInitialState,
     app: appSliceInitialState,
     appSettings: appSettingsInitialState,
