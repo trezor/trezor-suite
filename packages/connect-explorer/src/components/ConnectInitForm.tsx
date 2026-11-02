@@ -21,6 +21,7 @@ import { CheckIcon, FadersIcon, LightningIcon } from '@trezor/icons';
 import { RequestedPermissions } from './RequestedPermissions';
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { useActions } from '../hooks';
+import { selectMethod } from '../reducers/methodReducer';
 import { selectNetworkOptions } from '../reducers/networksReducer';
 import {
     selectConnectInitError,
@@ -173,6 +174,10 @@ export const ConnectInitForm = ({ onInitialized }: ConnectInitFormProps) => {
     const isInitializing = useSelector(selectIsConnectInitializing);
     const isInitSuccess = useSelector(selectIsConnectInitSuccess);
     const initError = useSelector(selectConnectInitError);
+    // TrezorConnect.init resets the pending-call counter of the dynamic implementation, which the
+    // call that is still in flight then decrements below zero — breaking the target retry for the
+    // rest of the session. So (re-)initializing waits until the call settles.
+    const { processing: isCallPending } = useSelector(selectMethod);
 
     const actions = useActions({ initWithOptions: trezorConnectActions.initWithOptions });
 
@@ -377,11 +382,18 @@ export const ConnectInitForm = ({ onInitialized }: ConnectInitFormProps) => {
                 />
             )}
 
+            {isCallPending && (
+                <Text typographyStyle="body-sm" color="contentSecondary">
+                    A method call is in progress — finish or cancel it before re-initializing.
+                </Text>
+            )}
+
             <SubmitRow>
                 <Button
                     data-testid="@init/submit-button"
                     onClick={handleInit}
                     isLoading={isInitializing}
+                    isDisabled={isCallPending}
                     iconLeft={justInitialized ? CheckIcon : LightningIcon}
                     flex="1"
                 >
