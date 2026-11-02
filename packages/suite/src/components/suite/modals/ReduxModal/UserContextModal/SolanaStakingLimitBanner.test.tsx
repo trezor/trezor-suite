@@ -35,11 +35,15 @@ jest.mock('@trezor/components', () => ({
 // Each account is claimed whole, so the amounts do not matter for the limit.
 const mockDeactivatedAccount = (count: number): Account => {
     const account = mockSolanaStakingAccount('deactivated');
-    const [deactivated] = account.misc.solStakingAccounts ?? [];
+    const deactivated = account.misc?.solStakingAccounts?.[0];
+    if (!deactivated) throw new Error('The deactivated scenario has no staking account.');
 
     return {
         ...account,
-        misc: { ...account.misc, solStakingAccounts: Array(count).fill(deactivated) },
+        misc: {
+            ...account.misc,
+            solStakingAccounts: Array.from({ length: count }, () => deactivated),
+        },
     };
 };
 
