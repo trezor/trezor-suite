@@ -51,7 +51,7 @@
         "@trezor/requirements": "workspace:*",
         "@types/react": "19.2.14",
         "concurrently": "^10.0.3",
-        "next": "15.5.25",
+        "next": "15.5.28",
         "nextra": "patch:nextra@npm%3A3.3.1#~/.yarn/patches/nextra-npm-3.3.1-e045409406.patch",
         "postcss": "^8.5.22",
         "postcss-cli": "^11.0.1",
