@@ -136,7 +136,15 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn workspace @suite/desktop-app build:app
-          yarn workspace @suite/desktop-app build:app:electron:${{ matrix.platform }}
+          if [ "${{ matrix.platform }}" = "mac" ]; then
+            # One electron-builder run per arch: in a combined run, the x64 DMG is created while the arm64 app is
+            # being packaged and signed, and on GitHub macOS runners its `hdiutil create`/`attach` then intermittently
+            # fails with "Device not configured" (since electron-builder 27). latest-mac.yml lists only arm64 here.
+            yarn workspace @suite/desktop-app build:app:electron --publish never --mac --x64
+            yarn workspace @suite/desktop-app build:app:electron --publish never --mac --arm64
+          else
+            yarn workspace @suite/desktop-app build:app:electron:${{ matrix.platform }}
+          fi
           bash suite/desktop-app-main/scripts/gnupg-sign.sh
           mv suite/desktop-app/build-electron/* .
 
