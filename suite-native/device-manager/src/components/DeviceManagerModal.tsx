@@ -1,30 +1,23 @@
 import { type ReactNode } from 'react';
-import {
-    type GestureResponderEvent,
-    Modal,
-    Pressable,
-    StatusBar,
-    useWindowDimensions,
-} from 'react-native';
-import { FadeIn, LinearTransition, SlideInUp } from 'react-native-reanimated';
+import { type GestureResponderEvent, Modal, Pressable, useWindowDimensions } from 'react-native';
+import { FadeIn, SlideInUp } from 'react-native-reanimated';
 import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedView, Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { nativeBorders } from '@trezor/theme';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
 import { DeviceItemContent } from './DeviceItem/DeviceItemContent';
 
 type DeviceManagerModalProps = {
     children: ReactNode;
+    hasContent: boolean;
     customSwitchRightView?: ReactNode;
     onClose?: () => void;
     footer?: ReactNode;
-    isDeviceListVisible?: boolean;
 };
 
-export const MANAGER_MODAL_BOTTOM_RADIUS = nativeBorders.radii.r12;
+const PANEL_MAX_HEIGHT_RATIO = 0.8;
 
 const modalBackgroundOverlayStyle = prepareNativeStyle<{
     windowWidth: number;
@@ -39,28 +32,22 @@ const modalBackgroundOverlayStyle = prepareNativeStyle<{
 }));
 
 const deviceManagerModalWrapperStyle = prepareNativeStyle(utils => ({
+    flexShrink: 1,
     backgroundColor: utils.colors.surfaceFillPage,
-    borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
-    borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
+    borderBottomLeftRadius: utils.borders.radii.r12,
+    borderBottomRightRadius: utils.borders.radii.r12,
+    borderWidth: utils.borders.widths.small,
+    borderTopWidth: 0,
+    borderColor: utils.colors.borderNeutral,
+    overflow: 'hidden',
 }));
 
-const deviceManagerHeaderStyle = prepareNativeStyle<{ isDeviceListVisible: boolean }>(
-    (utils, { isDeviceListVisible }) => ({
-        marginHorizontal: utils.spacings.sp16,
+const deviceManagerHeaderStyle = prepareNativeStyle<{ topInset: number; hasContent: boolean }>(
+    (utils, { topInset, hasContent }) => ({
+        paddingTop: topInset,
         backgroundColor: utils.colors.surfaceFillRaised,
-        borderWidth: utils.borders.widths.small,
-        borderBottomLeftRadius: utils.borders.radii.r12,
-        borderBottomRightRadius: utils.borders.radii.r12,
-        borderColor: utils.colors.borderNeutral,
-        borderTopWidth: 0,
-        extend: {
-            condition: isDeviceListVisible,
-            style: {
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0,
-                borderBottomWidth: 0,
-            },
-        },
+        borderBottomWidth: hasContent ? utils.borders.widths.small : 0,
+        borderBottomColor: utils.colors.borderNeutral,
     }),
 );
 
@@ -69,30 +56,22 @@ const modalHeaderStyle = prepareNativeStyle(utils => ({
     paddingRight: utils.spacings.sp16,
 }));
 
-const modalPanelStyle = prepareNativeStyle<{ insets: EdgeInsets }>((_, { insets }) => ({
-    marginLeft: insets.left,
-    marginRight: insets.right,
-}));
-
-const deviceSwitchWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
-    (utils, { insets }) => ({
-        marginTop: insets.top + (StatusBar.currentHeight ?? 0),
-        backgroundColor: utils.colors.surfaceFillPage,
-        borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
-        borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
-        borderWidth: utils.borders.widths.small,
-        borderTopWidth: 0,
-        borderColor: utils.colors.borderNeutral,
-        zIndex: 20,
+const modalPanelStyle = prepareNativeStyle<{ insets: EdgeInsets; windowHeight: number }>(
+    (_, { insets, windowHeight }) => ({
+        marginLeft: insets.left,
+        marginRight: insets.right,
+        maxHeight: windowHeight * PANEL_MAX_HEIGHT_RATIO - insets.bottom,
     }),
 );
 
+const modalContentStyle = prepareNativeStyle(() => ({ flexShrink: 1 }));
+
 export const DeviceManagerModal = ({
     children,
+    hasContent,
     customSwitchRightView,
     onClose,
     footer,
-    isDeviceListVisible = false,
 }: DeviceManagerModalProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -125,40 +104,35 @@ export const DeviceManagerModal = ({
             >
                 <AnimatedView
                     entering={SlideInUp.damping(30)}
-                    style={applyStyle(modalPanelStyle, { insets })}
+                    style={applyStyle(modalPanelStyle, { insets, windowHeight })}
                 >
-                    <AnimatedView
-                        style={applyStyle(deviceManagerModalWrapperStyle, { insets })}
-                        layout={LinearTransition}
-                    >
-                        <AnimatedView
-                            style={applyStyle(deviceSwitchWrapperStyle, { insets })}
-                            layout={LinearTransition}
+                    <AnimatedView style={applyStyle(deviceManagerModalWrapperStyle)}>
+                        <Pressable
+                            onPress={handleClose}
+                            style={applyStyle(deviceManagerHeaderStyle, {
+                                topInset: insets.top,
+                                hasContent,
+                            })}
                         >
-                            <Pressable
-                                onPress={handleClose}
-                                style={applyStyle(deviceManagerHeaderStyle, {
-                                    isDeviceListVisible,
-                                })}
-                            >
-                                <ScreenHeaderWrapper style={applyStyle(modalHeaderStyle)}>
-                                    <HStack
-                                        justifyContent="space-between"
-                                        alignItems="center"
-                                        spacing="sp16"
-                                        flex={1}
-                                    >
-                                        <Box flexShrink={1}>
-                                            <DeviceItemContent
-                                                headerTextVariant="headline-sm"
-                                                isCompact={false}
-                                            />
-                                        </Box>
-                                        {customSwitchRightView}
-                                    </HStack>
-                                </ScreenHeaderWrapper>
-                            </Pressable>
-                            <AnimatedView entering={FadeIn}>{children}</AnimatedView>
+                            <ScreenHeaderWrapper style={applyStyle(modalHeaderStyle)}>
+                                <HStack
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    spacing="sp16"
+                                    flex={1}
+                                >
+                                    <Box flexShrink={1}>
+                                        <DeviceItemContent
+                                            headerTextVariant="headline-sm"
+                                            isCompact={false}
+                                        />
+                                    </Box>
+                                    {customSwitchRightView}
+                                </HStack>
+                            </ScreenHeaderWrapper>
+                        </Pressable>
+                        <AnimatedView entering={FadeIn} style={applyStyle(modalContentStyle)}>
+                            {children}
                         </AnimatedView>
                     </AnimatedView>
                     {footer}
