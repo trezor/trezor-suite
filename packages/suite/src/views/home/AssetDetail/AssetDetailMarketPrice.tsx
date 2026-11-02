@@ -13,8 +13,9 @@ import { Card, Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { HomeBalanceChange } from 'src/views/home/HomeBalance/HomeBalanceChange';
-import { HomeTotalBalance } from 'src/views/home/HomeBalance/HomeTotalBalance';
+import { FiatAmountHeadline } from 'src/views/home/HomeBalance/FiatAmountHeadline';
+
+import { AssetDetailPriceChange } from './AssetDetailPriceChange';
 
 type AssetDetailMarketPriceProps = {
     assetKey: WalletAssetKey;
@@ -68,17 +69,15 @@ export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps
                         <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                             <Translation id="TR_ASSET_DETAIL_MARKET_PRICE" />
                         </Text>
-                        <HomeTotalBalance
+                        <FiatAmountHeadline
                             fiatValue={price}
                             isExact
                             data-testid="@asset-detail/market-price/fiat-amount"
                         />
                         {weekChange !== undefined && (
-                            <HomeBalanceChange
-                                period={<Translation id="TR_HOME_ASSET_WEEK_PERIOD" />}
+                            <AssetDetailPriceChange
                                 change={weekChange.change}
                                 changePercent={weekChange.changePercent}
-                                isExact
                                 data-testid="@asset-detail/market-price/week-change"
                             />
                         )}
