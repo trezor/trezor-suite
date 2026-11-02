@@ -18,6 +18,7 @@ import { loadIndex } from './libs/loadIndex';
 import type { ILogger } from './libs/logger';
 import { type MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
+import { isValidProtocol } from './libs/protocol';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
 import { Store } from './libs/store';
@@ -143,12 +144,20 @@ export const createDesktopMainApp =
                 global.customProtocolUrl = url;
                 handleFullStart();
             };
-            app.on('second-instance', handleFullStart);
+            const handleSecondInstance = (_event: Electron.Event, argv: string[]) => {
+                // Deeplink in daemon mode on Windows and Linux. The custom protocols module
+                // listens for it only once the UI is initialized, too late for this instance.
+                const protocols = process.env.PROTOCOLS as unknown as string[];
+                const url = argv.find(arg => isValidProtocol(arg, protocols));
+                if (url) global.customProtocolUrl = url;
+                handleFullStart();
+            };
+            app.on('second-instance', handleSecondInstance);
             app.on('activate', handleFullStart);
             app.on('open-url', openURL);
             mainThreadEmitter.on('app/show', handleFullStart);
             await waitForFullStart.promise;
-            app.off('second-instance', handleFullStart);
+            app.off('second-instance', handleSecondInstance);
             app.off('activate', handleFullStart);
             app.off('open-url', openURL);
             mainThreadEmitter.off('app/show', handleFullStart);
