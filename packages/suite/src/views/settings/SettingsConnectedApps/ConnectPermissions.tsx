@@ -310,17 +310,23 @@ export const ConnectPermissions = () => {
                     >
                         <ConnectAppIcon src={app.manifest?.appIcon} />
 
-                        <Column flex="1">
+                        <Column flex="1" minWidth={0}>
                             <Row columnGap={12} rowGap={2} flexWrap="wrap">
                                 {app.manifest?.appName ? (
                                     <>
-                                        <Text>{app.manifest.appName}</Text>
-                                        <Text intent="neutral" priority="secondary">
+                                        <Text ellipsisLineCount={2} overflowWrap="anywhere">
+                                            {app.manifest.appName}
+                                        </Text>
+                                        <Text
+                                            intent="neutral"
+                                            priority="secondary"
+                                            overflowWrap="anywhere"
+                                        >
                                             {app.origin}
                                         </Text>
                                     </>
                                 ) : (
-                                    <Text>{app.origin}</Text>
+                                    <Text overflowWrap="anywhere">{app.origin}</Text>
                                 )}
 
                                 {app.process && <ConnectProcessLabel process={app.process} />}
