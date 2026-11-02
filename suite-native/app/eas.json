@@ -10,6 +10,9 @@
             "ios": {
                 "image": "macos-tahoe-26.6-xcode-27.0"
             },
+            "android": {
+                "resourceClass": "large"
+            },
             "env": {
                 "EAS_NO_FROZEN_LOCKFILE": "1"
             }
