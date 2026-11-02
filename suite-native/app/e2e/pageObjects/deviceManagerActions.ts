@@ -1,4 +1,4 @@
-import { waitForVisible } from '../support/utils';
+import { waitForEnabled, waitForVisible } from '../support/utils';
 
 class DeviceManagerActions {
     async tapDeviceSwitch() {
@@ -21,7 +21,7 @@ class DeviceManagerActions {
     async tapOpenPassphraseButton() {
         const openPassphraseButton = element(by.id('@device-manager/passphrase/add'));
 
-        await waitForVisible(openPassphraseButton);
+        await waitForEnabled(openPassphraseButton);
         await openPassphraseButton.tap();
     }
 
