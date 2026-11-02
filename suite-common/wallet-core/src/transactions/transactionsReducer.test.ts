@@ -167,7 +167,12 @@ describe(transactionsReducer.name, () => {
     });
 
     describe('fetchTransactionsPageThunk.fulfilled', () => {
-        const fetchedPage = (state: TransactionsState, page: number, hasPageAfter = true) =>
+        const fetchedPage = (
+            state: TransactionsState,
+            page: number,
+            hasPageAfter = true,
+            from?: number,
+        ) =>
             transactionsReducer(
                 state,
                 fetchTransactionsPageThunk.fulfilled(
@@ -176,7 +181,7 @@ describe(transactionsReducer.name, () => {
                         page: { index: page, size: 25, total: hasPageAfter ? page + 1 : page },
                     } as unknown as AccountInfo,
                     'requestId',
-                    { accountKey: account.key, page, perPage: 25 },
+                    { accountKey: account.key, page, perPage: 25, from },
                 ),
             );
 
@@ -199,6 +204,34 @@ describe(transactionsReducer.name, () => {
             const state = fetchedPage(transactionsInitialState, 3, false);
 
             expect(state.fetchStatusDetail[account.key]?.areAllTransactionsLoaded).toBeUndefined();
+        });
+
+        it('reopens a loaded history once a wider window puts a page after its last one', () => {
+            const state = fetchedPage(
+                fetchedPage(transactionsInitialState, 1, false),
+                1,
+                true,
+                100,
+            );
+
+            expect(state.fetchStatusDetail[account.key]?.areAllTransactionsLoaded).toBeUndefined();
+        });
+
+        it('keeps a loaded history closed when a wider window finds nothing older', () => {
+            const state = fetchedPage(
+                fetchedPage(transactionsInitialState, 1, false),
+                1,
+                false,
+                100,
+            );
+
+            expect(state.fetchStatusDetail[account.key]?.areAllTransactionsLoaded).toBe(true);
+        });
+
+        it('keeps a loaded history closed when a page is refetched without a wider window', () => {
+            const state = fetchedPage(fetchedPage(transactionsInitialState, 1, false), 1);
+
+            expect(state.fetchStatusDetail[account.key]?.areAllTransactionsLoaded).toBe(true);
         });
     });
 });
