@@ -14159,7 +14159,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/price-chart": "workspace:*"
-    "@suite-native/test-utils": "workspace:*"
+    "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
