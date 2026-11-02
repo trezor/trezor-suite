@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { updateFeeInfoThunk } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    updateFeeInfoThunk,
+} from '@suite-common/wallet-core';
 import type { AccountKey, FormState, TokenAddress } from '@suite-common/wallet-types';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
@@ -64,6 +68,9 @@ export const useMaxSpendableAmount = ({
     const tokenBalance = useSelector((state: TokensRootState) =>
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
+    const accountDescriptor = useSelector(
+        (state: AccountsRootState) => selectAccountByKey(state, accountKey)?.descriptor,
+    );
 
     useEffect(() => {
         if (!accountKey || !enabled || !symbol) {
@@ -120,6 +127,7 @@ export const useMaxSpendableAmount = ({
         tokenContract,
         formState,
         tokenBalance,
+        accountDescriptor,
         enabled,
         symbol,
         assumeNewAccount,
