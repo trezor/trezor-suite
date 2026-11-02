@@ -9,8 +9,10 @@ import {
     selectWalletAssetName,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
 import { Box, Button, HStack, ScreenFooterGradient } from '@suite-native/atoms';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     type AssetsStackParamList,
@@ -44,6 +46,10 @@ export const AssetDetailActions = () => {
     const hasSpendableBalance = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetHasSpendableBalance(state, assetKey),
     );
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
+        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
+    );
 
     const handleReceivePress = () => {
         if (assetName === undefined) {
@@ -75,19 +81,26 @@ export const AssetDetailActions = () => {
         });
     };
 
+    const isReceiveButtonDisplayed = !hasFirmwareAuthenticityCheckHardFailed;
+    const isSendButtonDisplayed = !isPortfolioTrackerDevice && hasSpendableBalance;
+
+    if (!isReceiveButtonDisplayed && !isSendButtonDisplayed) return null;
+
     return (
         <Box>
             <ScreenFooterGradient />
             <HStack spacing="sp12" paddingHorizontal="sp20" paddingTop="sp8" paddingBottom="sp16">
-                <Button
-                    flex={1}
-                    iconRight="arrowLineDown"
-                    onPress={handleReceivePress}
-                    testID="@assets/asset-detail/receive-button"
-                >
-                    <Translation id="transactions.receive" />
-                </Button>
-                {hasSpendableBalance && (
+                {isReceiveButtonDisplayed && (
+                    <Button
+                        flex={1}
+                        iconRight="arrowLineDown"
+                        onPress={handleReceivePress}
+                        testID="@assets/asset-detail/receive-button"
+                    >
+                        <Translation id="transactions.receive" />
+                    </Button>
+                )}
+                {isSendButtonDisplayed && (
                     <Button
                         flex={1}
                         priority="secondary"
