@@ -1,6 +1,7 @@
 export * from './Accordion/AccordionContent';
 export * from './Accordion/AccordionList';
 export * from './Animated/AnimatedBox';
+export * from './Animated/AnimatedChevron';
 export * from './Animated/AnimatedPressable';
 export * from './Animated/AnimatedScrollView';
 export * from './Animated/AnimatedStack';

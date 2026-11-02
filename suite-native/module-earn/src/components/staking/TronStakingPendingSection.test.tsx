@@ -2,13 +2,14 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultTron } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { act, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
+import { act, fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { type TronUnstakingBatch } from '@trezor/blockchain-link-types';
 
 import { TronStakingPendingSection } from './TronStakingPendingSection';
 
 const TRX = 1_000_000;
-const DAY = 24 * 60 * 60;
+const HOUR = 60 * 60;
+const DAY = 24 * HOUR;
 const NOW_SECONDS = 1_700_000_000;
 
 const buildTronAccount = (unstakingBatches: TronUnstakingBatch[]): Account => ({
@@ -50,7 +51,6 @@ const renderSection = (unstakingBatches: TronUnstakingBatch[]) => {
         preloadedState: {
             wallet: {
                 accounts: [account],
-                transactions: { transactions: { [account.key]: [] } },
                 fiat: { current: {}, lastWeek: {} },
             },
         },
@@ -71,17 +71,31 @@ describe('TronStakingPendingSection', () => {
         jest.useRealTimers();
     });
 
-    it('counts the days left down as time passes', async () => {
-        await renderSection([{ amount: String(5 * TRX), expireTime: NOW_SECONDS + DAY + 30 }]);
+    it('counts the time left down as time passes', async () => {
+        await renderSection([
+            { amount: String(5 * TRX), expireTime: NOW_SECONDS + DAY + 2 * HOUR + 30 },
+        ]);
+
+        await fireEvent.press(screen.getByTestId('@staking/tron-unstaking-card/toggle'));
 
         expect(
-            screen.getByText(getTranslation('earn.tron.unstakingCard.daysLocked', { days: 2 })),
+            screen.getByText(
+                getTranslation('earn.tron.unstakingCard.readyInDaysAndHours', {
+                    days: 1,
+                    hours: 2,
+                }),
+            ),
         ).toBeOnTheScreen();
 
         await advanceMinutes(1);
 
         expect(
-            screen.getByText(getTranslation('earn.tron.unstakingCard.daysLocked', { days: 1 })),
+            screen.getByText(
+                getTranslation('earn.tron.unstakingCard.readyInDaysAndHours', {
+                    days: 1,
+                    hours: 1,
+                }),
+            ),
         ).toBeOnTheScreen();
     });
 
@@ -93,7 +107,7 @@ describe('TronStakingPendingSection', () => {
             displaySymbol: 'TRX',
         });
 
-        expect(screen.getByTestId('@staking/tron-unstaking-card/row-0')).toBeOnTheScreen();
+        expect(screen.getByTestId('@staking/tron-unstaking-card/container')).toBeOnTheScreen();
         expect(screen.queryByText(readyToWithdrawText)).toBeNull();
 
         await advanceMinutes(1);

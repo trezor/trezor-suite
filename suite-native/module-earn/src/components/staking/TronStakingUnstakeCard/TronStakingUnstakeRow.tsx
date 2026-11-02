@@ -1,93 +1,59 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TronResourceType } from '@suite-common/wallet-types';
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-} from '@suite-native/formatters';
-import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { HStack, Text, VStack } from '@suite-native/atoms';
+import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
 
-type TitleStyleProps = {
-    isVisible: boolean;
-};
+import { EarnApproximateFiatAmount } from '../../earn/EarnApproximateFiatAmount';
 
-const titleStyle = prepareNativeStyle<TitleStyleProps>((_, { isVisible }) => ({
-    opacity: isVisible ? 1 : 0,
-}));
-
-const RESOURCE_LABELS: Record<TronResourceType, TxKeyPath> = {
-    bandwidth: 'earn.tron.resources.bandwidth',
-    energy: 'earn.tron.resources.energy',
-};
+const SECONDS_PER_HOUR = 60 * 60;
+const SECONDS_PER_DAY = 24 * SECONDS_PER_HOUR;
 
 type TronStakingUnstakeRowProps = {
     index: number;
     amount: string;
-    daysLocked: number;
-    resource: TronResourceType | undefined;
+    expireTime: number;
+    nowSeconds: number;
     symbol: NetworkSymbol;
 };
 
 export const TronStakingUnstakeRow = ({
     index,
     amount,
-    daysLocked,
-    resource,
+    expireTime,
+    nowSeconds,
     symbol,
 }: TronStakingUnstakeRowProps) => {
-    const { applyStyle } = useNativeStyles();
-
-    const isTitleVisible = index === 0;
+    const secondsLeft = Math.max(expireTime - nowSeconds, 0);
+    const days = Math.floor(secondsLeft / SECONDS_PER_DAY);
+    const hours = Math.max(Math.floor((secondsLeft % SECONDS_PER_DAY) / SECONDS_PER_HOUR), 1);
 
     return (
         <HStack
             alignItems="center"
+            justifyContent="space-between"
             paddingHorizontal="sp16"
             paddingVertical="sp12"
             spacing="sp16"
             testID={`@staking/tron-unstaking-card/row-${index}`}
         >
-            <Box
-                style={applyStyle(titleStyle, { isVisible: isTitleVisible })}
-                accessibilityElementsHidden={!isTitleVisible}
-                importantForAccessibility={isTitleVisible ? 'auto' : 'no-hide-descendants'}
-            >
-                <Text variant="body-sm-strong">
-                    <Translation id="earn.tron.unstakingCard.title" />
-                </Text>
-            </Box>
-
-            <Box flex={1}>
-                <Text variant="body-sm" color="contentSecondary">
-                    <Translation
-                        id="earn.tron.unstakingCard.daysLocked"
-                        values={{ days: daysLocked }}
-                    />
-                </Text>
-            </Box>
-
-            <VStack alignItems="flex-end" spacing="sp2">
-                <CompactCryptoAmountFormatter
+            <Text variant="body-sm" color="contentSecondary">
+                <Translation
+                    id={
+                        days > 0
+                            ? 'earn.tron.unstakingCard.readyInDaysAndHours'
+                            : 'earn.tron.unstakingCard.readyInHours'
+                    }
+                    values={{ days, hours }}
+                />
+            </Text>
+            <VStack spacing="sp2" alignItems="flex-end">
+                <ExactCryptoAmountFormatter
                     value={amount}
                     symbol={symbol}
                     color="contentPrimary"
-                    variant="body-sm"
+                    variant="body-sm-strong"
                 />
-
-                {resource ? (
-                    <Text variant="body-sm" color="contentSecondary">
-                        <Translation id={RESOURCE_LABELS[resource]} />
-                    </Text>
-                ) : (
-                    <CryptoToFiatAmountFormatter
-                        value={amount}
-                        symbol={symbol}
-                        color="contentSecondary"
-                        variant="body-sm"
-                        isBalance
-                    />
-                )}
+                <EarnApproximateFiatAmount amount={amount} symbol={symbol} />
             </VStack>
         </HStack>
     );

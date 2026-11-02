@@ -1,16 +1,15 @@
-import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { TRON_UNFREEZE_DELAY_SECONDS } from '@suite-common/wallet-core';
-import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultTron } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider, screen, within } from '@suite-native/test-utils-store';
+import { fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { type TronStakingInfo, type TronUnstakingBatch } from '@trezor/blockchain-link-types';
 
 import { TronStakingUnstakeCard } from './TronStakingUnstakeCard';
 
 const TRX = 1_000_000;
-const DAY = 24 * 60 * 60;
+const HOUR = 60 * 60;
+const DAY = 24 * HOUR;
 const NOW_SECONDS = 1_700_000_000;
 
 const buildStakingInfo = (unstakingBatches: TronUnstakingBatch[]): TronStakingInfo => ({
@@ -47,34 +46,7 @@ const buildTronAccount = (unstakingBatches: TronUnstakingBatch[]): Account => ({
     },
 });
 
-type BuildUnfreezeTxParams = {
-    unstakeAmount: string;
-    expireTime: number;
-    resource?: string;
-};
-
-const buildUnfreezeTx = ({
-    unstakeAmount,
-    expireTime,
-    resource,
-}: BuildUnfreezeTxParams): WalletAccountTransaction =>
-    testMocks.getWalletTransaction({
-        symbol: asNetworkSymbol('trx'),
-        blockTime: expireTime - TRON_UNFREEZE_DELAY_SECONDS,
-        tronSpecific: {
-            contractType: 'UnfreezeBalanceV2Contract',
-            operation: 'unstake',
-            resource,
-            unstakeAmount,
-        },
-    });
-
-type RenderCardParams = {
-    unstakingBatches: TronUnstakingBatch[];
-    transactions?: WalletAccountTransaction[];
-};
-
-const renderCard = ({ unstakingBatches, transactions = [] }: RenderCardParams) => {
+const renderCard = (unstakingBatches: TronUnstakingBatch[]) => {
     const account = buildTronAccount(unstakingBatches);
 
     return renderWithStoreProvider(
@@ -83,7 +55,6 @@ const renderCard = ({ unstakingBatches, transactions = [] }: RenderCardParams) =
             preloadedState: {
                 wallet: {
                     accounts: [account],
-                    transactions: { transactions: { [account.key]: transactions } },
                     fiat: { current: { 'trx-usd': { rate: 0.25 } }, lastWeek: {} },
                 },
             },
@@ -92,87 +63,90 @@ const renderCard = ({ unstakingBatches, transactions = [] }: RenderCardParams) =
 };
 
 describe('TronStakingUnstakeCard', () => {
-    it('shows each pending unstake with its resource and the days left until it unlocks', async () => {
-        const energyExpireTime = NOW_SECONDS + 6 * DAY;
-        const bandwidthExpireTime = NOW_SECONDS + 13 * DAY - 60;
+    it('starts collapsed with the pending total', async () => {
+        await renderCard([
+            { amount: String(50 * TRX), expireTime: NOW_SECONDS + 13 * DAY - 60 },
+            { amount: String(100 * TRX), expireTime: NOW_SECONDS + 6 * DAY + 5 * HOUR },
+        ]);
 
-        await renderCard({
-            unstakingBatches: [
-                { amount: String(50 * TRX), expireTime: bandwidthExpireTime },
-                { amount: String(100 * TRX), expireTime: energyExpireTime },
-            ],
-            transactions: [
-                buildUnfreezeTx({
-                    unstakeAmount: String(100 * TRX),
-                    expireTime: energyExpireTime,
-                    resource: 'energy',
-                }),
-                buildUnfreezeTx({
-                    unstakeAmount: String(50 * TRX),
-                    expireTime: bandwidthExpireTime,
-                }),
-            ],
-        });
-
-        const firstRow = screen.getByTestId('@staking/tron-unstaking-card/row-0');
-        const secondRow = screen.getByTestId('@staking/tron-unstaking-card/row-1');
-
-        expect(firstRow).toHaveTextContent(
-            getTranslation('earn.tron.unstakingCard.daysLocked', { days: 6 }),
+        expect(screen.getByText(getTranslation('earn.tron.unstakingCard.title'))).toBeOnTheScreen();
+        expect(screen.getByText(/150\sTRX/)).toBeOnTheScreen();
+        expect(screen.getByText('≈')).toBeOnTheScreen();
+        expect(screen.getByTestId('@staking/tron-unstaking-card/container')).toHaveTextContent(
+            '$37.50',
             { exact: false },
         );
-        expect(firstRow).toHaveTextContent(getTranslation('earn.tron.resources.energy'), {
-            exact: false,
-        });
-        expect(secondRow).toHaveTextContent(
-            getTranslation('earn.tron.unstakingCard.daysLocked', { days: 13 }),
-            { exact: false },
-        );
-        expect(secondRow).toHaveTextContent(getTranslation('earn.tron.resources.bandwidth'), {
-            exact: false,
-        });
+        expect(screen.queryByTestId('@staking/tron-unstaking-card/row-0')).toBeNull();
     });
 
-    it('shows the unstaking title only on the first row', async () => {
-        await renderCard({
-            unstakingBatches: [
-                { amount: String(50 * TRX), expireTime: NOW_SECONDS + 13 * DAY },
-                { amount: String(100 * TRX), expireTime: NOW_SECONDS + 6 * DAY },
-            ],
-        });
+    it('lists each pending unstake with the days and hours left once expanded', async () => {
+        await renderCard([
+            { amount: String(100 * TRX), expireTime: NOW_SECONDS + 6 * DAY + 5 * HOUR },
+            { amount: String(50 * TRX), expireTime: NOW_SECONDS + 13 * DAY - 60 },
+            { amount: String(5 * TRX), expireTime: NOW_SECONDS + 10 * 60 },
+        ]);
 
-        const title = getTranslation('earn.tron.unstakingCard.title');
-
-        expect(screen.getAllByText(title)).toHaveLength(1);
-        expect(
-            within(screen.getByTestId('@staking/tron-unstaking-card/row-0')).getByText(title),
-        ).toBeOnTheScreen();
-    });
-
-    it('shows the fiat value instead of a resource when no unfreeze transaction matches', async () => {
-        await renderCard({
-            unstakingBatches: [{ amount: String(5 * TRX), expireTime: NOW_SECONDS + DAY }],
-            transactions: [
-                buildUnfreezeTx({
-                    unstakeAmount: String(7 * TRX),
-                    expireTime: NOW_SECONDS + DAY,
-                    resource: 'energy',
-                }),
-            ],
-        });
+        await fireEvent.press(screen.getByTestId('@staking/tron-unstaking-card/toggle'));
 
         expect(screen.getByTestId('@staking/tron-unstaking-card/row-0')).toHaveTextContent(
-            '$1.25',
+            getTranslation('earn.tron.unstakingCard.readyInHours', { hours: 1 }),
             { exact: false },
         );
-        expect(screen.queryByText(getTranslation('earn.tron.resources.energy'))).toBeNull();
-        expect(screen.queryByText(getTranslation('earn.tron.resources.bandwidth'))).toBeNull();
+        expect(screen.getByTestId('@staking/tron-unstaking-card/row-1')).toHaveTextContent(
+            getTranslation('earn.tron.unstakingCard.readyInDaysAndHours', { days: 6, hours: 5 }),
+            { exact: false },
+        );
+        expect(screen.getByTestId('@staking/tron-unstaking-card/row-2')).toHaveTextContent(
+            getTranslation('earn.tron.unstakingCard.readyInDaysAndHours', {
+                days: 12,
+                hours: 23,
+            }),
+            { exact: false },
+        );
+    });
+
+    it('keeps full TRX precision and marks fiat estimates in the total and withdrawal rows', async () => {
+        await renderCard([
+            { amount: '1000001', expireTime: NOW_SECONDS + 2 * HOUR },
+            { amount: String(TRX), expireTime: NOW_SECONDS + 3 * HOUR },
+        ]);
+
+        expect(screen.getByText(/2\.000001\sTRX/)).toBeOnTheScreen();
+
+        await fireEvent.press(screen.getByTestId('@staking/tron-unstaking-card/toggle'));
+
+        expect(screen.getByTestId('@staking/tron-unstaking-card/row-0')).toHaveTextContent(
+            /1\.000001\sTRX/,
+        );
+        expect(screen.getByTestId('@staking/tron-unstaking-card/row-1')).toHaveTextContent(
+            /1\sTRX/,
+        );
+        expect(screen.getAllByText('≈')).toHaveLength(3);
+    });
+
+    it('hides the withdrawals when collapsed and shows them again when reopened', async () => {
+        await renderCard([
+            { amount: String(5 * TRX), expireTime: NOW_SECONDS + 2 * HOUR },
+            { amount: String(10 * TRX), expireTime: NOW_SECONDS + 3 * HOUR },
+        ]);
+
+        const toggle = screen.getByTestId('@staking/tron-unstaking-card/toggle');
+
+        await fireEvent.press(toggle);
+        expect(screen.getByTestId('@staking/tron-unstaking-card/row-0')).toBeOnTheScreen();
+        expect(screen.getByTestId('@staking/tron-unstaking-card/row-1')).toBeOnTheScreen();
+
+        await fireEvent.press(toggle);
+        expect(screen.queryByTestId('@staking/tron-unstaking-card/row-0')).toBeNull();
+        expect(screen.queryByTestId('@staking/tron-unstaking-card/row-1')).toBeNull();
+
+        await fireEvent.press(toggle);
+        expect(screen.getByTestId('@staking/tron-unstaking-card/row-0')).toBeOnTheScreen();
+        expect(screen.getByTestId('@staking/tron-unstaking-card/row-1')).toBeOnTheScreen();
     });
 
     it('renders nothing when every unstake is already withdrawable', async () => {
-        await renderCard({
-            unstakingBatches: [{ amount: String(5 * TRX), expireTime: NOW_SECONDS - 10 }],
-        });
+        await renderCard([{ amount: String(5 * TRX), expireTime: NOW_SECONDS - 10 }]);
 
         expect(screen.queryByTestId('@staking/tron-unstaking-card/container')).toBeNull();
         expect(
