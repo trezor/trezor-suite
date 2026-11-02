@@ -29,6 +29,17 @@ describe('stakingProviderSchema', () => {
         expect(stakingProviderSchema.parse(provider)).toEqual(provider);
     });
 
+    it.each(['retired', 'curated'] as const)('accepts a %s provider without links', status => {
+        const provider = {
+            id: stakingProviderIdSchema.parse('fivebinaries'),
+            name: 'FiveBinaries',
+            status,
+            identities: {},
+        };
+
+        expect(stakingProviderSchema.parse(provider)).toEqual(provider);
+    });
+
     it('rejects an active provider without a website', () => {
         const result = stakingProviderSchema.safeParse({ ...mockStakingProvider(), links: {} });
 
