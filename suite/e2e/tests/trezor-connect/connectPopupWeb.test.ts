@@ -345,6 +345,39 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
     );
 });
 
+// The settings panel only swaps the content of the method testing tool and the explorer initializes
+// Connect by itself on load, so no device is involved.
+test.describe('TrezorConnect settings panel', { tag: ['@webOnly', '@noDevice'] }, () => {
+    test(
+        'settings panel opens and closes from the method testing tool',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Suite Web Connect: The gear toggle of the method testing tool opens the Connect settings panel and the close button returns to the method',
+                stream: TestStream.Connect,
+            }),
+        },
+        async ({ page }) => {
+            await gotoConnectExplorer(page, 'bitcoin/getAddress');
+
+            // expand method tester
+            await page.getByTestId('@api-playground/collapsible-box').click();
+            await expect(page.getByTestId('@submit-button')).toBeVisible();
+
+            await page.getByTestId('@init/settings-toggle').click();
+            await expect(page.getByTestId('@init/settings-panel')).toBeVisible();
+            // the method view gives way to the panel while it is open
+            await expect(page.getByTestId('@submit-button')).toBeHidden();
+            // the explorer initializes Connect on load, so the panel reports it as initialized
+            await expect(page.getByTestId('@init/success')).toBeVisible({ timeout: 20_000 });
+
+            await page.getByTestId('@init/settings-close').click();
+            await expect(page.getByTestId('@init/settings-panel')).toBeHidden();
+            await expect(page.getByTestId('@submit-button')).toBeVisible();
+        },
+    );
+});
+
 test.describe('TrezorConnect popup web - no onboarding', { tag: ['@T3T1', '@webOnly'] }, () => {
     test(
         'popup blocked by browser returns popup-blocked error',

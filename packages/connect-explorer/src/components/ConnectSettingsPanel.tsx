@@ -104,10 +104,15 @@ export const ConnectSettingsPanel = ({ onClose }: ConnectSettingsPanelProps) => 
     // Stable identity so ConnectInitForm's success callback doesn't churn on parent re-renders.
     const handleInitialized = useCallback(() => setSucceeded(true), []);
 
-    // Hold the success screen for a beat, then hand control back to the method (onClose).
+    // Hold the success screen for a beat, then hand control back to the method (onClose). The panel
+    // stays mounted while hidden, so the flag has to be cleared here or reopening would land on the
+    // success screen of the previous init.
     useEffect(() => {
         if (!succeeded) return;
-        const timeout = setTimeout(onClose, SUCCESS_HOLD_MS);
+        const timeout = setTimeout(() => {
+            setSucceeded(false);
+            onClose();
+        }, SUCCESS_HOLD_MS);
 
         return () => clearTimeout(timeout);
     }, [succeeded, onClose]);

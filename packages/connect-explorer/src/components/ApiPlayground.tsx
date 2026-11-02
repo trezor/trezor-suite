@@ -1,15 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Object, type TSchema } from '@sinclair/typebox';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { CollapsibleBox, Select, Switch, variables } from '@trezor/components';
+import {
+    CollapsibleBox,
+    Dot,
+    type DotIntent,
+    Icon,
+    Select,
+    Switch,
+    variables,
+} from '@trezor/components';
+import { GearIcon } from '@trezor/icons';
 
+import { ConnectSettingsPanel } from './ConnectSettingsPanel';
 import { Method, MethodContent } from './Method';
 import * as methodActions from '../actions/methodActions';
 import { useActions, useSelector } from '../hooks';
 import { type MethodState } from '../reducers/methodCommon';
 import { selectMethod } from '../reducers/methodReducer';
+import {
+    selectConnectInitError,
+    selectIsConnectInitSuccess,
+    selectIsConnectInitializing,
+} from '../reducers/trezorConnectReducer';
 
 const ApiPlaygroundWrapper = styled.div`
     display: block;
@@ -68,6 +83,60 @@ const SelectWrapper = styled.div`
     }
 `;
 
+const RightControls = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+`;
+
+type ConnectStatus = 'ok' | 'pending' | 'error' | 'idle';
+
+const DOT_INTENTS: Record<ConnectStatus, DotIntent> = {
+    ok: 'brand',
+    pending: 'warning',
+    error: 'critical',
+    idle: 'neutral',
+};
+
+const STATUS_LABELS: Record<ConnectStatus, string> = {
+    ok: 'initialized',
+    pending: 'initializing…',
+    error: 'initialization error',
+    idle: 'not initialized',
+};
+
+const SettingsToggle = styled.button<{ $open: boolean }>`
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition:
+        background 0.15s,
+        border-color 0.15s,
+        color 0.15s;
+    border: 1px solid ${({ theme, $open }) => ($open ? theme.borderBrand : theme.borderNeutral)};
+    background: ${({ theme, $open }) => ($open ? theme.elementFillBrandSoft : 'transparent')};
+    color: ${({ theme, $open }) => ($open ? theme.contentBrand : theme.contentPrimary)};
+
+    &:hover {
+        border-color: ${({ theme }) => theme.borderBrand};
+    }
+`;
+
+// Both views stay mounted and the inactive one is only hidden, so toggling the gear keeps the
+// method's editor content (manual mode) and the settings form's edits instead of discarding them.
+const SwitchArea = styled.div<{ $hidden: boolean }>`
+    ${({ $hidden }) =>
+        $hidden &&
+        css`
+            display: none;
+        `}
+`;
+
 interface ApiPlaygroundProps {
     options: (
         | {
@@ -83,7 +152,11 @@ interface ApiPlaygroundProps {
 }
 export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     const [selectedOption, setSelectedOption] = useState(0);
+    const [showSettings, setShowSettings] = useState(false);
     const method = useSelector(selectMethod);
+    const isInitSuccess = useSelector(selectIsConnectInitSuccess);
+    const isInitializing = useSelector(selectIsConnectInitializing);
+    const initError = useSelector(selectConnectInitError);
     const actions = useActions({
         onSetSchema: methodActions.onSetSchema,
         onSetMethod: methodActions.onSetMethod,
@@ -91,6 +164,19 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     });
 
     const { manualMode } = method;
+
+    // Stable identity so the success screen's auto-switch timer isn't reset by re-renders (this
+    // component re-renders on isInitializing for the status dot).
+    const closeSettings = useCallback(() => setShowSettings(false), []);
+
+    const getConnectStatus = (): ConnectStatus => {
+        if (initError) return 'error';
+        if (isInitializing) return 'pending';
+        if (isInitSuccess) return 'ok';
+
+        return 'idle';
+    };
+    const connectStatus = getConnectStatus();
 
     useEffect(() => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -127,7 +213,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                 <ContentWrapper>
                     <OptionsRow $manualMode={manualMode}>
                         <div>
-                            {options.length > 1 && (
+                            {!showSettings && options.length > 1 && (
                                 <SelectWrapper>
                                     <Select
                                         label="Select method"
@@ -145,14 +231,44 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                             )}
                         </div>
                         <div>
-                            <Switch
-                                label="Manual mode"
-                                isChecked={!!manualMode}
-                                onChange={checked => actions.onSetManualMode(!!checked)}
-                            />
+                            <RightControls>
+                                <SettingsToggle
+                                    type="button"
+                                    $open={showSettings}
+                                    onClick={() => setShowSettings(open => !open)}
+                                    data-testid="@init/settings-toggle"
+                                    title={`Trezor Connect — ${STATUS_LABELS[connectStatus]}`}
+                                    aria-expanded={showSettings}
+                                    aria-label={`Trezor Connect settings — ${STATUS_LABELS[connectStatus]}`}
+                                >
+                                    <Icon
+                                        as={GearIcon}
+                                        size={16}
+                                        color={showSettings ? 'contentBrand' : 'contentSecondary'}
+                                    />
+                                    Connect
+                                    <Dot
+                                        size={8}
+                                        intent={DOT_INTENTS[connectStatus]}
+                                        isAnimated={connectStatus === 'pending'}
+                                    />
+                                </SettingsToggle>
+                                {!showSettings && (
+                                    <Switch
+                                        label="Manual mode"
+                                        isChecked={!!manualMode}
+                                        onChange={checked => actions.onSetManualMode(!!checked)}
+                                    />
+                                )}
+                            </RightControls>
                         </div>
                     </OptionsRow>
-                    <Method />
+                    <SwitchArea $hidden={showSettings}>
+                        <Method />
+                    </SwitchArea>
+                    <SwitchArea $hidden={!showSettings}>
+                        <ConnectSettingsPanel onClose={closeSettings} />
+                    </SwitchArea>
                 </ContentWrapper>
             </CollapsibleBox>
         </ApiPlaygroundWrapper>
