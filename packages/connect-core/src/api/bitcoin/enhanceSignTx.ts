@@ -12,9 +12,9 @@ const ZCASH_NU5_VERSION_GROUP_ID = 0x26a7270a;
 // only reaches users through the (slow) release train, the backend value
 // (Blockbook `backend.consensus.chaintip`) is the preferred source and this is a last
 // resort — offline signers should pass an explicit `branchId` instead.
-// NU6.3 (active since mainnet height 3428143, 2026-07-28): 0x37a5165b.
-// https://zips.z.cash/zip-0258
-const ZCASH_FALLBACK_BRANCH_ID = 0x37a5165b;
+// NU7 (active since mainnet height 3543405, testnet height 4465026): 0x77190ad9.
+// https://zips.z.cash/zip-0259
+const ZCASH_FALLBACK_BRANCH_ID = 0x77190ad9;
 
 // enhance TransactionOptions with default values if they are not provided
 // in case of network upgrade/fork those values should be updated as well
