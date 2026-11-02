@@ -145,11 +145,18 @@ const selectFilteredDeviceAccounts = createNetworkMemoizedSelector(
         (_state: NativeAccountsRootState, filterValue: string) => filterValue,
         (_state: NativeAccountsRootState, _filterValue: string, isSendFlow: boolean = false) =>
             isSendFlow,
+        (
+            _state: NativeAccountsRootState,
+            _filterValue: string,
+            _isSendFlow: boolean = false,
+            _networkSymbols: NetworkSymbol[] = [],
+            tokenContract?: TokenAddress,
+        ) => tokenContract,
     ],
-    (accounts, supportedNetworks, filterValue, isSendFlow) => {
+    (accounts, supportedNetworks, filterValue, isSendFlow, tokenContract) => {
         const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts, supportedNetworks);
         const sendFilteredAccounts = isSendFlow
-            ? filterSendAvailableAccounts(sortedAccounts)
+            ? filterSendAvailableAccounts(sortedAccounts, tokenContract)
             : sortedAccounts;
 
         return filterAccountsByLabelAndNetworkNames(sendFilteredAccounts, filterValue);

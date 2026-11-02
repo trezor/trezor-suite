@@ -4,8 +4,8 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type Account, type TokenAddress, asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
@@ -65,6 +65,20 @@ const ethAccount = mockWalletAccount({
     accountType: 'normal',
     index: 0,
     availableBalance: '10',
+});
+
+const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
+
+// Holds the token but no ether to pay the fee with. It still counts as a send target, the
+// same call desktop makes; the shortfall is the compose step's to report.
+const ethZeroGasTokenAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('eth'),
+    descriptor: asAccountDescriptor('ethzerogas'),
+    deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
+    accountType: 'normal',
+    index: 1,
+    availableBalance: '0',
+    tokens: [mockAccountToken({ contract: USDC_ON_ETH, balance: '100' })],
 });
 
 const adaAccount = mockWalletAccount({
@@ -223,6 +237,14 @@ describe('selectFilteredDeviceAccountListRows', () => {
             { accountKey: ethAccount.key, isFirst: true, isLast: true },
             { accountKey: adaAccount.key, isFirst: true, isLast: true },
         ]);
+    });
+
+    it('keeps the accounts holding the selected token, whatever their native balance', () => {
+        const stateWithTokenHolder = createState([...stateAccounts, ethZeroGasTokenAccount]);
+
+        expect(
+            selectFilteredDeviceAccountListRows(stateWithTokenHolder, '', true, [], USDC_ON_ETH),
+        ).toEqual([{ accountKey: ethZeroGasTokenAccount.key, isFirst: true, isLast: true }]);
     });
 
     it('combines network symbol filtering with text search', () => {
