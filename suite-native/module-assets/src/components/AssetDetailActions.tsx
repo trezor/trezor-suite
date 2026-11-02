@@ -77,6 +77,8 @@ export const AssetDetailActions = () => {
             screen: SendStackRoutes.SendAccounts,
             params: {
                 networksFilter: [networkSymbol],
+                tokenContract,
+                isAssetPreselected: true,
             },
         });
     };
