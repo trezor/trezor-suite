@@ -12,10 +12,11 @@ import {
     selectAccountsSymbols,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
     selectDeviceAccountsByNetworkSymbol,
+    subscribeAccountsThunk,
     subscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type BlockchainNotification } from '@trezor/connect';
+import type { BlockchainInfo, BlockchainNotification } from '@trezor/connect';
 import { createThunk } from '@trezor/redux-utils';
 
 const BLOCKCHAIN_MODULE_PREFIX = '@suite-native/blockchain';
@@ -91,8 +92,6 @@ export const syncAllAccountsWithBlockchainThunk = createThunk<
     await Promise.all(accountPromises);
 });
 
-type OnBlockchainConnectThunkParams = { symbol: string };
-
 export type OnBlockchainConnectThunkState = SubscribeBlockchainThunkState &
     SyncAccountsWithBlockchainThunkState;
 
@@ -100,18 +99,24 @@ export type OnBlockchainConnectThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
 export const onBlockchainConnectThunk = createThunk<
     void,
-    OnBlockchainConnectThunkParams,
+    BlockchainInfo,
     { state: OnBlockchainConnectThunkState; extra: OnBlockchainConnectThunkDeps }
->(`${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`, async ({ symbol }, { dispatch }) => {
-    const network = getNetworkOptional(symbol.toLowerCase());
-    if (!network) return;
+>(
+    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
+    async ({ coin: { shortcut }, identity }, { dispatch }) => {
+        const network = getNetworkOptional(shortcut.toLowerCase());
+        if (!network) return;
 
-    await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, onConnect: true }));
+        await dispatch(subscribeBlockchainThunk({ symbol: network.symbol }));
+        await dispatch(subscribeAccountsThunk({ symbol: network.symbol, identity }));
 
-    // update accounts for connected network
-    await dispatch(syncAccountsWithBlockchainThunk({ symbol: network.symbol }));
-    dispatch(blockchainActions.connected(network.symbol));
-});
+        // update accounts for connected network
+        await dispatch(syncAccountsWithBlockchainThunk({ symbol: network.symbol }));
+        if (!identity) {
+            dispatch(blockchainActions.connected(network.symbol));
+        }
+    },
+);
 
 export type OnBlockchainNotificationThunkState = FetchAndUpdateAccountThunkState;
 

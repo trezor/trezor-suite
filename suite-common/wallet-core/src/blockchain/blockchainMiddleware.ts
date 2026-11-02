@@ -23,8 +23,7 @@ export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps<
 
     switch (action.type) {
         case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT:
-            dispatch(onBlockchainConnectThunk(action.payload.coin.shortcut));
-
+            dispatch(onBlockchainConnectThunk(action.payload));
             break;
         case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK:
             dispatch(onBlockMinedThunk(action.payload));

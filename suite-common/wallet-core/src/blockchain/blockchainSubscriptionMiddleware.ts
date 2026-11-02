@@ -1,10 +1,10 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountAddresses } from '@suite-common/wallet-utils';
+import { getAccountAddresses, getAccountIdentity } from '@suite-common/wallet-utils';
 import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
-import { subscribeBlockchainThunk, unsubscribeBlockchainThunk } from './blockchainThunks';
+import { subscribeAccountsThunk, unsubscribeAccountsThunk } from './blockchainThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -47,11 +47,12 @@ export const prepareBlockchainSubscriptionMiddleware = createMiddlewareWithExtra
         (accountsActions.updateAccount.match(action) &&
             hasSubscriptionChanged(previousAccount, action.payload.account))
     ) {
-        dispatch(subscribeBlockchainThunk({ symbol: action.payload.account.symbol }));
+        const identity = getAccountIdentity(action.payload.account);
+        dispatch(subscribeAccountsThunk({ symbol: action.payload.account.symbol, identity }));
     }
 
     if (accountsActions.removeAccount.match(action)) {
-        dispatch(unsubscribeBlockchainThunk(action.payload));
+        dispatch(unsubscribeAccountsThunk(action.payload));
     }
 
     return action;
