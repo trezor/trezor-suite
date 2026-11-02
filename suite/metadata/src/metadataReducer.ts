@@ -17,10 +17,15 @@ import {
     type WalletLabels,
 } from '@suite-common/metadata-types';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectAccounts,
+} from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import {
     addMetadataProvider,
@@ -311,24 +316,10 @@ export const selectLabelableEntities = (state: MetadataRootState, deviceState: S
     ];
 };
 
-/**
- * @deprecated Legacy Labeling
- */
-const selectLabelableEntityByKey = (
-    state: MetadataRootState,
-    deviceState: StaticSessionId,
-    entityKey: string,
-) =>
-    selectLabelableEntities(state, deviceState).find(e => {
-        if ('key' in e) {
-            return e.key === entityKey;
-        }
-        if ('state' in e) {
-            return e.state?.staticSessionId === entityKey;
-        }
-
-        return false;
-    });
+const selectLabelableAccountByKey = createWeakMapSelector.withTypes<AccountsRootState>()(
+    [selectAccounts, (_state: AccountsRootState, entityKey: string) => entityKey],
+    (accounts, entityKey) => accounts.find(account => account.key === entityKey),
+);
 
 /**
  * @deprecated Legacy Labeling
@@ -373,16 +364,27 @@ export const selectIsLabelingAvailableForEntity = (
     entityKey: string,
     deviceStaticSessionId?: StaticSessionId,
 ): boolean => {
+    if (!selectIsLabelingAvailable(state)) {
+        return false;
+    }
+
     const device = deviceStaticSessionId
         ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
         : selectSelectedDevice(state);
-    if (!device?.state?.staticSessionId) return false;
-    const entity = selectLabelableEntityByKey(state, device.state.staticSessionId, entityKey);
+    if (!device?.state?.staticSessionId) {
+        return false;
+    }
 
-    return Boolean(
-        selectIsLabelingAvailable(state) &&
-        entity?.[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName,
-    );
+    const account = selectLabelableAccountByKey(state, entityKey);
+    if (account?.deviceState === device.state.staticSessionId) {
+        return Boolean(account.metadata[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName);
+    }
+
+    if (entityKey === device.state.staticSessionId) {
+        return Boolean(device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName);
+    }
+
+    return false;
 };
 
 /**
