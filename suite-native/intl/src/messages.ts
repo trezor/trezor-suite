@@ -3816,7 +3816,9 @@ export const messages = {
             allVotesUsed: 'All {count} {count, plural, one {vote} other {votes}} used',
             unstakingCard: {
                 title: 'Unstaking',
-                daysLocked: '{days, plural, one {# day} other {# days}} locked',
+                readyInDaysAndHours:
+                    'In ~{days, plural, one {# day} other {# days}} {hours, plural, one {# hour} other {# hours}}',
+                readyInHours: 'In ~{hours, plural, one {# hour} other {# hours}}',
             },
         },
         notAvailable: 'Not available',
