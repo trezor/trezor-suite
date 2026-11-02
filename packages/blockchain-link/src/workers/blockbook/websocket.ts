@@ -13,7 +13,6 @@ import type {
     BlockbookSend as Send,
 } from '@trezor/blockchain-link-types';
 import { type GetContractInfo } from '@trezor/blockchain-link-types/src/messages';
-import { getSuiteVersion } from '@trezor/env-utils';
 
 import { BaseWebsocket } from '../baseWebsocket';
 
@@ -36,27 +35,12 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
             throw new CustomError('websocket_no_url');
         }
 
-        // this resolves https->wss as well
-        if (url.startsWith('http')) {
-            url = url.replace('http', 'ws');
-        }
         if (!url.endsWith('/websocket')) {
             const suffix = url.endsWith('/') ? 'websocket' : '/websocket';
             url += suffix;
         }
 
-        return this.initWebsocket({
-            url,
-            agent: this.options.agent,
-            headers: {
-                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
-                ...this.options.headers,
-            },
-        });
-    }
-
-    protected ping() {
-        return this.getBlockHash(1);
+        return super.createWebsocket(url);
     }
 
     send: Send = (method, params = {}) => this.sendMessage({ method, params });

@@ -6,7 +6,6 @@ import type {
     EstimateFeeParams,
     BlockfrostSend as Send,
 } from '@trezor/blockchain-link-types';
-import { getSuiteVersion } from '@trezor/env-utils';
 
 import { BaseWebsocket } from '../baseWebsocket';
 
@@ -16,23 +15,6 @@ interface BlockfrostEvents {
 }
 
 export class BlockfrostAPI extends BaseWebsocket<BlockfrostEvents> {
-    protected createWebsocket() {
-        const { url } = this.options;
-
-        return this.initWebsocket({
-            url,
-            agent: this.options.agent,
-            headers: {
-                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
-                ...this.options.headers,
-            },
-        });
-    }
-
-    protected ping() {
-        return this.getBlockHash(1);
-    }
-
     send: Send = (command, params = {}) => this.sendMessage({ command, params });
 
     getServerInfo() {

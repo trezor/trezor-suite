@@ -1,4 +1,5 @@
 import { CustomError } from '@trezor/blockchain-link-types';
+import { getSuiteVersion } from '@trezor/env-utils';
 import {
     WebsocketClient,
     type WebsocketRequest,
@@ -13,6 +14,23 @@ interface Subscription<T> {
 
 export abstract class BaseWebsocket<T extends Record<string, any>> extends WebsocketClient<T> {
     private readonly subscriptions: Subscription<keyof T & string>[] = [];
+
+    abstract getBlockHash(block: number): Promise<unknown>;
+
+    protected createWebsocket(url = this.options.url) {
+        return this.initWebsocket({
+            url,
+            agent: this.options.agent,
+            headers: {
+                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
+                ...this.options.headers,
+            },
+        });
+    }
+
+    protected ping() {
+        return this.getBlockHash(1);
+    }
 
     async onPing() {
         // make sure that connection is alive if there are subscriptions
