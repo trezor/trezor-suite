@@ -6,7 +6,7 @@ import {
     type SolanaStakingLimit,
     estimateSolanaStakingLimit,
     getOutputTxAmount,
-    getSolanaDeactivatedRentReserves,
+    getSolanaDeactivatedAccountCount,
     selectBlockchainUrlBySymbol,
 } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
@@ -46,7 +46,7 @@ export const SolanaStakingLimitBanner = ({
 
         estimateSolanaStakingLimit({
             descriptor: account.descriptor,
-            deactivatedRentReserves: getSolanaDeactivatedRentReserves(account),
+            deactivatedAccountCount: getSolanaDeactivatedAccountCount(account),
             blockchainUrl,
             userAgent: `Trezor Suite ${getSuiteVersion()}`,
             type,

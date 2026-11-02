@@ -6,7 +6,7 @@ import {
     type BlockchainRootState,
     type SolanaStakingLimitType,
     estimateSolanaStakingLimit,
-    getSolanaDeactivatedRentReserves,
+    getSolanaDeactivatedAccountCount,
     selectAccountByKey,
     selectBlockchainUrlBySymbol,
 } from '@suite-common/wallet-core';
@@ -48,14 +48,7 @@ export const useSolanaStakingLimit = ({
     }, [amount, symbol]);
 
     const debouncedOutputAmount = useDebouncedValue(outputAmount);
-    const deactivatedRentReservesKey = useMemo(
-        () => (account ? getSolanaDeactivatedRentReserves(account).join(',') : ''),
-        [account],
-    );
-    const deactivatedRentReserves = useMemo(
-        () => (deactivatedRentReservesKey ? deactivatedRentReservesKey.split(',') : []),
-        [deactivatedRentReservesKey],
-    );
+    const deactivatedAccountCount = account ? getSolanaDeactivatedAccountCount(account) : 0;
 
     const [limit, setLimit] = useState(NO_LIMIT);
 
@@ -76,7 +69,7 @@ export const useSolanaStakingLimit = ({
 
         estimateSolanaStakingLimit({
             descriptor,
-            deactivatedRentReserves,
+            deactivatedAccountCount,
             blockchainUrl,
             userAgent: 'Trezor Suite',
             type,
@@ -108,7 +101,7 @@ export const useSolanaStakingLimit = ({
         blockchainUrl,
         debouncedOutputAmount,
         type,
-        deactivatedRentReserves,
+        deactivatedAccountCount,
     ]);
 
     return limit;
