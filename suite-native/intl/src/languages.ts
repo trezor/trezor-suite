@@ -1,8 +1,14 @@
 import { type LocaleInfo, LANGUAGES as SUITE_LANGUAGES } from '@suite-common/locale';
 
 export const DEFAULT_LOCALE = 'en-US';
+
+/**
+ * Any locale tag, e.g. the OS locale, which may be a language the app does not support.
+ * Use `SupportedLocaleCode` for locales the app is translated to.
+ */
 export type LocaleCode = `${string}-${string}`;
 
+// Only the locales the app is translated to, unlike the arbitrary OS locale in `LocaleCode`.
 type NativeLocaleCode =
     'id-ID' | 'cs-CZ' | 'de-DE' | 'en-US' | 'es-ES' | 'fr-FR' | 'pt-BR' | 'ja-JP' | 'zh-CN';
 
