@@ -1,6 +1,6 @@
 import { type Dispatch } from 'redux';
 
-import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type AnalyticsDep, type EventInstance, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -34,7 +34,13 @@ const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancell
  */
 export type VerifyMessageResult = 'verified' | 'failed' | 'cancelled';
 
-const getFailureAttributes = ({ code }: SerializedError) => ({
+// Sign and verify events share these attributes.
+const getFailureAttributes = ({
+    code,
+}: SerializedError): Pick<
+    EventInstance<typeof events.coinSignMessageEvent>['payload'],
+    'status' | 'error'
+> => ({
     status: CANCEL_ERROR_CODES.includes(code) ? ('cancelled' as const) : ('error' as const),
     error: code,
 });

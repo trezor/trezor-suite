@@ -1,6 +1,10 @@
 import { type Account, type FormState, type FormStateTxType } from '@suite-common/wallet-types';
 
-import { type TransactionCreatedEventAction } from '../events/transactionCreatedEvent';
+import type { EventInstance } from '../eventDefinition';
+import {
+    type TransactionCreatedEventAction,
+    type transactionCreatedEvent,
+} from '../events/transactionCreatedEvent';
 
 type GetTransactionCreatedEventPayloadParams = {
     action: TransactionCreatedEventAction;
@@ -16,7 +20,9 @@ export const getTransactionCreatedEventPayload = ({
     precomposedForm,
     tokens,
     txType = precomposedForm.txType,
-}: GetTransactionCreatedEventPayloadParams) => {
+}: GetTransactionCreatedEventPayloadParams): EventInstance<
+    typeof transactionCreatedEvent
+>['payload'] => {
     const { options, selectedFee, outputs, isCoinControlEnabled, hasCoinControlBeenOpened } =
         precomposedForm;
 

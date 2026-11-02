@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+import { type events } from '@suite/analytics';
+import { type EventInstance } from '@suite-common/analytics';
 import {
     type TradingExchangeType,
     selectTradingExchangeProviders,
@@ -15,7 +17,17 @@ export const useTradingExchangeCryptoAndProviderInfo = () => {
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const exchangeProviders = useSelector(selectTradingExchangeProviders);
 
-    const getCryptoInfo = useCallback(() => {
+    const getCryptoInfo = useCallback((): Pick<
+        EventInstance<typeof events.tradeApprovalEvent>['payload'],
+        | 'sendCryptoLabel'
+        | 'sendCryptoNetworkSymbol'
+        | 'sendCryptoContractAddress'
+        | 'receiveCryptoLabel'
+        | 'receiveCryptoNetworkSymbol'
+        | 'receiveCryptoContractAddress'
+        | 'exchangeName'
+        | 'selectedFee'
+    > => {
         const { sendCryptoSelect, receiveCryptoSelect, selectedFee } = getValues();
 
         const quoteExchange = selectedQuote?.exchange;

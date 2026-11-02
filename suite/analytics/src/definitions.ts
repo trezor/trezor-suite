@@ -18,13 +18,4 @@ export type OnboardingAnalytics = {
     pin: 'create' | 'skip';
 };
 
-export type AppUpdateEvent = {
-    fromVersion?: string;
-    toVersion?: string;
-    status: AppUpdateEventStatus;
-    earlyAccessProgram: boolean;
-    isPrerelease?: boolean;
-    isAutoUpdated?: boolean;
-};
-
 export type FirmwareSource = 'official' | 'unknown' | 'NA - bootloader';

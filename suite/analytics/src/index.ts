@@ -1,5 +1,6 @@
 export type {
     AnalyticsDesktopEvents,
+    AppUpdatePayload,
     StakingCardanoPoolDelegationPayload,
     SuiteReadyPayload,
 } from './analyticsEvents';
@@ -9,12 +10,7 @@ export {
     type DesktopAnalytics,
     type DesktopAnalyticsDep,
 } from './createAnalytics';
-export {
-    AppUpdateEventStatus,
-    type AppUpdateEvent,
-    type FirmwareSource,
-    type OnboardingAnalytics,
-} from './definitions';
+export { AppUpdateEventStatus, type FirmwareSource, type OnboardingAnalytics } from './definitions';
 export { redactRouterUrl } from './redactRouterUrl';
 
 export * from './events';
