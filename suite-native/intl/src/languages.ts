@@ -1,16 +1,20 @@
-import { type LocaleInfo } from '@suite-common/locale';
+import { type LocaleInfo, LANGUAGES as SUITE_LANGUAGES } from '@suite-common/locale';
 
 export const DEFAULT_LOCALE = 'en-US';
 export type LocaleCode = `${string}-${string}`;
 
-export const LANGUAGES = {
-    'id-ID': { icon: '🇮🇩', name: 'Bahasa Indonesia', en: 'Indonesian', type: 'official' },
-    'cs-CZ': { icon: '🇨🇿', name: 'Čeština', en: 'Czech', type: 'official' },
-    'de-DE': { icon: '🇩🇪', name: 'Deutsch', en: 'German', type: 'official' },
-    'en-US': { icon: '🇬🇧', name: 'English', en: 'English', type: 'official' },
-    'es-ES': { icon: '🇪🇸', name: 'Español', en: 'Spanish', type: 'official' },
-    'fr-FR': { icon: '🇫🇷', name: 'Français', en: 'French', type: 'official' },
-    'pt-BR': { icon: '🇧🇷', name: 'Português (BR)', en: 'Portuguese (BR)', type: 'official' },
-    'ja-JP': { icon: '🇯🇵', name: '日本語', en: 'Japanese', type: 'official' },
-    'zh-CN': { icon: '简', name: '中文(简体)', en: 'Chinese Simplified', type: 'official' },
-} as const satisfies Record<LocaleCode, LocaleInfo>;
+type NativeLocaleCode =
+    'id-ID' | 'cs-CZ' | 'de-DE' | 'en-US' | 'es-ES' | 'fr-FR' | 'pt-BR' | 'ja-JP' | 'zh-CN';
+
+// Suite Native supports a subset of Suite languages; their details come from the shared list.
+export const LANGUAGES: Record<NativeLocaleCode, LocaleInfo> = {
+    'id-ID': SUITE_LANGUAGES['id-ID'],
+    'cs-CZ': SUITE_LANGUAGES['cs-CZ'],
+    'de-DE': SUITE_LANGUAGES['de-DE'],
+    'en-US': SUITE_LANGUAGES['en-US'],
+    'es-ES': SUITE_LANGUAGES['es-ES'],
+    'fr-FR': SUITE_LANGUAGES['fr-FR'],
+    'pt-BR': SUITE_LANGUAGES['pt-BR'],
+    'ja-JP': SUITE_LANGUAGES['ja-JP'],
+    'zh-CN': SUITE_LANGUAGES['zh-CN'],
+};
