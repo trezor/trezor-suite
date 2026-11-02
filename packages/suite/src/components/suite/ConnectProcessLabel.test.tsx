@@ -40,11 +40,11 @@ const getBadgeIcon = () =>
         ?.getAttribute('data-icon');
 
 describe('ConnectProcessLabel', () => {
-    it('shows an identified process on the neutral badge', async () => {
+    it('shows the path of an identified process on the neutral badge', async () => {
         renderLabel({ name: 'App', fullPath: '/Applications/App.app/', warning: false });
 
         expect(getBadgeIcon()).toBe('AppWindow');
-        expect(await hoverLabel()).toBeUndefined();
+        expect(await hoverLabel()).toHaveTextContent('/Applications/App.app/');
     });
 
     it('shows the executable path of a warned-about process', async () => {
@@ -54,6 +54,14 @@ describe('ConnectProcessLabel', () => {
         expect(await hoverLabel()).toHaveTextContent('/tmp/node');
     });
 
+    // On macOS the path is argv[0], a bare name for anything started from PATH.
+    it('shows no path that only repeats the name on the badge', async () => {
+        renderLabel({ name: 'node', fullPath: 'node', warning: true });
+
+        expect(getBadgeIcon()).toBe('Warning');
+        expect(await hoverLabel()).toBeUndefined();
+    });
+
     it('says that a warned-about process without a path could not be identified', async () => {
         renderLabel({ name: 'Claude Code', fullPath: '', warning: true });
 
@@ -61,7 +69,7 @@ describe('ConnectProcessLabel', () => {
         expect(await hoverLabel()).toHaveTextContent('TR_CONNECT_PROCESS_UNIDENTIFIED');
     });
 
-    // The Linux lookup sets no warning, so a process it found no path for arrives without one.
+    // A process without a path is warned about whatever warning flag it carries.
     it('warns about a process without a path even when it carries no warning', async () => {
         renderLabel({ name: 'node', fullPath: '', warning: false });
 
