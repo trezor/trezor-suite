@@ -81,7 +81,7 @@ These examples use current package names and describe their intended roles after
 
 Existing packages can mix both roles. For example, `@suite-native/suite-sync` also exports UI hooks, and `@suite-native/address` currently imports its `useSuiteSyncErrorHandler`. The migration must separate reusable hooks from Suite Sync composition so address UI can use them without depending on app wiring. Classify the code by its responsibility, then split mixed packages along that boundary.
 
-The diagram and layout below use the final package names after migration. For example, reusable code from `@trezor/product-components` is shown as `@suite/product-components`, and the temporary `@suite-lego/sign-verify` becomes `@suite/sign-verify`.
+The diagram and layout below use the final package names after migration. For example, reusable code from `@trezor/product-components` is shown as `@suite/product-components`, and reusable sign-verify UI lives in `@suite/sign-verify`.
 
 ![Sign-verify example showing the app and lego dependency layers](./001/sign-verify-example.svg)
 
@@ -90,9 +90,9 @@ The diagram and layout below use the final package names after migration. For ex
 > [!NOTE]
 > This is an ongoing, opportunistic migration. We will move and split code when needed for development work, rather than reorganizing it for its own sake.
 
-1. Extract lego code into the temporary `suite-lego` and `suite-native-lego` directories.
-2. Once all lego code has moved, rename `suite` to `suite-app` and `suite-native` to `suite-native-app`.
-3. Rename `suite-lego` to `suite` and `suite-native-lego` to `suite-native`.
+1. Move app code directly from `@suite/*` to `@suite-app/*` (`suite-app/`), and from `@suite-native/*` to `@suite-native-app/*` (`suite-native-app/`). Apply the same separation to other applications. Reusable code stays in its existing scope.
+2. Do this opportunistically as development requires it, splitting mixed packages into app wiring and reusable parts when needed.
+3. Once a reusable package is separated from app wiring, allow `@trezor/network-<network>-suite` to import it from `@suite/*`, or `@trezor/network-<network>-suite-native` to import it from `@suite-native/*`. Its dependencies must also be independent of app assembly; each package can become available without waiting for the whole migration.
 
 ### Final state example
 
