@@ -114,27 +114,19 @@ const TooltipTime = styled.span`
     font-size: 12px;
 `;
 
-const MIN_PRICE_DECIMALS = 2;
-
-const useFormatExactPrice = () => {
+const useFormatShortPrice = () => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
-    return (price: number) => {
-        const amount = new BigNumber(price);
-        const decimals = Math.max(MIN_PRICE_DECIMALS, amount.decimalPlaces() ?? 0);
-
-        return (
-            BaseCurrencyAmountFormatter.format(asBaseCurrencyAmount(amount), {
-                minimumFractionDigits: decimals,
-                maximumFractionDigits: decimals,
-            }) ?? ''
-        );
-    };
+    return (price: number) =>
+        BaseCurrencyAmountFormatter.format(asBaseCurrencyAmount(new BigNumber(price)), {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 4,
+        }) ?? '';
 };
 
 const PriceTooltip = ({ active, payload }: TooltipProps<number, string>) => {
     const { DateTimeFormatter } = useFormatters();
-    const formatExactPrice = useFormatExactPrice();
+    const formatShortPrice = useFormatShortPrice();
     const point = payload?.[0]?.payload as AssetPricePoint | undefined;
 
     if (!active || point === undefined) {
@@ -143,7 +135,7 @@ const PriceTooltip = ({ active, payload }: TooltipProps<number, string>) => {
 
     return (
         <TooltipBox data-testid="@price-chart/tooltip">
-            <TooltipPrice>{formatExactPrice(point.price)}</TooltipPrice>
+            <TooltipPrice>{formatShortPrice(point.price)}</TooltipPrice>
             <TooltipTime>{DateTimeFormatter.format(point.timestamp)}</TooltipTime>
         </TooltipBox>
     );
@@ -155,7 +147,7 @@ type AssetPriceGraphProps = {
 
 export const AssetPriceGraph = ({ points }: AssetPriceGraphProps) => {
     const theme = useTheme();
-    const formatExactPrice = useFormatExactPrice();
+    const formatShortPrice = useFormatShortPrice();
     const extremes = useMemo(() => getPriceExtremes(points), [points]);
 
     if (extremes === undefined) {
@@ -189,7 +181,7 @@ export const AssetPriceGraph = ({ points }: AssetPriceGraphProps) => {
                             r={0}
                             label={
                                 <ExtremeLabel
-                                    text={formatExactPrice(extremes.high.price)}
+                                    text={formatShortPrice(extremes.high.price)}
                                     placement="above"
                                     textAnchor={getLabelAnchor(extremes.highIndex, points.length)}
                                 />
@@ -201,7 +193,7 @@ export const AssetPriceGraph = ({ points }: AssetPriceGraphProps) => {
                             r={0}
                             label={
                                 <ExtremeLabel
-                                    text={formatExactPrice(extremes.low.price)}
+                                    text={formatShortPrice(extremes.low.price)}
                                     placement="below"
                                     textAnchor={getLabelAnchor(extremes.lowIndex, points.length)}
                                 />
