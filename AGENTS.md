@@ -38,6 +38,7 @@ Nested mandatory skills still apply within their stated scope.
 - Persistence/browser APIs: [IDB migrations](skills/idb-migrations/SKILL.md),
   [Security headers](skills/security-headers/SKILL.md). Migration default exports are a specific exception
   to the general named-export rule.
+- Analytics/Sentry reporting: [Analytics and Sentry privacy](skills/analytics-and-sentry-privacy/SKILL.md).
 - Commits/PRs: [Git conventions](skills/git-and-commit-guidelines/SKILL.md).
   PR reviews: [PR review](skills/pr-review/SKILL.md).
   QA notes: [QA notes](skills/qa-notes/SKILL.md).
@@ -187,6 +188,7 @@ site, not just the field type, and check the whole repo for outbound reporting.
 Confidential (see `redactAccount`/`redactDevice` in `suite-common/logger/src/utils.ts`): device
 id/label/state, static session id, `session_id`; account descriptor/xpub/key, addresses, UTXOs, txids;
 exact balances/amounts; labels and free-form user text; passphrase/seed/PIN/wipe code.
+For analytics events and Sentry reports, follow [Analytics and Sentry privacy](skills/analytics-and-sentry-privacy/SKILL.md).
 
 GitHub issue screenshots are the exception in [GitHub issues](skills/github-issues/SKILL.md): addresses,
 balances, txids, and labels from public QA and dev wallets may be attached. Seed words, PIN,
