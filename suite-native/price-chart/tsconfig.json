@@ -18,8 +18,6 @@
         { "path": "../intl" },
         { "path": "../react-native-graph" },
         { "path": "../storage" },
-        {
-            "path": "../../packages/styles-native"
-        }
+        { "path": "../../packages/styles-native" }
     ]
 }

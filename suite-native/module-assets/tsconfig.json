@@ -28,7 +28,6 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../price-chart" },
-        { "path": "../toasts" },
         {
             "path": "../../packages/styles-native"
         },
