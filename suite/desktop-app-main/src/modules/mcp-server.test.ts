@@ -45,7 +45,7 @@ jest.mock('../libs/process-icon', () => ({
     getProcessIcon: jest.fn().mockResolvedValue(undefined),
 }));
 
-import { CALL_SOURCE_MCP } from '@suite-common/connect-popup';
+import { CALL_SOURCE_MCP, UNKNOWN_PROCESS } from '@suite-common/connect-popup';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
 import { init } from './mcp-server';
@@ -198,12 +198,11 @@ const jsonRpcNotification = (method: string, params?: Record<string, unknown>) =
     params,
 });
 
-/** Initializes a session and returns the payload of the first popup call it makes. */
-const initializeAndCallPopup = async (
+/** Makes a tool call in the given session and returns the payload of the popup call it makes. */
+const callPopup = async (
     server: Awaited<ReturnType<typeof startMcpServer>>,
-    initializeParams?: Record<string, unknown>,
+    sessionId?: string | null,
 ) => {
-    const initRes = await mcpFetch(server.port, jsonRpc('initialize', initializeParams));
     const call = mcpFetch(
         server.port,
         jsonRpc(
@@ -211,7 +210,7 @@ const initializeAndCallPopup = async (
             { name: 'trezor_get_account_info', arguments: { coin: 'btc', path: "m/84'/0'/0'" } },
             2,
         ),
-        { sessionId: initRes.headers.get('mcp-session-id') },
+        { sessionId },
     );
 
     const popupCall = await sentPopupCall(server.mainWindowProxy.mainWindow.webContents.send);
@@ -223,6 +222,16 @@ const initializeAndCallPopup = async (
     await call;
 
     return popupCall;
+};
+
+/** Initializes a session and returns the payload of the first popup call it makes. */
+const initializeAndCallPopup = async (
+    server: Awaited<ReturnType<typeof startMcpServer>>,
+    initializeParams?: Record<string, unknown>,
+) => {
+    const initRes = await mcpFetch(server.port, jsonRpc('initialize', initializeParams));
+
+    return callPopup(server, initRes.headers.get('mcp-session-id'));
 };
 
 describe('MCP server', () => {
@@ -498,8 +507,18 @@ describe('MCP server', () => {
             const popupCall = await initializeAndCallPopup(server, { clientInfo: { name: {} } });
 
             // The name is a React child in the consent prompt, where an object would throw.
-            expect(popupCall.process).toBeUndefined();
+            expect(popupCall.process).toEqual(UNKNOWN_PROCESS);
             expect(popupCall.manifest.appName).toBe('MCP Agent');
+        });
+
+        it('labels a tool call made without a session as a caller Suite could not identify', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            // Nothing makes a client initialize first, and `DELETE` drops the session it had.
+            const popupCall = await callPopup(server);
+
+            expect(popupCall.process).toEqual(UNKNOWN_PROCESS);
         });
 
         it('reduces a declared name with control and format characters to a single line', async () => {
@@ -564,7 +583,7 @@ describe('MCP server', () => {
 
             // Permissions are remembered by `process.fullPath`, so inheriting the previous
             // process would let this client pass for the identified one.
-            expect(unidentified.process).toBeUndefined();
+            expect(unidentified.process).toEqual(UNKNOWN_PROCESS);
             expect(unidentified.manifest.appName).toBe('MCP Agent');
         });
 
