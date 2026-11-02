@@ -20,6 +20,7 @@ interface MainThreadMessages {
     'module/tor-status-update': TorStatus;
     'module/trezor-connect/device-event': DeviceEvent;
     'module/bridge/toggle': void;
+    'module/bridge/start-hid': void;
     'module/bridge/status': {
         service: boolean;
         process: boolean;

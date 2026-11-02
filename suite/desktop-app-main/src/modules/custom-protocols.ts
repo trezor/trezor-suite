@@ -8,11 +8,26 @@ import { isValidProtocol } from '../libs/protocol';
 
 export const SERVICE_NAME = 'custom-protocols';
 
-export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
+// Opened by the page that moves funds off HID-only Trezor One devices, so that Suite starts the
+// bridge the page talks to them through. Any page can open it, only that one can use the bridge.
+const isHidBridgeRequest = (url: string) => /^trezorsuite:\/\/hid-bridge\/?$/i.test(url);
+
+export const init: ModuleInit = ({ mainWindowProxy, mainThreadEmitter, logger }) => {
     const protocols = process.env.PROTOCOLS as unknown as string[];
     protocols.forEach((p: string) => app.setAsDefaultProtocolClient(p));
 
+    const startHidBridgeIfRequested = (url: string) => {
+        if (!isHidBridgeRequest(url)) return false;
+
+        logger.info(SERVICE_NAME, 'HID bridge requested');
+        mainThreadEmitter.emit('module/bridge/start-hid');
+
+        return true;
+    };
+
     const sendProtocolInfo = (protocol: string) => {
+        if (startHidBridgeIfRequested(protocol)) return;
+
         if (isValidProtocol(protocol, protocols)) {
             logger.debug(SERVICE_NAME, `Send custom protocol to browser window: ${protocol}`);
             mainWindowProxy.getInstance()?.webContents.send('protocol/open', protocol);
@@ -74,6 +89,8 @@ export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
         if (argv[1]) {
             logger.debug(SERVICE_NAME, 'App is launched via custom protocol (Linux, Windows)');
 
+            if (startHidBridgeIfRequested(argv[1])) return;
+
             if (isValidProtocol(argv[1], protocols)) {
                 return { onLoad: firstRunOnly(argv[1]) };
             }
@@ -83,6 +100,8 @@ export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
     // App is launched via custom protocol (macOS)
     if (global.customProtocolUrl) {
         logger.debug(SERVICE_NAME, 'App is initially launched via custom protocol (macOS)');
+        if (startHidBridgeIfRequested(global.customProtocolUrl)) return;
+
         if (isValidProtocol(global.customProtocolUrl, protocols)) {
             return { onLoad: firstRunOnly(global.customProtocolUrl) };
         }

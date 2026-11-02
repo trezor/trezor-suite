@@ -2,6 +2,7 @@
  * Bridge runner
  */
 import { type InvokeResult } from '@suite/desktop-app-api';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { type TrezordNode } from '@trezor/transport-bridge';
 import { scheduleAction } from '@trezor/utils';
 
@@ -16,6 +17,11 @@ import { b2t } from '../libs/utils';
 const bridgeTest = hasSwitch('bridge-test');
 
 export const SERVICE_NAME = 'bridge';
+
+// The page that moves funds off HID-only Trezor One devices (firmware 1.6.3 and older) talks to
+// them through a bridge of their own, which only pages on trezor.io may use.
+const HID_BRIDGE_PORT = 21329;
+const HID_BRIDGE_ORIGINS = ['trezor.io', ...(isDevEnv ? ['localhost'] : [])];
 
 class TrezordNodeProcess {
     private readonly proxy;
@@ -83,6 +89,43 @@ class TrezordNodeProcess {
     }
 }
 
+// Started on request only, see `custom-protocols`. A crash takes just this bridge down, the next
+// request starts it again.
+class HidBridgeProcess {
+    private readonly proxy = new ThreadProxy<TrezordNode>({ name: 'bridge' });
+    private starting?: Promise<void>;
+
+    start() {
+        this.starting ??= this.run().finally(() => {
+            this.starting = undefined;
+        });
+
+        return this.starting;
+    }
+
+    private async run() {
+        if (this.proxy.running) return;
+        await this.proxy.run({
+            api: 'hid',
+            port: HID_BRIDGE_PORT,
+            allowedOrigins: HID_BRIDGE_ORIGINS,
+        });
+        try {
+            await this.proxy.request('start', []);
+        } catch (err) {
+            this.proxy.dispose();
+            throw err;
+        }
+    }
+
+    async stop() {
+        await this.starting?.catch(() => {});
+        if (!this.proxy.running) return;
+        await this.proxy.request('stop', []);
+        this.proxy.dispose();
+    }
+}
+
 const start = async (bridge: TrezordNodeProcess) => {
     if (bridgeTest) {
         await bridge.startTest();
@@ -138,6 +181,14 @@ export const initBackground = ({
     let loaded = false;
 
     bridge = new TrezordNodeProcess(store);
+    const hidBridge = new HidBridgeProcess();
+
+    mainThreadEmitter.on('module/bridge/start-hid', () => {
+        logger.info(SERVICE_NAME, 'Starting the HID bridge');
+        hidBridge.start().catch(err => {
+            logger.error(SERVICE_NAME, `HID bridge start failed: ${err.message}`);
+        });
+    });
 
     const onLoad = async () => {
         if (loaded) return;
@@ -187,7 +238,7 @@ export const initBackground = ({
 
     const onQuit = async () => {
         clearInterval(watchInterval);
-        await bridge?.stop();
+        await Promise.allSettled([bridge?.stop(), hidBridge.stop()]);
     };
 
     return { onLoad, onQuit };
