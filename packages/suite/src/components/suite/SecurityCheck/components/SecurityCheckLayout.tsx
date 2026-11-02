@@ -53,7 +53,7 @@ export const SecurityCheckLayout = ({
     };
 
     return (
-        <ContentFlex breakpoint={breakpoints.tablet} gap={24} alignItems="center" width="100%">
+        <ContentFlex breakpoint={breakpoints.tablet} gap={48} alignItems="center" width="100%">
             {model && (
                 <Box
                     backgroundColor="surfaceFillRaised"
