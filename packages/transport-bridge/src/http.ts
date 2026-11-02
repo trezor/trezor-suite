@@ -92,7 +92,7 @@ const DEFAULT_ALLOWED_ORIGIN_SUFFIXES = [
 ];
 
 export class TrezordNode {
-    version = '3.2.1';
+    version = '3.3.0';
     bundledVersion?: string;
     serviceName = 'trezord-node';
     /** last known descriptors state */
