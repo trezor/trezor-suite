@@ -3,6 +3,7 @@ import { type ReactNode, useCallback, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { type AddCoinFlowType, type CloseActionType } from '@suite-native/navigation';
 
 import { type NetworkFilterType, type OnSelectAccount } from '../types';
@@ -18,6 +19,7 @@ type AccountsListWithFilterProps = {
     title: ReactNode;
     flowType?: AddCoinFlowType;
     networksFilter?: NetworkSymbol[];
+    tokenContract?: TokenAddress;
     closeActionType?: CloseActionType;
     closeAction?: () => void;
     onAddAccount?: () => void;
@@ -31,6 +33,7 @@ export const AccountsListWithFilter = ({
     title,
     flowType,
     networksFilter = EMPTY_NETWORKS_FILTER,
+    tokenContract,
     closeActionType,
     closeAction,
     onAddAccount,
@@ -95,6 +98,7 @@ export const AccountsListWithFilter = ({
                 searchValue={searchValue}
                 networkFilter={filteredNetworks}
                 isSendFlow={networkFilterType === 'send'}
+                tokenContract={tokenContract}
                 ListHeaderComponent={<>{children}</>}
                 ListEmptyComponent={
                     <AccountsListEmptyPlaceholder isFilterEmpty={!searchValue.length} />

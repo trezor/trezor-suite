@@ -3,7 +3,8 @@ import { A } from '@mobily/ts-belt';
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getFormattedAccountType } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { hasAccountOrTokenSpendableBalance } from '@suite-common/wallet-utils';
 import { orderedAccountTypes } from '@suite-native/config';
 
 const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>> = {
@@ -76,8 +77,14 @@ export const filterAccountsByNetworkSymbols = (
     return A.filter(accounts, account => networkSymbols.includes(account.symbol));
 };
 
-export const filterSendAvailableAccounts = <T extends Account>(accounts: readonly T[]) =>
-    A.filter(accounts, account => Number(account.availableBalance) > 0);
+/**
+ * The accounts a send flow can start from. Pass a contract address to ask about that token
+ * rather than the native asset.
+ */
+export const filterSendAvailableAccounts = <T extends Account>(
+    accounts: readonly T[],
+    tokenContract?: TokenAddress,
+) => A.filter(accounts, account => hasAccountOrTokenSpendableBalance({ account, tokenContract }));
 
 export const sortAccountsByNetworksAndAccountTypes = <T extends Account>(
     accounts: readonly T[],

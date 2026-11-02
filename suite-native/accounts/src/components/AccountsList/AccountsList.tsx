@@ -6,6 +6,7 @@ import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 
 import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -24,6 +25,7 @@ type AccountsListProps = {
     onSelectAccount: OnSelectAccount;
     searchValue?: string;
     isSendFlow?: boolean;
+    tokenContract?: TokenAddress;
     networkFilter?: NetworkSymbol[];
     ListHeaderComponent?: ReactElement;
     ListEmptyComponent?: ReactElement;
@@ -46,6 +48,7 @@ export const AccountsList = ({
     onSelectAccount,
     searchValue = '',
     isSendFlow = false,
+    tokenContract,
     networkFilter = DEFAULT_NETWORK_FILTER,
     ListHeaderComponent,
     ListEmptyComponent,
@@ -58,7 +61,13 @@ export const AccountsList = ({
     const { applyStyle } = useNativeStyles();
 
     const accountListRows = useSelector((state: NativeAccountsRootState & NetworksRootState) =>
-        selectFilteredDeviceAccountListRows(state, searchValue, isSendFlow, networkFilter),
+        selectFilteredDeviceAccountListRows(
+            state,
+            searchValue,
+            isSendFlow,
+            networkFilter,
+            tokenContract,
+        ),
     );
 
     const renderItem = useCallback(
