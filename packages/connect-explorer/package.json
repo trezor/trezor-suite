@@ -46,7 +46,7 @@
         "codemirror-json-schema": "^0.8.1",
         "codemirror-json5": "^1.0.3",
         "json5": "^2.2.3",
-        "next": "15.5.25",
+        "next": "15.5.28",
         "next-themes": "^0.4.6",
         "nextra": "patch:nextra@npm%3A3.3.1#~/.yarn/patches/nextra-npm-3.3.1-e045409406.patch",
         "nextra-theme-docs": "^3.3.1",
