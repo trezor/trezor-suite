@@ -472,6 +472,33 @@ describe('http', () => {
             await trezordNode.stop();
         });
 
+        it('admits only pages on allowedOrigins, not even a request without an Origin header', async () => {
+            const enumerate = jest.fn(() => Promise.resolve({ success: true, payload: [] }));
+            const trezordNode = new TrezordNode({
+                port: (await getFreePort())[0],
+                api: createTransportApi({ enumerate }),
+                // @ts-expect-error
+                logger: muteLogger,
+                allowedOrigins: ['trezor.io'],
+            });
+            await trezordNode.start();
+            const url = trezordNode.server[0]!.getRouteAddress('/')!;
+            const getEnumerateStatus = async (origin: string) =>
+                (await fetch(`${url}enumerate`, { method: 'POST', headers: { Origin: origin } }))
+                    .status;
+
+            // Any page can make a browser send this one, e.g. through an image.
+            expect((await fetch(`${url}status-data`)).status).toBe(404);
+            expect(enumerate).not.toHaveBeenCalled();
+
+            // Both allowed by the default allowlist.
+            expect(await getEnumerateStatus('http://localhost:5181')).toBe(403);
+            expect(await getEnumerateStatus('https://suite.sldev.cz')).toBe(403);
+            expect(await getEnumerateStatus('https://old-trezors.trezor.io')).toBe(200);
+
+            await trezordNode.stop();
+        });
+
         it('GET /enumerate', async () => {
             const trezordNode = createTrezordNode({ port });
             await trezordNode.start();
