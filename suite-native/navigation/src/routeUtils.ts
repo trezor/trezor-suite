@@ -23,7 +23,10 @@ export const getActiveRouteName = (state: AppNavigationState): string | undefine
 
     if (route.state) return getActiveRouteName(route.state as AppNavigationState);
 
-    return route.params?.screen ?? route.name;
+    const nestedScreenName =
+        route.params && 'screen' in route.params ? route.params.screen : undefined;
+
+    return nestedScreenName ?? route.name;
 };
 
 export const checkIsRouteAnyOf = (routeList: string[], route?: string): boolean => {

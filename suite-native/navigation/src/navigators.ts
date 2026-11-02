@@ -51,7 +51,6 @@ import {
     type SignAndVerifyStackRoutes,
     type StellarManageTokenStackRoutes,
     type TradingFlowStackRoutes,
-    type TradingStackRoutes,
     type TransactionDetailStackRoutes,
     type WipeDeviceStackRoutes,
     type WrappedNativeTokenStackRoutes,
@@ -313,7 +312,7 @@ export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
     [AppTabsRoutes.EarnStack]: NavigatorScreenParams<EarnStackParamList>;
-    [AppTabsRoutes.TradeStack]: NavigatorScreenParams<TradingStackParamList>;
+    [AppTabsRoutes.Trading]: TradingScreenParams | undefined;
     [AppTabsRoutes.Settings]: undefined;
 };
 
@@ -644,13 +643,11 @@ export type TransactionDetailStackParamList = {
 export type ConfirmingScreenFlowType = AllowanceTransactionType | 'revoke-and-approve';
 export type ExchangeFlowType = 'swap' | 'sign-data' | ConfirmingScreenFlowType;
 
-export type TradingStackParamList = {
-    [TradingStackRoutes.Trading]: {
-        tradingType?: TradingType;
-        selectedMyAssetAccountKey?: AccountKey;
-        selectedMyAssetCryptoId?: string;
-        selectedTradeableAssetCryptoId?: string;
-    };
+export type TradingScreenParams = {
+    tradingType?: TradingType;
+    selectedMyAssetAccountKey?: AccountKey;
+    selectedMyAssetCryptoId?: string;
+    selectedTradeableAssetCryptoId?: string;
 };
 
 export type TradingFlowStackParamList = {

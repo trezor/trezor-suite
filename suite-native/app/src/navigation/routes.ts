@@ -23,8 +23,8 @@ const earnStack = enhanceTabOption({
     focusedIconName: 'piggyBankFilled',
 });
 
-const tradeStack = enhanceTabOption({
-    routeName: AppTabsRoutes.TradeStack,
+const trading = enhanceTabOption({
+    routeName: AppTabsRoutes.Trading,
     iconName: 'repeat',
     focusedIconName: 'repeat',
 });
@@ -38,7 +38,7 @@ const settings = enhanceTabOption({
 export const rootTabsOptionsWithoutEarn: TabsOptions = {
     ...homeStack,
     ...accountsStack,
-    ...tradeStack,
+    ...trading,
     ...settings,
 };
 

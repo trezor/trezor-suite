@@ -23,7 +23,7 @@ jest.mock('@suite-native/module-trading', () => {
     const { View } = require('react-native');
 
     return {
-        TradingStackNavigator: () => <View testID="@screen/Trading" />,
+        TradingScreen: () => <View testID="@screen/Trading" />,
     };
 });
 

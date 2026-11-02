@@ -7,7 +7,6 @@ import {
     Screen,
     ScreenHeader,
     type TradingFlowStackRoutes,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import {
     selectBuyTradeableAssets,
@@ -82,13 +81,10 @@ export const TradingTradeableAssetScreen = ({
     const handleAssetSelect = useCallback(
         ({ cryptoId }: TradeableAsset) => {
             navigation.popTo(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.TradeStack,
+                screen: AppTabsRoutes.Trading,
                 params: {
-                    screen: TradingStackRoutes.Trading,
-                    params: {
-                        tradingType,
-                        selectedTradeableAssetCryptoId: cryptoId,
-                    },
+                    tradingType,
+                    selectedTradeableAssetCryptoId: cryptoId,
                 },
             });
         },

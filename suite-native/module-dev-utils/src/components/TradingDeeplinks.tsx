@@ -7,7 +7,6 @@ import {
     type RootStackParamList,
     type RootStackRoutes,
     type StackToTabCompositeNavigationProp,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackToTabCompositeNavigationProp<
@@ -30,10 +29,7 @@ export const TradingDeeplinks = () => {
                     priority="secondary"
                     size="medium"
                     onPress={() => {
-                        navigate(AppTabsRoutes.TradeStack, {
-                            screen: TradingStackRoutes.Trading,
-                            params: { tradingType: 'buy' },
-                        });
+                        navigate(AppTabsRoutes.Trading, { tradingType: 'buy' });
                     }}
                 >
                     Go to Buy
@@ -43,10 +39,7 @@ export const TradingDeeplinks = () => {
                     priority="secondary"
                     size="medium"
                     onPress={() => {
-                        navigate(AppTabsRoutes.TradeStack, {
-                            screen: TradingStackRoutes.Trading,
-                            params: { tradingType: 'exchange' },
-                        });
+                        navigate(AppTabsRoutes.Trading, { tradingType: 'exchange' });
                     }}
                 >
                     Go to Swap

@@ -11,12 +11,12 @@ import {
 } from '@suite-common/trading';
 import { useFormState, useWatch } from '@suite-native/forms';
 import {
+    type AppTabsParamList,
+    type AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
+    type TabToStackCompositeNavigationProp,
     TradingFlowStackRoutes,
-    type TradingStackParamList,
-    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
@@ -24,9 +24,9 @@ import { type SellFormType } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.Trading,
+type NavigationProps = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.Trading,
     RootStackParamList
 >;
 

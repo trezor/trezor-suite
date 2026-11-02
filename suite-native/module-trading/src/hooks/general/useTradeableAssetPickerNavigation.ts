@@ -3,13 +3,13 @@ import { useCallback, useEffect } from 'react';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
+    type AppTabsParamList,
+    type AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
+    type TabToStackCompositeNavigationProp,
     type TradingFlowStackParamList,
     TradingFlowStackRoutes,
-    type TradingStackParamList,
-    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -22,9 +22,9 @@ type UseTradeableAssetPickerNavigationProps = {
     tradingType: TradeableAssetPickerTradingType;
 };
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.Trading,
+type NavigationProp = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.Trading,
     RootStackParamList
 >;
 
@@ -34,7 +34,7 @@ export const useTradeableAssetPickerNavigation = ({
     tradingType,
 }: UseTradeableAssetPickerNavigationProps) => {
     const navigation = useNavigation<NavigationProp>();
-    const { params } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.Trading>>();
+    const { params } = useRoute<RouteProp<AppTabsParamList, AppTabsRoutes.Trading>>();
     const routeTradingType = params?.tradingType;
     const selectedTradeableAssetCryptoId = params?.selectedTradeableAssetCryptoId;
 

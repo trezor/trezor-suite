@@ -6,13 +6,13 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { type TradingRootState, selectTradingCoinInfoByCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import {
+    type AppTabsParamList,
+    type AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
+    type TabToStackCompositeNavigationProp,
     type TradingFlowStackParamList,
     TradingFlowStackRoutes,
-    type TradingStackParamList,
-    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { type SectionListData, coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 import { type MyAsset, type TradeableAsset } from '@suite-native/trading-types';
@@ -26,9 +26,9 @@ type UseMyAssetPickerNavigationProps = {
     tradingType: MyAssetPickerTradingType;
 };
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.Trading,
+type NavigationProp = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.Trading,
     RootStackParamList
 >;
 
@@ -38,7 +38,7 @@ export const useMyAssetPickerNavigation = ({
     tradingType,
 }: UseMyAssetPickerNavigationProps) => {
     const navigation = useNavigation<NavigationProp>();
-    const { params } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.Trading>>();
+    const { params } = useRoute<RouteProp<AppTabsParamList, AppTabsRoutes.Trading>>();
     const routeTradingType = params?.tradingType;
     const selectedMyAssetAccountKey = params?.selectedMyAssetAccountKey;
     const selectedMyAssetCryptoId = params?.selectedMyAssetCryptoId;

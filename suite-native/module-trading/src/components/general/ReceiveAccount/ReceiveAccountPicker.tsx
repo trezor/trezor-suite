@@ -10,12 +10,12 @@ import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import {
+    type AppTabsParamList,
+    type AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
+    type TabToStackCompositeNavigationProp,
     TradingFlowStackRoutes,
-    type TradingStackParamList,
-    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { OverviewRow } from '@suite-native/trading-atoms';
 import { type ReceiveAccount } from '@suite-native/trading-types';
@@ -41,9 +41,9 @@ type ReceiveAccountPickerRightProps = {
     testID?: string;
 };
 
-export type NavigationProps = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.Trading,
+export type NavigationProps = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.Trading,
     RootStackParamList
 >;
 

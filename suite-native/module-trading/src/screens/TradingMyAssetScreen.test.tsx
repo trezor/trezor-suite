@@ -9,7 +9,6 @@ import {
     RootStackRoutes,
     type TradingFlowStackParamList,
     TradingFlowStackRoutes,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
@@ -92,14 +91,11 @@ describe('TradingMyAssetScreen', () => {
                 tradingType,
             );
             expect(navigation.popTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.TradeStack,
+                screen: AppTabsRoutes.Trading,
                 params: {
-                    screen: TradingStackRoutes.Trading,
-                    params: {
-                        tradingType,
-                        selectedMyAssetAccountKey: btc1NormalAccount.key,
-                        selectedMyAssetCryptoId: bitcoinAsset.cryptoId,
-                    },
+                    tradingType,
+                    selectedMyAssetAccountKey: btc1NormalAccount.key,
+                    selectedMyAssetCryptoId: bitcoinAsset.cryptoId,
                 },
             });
         },

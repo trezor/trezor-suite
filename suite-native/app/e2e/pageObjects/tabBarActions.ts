@@ -33,7 +33,7 @@ class TabBarActions {
     }
 
     async navigateToTrade() {
-        const tradeTabBarItem = element(by.id('@tabBar/TradeStack'));
+        const tradeTabBarItem = element(by.id('@tabBar/Trading'));
         await waitForVisible(tradeTabBarItem);
         await tradeTabBarItem.tap();
 

@@ -10,7 +10,6 @@ import {
     ReceiveStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import {
     selectIsTradingBuyEnabled,
@@ -43,11 +42,8 @@ export const useEarnNoBalanceActions = ({
 
     const navigateToTrading = (tradingType: 'buy' | 'exchange') => {
         navigation.popTo(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.TradeStack,
-            params: {
-                screen: TradingStackRoutes.Trading,
-                params: { tradingType },
-            },
+            screen: AppTabsRoutes.Trading,
+            params: { tradingType },
         });
     };
 
