@@ -64,6 +64,9 @@ module.exports = {
     },
     dmg: {
         sign: false,
+        // electron-builder 27 switched the default to APFS, whose `hdiutil create`/`attach` fails
+        // intermittently on GitHub macOS runners with "Device not configured". Keep the previous default.
+        filesystem: 'HFS+',
         contents: [
             {
                 x: 410,
