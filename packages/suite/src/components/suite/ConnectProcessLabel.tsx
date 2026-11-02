@@ -16,6 +16,13 @@ interface ConnectProcessLabelProps {
     'data-testid'?: string;
 }
 
+// `fullPath` is the path remembered permissions are keyed by, so it is shown on both badges and not
+// only next to a warning: the executable on Linux and Windows, and on macOS the app bundle taken from
+// the path the process reports for itself. A path that only repeats the name on the badge adds
+// nothing to it.
+const getPathTooltip = ({ name, fullPath }: ConnectProcessInfo) =>
+    fullPath !== name ? fullPath : undefined;
+
 export const ConnectProcessLabel = ({
     process,
     'data-testid': dataTest,
@@ -24,14 +31,13 @@ export const ConnectProcessLabel = ({
     // process that cannot be told apart from others is warned about even when the lookup set no
     // warning, and its tooltip explains why instead of showing a path that identifies nothing.
     const isUnidentified = !isIdentifiedProcess(process);
+    const tooltip = isUnidentified ? (
+        <Translation id="TR_CONNECT_PROCESS_UNIDENTIFIED" />
+    ) : (
+        getPathTooltip(process)
+    );
 
     if (process.warning || isUnidentified) {
-        const tooltip = isUnidentified ? (
-            <Translation id="TR_CONNECT_PROCESS_UNIDENTIFIED" />
-        ) : (
-            process.fullPath
-        );
-
         return (
             <Tooltip content={tooltip}>
                 <Badge intent="warning" iconLeft={WarningIcon}>
@@ -42,15 +48,17 @@ export const ConnectProcessLabel = ({
     }
 
     return (
-        <Badge intent="neutral">
-            <Row gap={8}>
-                {process.icon ? (
-                    <AppIcon src={process.icon} alt="Process icon" />
-                ) : (
-                    <Icon as={AppWindowIcon} intent="neutral" priority="secondary" />
-                )}
-                <Text data-testid={dataTest}>{process.name}</Text>
-            </Row>
-        </Badge>
+        <Tooltip content={tooltip}>
+            <Badge intent="neutral">
+                <Row gap={8}>
+                    {process.icon ? (
+                        <AppIcon src={process.icon} alt="Process icon" />
+                    ) : (
+                        <Icon as={AppWindowIcon} intent="neutral" priority="secondary" />
+                    )}
+                    <Text data-testid={dataTest}>{process.name}</Text>
+                </Row>
+            </Badge>
+        </Tooltip>
     );
 };
