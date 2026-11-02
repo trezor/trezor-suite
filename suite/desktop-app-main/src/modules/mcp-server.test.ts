@@ -521,6 +521,43 @@ describe('MCP server', () => {
             expect(popupCall.process).toEqual(UNKNOWN_PROCESS);
         });
 
+        // Documents the behaviour today: a lookup that found the process is kept whatever it
+        // reports, so a process without a path is labelled by the name it picked for its own
+        // kernel task, while the manifest shows the name the client declared.
+        it('names the client by its pathless process, not by the name it declared', async () => {
+            // The Linux lookup reports an empty path when it cannot read /proc/<pid>/exe, or when
+            // the process runs from an AppImage mountpoint.
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '1',
+                fullPath: '',
+                warning: true,
+            });
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: 'Claude Code' },
+            });
+
+            expect(popupCall.process).toEqual({ name: 'node', fullPath: '', warning: true });
+            expect(popupCall.manifest.appName).toBe('Claude Code');
+        });
+
+        it('keeps the pathless process name when the client declared none', async () => {
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '1',
+                fullPath: '',
+            });
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server);
+
+            expect(popupCall.process).toEqual({ name: 'node', fullPath: '', warning: false });
+        });
+
         it('reduces a declared name with control and format characters to a single line', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
