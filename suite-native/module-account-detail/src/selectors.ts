@@ -10,12 +10,11 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
-    isPositiveBalance,
-    isStellarContractToken,
+    hasAccountOrTokenSpendableBalance,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type AccountOverviewTab } from '@suite-native/navigation';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState } from '@suite-native/tokens';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
@@ -75,16 +74,5 @@ export const selectHasAccountOrTokenSpendableBalance = (
 ): boolean => {
     const account = selectAccountByKey(state, accountKey);
 
-    if (!account) return false;
-
-    if (tokenContract) {
-        const token = selectAccountTokenInfo(state, accountKey, tokenContract);
-
-        // Native has no compose path for a Soroban transfer yet.
-        if (!token || isStellarContractToken(token)) return false;
-
-        return isPositiveBalance(token.balance ?? '0');
-    }
-
-    return isPositiveBalance(account.availableBalance);
+    return hasAccountOrTokenSpendableBalance({ account, tokenContract });
 };
