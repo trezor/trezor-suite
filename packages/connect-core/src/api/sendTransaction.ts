@@ -29,7 +29,7 @@ import { requestExistingAccounts } from './common/requestExistingAccounts';
 import { fixCoinInfoNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { formatAmount } from '../utils/formatUtils';
 import { createComposer } from './bitcoin/TransactionComposer';
-import { enhanceSignTx } from './bitcoin/enhanceSignTx';
+import { applyZcashSignTxDefaultsIfZcash } from './bitcoin/applyZcashSignTxDefaultsIfZcash';
 import { inputToTrezor } from './bitcoin/inputs';
 import { outputToTrezor, validateHDOutput } from './bitcoin/outputs';
 import { parseTransactionHexes, transformReferencedTransactions } from './bitcoin/refTx';
@@ -418,7 +418,7 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
             inputs,
             outputs,
             refTxs,
-            options: enhanceSignTx({}, coinInfo),
+            options: applyZcashSignTxDefaultsIfZcash({}, coinInfo),
             coinInfo,
         });
 

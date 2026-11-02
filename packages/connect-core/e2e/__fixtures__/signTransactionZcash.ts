@@ -231,7 +231,7 @@ const signTransactionZcash: TestCase = {
                 // enhancement for v5 is added automatically (version 5,
                 // overwintered, versionGroupId). branchId is pinned to NU5
                 // explicitly so these historical fixtures stay valid regardless
-                // of the mutable fallback in enhanceSignTx (now NU7).
+                // of the mutable fallback in applyZcashSignTxDefaultsIfZcash (now NU7).
                 branchId: 0xc2d6d0b4,
                 inputs: [
                     {
@@ -264,7 +264,7 @@ const signTransactionZcash: TestCase = {
                 // enhancement for v5 is added automatically (version 5,
                 // overwintered, versionGroupId). branchId is pinned to NU5
                 // explicitly so these historical fixtures stay valid regardless
-                // of the mutable fallback in enhanceSignTx (now NU7).
+                // of the mutable fallback in applyZcashSignTxDefaultsIfZcash (now NU7).
                 branchId: 0xc2d6d0b4,
                 inputs: [
                     {
@@ -297,7 +297,7 @@ const signTransactionZcash: TestCase = {
                 // enhancement for v5 is added automatically (version 5,
                 // overwintered, versionGroupId). branchId is pinned to NU5
                 // explicitly so these historical fixtures stay valid regardless
-                // of the mutable fallback in enhanceSignTx (now NU7).
+                // of the mutable fallback in applyZcashSignTxDefaultsIfZcash (now NU7).
                 branchId: 0xc2d6d0b4,
                 inputs: [
                     {
@@ -335,7 +335,7 @@ const signTransactionZcash: TestCase = {
                 // enhancement for v5 is added automatically (version 5,
                 // overwintered, versionGroupId). branchId is pinned to NU5
                 // explicitly so these historical fixtures stay valid regardless
-                // of the mutable fallback in enhanceSignTx (now NU7).
+                // of the mutable fallback in applyZcashSignTxDefaultsIfZcash (now NU7).
                 branchId: 0xc2d6d0b4,
                 inputs: [
                     {
@@ -378,7 +378,7 @@ const signTransactionZcash: TestCase = {
                 // enhancement for v5 is added automatically (version 5,
                 // overwintered, versionGroupId). branchId is pinned to NU5
                 // explicitly so these historical fixtures stay valid regardless
-                // of the mutable fallback in enhanceSignTx (now NU7).
+                // of the mutable fallback in applyZcashSignTxDefaultsIfZcash (now NU7).
                 branchId: 0xc2d6d0b4,
                 inputs: [
                     {
