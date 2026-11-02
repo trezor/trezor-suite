@@ -77,10 +77,6 @@ export const filterAccountsByNetworkSymbols = (
     return A.filter(accounts, account => networkSymbols.includes(account.symbol));
 };
 
-/**
- * The accounts a send flow can start from. Pass a contract address to ask about that token
- * rather than the native asset.
- */
 export const filterSendAvailableAccounts = <T extends Account>(
     accounts: readonly T[],
     tokenContract?: TokenAddress,

@@ -5,13 +5,10 @@ import { findToken } from './sendFormUtils';
 import { isStellarContractToken } from './transactionUtils';
 
 type HasAccountOrTokenSpendableBalanceParams = {
-    account: Account | undefined;
+    account: Account | null | undefined;
     tokenContract?: TokenAddress;
 };
 
-/**
- * Whether the account holds enough of the selected asset to open a send flow for it.
- */
 export const hasAccountOrTokenSpendableBalance = ({
     account,
     tokenContract,

@@ -14177,7 +14177,6 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/price-chart": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
-    "@suite-native/toasts": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.3.0"
