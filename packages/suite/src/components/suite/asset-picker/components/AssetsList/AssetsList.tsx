@@ -16,6 +16,7 @@ export type AssetsListProps<T> = {
     height: VirtualizedListProps<MeasuredItem<T>>['listHeight'];
     minHeight?: VirtualizedListProps<MeasuredItem<T>>['listMinHeight'];
     ref?: RefObject<HTMLDivElement | null>;
+    'data-testid'?: string;
 };
 
 export const LIST_MIN_HEIGHT = 200;
@@ -27,6 +28,7 @@ function AssetsListInner<T>({
     height,
     minHeight = LIST_MIN_HEIGHT,
     ref,
+    'data-testid': dataTestId,
 }: AssetsListProps<T>) {
     const { scrollElementRef, ScrollSentinels, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow({
@@ -55,6 +57,7 @@ function AssetsListInner<T>({
                 listHeight={height}
                 listMinHeight={minHeight}
                 resetScrollOnItemsChange={false}
+                data-testid={dataTestId}
             />
             <ShadowBottom />
         </ShadowContainer>
