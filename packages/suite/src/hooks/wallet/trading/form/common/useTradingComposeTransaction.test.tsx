@@ -13,7 +13,11 @@ import {
     deriveBitcoinSwapFromAddresses,
 } from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type PrecomposedLevels,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 
@@ -27,16 +31,20 @@ const BTC_PLACEHOLDER = 'btc-placeholder-address';
 const SOL_PLACEHOLDER = 'sol-placeholder-address';
 const EXTERNAL_ADDRESS = 'external-address-set-meanwhile';
 
+const mockTranslationString = (id: string) => id;
+
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
-    useTranslation: () => ({ translationString: (id: string) => id }),
+    useTranslation: () => ({ translationString: mockTranslationString }),
 }));
+
+let mockComposedLevels: PrecomposedLevels | undefined;
 
 jest.mock('src/hooks/wallet/form/useCompose', () => ({
     useCompose: () => ({
         isLoading: false,
         composeRequest: jest.fn(),
-        composedLevels: undefined,
+        composedLevels: mockComposedLevels,
         onFeeLevelChange: jest.fn(),
         setComposedLevels: jest.fn(),
     }),
@@ -154,6 +162,17 @@ const renderComposeTransaction = ({
     );
 };
 
+const FEE_ERROR_LEVELS: PrecomposedLevels = {
+    normal: {
+        type: 'error',
+        error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+        errorMessage: {
+            id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+            values: { networkDisplaySymbol: 'ETH', feeAmount: '0.000076965689338' },
+        },
+    },
+};
+
 describe('useTradingComposeTransaction', () => {
     beforeEach(() => {
         mockGetComposeAddressPlaceholder.mockImplementation((account: Account) =>
@@ -163,6 +182,19 @@ describe('useTradingComposeTransaction', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+        mockComposedLevels = undefined;
+    });
+
+    it('shows the short fee error without the fee amount', async () => {
+        mockComposedLevels = FEE_ERROR_LEVELS;
+
+        const { result } = renderComposeTransaction();
+
+        await waitFor(() =>
+            expect(
+                result.current.methods.getFieldState(TRADING_FORM_OUTPUT_AMOUNT).error?.message,
+            ).toBe('AMOUNT_NOT_ENOUGH_CURRENCY_FEE'),
+        );
     });
 
     it('refreshes the compose address placeholder when the send account changes', async () => {
