@@ -1,3 +1,5 @@
+import type * as NodeHidModule from 'node-hid';
+
 import type { Log } from '@trezor/logger';
 import {
     type TransportProtocol,
@@ -32,7 +34,12 @@ import {
     unknownError,
 } from '@trezor/transport-common';
 
-export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logger?: Log) => {
+import { HidApi } from './api/hid';
+
+export const createCore = (
+    apiArg: 'legacy' | 'nusb' | 'udp' | 'hid' | AbstractApi,
+    logger?: Log,
+) => {
     let api: AbstractApi;
 
     const sessionsBackground = new SessionsBackground();
@@ -41,6 +48,13 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
     if (typeof apiArg === 'string') {
         if (apiArg === 'udp') {
             api = new UdpApi({ logger });
+        } else if (apiArg === 'hid') {
+            // Only HID-only Trezor One devices (534c:0001), which libusb cannot claim on macOS
+            // and Windows. The addon is loaded by the first enumeration, not here.
+            api = new HidApi({
+                logger,
+                loadNodeHid: () => require('node-hid') as typeof NodeHidModule,
+            });
         } else if (apiArg === 'legacy') {
             // Lazy-require so only the SELECTED native usb addon is ever loaded - never both at
             // once, which would make libusb (2.x) and nusb (3.x) contend for the same device.
