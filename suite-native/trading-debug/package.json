@@ -15,7 +15,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
-        "@suite-common/trading": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
@@ -24,7 +24,6 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-common/wallet-core": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",

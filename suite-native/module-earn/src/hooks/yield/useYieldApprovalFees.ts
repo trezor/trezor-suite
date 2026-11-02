@@ -1,15 +1,14 @@
 import { useMemo } from 'react';
 
 import { type ResolvedYieldFlowData, getApprovalContractAddress } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type AllowanceLimitType, type TokenAddress } from '@suite-common/wallet-types';
 
 import { type YieldAllowanceFeeTransaction, useYieldAllowanceFees } from './useYieldAllowanceFees';
-import { type YieldApprovalLimitType } from '../../types';
 import { getYieldApprovalAllowanceAmount } from '../../utils/yield/yieldApprovalUtils';
 
 type UseYieldApprovalFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     amount: string | undefined;
-    approvalLimitType: YieldApprovalLimitType;
+    approvalLimitType: AllowanceLimitType;
     isEnabled: boolean;
     tokenContract: TokenAddress;
 };

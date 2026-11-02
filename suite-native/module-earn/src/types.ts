@@ -21,10 +21,6 @@ export type StakingPendingModal = {
     pendingTransaction: StakingPendingTxParams;
 };
 
-export type YieldApprovalLimitType = 'per-deposit' | 'unlimited';
-
-export type YieldAllowanceFormDraftTransactionType = 'approve' | 'revoke';
-
 export type YieldReviewActionStatus = 'idle' | 'signing' | 'sending';
 
 export type YieldReviewStatus = YieldReviewActionStatus | 'signed';

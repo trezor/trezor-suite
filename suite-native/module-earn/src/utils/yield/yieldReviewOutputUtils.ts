@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
+    type AllowanceTransactionType,
     type EvmSelectedFee,
     type EvmTransactionPurpose,
     type FormState,
@@ -113,7 +114,7 @@ type BuildYieldAllowanceReviewPreviewParams = {
     device: TrezorDevice;
     formState: FormState;
     precomposedTransaction: PrecomposedTransactionFinal;
-    type: 'approve' | 'revoke';
+    type: AllowanceTransactionType;
     vaultName?: string;
 };
 

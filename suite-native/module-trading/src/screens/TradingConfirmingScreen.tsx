@@ -4,10 +4,9 @@ import { useSelector } from 'react-redux';
 import {
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
-    useAllowanceTxTracking,
     useTradingExchangeWatchApproval,
 } from '@suite-common/trading';
-import { sendFormActions } from '@suite-common/wallet-core';
+import { sendFormActions, useAllowanceTxTracking } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,

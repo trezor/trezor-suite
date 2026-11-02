@@ -15748,7 +15748,6 @@ __metadata:
   resolution: "@suite-native/trading-debug@workspace:suite-native/trading-debug"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
-    "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"

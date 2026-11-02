@@ -18,6 +18,7 @@ import {
     signTransactionThunk,
     transactionsActions,
 } from '@suite-common/wallet-core';
+import { type AllowanceLimitType, type AllowanceTransactionType } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import type {
@@ -33,22 +34,18 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
 import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';
 import { getYieldAllowanceFormDraftKey } from '../../thunks/yield/yieldApprovalThunks';
-import {
-    type YieldAllowanceFormDraftTransactionType,
-    type YieldApprovalLimitType,
-    type YieldReviewSigningResult,
-} from '../../types';
+import { type YieldReviewSigningResult } from '../../types';
 import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
 import { isUserCancelledSignError } from '../../utils/earn/utils';
 import { getYieldApprovalAnalyticsType } from '../../utils/yield/yieldAnalyticsUtils';
 import { useHandleEarnReviewError } from '../earn/useHandleEarnReviewError';
 
 type UseYieldApprovalReviewParams = {
-    approvalLimitType?: YieldApprovalLimitType;
+    approvalLimitType?: AllowanceLimitType;
     flowData: YieldFlowResolvedData;
     flowKey: string;
     onReviewLeave?: () => void;
-    transactionType: YieldAllowanceFormDraftTransactionType;
+    transactionType: AllowanceTransactionType;
 };
 
 type UseYieldApprovalReviewResult = {

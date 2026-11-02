@@ -1,5 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type AllowanceLimitType, type TokenAddress } from '@suite-common/wallet-types';
 import {
     BannerInline,
     BottomSheetModal,
@@ -10,14 +10,13 @@ import {
 import { Translation } from '@suite-native/intl';
 
 import { YieldDepositApprovalLimitCard } from './YieldDepositApprovalLimitCard';
-import { type YieldApprovalLimitType } from '../../types';
 
 type YieldDepositApprovalLimitBottomSheetProps = {
     accountSymbol: NetworkSymbol;
-    onApprovalLimitSelect: (approvalLimitType: YieldApprovalLimitType) => void;
+    onApprovalLimitSelect: (approvalLimitType: AllowanceLimitType) => void;
     onClose: () => void;
     ref: BottomSheetModalRef;
-    selectedApprovalLimitType: YieldApprovalLimitType;
+    selectedApprovalLimitType: AllowanceLimitType;
     tokenContract: TokenAddress;
     tokenSymbol: string;
 };
@@ -31,7 +30,7 @@ export const YieldDepositApprovalLimitBottomSheet = ({
     tokenContract,
     tokenSymbol,
 }: YieldDepositApprovalLimitBottomSheetProps) => {
-    const handleSelect = (approvalLimitType: YieldApprovalLimitType) => {
+    const handleSelect = (approvalLimitType: AllowanceLimitType) => {
         onApprovalLimitSelect(approvalLimitType);
         onClose();
     };
@@ -56,8 +55,8 @@ export const YieldDepositApprovalLimitBottomSheet = ({
                     symbol={accountSymbol}
                     contractAddress={tokenContract}
                     tokenSymbol={tokenSymbol}
-                    isChecked={selectedApprovalLimitType === 'per-deposit'}
-                    onChange={() => handleSelect('per-deposit')}
+                    isChecked={selectedApprovalLimitType === 'minimal'}
+                    onChange={() => handleSelect('minimal')}
                 />
                 <YieldDepositApprovalLimitCard
                     title={

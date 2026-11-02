@@ -3,12 +3,8 @@ import { useCallback } from 'react';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    getYieldApprovalAction,
-    getYieldNativeFeeStatus,
-    yieldActions,
-} from '@suite-common/wallet-core';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { getYieldNativeFeeStatus, yieldActions } from '@suite-common/wallet-core';
+import { getAllowanceAction, isPositiveBalance } from '@suite-common/wallet-utils';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import {
     type StackNavigationProps,
@@ -69,7 +65,7 @@ export const useYieldDepositApprovalController = () => {
         vaultId: yieldFlowData.vault?.id,
     });
     const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
-    const defaultApprovalLimitType = isAllowanceAmountUnlimited ? 'unlimited' : 'per-deposit';
+    const defaultApprovalLimitType = isAllowanceAmountUnlimited ? 'unlimited' : 'minimal';
     const { approvalLimitTitle, approvalLimitType, setApprovalLimitType } =
         useYieldApprovalLimit(defaultApprovalLimitType);
     const allowanceAmount = session?.approval.allowanceAmount;
@@ -112,9 +108,9 @@ export const useYieldDepositApprovalController = () => {
     } = form;
     const footerApprovalAction =
         allowanceStatus === 'loaded'
-            ? getYieldApprovalAction({
-                  liveAmount: amountValue ?? '',
-                  allowanceAmount,
+            ? getAllowanceAction({
+                  requestedAmount: amountValue ?? '',
+                  currentAllowanceAmount: allowanceAmount,
                   shouldConsiderAllowance: hasApprovedAmount,
                   isRevokeRequired: session?.approval.isRevokeRequired ?? false,
                   tokenContractAddress: token?.contractAddress,

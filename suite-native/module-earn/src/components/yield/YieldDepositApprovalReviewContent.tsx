@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type YieldFlowResolvedData } from '@suite-common/wallet-core';
+import { type AllowanceLimitType, type AllowanceTransactionType } from '@suite-common/wallet-types';
 import { TransactionReviewScreen } from '@suite-native/transaction-review';
 
 import { YieldTransactionReviewSummaryCard } from './YieldTransactionReviewSummaryCard';
@@ -14,21 +15,17 @@ import {
 } from '../../hooks/yield/useYieldReviewScreenControls';
 import { useYieldTransactionReviewOutputs } from '../../hooks/yield/useYieldTransactionReviewOutputs';
 import {
-    type YieldAllowanceFormDraftTransactionType,
-    type YieldApprovalLimitType,
-} from '../../types';
-import {
     buildYieldReviewPreview,
     getYieldReviewSummaryState,
     getYieldStatefulReviewOutputs,
 } from '../../utils/yield/yieldReviewOutputUtils';
 
 type YieldDepositApprovalReviewContentProps = {
-    approvalLimitType?: YieldApprovalLimitType;
+    approvalLimitType?: AllowanceLimitType;
     device: TrezorDevice;
     flowData: YieldFlowResolvedData;
     flowKey: string;
-    transactionType: YieldAllowanceFormDraftTransactionType;
+    transactionType: AllowanceTransactionType;
     vaultName: string;
 };
 
