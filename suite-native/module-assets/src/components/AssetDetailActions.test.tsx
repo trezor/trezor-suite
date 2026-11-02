@@ -1,3 +1,4 @@
+import { selectWalletAssetHasSpendableBalance } from '@suite-common/assets';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -32,15 +33,19 @@ jest.mock('@suite-common/assets', () => ({
     selectWalletAssetKey: () => 'asset-key',
     selectWalletAssetName: () => 'USD Coin',
     selectWalletAssetTokenSymbol: () => 'USDC',
+    selectWalletAssetHasSpendableBalance: jest.fn(),
 }));
 
 jest.mock('@suite-common/receive', () => ({
     buildGlobalReceiveAssetOption: () => mockReceiveAsset,
 }));
 
+const mockHasSpendableBalance = jest.mocked(selectWalletAssetHasSpendableBalance);
+
 describe('AssetDetailActions', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockHasSpendableBalance.mockReturnValue(true);
     });
 
     it('opens receive with the selected asset prefiltered', async () => {
@@ -68,5 +73,14 @@ describe('AssetDetailActions', () => {
                 networksFilter: [mockNetworkSymbol],
             },
         });
+    });
+
+    it('offers no send button while the asset has nothing to spend', async () => {
+        mockHasSpendableBalance.mockReturnValue(false);
+
+        const { queryByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
+
+        expect(queryByTestId('@assets/asset-detail/send-button')).toBeNull();
+        expect(queryByTestId('@assets/asset-detail/receive-button')).not.toBeNull();
     });
 });

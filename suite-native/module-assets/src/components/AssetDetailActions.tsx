@@ -4,6 +4,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import {
     type HomeAssetTableState,
+    selectWalletAssetHasSpendableBalance,
     selectWalletAssetKey,
     selectWalletAssetName,
     selectWalletAssetTokenSymbol,
@@ -39,6 +40,9 @@ export const AssetDetailActions = () => {
     );
     const tokenSymbol = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetTokenSymbol(state, assetKey),
+    );
+    const hasSpendableBalance = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetHasSpendableBalance(state, assetKey),
     );
 
     const handleReceivePress = () => {
@@ -83,15 +87,17 @@ export const AssetDetailActions = () => {
                 >
                     <Translation id="transactions.receive" />
                 </Button>
-                <Button
-                    flex={1}
-                    priority="secondary"
-                    iconRight="arrowLineUp"
-                    onPress={handleSendPress}
-                    testID="@assets/asset-detail/send-button"
-                >
-                    <Translation id="transactions.send" />
-                </Button>
+                {hasSpendableBalance && (
+                    <Button
+                        flex={1}
+                        priority="secondary"
+                        iconRight="arrowLineUp"
+                        onPress={handleSendPress}
+                        testID="@assets/asset-detail/send-button"
+                    >
+                        <Translation id="transactions.send" />
+                    </Button>
+                )}
             </HStack>
         </Box>
     );

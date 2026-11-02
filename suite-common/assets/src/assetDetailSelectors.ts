@@ -9,10 +9,14 @@ import {
     selectTransactions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { hasAccountOrTokenSpendableBalance } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type HomeAssetTableState } from './homeAssetTableSelectors';
+import {
+    type HomeAssetTableState,
+    selectWalletAssetContractAddress,
+} from './homeAssetTableSelectors';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
 
@@ -20,7 +24,7 @@ export const selectWalletAssetAccounts = createMemoizedSelector(
     [
         selectDeviceAssetAccounts,
         selectAccounts,
-        (_state: HomeAssetTableState, assetKey: WalletAssetKey) => assetKey,
+        (_state: HomeAssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
     ],
     (assetAccounts, accounts, assetKey): readonly Account[] => {
         const accountKeys = new Set(
@@ -32,6 +36,14 @@ export const selectWalletAssetAccounts = createMemoizedSelector(
         return returnStableArrayIfEmpty(accounts.filter(account => accountKeys.has(account.key)));
     },
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
+);
+
+export const selectWalletAssetHasSpendableBalance = createMemoizedSelector(
+    [selectWalletAssetAccounts, selectWalletAssetContractAddress],
+    (accounts, contractAddress): boolean =>
+        accounts.some(account =>
+            hasAccountOrTokenSpendableBalance({ account, tokenContract: contractAddress }),
+        ),
 );
 
 const createStakingMemoizedSelector = createWeakMapSelector.withTypes<

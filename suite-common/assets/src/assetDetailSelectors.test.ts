@@ -9,6 +9,7 @@ import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     selectWalletAssetAccounts,
+    selectWalletAssetHasSpendableBalance,
     selectWalletAssetUnstakedAccounts,
 } from './assetDetailSelectors';
 import { type HomeAssetTableState } from './homeAssetTableSelectors';
@@ -47,6 +48,7 @@ type MockAccountParams = {
     symbol: Account['symbol'];
     index: number;
     balance?: string;
+    availableBalance?: string;
     tokens?: { contract: TokenAddress; balance: string }[];
     isDelegating?: boolean;
     everstakePool?: EverstakePoolParams;
@@ -67,7 +69,7 @@ const getMisc = ({ symbol, isDelegating, everstakePool }: MockAccountParams) => 
 };
 
 const mockAccount = (params: MockAccountParams): Account => {
-    const { symbol, index, balance = '1', tokens = [] } = params;
+    const { symbol, index, balance = '1', availableBalance = balance, tokens = [] } = params;
 
     return {
         key: `descriptor${index}-${symbol}-${ALICE}`,
@@ -78,6 +80,7 @@ const mockAccount = (params: MockAccountParams): Account => {
         index,
         accountType: 'normal',
         formattedBalance: balance,
+        availableBalance,
         visible: true,
         tokens: tokens.map(token => ({ ...token, standard: 'ERC20', symbol: 'tkn' })),
         misc: getMisc(params),
@@ -120,6 +123,11 @@ const createState = ({
 const bitcoin = getWalletAssetKey({ deviceState: ALICE, symbol: BTC, contractAddress: undefined });
 const cardano = getWalletAssetKey({ deviceState: ALICE, symbol: ADA, contractAddress: undefined });
 const ethereum = getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: undefined });
+const usdc = getWalletAssetKey({
+    deviceState: ALICE,
+    symbol: ETH,
+    contractAddress: USDC_ON_ETH,
+});
 
 describe('the accounts the asset is on', () => {
     const state = createState({
@@ -141,6 +149,61 @@ describe('the accounts the asset is on', () => {
         expect(selectWalletAssetAccounts(state, bitcoin)).toBe(
             selectWalletAssetAccounts(state, bitcoin),
         );
+    });
+});
+
+describe('whether an asset can be sent', () => {
+    it('returns true when any account holding a native asset has spendable balance', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ symbol: BTC, index: 0, balance: '1', availableBalance: '0' }),
+                mockAccount({ symbol: BTC, index: 1, balance: '1', availableBalance: '0.5' }),
+            ],
+        });
+
+        expect(selectWalletAssetHasSpendableBalance(state, bitcoin)).toBe(true);
+    });
+
+    it('returns false when all accounts holding a native asset have no spendable balance', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ symbol: BTC, index: 0, balance: '1', availableBalance: '0' }),
+                mockAccount({ symbol: BTC, index: 1, balance: '0', availableBalance: '0' }),
+            ],
+        });
+
+        expect(selectWalletAssetHasSpendableBalance(state, bitcoin)).toBe(false);
+    });
+
+    it('checks the selected token balance across the accounts holding it', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    index: 0,
+                    balance: '0',
+                    availableBalance: '0',
+                    tokens: [{ contract: USDC_ON_ETH, balance: '0' }],
+                }),
+                mockAccount({
+                    symbol: ETH,
+                    index: 1,
+                    balance: '0',
+                    availableBalance: '0',
+                    tokens: [{ contract: USDC_ON_ETH, balance: '1' }],
+                }),
+            ],
+        });
+
+        expect(selectWalletAssetHasSpendableBalance(state, usdc)).toBe(true);
+    });
+
+    it('returns false before the asset on screen is known', () => {
+        const state = createState({
+            accounts: [mockAccount({ symbol: BTC, index: 0, balance: '1' })],
+        });
+
+        expect(selectWalletAssetHasSpendableBalance(state, undefined)).toBe(false);
     });
 });
 
