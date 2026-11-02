@@ -8,13 +8,13 @@ import { Model } from '@trezor/trezor-user-env-link';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import { step } from '../../common';
+import { DeviceFixture } from '../../device';
 import { AnalyticsSection } from '../analyticsSection';
 import { DevicePrompt } from '../devicePrompt';
 import { BackupSection } from './backupSection';
 import { FirmwareSection } from './firmwareSection';
 import { PinSection } from './pinSection';
 import { TutorialSection } from './tutorialSection';
-import { DeviceFixture } from '../../device';
 import { SettingsPage } from '../settings/settingsPage';
 
 export class OnboardingPage {
@@ -27,6 +27,7 @@ export class OnboardingPage {
     readonly databaseUpgradeModalHeading: Locator;
     readonly completeOnboardingButton: Locator;
     readonly setupDeviceButton: Locator;
+    readonly deviceCheckCheckboxes: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
     readonly createBackupButton: Locator;
@@ -64,6 +65,9 @@ export class OnboardingPage {
         this.databaseUpgradeModalHeading = this.page.getByTestId('@modal/database-upgrade/heading');
         this.completeOnboardingButton = this.page.getByTestId('@onboarding/complete-onboarding');
         this.setupDeviceButton = this.page.getByTestId('@onboarding/device-check/setup-button');
+        this.deviceCheckCheckboxes = this.page.locator(
+            '[data-testid^="@onboarding/device-check/checkbox/"]',
+        );
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(
             '@authenticity-check/continue-button',
@@ -154,9 +158,18 @@ export class OnboardingPage {
     }
 
     @step()
+    async passDeviceCheck() {
+        await this.setupDeviceButton.waitFor();
+        for (const checkbox of await this.deviceCheckCheckboxes.all()) {
+            await checkbox.click();
+        }
+        await this.setupDeviceButton.click();
+    }
+
+    @step()
     async passThroughAnalyticsAndDeviceCheck() {
         await this.analyticsSection.continueButton.click();
-        await this.setupDeviceButton.click();
+        await this.passDeviceCheck();
     }
 
     @step()

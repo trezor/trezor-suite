@@ -8758,28 +8758,39 @@ export const messages = defineMessages({
         id: 'TR_CONNECTED_DIFFERENT_DEVICE',
         defaultMessage: 'Connected a different device?',
     },
-    TR_ONBOARDING_DEVICE_CHECK: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK',
-        defaultMessage: 'Device security check',
+    TR_ONBOARDING_SECURITY_CHECK: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK',
+        defaultMessage: 'Security check',
         description:
             'Heading for an onboarding step where we ask the user to verify authenticity of his device',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_SHOP: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_SHOP',
+        defaultMessage:
+            'The device was bought from the official <shop>Trezor Shop</shop> or a <reseller>trusted reseller</reseller>.',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_HOLOGRAM: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_HOLOGRAM',
+        defaultMessage: 'The <hologram>hologram</hologram> was intact before you removed it.',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP',
+        defaultMessage: 'The clear plastic wrap around the box had the Trezor logo printed on it.',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_PACKAGE: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_PACKAGE',
+        defaultMessage:
+            'The package was factory sealed and intact, with no signs of tampering before unboxing.',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP',
+        defaultMessage:
+            "Click to confirm you've carefully read and understood the instructions in each box below.",
+        description: 'Tooltip on the disabled setup button until all security checks are confirmed',
     },
     TR_USED_TREZOR_BEFORE: {
         id: 'TR_USED_TREZOR_BEFORE',
         defaultMessage: 'Have you used this Trezor before?',
-    },
-    TR_ONBOARDING_DEVICE_CHECK_1: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK_1',
-        defaultMessage: 'The <strong>hologram</strong> was intact and untampered with.',
-    },
-    TR_ONBOARDING_DEVICE_CHECK_2: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK_2',
-        defaultMessage:
-            'The device was bought from the <shop>official Trezor Shop</shop> or a <reseller>trusted reseller</reseller>.',
-    },
-    TR_ONBOARDING_DEVICE_CHECK_3: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK_3',
-        defaultMessage: 'The device package was intact and untampered with.',
     },
     TR_ONBOARDING_DEVICE_CHECK_4: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_4',

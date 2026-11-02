@@ -9,26 +9,25 @@ import {
 import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsDebugModeActive } from '@suite/debug';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import {
-    Column,
-    Divider,
-    H3,
-    Icon,
-    Note,
-    Paragraph,
-    Text,
-    TextButton,
-    Tooltip,
-} from '@trezor/components';
+import { Column, H3, Icon, Note, Paragraph, Text, TextButton, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
-import { ClockIcon, GradientIcon, InfoIcon, PackageIcon, SealCheckIcon } from '@trezor/icons';
+import {
+    ClockIcon,
+    InfoIcon,
+    PackageIcon,
+    QuestionFilledIcon,
+    SealCheckIcon,
+    StickerIcon,
+    TrezorBodyIcon,
+} from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 import {
@@ -48,8 +47,9 @@ import { SecurityCheckButton } from './components/SecurityCheckButton';
 import { SecurityCheckFail } from './components/SecurityCheckFail';
 import { SecurityCheckLayout } from './components/SecurityCheckLayout';
 import { SecurityChecklist } from './components/SecurityChecklist';
+import { SecurityConfirmationChecklist } from './components/SecurityConfirmationChecklist';
 import { ContactSupport } from './components/ctas';
-import { type SecurityChecklistItem } from './types';
+import { type SecurityChecklistItem, type SecurityConfirmationItem } from './types';
 
 /*
 ABOUT THIS FILE:
@@ -80,13 +80,14 @@ const firmwareInstalledChecklist = [
     },
 ] as const satisfies SecurityChecklistItem[];
 
-const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
+const getNoFirmwareConfirmationItems = (isBelowTablet: boolean) =>
     [
         {
-            icon: <Icon size={24} as={SealCheckIcon} />,
+            id: 'shop',
+            icon: SealCheckIcon,
             content: (
                 <Translation
-                    id="TR_ONBOARDING_DEVICE_CHECK_2"
+                    id="TR_ONBOARDING_SECURITY_CHECK_SHOP"
                     values={{
                         reseller: link => (
                             <TrezorLink href={TREZOR_RESELLERS_URL}>{link}</TrezorLink>
@@ -97,12 +98,24 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
             ),
         },
         {
-            icon: <Icon size={24} as={GradientIcon} />,
+            id: 'package',
+            icon: PackageIcon,
+            content: <Translation id="TR_ONBOARDING_SECURITY_CHECK_PACKAGE" />,
+        },
+
+        {
+            id: 'plastic-wrap',
+            icon: StickerIcon,
+            content: <Translation id="TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP" />,
+        },
+        {
+            id: 'hologram',
+            icon: TrezorBodyIcon,
             content: (
                 <Translation
-                    id="TR_ONBOARDING_DEVICE_CHECK_1"
+                    id="TR_ONBOARDING_SECURITY_CHECK_HOLOGRAM"
                     values={{
-                        strong: chunks => (
+                        hologram: chunks => (
                             <Tooltip
                                 placement={isBelowTablet ? 'top' : 'left'}
                                 content={
@@ -113,26 +126,23 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
                                 }
                                 display="inline-flex"
                                 as="span"
-                                hasIcon
                             >
-                                {chunks}
+                                <u>{chunks}</u>
+                                <Icon as={QuestionFilledIcon} size={16} />
                             </Tooltip>
                         ),
                     }}
                 />
             ),
         },
-        {
-            icon: <Icon size={24} as={PackageIcon} />,
-            content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
-        },
-    ] as const satisfies SecurityChecklistItem[];
+    ] as const satisfies SecurityConfirmationItem[];
 
 type BaseLayoutWithFlowProps = {
     heading: ReactNode;
+    description?: ReactNode;
     secondaryButtonLabel: ReactNode;
     supportUrl: Url;
-    checklistItems: readonly SecurityChecklistItem[];
+    checklist: ReactNode;
     primaryButton: ReactNode;
 };
 
@@ -142,9 +152,10 @@ type BaseLayoutWithFlowProps = {
  */
 const BaseLayoutWithFlow = ({
     heading,
+    description,
     secondaryButtonLabel,
     supportUrl,
-    checklistItems,
+    checklist,
     primaryButton,
 }: BaseLayoutWithFlowProps) => {
     const device = useSelector(selectSelectedDevice);
@@ -181,34 +192,40 @@ const BaseLayoutWithFlow = ({
         />
     ) : (
         <SecurityCheckLayout imageMode="ROTATE">
-            <Column gap={12}>
+            <Column gap={4}>
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_YOU_HAVE_CONNECTED" />
                 </Paragraph>
-                <Paragraph typographyStyle="headline-md" intent="brand">
+                <Paragraph typographyStyle="headline-md">
                     {device?.name}
                     {humanizedModelColor && <Text> {humanizedModelColor}</Text>}
                 </Paragraph>
                 <TextButton
                     intent="neutral"
                     priority="secondary"
-                    size="small"
+                    size="large"
                     isUnderlined
                     onClick={handleRejectDevice}
                 >
                     <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
                 </TextButton>
             </Column>
-            <Divider margin={{ vertical: 32 }} />
-            <Column gap={16}>
-                <H3>{heading}</H3>
-                <SecurityChecklist items={checklistItems} />
+            <Column gap={16} margin={{ top: 32 }}>
+                <Column gap={4}>
+                    <H3>{heading}</H3>
+                    {description && (
+                        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            {description}
+                        </Paragraph>
+                    )}
+                </Column>
+                {checklist}
             </Column>
             <ContentFlex
                 breakpoint={breakpoints.tablet}
                 alignItems="center"
-                gap={12}
-                margin={{ top: 48 }}
+                gap={16}
+                margin={{ top: 32 }}
             >
                 <SecurityCheckButton
                     intent="neutral"
@@ -237,24 +254,55 @@ const UILayoutWithoutFirmware = ({
     PrimaryButtonWrapper,
     dataTestId,
 }: CommonUILayoutProps) => {
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    const [confirmedItemIds, setConfirmedItemIds] = useState<string[]>([]);
     const { isBelowTablet } = useLayoutSize();
+    const isVerticalLayout = useIsContentBelowBreakpoint(breakpoints.tablet);
+
+    const handleToggleItem = (id: string) =>
+        setConfirmedItemIds(ids =>
+            ids.includes(id) ? ids.filter(confirmedId => confirmedId !== id) : [...ids, id],
+        );
+
+    const confirmationItems = getNoFirmwareConfirmationItems(isBelowTablet);
+    const isConfirmed =
+        isDebugModeActive || confirmationItems.every(item => confirmedItemIds.includes(item.id));
+
+    const setupButton = (
+        <SecurityCheckButton
+            onClick={onPrimaryButtonClick}
+            data-testid={dataTestId}
+            intent="brand"
+            isDisabled={!isConfirmed}
+        >
+            <Translation id="TR_SETUP_MY_TREZOR" />
+        </SecurityCheckButton>
+    );
 
     return (
         <BaseLayoutWithFlow
-            heading={<Translation id="TR_ONBOARDING_DEVICE_CHECK" />}
+            heading={<Translation id="TR_ONBOARDING_SECURITY_CHECK" />}
             secondaryButtonLabel={<Translation id="TR_I_HAVE_DOUBTS" />}
             supportUrl={TREZOR_SUPPORT_IS_MY_DEVICE_SAFE}
-            checklistItems={getNoFirmwareChecklist(isBelowTablet)}
+            checklist={
+                <SecurityConfirmationChecklist
+                    items={confirmationItems}
+                    confirmedItemIds={confirmedItemIds}
+                    onToggle={handleToggleItem}
+                />
+            }
             primaryButton={
-                <PrimaryButtonWrapper>
-                    <SecurityCheckButton
-                        onClick={onPrimaryButtonClick}
-                        data-testid={dataTestId}
-                        intent="brand"
+                isConfirmed ? (
+                    <PrimaryButtonWrapper>{setupButton}</PrimaryButtonWrapper>
+                ) : (
+                    <Tooltip
+                        content={<Translation id="TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP" />}
+                        placement="bottom"
+                        width={isVerticalLayout ? '100%' : undefined}
                     >
-                        <Translation id="TR_SETUP_MY_TREZOR" />
-                    </SecurityCheckButton>
-                </PrimaryButtonWrapper>
+                        {setupButton}
+                    </Tooltip>
+                )
             }
         />
     );
@@ -272,7 +320,7 @@ const UILayoutWithFirmware = ({
         heading={<Translation id="TR_USED_TREZOR_BEFORE" />}
         secondaryButtonLabel={<Translation id="TR_I_HAVE_NOT_USED_IT" />}
         supportUrl={TREZOR_SUPPORT_FW_ALREADY_INSTALLED}
-        checklistItems={firmwareInstalledChecklist}
+        checklist={<SecurityChecklist items={firmwareInstalledChecklist} />}
         primaryButton={
             <PrimaryButtonWrapper>
                 <SecurityCheckButton
@@ -357,6 +405,7 @@ const UninitializedManualDeviceCheck = ({ onSuccess }: CommonManualDeviceCheckPr
 
     return (
         <UILayoutComponent
+            key={device?.path}
             onPrimaryButtonClick={handleSetupButtonClick}
             PrimaryButtonWrapper={TakesManyMinutesTooltip}
             dataTestId="@onboarding/device-check/setup-button"

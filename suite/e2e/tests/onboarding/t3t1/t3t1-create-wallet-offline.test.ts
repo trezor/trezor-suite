@@ -47,7 +47,7 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
             await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
                 'TR_YOU_WERE_DISCONNECTED_DOT',
             );
-            await onboardingPage.setupDeviceButton.click();
+            await onboardingPage.passDeviceCheck();
 
             await test.step('Device onboarding steps', async () => {
                 await onboardingPage.firmware.continueThroughFirmware();
