@@ -1,5 +1,6 @@
 import { type TradingAmountLimitProps } from '@suite-common/trading';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { act } from '@suite-native/test-utils-store';
 
@@ -10,12 +11,24 @@ import {
     renderHookWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
 
+const mockUseMaxSpendableAmount = jest.fn();
+
+jest.mock('@suite-native/transaction-management', () => ({
+    ...jest.requireActual('@suite-native/transaction-management'),
+    useMaxSpendableAmount: (...args: unknown[]) => mockUseMaxSpendableAmount(...args),
+}));
+
 describe('useContextForTradingForm', () => {
+    beforeEach(() => {
+        mockUseMaxSpendableAmount.mockReset().mockReturnValue({ maxSpendableAmount: undefined });
+    });
+
     const renderUseContextForTradingForm = (
         limits: TradingAmountLimitProps | undefined,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+        options?: Parameters<typeof useContextForTradingForm>[1],
     ) =>
-        renderHookWithTradingProvider(() => useContextForTradingForm(limits), {
+        renderHookWithTradingProvider(() => useContextForTradingForm(limits, options), {
             overrides,
         });
 
@@ -63,4 +76,55 @@ describe('useContextForTradingForm', () => {
             }),
         );
     });
+
+    it.each<[string, NetworkSymbol, TokenAddress | undefined, boolean, string | undefined]>([
+        [
+            'reserve contract call gas for EVM native coin',
+            asNetworkSymbol('eth'),
+            undefined,
+            true,
+            ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+        ],
+        [
+            'not reserve contract call gas for EVM token',
+            asNetworkSymbol('eth'),
+            '0x123' as TokenAddress,
+            true,
+            undefined,
+        ],
+        [
+            'not reserve contract call gas for non-EVM coin',
+            asNetworkSymbol('btc'),
+            undefined,
+            true,
+            undefined,
+        ],
+        [
+            'not reserve contract call gas when not requested',
+            asNetworkSymbol('eth'),
+            undefined,
+            false,
+            undefined,
+        ],
+    ])(
+        'should %s',
+        async (_, symbol, contractAddress, shouldReserveContractCallGas, ethereumFixedGasLimit) => {
+            const { result } = await renderUseContextForTradingForm(
+                undefined,
+                {},
+                {
+                    shouldReserveContractCallGas,
+                },
+            );
+
+            await act(() => {
+                result.current.setSendNetworkSymbol(symbol);
+                result.current.setContractAddress(contractAddress);
+            });
+
+            expect(mockUseMaxSpendableAmount).toHaveBeenLastCalledWith(
+                expect.objectContaining({ symbol, ethereumFixedGasLimit }),
+            );
+        },
+    );
 });

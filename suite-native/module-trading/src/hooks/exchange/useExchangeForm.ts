@@ -240,7 +240,7 @@ export const useExchangeForm = (): TradingFormWithMetadata<ExchangeFormType> => 
         setSendAssetSymbol,
         setContractAddress,
         setAccountKey,
-    } = useContextForTradingForm(limits);
+    } = useContextForTradingForm(limits, { shouldReserveContractCallGas: true });
     const maxSpendableAmount = useBitcoinExchangeMaxSpendableAmount(
         tradingFormContext.maxSpendableAmount,
     );
