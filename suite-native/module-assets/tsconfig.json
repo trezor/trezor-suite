@@ -26,11 +26,11 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../price-chart" },
-        { "path": "../test-utils" },
         { "path": "../toasts" },
         {
             "path": "../../packages/styles-native"
         },
+        { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ]
 }

@@ -7,12 +7,11 @@ import {
     RootStackRoutes,
     SendStackRoutes,
 } from '@suite-native/navigation';
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { AssetDetailActions } from './AssetDetailActions';
 
 const mockNavigate = jest.fn();
-const mockUseSelector = jest.fn();
 const mockNetworkSymbol = asNetworkSymbol('eth');
 const mockTokenContract = '0x1234567890123456789012345678901234567890' as TokenAddress;
 const mockReceiveAsset = { networkSymbol: mockNetworkSymbol };
@@ -27,9 +26,12 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ params: mockRouteParams }),
 }));
 
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
-    useSelector: mockUseSelector,
+// Mocking the selectors rather than the `useSelector` calls keeps the test free of the order
+// the component happens to read them in.
+jest.mock('@suite-common/assets', () => ({
+    selectWalletAssetKey: () => 'asset-key',
+    selectWalletAssetName: () => 'USD Coin',
+    selectWalletAssetTokenSymbol: () => 'USDC',
 }));
 
 jest.mock('@suite-common/receive', () => ({
@@ -39,14 +41,10 @@ jest.mock('@suite-common/receive', () => ({
 describe('AssetDetailActions', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockUseSelector
-            .mockReturnValueOnce('asset-key')
-            .mockReturnValueOnce('USD Coin')
-            .mockReturnValueOnce('USDC');
     });
 
     it('opens receive with the selected asset prefiltered', async () => {
-        const { getByTestId } = await renderWithBasicProvider(<AssetDetailActions />);
+        const { getByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
 
         fireEvent.press(getByTestId('@assets/asset-detail/receive-button'));
 
@@ -60,7 +58,7 @@ describe('AssetDetailActions', () => {
     });
 
     it('opens send with the selected network prefiltered', async () => {
-        const { getByTestId } = await renderWithBasicProvider(<AssetDetailActions />);
+        const { getByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
 
         fireEvent.press(getByTestId('@assets/asset-detail/send-button'));
 
