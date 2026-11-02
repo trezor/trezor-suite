@@ -11173,6 +11173,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_BANNER_ETH_EARN_BUTTON',
         defaultMessage: 'Explore',
     },
+    TR_EARN_TOKEN_YIELD_BANNER_TEXT: {
+        id: 'TR_EARN_TOKEN_YIELD_BANNER_TEXT',
+        defaultMessage: 'Deposit your {displaySymbol} in a yield vault and earn rewards on it.',
+    },
     TR_STAKING_CARD_TITLE: {
         id: 'TR_STAKING_CARD_TITLE',
         defaultMessage: 'Earn ~{apy}% APY by staking your {displaySymbol}',
