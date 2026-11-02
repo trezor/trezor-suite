@@ -12,6 +12,7 @@ import {
 } from '@suite-common/trading';
 import {
     type TradingExchangeAction,
+    type TradingExchangeQuotePayload,
     type TradingExchangeStep,
     events,
     injectNativeAnalytics,
@@ -24,7 +25,9 @@ export type TradingExchangeAnalyticReportCallback = (
     action: TradingExchangeAction,
 ) => void;
 
-const useExchangeFormAnalyticsPayload = (quote: ExchangeTrade | undefined) => {
+const useExchangeFormAnalyticsPayload = (
+    quote: ExchangeTrade | undefined,
+): TradingExchangeQuotePayload => {
     const { send, receive, exchange } = quote || {};
 
     const sendCoinInfo = useSelector((state: TradingRootState) =>

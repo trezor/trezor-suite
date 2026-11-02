@@ -22,6 +22,7 @@ export const deviceSetupCompletedEvent: EventDef<Attributes, EventType.DeviceSet
         { version: '25.5.1', notes: 'added' },
         { version: '25.6.1', notes: 'added `recoveryStepBack` attribute' },
         { version: '25.7.1', notes: 'added `wasBackupSkipped`, `wasPinSkipped` attributes' },
+        { version: '26.11.0', notes: 'stopped sending undocumented `startTimestamp` attribute' },
     ],
     attributes: {
         osName: {

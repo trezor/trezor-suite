@@ -6,6 +6,8 @@ export const desktopEvents = desktopEventsData;
 export type AnyDesktopEventsDef = (typeof desktopEvents)[keyof typeof desktopEvents];
 export type AnalyticsDesktopEvents = EventInstance<AnyDesktopEventsDef> | AnalyticsSharedEvents;
 
+export type AppUpdatePayload = EventInstance<typeof desktopEvents.appUpdateEvent>['payload'];
+
 export type SuiteReadyPayload = EventInstance<typeof desktopEvents.suiteReadyEvent>['payload'];
 
 export type StakingCardanoPoolDelegationPayload = EventInstance<

@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { type ExchangeTrade } from 'invity-api';
 
+import { type events } from '@suite/analytics';
+import { type EventInstance } from '@suite-common/analytics';
 import {
     type TradingExchangeFormProps,
     type TradingExchangeType,
@@ -25,7 +27,17 @@ export const getTradingExchangeCryptoInfo = ({
     values: { sendCryptoSelect, receiveCryptoSelect, selectedFee },
     quoteExchange,
     exchangeProviders,
-}: GetTradingExchangeCryptoInfoParams) => {
+}: GetTradingExchangeCryptoInfoParams): Pick<
+    EventInstance<typeof events.tradeApprovalEvent>['payload'],
+    | 'sendCryptoLabel'
+    | 'sendCryptoNetworkSymbol'
+    | 'sendCryptoContractAddress'
+    | 'receiveCryptoLabel'
+    | 'receiveCryptoNetworkSymbol'
+    | 'receiveCryptoContractAddress'
+    | 'exchangeName'
+    | 'selectedFee'
+> => {
     const quoteProviderName = quoteExchange && exchangeProviders?.[quoteExchange]?.companyName;
 
     return {

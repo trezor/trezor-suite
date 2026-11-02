@@ -1,6 +1,7 @@
 import type { BuyTrade, CoinInfo, SellFiatTrade } from 'invity-api';
 
 import { cryptoIdToNetwork } from '@suite-common/trading';
+import type { TradingBuyQuotePayload, TradingSellQuotePayload } from '@suite-native/analytics';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 
 export type GetAnalyticsTradingBuyPayloadProps = {
@@ -11,7 +12,7 @@ export type GetAnalyticsTradingBuyPayloadProps = {
 export const getAnalyticsTradingBuyPayload = ({
     quote,
     coinInfo,
-}: GetAnalyticsTradingBuyPayloadProps) => {
+}: GetAnalyticsTradingBuyPayloadProps): TradingBuyQuotePayload | null => {
     if (!coinInfo || !quote?.receiveCurrency) {
         return null;
     }
@@ -41,7 +42,7 @@ export type GetAnalyticsTradingSellPayloadProps = {
 export const getAnalyticsTradingSellPayload = ({
     quote,
     coinInfo,
-}: GetAnalyticsTradingSellPayloadProps) => {
+}: GetAnalyticsTradingSellPayloadProps): TradingSellQuotePayload | null => {
     if (!coinInfo || !quote?.cryptoCurrency) {
         return null;
     }
