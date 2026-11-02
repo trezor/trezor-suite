@@ -14,6 +14,7 @@ import {
     selectFormDraft,
 } from '@suite-common/wallet-core';
 import {
+    type AllowanceTransactionType,
     type FeeInfo,
     type FormState,
     isFinalPrecomposedTransaction,
@@ -33,7 +34,6 @@ import {
     getYieldAllowanceFormDraftKey,
     updateYieldAllowanceSelectedFeeLevelThunk,
 } from '../../thunks/yield/yieldApprovalThunks';
-import { type YieldAllowanceFormDraftTransactionType } from '../../types';
 import {
     buildYieldAllowanceFormState,
     getYieldAllowanceFeeState,
@@ -49,7 +49,7 @@ type YieldAllowanceFeesCommonParams = Pick<ResolvedYieldFlowData, 'flowData' | '
 };
 
 export type UseYieldAllowanceFeesParams = YieldAllowanceFeesCommonParams & {
-    draftTransactionType: YieldAllowanceFormDraftTransactionType;
+    draftTransactionType: AllowanceTransactionType;
     transaction: YieldAllowanceFeeTransaction | null;
 };
 

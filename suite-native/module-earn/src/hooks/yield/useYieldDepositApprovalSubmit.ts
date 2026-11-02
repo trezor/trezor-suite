@@ -7,12 +7,13 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import {
     type ResolvedYieldFlowData,
     type YieldRootState,
-    getYieldApprovalAction,
     initYieldAllowanceThunk,
     selectYieldSession,
     submitYieldApproveThunk,
     yieldActions,
 } from '@suite-common/wallet-core';
+import { type AllowanceLimitType } from '@suite-common/wallet-types';
+import { getAllowanceAction } from '@suite-common/wallet-utils';
 import {
     type StackNavigationProps,
     type YieldFlowParams,
@@ -24,7 +25,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useShowYieldAlert } from './useShowYieldAlert';
 import { prepareYieldAllowanceReviewTransactionThunk } from '../../thunks/yield/yieldApprovalThunks';
-import { type YieldApprovalLimitType } from '../../types';
 
 type NavigationProps = StackNavigationProps<
     YieldStackParamList,
@@ -32,7 +32,7 @@ type NavigationProps = StackNavigationProps<
 >;
 
 type UseYieldDepositApprovalSubmitParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
-    approvalLimitType: YieldApprovalLimitType;
+    approvalLimitType: AllowanceLimitType;
     routeParams: YieldFlowParams;
 };
 
@@ -73,9 +73,9 @@ export const useYieldDepositApprovalSubmit = ({
                     sessionWithAllowance = selectYieldSession(store.getState(), 'deposit', flowKey);
                 }
 
-                const approvalAction = getYieldApprovalAction({
-                    liveAmount: amount,
-                    allowanceAmount: sessionWithAllowance.approval.allowanceAmount,
+                const approvalAction = getAllowanceAction({
+                    requestedAmount: amount,
+                    currentAllowanceAmount: sessionWithAllowance.approval.allowanceAmount,
                     shouldConsiderAllowance: true,
                     isRevokeRequired: sessionWithAllowance.approval.isRevokeRequired,
                     tokenContractAddress: flowData.token.contractAddress,

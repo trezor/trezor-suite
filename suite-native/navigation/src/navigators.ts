@@ -7,6 +7,8 @@ import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-confi
 import {
     type Account,
     type AccountKey,
+    type AllowanceLimitType,
+    type AllowanceTransactionType,
     type GeneralPrecomposedTransactionFinal,
     type TokenAddress,
     type XpubAddress,
@@ -142,7 +144,7 @@ export type StakingPendingTxParams = {
 
 type YieldDepositApprovalReviewParams = YieldFlowParams & {
     amount: string;
-    approvalLimitType: 'per-deposit' | 'unlimited';
+    approvalLimitType: AllowanceLimitType;
 };
 
 export type YieldDepositRevokeParams = YieldFlowParams & {
@@ -677,7 +679,7 @@ export type TransactionDetailStackParamList = {
     };
 };
 
-export type ConfirmingScreenFlowType = 'approve' | 'revoke' | 'revoke-and-approve';
+export type ConfirmingScreenFlowType = AllowanceTransactionType | 'revoke-and-approve';
 export type ExchangeFlowType = 'swap' | 'sign-data' | ConfirmingScreenFlowType;
 
 export type TradingStackParamList = {

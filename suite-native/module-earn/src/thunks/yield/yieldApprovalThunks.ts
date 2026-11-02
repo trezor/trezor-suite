@@ -9,6 +9,8 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
+    type AllowanceLimitType,
+    type AllowanceTransactionType,
     type FormState,
     type TokenAddress,
     isFinalPrecomposedTransaction,
@@ -24,39 +26,35 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import {
-    type YieldAllowanceFormDraftTransactionType,
-    type YieldApprovalLimitType,
-} from '../../types';
-import {
     buildYieldAllowanceFormState,
     getYieldAllowanceFeeState,
     getYieldApprovalAllowanceAmount,
 } from '../../utils/yield/yieldApprovalUtils';
 
-const yieldAllowanceFormDraftPrefixes: Record<YieldAllowanceFormDraftTransactionType, string> = {
+const yieldAllowanceFormDraftPrefixes: Record<AllowanceTransactionType, string> = {
     approve: 'yield-approval',
     revoke: 'yield-revoke',
 };
 
 export const getYieldAllowanceFormDraftKey = (
     flowKey: string,
-    transactionType: YieldAllowanceFormDraftTransactionType,
+    transactionType: AllowanceTransactionType,
 ) => `${yieldAllowanceFormDraftPrefixes[transactionType]}/${flowKey}`;
 
 type PrepareYieldAllowanceReviewTransactionParams = {
     amount?: string;
-    approvalLimitType?: YieldApprovalLimitType;
+    approvalLimitType?: AllowanceLimitType;
     flowData: YieldFlowResolvedData;
     flowKey: string;
-    transactionType: YieldAllowanceFormDraftTransactionType;
+    transactionType: AllowanceTransactionType;
     tokenContract: TokenAddress;
 };
 
 type GetYieldAllowanceReviewAmountParams = {
     amount?: string;
-    approvalLimitType?: YieldApprovalLimitType;
+    approvalLimitType?: AllowanceLimitType;
     flowData: YieldFlowResolvedData;
-    modalTxType: 'approve' | 'revoke';
+    modalTxType: AllowanceTransactionType;
     tokenContract: TokenAddress;
 };
 
@@ -88,8 +86,8 @@ const getYieldAllowanceReviewAmount = ({
 };
 
 const isExpectedAllowanceModalTxType = (
-    transactionType: YieldAllowanceFormDraftTransactionType,
-    modalTxType: 'approve' | 'revoke',
+    transactionType: AllowanceTransactionType,
+    modalTxType: AllowanceTransactionType,
 ) => {
     if (transactionType === 'approve') {
         return modalTxType === 'approve';

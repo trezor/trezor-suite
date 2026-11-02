@@ -1,13 +1,12 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { mockNetworksServices } from '@suite-common/networks/mocks';
-import type { TransactionStatus } from '@suite-common/trading';
+import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import {
-    selectTradingExchangeSelectedQuote,
-    tradingExchangeActions,
+    type AccountsRootState,
+    type AllowanceTransactionStatus,
     useAllowanceTxTracking,
-} from '@suite-common/trading';
-import { type AccountsRootState } from '@suite-common/wallet-core';
+} from '@suite-common/wallet-core';
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -84,14 +83,14 @@ jest.mock('@react-navigation/native', () => ({
     },
 }));
 
-const mockAllowanceTxStatus: TransactionStatus = {
+const mockAllowanceTxStatus: AllowanceTransactionStatus = {
     isConfirmed: false,
     isFailed: false,
     isPending: false,
 };
 
-jest.mock('@suite-common/trading', () => ({
-    ...jest.requireActual('@suite-common/trading'),
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
     useAllowanceTxTracking: jest.fn(),
 }));
 
@@ -140,7 +139,11 @@ describe('TradingConfirmingScreen', () => {
     });
 
     const confirmedStatus = {
-        status: { isConfirmed: true, isFailed: false, isPending: false } as TransactionStatus,
+        status: {
+            isConfirmed: true,
+            isFailed: false,
+            isPending: false,
+        } as AllowanceTransactionStatus,
         approvalTxid: 'some-txid',
         setApprovalTxid: jest.fn(),
     };
@@ -301,7 +304,11 @@ describe('TradingConfirmingScreen', () => {
 
     it('should allow leaving without confirmation when approval transaction fails', async () => {
         mockUseAllowanceTxTracking.mockReturnValue({
-            status: { isConfirmed: false, isFailed: true, isPending: false } as TransactionStatus,
+            status: {
+                isConfirmed: false,
+                isFailed: true,
+                isPending: false,
+            } as AllowanceTransactionStatus,
             approvalTxid: 'some-txid',
             setApprovalTxid: jest.fn(),
         });

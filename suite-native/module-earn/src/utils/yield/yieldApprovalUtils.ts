@@ -4,14 +4,13 @@ import {
     type YieldSessionState,
 } from '@suite-common/wallet-core';
 import {
+    type AllowanceLimitType,
     type FeeLevelLabel,
     type FormState,
     type PrecomposedTransactionFinal,
     type TokenAddress,
 } from '@suite-common/wallet-types';
-import { getAllowanceAmount, isAllowanceUnlimited } from '@suite-common/wallet-utils';
-
-import { type YieldApprovalLimitType } from '../../types';
+import { getAllowanceAmountForLimit, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 
 type BuildYieldAllowanceFormStateParams = {
     approvalModalState: YieldApproveModalState;
@@ -34,7 +33,7 @@ type YieldAllowanceFeeState = {
 
 type GetYieldApprovalAllowanceAmountParams = {
     amount: string;
-    approvalLimitType: YieldApprovalLimitType;
+    approvalLimitType: AllowanceLimitType;
     tokenContract: TokenAddress;
     tokenDecimals: number;
     tokenSymbol: string;
@@ -73,9 +72,6 @@ export const buildYieldAllowanceFormState = ({
     selectedUtxos: [],
 });
 
-export const getYieldApprovalType = (approvalLimitType: YieldApprovalLimitType) =>
-    approvalLimitType === 'unlimited' ? 'INFINITE' : 'MINIMAL';
-
 export const getYieldAllowanceFeeState = (
     formDraft: FormState | null | undefined,
 ): YieldAllowanceFeeState => {
@@ -109,9 +105,9 @@ export const getYieldApprovalAllowanceAmount = ({
     tokenDecimals,
     tokenSymbol,
 }: GetYieldApprovalAllowanceAmountParams) =>
-    getAllowanceAmount({
-        rawAmount: amount,
-        approvalType: getYieldApprovalType(approvalLimitType),
+    getAllowanceAmountForLimit({
+        amount,
+        limitType: approvalLimitType,
         token: {
             contract: tokenContract,
             decimals: tokenDecimals,

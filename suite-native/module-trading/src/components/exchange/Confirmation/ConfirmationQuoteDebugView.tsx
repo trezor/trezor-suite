@@ -1,13 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import { type TransactionStatus, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { type AllowanceTransactionStatus } from '@suite-common/wallet-core';
 import { Button, HStack, Text } from '@suite-native/atoms';
 import { DebugModeView, type TransactionStatusWithOverride } from '@suite-native/trading-debug';
 
 export type ConfirmationQuoteDebugViewProps = {
     approvalTxid: string | null;
     forceStatus: TransactionStatusWithOverride['forceStatus'];
-    transactionStatus: TransactionStatus;
+    transactionStatus: AllowanceTransactionStatus;
 };
 
 export const ConfirmationQuoteDebugView = ({
