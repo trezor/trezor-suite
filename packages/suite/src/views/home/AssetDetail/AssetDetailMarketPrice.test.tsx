@@ -114,6 +114,20 @@ describe('the market price on the asset screen', () => {
         ).not.toBeInTheDocument();
     });
 
+    it('keeps the public price and its change visible in discreet mode', () => {
+        renderMarketPrice({
+            ...getInitialState({ ethRate: 3000, ethWeekAgoRate: 2500 }),
+            discreetMode: { isActive: true },
+        });
+
+        expect(screen.getByTestId('@asset-detail/market-price/fiat-amount')).toHaveTextContent(
+            '$3,000',
+        );
+        expect(screen.getByTestId('@asset-detail/market-price/week-change')).toHaveTextContent(
+            '$500',
+        );
+    });
+
     it('is left out for an asset the market does not price, leaving the balance card alone', () => {
         renderMarketPrice(getInitialState({}));
 

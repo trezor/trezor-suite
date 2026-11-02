@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
+import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/discreet-mode';
 import { useCurrencyAmountParts } from '@suite-common/formatters';
 import { Row, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
@@ -23,6 +24,7 @@ export const FiatAmountHeadline = ({
     'data-testid': dataTestId,
 }: FiatAmountHeadlineProps) => {
     const locale = useSelector(selectLanguage);
+    const shouldRedactNumbers = useShouldRedactNumbers({ strict: false });
 
     const { currencySymbol, wholeNumber, decimalNumber, isCurrencySymbolFirst } =
         useCurrencyAmountParts({ value: fiatValue.toFixed(), locale, isExact });
@@ -37,9 +39,11 @@ export const FiatAmountHeadline = ({
         <Row alignItems="baseline" data-testid={dataTestId}>
             {isCurrencySymbolFirst && symbol}
             <Text typographyStyle="headline-lg">
-                <TabularNumbers>{wholeNumber}</TabularNumbers>
+                <TabularNumbers>
+                    {shouldRedactNumbers ? redactNumericalSubstring(wholeNumber) : wholeNumber}
+                </TabularNumbers>
             </Text>
-            {decimalNumber !== '' && (
+            {!shouldRedactNumbers && decimalNumber !== '' && (
                 <Text typographyStyle="headline-lg" color="contentTertiary">
                     <TabularNumbers>{decimalNumber}</TabularNumbers>
                 </Text>
