@@ -1,6 +1,6 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events, redactRouterUrl } from '@suite/analytics';
 import {
     type RouterRootState,
     anchorChange,
@@ -34,7 +34,6 @@ import {
     type GetSuiteReadyPayloadState,
     getSuiteReadyPayload,
     redactAnchor,
-    redactRouterUrl,
 } from 'src/utils/suite/analytics';
 
 /*

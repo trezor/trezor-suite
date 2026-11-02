@@ -15,6 +15,7 @@ export {
     type FirmwareSource,
     type OnboardingAnalytics,
 } from './definitions';
+export { redactRouterUrl } from './redactRouterUrl';
 
 export * from './events';
 export * as events from './events';

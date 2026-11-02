@@ -97,9 +97,6 @@ export const redactAnchor = (anchor?: string) => {
     return anchor;
 };
 
-// 1. replace coinjoin by taproot
-export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproot');
-
 export const getSuiteReadyPayload = async (
     state: GetSuiteReadyPayloadState,
 ): Promise<SuiteReadyPayload> => {
