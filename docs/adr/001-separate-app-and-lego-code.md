@@ -40,8 +40,46 @@ Separate code into folders according to its role in application composition:
 - **App code** chooses and wires concrete implementations. It owns application navigation, state integration, and assembly of feature pages. **Network modules cannot import app code.**
 - **Lego code** provides reusable building blocks that network modules and app code can both import.
 
-> [!NOTE]
-> **Already used in the native app:** `@suite-native/module-*` packages assemble screens and wire application behavior using reusable packages such as `@suite-native/accounts`.
+### How to distinguish app code from lego code
+
+Think of **wiring versus reusable parts**. App code decides which parts an application uses and connects them: which screens appear in navigation, which network modules are registered, or which storage implementation a service uses. Lego code implements those parts, with explicit dependencies, without deciding how the application is assembled.
+
+Ask: **could another feature, network module, or application use this code by supplying its dependencies, without importing this application's assembly?** If yes, it belongs in lego. If it chooses implementations or connects features for this application, it belongs in app code. Reusable does not mean platform-independent, stateless, or limited to small utilities; a native component or a complete business feature can be a lego.
+
+### Reading the dependency graph
+
+Starting at application entry points, imagine separate trees of application wiring. Where those branches meet at shared dependencies, the tree picture becomes a directed acyclic graph: several consumers import the same reusable parts.
+
+For example, these existing native packages share address UI. Here arrows mean **imports**:
+
+```text
+                    @suite-native/app
+                      /           \
+                     v             v
+         module-send                 module-receive       App: screen wiring
+                     \             /
+                      v           v
+                 @suite-native/address                    Lego: address UI
+```
+
+This convergence helps identify lego candidates, but the number of importers is not the rule. A lego can have only one consumer today, and app wiring can be shared by several entry points. The deciding factor is whether the code provides a reusable part or assembles a particular application. Dependencies must remain acyclic; lego code must not import app assembly.
+
+### Comparison with Nx apps and libs
+
+Nx's [apps and libs convention](https://nx.dev/docs/kb/folder-structure) is a useful analogy: `apps/mobile` wires an application together, while `libs/address` supplies reusable address UI. Nx also allows [app-specific feature libraries](https://nx.dev/docs/kb/project-dependency-rules), so an Nx `lib` is not automatically lego. Our app layer includes assembly packages such as `module-send`, even though they are imported packages rather than standalone applications. This ADR classifies responsibilities, not Nx project types.
+
+### Examples in Suite
+
+These examples use current package names and describe their intended roles after separation:
+
+| Code                                            | Role | Why                                                                                                                      |
+| ----------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------ |
+| `@suite-native/module-*`, such as `module-send` | App  | Assemble screens, navigation, and application behavior from reusable parts.                                              |
+| Composition in `@suite-native/suite-sync`       | App  | `createSuiteSyncNativeCompositionRoot` selects native Evolu/SQLite storage and wires it into Suite Sync.                 |
+| `@suite/intl`                                   | Lego | Provides translation components and formatting that features and network modules can use without importing app assembly. |
+| `@suite-native/address`                         | Lego | Provides address label UI used by multiple features, independently of which screen hosts it.                             |
+
+Existing packages can mix both roles. For example, `@suite-native/suite-sync` also exports UI hooks, and `@suite-native/address` currently imports its `useSuiteSyncErrorHandler`. The migration must separate reusable hooks from Suite Sync composition so address UI can use them without depending on app wiring. Classify the code by its responsibility, then split mixed packages along that boundary.
 
 The diagram and layout below use the final package names after migration. For example, reusable code from `@trezor/product-components` is shown as `@suite/product-components`, and the temporary `@suite-lego/sign-verify` becomes `@suite/sign-verify`.
 
