@@ -5,8 +5,9 @@ import { createThread } from '../libs/thread';
 import { convertILoggerToLog } from '../utils/IloggerToLog';
 
 interface TrezordNodeSettings {
-    port: number;
-    api: 'legacy' | 'nusb' | 'udp';
+    port?: number;
+    api: 'legacy' | 'nusb' | 'udp' | 'hid';
+    allowedOrigins?: string[];
 }
 
 const init = (settings: TrezordNodeSettings) =>
