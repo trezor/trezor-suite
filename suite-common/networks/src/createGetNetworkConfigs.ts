@@ -8,6 +8,8 @@ export type GetNetworkConfigs = () => readonly NetworkMetadata[];
 
 export type GetNetworkConfigsDep = { getNetworkConfigs: GetNetworkConfigs };
 
+const compareBooleans = (a: boolean, b: boolean) => Number(a) - Number(b);
+
 // Byte-wise, not locale-aware, as fractional-indexing keys require.
 const compareStrings = (a: string, b: string) => {
     if (a < b) {
@@ -22,7 +24,9 @@ const compareStrings = (a: string, b: string) => {
 };
 
 const compareDisplayOrder = (a: NetworkMetadata, b: NetworkMetadata) =>
-    compareStrings(a.displayOrder, b.displayOrder) || compareStrings(a.symbol, b.symbol);
+    compareBooleans(a.testnet, b.testnet) ||
+    compareStrings(a.displayOrder, b.displayOrder) ||
+    compareStrings(a.symbol, b.symbol);
 
 export const createGetNetworkConfigs =
     (deps: GetNetworkConfigsDeps): GetNetworkConfigs =>

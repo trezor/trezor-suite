@@ -64,7 +64,6 @@ export const YieldClaimRewardRow = ({
                         maxDisplayedDecimals={tokenDecimals}
                         variant="body-sm-strong"
                         color="contentPrimary"
-                        isDiscreetText={false}
                         numberOfLines={2}
                     />
                 </Box>
@@ -86,7 +85,6 @@ export const YieldClaimRewardRow = ({
                         value={fiatAmount}
                         variant="body-sm"
                         color="contentSecondary"
-                        isDiscreetText={false}
                         isLoading={isFiatLoading}
                         numberOfLines={1}
                     />

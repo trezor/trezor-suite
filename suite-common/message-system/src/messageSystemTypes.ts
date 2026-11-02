@@ -74,22 +74,34 @@ export const Feature = {
         },
     },
 
+    // Disables firmware revision check UI, making it silent on Desktop/Web.
     firmwareRevisionCheck: 'security.firmware.revisionCheck',
+    // Like `firmwareRevisionCheck` for Mobile. DO NOT separate flags per platform, rather use conditions in the message. Kept here for compatibility.
     firmwareRevisionCheckMobile: 'security.firmware.revisionCheck.mobile',
+    // Disables firmware hash check UI, making it silent.
     firmwareHashCheck: 'security.firmware.hashCheck',
-    // subset of `firmwareHashCheck`: can turn off specifically UI for other-error result
+    // Subset of `firmwareHashCheck`: disables specifically UI for other-error result
     firmwareHashCheckOtherError: 'security.firmware.hashCheck.otherError',
-    // subset of `firmwareHashCheck`: can turn off timeout result, and also may bear `timeoutThresholdsPerModel` payload, see connectInitThunks
+    // Subset of `firmwareHashCheck`: disables timeout result, and also may bear `timeoutThresholdsPerModel` payload, see connectInitThunks
     firmwareHashCheckTimeout: 'security.firmware.hashCheck.timeout',
 
+    // Disables wallet-creation entropy check UI, making it silent on Desktop/Web.
     entropyCheck: 'security.entropyCheck',
+    // Like `entropyCheck` for Mobile. DO NOT separate flags per platform, rather use conditions in the message. Kept here for compatibility.
     entropyCheckMobile: 'security.entropyCheck.mobile',
+    // Disables discovery entropy check UI, making it silent.
+    entropyCheckDiscovery: 'security.entropyCheck.discovery',
 
+    // Disables UI for Optiga proof result on Device Authenticity Check.
     deviceAuthenticityCheckOptiga: 'security.deviceAuthenticityCheck.optiga',
+    // Disables UI for Tropic proof result on Device Authenticity Check.
     deviceAuthenticityCheckTropic: 'security.deviceAuthenticityCheck.tropic',
+    // Disables UI for MCU proof result on Device Authenticity Check.
     deviceAuthenticityCheckMCU: 'security.deviceAuthenticityCheck.mcu',
 
+    // Disables id check UI (one of the meta checks), making it silent.
     idCheck: 'security.deviceMetaChecks.id',
+    // Disables invariability check UI (one of the meta checks), making it silent.
     invariabilityCheck: 'security.deviceMetaChecks.invariability',
 
     trading: {
@@ -98,6 +110,7 @@ export const Feature = {
         exchange: 'trading.exchange',
         restrictions: {
             blacklist: 'trading.restrictions.blacklist',
+            residenceWhitelistRequired: 'trading.restrictions.residenceWhitelistRequired',
         },
         concierge: 'trading.concierge',
         survey: 'trading.survey',
@@ -122,8 +135,12 @@ export const Feature = {
             unwrap: 'earn.wrappedNative.unwrap',
         } as const satisfies Record<WrappedNativeFlowType, string>,
     },
+    finprom: {
+        presenceRestriction: 'finprom.presenceRestriction',
+    },
     mevProtection: 'settings.mevProtection',
     suiteSync: 'settings.suiteSync',
+    referAFriend: 'referAFriend',
 
     // Feature flags implemented only for mobile app
     firmwareUpdate: 'device.firmware.update',
@@ -212,7 +229,6 @@ export enum ExperimentId {
     assetFirstHomeTable = 'da21537c-d393-4292-9908-cba1eabdb651',
     tradingFeedbackForm = '092db279-98dc-418e-bbfa-ef70716fb211',
     tradingFiatValues = 'b73df44d-37ed-4b66-aba1-5c4164493bae',
-    tradingShowTradeFee = 'eef0ff6f-95da-4a7e-aae6-ccd589c32998',
 }
 
 export type ExperimentsItemType = Omit<ExperimentsItem, 'id'> & { id: ExperimentId };

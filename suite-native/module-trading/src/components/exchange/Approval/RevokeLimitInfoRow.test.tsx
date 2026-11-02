@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { BigNumber } from '@trezor/utils';
@@ -10,12 +11,13 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 describe('RevokeLimitInfoRow', () => {
-    const renderRevokeLimitInfoRow = async (
+    const renderRevokeLimitInfoRow = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(<RevokeLimitInfoRow />, {
+        renderWithTradingProvider(<RevokeLimitInfoRow />, {
             tradeType: 'exchange',
             overrides,
+            services: { networks: mockNetworksServices() },
         });
 
     const withPreselectedQuote: PreloadedStatePartial<TradingTestPreloadedState> = {

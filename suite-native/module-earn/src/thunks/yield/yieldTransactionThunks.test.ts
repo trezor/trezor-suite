@@ -1,6 +1,7 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -12,6 +13,7 @@ import {
     selectYieldSession,
     selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    transactionsActions,
     yieldActions,
     yieldReducer,
 } from '@suite-common/wallet-core';
@@ -21,10 +23,16 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from './yieldTransactionThunks';
+import {
+    type PushYieldActionReviewThunkDeps,
+    pushYieldActionReviewThunk,
+    signYieldActionReviewThunk,
+} from './yieldTransactionThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -114,6 +122,15 @@ const precomposedTransaction = {
     outputsPermutation: [0],
 } satisfies PrecomposedTransactionFinal;
 
+const services = (): PushYieldActionReviewThunkDeps['services'] => ({
+    analytics: mockNativeAnalytics(),
+    getIsWindowVisible: asGetter(() => true),
+    getTradedAccountKeys: asGetter(() => []),
+    networks: {
+        getAccountSyncInterval: mockGetAccountSyncInterval(),
+    },
+});
+
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jest.Mock;
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
@@ -121,7 +138,8 @@ const selectSelectedDeviceMock = selectSelectedDevice as jest.Mock;
 
 // Other thunk dependencies are mocked; only the yield reducer is needed for review-state assertions.
 const buildStore = () =>
-    createTestCompositionRoot<void, YieldRootState>({
+    createTestCompositionRoot<PushYieldActionReviewThunkDeps, YieldRootState>({
+        services,
         reducer: combineReducers({
             wallet: combineReducers({
                 stablecoinYield: yieldReducer,
@@ -130,7 +148,7 @@ const buildStore = () =>
     }).services.store;
 
 type PrepareParams = {
-    store: TestCompositionStore<YieldRootState, void>;
+    store: TestCompositionStore<YieldRootState, PushYieldActionReviewThunkDeps>;
     flowType: YieldPositionFlowType;
     flowKey: string;
 };
@@ -169,7 +187,7 @@ const storeSignedTransaction = ({ flowType, flowKey, store }: PrepareParams) => 
 };
 
 type DispatchPushParams = {
-    store: TestCompositionStore<YieldRootState, void>;
+    store: TestCompositionStore<YieldRootState, PushYieldActionReviewThunkDeps>;
     flowType: YieldPositionFlowType;
     flowKey: string;
     flowAccount?: Account;
@@ -209,6 +227,35 @@ describe('pushYieldActionReviewThunk', () => {
     afterEach(() => {
         jest.restoreAllMocks();
     });
+
+    it.each(
+        (['deposit', 'withdraw', 'redeem'] as const).flatMap(flowType =>
+            [true, false].map(success => ({ flowType, success })),
+        ),
+    )(
+        'registers the $flowType broadcast outcome (success: $success)',
+        async ({ flowType, success }) => {
+            const store = buildStore();
+            prepareActionReview({ store, flowType, flowKey: FLOW_KEY });
+            storeSignedTransaction({ store, flowType, flowKey: FLOW_KEY });
+            pushTransactionMock.mockResolvedValue(
+                success
+                    ? { success: true, payload: { txid: 'status-txid' } }
+                    : { success: false, error: { message: 'backend-private-details' } },
+            );
+            await dispatchPush({ store, flowType, flowKey: FLOW_KEY });
+            const outcomes = store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match);
+            expect(outcomes.map(action => action.payload)).toEqual([
+                {
+                    account,
+                    flow: `yield-${flowType}`,
+                    ...(success ? { status: 'success', txid: 'status-txid' } : { status: 'error' }),
+                },
+            ]);
+        },
+    );
 
     it('pushes the signed deposit tx and stores pending deposit metadata', async () => {
         const store = buildStore();

@@ -1,4 +1,9 @@
-import { act, renderWithBasicProvider } from '@suite-native/test-utils';
+import {
+    mockNetworkIcon,
+    mockNetworkMetadata,
+    mockNetworksServices,
+} from '@suite-common/networks/mocks';
+import { act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
     ethOnBaseAsset,
@@ -13,7 +18,15 @@ const networkIconHint = 'Network Icon';
 
 describe('IconByCryptoId', () => {
     const renderIcon = async (props: IconByCryptoIdProps) => {
-        const result = await renderWithBasicProvider(<IconByCryptoId {...props} />);
+        const networks = mockNetworksServices({
+            networkIcon: mockNetworkIcon({
+                getTokenLogoIdentifiers: (_symbol, contract) => (contract ? [contract] : []),
+            }),
+        });
+        const result = await renderWithStoreProvider(<IconByCryptoId {...props} />, {
+            preloadedState: { networks: mockNetworkMetadata },
+            services: { networks },
+        });
         await act(async () => {});
 
         return result;

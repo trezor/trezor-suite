@@ -1,6 +1,7 @@
 import { type NavigationAction, type RouteProp } from '@react-navigation/native';
 import { type Store } from '@reduxjs/toolkit';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -104,7 +105,11 @@ describe('TradingExchangeApprovalScreen', () => {
                 navigation={{ dispatch: mockNavigationDispatch } as any}
             />,
             {
-                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
+                services: {
+                    analytics: mockNativeAnalytics(mockAnalyticsReport),
+                    store,
+                    networks: mockNetworksServices(),
+                },
                 tradeType: 'exchange',
             },
         );

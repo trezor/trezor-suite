@@ -340,6 +340,21 @@ describe('resolveExchangeTradeError', () => {
     });
 
     describe('generic codes', () => {
+        it('returns trade_is_not_possible with the partner message', () => {
+            const source: Partial<TradeError> = {
+                errorDetails: {
+                    origin: 'partner',
+                    message: 'Amount too low for route.',
+                    code: 'trade_is_not_possible',
+                },
+            };
+
+            expect(resolveExchangeTradeError(source)).toEqual({
+                code: 'trade_is_not_possible',
+                message: 'Amount too low for route.',
+            });
+        });
+
         it('returns no_response with no values', () => {
             const source: Partial<TradeError> = {
                 errorDetails: { origin: 'external', code: 'no_response' },

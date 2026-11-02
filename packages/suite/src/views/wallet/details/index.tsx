@@ -1,7 +1,5 @@
 import { type ReactNode } from 'react';
 
-import styled from 'styled-components';
-
 import { AccountTypeBadge, selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
@@ -11,7 +9,6 @@ import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { typography } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/urls';
 
 import { showXpubThunk } from 'src/actions/wallet/publicKeyActions';
@@ -22,16 +19,8 @@ import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/Cont
 
 import { AccountNonce } from './AccountNonce';
 import { CoinjoinLogs } from './CoinjoinLogs';
-import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
 import { Bip329Labels } from '../labels/Bip329Labels';
-
-const Heading = styled.h3`
-    color: ${({ theme }) => theme.contentSecondary};
-    ${typography['body-sm-strong']}
-    margin: 14px 0 4px;
-    text-transform: uppercase;
-`;
 
 type DetailsRowProps = {
     title: TranslationKey;
@@ -44,7 +33,7 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     return (
-        <ContentFlex gap={40} justifyContent="space-between">
+        <ContentFlex gap={isContentBelowBreakpoint ? 16 : 40} justifyContent="space-between">
             <InfoItem
                 label={<Translation id={title} />}
                 typographyStyle="body-md"
@@ -99,15 +88,6 @@ const Details = () => {
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
-            {isCoinjoinAccount && (
-                <>
-                    <Heading>
-                        <Translation id="TR_COINJOIN_SETUP_HEADING" />
-                    </Heading>
-                    <CoinjoinSetup accountKey={account.key} />
-                </>
-            )}
-
             <Card data-testid="@wallet/account-details">
                 <Column gap={40} hasDivider>
                     <DetailsRow
@@ -161,7 +141,14 @@ const Details = () => {
                             </DetailsRow>
                         )
                     ) : (
-                        <RescanAccount account={account} />
+                        <DetailsRow
+                            title="TR_COINJOIN_ACCOUNT_RESCAN_TITLE"
+                            description={
+                                <Translation id="TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION" />
+                            }
+                        >
+                            <RescanAccount account={account} />
+                        </DetailsRow>
                     )}
                     {account.networkType === 'ethereum' && (
                         <DetailsRow

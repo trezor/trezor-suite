@@ -11,7 +11,6 @@ export { useStakingDetailNavigation } from './hooks/staking/useStakingDetailNavi
 export { useStakingRate } from './hooks/staking/useStakingRate';
 export { useMessageSystemYield } from './hooks/yield/useMessageSystemYield';
 export { useStablecoinYieldFirmwareUpdateAlert } from './hooks/yield/useStablecoinYieldFirmwareUpdateAlert';
-export { useYieldApyBreakdownAlert } from './hooks/yield/useYieldApyBreakdownAlert';
 export { useYieldBadge } from './hooks/yield/useYieldBadge';
 export { useYieldDetailNavigation } from './hooks/yield/useYieldDetailNavigation';
 export { useYieldFlowData } from './hooks/yield/useYieldFlowData';

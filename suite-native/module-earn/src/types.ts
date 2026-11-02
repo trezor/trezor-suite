@@ -12,7 +12,8 @@ import {
     type TokenAddress,
     type TokenSymbol,
 } from '@suite-common/wallet-types';
-import { type YieldClaimVaultParams } from '@suite-native/navigation';
+import { type BottomSheetModalRef } from '@suite-native/atoms';
+import { type StakingPendingTxParams, type YieldClaimVaultParams } from '@suite-native/navigation';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface YieldOpportunity extends YieldDtoV2 {}
@@ -23,6 +24,13 @@ export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
 
 export type SignStakeTransactionRejectValue =
     SignTransactionError | SignTransactionTimeoutError | StakeLiveStateInvalidError | undefined;
+
+export type StakingPendingModal = {
+    bottomSheetRef: BottomSheetModalRef;
+    isExploreDisabled: boolean;
+    onExplorePress: () => void;
+    pendingTransaction: StakingPendingTxParams;
+};
 
 export type YieldApprovalLimitType = 'per-deposit' | 'unlimited';
 

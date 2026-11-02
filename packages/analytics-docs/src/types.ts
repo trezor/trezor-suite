@@ -6,7 +6,14 @@ export type Sort = (typeof sorts)[number];
 export const platforms = ['desktop', 'mobile', 'shared'];
 export type Platform = (typeof platforms)[number];
 
-export type SearchMode = 'name' | 'fulltext';
+export const searchFields = [
+    'eventName',
+    'attributeName',
+    'runtimeType',
+    'trigger',
+    'description',
+] as const;
+export type SearchField = (typeof searchFields)[number];
 
 export const allPlatforms = [...platforms, 'all'];
 export type AllPlatform = (typeof allPlatforms)[number];

@@ -21,8 +21,8 @@ describe('useBuyReceiveAssetChange', () => {
     let store: Store<TradingRootState>;
     let dispatchSpy: jest.SpyInstance;
 
-    const renderBuyReceiveAssetChange = async () =>
-        await renderHookWithStoreProvider(
+    const renderBuyReceiveAssetChange = () =>
+        renderHookWithStoreProvider(
             () => {
                 const form = useForm<BuyFormValues>({ validation: buyFormValidationSchema });
 

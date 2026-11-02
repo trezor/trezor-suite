@@ -1,6 +1,10 @@
 import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
-import { type CallMethodKeys, type PermissionRequest } from '@trezor/connect';
+import {
+    type CallMethodKeys,
+    type DeviceUniquePath,
+    type PermissionRequest,
+} from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type AddressSelection } from '@trezor/connect-common/src/types/api/selectAccount';
 
@@ -34,6 +38,12 @@ export type ConnectProcessInfo = {
     icon?: string;
     warning: boolean;
 };
+// Process of a desktop caller that the main process could not identify.
+export const UNKNOWN_PROCESS = Object.freeze({
+    name: 'Unknown',
+    fullPath: 'Unknown',
+    warning: true,
+} as const) satisfies ConnectProcessInfo;
 export type ConnectCallSource = {
     origin: string;
     // Permissions the host declared up front (via ConnectSettings.requestedPermissions), carried on
@@ -240,7 +250,14 @@ type ConnectPopupCallError = {
     state: 'error';
     error: ConnectSerializedError;
 };
-export type ConnectPopupCall = ConnectPopupCallLoaded | ConnectPopupCallError;
+
+type ConnectPopupCallDeviceMeta = {
+    // Device the call runs on, so cancel can clear its button requests.
+    devicePath?: DeviceUniquePath;
+};
+
+export type ConnectPopupCall = (ConnectPopupCallLoaded | ConnectPopupCallError) &
+    ConnectPopupCallDeviceMeta;
 
 export type ConnectPopupCallWithState<
     CallState extends ConnectPopupCall['state'],

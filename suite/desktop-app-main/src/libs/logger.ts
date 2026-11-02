@@ -89,7 +89,12 @@ export type ILogger = {
 
 const logLevelSwitchValue = getSwitchValue('log-level');
 const logLevelByEnv = isDevEnv ? 'debug' : 'info';
-const logLevelDefault = isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
+const getLogLevelDefault = (): LogLevel => {
+    if (hasSwitch('silent')) return 'mute';
+
+    return isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
+};
+const logLevelDefault = getLogLevelDefault();
 
 type RepeatedLogMessage = LogMessage & {
     repetition?: number;

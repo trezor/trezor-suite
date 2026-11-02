@@ -1,0 +1,25 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/price-chart"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../atoms" },
+        { "path": "../intl" },
+        { "path": "../react-native-graph" },
+        { "path": "../storage" },
+        {
+            "path": "../../packages/styles-native"
+        }
+    ]
+}

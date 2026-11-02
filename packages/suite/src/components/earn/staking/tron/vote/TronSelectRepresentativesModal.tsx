@@ -194,7 +194,10 @@ export const TronSelectRepresentativesModal = ({
                                         />
                                     </Checkbox>
                                 </Table.Cell>
-                                <Table.Cell align="end">
+                                <Table.Cell
+                                    align="end"
+                                    data-testid="@staking/tron-select-representatives/apr"
+                                >
                                     <TronRepresentativeApr
                                         address={address}
                                         representatives={representatives}

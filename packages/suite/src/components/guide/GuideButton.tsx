@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useRef } from 'react';
 import { FreeFocusInside } from 'react-focus-lock';
 
-import type { LottieRef } from 'lottie-react';
+import type { LottieHandle } from 'lottie-react';
 import styled, { useTheme } from 'styled-components';
 
 import { Translation, useTranslation } from '@suite/intl';
@@ -72,7 +72,7 @@ export const GuideButton = memo(function GuideButton() {
     const { openGuide, isGuideOpen } = useGuide();
     const { translationString } = useTranslation();
     const theme = useTheme();
-    const lottieRef: LottieRef = useRef(null);
+    const lottieRef = useRef<LottieHandle>(null);
 
     const shouldAutoplayIntro = !mascotIntro.hasPlayed;
 
@@ -86,7 +86,8 @@ export const GuideButton = memo(function GuideButton() {
     );
 
     const handleMouseEnter = () => {
-        lottieRef.current?.goToAndPlay(0, true);
+        lottieRef.current?.seek(0);
+        lottieRef.current?.play();
     };
 
     return (

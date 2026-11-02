@@ -2,8 +2,10 @@ import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-ty
 
 import { type Route } from './route';
 import {
+    type AssetParams,
     type DashboardParams,
     decodeEarnVaultAddress,
+    parseAssetParams,
     parseDashboardParams,
     parseEarnParams,
     validateAccountRouteParams,
@@ -191,10 +193,18 @@ const validateDashboardParams = (hash: HashString): DashboardParams | undefined 
     return params;
 };
 
+const validateAssetParams = (hash: HashString): AssetParams | undefined => {
+    const [symbol, contractAddress] = parseHash(hash);
+
+    return parseAssetParams({ symbol, contractAddress });
+};
+
 const getAppParams = (route: Route, hash: HashString = '') => {
     switch (route.app) {
         case 'dashboard':
-            return validateDashboardParams(hash);
+            return route.name === 'suite-asset'
+                ? validateAssetParams(hash)
+                : validateDashboardParams(hash);
         case 'earn':
             return undefined;
         case 'earn-yield':
@@ -231,6 +241,9 @@ export type WalletParams = CommonWalletParams;
 
 export const getRoute = (name: Route['name']): Route | undefined =>
     suiteRoutes.find(r => r.name === name);
+
+export const isTradingRoute = (routeName: Route['name'] | undefined): boolean =>
+    routeName?.startsWith('wallet-trading') === true;
 
 export const getRouteHash = (route?: Route, params?: RouteParams) =>
     ensureHashString(

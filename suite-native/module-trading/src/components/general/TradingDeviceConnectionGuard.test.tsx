@@ -33,8 +33,8 @@ jest.mock('@suite-common/device', () => ({
 describe('TradingDeviceConnectionGuard', () => {
     let store: Store<State>;
 
-    const renderTradingDeviceConnectionGuard = async () =>
-        await renderWithStoreProvider(
+    const renderTradingDeviceConnectionGuard = () =>
+        renderWithStoreProvider(
             <TradingDeviceConnectionGuard>
                 <Text>CHILDREN</Text>
             </TradingDeviceConnectionGuard>,

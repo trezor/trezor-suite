@@ -1,4 +1,8 @@
+import z from 'zod';
+
 import { type TorStatus } from '@suite/tor-types';
+import { appsEmbeddingEntryId } from '@suite-common/apps-embedding';
+import { httpsUrl } from '@suite-common/schemas/src/general/url';
 
 import { type ExtractUndefined } from './methods';
 
@@ -174,3 +178,70 @@ export type ConnectPopupResponse = {
           error: any;
       }
 );
+
+export const inAppBrowserBounds = z.strictObject({
+    x: z.number(),
+    y: z.number(),
+    width: z.number(),
+    height: z.number(),
+});
+
+export type InAppBrowserBounds = z.infer<typeof inAppBrowserBounds>;
+
+/**
+ * A catalog entry is named, never described: the host resolves its page and both of its navigation
+ * allowlists from the catalog, so that the session an entry keeps on disk only ever runs the site
+ * the catalog assigned to it, within the limits the catalog gave it.
+ */
+const inAppBrowserOpenCatalogEntryPayload = z.strictObject({
+    kind: z.literal('catalog-entry'),
+    entryId: appsEmbeddingEntryId,
+
+    /**
+     * The locale Suite runs in, e.g. `cs-CZ`, for an entry whose page depends on it. Held to the
+     * shape of Suite's own locale tags: the catalog looks it up by key and falls back for a tag it
+     * does not know.
+     */
+    locale: z.string().regex(/^[a-z]{2}-[A-Z]{2}$/),
+});
+
+/**
+ * Only for demo purposes. Prod. code will pass solely a catalog entry, no custom URLs are going to
+ * be allowed. A custom url declares nothing: it opens in the shared in-memory session and may
+ * neither leave its origin nor open a window.
+ */
+const inAppBrowserOpenCustomUrlPayload = z.strictObject({
+    kind: z.literal('custom-url'),
+    url: httpsUrl,
+});
+
+export const inAppBrowserOpenPayload = z.discriminatedUnion('kind', [
+    inAppBrowserOpenCatalogEntryPayload,
+    inAppBrowserOpenCustomUrlPayload,
+]);
+
+export type InAppBrowserOpenPayload = z.infer<typeof inAppBrowserOpenPayload>;
+
+/**
+ * Events forwarded from the main-process WebContentsView host
+ */
+export type InAppBrowserHostEvent =
+    | { type: 'navigated'; url: string }
+    // Not a log line but the state the in-app browser bar renders from: which history buttons are
+    // live and what the address field shows. The renderer cannot derive any of it — the history
+    // belongs to a WebContents it has no handle on — so the host pushes it on every navigation and
+    // once when the view opens.
+    | { type: 'navigation-state'; url: string; canGoBack: boolean; canGoForward: boolean }
+    | { type: 'loaded'; url: string }
+    // Without a url when the host refused the request before it had a page to open — a catalog
+    // entry it does not know.
+    | { type: 'load-failed'; url?: string; error: string }
+    // Spelled out rather than imported from `@suite-common/apps-embedding`, like the rest of this
+    // union. The renderer maps one onto the other, so a member added here and not there stops
+    // compiling at that mapping.
+    | {
+          type: 'window-open-attempt';
+          url: string;
+          outcome: 'denied' | 'opened-in-app';
+      }
+    | { type: 'navigation-blocked'; url: string };

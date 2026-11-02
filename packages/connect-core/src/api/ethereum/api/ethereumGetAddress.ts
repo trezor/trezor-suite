@@ -7,6 +7,7 @@ import {
     createUiEventMessage,
 } from '@trezor/connect-common';
 import type {
+    DeviceButtonRequestCode,
     EthereumNetworkInfoDefinitionValues,
     PROTO,
     PermissionRequest,
@@ -109,7 +110,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         return 'Export multiple addresses';
     }
 
-    getButtonRequestData(code: string) {
+    getButtonRequestData(code: DeviceButtonRequestCode) {
         if (code === 'ButtonRequest_Address') {
             const { params } = this;
             // @ts-expect-error: indexing with noUncheckedIndexedAccess

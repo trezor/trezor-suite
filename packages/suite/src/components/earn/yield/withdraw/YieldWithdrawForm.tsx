@@ -6,6 +6,7 @@ import { events } from '@suite-common/analytics';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getYieldFlowStepSequence,
+    getYieldVaultContractAddress,
     getYieldWithdrawInputToken,
     splitYieldPendingTransaction,
     useFetchFees,
@@ -16,7 +17,9 @@ import { useServices } from '@trezor/dependency-injection';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
+import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
@@ -27,6 +30,7 @@ import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
 
 export const YieldWithdrawForm = () => {
+    const deviceStatus = useEarnDeviceStatus();
     const { analytics } = useServices(injectDesktopAnalytics);
 
     const {
@@ -62,6 +66,14 @@ export const YieldWithdrawForm = () => {
         content: unwrapDisabledContent,
         variant: unwrapDisabledVariant,
     } = useMessageSystemWrappedNative('unwrap');
+
+    const {
+        isDisabled,
+        content: disabledContent,
+        variant: disabledVariant,
+    } = useMessageSystemYield('withdraw', {
+        vaultContractAddress: getYieldVaultContractAddress(vault),
+    });
 
     const { actionPendingTransaction: withdrawPendingTransaction } = splitYieldPendingTransaction(
         pendingTransaction,
@@ -100,6 +112,8 @@ export const YieldWithdrawForm = () => {
     const shouldCheckUnwrapAmount = !isAmountInvalidDecimals && !unwrapPendingTransaction;
 
     const handleOnWithdraw = () => {
+        if (isDisabled) return;
+
         const apyBreakdown = getApyBreakdown(vault.rewardRate?.components);
         analytics.report({
             type: events.yieldWithdrawEvent.name,
@@ -107,6 +121,7 @@ export const YieldWithdrawForm = () => {
                 type: 'withdraw',
                 operation: flowType,
                 action: 'continue',
+                deviceStatus,
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
                 wrappedNative: flow.isWrappedNativeVault,
@@ -124,6 +139,7 @@ export const YieldWithdrawForm = () => {
                 type: 'unwrap',
                 operation: flowType,
                 action: 'continue',
+                deviceStatus,
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },
@@ -230,6 +246,14 @@ export const YieldWithdrawForm = () => {
                             <Translation id="TR_EARN_YIELD_WITHDRAW_TITLE" />
                         </Text>
 
+                        {isDisabled && (
+                            <YieldDisabledBanner
+                                type="withdraw"
+                                content={disabledContent}
+                                variant={disabledVariant}
+                            />
+                        )}
+
                         {errorMessage && (
                             <Banner
                                 intent="warning"
@@ -259,6 +283,7 @@ export const YieldWithdrawForm = () => {
                                     }
                                     warning={getWithdrawWarning()}
                                     isDisabled={
+                                        isDisabled ||
                                         hasBlockingAmountIssue ||
                                         isSubmittingAction ||
                                         !!withdrawPendingTransaction
@@ -268,7 +293,7 @@ export const YieldWithdrawForm = () => {
                                     unitToggle={
                                         // Switching flow mid-submit can dispose its session before
                                         // the pending transaction is stored.
-                                        !isSubmittingAction
+                                        !isDisabled && !isSubmittingAction
                                             ? {
                                                   otherTokenSymbol: otherUnitTokenSymbol,
                                                   onClick: handleToggleWithdrawInputUnit,
@@ -298,7 +323,9 @@ export const YieldWithdrawForm = () => {
                                 />
                             ),
                             // Unwrapping may be disabled remotely; skipping it stays available so the
-                            // user can finish the flow and keep the wrapped token.
+                            // user can finish the flow and keep the wrapped token. The yield withdraw
+                            // kill-switch does not apply here: the withdrawal has already happened, and
+                            // gating this step would strand a resumable session before `complete`.
                             content: () => (
                                 <Column gap={16}>
                                     {isUnwrapDisabled && (

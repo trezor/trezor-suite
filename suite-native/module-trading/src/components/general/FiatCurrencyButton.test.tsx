@@ -4,8 +4,8 @@ import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { FiatCurrencyButton, type FiatCurrencyButtonProps } from './FiatCurrencyButton';
 
 describe('FiatCurrencyButton', () => {
-    const renderFiatCurrencyButton = async (props: Partial<FiatCurrencyButtonProps>) =>
-        await renderWithBasicProvider(
+    const renderFiatCurrencyButton = (props: Partial<FiatCurrencyButtonProps>) =>
+        renderWithBasicProvider(
             <FiatCurrencyButton currency="czk" onPress={jest.fn()} {...props} />,
         );
 

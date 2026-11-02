@@ -5,7 +5,7 @@ import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 import stellar from '@trezor/network-stellar/runtime';
 
 import { fetchUrl } from './fetch';
-import { RateLimiter } from './limiter';
+import { RateLimiter, type RequestPriority } from './limiter';
 
 // a proxy for https://api.coingecko.com/api/v3
 const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';
@@ -20,16 +20,41 @@ interface FetchCurrentFiatRatesOptions {
     skipCache?: boolean;
 }
 
+export type CoinGeckoPricePair = [timestamp: number, price: number];
+
+export type CoinGeckoMarketChartDays = number | 'max';
+
+type FetchCoinGeckoMarketChartParams = {
+    ticker: TickerId;
+    fiatCurrency: BaseCurrencyCode;
+    days: CoinGeckoMarketChartDays;
+    signal?: AbortSignal;
+};
+
+type CoinGeckoMarketChartResponse = {
+    prices?: CoinGeckoPricePair[];
+};
+
 const rateLimiter = new RateLimiter(1_000, 15_000);
 
-const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
+type FetchCoinGeckoOptions = {
+    skipCache?: boolean;
+    signal?: AbortSignal;
+    priority?: RequestPriority;
+};
+
+const NOT_FOUND_STATUS = 404;
+
+const requestCoinGecko = (url: string, options: FetchCoinGeckoOptions = {}): Promise<Response> =>
+    options.skipCache
+        ? fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' }, signal: options.signal })
+        : rateLimiter.limit(fetchSignal => fetchUrl(url, { signal: fetchSignal }), options.signal, {
+              priority: options.priority,
+          });
+
+const fetchCoinGecko = async (url: string, options: FetchCoinGeckoOptions = {}) => {
     try {
-        let res: Response;
-        if (skipCache) {
-            res = await fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' } });
-        } else {
-            res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
-        }
+        const res = await requestCoinGecko(url, options);
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
 
@@ -38,6 +63,8 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
 
         return res.json();
     } catch (error) {
+        if (options.signal?.aborted) throw error;
+
         // Do not report to Sentry to save the issues count limit.
         console.warn(error);
     }
@@ -47,16 +74,16 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
  * Build coinUrl using defined coin ids
  */
 const buildCoinUrls = async (ticker: TickerId) => {
-    const { coingeckoId, fiatRateCryptoId, networkType } = getNetwork(ticker.symbol);
+    const { coingeckoId, nativeAssetCryptoId, networkType } = getNetwork(ticker.symbol);
 
     if (!ticker.tokenAddress) {
-        if (!fiatRateCryptoId) {
-            console.error('buildCoinUrls: cannot find fiatRateCryptoId for', ticker);
+        if (!nativeAssetCryptoId) {
+            console.error('buildCoinUrls: cannot find nativeAssetCryptoId for', ticker);
 
             return [];
         }
 
-        return [`${COINGECKO_API_BASE_URL}/coins/${fiatRateCryptoId}`];
+        return [`${COINGECKO_API_BASE_URL}/coins/${nativeAssetCryptoId}`];
     }
 
     if (!coingeckoId) {
@@ -97,6 +124,52 @@ const buildCoinUrls = async (ticker: TickerId) => {
     return [`${baseUrl}/contract/${ticker.tokenAddress}`];
 };
 
+export const fetchCoinGeckoMarketChart = async ({
+    ticker,
+    fiatCurrency,
+    days,
+    signal,
+}: FetchCoinGeckoMarketChartParams): Promise<CoinGeckoPricePair[] | null> => {
+    const coinUrls = await buildCoinUrls(ticker);
+    const urlParams = `vs_currency=${fiatCurrency}&days=${days}`;
+    let isListed = false;
+    let failedStatus: number | null = null;
+
+    for (const coinUrl of coinUrls) {
+        const res = await requestCoinGecko(`${coinUrl}/market_chart?${urlParams}`, {
+            signal,
+            priority: 'high',
+        });
+
+        if (res.status === NOT_FOUND_STATUS) {
+            continue;
+        }
+
+        if (!res.ok) {
+            failedStatus = res.status;
+            continue;
+        }
+
+        isListed = true;
+
+        const { prices } = (await res.json()) as CoinGeckoMarketChartResponse;
+
+        if (prices && prices.length > 0) {
+            return prices;
+        }
+    }
+
+    if (isListed) {
+        return [];
+    }
+
+    if (failedStatus !== null) {
+        throw new Error(`Coingecko: Market chart failed to fetch: ${failedStatus}`);
+    }
+
+    return null;
+};
+
 /**
  * Returns the current rate for a given symbol fetched from CoinGecko API.
  * Returns null if coin for a given symbol was not found.
@@ -116,7 +189,7 @@ export const fetchCurrentFiatRates = async (
 
     for (const coinUrl of coinUrls) {
         const url = `${coinUrl}?${urlParams}`;
-        const rates = await fetchCoinGecko(url, options?.skipCache);
+        const rates = await fetchCoinGecko(url, { skipCache: options?.skipCache });
 
         if (rates) {
             return {

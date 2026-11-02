@@ -1,4 +1,6 @@
 import { type DeviceRootState } from '@suite-common/device';
+import { asNetworkSymbol } from '@suite-common/networks';
+import { testMocks } from '@suite-common/test-utils';
 import {
     type NotificationsRootState,
     type TransactionNotification,
@@ -7,22 +9,29 @@ import {
     DUST_PHISHING_THRESHOLD,
     type TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
+import { type TronTxContractType } from '@suite-common/wallet-constants';
 import {
     type Account,
     type AccountKey,
     type TokenAddress,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
+import { transactionsInitialState } from './transactionsReducer';
 import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
+    selectAccountClaimTransactions,
+    selectAccountStakeTransactions,
+    selectAccountStakeTypeTransactions,
+    selectAccountYieldVaultTransactions,
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
     selectTransactionsWithMissingRates,
 } from './transactionsSelectors';
-import { type AccountsRootState } from '../accounts/accountsReducer';
+import { type AccountsRootState, accountsInitialState } from '../accounts/accountsReducer';
 import { type FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 
@@ -228,5 +237,220 @@ describe('selectNonPhishingTransactionNotifications', () => {
 
         expect(selectNonPhishingTransactionNotifications(state)).toEqual([receivedNotification]);
         expect(selectHasUnseenNonPhishingTransactionNotifications(state)).toBe(true);
+    });
+});
+
+describe('selectAccountStakeTypeTransactions', () => {
+    const TRON_ACCOUNT_KEY = mockAccountKey({ symbol: asNetworkSymbol('trx') });
+
+    const tronTx = (contractType: TronTxContractType) =>
+        testMocks.getWalletTransaction({
+            txid: `tron-${contractType}`,
+            symbol: asNetworkSymbol('trx'),
+            type: 'self',
+            tronSpecific: { contractType },
+        });
+
+    const getTronState = (transactions: WalletAccountTransaction[]): TransactionsRootState => ({
+        wallet: {
+            transactions: {
+                ...transactionsInitialState,
+                transactions: { [TRON_ACCOUNT_KEY]: transactions },
+            },
+            accounts: accountsInitialState,
+        },
+    });
+
+    it('keeps Tron staking transactions', () => {
+        const state = getTronState([
+            tronTx('FreezeBalanceV2Contract'),
+            tronTx('UnfreezeBalanceV2Contract'),
+            tronTx('VoteWitnessContract'),
+            tronTx('WithdrawExpireUnfreezeContract'),
+            tronTx('WithdrawBalanceContract'),
+        ]);
+
+        expect(
+            selectAccountStakeTypeTransactions(state, TRON_ACCOUNT_KEY).map(tx => tx.txid),
+        ).toEqual([
+            'tron-FreezeBalanceV2Contract',
+            'tron-UnfreezeBalanceV2Contract',
+            'tron-VoteWitnessContract',
+            'tron-WithdrawExpireUnfreezeContract',
+            'tron-WithdrawBalanceContract',
+        ]);
+    });
+
+    it('omits Tron transactions that are not staking operations', () => {
+        const state = getTronState([
+            tronTx('TransferContract'),
+            tronTx('TriggerSmartContract'),
+            tronTx('DelegateResourceContract'),
+        ]);
+
+        expect(selectAccountStakeTypeTransactions(state, TRON_ACCOUNT_KEY)).toEqual([]);
+    });
+});
+
+describe('selectAccountYieldVaultTransactions', () => {
+    const OTHER_VAULT_CONTRACT = '0x8eb67a509616cd6a7c1b3c8c21d48ff57df3d458' as TokenAddress;
+    const RECEIVER = '0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3';
+    const AMOUNT = '00000000000000000000000000000000000000000000000000000000004c4b40';
+    const ERC4626_DEPOSIT = `0x6e553f65${AMOUNT}${RECEIVER}`;
+    const TRANSFER = `0xa9059cbb${RECEIVER}${AMOUNT}`;
+
+    type VaultCallTransactionParams = {
+        txid: string;
+        callTarget: string;
+        data: string;
+    };
+
+    const vaultCallTransaction = ({ txid, callTarget, data }: VaultCallTransactionParams) =>
+        testMocks.getWalletTransaction({
+            txid,
+            symbol: asNetworkSymbol('eth'),
+            ethereumSpecific: { status: 1, nonce: 0, gasLimit: 200000, data },
+            details: {
+                vin: [],
+                vout: [{ n: 0, isAddress: true, addresses: [callTarget] }],
+                size: 0,
+                totalInput: '0',
+                totalOutput: '0',
+            },
+        });
+
+    const getVaultState = (transactions: WalletAccountTransaction[]): TransactionsRootState => ({
+        wallet: {
+            transactions: {
+                ...transactionsInitialState,
+                transactions: { [ACCOUNT_KEY]: transactions },
+            },
+            accounts: accountsInitialState,
+        },
+    });
+
+    it('keeps only the deposit/withdraw/redeem transactions of the given vault', () => {
+        const state = getVaultState([
+            vaultCallTransaction({
+                txid: 'vault-deposit',
+                callTarget: VAULT_CONTRACT,
+                data: ERC4626_DEPOSIT,
+            }),
+            vaultCallTransaction({
+                txid: 'other-vault-deposit',
+                callTarget: OTHER_VAULT_CONTRACT,
+                data: ERC4626_DEPOSIT,
+            }),
+            vaultCallTransaction({
+                txid: 'unrelated-transfer',
+                callTarget: USDT_CONTRACT,
+                data: TRANSFER,
+            }),
+        ]);
+
+        expect(
+            selectAccountYieldVaultTransactions(state, ACCOUNT_KEY, VAULT_CONTRACT).map(
+                tx => tx.txid,
+            ),
+        ).toEqual(['vault-deposit']);
+        expect(
+            selectAccountYieldVaultTransactions(state, ACCOUNT_KEY, OTHER_VAULT_CONTRACT).map(
+                tx => tx.txid,
+            ),
+        ).toEqual(['other-vault-deposit']);
+    });
+});
+
+describe('staking transaction selectors', () => {
+    const EVERSTAKE_CLAIM_METHOD_ID = '0x33986ffa';
+    const EVERSTAKE_STAKE_METHOD_ID = '0x3a29dbae';
+
+    const ethereumStakingTransaction = (txid: string, methodId: string) =>
+        testMocks.getWalletTransaction({
+            txid,
+            symbol: asNetworkSymbol('eth'),
+            ethereumSpecific: {
+                status: 1,
+                nonce: 1,
+                gasLimit: 21000,
+                parsedData: { methodId, name: 'everstake' },
+            },
+        });
+
+    const solanaStakingTransaction = (
+        txid: string,
+        type: 'stake' | 'unstake' | 'claim',
+        blockHeight?: number,
+    ) =>
+        testMocks.getWalletTransaction({
+            txid,
+            symbol: asNetworkSymbol('sol'),
+            blockHeight,
+            solanaSpecific: {
+                status: blockHeight ? 'confirmed' : 'pending',
+                stakeOperation: { type, amount: '1' },
+            },
+        });
+
+    const transferTransaction = testMocks.getWalletTransaction({
+        txid: 'transfer',
+        symbol: asNetworkSymbol('sol'),
+    });
+
+    describe('selectAccountClaimTransactions', () => {
+        it('returns Ethereum claims by their Everstake method id regardless of its casing', () => {
+            const ethereumClaim = ethereumStakingTransaction('eth-claim', '0x33986FFA');
+
+            expect(
+                selectAccountClaimTransactions(
+                    getState([
+                        ethereumClaim,
+                        ethereumStakingTransaction('eth-stake', EVERSTAKE_STAKE_METHOD_ID),
+                        transferTransaction,
+                    ]),
+                    ACCOUNT_KEY,
+                ),
+            ).toEqual([ethereumClaim]);
+        });
+
+        it('returns Solana claims by their stake operation, including a pending stand-in', () => {
+            const pendingClaim = solanaStakingTransaction('sol-claim-pending', 'claim');
+            const confirmedClaim = solanaStakingTransaction('sol-claim', 'claim', 100);
+
+            expect(
+                selectAccountClaimTransactions(
+                    getState([
+                        pendingClaim,
+                        confirmedClaim,
+                        solanaStakingTransaction('sol-unstake', 'unstake'),
+                        transferTransaction,
+                    ]),
+                    ACCOUNT_KEY,
+                ),
+            ).toEqual([pendingClaim, confirmedClaim]);
+        });
+    });
+
+    describe('selectAccountStakeTransactions', () => {
+        it('returns Ethereum and Solana stakes and leaves out the other operations', () => {
+            const ethereumStake = ethereumStakingTransaction(
+                'eth-stake',
+                EVERSTAKE_STAKE_METHOD_ID,
+            );
+            const solanaStake = solanaStakingTransaction('sol-stake', 'stake');
+
+            expect(
+                selectAccountStakeTransactions(
+                    getState([
+                        ethereumStake,
+                        solanaStake,
+                        ethereumStakingTransaction('eth-claim', EVERSTAKE_CLAIM_METHOD_ID),
+                        solanaStakingTransaction('sol-claim', 'claim'),
+                        transferTransaction,
+                    ]),
+                    ACCOUNT_KEY,
+                ),
+            ).toEqual([ethereumStake, solanaStake]);
+        });
     });
 });

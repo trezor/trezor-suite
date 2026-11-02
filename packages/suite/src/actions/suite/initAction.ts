@@ -12,6 +12,7 @@ import {
 } from '@suite/router';
 import {
     type SuiteSettingsRootState,
+    selectEarnStakingWorkerBaseUrl,
     selectEarnYieldWorkerBaseUrl,
     selectLanguage,
     suiteSettingsActions,
@@ -21,6 +22,7 @@ import * as trezorConnectActions from '@suite-common/connect-init';
 import { type ConnectInitThunkDeps, type ConnectInitThunkState } from '@suite-common/connect-init';
 import { type DeviceRootState } from '@suite-common/device';
 import { earnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
+import { earnStakingWorkerBaseUrl } from '@suite-common/earn-staking-api';
 import {
     type MessageSystemRootState,
     initMessageSystemThunk,
@@ -109,8 +111,9 @@ export const initThunk =
 
         dispatch(onSuiteInit());
 
-        // apply the earn yield worker base url from debug settings (or the default for this build)
+        // Apply the earn worker base URLs from debug settings (or the defaults for this build).
         earnYieldWorkerBaseUrl.set(selectEarnYieldWorkerBaseUrl(getState()));
+        earnStakingWorkerBaseUrl.set(selectEarnStakingWorkerBaseUrl(getState()));
 
         await dispatch(initDevicesThunk());
 

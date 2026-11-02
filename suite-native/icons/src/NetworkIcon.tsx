@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import {
     BlendColor,
@@ -11,14 +12,15 @@ import {
 } from '@shopify/react-native-skia';
 
 import {
-    type NetworkIconName,
-    getNetworkIconName,
-    isNetworkIconSymbol,
-    isTestnetNetworkIconSymbol,
-    networkIcons,
-} from '@suite-common/icons';
+    type NetworksRootState,
+    injectGetNetworkIcon,
+    injectHasNetworkIcon,
+    selectNetworkConfig,
+} from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
+import type { NetworkIconSource } from '@trezor/network-assets-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor } from '@trezor/theme';
 
@@ -31,7 +33,7 @@ type NetworkIconProps = {
 };
 
 type NetworkIconCanvasProps = {
-    iconName: NetworkIconName;
+    source: NetworkIconSource;
     size: NetworkIconSize;
     backgroundColor: CSSColor;
     iconColor: CSSColor;
@@ -43,12 +45,12 @@ const iconStyle = prepareNativeStyle<{ size: NetworkIconSize }>((_, { size }) =>
 }));
 
 const NetworkIconCanvas = ({
-    iconName,
+    source,
     size,
     backgroundColor,
     iconColor,
 }: NetworkIconCanvasProps) => {
-    const iconSvg = useSVG(networkIcons[iconName]);
+    const iconSvg = useSVG(source);
 
     if (!iconSvg) {
         return null;
@@ -81,12 +83,15 @@ export const NetworkIcon = ({ symbol, size = 16 }: NetworkIconProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const { translate } = useTranslate();
 
-    if (!isNetworkIconSymbol(symbol)) {
-        return null;
-    }
+    const { getNetworkIcon, hasNetworkIcon } = useServices(
+        injectGetNetworkIcon,
+        injectHasNetworkIcon,
+    );
+    const isTestnet = useSelector(
+        (state: NetworksRootState) => selectNetworkConfig(state, symbol)?.testnet ?? false,
+    );
 
-    const iconName = getNetworkIconName(symbol);
-    const isTestnet = isTestnetNetworkIconSymbol(symbol);
+    if (!hasNetworkIcon(symbol)) return null;
     const backgroundColor = isTestnet
         ? utils.colors.elementFillCriticalBold
         : utils.colors.elementFillContrast;
@@ -102,7 +107,7 @@ export const NetworkIcon = ({ symbol, size = 16 }: NetworkIconProps) => {
             style={applyStyle(iconStyle, { size })}
         >
             <NetworkIconCanvas
-                iconName={iconName}
+                source={getNetworkIcon(symbol)}
                 size={size}
                 backgroundColor={backgroundColor}
                 iconColor={iconColor}

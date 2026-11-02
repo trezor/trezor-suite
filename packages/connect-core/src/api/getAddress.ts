@@ -3,6 +3,7 @@
 import {
     type BitcoinNetworkInfo,
     Bundle,
+    type DeviceButtonRequestCode,
     type PROTO,
     type PermissionRequest,
 } from '@trezor/connect-common';
@@ -108,7 +109,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         return 'Export multiple addresses';
     }
 
-    getButtonRequestData(code: string) {
+    getButtonRequestData(code: DeviceButtonRequestCode) {
         if (code === 'ButtonRequest_Address') {
             const { params } = this;
             // @ts-expect-error: indexing with noUncheckedIndexedAccess

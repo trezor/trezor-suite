@@ -1,3 +1,5 @@
+import { shallowEqual } from 'react-redux';
+
 import {
     type MetadataRootState,
     fromLegacyMetadataToSearchAccountLabels,
@@ -43,4 +45,13 @@ export const selectAccountLabelsForSearch = createMemoizedSelector(
 
         return fromLegacyMetadataToSearchAccountLabels(accountMetadata);
     },
+);
+
+export const selectAccountsLabelsForSearch = createMemoizedSelector(
+    [
+        (state: SelectAccountLabelsForSearchState) => state,
+        (_state: SelectAccountLabelsForSearchState, accounts: readonly Account[]) => accounts,
+    ],
+    (state, accounts) => accounts.map(account => selectAccountLabelsForSearch(state, account)),
+    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );

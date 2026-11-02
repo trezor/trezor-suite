@@ -3,42 +3,53 @@ import { useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
+    Box,
     Button,
     Card,
     CheckBox,
     HStack,
     PressableOpacity,
+    ScreenFooterGradient,
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
+import { NetworkIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type NativeAccountsRootState, selectNetworkFilterOptions } from '../selectors';
+import { type NativeAccountsWithNetworksRootState, selectNetworkFilterOptions } from '../selectors';
+import { type NetworkFilterType } from '../types';
 
 type NetworkFilterBottomSheetProps = {
     selectedNetworks: NetworkSymbol[];
     onApply: (selected: NetworkSymbol[]) => void;
     onClear: () => void;
-    isSendFlow: boolean;
+    type: NetworkFilterType;
 };
+
+const textContentStyle = prepareNativeStyle(_ => ({
+    flex: 1,
+    minHeight: 44, // ensures same height of network cards with no accounts
+    justifyContent: 'center',
+}));
 
 export const NetworkFilterBottomSheet = forwardRef(
     (
-        { selectedNetworks, onApply, onClear, isSendFlow }: NetworkFilterBottomSheetProps,
+        { selectedNetworks, onApply, onClear, type }: NetworkFilterBottomSheetProps,
         ref: Ref<BottomSheetModalMethods>,
     ) => {
         const { translate } = useTranslate();
+        const { applyStyle } = useNativeStyles();
+
         const [pendingSelection, setPendingSelection] = useState<NetworkSymbol[]>(selectedNetworks);
         const selectedNetworksRef = useRef(selectedNetworks);
         selectedNetworksRef.current = selectedNetworks;
 
-        const options = useSelector((state: NativeAccountsRootState & NetworksRootState) =>
-            selectNetworkFilterOptions(state, isSendFlow),
+        const options = useSelector((state: NativeAccountsWithNetworksRootState) =>
+            selectNetworkFilterOptions(state, type),
         );
 
         useEffect(() => {
@@ -74,39 +85,47 @@ export const NetworkFilterBottomSheet = forwardRef(
         return (
             <BottomSheetModal
                 ref={ref}
-                title={translate(
-                    'moduleAccountManagement.accountsScreen.networkFilter.showAccountsOnTitle',
-                )}
+                title={translate('moduleAccountManagement.accountsScreen.networkFilter.title')}
                 isCloseDisplayed
                 onDismiss={handleDismiss}
                 footer={
-                    <VStack spacing="sp12" paddingHorizontal="sp16" paddingBottom="sp16">
-                        <Button onPress={handleConfirmSelection}>
-                            <Translation id="moduleAccountManagement.accountsScreen.networkFilter.applyButton" />
-                        </Button>
-                        <Button intent="neutral" priority="secondary" onPress={handleClear}>
-                            <Translation id="moduleAccountManagement.accountsScreen.networkFilter.clearButton" />
-                        </Button>
-                    </VStack>
+                    <>
+                        <ScreenFooterGradient />
+                        <VStack spacing="sp12" paddingHorizontal="sp16" paddingBottom="sp16">
+                            <Button onPress={handleConfirmSelection}>
+                                <Translation id="moduleAccountManagement.accountsScreen.networkFilter.applyButton" />
+                            </Button>
+                            <Button intent="neutral" priority="secondary" onPress={handleClear}>
+                                <Translation id="moduleAccountManagement.accountsScreen.networkFilter.clearButton" />
+                            </Button>
+                        </VStack>
+                    </>
                 }
             >
                 <VStack spacing="sp12" paddingBottom="sp16">
                     {options.map(({ symbol, accountCount }) => (
                         <PressableOpacity key={symbol} onPress={() => handleSelectNetwork(symbol)}>
-                            <Card noShadow>
-                                <HStack alignItems="center" spacing="sp16">
-                                    <TokenIcon tokenSymbol={symbol} networkSymbol={symbol} />
-                                    <VStack flex={1} spacing={0}>
+                            <Card noPadding noShadow>
+                                <HStack
+                                    marginHorizontal="sp16"
+                                    marginVertical="sp12"
+                                    alignItems="center"
+                                    spacing="sp16"
+                                >
+                                    <NetworkIcon symbol={symbol} size={32} />
+                                    <Box style={applyStyle(textContentStyle)}>
                                         <Text variant="body-md-strong">
                                             {getNetwork(symbol).name}
                                         </Text>
-                                        <Text variant="body-sm" color="contentSecondary">
-                                            <Translation
-                                                id="moduleAccountManagement.accountsScreen.networkFilter.accountCount"
-                                                values={{ count: accountCount }}
-                                            />
-                                        </Text>
-                                    </VStack>
+                                        {accountCount && (
+                                            <Text variant="body-sm" color="contentSecondary">
+                                                <Translation
+                                                    id="moduleAccountManagement.accountsScreen.networkFilter.accountCount"
+                                                    values={{ count: accountCount }}
+                                                />
+                                            </Text>
+                                        )}
+                                    </Box>
                                     <CheckBox
                                         isChecked={pendingSelection.includes(symbol)}
                                         onChange={() => handleSelectNetwork(symbol)}

@@ -54,9 +54,8 @@ export const init: ModuleInit = ({ logger }) => {
 
             return { process, client };
         },
-        ({ process }) => {
-            process.stop();
-        },
+        ({ process }) => process.stop(),
+        err => logger.error(SERVICE_NAME, `Failed to stop process: ${err}`),
     );
 
     const getClient = () =>
@@ -120,6 +119,14 @@ export const init: ModuleInit = ({ logger }) => {
 
                     return (client[method] as any)(...params);
                 },
+                onRequestError: (method, error) => {
+                    logger.error(SERVICE_NAME, `onRequestError: ${method}: ${error}`);
+
+                    return {
+                        success: false,
+                        error: { message: String(error), code: 'unknown' },
+                    };
+                },
                 onAddListener: (eventName, listener) => {
                     logger.debug(SERVICE_NAME, `add listener ${eventName}`);
 
@@ -139,10 +146,10 @@ export const init: ModuleInit = ({ logger }) => {
         bluetoothModuleState.getTransport = getBluetoothTransport;
     };
 
-    const onQuit = () => {
+    const onQuit = async () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
         unregisterProxy();
-        lazyBluetooth.dispose();
+        await lazyBluetooth.dispose();
         bluetoothModuleState.getTransport = () => undefined;
     };
 

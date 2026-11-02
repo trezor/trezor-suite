@@ -18,7 +18,6 @@ export * from './blockchain/blockchainReducer';
 export * from './blockchain/blockchainSelectors';
 export * from './blockchain/blockchainSubscriptionMiddleware';
 export * from './blockchain/blockchainThunks';
-export * from './device/deviceAddressUtils';
 export * from './device/deviceSelectors';
 export * from './device/deviceThunks';
 export * from './device/entropyCheckThunks';
@@ -29,6 +28,7 @@ export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoverySelectors';
 export * from './discovery/discoveryThunks';
+export * from './discovery/ejectAllWalletsThunk';
 export * from './discovery/passphraseWalletThunks';
 export * from './earn/earnDepositsFiatUtils';
 export * from './earn/earnTransactionsMiddleware';
@@ -132,6 +132,8 @@ export * from './tokens/tokenSelectors';
 export * from './tokens/tokenUtils';
 export * from './transactions/hooks/useDirectRpcHistoryState';
 export * from './transactions/hooks/useEvmPendingTxStatus';
+export * from './transactions/retriever/accountsTransactionsSelectors';
+export * from './transactions/retriever/createTransactionRetriever';
 export * from './transactions/target/createTargets';
 export type * from './transactions/target/Target';
 export * from './transactions/transactionsActions';
@@ -164,3 +166,5 @@ export * from './yield/yieldTypes';
 // Named re-export, not `export *`: the .tsx this hook reaches must stay prunable from the Electron
 // main bundle, whose webpack resolves .ts/.js only.
 export { useResolveNamedAddress } from './named-address/useResolveNamedAddress';
+
+export { isEarnSigningCancelled } from './earn/earnTransactionAnalytics';

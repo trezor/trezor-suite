@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { RootStackRoutes } from '@suite-native/navigation';
@@ -66,7 +67,12 @@ describe('AccountList', () => {
                 {...props}
                 data={props.data ?? data}
             />,
-            { services: { store } },
+            {
+                services: {
+                    store,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
 
         return { ...result, store };

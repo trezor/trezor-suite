@@ -4,6 +4,8 @@ import { Translation } from '@suite/intl';
 import { Button, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
+import { EarnBuyButton } from '../common/EarnBuyButton';
+
 type EarnYieldActionButtonsProps = {
     hasDepositedBalance: boolean;
     hasAdditionalDepositAmount: boolean;
@@ -78,15 +80,7 @@ export const EarnYieldActionButtons = ({
         )}
 
         {!hasDepositedBalance && !hasAdditionalDepositAmount && (
-            <Button
-                data-testid="@earn/dashboard/buy-button"
-                size="small"
-                intent="neutral"
-                priority="secondary"
-                onClick={onBuy}
-            >
-                <Translation id="TR_BUY" />
-            </Button>
+            <EarnBuyButton onClick={onBuy} data-testid="@earn/dashboard/buy-button" />
         )}
     </>
 );

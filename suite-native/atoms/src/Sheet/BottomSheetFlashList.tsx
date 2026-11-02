@@ -71,6 +71,11 @@ const handleStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.borderNeutral,
 }));
 
+const sheetStyle = prepareNativeStyle<{ left: number; right: number }>((_, { left, right }) => ({
+    marginLeft: left,
+    marginRight: right,
+}));
+
 const footerStyle = prepareNativeStyle(({ colors }) => ({
     backgroundColor: colors.surfaceFillPage,
 }));
@@ -94,7 +99,7 @@ export const BottomSheetFlashList = <TItem,>({
     ...flashListProps
 }: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
-    const { bottom: insetBottom } = useSafeAreaInsets();
+    const { bottom: insetBottom, left, right } = useSafeAreaInsets();
     const { height: windowHeight } = useWindowDimensions();
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -189,6 +194,7 @@ export const BottomSheetFlashList = <TItem,>({
                 />
             )}
             backgroundStyle={applyStyle(bottomSheetStyle)}
+            style={applyStyle(sheetStyle, { left, right })}
             handleIndicatorStyle={applyStyle(handleStyle)}
             // @ts-expect-error wrong type, doesn't expect children
             containerComponent={WindowOverlay}

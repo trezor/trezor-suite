@@ -80,6 +80,7 @@ import {
     MIN_TRON_BALANCE_FOR_FEE_BUFFER,
     MIN_TRON_BALANCE_FOR_STAKING,
     MIN_TRON_FOR_WITHDRAWALS,
+    TRON_UNFREEZE_DELAY_DAYS,
 } from '../tron/tronStakingConstants';
 import {
     getTronStakingRewards,
@@ -279,8 +280,7 @@ export const getUnstakingPeriodInDays = (
     }
 
     if (networkType === 'tron') {
-        // TODO: move to constants
-        return 14;
+        return TRON_UNFREEZE_DELAY_DAYS;
     }
 
     if (typeof withdrawTime !== 'number' || typeof exitTime !== 'number') {
@@ -351,12 +351,22 @@ export const getStakingContractAddress = (account: Account, stakeType: StakeType
     }
 };
 
+export const hasAccountStakedForAnalytics = (account: Account): boolean => {
+    if (account.networkType === 'solana') {
+        return [
+            ...(account.misc?.solStakingAccounts ?? []),
+            ...(account.misc?.solExternalStakingAccounts ?? []),
+        ].some(stakingAccount => new BigNumber(stakingAccount.stake ?? '0').gt(0));
+    }
+
+    return new BigNumber(getAccountTotalStakingBalance(account) ?? '0').gt(0);
+};
+
 export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] => {
     const providers = new Set<string>();
 
     accounts.forEach(account => {
-        const stakingBalance = getAccountTotalStakingBalance(account);
-        if (!stakingBalance || new BigNumber(stakingBalance).lte(0)) {
+        if (!hasAccountStakedForAnalytics(account)) {
             return;
         }
 
@@ -381,7 +391,10 @@ export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] =
                     ...(account.misc?.solStakingAccounts ?? []),
                     ...(account.misc?.solExternalStakingAccounts ?? []),
                 ].forEach(stakingAccount => {
-                    if (stakingAccount.voterPubkey) {
+                    if (
+                        stakingAccount.voterPubkey &&
+                        new BigNumber(stakingAccount.stake ?? '0').gt(0)
+                    ) {
                         const provider = getStakingProviderBySolanaVoterPubkey(
                             stakingAccount.voterPubkey,
                         );
@@ -430,7 +443,7 @@ export const getTxStakeType = (tx: WalletAccountTransaction) => {
     const signature = tx?.ethereumSpecific?.parsedData?.methodId;
 
     if (signature) {
-        return signatureToStakeTypeMap[signature];
+        return signatureToStakeTypeMap[signature.toLowerCase()];
     }
 
     if (tx?.solanaSpecific?.stakeOperation) {
@@ -493,4 +506,15 @@ export const isAccountStakingActive = (
     const hasDepositedBalance = new BigNumber(depositedBalance).gt(0);
 
     return hasDepositedBalance || isStakePending || isUnstakePending || isClaimPending || canClaim;
+};
+
+export const isAccountStakingActiveByHistory = (
+    account: Account,
+    transactions: WalletAccountTransaction[],
+) => {
+    if (!isSupportedStakingNetworkSymbol(account.symbol)) return false;
+
+    const claimTransactions = transactions.filter(tx => getTxStakeType(tx) === 'claim');
+
+    return isAccountStakingActive(account, claimTransactions);
 };

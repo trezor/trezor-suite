@@ -30,8 +30,8 @@ jest.mock('@suite-native/alerts', () => ({
 describe('useReceiveAddressSharing', () => {
     const address = 'bc1qreceiveaddress';
 
-    const renderUseReceiveAddressSharing = async (isDeviceVerificationEnabled = true) =>
-        await renderHookWithBasicProvider(
+    const renderUseReceiveAddressSharing = (isDeviceVerificationEnabled = true) =>
+        renderHookWithBasicProvider(
             () =>
                 useReceiveAddressSharing({
                     address,

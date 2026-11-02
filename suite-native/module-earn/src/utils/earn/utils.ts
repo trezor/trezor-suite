@@ -1,4 +1,5 @@
 import { isUserCancelledSignErrorCode } from '@suite-common/earn-stablecoin';
+import { isEarnSigningCancelled } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 
 export const buildEarnComposeFormState = (
@@ -28,9 +29,7 @@ export const buildEarnComposeFormState = (
 
 export const isUserCancelledSignError = (
     payload: { errorCode?: string; message?: string } | undefined,
-) =>
-    payload?.message === 'tx-cancelled' ||
-    (!!payload?.errorCode && isUserCancelledSignErrorCode(payload.errorCode));
+) => !!payload && isEarnSigningCancelled({ code: payload.errorCode, message: payload.message });
 
 export type EarnReviewErrorPayload =
     { error?: string; errorCode?: string; message?: string } | undefined;

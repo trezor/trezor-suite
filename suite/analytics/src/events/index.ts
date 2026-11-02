@@ -1,18 +1,26 @@
+export {
+    appFormPercentButtonsEvent,
+    stakingClaimEvent,
+    stakingNavigateEvent,
+    stakingStakeEvent,
+    stakingUnstakeEvent,
+    yieldEarnEntryEvent,
+} from '@suite-common/analytics';
+
+export {
+    promoDashboardBannerEvent,
+    transactionCancelEvent,
+    transactionCreatedEvent,
+} from '@suite-common/analytics';
 export { accountsActionsEvent } from './accountsActionsEvent';
-export { accountsActiveStakingEvent } from './accountsActiveStakingEvent';
 export { accountsEmptyAccountReceiveEvent } from './accountsEmptyAccountReceiveEvent';
 export { accountsNewAccountEvent } from './accountsNewAccountEvent';
-export { accountsNonZeroBalanceEvent } from './accountsNonZeroBalanceEvent';
-export { accountsStatusEvent } from './accountsStatusEvent';
-export { accountsTokensStatusEvent } from './accountsTokensStatusEvent';
 export { accountsTransactionsExportEvent } from './accountsTransactionsExportEvent';
 export { addTokenEvent } from './addTokenEvent';
-export { appFormPercentButtonsEvent } from './appFormPercentButtonsEvent';
 export { appNewContentBadgeEvent } from './appNewContentBadgeEvent';
 export { appUpdateEvent } from './appUpdateEvent';
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { autostartModalEvent } from './autostartModalEvent';
-export { coinjoinAnonymityGainEvent } from './coinjoinAnonymityGainEvent';
 export { createBackupEvent } from './createBackupEvent';
 export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddressConfirmOnTrezorEvent';
 export { createReceiveAddressCopyAddressEvent } from './createReceiveAddressCopyAddressEvent';
@@ -40,7 +48,6 @@ export { guideTooltipLinkNavigationEvent } from './guideTooltipLinkNavigationEve
 export { menuGuideEvent } from './menuGuideEvent';
 export { menuNotificationsToggleEvent } from './menuNotificationsToggleEvent';
 export { menuToggleDiscreetEvent } from './menuToggleDiscreetEvent';
-export { promoDashboardBannerEvent } from '@suite-common/analytics';
 export { promoDesktopEvent } from './promoDesktopEvent';
 export { promoMobileEvent } from './promoMobileEvent';
 export { promoReferralButtonEvent } from './promoReferralButtonEvent';
@@ -89,13 +96,7 @@ export { settingsTorEvent } from './settingsTorEvent';
 export { settingsTorOnionLinksEvent } from './settingsTorOnionLinksEvent';
 export { stakingCardanoPoolDelegationEvent } from './stakingCardanoPoolDelegationEvent';
 export { stakingChangeDelegateEvent } from './stakingChangeDelegateEvent';
-export { stakingClaimEvent } from './stakingClaimEvent';
-export { stakingConfirmEvent } from './stakingConfirmEvent';
-export { stakingNavigateEvent } from './stakingNavigateEvent';
-export { stakingStakeEvent } from './stakingStakeEvent';
-export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
-export { yieldEarnEntryEvent } from './yieldEarnEntryEvent';
 export { suiteReadyEvent } from './suiteReadyEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
 export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';
@@ -109,7 +110,5 @@ export { tradeReceivedQuotesEvent } from './tradeReceivedQuotesEvent';
 export { tradeSellEvent } from './tradeSellEvent';
 export { tradeStatusEvent } from './tradeStatusEvent';
 export { tradingExchangeIssueEvent } from './tradingExchangeIssueEvent';
-export { transactionCancelEvent } from './transactionCancelEvent';
-export { transactionCreatedEvent } from './transactionCreatedEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';
 export { transportTypeEvent } from './transportTypeEvent';

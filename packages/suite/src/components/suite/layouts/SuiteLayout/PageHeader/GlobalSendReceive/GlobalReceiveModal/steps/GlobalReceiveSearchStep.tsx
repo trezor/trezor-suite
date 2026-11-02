@@ -8,7 +8,11 @@ import {
     events as sharedEvents,
 } from '@suite-common/analytics';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
+import {
+    type GlobalReceiveAssetCatalogStatus,
+    type GlobalReceiveAssetSections,
+} from '@suite-common/receive';
+import { type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Link, SubTabs } from '@trezor/components';
@@ -21,17 +25,14 @@ import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendRec
 
 import { AssetSearchWithNetworkFilter } from '../../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
-import { GlobalReceiveAccountsTab } from './GlobalReceiveAccountsTab';
-import { type GlobalReceiveAssetCatalogStatus } from '../hooks/useGlobalReceiveAssets';
 import { type GlobalReceiveTab } from '../types';
+import { GlobalReceiveAccountsTab } from './GlobalReceiveAccountsTab';
 import { GlobalReceiveAssetsTab } from './GlobalReceiveAssetsTab';
 
-type GlobalReceiveSearchStepProps = {
+type GlobalReceiveSearchStepProps = Omit<GlobalReceiveAssetSections, 'hasMoreOtherAssets'> & {
     activeTab: GlobalReceiveTab;
-    assets: TradingAssetOption[];
     assetNetworks: readonly NetworkSymbol[];
     accountNetworks: readonly NetworkSymbol[];
-    balances: TradeableAssetBalances;
     catalogStatus: GlobalReceiveAssetCatalogStatus;
     isAssetDisabled: (asset: TradingAssetOption) => boolean;
     onAccountClick: (account: Account) => void;
@@ -44,10 +45,10 @@ type GlobalReceiveSearchStepProps = {
 
 export const GlobalReceiveSearchStep = ({
     activeTab,
-    assets,
+    myAssets,
+    otherAssets,
     assetNetworks,
     accountNetworks,
-    balances,
     catalogStatus,
     isAssetDisabled,
     onAccountClick,
@@ -70,8 +71,7 @@ export const GlobalReceiveSearchStep = ({
             type: sharedEvents.receiveEntryInteractionEvent.name,
             payload: {
                 action,
-                platform: 'desktop',
-                ...(networkSymbol ? { networkSymbol } : {}),
+                networkSymbols: networkSymbol ? [networkSymbol] : undefined,
             },
         });
     };
@@ -162,8 +162,8 @@ export const GlobalReceiveSearchStep = ({
 
                 {activeTab === 'assets' ? (
                     <GlobalReceiveAssetsTab
-                        assets={assets}
-                        balances={balances}
+                        myAssets={myAssets}
+                        otherAssets={otherAssets}
                         catalogStatus={catalogStatus}
                         isAssetDisabled={isAssetDisabled}
                         listRef={listRef}

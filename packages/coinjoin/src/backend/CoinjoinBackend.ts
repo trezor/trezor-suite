@@ -18,6 +18,7 @@ import type {
     ScanProgressInfo,
     Transaction,
 } from '../types/backend';
+import { resetIdentityCircuit } from '../utils/http';
 import { getCoinjoinNetwork } from '../utils/settingsUtils';
 
 interface Events {
@@ -122,10 +123,18 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstDerived: (typeof derived)[number] = derived[0];
         const { address } = firstDerived;
-        const addressFirstPage = await this.client.fetchAddress(address);
+        // The lookup carries an address of the account, so it runs over a fresh Tor circuit of
+        // its own rather than the default one the account's filters are then downloaded over.
+        const options = { identity: resetIdentityCircuit('AccountCheckpoint') };
+        const addressFirstPage = await this.client.fetchAddress(
+            address,
+            undefined,
+            undefined,
+            options,
+        );
 
         if (addressFirstPage.txs === 0) {
-            const networkInfo = await this.client.fetchNetworkInfo();
+            const networkInfo = await this.client.fetchNetworkInfo(options);
 
             return {
                 blockHash: networkInfo.bestHash,
@@ -137,7 +146,12 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
 
         const latestPage =
             addressFirstPage.totalPages > 1
-                ? await this.client.fetchAddress(address, addressFirstPage.totalPages)
+                ? await this.client.fetchAddress(
+                      address,
+                      addressFirstPage.totalPages,
+                      undefined,
+                      options,
+                  )
                 : addressFirstPage;
 
         const transactions = latestPage.transactions!;
@@ -145,7 +159,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const oldestTx: (typeof transactions)[number] = transactions[lastIndex];
         const blockHeight = oldestTx.blockHeight - 1;
-        const blockHash = await this.client.fetchBlockHash(blockHeight);
+        const blockHash = await this.client.fetchBlockHash(blockHeight, options);
 
         return {
             blockHash,

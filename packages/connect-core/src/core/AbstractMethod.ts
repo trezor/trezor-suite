@@ -5,6 +5,7 @@ import type {
     CoinInfo,
     CoinSymbol,
     CoreEventMessage,
+    DeviceButtonRequestCode,
     DeviceState,
     FirmwareCapability,
     MethodInfo,
@@ -186,7 +187,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public confirmMissingBackup: boolean;
 
-    public getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
+    public getButtonRequestData?(
+        code: DeviceButtonRequestCode,
+        name?: string,
+    ): UiRequestButtonData | undefined;
 
     constructor(message: MethodMessage<Name>, params: Params) {
         const { payload } = message;

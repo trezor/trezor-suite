@@ -1,7 +1,6 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { Calldata } from '@suite-common/calldata';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type OnModalCancelDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -28,14 +27,15 @@ import {
     getEvmTransactionTextSignature,
     getMevProtectedTxData,
     getPendingAccount,
+    getStakeType,
     hasNetworkFeatures,
     isAllowanceUnlimited,
     isCardanoTx,
     isEvmApprovalTxByTextSignature,
     isEvmYieldTxByTextSignature,
     isExchangeTradingForm,
-    isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
+    isRbfTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -50,6 +50,7 @@ import {
 import { getSolanaTokenDefinition } from '@trezor/connect-core/src/api/solana/solanaDefinitions';
 import { type Getter } from '@trezor/dependency-injection';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
+import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { type ActionsFromAsyncThunk, createThunk } from '@trezor/redux-utils';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
@@ -100,10 +101,9 @@ import {
     syncAccountsWithBlockchainThunk,
 } from '../blockchain/blockchainThunks';
 import {
-    type EarnTransactionsRootState,
-    selectTrackedEarnTransaction,
-} from '../earn/earnTransactionsReducer';
-import { notifyEarnTransactionBroadcastThunk } from '../earn/earnTransactionsThunks';
+    type HandleEarnTransactionReplacementThunkState,
+    handleEarnTransactionReplacementThunk,
+} from '../earn/earnTransactionsThunks';
 import { type FeesRootState } from '../fees/feesReducer';
 import {
     type WalletSettingsRootState,
@@ -116,6 +116,7 @@ import {
     addFakePendingCardanoTxThunk,
     addFakePendingEvmTxThunk,
     addFakePendingSolanaSendTxThunk,
+    addFakePendingSolanaStakeTxThunk,
     addFakePendingStellarTxThunk,
     addFakePendingTronSendTxThunk,
     addFakePendingTxThunk,
@@ -421,19 +422,33 @@ export const synchronizeSentTransactionThunk = createThunk<
 
                 dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
                 break;
-            case 'solana':
+            case 'solana': {
                 // Solana backends only report a tx once it is confirmed and indexed, so without a
-                // fake pending tx a just-broadcast send or swap is missing from the store until then.
-                dispatch(
-                    addFakePendingSolanaSendTxThunk({
-                        precomposedTransaction,
-                        txid,
-                        account: selectedAccount,
-                    }),
-                );
+                // fake pending tx a just-broadcast transaction is missing from the store until then.
+                const stakeType = precomposedForm ? getStakeType(precomposedForm) : null;
+
+                if (stakeType) {
+                    dispatch(
+                        addFakePendingSolanaStakeTxThunk({
+                            precomposedTransaction,
+                            stakeType,
+                            txid,
+                            account: selectedAccount,
+                        }),
+                    );
+                } else {
+                    dispatch(
+                        addFakePendingSolanaSendTxThunk({
+                            precomposedTransaction,
+                            txid,
+                            account: selectedAccount,
+                        }),
+                    );
+                }
 
                 dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
                 break;
+            }
             case 'cardano':
             case 'ripple':
                 // there is no point in fetching account data right after tx submit
@@ -458,7 +473,7 @@ export const synchronizeSentTransactionThunk = createThunk<
     },
 );
 
-export type PushSendFormTransactionThunkState = EarnTransactionsRootState &
+export type PushSendFormTransactionThunkState = HandleEarnTransactionReplacementThunkState &
     SynchronizeSentTransactionThunkState;
 
 export type PushSendFormTransactionThunkDeps = {
@@ -522,12 +537,16 @@ export const pushSendFormTransactionThunk = createThunk<
             : '0';
 
         const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
-        const bumpedPrevTxid = isRbfBumpFeeTransaction(precomposedTransaction)
-            ? precomposedTransaction.prevTxid
-            : undefined;
-        const spedUpEarnTransaction = bumpedPrevTxid
-            ? selectTrackedEarnTransaction(getState(), selectedAccount.key, bumpedPrevTxid)
-            : undefined;
+        const hasEarnToast =
+            isRbfTransaction(precomposedTransaction) &&
+            (await dispatch(
+                handleEarnTransactionReplacementThunk({
+                    account: selectedAccount,
+                    device,
+                    precomposedTransaction,
+                    txid: pushTxResponse.success ? pushTxResponse.payload.txid : null,
+                }),
+            ).unwrap());
 
         if (pushTxResponse.success) {
             const { txid } = pushTxResponse.payload;
@@ -570,18 +589,7 @@ export const pushSendFormTransactionThunk = createThunk<
                         style: { maxWidth: 'auto' },
                     }),
                 );
-            } else if (spedUpEarnTransaction) {
-                dispatch(
-                    notifyEarnTransactionBroadcastThunk({
-                        account: selectedAccount,
-                        device,
-                        txid,
-                        flow: spedUpEarnTransaction.flow,
-                        stage: 'sped-up',
-                        prevTxid: bumpedPrevTxid,
-                    }),
-                );
-            } else {
+            } else if (!hasEarnToast) {
                 // The token amount, or the total amount without the fee, in main units.
                 const sentAmount = token
                     ? subunitsToUnits({
@@ -796,6 +804,7 @@ export const signTransactionThunk = createThunk<
             if (message === 'tx-cancelled') {
                 return rejectWithValue({
                     error: 'sign-transaction-failed',
+                    errorCode: 'Method_Cancel',
                     message: 'User canceled the signing process.',
                 });
             }

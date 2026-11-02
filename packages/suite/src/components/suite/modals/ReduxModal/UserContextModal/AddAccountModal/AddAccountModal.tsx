@@ -262,24 +262,17 @@ export const AddAccountModal = ({
             if (!networkAccountTypes || networkAccountTypes.length > 1) return undefined;
 
             const defaultAccountTypeName = networkAccountTypes[0]?.accountType ?? 'normal';
-            const networkScopedAccounts = accounts.filter(
-                account =>
-                    account.deviceState === device.state?.staticSessionId &&
-                    account.symbol === network.symbol &&
-                    account.accountType === defaultAccountTypeName,
-            );
-            const defaultAccount = networkScopedAccounts
-                .toSorted((a, b) => a.index - b.index)
-                .at(-1);
+            const scopedAccounts = accounts
+                .filter(
+                    account =>
+                        account.deviceState === device.state?.staticSessionId &&
+                        account.symbol === network.symbol &&
+                        account.accountType === defaultAccountTypeName,
+                )
+                .toSorted((a, b) => a.index - b.index);
             const unavailableCapability = device.unavailableCapabilities?.[defaultAccountTypeName];
 
-            const disabledMessage = verifyAvailability({
-                emptyAccounts: networkScopedAccounts.filter(
-                    account => account.empty && !account.visible,
-                ),
-                account: defaultAccount,
-                unavailableCapability,
-            });
+            const disabledMessage = verifyAvailability({ scopedAccounts, unavailableCapability });
 
             return disabledMessage ? <Translation id={disabledMessage} /> : undefined;
         },

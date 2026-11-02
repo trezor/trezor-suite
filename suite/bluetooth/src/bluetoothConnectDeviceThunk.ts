@@ -26,8 +26,9 @@ export const bluetoothConnectDeviceThunk = createThunk<
         const result = await bluetoothIpc.connectDevice(deviceId);
 
         if (!result.success) {
+            const errorMessage = result.error.message;
             // handling for this error: https://github.com/trezor/trezor-suite/blob/837cdf89c70cca80fd5dabb910e9a8509de7c3b1/packages/transport-bluetooth/src/server/platform/linux.rs#L253
-            if (result.error === 'BluetoothSettingsMissing') {
+            if (errorMessage === 'BluetoothSettingsMissing') {
                 dispatch(stopConnectingBluetoothDevice({ deviceId }));
                 dispatch(setBluetoothDeviceNeedsManualPairing(true));
 
@@ -40,8 +41,8 @@ export const bluetoothConnectDeviceThunk = createThunk<
             // linux: emits DeviceDisconnect right after DeviceConnect but before subscription. Operation already in progress is the error from subscription process
             // macos: connect error Peer removed
             const isUnpaired =
-                result.error.includes('Operation already in progress') ||
-                result.error.includes('Peer removed pairing information');
+                errorMessage.includes('Operation already in progress') ||
+                errorMessage.includes('Peer removed pairing information');
             if (isUnpaired) {
                 dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(true));
                 dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceId }));
@@ -49,7 +50,7 @@ export const bluetoothConnectDeviceThunk = createThunk<
                 dispatch(
                     notificationsActions.addToast({
                         type: 'error',
-                        error: result.error,
+                        error: errorMessage,
                     }),
                 );
             }

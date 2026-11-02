@@ -18,7 +18,7 @@ jest.mock('../hooks/useDeviceManager');
 const mockUseDeviceManager = jest.mocked(useDeviceManager);
 
 describe('DeviceManager', () => {
-    const renderDeviceManager = async () => await renderWithBasicProvider(<DeviceManager />);
+    const renderDeviceManager = () => renderWithBasicProvider(<DeviceManager />);
 
     it('renders DeviceManagerContent when the device manager is visible', async () => {
         mockUseDeviceManager.mockReturnValue({

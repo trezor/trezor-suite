@@ -10,6 +10,8 @@ export const TRON_STAKING_RESERVE = new BigNumber(0.5);
 export const MIN_TRON_BALANCE_FOR_STAKING =
     MIN_TRON_AMOUNT_FOR_STAKING.plus(MIN_TRON_FOR_WITHDRAWALS);
 
+export const TRON_UNFREEZE_DELAY_DAYS = 14;
+
 // TODO: return these from the API
 export const LUGANODES_TERMS_OF_SERVICE_URL = 'https://luganodes.com/terms-of-service';
 export const P2P_ORG_TERMS_OF_SERVICE_URL = 'https://www.p2p.org/terms-of-use';

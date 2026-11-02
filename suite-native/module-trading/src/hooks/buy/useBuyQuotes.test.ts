@@ -55,8 +55,8 @@ describe('useBuyQuotes', () => {
         });
     };
 
-    const renderUseBuyQuotes = async (store: Store<State>) =>
-        await renderHookWithStoreProvider(
+    const renderUseBuyQuotes = (store: Store<State>) =>
+        renderHookWithStoreProvider(
             () => {
                 const form = useBuyForm();
                 useBuyQuotes(form);

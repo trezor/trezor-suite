@@ -7,8 +7,16 @@ import {
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { type Device, type DeviceState, type Features, type KnownDevice } from '@trezor/connect';
+import {
+    type Device,
+    type DeviceState,
+    type DeviceUniquePath,
+    type Features,
+    type KnownDevice,
+    type StaticSessionId,
+} from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -29,9 +37,16 @@ export type DeviceReducerState = {
      */
     devices: TrezorDevice[];
 
+    /**
+     * Pending button requests keyed by physical-device `path`: a prompt on the device does not
+     * depend on the wallet instance/state. Never persisted.
+     */
+    buttonRequestsByPath: Record<DeviceUniquePath, ButtonRequest[]>;
+
     selectedDevice?: TrezorDevice;
     dismissedSecurityChecks?: {
         firmwareAuthenticity?: string[];
+        discoveryEntropy?: string[];
     };
     lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
     // Setting with no UI to toggle it on, used in tests to simulate various outcomes of entropy check failure
@@ -40,6 +55,7 @@ export type DeviceReducerState = {
 
 export const deviceInitialState: DeviceReducerState = {
     devices: [],
+    buttonRequestsByPath: {},
     selectedDevice: undefined,
 };
 
@@ -56,6 +72,21 @@ const isUnlocked = (features: Features): boolean =>
         ? features.unlocked
         : // Older FW (<2.3.2) which doesn't have `unlocked` feature also doesn't have auto-lock and is always unlocked.
           true;
+
+// A wallet created with a passphrase is available only while the passphrase protection is enabled.
+const getIsWalletAvailable = (useEmptyPassphrase: boolean | undefined, features: Features) =>
+    !!useEmptyPassphrase || !!features.passphrase_protection;
+
+// The instance is ignored, the same wallet can be referenced through a different one after a reconnect.
+const isSameWallet = (first: StaticSessionId, second: StaticSessionId) => {
+    const firstParts = parseStaticSessionId(first);
+    const secondParts = parseStaticSessionId(second);
+
+    return (
+        firstParts.walletDescriptor === secondParts.walletDescriptor &&
+        firstParts.deviceId === secondParts.deviceId
+    );
+};
 
 /**
  * Local utility: get state in DeviceState format from AcquiredDevice in backwards compatible way
@@ -126,7 +157,6 @@ const connectDevice = (draft: DeviceReducerState, { state, ...device }: Device) 
 
     const deviceCommonFields = {
         connected: true,
-        buttonRequests: [],
         metadata: {},
         passwords: {},
         firstConnectedTimestamp:
@@ -290,10 +320,7 @@ const changeDevice = (
             }
             if (d.state && isDeviceUnlocked) {
                 // if device is unlocked and authorized (with state) check availability.
-                // if it was created with passphrase (useEmptyPassphrase = false) then availability depends on current settings
-                const available = d.useEmptyPassphrase
-                    ? true
-                    : !!device.features.passphrase_protection;
+                const available = getIsWalletAvailable(d.useEmptyPassphrase, device.features);
 
                 return merge(d, { ...device, ...extended, available });
             }
@@ -327,6 +354,10 @@ const addAuthorizedDevice = (
     const newDevice = {
         ...oldDevice,
         metadata: {},
+        passwords: {},
+        remember: false,
+        temporaryRemember: false,
+        available: getIsWalletAvailable(useEmptyPassphrase, device.features),
         instance: deviceUtils.getNewInstanceNumber(draft.devices, device),
         walletNumber: deviceUtils.getNewWalletNumber(draft.devices, device),
         useEmptyPassphrase,
@@ -343,24 +374,34 @@ const setDeviceState = (
     // change only acquired devices
     if (!device.features) return;
 
-    const affectedDevice = draft.devices.filter(
+    const [targetDevice, ...otherDevices] = draft.devices.filter(
         d =>
             d.features &&
             d.connected &&
             d.instance === device.instance &&
             (d.id === device.id || (d.path.length > 0 && d.path === device.path)),
     );
+    if (!targetDevice) return;
 
-    if (affectedDevice.length > 1) {
-        console.error('there must be only one device with the same id and without state');
+    if (otherDevices.length > 0) {
+        console.error('there must be only one matching connected device');
 
         return;
     }
 
-    const targetDevice = affectedDevice[0];
-    if (!targetDevice) return;
+    // Refreshing the state of the same wallet is fine, overwriting another wallet is not.
+    const currentStaticSessionId = targetDevice.state?.staticSessionId;
+    if (currentStaticSessionId && !isSameWallet(currentStaticSessionId, state.staticSessionId)) {
+        console.error('the device is already authorized with a different state');
 
-    targetDevice.state = state;
+        return;
+    }
+
+    // The accounts of an authorized wallet are bound to its static session id, so it must not change.
+    targetDevice.state = {
+        ...state,
+        staticSessionId: currentStaticSessionId ?? state.staticSessionId,
+    };
     targetDevice.useEmptyPassphrase = useEmptyPassphrase;
     targetDevice.walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
     delete targetDevice.discovered;
@@ -372,6 +413,9 @@ const setDeviceState = (
  * @param {Device} device
  */
 const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
+    // Must run before the `path` of remembered devices is blanked below.
+    if (device.path) delete draft.buttonRequestsByPath[device.path];
+
     // find all devices with "path"
     const affectedDevices = draft.devices.filter(d => d.path === device.path);
     affectedDevices.forEach(d => {
@@ -433,7 +477,6 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
         walletNumber: undefined,
         ts: currentTime,
         firstConnectedTimestamp: device.firstConnectedTimestamp ?? currentTime,
-        buttonRequests: [],
         metadata: {},
         passwords: {},
     };
@@ -514,37 +557,17 @@ const forget = (draft: DeviceReducerState, device: TrezorDevice) => {
 
 const addButtonRequest = (
     draft: DeviceReducerState,
-    device: TrezorDevice | undefined,
+    path: DeviceUniquePath,
     buttonRequest: ButtonRequest,
 ) => {
-    // only acquired devices
-    if (!device?.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    if (!draft.devices[index]) return;
-    // update state
-
-    draft.devices[index].buttonRequests.push(buttonRequest);
+    // An entry under an empty path could never be read or removed.
+    if (!path) return;
+    (draft.buttonRequestsByPath[path] ??= []).push(buttonRequest);
 };
 
-const removeButtonRequests = (
-    draft: DeviceReducerState,
-    device?: TrezorDevice,
-    buttonRequestCode?: ButtonRequest['code'],
-) => {
-    // only acquired devices
-    if (!device?.features) return;
-    const index = deviceUtils.findInstanceIndex(draft.devices, device);
-    if (!draft.devices[index]) return;
-    // update state
-    if (!buttonRequestCode) {
-        draft.devices[index].buttonRequests = [];
-
-        return;
-    }
-
-    draft.devices[index].buttonRequests = draft.devices[index].buttonRequests.filter(
-        ({ code }) => code !== buttonRequestCode,
-    );
+const removeButtonRequests = (draft: DeviceReducerState, path?: DeviceUniquePath) => {
+    if (!path) return;
+    delete draft.buttonRequestsByPath[path];
 };
 
 // called after successful wipeDevice
@@ -590,10 +613,10 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 forget(state, payload.device);
             })
             .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
-                addButtonRequest(state, payload.device, payload.buttonRequest);
+                addButtonRequest(state, payload.path, payload.buttonRequest);
             })
             .addCase(deviceActions.removeButtonRequests, (state, { payload }) => {
-                removeButtonRequests(state, payload.device, payload.buttonRequestCode);
+                removeButtonRequests(state, payload.path);
             })
             .addCase(deviceActions.requestDeviceReconnect, state => {
                 requestDeviceReconnect(state);
@@ -612,7 +635,20 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 if (!state.dismissedSecurityChecks.firmwareAuthenticity) {
                     state.dismissedSecurityChecks.firmwareAuthenticity = [];
                 }
+                // The array only grows; there is no mechanism to undo a dismissal → start displaying Device Compromised again.
+                // That's intentional – this data is not persisted, it's session-scoped → reloading the app refreshes it.
                 state.dismissedSecurityChecks.firmwareAuthenticity.unshift(payload);
+            })
+            .addCase(deviceActions.dismissDiscoveryEntropyCheck, (state, { payload }) => {
+                if (!state.dismissedSecurityChecks) {
+                    state.dismissedSecurityChecks = {};
+                }
+                if (!state.dismissedSecurityChecks.discoveryEntropy) {
+                    state.dismissedSecurityChecks.discoveryEntropy = [];
+                }
+                // The array only grows; there is no mechanism to undo a dismissal → start displaying Device Compromised again.
+                // That's intentional – this data is not persisted, it's session-scoped → reloading the app refreshes it.
+                state.dismissedSecurityChecks.discoveryEntropy.unshift(payload);
             })
             .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
             .addCase(

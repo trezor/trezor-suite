@@ -2,7 +2,12 @@ import { type ActionCreatorWithPayload, type ActionCreatorWithoutPayload } from 
 
 import { type RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type AddressType, type EvmSelectedFee } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AddressType,
+    type EvmSelectedFee,
+    type FeeLevelLabel,
+} from '@suite-common/wallet-types';
 import { type UI_EVENTS } from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
@@ -157,6 +162,11 @@ export type UserContextPayload =
     | {
           type: 'tron-stake-in-a-nutshell';
           actionType?: EarnModalAction;
+          account?: Account;
+      }
+    | {
+          type: 'tron-stake-consent';
+          decision: Deferred<boolean>;
       }
     | {
           type: 'tron-vote-consent';
@@ -231,6 +241,7 @@ export type UserContextPayload =
               | {
                     value: true;
                     selectedFee: EvmSelectedFee | null;
+                    selectedFeeLevel: FeeLevelLabel;
                     /**
                      * Send a signal from the thunk to the modal that the related business logic has finished.
                      * Used for tracking the loading state of the confirm button in the modal.

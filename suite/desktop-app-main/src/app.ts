@@ -2,6 +2,7 @@ import { app as electronApp } from 'electron';
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
+import { isCodesignBuild } from '@trezor/env-utils';
 
 import { createDesktopMainCompositionRoot } from './createDesktopMainCompositionRoot';
 import { hasSwitch } from './libs/process-switches';
@@ -9,13 +10,19 @@ import { clearUserDataOptimistically, initUserData } from './libs/user-data';
 
 process.traceProcessWarnings = true;
 
+// Node deprecation warnings are only useful during development
+if (isCodesignBuild()) {
+    process.noDeprecation = true;
+}
+
 // Without PLAYWRIGHT_RUN env variable, the version is set to 0.0 during e2e tests, and auto-updater fails to load
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv || process.env.PLAYWRIGHT_RUN) electronApp.setVersion(process.env.VERSION);
 
-global.resourcesPath = isDevEnv
-    ? path.join(__dirname, '..', 'build', 'static')
-    : process.resourcesPath;
+// Unpacked applications (development and E2E) keep their resources in `build/static`.
+global.resourcesPath = electronApp.isPackaged
+    ? process.resourcesPath
+    : path.join(__dirname, '..', 'build', 'static');
 
 const parseRemoveUserDataSwitch = () => {
     if (hasSwitch('remove-user-data-on-start')) {

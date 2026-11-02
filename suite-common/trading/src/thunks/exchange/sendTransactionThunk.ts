@@ -72,6 +72,8 @@ export const sendTransactionThunk = createThunk<
                         account,
                         returnUrl,
                         setMaxOutputId,
+                        decimals,
+                        shouldSendInSats,
                         nextStep,
                         triggerAnalyticsTradeConfirmation,
                         processResponseData,

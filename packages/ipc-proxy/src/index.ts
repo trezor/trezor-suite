@@ -3,4 +3,4 @@ export { createIpcProxyHandler } from './proxy-handler';
 export { createIpcProxy } from './proxy';
 export { validateIpcMessage } from './validateIpcMessage';
 export { isSenderFrameDestroyed } from './isSenderFrameDestroyed';
-export type { IpcProxyHandlerOptions } from './proxy-handler';
+export type { IpcProxyHandlerOptions, IpcProxyInstance } from './proxy-handler';

@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -67,12 +68,12 @@ const createControlsMockValue = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe('TradingTransactionReview', () => {
-    const renderReviewOutputsContent = async (
+    const renderReviewOutputsContent = (
         props: Partial<Omit<TradingTransactionReviewProps, 'exchangeFlowType' | 'tradingType'>> & {
             exchangeFlowType?: TradingTransactionReviewProps['exchangeFlowType'];
         } = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <TradingTransactionReview
                 orderId="ORDER_ID"
                 accountKey={mockAccountKey({ descriptor: 'accountKey' })}
@@ -85,7 +86,10 @@ describe('TradingTransactionReview', () => {
                 exchangeFlowType="swap"
                 {...props}
             />,
-            { tradeType: 'exchange' },
+            {
+                tradeType: 'exchange',
+                services: { networks: mockNetworksServices() },
+            },
         );
 
     beforeEach(() => {
@@ -227,6 +231,7 @@ describe('TradingTransactionReview', () => {
                         },
                     },
                 },
+                services: { networks: mockNetworksServices() },
             },
         );
 

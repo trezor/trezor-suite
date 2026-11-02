@@ -79,6 +79,7 @@ export const useYieldDepositReview = ({
     const { finalizeSubmit, leaveReviewFromDeviceCancel, startReview, status, submitReview } =
         useEarnTransactionReview({
             formType: 'yield-deposit',
+            networkSymbol: flowData.account.symbol,
             isSigned: isDepositSigned,
             navigation,
             onPushSuccess,

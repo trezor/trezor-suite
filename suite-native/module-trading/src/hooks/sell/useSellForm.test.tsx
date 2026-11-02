@@ -40,8 +40,8 @@ const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal'
 describe('useSellForm', () => {
     let store: Store<State>;
 
-    const renderUseSellForm = async () =>
-        await renderHookWithStoreProvider(() => useSellForm(), { services: { store } });
+    const renderUseSellForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), { services: { store } });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
         createTradingTestStore({

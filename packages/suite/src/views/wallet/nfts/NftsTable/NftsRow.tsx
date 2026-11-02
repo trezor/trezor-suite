@@ -45,11 +45,11 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { HiddenPlaceholder } from 'src/components/suite';
+import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { useSelector } from 'src/hooks/suite';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';
-import { BlurUrls } from '../../tokens/common/BlurUrls';
 
 type NftsRowProps = {
     nft: TokenInfo;
@@ -74,7 +74,7 @@ const NftsRow = ({
     const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
     const { account } = selectedAccount;
     const nftItemsCount = nft.ids?.length || nft.multiTokenValues?.length || 0;
-    const NftName = <BlurUrls text={nft.name} />;
+    const NftName = <TokenUrlBlur text={nft.name} />;
 
     return (
         <>

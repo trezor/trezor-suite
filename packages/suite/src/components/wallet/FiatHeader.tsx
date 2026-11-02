@@ -46,12 +46,15 @@ const FiatHeaderContent = ({
     const fiatAmount = useFiatAmount({ amount, symbol });
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
-    const formattedAmount = BaseCurrencyAmountFormatter({
-        value: fiatAmount ?? BASE_CURRENCY_ZERO,
-        currency: localCurrency,
-    });
-
-    const formattedFiatAmount = formattedAmount?.props.children;
+    // `.format` rather than calling the formatter component and unpacking the element it returns:
+    // the component body reads the discreet-mode context, and calling it inlines that read into this
+    // render, where the React Compiler caches it behind a guard of values that never change while the
+    // user hovers. `BigAmountValue` does the redaction itself from a live context read, so the string
+    // wanted here is the unredacted one.
+    const formattedFiatAmount =
+        BaseCurrencyAmountFormatter.format(fiatAmount ?? BASE_CURRENCY_ZERO, {
+            currency: localCurrency,
+        }) ?? '';
 
     return (
         <BigAmountValue

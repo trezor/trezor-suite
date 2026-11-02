@@ -88,6 +88,7 @@ type TradingFormTestHarnessProps = {
     symbol?: NetworkSymbol;
     nextSymbol?: NetworkSymbol;
     cryptoInput?: string;
+    isAssetUnset?: boolean;
 };
 
 const TradingFormTestHarness = ({
@@ -95,6 +96,7 @@ const TradingFormTestHarness = ({
     symbol: initialSymbol = BTC_SYMBOL,
     nextSymbol,
     cryptoInput: initialCryptoInput = '',
+    isAssetUnset = false,
 }: TradingFormTestHarnessProps) => {
     const [symbol, setSymbol] = useState(initialSymbol);
     const methods = useForm<TradingBuyFormProps>({
@@ -127,7 +129,7 @@ const TradingFormTestHarness = ({
             <TradingFormInputBaseCurrencyAmount
                 cryptoInputName="cryptoInput"
                 fiatInputName="fiatInput"
-                symbol={symbol}
+                symbol={isAssetUnset ? undefined : symbol}
             />
             <output data-testid="@trading/form/values">
                 {JSON.stringify({ cryptoInput, fiatInput, amountInCrypto, amountInputSource })}
@@ -261,6 +263,16 @@ describe('TradingFormInputBaseCurrencyAmount', () => {
 
         expect(screen.getByTestId('@trading/form/base-currency-input')).toHaveValue('200');
         expect(screen.getByTestId('@trading/form/values')).toHaveTextContent('"cryptoInput":"4"');
+    });
+
+    it('shows a disabled empty placeholder when no asset is selected', () => {
+        renderBaseCurrencyAmount({ cryptoInput: '4', isAssetUnset: true });
+
+        const input = screen.getByTestId('@trading/form/base-currency-input');
+        expect(input).toBeDisabled();
+        expect(input).toHaveValue('');
+        expect(input).toHaveAttribute('placeholder', '0');
+        expect(screen.getByTestId('@trading/form/base-currency-label')).toHaveTextContent('$');
     });
 
     it('keeps the neutral color when neither amount is invalid', () => {

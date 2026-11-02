@@ -33,6 +33,7 @@ export type ComposeTradingTransactionThunkProps = {
     ethereumAdjustGasLimit?: string;
     setMaxOutputId?: number | undefined;
     tradingFormState: FormStateTrading;
+    assumeNewAccount?: boolean;
 };
 
 export type ComposeTradingTransactionResult = {
@@ -65,6 +66,7 @@ export const composeTradingTransactionThunk = createThunk<
             ethereumAdjustGasLimit,
             setMaxOutputId,
             tradingFormState,
+            assumeNewAccount,
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
@@ -96,7 +98,7 @@ export const composeTradingTransactionThunk = createThunk<
             tradingFormState,
         });
 
-        const composeContext = { account, network, feeInfo };
+        const composeContext = { account, network, feeInfo, assumeNewAccount };
 
         if (recalculateCustomLimit && selectedFee === 'custom') {
             const normalLevels = await dispatch(

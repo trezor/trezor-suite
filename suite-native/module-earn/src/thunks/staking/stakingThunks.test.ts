@@ -1,5 +1,6 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { deviceInitialState } from '@suite-common/device';
 import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -7,12 +8,20 @@ import { mockGetIsWindowVisible, mockOnModalCancel } from '@suite-common/suite-t
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type PushSendFormTransactionThunkState,
     type PushStakeTransactionThunkDeps,
-    type SendState,
     WALLET_SDK_SOURCE_MOBILE,
+    blockchainInitialState,
     buildStakeData,
+    earnTransactionsReducer,
+    feesInitialState,
+    initialWalletSettingsState,
     prepareSendFormReducer,
+    pushSendFormTransactionThunk,
     pushStakeTransactionThunk,
+    sendFormActions,
+    stellarContractTokensInitialState,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -134,22 +143,9 @@ const solAccount: Account = {
     visible: true,
 } as unknown as Account;
 
-// These Ethereum and Solana cases share deliberately sparse wallet slices and one test store.
-type State = {
-    device: { selectedDevice: TrezorDevice };
+type State = PushSendFormTransactionThunkState & {
     messageSystem: MessageSystemState;
-    wallet: {
-        accounts: Account[];
-        transactions: {
-            transactions: Record<never, never>;
-            phishing: Record<never, never>;
-            fetchStatusDetail: Record<never, never>;
-        };
-        formDrafts: Record<string, FormState>;
-        blockchain: Record<string, unknown>;
-        send: SendState;
-        settings: { mevProtection: boolean };
-    };
+    wallet: { formDrafts: Record<string, FormState> };
 };
 
 const buildStore = ({
@@ -164,7 +160,8 @@ const buildStore = ({
     createTestCompositionRoot<PushStakeTransactionThunkDeps, State>({
         extra: { actions: { onModalCancel: mockOnModalCancel() } },
         reducer: combineReducers({
-            device: (): { selectedDevice: TrezorDevice } => ({
+            device: (): State['device'] => ({
+                ...deviceInitialState,
                 selectedDevice: {
                     path: 'device-id:1',
                     instance: 1,
@@ -173,20 +170,25 @@ const buildStore = ({
                 } as unknown as TrezorDevice,
             }),
             messageSystem: () => messageSystemInitialState,
+            notifications: (): State['notifications'] => [],
+            tokenDefinitions: (): State['tokenDefinitions'] => ({}),
             wallet: combineReducers({
                 accounts: () => accounts,
+                earnTransactions: earnTransactionsReducer,
+                fees: () => feesInitialState,
+                stellarContractTokens: () => stellarContractTokensInitialState,
                 transactions: () => ({
                     transactions: {},
                     phishing: {},
                     fetchStatusDetail: {},
                 }),
                 formDrafts: () => formDrafts,
-                blockchain: () => blockchain,
+                blockchain: () => ({ ...blockchainInitialState, ...blockchain }),
                 send: prepareSendFormReducer({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
                     reducers: { storageLoadFormDrafts: mockReducer() },
                 }),
-                settings: () => ({ mevProtection: false }),
+                settings: () => ({ ...initialWalletSettingsState, mevProtection: false }),
             }),
         }),
         services: () => ({
@@ -416,6 +418,113 @@ describe('signStakeTransactionThunk', () => {
 
 // Integration coverage of the shared wallet-core push thunk against the mobile deferred
 // sign flow (sign stores the transaction, push broadcasts it).
+describe('pending Earn replacements', () => {
+    it.each([
+        { flow: 'wrap', isCancellation: false },
+        { flow: 'stake', isCancellation: true },
+        { flow: 'unstake', isCancellation: true },
+    ] as const)(
+        'keeps the sent toast when speeding up $flow (cancel=$isCancellation)',
+        async ({ flow, isCancellation }) => {
+            const store = buildStore();
+            store.dispatch(
+                transactionsActions.transactionBroadcastStatus({
+                    account: ethAccount,
+                    flow,
+                    isCancellation,
+                    status: 'success',
+                    txid: 'original',
+                }),
+            );
+            store.dispatch(
+                sendFormActions.storePrecomposedTransaction({
+                    formState: { ...buildEthStakeFormDraft(), transactionData: undefined },
+                    precomposedTransaction: {
+                        ...buildPrecomposedTransaction(),
+                        rbfType: 'bump-fee',
+                        prevTxid: 'original',
+                        feeDifference: '1',
+                        useNativeRbf: false,
+                    },
+                }),
+            );
+            store.dispatch(
+                sendFormActions.storeSignedTransaction({
+                    serializedTx: { tx: 'replacement', symbol: ethAccount.symbol },
+                }),
+            );
+            await store.dispatch(
+                pushSendFormTransactionThunk({
+                    selectedAccount: ethAccount,
+                    isMevProtectionEnabled: false,
+                }),
+            );
+            expect(store.getActions()).toContainEqual(
+                expect.objectContaining({ payload: expect.objectContaining({ type: 'tx-sent' }) }),
+            );
+            expect(
+                store.getActions().filter(transactionsActions.transactionBroadcastStatus.match),
+            ).toHaveLength(2);
+            expect(store.getState().wallet.earnTransactions).toMatchObject({
+                [ethAccount.key + ':0xpushedtxid']: { flow, isCancellation, isRbf: true },
+            });
+        },
+    );
+
+    it.each(['stake', 'unstake', 'yield-deposit'] as const)(
+        'keeps an on-chain cancel separate from %s success',
+        async flow => {
+            const store = buildStore();
+            store.dispatch(
+                transactionsActions.transactionBroadcastStatus({
+                    account: ethAccount,
+                    flow,
+                    status: 'success',
+                    txid: 'original',
+                }),
+            );
+            store.dispatch(
+                sendFormActions.storePrecomposedTransaction({
+                    formState: { ...buildEthStakeFormDraft(), transactionData: undefined },
+                    precomposedTransaction: {
+                        ...buildPrecomposedTransaction(),
+                        rbfType: 'cancel',
+                        prevTxid: 'original',
+                    },
+                }),
+            );
+            store.dispatch(
+                sendFormActions.storeSignedTransaction({
+                    serializedTx: { tx: 'cancel', symbol: ethAccount.symbol },
+                }),
+            );
+            const response = await store.dispatch(
+                pushSendFormTransactionThunk({
+                    selectedAccount: ethAccount,
+                    isMevProtectionEnabled: false,
+                }),
+            );
+            expect(isFulfilled(response)).toBe(true);
+            expect(
+                store
+                    .getActions()
+                    .filter(transactionsActions.transactionBroadcastStatus.match)
+                    .at(-1)?.payload,
+            ).toEqual({
+                account: ethAccount,
+                flow,
+                isCancellation: true,
+                isRbf: true,
+                status: 'success',
+                txid: '0xpushedtxid',
+            });
+            expect(store.getState().wallet.earnTransactions).toMatchObject({
+                [ethAccount.key + ':original']: { flow },
+            });
+        },
+    );
+});
+
 describe('pushStakeTransactionThunk', () => {
     it('broadcasts the transaction signed during a deferred sign', async () => {
         const store = buildStore({
@@ -435,8 +544,17 @@ describe('pushStakeTransactionThunk', () => {
         const result = await dispatchPush(store, {
             accountKey: ETH_ACCOUNT_KEY,
             isMevProtectionFeatureEnabled: true,
+            stakeType: 'stake',
         });
 
+        expect(
+            store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match)
+                .map(action => action.payload),
+        ).toEqual([
+            expect.objectContaining({ flow: 'stake', status: 'success', txid: '0xpushedtxid' }),
+        ]);
         expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
         expect(pushTransactionMock).toHaveBeenCalledTimes(1);
     });
@@ -458,8 +576,17 @@ describe('pushStakeTransactionThunk', () => {
         const result = await dispatchPush(store, {
             accountKey: SOL_ACCOUNT_KEY,
             isMevProtectionFeatureEnabled: true,
+            stakeType: 'stake',
         });
 
+        expect(
+            store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match)
+                .map(action => action.payload),
+        ).toEqual([
+            expect.objectContaining({ flow: 'stake', status: 'success', txid: '0xpushedtxid' }),
+        ]);
         expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
         expect(pushTransactionMock).toHaveBeenCalledTimes(1);
     });
@@ -471,6 +598,7 @@ describe('pushStakeTransactionThunk', () => {
         const result = await dispatchPush(store, {
             accountKey: ETH_ACCOUNT_KEY,
             isMevProtectionFeatureEnabled: true,
+            stakeType: 'stake',
         });
 
         expect(result).toEqual({
@@ -503,6 +631,7 @@ describe('pushStakeTransactionThunk', () => {
         const result = await dispatchPush(store, {
             accountKey: ETH_ACCOUNT_KEY,
             isMevProtectionFeatureEnabled: true,
+            stakeType: 'stake',
         });
 
         expect(result).toMatchObject({

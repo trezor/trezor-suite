@@ -1,10 +1,17 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getStatus } from '@suite-common/suite-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
+import { isArrayMember } from '@trezor/utils';
+
+import {
+    type WalletSettingsRootState,
+    selectEnabledNetworks,
+} from '../settings/walletSettingsReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState & NetworksRootState
@@ -38,7 +45,14 @@ export const selectSupportedNetworkByDevice = (
     supportedNetworks: readonly NetworkSymbol[],
 ) => {
     const firmwareVersion = getFirmwareVersion(device);
+    const isBitcoinOnly = hasBitcoinOnlyFirmware(device);
     const result = supportedNetworks.filter(symbol => {
+        // A remembered device keeps the capability map from when it was saved, which has no
+        // entries for networks added since, and a missing entry reads as supported.
+        if (isBitcoinOnly && !isArrayMember(symbol, BITCOIN_ONLY_SYMBOLS)) {
+            return false;
+        }
+
         const unavailableCapability = device?.unavailableCapabilities?.[symbol];
         // if device does not have fw, do not show coins which are not supported by device in any case
         if (!firmwareVersion && unavailableCapability === 'no-support') {
@@ -62,3 +76,11 @@ export const selectDeviceSupportedNetworks = createMemoizedSelector(
     [selectSelectedDevice, selectSupportedNetworkSymbols],
     selectSupportedNetworkByDevice,
 );
+
+export const selectEnabledSupportedNetworks = createWeakMapSelector.withTypes<
+    DeviceRootState & NetworksRootState & WalletSettingsRootState
+>()([selectEnabledNetworks, selectDeviceSupportedNetworks], (enabledNetworks, deviceNetworks) => {
+    const supportedNetworks = enabledNetworks.filter(n => deviceNetworks.includes(n));
+
+    return returnStableArrayIfEmpty(supportedNetworks);
+});

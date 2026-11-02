@@ -27,6 +27,15 @@ export const createNativeApp = (deps: NativeAppDeps): NativeApp => {
     let App: ComponentType | null = null;
 
     const initialize = async () => {
+        try {
+            await deps.services.getMMKVStorage();
+        } catch (error) {
+            // Storage shows the recovery alert; do not hydrate with default state.
+            Sentry.captureException(error);
+
+            return;
+        }
+
         await deps.services.hydrateReduxStore();
         deps.services.networks.loadNetworkModules();
         await deps.services.store.dispatch(applicationInitThunk());

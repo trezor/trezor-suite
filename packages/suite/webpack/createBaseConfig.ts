@@ -19,6 +19,12 @@ import {
     transportBrowserPing,
 } from './env';
 import { getRevision } from './git';
+import {
+    REACT_COMPILER_PATHS,
+    getUnmatchedReactCompilerPaths,
+    reactCompilerOptions,
+    shouldCompileWithReactCompiler,
+} from './reactCompiler';
 
 // Prevent "webpack: TypeError: Do not know how to serialize a BigInt"
 // @ts-expect-error
@@ -27,6 +33,52 @@ BigInt.prototype.toJSON = function toJSON() {
 };
 
 const gitRevision = getRevision();
+
+/**
+ * babel-loader's default cache identifier is `core<@babel/core version>,loader<babel-loader
+ * version>`, and supplying the option replaces that default instead of extending it — hence the
+ * restatement here. Everything else about the babel config is already covered by the per-file cache
+ * key, which hashes the resolved options (`loadPartialConfig` flattens `overrides` into them, so
+ * toggling the React Compiler on or off invalidates the affected files on its own). What that key
+ * never sees is a plugin's version, so an in-place bump of the compiler would otherwise be served
+ * from a stale cache.
+ */
+const babelCacheIdentifier = [
+    `core${require('@babel/core/package.json').version}`,
+    `loader${require('babel-loader/package.json').version}`,
+    `react-compiler${require('babel-plugin-react-compiler/package.json').version}`,
+].join(',');
+
+/**
+ * A filter that silently matches nothing is this rollout's primary failure mode: the build stays
+ * green and simply ships uncompiled code. `reactCompiler.ts` rejects unmatchable entries at config
+ * load; this catches the remaining case — an entry that is a real directory no module in the graph
+ * happens to live under. Only webpack can check this — a Vite dev server transforms lazily and
+ * never walks a complete graph.
+ */
+const reactCompilerCoveragePlugin: webpack.WebpackPluginInstance = {
+    apply(compiler) {
+        compiler.hooks.afterCompile.tap('ReactCompilerCoverage', compilation => {
+            // `createChildCompiler` copies this tap onto the child, and a child compilation
+            // (html-webpack-plugin's, for one) finishes long before the real module graph is
+            // walked. Only the top-level compilation has seen every file.
+            if (compilation.compiler.isChild()) return;
+
+            if (REACT_COMPILER_PATHS.length === 0 || compilation.errors.length > 0) return;
+
+            const unmatchedPaths = getUnmatchedReactCompilerPaths();
+            if (unmatchedPaths.length === 0) return;
+
+            compilation.errors.push(
+                new webpack.WebpackError(
+                    `React Compiler: no compiled module matched ${unmatchedPaths.join(', ')}. ` +
+                        `Either remove the entry from REACT_COMPILER_PATHS or fix it — as it stands ` +
+                        `the build ships that code uncompiled without any other signal.`,
+                ),
+            );
+        });
+    },
+};
 
 export type BaseConfigOptions = {
     /** Identifies the application in `process.env.SUITE_TYPE` and in the Sentry release name. */
@@ -78,14 +130,6 @@ export const createBaseConfig = ({
                 // `sideEffects: false`, so the same imports shrink by ~30%. Prefix alias: `lodash/get`
                 // becomes `lodash-es/get`, and `lodash-es/*` is left alone.
                 lodash: 'lodash-es',
-                // lottie-web's entry point is the full player: svg + canvas + html renderers and the
-                // expressions engine. We only ever use the svg renderer, and none of our animations use
-                // expressions or effects, so the light player renders them identically for ~28 kB gzip
-                // less. Adding an animation that needs either would silently break here.
-                'lottie-web$': require.resolve('lottie-web/build/player/lottie_light'),
-                // mainFields prefers "browser", which points lottie-react at its UMD bundle and blocks
-                // tree shaking; go straight to the ESM build instead.
-                'lottie-react$': require.resolve('lottie-react/build/index.es.js'),
             },
             fallback: {
                 // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
@@ -109,7 +153,7 @@ export const createBaseConfig = ({
                 url: false,
             },
             // Prefer the ESM 'module' entry over 'browser', which in several packages points at a
-            // UMD or pre-bundled file that cannot be tree-shaken (e.g. lottie-react, dropbox).
+            // UMD or pre-bundled file that cannot be tree-shaken (e.g. dropbox).
             mainFields: ['module', 'browser', 'main'],
         },
         optimization: {
@@ -173,6 +217,7 @@ export const createBaseConfig = ({
                         loader: 'babel-loader',
                         options: {
                             cacheDirectory: !process.env.INSTRUMENT_CODE,
+                            cacheIdentifier: babelCacheIdentifier,
                             presets: [
                                 ['@babel/preset-react', { runtime: 'automatic' }],
                                 '@babel/preset-typescript',
@@ -206,38 +251,48 @@ export const createBaseConfig = ({
                                     },
                                 ],
                             ],
-                            plugins: [
-                                [
-                                    'babel-plugin-styled-components',
-                                    {
-                                        displayName: true,
-                                        preprocess: true,
-                                    },
-                                ],
-                                ...(isDev ? ['react-refresh/babel'] : []),
-                                ...(process.env.INSTRUMENT_CODE
-                                    ? [
-                                          [
-                                              'istanbul',
-                                              {
-                                                  cwd: resolve(__dirname, '../../../'),
-                                                  include: [
-                                                      'packages/*/src/**/*',
-                                                      'suite-common/*/src/**/*',
+                            overrides: [
+                                {
+                                    include: shouldCompileWithReactCompiler,
+                                    plugins: [
+                                        ['babel-plugin-react-compiler', reactCompilerOptions],
+                                    ],
+                                },
+                                {
+                                    plugins: [
+                                        [
+                                            'babel-plugin-styled-components',
+                                            {
+                                                displayName: true,
+                                                preprocess: true,
+                                            },
+                                        ],
+                                        ...(isDev ? ['react-refresh/babel'] : []),
+                                        ...(process.env.INSTRUMENT_CODE
+                                            ? [
+                                                  [
+                                                      'istanbul',
+                                                      {
+                                                          cwd: resolve(__dirname, '../../../'),
+                                                          include: [
+                                                              'packages/*/src/**/*',
+                                                              'suite-common/*/src/**/*',
+                                                          ],
+                                                          exclude: [
+                                                              '**/*.test.{ts,tsx,js,jsx}',
+                                                              '**/*.spec.{ts,tsx,js,jsx}',
+                                                              '**/__tests__/**',
+                                                              '**/tests/**',
+                                                              '**/test/**',
+                                                              '**/e2e/**',
+                                                          ],
+                                                          extension: ['.js', '.jsx', '.ts', '.tsx'],
+                                                      },
                                                   ],
-                                                  exclude: [
-                                                      '**/*.test.{ts,tsx,js,jsx}',
-                                                      '**/*.spec.{ts,tsx,js,jsx}',
-                                                      '**/__tests__/**',
-                                                      '**/tests/**',
-                                                      '**/test/**',
-                                                      '**/e2e/**',
-                                                  ],
-                                                  extension: ['.js', '.jsx', '.ts', '.tsx'],
-                                              },
-                                          ],
-                                      ]
-                                    : []),
+                                              ]
+                                            : []),
+                                    ],
+                                },
                             ],
                         },
                     },
@@ -255,6 +310,7 @@ export const createBaseConfig = ({
         },
         plugins: [
             new WebpackSecurityCheckPlugin(),
+            reactCompilerCoveragePlugin,
             new webpack.ProgressPlugin(),
             new webpack.DefinePlugin({
                 'process.browser': true,

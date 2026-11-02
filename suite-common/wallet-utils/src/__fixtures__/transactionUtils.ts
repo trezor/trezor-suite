@@ -420,6 +420,23 @@ export const analyzeTransactionsPrepending = [
             remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 1 }],
         },
     },
+    {
+        description: 'pre-pending is removed with the known history when there is no history',
+        fresh: [],
+        known: [
+            { blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 },
+            { blockHeight: 1, blockHash: '2', txid: '2' },
+        ],
+        blockHeight: 1,
+        result: {
+            newTransactions: [],
+            add: [],
+            remove: [
+                { blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 },
+                { blockHeight: 1, blockHash: '2', txid: '2' },
+            ],
+        },
+    },
 ];
 
 export const enhanceTransaction = [

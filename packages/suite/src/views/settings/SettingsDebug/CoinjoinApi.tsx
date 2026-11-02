@@ -1,25 +1,14 @@
 import styled from 'styled-components';
 
 import {
+    type CoinjoinClientInstance,
     isCoinjoinSupportedSymbol,
     selectCoinjoinClients,
-    selectCoinjoinDebug,
-    setDebugSettings,
-} from '@suite/coinjoin';
-import {
-    COINJOIN_NETWORKS,
-    type CoinjoinClientInstance,
-    type CoinjoinServerEnvironment,
-    type CoinjoinSymbol,
 } from '@suite/coinjoin';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
-import { injectReloadApp } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
-import { injectDispatch } from '@trezor/redux-utils';
-import { typedObjectKeys } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -32,9 +21,6 @@ const CoordinatorVersionContainer = styled.div`
 type CoordinatorServerProps = {
     symbol: NetworkSymbol;
     version?: CoinjoinClientInstance['version'];
-    environments: CoinjoinServerEnvironment[];
-    value?: CoinjoinServerEnvironment;
-    onChange: (symbol: CoinjoinSymbol, value: CoinjoinServerEnvironment) => void;
 };
 
 type CoordinatorVersionProps = { version: CoordinatorServerProps['version'] };
@@ -57,19 +43,9 @@ const CoordinatorVersion = ({ version }: CoordinatorVersionProps) => {
     );
 };
 
-const CoordinatorServer = ({
-    symbol,
-    version,
-    environments,
-    value,
-    onChange,
-}: CoordinatorServerProps) => {
-    const options = environments.map(environment => ({
-        label: environment,
-        value: environment,
-    }));
-
-    const selectedOption = (value && options.find(option => option.value === value)) ?? options[0];
+// The coordinator itself is not selectable here, every network has a single environment. Testers
+// set a coordinator through debug.coinjoinConfigOverride, see docs/features/coinjoin.md.
+const CoordinatorServer = ({ symbol, version }: CoordinatorServerProps) => {
     const networkName = getNetwork(symbol).name;
 
     if (!isCoinjoinSupportedSymbol(symbol)) return null;
@@ -84,60 +60,26 @@ const CoordinatorServer = ({
                     <CoordinatorVersion version={version} />
                 </>
             }
-            actions={
-                <SectionItem.Select
-                    isDisabled={options.length < 2}
-                    onChange={({ value }) => onChange(symbol, value)}
-                    value={selectedOption}
-                    options={options}
-                    data-testid={`@settings/debug/coinjoin/${symbol}/server-select`}
-                />
-            }
         />
     );
 };
 
 export const CoinjoinApi = () => {
-    const debug = useSelector(selectCoinjoinDebug);
     const clients = useSelector(selectCoinjoinClients);
-    const { reloadApp, dispatch } = useServices(injectReloadApp, injectDispatch);
 
     const coinjoinSymbols = BITCOIN_ONLY_SYMBOLS.filter(symbol =>
         isCoinjoinSupportedSymbol(symbol),
     );
 
-    const handleServerChange: CoordinatorServerProps['onChange'] = (symbol, value) => {
-        dispatch(
-            setDebugSettings({
-                coinjoinServerEnvironment: {
-                    [symbol]: value,
-                },
-            }),
-        );
-        // reload the Suite to reinitialize everything, with a slight delay to let the browser save the settings
-        setTimeout(() => {
-            reloadApp();
-        }, 100);
-    };
-
     return (
         <>
-            {coinjoinSymbols.map(symbol => {
-                const environments = typedObjectKeys(
-                    COINJOIN_NETWORKS[symbol as keyof typeof COINJOIN_NETWORKS] || {},
-                );
-
-                return (
-                    <CoordinatorServer
-                        key={symbol}
-                        symbol={symbol}
-                        version={clients[symbol]?.version}
-                        environments={environments}
-                        value={debug?.coinjoinServerEnvironment?.[symbol]}
-                        onChange={handleServerChange}
-                    />
-                );
-            })}
+            {coinjoinSymbols.map(symbol => (
+                <CoordinatorServer
+                    key={symbol}
+                    symbol={symbol}
+                    version={clients[symbol]?.version}
+                />
+            ))}
         </>
     );
 };

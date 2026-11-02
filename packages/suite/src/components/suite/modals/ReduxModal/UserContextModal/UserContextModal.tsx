@@ -22,23 +22,24 @@ import {
     TronVoteConsentModal,
     UnstakeModal,
 } from 'src/components/earn';
+import { TronStakeConsentModal } from 'src/components/earn/staking/tron/TronStakeConsentModal';
 import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
 import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
 import { useSelector } from 'src/hooks/suite';
 
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';
+import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
+import type { ReduxModalProps } from '../ReduxModalProps';
+import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
+import { UnhideTokenModal } from '../UnhideTokenModal';
 import { ActivateAssetsModal } from './ActivateAssetsModal';
 import { AddAccountModal } from './AddAccountModal/AddAccountModal';
 import { AddTokenModal } from './AddTokenModal';
-import type { ReduxModalProps } from '../ReduxModalProps';
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 import { ApplicationLogModal } from './ApplicationLogModal';
-import { BackgroundGalleryModal } from './BackgroundGalleryModal';
-import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
-import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
-import { UnhideTokenModal } from '../UnhideTokenModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
+import { BackgroundGalleryModal } from './BackgroundGalleryModal';
 import { CancelCoinjoinModal } from './CancelCoinjoinModal';
 import { CoinjoinSuccessModal } from './CoinjoinSuccessModal';
 import { ConfirmUnverifiedProceedModal } from './ConfirmUnverifiedProceedModal';
@@ -173,6 +174,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <EarnInANutshellModal {...payload} onCancel={onCancel} />;
         case 'tron-stake-in-a-nutshell':
             return <TronStakeInANutshellModal {...payload} onCancel={onCancel} />;
+        case 'tron-stake-consent':
+            return <TronStakeConsentModal {...payload} onCancel={onCancel} />;
         case 'tron-vote-consent':
             return <TronVoteConsentModal {...payload} onCancel={onCancel} />;
         case 'earn-provider-consent':

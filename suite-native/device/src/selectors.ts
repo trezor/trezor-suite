@@ -12,6 +12,7 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInBootloader,
     selectIsDeviceThpLocked,
+    selectIsDiscoveryEntropyCheckDismissed,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectIsUnacquiredDevice,
     selectSelectedDevice,
@@ -30,6 +31,7 @@ import {
     type PersistentDeviceDataRootState,
     selectDeviceAuthenticityByDeviceId,
     selectIsDeviceInvariabilityCheckSuccess,
+    selectIsDiscoveryEntropyCheckFailed,
     selectIsEntropyCheckFailed,
 } from '@suite-common/persistent-device-data';
 import { type ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
@@ -254,6 +256,17 @@ export const selectIsEntropyCheckEnabledAndFailedForSelectedDevice = (
     return selectIsEntropyCheckEnabledAndFailed(state, device.id);
 };
 
+// Dismissal is not taken into account.
+export const selectIsDiscoveryEntropyCheckEnabledAndFailed = createMemoizedSelector(
+    [
+        (state: FwAuthenticityCheckState) =>
+            selectIsFeatureEnabled(state, Feature.entropyCheckDiscovery, true),
+        selectIsDiscoveryEntropyCheckFailed,
+    ],
+    (isFeatureEnabled, isDiscoveryEntropyCheckFailed) =>
+        isFeatureEnabled && isDiscoveryEntropyCheckFailed,
+);
+
 export const selectIsDeviceIdCheckEnabledAndFailed = createMemoizedSelector(
     [
         selectAreDeviceMetaChecksEnabled,
@@ -312,6 +325,14 @@ export const selectCompromisedDeviceFailedCheck = (
         state,
         device,
     );
+    const isDiscoveryEntropyCheckEnabledAndFailed = selectIsDiscoveryEntropyCheckEnabledAndFailed(
+        state,
+        deviceId,
+    );
+    const isDiscoveryEntropyCheckDismissed = selectIsDiscoveryEntropyCheckDismissed(
+        state,
+        deviceId,
+    );
     const isDeviceAuthenticityEnabledAndFailed =
         isDeviceAuthenticityCheckEnabled && isDeviceAuthenticityCheckFailed;
 
@@ -323,6 +344,11 @@ export const selectCompromisedDeviceFailedCheck = (
         if (isDeviceIdCheckEnabledAndFailed) return 'device-id';
         if (isDeviceInvariabilityEnabledAndFailed) return 'device-invariability';
         if (hasFirmwareAuthenticityCheckHardFailed) return 'firmware-authenticity';
+    }
+
+    // Discovery entropy check is dismissible separately.
+    if (isDiscoveryEntropyCheckEnabledAndFailed && !isDiscoveryEntropyCheckDismissed) {
+        return 'entropy-discovery';
     }
 
     return null;

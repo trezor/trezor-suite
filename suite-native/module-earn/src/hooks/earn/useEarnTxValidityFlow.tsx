@@ -25,6 +25,7 @@ import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useEarnReviewCancellationAnalytics } from './useEarnReviewCancellationAnalytics';
 import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
 import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 import { signStakeTransactionThunk } from '../../thunks/staking/stakingThunks';
@@ -56,6 +57,10 @@ export const useEarnTxValidityFlow = ({
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, accountKey);
 
     const handleReviewError = useHandleEarnReviewError(stakeType, navigation);
+    const reportReviewCancellation = useEarnReviewCancellationAnalytics({
+        networkSymbol: account?.symbol,
+        txType: 'stake',
+    });
 
     const handleRetry = useCallback(async () => {
         if (!precomposedTransaction) return;
@@ -104,9 +109,11 @@ export const useEarnTxValidityFlow = ({
     ]);
 
     const handleCancel = useCallback(() => {
+        // POP also closes failed broadcasts, so record this explicit cancellation before popping.
+        if (isTransactionAlreadySigned) reportReviewCancellation('GO_BACK');
         TrezorConnect.cancel('tx-timeout');
         navigation.pop();
-    }, [navigation]);
+    }, [isTransactionAlreadySigned, navigation, reportReviewCancellation]);
 
     const [reviewOpenedAt] = useState(() => Date.now());
     const precomposedTxTimestamp = precomposedTx?.createdTimestamp ?? 0;

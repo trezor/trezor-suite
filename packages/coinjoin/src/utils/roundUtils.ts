@@ -219,29 +219,6 @@ export const compareOutpoint = (a: string, b: string) =>
 // sum input Credentials
 export const sumCredentials = (c: Credentials[]) => c.reduce((sum, cre) => sum + cre.Value, 0);
 
-export const getAffiliateRequest = (base64data?: string) => {
-    if (!base64data) {
-        throw new Error('Missing affiliate request data');
-    }
-
-    const reader = new bufferutils.BufferReader(Buffer.from(base64data, 'base64'));
-    // read first 33 bytes of mask_public_key
-    const mask = reader.readSlice(33);
-    // read 64 bytes of signature
-    const signature = reader.readSlice(64);
-    // read left overs, each byte = one element of coinjoin_flags_array
-    const flags: number[] = [];
-    while (reader.offset < reader.buffer.length) {
-        flags.push(reader.readUInt8());
-    }
-
-    return {
-        mask_public_key: mask.toString('hex'),
-        signature: signature.toString('hex'),
-        coinjoin_flags_array: flags,
-    };
-};
-
 export const getRoundParams = (roundParameters: CoinjoinRoundParameters) => ({
     fee_rate: roundParameters.CoordinationFeeRate.Rate * 10 ** 8,
     no_fee_threshold: roundParameters.CoordinationFeeRate.PlebsDontPayThreshold,

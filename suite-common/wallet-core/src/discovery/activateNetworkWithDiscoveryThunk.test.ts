@@ -91,6 +91,7 @@ const createState = ({
     device: {
         devices: [device],
         selectedDevice: device,
+        buttonRequestsByPath: {},
     },
     persistentDeviceData: persistentDeviceDataInitialState,
     tokenDefinitions: tokenDefinitionsInitialState,
@@ -101,6 +102,7 @@ const createExtra = (): ActivateNetworkWithDiscoveryThunkDeps => ({
     services: {
         analytics: mockAnalytics<AnalyticsSharedEvents>(),
         getTradedAccountKeys: mockGetTradedAccountKeys(),
+        reportSecurityCheck: jest.fn(),
     },
 });
 

@@ -1,6 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { deviceActions } from '@suite-common/device';
+import { ejectAllWalletsThunk } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
@@ -50,18 +51,55 @@ const DismissButton = ({ onClick }: DismissButtonProps) => (
         <Translation id="TR_DISMISS" />
     </SecurityCheckButton>
 );
+export const RetryButton = ({ onClick }: DismissButtonProps) => (
+    <SecurityCheckButton
+        intent="neutral"
+        priority="secondary"
+        onClick={onClick}
+        data-testid="@device-compromised/retry-button"
+    >
+        <Translation id="TR_RETRY" />
+    </SecurityCheckButton>
+);
 
 export const DismissFwAuthenticityCheckButton = () => {
     const { device } = useDevice();
     const { dispatch } = useServices(injectDispatch);
 
+    // device.id should always defined at this point, but if it weren't, fail-close by disabling dismissing.
+    const deviceId = device?.id;
+    if (typeof deviceId !== 'string') return null;
+
     const goToSuite = () => {
-        if (!device?.id) return; // device.id is always defined at this point
-        dispatch(deviceActions.dismissFirmwareAuthenticityCheck(device.id));
+        dispatch(deviceActions.dismissFirmwareAuthenticityCheck(deviceId));
     };
 
     return <DismissButton onClick={goToSuite} />;
 };
+
+const DismissDiscoveryEntropyCheckButton = () => {
+    const { device } = useDevice();
+    const { dispatch } = useServices(injectDispatch);
+
+    // device incl. its id should always defined at this point, but if it weren't, fail-close by disabling dismissing.
+    const deviceId = device?.id;
+    if (!device || typeof deviceId !== 'string') return null;
+
+    const goToSuite = () => {
+        dispatch(deviceActions.dismissDiscoveryEntropyCheck(deviceId));
+        // The device returned a wrong xpub, so nothing it has ever returned can be trusted. See the thunk description.
+        dispatch(ejectAllWalletsThunk({ device }));
+    };
+
+    return <DismissButton onClick={goToSuite} />;
+};
+
+export const DiscoveryEntropyCheckCtas = () => (
+    <>
+        <DismissDiscoveryEntropyCheckButton />
+        <EntropyCheckSupportButton />
+    </>
+);
 
 export const FwAuthenticityChecksCtas = () => (
     <>

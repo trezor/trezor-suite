@@ -6,8 +6,11 @@ import { type PROTO } from '@trezor/connect';
 /**
  * Client-side verification of the SLIP-24 payment request signature created by the trade API.
  * Mirrors the digest computation of `PaymentRequestSigner` (trezor-trade-api) and
- * `PaymentRequestVerifier` (trezor-firmware, core/src/apps/common/payment_request.py),
- * so a mismatch is caught before the request is sent to the device for signing.
+ * `PaymentRequestVerifier` (trezor-firmware, core/src/apps/common/payment_request.py).
+ *
+ * Debug aid only, not a security check: the device verifies the signature and rejects
+ * an invalid payment request on its own. Suite logs a mismatch to surface trade API or
+ * digest bugs early and intentionally does not block signing on the result.
  *
  * SLIP-0024: https://github.com/satoshilabs/slips/blob/master/slip-0024.md
  */
@@ -185,6 +188,7 @@ type ValidatePaymentRequestSignatureProps = ComputePaymentRequestPayloadProps & 
 /**
  * Returns false and logs an error when the signature received from the trade API
  * does not match the payment request content passed to TrezorConnect.
+ * Callers may ignore the result, the device enforces the signature.
  */
 export const validatePaymentRequestSignature = ({
     paymentRequest,

@@ -17,7 +17,7 @@
         "@trezor/styles-native": "workspace:*",
         "expo": "~57.0.23",
         "expo-video": "~57.0.1",
-        "prettier": "^3.9.6",
+        "prettier": "^3.9.9",
         "react": "19.2.3",
         "react-native": "0.86.3",
         "react-native-reanimated": "4.7.0"

@@ -12,11 +12,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/earn-stablecoin-defs": "workspace:*",
+        "@suite-common/earn-staking-api": "workspace:*",
+        "@suite-common/locale": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
-        "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",
         "@suite/experimental": "workspace:*",

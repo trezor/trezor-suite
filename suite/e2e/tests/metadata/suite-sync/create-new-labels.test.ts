@@ -106,6 +106,98 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
     );
 
     test(
+        'Import and export BIP329 address and output labels',
+        { tag: ['@webOnly'], annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ walletPage, metadataPage, page }) => {
+            await test.step('Create labels to export', async () => {
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
+                await metadataPage.output.changeLabel({
+                    outputId: expectedOutput.txId,
+                    txNumber: Number(expectedOutput.outputIndex),
+                    label: expectedOutput.label,
+                    confirmSuiteSync: true,
+                });
+                await walletPage.receiveButton.click();
+                await metadataPage.address.changeLabel({
+                    address: expectedAddress.address,
+                    label: expectedAddress.label,
+                });
+            });
+
+            const downloadPath = await test.step('Export and verify BIP329 records', async () => {
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
+                await walletPage.accountDetailsTabButton.click();
+                const downloadPromise = page.waitForEvent('download');
+                await metadataPage.exportBip329LabelsButton.click();
+                const download = await downloadPromise;
+
+                expect(download.suggestedFilename()).toMatch(/_export_bip329\.jsonl$/);
+                const filePath = await download.path();
+                const records = fs
+                    .readFileSync(filePath, 'utf8')
+                    .trim()
+                    .split('\n')
+                    .map(line => JSON.parse(line));
+
+                expect(records).toEqual([
+                    {
+                        type: 'output',
+                        ref: `${expectedOutput.txId}:${expectedOutput.outputIndex}`,
+                        label: expectedOutput.label,
+                        spendable: true,
+                    },
+                    {
+                        type: 'addr',
+                        ref: expectedAddress.address,
+                        label: expectedAddress.label,
+                    },
+                ]);
+
+                return filePath;
+            });
+
+            await test.step('Replace the exported labels', async () => {
+                await walletPage.receiveButton.click();
+                await metadataPage.address.changeLabel({
+                    address: expectedAddress.address,
+                    label: 'Changed address label',
+                });
+                await expect(metadataPage.address.label(expectedAddress.address)).toHaveText(
+                    'Changed address label',
+                );
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
+                await metadataPage.output.changeLabel({
+                    outputId: expectedOutput.txId,
+                    txNumber: Number(expectedOutput.outputIndex),
+                    label: 'Changed output label',
+                });
+                await expect(
+                    metadataPage.output.outputLabel(
+                        expectedOutput.txId,
+                        Number(expectedOutput.outputIndex),
+                    ),
+                ).toHaveText('Changed output label');
+            });
+
+            await test.step('Import the exported file and restore its labels', async () => {
+                await walletPage.accountDetailsTabButton.click();
+                await metadataPage.importBip329LabelsInput.setInputFiles(downloadPath);
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
+                await expect(
+                    metadataPage.output.outputLabel(
+                        expectedOutput.txId,
+                        Number(expectedOutput.outputIndex),
+                    ),
+                ).toHaveText(expectedOutput.label);
+                await walletPage.receiveButton.click();
+                await expect(metadataPage.address.label(expectedAddress.address)).toHaveText(
+                    expectedAddress.label,
+                );
+            });
+        },
+    );
+
+    test(
         'Export account and output labels',
         { tag: ['@webOnly'], annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
         async ({ walletPage, metadataPage, page }) => {

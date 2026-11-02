@@ -1,5 +1,7 @@
 ## Suite Sync
 
+For what Suite Sync does, its terms, keys and authentication flow, see the [Suite Sync documentation](../../docs/features/suite-sync.md).
+
 This is the big package with most of the Suite Sync code. Here all the other Suite Sync packages meet.
 Except for `@suite-common/suite-sync-evolu`. Evolu MUST NOT be imported here directly.
 

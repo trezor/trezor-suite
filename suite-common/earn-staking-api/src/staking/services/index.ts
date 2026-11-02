@@ -1,5 +1,6 @@
 import { createHttpClient } from '@suite-common/http-client';
 
+import { getSuiteInfo } from './getSuiteInfo';
 import { resilientStakingBatchResponse } from './resilientStakingBatchResponse';
 import {
     reportStakingTxIdsResponse,
@@ -24,12 +25,12 @@ import type {
     StakingSolanaRewardsHistoryParams,
     TrxStats,
 } from '../../api/types';
-import { EARN_API_BASE_URL } from '../../constants';
+import { earnStakingWorkerBaseUrl } from '../../context';
 
 export const earnHttpClient = createHttpClient({
     fetch: (input, init) => globalThis.fetch(input, init),
 })({
-    baseUrl: EARN_API_BASE_URL,
+    baseUrl: () => earnStakingWorkerBaseUrl.get(),
 });
 
 type RequestOptions = { signal?: AbortSignal };
@@ -92,7 +93,7 @@ export const getSolanaRewardsTotal: (
     schema: stakingSolanaRewardsTotalResponse,
 });
 
-export const reportStakingTxIds: (
+const postStakingTxIdsReport: (
     options: RequestOptions & { body: ReportStakingTxIds },
 ) => Promise<unknown> = earnHttpClient('/report', {
     method: 'POST',
@@ -100,3 +101,11 @@ export const reportStakingTxIds: (
     timeout: 60_000,
     reject: response => !response.ok,
 });
+
+type ReportStakingTxIdsOptions = RequestOptions & { body: Omit<ReportStakingTxIds, 'suite'> };
+
+export const reportStakingTxIds = ({
+    body,
+    ...options
+}: ReportStakingTxIdsOptions): Promise<unknown> =>
+    postStakingTxIdsReport({ ...options, body: { ...body, suite: getSuiteInfo() } });

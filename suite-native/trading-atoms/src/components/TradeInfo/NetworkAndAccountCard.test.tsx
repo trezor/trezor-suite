@@ -4,6 +4,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
@@ -29,8 +30,8 @@ describe('NetworkAndAccountCard', () => {
         }),
     } as const;
 
-    const renderNetworkAndAccountCard = async (props: Partial<NetworkAndAccountCardProps>) =>
-        await renderWithStoreProvider(
+    const renderNetworkAndAccountCard = (props: Partial<NetworkAndAccountCardProps>) =>
+        renderWithStoreProvider(
             <NetworkAndAccountCard title="TITLE" account={btc1NormalAccount} {...props} />,
             {
                 services: {
@@ -42,6 +43,7 @@ describe('NetworkAndAccountCard', () => {
                             },
                         },
                     }),
+                    networks: mockNetworksServices(),
                 },
             },
         );

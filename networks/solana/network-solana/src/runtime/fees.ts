@@ -1,4 +1,5 @@
 import {
+    decompileTransactionMessage,
     decompileTransactionMessageFetchingLookupTables,
     getBase16Encoder,
     getBase64Decoder,
@@ -6,6 +7,8 @@ import {
     getCompiledTransactionMessageEncoder,
     getTransactionDecoder,
     getTransactionEncoder,
+    getTransactionMessageComputeUnitLimit,
+    getTransactionMessagePriorityFeeLamports,
     isWritableRole,
     pipe,
 } from '@solana/kit';
@@ -37,8 +40,8 @@ import type {
     TransactionMessageBytesBase64,
     TransactionMessageWithFeePayer,
     V0CompiledTransactionMessage,
+    V1CompiledTransactionMessage,
 } from '../types';
-import { V1_NOT_SUPPORTED_MESSAGE, isV1Transaction } from './signing';
 
 const DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS = BigInt(300_000); // micro-lamports, value taken from other wallets
 
@@ -180,23 +183,57 @@ const getAccountProgramSize = (programName: AccountProgramName) =>
         'spl-token-2022': _getToken2022Size(),
     })[programName];
 
+const getAccountCreationFee = (
+    api: SolanaAPI,
+    newAccountProgramName: AccountProgramName | undefined,
+) =>
+    newAccountProgramName
+        ? api.rpc
+              .getMinimumBalanceForRentExemption(
+                  BigInt(getAccountProgramSize(newAccountProgramName)),
+              )
+              .send()
+        : BigInt(0);
+
+// v1 takes a flat priority fee in lamports from its config and ignores ComputeBudget instructions,
+// so the fee is read from the transaction and not estimated.
+const getV1Fees = (
+    message: V1CompiledTransactionMessage & CompiledTransactionMessageWithLifetime,
+) => {
+    // v1 has no address lookup tables, so it decompiles without the RPC.
+    const decompiledTransactionMessage = decompileTransactionMessage(message);
+    const computeUnitLimit = getTransactionMessageComputeUnitLimit(decompiledTransactionMessage);
+    const priorityFeeLamports = getTransactionMessagePriorityFeeLamports(
+        decompiledTransactionMessage,
+    );
+
+    return {
+        // getFeeForMessage would include the priority fee from the config, so the fixed fee per
+        // signature is used instead.
+        baseFee: SOL_BASE_FEE * BigInt(message.header.numSignerAccounts),
+        priorityFee: {
+            // v1 has no compute unit price.
+            computeUnitPrice: '0',
+            computeUnitLimit: (computeUnitLimit ?? 0).toString(10),
+            fee: (priorityFeeLamports ?? BigInt(0)).toString(10),
+        },
+        decompiledTransactionMessage,
+    };
+};
+
 export const getFees = async (
     messageHex: string,
     newAccountProgramName: AccountProgramName | undefined,
     api: SolanaAPI,
 ) => {
-    // kit decodes v1 happily, but into a message carrying instructionHeaders/instructionPayloads
-    // rather than instructions, which the fee helpers below read. Without this the caller gets a
-    // TypeError from deep inside them instead of the reason, and never reaches the signing guard.
-    if (isV1Transaction(messageHex)) {
-        throw new Error(V1_NOT_SUPPORTED_MESSAGE);
-    }
-
     const transaction = pipe(messageHex, getBase16Encoder().encode, getTransactionDecoder().decode);
-    const message = pipe(
-        transaction.messageBytes,
-        getCompiledTransactionMessageDecoder().decode,
-    ) as CompiledTransactionMessageV0OrLegacy & CompiledTransactionMessageWithLifetime;
+    const message = pipe(transaction.messageBytes, getCompiledTransactionMessageDecoder().decode);
+
+    if (message.version === 1) {
+        const accountCreationFee = await getAccountCreationFee(api, newAccountProgramName);
+
+        return { ...getV1Fees(message), accountCreationFee };
+    }
 
     const decompiledTransactionMessage = await decompileTransactionMessageFetchingLookupTables(
         message,
@@ -212,13 +249,7 @@ export const getFees = async (
 
     const baseFee = await getBaseFee(api.rpc, message);
 
-    const accountCreationFee = newAccountProgramName
-        ? await api.rpc
-              .getMinimumBalanceForRentExemption(
-                  BigInt(getAccountProgramSize(newAccountProgramName)),
-              )
-              .send()
-        : BigInt(0);
+    const accountCreationFee = await getAccountCreationFee(api, newAccountProgramName);
 
     return { baseFee, priorityFee, accountCreationFee, decompiledTransactionMessage };
 };

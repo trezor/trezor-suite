@@ -1,6 +1,6 @@
 // fixures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_signtx_external.py
 
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const signTransactionExternal: TestCase = {
     method: 'signTransaction',
@@ -65,7 +65,7 @@ const signTransactionExternal: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['e5040e', 'd830b8']),
+                refTxs: getRefTxs(['e5040e', 'd830b8']),
             },
             result: {
                 serializedTx:
@@ -118,7 +118,7 @@ const signTransactionExternal: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['20912f', 'ec16dc']),
+                refTxs: getRefTxs(['20912f', 'ec16dc']),
             },
             result: {
                 serializedTx:
@@ -170,7 +170,7 @@ const signTransactionExternal: TestCase = {
                         script_type: 'PAYTOWITNESS',
                     },
                 ],
-                refTxs: TX_CACHE(['70f987', '65b768']),
+                refTxs: getRefTxs(['70f987', '65b768']),
             },
             result: {
                 serializedTx:
@@ -217,7 +217,7 @@ const signTransactionExternal: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['ec16dc', '1c022d']),
+                refTxs: getRefTxs(['ec16dc', '1c022d']),
             },
             result: {
                 serializedTx:
@@ -270,7 +270,7 @@ const signTransactionExternal: TestCase = {
                         script_type: 'PAYTOTAPROOT',
                     },
                 ],
-                // refTxs: TX_CACHE([]), // Taproot inputs doesnt require streaming previous transactions
+                // refTxs: getRefTxs([]), // Taproot inputs doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:
@@ -332,7 +332,7 @@ const signTransactionExternal: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['e5b7e2', 'ec16dc']),
+                refTxs: getRefTxs(['e5b7e2', 'ec16dc']),
             },
             result: {
                 serializedTx:
@@ -382,7 +382,7 @@ const signTransactionExternal: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                // refTxs: TX_CACHE([]), // Taproot inputs doesnt require streaming previous transactions
+                // refTxs: getRefTxs([]), // Taproot inputs doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:

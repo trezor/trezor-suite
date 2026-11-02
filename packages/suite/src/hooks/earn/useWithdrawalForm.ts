@@ -169,6 +169,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         onFeeLevelChange,
     } = useStakeCompose({
         ...methods,
+        formState,
         state,
     });
 
@@ -178,6 +179,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         onChange: onFeeLevelChange,
         composeRequest,
         ...methods,
+        formState,
     });
     const selectedFee = _selectedFee ?? 'normal';
 
@@ -272,9 +274,16 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+
         if (composedTx?.type === 'final') {
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk({
+                        accountKey: account.key,
+                        formValues: values,
+                        transactionInfo: composedTx,
+                    }),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -287,7 +296,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
                 console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
 
     return {
         ...methods,

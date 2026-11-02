@@ -18,7 +18,7 @@ import { type Analytics } from '@trezor/analytics-uploader';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -92,6 +92,10 @@ type YieldResolutionAnalyticsEvent =
     | EventInstance<typeof events.yieldClaimEvent>;
 
 type YieldResolutionAnalytics = Pick<Analytics<YieldResolutionAnalyticsEvent>, 'report'>;
+
+// Keep claim deduplication across page remounts while Merkl catches up, scoped to this app's
+// analytics instance. Transaction identifiers stay local and are never part of event payloads.
+const reportedClaimTransactions = new WeakMap<YieldResolutionAnalytics, Set<string>>();
 
 const resolveReportedType = <T extends string>(
     outcome: 'success' | 'error' | 'leftPending',
@@ -188,7 +192,11 @@ export const useYieldPendingTransactionTracking = ({
     waitForMerklToResolveClaim = stablePlaceholderPromise,
     vault,
 }: UseYieldPendingTransactionTrackingProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { analytics, dispatch, getState } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetState,
+    );
     const pendingTransaction = useSelector(
         state => selectYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );
@@ -225,6 +233,21 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
+        let shouldReportResolution = true;
+
+        if (
+            pendingTransaction.type === 'claim' &&
+            flowType === 'claim' &&
+            pendingTxStatus === 'confirmed'
+        ) {
+            const claimKey = `${account.symbol}:${pendingTransaction.txid}`;
+            const reported = reportedClaimTransactions.get(analytics) ?? new Set<string>();
+            shouldReportResolution = !reported.has(claimKey);
+
+            reported.add(claimKey);
+            reportedClaimTransactions.set(analytics, reported);
+        }
+
         const resolution = getResolutionEventType(pendingTransaction.type, flowType);
         const durationMs = getPendingDurationMs(pendingTransaction, pendingStartRef.current);
         const context: ReportContext = {
@@ -245,7 +268,7 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
-        if (resolution) {
+        if (resolution && shouldReportResolution) {
             reportResolution(analytics, resolution, 'success', context);
             pendingStartRef.current = null;
         }
@@ -300,16 +323,21 @@ export const useYieldPendingTransactionTracking = ({
                 return;
             }
 
-            analytics.report({
-                type: events.yieldClaimEvent.name,
-                payload: {
-                    action: 'continue',
-                    type: 'success',
-                    networkSymbol: account.symbol,
-                },
-            });
+            const completeClaimAction = async () => {
+                try {
+                    await waitForMerklToResolveClaim();
+                } catch {
+                    // Merkl can lag behind an already confirmed claim transaction.
+                } finally {
+                    const currentPending = selectYieldSession(getState(), flowType, flowKey).action
+                        .pendingTransaction;
+                    if (currentPending?.txid === pendingTransaction.txid) {
+                        completeAction();
+                    }
+                }
+            };
 
-            waitForMerklToResolveClaim().then(completeAction);
+            void completeClaimAction();
 
             return;
         }
@@ -325,6 +353,7 @@ export const useYieldPendingTransactionTracking = ({
         account.symbol,
         vault,
         waitForMerklToResolveClaim,
+        getState,
     ]);
 
     // Emit `leftPending` if the component unmounts while a tx is still unresolved.

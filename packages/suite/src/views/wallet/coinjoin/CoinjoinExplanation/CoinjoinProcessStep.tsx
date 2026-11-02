@@ -1,0 +1,131 @@
+import { type ReactNode } from 'react';
+
+import styled from 'styled-components';
+
+import { Translation } from '@suite/intl';
+import {
+    H3,
+    IconCircle,
+    type IconComponent,
+    Paragraph,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
+import { belowBreakpoint, breakpoints } from '@trezor/theme';
+
+const Image = styled.div`
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        grid-column: 1;
+        grid-row: 1/4;
+    }
+`;
+
+const StepNumberSlot = styled.div`
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        grid-column: 2;
+        grid-row: 1;
+    }
+`;
+
+const StepTitleSlot = styled.div`
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        grid-column: 2;
+        grid-row: 2;
+    }
+`;
+
+const StepDescriptionSlot = styled.div`
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        grid-column: 2;
+        grid-row: 3;
+    }
+`;
+
+const Container = styled.div`
+    position: relative;
+    max-width: 220px;
+
+    & + & {
+        margin-left: 16px;
+
+        &::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -15px;
+            width: 1px;
+            height: 130px;
+        }
+    }
+
+    &:not(:last-child) {
+        margin-right: 16px;
+    }
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        display: grid;
+        grid-template-columns: 50px auto;
+        gap: 0 14px;
+        max-width: unset;
+
+        &:not(:last-child) {
+            margin-right: 0;
+            margin-bottom: 24px;
+        }
+
+        & + & {
+            margin-left: 0;
+
+            &::before {
+                content: none;
+            }
+        }
+    }
+`;
+
+export interface CoinjoinProcessStepProps {
+    number: number;
+    iconName: IconComponent;
+    title: ReactNode;
+    description: ReactNode;
+}
+
+export const CoinjoinProcessStep = ({
+    number,
+    iconName,
+    title,
+    description,
+}: CoinjoinProcessStepProps) => {
+    const isBelowLaptop = useMediaQuery(belowBreakpoint(breakpoints.laptop));
+
+    return (
+        <Container>
+            <Image>
+                <IconCircle icon={iconName} size={isBelowLaptop ? 48 : 96} />
+            </Image>
+            <StepNumberSlot>
+                <Paragraph
+                    typographyStyle="body-sm"
+                    intent="neutral"
+                    priority="secondary"
+                    margin={{ top: isBelowLaptop ? 0 : 16, bottom: isBelowLaptop ? 2 : 6 }}
+                >
+                    <Translation id="TR_STEP" values={{ number }} />
+                </Paragraph>
+            </StepNumberSlot>
+            <StepTitleSlot>
+                <H3
+                    typographyStyle={isBelowLaptop ? 'body-md-strong' : 'headline-sm'}
+                    margin={{ bottom: isBelowLaptop ? 4 : 20 }}
+                >
+                    {title}
+                </H3>
+            </StepTitleSlot>
+            <StepDescriptionSlot>
+                <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
+                    {description}
+                </Paragraph>
+            </StepDescriptionSlot>
+        </Container>
+    );
+};

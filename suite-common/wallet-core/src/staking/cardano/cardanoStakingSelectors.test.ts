@@ -21,6 +21,7 @@ const buildStakeState = (data: Partial<StakeDataState['data']>): StakeRootState 
     },
     device: {
         devices: [],
+        buttonRequestsByPath: {},
     },
 });
 

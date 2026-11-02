@@ -1,3 +1,4 @@
+import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TextProps } from '@suite-native/atoms';
 
@@ -10,5 +11,5 @@ export type CryptoAmountFormatterProps = FormatterProps<string | null | number> 
         isDiscreetText?: boolean;
         isForcedDiscreetMode?: boolean;
         isLoading?: boolean;
-        sign?: '+' | '-' | null;
+        signValue?: SignValue;
     };

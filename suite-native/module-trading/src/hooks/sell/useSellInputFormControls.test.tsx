@@ -9,13 +9,13 @@ import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils
 describe('useSellInputFormControls', () => {
     let form: SellFormType;
 
-    const renderSellFormHook = async () =>
-        await renderHookWithTradingProvider(() => useSellForm(), { tradeType: 'sell' });
+    const renderSellFormHook = () =>
+        renderHookWithTradingProvider(() => useSellForm(), { tradeType: 'sell' });
 
-    const renderUseSellInputFormControls = async (
+    const renderUseSellInputFormControls = (
         name: 'fiatStringAmount' | 'cryptoStringAmount' = 'fiatStringAmount',
     ) =>
-        await renderHookWithBasicProvider(() => useSellInputFormControls(name), {
+        renderHookWithBasicProvider(() => useSellInputFormControls(name), {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

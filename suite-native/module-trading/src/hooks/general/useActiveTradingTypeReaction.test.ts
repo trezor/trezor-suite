@@ -48,8 +48,8 @@ describe('useActiveTradingTypeReaction', () => {
         }),
     } as const;
 
-    const renderUseActiveTradingTypeReaction = async (store: Store<State>) =>
-        await renderHookWithStoreProvider(() => useActiveTradingTypeReaction(), {
+    const renderUseActiveTradingTypeReaction = (store: Store<State>) =>
+        renderHookWithStoreProvider(() => useActiveTradingTypeReaction(), {
             services: { store },
         });
 

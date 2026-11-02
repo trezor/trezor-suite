@@ -9,8 +9,11 @@ import { mockNetworkMetadata } from '../mocks/mockNetworkMetadata';
 import type { NetworkMetadata } from '../reduxState/NetworkMetadata';
 
 it('indexes registered networks by CoinGecko ID and skips networks without one', () => {
-    const ethereum: NetworkMetadata = { ...mockNetworkMetadata.eth, coingeckoId: 'ethereum' };
-    const bitcoin: NetworkMetadata = { ...mockNetworkMetadata.btc, coingeckoId: 'bitcoin' };
+    const ethereum = mockNetworkMetadata.eth;
+    const bitcoin: NetworkMetadata = {
+        ...mockNetworkMetadata.btc,
+        coingeckoId: 'coingecko-bitcoin-id',
+    };
     const deps = createMockDeps<GetNetworkByCoingeckoIdDeps>({
         networkModuleRepository: {
             getSupportedNetworks: () => [
@@ -31,7 +34,8 @@ it('indexes registered networks by CoinGecko ID and skips networks without one',
 
     const getNetworkByCoingeckoId = createGetNetworkByCoingeckoId(deps);
 
-    expect(getNetworkByCoingeckoId('ethereum')).toEqual(ethereum);
-    expect(getNetworkByCoingeckoId('bitcoin')).toEqual(bitcoin);
+    expect(getNetworkByCoingeckoId('coingecko-ethereum-id')).toEqual(ethereum);
+    expect(getNetworkByCoingeckoId('coingecko-bitcoin-id')).toEqual(bitcoin);
+    expect(getNetworkByCoingeckoId('eth')).toBeUndefined();
     expect(getNetworkByCoingeckoId('unknown-platform')).toBeUndefined();
 });

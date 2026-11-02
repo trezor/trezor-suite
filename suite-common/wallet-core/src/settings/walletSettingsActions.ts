@@ -64,6 +64,14 @@ export const setAreHomeAssetSmallBalancesShown = createAction(
     (areShown: boolean) => ({ payload: areShown }),
 );
 
+export const closeHomeAssetTableNewBanner = createAction(
+    WALLET_SETTINGS.CLOSE_HOME_ASSET_TABLE_NEW_BANNER,
+);
+
+export const closeHomeAssetTableFeedback = createAction(
+    WALLET_SETTINGS.CLOSE_HOME_ASSET_TABLE_FEEDBACK,
+);
+
 export const changeCoinVisibilityEvent = createAction(
     WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
     (payload: { symbol: NetworkSymbol; shouldBeVisible: boolean }) => ({ payload }),

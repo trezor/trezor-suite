@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
@@ -6,21 +7,22 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { gotoThunk } from '@suite/router';
 import {
+    type TradingRootState,
     buyThunks,
     selectTradingAccountKeyByTradeType,
+    selectTradingBuyExtraField,
     selectTradingBuyIsLoading,
     selectTradingBuyReceiveAccount,
     selectTradingBuyReceiveAddress,
     selectTradingBuySelectedQuote,
     tradingBuyActions,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useSelector } from 'src/hooks/suite';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 export const useTradingBuyConfirm = () => {
@@ -32,9 +34,14 @@ export const useTradingBuyConfirm = () => {
 
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);
     const receiveAddress = useSelector(selectTradingBuyReceiveAddress);
+    const extraField = useSelector(selectTradingBuyExtraField);
     const isLoading = useSelector(selectTradingBuyIsLoading);
-    const accountKey = useSelector(state => selectTradingAccountKeyByTradeType(state, 'buy'));
-    const account = useSelector(state => selectAccountByKey(state, accountKey) ?? undefined);
+    const accountKey = useSelector((state: TradingRootState) =>
+        selectTradingAccountKeyByTradeType(state, 'buy'),
+    );
+    const account = useSelector(
+        (state: AccountsRootState) => selectAccountByKey(state, accountKey) ?? undefined,
+    );
     const receiveAccount = useSelector(selectTradingBuyReceiveAccount);
 
     const isReady = !!selectedQuote && !!receiveAddress && !!account;
@@ -75,6 +82,7 @@ export const useTradingBuyConfirm = () => {
             buyThunks.confirmTradeThunk({
                 quote: selectedQuote,
                 address: receiveAddress,
+                extraField,
                 returnUrl,
                 account: tradeAccount,
                 processResponseData,

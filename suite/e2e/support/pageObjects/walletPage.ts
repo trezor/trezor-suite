@@ -167,10 +167,14 @@ export class WalletPage {
         this.transactionItem = this.page.getByTestId('@wallet/transaction-item');
         this.transactionAddress = this.page.getByTestId('@wallet/transaction/target-address');
         this.fiatAmount = this.page.getByTestId('@wallet/account/fiat-amount').first();
-        this.topPanelBalance = this.page.getByTestId('@wallet/account/crypto-balance');
-        this.topPanelBalanceWithSymbol = this.page.getByTestId(
-            '@wallet/account/crypto-balance-with-symbol',
-        );
+        // The previous tab's balance stays in the DOM hidden while the route switches, so only the
+        // visible balance is matched.
+        this.topPanelBalance = this.page
+            .getByTestId('@wallet/account/crypto-balance')
+            .filter({ visible: true });
+        this.topPanelBalanceWithSymbol = this.page
+            .getByTestId('@wallet/account/crypto-balance-with-symbol')
+            .filter({ visible: true });
         this.copyToCliboardToast = this.page.getByTestId('@toast/copy-to-clipboard');
         this.verifyAddressErrorToast = this.page.getByTestId('@toast/verify-address-error');
         this.addAccountButton = this.page.getByTestId('@account-menu/add-account');

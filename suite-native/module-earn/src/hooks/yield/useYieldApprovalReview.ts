@@ -16,6 +16,7 @@ import {
     selectYieldSession,
     sendFormActions,
     signTransactionThunk,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -37,6 +38,7 @@ import {
     type YieldApprovalLimitType,
     type YieldReviewSigningResult,
 } from '../../types';
+import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
 import { isUserCancelledSignError } from '../../utils/earn/utils';
 import { getYieldApprovalAnalyticsType } from '../../utils/yield/yieldAnalyticsUtils';
 import { useHandleEarnReviewError } from '../earn/useHandleEarnReviewError';
@@ -134,6 +136,8 @@ export const useYieldApprovalReview = ({
     const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess, wasReviewCancelledByUser } =
         useYieldApprovalReviewNavigation({
             flowKey,
+            networkSymbol: flowData.account.symbol,
+            isSigned: isApprovalSigned && !isSendingApproval,
             onReviewLeave,
             shouldConfirmCancellation: shouldConfirmApprovalCancellation,
             transactionType,
@@ -187,6 +191,14 @@ export const useYieldApprovalReview = ({
                 isUserCancelledSignError(signTransactionResponse.payload) ||
                 wasReviewCancelledByUser()
             ) {
+                analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: flowData.account.symbol,
+                        stage: 'signing',
+                    },
+                });
                 reportApprovalReviewEvent({ action: 'cancel' });
 
                 return 'cancelled';
@@ -202,6 +214,7 @@ export const useYieldApprovalReview = ({
 
         return 'signed';
     }, [
+        analytics,
         dispatch,
         flowData.account,
         handleReviewError,
@@ -219,10 +232,30 @@ export const useYieldApprovalReview = ({
 
         setIsSendingApproval(true);
 
+        if (reviewTransaction) {
+            reportTransactionCreated({
+                analytics,
+                symbol: flowData.account.symbol,
+                precomposedTransaction: reviewTransaction.precomposedTransaction,
+                formState: reviewTransaction.formState,
+                txType: 'yield',
+            });
+        }
+
         const pushResponse = await dispatch(
             pushSendFormTransactionThunk({
                 selectedAccount: flowData.account,
                 isMevProtectionEnabled: isMevProtectionEnabled && isMevProtectionFeatureEnabled,
+            }),
+        );
+
+        dispatch(
+            transactionsActions.transactionBroadcastStatus({
+                account: flowData.account,
+                flow: transactionType,
+                ...(isRejected(pushResponse)
+                    ? ({ status: 'error' } as const)
+                    : ({ status: 'success', txid: pushResponse.payload.payload.txid } as const)),
             }),
         );
 
@@ -236,6 +269,7 @@ export const useYieldApprovalReview = ({
 
         return pushResponse.payload.payload.txid;
     }, [
+        analytics,
         dispatch,
         flowData.account,
         handleReviewError,
@@ -244,6 +278,8 @@ export const useYieldApprovalReview = ({
         isMevProtectionFeatureEnabled,
         isSendingApproval,
         reportApprovalReviewEvent,
+        reviewTransaction,
+        transactionType,
     ]);
 
     // Fired when the pushed transaction appears in the transactions store; the

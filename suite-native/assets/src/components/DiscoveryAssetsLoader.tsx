@@ -20,7 +20,7 @@ export const DiscoveryAssetsLoader = () => {
             <ListItemSkeleton />
             <HStack justifyContent="center" marginBottom="sp16">
                 <Icon size="mediumLarge" name="trezorLogo" />
-                <Text variant="body-sm-strong">
+                <Text variant="body-sm-strong" testID="@assets/discovery/loading">
                     <Translation
                         id={
                             isAssetListEmpty

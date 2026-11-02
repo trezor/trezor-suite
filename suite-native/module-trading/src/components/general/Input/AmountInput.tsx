@@ -98,7 +98,7 @@ const textStyle = prepareNativeStyle<TextStyleParams>(
         lineHeight: undefined,
 
         extend: [
-            { condition: isPlaceholder, style: { color: colors.contentDisabled } },
+            { condition: isPlaceholder, style: { color: colors.contentSecondary } },
             { condition: hasError, style: { color: colors.contentCritical } },
         ],
     }),

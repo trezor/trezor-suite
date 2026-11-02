@@ -1,3 +1,5 @@
+import { BigNumber } from '@trezor/utils';
+
 const MAX_DECIMALS_LENGTH = 2;
 const SATOSHIS_IN_BITCOIN = 100_000_000;
 
@@ -24,10 +26,19 @@ type DecimalNumberParams = {
     value: string | undefined;
     locale: string;
     isSatsValue: boolean;
+    isExact: boolean;
 };
 
-const getFormattedDecimalNumber = ({ value = '00', locale, isSatsValue }: DecimalNumberParams) =>
-    isSatsValue ? '' : `${getDecimalSeparator(locale)}${value.slice(0, MAX_DECIMALS_LENGTH)}`;
+const getFormattedDecimalNumber = ({
+    value = '00',
+    locale,
+    isSatsValue,
+    isExact,
+}: DecimalNumberParams) => {
+    if (isSatsValue) return '';
+
+    return `${getDecimalSeparator(locale)}${isExact ? value : value.slice(0, MAX_DECIMALS_LENGTH)}`;
+};
 
 type CurrencySymbolParams = {
     locale: string;
@@ -81,6 +92,26 @@ export type CurrencyAmountParts = {
 
 type CurrencyAmountPartsParams = CurrencySymbolParams & {
     value?: string;
+    /** Every decimal of the value, as a price needs, rather than cents. */
+    isExact?: boolean;
+};
+
+type SplitAmountParams = {
+    value: string;
+    isSatsValue: boolean;
+    isExact: boolean;
+};
+
+const splitAmount = ({ value, isSatsValue, isExact }: SplitAmountParams) => {
+    if (isExact && !isSatsValue) {
+        const [integerPart = '0', decimalPart = ''] = new BigNumber(value).toFixed().split('.');
+
+        return [integerPart, decimalPart.padEnd(MAX_DECIMALS_LENGTH, '0')];
+    }
+
+    const numericValue = isSatsValue ? Number(value) * SATOSHIS_IN_BITCOIN : Number(value);
+
+    return numericValue.toFixed(MAX_DECIMALS_LENGTH).toString().split('.');
 };
 
 /**
@@ -92,17 +123,19 @@ export const getCurrencyAmountParts = ({
     locale,
     currency,
     isSatsValue,
+    isExact = false,
 }: CurrencyAmountPartsParams): CurrencyAmountParts => {
-    const numericValue = isSatsValue ? Number(value) * SATOSHIS_IN_BITCOIN : Number(value);
-    const [integerPart = '0', decimalPart = '0'] = numericValue
-        .toFixed(MAX_DECIMALS_LENGTH)
-        .toString()
-        .split('.');
+    const [integerPart = '0', decimalPart = '0'] = splitAmount({ value, isSatsValue, isExact });
 
     return {
         currencySymbol: getFormattedCurrencySymbol({ locale, currency, isSatsValue }),
         wholeNumber: getFormattedWholeNumber({ value: integerPart, locale }),
-        decimalNumber: getFormattedDecimalNumber({ value: decimalPart, locale, isSatsValue }),
+        decimalNumber: getFormattedDecimalNumber({
+            value: decimalPart,
+            locale,
+            isSatsValue,
+            isExact,
+        }),
         isCurrencySymbolFirst: isCurrencySymbolFirstInLocale({ locale, currency, isSatsValue }),
     };
 };

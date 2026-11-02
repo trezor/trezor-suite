@@ -32,6 +32,7 @@ export const TradingFormInputAmountPlaceholder = ({
     return (
         <NumberInput
             isClean
+            placeholderColor="contentSecondary"
             flex="1"
             name={name}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}

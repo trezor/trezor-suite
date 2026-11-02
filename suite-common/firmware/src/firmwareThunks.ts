@@ -1,7 +1,7 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type GetLanguageDep } from '@suite-common/locale';
 import {
     type GetBinFilesBaseUrlDep,
-    type GetLanguageDep,
     type ReportSecurityCheckDep,
     type TrezorDevice,
 } from '@suite-common/suite-types';

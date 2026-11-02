@@ -182,13 +182,30 @@ export const exposeConnectWs = ({
                 return;
             }
             if (message.type === POPUP.HANDSHAKE) {
+                // A call without a valid manifest is dropped without a response, so acknowledging
+                // the handshake would leave the client waiting and hold the connection slot.
+                const handshakeManifest = parseManifest(message.payload.settings.manifest);
+                if (!handshakeManifest) {
+                    logger.warn(
+                        LOG_PREFIX,
+                        `connection closed: invalid handshake manifest from ${ip}:${port} (origin: ${originKey})`,
+                    );
+                    req.socket.destroy();
+
+                    return;
+                }
+
                 const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
-                processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
-                    logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+                processOnPort = await findProcessFromIncomingPort(
+                    port,
+                    filterSelf,
+                    req.socket,
+                ).catch(error => {
+                    logger.error(LOG_PREFIX, `findProcessFromIncomingPort failed: ${error}`);
 
                     return undefined;
                 });
-                manifest = parseManifest(message.payload.settings.manifest);
+                manifest = handshakeManifest;
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
                 isHandshakeDone = true;
@@ -210,11 +227,24 @@ export const exposeConnectWs = ({
                 });
             } else if (message.type === CORE_CALL) {
                 if (!processOnPort) {
-                    // ts check, should be set
-                    logger.error(LOG_PREFIX, 'processOnPort result not found');
+                    // The lookup can legitimately miss, so log both endpoints of the connection:
+                    // it tells an lsof or netstat format difference apart from a lookup that
+                    // could not run at all.
+                    logger.error(
+                        LOG_PREFIX,
+                        `processOnPort result not found for ${ip}:${port} -> ${req.socket.localAddress}:${req.socket.localPort}`,
+                    );
 
                     if (!isLinux()) {
                         // we ignore missing process on linux because of AppImage/Flatpak sandboxing
+                        ws.send(
+                            JSON.stringify({
+                                id: message.id,
+                                success: false,
+                                payload: { error: 'Calling process could not be identified' },
+                            }),
+                        );
+
                         return;
                     }
                 }

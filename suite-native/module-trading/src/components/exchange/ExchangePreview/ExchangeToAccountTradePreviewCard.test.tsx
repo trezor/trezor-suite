@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { btc1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -9,11 +10,11 @@ import {
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeToAccountTradePreviewCard', () => {
-    const renderExchangeToAccountTradePreviewCard = async (
+    const renderExchangeToAccountTradePreviewCard = (
         props: Partial<ExchangeToAccountTradePreviewCardProps> = {},
         receiveAccountKey = btc1NormalAccount.key,
     ) =>
-        await renderWithTradingProvider(<ExchangeToAccountTradePreviewCard {...props} />, {
+        renderWithTradingProvider(<ExchangeToAccountTradePreviewCard {...props} />, {
             tradeType: 'exchange',
             overrides: {
                 wallet: {
@@ -30,6 +31,7 @@ describe('ExchangeToAccountTradePreviewCard', () => {
                     },
                 },
             },
+            services: { networks: mockNetworksServices() },
         });
 
     it('should render nothing when there is no quote', async () => {

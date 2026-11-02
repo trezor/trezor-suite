@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 import { IntlProvider as ReactIntlProvider } from 'react-intl';
 
-import type { Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
 import { isDevEnv } from '@suite-common/suite-utils';
 
 import { useIntlMessages } from '../hooks/useIntlMessages';

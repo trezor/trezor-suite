@@ -3,7 +3,12 @@ import { Badge, Box, Card, Table, Text } from '@trezor/components';
 import type { AttributeDoc } from '../types';
 import { AttributesTableRow } from './AttributesTableRow';
 
-export const AttributesTable = ({ attributes }: { attributes: Record<string, AttributeDoc> }) => {
+type AttributesTableProps = {
+    attributes: Record<string, AttributeDoc>;
+    query: string;
+};
+
+export const AttributesTable = ({ attributes, query }: AttributesTableProps) => {
     const keys = Object.keys(attributes);
 
     if (keys.length === 0) {
@@ -41,6 +46,7 @@ export const AttributesTable = ({ attributes }: { attributes: Record<string, Att
                             <AttributesTableRow
                                 attributes={attributes}
                                 attributeKey={key}
+                                query={query}
                                 key={key}
                             />
                         ))}

@@ -85,6 +85,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         utils: { colors },
     } = useNativeStyles();
     const [delayedLoading, setDelayedLoading] = useState(false);
+    const [graphWidth, setGraphWidth] = useState(0);
 
     const arePointsEmpty = points.length <= 1;
 
@@ -115,25 +116,30 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
             return {
                 TopAxisLabel: () => (
                     <AxisLabel
+                        graphWidth={graphWidth}
                         x={extremaFromGraphPoints.max.x}
                         value={extremaFromGraphPoints.max.value}
                     />
                 ),
                 BottomAxisLabel: () => (
                     <AxisLabel
+                        graphWidth={graphWidth}
                         x={extremaFromGraphPoints.min.x}
                         value={extremaFromGraphPoints.min.value}
                     />
                 ),
             };
         }
-    }, [extremaFromGraphPoints, areLabelsHidden]);
+    }, [extremaFromGraphPoints, areLabelsHidden, graphWidth]);
 
     // For some reason, 16 feels better than 0
     const panGestureDelay = 16;
 
     return (
-        <Box style={applyStyle(graphWrapperStyle)}>
+        <Box
+            style={applyStyle(graphWrapperStyle)}
+            onLayout={event => setGraphWidth(event.nativeEvent.layout.width)}
+        >
             <LineGraph<GroupedBalanceMovementEventPayload>
                 style={applyStyle(graphStyle, { loading, error })}
                 points={points}

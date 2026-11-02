@@ -45,8 +45,8 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('TradingLocationModalScreen', () => {
-    const renderTradingLocationModalScreen = async () =>
-        await renderWithStoreProvider(
+    const renderTradingLocationModalScreen = () =>
+        renderWithStoreProvider(
             <TradingLocationModalScreen
                 navigation={
                     {

@@ -9,6 +9,7 @@ export const ANALYTICS_ALLOWED_DOMAINS = [
     'coin',
     'dashboard',
     'device',
+    'earn',
     'firmware',
     'guide',
     'menu',

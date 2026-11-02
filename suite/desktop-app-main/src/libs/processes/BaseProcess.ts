@@ -15,6 +15,7 @@ export type Status = {
 /**
  * [startupCooldown] Cooldown before being able to run start again (seconds).
  * [stopKillWait] How long to wait before killing the process on stop (seconds).
+ * [maxKillAttempts] How many SIGKILLs to send before giving up.
  * [autoRestart] Seconds to wait before auto-restarting the process (seconds). 0 = off.
  * [env] additional env variables.
  * [stdio] inherit process stdio. doesn't work on windows, "inherit" works on linux/macos
@@ -22,14 +23,18 @@ export type Status = {
 export type BaseProcessOptions = {
     startupCooldown?: number;
     stopKillWait?: number;
+    maxKillAttempts?: number;
     autoRestart?: number;
     env?: Record<string, string | undefined>;
     stdio?: IOType;
 };
 
+const DEFAULT_MAX_KILL_ATTEMPTS = 2;
+
 const defaultOptions: BaseProcessOptions = {
     startupCooldown: 0,
-    stopKillWait: 10,
+    stopKillWait: 2,
+    maxKillAttempts: DEFAULT_MAX_KILL_ATTEMPTS,
     autoRestart: 2,
 } as const;
 
@@ -206,13 +211,32 @@ export abstract class BaseProcess {
             }
 
             this.logger.info(this.logTopic, 'Stopping process');
-            this.process.kill();
+            const child = this.process;
+
+            // The interval below is the SIGKILL escalation ladder, resolving on `close` avoids waiting for its next tick.
+            // eslint-disable-next-line prefer-const
+            let interval: ReturnType<typeof setTimeout> | undefined;
+            const onClose = () => {
+                this.logger.info(this.logTopic, 'Killed successfully');
+                clearInterval(interval);
+                this.process = null;
+                resolve();
+            };
+            child.once('close', onClose);
+            child.kill();
 
             let timeout = 0;
-            const interval = setInterval(() => {
-                if (!this.process || this.process.killed) {
+            let sigkillAttempts = 0;
+            const maxKillAttempts = this.options.maxKillAttempts ?? DEFAULT_MAX_KILL_ATTEMPTS;
+            interval = setInterval(() => {
+                // `process.killed` only indicates that the signal was sent, so rely on the
+                // actual exit state instead.
+                const isKilled = this.process?.exitCode != null || this.process?.signalCode != null;
+
+                if (!this.process || isKilled) {
                     this.logger.info(this.logTopic, 'Killed successfully');
                     clearInterval(interval);
+                    child.removeListener('close', onClose);
                     this.process = null;
                     resolve();
 
@@ -222,9 +246,19 @@ export abstract class BaseProcess {
                 if (this.options.stopKillWait && timeout < this.options.stopKillWait) {
                     this.logger.info(this.logTopic, 'Still alive, checking again...');
                     timeout++;
-                } else {
+                } else if (sigkillAttempts < maxKillAttempts) {
                     this.logger.info(this.logTopic, 'Still alive, going for the SIGKILL');
+                    sigkillAttempts++;
                     this.process.kill('SIGKILL');
+                } else {
+                    this.logger.error(
+                        this.logTopic,
+                        `Process did not exit after SIGKILL, giving up... (pid: ${this.process.pid})`,
+                    );
+                    clearInterval(interval);
+                    child.removeListener('close', onClose);
+                    // The child is still alive, the `close` handler clears it if it ever exits.
+                    resolve();
                 }
             }, 1000);
         });

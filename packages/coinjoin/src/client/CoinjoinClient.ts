@@ -41,7 +41,6 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
             }
         });
         this.status.on('log', ({ level, payload }) => this.logger[level](payload));
-        this.status.on('affiliate-server', event => this.onAffiliateServerStatus(event));
 
         this.prison = new CoinjoinPrison(settings.prison);
         this.prison.on('change', data => this.emit('prison', data));
@@ -168,10 +167,6 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         this.emit('session-phase', event);
     }
 
-    private onAffiliateServerStatus(status: boolean) {
-        this.rounds.map(r => r.onAffiliateServerStatus(status));
-    }
-
     private async onStatusUpdate({
         changed,
         rounds,
@@ -194,21 +189,22 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
             }),
         );
 
+        // a round cannot exist without a coordinator, Status.start refuses to run without one
+        const { coordinatorUrl } = this.settings;
+
         // there are no CoinjoinRounds to process? try to create new one
-        if (roundsToProcess.length === 0) {
+        if (roundsToProcess.length === 0 && coordinatorUrl) {
             const newRound = await CoinjoinRound.create({
                 accounts: this.accounts,
                 statusRounds: rounds,
                 coinjoinRounds: this.rounds,
                 prison: this.prison,
-                runningAffiliateServer: this.status.isAffiliateServerRunning(),
                 options: {
                     network: this.network,
                     signal: this.abortController.signal,
                     coordinatorName: this.settings.coordinatorName,
-                    coordinatorUrl: this.settings.coordinatorUrl,
+                    coordinatorUrl,
                     middlewareUrl: this.settings.middlewareUrl,
-                    affiliationId: this.settings.affiliationId,
                     logger: this.logger,
                     setSessionPhase: sessionPhase => this.setSessionPhase(sessionPhase),
                 },

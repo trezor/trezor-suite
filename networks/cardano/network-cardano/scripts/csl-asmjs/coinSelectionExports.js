@@ -1,10 +1,10 @@
-// Lists the Cardano Serialization Lib exports that @fivebinaries/coin-selection can reach, derived
-// from its source and the glue.
+// Lists the Cardano Serialization Lib exports that @trezor/network-cardano-coin-selection can
+// reach, derived from its TypeScript sources and the glue.
 import fs from 'node:fs';
 import path from 'node:path';
 
-const CSL_REQUIRE =
-    /const (\w+) = (?:__importStar\()?require\("@emurgo\/cardano-serialization-lib-nodejs"\)/g;
+const CSL_IMPORT =
+    /import (?:type )?\* as (\w+) from ['"]@emurgo\/cardano-serialization-lib-nodejs['"]/g;
 // Matches string literals (captured, kept) and comments (dropped) so a `//` inside a string does
 // not truncate the line.
 const STRING_OR_COMMENT =
@@ -23,18 +23,25 @@ const GLUE_WRAP = /\b(\w+)\.__wrap\(/g;
 const stripComments = source =>
     source.replace(STRING_OR_COMMENT, (match, stringLiteral) => stringLiteral ?? '');
 
-const listJsFiles = dir =>
+const SOURCE_FILE = /\.[cm]?[jt]sx?$/;
+const TEST_FILE = /\.test\.[cm]?[jt]sx?$/;
+const DECLARATION_FILE = /\.d\.[cm]?ts$/;
+
+const isSourceFile = name =>
+    SOURCE_FILE.test(name) && !TEST_FILE.test(name) && !DECLARATION_FILE.test(name);
+
+const listSourceFiles = dir =>
     fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
         const entryPath = path.join(dir, entry.name);
-        if (entry.isDirectory()) return listJsFiles(entryPath);
+        if (entry.isDirectory()) return listSourceFiles(entryPath);
 
-        return entry.name.endsWith('.js') ? [entryPath] : [];
+        return isSourceFile(entry.name) ? [entryPath] : [];
     });
 
-const readCoinSelectionSources = coinSelectionLibDir =>
-    listJsFiles(coinSelectionLibDir).map(file => {
+const readCoinSelectionSources = coinSelectionSrcDir =>
+    listSourceFiles(coinSelectionSrcDir).map(file => {
         const source = stripComments(fs.readFileSync(file, 'utf8'));
-        const aliases = [...source.matchAll(CSL_REQUIRE)].map(([, alias]) => alias);
+        const aliases = [...source.matchAll(CSL_IMPORT)].map(([, alias]) => alias);
         if (aliases.length === 0 && source.includes('@emurgo/cardano-serialization-lib')) {
             throw new Error(`csl-asmjs: unrecognised Cardano Serialization Lib import in ${file}`);
         }
@@ -42,9 +49,9 @@ const readCoinSelectionSources = coinSelectionLibDir =>
         return { file, source, aliases };
     });
 
-export const findCoinSelectionMemberNames = coinSelectionLibDir => {
+export const findCoinSelectionMemberNames = coinSelectionSrcDir => {
     const memberNames = new Set();
-    readCoinSelectionSources(coinSelectionLibDir).forEach(({ file, source }) => {
+    readCoinSelectionSources(coinSelectionSrcDir).forEach(({ file, source }) => {
         if (COMPUTED_CALL.test(source)) {
             throw new Error(`csl-asmjs: computed member call in ${file}`);
         }
@@ -57,9 +64,9 @@ export const findCoinSelectionMemberNames = coinSelectionLibDir => {
     return [...memberNames].sort();
 };
 
-export const findCoinSelectionClassNames = coinSelectionLibDir => {
+export const findCoinSelectionClassNames = coinSelectionSrcDir => {
     const classNames = new Set();
-    readCoinSelectionSources(coinSelectionLibDir).forEach(({ source, aliases }) => {
+    readCoinSelectionSources(coinSelectionSrcDir).forEach(({ source, aliases }) => {
         aliases.forEach(alias => {
             const reference = new RegExp(`\\b${alias}\\.([A-Z]\\w*)`, 'g');
             [...source.matchAll(reference)].forEach(([, className]) => classNames.add(className));
@@ -115,15 +122,15 @@ export const parseGlue = glueSource => {
     return { classes, functions, plumbing };
 };
 
-export const findReachableExports = (coinSelectionLibDir, glueSource) => {
+export const findReachableExports = (coinSelectionSrcDir, glueSource) => {
     const { classes, functions, plumbing } = parseGlue(glueSource);
-    const memberNames = new Set(findCoinSelectionMemberNames(coinSelectionLibDir));
+    const memberNames = new Set(findCoinSelectionMemberNames(coinSelectionSrcDir));
     // `new CardanoWasm.Class()` reaches the constructor without a `.constructor` access.
     memberNames.add('constructor');
 
     const reachableExports = new Set(plumbing.exports);
     const reachedClasses = new Set();
-    const pendingClasses = findCoinSelectionClassNames(coinSelectionLibDir);
+    const pendingClasses = findCoinSelectionClassNames(coinSelectionSrcDir);
     const reach = member => {
         member.exports.forEach(exportName => reachableExports.add(exportName));
         pendingClasses.push(...member.returnedClasses);

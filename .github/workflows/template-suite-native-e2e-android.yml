@@ -64,7 +64,9 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
-          cache: yarn
+
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
 
       - name: Load node modules cache
         id: node-modules-cache
@@ -79,7 +81,8 @@ jobs:
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - name: Disable Yarn hardened mode
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
@@ -144,6 +147,8 @@ jobs:
           CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
           CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
+          # On a pull request GITHUB_SHA is the ephemeral merge commit, not what was pushed.
+          PERF_COMMIT_ID: ${{ github.event.pull_request.head.sha || github.sha }}
         with:
           api-level: 34
           profile: pixel_6
@@ -191,6 +196,25 @@ jobs:
             || true
           docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
           docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
+
+      - name: Summarize performance report
+        if: always()
+        continue-on-error: true
+        shell: bash
+        env:
+          # Absolute: `yarn workspace … exec` runs inside suite-native/app.
+          PERF_REPORT: ${{ github.workspace }}/suite-native/app/artifacts/performance/perf-report.json
+          SHARD: ${{ matrix.TEST_GROUP }}
+        run: yarn workspace @suite-native/app exec tsx e2e/support/performance/summarize.ts
+
+      - name: "Store performance report"
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: android-perf-report-${{ matrix.TEST_GROUP }}
+          path: suite-native/app/artifacts/performance/perf-report.json
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: "Store emulator crash reports"
         if: ${{ !cancelled() }}

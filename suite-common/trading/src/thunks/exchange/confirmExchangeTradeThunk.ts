@@ -22,7 +22,6 @@ export type ConfirmExchangeTradeThunkProps = {
     returnUrl: string;
     receiveAddress: string;
     account: Account;
-    extraField?: string;
     trade?: ExchangeTrade;
     approvalFlow?: boolean;
     isTradeSubmitted?: boolean;
@@ -46,7 +45,6 @@ export const confirmExchangeTradeThunk = createThunk<
             returnUrl,
             receiveAddress,
             account,
-            extraField,
             approvalFlow = false,
             isTradeSubmitted = false,
             triggerAnalyticsTradeConfirmation,
@@ -90,7 +88,6 @@ export const confirmExchangeTradeThunk = createThunk<
                 trade,
                 receiveAddress,
                 refundAddress,
-                extraField,
                 returnUrl,
                 approvalFlow,
             },

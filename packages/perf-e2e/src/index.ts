@@ -7,3 +7,6 @@ export * from './report';
 export * from './markdown';
 export * from './suggestLimits';
 export * from './instrumentation';
+export * from './store';
+export * from './storeReader';
+export * from './publishRuns';

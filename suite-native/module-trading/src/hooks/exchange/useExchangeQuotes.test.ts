@@ -89,8 +89,8 @@ describe('useExchangeQuotes', () => {
             },
         });
 
-    const renderUseExchangeQuotes = async (store: Store<State>) =>
-        await renderHookWithStoreProvider(
+    const renderUseExchangeQuotes = (store: Store<State>) =>
+        renderHookWithStoreProvider(
             () => {
                 const form = useExchangeForm();
                 useExchangeQuotes(form);

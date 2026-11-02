@@ -3,7 +3,7 @@ import * as http from 'http';
 import { type Logger, noopLogger } from '@trezor/logger';
 import { getFreePort } from '@trezor/node-utils';
 
-import { AFFILIATE_INFO, DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../src/__fixtures__/round.fixture';
+import { DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../src/__fixtures__/round.fixture';
 import type { CoinjoinClientEvents } from '../src/types/client';
 
 // Mock coordinator and middleware responses
@@ -79,7 +79,6 @@ const DEFAULT = {
     status: {
         RoundStates: [DEFAULT_ROUND],
         CoinJoinFeeRateMedians: FEE_RATE_MEDIANS,
-        AffiliateInformation: AFFILIATE_INFO,
     },
     'input-registration': {
         AliceId: Math.random().toString(),
@@ -195,7 +194,6 @@ interface MockedServerEvents {
 export interface MockedServer extends Exclude<http.Server, 'addListener'> {
     requestOptions: {
         network: any;
-        affiliationId: 'trezor';
         coordinatorName: string;
         wabisabiBackendUrl: string;
         coordinatorUrl: string;
@@ -240,7 +238,6 @@ export const createServer = async () => {
     server.requestOptions = {
         network: 'test',
         coordinatorName: 'CoinJoinCoordinatorIdentifier',
-        affiliationId: 'trezor',
         wabisabiBackendUrl: url,
         coordinatorUrl: url,
         middlewareUrl: url,

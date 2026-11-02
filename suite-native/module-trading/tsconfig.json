@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/calldata" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -50,6 +49,7 @@
         { "path": "../device-mutex" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
+        { "path": "../finprom" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },
@@ -86,6 +86,9 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/redux-utils" },
         {
@@ -102,6 +105,9 @@
             "path": "../../suite-common/suite-constants"
         },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/test-utils"
         },
         {
@@ -114,6 +120,9 @@
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         { "path": "../../packages/requirements" }
     ]
 }

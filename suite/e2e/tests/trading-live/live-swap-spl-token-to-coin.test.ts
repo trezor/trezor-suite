@@ -20,6 +20,8 @@ const accountLabel = 'Solana #2';
 // afterEach constants
 const usdtTopUpThreshold = parseFloat(sendAmount) * 3;
 const solFeeReserve = 0.05;
+// Changelly blocklisted the live-test address, so the refill uses ChangeNOW for now.
+const refillProvider = 'ChangeNOW';
 
 // limiting number of runs due to fees onchain and nonce issues during teardown - by using specific model and FW tags
 test.describe(
@@ -91,7 +93,8 @@ test.describe(
             });
 
             await test.step('Confirm the Swap trade', async () => {
-                await expect(tradingPage.inputs.youPayAssetSymbol).toHaveText(sendTokenSymbol);
+                await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText(sendTokenSymbol);
+                await tradingPage.quotes.chooseDifferentOfferIfAvailable(refillProvider);
                 await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
             });
 
@@ -135,6 +138,7 @@ test.describe(
                     await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText(
                         receiveCoinSymbol,
                     );
+                    await tradingPage.quotes.chooseCexOffer();
                     liveTradeAmounts = tradingPage.waitForLiveTradeAmounts();
                     await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
                 });

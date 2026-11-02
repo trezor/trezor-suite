@@ -4,6 +4,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
+    type ComposeYieldWrapErrorReason,
     type WrappedNativeFlowType,
     type YieldFlowType,
     yieldActions,
@@ -35,6 +36,7 @@ type UseYieldWrappedNativeStepParams = {
     onNavigateToReview: () => void;
     onSkipAnalytics: () => void;
     onSubmitAnalytics: () => void;
+    onComposeError: (reason: ComposeYieldWrapErrorReason) => void;
     step: WrappedNativeFlowType;
     tokenSymbol: string;
     vault: YieldDtoV2 | null;
@@ -52,6 +54,7 @@ export const useYieldWrappedNativeStep = ({
     onNavigateToReview,
     onSkipAnalytics,
     onSubmitAnalytics,
+    onComposeError,
     step,
     tokenSymbol,
     vault,
@@ -86,6 +89,7 @@ export const useYieldWrappedNativeStep = ({
         isFocused,
         pendingTransaction: session?.action.pendingTransaction,
         transactionType: step,
+        vaultId: vault?.id,
     });
     const isStepPending = !!pendingTransaction;
     const isAmountReady = isValid && !!amountValue;
@@ -96,6 +100,7 @@ export const useYieldWrappedNativeStep = ({
         amount: amountValue,
         flowType: step,
         isEnabled: isFeeSectionDisplayed && isStepSessionReady,
+        onComposeError,
     });
 
     useShowYieldTransactionFailureAlert({

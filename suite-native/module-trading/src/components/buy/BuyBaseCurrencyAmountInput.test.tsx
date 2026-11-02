@@ -44,8 +44,8 @@ describe('BuyBaseCurrencyAmountInput', () => {
         'moduleTrading.tradingScreen.baseCurrencyAmountLabel',
     );
 
-    const renderInput = async () =>
-        await renderWithTradingProvider(
+    const renderInput = () =>
+        renderWithTradingProvider(
             <BuyBaseCurrencyAmountInput showAssetsSheet={showAssetsSheetMock} />,
             {
                 overrides,

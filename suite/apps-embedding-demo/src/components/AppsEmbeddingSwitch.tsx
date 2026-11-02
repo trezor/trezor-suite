@@ -16,7 +16,7 @@ export const AppsEmbeddingSwitch = () => {
     return (
         <SectionItem
             title="Apps embedding showcase"
-            description="Adds an Apps embedding item to the sidebar, below Earn. It embeds external sites (iframe on web, WebContentsView on desktop) to observe how platform APIs like Apple Pay or Google Sign-In behave when embedded."
+            description="Playground for testing embedded apps and later on dApps."
             actions={
                 <Switch
                     isChecked={isAppsEmbeddingEnabled}

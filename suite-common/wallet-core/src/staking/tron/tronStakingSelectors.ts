@@ -17,6 +17,7 @@ import {
     getTronAvailableVotingPower,
     getTronPendingUnstakeBalance,
     getTronTotalVotingPower,
+    getTronUnstakingBatches,
     getTronVotes,
     getTronWithdrawableBalance,
     isTronStakingActive,
@@ -81,12 +82,21 @@ export const selectTronUnstakedBalanceByAccountKey = (
 export const selectTronPendingUnstakeBalanceByAccountKey = (
     state: AccountsRootState,
     accountKey: AccountKey,
+    nowSeconds?: number,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'tron') return '0';
 
-    return getTronPendingUnstakeBalance(account);
+    return getTronPendingUnstakeBalance(account, nowSeconds);
 };
+
+export const selectTronUnstakingBatchesByAccountKey = createMemoizedSelector(
+    [selectAccountByKey],
+    account =>
+        returnStableArrayIfEmpty(
+            account?.networkType === 'tron' ? getTronUnstakingBatches(account) : [],
+        ),
+);
 
 export const selectTronVotesByAccountKey = (state: AccountsRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);

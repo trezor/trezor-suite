@@ -12,7 +12,11 @@ import {
     getContractAddressForNetworkSymbol,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { type EthereumSignTransaction, type TokenInfo } from '@trezor/connect-common';
+import {
+    type EthereumSignTransaction,
+    type FeeLevel,
+    type TokenInfo,
+} from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 // Codes TrezorConnect returns when the user backs out of signing on purpose (device button, PIN
@@ -25,6 +29,8 @@ export const USER_CANCELLED_ERROR_CODES = [
 
 export const isUserCancelledSignErrorCode = (code: string | undefined) =>
     USER_CANCELLED_ERROR_CODES.some(cancelledCode => cancelledCode === code);
+
+const EIP1559_TRANSACTION_TYPE = 2;
 
 export type StablecoinYieldParsedTransactionForSigning = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
@@ -42,6 +48,7 @@ type BuildStablecoinYieldReviewTokenParams = {
 type BuildStablecoinYieldReviewStateParams = BuildStablecoinYieldReviewTokenParams & {
     amount: string;
     tx: StablecoinYieldParsedTransactionForSigning;
+    selectedFeeLevel?: FeeLevel['label'];
 };
 
 type BuildStablecoinYieldReviewStateResult = {
@@ -75,9 +82,18 @@ const getStablecoinYieldTransactionWithSelectedFee = (
         throw new Error('Fee information is missing for the transaction.');
     }
 
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas, type, ...transactionFields } =
+        parsedTransaction;
+    const selectedFeeFields = flattenEvmFees(parsedSelectedFee);
+
+    if (parsedSelectedFee.type === 'eip1559') {
+        return { ...transactionFields, type: EIP1559_TRANSACTION_TYPE, ...selectedFeeFields };
+    }
+
     return {
-        ...parsedTransaction,
-        ...flattenEvmFees(parsedSelectedFee),
+        ...transactionFields,
+        ...(type === EIP1559_TRANSACTION_TYPE ? {} : { type }),
+        ...selectedFeeFields,
     };
 };
 
@@ -134,6 +150,7 @@ export const buildStablecoinYieldReviewState = ({
     amount,
     token,
     symbol,
+    selectedFeeLevel = 'custom',
 }: BuildStablecoinYieldReviewStateParams): BuildStablecoinYieldReviewStateResult => {
     const gasPriceHex = tx.maxFeePerGas ?? tx.gasPrice ?? '0x0';
     const gasLimit = fromHex(tx.gasLimit);
@@ -168,7 +185,7 @@ export const buildStablecoinYieldReviewState = ({
                 dataHex: tx.data,
             },
         ],
-        selectedFee: 'custom',
+        selectedFee: selectedFeeLevel,
         feePerUnit,
         feeLimit: gasLimit.toIntegerString(),
         ...eip1559ReviewFields,

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import type { GuideNode, Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
+import type { GuideNode } from '@suite-common/suite-types';
 
 export const loadPageMarkdownFile = async (id: string, language = 'en-US'): Promise<string> => {
     const file = await import(

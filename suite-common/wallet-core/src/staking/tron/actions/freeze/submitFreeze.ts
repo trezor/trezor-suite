@@ -1,14 +1,16 @@
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type FreezeThunkArguments, composeTronFreezeFeeLevelsThunk } from './composeFreeze';
 import { buildFreezeContract, buildFreezeReviewForm } from './freezeContract';
 import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
+import { transactionsActions } from '../../../../transactions/transactionsActions';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -27,15 +29,17 @@ interface SubmitFreezeThunkArguments extends FreezeThunkArguments {
 
 type SubmitTronFreezeThunkState = AddFakePendingTronTxThunkState;
 
+type SubmitTronFreezeThunkDeps = WithServices<AnalyticsDep>;
+
 export const submitTronFreezeThunk = createThunk<
     void,
     SubmitFreezeThunkArguments,
-    { state: SubmitTronFreezeThunkState }
+    { state: SubmitTronFreezeThunkState; extra: SubmitTronFreezeThunkDeps }
 >(
     `${TRON_STAKE_MODULE}/submitTronFreezeThunk`,
     async (
         { account, device, amount, resourceType, requestPushApproval, onSigningStart, onSettled },
-        { dispatch },
+        { dispatch, extra },
     ) => {
         const { key: accountKey } = account;
         const flow: TronFlow = 'stake';
@@ -98,9 +102,24 @@ export const submitTronFreezeThunk = createThunk<
 
             onSigningStart?.();
 
-            const signResult = await signTronContract({ account, device, contract });
+            const signResult = await signTronContract({
+                account,
+                device,
+                contract,
+            });
 
             if ('error' in signResult) {
+                if (signResult.error.kind === 'cancelled') {
+                    extra.services.analytics.report({
+                        type: events.transactionCancelEvent.name,
+                        payload: {
+                            txType: 'stake',
+                            networkSymbol: account.symbol,
+                            stage: 'signing',
+                        },
+                    });
+                }
+
                 dispatch(
                     tronStakeActions.submitFinished({ accountKey, flow, error: signResult.error }),
                 );
@@ -117,6 +136,10 @@ export const submitTronFreezeThunk = createThunk<
             const isPushApproved = await requestPushApproval();
 
             if (!isPushApproved) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: { txType: 'stake', networkSymbol: account.symbol, stage: 'review' },
+                });
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
@@ -135,6 +158,13 @@ export const submitTronFreezeThunk = createThunk<
             });
 
             if (!pushResult.success) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account,
+                        flow,
+                        status: 'error',
+                    }),
+                );
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
@@ -174,7 +204,14 @@ export const submitTronFreezeThunk = createThunk<
             );
 
             dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
-            dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    flow,
+                    txid,
+                    freeze: { amount, resourceType },
+                }),
+            );
         } finally {
             onSettled?.();
             dispatch(tronStakeActions.discardTransaction());

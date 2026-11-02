@@ -7,11 +7,6 @@ export type {
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
     FirmwareUpdateStuckedState,
-    StakingClaimStep,
-    StakingConfirmAction,
-    StakingNavigateFrom,
-    StakingStakeStep,
-    StakingUnstakeStep,
     TradingBuyAction,
     TradingBuyStep,
     TradingExchangeAction,
@@ -35,3 +30,10 @@ export { analytics, type NativeAnalyticsDep, injectNativeAnalytics } from './cre
 export type { AnalyticsNativeEvents } from './analyticsEvents';
 
 export * as events from './events';
+
+export type {
+    StakingNavigateFrom,
+    StakingStakeStep,
+    StakingUnstakeStep,
+    StakingClaimStep,
+} from '@suite-common/analytics';

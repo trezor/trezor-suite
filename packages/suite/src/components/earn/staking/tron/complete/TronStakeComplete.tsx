@@ -50,7 +50,11 @@ export const TronStakeComplete = ({
                 <Text typographyStyle="headline-md" data-testid="@staking/tron-complete/heading">
                     {heading}
                 </Text>
-                <Text intent="neutral" priority="secondary">
+                <Text
+                    intent="neutral"
+                    priority="secondary"
+                    data-testid="@staking/tron-complete/description"
+                >
                     {description}
                 </Text>
             </Column>

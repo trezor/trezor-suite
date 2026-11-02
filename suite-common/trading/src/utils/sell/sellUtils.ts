@@ -1,11 +1,12 @@
 import {
+    type BankAccount,
     type SellFiatTrade,
     type SellFiatTradeQuoteRequest,
     type SellTradeStatus,
 } from 'invity-api';
 
 import { type TradingSellInfoSelector } from '../../selectors/tradingSelectors';
-import { type TradingAmountLimitProps } from '../../types';
+import { type TradingAmountLimitProps, type TradingSellStepType } from '../../types';
 
 type GetAmountLimitsProps = {
     request: SellFiatTradeQuoteRequest;
@@ -81,31 +82,52 @@ const getStatusMessage = (status: SellTradeStatus) => {
             return 'TR_SELL_STATUS_PENDING';
     }
 };
-type NeedToRegisterOrVerifyBankAccountParams = {
+type SellQuoteParams = {
     sellInfo: TradingSellInfoSelector;
     quote: SellFiatTrade;
 };
 
-const needToRegisterOrVerifyBankAccount = ({
-    sellInfo,
-    quote,
-}: NeedToRegisterOrVerifyBankAccountParams) => {
-    const provider = quote.exchange ? sellInfo.providerInfos[quote.exchange] : undefined;
+const getProvider = ({ sellInfo, quote }: SellQuoteParams) =>
+    quote.exchange ? sellInfo.providerInfos[quote.exchange] : undefined;
+
+const hasVerifiedBankAccount = (quote: SellFiatTrade) =>
+    !!quote.bankAccounts?.some(bankAccount => bankAccount.verified);
+
+const needToRegisterOrVerifyBankAccount = ({ sellInfo, quote }: SellQuoteParams) => {
+    const provider = getProvider({ sellInfo, quote });
 
     // for BANK_ACCOUNT flow a message is shown if bank account is not verified
     if (provider?.flow === 'BANK_ACCOUNT') {
-        const isSomeBankAccountVerified = quote.bankAccounts?.some(
-            bankAccount => bankAccount.verified,
-        );
-
-        return !!quote.quoteId && !isSomeBankAccountVerified;
+        return !!quote.quoteId && !hasVerifiedBankAccount(quote);
     }
 
     return false;
 };
+
+const getStepForQuote = ({ sellInfo, quote }: SellQuoteParams): TradingSellStepType => {
+    const provider = getProvider({ sellInfo, quote });
+
+    return provider?.flow === 'BANK_ACCOUNT' && !!quote.quoteId && hasVerifiedBankAccount(quote)
+        ? 'BANK_ACCOUNT'
+        : 'PREVIEW';
+};
+
+const isReadyToSendCrypto = (trade: SellFiatTrade) =>
+    trade.status === 'SEND_CRYPTO' && !!trade.destinationAddress;
+
+const findSelectedBankAccount = (
+    bankAccounts: BankAccount[] | undefined,
+    selectedIban: string | undefined,
+) =>
+    bankAccounts?.find(({ bankAccount }) => bankAccount === selectedIban) ??
+    bankAccounts?.find(({ verified }) => verified);
+
 export const sellUtils = {
     getAmountLimits,
     formatIban,
     getStatusMessage,
     needToRegisterOrVerifyBankAccount,
+    getStepForQuote,
+    isReadyToSendCrypto,
+    findSelectedBankAccount,
 };

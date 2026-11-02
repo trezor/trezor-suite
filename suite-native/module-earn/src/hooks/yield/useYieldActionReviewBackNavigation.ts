@@ -9,32 +9,46 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
 import { type YieldReviewStatus } from '../../types';
+import { useEarnReviewCancellationAnalytics } from '../earn/useEarnReviewCancellationAnalytics';
 
 type UseYieldActionReviewBackNavigationParams = {
     onReviewLeave?: () => void;
     reviewStatus: YieldReviewStatus;
+    networkSymbol: string;
 };
 
 export const useYieldActionReviewBackNavigation = ({
     onReviewLeave,
     reviewStatus,
+    networkSymbol,
 }: UseYieldActionReviewBackNavigationParams) => {
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowYieldReviewCancellationAlert();
     const isCleanupHandledRef = useRef(false);
+    const reportReviewCancellation = useEarnReviewCancellationAnalytics({
+        networkSymbol,
+        txType: 'yield',
+    });
 
-    const discardActionReview = useCallback(() => {
-        dispatch(yieldActions.discardTransaction());
-    }, [dispatch]);
+    const discardActionReview = useCallback(
+        (actionType?: string) => {
+            if (reviewStatus === 'signed') reportReviewCancellation(actionType);
+            dispatch(yieldActions.discardTransaction());
+        },
+        [dispatch, reviewStatus, reportReviewCancellation],
+    );
 
-    const cleanupCanceledActionReview = useCallback(() => {
-        if (reviewStatus === 'signing') {
-            TrezorConnect.cancel({ reason: 'tx-cancelled' });
-        }
+    const cleanupCanceledActionReview = useCallback(
+        (actionType?: string) => {
+            if (reviewStatus === 'signing') {
+                TrezorConnect.cancel({ reason: 'tx-cancelled' });
+            }
 
-        discardActionReview();
-    }, [discardActionReview, reviewStatus]);
+            discardActionReview(actionType);
+        },
+        [discardActionReview, reviewStatus],
+    );
 
     const markReviewNavigationSuccess = useCallback(() => {
         isCleanupHandledRef.current = true;
@@ -61,7 +75,7 @@ export const useYieldActionReviewBackNavigation = ({
                 showReviewCancellationAlert().then(({ wasReviewCanceled }) => {
                     if (wasReviewCanceled) {
                         onReviewLeave?.();
-                        cleanupCanceledActionReview();
+                        cleanupCanceledActionReview(event.data.action.type);
                         isCleanupHandledRef.current = true;
                         unsubscribe();
                         navigation.dispatch(event.data.action);
@@ -73,13 +87,13 @@ export const useYieldActionReviewBackNavigation = ({
 
             if (event.data.action.type === 'GO_BACK') {
                 onReviewLeave?.();
-                discardActionReview();
+                discardActionReview(event.data.action.type);
 
                 return;
             }
 
             onReviewLeave?.();
-            discardActionReview();
+            discardActionReview(event.data.action.type);
         });
 
         return unsubscribe;

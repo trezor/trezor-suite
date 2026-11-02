@@ -12,6 +12,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@sentry/core": "10.69.0"
+        "@sentry/core": "10.75.2"
     }
 }

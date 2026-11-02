@@ -28,9 +28,11 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                 // TypeError: Cannot assign to read only property of object '#<Object>'
                 // This might not be necessary in the future when the dependencies are upgraded.
                 state.precomposedForm = cloneObject(action.payload.formValues);
+                state.accountKey = action.payload.accountKey;
             } else {
                 delete state.precomposedTx;
                 delete state.precomposedForm;
+                delete state.accountKey;
             }
         })
         .addCase(stakeActions.setResolvedEthereumNonce, (state, action) => {
@@ -52,6 +54,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         .addCase(stakeActions.dispose, state => {
             delete state.precomposedTx;
             delete state.precomposedForm;
+            delete state.accountKey;
             delete state.serializedTx;
             delete state.resolvedEthereumNonce;
         })

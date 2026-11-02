@@ -13,6 +13,7 @@ export const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 export const modalAppParams = ['cancelable', 'variant'] as const;
 export const dashboardParams = ['modal', 'networkSymbol'] as const;
 export const earnParams = ['symbol', 'accountIndex', 'accountType', 'vaultAddress'] as const;
+export const assetParams = ['symbol', 'contractAddress'] as const;
 
 // Do not export, only for type-checking `routes` itself, instead use the inferred `Route` in @suite/router.
 type RouteDefinition = {
@@ -51,6 +52,12 @@ export const routes = [
         name: 'suite-hidden-tokens',
         pattern: '/hidden-tokens',
         app: 'dashboard',
+    },
+    {
+        name: 'suite-asset',
+        pattern: '/asset',
+        app: 'dashboard',
+        params: assetParams,
     },
     {
         name: 'suite-earn',
@@ -361,6 +368,13 @@ export const routes = [
         app: 'wallet',
         params: walletParams,
     },
+    // Debug only: trading form embed preview
+    {
+        name: 'wallet-trade',
+        pattern: '/accounts/trade',
+        app: 'wallet',
+        params: walletParams,
+    },
     {
         name: 'wallet-tokens',
         pattern: '/accounts/tokens',
@@ -404,6 +418,12 @@ export const routes = [
         isNestedRoute: true,
     },
 
+    {
+        name: 'wallet-coinjoin',
+        pattern: '/accounts/coinjoin',
+        app: 'wallet',
+        params: walletParams,
+    },
     {
         name: 'wallet-anonymize',
         pattern: '/accounts/anonymize',

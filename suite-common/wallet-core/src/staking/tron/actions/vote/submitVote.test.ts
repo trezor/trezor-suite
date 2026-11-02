@@ -1,13 +1,17 @@
 import { captureException, withScope } from '@sentry/core';
 
+import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import TrezorConnect from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 import { createDeferred } from '@trezor/utils';
 
 import { submitTronVoteThunk } from './submitVote';
+import { transactionsActions } from '../../../../transactions/transactionsActions';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -15,6 +19,10 @@ import {
 import { reportTronVoteTxId } from '../../shared/reportTronVoteTxId';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakingReducer';
+import { submitTronClaimThunk } from '../claim/submitClaim';
+import { submitTronFreezeThunk } from '../freeze/submitFreeze';
+import { submitTronUnstakeThunk } from '../unstake/submitUnstake';
+import { submitTronWithdrawThunk } from '../withdraw/submitWithdraw';
 
 jest.mock('@sentry/core', () => ({ captureException: jest.fn(), withScope: jest.fn() }));
 jest.mock('@trezor/connect', () => {
@@ -32,6 +40,8 @@ jest.mock('@trezor/connect', () => {
 });
 jest.mock('../../shared/reportTronVoteTxId', () => ({ reportTronVoteTxId: jest.fn() }));
 jest.mock('../../shared/signTronContract', () => ({ signTronContract: jest.fn() }));
+
+const analytics = mockAnalytics<AnalyticsSharedEvents>();
 
 const ACCOUNT_KEY = 'tron-account' as AccountKey;
 const ACCOUNT_ADDRESS = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
@@ -79,7 +89,8 @@ const buildAccount = (overrides?: Partial<Account>): Account =>
     }) as unknown as Account;
 
 const initStore = () =>
-    createTestCompositionRoot<void, AddFakePendingTronTxThunkState>({
+    createTestCompositionRoot<WithServices<AnalyticsDep>, AddFakePendingTronTxThunkState>({
+        services: () => ({ analytics }),
         preloadedState: {
             wallet: {
                 blockchain: { [trxSymbol]: { blockHeight: 100 } },
@@ -91,7 +102,7 @@ const initStore = () =>
 const ALLOCATIONS = [{ address: REPRESENTATIVE_ADDRESS, count: 10 }];
 
 const submitVote = (
-    store: TestCompositionStore<AddFakePendingTronTxThunkState, void>,
+    store: TestCompositionStore<AddFakePendingTronTxThunkState, WithServices<AnalyticsDep>>,
     account = buildAccount(),
     requestPushApproval = () => Promise.resolve(true),
 ) =>
@@ -106,7 +117,7 @@ const submitVote = (
     );
 
 const getSubmitFinishedActions = (
-    store: TestCompositionStore<AddFakePendingTronTxThunkState, void>,
+    store: TestCompositionStore<AddFakePendingTronTxThunkState, WithServices<AnalyticsDep>>,
 ) => store.getActions().filter(tronStakeActions.submitFinished.match);
 
 beforeEach(() => {
@@ -172,6 +183,10 @@ describe('submitTronVoteThunk', () => {
 
         expect(reportTronVoteTxIdMock).not.toHaveBeenCalled();
         expect(pushTransactionMock).not.toHaveBeenCalled();
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'transaction/cancel',
+            payload: { txType: 'stake', networkSymbol: 'trx', stage: 'review' },
+        });
         expect(getSubmitFinishedActions(store)).toEqual([
             tronStakeActions.submitFinished({
                 accountKey: ACCOUNT_KEY,
@@ -207,6 +222,12 @@ describe('submitTronVoteThunk', () => {
 
         await submitVote(store);
 
+        expect(
+            store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match)
+                .map(action => action.payload),
+        ).toEqual([{ account: buildAccount(), flow: FLOW, status: 'error' }]);
         expect(captureExceptionMock).toHaveBeenCalledTimes(1);
         expect(scope.setTag).toHaveBeenCalledWith(
             'error.code',
@@ -364,4 +385,91 @@ describe('submitTronVoteThunk', () => {
             }),
         ]);
     });
+});
+
+describe('Tron signing cancellation analytics', () => {
+    const submissions = [
+        [
+            'vote',
+            () =>
+                submitTronVoteThunk({
+                    account: buildAccount(),
+                    device,
+                    flow: FLOW,
+                    allocations: ALLOCATIONS,
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+        [
+            'stake',
+            () =>
+                submitTronFreezeThunk({
+                    account: buildAccount(),
+                    device,
+                    amount: '1',
+                    resourceType: 'energy',
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+        [
+            'unstake',
+            () =>
+                submitTronUnstakeThunk({
+                    account: buildAccount(),
+                    device,
+                    amount: '1',
+                    resourceType: 'bandwidth',
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+        [
+            'claim',
+            () =>
+                submitTronClaimThunk({
+                    account: buildAccount(),
+                    device,
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+        [
+            'withdraw',
+            () =>
+                submitTronWithdrawThunk({
+                    account: buildAccount(),
+                    device,
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+    ] as const;
+
+    it.each(submissions)('reports a signing cancellation once for %s', async (_, submit) => {
+        signTronContractMock.mockResolvedValue({ error: { kind: 'cancelled' } });
+        const store = initStore();
+
+        await store.dispatch(submit());
+
+        expect(signTronContractMock).toHaveBeenCalledTimes(1);
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'transaction/cancel',
+            payload: { txType: 'stake', networkSymbol: 'trx', stage: 'signing' },
+        });
+        expect(pushTransactionMock).not.toHaveBeenCalled();
+    });
+
+    it.each(submissions)(
+        'does not report cancellation for a %s signing failure',
+        async (_, submit) => {
+            signTronContractMock.mockResolvedValue({
+                error: { kind: 'sign-failed', message: 'disconnected' },
+            });
+            const store = initStore();
+
+            await store.dispatch(submit());
+
+            expect(signTronContractMock).toHaveBeenCalledTimes(1);
+            expect(analytics.report).not.toHaveBeenCalled();
+            expect(pushTransactionMock).not.toHaveBeenCalled();
+        },
+    );
 });

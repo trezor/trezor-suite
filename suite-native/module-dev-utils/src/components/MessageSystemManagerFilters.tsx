@@ -22,7 +22,7 @@ export const MessageSystemManagerFilters = ({
             items={[...CATEGORY_FILTER_OPTIONS]}
             value={selectedCategory}
             onSelectItem={onCategoryChange}
-            isLabelShown
+            labelType="innerLabel"
         />
         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
             <Text>Show only active</Text>

@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useSeededCardanoVotingDelegation } from 'src/hooks/earn/useCardanoAccountVotingDelegation';
@@ -9,13 +10,6 @@ import {
     VotingPreferenceCard,
     type VotingPreferenceOption,
 } from './VotingPreferenceCard';
-
-const VOTING_PREFERENCE_OPTIONS: VotingPreferenceOption[] = BASE_VOTING_PREFERENCE_OPTIONS.map(
-    option =>
-        option.type === 'abstain'
-            ? { ...option, badge: { label: 'TR_DEFAULT', intent: 'brand' } }
-            : option,
-);
 
 const KEEP_CURRENT_OPTION: VotingPreferenceOption = {
     type: 'current',
@@ -31,9 +25,18 @@ export const CardanoVotingPreference = ({ account }: CardanoVotingPreferenceProp
 
     if (account.networkType !== 'cardano') return null;
 
-    const options = accountVotingDelegation
-        ? [KEEP_CURRENT_OPTION, ...VOTING_PREFERENCE_OPTIONS]
-        : VOTING_PREFERENCE_OPTIONS;
+    const defaultType =
+        accountVotingDelegation && !isCardanoStakedWithFiveBinaries(account)
+            ? 'current'
+            : 'abstain';
+    const availableOptions = accountVotingDelegation
+        ? [KEEP_CURRENT_OPTION, ...BASE_VOTING_PREFERENCE_OPTIONS]
+        : BASE_VOTING_PREFERENCE_OPTIONS;
+    const options: VotingPreferenceOption[] = availableOptions.map(option =>
+        option.type === defaultType
+            ? { ...option, badge: { label: 'TR_DEFAULT', intent: 'brand' } }
+            : option,
+    );
 
     return (
         <VotingPreferenceCard

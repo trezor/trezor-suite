@@ -1,8 +1,13 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type PrecomposedTransactionFinal,
+    type StakeFormState,
+} from '@suite-common/wallet-types';
 
 import { DEFAULT_VOTING_OPTION } from './cardano/cardanoStakingConstants';
 import { type AccountVotingDelegation } from './cardano/cardanoStakingTypes';
+import { getStakeFormsDefaultValues } from './ethereum/ethereumStaking';
 import { stakeActions } from './stakingActions';
 import { prepareStakeReducer, stakeInitialState } from './stakingReducer';
 import type { StakeState } from './stakingReducerTypes';
@@ -61,5 +66,50 @@ describe('stakeReducer voting delegation', () => {
 
         expect(state.votingDelegation).toEqual(anotherDrep);
         expect(state.serializedTx).toBeUndefined();
+    });
+});
+
+describe('stakeReducer transaction review account', () => {
+    const formValues: StakeFormState = {
+        ...getStakeFormsDefaultValues({ address: 'addr1stake', stakeType: 'stake' }),
+        options: ['broadcast'],
+        setMaxOutputId: undefined,
+    };
+    const transactionInfo: PrecomposedTransactionFinal = {
+        type: 'final',
+        fee: '174301',
+        feePerByte: '44',
+        bytes: 300,
+        totalSpent: '1174301',
+        max: undefined,
+        inputs: [],
+        outputs: [],
+        outputsPermutation: [],
+    };
+
+    const stateInReview = (): StakeState =>
+        stakeReducer(
+            stakeInitialState,
+            stakeActions.requestSignTransaction({
+                formValues,
+                transactionInfo,
+                accountKey: ACCOUNT_KEY,
+            }),
+        );
+
+    it('remembers the account the transaction was composed for', () => {
+        expect(stateInReview().accountKey).toBe(ACCOUNT_KEY);
+    });
+
+    it('forgets the account when signing is cancelled', () => {
+        const state = stakeReducer(stateInReview(), stakeActions.requestSignTransaction());
+
+        expect(state.accountKey).toBeUndefined();
+    });
+
+    it('forgets the account on dispose', () => {
+        const state = stakeReducer(stateInReview(), stakeActions.dispose());
+
+        expect(state.accountKey).toBeUndefined();
     });
 });

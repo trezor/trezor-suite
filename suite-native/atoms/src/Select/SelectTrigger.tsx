@@ -15,30 +15,41 @@ type SelectTriggerProps = {
     handlePress?: () => void;
     rightIcon?: ReactNode;
     hasError?: boolean;
+    isDisabled?: boolean;
     testID?: string;
 };
 
-type StyleProps = {
+const SELECT_MIN_HEIGHT = 56 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+
+type SelectStyleProps = {
     hasError: boolean;
+    isDisabled: boolean;
 };
 
-const selectStyle = prepareNativeStyle<StyleProps>((utils, { hasError }) => ({
+const selectStyle = prepareNativeStyle<SelectStyleProps>((utils, { hasError, isDisabled }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: utils.spacings.sp16,
+    paddingVertical: utils.spacings.sp6,
     backgroundColor: utils.colors.elementFillField,
-    borderWidth: utils.borders.widths.small,
+    outlineStyle: 'solid',
+    outlineWidth: utils.borders.widths.small,
+    outlineColor: utils.colors.elementBorderField,
     borderRadius: utils.borders.radii.r12,
-    borderColor: utils.colors.elementBorderField,
-    color: utils.colors.contentSecondary,
-    paddingLeft: utils.spacings.sp12,
-    paddingRight: utils.spacings.sp16,
-    height: 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
+    minHeight: SELECT_MIN_HEIGHT,
     extend: [
         {
-            condition: hasError,
+            condition: isDisabled,
             style: {
-                borderColor: utils.colors.elementBorderFieldError,
+                backgroundColor: utils.colors.elementFillFieldDisabled,
+                outlineColor: utils.colors.elementBorderFieldDisabled,
+            },
+        },
+        {
+            condition: hasError && !isDisabled,
+            style: {
+                outlineColor: utils.colors.elementBorderFieldError,
             },
         },
     ],
@@ -51,33 +62,61 @@ export const SelectTrigger = ({
     handlePress,
     rightIcon,
     hasError = false,
+    isDisabled = false,
     testID,
 }: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
+
+    const hasValue = value !== null && value !== undefined;
+    const hasLabel = !!label;
+    const showMinimizedLabel = hasLabel && hasValue;
+    const showFullLabel = hasLabel && !hasValue;
+
+    const fullLabelColor = isDisabled ? 'contentDisabled' : 'contentSecondary';
+    const minimizedLabelColor = isDisabled ? 'contentDisabled' : 'contentTertiary';
+    const valueColor = isDisabled ? 'contentDisabled' : 'contentPrimary';
 
     const Wrapper = handlePress ? PressableOpacity : Box;
 
     return (
         <Wrapper
             onPress={handlePress}
-            style={applyStyle(selectStyle, { hasError })}
+            style={applyStyle(selectStyle, { hasError, isDisabled })}
+            disabled={isDisabled}
             testID={testID}
         >
-            <Box>
-                {label && (
-                    <Text variant="body-xs" color="contentSecondary">
+            <Box flex={1} justifyContent="center">
+                {showFullLabel && (
+                    <Text variant="body-md" color={fullLabelColor} numberOfLines={1}>
                         {label}
                     </Text>
                 )}
-                <HStack alignItems="center">
-                    {icon}
-                    <Text numberOfLines={1} ellipsizeMode="tail">
-                        {value}
+                {showMinimizedLabel && (
+                    <Text variant="body-sm" color={minimizedLabelColor} numberOfLines={1}>
+                        {label}
                     </Text>
-                </HStack>
+                )}
+                {hasValue && (
+                    <HStack alignItems="center">
+                        {icon}
+                        <Text
+                            variant="body-md"
+                            color={valueColor}
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={{ flex: 1 }}
+                        >
+                            {value}
+                        </Text>
+                    </HStack>
+                )}
             </Box>
             {handlePress ? (
-                <Icon size="large" color="contentSecondary" name="caretDown" />
+                <Icon
+                    size="large"
+                    color={isDisabled ? 'contentDisabled' : 'contentPrimary'}
+                    name="caretDown"
+                />
             ) : (
                 rightIcon
             )}

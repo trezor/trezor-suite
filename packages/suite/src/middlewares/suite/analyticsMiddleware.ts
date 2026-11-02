@@ -2,15 +2,6 @@ import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import {
-    type CoinjoinRootState,
-    coinjoinAccountUnregister,
-    coinjoinSessionCompleted,
-    coinjoinSessionPause,
-    selectAnonymityGainToReportByAccountKey,
-    selectCoinjoinAccountByKey,
-    updateLastAnonymityReportTimestamp,
-} from '@suite/coinjoin';
-import {
     type RouterRootState,
     anchorChange,
     routerLocationChange,
@@ -25,18 +16,7 @@ import {
     getIsDeviceDescriptorApiTypeBluetooth,
     getPhysicalDeviceCount,
 } from '@suite-common/suite-utils';
-import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import {
-    changeCoinVisibilityEvent,
-    discoveryActions,
-    setBitcoinAmountUnits,
-} from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    accumulateAccountCountBySymbolAndType,
-    getAccountTotalStakingBalance,
-    getAccountsWithSomeTransactionHistory,
-} from '@suite-common/wallet-utils';
+import { changeCoinVisibilityEvent, setBitcoinAmountUnits } from '@suite-common/wallet-core';
 import { TRANSPORT, isTransportEventOfType } from '@trezor/connect';
 import {
     getBootloaderHash,
@@ -48,7 +28,6 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import {
@@ -57,7 +36,6 @@ import {
     redactAnchor,
     redactRouterUrl,
 } from 'src/utils/suite/analytics';
-import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -68,10 +46,8 @@ import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 */
 export type PrepareAnalyticsMiddlewareDeps = WithServices<DesktopAnalyticsDep>;
 
-type AnalyticsMiddlewareState = CoinjoinRootState &
-    GetSuiteReadyPayloadState &
-    RouterRootState &
-    TokenDefinitionsRootState & {
+type AnalyticsMiddlewareState = GetSuiteReadyPayloadState &
+    RouterRootState & {
         suite: Pick<SuiteRootState['suite'], 'lifecycle'>;
     };
 
@@ -82,7 +58,7 @@ const createAnalyticsMiddleware = createMiddlewareWithExtraDeps<
 >;
 
 export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
-    (action: UnknownAction, { extra, next, dispatch, getState }) => {
+    (action: UnknownAction, { extra, next, getState }) => {
         const prevRouterUrl = selectRouterUrl(getState());
         const prevRouteName = selectRouteName(getState());
         // NOTE: pass action on, keep the result
@@ -180,62 +156,6 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
             analytics.report({
                 type: events.deviceDisconnectEvent.name,
             });
-        } else if (discoveryActions.updateDiscovery.match(action)) {
-            if (action.payload.status.status !== 'complete') return result;
-
-            const accountsWithNonZeroBalance = state.wallet.accounts
-                .filter(
-                    account =>
-                        new BigNumber(account.balance).gt(0) ||
-                        new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0) ||
-                        hasVisibleTokens(
-                            account.symbol,
-                            account.tokens ?? [],
-                            state.tokenDefinitions,
-                        ),
-                )
-                .reduce(accumulateAccountCountBySymbolAndType, {});
-
-            const accountsWithTokens = state.wallet.accounts
-                .filter(account => new BigNumber(account.tokens?.length || 0).gt(0))
-                .reduce<Record<string, number>>((acc, { symbol, tokens }) => {
-                    if (
-                        tokens?.length &&
-                        !hasVisibleTokens(symbol, tokens, state.tokenDefinitions)
-                    ) {
-                        return acc;
-                    }
-                    acc[symbol] = (acc[symbol] || 0) + 1;
-
-                    return acc;
-                }, {});
-
-            const accountsWithStaking = state.wallet.accounts
-                .filter(account => new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0))
-                .reduce(accumulateAccountCountBySymbolAndType, {});
-
-            analytics.report({
-                type: events.accountsStatusEvent.name,
-                payload: getAccountsWithSomeTransactionHistory(state.wallet.accounts).reduce(
-                    accumulateAccountCountBySymbolAndType,
-                    {},
-                ),
-            });
-
-            analytics.report({
-                type: events.accountsNonZeroBalanceEvent.name,
-                payload: accountsWithNonZeroBalance,
-            });
-
-            analytics.report({
-                type: events.accountsTokensStatusEvent.name,
-                payload: accountsWithTokens,
-            });
-
-            analytics.report({
-                type: events.accountsActiveStakingEvent.name,
-                payload: accountsWithStaking,
-            });
         } else if (routerLocationChange.match(action)) {
             if (
                 state.suite.lifecycle.status !== 'initial' &&
@@ -249,13 +169,13 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
                         anchor: redactAnchor(action.payload.anchor),
                     },
                 });
+            }
 
-                if (selectRouteName(state) === 'suite-earn' && prevRouteName !== 'suite-earn') {
-                    analytics.report({
-                        type: events.yieldEarnEntryEvent.name,
-                        payload: { from: prevRouteName ?? 'unknown' },
-                    });
-                }
+            if (selectRouteName(state) === 'suite-earn' && prevRouteName !== 'suite-earn') {
+                analytics.report({
+                    type: events.yieldEarnEntryEvent.name,
+                    payload: { from: prevRouteName ?? 'unknown' },
+                });
             }
         } else if (anchorChange.match(action)) {
             if (action.payload) {
@@ -267,35 +187,6 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
                         anchor: redactAnchor(action.payload),
                     },
                 });
-            }
-        } else if (
-            isAnyOf(
-                coinjoinSessionCompleted,
-                coinjoinSessionPause,
-                coinjoinAccountUnregister,
-            )(action)
-        ) {
-            const coinjoinAccount = selectCoinjoinAccountByKey(
-                state,
-                action.payload.accountKey as AccountKey,
-            );
-            const anonymityGainToReport = selectAnonymityGainToReportByAccountKey(
-                state,
-                action.payload.accountKey as AccountKey,
-            );
-
-            if (coinjoinAccount && anonymityGainToReport !== null) {
-                analytics.report(
-                    {
-                        type: events.coinjoinAnonymityGainEvent.name,
-                        payload: {
-                            networkSymbol: coinjoinAccount.symbol,
-                            value: anonymityGainToReport,
-                        },
-                    },
-                    { anonymize: true },
-                );
-                dispatch(updateLastAnonymityReportTimestamp(action.payload.accountKey));
             }
         } else if (deviceActions.setRememberDevice.match(action)) {
             analytics.report({

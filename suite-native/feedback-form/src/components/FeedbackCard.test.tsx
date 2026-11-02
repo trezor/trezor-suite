@@ -25,8 +25,8 @@ describe('FeedbackCard', () => {
     const presentSpy = jest.spyOn(BottomSheetModal.prototype, 'present');
     const dismissSpy = jest.spyOn(BottomSheetModal.prototype, 'dismiss');
 
-    const renderFeedbackCard = async (props?: Partial<Parameters<typeof FeedbackCard>[0]>) =>
-        await renderWithBasicProvider(
+    const renderFeedbackCard = (props?: Partial<Parameters<typeof FeedbackCard>[0]>) =>
+        renderWithBasicProvider(
             <FeedbackCard
                 heading={HEADING}
                 description={DESCRIPTION}
@@ -169,6 +169,30 @@ describe('FeedbackCard', () => {
         expect(screen.getByTestId('@feedback-form/description-input')).toHaveProp('value', '');
         // The card stays in the form view.
         expect(screen.getByText(HEADING)).toBeOnTheScreen();
+    });
+
+    it('cannot be dismissed unless onDismiss is provided', async () => {
+        await renderFeedbackCard();
+
+        expect(screen.queryByTestId('@feedback-form/dismiss-button')).not.toBeOnTheScreen();
+    });
+
+    it('calls onDismiss from the form view', async () => {
+        const onDismiss = jest.fn();
+        await renderFeedbackCard({ onDismiss });
+
+        await fireEvent.press(screen.getByTestId('@feedback-form/dismiss-button'));
+
+        expect(onDismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onDismiss from the success view', async () => {
+        const onDismiss = jest.fn();
+        await renderFeedbackCard({ onDismiss, defaultView: 'success' });
+
+        await fireEvent.press(screen.getByTestId('@feedback-form/dismiss-button'));
+
+        expect(onDismiss).toHaveBeenCalledTimes(1);
     });
 
     it('renders the success view directly when defaultView is "success"', async () => {

@@ -64,14 +64,17 @@ test.describe('Trading - Sell ETH token', { tag: ['@T3W1', '@T3T1'] }, () => {
                     cryptoAmount: sendAmount,
                     networkSymbolOrTokenId: tokenId,
                 });
-                await tradingPage.fees.waitToBeCalculated();
+            });
+
+            await test.step('Review the offer and its network fee', async () => {
+                await tradingPage.sellBestOfferButton.click();
+                await tradingPage.fees.expectNetworkFeeCalculated();
             });
 
             let providerName: string;
 
-            await test.step('Confirm the sell trade and return from the provider', async () => {
-                await tradingPage.sellBestOfferButton.click();
-                await tradingPage.waitForRedirectCompletion();
+            await test.step('Continue with the provider and return', async () => {
+                await tradingPage.continueSellWithProvider();
             });
 
             await test.step('Verify all confirmation values', async () => {
@@ -83,8 +86,7 @@ test.describe('Trading - Sell ETH token', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(tradingPage.confirmation.paymentMethod).toHaveTranslation(
                     'TR_PAYMENT_METHOD_CREDITCARD',
                 );
-                await expect(tradingPage.confirmation.account).toContainText(accountLabel);
-                await expect(tradingPage.confirmation.address).toHaveText(depositAddress);
+                await expect(tradingPage.confirmation.sendAccount).toContainText(accountLabel);
                 // Providers pad differently ("50.00000000"), so both amounts are normalised the way
                 // the panel formats them rather than compared to the raw strings. The panel always
                 // renders the fiat amount with two decimals, including a trailing zero.

@@ -41,8 +41,8 @@ describe('SellSendBaseCurrencyAmountInput', () => {
         'moduleTrading.tradingScreen.baseCurrencyAmountLabel',
     );
 
-    const renderInput = async () =>
-        await renderWithStoreProvider(
+    const renderInput = () =>
+        renderWithStoreProvider(
             <SellSendBaseCurrencyAmountInput showAssetsScreen={showAssetsScreenMock} />,
             {
                 wrapper: ({ children }) => <Form form={form}>{children}</Form>,

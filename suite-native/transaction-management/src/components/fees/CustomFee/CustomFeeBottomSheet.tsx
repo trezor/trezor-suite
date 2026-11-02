@@ -2,7 +2,7 @@ import { type RefObject, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Form, FormSubmitButton, useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';

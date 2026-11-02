@@ -1,17 +1,22 @@
+import { mockNetworkMetadata, mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { adaAsset, btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
 import { TradeableAssetButton, type TradeableAssetButtonProps } from './TradeableAssetButton';
 
 describe('TradeableAssetButton', () => {
     const renderButton = async (initialProps: Partial<TradeableAssetButtonProps> = {}) => {
-        const res = await renderWithBasicProvider(
+        const res = await renderWithStoreProvider(
             <TradeableAssetButton
                 onPress={jest.fn()}
                 selectedAsset={undefined}
                 {...initialProps}
             />,
+            {
+                preloadedState: { networks: mockNetworkMetadata },
+                services: { networks: mockNetworksServices() },
+            },
         );
         await act(() => Promise.resolve());
 

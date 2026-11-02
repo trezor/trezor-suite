@@ -27,12 +27,12 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
-        "react-intl": "^8.1.3",
+        "react-intl": "^12.1.4",
         "react-native": "0.86.3",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*"
     }

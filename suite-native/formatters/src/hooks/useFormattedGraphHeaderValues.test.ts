@@ -38,8 +38,8 @@ const setNewStoreMockup = (preloadedState: PreloadedStatePartial<State>) => {
 };
 
 describe(useFormattedGraphHeaderValues.name, () => {
-    const renderUseFormattedGraphHeaderValues = async (value?: string) =>
-        await renderHookWithStoreProvider(() => useFormattedGraphHeaderValues(value), {
+    const renderUseFormattedGraphHeaderValues = (value?: string) =>
+        renderHookWithStoreProvider(() => useFormattedGraphHeaderValues(value), {
             services: { store },
         });
 

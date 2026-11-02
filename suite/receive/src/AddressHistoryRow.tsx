@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import styled, { css } from 'styled-components';
@@ -9,7 +10,7 @@ import { type SelectIsLabelActionEnabledState, selectIsLabelActionEnabled } from
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { IconButton, Row, Text } from '@trezor/components';
+import { IconButton, Row, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CopyIcon, ShareNetworkIcon, ShieldCheckIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -76,6 +77,8 @@ type AddressHistoryRowProps = {
     item: ReceiveAddressItem;
     accountKey: AccountKey;
     disabled: boolean;
+    isReceiveDisabled: boolean;
+    receiveDisabledReason: ReactNode;
     isVerifyLoading: boolean;
     isVerifyDisabled: boolean;
     AmountComponent: ReceiveAmountComponent;
@@ -87,6 +90,8 @@ export const AddressHistoryRow = ({
     item,
     accountKey,
     disabled,
+    isReceiveDisabled,
+    receiveDisabledReason,
     isVerifyLoading,
     isVerifyDisabled,
     AmountComponent,
@@ -140,43 +145,71 @@ export const AddressHistoryRow = ({
                                 address={item.address}
                                 label={item.label}
                                 typographyStyle="body-sm"
-                                isAddressTruncated={false}
+                                isAddressTruncated={isReceiveDisabled}
                                 isDisplayValueMultiline
                             />
                         </Label>
                         <Actions $hasLabelAction={isLabelActionEnabled}>
                             <Row gap={4}>
-                                <IconButton
-                                    size="small"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    icon={CopyIcon}
-                                    tooltip={{ content: <Translation id="RECEIVE_COPY_ADDRESS" /> }}
-                                    data-testid={`@wallet/receive/used-address/${item.pathIndex}/copy-button`}
-                                    onClick={handleCopy}
-                                />
-                                {canShareAddress() && (
+                                <Tooltip
+                                    content={receiveDisabledReason}
+                                    isActive={isReceiveDisabled}
+                                >
                                     <IconButton
                                         size="small"
                                         intent="neutral"
                                         priority="secondary"
-                                        icon={ShareNetworkIcon}
-                                        tooltip={{ content: <Translation id="RECEIVE_SHARE" /> }}
-                                        data-testid={`@wallet/receive/used-address/${item.pathIndex}/share-button`}
-                                        onClick={handleShare}
+                                        icon={CopyIcon}
+                                        isDisabled={isReceiveDisabled}
+                                        tooltip={{
+                                            content: <Translation id="RECEIVE_COPY_ADDRESS" />,
+                                            isActive: !isReceiveDisabled,
+                                        }}
+                                        data-testid={`@wallet/receive/used-address/${item.pathIndex}/copy-button`}
+                                        onClick={handleCopy}
                                     />
+                                </Tooltip>
+                                {canShareAddress() && (
+                                    <Tooltip
+                                        content={receiveDisabledReason}
+                                        isActive={isReceiveDisabled}
+                                    >
+                                        <IconButton
+                                            size="small"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            icon={ShareNetworkIcon}
+                                            isDisabled={isReceiveDisabled}
+                                            tooltip={{
+                                                content: <Translation id="RECEIVE_SHARE" />,
+                                                isActive: !isReceiveDisabled,
+                                            }}
+                                            data-testid={`@wallet/receive/used-address/${item.pathIndex}/share-button`}
+                                            onClick={handleShare}
+                                        />
+                                    </Tooltip>
                                 )}
-                                <IconButton
-                                    size="small"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    icon={ShieldCheckIcon}
-                                    isDisabled={disabled || isVerifyDisabled}
-                                    isLoading={isVerifyLoading}
-                                    tooltip={{ content: <Translation id="TR_VERIFY" /> }}
-                                    data-testid={`@wallet/receive/used-address/${item.pathIndex}/verify-button`}
-                                    onClick={() => onVerify(item.path)}
-                                />
+                                <Tooltip
+                                    content={receiveDisabledReason}
+                                    isActive={isReceiveDisabled}
+                                >
+                                    <IconButton
+                                        size="small"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        icon={ShieldCheckIcon}
+                                        isDisabled={
+                                            disabled || isReceiveDisabled || isVerifyDisabled
+                                        }
+                                        isLoading={isVerifyLoading}
+                                        tooltip={{
+                                            content: <Translation id="TR_VERIFY" />,
+                                            isActive: !isReceiveDisabled,
+                                        }}
+                                        data-testid={`@wallet/receive/used-address/${item.pathIndex}/verify-button`}
+                                        onClick={() => onVerify(item.path)}
+                                    />
+                                </Tooltip>
                             </Row>
                         </Actions>
                     </Row>

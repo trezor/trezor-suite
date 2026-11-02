@@ -36,7 +36,7 @@ export const CreateWalletLoadingScreen = ({
     return (
         <Screen isScrollable={false}>
             <Box justifyContent="center" alignItems="center" flex={1}>
-                <VStack spacing="sp20">
+                <VStack spacing="sp20" alignSelf="stretch">
                     <CreateWalletLoader />
                     <Text variant="headline-md" style={applyStyle(titleStyle)} textAlign="center">
                         <Translation id="moduleDeviceOnboarding.createWalletLoadingScreen.title" />

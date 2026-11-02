@@ -87,6 +87,7 @@ export const CancelTransactionModal = ({
             .then(precomposed => {
                 setUtxoComposedCancelTx({ ...precomposed, rbfType: 'cancel', prevTxid: tx.txid });
                 setUtxoCancelFormState({
+                    txType: 'send',
                     feeLimit: '', // Eth only
                     feePerUnit: precomposed.feePerByte,
                     hasCoinControlBeenOpened: false,

@@ -9,6 +9,7 @@ import {
     selectFeaturesConfig,
 } from '@suite-common/message-system';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type LocaleSliceRootState } from '@suite-native/intl';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 import { type TradingRootState } from '@suite-native/trading-types';
 import { createWeakMapSelector } from '@trezor/redux-utils';
@@ -25,7 +26,8 @@ type PromoBannersRootState = MessageSystemRootState &
     BannerFlagsSliceRootState &
     DeviceRootState &
     FeatureFlagsRootState &
-    TradingRootState;
+    TradingRootState &
+    LocaleSliceRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<PromoBannersRootState>();
 

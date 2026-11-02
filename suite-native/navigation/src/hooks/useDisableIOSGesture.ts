@@ -1,30 +1,52 @@
-import { useCallback, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { Platform } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { type NavigationProp, type ParamListBase, useNavigation } from '@react-navigation/native';
+
+type Navigation = NavigationProp<ParamListBase>;
+
+const navigationToBlockerCount = new WeakMap<Navigation, number>();
+
+const getNavigationChain = (navigation: Navigation) => {
+    const chain: Navigation[] = [];
+    let current: Navigation | undefined = navigation;
+
+    while (current) {
+        chain.push(current);
+        current = current.getParent?.();
+    }
+
+    return chain;
+};
 
 export const useDisableIOSGesture = () => {
-    const navigation = useNavigation();
-
-    const toggleGestures = useCallback((nav: typeof navigation, enable: boolean) => {
-        nav?.setOptions({ gestureEnabled: enable });
-        const parent = nav?.getParent?.();
-        if (parent) {
-            // This code is OK, but the eslint plugin crashes on recursive calls
-            // eslint-disable-next-line react-hooks/immutability
-            toggleGestures(parent, enable);
-        }
-    }, []);
+    const navigation = useNavigation<Navigation>();
 
     useLayoutEffect(() => {
-        if (Platform.OS === 'ios') {
-            toggleGestures(navigation, false);
+        if (Platform.OS !== 'ios') {
+            return;
         }
 
-        return () => {
-            if (Platform.OS === 'ios') {
-                toggleGestures(navigation, true);
+        const navigationChain = getNavigationChain(navigation);
+
+        navigationChain.forEach(routeNavigation => {
+            const blockerCount = navigationToBlockerCount.get(routeNavigation) ?? 0;
+            if (blockerCount === 0) {
+                routeNavigation.setOptions({ gestureEnabled: false });
             }
+            navigationToBlockerCount.set(routeNavigation, blockerCount + 1);
+        });
+
+        return () => {
+            navigationChain.forEach(routeNavigation => {
+                const blockerCount = navigationToBlockerCount.get(routeNavigation) ?? 0;
+                if (blockerCount > 1) {
+                    navigationToBlockerCount.set(routeNavigation, blockerCount - 1);
+                } else {
+                    navigationToBlockerCount.delete(routeNavigation);
+                    routeNavigation.setOptions({ gestureEnabled: true });
+                }
+            });
         };
-    }, [navigation, toggleGestures]);
+    }, [navigation]);
 };

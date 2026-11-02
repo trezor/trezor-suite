@@ -16,15 +16,16 @@ import {
     getTronAvailableVotingPower,
     getTronCryptoBalanceWithStaking,
     getTronPendingUnstakeBalance,
+    getTronPendingUnstakingBatches,
     getTronRewardClaimCooldownEndsAt,
     getTronStakingRewards,
     getTronTotalVotingPower,
     getTronUnstakingBalance,
+    getTronUnstakingBatches,
     getTronVotes,
     getTronWithdrawableBalance,
     isSupportedTronStakingNetworkSymbol,
     isTronClaimSupported,
-    isTronRewardClaimOnCooldown,
     isTronStakingActive,
 } from './tronStakingUtils';
 
@@ -174,28 +175,6 @@ describe('Tron reward claim cooldown', () => {
             );
         });
     });
-
-    describe('isTronRewardClaimOnCooldown', () => {
-        it('returns false when rewards were never withdrawn', () => {
-            expect(isTronRewardClaimOnCooldown(buildTronAccount())).toBe(false);
-        });
-
-        it('returns true within 24h of the last withdrawal', () => {
-            const account = buildTronAccount({
-                stakingInfo: buildStakingInfo({ latestWithdrawTime: NOW_SECONDS - 100 }),
-            });
-            expect(isTronRewardClaimOnCooldown(account)).toBe(true);
-        });
-
-        it('returns false once the 24h cooldown has passed', () => {
-            const account = buildTronAccount({
-                stakingInfo: buildStakingInfo({
-                    latestWithdrawTime: NOW_SECONDS - TRON_REWARD_CLAIM_COOLDOWN_SECONDS - 1,
-                }),
-            });
-            expect(isTronRewardClaimOnCooldown(account)).toBe(false);
-        });
-    });
 });
 
 describe('Tron unstaking balances', () => {
@@ -233,6 +212,10 @@ describe('Tron unstaking balances', () => {
             expect(getTronWithdrawableBalance(accountWithBatches)).toBe('4');
         });
 
+        it('uses the given time instead of the current one', () => {
+            expect(getTronWithdrawableBalance(accountWithBatches, NOW_SECONDS + 100)).toBe('10');
+        });
+
         it('treats a batch expiring exactly now as withdrawable', () => {
             const account = buildTronAccount({
                 stakingInfo: buildStakingInfo({
@@ -247,6 +230,70 @@ describe('Tron unstaking balances', () => {
         it('sums only batches that have not yet expired', () => {
             expect(getTronPendingUnstakeBalance(accountWithBatches)).toBe('6');
         });
+
+        it('uses the given time instead of the current one', () => {
+            expect(getTronPendingUnstakeBalance(accountWithBatches, NOW_SECONDS + 100)).toBe('0');
+        });
+    });
+});
+
+describe('getTronUnstakingBatches', () => {
+    it('returns the batches ordered by expiry', () => {
+        const account = buildTronAccount({
+            stakingInfo: buildStakingInfo({
+                unstakingBatches: [
+                    buildBatch(String(2 * TRX), NOW_SECONDS + 20),
+                    buildBatch(String(1 * TRX), NOW_SECONDS + 10),
+                ],
+            }),
+        });
+
+        expect(getTronUnstakingBatches(account)).toEqual([
+            { amount: String(1 * TRX), expireTime: NOW_SECONDS + 10 },
+            { amount: String(2 * TRX), expireTime: NOW_SECONDS + 20 },
+        ]);
+    });
+
+    it('returns an empty list for an account without staking info', () => {
+        expect(getTronUnstakingBatches(buildTronAccount())).toEqual([]);
+    });
+});
+
+describe('getTronPendingUnstakingBatches', () => {
+    const DAY = 24 * 60 * 60;
+
+    it('converts pending batches to TRX and keeps their expiry', () => {
+        const batches = [
+            buildBatch(String(2 * TRX), NOW_SECONDS + 1),
+            buildBatch(String(3 * TRX), NOW_SECONDS + 6 * DAY),
+        ];
+
+        expect(
+            getTronPendingUnstakingBatches({
+                batches,
+                symbol: asNetworkSymbol('trx'),
+                nowSeconds: NOW_SECONDS,
+            }),
+        ).toEqual([
+            { amount: '2', expireTime: NOW_SECONDS + 1 },
+            { amount: '3', expireTime: NOW_SECONDS + 6 * DAY },
+        ]);
+    });
+
+    it('skips batches that are already withdrawable', () => {
+        const batches = [
+            buildBatch(String(1 * TRX), NOW_SECONDS - 10),
+            buildBatch(String(2 * TRX), NOW_SECONDS),
+            buildBatch(String(3 * TRX), NOW_SECONDS + 10),
+        ];
+
+        expect(
+            getTronPendingUnstakingBatches({
+                batches,
+                symbol: asNetworkSymbol('trx'),
+                nowSeconds: NOW_SECONDS,
+            }),
+        ).toEqual([{ amount: '3', expireTime: NOW_SECONDS + 10 }]);
     });
 });
 

@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -52,16 +53,14 @@ const createAccount = (
 describe('AccountListAddressItem', () => {
     const onPressMock = jest.fn();
 
-    const renderAccountListAddressItem = async (
-        receiveAccount: ReceiveAccount,
-        isFreshAddress = false,
-    ) =>
-        await renderWithTradingProvider(
+    const renderAccountListAddressItem = (receiveAccount: ReceiveAccount, isFreshAddress = false) =>
+        renderWithTradingProvider(
             <AccountListAddressItem
                 receiveAccount={receiveAccount}
                 isFreshAddress={isFreshAddress}
                 onPress={onPressMock}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     beforeEach(() => {

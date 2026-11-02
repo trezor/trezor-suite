@@ -88,8 +88,8 @@ describe('useBuyPreviewFlow', () => {
         });
     };
 
-    const renderHook = async (store: Store<State>) =>
-        await renderHookWithStoreProvider(() => useBuyPreviewFlow(), {
+    const renderHook = (store: Store<State>) =>
+        renderHookWithStoreProvider(() => useBuyPreviewFlow(), {
             services: { ...services, store },
         });
 

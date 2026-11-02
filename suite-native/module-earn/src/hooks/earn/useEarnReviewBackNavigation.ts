@@ -5,8 +5,10 @@ import { CommonActions, StackActions, useNavigation } from '@react-navigation/na
 
 import {
     type AccountsRootState,
+    type SendRootState,
     cancelSignSendFormTransactionThunk,
     selectAccountByKey,
+    selectSendSerializedTx,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -19,16 +21,24 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useEarnReviewCancellationAnalytics } from './useEarnReviewCancellationAnalytics';
 import { type EarnFormDraftPrefix } from '../../types';
 import { resolveStakingHomeRoute } from '../../utils/staking/resolveStakingHomeRoute';
 
 const CLOSE_FLOW_ACTION_TYPE = StackActions.popToTop().type;
 const REVIEW_EXIT_ACTION_TYPES = ['GO_BACK', CLOSE_FLOW_ACTION_TYPE];
 
-export const useEarnReviewBackNavigation = (
-    formType: EarnFormDraftPrefix,
-    accountKey: AccountKey,
-) => {
+type UseEarnReviewBackNavigationParams = {
+    formType: EarnFormDraftPrefix;
+    accountKey: AccountKey;
+    isPushing: boolean;
+};
+
+export const useEarnReviewBackNavigation = ({
+    formType,
+    accountKey,
+    isPushing,
+}: UseEarnReviewBackNavigationParams) => {
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
         selectIsTransactionReviewInProgress(state, formType, accountKey),
     );
@@ -37,6 +47,11 @@ export const useEarnReviewBackNavigation = (
     );
 
     const { dispatch } = useServices(injectDispatch);
+    const serializedTx = useSelector((state: SendRootState) => selectSendSerializedTx(state));
+    const reportReviewCancellation = useEarnReviewCancellationAnalytics({
+        networkSymbol: account?.symbol,
+        txType: 'stake',
+    });
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
 
@@ -73,7 +88,9 @@ export const useEarnReviewBackNavigation = (
     }, [account, navigation]);
 
     useEffect(() => {
-        const cleanup = () => {
+        const cleanup = (actionType: string) => {
+            if (serializedTx && isTransactionReviewInProgress && !isPushing)
+                reportReviewCancellation(actionType);
             dispatch(cancelSignSendFormTransactionThunk());
         };
 
@@ -89,7 +106,7 @@ export const useEarnReviewBackNavigation = (
             const isLeavingReview = REVIEW_EXIT_ACTION_TYPES.includes(actionType);
 
             if (!isLeavingReview || !isTransactionReviewInProgress) {
-                cleanup();
+                cleanup(actionType);
 
                 // Redirect the close button to the staking home; let plain back/swipe proceed.
                 if (isClosingWholeFlow) {
@@ -112,7 +129,7 @@ export const useEarnReviewBackNavigation = (
                 isCancellationAlertVisibleRef.current = false;
 
                 if (wasReviewCanceled) {
-                    cleanup();
+                    cleanup(actionType);
                     unsubscribe();
 
                     if (isClosingWholeFlow) {
@@ -133,6 +150,9 @@ export const useEarnReviewBackNavigation = (
         dispatch,
         formType,
         navigateToStakingHome,
+        serializedTx,
+        reportReviewCancellation,
+        isPushing,
     ]);
 
     const navigateBack = useCallback(() => {

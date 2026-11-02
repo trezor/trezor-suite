@@ -13,7 +13,7 @@ const universalResolverErrorsAbi = parseAbi([
 ]);
 
 /**
- * Calldata is built through `@suite-common/calldata` so the ABIs and the encoding live where every
+ * Calldata is built through the Ethereum network module so the ABIs and the encoding live where every
  * other EVM call in the app keeps them. A builder validates its params before encoding and reports
  * failure in `data`, so an unbuildable call is a programming error rather than a bad request.
  */

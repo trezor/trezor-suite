@@ -18,15 +18,18 @@ export type SelectItemType<TItemValue extends SelectItemValue> = {
     badge?: ReactNode;
 };
 
+export type SelectLabelType = 'innerLabel' | 'noLabel';
+
 export type SelectProps<TItemValue extends SelectItemValue> = {
     title: ReactNode;
     items: SelectItemType<TItemValue>[];
-    value: TItemValue;
+    value: TItemValue | null;
     onSelectItem: (value: TItemValue) => void;
     rightIcon?: ReactNode;
     isConfirmable?: boolean;
-    isLabelShown?: boolean;
+    labelType?: SelectLabelType;
     isReadOnly?: boolean;
+    isDisabled?: boolean;
     hasError?: boolean;
     testID?: string;
 };
@@ -38,9 +41,10 @@ export const Select = <TItemValue extends SelectItemValue>({
     onSelectItem,
     rightIcon,
     isConfirmable = false,
-    isLabelShown = false,
+    labelType = 'noLabel',
     isReadOnly = false,
-    hasError,
+    isDisabled = false,
+    hasError = false,
     testID,
 }: SelectProps<TItemValue>) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
@@ -73,6 +77,14 @@ export const Select = <TItemValue extends SelectItemValue>({
         }
     };
 
+    const handleConfirmSelection = () => {
+        if (selectedItemValue !== null) {
+            confirmSelection(selectedItemValue);
+        }
+    };
+
+    const triggerLabel = labelType === 'innerLabel' ? title : undefined;
+
     return (
         <>
             <BottomSheetModal
@@ -83,7 +95,7 @@ export const Select = <TItemValue extends SelectItemValue>({
                         <>
                             <ScreenFooterGradient />
                             <Box marginHorizontal="sp16" marginBottom="sp16">
-                                <Button onPress={() => confirmSelection(selectedItemValue)}>
+                                <Button onPress={handleConfirmSelection}>
                                     <Translation id="generic.buttons.confirm" />
                                 </Button>
                             </Box>
@@ -107,12 +119,13 @@ export const Select = <TItemValue extends SelectItemValue>({
                 </VStack>
             </BottomSheetModal>
             <SelectTrigger
-                label={isLabelShown && title}
+                label={triggerLabel}
                 value={selectTriggerItem?.label ?? null}
                 icon={selectTriggerItem?.icon}
                 handlePress={!isReadOnly ? openBottomSheet : undefined}
                 rightIcon={rightIcon}
                 hasError={hasError}
+                isDisabled={isDisabled}
                 testID={testID}
             />
         </>

@@ -613,11 +613,18 @@ impl AdapterManager {
                     CentralEvent::DeviceConnected(id) => {
                         if let Some(device) = self_ref.get_device(&id).await {
                             info!("DeviceConnected: {id:?} : {device:?}");
-                            if let DeviceConnectionStatus::Disconnected =
-                                device.get_connection_status()
-                            {
+                            let should_dispatch = match device.get_connection_status() {
                                 // device was connected manually using system UI
-                                device.set_connection_status(DeviceConnectionStatus::Connected);
+                                DeviceConnectionStatus::Disconnected => {
+                                    device.set_connection_status(DeviceConnectionStatus::Connected);
+                                    true
+                                }
+                                // already connected when discovered
+                                DeviceConnectionStatus::Connected => device.is_paired(),
+                                _ => false,
+                            };
+
+                            if should_dispatch {
                                 let devices = self_ref.get_devices().await;
                                 self_ref
                                     .dispatch_notification(NotificationEvent::DeviceConnected {

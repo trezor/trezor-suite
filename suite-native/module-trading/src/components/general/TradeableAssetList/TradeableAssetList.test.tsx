@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
@@ -9,8 +10,8 @@ import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils'
 describe('TradeableAssetList', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];
 
-    const renderTradeableAssetList = async (props: Partial<TradeableAssetListProps>) =>
-        await renderWithTradingProvider(
+    const renderTradeableAssetList = (props: Partial<TradeableAssetListProps>) =>
+        renderWithTradingProvider(
             <TradeableAssetList
                 assets={defaultAssets}
                 onAssetSelect={jest.fn()}
@@ -21,6 +22,7 @@ describe('TradeableAssetList', () => {
                 assetBalances={new Map()}
                 {...props}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     afterEach(async () => {

@@ -29,8 +29,8 @@ describe('AccountTypeBadge', () => {
 
     const accounts = [ethNormalAccount, ethLedgerAccount];
 
-    const renderAccountTypeBadge = async (accountKey: AccountKey) =>
-        await renderWithStoreProvider(<AccountTypeBadge accountKey={accountKey} />, {
+    const renderAccountTypeBadge = (accountKey: AccountKey) =>
+        renderWithStoreProvider(<AccountTypeBadge accountKey={accountKey} />, {
             preloadedState: { wallet: { accounts } },
         });
 

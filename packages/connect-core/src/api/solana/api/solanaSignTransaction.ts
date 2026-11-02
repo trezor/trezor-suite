@@ -21,6 +21,11 @@ import { getSolanaTokenDefinition } from '../solanaDefinitions';
 
 type Params = { proto: PROTO.SolanaSignTx; serialize: boolean; symbols?: (string | undefined)[] };
 
+// A v1 transaction (SIMD-0385) starts with the version byte, also when serialized: v1 puts the
+// signatures after the message. The Solana runtime loads asynchronously, but the constructor must
+// set the required firmware capabilities, so the byte is compared directly.
+const isV1Transaction = (serializedTx: string) => serializedTx.slice(0, 2).toLowerCase() === '81';
+
 export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTransaction', Params> {
     constructor(message: MethodMessage<'solanaSignTransaction'>) {
         const { payload } = message;
@@ -71,6 +76,9 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
 
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.requiredFirmwareCoins = [getMiscNetwork('sol')];
+        if (isV1Transaction(payload.serializedTx)) {
+            this.requiredFirmwareCapabilities = ['solanaV1Transaction'];
+        }
     }
 
     get requiredPermissions(): PermissionRequest[] {
@@ -91,7 +99,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
 
             if (!decompiledMessage) return;
 
-            const { message, baseFee, instructions } = decompiledMessage;
+            const { message, baseFee, priorityFee, instructions } = decompiledMessage;
             const outputs = [];
             let feePerUnit = new BigNumber(0);
             let feeLimit = new BigNumber(0);
@@ -167,7 +175,9 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                 throw ERRORS.TypedError('Runtime', 'No outputs decoded');
             }
 
-            const fee = baseFee.plus(feePerUnit.multipliedBy(feeLimit).dividedBy(1e6));
+            const fee = baseFee.plus(
+                priorityFee ?? feePerUnit.multipliedBy(feeLimit).dividedBy(1e6),
+            );
             const totalSpent = sendAmount.plus(rent).plus(fee);
 
             return {
@@ -210,18 +220,12 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
     }
 
     async run() {
-        const cmd = this.getDevice().getCommands();
-        const { V1_NOT_SUPPORTED_MESSAGE, createTransactionShimFromHex, isV1Transaction } =
-            await solana();
-
-        // Firmware cannot parse the v1 envelope yet.
-        if (isV1Transaction(this.params.proto.serialized_tx)) {
-            throw ERRORS.TypedError('Method_InvalidParameter', V1_NOT_SUPPORTED_MESSAGE);
-        }
-
         await this.setTokenDefinition();
 
+        const cmd = this.getDevice().getCommands();
+
         if (this.params.serialize) {
+            const { createTransactionShimFromHex } = await solana();
             const tx = createTransactionShimFromHex(this.params.proto.serialized_tx);
 
             const addressCall = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', {

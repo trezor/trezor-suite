@@ -23,8 +23,8 @@ import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils
 describe('quotesUtils', () => {
     let form: ExchangeFormType;
 
-    const renderUseTradingBuyForm = async () =>
-        await renderHookWithTradingProvider(() => useExchangeForm(), {
+    const renderUseTradingBuyForm = () =>
+        renderHookWithTradingProvider(() => useExchangeForm(), {
             overrides: { wallet: { trading: getInitializedTradingState() } },
         });
 

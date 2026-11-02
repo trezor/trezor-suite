@@ -37,6 +37,7 @@ import * as splToken2022 from '@solana-program/token-2022';
 import { BigNumber } from '@trezor/utils';
 
 import {
+    MEMO_V3_PROGRAM_PUBLIC_KEY,
     SOLANA_BLOCKHASH_VALIDITY_MS,
     SOLANA_MEMO_MAX_BYTES,
     SYSTEM_PROGRAM_PUBLIC_KEY,
@@ -62,6 +63,10 @@ const validateMemo = (memo: string) => {
         );
     }
 };
+
+// @solana-program/memo defaults to Memo v4, which Trezor firmware does not recognize yet
+const getMemoInstruction = (memo: string) =>
+    getAddMemoInstruction({ memo }, { programAddress: address(MEMO_V3_PROGRAM_PUBLIC_KEY) });
 
 export const getLamportsFromSol = (amountInSol: string) =>
     BigInt(new BigNumber(amountInSol).times(10 ** 9).toString());
@@ -122,7 +127,7 @@ export const buildTransferTransaction = (
     if (memo) {
         validateMemo(memo);
         messageWithFees = appendTransactionMessageInstruction(
-            getAddMemoInstruction({ memo }),
+            getMemoInstruction(memo),
             messageWithFees,
         );
     }
@@ -333,7 +338,7 @@ export const buildTokenTransferTransaction = async (
     // Step 7: Append memo instruction if provided
     if (memo) {
         validateMemo(memo);
-        message = appendTransactionMessageInstruction(getAddMemoInstruction({ memo }), message);
+        message = appendTransactionMessageInstruction(getMemoInstruction(memo), message);
     }
 
     // Step 8: Return the transaction

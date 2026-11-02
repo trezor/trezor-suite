@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -23,12 +24,13 @@ describe('ExchangeRevokeDetails', () => {
         },
     };
 
-    const renderExchangeRevokeDetails = async (
+    const renderExchangeRevokeDetails = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        await renderWithTradingProvider(<ExchangeRevokeDetails exchange="mercuryo" />, {
+        renderWithTradingProvider(<ExchangeRevokeDetails exchange="mercuryo" />, {
             tradeType: 'exchange',
             overrides,
+            services: { networks: mockNetworksServices() },
         });
 
     beforeEach(() => {

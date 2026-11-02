@@ -28,12 +28,10 @@
 !/networks/bitcoin
 !/networks/cardano
 !/networks/ethereum
-!/networks/monero
 !/networks/network-module
 !/networks/ripple
 !/networks/solana
 !/networks/stellar
-!/networks/tezos
 !/networks/tron
 /packages/*
 !/packages/analytics-uploader
@@ -42,6 +40,7 @@
 !/packages/blockchain-link-types
 !/packages/blockchain-link-utils
 !/packages/bundler-security
+!/packages/calldata
 !/packages/connect
 !/packages/connect-common
 !/packages/connect-core
@@ -56,8 +55,10 @@
 !/packages/env-utils
 !/packages/eslint
 !/packages/icons
+!/packages/jsonl
 !/packages/logger
 !/packages/node-utils
+!/packages/perf-e2e
 !/packages/protobuf
 !/packages/protocol
 !/packages/react-native-usb
@@ -83,11 +84,11 @@
 !/suite-common/address
 !/suite-common/analytics
 !/suite-common/analytics-redux
+!/suite-common/apps-embedding
 !/suite-common/assets
 !/suite-common/bip329
 !/suite-common/bip329-types
 !/suite-common/bluetooth
-!/suite-common/calldata
 !/suite-common/connect-init
 !/suite-common/connect-popup
 !/suite-common/delegated-identity-key
@@ -103,6 +104,7 @@
 !/suite-common/extra-dependencies
 !/suite-common/feedback
 !/suite-common/fiat-services
+!/suite-common/finprom
 !/suite-common/firmware
 !/suite-common/firmware-authenticity
 !/suite-common/flags
@@ -111,8 +113,8 @@
 !/suite-common/graph
 !/suite-common/http-client
 !/suite-common/icons
-!/suite-common/jsonl
 !/suite-common/legacy-network-config
+!/suite-common/locale
 !/suite-common/logger
 !/suite-common/message-system
 !/suite-common/metadata-types
@@ -120,6 +122,7 @@
 !/suite-common/networks
 !/suite-common/persistent-device-data
 !/suite-common/platform-encryption
+!/suite-common/price-chart
 !/suite-common/react-query
 !/suite-common/receive
 !/suite-common/schemas
@@ -161,6 +164,8 @@
 !/suite-native/analytics-redux
 !/suite-native/app
 !/suite-native/app-init
+!/suite-native/apps-embedding
+!/suite-native/apps-embedding-demo
 !/suite-native/assets
 !/suite-native/atoms
 !/suite-native/banners
@@ -184,6 +189,7 @@
 !/suite-native/feature-feedback
 !/suite-native/feature-flags
 !/suite-native/feedback-form
+!/suite-native/finprom
 !/suite-native/firmware
 !/suite-native/formatters
 !/suite-native/formatters-config
@@ -225,7 +231,9 @@
 !/suite-native/module-transactions
 !/suite-native/navigation
 !/suite-native/passphrase
+!/suite-native/performance-metrics
 !/suite-native/platform-encryption-native
+!/suite-native/price-chart
 !/suite-native/qr-code
 !/suite-native/react-native-graph
 !/suite-native/scrollview
@@ -271,6 +279,7 @@
 /networks/cardano/*
 !/networks/cardano/network-cardano
 !/networks/cardano/network-cardano-assets
+!/networks/cardano/network-cardano-coin-selection
 !/networks/cardano/network-cardano-suite-common
 !/networks/cardano/network-cardano-types
 /networks/ethereum/*
@@ -278,13 +287,10 @@
 !/networks/ethereum/network-ethereum-assets
 !/networks/ethereum/network-ethereum-suite-common
 !/networks/ethereum/network-ethereum-types
-/networks/monero/*
-!/networks/monero/network-monero-assets
-!/networks/monero/network-monero-types
 /networks/network-module/*
 !/networks/network-module/network-assets-types
-!/networks/network-module/network-module-suite-common-types
 !/networks/network-module/network-module-types
+!/networks/network-module/suite-common
 /networks/ripple/*
 !/networks/ripple/network-ripple
 !/networks/ripple/network-ripple-assets
@@ -300,14 +306,13 @@
 !/networks/stellar/network-stellar-assets
 !/networks/stellar/network-stellar-suite-common
 !/networks/stellar/network-stellar-types
-/networks/tezos/*
-!/networks/tezos/network-tezos-assets
-!/networks/tezos/network-tezos-types
 /networks/tron/*
 !/networks/tron/network-tron
 !/networks/tron/network-tron-assets
 !/networks/tron/network-tron-suite-common
 !/networks/tron/network-tron-types
+/networks/network-module/suite-common/*
+!/networks/network-module/suite-common/suite-common-types
 
 # Never uploaded, including out of the allowed directories
 **/node_modules/

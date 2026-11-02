@@ -97,8 +97,8 @@ const selectDeviceButtonRequestsCodesMock = selectDeviceButtonRequestsCodes as u
 // Stable references so react-redux's reference-equality useSelector doesn't re-render every tick.
 const EMPTY_BUTTON_REQUEST_CODES: number[] = [];
 
-const renderCancelHook = async (transaction: WalletAccountTransaction = pendingEvmTx) =>
-    await renderHookWithStoreProvider(() =>
+const renderCancelHook = (transaction: WalletAccountTransaction = pendingEvmTx) =>
+    renderHookWithStoreProvider(() =>
         useCancelEvmTransaction({ accountKey: ethAccount.key, transaction }),
     );
 

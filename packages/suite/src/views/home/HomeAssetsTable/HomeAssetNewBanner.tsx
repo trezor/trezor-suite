@@ -1,5 +1,8 @@
-import { selectIsHomeAssetTableNewBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import {
+    closeHomeAssetTableNewBanner,
+    selectIsHomeAssetTableNewBannerClosed,
+} from '@suite-common/wallet-core';
 import { Box, Column, IconButton, IconCircle, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { LightningIcon, XIcon } from '@trezor/icons';
@@ -41,9 +44,7 @@ export const HomeAssetNewBanner = () => {
                     intent="neutral"
                     priority="secondary"
                     size="small"
-                    onClick={() =>
-                        dispatch(setFlag({ key: 'homeAssetTableNewBannerClosed', value: true }))
-                    }
+                    onClick={() => dispatch(closeHomeAssetTableNewBanner())}
                     tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     data-testid="@dashboard/home-asset/banner/dismiss"
                 />

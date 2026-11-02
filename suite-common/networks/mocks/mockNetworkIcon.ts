@@ -4,11 +4,11 @@ import type {
     GetNetworkIcon,
     GetTokenLogoIdentifiers,
     HasCryptoIcon,
-    NetworkIcon,
+    NetworkIconModule,
 } from '@trezor/network-assets-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-export const mockNetworkIcon = (overrides: Partial<NetworkIcon> = {}): NetworkIcon => ({
+export const mockNetworkIcon = (overrides: Partial<NetworkIconModule> = {}): NetworkIconModule => ({
     getCryptoIcon: mock<GetCryptoIcon>(() => 'coin.svg'),
     getNetworkIcon: mock<GetNetworkIcon>(() => 'network.svg'),
     hasCryptoIcon: mock<HasCryptoIcon>(() => true),

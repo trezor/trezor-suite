@@ -72,8 +72,8 @@ const DEFAULT_BASE_REF = 'origin/develop';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENROUTER_MODEL = 'moonshotai/kimi-k2.7-code';
-// Pinned to the cheaper (int4) tag of the model author's own endpoint — the only provider this account's OpenRouter privacy settings currently allow for this model.
-const OPENROUTER_PROVIDER_ORDER = ['moonshotai/int4'];
+// Keep requests on the model author's endpoints, allowed by the account's privacy settings.
+const OPENROUTER_PROVIDER_ORDER = ['moonshotai'];
 const OPENROUTER_MAX_TOKENS = 49152;
 
 const ALLOWED_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.css', '.json']);

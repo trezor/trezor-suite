@@ -3,11 +3,11 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
-import { deviceActions } from '@suite-common/device';
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { firmwareActions, selectFirmware } from '@suite-common/firmware';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
-import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
+import { type PROTO, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 import { type Dispatch } from '@trezor/redux-utils';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
@@ -60,12 +60,16 @@ const onboardingMiddleware =
             }
         }
 
-        if (
-            deviceActions.updateSelectedDevice.match(action) &&
-            action.payload?.features !== undefined &&
-            isRecoveryInProgress(action.payload?.features) &&
-            selectRecoveryStatus(api.getState()) !== 'in-progress'
-        ) {
+        // Resume an interrupted recovery when the device reports it is mid-recovery. After a reload the
+        // router resets the recovery state, so the device's next button request has to resume it too.
+        const resumeRecoveryIfInProgress = (features: PROTO.Features | undefined) => {
+            if (
+                features === undefined ||
+                !isRecoveryInProgress(features) ||
+                selectRecoveryStatus(api.getState()) === 'in-progress'
+            ) {
+                return;
+            }
             api.dispatch(
                 onboardingActions.updateAnalytics({
                     startTime: Date.now(),
@@ -77,6 +81,17 @@ const onboardingMiddleware =
                 api.dispatch(recoveryActions.setStatus('in-progress'));
             } else {
                 api.dispatch(onboardingActions.rerunRecoveryThunk());
+            }
+        };
+
+        if (deviceActions.updateSelectedDevice.match(action)) {
+            resumeRecoveryIfInProgress(action.payload?.features);
+        }
+        if (deviceActions.addButtonRequest.match(action)) {
+            // A call running on another device must not drive the selected device's recovery.
+            const selectedDevice = selectSelectedDevice(api.getState());
+            if (selectedDevice?.path === action.payload.path) {
+                resumeRecoveryIfInProgress(selectedDevice.features);
             }
         }
 

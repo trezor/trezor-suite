@@ -90,11 +90,10 @@ describe('useComposeTradingTransaction', () => {
         });
     };
 
-    const renderUseComposeTradingTransaction = async (store: Store<State>) =>
-        await renderHookWithStoreProvider(
-            () => useComposeTradingTransaction({ tradeType: 'exchange' }),
-            { services: { store } },
-        );
+    const renderUseComposeTradingTransaction = (store: Store<State>) =>
+        renderHookWithStoreProvider(() => useComposeTradingTransaction({ tradeType: 'exchange' }), {
+            services: { store },
+        });
 
     beforeEach(() => {
         mockComposeTradingTransactionThunk.mockClear();

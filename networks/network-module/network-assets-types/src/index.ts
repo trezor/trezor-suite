@@ -6,10 +6,15 @@ export type {
     NetworkIconSource,
 } from './NetworkAssetsModule';
 export type {
-    NetworkIcon,
+    NetworkIconModule,
     GetCryptoIcon,
+    GetCryptoIconDep,
     GetNetworkIcon,
+    GetNetworkIconDep,
     HasCryptoIcon,
+    HasCryptoIconDep,
     HasNetworkIcon,
+    HasNetworkIconDep,
     GetTokenLogoIdentifiers,
-} from './NetworkIcon';
+    GetTokenLogoIdentifiersDep,
+} from './NetworkIconModule';

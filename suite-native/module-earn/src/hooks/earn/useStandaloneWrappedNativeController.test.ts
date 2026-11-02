@@ -5,6 +5,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
+    act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
@@ -40,7 +41,10 @@ const useStandaloneWrappedNativeFlowMock = jest.mocked(useStandaloneWrappedNativ
 const useWrappedNativeTokenFeesMock = jest.mocked(useWrappedNativeTokenFees);
 const useWrappedNativeTokenFormMock = jest.mocked(useWrappedNativeTokenForm);
 
-const renderStandaloneController = (flowType: 'wrap' | 'unwrap', currentAccount = account) => {
+const renderStandaloneController = async (
+    flowType: 'wrap' | 'unwrap',
+    currentAccount = account,
+) => {
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(jest.fn()) };
     const store = createLightStore({
         reducer: {
@@ -56,12 +60,40 @@ const renderStandaloneController = (flowType: 'wrap' | 'unwrap', currentAccount 
         },
     });
 
-    return renderHookWithStoreProvider(() => useStandaloneWrappedNativeController(flowType), {
-        services: { ...services, store },
-    });
+    const view = await renderHookWithStoreProvider(
+        () => useStandaloneWrappedNativeController(flowType),
+        {
+            services: { ...services, store },
+        },
+    );
+
+    return { ...view, analytics: services.analytics };
 };
 
 describe('useStandaloneWrappedNativeController', () => {
+    it.each(['wrap', 'unwrap'] as const)(
+        'reports %s compose errors without transaction data',
+        async flowType => {
+            const { analytics } = await renderStandaloneController(flowType);
+
+            await act(() =>
+                useWrappedNativeTokenFeesMock.mock.calls
+                    .at(-1)?.[0]
+                    .onComposeError('missing-fee-level'),
+            );
+
+            expect(analytics.report).toHaveBeenCalledWith({
+                type: `yield/${flowType}`,
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    networkSymbol: 'eth',
+                    errorMessage: 'missing-fee-level',
+                },
+            });
+        },
+    );
+
     beforeEach(() => {
         jest.clearAllMocks();
         mockRouteParams = { accountKey: account.key };

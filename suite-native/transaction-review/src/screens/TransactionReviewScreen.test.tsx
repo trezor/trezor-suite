@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { View } from 'react-native';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Text as MockText } from '@suite-native/atoms';
@@ -86,8 +87,8 @@ const txValidityFlow: TransactionReviewTxValidityFlow = {
 type ScreenProps = Partial<React.ComponentProps<typeof TransactionReviewScreen>>;
 
 describe('TransactionReviewScreen', () => {
-    const renderScreen = async (props: ScreenProps = {}) =>
-        await renderWithStoreProvider(
+    const renderScreen = (props: ScreenProps = {}) =>
+        renderWithStoreProvider(
             <TransactionReviewScreen
                 accountKey={ETH_ACCOUNT_KEY}
                 reviewOutputs={reviewOutputs}
@@ -100,7 +101,10 @@ describe('TransactionReviewScreen', () => {
                 sendButtonTestId={SEND_BUTTON_TEST_ID}
                 {...props}
             />,
-            { preloadedState: { wallet: mockWalletState() } },
+            {
+                preloadedState: { wallet: mockWalletState() },
+                services: { networks: mockNetworksServices() },
+            },
         );
 
     beforeEach(() => {

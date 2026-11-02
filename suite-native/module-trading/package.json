@@ -19,9 +19,8 @@
         "@react-native-community/netinfo": "^12.0.1",
         "@react-navigation/native": "7.1.31",
         "@react-navigation/native-stack": "7.12.0",
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@shopify/flash-list": "2.3.0",
-        "@suite-common/calldata": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
@@ -49,6 +48,7 @@
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
+        "@suite-native/finprom": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/helpers": "workspace:*",
@@ -79,6 +79,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
@@ -97,6 +98,7 @@
     "devDependencies": {
         "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/tx-simulation": "workspace:*",
@@ -104,7 +106,8 @@
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@trezor/requirements": "workspace:*",
-        "@types/invity-api": "^1.1.22"
+        "@types/invity-api": "^1.1.23"
     }
 }

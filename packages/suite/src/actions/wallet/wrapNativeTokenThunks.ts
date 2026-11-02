@@ -8,6 +8,7 @@ import {
     type YieldFlowDisplayToken,
     composeYieldWrapTransactionThunk,
     setYieldError,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
@@ -18,6 +19,7 @@ import {
     type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
+    isYieldPushError,
     sendYieldTransaction,
 } from './stablecoin-yield/signingHelpers';
 import { addToken } from './tokenActions';
@@ -151,17 +153,32 @@ export const submitWrapNativeTokenThunk = createThunk<
                 dispatch,
                 getState,
                 selectedFee: userAcceptedTxSimulation.selectedFee,
+                selectedFeeLevel: userAcceptedTxSimulation.selectedFeeLevel,
             });
 
             userAcceptedTxSimulation.resolve();
 
-            // Unlike the main yield transactions, a cancelled wrap is reported: the wrap-step
-            // failure values documented on the deposit event include user rejections.
             if (sendResult.status === 'cancelled') {
-                reportError('submit-failed');
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: account.symbol,
+                        stage: sendResult.stage,
+                    },
+                });
 
                 return undefined;
             }
+
+            dispatch(
+                transactionsActions.transactionBroadcastStatus({
+                    account,
+                    flow: 'wrap',
+                    status: 'success',
+                    txid: sendResult.txid,
+                }),
+            );
 
             if (!yieldFlow) {
                 extra.services.analytics.report({
@@ -222,6 +239,15 @@ export const submitWrapNativeTokenThunk = createThunk<
 
             return { txid: sendResult.txid, fee: sendResult.fee };
         } catch (error) {
+            if (isYieldPushError(error)) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account,
+                        flow: 'wrap',
+                        status: 'error',
+                    }),
+                );
+            }
             console.error(error);
             reportError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(

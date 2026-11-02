@@ -17,7 +17,7 @@ import {
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
     adapterStatus: BluetoothAdapterStatus;
     scanStatus: BluetoothScanStatus;
-    nearbyDevices: null | T[]; // Must be sorted, the newest last. Null = we haven't received first update yet
+    nearbyDevices: null | T[]; // Order is decided by the platform layer (desktop: oldest discovered first, suite-native: newest discovered first). Null = we haven't received first update yet
 
     // This will be persisted. Those are devices we believed that are paired
     // (because we already successfully paired them in the Suite) in the Operating System

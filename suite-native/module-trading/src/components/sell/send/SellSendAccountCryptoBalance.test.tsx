@@ -24,8 +24,8 @@ describe('SellSendAccountCryptoBalance', () => {
         return result.current;
     };
 
-    const renderComponent = async () =>
-        await renderWithTradingProvider(<SellSendAccountCryptoBalance />, {
+    const renderComponent = () =>
+        renderWithTradingProvider(<SellSendAccountCryptoBalance />, {
             tradeType: 'sell',
             wrapper: ({ children }) => <Form form={sellForm}>{children}</Form>,
         });

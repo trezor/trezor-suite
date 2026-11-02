@@ -1,6 +1,5 @@
 import { memo } from 'react';
 
-import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { getInstantStakeType } from '@suite-common/wallet-core';
@@ -10,7 +9,6 @@ import { Badge, Row } from '@trezor/components';
 import { LightningIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 const getTranslationId = (instantStakeType: StakeType) => {
@@ -35,31 +33,32 @@ const getInternalTransaction = (
 
 interface InstantStakeBadgeProps {
     transaction: WalletAccountTransaction;
+    accountDescriptor: string | undefined;
     symbol: string | undefined;
 }
 
-export const InstantStakeBadge = memo(({ transaction, symbol }: InstantStakeBadgeProps) => {
-    const { descriptor: selectedAccountAddress } = useSelector(selectSelectedAccount) || {};
+export const InstantStakeBadge = memo(
+    ({ transaction, accountDescriptor, symbol }: InstantStakeBadgeProps) => {
+        if (!accountDescriptor || !symbol || !isNetworkSymbol(symbol)) return null;
 
-    if (!selectedAccountAddress || !symbol || !isNetworkSymbol(symbol)) return null;
+        const internalTx = getInternalTransaction(transaction, accountDescriptor, symbol);
+        if (!internalTx) return null;
 
-    const internalTx = getInternalTransaction(transaction, selectedAccountAddress, symbol);
-    if (!internalTx) return null;
+        const instantStakeType = getInstantStakeType(internalTx, accountDescriptor, symbol);
+        if (!instantStakeType) return null;
 
-    const instantStakeType = getInstantStakeType(internalTx, selectedAccountAddress, symbol);
-    if (!instantStakeType) return null;
+        const translationId = getTranslationId(instantStakeType);
+        if (!translationId) return null;
 
-    const translationId = getTranslationId(instantStakeType);
-    if (!translationId) return null;
+        const amount = internalTx.amount && formatNetworkAmount(internalTx.amount, symbol);
 
-    const amount = internalTx.amount && formatNetworkAmount(internalTx.amount, symbol);
-
-    return (
-        <Badge size="small" iconLeft={LightningIcon}>
-            <Row gap={4}>
-                <FormattedCryptoAmount value={amount} symbol={symbol} />
-                <Translation id={translationId} />
-            </Row>
-        </Badge>
-    );
-});
+        return (
+            <Badge size="small" iconLeft={LightningIcon}>
+                <Row gap={4}>
+                    <FormattedCryptoAmount value={amount} symbol={symbol} />
+                    <Translation id={translationId} />
+                </Row>
+            </Badge>
+        );
+    },
+);

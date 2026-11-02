@@ -1,4 +1,4 @@
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act, fireEvent } from '@suite-native/test-utils-store';
@@ -26,16 +26,13 @@ describe('ExchangeReceiveAmountInput', () => {
     let form: ExchangeFormType;
 
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
-        featureFlags: {
-            ...featureFlagsInitialState,
-            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-        },
+        featureFlags: featureFlagsInitialState,
     };
 
-    const renderExchangeReceiveAmountInput = async (
+    const renderExchangeReceiveAmountInput = (
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(<ExchangeReceiveAmountInput />, {
+        renderWithTradingProvider(<ExchangeReceiveAmountInput />, {
             tradeType: 'exchange',
             overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,

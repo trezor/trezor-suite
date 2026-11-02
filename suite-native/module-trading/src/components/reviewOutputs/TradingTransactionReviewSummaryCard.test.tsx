@@ -31,10 +31,8 @@ const summaryOutput: TransactionReviewSummaryOutput = {
 };
 
 describe('TradingTransactionReviewSummaryCard', () => {
-    const renderSummaryCard = async (
-        props: Pick<TradingTransactionReviewSummaryCardProps, 'symbol'>,
-    ) =>
-        await renderWithTradingProvider(
+    const renderSummaryCard = (props: Pick<TradingTransactionReviewSummaryCardProps, 'symbol'>) =>
+        renderWithTradingProvider(
             <TradingTransactionReviewSummaryCard
                 accountKey={mockAccountKey({ descriptor: 'accountKey' })}
                 onLayout={jest.fn()}

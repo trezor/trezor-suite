@@ -1,4 +1,4 @@
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const signTransactionBcash: TestCase = {
     method: 'signTransaction',
@@ -32,7 +32,7 @@ const signTransactionBcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['bc37c2']),
+                refTxs: getRefTxs(['bc37c2']),
             },
             result: {
                 signatures: [
@@ -71,7 +71,7 @@ const signTransactionBcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['502e85']),
+                refTxs: getRefTxs(['502e85']),
             },
             result: {
                 signatures: [
@@ -111,7 +111,7 @@ const signTransactionBcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['502e85']),
+                refTxs: getRefTxs(['502e85']),
             },
             result: false,
         },

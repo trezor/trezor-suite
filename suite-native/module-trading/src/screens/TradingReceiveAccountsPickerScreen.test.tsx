@@ -1,10 +1,12 @@
 import { type RouteProp } from '@react-navigation/native';
 
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworksServices } from '@suite-common/networks/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { accounts } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingReceiveAccountsPickerScreen } from './TradingReceiveAccountsPickerScreen';
 import {
@@ -24,6 +26,11 @@ jest.mock('@react-navigation/native', () => ({
         ({
             params: { ...mockRouteParams },
         }) as RouteProp<RootStackParamList, RootStackRoutes.ReceiveAccounts>,
+}));
+
+jest.mock('@suite-common/message-system', () => ({
+    ...jest.requireActual('@suite-common/message-system'),
+    useIsExperimentVariantActive: () => false,
 }));
 
 const overridesWithAccounts = (
@@ -52,6 +59,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
         const result = await renderWithTradingProvider(<TradingReceiveAccountsPickerScreen />, {
             tradeType: mockRouteParams.tradingType,
             overrides,
+            services: { networks: mockNetworksServices() },
         });
 
         ({ unmount } = result);

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { type UseFormReturn, useForm } from 'react-hook-form';
 
-import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
+import { selectEffectiveTargetAnonymityByAccountKey } from '@suite/coinjoin';
 import { type Network, getNetwork } from '@suite-common/wallet-config';
 import {
     DEFAULT_OPRETURN,
@@ -174,7 +174,9 @@ const getRbfFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParams) => {
 
 const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps): RbfState => {
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
-    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
+    const targetAnonymity = useSelector(state =>
+        selectEffectiveTargetAnonymityByAccountKey(state, account.key),
+    );
     const coinjoinRegisteredUtxos = useCoinjoinRegisteredUtxos({ account });
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
@@ -243,6 +245,7 @@ const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps): RbfState 
             shouldSendInSats,
             formValues: {
                 ...DEFAULT_VALUES,
+                txType: 'send',
                 outputs,
                 selectedFee: undefined,
                 setMaxOutputId,
@@ -288,6 +291,7 @@ export const useRbf = (props: UseRbfProps): RbfContextValues => {
     const { isLoading, composeRequest, composedLevels, onFeeLevelChange, signTransaction } =
         useCompose({
             ...useFormMethods,
+            formState,
             state,
             defaultField: 'selectedFee',
         });
@@ -300,6 +304,7 @@ export const useRbf = (props: UseRbfProps): RbfContextValues => {
         composeRequest,
         composedLevels,
         ...useFormMethods,
+        formState,
     });
 
     // If automatically composed transaction throws NOT-ENOUGH-FUNDS error

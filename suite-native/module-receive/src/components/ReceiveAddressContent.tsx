@@ -6,6 +6,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { selectCurrentFreshAddress } from '@suite-common/receive';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    AccountDiscoveryFailedBanner,
+    type NativeAccountsRootState,
+    selectIsAccountDiscoveryFailed,
+} from '@suite-native/accounts';
 import { ErrorMessage, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -39,6 +44,9 @@ export const ReceiveAddressContent = ({
 
     const currentFreshAddress = useSelector((state: ReceiveAddressListRootState) =>
         selectCurrentFreshAddress(state, accountKey),
+    );
+    const isDiscoveryFailed = useSelector((state: NativeAccountsRootState) =>
+        selectIsAccountDiscoveryFailed(state, accountKey),
     );
 
     useFocusEffect(
@@ -90,26 +98,34 @@ export const ReceiveAddressContent = ({
                 footer={
                     <>
                         <ScreenFooterGradient />
-                        <VStack paddingHorizontal="sp16" paddingTop="sp8" paddingBottom="sp16">
+                        <VStack paddingTop="sp8" paddingBottom="sp16">
                             <ReceiveAddressActions
                                 address={currentFreshAddress.address}
                                 isDeviceVerificationEnabled={!isPortfolioTrackerDevice}
+                                isDisabled={isDiscoveryFailed}
                             />
                         </VStack>
                     </>
                 }
+                footerHorizontalPadding="sp16"
                 noBottomPadding
             >
-                <VStack marginTop="sp8" spacing="sp16" flex={1}>
-                    <ReceiveAddressCard
-                        accountKey={accountKey}
-                        address={currentFreshAddress.address}
-                        tokenContract={tokenContract}
-                    />
-                    <ReceiveDestinationTagInfo
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
-                    />
+                <VStack marginBottom="sp16" spacing="sp16" flex={1}>
+                    {isDiscoveryFailed ? (
+                        <AccountDiscoveryFailedBanner accountKey={accountKey} />
+                    ) : (
+                        <>
+                            <ReceiveAddressCard
+                                accountKey={accountKey}
+                                address={currentFreshAddress.address}
+                                tokenContract={tokenContract}
+                            />
+                            <ReceiveDestinationTagInfo
+                                accountKey={accountKey}
+                                tokenContract={tokenContract}
+                            />
+                        </>
+                    )}
                 </VStack>
             </Screen>
         </ReceiveAddressInteractionsProvider>

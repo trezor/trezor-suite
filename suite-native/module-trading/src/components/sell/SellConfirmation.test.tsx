@@ -20,8 +20,8 @@ describe('SellConfirmation', () => {
     const mockUseSellSelectQuote =
         require('../../hooks/sell/useSellSelectQuote').useSellSelectQuote;
 
-    const renderConfirmation = async () =>
-        await renderWithStoreProvider(<SellConfirmation />, {
+    const renderConfirmation = () =>
+        renderWithStoreProvider(<SellConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
         });
 

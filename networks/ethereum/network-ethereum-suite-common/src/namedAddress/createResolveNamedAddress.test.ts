@@ -38,7 +38,18 @@ describe('resolveNamedAddress', () => {
         mockResolveViaBlockbook.mockResolvedValue(VITALIK_ADDRESS);
 
         await expect(resolveNamedAddress('vitalik.eth', 'eth')).resolves.toBe(VITALIK_ADDRESS);
-        expect(mockResolveViaBlockbook).toHaveBeenCalledWith('vitalik.eth', 'eth');
+        expect(mockResolveViaBlockbook).toHaveBeenCalledWith('vitalik.eth', 'eth', undefined);
+    });
+
+    it('hands the backend identity to both the onchain call and the fallback', async () => {
+        mockResolveOnchain.mockRejectedValue(new Error('Backend not connected'));
+        mockResolveViaBlockbook.mockResolvedValue(VITALIK_ADDRESS);
+
+        await resolveNamedAddress('vitalik.eth', 'eth', { identity: 'deviceState' });
+
+        const options = { identity: 'deviceState' };
+        expect(mockResolveOnchain).toHaveBeenCalledWith('vitalik.eth', 'eth', options);
+        expect(mockResolveViaBlockbook).toHaveBeenCalledWith('vitalik.eth', 'eth', options);
     });
 
     it('reports a Blockbook answer that is not an address as no record', async () => {

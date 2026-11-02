@@ -42,8 +42,8 @@ const summaryOutput: TransactionReviewSummaryOutput = {
 };
 
 describe('TransactionReviewOutputsList', () => {
-    const renderList = async (providerProps: TransactionReviewTestProviderProps = {}) =>
-        await renderWithTransactionReview(<TransactionReviewOutputsList />, {
+    const renderList = (providerProps: TransactionReviewTestProviderProps = {}) =>
+        renderWithTransactionReview(<TransactionReviewOutputsList />, {
             providerProps: { reviewOutputs, summaryOutput, ...providerProps },
         });
 

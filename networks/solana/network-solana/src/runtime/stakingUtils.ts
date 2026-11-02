@@ -1,4 +1,5 @@
 import {
+    AccountRole,
     address,
     compileTransactionMessage,
     createAddressWithSeed,
@@ -10,6 +11,7 @@ import {
     setTransactionMessageFeePayer,
     setTransactionMessageLifetimeUsingBlockhash,
 } from '@solana/kit';
+import type { AccountMeta, InstructionWithAccounts } from '@solana/kit';
 import {
     SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR,
     SET_COMPUTE_UNIT_PRICE_DISCRIMINATOR,
@@ -21,8 +23,17 @@ import {
 import {
     STAKE_PROGRAM_ADDRESS,
     decodeStakeStateAccount,
+    getDeactivateInstruction,
+    getDelegateStakeInstruction,
     getInitializeInstruction,
     getSplitInstruction,
+    getWithdrawInstruction,
+} from '@solana-program/stake';
+import type {
+    DeactivateInput,
+    DelegateStakeInput,
+    InitializeInput,
+    WithdrawInput,
 } from '@solana-program/stake';
 import {
     getAllocateWithSeedInstruction,
@@ -68,6 +79,44 @@ const FILTER_DATA_SIZE = 200n;
 const FILTER_OFFSET = 44n;
 
 const ADDRESS_DEFAULT = address('11111111111111111111111111111111');
+const CLOCK_SYSVAR = address('SysvarC1ock11111111111111111111111111111111');
+const RENT_SYSVAR = address('SysvarRent111111111111111111111111111111111');
+const STAKE_HISTORY_SYSVAR = address('SysvarStakeHistory1111111111111111111111111');
+const STAKE_CONFIG_ACCOUNT = address('StakeConfig11111111111111111111111111111111');
+
+// Firmware maps stake instruction accounts to its definitions by position, so the sysvar and config
+// accounts that @solana-program/stake >= 0.9.1 omits have to stay where they used to be.
+const insertReadonlyAccounts = (
+    instruction: Instruction & InstructionWithAccounts<readonly AccountMeta[]>,
+    index: number,
+    addresses: Address[],
+): Instruction => ({
+    ...instruction,
+    accounts: instruction.accounts.toSpliced(
+        index,
+        0,
+        ...addresses.map(accountAddress => ({
+            address: accountAddress,
+            role: AccountRole.READONLY,
+        })),
+    ),
+});
+
+const getInitializeInstructionWithSysvars = (input: InitializeInput) =>
+    insertReadonlyAccounts(getInitializeInstruction(input), 1, [RENT_SYSVAR]);
+
+export const getDelegateStakeInstructionWithSysvars = (input: DelegateStakeInput) =>
+    insertReadonlyAccounts(getDelegateStakeInstruction(input), 2, [
+        CLOCK_SYSVAR,
+        STAKE_HISTORY_SYSVAR,
+        STAKE_CONFIG_ACCOUNT,
+    ]);
+
+export const getWithdrawInstructionWithSysvars = (input: WithdrawInput) =>
+    insertReadonlyAccounts(getWithdrawInstruction(input), 2, [CLOCK_SYSVAR, STAKE_HISTORY_SYSVAR]);
+
+export const getDeactivateInstructionWithSysvars = (input: DeactivateInput) =>
+    insertReadonlyAccounts(getDeactivateInstruction(input), 1, [CLOCK_SYSVAR]);
 
 const formatEverstakeSource = (source: string): string => {
     const timestamp = new Date().getTime();
@@ -101,7 +150,7 @@ export const createAccountWithSeedTx = async (
         programAddress: STAKE_PROGRAM_ADDRESS,
     });
 
-    const initializeInstruction = getInitializeInstruction(
+    const initializeInstruction = getInitializeInstructionWithSysvars(
         /** Uninitialized stake account */
         {
             stake: stakeAccountPubkey,

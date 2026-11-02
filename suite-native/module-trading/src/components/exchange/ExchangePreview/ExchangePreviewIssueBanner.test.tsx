@@ -79,10 +79,8 @@ describe('ExchangePreviewIssueBanner', () => {
         },
     };
 
-    const renderExchangePreviewIssueBanner = async ({
-        onSignTransactionNavigation = jest.fn(),
-    } = {}) =>
-        await renderWithTradingProvider(
+    const renderExchangePreviewIssueBanner = ({ onSignTransactionNavigation = jest.fn() } = {}) =>
+        renderWithTradingProvider(
             <ExchangePreviewIssueBanner
                 onSignTransactionNavigation={onSignTransactionNavigation}
             />,

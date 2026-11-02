@@ -1,7 +1,7 @@
 import { deviceInitialState } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
@@ -16,20 +16,17 @@ describe('ExchangeAlert', () => {
     const preloadedState = {
         networks: mockNetworksState(mockGetSupportedNetworks()),
         device: deviceInitialState,
-        featureFlags: {
-            ...featureFlagsInitialState,
-            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-        },
+        featureFlags: featureFlagsInitialState,
         wallet: getWalletState({ tradeType: 'exchange' }),
     };
 
-    const renderFormHook = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderFormHook = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
         });
 
-    const renderTradingAlert = async () =>
-        await renderWithBasicProvider(<ExchangeAlert />, {
+    const renderTradingAlert = () =>
+        renderWithBasicProvider(<ExchangeAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

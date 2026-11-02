@@ -8,10 +8,10 @@ describe('ReceiveAddressVerificationBottomSheet', () => {
     const onVerifyAddress = jest.fn();
     const onSkipVerification = jest.fn();
 
-    const renderBottomSheet = async (
+    const renderBottomSheet = (
         source: ReceiveAddressVerificationSource = ReceiveAddressVerificationSource.Pasted,
     ) =>
-        await renderWithBasicProvider(
+        renderWithBasicProvider(
             <ReceiveAddressVerificationBottomSheet
                 ref={{ current: null }}
                 source={source}

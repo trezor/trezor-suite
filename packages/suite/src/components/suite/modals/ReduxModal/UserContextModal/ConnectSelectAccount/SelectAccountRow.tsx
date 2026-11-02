@@ -16,11 +16,7 @@ import {
 } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { ArrowsClockwiseIcon, CaretRightIcon, CheckIcon, WarningIcon } from '@trezor/icons';
-import {
-    NetworkIcon,
-    isNetworkSymbolWithIcon,
-    mapTrezorModelToIcon,
-} from '@trezor/product-components';
+import { NetworkIcon, mapTrezorModelToIcon } from '@trezor/product-components';
 
 interface SelectAccountRowProps {
     candidate: SelectAccountCandidate;
@@ -202,9 +198,7 @@ export const SelectAccountRow = ({
                     </div>
                 )}
 
-                {isNetworkSymbolWithIcon(symbol) && (
-                    <NetworkIcon networkSymbol={symbol} size={24} />
-                )}
+                <NetworkIcon networkSymbol={symbol} size={24} />
 
                 <Column gap={2} flex="1" minWidth={0} alignItems="flex-start">
                     <Text typographyStyle="body-sm-strong">{label}</Text>

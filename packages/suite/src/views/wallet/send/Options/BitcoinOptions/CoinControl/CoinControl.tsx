@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import styled from 'styled-components';
-
-import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
+import { selectEffectiveTargetAnonymityByAccountKey } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
@@ -36,17 +34,17 @@ import { UtxoSearch } from './UtxoSearch';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSortingSelect } from './UtxoSortingSelect';
 
-const Empty = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
-    margin-bottom: 12px;
-    padding: 12px 0;
-`;
-
 type CoinControlProps = {
     close: () => void;
 };
 
 export const CoinControl = ({ close }: CoinControlProps) => {
+    // React Compiler: `getDefaultValue` reads the form imperatively, so a compiled render-time read
+    // of it freezes as soon as its own identity is stable -- including the one inside the
+    // `outputs.map` below, which runs during render. Remove once these reads move to `useWatch` or
+    // out of render.
+    'use no memo';
+
     const [currentPage, setSelectedPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const {
@@ -69,7 +67,9 @@ export const CoinControl = ({ close }: CoinControlProps) => {
         },
     } = useSendFormContext();
     const { outputLabels } = useSelector(state => selectAccountLabelsForSearch(state, account));
-    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
+    const targetAnonymity = useSelector(state =>
+        selectEffectiveTargetAnonymityByAccountKey(state, account.key),
+    );
     const { dispatch } = useServices(injectDispatch);
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
@@ -140,7 +140,8 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const spendableUtxosOnPage = paginatedCategories[0] ?? [];
     const lowAnonymityUtxosOnPage = paginatedCategories[1] ?? [];
     const dustUtxosOnPage = paginatedCategories[2] ?? [];
-    const isCoinjoinAccount = account.accountType === 'coinjoin';
+    // Private / not private categories mean something only where coins are held back.
+    const shouldShowAnonymityCategories = !!targetAnonymity && targetAnonymity > 1;
     const hasEligibleUtxos = spendableUtxos.length + lowAnonymityUtxos.length > 0;
 
     // fetch all transactions so that we can show a transaction timestamp for each UTXO
@@ -218,7 +219,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                 )}
                 {!!spendableUtxosOnPage.length && (
                     <UtxoSelectionList
-                        withHeader={isCoinjoinAccount}
+                        withHeader={shouldShowAnonymityCategories}
                         heading={<Translation id="TR_PRIVATE" />}
                         description={
                             <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
@@ -244,9 +245,12 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     />
                 )}
                 {!hasEligibleUtxos && (
-                    <Empty>
-                        <Translation id="TR_NO_SPENDABLE_UTXOS" />
-                    </Empty>
+                    <>
+                        <Paragraph>
+                            <Translation id="TR_NO_SPENDABLE_UTXOS" />
+                        </Paragraph>
+                        {!!dustUtxosOnPage.length && <Divider margin={0} />}
+                    </>
                 )}
                 {!!dustUtxosOnPage.length && (
                     <UtxoSelectionList

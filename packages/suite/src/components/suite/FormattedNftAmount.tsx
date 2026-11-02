@@ -11,7 +11,8 @@ import { type TypographyStyle } from '@trezor/theme';
 
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
+
+import { TokenUrlBlur } from './TokenUrlBlur';
 
 export interface FormattedNftAmountProps {
     transfer: TokenTransfer;
@@ -38,7 +39,7 @@ export const FormattedNftAmount = ({
 
     const symbolComponent = transfer.symbol ? (
         <Text ellipsisLineCount={1}>
-            <BlurUrls text={transfer.symbol} />
+            <TokenUrlBlur text={transfer.symbol} />
         </Text>
     ) : null;
 
@@ -56,7 +57,7 @@ export const FormattedNftAmount = ({
                                 <Sign value={signValue} grayscale={signGrayscale} />
                             ) : null}
                             {transfer.name ? (
-                                <BlurUrls
+                                <TokenUrlBlur
                                     text={translationString('TR_COLLECTION_NAME_OF_TOKEN_ID', {
                                         tokenValue: token.value,
                                         collectionName: transfer.name,

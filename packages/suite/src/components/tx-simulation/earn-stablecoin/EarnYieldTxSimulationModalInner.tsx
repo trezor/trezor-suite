@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FormProvider } from 'react-hook-form';
 
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { type UserContextModalType } from '@suite/modal';
 import {
@@ -118,6 +118,7 @@ export function EarnYieldTxSimulationModalInner({
             decision.resolve({
                 value: true,
                 selectedFee,
+                selectedFeeLevel: form.getValues('selectedFee') ?? 'normal',
                 resolve,
             });
         });
@@ -133,6 +134,8 @@ export function EarnYieldTxSimulationModalInner({
         (hasRenderFailure && !renderFailureAccepted) ||
         composedLevelsError,
     );
+
+    const { formState } = form;
 
     return (
         <Modal.Backdrop onClick={cancel}>
@@ -180,7 +183,7 @@ export function EarnYieldTxSimulationModalInner({
                         <TxSimulationProvider />
 
                         {areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && (
-                            <FormProvider {...form}>
+                            <Form form={form} formState={formState}>
                                 <Card>
                                     <Fees
                                         account={account}
@@ -191,7 +194,7 @@ export function EarnYieldTxSimulationModalInner({
                                         }
                                     />
                                 </Card>
-                            </FormProvider>
+                            </Form>
                         )}
 
                         {composedLevelsError && (

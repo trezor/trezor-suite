@@ -1,6 +1,6 @@
-import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import React, { type Ref, Suspense, useEffect, useMemo, useState } from 'react';
 
-import { type LottieRef } from 'lottie-react';
+import { type LottieHandle } from 'lottie-react';
 
 import { resolveStaticPath } from '@trezor/env-utils';
 
@@ -26,7 +26,7 @@ type LottieAnimationProps = {
     loop?: boolean;
     autoplay?: boolean;
     shape?: Shape;
-    lottieRef?: LottieRef;
+    lottieRef?: Ref<LottieHandle>;
     colorReplacements?: { from: string; to: string }[];
 };
 
@@ -93,13 +93,13 @@ export const LottieAnimationInner = ({
             data-component="LottieAnimation"
         >
             <>
-                {animationData && (
+                {typeof animationData === 'object' && animationData !== null && (
                     /* Nothing was rendered while the JSON was in flight either, so there is no
                     placeholder to hold here. */
                     <Suspense fallback={null}>
                         <LottiePlayer
                             lottieRef={lottieRef}
-                            animationData={animationData}
+                            src={animationData}
                             loop={loop}
                             autoplay={autoplay}
                         />

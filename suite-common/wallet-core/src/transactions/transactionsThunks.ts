@@ -6,6 +6,7 @@ import {
     type PrecomposedTransactionCardanoFinal,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalBumpFeeRbf,
+    type StakeType,
     type Timestamp,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
@@ -38,7 +39,10 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { LOVELACE_UNIT } from '@trezor/network-cardano/constants';
-import { SOLANA_SLOT_TIME_MS } from '@trezor/network-solana/constants';
+import {
+    SOLANA_BLOCKHASH_VALIDITY_BLOCKS,
+    SOLANA_SLOT_TIME_MS,
+} from '@trezor/network-solana/constants';
 import { createSingleInstanceThunk, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -47,8 +51,8 @@ import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
     selectAccountTransactions,
     selectAccountTransactionsFromNowUntilTimestamp,
-    selectAreAllAccountTransactionsLoaded,
     selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp,
+    selectAreAllTransactionsLoaded,
     selectIsPageAlreadyFetched,
     selectTransactions,
 } from './transactionsSelectors';
@@ -77,6 +81,8 @@ const STELLAR_LEDGER_CLOSE_SECONDS = 5;
 const CARDANO_BLOCK_TIME_SECONDS = 20;
 // Solana's average block interval; its fee info reports the block time as unknown (-1).
 const SOLANA_BLOCK_TIME_SECONDS = SOLANA_SLOT_TIME_MS / 1000;
+// A Solana tx expires with its blockhash after about a minute, so a fake one is kept only briefly.
+const SOLANA_FAKE_TX_TTL_SECONDS = 3 * 60;
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -815,13 +821,102 @@ export const addFakePendingTronSendTxThunk = createThunk<
     },
 );
 
-interface AddFakePendingSolanaSendTxThunkParams {
-    precomposedTransaction: PrecomposedTransactionFinal;
+type SolanaStakeOperation = NonNullable<
+    NonNullable<WalletAccountTransaction['solanaSpecific']>['stakeOperation']
+>;
+
+type AddFakePendingSolanaTxThunkParams = {
     txid: string;
     account: Account;
-}
+    amount: string;
+    fee: string;
+    type: WalletAccountTransaction['type'];
+    target?: { address: string; amount: string };
+    tokens?: WalletAccountTransaction['tokens'];
+    internalTransfers?: WalletAccountTransaction['internalTransfers'];
+    stakeOperation?: SolanaStakeOperation;
+    lastValidBlockHeight?: number;
+};
 
-type AddFakePendingSolanaSendTxThunkState = BlockchainRootState;
+export type AddFakePendingSolanaTxThunkState = BlockchainRootState;
+
+export const addFakePendingSolanaTxThunk = createThunk<
+    void,
+    AddFakePendingSolanaTxThunkParams,
+    { state: AddFakePendingSolanaTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    (
+        {
+            txid,
+            account,
+            amount,
+            fee,
+            type,
+            target,
+            tokens,
+            internalTransfers,
+            stakeOperation,
+            lastValidBlockHeight,
+        },
+        { dispatch, getState },
+    ) => {
+        if (account.networkType !== 'solana') return;
+
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
+        // The stored Solana height is the last valid height of the latest blockhash, which runs
+        // SOLANA_BLOCKHASH_VALIDITY_BLOCKS ahead of the height at which this tx's blockhash expires.
+        const deadline =
+            lastValidBlockHeight === undefined
+                ? blockHeight + Math.ceil(SOLANA_FAKE_TX_TTL_SECONDS / SOLANA_BLOCK_TIME_SECONDS)
+                : lastValidBlockHeight + SOLANA_BLOCKHASH_VALIDITY_BLOCKS;
+
+        const fakeTx = {
+            type,
+            txid,
+            blockTime: Math.floor(Date.now() / 1000),
+            blockHash: undefined,
+            amount,
+            fee,
+            feeRate: undefined,
+            targets: target
+                ? [{ n: 0, addresses: [target.address], isAddress: true, amount: target.amount }]
+                : [],
+            tokens: tokens ?? [],
+            internalTransfers: internalTransfers ?? [],
+            solanaSpecific: stakeOperation
+                ? { status: 'pending' as const, stakeOperation }
+                : undefined,
+            details: {
+                vin: [
+                    {
+                        n: 0,
+                        addresses: [account.descriptor],
+                        isAddress: true,
+                        isOwn: true,
+                        isAccountOwned: true,
+                    },
+                ],
+                vout: target
+                    ? [{ value: target.amount, n: 0, addresses: [target.address], isAddress: true }]
+                    : [],
+                size: 0,
+                totalInput: '0',
+                totalOutput: target?.amount ?? '0',
+            },
+            deadline,
+        };
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
+type AddFakePendingSolanaSendTxThunkParams = {
+    precomposedTransaction: Pick<PrecomposedTransactionFinal, 'outputs' | 'fee' | 'token'>;
+    txid: string;
+    account: Account;
+};
+
+export type AddFakePendingSolanaSendTxThunkState = AddFakePendingSolanaTxThunkState;
 
 export const addFakePendingSolanaSendTxThunk = createThunk<
     void,
@@ -829,14 +924,11 @@ export const addFakePendingSolanaSendTxThunk = createThunk<
     { state: AddFakePendingSolanaSendTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ precomposedTransaction, txid, account }, { dispatch, getState }) => {
-        if (account.networkType !== 'solana') return;
-
+    ({ precomposedTransaction, txid, account }, { dispatch }) => {
         const [output] = precomposedTransaction.outputs;
         const { token } = precomposedTransaction;
         const recipient = output?.address;
         const outputAmount = output?.amount?.toString() ?? '0';
-        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
 
         const tokenTransfer: TokenTransfer | undefined =
             token && recipient
@@ -853,44 +945,72 @@ export const addFakePendingSolanaSendTxThunk = createThunk<
                   }
                 : undefined;
         const nativeTarget = recipient && !token ? recipient : undefined;
+        const solBalanceChange = new BigNumber(token ? '0' : outputAmount)
+            .plus(precomposedTransaction.fee)
+            .toString();
 
-        const fakeTx = {
-            type: 'sent' as const,
-            txid,
-            blockTime: Math.floor(Date.now() / 1000),
-            blockHash: undefined,
-            // the fee is included to match the confirmed tx, whose amount is the account's SOL
-            // balance change; for an SPL token transfer that change is only the fee
-            amount: new BigNumber(token ? '0' : outputAmount)
-                .plus(precomposedTransaction.fee)
-                .toString(),
-            fee: precomposedTransaction.fee,
-            feeRate: undefined,
-            targets: nativeTarget
-                ? [{ n: 0, addresses: [nativeTarget], isAddress: true, amount: outputAmount }]
-                : [],
-            tokens: tokenTransfer ? [tokenTransfer] : [],
-            internalTransfers: [],
-            details: {
-                vin: [
-                    {
-                        n: 0,
-                        addresses: [account.descriptor],
-                        isAddress: true,
-                        isOwn: true,
-                        isAccountOwned: true,
-                    },
-                ],
-                vout: nativeTarget
-                    ? [{ value: outputAmount, n: 0, addresses: [nativeTarget], isAddress: true }]
-                    : [],
-                size: 0,
-                totalInput: '0',
-                totalOutput: nativeTarget ? outputAmount : '0',
-            },
-            deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / SOLANA_BLOCK_TIME_SECONDS),
-        };
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            addFakePendingSolanaTxThunk({
+                txid,
+                account,
+                amount: solBalanceChange,
+                fee: precomposedTransaction.fee,
+                type: 'sent',
+                target: nativeTarget ? { address: nativeTarget, amount: outputAmount } : undefined,
+                tokens: tokenTransfer ? [tokenTransfer] : [],
+            }),
+        );
+    },
+);
+
+type AddFakePendingSolanaStakeTxThunkParams = {
+    precomposedTransaction: Pick<PrecomposedTransactionFinal, 'outputs' | 'fee' | 'solanaTxMeta'>;
+    stakeType: StakeType;
+    txid: string;
+    account: Account;
+};
+
+export type AddFakePendingSolanaStakeTxThunkState = AddFakePendingSolanaTxThunkState;
+
+export const addFakePendingSolanaStakeTxThunk = createThunk<
+    void,
+    AddFakePendingSolanaStakeTxThunkParams,
+    { state: AddFakePendingSolanaStakeTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    ({ precomposedTransaction, stakeType, txid, account }, { dispatch }) => {
+        const { solanaTxMeta } = precomposedTransaction;
+        const operatedAmount =
+            solanaTxMeta?.deviceAmountLamports ??
+            precomposedTransaction.outputs[0]?.amount?.toString() ??
+            '0';
+        const fee = solanaTxMeta?.feeLamports ?? precomposedTransaction.fee;
+
+        dispatch(
+            addFakePendingSolanaTxThunk({
+                txid,
+                account,
+                amount:
+                    stakeType === 'stake'
+                        ? new BigNumber(operatedAmount).plus(fee).toString()
+                        : '0',
+                fee,
+                type: 'sent',
+                internalTransfers:
+                    stakeType === 'claim'
+                        ? [
+                              {
+                                  type: 'recv',
+                                  from: '',
+                                  to: account.descriptor,
+                                  amount: operatedAmount,
+                              },
+                          ]
+                        : undefined,
+                stakeOperation: { type: stakeType, amount: operatedAmount },
+                lastValidBlockHeight: solanaTxMeta?.lastValidBlockHeight,
+            }),
+        );
     },
 );
 
@@ -898,7 +1018,7 @@ export const addFakePendingSolanaSendTxThunk = createThunk<
  * @param noLoading - disable loading indicator
  * @param forceRefetch - force refetch of transactions even if this page is already fetched
  */
-type FetchTransactionsPageThunkParams = {
+export type FetchTransactionsPageThunkParams = {
     accountKey: AccountKey;
     page: number;
     perPage: number;
@@ -1004,6 +1124,22 @@ export const fetchTransactionsPageThunk = createThunk<
     },
 );
 
+/**
+ * `knownTotalPages` carries the page count of an earlier response over, so a response that omits
+ * it does not end the walk on its own. An empty page is the end whatever the count says, because
+ * Solana reports more pages than it serves.
+ */
+export const hasTransactionsPageAfter = (
+    result: AccountInfo | 'ALREADY_FETCHED',
+    page: number,
+    knownTotalPages = 0,
+) =>
+    result === 'ALREADY_FETCHED' ||
+    (!!result.history.transactions?.length &&
+        (page < Math.max(result.page?.total ?? 0, knownTotalPages) ||
+            !!result.marker ||
+            !!result.stellarCursor));
+
 type FetchUtxoTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
 };
@@ -1026,6 +1162,13 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
         }
 
         if (account.utxo === undefined || account.utxo.length === 0) {
+            return selectAccountTransactions(getState(), accountKey);
+        }
+
+        // The coinjoin backend already stores every transaction of the account. Connect does not
+        // know the account, so its copies would come back unlinked from it (type 'unknown', no
+        // owned inputs or outputs) and replace the stored ones.
+        if (!isTrezorConnectBackendType(account.backendType)) {
             return selectAccountTransactions(getState(), accountKey);
         }
 
@@ -1057,7 +1200,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
 /**
  * @param noLoading - disable loading indicator, it's not used directly in this thunk, but it's used in reducer
  */
-type FetchAllTransactionsForAccountThunkParams = {
+export type FetchAllTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
     noLoading?: boolean;
 };
@@ -1083,7 +1226,9 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk<
 
         // If all transactions are already loaded, it means we can do some optimization (fetch only first few pages, less transactions per page etc.)
         // to just check for that few new transactions.
-        const areAllTransactionsAlreadyFetched = selectAreAllAccountTransactionsLoaded(
+        // Only a walk that reached the end counts, never the account's total: XRP and Stellar
+        // report -1, which would make every walk a quick one that stops at the first stored page.
+        const areAllTransactionsAlreadyFetched = !!selectAreAllTransactionsLoaded(
             getState(),
             accountKey,
         );
@@ -1130,10 +1275,8 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk<
             }
 
             totalPages = result.page?.total || totalPages;
-            const areThereMorePages =
-                page < totalPages || !!result.marker || !!result.stellarCursor;
 
-            if (!areThereMorePages) {
+            if (!hasTransactionsPageAfter(result, page, totalPages)) {
                 break;
             }
 
@@ -1221,9 +1364,8 @@ export const fetchTransactionsFromNowUntilTimestampThunk = createSingleInstanceT
             }
 
             totalPages = result.page?.total || totalPages;
-            const areThereMorePages = page < totalPages || !!result.marker;
 
-            if (!areThereMorePages) {
+            if (!hasTransactionsPageAfter(result, page, totalPages)) {
                 // This should never happen because of previous checks, but just it won't hurt to have it here as a safety net.
                 break;
             }

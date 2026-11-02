@@ -3,6 +3,10 @@ const name = 'solanaSignTransaction';
 const serializedTx =
     '0100040700d1699dcb1811b50bb0055f13044463128242e37a463b52f6c97a1f6eef88ad9bdc8c11af6a471f7373e52c917aac6304c71796b97b47350d46cf4c54bae9d9fdd530a73d5e74613b17aaeb9346f9fc3c5fd6a7ad126b269e3e73454e2a0b1b000000000000000000000000000000000000000000000000000000000000000081432588d91c8e02d613baa94e05994e78467cf5a8821d8f4c2e373e8b9b56ef8c97258f4e2489f1bb3d1029148e0d830b5a1399daff1084048e7bd8dbe9f85906ddf6e1d765a193d9cbe146ceeb79ac1cb485ed5f5b37913a8cf5857eff00a91aea57c9906a7cad656ff61b3893abda63f4b6b210c939855e7ab6e54049213d020506000201040306000604010402000a0c0b0000000000000009';
 
+// v1 transfer of 0.02 SOL with a config priority fee of 1600 lamports.
+const serializedV1Tx =
+    '810100011f0000001aea57c9906a7cad656ff61b3893abda63f4b6b210c939855e7ab6e54049213d010300d1699dcb1811b50bb0055f13044463128242e37a463b52f6c97a1f6eef88adc80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c600000000000000000000000000000000000000000000000000000000000000004006000000000000400d0300000001000000010002020c00000102000000002d310100000000';
+
 const additionalInfo = {
     tokenAccountsInfos: [
         {
@@ -33,6 +37,27 @@ export default [
                 name: 'additionalInfo',
                 type: 'json',
                 value: additionalInfo,
+            },
+            {
+                name: 'chunkify',
+                type: 'checkbox',
+                value: false,
+            },
+        ],
+    },
+    {
+        name,
+        submitButton: 'Sign transaction',
+        fields: [
+            {
+                name: 'path',
+                type: 'input',
+                value: `m/44'/501'/0'/0'`,
+            },
+            {
+                name: 'serializedTx',
+                type: 'input-long',
+                value: serializedV1Tx,
             },
             {
                 name: 'chunkify',

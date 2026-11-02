@@ -1,5 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey, type FormState } from '@suite-common/wallet-types';
+import type { AccountKey, FormState } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -60,7 +60,7 @@ describe('CustomFee', () => {
         return result.current;
     };
 
-    const renderCustomFee = async ({
+    const renderCustomFee = ({
         form,
         props,
     }: {
@@ -85,7 +85,7 @@ describe('CustomFee', () => {
             formDraft: mockFormDraft,
         };
 
-        return await renderWithStoreProvider(<CustomFee {...finalProps} />, {
+        return renderWithStoreProvider(<CustomFee {...finalProps} />, {
             preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });

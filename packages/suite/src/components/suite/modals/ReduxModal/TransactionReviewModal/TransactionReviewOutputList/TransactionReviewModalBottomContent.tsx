@@ -4,6 +4,7 @@ import {
     injectDesktopAnalytics,
 } from '@suite/analytics';
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { getTransactionCreatedEventPayload } from '@suite-common/analytics';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -11,14 +12,12 @@ import {
     type FormState,
     type RbfTransactionType,
     type TransactionReviewOutput,
-    type TronStakingFormState,
 } from '@suite-common/wallet-types';
 import {
     getTxValidityTimeoutInMs,
     isRbfCancelTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
-import { type StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard, download } from '@trezor/dom-utils';
@@ -27,22 +26,11 @@ import { type Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { type TxInfoState, getTxType, hasTxValidityExpired } from '../utils';
+import { type TxInfoState, hasTxValidityExpired, selectTxType } from '../utils';
 
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
     'bump-fee': 'replaced',
     cancel: 'canceled',
-};
-
-const mapTronStakingKindToConfirmAction: Record<
-    TronStakingFormState['kind'],
-    'stake' | 'unstake' | 'claim' | 'change-delegate' | 'withdraw'
-> = {
-    freeze: 'stake',
-    vote: 'change-delegate',
-    unstake: 'unstake',
-    withdraw: 'withdraw',
-    claim: 'claim',
 };
 
 type TransactionReviewModalBottomContentProps = {
@@ -54,7 +42,6 @@ type TransactionReviewModalBottomContentProps = {
     txInfoState: TxInfoState;
     actionTranslation: ExtendedMessageDescriptor;
     hasTxReviewExpired: boolean;
-    stakeType?: StakeType;
     isRbfConfirmedError?: boolean;
     account: Account;
     precomposedForm: FormState;
@@ -71,7 +58,6 @@ export const TransactionReviewModalBottomContent = ({
     txInfoState,
     actionTranslation,
     hasTxReviewExpired,
-    stakeType,
     account,
     precomposedForm,
     outputs,
@@ -80,11 +66,11 @@ export const TransactionReviewModalBottomContent = ({
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
 
-    const { symbol, networkType } = account;
-    const { options, selectedFee } = precomposedForm;
+    const { networkType } = account;
+    const { options } = precomposedForm;
 
     const isBroadcastEnabled = options.includes('broadcast');
-    const txType = getTxType(txInfoState, precomposedForm);
+    const txType = useSelector(state => selectTxType(state, txInfoState, precomposedForm));
 
     const isCancelRbfAction = precomposedTx ? isRbfCancelTransaction(precomposedTx) : false;
 
@@ -96,24 +82,19 @@ export const TransactionReviewModalBottomContent = ({
     const reportTransactionCreatedEvent = (action: TransactionCreatedEventAction) =>
         analytics.report({
             type: events.transactionCreatedEvent.name,
-            payload: {
+            payload: getTransactionCreatedEventPayload({
                 action,
-                symbol,
-                tokens: outputs
-                    .filter((output: TransactionReviewOutput) => output.token?.symbol)
-                    .map((output: TransactionReviewOutput) => output.token?.symbol)
-                    .join(','),
-                outputsCount: precomposedForm.outputs.length,
-                broadcast: isBroadcastEnabled,
-                bitcoinLocktime: !!options.includes('bitcoinLocktime'),
-                transactionData: !!options.includes('transactionData'),
-                ethereumNonce: !!options.includes('ethereumNonce'),
-                destinationTag: !!options.includes('destinationTag'),
-                selectedFee: selectedFee || 'normal',
-                isCoinControlEnabled: precomposedForm.isCoinControlEnabled,
-                hasCoinControlBeenOpened: precomposedForm.hasCoinControlBeenOpened,
+                account,
+                precomposedForm,
+                tokens:
+                    txType === 'yield'
+                        ? (precomposedTx?.token?.symbol ?? '')
+                        : outputs
+                              .filter((output: TransactionReviewOutput) => output.token?.symbol)
+                              .map((output: TransactionReviewOutput) => output.token?.symbol)
+                              .join(','),
                 txType,
-            },
+            }),
         });
 
     const handleSend = () => {
@@ -128,23 +109,17 @@ export const TransactionReviewModalBottomContent = ({
                     ? mapRbfTypeToReporting[precomposedTx.rbfType]
                     : 'sent',
             );
-
-            const stakingConfirmAction =
-                stakeType ??
-                (precomposedForm.tronStaking &&
-                    mapTronStakingKindToConfirmAction[precomposedForm.tronStaking.kind]);
-
-            if (stakingConfirmAction) {
-                return analytics.report({
-                    type: events.stakingConfirmEvent.name,
-                    payload: { action: stakingConfirmAction, networkSymbol: symbol },
-                });
-            }
         }
     };
 
+    // Both handlers guard `serializedTx` instead of asserting it: the React Compiler hoists the
+    // dependencies of a memoised closure into a guard that runs on every render, above every early
+    // return below, so `serializedTx!.tx` would be read while the transaction is still unsigned and
+    // throw. The buttons are disabled until it exists, so neither guard is reachable in practice.
     const handleCopy = async () => {
-        const result = await copyToClipboard(serializedTx!.tx);
+        if (!serializedTx) return;
+
+        const result = await copyToClipboard(serializedTx.tx);
 
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
@@ -154,7 +129,9 @@ export const TransactionReviewModalBottomContent = ({
     };
 
     const handleDownload = () => {
-        download(serializedTx!.tx, 'signed-transaction.txt');
+        if (!serializedTx) return;
+
+        download(serializedTx.tx, 'signed-transaction.txt');
         reportTransactionCreatedEvent('downloaded');
     };
 

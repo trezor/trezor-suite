@@ -42,8 +42,11 @@ export const DEVICE = {
     THP_PAIRING_STATUS_CHANGED: 'device-thp_pairing_status_changed',
 } as const;
 
+export type DeviceButtonRequestCode =
+    NonNullable<PROTO.ButtonRequest['code']> | 'ButtonRequest_FirmwareUpdate';
+
 export interface DeviceButtonRequestPayload extends Omit<PROTO.ButtonRequest, 'code'> {
-    code?: PROTO.ButtonRequest['code'] | 'ButtonRequest_FirmwareUpdate';
+    code: DeviceButtonRequestCode;
 }
 
 export interface DeviceButtonRequest {
@@ -128,3 +131,10 @@ export const createDeviceMessage = <T extends DeviceEvent['type']>(
         type,
         payload,
     }) as Extract<DeviceEventMessage, { type: T }>;
+
+export const normalizeButtonRequestPayload = <T extends { code?: DeviceButtonRequestCode }>(
+    payload: T,
+): DeviceButtonRequestPayload => ({
+    ...payload,
+    code: payload.code || 'ButtonRequest_Other',
+});

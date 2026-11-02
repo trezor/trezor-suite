@@ -3,6 +3,7 @@ import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Column, Row, TextButton } from '@trezor/components';
 import { QuestionIcon } from '@trezor/icons';
+import { useNow } from '@trezor/react-utils';
 
 import { WalletLayout } from 'src/components/wallet';
 import { useGuideOpenNode } from 'src/hooks/guide';
@@ -10,12 +11,13 @@ import { useSelector } from 'src/hooks/suite';
 
 import { TronResourcesCard } from './TronResourcesCard/TronResourcesCard';
 import { TronStakedCard } from './TronStakedCard';
-import { TronUnstakingCard } from './TronUnstakingCard';
+import { TronUnstakingCard } from './TronUnstakingCard/TronUnstakingCard';
 import { TronVotingRewardsCard } from './TronVotingRewardsCard';
 import { TronWithdrawReadyBanner } from './TronWithdrawReadyBanner';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
 
 const TRON_STAKING_GUIDE_PATH = '/earn/staking/tron-trx-staking.md';
+const UNSTAKING_REFRESH_INTERVAL_MS = 60 * 1000;
 
 interface TronStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
@@ -27,6 +29,8 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
+    const nowSeconds = useNow(UNSTAKING_REFRESH_INTERVAL_MS) / 1000;
+
     return (
         <WalletLayout title="TR_NAV_STAKING" account={selectedAccount}>
             {isStakingActive ? (
@@ -37,9 +41,9 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
                     maxWidth={560}
                     margin={{ horizontal: 'auto' }}
                 >
-                    <TronWithdrawReadyBanner account={account} />
-                    <TronUnstakingCard account={account} />
+                    <TronWithdrawReadyBanner account={account} nowSeconds={nowSeconds} />
                     <TronVotingRewardsCard account={account} />
+                    <TronUnstakingCard account={account} nowSeconds={nowSeconds} />
                     <TronStakedCard account={account} />
                     <TronResourcesCard account={account} />
                     <Row justifyContent="center" padding={{ vertical: 20 }}>
@@ -54,7 +58,7 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
                     </Row>
                 </Column>
             ) : (
-                <EmptyStakingCard />
+                <EmptyStakingCard account={account} />
             )}
         </WalletLayout>
     );

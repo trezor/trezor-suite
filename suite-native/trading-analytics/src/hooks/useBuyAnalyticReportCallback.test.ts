@@ -28,14 +28,14 @@ describe('useBuyAnalyticReportCallback', () => {
     ): BuyAnalyticsPreloadedState =>
         mergePreloadedState({ wallet: getWalletState({ tradeType: 'buy' }) }, overrides);
 
-    const renderUseBuyAnalyticReportCallback = async ({
+    const renderUseBuyAnalyticReportCallback = ({
         candidateQuote: initialCandidateQuote,
         preloadedState = createPreloadedState(),
     }: {
         candidateQuote?: Parameters<typeof useBuyAnalyticReportCallback>[0];
         preloadedState?: BuyAnalyticsPreloadedState;
     } = {}) =>
-        await renderHookWithStoreProvider(
+        renderHookWithStoreProvider(
             ({ candidateQuote }) => useBuyAnalyticReportCallback(candidateQuote),
             {
                 preloadedState,

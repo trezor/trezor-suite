@@ -1,4 +1,4 @@
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const xpubExt1 =
     'tpubDADHV9u9Y6gkggintTdMjJE3be58zKNLhpxBQyuEM6Pwx3sN9JVLmMCMN4DNVwL9AKec27z5TaWcWuHzMXiGAtcra5DjwWbvppGX4gaEGVN';
@@ -87,7 +87,7 @@ const signTransactionMultisigChange: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['16c6c8', 'd80c34']),
+                refTxs: getRefTxs(['16c6c8', 'd80c34']),
             },
             result: {
                 serializedTx:
@@ -111,7 +111,7 @@ const signTransactionMultisigChange: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['16c6c8', 'd80c34']),
+                refTxs: getRefTxs(['16c6c8', 'd80c34']),
             },
             result: {
                 serializedTx:
@@ -135,7 +135,7 @@ const signTransactionMultisigChange: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['16c6c8', 'd80c34']),
+                refTxs: getRefTxs(['16c6c8', 'd80c34']),
             },
             result: {
                 serializedTx:
@@ -159,7 +159,7 @@ const signTransactionMultisigChange: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['16c6c8', 'd80c34']),
+                refTxs: getRefTxs(['16c6c8', 'd80c34']),
             },
             result: {
                 serializedTx:

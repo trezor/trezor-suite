@@ -26,8 +26,8 @@ jest.mock('@suite-common/wallet-core', () => ({
 describe('useShowReviewCancellationAlert', () => {
     let store: Store<CancelSignSendFormTransactionThunkState>;
 
-    const renderUseShowReviewCancellationAlert = async () =>
-        await renderHookWithStoreProvider(() => useShowReviewCancellationAlert(), {
+    const renderUseShowReviewCancellationAlert = () =>
+        renderHookWithStoreProvider(() => useShowReviewCancellationAlert(), {
             services: { store },
         });
 

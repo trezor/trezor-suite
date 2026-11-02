@@ -39,8 +39,8 @@ const summaryOutput: TransactionReviewSummaryOutput = {
 };
 
 describe('TransactionReviewOutputSummaryItem', () => {
-    const renderSummary = async (providerProps: TransactionReviewTestProviderProps = {}) =>
-        await renderWithTransactionReview(<TransactionReviewOutputSummaryItem />, {
+    const renderSummary = (providerProps: TransactionReviewTestProviderProps = {}) =>
+        renderWithTransactionReview(<TransactionReviewOutputSummaryItem />, {
             providerProps: { summaryOutput, ...providerProps },
         });
 

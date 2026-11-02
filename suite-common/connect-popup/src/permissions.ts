@@ -7,7 +7,14 @@ import {
     asCoinSymbol,
     isCoinSymbol,
 } from '@trezor/connect';
+import { isArrayMember } from '@trezor/utils';
 import { unique } from '@trezor/utils/src/unique';
+
+import {
+    CALL_SOURCE_WALLETCONNECT,
+    type ConnectCallSource,
+    UNKNOWN_PROCESS,
+} from './connectPopupTypes';
 
 // A `PermissionRequest.coin` is the canonical lowercase `CoinSymbol`: call-derived permissions are
 // lowercased in `coinPerm`, host-declared ones in `sanitizeRequestedPermissions`. Everything below
@@ -62,6 +69,25 @@ export const permissionsAreCovered = (
         granted.some(g => g.permission === req.permission && g.coin === req.coin),
     );
 
+/**
+ * Whether permissions remembered for `app` belong to the caller `source`: the same source type,
+ * origin and process.
+ */
+export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSource): boolean =>
+    app.type === source.type &&
+    app.origin === source.origin &&
+    app.process?.fullPath === source.process?.fullPath;
+
+/**
+ * Permissions are remembered only for a caller that can be told apart from others: not for a desktop
+ * process that could not be identified, and not for the origin `null` that browsers send for every
+ * sandboxed or local page. WalletConnect is excluded too: its consent lives in its own session.
+ */
+export const canRememberPermissions = (source: ConnectCallSource): boolean =>
+    source.type !== CALL_SOURCE_WALLETCONNECT &&
+    source.origin !== 'null' &&
+    source.process?.fullPath !== UNKNOWN_PROCESS.fullPath;
+
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
     const order: (CoinSymbol | undefined)[] = [];
     const byCoin = new Map<CoinSymbol | undefined, PermissionRequest['permission'][]>();
@@ -89,7 +115,7 @@ export const groupPermissionsByCoin = (permissions: PermissionRequest[]): Groupe
 // Runtime guard narrowing the untrusted `permission` value against the imported grantable set,
 // mirroring `isCoinSymbol` for coins.
 const isGrantablePermission = (value: string): value is PermissionRequest['permission'] =>
-    (GRANTABLE_PERMISSIONS as readonly string[]).includes(value);
+    isArrayMember(value, GRANTABLE_PERMISSIONS);
 
 // Sanitize the host-declared `requestedPermissions`: drop entries whose permission is not
 // grantable, `push_tx` on deeplinks, and unknown coins; lowercase each `coin` to its `CoinSymbol`.

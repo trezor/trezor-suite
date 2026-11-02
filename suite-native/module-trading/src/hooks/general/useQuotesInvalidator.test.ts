@@ -14,7 +14,7 @@ type State = TradingRootState;
 describe('useQuotesInvalidator', () => {
     let store: Store<State>;
 
-    const renderUseQuotesInvalidator = async ({
+    const renderUseQuotesInvalidator = ({
         isFormValid = false,
         isLoading = false,
         anyQuotesLoaded = false,
@@ -25,7 +25,7 @@ describe('useQuotesInvalidator', () => {
         })) as ActionCreatorWithoutPayload,
         getClearStateAction = (() => ({ type: 'clearStateAction' })) as ActionCreatorWithoutPayload,
     }: Partial<UseQuotesInvalidatorProps>) =>
-        await renderHookWithTradingProvider(props => useQuotesInvalidator(props), {
+        renderHookWithTradingProvider(props => useQuotesInvalidator(props), {
             services: { store },
             initialProps: {
                 isFormValid,

@@ -2,11 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    deviceActions,
-    selectIsDeviceInitialized,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { selectIsDeviceInitialized, selectSelectedDevice } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { selectIsDeviceSetupSupported } from '@suite-native/device';
@@ -18,8 +14,6 @@ import {
     type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList,
@@ -32,8 +26,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
  * to the Device Compromised screen can occur inbetween different flows.
  */
 export const useCloseDeviceCompromisedScreen = () => {
-    const { dispatch } = useServices(injectDispatch);
-
     const navigation = useNavigation<NavigationProps>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
@@ -42,15 +34,7 @@ export const useCloseDeviceCompromisedScreen = () => {
     const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const device = useSelector(selectSelectedDevice);
 
-    const dismissCheck = () => {
-        if (device?.id) {
-            dispatch(deviceActions.dismissFirmwareAuthenticityCheck(device.id));
-        }
-    };
-
     const handleClose = () => {
-        dismissCheck();
-
         if (!isDeviceInitialized && isDeviceSetupSupported) {
             navigation.popTo(RootStackRoutes.DeviceOnboardingStack, {
                 screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,

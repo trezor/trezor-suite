@@ -17,13 +17,10 @@ import { TokenYieldRateBadge } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type AccountAssetsTabListProps, type OnSelectAsset } from './types';
+import { useAccountOverviewListContentStyle } from './useAccountOverviewListContentStyle';
 
 const listStyle = prepareNativeStyle(() => ({
     flex: 1,
-}));
-
-const listContentStyle = prepareNativeStyle(({ spacings }) => ({
-    paddingHorizontal: spacings.sp16,
 }));
 
 type DefiTokenListItem = {
@@ -58,6 +55,7 @@ export const DefiTokensTab = ({
     onScroll,
 }: DefiTokensTabProps) => {
     const { applyStyle } = useNativeStyles();
+    const listContentStyle = useAccountOverviewListContentStyle();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -113,7 +111,7 @@ export const DefiTokensTab = ({
     return (
         <FlashList
             style={applyStyle(listStyle)}
-            contentContainerStyle={applyStyle(listContentStyle)}
+            contentContainerStyle={listContentStyle}
             data={listItems}
             keyExtractor={item => item.id}
             renderItem={renderItem}

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import {
     TRADING_EXCHANGE_FORM,
@@ -9,6 +10,7 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
+    type TradingFormAccountRootState,
     hasEip712SignDataType,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeAmountLimits,
@@ -26,7 +28,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
@@ -47,6 +48,14 @@ import { useTradingFormAccount } from '../useTradingFormAccount';
 import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
+    // React Compiler: react-hook-form edits `formState.errors` in place, so the object keeps one
+    // identity until the next `reset` and a compiled `Object.keys` of it -- this form's or the
+    // receive-address form's -- is never recomputed. A swap amount above the balance would keep the
+    // previous offer and leave Approve enabled. Naming `formState`, as the return value below does,
+    // cannot help: the guard compares the errors object itself. Remove once form validity derives
+    // from a value that changes identity when an error is added or cleared.
+    'use no memo';
+
     const type = 'exchange';
     const { dispatch } = useServices(injectDispatch);
     const savedFormValues = useSelector(selectTradingExchangeFormValues);
@@ -58,7 +67,9 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
-    const account = useSelector(state => selectTradingSendAccount(state, type));
+    const account = useSelector((state: TradingFormAccountRootState) =>
+        selectTradingSendAccount(state, type),
+    );
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
     const [isApproval, setIsApproval] = useState<boolean>(false);
@@ -98,9 +109,9 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'exchange',
         cryptoId: receiveCryptoSelect?.id,
-        nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
+        nonSuiteAccount: false,
     });
-    const { receiveAddress, extraField } = tradingReceiveAddress;
+    const { receiveAddress } = tradingReceiveAddress;
     const isReceiveAddressFormValid =
         Object.keys(tradingReceiveAddress.form.formState.errors).length === 0;
 
@@ -192,7 +203,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         useExchangeApproval({
             account,
             receiveAddress,
-            extraField,
         });
 
     const { confirmTrade } = useTradingExchangeTradeActions();
@@ -221,6 +231,10 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     return {
         type,
         ...methods,
+        // The spread copies react-hook-form's ref object, whose `formState` is replaced by a
+        // new proxy on every update. Naming it puts a moving dependency in the compiler's guard,
+        // so this context value is rebuilt when validation state changes.
+        formState,
 
         form: {
             state: {

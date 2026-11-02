@@ -47,8 +47,7 @@ jest.mock('./ExchangeUsdcPresetButton', () => ({
 }));
 
 describe('ExchangeFormQuoteDebugView', () => {
-    const renderDebugView = async () =>
-        await renderWithBasicProvider(<ExchangeFormQuoteDebugView />);
+    const renderDebugView = () => renderWithBasicProvider(<ExchangeFormQuoteDebugView />);
 
     beforeEach(() => {
         mockQuote = undefined;

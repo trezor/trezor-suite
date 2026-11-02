@@ -10,6 +10,7 @@ import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/featur
 import {
     type FlagsRootState,
     markNewContentIndicatorAsSeen,
+    setAssetPriceChartRange,
     setFlag,
     setNewContentIndicatorSeen,
 } from '@suite/flags';
@@ -25,7 +26,6 @@ import {
     selectDeviceByState,
     selectDeviceByStaticSessionId,
     selectDevices,
-    selectSelectedDevice,
 } from '@suite-common/device';
 import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
@@ -52,6 +52,8 @@ import {
     accountsActions,
     blockchainActions,
     changeNetworks,
+    closeHomeAssetTableFeedback,
+    closeHomeAssetTableNewBanner,
     earnOnboardingActions,
     explorerActions,
     phishingActions,
@@ -295,13 +297,6 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         },
     }),
     defineRememberedDeviceHandler({
-        match: [suiteSettingsActions.setCoinjoinReceiveWarningHidden.match],
-        getDevice: (_action, state) => selectSelectedDevice(state),
-        save: (_params, deps) => {
-            deps.dispatch(storageActions.saveSuiteSettingsThunk());
-        },
-    }),
-    defineRememberedDeviceHandler({
         match: [accountGraphSuccess.match, accountGraphFail.match],
         getDevice: (action, state) =>
             selectDevices(state).find(
@@ -380,10 +375,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
 
     if (accountsActions.removeAccount.match(action)) {
         action.payload.forEach(
-            storageActions.removeAccountWithDependencies({
-                db: api.extra.services.db,
-                getState: api.getState,
-            }),
+            storageActions.removeAccountWithDependencies({ db: api.extra.services.db }),
         );
     }
 
@@ -424,6 +416,10 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             messageSystemActions.fetchSuccessUpdate,
             messageSystemActions.dismissMessage,
             messageSystemActions.setConfigSource,
+            messageSystemActions.addMessage,
+            messageSystemActions.removeMessage,
+            messageSystemActions.addExperiment,
+            messageSystemActions.removeExperiment,
         )(action)
     ) {
         api.dispatch(storageActions.saveMessageSystemThunk());
@@ -545,6 +541,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             deviceActions.connectDevice,
             deviceActions.deviceChanged,
             persistentDeviceDataActions.setEntropyCheckResult,
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult,
             persistentDeviceDataActions.setDeviceAuthenticityResult,
             persistentDeviceDataActions.setManualDeviceCheckSuccess,
             persistentDeviceDataActions.clearDevicePersistentData,
@@ -568,6 +565,8 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             setAddressDisplayType,
             setHomeAssetsTableGrouping,
             setAreHomeAssetSmallBalancesShown,
+            closeHomeAssetTableNewBanner,
+            closeHomeAssetTableFeedback,
             setSuspiciousTransactionsFilter,
         )(action)
     ) {
@@ -576,6 +575,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         isAnyOf(
             suiteSettingsActions.setLanguage,
             setFlag,
+            setAssetPriceChartRange,
             markNewContentIndicatorAsSeen,
             setNewContentIndicatorSeen,
             suiteSettingsActions.setDebugMode,

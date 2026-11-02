@@ -1,7 +1,11 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type Coins, type CryptoId, type Platforms, type ProviderMetadata } from 'invity-api';
 
-import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type PrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
 
 import {
@@ -144,6 +148,27 @@ const tradingCommonSlice = createSlice({
         },
         setTradingActiveSection(state: TradingState, action: PayloadAction<TradingType>) {
             state.activeSection = action.payload;
+        },
+        bindTradingAccount(
+            state: TradingState,
+            action: PayloadAction<{ type: TradingType; accountKey: Account['key'] }>,
+        ) {
+            const { type, accountKey } = action.payload;
+            const section = state[type];
+
+            if (section.tradingAccountKey !== accountKey) {
+                section.quotes = [];
+                section.quotesRequest = undefined;
+                section.formValues = undefined;
+                section.selectedQuote = undefined;
+                section.amountLimits = undefined;
+            }
+            section.tradingAccountKey = accountKey;
+            section.transactionId = undefined;
+            if (type === 'buy') {
+                state.buy.receiveAccountKey = accountKey;
+            }
+            state.activeSection = type;
         },
         setTradingFromPrefilledAccount(
             state: TradingState,

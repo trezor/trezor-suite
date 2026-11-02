@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -28,6 +29,7 @@ const renderSheet = async (
             overrides: {
                 wallet: { trading: { exchange: { selectedQuote: testQuote } } },
             },
+            services: { networks: mockNetworksServices() },
         },
     );
     await act(async () => {

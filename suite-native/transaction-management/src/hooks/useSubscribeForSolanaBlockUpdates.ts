@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { type Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import TrezorConnect, { asCoinSymbol } from '@trezor/connect';
 
 export const useSubscribeForSolanaBlockUpdates = (account: Account | null) => {

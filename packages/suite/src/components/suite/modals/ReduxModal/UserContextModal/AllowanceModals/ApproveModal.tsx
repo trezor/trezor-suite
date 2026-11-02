@@ -1,9 +1,8 @@
-import { FormProvider } from 'react-hook-form';
-
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
+import { Form } from '@suite/form';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -81,8 +80,10 @@ export const ApproveModal = (props: ApproveModalProps) => {
         hasPreapprovedAmount &&
         isAllowanceUnlimited({ amount: preapprovedAmount, decimals: token.decimals });
 
+    const { formState } = methods;
+
     return (
-        <FormProvider {...methods}>
+        <Form form={methods} formState={formState}>
             <Modal
                 onCancel={handleClose}
                 intent="brand"
@@ -216,6 +217,6 @@ export const ApproveModal = (props: ApproveModalProps) => {
                     </Column>
                 </Column>
             </Modal>
-        </FormProvider>
+        </Form>
     );
 };

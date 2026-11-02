@@ -26,10 +26,10 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('HistoryButton', () => {
-    const renderHistoryButton = async (
+    const renderHistoryButton = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(<HistoryButton />, {
+        renderWithTradingProvider(<HistoryButton />, {
             overrides,
         });
 

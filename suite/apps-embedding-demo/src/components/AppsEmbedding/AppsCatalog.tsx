@@ -1,5 +1,8 @@
 import { APPS_EMBEDDING_CATALOG, getPlatformSpecificEntry } from '@suite-common/apps-embedding';
 import { Button, Card, Column, Row, Text } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
+
+import { ForgetAppDataButton } from './ForgetAppDataButton';
 
 type AppsCatalogProps = {
     selectedEntryId: string | undefined;
@@ -19,7 +22,9 @@ export const AppsCatalog = ({ selectedEntryId, onSelect }: AppsCatalogProps) => 
                             </Text>
                         </Column>
                         <Row gap={8} alignItems="flex-start">
-                            {/* TODO: next PR - "Forget data" for persistent sessions. */}
+                            {/* Only desktop gives an entry a session of its own to forget. */}
+                            {getPlatformSpecificEntry(entry, 'desktop')?.persistSession === true &&
+                                isDesktop() && <ForgetAppDataButton entryId={entry.id} />}
                             <Button
                                 size="small"
                                 intent="brand"
@@ -27,7 +32,7 @@ export const AppsCatalog = ({ selectedEntryId, onSelect }: AppsCatalogProps) => 
                                 onClick={() => onSelect(entry.id)}
                                 data-testid={`@settings/apps-embedding/embed/${entry.id}`}
                             >
-                                Embed
+                                Open
                             </Button>
                         </Row>
                     </Row>

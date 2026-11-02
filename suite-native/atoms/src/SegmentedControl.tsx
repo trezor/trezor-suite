@@ -29,13 +29,26 @@ const indicatorStyle = prepareNativeStyle(utils => ({
     ...utils.boxShadows.small,
 }));
 
-const optionStyle = prepareNativeStyle(utils => ({
+type OptionStyleProps = {
+    isCompact: boolean;
+};
+
+const optionStyle = prepareNativeStyle<OptionStyleProps>((utils, { isCompact }) => ({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 6,
     paddingHorizontal: 24,
     borderRadius: utils.borders.radii.round,
+    extend: [
+        {
+            condition: isCompact,
+            style: {
+                minHeight: 40,
+                paddingHorizontal: 8,
+            },
+        },
+    ],
 }));
 
 export type SegmentedControlOption<TValue extends string> = {
@@ -47,6 +60,7 @@ export type SegmentedControlProps<TValue extends string> = {
     options: Array<SegmentedControlOption<TValue>>;
     selectedValue: TValue;
     onValueChange: (value: TValue) => void;
+    isCompact?: boolean;
     testID?: string;
 };
 
@@ -54,6 +68,7 @@ export const SegmentedControl = <TValue extends string>({
     options,
     selectedValue,
     onValueChange,
+    isCompact = false,
     testID,
 }: SegmentedControlProps<TValue>) => {
     const { applyStyle } = useNativeStyles();
@@ -96,7 +111,7 @@ export const SegmentedControl = <TValue extends string>({
                 return (
                     <PressableOpacity
                         key={option.value}
-                        style={applyStyle(optionStyle)}
+                        style={applyStyle(optionStyle, { isCompact })}
                         onPress={() => onValueChange(option.value)}
                         accessibilityRole="tab"
                         accessibilityState={{ selected: isSelected }}
@@ -105,6 +120,8 @@ export const SegmentedControl = <TValue extends string>({
                         <Text
                             variant="body-md"
                             color={isSelected ? 'contentBrand' : 'contentSecondary'}
+                            numberOfLines={isCompact ? 1 : undefined}
+                            textAlign={isCompact ? 'center' : undefined}
                         >
                             {option.label}
                         </Text>

@@ -20,8 +20,8 @@ const testQuote = exchangeQuotes[0];
 describe('ExchangeConfirmationHeader', () => {
     let store: Store<State>;
 
-    const renderHeader = async (props: ExchangeConfirmationHeaderProps) =>
-        await renderWithStoreProvider(<ExchangeConfirmationHeader {...props} />, {
+    const renderHeader = (props: ExchangeConfirmationHeaderProps) =>
+        renderWithStoreProvider(<ExchangeConfirmationHeader {...props} />, {
             services: { store },
         });
 

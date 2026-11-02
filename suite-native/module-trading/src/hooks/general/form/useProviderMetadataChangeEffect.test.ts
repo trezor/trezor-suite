@@ -33,8 +33,8 @@ jest.mock('@react-navigation/native', () => {
 describe('useProviderMetadataChangeEffect', () => {
     let store: Store<State>;
 
-    const renderUseProviderMetadataChangeEffect = async (exchange: string | undefined) =>
-        await renderHookWithTradingProvider(
+    const renderUseProviderMetadataChangeEffect = (exchange: string | undefined) =>
+        renderHookWithTradingProvider(
             () => {
                 const form = useForm<ProviderFormValues>({
                     defaultValues: { quote: { exchange } },

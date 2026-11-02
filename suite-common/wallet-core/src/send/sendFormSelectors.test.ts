@@ -10,10 +10,12 @@ import {
     selectSendFormReviewLastButtonCode,
 } from './sendFormSelectors';
 
+const DEVICE_PATH = 'device-path';
 const stateWith = (buttonRequests: ButtonRequest[]): DeviceRootState =>
     ({
         device: {
-            selectedDevice: mockSuiteDevice({ buttonRequests }),
+            selectedDevice: mockSuiteDevice({ path: DEVICE_PATH }),
+            buttonRequestsByPath: { [DEVICE_PATH]: buttonRequests },
         },
     }) as unknown as DeviceRootState;
 

@@ -13,12 +13,15 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
 import { type YieldAllowanceFormDraftTransactionType } from '../../types';
+import { useEarnReviewCancellationAnalytics } from '../earn/useEarnReviewCancellationAnalytics';
 
 type UseYieldApprovalReviewNavigationParams = {
     flowKey: string;
     onReviewLeave?: () => void;
     shouldConfirmCancellation: boolean;
     transactionType: YieldAllowanceFormDraftTransactionType;
+    networkSymbol: string;
+    isSigned: boolean;
 };
 
 export const useYieldApprovalReviewNavigation = ({
@@ -26,30 +29,44 @@ export const useYieldApprovalReviewNavigation = ({
     onReviewLeave,
     shouldConfirmCancellation,
     transactionType,
+    networkSymbol,
+    isSigned,
 }: UseYieldApprovalReviewNavigationParams) => {
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowYieldReviewCancellationAlert();
     const isCleanupHandledRef = useRef(false);
     const isReviewCancelledByUserRef = useRef(false);
+    const reportReviewCancellation = useEarnReviewCancellationAnalytics({
+        networkSymbol,
+        txType: 'yield',
+    });
 
     useDisableIOSGesture();
 
-    const cleanupReview = useCallback(() => {
-        dispatch(sendFormActions.discardTransaction());
+    const cleanupReview = useCallback(
+        (actionType?: string) => {
+            if (isSigned) reportReviewCancellation(actionType);
+            dispatch(sendFormActions.discardTransaction());
 
-        if (transactionType === 'approve') {
-            dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
-        }
-    }, [dispatch, flowKey, transactionType]);
+            if (transactionType === 'approve') {
+                dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
+            }
+        },
+        [dispatch, flowKey, transactionType, isSigned, reportReviewCancellation],
+    );
 
-    const cleanupCanceledReview = useCallback(() => {
-        dispatch(cancelSignSendFormTransactionThunk());
+    const cleanupCanceledReview = useCallback(
+        (actionType?: string) => {
+            if (isSigned) reportReviewCancellation(actionType);
+            dispatch(cancelSignSendFormTransactionThunk());
 
-        if (transactionType === 'approve') {
-            dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
-        }
-    }, [dispatch, flowKey, transactionType]);
+            if (transactionType === 'approve') {
+                dispatch(handleYieldApproveCancelThunk({ flowType: 'deposit', flowKey }));
+            }
+        },
+        [dispatch, flowKey, transactionType, isSigned, reportReviewCancellation],
+    );
 
     const markReviewNavigationSuccess = useCallback(() => {
         isCleanupHandledRef.current = true;
@@ -77,7 +94,7 @@ export const useYieldApprovalReviewNavigation = ({
                     if (wasReviewCanceled) {
                         onReviewLeave?.();
                         isReviewCancelledByUserRef.current = true;
-                        cleanupCanceledReview();
+                        cleanupCanceledReview(event.data.action.type);
                         isCleanupHandledRef.current = true;
                         unsubscribe();
                         navigation.dispatch(event.data.action);
@@ -89,13 +106,13 @@ export const useYieldApprovalReviewNavigation = ({
 
             if (event.data.action.type === 'GO_BACK') {
                 onReviewLeave?.();
-                cleanupReview();
+                cleanupReview(event.data.action.type);
 
                 return;
             }
 
             onReviewLeave?.();
-            cleanupReview();
+            cleanupReview(event.data.action.type);
         });
 
         return unsubscribe;

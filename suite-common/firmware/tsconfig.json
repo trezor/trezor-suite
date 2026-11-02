@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../device" },
+        { "path": "../locale" },
         { "path": "../suite-types" },
         { "path": "../thp" },
         { "path": "../../packages/connect" },

@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -25,6 +26,7 @@ describe('TokenIconGroup', () => {
                 assets={[createAsset(1), createAsset(2), createAsset(3), createAsset(4)]}
                 testID={testID}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         expect(getByTestId(`${testID}/icon-0`)).toHaveStyle({ marginLeft: 0 });

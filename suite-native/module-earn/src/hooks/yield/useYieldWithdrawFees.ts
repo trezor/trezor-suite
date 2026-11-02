@@ -3,6 +3,7 @@ import { useSelector, useStore } from 'react-redux';
 
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import {
+    type ComposeYieldWithdrawErrorReason,
     type FeesRootState,
     type FormDraftRootState,
     type ResolvedYieldFlowData,
@@ -38,8 +39,10 @@ import { createThunk, injectDispatch } from '@trezor/redux-utils';
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { getYieldWithdrawFormDraftKey } from '../../utils/yield/yieldWithdrawUtils';
+import { useComposeErrorHandler } from '../earn/useComposeErrorHandler';
 
 type UseYieldWithdrawFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
+    onComposeError?: (reason: ComposeYieldWithdrawErrorReason) => void;
     amount: string;
     flowType: YieldWithdrawFlowType;
     isEnabled: boolean;
@@ -212,6 +215,7 @@ export const useYieldWithdrawFees = ({
     flowData,
     flowKey,
     isEnabled,
+    onComposeError,
 }: UseYieldWithdrawFeesParams): UseYieldWithdrawFeesResult => {
     const { dispatch } = useServices(injectDispatch);
     const store = useStore<FeesRootState>();
@@ -230,6 +234,15 @@ export const useYieldWithdrawFees = ({
         () => (flowKey ? getYieldWithdrawFormDraftKey(flowKey) : ''),
         [flowKey],
     );
+    const { reportError: reportComposeError, resetError: resetComposeError } =
+        useComposeErrorHandler({
+            contextKey: `${formDraftKey}/${flowType}`,
+            onError: onComposeError,
+        });
+    const handleRetryFeeEstimation = useCallback(() => {
+        resetComposeError();
+        retryFeeEstimation();
+    }, [resetComposeError, retryFeeEstimation]);
     const formDraft = useSelector((state: FormDraftRootState) =>
         formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
     );
@@ -247,7 +260,6 @@ export const useYieldWithdrawFees = ({
     const selectedFeeLevel = feeLevels[selectedFee];
     const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const { isFeeUnavailable } = getFeeAvailability({
-        fee,
         feeLevels,
         selectedFee,
         isLoading: isComposingWithdrawFee,
@@ -303,6 +315,7 @@ export const useYieldWithdrawFees = ({
                 }
 
                 if (composeResult.type === 'error') {
+                    reportComposeError(composeResult.reason);
                     setHasFeeEstimationError(true);
                     dispatch(formDraftActions.removeDraft({ key: withdrawFormDraftKey }));
                     setPreparedAction(null);
@@ -358,6 +371,7 @@ export const useYieldWithdrawFees = ({
                     : undefined;
 
                 if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
+                    reportComposeError('missing-fee-level');
                     setHasFeeEstimationError(true);
                     dispatch(formDraftActions.removeDraft({ key: withdrawFormDraftKey }));
                     setPreparedAction(null);
@@ -375,6 +389,7 @@ export const useYieldWithdrawFees = ({
                         },
                     }),
                 );
+                resetComposeError();
                 setPreparedAction({
                     amount: withdrawAmount,
                     flowType: currentFlowType,
@@ -382,6 +397,7 @@ export const useYieldWithdrawFees = ({
                 });
             } catch {
                 if (requestId === requestIdRef.current) {
+                    reportComposeError('fee-estimation-failed');
                     setHasFeeEstimationError(true);
                     dispatch(formDraftActions.removeDraft({ key: withdrawFormDraftKey }));
                     setPreparedAction(null);
@@ -392,7 +408,7 @@ export const useYieldWithdrawFees = ({
                 }
             }
         },
-        [dispatch, setHasFeeEstimationError, store],
+        [dispatch, reportComposeError, resetComposeError, setHasFeeEstimationError, store],
     );
 
     useEffect(() => {
@@ -444,7 +460,7 @@ export const useYieldWithdrawFees = ({
         isComposingWithdrawFee,
         isFeeUnavailable,
         preparedAction,
-        retryFeeEstimation,
+        retryFeeEstimation: handleRetryFeeEstimation,
         selectedFee,
         updateFeeLevelThunk: updateYieldWithdrawSelectedFeeLevelThunk,
     };

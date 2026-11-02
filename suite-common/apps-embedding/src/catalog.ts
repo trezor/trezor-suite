@@ -56,6 +56,31 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
         ],
     },
     {
+        id: 'tor-check',
+        name: 'Tor check',
+        description:
+            "check.torproject.org — reports whether the visitor arrived over Tor and from which address. A quick way to see that the embedded page follows Suite's Tor setting; meaningful on desktop only, the one platform where Suite routes anything through Tor.",
+        url: 'https://check.torproject.org/',
+        communication: [],
+        platformSpecific: [
+            {
+                kind: 'web',
+                expectedBehavior:
+                    "Suite web routes nothing through Tor, so the page can only report the browser's own address. Whether it renders at all depends on the site's framing headers and, in preview/production builds, on frame-src.",
+            },
+            {
+                kind: 'desktop',
+                expectedBehavior:
+                    'With Tor off the page says the browser is not using Tor and shows the real address (via the system proxy, if any). With Tor on it congratulates and shows a Tor exit address; opened while Tor is still bootstrapping it fails to load rather than leaking, since the session is already routed. Toggling Tor while the page is open drops its connections — reload and the verdict flips.',
+            },
+            {
+                kind: 'mobile',
+                expectedBehavior:
+                    "Suite mobile has no Tor at all; the page reports the device's own address.",
+            },
+        ],
+    },
+    {
         id: 'apple-pay-demo',
         name: 'Apple Pay demo',
         description: 'Apple demo merchant exercising the ApplePaySession API.',
@@ -103,46 +128,23 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 redirectExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
                 // The sheet prefers a window of its own — it posts the result back through
                 // window.opener — and the sign-in step inside it does the same.
-                popupExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
+                popupExternalOrigins: [
+                    'https://pay.google.com',
+                    'https://accounts.google.com',
+                    'https://accounts.youtube.com',
+                    'https://accounts.google.cz',
+                ],
             },
             {
                 kind: 'mobile',
                 expectedBehavior:
-                    'Google Pay does not work in plain WebViews at all — it requires Chrome Custom Tabs.',
-            },
-        ],
-        communication: [],
-    },
-    {
-        // Deliberately a near-duplicate of `google-pay-demo`: the two differ in
-        // `openPopupInSystemBrowser` and nothing else, so the popup destinations can be compared on
-        // the same flow without editing the catalog. One of them goes away once that comparison is
-        // settled.
-        id: 'google-pay-demo-system-browser',
-        name: 'Google Pay demo (system browser popup)',
-        description:
-            'The same Google Pay demo, with the payment sheet handed to the default browser instead of an app window.',
-        url: 'https://gpay-live-demo.web.app/',
-        platformSpecific: [
-            {
-                kind: 'web',
-                expectedBehavior:
-                    'No different from the other Google Pay entry — the popup destination is a desktop-host setting and the iframe cannot act on it.',
-                allow: 'payment',
-            },
-            {
-                kind: 'desktop',
-                expectedBehavior:
-                    'The sheet opens in the default browser and the embedded page keeps none of its cookies, so watch whether the flow completes at all: without window.opener the merchant page can only learn the result from a redirect back to itself. The event log says "opened in the system browser". Refused while Tor is running, since the handoff would leave the proxy.',
+                    "Google's web SDK does not support iOS web views, and Android WebView shows the sheet only with the Payment Request API switched on (Android System WebView 137+, not enabled in Suite), so the button does nothing in the WebView on either platform. The sheet needs a popup, which the WebView denies, and the site then redirects at the top level instead, which originWhitelist permits. The system browser runs the flow; persistSession keeps its Google sign-in between openings on iOS, and Chrome Custom Tabs keep it regardless.",
+                // As on desktop, a Google account that stays signed in is what makes the sheet
+                // reachable at all on a second run.
                 persistSession: true,
-                openPopupInSystemBrowser: true,
-                redirectExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
-                popupExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
-            },
-            {
-                kind: 'mobile',
-                expectedBehavior:
-                    'Google Pay does not work in plain WebViews at all — it requires Chrome Custom Tabs.',
+                // Where the popup is denied the site falls back to a top-level redirect, and the
+                // sign-in step inside it hops the same way.
+                originWhitelist: ['https://pay.google.com', 'https://accounts.google.com'],
             },
         ],
         communication: [],
@@ -163,12 +165,15 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'desktop',
                 expectedBehavior:
                     'Loads in the WebContentsView — X-Frame-Options does not apply to a top-level browsing context.',
-                openPopupInSystemBrowser: true,
+                popupExternalOrigins: ['https://accounts.youtube.com'],
             },
             {
                 kind: 'mobile',
                 expectedBehavior:
                     'The page loads, but Google refuses OAuth in embedded webviews (disallowed_useragent).',
+                // Signing in bounces the main frame through accounts.youtube.com; on desktop the
+                // same hop happens in a popup.
+                originWhitelist: ['https://accounts.youtube.com'],
             },
         ],
     },
@@ -189,7 +194,6 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'desktop',
                 expectedBehavior:
                     'PaymentRequest constructor exists but Electron ships no payment apps.',
-                openPopupInSystemBrowser: true,
             },
             {
                 kind: 'mobile',
@@ -220,6 +224,32 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'mobile',
                 expectedBehavior:
                     'Loads in the WebView, a top-level browsing context. Expect a 401 from the develop site in a develop build: the WebView is given no basicAuthCredential to answer its HTTP Basic challenge with.',
+            },
+        ],
+    },
+    {
+        id: 'qr-code-scanner',
+        name: 'QR code scanner',
+        description:
+            'qrscanner.net — a QR code reader that scans the camera feed on the device (the nimiq qr-scanner library) and uploads images to its server for decoding. The camera entry: each host decides whether the page gets the camera at all, and the page shows what it got.',
+        url: 'https://qrscanner.net/',
+        communication: [],
+        platformSpecific: [
+            {
+                kind: 'web',
+                expectedBehavior:
+                    'Iframe refused (X-Frame-Options: SAMEORIGIN as of 2026-10-21) — observe how the refusal renders. Were it framed, allow=camera would delegate the camera in dev only: preview/production builds block the frame with their own frame-src first and keep the camera from a cross-origin frame with permissions-policy camera=(self).',
+                allow: 'camera',
+            },
+            {
+                kind: 'desktop',
+                expectedBehavior:
+                    "Loads in the WebContentsView, but the in-app browser session refuses every permission, so the camera mode cannot start; image upload still works, decoded by the site's server behind a Cloudflare Turnstile check. A decoded link is a target=_blank anchor: denied and reported as a popup.",
+            },
+            {
+                kind: 'mobile',
+                expectedBehavior:
+                    "Loads in the WebView. iOS denies the camera (EmbeddedAppWebView answers every capture request with deny), so the camera mode cannot start; Android WebView grants the camera once Suite holds the permission and asks the OS for it otherwise, so scanning works there. Image upload works on both, decoded by the site's server behind a Cloudflare Turnstile check. A decoded link is a target=_blank anchor: denied and reported as a popup. The scan history lives in localStorage, so it is gone on the next opening as long as the entry does not persist. In the system browser Safari or Chrome asks for the camera itself — on iOS in the ephemeral session this non-persisting entry gets; observe whether that one grants it too.",
             },
         ],
     },

@@ -29,6 +29,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type AccountAssetsTabListProps } from './types';
+import { useAccountOverviewListContentStyle } from './useAccountOverviewListContentStyle';
 
 type InactiveTokensTabProps = AccountAssetsTabListProps & {
     accountKey: AccountKey;
@@ -51,10 +52,6 @@ const listFooterStyle = prepareNativeStyle(utils => ({
 
 const listStyle = prepareNativeStyle(() => ({
     flex: 1,
-}));
-
-const listContentStyle = prepareNativeStyle(({ spacings }) => ({
-    paddingHorizontal: spacings.sp16,
 }));
 
 type InactiveTokensSearchHeaderProps = {
@@ -93,6 +90,7 @@ export const InactiveTokensTab = ({
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
     const { applyStyle } = useNativeStyles();
+    const listContentStyle = useAccountOverviewListContentStyle();
     const { dispatch } = useServices(injectDispatch);
 
     const { inactiveTokens, isLoading } = useInactiveStellarTokens(accountKey);
@@ -170,7 +168,7 @@ export const InactiveTokensTab = ({
     return (
         <FlashList
             style={applyStyle(listStyle)}
-            contentContainerStyle={applyStyle(listContentStyle)}
+            contentContainerStyle={listContentStyle}
             data={filteredTokens}
             keyExtractor={item => item.contract}
             renderItem={renderItem}

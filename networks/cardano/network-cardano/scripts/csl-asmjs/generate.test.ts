@@ -32,21 +32,21 @@ describe('generated Cardano Serialization Lib asm.js build', () => {
     });
 
     it('ignores references inside comments of coin selection', () => {
-        const libDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coin-selection-'));
+        const srcDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coin-selection-'));
         try {
             fs.writeFileSync(
-                path.join(libDir, 'sign.js'),
+                path.join(srcDir, 'sign.ts'),
                 [
-                    'const CardanoWasm = __importStar(require("@emurgo/cardano-serialization-lib-nodejs"));',
+                    "import * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';",
                     '// CardanoWasm.Commented.line',
                     '/* CardanoWasm.Commented.block */ CardanoWasm.Vkey.new();',
                     "const url = 'https://trezor.io'; CardanoWasm.Vkey.from_bytes();",
                 ].join('\n'),
             );
 
-            expect(findCoinSelectionClassNames(libDir)).toEqual(['Vkey']);
+            expect(findCoinSelectionClassNames(srcDir)).toEqual(['Vkey']);
         } finally {
-            fs.rmSync(libDir, { recursive: true, force: true });
+            fs.rmSync(srcDir, { recursive: true, force: true });
         }
     });
 
@@ -96,25 +96,48 @@ describe('generated Cardano Serialization Lib asm.js build', () => {
             '}',
         ].join('\n');
 
-        const withCoinSelection = (source: string, run: (libDir: string) => void) => {
-            const libDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coin-selection-'));
+        const withCoinSelection = (
+            files: Record<string, string>,
+            run: (srcDir: string) => void,
+        ) => {
+            const srcDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coin-selection-'));
             try {
-                fs.writeFileSync(path.join(libDir, 'compose.js'), source);
-                run(libDir);
+                Object.entries(files).forEach(([name, source]) =>
+                    fs.writeFileSync(path.join(srcDir, name), source),
+                );
+                run(srcDir);
             } finally {
-                fs.rmSync(libDir, { recursive: true, force: true });
+                fs.rmSync(srcDir, { recursive: true, force: true });
             }
         };
 
         it('follows returned classes and keeps only the members coin selection calls', () => {
             withCoinSelection(
-                [
-                    'const CardanoWasm = __importStar(require("@emurgo/cardano-serialization-lib-nodejs"));',
-                    'const body = CardanoWasm.Builder.new().build();',
-                    'body.to_hex(); CardanoWasm.min_fee(body);',
-                ].join('\n'),
-                libDir => {
-                    expect(findReachableExports(libDir, glueSource)).toEqual([
+                {
+                    'compose.ts': [
+                        "import * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';",
+                        'const body = CardanoWasm.Builder.new().build();',
+                        'body.to_hex();',
+                    ].join('\n'),
+                    'fee.mjs': [
+                        "import * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';",
+                        'CardanoWasm.min_fee(body);',
+                    ].join('\n'),
+                    'types.ts': [
+                        "import type * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';",
+                        'export type Output = CardanoWasm.Body;',
+                    ].join('\n'),
+                    'compose.test.tsx': [
+                        "import * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';",
+                        'CardanoWasm.Unreachable.new().to_hex(); CardanoWasm.Builder.new().unused();',
+                    ].join('\n'),
+                    'glue.d.ts': [
+                        "import * as CardanoWasm from '@emurgo/cardano-serialization-lib-nodejs';",
+                        'CardanoWasm.Unreachable.new();',
+                    ].join('\n'),
+                },
+                srcDir => {
+                    expect(findReachableExports(srcDir, glueSource)).toEqual([
                         '__wbindgen_free',
                         'body_to_hex',
                         'builder_build',
@@ -126,8 +149,8 @@ describe('generated Cardano Serialization Lib asm.js build', () => {
         });
 
         it('rejects a computed member call it cannot resolve', () => {
-            withCoinSelection('const body = builder["build"]();', libDir => {
-                expect(() => findReachableExports(libDir, glueSource)).toThrow(
+            withCoinSelection({ 'compose.ts': 'const body = builder["build"]();' }, srcDir => {
+                expect(() => findReachableExports(srcDir, glueSource)).toThrow(
                     'computed member call',
                 );
             });
@@ -135,9 +158,12 @@ describe('generated Cardano Serialization Lib asm.js build', () => {
 
         it('rejects an import form it cannot resolve', () => {
             withCoinSelection(
-                'import * as CardanoWasm from "@emurgo/cardano-serialization-lib-nodejs";',
-                libDir => {
-                    expect(() => findReachableExports(libDir, glueSource)).toThrow(
+                {
+                    'compose.ts':
+                        "import { Builder } from '@emurgo/cardano-serialization-lib-nodejs';",
+                },
+                srcDir => {
+                    expect(() => findReachableExports(srcDir, glueSource)).toThrow(
                         'unrecognised Cardano Serialization Lib import',
                     );
                 },
@@ -145,10 +171,10 @@ describe('generated Cardano Serialization Lib asm.js build', () => {
         });
 
         it('rejects a glue class line it cannot attribute to a method', () => {
-            withCoinSelection('', libDir => {
+            withCoinSelection({ 'compose.ts': '' }, srcDir => {
                 const getterGlue = glueSource.replace('    to_hex() {', '    get hex() {');
 
-                expect(() => findReachableExports(libDir, getterGlue)).toThrow(
+                expect(() => findReachableExports(srcDir, getterGlue)).toThrow(
                     'unrecognised line in glue class Body',
                 );
             });

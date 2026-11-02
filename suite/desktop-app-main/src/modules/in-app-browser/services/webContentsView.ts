@@ -1,0 +1,374 @@
+import { WebContentsView } from 'electron';
+
+import { type InAppBrowserOpenPayload } from '@suite/desktop-app-api';
+import {
+    type AppsEmbeddingCatalogEntry,
+    getAppsEmbeddingCatalogEntry,
+    getAppsEmbeddingCatalogEntryUrl,
+    getPlatformSpecificEntry,
+} from '@suite-common/apps-embedding';
+import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
+import { safeParseUrl } from '@trezor/utils';
+
+import { SERVICE_NAME } from '../constants';
+import { activeViewContext, inAppBrowserContext, inAppBrowserWebContentsIds } from '../context';
+import { handleZoomChanged } from './dimensions';
+import {
+    getActiveWebContents,
+    isNavigationToAllowedOrigin,
+    sendEventToRenderer,
+    waitUntilDestroyed,
+} from './general';
+import { registerPopup, registerPopupOpener } from './popup';
+import { applyTorProxy, forgetInMemorySessionData, resolveSessionForOpen } from './session';
+
+// Unparsable entries are dropped rather than rejecting the whole open call: an allowlist that
+// cannot be parsed can only ever widen nothing.
+const toOrigins = (urls: string[]) =>
+    urls
+        .map(url => safeParseUrl(url)?.origin)
+        .filter((origin): origin is string => origin !== undefined);
+
+async function sendNavigationState() {
+    const webContents = await getActiveWebContents();
+
+    if (!webContents) return;
+
+    const { navigationHistory } = webContents;
+    const { mainWindowProxy } = await inAppBrowserContext.get();
+
+    sendEventToRenderer(mainWindowProxy, {
+        type: 'navigation-state',
+        url: webContents.getURL(),
+        canGoBack: navigationHistory.canGoBack(),
+        canGoForward: navigationHistory.canGoForward(),
+    });
+}
+
+/**
+ * The global will-navigate lock in createDesktopMainApp.ts consults this predicate and then defers entirely:
+ * the per-view listener installed in `openView` is what decides, so that a blocked navigation can be reported to the renderer from here.
+ */
+export function isWebContentsOfInAppBrowser(webContentsId: number) {
+    return inAppBrowserWebContentsIds.has(webContentsId);
+}
+
+export async function closeView() {
+    const { activeView, openPopups } = await activeViewContext.get();
+
+    if (!activeView) {
+        return;
+    }
+
+    // Null at runtime (despite the typing) or destroyed once the page has closed itself, e.g.
+    // `window.close()` on its only history entry; the view outlives its WebContents.
+    const { webContents } = activeView;
+    const liveWebContents = webContents && !webContents.isDestroyed() ? webContents : undefined;
+
+    if (liveWebContents) inAppBrowserWebContentsIds.delete(liveWebContents.id);
+
+    const { mainWindowProxy, appliedProxyRules, logger } = await inAppBrowserContext.get();
+
+    logger.info(SERVICE_NAME, 'Closing embedded view');
+
+    const mainWindow = mainWindowProxy.getInstance();
+
+    mainWindow?.webContents.off('zoom-changed', handleZoomChanged);
+    mainWindow?.contentView.removeChildView(activeView);
+
+    liveWebContents?.closeDevTools();
+
+    Array.from(openPopups).forEach(popupWindow => popupWindow.destroy());
+
+    liveWebContents?.close();
+
+    // With the page and its popups gone there is nothing whose connections a re-route would have
+    // to close, and the next open routes its session afresh.
+    appliedProxyRules.clear();
+
+    await activeViewContext.insert(() => ({
+        activeView: undefined,
+        activeEntryId: undefined,
+        allowedNavigationOrigins: new Set(),
+        allowedPopupOrigins: new Set(),
+        opensPopupInSystemBrowser: false,
+    }));
+
+    // `close()` only asks the page to go: its unload handlers still run and may write to its
+    // storage until the WebContents is destroyed. The in-memory session is emptied once it is
+    // gone, so that nothing lands after the clear — and before this call returns, so that the
+    // next open, queued behind it, starts on an empty session instead of losing its own fresh
+    // state to a late clear.
+    if (liveWebContents) {
+        await waitUntilDestroyed(liveWebContents);
+    }
+
+    await forgetInMemorySessionData();
+
+    // `lastReportedRect` deliberately survives: switching sites tears the view down and builds
+    // a new one, while the renderer's region stays exactly where it was and so never resizes.
+    // Clearing here would leave the replacement with no geometry and permanently hidden.
+}
+
+type OpenTarget = {
+    url: string;
+    /** The catalog entry being opened; a custom url has none. */
+    entry: AppsEmbeddingCatalogEntry | undefined;
+    redirectExternalOrigins: string[];
+    popupExternalOrigins: string[];
+};
+
+/**
+ * What a request to open amounts to. A catalog entry is resolved from the catalog alone — the page,
+ * where it may navigate and what it may open in a window of its own — so that a renderer naming an
+ * entry cannot run a site of its own choosing in that entry's session, under allowlists of its own
+ * choosing. A custom url is taken as it is and declares nothing.
+ */
+function resolveOpenTarget(payload: InAppBrowserOpenPayload): Result<OpenTarget, string> {
+    switch (payload.kind) {
+        case 'custom-url':
+            return ok({
+                url: payload.url,
+                entry: undefined,
+                redirectExternalOrigins: [],
+                popupExternalOrigins: [],
+            });
+        case 'catalog-entry': {
+            const entry = getAppsEmbeddingCatalogEntry(payload.entryId);
+
+            // An id naming no entry is a caller inventing one. Nothing downstream should act on
+            // it: the catalog is the allowlist that keeps ids compile-time constants.
+            if (entry === undefined) {
+                return err(`"${payload.entryId}" is not a catalog entry`);
+            }
+
+            const desktopEntry = getPlatformSpecificEntry(entry, 'desktop');
+
+            return ok({
+                url: getAppsEmbeddingCatalogEntryUrl(entry, { locale: payload.locale }),
+                entry,
+                redirectExternalOrigins: desktopEntry?.redirectExternalOrigins ?? [],
+                popupExternalOrigins: desktopEntry?.popupExternalOrigins ?? [],
+            });
+        }
+        default:
+            return exhaustive(payload);
+    }
+}
+
+export async function openView(payload: InAppBrowserOpenPayload) {
+    const { mainWindowProxy, logger } = await inAppBrowserContext.get();
+    const mainWindow = mainWindowProxy.getInstance();
+
+    if (!mainWindow) {
+        logger.error(SERVICE_NAME, 'Cannot open embedded view without the main window');
+
+        return;
+    }
+
+    const target = resolveOpenTarget(payload);
+
+    if (!target.success) {
+        logger.error(SERVICE_NAME, `Refusing to open: ${target.error}`);
+        sendEventToRenderer(mainWindowProxy, { type: 'load-failed', error: target.error });
+
+        return;
+    }
+
+    const { url, entry, redirectExternalOrigins, popupExternalOrigins } = target.payload;
+    const origin = safeParseUrl(url)?.origin;
+
+    if (origin === undefined) {
+        logger.error(SERVICE_NAME, `Refusing to open an unparsable url: ${url}`);
+
+        return;
+    }
+
+    const { clearingEntryIds } = await activeViewContext.get();
+
+    if (entry !== undefined && clearingEntryIds.has(entry.id)) {
+        logger.warn(SERVICE_NAME, `Refusing to open "${entry.id}" while its data is cleared`);
+        sendEventToRenderer(mainWindowProxy, {
+            type: 'load-failed',
+            url,
+            error: 'the stored data of this app is still being cleared',
+        });
+
+        return;
+    }
+
+    // Resolved before anything is torn down. Creating a session touches the filesystem and can
+    // fail, and failing after `closeView` would leave the region blank with the previous site
+    // gone and nothing in the event log to explain it.
+    const openSession = await resolveSessionForOpen(entry);
+
+    if (!openSession.success) {
+        logger.error(SERVICE_NAME, `Refusing to open ${url}: ${openSession.error}`);
+        sendEventToRenderer(mainWindowProxy, {
+            type: 'load-failed',
+            url,
+            error: openSession.error,
+        });
+
+        return;
+    }
+
+    // The showcase embeds a single site at a time.
+    await closeView();
+
+    // Routed only now: `closeView` forgets the route of every session, and the record written here
+    // is what a later toggle consults to know that this page's connections have to be closed. A
+    // session that cannot take the route Suite's own runs on is not used, so the failure reads as a
+    // failed open rather than as a leak.
+    const routed = await applyTorProxy(openSession.payload);
+
+    if (!routed.success) {
+        logger.error(SERVICE_NAME, `Refusing to open ${url}: ${routed.error}`);
+        sendEventToRenderer(mainWindowProxy, { type: 'load-failed', url, error: routed.error });
+
+        return;
+    }
+
+    logger.info(
+        SERVICE_NAME,
+        `Opening embedded view for ${url}${openSession.payload.storagePath === null ? '' : ' with a persistent session'}`,
+    );
+
+    const view = new WebContentsView({
+        webPreferences: {
+            session: openSession.payload,
+            nodeIntegration: false,
+
+            /**
+             * !!! Don't change the security settings below, it's important to be strict as possible
+             */
+            sandbox: true,
+            contextIsolation: true,
+            webSecurity: true,
+            allowRunningInsecureContent: false,
+            // `alert`, `confirm` and `prompt` would be native message boxes parented to the Suite
+            // window, with nothing on them to say which site is asking.
+            disableDialogs: true,
+        },
+    });
+
+    // The origin the view is opened with is always navigable; everything beyond it — and every popup,
+    // including a same-origin one — is opted into per site instead of being allowed for every site.
+    const allowedNavigationOrigins = new Set([origin, ...toOrigins(redirectExternalOrigins)]);
+
+    await activeViewContext.insert(() => ({
+        activeView: view,
+        activeEntryId: entry?.id,
+        allowedNavigationOrigins,
+        allowedPopupOrigins: new Set(toOrigins(popupExternalOrigins)),
+    }));
+
+    inAppBrowserWebContentsIds.add(view.webContents.id);
+
+    view.setVisible(false);
+    mainWindow.contentView.addChildView(view);
+    mainWindow.webContents.on('zoom-changed', handleZoomChanged);
+
+    const { webContents } = view;
+    const webContentsId = webContents.id;
+
+    // WebRTC's UDP never goes through a SOCKS proxy: a STUN request from the page would carry the
+    // real address past Tor. Pinned to proxied transports for the page and, in `registerPopup`, for
+    // its popups.
+    webContents.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');
+
+    // The page can destroy its own WebContents, and nothing else would take the view down: it would
+    // stay attached to the window as the active view. Checked against the active view because a
+    // regular `closeView` destroys the WebContents too, possibly after a replacement has opened.
+    webContents.once('destroyed', async () => {
+        inAppBrowserWebContentsIds.delete(webContentsId);
+
+        const { activeView } = await activeViewContext.get();
+
+        if (activeView === view) {
+            await closeView();
+        }
+    });
+
+    await registerPopupOpener();
+
+    webContents.on('did-create-window', registerPopup);
+
+    const reportBlockedNavigation = (blockedUrl: string, kind: 'navigation' | 'redirect') => {
+        logger.warn(
+            SERVICE_NAME,
+            `Blocked ${kind} to ${blockedUrl}, allowed origins: ${[...allowedNavigationOrigins].join(', ')}`,
+        );
+        sendEventToRenderer(mainWindowProxy, { type: 'navigation-blocked', url: blockedUrl });
+    };
+
+    // Nothing else reports an open that a refused redirect cuts short: the cancelled navigation
+    // ends in ERR_ABORTED, for which Electron emits no `did-fail-load`, and the region would stay
+    // blank with only the blocked hop in the log.
+    let hasCommitted = false;
+
+    // Origin-scoped rather than "this is the embedding view, allow anything": following links
+    // within the embedded site is the point, leaving it for an arbitrary origin is not.
+    webContents.on('will-navigate', details => {
+        if (isNavigationToAllowedOrigin(details.url, allowedNavigationOrigins)) {
+            return;
+        }
+
+        details.preventDefault();
+        reportBlockedNavigation(details.url, 'navigation');
+    });
+
+    // `will-navigate` only sees the URL a navigation starts with, so an allowed origin answering
+    // 30x with an arbitrary one would otherwise be followed silently. Server-side redirects are
+    // held to the same list from the opening load on: an entry whose URL redirects elsewhere on
+    // open has to declare that origin like any other hop. Cancelling here cancels the whole
+    // navigation, not just the redirect.
+    webContents.on('will-redirect', details => {
+        if (
+            !details.isMainFrame ||
+            isNavigationToAllowedOrigin(details.url, allowedNavigationOrigins)
+        ) {
+            return;
+        }
+
+        details.preventDefault();
+        reportBlockedNavigation(details.url, 'redirect');
+
+        if (!hasCommitted) {
+            sendEventToRenderer(mainWindowProxy, {
+                type: 'load-failed',
+                url,
+                error: `redirected outside the allowed origins, to ${details.url}`,
+            });
+        }
+    });
+
+    // Both carry the url already, but the history flags come from the WebContents rather than
+    // from the event, so the bar's state is sent as its own message next to the log line.
+    webContents.on('did-navigate', (_, navigationUrl) => {
+        hasCommitted = true;
+        sendEventToRenderer(mainWindowProxy, { type: 'navigated', url: navigationUrl });
+        sendNavigationState();
+    });
+    webContents.on('did-navigate-in-page', (_, navigationUrl) => {
+        sendEventToRenderer(mainWindowProxy, { type: 'navigated', url: navigationUrl });
+        sendNavigationState();
+    });
+    webContents.on('did-finish-load', () => {
+        sendEventToRenderer(mainWindowProxy, { type: 'loaded', url: webContents.getURL() });
+    });
+    webContents.on('did-fail-load', (_, errorCode, errorDescription, validatedUrl) => {
+        sendEventToRenderer(mainWindowProxy, {
+            type: 'load-failed',
+            url: validatedUrl,
+            error: `${errorDescription} (${errorCode})`,
+        });
+    });
+
+    webContents.loadURL(url).catch(error => {
+        // The renderer has already heard of the failure — from `did-fail-load`, or from the
+        // redirect guard when the opening load was refused, which Electron cancels without one —
+        // so this only keeps the rejection from surfacing as an unhandled one.
+        logger.warn(SERVICE_NAME, `loadURL failed: ${error}`);
+    });
+}

@@ -77,7 +77,7 @@ export const TradingScreen = () => {
             }
         >
             <TradingScreenContent />
-            <LegalGatewayContextMessage marginVertical="sp16" paddingHorizontal="sp16" />
+            <LegalGatewayContextMessage marginVertical="sp16" marginHorizontal="sp16" />
         </Screen>
     );
 };

@@ -1,0 +1,1 @@
+export { selectIsFinpromRestricted } from './finpromSelectors';

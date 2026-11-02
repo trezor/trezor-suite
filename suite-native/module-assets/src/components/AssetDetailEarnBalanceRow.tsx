@@ -1,0 +1,53 @@
+import { type RouteProp, useRoute } from '@react-navigation/native';
+
+import { Box, HStack, Text } from '@suite-native/atoms';
+import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
+import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import {
+    type EarnBalanceType,
+    earnBalanceColors,
+    earnBalanceLabelTranslationKeys,
+} from './earnBalance';
+
+const balanceIndicatorStyle = prepareNativeStyle<{ type: EarnBalanceType }>((utils, { type }) => ({
+    width: utils.spacings.sp12,
+    height: utils.spacings.sp12,
+    borderRadius: utils.borders.radii.r4,
+    backgroundColor: utils.colors[earnBalanceColors[type]],
+}));
+
+type AssetDetailEarnBalanceRowProps = {
+    amount: string;
+    type: EarnBalanceType;
+};
+
+export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalanceRowProps) => {
+    const { networkSymbol } =
+        useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <HStack alignItems="center" justifyContent="space-between" spacing="sp16">
+            <HStack alignItems="center" spacing="sp12">
+                <Box style={applyStyle(balanceIndicatorStyle, { type })} />
+                <Text variant="body-sm" color="contentSecondary">
+                    <Translation id={earnBalanceLabelTranslationKeys[type]} />
+                </Text>
+            </HStack>
+
+            <Box flexShrink={1}>
+                <CryptoToFiatAmountFormatter
+                    value={amount}
+                    symbol={networkSymbol}
+                    isBalance
+                    variant="body-sm-strong"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                />
+            </Box>
+        </HStack>
+    );
+};

@@ -16,13 +16,23 @@ import {
 } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
-import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    Card,
+    DiscreetText,
+    DiscreetTextTrigger,
+    HStack,
+    Text,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import {
     CompactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -34,8 +44,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { ApyDottedUnderline } from '../../components/earn/ApyDottedUnderline';
+import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../../hooks/yield/useStablecoinYieldFirmwareUpdateAlert';
-import { useYieldApyBreakdownAlert } from '../../hooks/yield/useYieldApyBreakdownAlert';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
 const stakedSectionStyle = prepareNativeStyle(utils => ({
@@ -62,8 +72,9 @@ export const YieldVaultDetailScreenContent = ({
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const { analytics } = useServices(injectNativeAnalytics);
+    const { translate } = useTranslate();
 
-    const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter: cryptoAmountFormatter, PercentageFormatter } = useFormatters();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
 
@@ -74,9 +85,13 @@ export const YieldVaultDetailScreenContent = ({
 
     const { vault, apy, depositedSharesAmount, token, wrappedNativeSymbol } = yieldFlowData;
 
-    const apyValue = apy && isApyAvailable(apy) ? apy.toFixed(2) : null;
+    const apyValue = apy && isApyAvailable(apy) ? PercentageFormatter.format(apy) : null;
 
-    const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
+    const {
+        bottomSheetRef: apyBreakdownBottomSheetRef,
+        openModal: openApyBreakdownBottomSheet,
+        closeModal: closeApyBreakdownBottomSheet,
+    } = useBottomSheetModal();
 
     const depositedPosition = useMemo(() => {
         if (depositedSharesAmount === null || !vault || !token?.contractAddress) {
@@ -278,13 +293,15 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.tokenBalance" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
-                                tokenSymbol={yieldToken.symbol}
-                                tokenDecimals={yieldToken.decimals}
-                                color="contentPrimary"
-                                variant="headline-sm"
-                            />
+                            <DiscreetTextTrigger>
+                                <CompactTokenAmountFormatter
+                                    value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
+                                    tokenSymbol={yieldToken.symbol}
+                                    tokenDecimals={yieldToken.decimals}
+                                    color="contentPrimary"
+                                    variant="headline-sm"
+                                />
+                            </DiscreetTextTrigger>
 
                             <TokenToFiatAmountFormatter
                                 value={yieldToken.balance ?? '0'}
@@ -314,14 +331,11 @@ export const YieldVaultDetailScreenContent = ({
                                 variant="headline-sm"
                             />
 
-                            <Text variant="body-md" color="contentSecondary">
-                                <Translation
-                                    id="earn.yearlyRewardsDeposited"
-                                    values={{
-                                        amountWithSymbol: yearlyRewards.formattedDepositedAmount,
-                                    }}
-                                />
-                            </Text>
+                            <DiscreetText variant="body-md" color="contentSecondary">
+                                {translate('earn.yearlyRewardsDeposited', {
+                                    amountWithSymbol: yearlyRewards.formattedDepositedAmount,
+                                })}
+                            </DiscreetText>
                         </VStack>
                     )}
 
@@ -343,15 +357,12 @@ export const YieldVaultDetailScreenContent = ({
                                 variant="headline-sm"
                             />
 
-                            <Text variant="body-md" color="contentSecondary">
-                                <Translation
-                                    id="earn.potentialRewardsIfYouAdd"
-                                    values={{
-                                        amountWithSymbol:
-                                            potentialRewards.formattedAdditionalDepositAmount,
-                                    }}
-                                />
-                            </Text>
+                            <DiscreetText variant="body-md" color="contentSecondary">
+                                {translate('earn.potentialRewardsIfYouAdd', {
+                                    amountWithSymbol:
+                                        potentialRewards.formattedAdditionalDepositAmount,
+                                })}
+                            </DiscreetText>
                         </VStack>
                     )}
 
@@ -360,7 +371,7 @@ export const YieldVaultDetailScreenContent = ({
                         style={applyStyle(stakedSectionStyleWithBorder)}
                     >
                         {apyValue ? (
-                            <ApyDottedUnderline onPress={showYieldApyBreakdownAlert}>
+                            <ApyDottedUnderline onPress={openApyBreakdownBottomSheet}>
                                 <Text variant="body-sm">
                                     <Translation
                                         id="earn.apyPercentage"
@@ -400,6 +411,13 @@ export const YieldVaultDetailScreenContent = ({
                     <Translation id="transactions.title" />
                 </Text>
             </Box>
+
+            <YieldApyBreakdownBottomSheet
+                ref={apyBreakdownBottomSheetRef}
+                onClose={closeApyBreakdownBottomSheet}
+                account={account}
+                vault={vault}
+            />
         </>
     );
 };

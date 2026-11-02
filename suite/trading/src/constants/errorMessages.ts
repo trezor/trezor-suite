@@ -46,6 +46,7 @@ export const TRADING_ERROR_MESSAGE: Record<
         detailed: 'TR_TRADING_ERROR_TRADE_REFUNDED_DETAILED',
         base: 'TR_TRADING_ERROR_TRADE_REFUNDED',
     },
+    trade_is_not_possible: { base: 'TR_TRADING_ERROR_TRADE_IS_NOT_POSSIBLE' },
     no_response: { base: 'TR_TRADING_ERROR_NO_RESPONSE' },
     unknown: { base: 'TR_TRADING_ERROR_UNKNOWN' },
 };

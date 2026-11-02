@@ -5,7 +5,7 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectAutodetectLanguage, selectLanguage, suiteSettingsActions } from '@suite/settings';
-import { LANGUAGES, type Locale, type LocaleInfo } from '@suite-common/suite-types';
+import { LANGUAGES, type Locale, type LocaleInfo } from '@suite-common/locale';
 import { useServices } from '@trezor/dependency-injection';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { SectionItem } from '@trezor/product-components';

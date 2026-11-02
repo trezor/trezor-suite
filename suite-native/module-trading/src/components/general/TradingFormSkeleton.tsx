@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { Box, Card, VStack } from '@suite-native/atoms';
 import { SkeletonLargeRow, SkeletonSmall } from '@suite-native/trading-atoms';
-import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
+import { selectIsTradingResidenceWhitelistRequired } from '@suite-native/trading-state';
 
 import { TradingCardSection } from './TradingCardSection';
 
@@ -11,19 +11,23 @@ export type TradingFormSkeletonProps = {
 };
 
 export const TradingFormSkeleton = ({ hasResidenceField = false }: TradingFormSkeletonProps) => {
-    const isTradingResidenceCheckEnabled = useSelector(selectIsTradingResidenceCheckEnabled);
+    const isTradingResidenceWhitelistRequired = useSelector(
+        selectIsTradingResidenceWhitelistRequired,
+    );
 
-    const isResidenceSkeletonVisible = hasResidenceField && !isTradingResidenceCheckEnabled;
+    const isResidenceSkeletonVisible = hasResidenceField && !isTradingResidenceWhitelistRequired;
 
     return (
         <VStack spacing="sp16">
             <Card noPadding>
-                <TradingCardSection bottomBorder title={<SkeletonSmall widthPercentage={0.2} />}>
+                <TradingCardSection bottomBorder>
+                    <SkeletonSmall widthPercentage={0.2} />
                     <SkeletonLargeRow leftWidthPercentage={0.4} rightWidthPercentage={0.35} />
 
                     <Box paddingVertical="sp12" />
                 </TradingCardSection>
-                <TradingCardSection bottomBorder title={<SkeletonSmall widthPercentage={0.2} />}>
+                <TradingCardSection bottomBorder>
+                    <SkeletonSmall widthPercentage={0.2} />
                     <SkeletonLargeRow leftWidthPercentage={0.4} rightWidthPercentage={0.3} />
                 </TradingCardSection>
             </Card>

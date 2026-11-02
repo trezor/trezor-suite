@@ -1,5 +1,6 @@
 import { type Store } from '@reduxjs/toolkit';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import type { TransactionStatus } from '@suite-common/trading';
 import {
     selectTradingExchangeSelectedQuote,
@@ -100,7 +101,7 @@ const mockUseAllowanceTxTracking = useAllowanceTxTracking as jest.Mock;
 describe('TradingConfirmingScreen', () => {
     let store: Store<State>;
 
-    const renderScreen = async (
+    const renderScreen = (
         routeProps: Partial<RootStackParamList[RootStackRoutes.TradingConfirming]> = {},
     ) => {
         routeParams = {
@@ -108,9 +109,15 @@ describe('TradingConfirmingScreen', () => {
             ...routeProps,
         };
 
-        return await renderWithStoreProvider(
+        return renderWithStoreProvider(
             <TradingConfirmingScreen navigation={mockNavigation} route={mockUseRoute()} />,
-            { services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store } },
+            {
+                services: {
+                    analytics: mockNativeAnalytics(mockAnalyticsReport),
+                    store,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
     };
 

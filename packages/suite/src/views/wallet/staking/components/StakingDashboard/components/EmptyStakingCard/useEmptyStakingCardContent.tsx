@@ -3,7 +3,6 @@ import { type ReactNode } from 'react';
 import { type DesktopAnalyticsDep, events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { gotoThunk } from '@suite/router';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { type IconComponent, Tooltip } from '@trezor/components';
@@ -19,7 +18,7 @@ import {
 } from '@trezor/icons';
 import { type Dispatch, injectDispatch } from '@trezor/redux-utils';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApy } from 'src/hooks/earn/useFormatApy';
 
 import { type EmptyStakingCardData } from './useEmptyStakingCardData';
 
@@ -49,12 +48,14 @@ export interface EmptyStakingCardContent {
 interface UseNetworkContentProps {
     data: EmptyStakingCardData;
     dispatch: Dispatch;
+    formatApyValue: ReturnType<typeof useFormatApy>;
 }
 
 const getTronContent = ({
     data,
     dispatch,
     analytics,
+    formatApyValue,
 }: UseNetworkContentProps & {
     analytics: DesktopAnalyticsDep['analytics'];
 }): EmptyStakingCardContent => {
@@ -92,13 +93,10 @@ const getTronContent = ({
         if (!account || isStartStakingDisabled) return;
 
         dispatch(
-            gotoThunk({
-                routeName: 'earn-tron-stake',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+            openModal({
+                type: 'tron-stake-in-a-nutshell',
+                actionType: 'continue',
+                account,
             }),
         );
 
@@ -115,7 +113,11 @@ const getTronContent = ({
     return { title, text, features, onStartStakingClick };
 };
 
-const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptyStakingCardContent => {
+const getCardanoContent = ({
+    data,
+    dispatch,
+    formatApyValue,
+}: UseNetworkContentProps): EmptyStakingCardContent => {
     const rate = formatApyValue(data.rate);
 
     const {
@@ -198,7 +200,11 @@ const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
     return { title, text, features, onStartStakingClick };
 };
 
-const getDefaultContent = ({ data, dispatch }: UseNetworkContentProps): EmptyStakingCardContent => {
+const getDefaultContent = ({
+    data,
+    dispatch,
+    formatApyValue,
+}: UseNetworkContentProps): EmptyStakingCardContent => {
     const rate = formatApyValue(data.rate);
 
     const {
@@ -291,13 +297,14 @@ export const useStakingCardContent = ({
     data,
 }: UseStakingCardContentProps): EmptyStakingCardContent => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const formatApyValue = useFormatApy();
 
     switch (variant) {
         case 'tron':
-            return getTronContent({ data, dispatch, analytics });
+            return getTronContent({ data, dispatch, analytics, formatApyValue });
         case 'cardano':
-            return getCardanoContent({ data, dispatch });
+            return getCardanoContent({ data, dispatch, formatApyValue });
         case 'default':
-            return getDefaultContent({ data, dispatch });
+            return getDefaultContent({ data, dispatch, formatApyValue });
     }
 };

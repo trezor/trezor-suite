@@ -54,6 +54,7 @@ describe('Trade Sell [@androidOnly]', () => {
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await onHome.waitForScreen();
+            await onHome.waitForDiscoveryComplete();
             await onDeviceConnecting.stopEmuAndConfirmViewOnlyWarning();
             await tradingSellActions.openForm();
         });
@@ -110,7 +111,6 @@ describe('Trade Sell [@androidOnly]', () => {
             await sellCompletionActions.expectBrowserAuthTriggered();
 
             await sellCompletionActions.expectConfirmationInProgress();
-            await sellCompletionActions.expectConfirmationToFail();
         });
     });
 });

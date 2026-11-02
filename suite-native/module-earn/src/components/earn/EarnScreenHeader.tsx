@@ -15,6 +15,7 @@ import {
     selectYieldListItems,
 } from '../../earnScreenSelectors';
 import { useMessageSystemEarnDashboard } from '../../hooks/earn/useMessageSystemEarnDashboard';
+import { useReportEarnDashboardReadyEvent } from '../../hooks/earn/useReportEarnDashboardReadyEvent';
 import { useClaimRewardsWithFiat } from '../../hooks/yield/useClaimRewardsWithFiat';
 import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 import { CardanoStakingInfoBanner } from '../staking/CardanoStakingInfoBanner';
@@ -27,7 +28,11 @@ export const EarnScreenHeader = () => {
     const { isDisabled: isStakingDisabled } = useMessageSystemEarnDashboard('staking');
     const { isDisabled: isYieldDisabled } = useMessageSystemEarnDashboard('yield');
 
-    const { yieldOpportunities } = useYieldOpportunities();
+    const {
+        yieldOpportunities,
+        isLoading: isYieldOpportunitiesLoading,
+        isError: isYieldOpportunitiesError,
+    } = useYieldOpportunities();
 
     const stakingPositions = useSelector((state: EarnListRootState) =>
         !isStakingDisabled ? selectStakingListItems(state) : EMPTY_ARRAY,
@@ -37,7 +42,7 @@ export const EarnScreenHeader = () => {
         !isYieldDisabled ? selectYieldListItems(state, yieldOpportunities) : EMPTY_ARRAY,
     );
 
-    const { claimRewardsWithFiat } = useClaimRewardsWithFiat();
+    const { claimRewardsWithFiat, isClaimLoading, isClaimError } = useClaimRewardsWithFiat();
 
     const claimItems = useSelector((state: EarnListRootState) =>
         selectYieldClaimListItems(state, claimRewardsWithFiat),
@@ -50,6 +55,17 @@ export const EarnScreenHeader = () => {
 
     const hasEarnPositions = stakingPositions.length > 0 || yieldPositions.length > 0;
     const hasClaimItems = claimItems.length > 0;
+
+    useReportEarnDashboardReadyEvent({
+        yieldOpportunities,
+        isLoading: !isYieldDisabled && (isYieldOpportunitiesLoading || isClaimLoading),
+        isError: !isYieldDisabled && (isYieldOpportunitiesError || isClaimError),
+        yieldPositionsCount: yieldPositions.length,
+        stakingPositionsCount: stakingPositions.length,
+        claimItemsCount: isYieldDisabled ? 0 : claimItems.length,
+        isStakingDisabled,
+        isYieldDisabled,
+    });
 
     if (!hasEarnPositions && !hasClaimItems) return null;
 

@@ -5,8 +5,14 @@
         {
             "path": "../../suite-common/analytics"
         },
+        {
+            "path": "../../suite-common/assets"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/feedback" },
+        {
+            "path": "../../suite-common/formatters"
+        },
         {
             "path": "../../suite-common/message-system"
         },
@@ -25,6 +31,12 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
@@ -39,12 +51,15 @@
         { "path": "../discovery" },
         { "path": "../experimental-features" },
         { "path": "../feature-feedback" },
+        { "path": "../feedback-form" },
         { "path": "../firmware" },
         { "path": "../formatters" },
         { "path": "../graph" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../performance-metrics" },
         { "path": "../settings" },
         { "path": "../suite-sync" },
         { "path": "../toasts" },
@@ -58,6 +73,8 @@
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        { "path": "../../suite-common/networks" },
         { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ],

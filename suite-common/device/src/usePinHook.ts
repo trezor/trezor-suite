@@ -30,9 +30,11 @@ export const usePin = (buttonRequests: ButtonRequest[], requestId?: string) => {
         setPin('');
     };
 
+    // A new PIN request may come from a device other than the selected one, whose button requests
+    // are not in `buttonRequests`.
     useEffect(() => {
         setSubmitted(false);
-    }, [buttonRequests.length]);
+    }, [buttonRequests.length, requestId]);
 
     const invalidPinAttempts = buttonRequests.filter(r => r.code === UI_EVENTS.PIN_INVALID).length;
 

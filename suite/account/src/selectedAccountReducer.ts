@@ -5,10 +5,12 @@ import { type TradingState } from '@suite-common/trading';
 import {
     type AccountsRootState,
     type SendRootState,
+    type StakeSliceRootState,
     type TronStakeReducerState,
     type YieldState,
     accountsActions,
     selectAccountByKey,
+    selectStakeAccount,
 } from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
@@ -21,7 +23,8 @@ export type SelectedAccountRootState = {
 } & AccountsRootState;
 
 export type SelectedAccountRootStateWithTrading = SelectedAccountRootState &
-    SendRootState & {
+    SendRootState &
+    StakeSliceRootState & {
         wallet: {
             trading: TradingState;
             stablecoinYield: YieldState;
@@ -64,8 +67,8 @@ export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =
 
 /**
  * Mainly used for common modals, also used in the Trading section.
- * @returns account from stablecoin yield tx review if set, then send state if set, then trading if set,
- * otherwise account from the store.
+ * @returns account from stablecoin yield tx review if set, then tron stake tx review, then stake tx
+ * review, then send state if set, then trading if set, otherwise account from the store.
  */
 export const selectAccountIncludingChosenInTrading = (
     state: SelectedAccountRootStateWithTrading,
@@ -78,6 +81,11 @@ export const selectAccountIncludingChosenInTrading = (
     const tronStakeAccountKey = state.wallet.tronStake.txReview.accountKey;
     if (tronStakeAccountKey) {
         return selectAccountByKey(state, tronStakeAccountKey) ?? undefined;
+    }
+
+    const stakeAccount = selectStakeAccount(state);
+    if (stakeAccount) {
+        return stakeAccount;
     }
 
     const sendAccountKey = state.wallet.send.accountKey;

@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AnimatedView, Box, Button, Card, HStack, VStack } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';

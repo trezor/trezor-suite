@@ -17,6 +17,7 @@ import {
     accountsActions,
     prepareSendFormReducer,
     stakeInitialState,
+    yieldReducer,
 } from '@suite-common/wallet-core';
 import {
     type FeesState,
@@ -302,6 +303,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
         device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
         wallet: combineReducers({
             send: sendFormReducer,
+            stablecoinYield: yieldReducer,
             accounts: createReducer(
                 [
                     BTC_ACCOUNT.account,
@@ -817,6 +819,10 @@ export const setMax: any[] = [
                     },
                 ],
             },
+            // a coinjoin in the history keeps the anonymity restriction in place
+            transactions: {
+                'xpub-btc-1stTestnetAddress@device_id:0': [{ type: 'joint' }],
+            },
         },
         actions: [
             {
@@ -860,6 +866,64 @@ export const setMax: any[] = [
                 // only utxos with enough anonymity are used in TrezorConnect.composeTransaction
                 // see sendFormBitcoinThunks
                 utxo: [UTXO.BB, UTXO.DD],
+            },
+        },
+    },
+    {
+        description: 'setMax: a never mixed privacy account spends all of its utxos',
+        store: {
+            selectedAccount: {
+                ...BTC_ACCOUNT,
+                account: {
+                    ...BTC_ACCOUNT.account,
+                    accountType: 'coinjoin',
+                    addresses: {
+                        ...BTC_ACCOUNT.account!.addresses,
+                        anonymitySet: {
+                            AA: 1,
+                            BB: 1,
+                            CC: 1,
+                            DD: 1,
+                            EE: 1,
+                            'should-never-be-used': 1,
+                        },
+                    },
+                },
+            },
+            coinjoin: {
+                accounts: [{ key: 'xpub-btc-1stTestnetAddress@device_id:0' }],
+            },
+        },
+        actions: [
+            {
+                type: 'hover',
+                element: 'outputs.0.amount',
+            },
+            {
+                type: 'click',
+                element: 'outputs.0.setMax',
+                result: {
+                    composeTransactionCalls: 1,
+                    composeTransactionParams: {
+                        outputs: [{ type: 'send-max-noaddress' }],
+                    },
+                },
+            },
+        ],
+        connect: {
+            success: true,
+            payload: [
+                {
+                    type: 'nonfinal',
+                    max: '31249999500',
+                },
+            ],
+        },
+        finalResult: {
+            composeTransactionCalls: 1,
+            composeTransactionParams: {
+                // no joint transaction and no coordinator, so no utxo is held back
+                utxo: Object.values(UTXO),
             },
         },
     },
@@ -1568,8 +1632,18 @@ export const signAndPush: SignAndPush[] = [
                         totalSpent: '2500000000', // 2200000000 are externals + fee
                         fee: '100',
                         inputs: [
-                            { amount: '0', prev_hash: 'should not be used', prev_index: 0 },
-                            { amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 },
+                            {
+                                amount: '0',
+                                prev_hash: 'should not be used',
+                                prev_index: 0,
+                                script_type: 'SPENDTAPROOT',
+                            },
+                            {
+                                amount: '12500000000',
+                                prev_hash: UTXO.CC.txid,
+                                prev_index: 0,
+                                script_type: 'SPENDTAPROOT',
+                            },
                         ],
                         outputs: [
                             { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },

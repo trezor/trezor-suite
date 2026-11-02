@@ -4,7 +4,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectSupportedDeviceLanguages } from '@suite-common/device';
-import { type Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';

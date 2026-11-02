@@ -36,6 +36,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../app-init" },
+        { "path": "../apps-embedding-demo" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
         { "path": "../blockchain" },
@@ -118,13 +119,15 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../performance-metrics" },
         { "path": "../storybook" },
         { "path": "../test-utils-store" },
         { "path": "../../packages/connect-core" },
         {
             "path": "../../packages/connect-mobile"
         },
-        { "path": "../../packages/eslint" }
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/perf-e2e" }
     ],
     "include": [".", "**/*.json"]
 }

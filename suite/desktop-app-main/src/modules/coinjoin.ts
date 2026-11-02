@@ -137,12 +137,16 @@ export const init: ModuleInit = ({
 
     const clientProxyOptions: IpcProxyHandlerOptions<CoinjoinClient> = {
         onCreateInstance: async (settings: ConstructorParameters<typeof CoinjoinClient>[0]) => {
-            const urlObj = new URL(settings.coordinatorUrl);
+            // The client exists even without a coordinator because coinjoin accounts need it
+            // for scanning.
+            if (settings.coordinatorUrl) {
+                const urlObj = new URL(settings.coordinatorUrl);
 
-            mainThreadEmitter.emit('module/request-interceptor', {
-                type: 'ADD_WHITELISTED_DOMAIN',
-                domain: urlObj.hostname ?? urlObj.host,
-            });
+                mainThreadEmitter.emit('module/request-interceptor', {
+                    type: 'ADD_WHITELISTED_DOMAIN',
+                    domain: urlObj.hostname ?? urlObj.host,
+                });
+            }
 
             const coinjoinMiddleware = await synchronize(getCoinjoinProcess);
             const port = coinjoinMiddleware.getPort();

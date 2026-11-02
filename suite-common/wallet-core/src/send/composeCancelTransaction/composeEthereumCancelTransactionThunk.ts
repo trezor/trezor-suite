@@ -55,6 +55,7 @@ export const composeEthereumCancelTransactionThunk = createThunk<
         }
 
         const cancelFormState: FormState = {
+            txType: 'send',
             outputs: [
                 {
                     type: 'payment',

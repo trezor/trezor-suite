@@ -32,14 +32,14 @@ describe('CustomFeeLabel', () => {
         return result.current;
     };
 
-    const renderCustomFeeLabel = async ({
+    const renderCustomFeeLabel = ({
         networkType,
         form,
     }: {
         networkType: NetworkTypeConfig;
         form: FeesFormType;
     }) =>
-        await renderWithStoreProvider(<CustomFeeLabel networkType={networkType} />, {
+        renderWithStoreProvider(<CustomFeeLabel networkType={networkType} />, {
             preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });

@@ -43,7 +43,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
                 </>
             }
         >
-            <Column gap={4}>
+            <Column gap={8}>
                 <H3>
                     <Translation id="TR_CANCEL_COINJOIN" />
                 </H3>

@@ -13,6 +13,7 @@ import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getTradingErrorDisplay } from '@suite-common/trading';
 import { DEVICE } from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common';
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, GearIcon, TorBrowserIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -42,6 +43,14 @@ type RenderConfig = {
     values?: ExtendedMessageDescriptor['values'];
     icon?: NotificationViewProps['icon'];
 };
+
+// Connect uses the default Device_InvalidState message only for a passphrase that does not match the wallet.
+const getErrorValue = (error: string) =>
+    error === ERRORS.ERROR_CODES.Device_InvalidState ? (
+        <Translation id="TOAST_PASSPHRASE_MISMATCH_ERROR" />
+    ) : (
+        error
+    );
 
 /**
  * Renders a notification with the provided configuration.
@@ -86,22 +95,11 @@ export const NotificationRenderer = ({
                 values: { error: notification.error },
             });
 
-        case 'auth-confirm-error':
-            return renderNotificationView(render, notification, {
-                variant: 'error',
-                message: 'TOAST_AUTH_CONFIRM_ERROR',
-                values: {
-                    error: notification.error || (
-                        <Translation id="TOAST_AUTH_CONFIRM_ERROR_DEFAULT" />
-                    ),
-                },
-            });
-
         case 'discovery-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TOAST_DISCOVERY_ERROR',
-                values: { error: notification.error },
+                values: { error: getErrorValue(notification.error) },
             });
 
         case 'account-added':
@@ -201,49 +199,49 @@ export const NotificationRenderer = ({
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TR_ERROR_CARDANO_DELEGATE',
-                values: { error: notification.error },
+                values: { error: getErrorValue(notification.error) },
             });
 
         case 'cardano-withdrawal-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TR_ERROR_CARDANO_WITHDRAWAL',
-                values: { error: notification.error },
+                values: { error: getErrorValue(notification.error) },
             });
 
         case 'sign-tx-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TOAST_SIGN_TX_ERROR',
-                values: { error: notification.error },
+                values: { error: getErrorValue(notification.error) },
             });
 
         case 'verify-address-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TOAST_VERIFY_ADDRESS_ERROR',
-                values: { error: notification.error },
+                values: { error: getErrorValue(notification.error) },
             });
 
         case 'verify-xpub-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TOAST_VERIFY_XPUB_ERROR',
-                values: { error: notification.error },
+                values: { error: getErrorValue(notification.error) },
             });
 
         case 'sign-message-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TOAST_SIGN_MESSAGE_ERROR',
-                values: { error: notification.error },
+                values: { error: getErrorValue(notification.error) },
             });
 
         case 'verify-message-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TOAST_VERIFY_MESSAGE_ERROR',
-                values: { error: notification.error },
+                values: { error: getErrorValue(notification.error) },
             });
 
         case 'sign-message-success':
@@ -268,7 +266,7 @@ export const NotificationRenderer = ({
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TOAST_GENERIC_ERROR',
-                values: { error: notification.error },
+                values: { error: getErrorValue(notification.error) },
             });
 
         case 'trading-error': {

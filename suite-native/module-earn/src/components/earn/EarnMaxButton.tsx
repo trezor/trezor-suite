@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { events } from '@suite-common/analytics';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -8,14 +9,16 @@ import {
     selectAccountByKey,
     selectBaseCurrency,
     selectIsBaseCurrencyInSats,
-    selectStakedBalanceByAccountKey,
+    selectUnstakableBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { type EarnFormValues } from '../../utils/earn/earnFormSchema';
@@ -38,12 +41,13 @@ export const EarnMaxButton = ({
     variant = 'stake',
 }: EarnMaxButtonProps) => {
     const { setValue } = useFormContext<EarnFormValues>();
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const stakedBalance = useSelector((state: StakeRootState) =>
-        selectStakedBalanceByAccountKey(state, accountKey),
+    const unstakableBalance = useSelector((state: StakeRootState) =>
+        selectUnstakableBalanceByAccountKey(state, accountKey),
     );
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
@@ -56,7 +60,7 @@ export const EarnMaxButton = ({
 
     const getMaxAmount = (): string => {
         if (variant === 'unstake') {
-            return stakedBalance ?? '0';
+            return unstakableBalance ?? '0';
         }
 
         const availableAmount = formatNetworkAmount(account!.availableBalance, symbol);
@@ -85,6 +89,13 @@ export const EarnMaxButton = ({
             setValue('fiat', '', { shouldValidate: false });
 
             return;
+        }
+
+        if (variant === 'stake') {
+            analytics.report({
+                type: events.appFormPercentButtonsEvent.name,
+                payload: { type: 'staking', value: 'max' },
+            });
         }
 
         setMaxAmount();

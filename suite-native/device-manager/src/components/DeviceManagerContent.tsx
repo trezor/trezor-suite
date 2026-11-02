@@ -10,6 +10,7 @@ import {
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceStaticSessionId,
     selectDeviceThunk,
+    selectInstacelessUnselectedDevices,
     selectIsDeviceConnected,
     selectIsDeviceInitialized,
     selectIsDeviceProtectedByPassphrase,
@@ -61,6 +62,7 @@ export const DeviceManagerContent = () => {
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const unselectedDevices = useSelector(selectInstacelessUnselectedDevices);
     const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
 
@@ -114,10 +116,12 @@ export const DeviceManagerContent = () => {
         deviceStaticSessionId &&
         isPassphraseEnabledOnDevice;
 
-    const isDeviceListVisible = isChangeDeviceRequested || isPortfolioTrackerDevice;
+    const isDeviceListVisible =
+        (isChangeDeviceRequested || isPortfolioTrackerDevice) && unselectedDevices.length > 0;
 
     return (
         <DeviceManagerModal
+            isDeviceListVisible={isDeviceListVisible}
             footer={<ConnectButton onSelectDevice={handleSelectDevice} />}
             customSwitchRightView={
                 !isPortfolioTrackerDevice && (

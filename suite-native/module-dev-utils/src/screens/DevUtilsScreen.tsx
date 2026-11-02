@@ -4,6 +4,7 @@ import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { AnalyticsLogging } from '../components/AnalyticsLogging';
+import { AppsEmbeddingCard } from '../components/AppsEmbeddingCard';
 import { ComponentDemoCard } from '../components/ComponentDemoCard';
 import { DangerZoneCard } from '../components/DangerZoneCard';
 import { DebuggingCard } from '../components/DebuggingCard';
@@ -33,6 +34,7 @@ export const DevUtilsScreen = () => (
             <TradingCard />
             <EarnCard />
             <MessageSystemCard />
+            {isDevelopOrDebugEnv() && <AppsEmbeddingCard />}
             <FirmwareSourceCard />
             <SuiteSyncRelaySettings />
             <SuiteSyncQuotaManager />

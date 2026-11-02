@@ -4,8 +4,8 @@ import { AnimatedDoubleInput, type AnimatedDoubleInputProps } from './AnimatedDo
 import { Input } from '../Input/Input';
 
 describe('AnimatedDoubleInput', () => {
-    const renderAnimatedDoubleInput = async (props: Partial<AnimatedDoubleInputProps>) =>
-        await renderWithBasicProvider(
+    const renderAnimatedDoubleInput = (props: Partial<AnimatedDoubleInputProps>) =>
+        renderWithBasicProvider(
             <AnimatedDoubleInput
                 renderPrimary={({ onPress, isDisabled, inputRef }) => (
                     <Input

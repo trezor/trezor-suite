@@ -993,8 +993,16 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                     },
                 },
             },
+            // a configured coordinator keeps the anonymity restriction in place
             coinjoin: {
-                accounts: [{ key: BTC_CJ_ACCOUNT.account!.key }],
+                accounts: [{ key: BTC_CJ_ACCOUNT.account!.key, symbol: asNetworkSymbol('btc') }],
+                debug: {
+                    coinjoinConfigOverride: {
+                        [asNetworkSymbol('btc')]: {
+                            coordinatorUrl: 'https://coordinator.example/wabisabi/',
+                        },
+                    },
+                },
             },
         },
         tx: PREPARE_TX({

@@ -12,6 +12,7 @@ import {
 const UNIT_SUFFIX: Record<MetricUnit, string> = {
     ms: ' ms',
     count: '',
+    score: '',
 };
 
 /**

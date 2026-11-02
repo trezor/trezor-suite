@@ -25,7 +25,7 @@ type TransactionsGroupProps = {
     transactions: WalletAccountTransaction[];
     children?: ReactNode;
     symbol: NetworkSymbol;
-    account: Account;
+    accounts: readonly Account[];
     baseCurrencyCode: BaseCurrencyCode;
     index: number;
     isPending: boolean;
@@ -34,7 +34,7 @@ type TransactionsGroupProps = {
 export const TransactionsGroup = ({
     dateKey,
     symbol,
-    account,
+    accounts,
     transactions,
     baseCurrencyCode,
     isPending,
@@ -49,7 +49,7 @@ export const TransactionsGroup = ({
         baseCurrencyCode,
         historicFiatRates,
     );
-    const erc4626Contracts = getErc4626Contracts(account.tokens);
+    const erc4626Contracts = getErc4626Contracts(accounts.flatMap(account => account.tokens ?? []));
     const isMissingFiatRates = transactions.some(tx => {
         const fiatRateKey = getFiatRateKey(tx.symbol, baseCurrencyCode);
         const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);

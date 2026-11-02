@@ -2,8 +2,7 @@
 import { execSync } from 'child_process';
 import path from 'path';
 
-import { getGrepCommandOfTranslationKey } from '@suite-common/suite-utils';
-
+import { findUsedTranslationKeys } from './findUsedTranslationKeys';
 import { writeMessagesObjectToFile } from './utils';
 import { messages } from '../src/messages';
 import { deleteNestedTranslationKey, flatten } from '../src/utils';
@@ -18,30 +17,11 @@ function execLocal(cmd: string) {
     });
 }
 
-const unused: string[] = [];
-
-const flatMessages = flatten(messages);
-const numberOfMessages = Object.keys(flatMessages).length;
-
 console.log('Looking up for unused translation keys... 🔎');
 
-const messageKeys = Object.keys(flatMessages);
-
-for (let i = 0; i < numberOfMessages; i++) {
-    const message = messageKeys[i];
-    if (message === undefined) continue;
-    process.stdout.write(`\r\x1b[KProcessing translation ${i}/${numberOfMessages}: ${message}`);
-
-    if (Object.prototype.hasOwnProperty.call(flatMessages, message)) {
-        const cmd = getGrepCommandOfTranslationKey(message);
-
-        try {
-            execLocal(cmd);
-        } catch {
-            unused.push(message);
-        }
-    }
-}
+const messageKeys = Object.keys(flatten(messages));
+const usedKeys = findUsedTranslationKeys(messageKeys, suiteNativeRoot);
+const unused = messageKeys.filter(key => !usedKeys.has(key));
 
 if (unused.length > 0) {
     console.log('\n');

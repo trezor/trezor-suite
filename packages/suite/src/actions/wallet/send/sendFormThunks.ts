@@ -25,15 +25,19 @@ import {
     type ReplaceTransactionThunkState,
     type SendRootState,
     type SignTransactionThunkState,
+    type YieldRootState,
     cancelSignSendFormTransactionThunk,
     enhancePrecomposedTransactionThunk,
+    isEarnSigningCancelled,
     pushSendFormTransactionThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
     selectPrecomposedSendForm,
     selectSendFormDrafts,
+    selectYieldApprovalInReview,
     sendFormActions,
     signTransactionThunk,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -245,15 +249,16 @@ type SignAndPushSendFormTransactionThunkParams = {
     paymentRequests?: PROTO.PaymentRequest[];
 };
 
-type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
+export type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
     CancelSignSendFormTransactionThunkState &
     EnhancePrecomposedTransactionThunkState &
     MessageSystemRootState &
     PushSendFormTransactionThunkState &
     SignTransactionThunkState &
-    UpdateRbfLabelsThunkState;
+    UpdateRbfLabelsThunkState &
+    YieldRootState;
 
-type SignAndPushSendFormTransactionThunkDeps = ApplySendFormMetadataLabelsThunkDeps &
+export type SignAndPushSendFormTransactionThunkDeps = ApplySendFormMetadataLabelsThunkDeps &
     CancelSignSendFormTransactionThunkDeps &
     PushSendFormTransactionThunkDeps &
     UpdateRbfLabelsThunkDeps &
@@ -274,6 +279,16 @@ export const signAndPushSendFormTransactionThunk = createThunk<
     ) => {
         const device = selectSelectedDevice(getState());
         if (!device || !selectedAccount) return;
+
+        const yieldApproval = selectYieldApprovalInReview(getState());
+        const reportYieldCancellation = (stage: 'signing' | 'review') => {
+            if (!yieldApproval) return;
+
+            extra.services.analytics.report({
+                type: events.transactionCancelEvent.name,
+                payload: { txType: 'yield', networkSymbol: selectedAccount.symbol, stage },
+            });
+        };
 
         const enhancedPrecomposedTransaction = await dispatch(
             enhancePrecomposedTransactionThunk({
@@ -304,13 +319,6 @@ export const signAndPushSendFormTransactionThunk = createThunk<
             }),
         );
 
-        extra.services.analytics.report({
-            type: events.sendConfirmedOnDeviceEvent.name,
-            payload: {
-                assetSymbol: selectedAccount.symbol,
-            },
-        });
-
         if (isRejected(signResponse)) {
             // Do not close the modal, as we need that modal to display the error state.
             if (signResponse.payload?.message === RBF_ERROR_ALREADY_MINED) {
@@ -328,6 +336,15 @@ export const signAndPushSendFormTransactionThunk = createThunk<
                 };
             }
 
+            if (
+                isEarnSigningCancelled({
+                    code: signResponse.payload?.errorCode,
+                    message: signResponse.payload?.message,
+                })
+            ) {
+                reportYieldCancellation('signing');
+            }
+
             // Close the modal manually since UI_EVENTS.CLOSE_UI_WINDOW was
             // blocked by preserveModal() above.
             dispatch(closeModal());
@@ -335,10 +352,19 @@ export const signAndPushSendFormTransactionThunk = createThunk<
             return;
         }
 
+        extra.services.analytics.report({
+            type: events.sendConfirmedOnDeviceEvent.name,
+            payload: {
+                assetSymbol: selectedAccount.symbol,
+            },
+        });
+
         // Open a deferred modal and get the decision
         const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
 
         if (!isPushConfirmed) {
+            reportYieldCancellation('review');
+
             return;
         }
 
@@ -353,8 +379,26 @@ export const signAndPushSendFormTransactionThunk = createThunk<
 
         // push tx to the network
         const pushResponse = await dispatch(
-            pushSendFormTransactionThunk({ selectedAccount, isMevProtectionEnabled }),
+            pushSendFormTransactionThunk({
+                selectedAccount,
+                isMevProtectionEnabled,
+            }),
         );
+
+        if (yieldApproval) {
+            dispatch(
+                transactionsActions.transactionBroadcastStatus({
+                    account: selectedAccount,
+                    flow: yieldApproval.txType,
+                    ...(isRejected(pushResponse)
+                        ? ({ status: 'error' } as const)
+                        : ({
+                              status: 'success',
+                              txid: pushResponse.payload.payload.txid,
+                          } as const)),
+                }),
+            );
+        }
 
         if (isRejected(pushResponse)) {
             dispatch(sendFormActions.clearSignedTransactionData());

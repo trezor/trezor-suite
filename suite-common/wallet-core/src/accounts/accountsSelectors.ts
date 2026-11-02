@@ -181,6 +181,11 @@ export const selectVisibleDeviceAccountsByNetworkSymbol = createMemoizedSelector
         ),
 );
 
+export const selectVisibleDeviceAccountsCountByNetworkSymbol = createMemoizedSelector(
+    [selectVisibleDeviceAccountsByNetworkSymbol],
+    accounts => accounts.length,
+);
+
 export const selectVisibleNonEmptyDeviceAccountsByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccountsByNetworkSymbol],
     accounts =>

@@ -163,6 +163,11 @@ mocking/dropping. Items needing those are environment-blocked: list them in
   backends), Device (backup, passphrase, firmware, PIN, safety checks,
   homescreen, auto-lock), Connected apps (WalletConnect, Trezor Connect).
   Clicking a BTC balance toggles BTC ↔ sats; the eye icon is Discreet mode.
+- **Debug mode**: open Settings, then click the page title "Settings" 5× (or
+  Ctrl+Alt+Shift+D). A Debug tab appears: feature flags, custom backends, API
+  overrides (trade, earn, message system, message system experiments),
+  transport and device-check toggles. It also unlocks testnet and debug-only
+  coins. Don't wipe, throw the testing error, or change the firmware channel.
 - **Hands off**: Reset app to default, Factory reset / Wipe, wipe code, firmware
   install/update, custom firmware, Tor, PIN changes, "Forget this device" and
   the eject buttons all break the session → `environment`-blocked.

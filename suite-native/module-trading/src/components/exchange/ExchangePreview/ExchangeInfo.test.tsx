@@ -15,11 +15,11 @@ jest.mock('@suite-native/transaction-management', () => ({
 }));
 
 describe('ExchangeInfo', () => {
-    const renderExchangeInfo = async (
+    const renderExchangeInfo = (
         props: Partial<ExchangeInfoProps> = {},
         tradingAccountKey: AccountKey = btc1NormalAccount.key,
     ) =>
-        await renderWithTradingProvider(<ExchangeInfo isTxnError={false} {...props} />, {
+        renderWithTradingProvider(<ExchangeInfo isTxnError={false} {...props} />, {
             tradeType: 'exchange',
             overrides: {
                 wallet: { trading: { exchange: { tradingAccountKey } } },

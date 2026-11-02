@@ -4,7 +4,7 @@ import type { PROTO } from '@trezor/connect';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onTabBar } from './tabBarActions';
-import { scrollUntilVisible, wait, waitForVisible } from '../support/utils';
+import { platform, scrollUntilVisible, wait, waitForVisible } from '../support/utils';
 
 // On Android emulator, the host machine is reachable at 10.0.2.2, an alias for localhost.
 const LOCAL_RELAY_URL = 'http://10.0.2.2:4000';
@@ -67,10 +67,17 @@ class SettingsActions {
 
         await wait(1000); // wait for the currency selector to open
 
+        const scrollViewTestId = '@bottom-sheet/scroll-view';
         const currencySelectorItemElement = element(by.id(`@select/item/${currencyCode}`));
         await scrollUntilVisible(currencySelectorItemElement, {
-            scrollViewTestId: '@bottom-sheet/scroll-view',
+            scrollViewTestId,
         });
+
+        if (platform === 'android') {
+            // Without an extra scroll, the currency item can remain behind Android's
+            // system navigation bar.
+            await element(by.id(scrollViewTestId)).scroll(300, 'down');
+        }
 
         await currencySelectorItemElement.tap();
         await wait(1000); // wait for the currency selector to close

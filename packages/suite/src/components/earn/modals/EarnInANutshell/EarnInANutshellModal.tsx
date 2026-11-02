@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
+import { events } from '@suite-common/analytics';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -69,12 +70,9 @@ export const EarnInANutshellModal = ({
     const isConfirmed = useSelector(state =>
         selectIsEarnOnboardingConfirmed(state, account.key, opportunity),
     );
-    // The update-provider flow must always be shown, and an explicit 'close' action means the modal
-    // was opened as info only, never as an entry into the earn flow.
-    const shouldSkip =
-        isConfirmed &&
-        (!actionType || actionType === 'continue') &&
-        flow !== EarnFlow.UpdateProvider;
+    // An explicit 'close' action means the modal was opened as info only, never as an entry into
+    // the earn flow.
+    const shouldSkip = isConfirmed && (!actionType || actionType === 'continue');
 
     const hasSkipped = useRef(false);
 
@@ -85,6 +83,16 @@ export const EarnInANutshellModal = ({
         onCancel();
 
         if (flow === EarnFlow.Yield && yieldContext?.vaultAddress) {
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'continue',
+                    from: 'deposit-in-a-nutshell-modal',
+                    to: 'deposit-form',
+                    networkSymbol: account.symbol,
+                    vaultId: yieldContext.id,
+                },
+            });
             dispatch(
                 gotoThunk({
                     routeName: 'earn-yield-deposit',
@@ -94,10 +102,19 @@ export const EarnInANutshellModal = ({
                     }),
                 }),
             );
-        } else if (flow === EarnFlow.Stake) {
+        } else if (flow === EarnFlow.Stake || flow === EarnFlow.UpdateProvider) {
             dispatch(openModal({ type: 'stake', flow, account }));
         }
-    }, [shouldSkip, flow, yieldContext?.vaultAddress, onCancel, account, dispatch]);
+    }, [
+        shouldSkip,
+        flow,
+        yieldContext?.vaultAddress,
+        yieldContext?.id,
+        onCancel,
+        account,
+        dispatch,
+        analytics,
+    ]);
 
     useEffect(() => {
         switch (flow) {

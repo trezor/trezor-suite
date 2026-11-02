@@ -1,14 +1,15 @@
 import type { FiatCurrencyCode } from 'invity-api';
 
+import { mockNetworkMetadata, mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { TradingAsset } from './TradingAsset';
 
 describe('TradingAsset', () => {
     it('renders a crypto name with its symbol and network badge by default', async () => {
-        const { getByTestId, getByText } = await renderWithBasicProvider(
+        const { getByTestId, getByText } = await renderWithStoreProvider(
             <TradingAsset
                 assetType="crypto"
                 contractAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -17,6 +18,10 @@ describe('TradingAsset', () => {
                 symbol="USDC"
                 testID="@test/trading-asset"
             />,
+            {
+                preloadedState: { networks: mockNetworkMetadata },
+                services: { networks: mockNetworksServices() },
+            },
         );
 
         expect(getByTestId('@test/trading-asset/primary-label')).toHaveTextContent('USD Coin');
@@ -25,7 +30,7 @@ describe('TradingAsset', () => {
     });
 
     it('renders a crypto symbol with network text without repeating the symbol', async () => {
-        const { getByTestId, queryByTestId } = await renderWithBasicProvider(
+        const { getByTestId, queryByTestId } = await renderWithStoreProvider(
             <TradingAsset
                 assetType="crypto"
                 name="USD Coin"
@@ -35,6 +40,10 @@ describe('TradingAsset', () => {
                 symbol="USDC"
                 testID="@test/trading-asset"
             />,
+            {
+                preloadedState: { networks: mockNetworkMetadata },
+                services: { networks: mockNetworksServices() },
+            },
         );
 
         expect(getByTestId('@test/trading-asset/primary-label')).toHaveTextContent('USDC');
@@ -43,7 +52,7 @@ describe('TradingAsset', () => {
     });
 
     it('renders a fiat flag with name, symbol, configured size, and right content', async () => {
-        const { getByLabelText, getByTestId, getByText } = await renderWithBasicProvider(
+        const { getByLabelText, getByTestId, getByText } = await renderWithStoreProvider(
             <TradingAsset
                 assetType="fiat"
                 fiatCurrency="usd"
@@ -54,6 +63,10 @@ describe('TradingAsset', () => {
                 symbol="USD"
                 testID="@test/trading-asset"
             />,
+            {
+                preloadedState: { networks: mockNetworkMetadata },
+                services: { networks: mockNetworksServices() },
+            },
         );
 
         expect(getByLabelText('flag-US')).toHaveStyle({ height: 32, width: 32 });
@@ -63,7 +76,7 @@ describe('TradingAsset', () => {
     });
 
     it('renders only the fiat symbol with configured typography and falls back to a coin icon', async () => {
-        const { getByTestId, queryByRole, queryByTestId } = await renderWithBasicProvider(
+        const { getByTestId, queryByRole, queryByTestId } = await renderWithStoreProvider(
             <TradingAsset
                 assetType="fiat"
                 fiatCurrency={'unknown' as FiatCurrencyCode}
@@ -73,6 +86,10 @@ describe('TradingAsset', () => {
                 symbol="XYZ"
                 testID="@test/trading-asset"
             />,
+            {
+                preloadedState: { networks: mockNetworkMetadata },
+                services: { networks: mockNetworksServices() },
+            },
         );
 
         expect(getByTestId('@test/trading-asset/primary-label')).toHaveTextContent('XYZ');

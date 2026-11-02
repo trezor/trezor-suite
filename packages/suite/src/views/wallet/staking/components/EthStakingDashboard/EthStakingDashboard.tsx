@@ -88,15 +88,17 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                                 {isDiscoveryRunning && <DiscoveryWarning />}
 
                                 <InstantStakeBanner
+                                    account={account}
                                     txs={txs}
                                     daysToAddToPool={daysToAddToPool}
                                     daysToUnstake={daysToUnstake}
                                 />
                                 <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={12}>
-                                    <ClaimCard />
+                                    <ClaimCard account={account} />
                                     <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
                                         <ApyCard apy={apy} />
                                         <PayoutCardNextRewards
+                                            account={account}
                                             nextRewardPayout={nextRewardPayout}
                                             daysToAddToPool={daysToAddToPool}
                                             validatorWithdrawTime={validatorQueueData?.withdrawTime}
@@ -112,10 +114,10 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                             </Column>
                         </DashboardSection>
                     ) : (
-                        <EmptyStakingCard />
+                        <EmptyStakingCard account={account} />
                     )}
 
-                    <Transactions />
+                    <Transactions account={account} />
                 </Column>
             }
         />

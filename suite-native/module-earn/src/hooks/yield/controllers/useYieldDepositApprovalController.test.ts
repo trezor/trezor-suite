@@ -6,6 +6,7 @@ import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import {
     act,
     createLightStore,
@@ -90,9 +91,11 @@ const buildScreenBase = (overrides: Partial<ScreenBase> = {}): ScreenBase =>
     });
 
 const renderApprovalController = () => {
-    const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(jest.fn()) };
+    const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
     const store = createLightStore({
         reducer: {
+            deviceAuthorization: deviceAuthorizationReducer,
+            device: createStaticReducer({ selectedDevice: { connected: true } }),
             locale: createStaticReducer({
                 appLocaleCode: 'en-US',
                 systemLocaleCode: 'en-US',
@@ -257,5 +260,80 @@ describe('useYieldDepositApprovalController', () => {
         if (result.current.status !== 'ready') throw new Error('not ready');
         expect(result.current.footer.approvalAction).toBe('revoke');
         expect(result.current.isRevokeRequired).toBe(true);
+    });
+
+    it('does not report a revoke submit when opening the revoke form from the approved amount', async () => {
+        const { result, services } = await renderApprovalController();
+
+        const controller = result.current;
+        if (controller.status !== 'ready') throw new Error('not ready');
+        await act(() => controller.approvedAmountCard.onRevoke());
+
+        expect(services.analytics.report).not.toHaveBeenCalled();
+    });
+
+    it.each(['onPress', 'onSkipPress'] as const)(
+        'reports %s with sufficient allowance as a skip without a device snapshot',
+        async handler => {
+            const { result, services } = await renderApprovalController();
+
+            const controller = result.current;
+            if (controller.status !== 'ready') throw new Error('not ready');
+            expect(controller.footer.approvalAction).toBe('continue');
+            const onPress = controller.footer[handler];
+            if (!onPress) throw new Error('missing approval handler');
+            await act(() => onPress());
+
+            expect(services.analytics.report).toHaveBeenCalledTimes(1);
+            expect(services.analytics.report).toHaveBeenCalledWith({
+                type: 'yield/deposit',
+                payload: {
+                    action: 'skip',
+                    type: 'approve',
+                    networkSymbol: resolvedYieldFlowData.account.symbol,
+                    vaultId: resolvedYieldFlowData.vault.id,
+                },
+            });
+        },
+    );
+
+    it('keeps the device snapshot on an actual approval submit', async () => {
+        useYieldFlowScreenBaseMock.mockReturnValue(
+            buildScreenBase({
+                session: mockYieldSessionState({
+                    step: 'approve',
+                    approval: { allowanceStatus: 'loaded', allowanceAmount: '0' },
+                }),
+            }),
+        );
+        const { result, services } = await renderApprovalController();
+
+        const controller = result.current;
+        if (controller.status !== 'ready') throw new Error('not ready');
+        await act(() => controller.footer.onPress());
+
+        expect(services.analytics.report).toHaveBeenCalledTimes(1);
+        expect(services.analytics.report).toHaveBeenCalledWith({
+            type: 'yield/deposit',
+            payload: expect.objectContaining({
+                action: 'continue',
+                type: 'approve',
+                deviceStatus: 'connected',
+            }),
+        });
+    });
+
+    it('does not report a revoke submit when the approval footer opens the required revoke form', async () => {
+        useYieldFlowScreenBaseMock.mockReturnValue(
+            buildScreenBase({ session: buildSession('approve', true) }),
+        );
+        const { result, services } = await renderApprovalController();
+
+        const controller = result.current;
+        if (controller.status !== 'ready') throw new Error('not ready');
+        await act(() => controller.footer.onPress());
+
+        expect(mockHandleSubmitApproval).toHaveBeenCalledWith('5');
+        expect(services.analytics.report).not.toHaveBeenCalled();
     });
 });

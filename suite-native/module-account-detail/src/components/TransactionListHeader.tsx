@@ -11,7 +11,11 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { AccountDiscoveryFailedBanner } from '@suite-native/accounts';
+import {
+    AccountDiscoveryFailedBanner,
+    type NativeAccountsRootState,
+    selectIsAccountDiscoveryFailed,
+} from '@suite-native/accounts';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -80,6 +84,9 @@ export const TransactionListHeader = memo(
                 selectHasAccountAnyTransactionsForToken(state, accountKey, tokenContract),
         );
         const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+        const isDiscoveryFailed = useSelector((state: NativeAccountsRootState) =>
+            selectIsAccountDiscoveryFailed(state, accountKey),
+        );
         const token = useSelector((state: TokensRootState) =>
             selectAccountTokenInfo(state, accountKey, tokenContract),
         );
@@ -98,7 +105,11 @@ export const TransactionListHeader = memo(
         return (
             <>
                 <VStack spacing="sp24">
-                    <AccountDiscoveryFailedBanner accountKey={accountKey} />
+                    {isDiscoveryFailed && (
+                        <Box paddingHorizontal="sp16">
+                            <AccountDiscoveryFailedBanner accountKey={accountKey} />
+                        </Box>
+                    )}
 
                     <YourPositionCard account={account} token={token} />
 

@@ -16,8 +16,11 @@ export const TradingSelectedOfferInfo = ({
     quoteAmounts,
     selectedAccount,
     receiveAddress,
+    receiveExtraField,
     paymentMethod,
     paymentMethodName,
+    networkFee,
+    bankAccount,
 }: TradingSelectedOfferInfoProps) => {
     const { exchange } = selectedQuote;
 
@@ -32,6 +35,7 @@ export const TradingSelectedOfferInfo = ({
                 currency={quoteAmounts?.receiveCurrency}
                 amount={quoteAmounts?.receiveAmount}
                 receiveAddress={receiveAddress}
+                receiveExtraField={receiveExtraField}
                 isReceive={type === 'buy'}
             />
 
@@ -46,8 +50,17 @@ export const TradingSelectedOfferInfo = ({
                     <TradingPaymentMethodInfoItem
                         paymentMethod={paymentMethod}
                         paymentMethodName={paymentMethodName}
+                        label={
+                            type === 'sell'
+                                ? 'TR_TRADING_RECEIVE_METHOD'
+                                : 'TR_TRADING_PAYMENT_METHOD'
+                        }
                     />
                 )}
+
+                {networkFee}
+
+                {bankAccount}
 
                 <TradingProviderInfoItem providers={providers} exchange={exchange} />
             </Column>

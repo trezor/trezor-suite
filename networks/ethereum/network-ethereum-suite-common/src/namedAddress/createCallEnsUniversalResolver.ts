@@ -15,7 +15,11 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export type CallEnsUniversalResolverDeps = GetTrezorConnectDep<'blockchainEvmRpcCall'>;
 
-export type CallEnsUniversalResolver = (symbol: EthereumNetworkSymbol, data: Hex) => Promise<Hex>;
+export type CallEnsUniversalResolver = (
+    symbol: EthereumNetworkSymbol,
+    data: Hex,
+    identity?: string,
+) => Promise<Hex>;
 
 export type CallEnsUniversalResolverDep = {
     callEnsUniversalResolver: CallEnsUniversalResolver;
@@ -23,7 +27,7 @@ export type CallEnsUniversalResolverDep = {
 
 export const createCallEnsUniversalResolver =
     (deps: CallEnsUniversalResolverDeps): CallEnsUniversalResolver =>
-    async (symbol, data) => {
+    async (symbol, data, identity) => {
         // The loser of the race has to be cleaned up: an uncleared timer keeps the event loop
         // busy for the full timeout after every single resolution.
         let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -32,6 +36,7 @@ export const createCallEnsUniversalResolver =
             const response = await Promise.race([
                 deps.getTrezorConnect().blockchainEvmRpcCall({
                     coin: symbol,
+                    identity,
                     from: ZERO_ADDRESS,
                     to: UNIVERSAL_RESOLVER_ADDRESS,
                     data,

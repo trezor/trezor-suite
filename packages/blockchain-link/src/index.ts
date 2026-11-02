@@ -230,6 +230,13 @@ export class BlockchainLink extends TypedEmitter<Events> {
         });
     }
 
+    /** Get current Cardano protocol parameters (fees, deposits, size limits). Blockfrost backend only. */
+    getCardanoProtocolParameters(): Promise<ResponseTypes.GetCardanoProtocolParameters['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.GET_CARDANO_PROTOCOL_PARAMETERS,
+        });
+    }
+
     rpcCall(payload: MessageTypes.RpcCall['payload']): Promise<ResponseTypes.RpcCall['payload']> {
         return this.sendMessage({
             type: MESSAGES.RPC_CALL,
@@ -288,9 +295,7 @@ export class BlockchainLink extends TypedEmitter<Events> {
     async disconnect(): Promise<boolean> {
         if (!this.lazyWorker.get()) return true;
 
-        return this.sendMessage({
-            type: MESSAGES.DISCONNECT,
-        });
+        return this.sendMessage({ type: MESSAGES.DISCONNECT });
     }
 
     // worker messages handler
@@ -317,6 +322,8 @@ export class BlockchainLink extends TypedEmitter<Events> {
         }
         if (data.type === RESPONSES.DISCONNECTED) {
             this.emit('disconnected');
+            // reject all pending responses
+            this.deferred.rejectAll(new CustomError('worker_runtime', 'Disconnected'));
         }
         if (data.type === RESPONSES.NOTIFICATION) {
             const notification = data.payload;
@@ -345,6 +352,7 @@ export class BlockchainLink extends TypedEmitter<Events> {
     };
 
     dispose() {
+        this.deferred.rejectAll(new CustomError('worker_runtime', 'Disconnected'));
         this.removeAllListeners();
         this.throttler.dispose();
         this.lazyWorker.dispose();

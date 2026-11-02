@@ -3,19 +3,25 @@ import {
     selectFirmwareRevisionCheckErrorIfEnabled,
     selectIsDeviceIdCheckEnabledAndFailed,
     selectIsDeviceInvariabilityEnabledAndFailed,
+    selectIsDiscoveryEntropyCheckEnabledAndUndismissedFailed,
     selectIsEntropyCheckEnabledAndFailed,
 } from '@suite/authenticity-checks';
-import { type TranslationKey } from '@suite/intl';
-import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
-import { type SkippedHashCheckError } from '@suite-common/firmware-authenticity';
+import type { TranslationKey } from '@suite/intl';
+import {
+    selectIsFirmwareAuthenticityCheckDismissed,
+    selectSelectedDevice,
+    selectWasFwHashCheckOtherErrorLastTime,
+} from '@suite-common/device';
+import type { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
 import { Card } from '@trezor/components';
-import { type FirmwareHashCheckError } from '@trezor/connect';
+import type { FirmwareHashCheckError } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 
 import { SecurityCheckFail } from './components/SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './components/checklistItems';
 import {
+    DiscoveryEntropyCheckCtas,
     DismissFwAuthenticityCheckButton,
     EntropyCheckSupportButton,
     FwAuthenticityCheckSupportButton,
@@ -33,12 +39,22 @@ const hashCheckSubtitleMap: Record<
 };
 
 const DeviceCompromisedContent = () => {
+    const device = useSelector(state => selectSelectedDevice(state));
+    const isFirmwareAuthenticityCheckDismissed = useSelector(state =>
+        selectIsFirmwareAuthenticityCheckDismissed(state, device?.id),
+    );
     const isIdCheckFailure = useSelector(selectIsDeviceIdCheckEnabledAndFailed);
     const isInvariabilityCheckFailure = useSelector(selectIsDeviceInvariabilityEnabledAndFailed);
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const hashCheckError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
     const isEntropyCheckFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
+    const isDiscoveryEntropyCheckFailed = useSelector(
+        selectIsDiscoveryEntropyCheckEnabledAndUndismissedFailed,
+    );
     const wasHashCheckOtherErrorLastTime = useSelector(selectWasFwHashCheckOtherErrorLastTime);
+
+    // TODO this ifs are crazy, difficult to ensure the same logic that drives rendering of DeviceCompromisedScreen is reflected in this branching.
+    // → instead, pass parameter from Preloader, like it is on mobile.
 
     // this check is only a precaution, not expected to be seen often. This one cannot be dismissed (need id to register dismissal)
     if (isIdCheckFailure) {
@@ -47,17 +63,6 @@ const DeviceCompromisedContent = () => {
                 ctaSection={<FwAuthenticityCheckSupportButton />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text="TR_DEVICE_COMPROMISED_INVALID_ID_TEXT"
-                checklistItems={hardFailureChecklistItems}
-            />
-        );
-    }
-    // this check is only a precaution, not expected to be seen often
-    if (isInvariabilityCheckFailure) {
-        return (
-            <SecurityCheckFail
-                ctaSection={<FwAuthenticityChecksCtas />}
-                heading="TR_DEVICE_COMPROMISED_HEADING"
-                text="TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT"
                 checklistItems={hardFailureChecklistItems}
             />
         );
@@ -72,50 +77,74 @@ const DeviceCompromisedContent = () => {
             />
         );
     }
-    // revision check has precedence over hash check, because it does not have the ambiguous other-error state
-    if (revisionCheckError !== null) {
+    if (isDiscoveryEntropyCheckFailed) {
         return (
             <SecurityCheckFail
-                ctaSection={<FwAuthenticityChecksCtas />}
+                ctaSection={<DiscoveryEntropyCheckCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
-                text="TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT"
+                text="TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT"
                 checklistItems={hardFailureChecklistItems}
             />
         );
     }
-    if (hashCheckError === 'other-error') {
-        // display harsh modal only if there was an other-error for the second time
-        if (wasHashCheckOtherErrorLastTime) {
+    if (!isFirmwareAuthenticityCheckDismissed) {
+        // this check is only a precaution, not expected to be seen often
+        if (isInvariabilityCheckFailure) {
             return (
                 <SecurityCheckFail
                     ctaSection={<FwAuthenticityChecksCtas />}
-                    heading="TR_FAILED_VERIFY_DEVICE_HEADING"
-                    text="TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT"
+                    heading="TR_DEVICE_COMPROMISED_HEADING"
+                    text="TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT"
                     checklistItems={hardFailureChecklistItems}
                 />
             );
         }
 
-        // for the first time, display a softer version without a CTA to contact support
-        return (
-            <SecurityCheckFail
-                ctaSection={<DismissFwAuthenticityCheckButton />}
-                heading="TR_FAILED_VERIFY_DEVICE_HEADING"
-                text="TR_FAILED_VERIFY_DEVICE_TEXT"
-                checklistItems={softFailureChecklistItems}
-                useCompromisedImage={false}
-            />
-        );
-    }
-    if (hashCheckError !== null) {
-        return (
-            <SecurityCheckFail
-                ctaSection={<FwAuthenticityChecksCtas />}
-                heading="TR_DEVICE_COMPROMISED_HEADING"
-                text={hashCheckSubtitleMap[hashCheckError]}
-                checklistItems={hardFailureChecklistItems}
-            />
-        );
+        // revision check has precedence over hash check, because it does not have the ambiguous other-error state
+        if (revisionCheckError !== null) {
+            return (
+                <SecurityCheckFail
+                    ctaSection={<FwAuthenticityChecksCtas />}
+                    heading="TR_DEVICE_COMPROMISED_HEADING"
+                    text="TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT"
+                    checklistItems={hardFailureChecklistItems}
+                />
+            );
+        }
+        if (hashCheckError === 'other-error') {
+            // display harsh modal only if there was an other-error for the second time
+            if (wasHashCheckOtherErrorLastTime) {
+                return (
+                    <SecurityCheckFail
+                        ctaSection={<FwAuthenticityChecksCtas />}
+                        heading="TR_FAILED_VERIFY_DEVICE_HEADING"
+                        text="TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT"
+                        checklistItems={hardFailureChecklistItems}
+                    />
+                );
+            }
+
+            // for the first time, display a softer version without a CTA to contact support
+            return (
+                <SecurityCheckFail
+                    ctaSection={<DismissFwAuthenticityCheckButton />}
+                    heading="TR_FAILED_VERIFY_DEVICE_HEADING"
+                    text="TR_FAILED_VERIFY_DEVICE_TEXT"
+                    checklistItems={softFailureChecklistItems}
+                    useCompromisedImage={false}
+                />
+            );
+        }
+        if (hashCheckError !== null) {
+            return (
+                <SecurityCheckFail
+                    ctaSection={<FwAuthenticityChecksCtas />}
+                    heading="TR_DEVICE_COMPROMISED_HEADING"
+                    text={hashCheckSubtitleMap[hashCheckError]}
+                    checklistItems={hardFailureChecklistItems}
+                />
+            );
+        }
     }
 
     // should not happen, but default props will be used with no problem

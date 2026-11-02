@@ -4,6 +4,7 @@ import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import {
     selectAccountByKey,
     selectAdaAccountHasStaked,
@@ -29,17 +30,19 @@ import {
     selectEthereumRewardsBalanceByAccountKey,
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
+    selectEthereumUnstakableBalanceByAccountKey,
     selectEthereumUnstakingBalanceByAccountKey,
     selectEthereumValidatorsQueue,
     selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol,
 } from './ethereum/ethereumStakingSelectors';
 import { getEthereumCryptoBalanceWithStaking } from './ethereum/ethereumStakingUtils';
-import { selectPoolStatsApy, selectStake } from './shared/stakingSelectors';
+import { selectPoolStatsApy, selectStake, selectStakeAccountKey } from './shared/stakingSelectors';
 import { getUnstakingPeriodInDays } from './shared/stakingUtils';
 import {
     selectExpectedRewardsForEpoch,
     selectSolanaCanClaimByAccountKey,
     selectSolanaClaimableAmountByAccountKey,
+    selectSolanaIsStakeConfirmingByAccountKey,
     selectSolanaIsStakePendingByAccountKey,
     selectSolanaStakedBalanceByAccountKey,
     selectSolanaTotalStakePendingByAccountKey,
@@ -47,7 +50,7 @@ import {
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solana/solanaStakingSelectors';
 import { getSolanaCryptoBalanceWithStaking } from './solana/solanaStakingUtils';
-import type { StakeRootState } from './stakingReducerTypes';
+import type { StakeRootState, StakeSliceRootState } from './stakingReducerTypes';
 import {
     selectTronAccountHasStaked,
     selectTronRewardsBalanceByAccountKey,
@@ -185,7 +188,7 @@ export const selectIsStakeConfirmingByAccountKey = (
             return selectEthereumIsStakeConfirmingByAccountKey(state, accountKey);
         case 'dsol':
         case 'sol':
-            return false; // there are no pending txns for solana staking;
+            return selectSolanaIsStakeConfirmingByAccountKey(state, accountKey);
         case 'ada':
             return false;
         case 'trx':
@@ -216,6 +219,31 @@ export const selectStakedBalanceByAccountKey = (state: StakeRootState, accountKe
         case 'eth':
         case 'thod':
             return selectEthereumStakedBalanceByAccountKey(state, accountKey);
+        case 'dsol':
+        case 'sol':
+            return selectSolanaStakedBalanceByAccountKey(state, accountKey);
+        case 'ada':
+            return selectCardanoStakedBalanceByAccountKey(state, accountKey);
+        case 'trx':
+            return selectTronStakedBalanceByAccountKey(state, accountKey);
+        default:
+            return exhaustive(symbol);
+    }
+};
+
+export const selectUnstakableBalanceByAccountKey = (
+    state: StakeRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const symbol = account?.symbol;
+
+    if (!symbol || !isStakingSymbol(symbol)) return '0';
+
+    switch (symbol) {
+        case 'eth':
+        case 'thod':
+            return selectEthereumUnstakableBalanceByAccountKey(state, accountKey);
         case 'dsol':
         case 'sol':
             return selectSolanaStakedBalanceByAccountKey(state, accountKey);
@@ -392,11 +420,11 @@ export const selectEntryPeriodInDaysBySymbol = (
  * to render a selection wants `selectVotingDelegationOption` instead.
  */
 export const selectStakeVotingDelegation = (
-    state: StakeRootState,
+    state: StakeSliceRootState,
 ): AccountVotingDelegation | undefined => selectStake(state).votingDelegation;
 
 export const selectVotingDelegationOption = (
-    state: StakeRootState,
+    state: StakeSliceRootState,
     accountKey: AccountKey,
 ): VotingDelegationOption => {
     const votingDelegation = selectStakeVotingDelegation(state);
@@ -406,5 +434,15 @@ export const selectVotingDelegationOption = (
         : DEFAULT_VOTING_OPTION;
 };
 
-export const selectStakePrecomposedForm = (state: StakeRootState) =>
+export const selectStakePrecomposedForm = (state: StakeSliceRootState) =>
     selectStake(state).precomposedForm;
+
+export const selectStakeAccount = (
+    state: StakeSliceRootState & AccountsRootState,
+): Account | undefined => {
+    const accountKey = selectStakeAccountKey(state);
+
+    if (!accountKey) return undefined;
+
+    return selectAccountByKey(state, accountKey) ?? undefined;
+};

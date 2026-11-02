@@ -8,11 +8,11 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 describe('RequestedAmountShortfallNote', () => {
-    const renderNote = async (
+    const renderNote = (
         quote: typeof mercuryoApplePayBuyQuote,
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
     ) =>
-        await renderWithTradingProvider(<RequestedAmountShortfallNote quote={quote} />, {
+        renderWithTradingProvider(<RequestedAmountShortfallNote quote={quote} />, {
             overrides,
         });
 

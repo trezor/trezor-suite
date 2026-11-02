@@ -2,6 +2,7 @@ import { METRIC_DEFINITIONS } from './config';
 import {
     type MetricComparison,
     type MetricDefinition,
+    type MetricUnit,
     type PerfMetrics,
     type ScenarioComparison,
     type ScenarioLimits,
@@ -12,12 +13,12 @@ import {
  * has no say in it: a metric is over budget when it costs more than the app is allowed to cost, not
  * when it costs more than it used to.
  */
-export const compareMetric = (
-    definition: MetricDefinition,
+export const compareMetric = <K extends string, U extends MetricUnit>(
+    definition: MetricDefinition<K, U>,
     baseline: number | undefined,
     limit: number | undefined,
     current: number | null,
-): MetricComparison => {
+): MetricComparison<K, U> => {
     const comparison = {
         key: definition.key,
         label: definition.label,
@@ -39,13 +40,22 @@ export const compareMetric = (
     };
 };
 
-export const compareScenario = (
-    scenario: string,
-    current: PerfMetrics,
-    baseline: Partial<PerfMetrics> | undefined,
-    limits: ScenarioLimits | undefined,
-    definitions: readonly MetricDefinition[] = METRIC_DEFINITIONS,
-): ScenarioComparison => {
+type CompareScenarioMetricsParams<K extends string, U extends MetricUnit> = {
+    scenario: string;
+    current: Record<K, number | null>;
+    baseline: Partial<Record<K, number | null>> | undefined;
+    limits: Partial<Record<K, number | null>> | undefined;
+    definitions: readonly MetricDefinition<K, U>[];
+};
+
+/** `compareScenario` over any metric set, for a report whose metrics are not the browser ones. */
+export const compareScenarioMetrics = <K extends string, U extends MetricUnit>({
+    scenario,
+    current,
+    baseline,
+    limits,
+    definitions,
+}: CompareScenarioMetricsParams<K, U>): ScenarioComparison<K, U> => {
     const metrics = definitions.map(definition =>
         // A null recorded baseline or limit means "none" for that metric, same as absent.
         compareMetric(
@@ -63,3 +73,12 @@ export const compareScenario = (
         unlimited: metrics.every(metric => metric.limit === null),
     };
 };
+
+export const compareScenario = (
+    scenario: string,
+    current: PerfMetrics,
+    baseline: Partial<PerfMetrics> | undefined,
+    limits: ScenarioLimits | undefined,
+    definitions: readonly MetricDefinition[] = METRIC_DEFINITIONS,
+): ScenarioComparison =>
+    compareScenarioMetrics({ scenario, current, baseline, limits, definitions });

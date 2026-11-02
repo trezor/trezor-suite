@@ -5,11 +5,7 @@ import {
     splitVotesEvenly,
 } from '@suite-common/wallet-core';
 
-import { formatApyValue } from '../../../utils/earnApyUtils';
 import { type TronVoteFormAllocation } from '../hooks/useTronStakeForm';
-
-export const formatApr = (apr: number | undefined) =>
-    apr != null ? `${formatApyValue(apr)}%` : formatApyValue(apr);
 
 export const parseVoteCount = (value: string): number | null => {
     const trimmedValue = value.trim();

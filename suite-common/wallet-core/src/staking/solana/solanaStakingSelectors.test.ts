@@ -194,6 +194,7 @@ const getTestState = ({
                 staticSessionId: staticStateString,
             },
         } as TrezorDevice,
+        buttonRequestsByPath: {},
     },
 });
 
@@ -438,7 +439,7 @@ describe('selectors', () => {
                     },
                     sol1Key,
                 ),
-            ).toEqual('0.000340274');
+            ).toEqual('0.000170137');
         });
 
         it('should return "0" for account without activated or deactivating stake', () => {

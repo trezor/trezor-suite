@@ -34,7 +34,7 @@ import {
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
 import { type BlockchainRootState, selectGapLimit } from './blockchain/blockchainReducer';
-import { selectDeviceSupportedNetworks } from './device/deviceSelectors';
+import { selectEnabledSupportedNetworks } from './device/deviceSelectors';
 import { type DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
 import {
@@ -55,15 +55,6 @@ export type WalletCoreCompoundRootState = AccountsRootState &
     BlockchainRootState &
     NetworksRootState;
 const createMemoizedSelector = createWeakMapSelector.withTypes<WalletCoreCompoundRootState>();
-
-const selectEnabledSupportedNetworks = createMemoizedSelector(
-    [selectEnabledNetworks, selectDeviceSupportedNetworks],
-    (enabledNetworks, deviceNetworks) => {
-        const supportedNetworks = enabledNetworks.filter(n => deviceNetworks.includes(n));
-
-        return returnStableArrayIfEmpty(supportedNetworks);
-    },
-);
 
 /**
  * Listable accounts are visible, enabled in settings, supported by the device and conventionally sorted.

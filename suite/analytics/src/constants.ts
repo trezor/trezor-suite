@@ -1,22 +1,15 @@
 export enum EventType {
     AccountsActions = 'accounts/actions',
-    AccountsActiveStaking = 'accounts/active-staking',
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',
     AccountsNewAccount = 'accounts/new-account',
-    AccountsNonZeroBalance = 'accounts/non-zero-balance',
-    AccountsStatus = 'accounts/status',
-    AccountsTokensStatus = 'accounts/tokens-status',
     AccountsTransactionsExport = 'accounts/transactions-export',
     // eslint-disable-next-line local-rules/analytics-event-name
     AddToken = 'add-token',
-    AppFormPercentButtons = 'app/form-percent-buttons',
     // eslint-disable-next-line local-rules/analytics-event-name
     AppUpdate = 'app-update',
     AppUriHandler = 'app/uri-handler',
     // eslint-disable-next-line local-rules/analytics-event-name
     AutostartModal = 'autostart-modal',
-    // eslint-disable-next-line local-rules/analytics-event-name
-    CoinjoinAnonymityGain = 'coinjoin/anonymity-gain',
     // eslint-disable-next-line local-rules/analytics-event-name
     CreateBackup = 'create-backup',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -109,13 +102,7 @@ export enum EventType {
     SettingsTorOnionLinks = 'settings/tor/onion-links',
     StakingCardanoPoolDelegation = 'staking/cardano-pool-delegation',
     StakingChangeDelegate = 'staking/change-delegate',
-    StakingClaim = 'staking/claim',
-    StakingConfirm = 'staking/confirm',
-    StakingNavigate = 'staking/navigate',
-    StakingStake = 'staking/stake',
-    StakingUnstake = 'staking/unstake',
     StakingUpdateProvider = 'staking/update-provider',
-    YieldEarnEntry = 'yield/earn-entry',
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteReady = 'suite-ready',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -142,8 +129,6 @@ export enum EventType {
     TradeStatus = 'trade/status',
     TradingExchangeIssue = 'trading/exchange-issue',
     TransactionCancel = 'transaction/cancel',
-    // eslint-disable-next-line local-rules/analytics-event-name
-    TransactionCreated = 'transaction-created',
     TransactionTimeoutRetry = 'transaction/timeout-retry',
     // eslint-disable-next-line local-rules/analytics-event-name
     TransportType = 'transport-type',

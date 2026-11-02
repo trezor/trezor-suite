@@ -5,15 +5,15 @@ import { CardList, Column, Text } from '@trezor/components';
 
 import { AssetsModal } from 'src/components/suite/asset-picker/components';
 
+import { GlobalSendReceiveAssetDescription } from '../../components/GlobalSendReceiveAssetDescription';
 import { GlobalReceiveAccountListItem } from '../components/GlobalReceiveAccountListItem';
-import { GlobalReceiveAssetDescription } from '../components/GlobalReceiveAssetDescription';
 import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
 
 type GlobalReceiveAccountStepProps = {
     accounts: Account[];
     asset: TradingAssetOption | undefined;
     onAccountClick: (account: Account) => void;
-    onBack: () => void;
+    onBack?: () => void;
     onCancel: () => void;
 };
 
@@ -26,7 +26,7 @@ export const GlobalReceiveAccountStep = ({
 }: GlobalReceiveAccountStepProps) => (
     <AssetsModal
         heading={<Translation id="TR_RECEIVE" />}
-        description={<GlobalReceiveAssetDescription asset={asset} />}
+        description={<GlobalSendReceiveAssetDescription asset={asset} />}
         onBackClick={onBack}
         onClose={onCancel}
         maxHeight={GLOBAL_RECEIVE_MODAL_HEIGHT}

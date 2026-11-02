@@ -74,7 +74,10 @@ export const YieldPromoList = () => {
 
     const onItemPress = useCallback(
         (item: YieldPromoListItemType) => {
-            analytics.report({ type: events.earnStablecoinYieldTilePressedEvent.name });
+            analytics.report({
+                type: events.earnTilePressedEvent.name,
+                payload: { id: item.yieldId, asset: item.tokenSymbol.toLowerCase(), type: 'yield' },
+            });
             onPromoItemPress(item);
         },
         [analytics, onPromoItemPress],

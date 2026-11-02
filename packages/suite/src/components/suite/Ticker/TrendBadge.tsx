@@ -47,8 +47,10 @@ export const TrendBadge = ({ valueInFraction }: TrendBadgeProps) => {
     const trend = getTrend(valueInFraction);
     const { icon, color } = trendStyles[trend];
     // A change that rounds to ±0.0% is shown as a neutral "≈0%" instead of e.g. "-0.0%".
-    const formattedChange =
-        trend === 'stable' ? '≈0%' : localizePercentage({ valueInFraction, locale });
+    const isApproximatelyZero = trend === 'stable' && valueInFraction !== 0;
+    const formattedChange = isApproximatelyZero
+        ? '≈0%'
+        : localizePercentage({ valueInFraction, locale });
 
     return (
         <PercentageWrapper $color={color}>

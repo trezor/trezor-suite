@@ -1,4 +1,4 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type BaseStakeType } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
 import { STAKE_MODULE_PREFIX } from './stakingActions';
@@ -14,6 +14,7 @@ import {
     type WalletSettingsRootState,
     selectIsMevProtectionEnabled,
 } from '../settings/walletSettingsReducer';
+import { transactionsActions } from '../transactions/transactionsActions';
 
 const PUSH_LOG_PREFIX = 'pushStakeTransactionThunk';
 
@@ -29,7 +30,11 @@ export const pushStakeTransactionThunk = createThunk<
     { txid: string },
     // MEV protection availability is app-specific (message-system feature flag), so the caller
     // resolves it (e.g. via `selectIsMevProtectionFeatureEnabled` from `@suite-common/mev`).
-    { accountKey: AccountKey; isMevProtectionFeatureEnabled: boolean },
+    {
+        accountKey: AccountKey;
+        stakeType: BaseStakeType;
+        isMevProtectionFeatureEnabled: boolean;
+    },
     {
         rejectValue: PushStakeTransactionError;
         state: PushStakeTransactionThunkState;
@@ -37,7 +42,7 @@ export const pushStakeTransactionThunk = createThunk<
     }
 >(
     `${STAKE_MODULE_PREFIX}/${PUSH_LOG_PREFIX}`,
-    async ({ accountKey, isMevProtectionFeatureEnabled }, thunkApi) => {
+    async ({ accountKey, stakeType, isMevProtectionFeatureEnabled }, thunkApi) => {
         const { dispatch, getState, rejectWithValue } = thunkApi;
         const account = selectAccountByKey(getState(), accountKey);
 
@@ -56,7 +61,20 @@ export const pushStakeTransactionThunk = createThunk<
                 : false;
 
         const pushAction = await dispatch(
-            pushSendFormTransactionThunk({ selectedAccount: account, isMevProtectionEnabled }),
+            pushSendFormTransactionThunk({
+                selectedAccount: account,
+                isMevProtectionEnabled,
+            }),
+        );
+
+        dispatch(
+            transactionsActions.transactionBroadcastStatus({
+                account,
+                flow: stakeType,
+                ...(pushSendFormTransactionThunk.rejected.match(pushAction)
+                    ? ({ status: 'error' } as const)
+                    : ({ status: 'success', txid: pushAction.payload.payload.txid } as const)),
+            }),
         );
 
         if (pushSendFormTransactionThunk.rejected.match(pushAction)) {

@@ -1,4 +1,5 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
+import type { NamedAddressResolveOptions } from '@trezor/network-module-suite-common-types';
 
 /**
  * Resolves a name to an address; null means no record, while backend failures reject.
@@ -7,6 +8,7 @@ import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 export type ResolveNamedAddress = (
     value: string,
     symbol: EthereumNetworkSymbol,
+    options?: NamedAddressResolveOptions,
 ) => Promise<string | null>;
 
 export type ResolveNamedAddressDep = {

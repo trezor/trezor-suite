@@ -17,6 +17,7 @@ export type ConfirmTradeThunkProps = {
     quote?: BuyTrade;
     returnUrl: string;
     address: string;
+    extraField?: string;
     account: Account;
 
     triggerAnalyticsTradeConfirmation: () => void;
@@ -36,6 +37,7 @@ export const confirmBuyTradeThunk = createThunk<
             quote,
             returnUrl,
             address,
+            extraField,
             account,
             triggerAnalyticsTradeConfirmation,
             processResponseData,
@@ -58,6 +60,7 @@ export const confirmBuyTradeThunk = createThunk<
         const trade = {
             ...buyTrade,
             receiveAddress: address,
+            receiveAddressExtraId: extraField,
         };
 
         const response = await tradeApi.doBuyTrade({

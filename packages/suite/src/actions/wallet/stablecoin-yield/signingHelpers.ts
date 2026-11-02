@@ -2,10 +2,7 @@ import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import {
-    buildStablecoinYieldTransactionReview,
-    isUserCancelledSignErrorCode,
-} from '@suite-common/earn-stablecoin';
+import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
@@ -14,6 +11,7 @@ import {
     type WalletSettingsRootState,
     type YieldFlowDisplayToken,
     type YieldFlowType,
+    isEarnSigningCancelled,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
     synchronizeSentTransactionThunk,
@@ -23,6 +21,7 @@ import {
     type Account,
     AddressDisplayOptions,
     type EvmSelectedFee,
+    type FeeLevelLabel,
 } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
@@ -31,6 +30,9 @@ import { asCoinSymbol } from '@trezor/connect-common';
 // Marks failures of the final broadcast — the transaction is already signed at that point,
 // which deserves a more specific message than the generic one.
 export const PUSH_TRANSACTION_FAILED_CAUSE = 'PushTransactionFailed';
+
+export const isYieldPushError = (error: unknown) =>
+    error instanceof Error && error.cause === PUSH_TRANSACTION_FAILED_CAUSE;
 
 export const getYieldErrorTranslationKey = (error: unknown) => {
     if (!(error instanceof Error)) {
@@ -44,7 +46,7 @@ export const getYieldErrorTranslationKey = (error: unknown) => {
         return 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT';
     }
 
-    if (error.cause === PUSH_TRANSACTION_FAILED_CAUSE) {
+    if (isYieldPushError(error)) {
         return 'TR_EARN_YIELD_ERROR_PUSH_FAILED';
     }
 
@@ -52,9 +54,7 @@ export const getYieldErrorTranslationKey = (error: unknown) => {
 };
 
 export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
-    error instanceof Error && error.cause === PUSH_TRANSACTION_FAILED_CAUSE
-        ? 'push-failed'
-        : 'submit-failed';
+    isYieldPushError(error) ? 'push-failed' : 'submit-failed';
 
 export type SendYieldTransactionState = DeviceRootState &
     MessageSystemRootState &
@@ -69,7 +69,8 @@ type SendYieldTransactionDispatch = ThunkDispatch<
 
 // Genuine failures are thrown — a returned `cancelled` is always the user backing out on purpose.
 export type SendYieldTransactionResult =
-    { status: 'sent'; txid: string; fee: string } | { status: 'cancelled' };
+    | { status: 'sent'; txid: string; fee: string }
+    | { status: 'cancelled'; stage: 'signing' | 'review' };
 
 export type SendYieldTransactionParams = {
     account: Account;
@@ -81,6 +82,7 @@ export type SendYieldTransactionParams = {
     dispatch: SendYieldTransactionDispatch;
     getState: () => SendYieldTransactionState;
     selectedFee: EvmSelectedFee | null;
+    selectedFeeLevel: FeeLevelLabel;
 };
 
 export const sendYieldTransaction = async ({
@@ -93,6 +95,7 @@ export const sendYieldTransaction = async ({
     dispatch,
     getState,
     selectedFee,
+    selectedFeeLevel,
 }: SendYieldTransactionParams): Promise<SendYieldTransactionResult> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
@@ -108,6 +111,7 @@ export const sendYieldTransaction = async ({
     const transactionReview = buildStablecoinYieldTransactionReview({
         unsignedTransaction,
         selectedFee,
+        selectedFeeLevel,
         amount,
         token,
         symbol: account.symbol,
@@ -149,8 +153,8 @@ export const sendYieldTransaction = async ({
             dispatch(closeModal());
 
             const { code } = signingResponse.error;
-            if (isUserCancelledSignErrorCode(code)) {
-                return { status: 'cancelled' };
+            if (isEarnSigningCancelled(signingResponse.error)) {
+                return { status: 'cancelled', stage: 'signing' };
             }
 
             throw new Error(`${code}: ${signingResponse.error.message}`, { cause: code });
@@ -168,7 +172,7 @@ export const sendYieldTransaction = async ({
         const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
 
         if (!isPushConfirmed) {
-            return { status: 'cancelled' };
+            return { status: 'cancelled', stage: 'review' };
         }
 
         const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());

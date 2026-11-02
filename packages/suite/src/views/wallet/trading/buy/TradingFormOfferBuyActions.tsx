@@ -34,13 +34,8 @@ export const TradingFormOfferBuyActions = () => {
         selectAccountByKey(suiteState, receiveAccountKey),
     );
 
-    const {
-        quote,
-        areFeesLoading,
-        confirmButtonData,
-        selectedAssetCryptoId,
-        isBaseButtonDisabled,
-    } = useTradingFormOfferCommon<'buy'>();
+    const { quote, selectedAssetCryptoId, isBaseButtonDisabled } =
+        useTradingFormOfferCommon<'buy'>();
     const isButtonDisabled = isBaseButtonDisabled || state.isFormLoading;
 
     const { stellarActivateButton, stellarActivateModal } = useTradingStellarActivation({
@@ -60,13 +55,11 @@ export const TradingFormOfferBuyActions = () => {
 
     const renderActionButton = () => {
         if (!isReceiveAddressSelected && quote) {
-            return (
+            return isButtonDisabled ? null : (
                 <Button
                     onClick={onContinueClick}
                     intent="brand"
                     margin={{ top: 16 }}
-                    isDisabled={isButtonDisabled}
-                    isLoading={areFeesLoading || state.isFormLoading}
                     size="large"
                     minWidth={160}
                     width="100%"
@@ -80,12 +73,14 @@ export const TradingFormOfferBuyActions = () => {
             return stellarActivateButton;
         }
 
+        if (isButtonDisabled) {
+            return null;
+        }
+
         return (
             <TradingFormOfferConfirmButton
                 translationId="TR_CONTINUE"
-                isLoading={confirmButtonData.isLoading}
                 onClick={onSelectQuote}
-                isDisabled={isButtonDisabled}
                 testId="@trading/form/buy-button"
             />
         );

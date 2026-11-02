@@ -26,6 +26,7 @@
         },
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
+        { "path": "../../suite-common/networks" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" }
     ]

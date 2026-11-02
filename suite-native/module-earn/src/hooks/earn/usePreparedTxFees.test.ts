@@ -84,6 +84,8 @@ type HookProps = {
     hasInvalidContext: boolean;
     isEnabled: boolean;
     symbol: NetworkSymbol | undefined;
+    fallbackReason: string;
+    onComposeError?: (reason: string | undefined) => void;
 };
 
 const createTestStore = () =>
@@ -115,6 +117,7 @@ const createProps = (overrides: Partial<HookProps> = {}): HookProps => ({
     hasInvalidContext: false,
     isEnabled: true,
     symbol: asNetworkSymbol('eth'),
+    fallbackReason: 'fee-estimation-failed',
     ...overrides,
 });
 
@@ -144,6 +147,37 @@ const resolveCompose = (
     });
 
 describe('usePreparedTxFees', () => {
+    it('normalizes thrown and classified failures before deduplicating them', async () => {
+        const onComposeError = jest.fn();
+        const composeTransaction = jest
+            .fn()
+            .mockRejectedValueOnce(new Error('private-failure'))
+            .mockResolvedValue({ type: 'error', reason: 'fee-estimation-failed' });
+        const props = createProps({ composeTransaction, onComposeError });
+        const { rerender } = await renderPreparedTxFees(props);
+
+        await settleDebounce();
+        await rerender({ ...props, amount: '2' });
+        await settleDebounce();
+
+        expect(onComposeError).toHaveBeenCalledTimes(1);
+        expect(onComposeError).toHaveBeenCalledWith('fee-estimation-failed');
+    });
+
+    it('does not report a required approval or revoke as a compose failure', async () => {
+        const onComposeError = jest.fn();
+        const composeTransaction = jest.fn().mockResolvedValue({ type: 'not-ready' });
+        const { result } = await renderPreparedTxFees(
+            createProps({ composeTransaction, onComposeError }),
+        );
+
+        await settleDebounce();
+
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(result.current.preparedTx).toBeNull();
+        expect(onComposeError).not.toHaveBeenCalled();
+    });
+
     beforeEach(() => {
         jest.useFakeTimers();
         buildFeePreviewMock.mockReturnValue(BASE_FEE_PREVIEW);
@@ -153,6 +187,57 @@ describe('usePreparedTxFees', () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.useRealTimers();
+    });
+
+    it('reports a compose failure once until recovery or an explicit retry', async () => {
+        const onComposeError = jest.fn();
+        const composeTransaction = jest.fn().mockResolvedValue({
+            type: 'error',
+            reason: 'missing-fee-level',
+        });
+        const props = createProps({ composeTransaction, onComposeError });
+        const { result, rerender } = await renderPreparedTxFees(props);
+
+        await settleDebounce();
+        expect(onComposeError).toHaveBeenCalledWith('missing-fee-level');
+
+        await rerender({ ...props, amount: '2' });
+        await settleDebounce();
+        expect(onComposeError).toHaveBeenCalledTimes(1);
+
+        await act(() => result.current.retryFeeEstimation());
+        await settleDebounce();
+        expect(onComposeError).toHaveBeenCalledTimes(2);
+
+        composeTransaction.mockResolvedValue(composeReady());
+        await rerender({ ...props, amount: '3' });
+        await settleDebounce();
+
+        composeTransaction.mockResolvedValue({ type: 'error', reason: 'missing-fee-level' });
+        await rerender({ ...props, amount: '4' });
+        await settleDebounce();
+        expect(onComposeError).toHaveBeenCalledTimes(3);
+    });
+
+    it('ignores compose failures for stale requests and after unmount', async () => {
+        const deferred = createDeferred<ComposeTxResult<ComposedTxBase>>();
+        const composeTransaction = jest.fn().mockReturnValue(deferred.promise);
+        const onComposeError = jest.fn();
+        const props = createProps({ composeTransaction, onComposeError });
+        const { rerender, unmount } = await renderPreparedTxFees(props);
+
+        await settleDebounce();
+        await rerender({ ...props, isEnabled: false });
+        await resolveCompose(deferred, { type: 'error' });
+        expect(onComposeError).not.toHaveBeenCalled();
+
+        const next = createDeferred<ComposeTxResult<ComposedTxBase>>();
+        composeTransaction.mockReturnValue(next.promise);
+        await rerender(props);
+        await settleDebounce();
+        await unmount();
+        await resolveCompose(next, { type: 'error' });
+        expect(onComposeError).not.toHaveBeenCalled();
     });
 
     it('prepares the transaction and stores fee levels with the form draft', async () => {

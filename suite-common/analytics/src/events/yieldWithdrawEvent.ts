@@ -1,10 +1,12 @@
 import type { EarnModalAction } from '@suite-common/suite-types';
 
 import { EventType } from '../constants';
+import { type EarnDeviceStatus, deviceStatusAttribute } from '../earnAttributes';
 import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;
+    deviceStatus?: AttributeDef<EarnDeviceStatus>;
     type: AttributeDef<
         | 'withdraw'
         | 'unwrap'
@@ -32,15 +34,20 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
         { version: '26.8.0', notes: 'added unwrap transaction events' },
         { version: '26.9.0', notes: 'added pre-broadcast unwrap-step failures' },
+        {
+            version: '26.11.0',
+            notes: 'Mobile unwrap simulation cancellation includes backdrop and gesture dismissal exactly once and excludes dismissal after Continue.',
+        },
     ],
 
     attributes: {
+        deviceStatus: deviceStatusAttribute,
         action: {
             changelog: [{ version: '26.5.0', notes: 'added' }],
         },
         type: {
             description:
-                'Which step of the withdraw flow the event refers to: `withdraw` = form submit, `tx-simulation-modal` = simulation modal shown (desktop only), `success` / `error` / `leftPending` = withdraw transaction resolution. `error` also covers a failure of the unwrap step — see `errorMessage`.',
+                'Which step of the withdraw flow the event refers to: `withdraw` = form submit, `tx-simulation-modal` = simulation modal shown (also used for the mobile unwrap step), `success` / `error` / `leftPending` = withdraw transaction resolution. `error` also covers a failure of the unwrap step — see `errorMessage`.',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -69,10 +76,14 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
         },
         errorMessage: {
             description:
-                'Values prefixed with `unwrap-` are failures of the unwrap step of a wrapped-native withdraw, all of them before the unwrap transaction is broadcast: `unwrap-submit-failed` (signing failed, or the user rejected the transaction on the device or in the review modal), `unwrap-push-failed` (signed but the broadcast failed), and `unwrap-<compose reason>` (e.g. `unwrap-fee-estimation-failed`) when the transaction could not be composed. An unwrap that fails on chain instead reports `on-chain-failure`, as does the withdraw transaction itself.',
+                'Classified withdraw/redeem compose failures (e.g. `missing-vault-address`, `missing-chain-id`, `fee-estimation-failed`) use the same unprefixed reason on mobile and desktop. Values prefixed with `unwrap-` are failures of the unwrap step of a wrapped-native withdraw, all of them before the unwrap transaction is broadcast: `unwrap-submit-failed` (unexpected failure), `unwrap-push-failed` (signed but the broadcast failed), and `unwrap-<compose reason>` (e.g. `unwrap-fee-estimation-failed`) when the transaction could not be composed. Intentional user cancellations use `transaction/cancel` instead of errors. An unwrap that fails on chain instead reports `on-chain-failure`, as does the withdraw transaction itself.',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 { version: '26.9.0', notes: 'added `unwrap-` prefixed values' },
+                {
+                    version: '26.11.0',
+                    notes: 'Mobile reports unwrap signing and broadcast failures in the parent withdraw event. Intentional unwrap cancellations on both platforms use transaction/cancel instead of errors.',
+                },
                 {
                     version: '26.9.0',
                     notes: 'desktop no longer reports user cancellations of the withdraw transaction (device button, PIN entry, review modal) as `submit-failed`',

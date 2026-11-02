@@ -1,7 +1,12 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import {
+    type Account,
+    type AccountKey,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { DEFAULT_VOTING_OPTION } from './cardano/cardanoStakingConstants';
 import { type AccountVotingDelegation } from './cardano/cardanoStakingTypes';
@@ -11,9 +16,12 @@ import {
     selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
+    selectIsStakeConfirmingByAccountKey,
+    selectStakeAccount,
     selectStakeVotingDelegation,
     selectStakedBalanceByAccountKey,
     selectTotalStakePendingByAccountKey,
+    selectUnstakableBalanceByAccountKey,
     selectVotingDelegationOption,
 } from './stakingSelectors';
 
@@ -50,6 +58,27 @@ const ethAccountWithClaimableStake = {
         ],
     },
 } as unknown as Account;
+
+const ethAccountWithRestakedRewards = mockWalletAccount(
+    { symbol: ethSymbol, deviceState: 'device@state:1' },
+    {
+        misc: {
+            stakingPools: [
+                {
+                    name: 'Everstake',
+                    contract: '0x789',
+                    autocompoundBalance: '2050000000000000000',
+                    claimableAmount: '0',
+                    depositedBalance: '2000000000000000000',
+                    pendingBalance: '0',
+                    pendingDepositedBalance: '0',
+                    restakedReward: '50000000000000000',
+                    withdrawTotalAmount: '0',
+                },
+            ],
+        },
+    },
+);
 
 const solAccountWithStaking = {
     symbol: 'sol',
@@ -99,12 +128,15 @@ const etcAccount = {
     networkType: 'ethereum',
 } as unknown as Account;
 
-const getTestState = (accounts: Account[]) =>
+const getTestState = (
+    accounts: Account[],
+    transactions: Record<AccountKey, WalletAccountTransaction[]> = {},
+) =>
     ({
         wallet: {
             accounts,
             transactions: {
-                transactions: {},
+                transactions,
                 phishing: {},
                 fetchStatusDetail: {},
             },
@@ -160,6 +192,7 @@ const getTestState = (accounts: Account[]) =>
             selectedDevice: {
                 state: 'device@state:1',
             } as unknown as TrezorDevice,
+            buttonRequestsByPath: {},
         },
     }) satisfies StakeRootState;
 
@@ -359,6 +392,51 @@ describe('selectStakedBalanceByAccountKey', () => {
     });
 });
 
+describe('selectUnstakableBalanceByAccountKey', () => {
+    it('should include restaked rewards for an ETH account', () => {
+        const testState = getTestState([ethAccountWithRestakedRewards]);
+
+        const result = selectUnstakableBalanceByAccountKey(
+            testState,
+            ethAccountWithRestakedRewards.key,
+        );
+
+        expect(result).toBe('2.05');
+    });
+
+    it('should return the staked balance for a SOL account', () => {
+        const testState = getTestState([solAccountWithStaking]);
+
+        const result = selectUnstakableBalanceByAccountKey(testState, sol1Key);
+
+        expect(result).toBe('1');
+    });
+
+    it('should return the whole balance for a delegated ADA account', () => {
+        const testState = getTestState([createAdaAccount({ isActive: true, rewards: '0' })]);
+
+        const result = selectUnstakableBalanceByAccountKey(testState, ada1Key);
+
+        expect(result).toBe('100');
+    });
+
+    it('should return "0" for unsupported network', () => {
+        const testState = getTestState([etcAccount]);
+
+        const result = selectUnstakableBalanceByAccountKey(testState, etc1Key);
+
+        expect(result).toBe('0');
+    });
+
+    it('should return "0" for non-existent account', () => {
+        const testState = getTestState([ethAccountWithRestakedRewards]);
+
+        const result = selectUnstakableBalanceByAccountKey(testState, nonExistentKey);
+
+        expect(result).toBe('0');
+    });
+});
+
 describe('selectTotalStakePendingByAccountKey', () => {
     it('should return "0" for a delegated ADA account, which stakes the whole balance at once', () => {
         const testState = getTestState([createAdaAccount({ isActive: true, rewards: '0' })]);
@@ -378,7 +456,7 @@ describe('selectVotingDelegationOption', () => {
     };
 
     const createState = (votingDelegation?: AccountVotingDelegation): StakeRootState => ({
-        device: { devices: [] },
+        device: { devices: [], buttonRequestsByPath: {} },
         wallet: {
             stake: { ...stakeInitialState, votingDelegation },
             accounts: [],
@@ -416,7 +494,7 @@ describe('selectStakeVotingDelegation', () => {
             option: { type: 'current' },
         };
         const state: StakeRootState = {
-            device: { devices: [] },
+            device: { devices: [], buttonRequestsByPath: {} },
             wallet: {
                 stake: { ...stakeInitialState, votingDelegation },
                 accounts: [],
@@ -429,7 +507,7 @@ describe('selectStakeVotingDelegation', () => {
 
     it('returns undefined when nothing was confirmed', () => {
         const state: StakeRootState = {
-            device: { devices: [] },
+            device: { devices: [], buttonRequestsByPath: {} },
             wallet: {
                 stake: stakeInitialState,
                 accounts: [],
@@ -438,5 +516,59 @@ describe('selectStakeVotingDelegation', () => {
         };
 
         expect(selectStakeVotingDelegation(state)).toBeUndefined();
+    });
+});
+
+describe('selectStakeAccount', () => {
+    const adaAccount = createAdaAccount({ isActive: true, rewards: '0' });
+
+    const getStateInReview = (accountKey?: AccountKey): StakeRootState => ({
+        device: { devices: [], buttonRequestsByPath: {} },
+        wallet: {
+            stake: { ...stakeInitialState, accountKey },
+            accounts: [adaAccount, etcAccount],
+            transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
+        },
+    });
+
+    it('returns the account the transaction in review was composed for', () => {
+        expect(selectStakeAccount(getStateInReview(ada1Key))).toBe(adaAccount);
+    });
+
+    it('returns undefined when no transaction is in review', () => {
+        expect(selectStakeAccount(getStateInReview())).toBeUndefined();
+    });
+
+    it('returns undefined when the account is no longer known', () => {
+        expect(selectStakeAccount(getStateInReview(nonExistentKey))).toBeUndefined();
+    });
+});
+
+describe('selectIsStakeConfirmingByAccountKey', () => {
+    const solanaStakeTransaction = (blockHeight?: number) =>
+        testMocks.getWalletTransaction({
+            txid: 'sol-stake',
+            symbol: solSymbol,
+            blockHeight,
+            solanaSpecific: {
+                status: blockHeight ? 'confirmed' : 'pending',
+                stakeOperation: { type: 'stake', amount: '1' },
+            },
+        });
+
+    it('should return true for a SOL account whose stake is broadcast but not yet confirmed', () => {
+        const testState = getTestState([solAccountWithStaking], {
+            [sol1Key]: [solanaStakeTransaction()],
+        });
+
+        expect(selectIsStakeConfirmingByAccountKey(testState, sol1Key)).toBe(true);
+    });
+
+    it('should return false for a SOL account once the stake is confirmed', () => {
+        const testState = getTestState([solAccountWithStaking], {
+            [sol1Key]: [solanaStakeTransaction(100)],
+        });
+
+        expect(selectIsStakeConfirmingByAccountKey(testState, sol1Key)).toBe(false);
     });
 });

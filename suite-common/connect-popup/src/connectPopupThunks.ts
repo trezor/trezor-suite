@@ -7,17 +7,17 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    getAddressForNetworkType,
-    getPublicKeyForNetworkType,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
+    getAddressForNetworkType,
     getAddressParameters,
     getDerivationType,
     getNetworkId,
     getProtocolMagic,
+    getPublicKeyForNetworkType,
     prepareNewAccountPayload,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
@@ -49,16 +49,32 @@ import {
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { compatibilityHooks, postCallHooks, preCallHooks, validateCallHooks } from './methodHooks';
+import {
+    cleanupAllTemporaryAccounts,
+    compatibilityHooks,
+    postCallHooks,
+    preCallHooks,
+    validateCallHooks,
+} from './methodHooks';
 import type { DistributiveOmit } from './methodHooks/types';
 import {
+    canRememberPermissions,
     deriveCardanoEnabledNetworks,
+    isSameConnectApp,
     mergePermissions,
     permissionsAreCovered,
     sanitizeRequestedPermissions,
 } from './permissions';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
+
+// After these errors the popup stays open so that the user can reconnect or switch the device and
+// retry. The caller has not been answered yet.
+export const isDeviceReconnectError = (code: string | undefined) =>
+    code === 'Device_NotFound' ||
+    code === 'Device_Disconnected' ||
+    code === 'Device_UsedElsewhere' ||
+    code === 'Device_InvalidState';
 
 // Names only, values may hold confidential data. Deeplink payloads are arbitrary parsed JSON.
 const getCallParamNames = (payload: unknown): string[] =>
@@ -146,12 +162,13 @@ export const connectPopupCallInnerThunk = createThunk<
             // already covered, even if the app declared more than it has been granted so far.
             const rememberedApps = selectConnectAppPermissions(getState());
 
-            const isRemembered = rememberedApps.some(
-                app =>
-                    app.origin === source.origin &&
-                    app.process?.fullPath === source.process?.fullPath &&
-                    permissionsAreCovered(callPermissions, app.allowedPermissions),
-            );
+            const isRemembered =
+                canRememberPermissions(source) &&
+                rememberedApps.some(
+                    app =>
+                        isSameConnectApp(app, source) &&
+                        permissionsAreCovered(callPermissions, app.allowedPermissions),
+                );
 
             if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
                 // Create the deferred BEFORE dispatching requestPermissions.
@@ -203,6 +220,8 @@ export const connectPopupCallInnerThunk = createThunk<
             // refresh device state before call (could have changed during preCallHooks)
             device = selectSelectedDevice(getState());
             if (!device) throw TypedError('Device_Disconnected');
+
+            dispatch(connectPopupActions.setCallDevicePath(device.path));
 
             const response = await TrezorConnect.call({
                 device: {
@@ -267,13 +286,7 @@ export const connectPopupCallInnerThunk = createThunk<
                 dispatch(connectPopupActions.setError(serializeError(error)));
 
                 // don't return error, allow user to reconnect device
-                if (
-                    error?.code === 'Device_NotFound' ||
-                    error?.code === 'Device_Disconnected' ||
-                    error?.code === 'Device_UsedElsewhere' ||
-                    error?.code === 'Device_InvalidState'
-                )
-                    return;
+                if (isDeviceReconnectError(error?.code)) return;
             }
 
             extra.services.analytics.report({
@@ -296,6 +309,9 @@ export const connectPopupCallInnerThunk = createThunk<
                 error: serializeError(error),
             });
         } finally {
+            // Tear down any placeholder accounts created in preCallHooks even if the call threw
+            // before postCallHooks ran, so they cannot leak into a later removeAccount payload.
+            cleanupAllTemporaryAccounts(dispatch);
             extra.services.lockDevice(false);
         }
     },
@@ -418,6 +434,9 @@ export const connectPopupVerifyAddressThunk = createThunk<
         const device = selectSelectedDevice(getState());
         const call = selectConnectPopupCall(getState());
         if (!device || call?.state !== 'address-confirmation') return;
+        // Device is busy with a previous verification. A second call fails with
+        // Device_CallInProgress and clears the loading state of the running one.
+        if (call.addresses.some(({ loading }) => loading)) return;
 
         // Update loading state of addresses
         dispatch(
@@ -1095,27 +1114,52 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
     getPermissionDeferred().resolve();
 });
 
-export const connectPopupCancelThunk = createThunk<void, { error?: string; callId?: string }, void>(
-    `${CONNECT_POPUP_MODULE}/cancelThunk`,
-    ({ error, callId }, { dispatch }) => {
-        getPermissionDeferred().reject(TypedError('Method_Cancel'));
-        TrezorConnect.cancel({ reason: error, callId });
-        // todo: probably not needed to call explicitly anymore
-        dispatch(deviceActions.removeButtonRequests({}));
+type ConnectPopupCancelThunkState = ConnectPopupStateRootState;
 
-        dispatch(connectPopupActions.finishCall());
+export const connectPopupCancelThunk = createThunk<
+    void,
+    { error?: string; callId?: string },
+    {
+        state: ConnectPopupCancelThunkState;
+    }
+>(`${CONNECT_POPUP_MODULE}/cancelThunk`, ({ error, callId }, { dispatch, getState }) => {
+    const activeCall = selectConnectPopupCall(getState());
 
-        // Resolve the popup-call deferred directly so the cancel response
-        // reaches the caller immediately.  Without this, the response
-        // depends on TrezorConnect.cancel() propagating through the
-        // internal core, interrupting the device, and eventually causing
-        // the catch block in connectPopupCallInnerThunk to resolve the
-        // deferred — which may not happen reliably (e.g. the device
-        // interrupt doesn't complete, or the Suite popup tab closes
-        // before RESPONSE_EVENT is sent).
-        getPopupCallDeferred().resolve({
-            success: false,
-            error: serializeError(TypedError('Method_Interrupted')),
-        });
-    },
-);
+    getPermissionDeferred().reject(TypedError('Method_Cancel'));
+    TrezorConnect.cancel({ reason: error, callId });
+    // Clear now instead of when the aborted call settles. No-op before the call reaches a device.
+    dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));
+
+    dispatch(connectPopupActions.finishCall());
+
+    // Resolve the popup-call deferred directly so the cancel response
+    // reaches the caller immediately.  Without this, the response
+    // depends on TrezorConnect.cancel() propagating through the
+    // internal core, interrupting the device, and eventually causing
+    // the catch block in connectPopupCallInnerThunk to resolve the
+    // deferred — which may not happen reliably (e.g. the device
+    // interrupt doesn't complete, or the Suite popup tab closes
+    // before RESPONSE_EVENT is sent).
+    getPopupCallDeferred().resolve({
+        success: false,
+        error: serializeError(TypedError('Method_Interrupted')),
+    });
+});
+
+export type ConnectPopupFinishCallThunkState = ConnectPopupStateRootState;
+
+// Closing the popup of a call that ended with a device error answers its caller with that error.
+// Otherwise the caller never gets a response and every popup call queued after it keeps waiting.
+export const connectPopupFinishCallThunk = createThunk<
+    void,
+    void,
+    { state: ConnectPopupFinishCallThunkState }
+>(`${CONNECT_POPUP_MODULE}/finishCallThunk`, (_, { dispatch, getState }) => {
+    const activeCall = selectConnectPopupCall(getState());
+
+    if (activeCall?.state === 'call-error' && isDeviceReconnectError(activeCall.error.code)) {
+        getPopupCallDeferred().resolve({ success: false, error: activeCall.error });
+    }
+
+    dispatch(connectPopupActions.finishCall());
+});

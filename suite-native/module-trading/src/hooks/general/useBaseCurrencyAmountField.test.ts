@@ -23,8 +23,8 @@ describe('useBaseCurrencyAmountField', () => {
         typedBaseCurrencyAmount: undefined,
     };
 
-    const renderField = async (initialProps: Partial<FieldProps> = {}) =>
-        await renderHookWithStoreProvider(
+    const renderField = (initialProps: Partial<FieldProps> = {}) =>
+        renderHookWithStoreProvider(
             (props: FieldProps) =>
                 useBaseCurrencyAmountField({
                     ...props,

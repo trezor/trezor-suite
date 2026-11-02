@@ -47,9 +47,6 @@ export const closeEvmExplanationBanner = createAction<NetworkSymbol>(
     SUITE.EVM_CLOSE_EXPLANATION_BANNER,
 );
 
-export const hideCoinjoinReceiveWarning = () => (dispatch: Dispatch<UnknownAction>) =>
-    dispatch(suiteSettingsActions.setCoinjoinReceiveWarningHidden(true));
-
 export const toggleDeviceAuthenticityCheck =
     (enable: boolean) => (dispatch: Dispatch<UnknownAction>) => {
         dispatch(notificationsActions.addToast({ type: 'settings-applied' }));

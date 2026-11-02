@@ -6,9 +6,13 @@ import {
     type ScrollView,
 } from 'react-native';
 
+import { useNativeStyles } from '@trezor/styles-native';
+
 import { type AccountOverviewTab } from './types';
 
 export const useActiveTabScroll = (activeTab: AccountOverviewTab) => {
+    const { utils } = useNativeStyles();
+    const horizontalPadding = utils.spacings.sp16;
     const scrollViewRef = useRef<ScrollView>(null);
     const tabLayouts = useRef<Partial<Record<AccountOverviewTab, { x: number; width: number }>>>(
         {},
@@ -16,22 +20,31 @@ export const useActiveTabScroll = (activeTab: AccountOverviewTab) => {
     const scrollOffset = useRef(0);
     const visibleWidth = useRef(0);
 
-    const scrollToSelectedTab = useCallback((tab: AccountOverviewTab, animated = true) => {
-        const layout = tabLayouts.current[tab];
-        const visible = visibleWidth.current;
-        if (!layout || visible === 0) {
-            return;
-        }
+    const scrollToSelectedTab = useCallback(
+        (tab: AccountOverviewTab, animated = true) => {
+            const layout = tabLayouts.current[tab];
+            const visible = visibleWidth.current;
+            if (!layout || visible === 0) {
+                return;
+            }
 
-        const { x, width } = layout;
-        const offset = scrollOffset.current;
+            const { x, width } = layout;
+            const offset = scrollOffset.current;
 
-        if (x < offset) {
-            scrollViewRef.current?.scrollTo({ x, animated });
-        } else if (x + width > offset + visible) {
-            scrollViewRef.current?.scrollTo({ x: x + width - visible, animated });
-        }
-    }, []);
+            if (x - horizontalPadding < offset) {
+                scrollViewRef.current?.scrollTo({
+                    x: Math.max(x - horizontalPadding, 0),
+                    animated,
+                });
+            } else if (x + width + horizontalPadding > offset + visible) {
+                scrollViewRef.current?.scrollTo({
+                    x: x + width + horizontalPadding - visible,
+                    animated,
+                });
+            }
+        },
+        [horizontalPadding],
+    );
 
     const handleTabLayout =
         (tab: AccountOverviewTab) =>

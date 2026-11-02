@@ -3,11 +3,12 @@ import { type ComponentType } from 'react';
 import { type AppProps } from 'next/app';
 
 import { ServicesProvider } from '@trezor/dependency-injection';
+import type { ProductComponentsServices } from '@trezor/product-components';
 
 import { ConnectExplorerAppRoot } from '../ConnectExplorerAppRoot';
 import { type ConnectExplorerReduxStoreDep } from '../store/createConnectExplorerReduxStore';
 
-export type ConnectExplorerServices = ConnectExplorerReduxStoreDep;
+export type ConnectExplorerServices = ProductComponentsServices & ConnectExplorerReduxStoreDep;
 
 type ConnectExplorerAppDeps = {
     services: ConnectExplorerServices;

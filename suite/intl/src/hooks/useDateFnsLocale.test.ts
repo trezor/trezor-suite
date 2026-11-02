@@ -1,4 +1,4 @@
-import { LANGUAGES, type Locale as SuiteLocale } from '@suite-common/suite-types';
+import { LANGUAGES, type Locale as SuiteLocale } from '@suite-common/locale';
 
 import { loadDateFnsLocale } from './useDateFnsLocale';
 

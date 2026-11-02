@@ -1,5 +1,6 @@
 import { type Store } from '@reduxjs/toolkit';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent, within } from '@suite-native/test-utils-store';
@@ -15,8 +16,8 @@ describe('LimitPicker', () => {
     let store: Store<State>;
     const mockOnApprovalTypeChange = jest.fn();
 
-    const renderLimitPicker = async () =>
-        await renderWithStoreProvider(
+    const renderLimitPicker = () =>
+        renderWithStoreProvider(
             <LimitPicker
                 onApprovalTypeChange={approvalType => {
                     mockOnApprovalTypeChange(approvalType);
@@ -29,7 +30,12 @@ describe('LimitPicker', () => {
                     );
                 }}
             />,
-            { services: { store } },
+            {
+                services: {
+                    store,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
 
     beforeEach(() => {

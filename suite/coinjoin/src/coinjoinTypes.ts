@@ -71,7 +71,6 @@ export interface AnonymityGainPerRound {
 
 export interface AnonymityGains {
     history: AnonymityGainPerRound[];
-    lastReportTimestamp?: number;
 }
 
 export interface CoinjoinTxCandidate {

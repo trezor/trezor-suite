@@ -70,13 +70,6 @@ export const getTronRewardClaimCooldownEndsAt = (account: Account): number | nul
     return stakingInfo.latestWithdrawTime + TRON_REWARD_CLAIM_COOLDOWN_SECONDS;
 };
 
-export const isTronRewardClaimOnCooldown = (account: Account): boolean => {
-    const cooldownEndsAt = getTronRewardClaimCooldownEndsAt(account);
-    if (cooldownEndsAt === null) return false;
-
-    return Date.now() / 1000 < cooldownEndsAt;
-};
-
 const sumUnstakingBatchesSun = (
     account: Account,
     predicate: (batch: TronUnstakingBatch) => boolean,
@@ -95,17 +88,39 @@ const sumUnstakingBatchesSun = (
 export const getTronUnstakingBalance = (account: Account): string =>
     sumUnstakingBatchesSun(account, () => true);
 
-export const getTronWithdrawableBalance = (account: Account): string => {
-    const nowSeconds = Date.now() / 1000;
+export const getTronUnstakingBatches = (account: Account): TronUnstakingBatch[] =>
+    getTronStakingInfo(account)?.unstakingBatches.toSorted((a, b) => a.expireTime - b.expireTime) ??
+    [];
 
-    return sumUnstakingBatchesSun(account, batch => batch.expireTime <= nowSeconds);
+export type TronPendingUnstakingBatch = {
+    amount: string;
+    expireTime: number;
 };
 
-export const getTronPendingUnstakeBalance = (account: Account): string => {
-    const nowSeconds = Date.now() / 1000;
-
-    return sumUnstakingBatchesSun(account, batch => batch.expireTime > nowSeconds);
+type GetTronPendingUnstakingBatchesParams = {
+    batches: TronUnstakingBatch[];
+    symbol: NetworkSymbol;
+    nowSeconds?: number;
 };
+
+export const getTronPendingUnstakingBatches = ({
+    batches,
+    symbol,
+    nowSeconds = Date.now() / 1000,
+}: GetTronPendingUnstakingBatchesParams): TronPendingUnstakingBatch[] =>
+    batches
+        .filter(batch => batch.expireTime > nowSeconds)
+        .map(batch => ({ amount: sunToTrx(batch.amount, symbol), expireTime: batch.expireTime }));
+
+export const getTronWithdrawableBalance = (
+    account: Account,
+    nowSeconds: number = Date.now() / 1000,
+): string => sumUnstakingBatchesSun(account, batch => batch.expireTime <= nowSeconds);
+
+export const getTronPendingUnstakeBalance = (
+    account: Account,
+    nowSeconds: number = Date.now() / 1000,
+): string => sumUnstakingBatchesSun(account, batch => batch.expireTime > nowSeconds);
 
 export const getTronVotes = (account?: Account): TronVote[] =>
     getTronStakingInfo(account)?.votes ?? [];

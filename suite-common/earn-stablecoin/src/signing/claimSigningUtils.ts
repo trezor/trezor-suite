@@ -1,12 +1,12 @@
-import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { type EvmFeeHex, type EvmHexString, parseEvmFeeHex } from '@suite-common/schemas/src/evm';
 import {
     type FormState,
     type PrecomposedTransactionFinal,
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
-import { fromHex, sanitizeHex } from '@suite-common/wallet-utils';
-import { type EthereumSignTransaction } from '@trezor/connect-common';
+import { fromHex, fromIntegerString, sanitizeHex } from '@suite-common/wallet-utils';
+import { type EthereumSignTransaction, type FeeLevel } from '@trezor/connect-common';
+import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 export type ClaimReward = {
@@ -67,6 +67,7 @@ type BuildClaimReviewStateParams = {
     contractAddress: EvmHexString;
     fee: EvmFeeHex;
     rewards: ClaimReviewReward[];
+    selectedFeeLevel?: FeeLevel['label'];
 };
 
 type BuildClaimReviewStateResult = {
@@ -82,8 +83,9 @@ type GetClaimTransactionForSigningParams = {
 
 type BuildClaimTransactionReviewParams = {
     unsignedTransaction: UnsignedClaimTransaction;
-    selectedFee: unknown;
+    selectedFee?: unknown;
     rewards: ClaimReviewReward[];
+    selectedFeeLevel?: FeeLevel['label'];
 };
 
 type BuildClaimTransactionReviewResult = BuildClaimReviewStateResult & {
@@ -208,6 +210,7 @@ export const buildClaimReviewState = ({
     contractAddress,
     fee,
     rewards,
+    selectedFeeLevel = 'custom',
 }: BuildClaimReviewStateParams): BuildClaimReviewStateResult => {
     const { feeWei, feeLimitWei, feePerUnitGwei, eip1559Fields } = getClaimFeeData(fee);
     const availableRewards = rewards.map(reward => ({
@@ -227,7 +230,7 @@ export const buildClaimReviewState = ({
                 dataHex: data,
             },
         ],
-        selectedFee: 'custom',
+        selectedFee: selectedFeeLevel,
         feePerUnit: feePerUnitGwei,
         feeLimit: feeLimitWei,
         maxFeePerGas: eip1559Fields.maxFeePerGas,
@@ -283,16 +286,42 @@ export const getClaimTransactionForSigning = ({
     };
 };
 
+const getUnsignedClaimTransactionFee = ({
+    gasLimit,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+}: UnsignedClaimTransaction): EvmFeeHex => {
+    const gasLimitHex = fromIntegerString(gasLimit).toHex();
+
+    if (maxFeePerGas && maxPriorityFeePerGas) {
+        return {
+            type: 'eip1559',
+            gasLimit: gasLimitHex,
+            maxFeePerGas: fromIntegerString(maxFeePerGas).toHex(),
+            maxPriorityFeePerGas: fromIntegerString(maxPriorityFeePerGas).toHex(),
+            baseFeePerGas: '0x0',
+        };
+    }
+
+    if (gasPrice) {
+        return {
+            type: 'legacy',
+            gasLimit: gasLimitHex,
+            gasPrice: fromIntegerString(gasPrice).toHex(),
+        };
+    }
+
+    throw new Error('Fee information is missing for the transaction.');
+};
+
 export const buildClaimTransactionReview = ({
     unsignedTransaction,
     selectedFee,
     rewards,
+    selectedFeeLevel,
 }: BuildClaimTransactionReviewParams): BuildClaimTransactionReviewResult => {
-    const fee = parseEvmFeeHex(selectedFee);
-
-    if (!fee) {
-        throw new Error('Fee information is missing for the transaction.');
-    }
+    const fee = parseEvmFeeHex(selectedFee) ?? getUnsignedClaimTransactionFee(unsignedTransaction);
 
     assertRewardsMatchClaimCalldata({ data: unsignedTransaction.data, rewards });
 
@@ -302,6 +331,7 @@ export const buildClaimTransactionReview = ({
             contractAddress: unsignedTransaction.to,
             fee,
             rewards,
+            selectedFeeLevel,
         }),
         transactionForSigning: getClaimTransactionForSigning({
             unsignedTransaction,

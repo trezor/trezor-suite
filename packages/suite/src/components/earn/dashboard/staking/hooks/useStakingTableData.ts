@@ -1,11 +1,18 @@
 import { useMemo } from 'react';
 
-import { type StakingNetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    PROD_STAKING_SYMBOLS,
+    type StakingNetworkSymbol,
+    asNetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     selectDeviceSupportedNetworks,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -22,7 +29,31 @@ type UseStakingTableDataResult = {
     isExpanded: boolean;
     toggleExpanded: () => void;
     hasAnyRewardsData: boolean;
+    hasStakingPosition: boolean;
+    availableStakingCount: number;
 };
+
+type GetStakingDashboardAnalyticsParams = {
+    stakingAccounts: Account[];
+    deviceSupportedNetworkSymbols: NetworkSymbol[];
+};
+
+export const getStakingDashboardAnalytics = ({
+    stakingAccounts,
+    deviceSupportedNetworkSymbols,
+}: GetStakingDashboardAnalyticsParams): Pick<
+    UseStakingTableDataResult,
+    'hasStakingPosition' | 'availableStakingCount'
+> => ({
+    hasStakingPosition: stakingAccounts.some(account =>
+        new BigNumber(getAccountTotalStakingBalance(account) ?? '0').gt(0),
+    ),
+    availableStakingCount: PROD_STAKING_SYMBOLS.filter(
+        symbol =>
+            deviceSupportedNetworkSymbols.includes(asNetworkSymbol(symbol)) ||
+            stakingAccounts.some(account => account.symbol === symbol),
+    ).length,
+});
 
 export const useStakingTableData = (): UseStakingTableDataResult => {
     const ethCurrentRate = useCryptoCurrentRate(asNetworkSymbol('eth'));
@@ -53,6 +84,10 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
     );
 
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const { hasStakingPosition, availableStakingCount } = getStakingDashboardAnalytics({
+        stakingAccounts,
+        deviceSupportedNetworkSymbols,
+    });
 
     const ethNotActivated =
         deviceSupportedNetworkSymbols.includes(asNetworkSymbol('eth')) &&
@@ -90,5 +125,7 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
         isExpanded,
         toggleExpanded,
         hasAnyRewardsData,
+        hasStakingPosition,
+        availableStakingCount,
     };
 };

@@ -13,18 +13,18 @@ import {
     selectSendFormDraftByKey,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type FormState,
-    type GeneralPrecomposedTransactionFinal,
-    type PrecomposedLevels,
-    type PrecomposedLevelsCardano,
-    isFinalPrecomposedTransaction,
+import type {
+    AccountKey,
+    FormState,
+    GeneralPrecomposedTransactionFinal,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
 import { transactionManagementActions } from './sendFormSlice';
-import { type FeeLevelsMaxAmount, type UpdateFeeLimitThunkParams } from './types/fees';
+import { type FeeLevelsMaxAmount, type UpdateFeeLimitThunkParams } from './types';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
 
@@ -55,12 +55,16 @@ export type CalculateFeeLevelsMaxAmountThunkState = AccountsRootState &
 
 export const calculateFeeLevelsMaxAmountThunk = createThunk<
     FeeLevelsMaxAmount,
-    { formState: FormState; accountKey: AccountKey },
+    {
+        formState: FormState;
+        accountKey: AccountKey;
+        assumeNewAccount?: boolean;
+    },
     { state: CalculateFeeLevelsMaxAmountThunkState }
 >(
     `${TRANSACTION_MANAGEMENT_PREFIX}/calculateMaxAmountThunk`,
     async (
-        { formState, accountKey },
+        { formState, accountKey, assumeNewAccount },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
@@ -81,6 +85,7 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
                     account,
                     network,
                     feeInfo: networkFeeInfo,
+                    assumeNewAccount,
                 },
             }),
         );

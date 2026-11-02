@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
@@ -7,13 +8,14 @@ import { TradeableAssetListItem, type TradeableAssetListItemProps } from './Trad
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('TradeableAssetListItem', () => {
-    const renderComponent = async ({
+    const renderComponent = ({
         onPress = jest.fn(),
         asset = btcAsset,
         balance,
     }: Partial<TradeableAssetListItemProps>) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <TradeableAssetListItem asset={asset} balance={balance} onPress={onPress} />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     it('should render with correct labels', async () => {

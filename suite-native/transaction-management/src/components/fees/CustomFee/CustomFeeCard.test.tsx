@@ -1,4 +1,4 @@
-import { type AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
@@ -43,7 +43,7 @@ describe('CustomFeeCard', () => {
         return result.current;
     };
 
-    const renderCustomFeeCard = async ({
+    const renderCustomFeeCard = ({
         form,
         props,
     }: {
@@ -52,7 +52,7 @@ describe('CustomFeeCard', () => {
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return await renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
+        return renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
             preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });

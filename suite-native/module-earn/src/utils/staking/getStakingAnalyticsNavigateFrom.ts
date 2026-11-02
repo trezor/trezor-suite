@@ -4,12 +4,10 @@ import { formatNetworkAmount, getAccountTotalStakingBalance } from '@suite-commo
 import { type StakingNavigateFrom } from '@suite-native/analytics';
 import { BigNumber } from '@trezor/utils';
 
-export const getStakingAnalyticsNavigateFrom = (
-    account: Account,
-): StakingNavigateFrom | undefined => {
+export const getStakingAnalyticsNavigateFrom = (account: Account): StakingNavigateFrom => {
     const limits = getStakingLimitsByNetworkSymbol(account.symbol);
 
-    if (!limits) return undefined;
+    if (!limits) return 'unknown';
 
     const stakedBalance = getAccountTotalStakingBalance(account);
     const hasStakedBalance = !!stakedBalance && new BigNumber(stakedBalance).gt(0);
@@ -20,15 +18,17 @@ export const getStakingAnalyticsNavigateFrom = (
 
     if (hasStakedBalance) {
         if (new BigNumber(formattedAvailableBalance).isZero()) {
-            return 'earn/staking-max';
+            return 'dashboard/staking-dashboard/staking-max';
         }
 
         if (!hasEnoughBalanceForStaking) {
-            return 'earn/staked-but-insufficient-funds';
+            return 'dashboard/staking-dashboard/staked-but-insufficient-funds';
         }
 
-        return 'earn/staking-active';
+        return 'dashboard/staking-dashboard/staking-active';
     }
 
-    return hasEnoughBalanceForStaking ? 'earn/staking-inactive' : 'earn/insufficient-funds';
+    return hasEnoughBalanceForStaking
+        ? 'dashboard/staking-dashboard/staking-inactive'
+        : 'dashboard/staking-dashboard/insufficient-funds';
 };

@@ -207,8 +207,8 @@ describe(useStellarFeeScreen.name, () => {
         onSuccess: mockOnSuccess,
     };
 
-    const renderUseStellarFeeScreen = async (props: UseStellarFeeScreenParams = defaultProps) =>
-        await renderHookWithStoreProvider(hookProps => useStellarFeeScreen(hookProps), {
+    const renderUseStellarFeeScreen = (props: UseStellarFeeScreenParams = defaultProps) =>
+        renderHookWithStoreProvider(hookProps => useStellarFeeScreen(hookProps), {
             services: { store },
             initialProps: props,
         });

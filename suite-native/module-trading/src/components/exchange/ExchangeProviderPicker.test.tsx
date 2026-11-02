@@ -9,8 +9,8 @@ import { type TradingTestPreloadedState } from '../../test-utils/tradingTestUtil
 describe('ExchangeProviderPicker', () => {
     let preloadedState: PreloadedStatePartial<TradingTestPreloadedState>;
 
-    const renderExchangeProviderPicker = async (props: Partial<ExchangeProviderPickerProps>) =>
-        await renderWithStoreProvider(
+    const renderExchangeProviderPicker = (props: Partial<ExchangeProviderPickerProps>) =>
+        renderWithStoreProvider(
             <ExchangeProviderPicker
                 isLoading={false}
                 selectedValue={undefined}

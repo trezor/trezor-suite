@@ -1,12 +1,7 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analytics';
-import {
-    type DeviceRootState,
-    deviceActions,
-    selectDevices,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { type DeviceRootState, deviceActions, selectDevices } from '@suite-common/device';
 import { type FirmwareRootState, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import {
     Feature,
@@ -169,18 +164,13 @@ export const connectInitThunk = createThunk<
 
         lockDevice(true);
 
-        const result = await synchronize(() => original(params));
+        const response = await synchronize(() => original(params));
 
         lockDevice(false);
-        dispatch(
-            deviceActions.removeButtonRequests({
-                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                // be the same re-selected device from this line. We should reuse device from params.
-                device: selectSelectedDevice(getState()),
-            }),
-        );
+        const path = response.device?.path ?? params.device?.path;
+        dispatch(deviceActions.removeButtonRequests({ path }));
 
-        return result;
+        return response;
     };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();

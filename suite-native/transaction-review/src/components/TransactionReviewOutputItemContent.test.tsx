@@ -47,11 +47,8 @@ const output = (
 ) => ({ type, value, state }) as TransactionReviewStatefulOutput;
 
 describe('TransactionReviewOutputItemContent', () => {
-    const renderContent = async (
-        reviewOutput: TransactionReviewStatefulOutput,
-        providerProps = {},
-    ) =>
-        await renderWithTransactionReview(
+    const renderContent = (reviewOutput: TransactionReviewStatefulOutput, providerProps = {}) =>
+        renderWithTransactionReview(
             <MockText testID={CONTENT_TEST_ID}>
                 <TransactionReviewOutputItemContent output={reviewOutput} />
             </MockText>,
@@ -85,6 +82,16 @@ describe('TransactionReviewOutputItemContent', () => {
 
         expect(getByTestId(CONTENT_TEST_ID)).toHaveTextContent(
             `Values: [${ETH_ACCOUNT_KEY}]-[no-token]-[transactionManagement.review.outputs.amountLabel]-[1000]`,
+        );
+    });
+
+    it('should render the fee as a native amount row', async () => {
+        const { getByTestId } = await renderContent(output('fee', '21000000000000'), {
+            tokenContract: USDC_CONTRACT,
+        });
+
+        expect(getByTestId(CONTENT_TEST_ID)).toHaveTextContent(
+            `Values: [${ETH_ACCOUNT_KEY}]-[no-token]-[transactionManagement.review.outputs.amountLabel]-[21000000000000]`,
         );
     });
 
@@ -253,7 +260,6 @@ describe('TransactionReviewOutputItemContent', () => {
 
     it.each<TransactionReviewOutputType>([
         'locktime',
-        'fee',
         'txid',
         'gas',
         'approve_data',

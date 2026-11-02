@@ -19,8 +19,8 @@ type State = TradingResidenceRootState;
 describe('useLocationForm', () => {
     let store: Store<State>;
 
-    const renderUseLocationForm = async () =>
-        await renderHookWithStoreProvider(() => useLocationForm(), { services: { store } });
+    const renderUseLocationForm = () =>
+        renderHookWithStoreProvider(() => useLocationForm(), { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { openSystemSettingsThunk, selectIsUnpairingDevice } from '@suite/bluetooth';
+import { injectBluetooth, selectIsUnpairingDevice } from '@suite/bluetooth';
 import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { bluetoothActions } from '@suite-common/bluetooth';
@@ -19,13 +19,13 @@ export const UnpairBluetoothDeviceFromOsModal = ({
     onFinish,
     skipToggleModalConnection = false,
 }: UnpairBluetoothDeviceFromOsModalProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, bluetooth } = useServices(injectDispatch, injectBluetooth);
     const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
 
     const [hasDeeplinkFailed, setHasDeeplinkFailed] = useState(false);
 
     const handleOpenBluetoothSettings = async () => {
-        const result = await dispatch(openSystemSettingsThunk({ type: 'bluetooth' })).unwrap();
+        const result = await bluetooth.openSystemSettings('bluetooth');
 
         if (!result.success) {
             setHasDeeplinkFailed(true);

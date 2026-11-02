@@ -27,8 +27,8 @@ const mockAnalyticsReport = jest.fn();
 describe('useBrowserStateChangeCallbacks', () => {
     let store: Store<State>;
 
-    const renderUseBrowserwStateChangeCallbacks = async (tradingType: TradingType | undefined) =>
-        await renderHookWithStoreProvider(() => useBrowserStateChangeCallbacks(tradingType), {
+    const renderUseBrowserwStateChangeCallbacks = (tradingType: TradingType | undefined) =>
+        renderHookWithStoreProvider(() => useBrowserStateChangeCallbacks(tradingType), {
             services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
         });
 

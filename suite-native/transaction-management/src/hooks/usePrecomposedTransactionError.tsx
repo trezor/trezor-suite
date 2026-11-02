@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type PrecomposedTransactionError } from '@suite-common/wallet-types';
+import type { PrecomposedTransactionError } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { isArrayMember } from '@trezor/utils';
 
@@ -18,6 +18,7 @@ const VALID_PRECOMPOSED_ERRORS: PrecomposedTransactionError['error'][] = [
     'TR_STAKE_NOT_ENOUGH_FUNDS',
     'REMAINING_BALANCE_LESS_THAN_RENT',
     'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+    'TR_STAKE_TX_PREPARATION_FAILED',
     'NOT-ENOUGH-FUNDS',
 ];
 
@@ -83,6 +84,11 @@ export const usePrecomposedTransactionError = ({
             case 'TR_STAKE_NOT_ENOUGH_FUNDS':
                 return (
                     <Translation id="transactionManagement.precomposedTransaction.errors.stakeNotEnoughFunds" />
+                );
+
+            case 'TR_STAKE_TX_PREPARATION_FAILED':
+                return (
+                    <Translation id="transactionManagement.precomposedTransaction.errors.stakeTxPreparationFailed" />
                 );
 
             default:

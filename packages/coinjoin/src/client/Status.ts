@@ -15,7 +15,6 @@ type StatusMode = keyof typeof STATUS_TIMEOUT;
 interface StatusEvents {
     update: CoinjoinStatusEvent;
     log: LogEvent;
-    'affiliate-server': boolean;
 }
 
 // partial CoinjoinRound
@@ -36,7 +35,6 @@ export class Status extends TypedEmitter<StatusEvents> {
     private abortController: AbortController;
     private statusTimeout?: TimerId;
     private identities: string[]; // registered identities
-    private runningAffiliateServer = false;
     private lastStatusRequestTimestamp?: number;
 
     constructor(settings: CoinjoinClientSettings) {
@@ -56,14 +54,6 @@ export class Status extends TypedEmitter<StatusEvents> {
                 const known = this.rounds.find(prevRound => prevRound.Id === nextRound.Id);
                 if (!known) return true; // new phase
                 if (nextRound.Phase === known.Phase + 1) return true; // expected update
-                if (
-                    nextRound.Phase === RoundPhase.TransactionSigning &&
-                    this.settings.affiliationId &&
-                    !known.AffiliateRequest
-                ) {
-                    return true; // affiliateRequest is propagated asynchronously, might be added after phase change
-                }
-
                 if (
                     known.Phase === RoundPhase.Ended &&
                     known.EndRoundState !== nextRound.EndRoundState
@@ -172,23 +162,6 @@ export class Status extends TypedEmitter<StatusEvents> {
     }
 
     private processStatus(status: coordinator.CoinjoinStatus, prevStatusTimestamp?: number) {
-        const { affiliationId } = this.settings;
-        if (affiliationId) {
-            // add matching coinjoinRequest to rounds
-            status.RoundStates.forEach(round => {
-                const roundRequest = status.AffiliateInformation?.AffiliateData[round.Id];
-                round.AffiliateRequest = roundRequest?.[affiliationId];
-            });
-
-            // report affiliate server status
-            const runningAffiliateServer =
-                !!status.AffiliateInformation?.RunningAffiliateServers.includes(affiliationId);
-            if (this.runningAffiliateServer !== runningAffiliateServer) {
-                this.emit('affiliate-server', runningAffiliateServer);
-            }
-            this.runningAffiliateServer = runningAffiliateServer;
-        }
-
         const changed = this.compareStatus(status.RoundStates);
         if (changed.length > 0) {
             const statusEvent = {
@@ -202,10 +175,6 @@ export class Status extends TypedEmitter<StatusEvents> {
 
             return statusEvent;
         }
-    }
-
-    isAffiliateServerRunning() {
-        return this.runningAffiliateServer;
     }
 
     async getStatus() {
@@ -239,19 +208,22 @@ export class Status extends TypedEmitter<StatusEvents> {
     }
 
     private async getVersion() {
-        const version = await coordinatorRequest<coordinator.SoftwareVersion>(
-            'api/Software/versions',
-            undefined,
-            {
-                method: 'GET',
-                baseUrl: this.settings.wabisabiBackendUrl,
-                signal: this.abortController.signal,
-                identity: this.identities[0],
-                attempts: 3, // schedule 3 attempts on start
-            },
-        )
-            .then(patchResponse)
-            .catch(() => undefined);
+        const { wabisabiBackendUrl } = this.settings;
+        const version = wabisabiBackendUrl
+            ? await coordinatorRequest<coordinator.SoftwareVersion>(
+                  'api/Software/versions',
+                  undefined,
+                  {
+                      method: 'GET',
+                      baseUrl: wabisabiBackendUrl,
+                      signal: this.abortController.signal,
+                      identity: this.identities[0],
+                      attempts: 3, // schedule 3 attempts on start
+                  },
+              )
+                  .then(patchResponse)
+                  .catch(() => undefined)
+            : undefined;
 
         return {
             majorVersion: version?.BackenMajordVersion ?? '0',
@@ -261,6 +233,10 @@ export class Status extends TypedEmitter<StatusEvents> {
     }
 
     async start() {
+        if (!this.settings.coordinatorUrl) {
+            return { success: false as const, error: 'Coordinator url is not set' };
+        }
+
         this.abortController = new AbortController();
         this.enabled = true;
 

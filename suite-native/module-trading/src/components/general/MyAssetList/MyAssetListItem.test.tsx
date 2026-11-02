@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type MyAsset } from '@suite-native/trading-types';
@@ -28,6 +29,7 @@ describe('MyAssetListItem', () => {
                 })}
                 onPress={jest.fn()}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         expect(getByText('0.05196 ETH')).toBeOnTheScreen();
@@ -41,6 +43,7 @@ describe('MyAssetListItem', () => {
                 })}
                 onPress={jest.fn()}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         expect(getByText('<0.00001 ETH')).toBeOnTheScreen();
@@ -58,6 +61,7 @@ describe('MyAssetListItem', () => {
                 })}
                 onPress={jest.fn()}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         expect(getByText('1.50 USDC')).toBeOnTheScreen();
@@ -75,6 +79,7 @@ describe('MyAssetListItem', () => {
                 })}
                 onPress={jest.fn()}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         expect(getByText('23.91 USDC')).toBeOnTheScreen();

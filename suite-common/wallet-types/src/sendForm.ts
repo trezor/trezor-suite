@@ -65,7 +65,10 @@ export type FormStateTradingExchange = {
 export type FormStateTrading =
     FormStateTradingSell | FormStateTradingExchange | FormStateTradingDefault;
 
+export type FormStateTxType = 'send' | 'trade' | 'stake' | 'yield';
+
 export interface FormState {
+    txType?: FormStateTxType;
     outputs: Output[]; // output arrays, each element is corresponding with single Output item
     setMaxOutputId?: number;
     selectedFee?: FeeLevel['label'];

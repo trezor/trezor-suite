@@ -1,5 +1,4 @@
 import { useDevice } from '@suite/device';
-import { isDevicePerceivedAsNew } from '@suite-common/suite-utils';
 
 export const useLabelingDeviceState = () => {
     const { device, isLocked } = useDevice();
@@ -14,13 +13,8 @@ export const useLabelingDeviceState = () => {
     // - Labeling enabled with the device connected inside Settings
     // The initialization of Labeling then start when user select a Wallet.
 
-    const newlyConnectedDevice = isDevicePerceivedAsNew(device);
-
     const isDeviceLabelingDisabled =
-        isLocked() ||
-        device?.mode !== 'normal' ||
-        !device?.state?.staticSessionId ||
-        newlyConnectedDevice;
+        isLocked() || device?.mode !== 'normal' || !device?.state?.staticSessionId;
 
-    return { isDeviceLabelingDisabled, newlyConnectedDevice };
+    return { isDeviceLabelingDisabled };
 };

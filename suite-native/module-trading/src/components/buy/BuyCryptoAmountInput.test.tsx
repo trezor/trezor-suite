@@ -15,12 +15,12 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 describe('BuyCryptoAmountInput', () => {
-    const renderCryptoAmountInput = async (
+    const renderCryptoAmountInput = (
         props: Partial<CryptoAmountInputProps>,
         form: BuyFormType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <BuyCryptoAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,

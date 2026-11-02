@@ -4,10 +4,10 @@ import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { type UseSectionListProps, useSectionList } from './useSectionList';
 
-const renderUseSectionListHook = async <T, U = undefined>(
+const renderUseSectionListHook = <T, U = undefined>(
     initialProps: Partial<UseSectionListProps<T, U>>,
 ) =>
-    await renderHookWithBasicProvider(
+    renderHookWithBasicProvider(
         ({
             data = [],
             noSingletonSectionHeader = false,

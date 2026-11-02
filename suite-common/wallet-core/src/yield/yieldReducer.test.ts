@@ -5,6 +5,7 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     type YieldState,
     getYieldSessionKey,
+    hasYieldSessionTransactionActivity,
     initialStablecoinYieldState,
     yieldActions,
     yieldReducer,
@@ -756,6 +757,118 @@ describe('yieldReducer', () => {
             );
 
             expect(getSession(state, 'deposit')?.step).toBe('wrap');
+        });
+    });
+
+    describe('hasYieldSessionTransactionActivity', () => {
+        const sessionPayload = { flowType: 'deposit', flowKey: FLOW_KEY } as const;
+        const getDepositSession = (state: YieldState) => getSession(state, 'deposit')!;
+
+        it('is false for a session that has not started signing', () => {
+            expect(
+                hasYieldSessionTransactionActivity(getDepositSession(initSession('deposit'))),
+            ).toBe(false);
+        });
+
+        it('is false after a non-transaction step transition', () => {
+            const state = yieldReducer(
+                initSession('deposit'),
+                yieldActions.skipApprovalStep({ ...sessionPayload, amount: '100' }),
+            );
+
+            expect(hasYieldSessionTransactionActivity(getDepositSession(state))).toBe(false);
+        });
+
+        it('is true while the approval modal is open', () => {
+            const state = yieldReducer(
+                initSession('deposit'),
+                yieldActions.openApprovalModal({
+                    ...sessionPayload,
+                    modalState: {
+                        amount: '100',
+                        contractAddress: '0xtoken',
+                        spender: '0xvault',
+                        txType: 'approve',
+                    },
+                }),
+            );
+
+            expect(hasYieldSessionTransactionActivity(getDepositSession(state))).toBe(true);
+        });
+
+        it('is true while an approval is being signed', () => {
+            const state = yieldReducer(
+                initSession('deposit'),
+                yieldActions.startSubmittingApproval(sessionPayload),
+            );
+
+            expect(hasYieldSessionTransactionActivity(getDepositSession(state))).toBe(true);
+        });
+
+        it('is true while the action is being signed', () => {
+            const state = yieldReducer(
+                initSession('deposit'),
+                yieldActions.startSubmittingAction({ ...sessionPayload, amount: '100' }),
+            );
+
+            expect(hasYieldSessionTransactionActivity(getDepositSession(state))).toBe(true);
+        });
+
+        it('is false again when signing ends without a broadcast', () => {
+            const state = yieldReducer(
+                yieldReducer(
+                    initSession('deposit'),
+                    yieldActions.startSubmittingAction({ ...sessionPayload, amount: '100' }),
+                ),
+                yieldActions.finishSubmittingAction(sessionPayload),
+            );
+
+            expect(hasYieldSessionTransactionActivity(getDepositSession(state))).toBe(false);
+        });
+
+        it('is true while a transaction is pending', () => {
+            const state = yieldReducer(
+                initSession('deposit'),
+                yieldActions.setPendingTx({
+                    ...sessionPayload,
+                    tx: { type: 'deposit', txid: '0xpendingtxid', amount: '100' },
+                }),
+            );
+
+            expect(hasYieldSessionTransactionActivity(getDepositSession(state))).toBe(true);
+        });
+
+        it('stays true once a broadcast approval confirmed', () => {
+            const session = getDepositSession(approveConfirmed());
+
+            expect(session.action.pendingTransaction).toBeNull();
+            expect(hasYieldSessionTransactionActivity(session)).toBe(true);
+        });
+
+        it('stays true on the complete step', () => {
+            const state = yieldReducer(
+                yieldReducer(
+                    initSession('deposit'),
+                    yieldActions.setPendingTx({
+                        ...sessionPayload,
+                        tx: { type: 'deposit', txid: '0xdeposittxid', amount: '100' },
+                    }),
+                ),
+                yieldActions.completeAction({ ...sessionPayload, amount: '100' }),
+            );
+            const session = getDepositSession(state);
+
+            expect(session.step).toBe('complete');
+            expect(hasYieldSessionTransactionActivity(session)).toBe(true);
+        });
+
+        it('is false again once the session is reset', () => {
+            const state = yieldReducer(
+                approveConfirmed(),
+                yieldActions.resetSession(sessionPayload),
+            );
+
+            expect(hasYieldSessionTransactionActivity(getDepositSession(state))).toBe(false);
         });
     });
 

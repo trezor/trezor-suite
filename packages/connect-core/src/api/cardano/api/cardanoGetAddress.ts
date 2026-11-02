@@ -3,6 +3,7 @@
 import {
     Bundle,
     CardanoGetAddress as CardanoGetAddressSchema,
+    type DeviceButtonRequestCode,
     type PermissionRequest,
     UI_EVENTS,
     createUiEventMessage,
@@ -85,7 +86,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         return 'Export multiple Cardano addresses';
     }
 
-    getButtonRequestData(code: string) {
+    getButtonRequestData(code: DeviceButtonRequestCode) {
         if (code === 'ButtonRequest_Address') {
             const { params } = this;
             // @ts-expect-error: indexing with noUncheckedIndexedAccess

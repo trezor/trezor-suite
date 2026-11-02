@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import type { FormState, TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 
 import { useMaxSpendableAmount } from './useMaxSpendableAmount';
@@ -50,14 +50,15 @@ describe('useMaxSpendableAmount', () => {
         selectedUtxos: [],
     };
 
-    const renderUseMaxSpendableAmount = async ({
+    const renderUseMaxSpendableAmount = ({
         accountKey,
         tokenContract,
         formState,
         enabled,
         symbol,
+        assumeNewAccount,
     }: Parameters<typeof useMaxSpendableAmount>[0]) =>
-        await renderHookWithStoreProvider(
+        renderHookWithStoreProvider(
             () =>
                 useMaxSpendableAmount({
                     accountKey,
@@ -65,6 +66,7 @@ describe('useMaxSpendableAmount', () => {
                     formState,
                     enabled,
                     symbol,
+                    assumeNewAccount,
                 }),
             {
                 preloadedState: {
@@ -141,6 +143,28 @@ describe('useMaxSpendableAmount', () => {
                 {
                     formState: customFormState,
                     accountKey: btcAccountKey,
+                },
+                expect.objectContaining({ signal: expect.any(AbortSignal) }),
+            );
+            expect(result.current.maxSpendableAmount).toBe('0.009');
+        });
+    });
+
+    it('should pass assumeNewAccount to max amount thunk when requested', async () => {
+        mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
+
+        const { result } = await renderUseMaxSpendableAmount({
+            accountKey: btcAccountKey,
+            symbol: btcSymbol,
+            assumeNewAccount: true,
+        });
+
+        await waitFor(() => {
+            expect(mockCalculateFeeLevelsMaxAmountThunk).toHaveBeenCalledWith(
+                {
+                    formState: expect.any(Object),
+                    accountKey: btcAccountKey,
+                    assumeNewAccount: true,
                 },
                 expect.objectContaining({ signal: expect.any(AbortSignal) }),
             );

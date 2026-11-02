@@ -259,7 +259,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                     },
                 },
                 connected: true,
-                buttonRequests: [],
                 metadata: {},
                 passwords: {},
                 firstConnectedTimestamp: 1759899657048,

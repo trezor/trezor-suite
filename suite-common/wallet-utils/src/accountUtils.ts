@@ -49,6 +49,8 @@ import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isDirectRpcBackendType } from './backendUtils';
+import { getDerivationType } from './cardanoUtils';
+import { getDescriptorForNetworkType } from './deviceAddressUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
@@ -103,12 +105,12 @@ export const sortByBIP44AddressIndex = <T extends { path: string }>(
 export const getTitleForCoinjoinAccount = (symbol: NetworkSymbolExtended) => {
     switch (symbol) {
         case 'test':
-            return 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET';
+            return 'TR_NETWORK_PRIVACY_BITCOIN_TESTNET';
         case 'regtest':
-            return 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST';
+            return 'TR_NETWORK_PRIVACY_BITCOIN_REGTEST';
         case 'btc':
         default:
-            return 'TR_NETWORK_COINJOIN_BITCOIN';
+            return 'TR_NETWORK_PRIVACY_BITCOIN';
     }
 };
 
@@ -194,7 +196,7 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_NAME';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_NAME';
     if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY';
-    if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_NAME';
+    if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_PRIVACY_NAME';
 
     return 'TR_ACCOUNT_TYPE_BIP44_NAME';
 };
@@ -1307,15 +1309,26 @@ export const prepareNewAccountPayload = async ({
 
     if (!newPath || !device.state?.staticSessionId) return new Error('Missing path');
 
-    const res = await TrezorConnect.getAccountInfo({
+    const descriptorResult = await getDescriptorForNetworkType({
         path: newPath,
-        coin: asCoinSymbol(networkSymbol),
+        coin: networkSymbol,
+        networkType: network.networkType,
+        derivationType:
+            network.networkType === 'cardano' ? getDerivationType(accountType) : undefined,
         device: {
             path: device.path,
             instance: device.instance,
             state: device.state,
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
+    });
+
+    if (!descriptorResult.success) return new Error(descriptorResult.error.message);
+
+    const { descriptor, ...deviceAccountDetails } = descriptorResult.payload;
+    const res = await TrezorConnect.getAccountInfo({
+        descriptor,
+        coin: asCoinSymbol(networkSymbol),
         details: 'txs',
         protocols: network.networkType === 'ethereum' ? ['erc4626'] : undefined,
     });
@@ -1323,7 +1336,7 @@ export const prepareNewAccountPayload = async ({
     if (!res.success) return new Error(res.error.message);
 
     return {
-        accountInfo: res.payload,
+        accountInfo: { ...res.payload, ...deviceAccountDetails },
         visible: true,
         deviceState: device.state.staticSessionId,
         symbol: networkSymbol,
@@ -1346,17 +1359,6 @@ export function filterAccountsByNetworkSymbol<T extends Account>(
 
 export const getAccountsWithSomeTransactionHistory = (accounts: Account[]) =>
     accounts.filter(account => account.history.total + (account.history.unconfirmed || 0));
-
-export const accumulateAccountCountBySymbolAndType = (
-    acc: Record<string, number>,
-    { symbol, accountType }: Account,
-) => {
-    const accType = accountType === 'coinjoin' ? 'taproot' : accountType;
-    const id = `${symbol}_${accType}`;
-    acc[id] = (acc[id] || 0) + 1;
-
-    return acc;
-};
 
 export const getAvailableAccountTypes = (
     networkSymbol: NetworkSymbol,

@@ -416,13 +416,13 @@ export class TradingPage {
     }
 
     @step()
-    async clickSwapDexBestOfferWithRetry() {
-        // The button is briefly enabled between two composes; a click landing on it after it re-disables is lost.
+    async clickSwapBestOfferWithRetry() {
+        // The button also disappears during composition, so wait for the confirmation panel.
         await expect(async () => {
             if (await this.swapBestOfferButton.isVisible()) {
                 await this.swapBestOfferButton.click({ timeout: 5_000 });
             }
-            await expect(this.swapBestOfferButton).toBeHidden({ timeout: 5_000 });
+            await expect(this.confirmation.section).toBeVisible({ timeout: 5_000 });
         }).toPass({ timeout: 30_000 });
     }
 
@@ -440,20 +440,27 @@ export class TradingPage {
     }
 
     @step()
+    async continueSellWithProvider() {
+        await this.confirmation.sellButton.click();
+        await this.waitForRedirectCompletion();
+        await expect(this.confirmation.confirmAndSendButton).toBeVisible({ timeout: 30_000 });
+    }
+
+    @step()
     async verifyBuyFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.buyBestOfferButton).toBeVisible();
+        await expect.soft(this.page.getByTestId('@trading/form')).toBeVisible();
         await expect.soft(this.inputs.youGetAssetSymbol).toHaveText(displaySymbol);
     }
 
     @step()
     async verifySellFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.sellBestOfferButton).toBeVisible();
+        await expect.soft(this.page.getByTestId('@trading/form')).toBeVisible();
         await expect.soft(this.inputs.youPayAssetSymbol).toHaveText(displaySymbol);
     }
 
     @step()
     async verifySwapFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.swapBestOfferButton).toBeVisible();
+        await expect.soft(this.page.getByTestId('@trading/form')).toBeVisible();
         await expect.soft(this.inputs.youPayAssetSymbol).toHaveText(displaySymbol);
     }
 }

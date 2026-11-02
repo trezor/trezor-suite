@@ -114,7 +114,7 @@ describe('useWatchTrade', () => {
             },
         });
 
-    const renderUseWatchTrade = async (
+    const renderUseWatchTrade = (
         store: Store<State>,
         props: {
             accountKey?: AccountKey;
@@ -124,7 +124,7 @@ describe('useWatchTrade', () => {
             shouldReportAnalytics?: boolean;
         },
     ) =>
-        await renderHookWithTradingProvider(() => useWatchTradeWithReportSpy(props), {
+        renderHookWithTradingProvider(() => useWatchTradeWithReportSpy(props), {
             services: { ...services, store },
         });
 

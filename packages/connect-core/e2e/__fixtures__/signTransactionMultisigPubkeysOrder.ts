@@ -1,6 +1,6 @@
 import { MultisigPubkeysOrder } from '@trezor/protobuf/src/definitions';
 
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 // fixtures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_multisig.py
 const PUBKEYS_2_OF_3 = [
@@ -54,7 +54,7 @@ const signTransactionMultisigPubkeysOrder: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['6b07c1']),
+                refTxs: getRefTxs(['6b07c1']),
             },
             result: {
                 signatures: [
@@ -89,7 +89,7 @@ const signTransactionMultisigPubkeysOrder: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['6b07c1']),
+                refTxs: getRefTxs(['6b07c1']),
             },
             result: false,
             legacyResults: [

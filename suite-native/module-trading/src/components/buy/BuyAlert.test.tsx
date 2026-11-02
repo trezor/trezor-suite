@@ -18,13 +18,13 @@ describe('BuyAlert', () => {
         wallet: getWalletState({ tradeType: 'buy' }),
     };
 
-    const renderFormHook = async () =>
-        await renderHookWithStoreProvider(() => useBuyForm(), {
+    const renderFormHook = () =>
+        renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
         });
 
-    const renderTradingAlert = async () =>
-        await renderWithBasicProvider(<BuyAlert />, {
+    const renderTradingAlert = () =>
+        renderWithBasicProvider(<BuyAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

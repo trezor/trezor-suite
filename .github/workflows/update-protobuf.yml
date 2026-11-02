@@ -20,6 +20,9 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
+
       - name: Install dependencies
         run: yarn install --immutable
 

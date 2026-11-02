@@ -1,15 +1,13 @@
 import styled from 'styled-components';
 
-// TODO: next PR
-// import { DesktopEmbeddedApp } from '@suite/apps-embedding-desktop';
 import { type AppsEmbeddingEvent, type PlatformSpecificOfKind } from '@suite-common/apps-embedding';
 import { Button, Row, Text } from '@trezor/components';
-import { isWeb } from '@trezor/env-utils';
-import { type HttpsUrl } from '@trezor/type-utils';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { EmbeddingEventLog } from './EmbeddingEventLog';
 import { WebIframeEntry } from './WebIframeEntry';
 import { type EmbeddingLogEntry } from './hooks/useAppsEmbeddingShowcase';
+import { InAppBrowser } from '../InAppBrowser/InAppBrowser';
 
 const LOG_PANE_MAX_HEIGHT = 180;
 
@@ -48,8 +46,6 @@ type EmbeddedAppRegionProps = {
     targetUrl: string;
     entryId?: string;
     embedTitle: string;
-    redirectExternalOrigins?: HttpsUrl[];
-    popupExternalOrigins?: HttpsUrl[];
     webEntry: PlatformSpecificOfKind<'web'> | null;
     logEntries: EmbeddingLogEntry[];
     onEvent: (event: AppsEmbeddingEvent) => void;
@@ -64,16 +60,14 @@ type EmbeddedAppRegionProps = {
 
 export const EmbeddedAppRegion = ({
     targetUrl,
-    // entryId,
+    entryId,
     embedTitle,
-    // redirectExternalOrigins,
-    // popupExternalOrigins,
     webEntry,
     logEntries,
     onEvent,
     onClearEvents,
     onClose,
-    // isModalOpen,
+    isModalOpen,
 }: EmbeddedAppRegionProps) => (
     <Region>
         <Toolbar>
@@ -92,17 +86,14 @@ export const EmbeddedAppRegion = ({
         </Toolbar>
 
         <Surface>
-            {/* TODO: next PR */}
-            {/* {isDesktop() && (
-                <DesktopEmbeddedApp
+            {isDesktop() && (
+                <InAppBrowser
                     isVisible={!isModalOpen}
                     targetUrl={targetUrl}
                     entryId={entryId}
-                    redirectExternalOrigins={redirectExternalOrigins}
-                    popupExternalOrigins={popupExternalOrigins}
                     onEvent={onEvent}
                 />
-            )} */}
+            )}
             {isWeb() && (
                 <WebIframeEntry
                     targetUrl={targetUrl}

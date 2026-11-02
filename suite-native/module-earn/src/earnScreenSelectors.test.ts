@@ -3,7 +3,11 @@ import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
-import { fiatRatesInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    fiatRatesInitialState,
+    initialWalletSettingsState,
+    selectFirstCardanoAccountStakedWithFiveBinaries,
+} from '@suite-common/wallet-core';
 import {
     type Account,
     type CryptoBaseCurrencyPair,
@@ -27,6 +31,7 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     type EarnListRootState,
+    selectCardanoAccountForFiveBinariesBanner,
     selectCardanoStakedWithFiveBinariesAccountKey,
     selectEarnFiatValuations,
     selectEarnMissingTickerIds,
@@ -120,6 +125,7 @@ const createState = (
     device: {
         devices: [selectedDevice],
         selectedDevice,
+        buttonRequestsByPath: {},
     },
     wallet: {
         accounts,
@@ -251,7 +257,125 @@ describe('selectCardanoStakedWithFiveBinariesAccountKey', () => {
     });
 });
 
+describe.each([
+    {
+        name: 'Home',
+        selectAccountKey: (state: EarnListRootState) =>
+            selectCardanoAccountForFiveBinariesBanner(state)?.key ?? null,
+    },
+    { name: 'Earn', selectAccountKey: selectCardanoStakedWithFiveBinariesAccountKey },
+])('$name Five Binaries banner', ({ selectAccountKey }) => {
+    it.each(['0', '0.0', '-1'])('hides the banner for balance %s', balance => {
+        const account = { ...createFiveBinariesAdaAccount('ada'), balance };
+
+        expect(selectAccountKey(createState([account]))).toBeNull();
+    });
+
+    it('shows the banner for one lovelace even when available balance is zero', () => {
+        const account = {
+            ...createFiveBinariesAdaAccount('ada'),
+            balance: '1',
+            availableBalance: '0',
+        };
+
+        expect(selectAccountKey(createState([account]))).toBe(account.key);
+    });
+
+    it('selects a funded account after an empty Five Binaries account', () => {
+        const empty = { ...createFiveBinariesAdaAccount('empty'), balance: '0' };
+        const funded = createFiveBinariesAdaAccount('funded');
+
+        expect(selectAccountKey(createState([empty, funded]))).toBe(funded.key);
+    });
+
+    it('ignores funded hidden accounts', () => {
+        const empty = { ...createFiveBinariesAdaAccount('empty'), balance: '0' };
+        const hidden = createFiveBinariesAdaAccount('hidden', false);
+
+        expect(selectAccountKey(createState([empty, hidden]))).toBeNull();
+    });
+
+    it('ignores funded accounts from another wallet', () => {
+        const empty = { ...createFiveBinariesAdaAccount('empty'), balance: '0' };
+        const otherWallet = {
+            ...createFiveBinariesAdaAccount('otherwallet'),
+            deviceState: OTHER_DEVICE_STATIC_SESSION_ID,
+        };
+
+        expect(selectAccountKey(createState([empty, otherWallet]))).toBeNull();
+    });
+
+    it('updates when the balance changes from zero to funded and back to zero', () => {
+        const account = { ...createFiveBinariesAdaAccount('ada'), balance: '0' };
+
+        expect(selectAccountKey(createState([account]))).toBeNull();
+        expect(selectAccountKey(createState([{ ...account, balance: '1' }]))).toBe(account.key);
+        expect(selectAccountKey(createState([{ ...account }]))).toBeNull();
+    });
+
+    it('keeps the warning hidden when only another Earn position has funds', () => {
+        const empty = { ...createFiveBinariesAdaAccount('empty'), balance: '0' };
+        const funded = createAdaAccount('everstake', '5000000');
+        const state = createState([empty, funded]);
+
+        expect(selectStakingListItems(state)).toEqual([
+            { symbol: asNetworkSymbol('ada'), accountKey: funded.key, balance: '5' },
+        ]);
+        expect(selectAccountKey(state)).toBeNull();
+    });
+
+    it('keeps the warning hidden while a non-Cardano yield position is funded', () => {
+        const empty = { ...createFiveBinariesAdaAccount('empty'), balance: '0' };
+        const state = createState([empty, createEthAccount('ethfunded', '1000000')]);
+
+        expect(selectYieldListItems(state, [vault])).toHaveLength(1);
+        expect(selectAccountKey(state)).toBeNull();
+    });
+
+    it('requires both a positive balance and the Five Binaries provider', () => {
+        expect(
+            selectAccountKey(createState([createAdaAccount('everstake', '5000000')])),
+        ).toBeNull();
+    });
+});
+
+it('keeps the provider selector used by badges independent of the banner balance gate', () => {
+    const account = { ...createFiveBinariesAdaAccount('empty'), balance: '0' };
+
+    expect(selectFirstCardanoAccountStakedWithFiveBinaries(createState([account]))).toBe(account);
+});
+
 describe('selectYieldClaimAccounts', () => {
+    it('includes all claim-contract networks without vaults and excludes hidden or other-wallet accounts', () => {
+        const claimAccounts = ['eth', 'arb', 'base', 'op'].map(symbol =>
+            mockWalletAccount({
+                symbol: asNetworkSymbol(symbol),
+                deviceState: DEVICE_STATIC_SESSION_ID,
+                tokens: [],
+            }),
+        );
+        const accounts = [
+            ...claimAccounts,
+            createBtcAccount('btc'),
+            mockWalletAccount({
+                symbol: asNetworkSymbol('pol'),
+                deviceState: DEVICE_STATIC_SESSION_ID,
+            }),
+            mockWalletAccount({
+                symbol: asNetworkSymbol('arb'),
+                descriptor: asAccountDescriptor('hidden'),
+                deviceState: DEVICE_STATIC_SESSION_ID,
+                visible: false,
+            }),
+            mockWalletAccount({
+                symbol: asNetworkSymbol('base'),
+                deviceState: OTHER_DEVICE_STATIC_SESSION_ID,
+            }),
+        ];
+
+        expect(selectYieldClaimAccounts(createState(accounts))).toEqual(claimAccounts);
+    });
+
     it('lists only ethereum accounts with claim support and keeps the reference', () => {
         const ethAccount = createEthAccount('ethclaim');
         const accounts = [createAdaAccount('ada', '5000000'), ethAccount];
@@ -310,6 +434,43 @@ describe('selectYieldClaimListItems', () => {
         ]),
         createChainRewards(emptyAccount, [createReward({ claimable: '0', fiatClaimable: '0' })]),
     ];
+
+    it.each([
+        ['arb', 42161],
+        ['base', 8453],
+        ['op', 10],
+    ] as const)(
+        'keeps %s rewards claimable after all vaults and positions are gone',
+        (symbol, chainId) => {
+            const account = mockWalletAccount({
+                symbol: asNetworkSymbol(symbol),
+                deviceState: DEVICE_STATIC_SESSION_ID,
+                tokens: [],
+            });
+            const state = createState([account]);
+            const reward = createReward({ claimable: '1000000', fiatClaimable: '1' });
+            const rewards: ChainRewardsWithFiat[] = [
+                {
+                    ...createChainRewards(account, [
+                        { ...reward, token: { ...reward.token, chainId } },
+                    ]),
+                    chainId,
+                },
+            ];
+
+            expect(selectYieldClaimAccountItems(state, rewards, [])).toEqual([
+                {
+                    summary: expect.objectContaining({
+                        accountKey: account.key,
+                        networkSymbol: asNetworkSymbol(symbol),
+                        claimableRewardsCount: 1,
+                    }),
+                    vaults: [],
+                },
+            ]);
+            expect(selectYieldClaimTotalFiatAmount(state, rewards)?.toString()).toBe('1');
+        },
+    );
 
     it('builds one claim item per account with claimable rewards', () => {
         const state = createState([createAdaAccount('ada', '5000000'), emptyAccount, claimAccount]);

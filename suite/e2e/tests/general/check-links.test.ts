@@ -117,6 +117,7 @@ const SECTIONS = {
     general: [
         '/',
         '/hidden-tokens',
+        '/asset',
         '/notifications',
         '/version',
         '/bridge',
@@ -154,6 +155,9 @@ const SECTIONS = {
         '/accounts/staking',
         '/accounts/sign-verify',
         '/accounts/details',
+        '/accounts/coinjoin',
+        // Debug only: trading form embed preview
+        '/accounts/trade',
         '/accounts/anonymize',
         '/accounts/tokens',
         '/accounts/tokens/hidden',

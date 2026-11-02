@@ -9,8 +9,8 @@ import {
 } from './AmountInput';
 
 describe('AmountInput', () => {
-    const renderAmountInput = async (props: Partial<AmountInputProps>) =>
-        await renderWithBasicProvider(
+    const renderAmountInput = (props: Partial<AmountInputProps>) =>
+        renderWithBasicProvider(
             <AmountInput
                 inputTransformer={v => v}
                 onChangeText={jest.fn()}

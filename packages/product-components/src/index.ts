@@ -1,7 +1,3 @@
-export {
-    isCryptoIconSymbol as isCoinSymbol,
-    isNetworkIconSymbol as isNetworkSymbolWithIcon,
-} from '@suite-common/icons';
 export { CardList, type CardListProps } from '@trezor/components';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
@@ -16,9 +12,9 @@ export { DropZone, type DropZoneProps } from './components/DropZone/DropZone';
 export { EditableText, type EditableTextProps } from './components/EditableText/EditableText';
 export {
     EmojiRatingSelector,
+    type EmojiRatingSelectorOption,
     type EmojiRatingSelectorProps,
 } from './components/EmojiRatingSelector/EmojiRatingSelector';
-export { FeedbackCard, type FeedbackCardProps } from './components/FeedbackCard/FeedbackCard';
 export { FeeRate } from './components/FeeRate/FeeRate';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
 export * from './components/JsonlReader/JsonlReader';
@@ -64,3 +60,5 @@ export type { NetworkConfig } from './network-display/NetworkConfig';
 export { selectShouldShowNetworkIcon } from './network-display/networkDisplaySelectors';
 export { getLargeModelImagePath, getModelFrontColor } from './utils/getModelFrontColor';
 export { mapTrezorModelToFilledIcon, mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
+export { NetworkIconBadge } from './components/NetworkIcon/NetworkIconBadge';
+export type { ProductComponentsServices } from './services/ProductComponentsServices';

@@ -51,8 +51,8 @@ describe('BuyFiatCurrencyPicker', () => {
         form = result.current;
     });
 
-    const renderFiatCurrencyPicker = async () =>
-        await renderWithStoreProvider(
+    const renderFiatCurrencyPicker = () =>
+        renderWithStoreProvider(
             <Form form={form}>
                 <BuyFiatCurrencyPicker />
             </Form>,

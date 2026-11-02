@@ -109,6 +109,7 @@ export const useYieldWithdrawReview = ({
     const { finalizeSubmit, leaveReviewFromDeviceCancel, startReview, status, submitReview } =
         useEarnTransactionReview({
             formType: 'yield-withdraw',
+            networkSymbol: flowData.account.symbol,
             isSigned: isWithdrawSigned,
             navigation,
             onPushSuccess,

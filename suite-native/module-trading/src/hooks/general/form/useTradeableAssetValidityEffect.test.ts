@@ -33,11 +33,10 @@ describe('useTradeableAssetValidityEffect', () => {
         }),
     } as const;
 
-    const renderEffect = async (cryptoId: CryptoId | undefined) =>
-        await renderHookWithStoreProvider(
-            () => useTradeableAssetValidityEffect(setValue, cryptoId),
-            { services: { store } },
-        );
+    const renderEffect = (cryptoId: CryptoId | undefined) =>
+        renderHookWithStoreProvider(() => useTradeableAssetValidityEffect(setValue, cryptoId), {
+            services: { store },
+        });
 
     beforeEach(() => {
         store = createLightStore({

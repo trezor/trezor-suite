@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceButtonRequests, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import {
     type PersistentDeviceDataRootState,
@@ -18,7 +18,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useLayoutSize } from 'src/hooks/suite';
 
 import { SecurityCheckFail } from './components/SecurityCheckFail';
-import { AuthenticateDeviceSupportButton } from './components/ctas';
+import { AuthenticateDeviceSupportButton, RetryButton } from './components/ctas';
 
 const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
     { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
@@ -49,6 +49,19 @@ const ExplanationBeforeCheck = () => {
     );
 };
 
+type DeviceAuthenticityCheckFailureCtasProps = {
+    onRetryClick: () => void;
+};
+
+const DeviceAuthenticityCheckFailureCtas = ({
+    onRetryClick,
+}: DeviceAuthenticityCheckFailureCtasProps) => (
+    <>
+        <RetryButton onClick={onRetryClick} />
+        <AuthenticateDeviceSupportButton />
+    </>
+);
+
 type DeviceAuthenticityCheckProps = {
     onSuccess: () => void;
 };
@@ -58,16 +71,20 @@ type DeviceAuthenticityCheckProps = {
  */
 export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckProps) => {
     const device = useSelector(selectSelectedDevice);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
     const selectedDeviceAuthenticity = useSelector((state: PersistentDeviceDataRootState) =>
         selectDeviceAuthenticityByDeviceId(state, device?.id),
     );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { dispatch } = useServices(injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
+    // Persisted result in redux drives rendering of initial screen / success screen / failure screen.
+    // But in case of failure, the user gets an opportunity to retry → display initial screen even with persisted failure.
+    const [isRetryStep, setIsRetryStep] = useState(false);
 
     if (!device) return null;
 
-    const isWaitingForConfirmation = device.buttonRequests.some(
+    const isWaitingForConfirmation = buttonRequests.some(
         request =>
             request.code === 'ButtonRequest_Other' || // Device Authenticity prompt
             request.code === 'ButtonRequest_PinEntry', // Device can be locked, and we can get Pin Request first
@@ -110,6 +127,7 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
                 }),
             );
             setIsLoading(false);
+            setIsRetryStep(false);
         };
 
         return isCheckSuccessful ? (
@@ -133,11 +151,15 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
         );
     };
 
-    if (isCheckFailed) {
+    if (isCheckFailed && !isRetryStep) {
         return (
             <Card paddingType="large">
                 <SecurityCheckFail
-                    ctaSection={<AuthenticateDeviceSupportButton />}
+                    ctaSection={
+                        <DeviceAuthenticityCheckFailureCtas
+                            onRetryClick={() => setIsRetryStep(true)}
+                        />
+                    }
                     text="TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT"
                 />
             </Card>

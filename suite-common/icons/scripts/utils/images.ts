@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import sharp from 'sharp';
 
 export async function resizeImage(imageBuffer: ArrayBuffer | Buffer, size: number) {

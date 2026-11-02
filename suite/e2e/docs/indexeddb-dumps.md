@@ -78,3 +78,23 @@ The dump is a JSON file with the following shape (v1):
 3. Save the downloaded `trezor-suite-db.json` under `suite/e2e/fixtures/`.
 4. Import the JSON file in your test and pass it to
    [`IndexedDbFixture.seedFromDump()`](../support/indexedDb.ts).
+
+## `remembered-wallet-db-lite.json`
+
+Used by [`swap-inputs`](../tests/trading/swap-inputs.test.ts) and
+[`send-address-validation`](../tests/wallet/send-address-validation.test.ts). It holds a
+single remembered hidden wallet, the same wallet the trading tests use:
+
+- **Seed:** `mnemonic_academic` from trezor-user-env, with passphrase protection enabled
+  (`deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true }`).
+- **Passphrase:** the trading test passphrase, read from the `PASSPHRASE` variable
+  (`suite/e2e/.env` locally, the `E2E_TEST_PASSPHRASE` secret in CI). Never write its value
+  into docs, tests or commit messages.
+- **Networks:** `btc`, `eth`, `arb`, `base`, `sol`.
+- **Funded accounts:** Ethereum #3 and Solana #4. Suite refreshes balances from the backend
+  after loading, so the dump decides which accounts exist, not what they hold.
+
+To rebuild it, start Suite with an emulator set up as above, enable the networks, add the
+hidden wallet with the trading test passphrase and wait for discovery to finish. Eject the
+standard wallet before exporting, otherwise the dump holds two wallets. Then follow the steps
+above and update `sellBalance` in `swap-inputs` to the live USDC balance of Ethereum #3.

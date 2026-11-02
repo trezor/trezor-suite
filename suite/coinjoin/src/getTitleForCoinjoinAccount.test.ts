@@ -5,10 +5,10 @@ const accountTitleCoinjoinFixture: Array<{
     symbol: NetworkSymbolExtended;
     title: ReturnType<typeof getTitleForCoinjoinAccount>;
 }> = [
-    { symbol: 'btc', title: 'TR_NETWORK_COINJOIN_BITCOIN' },
-    { symbol: 'eth', title: 'TR_NETWORK_COINJOIN_BITCOIN' },
-    { symbol: 'test', title: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET' },
-    { symbol: 'regtest', title: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST' },
+    { symbol: 'btc', title: 'TR_NETWORK_PRIVACY_BITCOIN' },
+    { symbol: 'eth', title: 'TR_NETWORK_PRIVACY_BITCOIN' },
+    { symbol: 'test', title: 'TR_NETWORK_PRIVACY_BITCOIN_TESTNET' },
+    { symbol: 'regtest', title: 'TR_NETWORK_PRIVACY_BITCOIN_REGTEST' },
 ];
 
 describe('getTitleForCoinjoinAccount', () => {

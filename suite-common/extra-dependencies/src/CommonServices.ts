@@ -1,6 +1,7 @@
 import type { AnalyticsDep } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type GetLanguageDep } from '@suite-common/locale';
 import type { NetworksDep } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
@@ -12,7 +13,6 @@ import {
     type GetAllowPrereleaseDep,
     type GetBinFilesBaseUrlDep,
     type GetIsWindowVisibleDep,
-    type GetLanguageDep,
     type LockDeviceDep,
     type ReloadAppDep,
     type ReportSecurityCheckDep,

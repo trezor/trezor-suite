@@ -13,7 +13,6 @@ export const mercuryoFixedWorstQuote: ExchangeTrade = {
     receiveStringAmount: '0.00083554',
     send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
-    swapGasEstimate: 692081943.384627,
     swapSlippage: '1',
 };
 
@@ -75,7 +74,6 @@ export const mercuryoDexQuote: ExchangeTrade = {
     receiveStringAmount: '0.00083554',
     send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
-    swapGasEstimate: 692081943.384627,
     swapSlippage: '1',
 };
 
@@ -108,7 +106,6 @@ export const oneInchFusionPlusWithoutEip712SignDataQuote: ExchangeTrade = {
     receiveStringAmount: '0.00081234',
     send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '100',
-    swapGasEstimate: 0,
     swapSlippage: '1',
 };
 

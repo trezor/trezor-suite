@@ -151,11 +151,6 @@ const coinjoinAccountUpdateAnonymityLevels = createAction(
     (accountKey: string, level: number) => ({ payload: { accountKey, level } }),
 );
 
-export const updateLastAnonymityReportTimestamp = createAction(
-    COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP,
-    (accountKey: string) => ({ payload: { accountKey } }),
-);
-
 export const updateCoinjoinConfig = createAction(
     COINJOIN.UPDATE_CONFIG,
     (payload: Partial<CoinjoinConfig>) => ({ payload }),
@@ -188,7 +183,6 @@ export type CoinjoinAccountAction = ReturnType<
     | typeof coinjoinSessionRestore
     | typeof coinjoinSessionStarting
     | typeof coinjoinSessionAutostop
-    | typeof updateLastAnonymityReportTimestamp
     | typeof coinjoinAccountUpdateAnonymityLevels
 >;
 
@@ -748,8 +742,8 @@ export const startCoinjoinSessionThunk =
                     session: params,
                 }),
             );
-            // switch to account
-            dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
+            // switch to the account's mixing progress
+            dispatch(gotoThunk({ routeName: 'wallet-coinjoin', preserveParams: true }));
         }
 
         dispatch(coinjoinSessionStarting(account.key, false));

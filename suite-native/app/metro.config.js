@@ -146,6 +146,12 @@ const config = {
                 type: 'sourceFile',
             });
 
+            // xrpl lazy-loads it only for Confidential MPT, which we don't use; its WASM build
+            // requires `node:fs` and Hermes cannot run WASM anyway.
+            if (isModuleFrom(['@xrplf/mpt-crypto'], moduleName)) {
+                return { type: 'empty' };
+            }
+
             if (
                 moduleName === '@emurgo/cardano-serialization-lib-nodejs' ||
                 moduleName === '@emurgo/cardano-serialization-lib-browser'

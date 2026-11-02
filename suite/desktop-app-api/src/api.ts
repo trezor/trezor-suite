@@ -13,6 +13,9 @@ import {
     type HandshakeEvent,
     type HandshakeInit,
     type HandshakeTorModule,
+    type InAppBrowserBounds,
+    type InAppBrowserHostEvent,
+    type InAppBrowserOpenPayload,
     type InvokeResult,
     type LoggerConfig,
     type Status,
@@ -110,6 +113,9 @@ export interface RendererChannels {
     'bio-auth/validation-status-changed': boolean;
     'bio-auth/bio-auth-availability-changed': boolean;
     'bio-auth/settings-changed': BioAuthSettings;
+
+    // In-app browser (debug-only)
+    'in-app-browser/event': InAppBrowserHostEvent;
 }
 
 // Invocation from renderer process
@@ -176,6 +182,18 @@ export interface InvokeChannels {
 
     // Browser Window
     'browser-window/reload': () => void;
+
+    // In app browser (debug-only)
+    'in-app-browser/open-view': (payload: InAppBrowserOpenPayload) => void;
+    'in-app-browser/close-view': () => void;
+    'in-app-browser/set-bounds': (bounds: InAppBrowserBounds) => void;
+    'in-app-browser/set-visible': (visible: boolean) => void;
+    'in-app-browser/clear-data': (entryId: string) => InvokeResult;
+    'in-app-browser/go-back': () => void;
+    'in-app-browser/go-forward': () => void;
+    'in-app-browser/reload': () => void;
+    'in-app-browser/toggle-dev-tools': () => void;
+    'in-app-browser/can-open-dev-tools': () => boolean;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -267,4 +285,16 @@ export type DesktopApi = {
 
     // Browser Window
     reloadBrowserWindow: DesktopApiInvoke<'browser-window/reload'>;
+
+    // In-app browser (debug-only)
+    inAppBrowserOpenView: DesktopApiInvoke<'in-app-browser/open-view'>;
+    inAppBrowserCloseView: DesktopApiInvoke<'in-app-browser/close-view'>;
+    inAppBrowserSetBounds: DesktopApiInvoke<'in-app-browser/set-bounds'>;
+    inAppBrowserSetVisible: DesktopApiInvoke<'in-app-browser/set-visible'>;
+    inAppBrowserClearData: DesktopApiInvoke<'in-app-browser/clear-data'>;
+    inAppBrowserGoBack: DesktopApiInvoke<'in-app-browser/go-back'>;
+    inAppBrowserGoForward: DesktopApiInvoke<'in-app-browser/go-forward'>;
+    inAppBrowserReload: DesktopApiInvoke<'in-app-browser/reload'>;
+    inAppBrowserToggleDevTools: DesktopApiInvoke<'in-app-browser/toggle-dev-tools'>;
+    inAppBrowserCanOpenDevTools: DesktopApiInvoke<'in-app-browser/can-open-dev-tools'>;
 };

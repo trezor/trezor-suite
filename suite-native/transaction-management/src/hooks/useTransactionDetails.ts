@@ -8,7 +8,7 @@ import {
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { useOpenLink } from '@suite-native/link';
 import { type WalletAccountTransaction } from '@suite-native/tokens';
 

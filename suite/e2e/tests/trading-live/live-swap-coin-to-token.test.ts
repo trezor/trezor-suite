@@ -116,6 +116,7 @@ test.describe(
                 let receiveAmount: string;
 
                 await test.step('Confirm the Swap trade', async () => {
+                    await tradingPage.quotes.chooseCexOffer();
                     await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText('USDC');
                     await expect(tradingPage.inputs.receiveAmount).toHaveText(/^[\d,]+(\.\d+)?$/);
                     const receiveAmountUnformated =

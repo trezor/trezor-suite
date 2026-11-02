@@ -1,0 +1,301 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
+
+import { Translation, useTranslation } from '@suite/intl';
+import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
+import { getTxsPerPage } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    hasNetworkPotentialFraudTransactions,
+    isPhishingTransaction,
+    selectNetworkTokenDefinitions,
+} from '@suite-common/token-definitions';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import {
+    selectActiveDustPhishingThreshold,
+    selectHistoricFiatRates,
+    selectIsHideSuspiciousTransactions,
+    selectPhishingTransactions,
+} from '@suite-common/wallet-core';
+import {
+    type Account,
+    type TokenAddress,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import {
+    getDirectRpcHistoryState,
+    getOlderHistoryFrom,
+    isPending,
+} from '@suite-common/wallet-utils';
+import { Button, Card, Column, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
+
+import { DashboardSection } from 'src/components/dashboard';
+import { Pagination } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
+
+import { LoadOlderHistory } from './LoadOlderHistory';
+import { TransactionListActions } from './TransactionListActions/TransactionListActions';
+import { TransactionListBody } from './TransactionListBody';
+import { findTransactionAccount } from './findTransactionAccount';
+import { useAccountsTransactions } from './useAccountsTransactions';
+import { useTransactionSearch } from './useTransactionSearch';
+
+const NO_TXIDS: string[] = [];
+
+type EmptyListMessageProps = {
+    id: 'TR_NO_TRANSACTIONS_YET' | 'TR_NO_VISIBLE_TRANSACTIONS' | 'TR_NO_RECENT_TRANSACTIONS';
+};
+
+const EmptyListMessage = ({ id }: EmptyListMessageProps) => (
+    <Card>
+        <Column alignItems="center">
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Translation id={id} />
+            </Text>
+        </Column>
+    </Card>
+);
+
+type LoadFailedMessageProps = {
+    onRetry: () => void;
+};
+
+const LoadFailedMessage = ({ onRetry }: LoadFailedMessageProps) => (
+    <Card data-testid="@transactions/load-failed">
+        <Column alignItems="center" gap={12}>
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Translation id="TR_GENERIC_ERROR_TITLE" />
+            </Text>
+            <Button size="small" intent="neutral" priority="secondary" onClick={onRetry}>
+                <Translation id="TR_RETRY" />
+            </Button>
+        </Column>
+    </Card>
+);
+
+type MultiAccountTransactionListProps = {
+    accounts: readonly Account[];
+    symbol: NetworkSymbol;
+    contractAddress?: TokenAddress;
+    isAccountShown?: boolean;
+    /** A fee is bumped from its account's own screen, so leave it off anywhere else. */
+    isBumpFeeAllowed?: boolean;
+    isExportable?: boolean;
+    knownTotal?: number;
+    'data-testid'?: string;
+};
+
+/** Mount it with a `key` made of the account keys, so its state resets when the accounts change. */
+export const MultiAccountTransactionList = ({
+    accounts,
+    symbol,
+    contractAddress,
+    isAccountShown = true,
+    isBumpFeeAllowed = false,
+    isExportable = false,
+    knownTotal,
+    'data-testid': dataTestId = '@transactions/multi-account',
+}: MultiAccountTransactionListProps) => {
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const { dispatch } = useServices(injectDispatch);
+    const { translationString } = useTranslation();
+
+    const accountKeys = useMemo(() => accounts.map(account => account.key), [accounts]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const perPage = getTxsPerPage(getNetworkType(symbol));
+    const anchor = useSelector(selectRouterAnchor);
+    const [searchQuery, setSearchQuery] = useState('');
+    const isSearching = searchQuery.trim() !== '';
+
+    const showSearchFailed = () =>
+        dispatch(
+            notificationsActions.addToast({
+                type: 'error',
+                error: translationString('TR_SEARCH_FAIL'),
+            }),
+        );
+
+    const isHidingSuspicious = useSelector(
+        state =>
+            hasNetworkPotentialFraudTransactions(symbol) &&
+            selectIsHideSuspiciousTransactions(state, symbol),
+    );
+    const tokenDefinitions = useSelector(state => selectNetworkTokenDefinitions(state, symbol));
+    const historicRates = useSelector(selectHistoricFiatRates);
+    const txsMarkedAsNotScamByAccount = useSelector(selectPhishingTransactions);
+    const dustThreshold = useSelector(selectActiveDustPhishingThreshold);
+
+    const isTransactionShown = useMemo(() => {
+        if (!isHidingSuspicious) return undefined;
+
+        return (transaction: WalletAccountTransaction) => {
+            const account = findTransactionAccount(accounts, transaction);
+
+            return !isPhishingTransaction({
+                transaction,
+                tokenDefinitions,
+                historicRates,
+                txsMarkedAsNotScam:
+                    (account && txsMarkedAsNotScamByAccount[account.key]) ?? NO_TXIDS,
+                dustThreshold,
+            }).isPhishing;
+        };
+    }, [
+        isHidingSuspicious,
+        accounts,
+        tokenDefinitions,
+        historicRates,
+        txsMarkedAsNotScamByAccount,
+        dustThreshold,
+    ]);
+
+    const {
+        transactions: loadedTransactions,
+        isComplete,
+        isLoading,
+        isFailed,
+        retry,
+    } = useAccountsTransactions({
+        accountKeys,
+        contractAddress,
+        page: currentPage,
+        perPage,
+        isAllRequested: !!anchor || isSearching,
+        onError: isSearching ? showSearchFailed : undefined,
+    });
+
+    const transactions = useMemo(
+        () =>
+            isTransactionShown ? loadedTransactions.filter(isTransactionShown) : loadedTransactions,
+        [isTransactionShown, loadedTransactions],
+    );
+    const confirmedTransactions = useMemo(
+        () => transactions.filter(transaction => !isPending(transaction)),
+        [transactions],
+    );
+
+    // A link to one transaction (e.g. from a notification) loads everything and opens its page.
+    const anchorPage = useMemo(
+        () => (anchor ? findAnchorTransactionPage(confirmedTransactions, perPage, anchor) : null),
+        [anchor, confirmedTransactions, perPage],
+    );
+
+    useEffect(() => {
+        if (anchorPage !== null) {
+            setCurrentPage(anchorPage);
+        }
+    }, [anchorPage]);
+
+    const searchedTransactions = useTransactionSearch(accounts, transactions, searchQuery);
+    const isSearchPending = !isComplete && !isFailed && searchedTransactions.length === 0;
+
+    const pendingTxs = useMemo(
+        () => searchedTransactions.filter(isPending),
+        [searchedTransactions],
+    );
+    // A token's transfers are sparse in the history, so while it loads, a short page is the end of
+    // what was found, not a sign of a next page; only a full last page is.
+    const isLastPageFull =
+        confirmedTransactions.length > 0 && confirmedTransactions.length % perPage === 0;
+    const hasNextPage = !isComplete && (contractAddress === undefined || isLastPageFull);
+    const loadedTotalItems = isComplete
+        ? confirmedTransactions.length
+        : Math.max(confirmedTransactions.length + (hasNextPage ? perPage : 0), knownTotal ?? 0);
+    const totalItems = isSearching
+        ? searchedTransactions.length - pendingTxs.length
+        : loadedTotalItems;
+
+    // Pages counted while loading can turn out not to exist, so the list falls back to the last
+    // page there is rather than showing an empty one.
+    const pageCount = Math.max(1, Math.ceil(totalItems / perPage));
+    const shownPage = Math.min(currentPage, pageCount);
+
+    // The clamp is kept in state too, so a page count that grows again later does not take the
+    // list back to the page that went away.
+    useEffect(() => {
+        setCurrentPage(page => Math.min(page, pageCount));
+    }, [pageCount]);
+
+    const confirmedTxs = useMemo(
+        () =>
+            searchedTransactions
+                .filter(transaction => !isPending(transaction))
+                .slice((shownPage - 1) * perPage, shownPage * perPage),
+        [searchedTransactions, shownPage, perPage],
+    );
+
+    const onPageSelected = (page: number) => {
+        setCurrentPage(page);
+        sectionRef.current?.scrollIntoView();
+    };
+
+    // A direct-RPC backend only scans a recent window of blocks, so an empty list there means no
+    // recent transactions rather than none at all, and the window is still pending until scanned.
+    const hasOlderHistory = accounts.some(account => getOlderHistoryFrom(account) !== undefined);
+    const isHistoryUnscanned = accounts.some(
+        account => getDirectRpcHistoryState(account) === 'unscanned',
+    );
+
+    const getCustomNoTransactions = () => {
+        if (isFailed || transactions.length > 0) return undefined;
+
+        if (loadedTransactions.length > 0) {
+            return <EmptyListMessage id="TR_NO_VISIBLE_TRANSACTIONS" />;
+        }
+
+        return (
+            <EmptyListMessage
+                id={hasOlderHistory ? 'TR_NO_RECENT_TRANSACTIONS' : 'TR_NO_TRANSACTIONS_YET'}
+            />
+        );
+    };
+
+    return (
+        <DashboardSection
+            ref={sectionRef}
+            heading={<Translation id="TR_ALL_TRANSACTIONS" />}
+            actions={
+                <TransactionListActions
+                    accounts={accounts}
+                    symbol={symbol}
+                    searchQuery={searchQuery}
+                    setSearch={setSearchQuery}
+                    setSelectedPage={setCurrentPage}
+                    isExportable={isExportable}
+                />
+            }
+            data-testid={dataTestId}
+        >
+            <Column gap={32} padding={{ top: 16 }}>
+                <TransactionListBody
+                    isLoading={(isSearching ? isSearchPending : isLoading) || isHistoryUnscanned}
+                    hasNoSearchResults={
+                        !isFailed &&
+                        isSearching &&
+                        transactions.length > 0 &&
+                        searchedTransactions.length === 0
+                    }
+                    pendingTxs={pendingTxs}
+                    confirmedTxs={confirmedTxs}
+                    accounts={accounts}
+                    symbol={symbol}
+                    customNoTransactions={getCustomNoTransactions()}
+                    isAccountShown={isAccountShown}
+                    isBumpFeeAllowed={isBumpFeeAllowed}
+                />
+                {isFailed && <LoadFailedMessage onRetry={retry} />}
+                <LoadOlderHistory accounts={accounts} />
+                {totalItems > perPage && (
+                    <Pagination
+                        currentPage={shownPage}
+                        perPage={perPage}
+                        totalItems={totalItems}
+                        onPageSelected={onPageSelected}
+                        explicitNavigation
+                    />
+                )}
+            </Column>
+        </DashboardSection>
+    );
+};

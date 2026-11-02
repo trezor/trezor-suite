@@ -1,5 +1,8 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
-import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
+import {
+    USER_CANCELLED_ERROR_CODES,
+    buildClaimTransactionReview,
+} from '@suite-common/earn-stablecoin';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -35,7 +38,7 @@ jest.mock('@suite-common/earn-stablecoin', () => ({
     ...jest.requireActual('@suite-common/earn-stablecoin'),
     buildClaimCalldata: () => '0xclaimdata',
     buildUnsignedClaimTransaction: () => '{}',
-    buildClaimTransactionReview: () => ({
+    buildClaimTransactionReview: jest.fn(() => ({
         formState: {},
         precomposedTransaction: { fee: '777000000000' },
         availableRewards: [],
@@ -48,7 +51,7 @@ jest.mock('@suite-common/earn-stablecoin', () => ({
             gasLimit: '0x5208',
             gasPrice: '0x1',
         },
-    }),
+    })),
 }));
 
 jest.mock('@suite-common/device', () => ({
@@ -122,7 +125,12 @@ describe('claimMerklRewardsThunk', () => {
             (payload: { type: string }) => () =>
                 payload.type === 'review-transaction'
                     ? Promise.resolve(true)
-                    : Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+                    : Promise.resolve({
+                          value: true,
+                          resolve: jest.fn(),
+                          selectedFee: null,
+                          selectedFeeLevel: 'normal',
+                      }),
         );
         jest.spyOn(TrezorConnect, 'ethereumSignTransaction').mockResolvedValue({
             success: true,
@@ -132,6 +140,26 @@ describe('claimMerklRewardsThunk', () => {
             success: true,
             payload: { txid: '0xclaim' },
         });
+    });
+
+    it('passes the selected fee level from simulation to the claim review', async () => {
+        mockOpenDeferredModal.mockImplementation(
+            (payload: { type: string }) => () =>
+                payload.type === 'review-transaction'
+                    ? Promise.resolve(true)
+                    : Promise.resolve({
+                          value: true,
+                          resolve: jest.fn(),
+                          selectedFee: null,
+                          selectedFeeLevel: 'low',
+                      }),
+        );
+
+        await dispatchClaim(jest.fn());
+
+        expect(buildClaimTransactionReview).toHaveBeenCalledWith(
+            expect.objectContaining({ selectedFee: null, selectedFeeLevel: 'low' }),
+        );
     });
 
     it.each([...USER_CANCELLED_ERROR_CODES])(
@@ -163,7 +191,12 @@ describe('claimMerklRewardsThunk', () => {
             (payload: { type: string }) => () =>
                 payload.type === 'review-transaction'
                     ? Promise.resolve(false)
-                    : Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+                    : Promise.resolve({
+                          value: true,
+                          resolve: jest.fn(),
+                          selectedFee: null,
+                          selectedFeeLevel: 'normal',
+                      }),
         );
 
         const { result } = await dispatchClaim(report);

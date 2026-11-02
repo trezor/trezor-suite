@@ -9,7 +9,6 @@ export { mockOnModalCancel, mockOpenModal } from './mockModalActions';
 export {
     mockGetAllowPrerelease,
     mockGetBinFilesBaseUrl,
-    mockGetLanguage,
     mockReportSecurityCheck,
     mockRerunFwAuthenticityChecksCall,
     mockShouldRetryFirmwareRevisionCheckError,

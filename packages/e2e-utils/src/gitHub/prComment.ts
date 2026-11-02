@@ -40,6 +40,8 @@ type UpsertStickyPrComment = {
     marker: string;
     buildBody: (existingBody: string | undefined) => string;
     holdsOwnContent?: (body: string) => boolean;
+    /** When false, only an existing comment is updated; none is started. */
+    createIfMissing?: boolean;
     attempts?: number;
 };
 
@@ -49,6 +51,7 @@ export const upsertStickyPrComment = async ({
     marker,
     buildBody,
     holdsOwnContent,
+    createIfMissing = true,
     attempts = 3,
 }: UpsertStickyPrComment): Promise<StickyPrCommentResult> => {
     const token = process.env.GITHUB_TOKEN;
@@ -84,6 +87,8 @@ export const upsertStickyPrComment = async ({
                 body: buildBody(previous.body),
             });
             result = 'updated';
+        } else if (!createIfMissing) {
+            return 'skipped';
         } else {
             await octokit.rest.issues.createComment({
                 ...repository,

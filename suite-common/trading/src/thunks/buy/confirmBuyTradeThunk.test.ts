@@ -2,7 +2,9 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type BuyTradeResponse } from 'invity-api';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mock } from '@trezor/dependency-injection';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { type ConfirmBuyTradeThunkState } from './confirmBuyTradeThunk';
@@ -18,6 +20,8 @@ import { buyThunks } from './index';
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
+
+const account = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -89,12 +93,7 @@ describe('confirmBuyTradeThunk', () => {
             buyThunks.confirmTradeThunk({
                 returnUrl: 'returnUrl',
                 address: 'address',
-                account: {
-                    symbol: 'btc',
-                    accountType: 'normal',
-                    descriptor: 'desc',
-                    index: 1,
-                } as Account,
+                account,
                 triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                 processResponseData: mockProcessResponseData,
             }),
@@ -117,12 +116,7 @@ describe('confirmBuyTradeThunk', () => {
                 buyThunks.confirmTradeThunk({
                     returnUrl: 'returnUrl',
                     address: 'address',
-                    account: {
-                        symbol: 'btc',
-                        accountType: 'normal',
-                        descriptor: 'desc',
-                        index: 1,
-                    } as Account,
+                    account,
                     triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
                 }),
@@ -151,12 +145,7 @@ describe('confirmBuyTradeThunk', () => {
                 buyThunks.confirmTradeThunk({
                     returnUrl: 'returnUrl',
                     address: 'address',
-                    account: {
-                        symbol: 'btc',
-                        accountType: 'normal',
-                        descriptor: 'desc',
-                        index: 1,
-                    } as Account,
+                    account,
                     triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
                 }),
@@ -191,12 +180,7 @@ describe('confirmBuyTradeThunk', () => {
                 buyThunks.confirmTradeThunk({
                     returnUrl: 'returnUrl',
                     address: 'address',
-                    account: {
-                        symbol: 'btc',
-                        accountType: 'normal',
-                        descriptor: 'desc',
-                        index: 1,
-                    } as Account,
+                    account,
                     triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
                 }),
@@ -232,12 +216,7 @@ describe('confirmBuyTradeThunk', () => {
                 buyThunks.confirmTradeThunk({
                     returnUrl: 'returnUrl',
                     address: 'address',
-                    account: {
-                        symbol: 'btc',
-                        accountType: 'normal',
-                        descriptor: 'desc',
-                        index: 1,
-                    } as Account,
+                    account,
                     triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
                 }),
@@ -253,6 +232,34 @@ describe('confirmBuyTradeThunk', () => {
             });
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
+        });
+    });
+
+    it('sends the receive address extra id to the provider', async () => {
+        const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
+            getMocks();
+        const doBuyTrade = mock<typeof tradeApi.doBuyTrade>(() =>
+            Promise.resolve({ trade: { ...MIN_MAX_QUOTES_OK[1] } }),
+        );
+        tradeApi.doBuyTrade = doBuyTrade;
+
+        await store.dispatch(
+            buyThunks.confirmTradeThunk({
+                returnUrl: 'returnUrl',
+                address: 'rAddress',
+                extraField: '12345',
+                account,
+                triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
+                processResponseData: mockProcessResponseData,
+            }),
+        );
+
+        expect(doBuyTrade).toHaveBeenCalledWith({
+            trade: expect.objectContaining({
+                receiveAddress: 'rAddress',
+                receiveAddressExtraId: '12345',
+            }),
+            returnUrl: 'returnUrl',
         });
     });
 
@@ -274,9 +281,7 @@ describe('confirmBuyTradeThunk', () => {
             buyThunks.confirmTradeThunk({
                 returnUrl: 'returnUrl',
                 address: 'address',
-                account: {
-                    key: 'yyy' as AccountKey, // Todo: create properly via `createAccountKey()`
-                } as Account,
+                account,
                 triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                 processResponseData: mockProcessResponseData,
             }),
@@ -295,7 +300,7 @@ describe('confirmBuyTradeThunk', () => {
             data: minMaxQuote,
             key: minMaxQuote.paymentId,
             receiveAccountKey: 'xxx',
-            selectedAccountKey: 'yyy',
+            selectedAccountKey: account.key,
         });
         expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
     });

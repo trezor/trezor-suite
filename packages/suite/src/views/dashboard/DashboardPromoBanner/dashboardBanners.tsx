@@ -16,6 +16,7 @@ export type BannerHandlers = {
 
 type BannerEligibilityContext = {
     selectedDevice: ReturnType<typeof selectSelectedDevice>;
+    isFinpromRestricted: boolean;
 };
 
 type DashboardBannerDefinition = {
@@ -51,7 +52,8 @@ export const DASHBOARD_BANNERS: Record<DashboardBannerType, DashboardBannerDefin
     },
     'trading-experience': {
         flag: 'showTradingExperienceDashboardPromoBanner',
-        isEligible: ({ selectedDevice }) => !hasBitcoinOnlyFirmware(selectedDevice),
+        isEligible: ({ selectedDevice, isFinpromRestricted }) =>
+            !hasBitcoinOnlyFirmware(selectedDevice) && !isFinpromRestricted,
         render: handlers => <TradingExperienceBanner {...handlers} />,
     },
 };

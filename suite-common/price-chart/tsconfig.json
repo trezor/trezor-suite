@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../fiat-services" },
+        { "path": "../react-query" },
+        { "path": "../wallet-types" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        }
+    ]
+}

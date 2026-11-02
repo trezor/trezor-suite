@@ -26,6 +26,16 @@ const setEntropyCheckResult = createAction(
     (payload: SetEntropyCheckResultParams) => ({ payload }),
 );
 
+type SetDiscoveryEntropyCheckResultParams = {
+    deviceId: AcquiredDevice['id'];
+    success: boolean;
+    path: string;
+};
+const setDiscoveryEntropyCheckResult = createAction(
+    `${PERSISTENT_DEVICE_DATA_MODULE_PREFIX}/setDiscoveryEntropyCheckResult`,
+    (payload: SetDiscoveryEntropyCheckResultParams) => ({ payload }),
+);
+
 type SetDelegatedIdentityKeyParams = {
     deviceId: string;
     delegatedKey: PersistentDeviceData['delegatedIdentityKey'];
@@ -54,6 +64,7 @@ export const persistentDeviceDataActions = {
     forgetDevicePersistentData,
     clearDevicePersistentData,
     setEntropyCheckResult,
+    setDiscoveryEntropyCheckResult,
     setDelegatedIdentityKey,
     setDeviceAuthenticityResult,
     setManualDeviceCheckSuccess,

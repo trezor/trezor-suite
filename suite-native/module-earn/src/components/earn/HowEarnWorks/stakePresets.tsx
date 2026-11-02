@@ -1,5 +1,6 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-core';
+import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-native/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
@@ -34,10 +35,9 @@ export const useHowStakeWorksPreset = ({
     const stakingRewardsTitleId = isSolana
         ? 'earn.howStakeWorksScreen.stakingTimeline.third.titleSolana'
         : 'earn.howStakeWorksScreen.stakingTimeline.third.titleEthereum';
-    const stakingRewardsDescriptionId =
-        apy != null
-            ? 'earn.howStakeWorksScreen.stakingTimeline.third.description'
-            : 'earn.notAvailableShort';
+    const stakingRewardsDescriptionId = isApyAvailable(apy)
+        ? 'earn.howStakeWorksScreen.stakingTimeline.third.description'
+        : 'earn.notAvailableShort';
     const unstakingPeriodTitleId = isSolana
         ? 'earn.howStakeWorksScreen.unstakeTimeline.second.titleSolana'
         : 'earn.howStakeWorksScreen.unstakeTimeline.second.titleEthereum';
@@ -129,7 +129,10 @@ export const useHowStakeWorksPreset = ({
                             />
                         ),
                         description: (
-                            <Translation id={stakingRewardsDescriptionId} values={{ apy }} />
+                            <Translation
+                                id={stakingRewardsDescriptionId}
+                                values={{ apy: apyFormatted }}
+                            />
                         ),
                     },
                 ],

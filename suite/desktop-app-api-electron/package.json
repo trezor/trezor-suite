@@ -13,7 +13,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/apps-embedding": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",
-        "electron": "43.2.0"
+        "electron": "44.9.3"
     }
 }

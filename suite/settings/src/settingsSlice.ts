@@ -3,8 +3,9 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 import { type SuiteThemeVariant } from '@suite/desktop-app-api';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs';
+import { type EarnStakingWorkerBaseUrl } from '@suite-common/earn-staking-api';
+import { type Locale } from '@suite-common/locale';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
-import { type Locale } from '@suite-common/suite-types';
 import type { TradeServerEnvironment } from '@suite-common/trading';
 import type { DefinitionsChannel } from '@trezor/connect-common';
 import { isWeb } from '@trezor/env-utils';
@@ -25,6 +26,7 @@ export type DebugTransport =
 export interface DebugModeOptions {
     tradeServerEnvironment?: TradeServerEnvironment;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
+    earnStakingWorkerBaseUrl?: EarnStakingWorkerBaseUrl;
     oauthServerEnvironment?: OAuthServerEnvironment;
     transports: DebugTransport[];
     isUnlockedBootloaderAllowed: boolean;
@@ -46,7 +48,6 @@ export interface SuiteSettingsState {
     };
     language: Locale;
     torOnionLinks: boolean;
-    isCoinjoinReceiveWarningHidden: boolean;
     isDesktopSuitePromoHidden: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
@@ -79,7 +80,6 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
     },
     language: 'en-US',
     torOnionLinks: isWeb(),
-    isCoinjoinReceiveWarningHidden: false,
     isDesktopSuitePromoHidden: false,
     enabledSecurityChecks: {
         deviceAuthenticity: true,
@@ -91,6 +91,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
     debug: {
         tradeServerEnvironment: undefined,
         earnYieldWorkerBaseUrl: undefined,
+        earnStakingWorkerBaseUrl: undefined,
         transports: [],
         isUnlockedBootloaderAllowed: false,
         showConnectLogs: false,
@@ -164,12 +165,6 @@ const suiteSettingsSlice = createSliceWithExtraDeps({
         },
         setOnionLinks: (state: SuiteSettingsState, { payload }: PayloadAction<boolean>) => {
             state.torOnionLinks = payload;
-        },
-        setCoinjoinReceiveWarningHidden: (
-            state: SuiteSettingsState,
-            { payload }: PayloadAction<boolean>,
-        ) => {
-            state.isCoinjoinReceiveWarningHidden = payload;
         },
         toggleDeviceAuthenticityCheck: (
             state: SuiteSettingsState,

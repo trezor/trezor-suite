@@ -2,10 +2,11 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { act, renderHook } from '@testing-library/react';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import { type AppState } from 'src/reducers/store';
 import { stakeReducer } from 'src/reducers/wallet';
@@ -17,7 +18,8 @@ import {
 } from './useCardanoAccountVotingDelegation';
 import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
-const CUSTOM_DREP_ID = 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs';
+// Not the Everstake DRep: its legacy spelling normalises to CARDANO_EVERSTAKE_DREP.
+const CUSTOM_DREP_ID = 'drep1g2d3y3skgr806wj2ryhhc5ca3akx6vmppde87jq7kgknjmv589e';
 const PREDEFINED_DREP_ID = 'drep_always_abstain';
 const ACCOUNT_KEY = 'ada-account-key' as AccountKey;
 const OTHER_ACCOUNT_KEY = 'other-ada-account-key' as AccountKey;
@@ -144,6 +146,31 @@ describe('useSeededCardanoVotingDelegation', () => {
                 option: { type: 'current' },
             }),
         ]);
+    });
+
+    it('defaults a Five Binaries migration to Abstain even with an existing DRep', () => {
+        const account = createCardanoAccount(CUSTOM_DREP_ID);
+        if (account.networkType !== 'cardano') throw new Error('Expected Cardano account');
+        account.misc.staking.poolId = getIndexOrThrow(FIVE_BINARIES_POOLS, 0);
+        const { getActions, dispatch, rerender } = renderSeededHook(account);
+
+        expect(getActions()).toEqual([
+            stakeActions.setAccountVotingDelegation({
+                accountKey: ACCOUNT_KEY,
+                option: DEFAULT_VOTING_OPTION,
+            }),
+        ]);
+
+        act(() => {
+            dispatch(
+                stakeActions.setAccountVotingDelegation({
+                    accountKey: ACCOUNT_KEY,
+                    option: { type: 'current' },
+                }),
+            );
+        });
+        rerender({ account: { ...account } });
+        expect(getActions()).toHaveLength(2);
     });
 
     it('seeds an account only once, so a later backend update cannot overwrite a user selection', () => {

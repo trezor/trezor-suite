@@ -24,7 +24,7 @@ type EventName = `${Domain}/${string}` | `${string}`;
 
 // An event can describe its data in two ways:
 // 1. List every field separately in `attributes` with a prescribed structure, e.g. `amount: AttributeDef<number>` (real example: `createBackupEvent`).
-// 2. Arbitrary object payload with no per-field documentation, via `payloadType` (real example: `accountsNonZeroBalanceEvent`).
+// 2. Arbitrary object payload with no per-field documentation, via `payloadType`.
 // `HasKeys` checks whether the attributes list is empty. `IsAttributeMap` tells these two kinds of
 // event apart.
 type HasKeys<T> = keyof T extends never ? false : true;

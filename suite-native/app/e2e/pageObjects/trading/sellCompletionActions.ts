@@ -31,12 +31,6 @@ class SellCompletionActions extends TradingActions {
             timeout: this.SHORT_TIMEOUT,
         });
     }
-
-    async expectConfirmationToFail() {
-        await waitForVisible(this.getElementById('provider-confirmation-failed'), {
-            timeout: this.DOUBLE_LONG_TIMEOUT,
-        });
-    }
 }
 
 export const sellCompletionActions = new SellCompletionActions();

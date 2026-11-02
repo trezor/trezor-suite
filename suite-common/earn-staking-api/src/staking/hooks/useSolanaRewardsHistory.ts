@@ -3,7 +3,7 @@ import { captureException, withScope } from '@sentry/core';
 import { commonQueryKeys, keepPreviousData, useQuery } from '@suite-common/react-query';
 import { type Account } from '@suite-common/wallet-types';
 
-import { EARN_API_BASE_URL } from '../../constants';
+import { earnStakingWorkerBaseUrl } from '../../context';
 import { getSolanaRewardsHistory } from '../services';
 import {
     type SolanaRewardsSyncStatus,
@@ -15,15 +15,17 @@ import {
 // would keep producing identical Sentry events — report it only once per app session.
 const reportedAccountDescriptors = new Set<string>();
 
-function reportSolanaRewardsOutOfSync(account: Account, syncStatus: SolanaRewardsSyncStatus) {
+async function reportSolanaRewardsOutOfSync(account: Account, syncStatus: SolanaRewardsSyncStatus) {
     if (reportedAccountDescriptors.has(account.descriptor)) {
         return;
     }
     reportedAccountDescriptors.add(account.descriptor);
 
+    const baseUrl = await earnStakingWorkerBaseUrl.get();
+
     withScope(scope => {
         scope.setTag('error.code', 'solana_rewards_history_out_of_sync');
-        scope.setTag('error.source', EARN_API_BASE_URL);
+        scope.setTag('error.source', baseUrl);
         scope.setTag('error.network', account.networkType);
         scope.setTag('error.service', 'rewards_history');
         scope.setExtras({
@@ -65,7 +67,7 @@ export function useSolanaRewardsHistory(
             const syncStatus = getSolanaRewardsSyncStatus(account, rewards);
             const outOfSync = offset === 0 && syncStatus.isOutOfSync;
 
-            if (outOfSync) reportSolanaRewardsOutOfSync(account, syncStatus);
+            if (outOfSync) await reportSolanaRewardsOutOfSync(account, syncStatus);
 
             return {
                 rewards,

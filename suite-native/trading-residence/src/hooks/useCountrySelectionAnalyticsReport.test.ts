@@ -10,8 +10,8 @@ describe('useCountrySelectionAnalyticsReport', () => {
         analytics: mockNativeAnalytics(reportMock),
     };
 
-    const renderUseCountrySelectionAnalyticsReport = async () =>
-        await renderHookWithBasicProvider(() => useCountrySelectionAnalyticsReport(), { services });
+    const renderUseCountrySelectionAnalyticsReport = () =>
+        renderHookWithBasicProvider(() => useCountrySelectionAnalyticsReport(), { services });
 
     beforeEach(() => {
         jest.clearAllMocks();

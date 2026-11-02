@@ -15,14 +15,13 @@ import {
     useController,
 } from 'react-hook-form';
 
-import { type Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
 import { Input, type InputProps } from '@trezor/components';
 import { BigNumber, getLocaleSeparators, localizeNumber } from '@trezor/utils';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
 
-// TODO: locale should be of type Locale
 const cleanValueString = (value: string, locale: string) => {
     if (value === undefined) {
         return '';

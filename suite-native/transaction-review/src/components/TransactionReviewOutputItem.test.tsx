@@ -15,8 +15,8 @@ const noteOutput: TransactionReviewStatefulOutput = {
 };
 
 describe('TransactionReviewOutputItem', () => {
-    const renderItem = async (providerProps: TransactionReviewTestProviderProps = {}) =>
-        await renderWithTransactionReview(
+    const renderItem = (providerProps: TransactionReviewTestProviderProps = {}) =>
+        renderWithTransactionReview(
             <TransactionReviewOutputItem output={noteOutput} onLayout={jest.fn()} />,
             { providerProps },
         );

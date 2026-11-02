@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -43,17 +43,20 @@ describe('ExchangeSendContent', () => {
         },
     });
 
-    const renderForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
             services,
         });
 
-    const renderExchangeSendContent = async () =>
-        await renderWithStoreProvider(<ExchangeSendContent />, {
+    const renderExchangeSendContent = () =>
+        renderWithStoreProvider(<ExchangeSendContent />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             preloadedState,
-            services,
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
         });
 
     beforeEach(async () => {

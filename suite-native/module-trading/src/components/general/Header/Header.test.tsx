@@ -3,7 +3,7 @@ import { type Store } from '@reduxjs/toolkit';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { type TradingRootState } from '@suite-native/trading-state';
@@ -20,10 +20,7 @@ type State = TradingRootState;
 
 describe('Header', () => {
     const getFFOverrides = (): PreloadedStatePartial<TradingTestPreloadedState> => ({
-        featureFlags: {
-            ...featureFlagsInitialState,
-            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-        },
+        featureFlags: featureFlagsInitialState,
     });
 
     const setupReportMock = () => {

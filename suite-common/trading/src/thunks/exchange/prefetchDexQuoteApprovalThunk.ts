@@ -16,6 +16,7 @@ import { getUnusedAddressFromAccount } from '../../utils';
 export type PrefetchDexQuoteApprovalThunkProps = {
     account: Account;
     trade: ExchangeTrade;
+    receiveAddress: string;
 };
 
 export type PrefetchDexQuoteApprovalThunkState = TradingRootState;
@@ -26,11 +27,11 @@ export const prefetchDexQuoteApprovalThunk = createThunk<
     { state: PrefetchDexQuoteApprovalThunkState }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/prefetchDexQuoteApproval`,
-    async ({ trade, account }, { dispatch, getState }) => {
+    async ({ trade, account, receiveAddress }, { dispatch, getState }) => {
         dispatch(tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(trade?.quoteId));
 
         try {
-            if (!trade?.quoteId) {
+            if (!trade?.quoteId || !receiveAddress) {
                 return undefined;
             }
 
@@ -41,9 +42,6 @@ export const prefetchDexQuoteApprovalThunk = createThunk<
             }
 
             const quoteToProcess = trade.fromAddress ? trade : { ...trade, fromAddress };
-
-            const receiveAddress =
-                quoteToProcess.receiveAddress ?? quoteToProcess.fromAddress ?? '';
 
             const response = await tradeApi.doExchangeTrade({
                 trade: quoteToProcess,

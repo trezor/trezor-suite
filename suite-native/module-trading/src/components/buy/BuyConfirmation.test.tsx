@@ -31,8 +31,8 @@ describe('BuyConfirmation', () => {
     const mockUseTradingStellarActivateToken =
         require('../../hooks/general/useTradingStellarActivateToken').useTradingStellarActivateToken;
 
-    const renderConfirmation = async () =>
-        await renderWithStoreProvider(<BuyConfirmation />, {
+    const renderConfirmation = () =>
+        renderWithStoreProvider(<BuyConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
         });
 

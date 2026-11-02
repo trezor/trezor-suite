@@ -1,5 +1,5 @@
 import { bytesToHex } from '@noble/hashes/utils.js';
-import { utils } from '@scure/base';
+import { base32nopad } from '@scure/base';
 import crc16xmodem from 'crc/calculators/crc16xmodem';
 
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
@@ -7,7 +7,6 @@ import type { StellarNetworkSymbol } from '@trezor/network-stellar-types';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
-const base32 = utils.chain(utils.radix(32), utils.alphabet(ALPHABET), utils.join(''));
 const regexp = new RegExp('^[' + ALPHABET + ']{56}$');
 const ed25519PublicKeyVersionByte = 6 << 3;
 
@@ -24,7 +23,7 @@ const numberToHex = (number: number, sizeInBytes: number): string =>
         .padStart(sizeInBytes * 2, '0');
 
 function verifyChecksum(address: string): boolean {
-    const bytes = base32.decode(address);
+    const bytes = base32nopad.decode(address);
     if (bytes[0] !== ed25519PublicKeyVersionByte) {
         return false;
     }

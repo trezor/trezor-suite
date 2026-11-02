@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 

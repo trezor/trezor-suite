@@ -33,4 +33,7 @@ Prevents the Expo dev client from hanging when Detox starts an Android test. Int
 
 ## nextra
 
-Undocumented reason, introduced in [#26620](https://github.com/trezor/trezor-suite/pull/26620)
+Skips the git timestamp lookup when building inside a git worktree. nextra resolves page paths against
+the worktree's git directory (`.git/worktrees/<name>`), so every page lookup walks the whole history and
+`next build` of `@trezor/connect-explorer` effectively never finishes. Introduced in
+[#26620](https://github.com/trezor/trezor-suite/pull/26620).

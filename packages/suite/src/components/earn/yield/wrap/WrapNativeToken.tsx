@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { useMutation } from '@tanstack/react-query';
 
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useFormatters } from '@suite-common/formatters';
@@ -241,6 +242,8 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         return null;
     };
 
+    const { formState } = methods;
+
     const renderContent = () => {
         if (broadcast && isFlowComplete) {
             return (
@@ -285,7 +288,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                     />
                 </Text>
 
-                <FormProvider {...methods}>
+                <Form form={methods} formState={formState}>
                     <YieldWrapStep
                         token={token}
                         nativeSymbol={nativeSymbol}
@@ -304,7 +307,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                         onSubmit={handleSubmit}
                         onPendingTxClick={openTxDetail}
                     />
-                </FormProvider>
+                </Form>
             </>
         );
     };

@@ -11,6 +11,7 @@ import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import {
     YIELD_FLOW_AVAILABLE_STEPS,
+    hasYieldSessionTransactionActivity,
     isYieldSupported,
     selectYieldSession,
     selectYieldTxReview,
@@ -19,14 +20,15 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
+import { YieldClaimFeeWarning } from './YieldClaimFeeWarning';
 import { YieldRewardsList } from './YieldRewardsList';
 import { useMerklRewards } from './hooks';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
@@ -41,6 +43,7 @@ type YieldClaimProps = {
 };
 
 export const YieldClaim = ({ account }: YieldClaimProps) => {
+    const deviceStatus = useEarnDeviceStatus();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const { translationString } = useTranslation();
@@ -55,6 +58,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         claimSession.action.isSubmitting ||
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account.key);
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
+    // A flow that is already signing or has broadcast keeps its form, so the pending transaction
+    // and the completion stay visible after the feature is disabled remotely.
+    const isFormHidden =
+        isDisabled && !isClaimSubmitting && !hasYieldSessionTransactionActivity(claimSession);
     const isDeviceConnected = !!device?.connected && device.available;
     const isClaimFirmwareOutdated = !isYieldSupported(device, { flowType: 'claim' });
 
@@ -82,19 +89,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     });
 
     const handleClaim = async () => {
-        if (!accountRewards) return;
+        if (!accountRewards || isDisabled) return;
 
         if (isClaimFirmwareOutdated) {
             openFirmwareModal();
-
-            return;
-        }
-
-        if (!isDeviceConnected) {
-            if (device?.descriptor?.apiType === 'bluetooth') {
-                dispatch(setConnectionMode('bluetooth'));
-            }
-            dispatch(setConnectionModal(true));
 
             return;
         }
@@ -105,11 +103,21 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
             type: events.yieldClaimEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 type: 'claim',
                 networkSymbol: account.symbol,
                 rewardCount: rewards.length,
             },
         });
+
+        if (!isDeviceConnected) {
+            if (device?.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            dispatch(setConnectionModal(true));
+
+            return;
+        }
 
         const isSessionReady = await ensureDeviceSession();
 
@@ -166,12 +174,14 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                         <Text typographyStyle="headline-md" data-testid="@yield/claim/heading">
                             <Translation id="TR_EARN_YIELD_CLAIM_REWARDS" />
                         </Text>
+
+                        {isDisabled && (
+                            <YieldDisabledBanner type="claim" content={content} variant={variant} />
+                        )}
                     </>
                 )}
 
-                {isDisabled && currentStep !== 'complete' ? (
-                    <YieldDisabledBanner type="claim" content={content} variant={variant} />
-                ) : (
+                {!isFormHidden && (
                     <YieldFlowStepList
                         sequence={YIELD_FLOW_AVAILABLE_STEPS.claim}
                         currentStep={currentStep}
@@ -193,17 +203,13 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                             </Column>
                                         </Card>
 
-                                        {merklRewardsQuery.isSuccess &&
-                                            (accountRewards?.rewards?.length ?? 0) > 0 &&
-                                            !claimSession.action.pendingTransaction && (
-                                                <Banner
-                                                    intent="warning"
-                                                    icon={WarningIcon}
-                                                    description={
-                                                        <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
-                                                    }
-                                                />
-                                            )}
+                                        <YieldClaimFeeWarning
+                                            accountRewards={accountRewards}
+                                            networkSymbol={account.symbol}
+                                            isClaimPending={
+                                                !!claimSession.action.pendingTransaction
+                                            }
+                                        />
 
                                         {claimSession.error && (
                                             <Banner
@@ -218,6 +224,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                             size="large"
                                             width="100%"
                                             isDisabled={
+                                                isDisabled ||
                                                 isRewardsLoading ||
                                                 !accountRewards?.rewards.length ||
                                                 isClaiming

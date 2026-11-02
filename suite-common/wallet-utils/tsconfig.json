@@ -4,9 +4,9 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../address" },
-        { "path": "../calldata" },
         { "path": "../fiat-services" },
         { "path": "../legacy-network-config" },
+        { "path": "../locale" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },

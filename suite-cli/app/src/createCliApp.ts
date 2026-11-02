@@ -1,29 +1,36 @@
-import type { DownloadCryptoIconsDep } from '@suite-common/icons/scripts';
+import type { LoggerDep } from '@trezor/logger';
 
-export type CliAppDeps = DownloadCryptoIconsDep;
+import type { CliCommand } from './CliCommand';
+
+export type CliAppDeps = LoggerDep & { commands: readonly CliCommand[] };
 
 export type CliApp = (args: readonly string[]) => Promise<number>;
 
 export type CliAppDep = { cliApp: CliApp };
 
-export const createCliApp =
-    (deps: CliAppDeps): CliApp =>
-    async args => {
-        switch (args[0]) {
-            case 'download-crypto-icons':
-                await deps.downloadCryptoIcons();
+export const createCliApp = (deps: CliAppDeps): CliApp => {
+    const commands = new Map(deps.commands.map(command => [command.name, command]));
 
-                return 0;
-            case undefined:
-            case '--help':
-            case 'help':
-                // eslint-disable-next-line no-console -- CLI help output.
-                console.log('Usage: yarn suite:cli download-crypto-icons');
+    return async args => {
+        const commandName = args[0];
 
-                return 0;
-            default:
-                console.error(`Unknown CLI command: ${args[0]}. Use --help to list commands.`);
+        if (commandName === undefined || commandName === '--help' || commandName === 'help') {
+            const commandList = [...commands.keys()].map(name => `  ${name}`).join('\n');
 
-                return 1;
+            deps.logger.log(`Usage: yarn suite:cli <command>\n\nCommands:\n${commandList}`);
+
+            return 0;
         }
+
+        const command = commands.get(commandName);
+        if (!command) {
+            deps.logger.error(`Unknown CLI command: ${commandName}. Use --help to list commands.`);
+
+            return 1;
+        }
+
+        await command.exec(args.slice(1));
+
+        return 0;
     };
+};

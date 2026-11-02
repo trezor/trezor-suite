@@ -8,7 +8,7 @@ import {
 import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
 import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
-import { useScrollDivider } from '@suite-native/atoms';
+import { useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { ScrollViewContext } from '@suite-native/scrollview';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -18,6 +18,7 @@ type ScreenContentProps = {
     children: ReactNode;
     isScrollable: boolean;
     hasHeader: boolean;
+    scrollIndicatorBottomInset: number;
     focusedInputBottomOffset?: number;
     isDynamicHeader?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
@@ -29,14 +30,16 @@ export const ScreenContentWrapper = ({
     children,
     isScrollable,
     hasHeader,
+    scrollIndicatorBottomInset,
     focusedInputBottomOffset,
     refreshControl,
     isDynamicHeader = false,
 }: ScreenContentProps) => {
     const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
     const { applyStyle } = useNativeStyles();
+    const { left, right } = useBannerAwareSafeAreaInsets();
 
-    const { scrollDivider, handleScroll } = useScrollDivider();
+    const { scrollDivider, handleScroll } = useScrollDivider({ left, right });
     const { handleDynamicHeaderScroll } = useDynamicHeader();
 
     const scrollHandler = (() => {
@@ -62,6 +65,8 @@ export const ScreenContentWrapper = ({
                 refreshControl={refreshControl}
                 keyboardShouldPersistTaps="handled"
                 contentInsetAdjustmentBehavior="never"
+                automaticallyAdjustsScrollIndicatorInsets={false}
+                scrollIndicatorInsets={{ left, right, bottom: scrollIndicatorBottomInset }}
                 contentContainerStyle={applyStyle(screenContentWrapperStyle)}
                 onScroll={scrollHandler}
                 testID="@screen/mainScrollView"

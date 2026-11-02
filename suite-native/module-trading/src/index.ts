@@ -1,4 +1,5 @@
 export * from './navigation/TradingStackNavigator';
+export * from './components/general/TradingRestrictedGuard';
 export { TradingHistoryDetailScreen } from './screens/TradingHistoryDetailScreen';
 export { TradingHistoryScreen } from './screens/TradingHistoryScreen';
 export * from './screens/TradingConfirmingScreen';

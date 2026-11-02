@@ -5,10 +5,10 @@ import { PROTO } from '@trezor/connect';
 import { useConvertFormValueToBaseUnit } from './useConvertFormValueToBaseUnit';
 
 describe('useConvertFormValueToBaseUnit', () => {
-    const renderUseConvertApiToAppAmount = async (bitcoinAmountUnit: PROTO.AmountUnit) => {
+    const renderUseConvertApiToAppAmount = (bitcoinAmountUnit: PROTO.AmountUnit) => {
         const preloadedState = { wallet: { settings: { bitcoinAmountUnit } } };
 
-        return await renderHookWithStoreProvider(() => useConvertFormValueToBaseUnit(), {
+        return renderHookWithStoreProvider(() => useConvertFormValueToBaseUnit(), {
             preloadedState,
         });
     };

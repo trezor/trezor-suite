@@ -24,8 +24,8 @@ jest.mock('@suite-common/trading', () => ({
 describe('useSellSelectQuote', () => {
     let store: Store<State>;
 
-    const renderUseSellSelectQuote = async () =>
-        await renderHookWithStoreProvider(
+    const renderUseSellSelectQuote = () =>
+        renderHookWithStoreProvider(
             () => {
                 const form = useSellForm();
 

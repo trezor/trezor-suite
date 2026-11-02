@@ -537,6 +537,9 @@ export const countries: CountryCatalogue = {
     ZW: { code: 'ZW', codeAlpha3: 'ZWE', flag: '🇿🇼', name: 'Zimbabwe' },
 };
 
+export const isKnownCountryCode = (code: string): code is CountryCode =>
+    Object.hasOwn(countries, code);
+
 export const usSubdivisions = [
     { code: 'AK', name: 'Alaska' },
     { code: 'AL', name: 'Alabama' },

@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type StakeRootState,
+    getTronWithdrawableBalance,
     selectAccountByKey,
-    selectUnstakingBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerInline } from '@suite-native/atoms';
@@ -13,19 +12,21 @@ import { Translation } from '@suite-native/intl';
 
 interface TronStakingWithdrawBannerProps {
     accountKey: AccountKey;
+    nowSeconds: number;
 }
 
-export const TronStakingWithdrawBanner = ({ accountKey }: TronStakingWithdrawBannerProps) => {
+export const TronStakingWithdrawBanner = ({
+    accountKey,
+    nowSeconds,
+}: TronStakingWithdrawBannerProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
 
-    const withdrawableBalance =
-        useSelector((state: StakeRootState) =>
-            selectUnstakingBalanceByAccountKey(state, accountKey),
-        ) ?? '0';
-
     if (account?.networkType !== 'tron') return null;
+
+    const withdrawableBalance = getTronWithdrawableBalance(account, nowSeconds);
+
     if (withdrawableBalance === '0') return null;
 
     return (

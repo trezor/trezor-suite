@@ -213,7 +213,9 @@ const verifyStellarToml = async (
 
     let parsed: StellarToml;
     try {
-        parsed = toml.parse(result.payload) as StellarToml;
+        // TOML integers are 64-bit, so without `bigint` a large supply field like `max_number`
+        // would fail the whole file even though only `code` and `issuer` are read.
+        parsed = toml.parse(result.payload, { bigint: true }) as StellarToml;
     } catch (error) {
         return err({
             type: 'NOT_VERIFIABLE',

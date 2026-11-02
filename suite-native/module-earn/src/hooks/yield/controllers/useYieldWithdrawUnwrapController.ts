@@ -4,6 +4,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    type ComposeYieldWrapErrorReason,
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
 } from '@suite-common/wallet-core';
@@ -69,6 +70,17 @@ export const useYieldWithdrawUnwrapController = () => {
         [flowType, reportWithdraw],
     );
 
+    const handleComposeError = useCallback(
+        (reason: ComposeYieldWrapErrorReason) =>
+            reportWithdraw({
+                action: 'continue',
+                type: 'error',
+                operation: flowType,
+                errorMessage: `unwrap-${reason}`,
+            }),
+        [flowType, reportWithdraw],
+    );
+
     const handleNavigateToReview = useCallback(() => {
         navigation.navigate(YieldStackRoutes.YieldWithdrawUnwrapReview, route.params);
     }, [navigation, route.params]);
@@ -84,6 +96,7 @@ export const useYieldWithdrawUnwrapController = () => {
         onNavigateToReview: handleNavigateToReview,
         onSkipAnalytics: handleSkipAnalytics,
         onSubmitAnalytics: handleSubmitAnalytics,
+        onComposeError: handleComposeError,
         step: 'unwrap',
         tokenSymbol: token?.symbol ?? '',
         vault,
@@ -223,8 +236,22 @@ export const useYieldWithdrawUnwrapController = () => {
             ? {
                   bottomSheetRef: simulation.simulationBottomSheetRef,
                   unsignedTransaction: simulation.preparedTx.unsignedTransaction,
-                  onConfirm: simulation.handleConfirmSimulation,
-                  onCancel: simulation.handleCancelSimulation,
+                  onConfirm: () => {
+                      reportWithdraw({
+                          action: 'continue',
+                          type: 'tx-simulation-modal',
+                          operation: flowType,
+                      });
+                      simulation.handleConfirmSimulation();
+                  },
+                  onCancel: () => {
+                      reportWithdraw({
+                          action: 'cancel',
+                          type: 'tx-simulation-modal',
+                          operation: flowType,
+                      });
+                      simulation.handleCancelSimulation();
+                  },
               }
             : null,
     };

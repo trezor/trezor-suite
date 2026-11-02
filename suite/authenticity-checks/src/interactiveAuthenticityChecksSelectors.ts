@@ -14,6 +14,21 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { SHOULD_ROUTER_APP_SKIP_INTERACTIVE_DEVICE_CHECKS } from './config';
 import type { AuthenticityChecksRootState } from './types';
 
+export const selectIsDeviceAuthenticityCheckSupportedAndEnabled = (
+    state: AuthenticityChecksRootState,
+    device: TrezorDevice | undefined,
+): boolean => {
+    if (!isDeviceAcquired(device)) return false; // Only for Typescript
+    const isDeviceAuthenticityCheckEnabled = selectIsDeviceAuthenticityCheckEnabled(state);
+    const isUnlockedBootloaderAllowed = selectIsUnlockedBootloaderAllowed(state);
+
+    return getIsDeviceAuthenticityCheckSupportedAndEnabled({
+        device,
+        isDeviceAuthenticityCheckEnabled,
+        isUnlockedBootloaderAllowed,
+    });
+};
+
 // TODO maybe extract to suite-common (setting selectors have to be refactored to params)
 /**
  * Select whether device is eligible to go through Device Authenticity Check (DAC):
@@ -29,19 +44,10 @@ export const selectShouldCheckDeviceAuthenticity = (
     state: AuthenticityChecksRootState,
     device: TrezorDevice | undefined,
 ): boolean => {
-    if (!isDeviceAcquired(device)) return false; // Only for Typescript
-    const isDeviceAuthenticityCheckEnabled = selectIsDeviceAuthenticityCheckEnabled(state);
-    const isUnlockedBootloaderAllowed = selectIsUnlockedBootloaderAllowed(state);
-    const isDeviceAuthenticityCheckSupportedAndEnabled =
-        getIsDeviceAuthenticityCheckSupportedAndEnabled({
-            device,
-            isDeviceAuthenticityCheckEnabled,
-            isUnlockedBootloaderAllowed,
-        });
+    const isEnabledAndSupported = selectIsDeviceAuthenticityCheckSupportedAndEnabled(state, device);
+    if (!isEnabledAndSupported) return false;
 
-    if (!isDeviceAuthenticityCheckSupportedAndEnabled) return false;
-
-    const persistedResult = selectDeviceAuthenticityByDeviceId(state, device.id);
+    const persistedResult = selectDeviceAuthenticityByDeviceId(state, device?.id);
     const isSuccessfulPersistedResult = persistedResult?.valid === true;
 
     return !isSuccessfulPersistedResult;

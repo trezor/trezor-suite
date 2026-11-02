@@ -1,4 +1,4 @@
-import { type BankAccount } from 'invity-api';
+import { type BankAccount, type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@trezor/redux-utils';
 
@@ -9,6 +9,7 @@ import {
 } from './handleSellTradeThunk';
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors';
 
 export type ConfirmSellTradeThunkProps = {
@@ -19,7 +20,7 @@ export type ConfirmSellTradeThunkProps = {
 export type ConfirmSellTradeThunkState = HandleSellTradeThunkState;
 
 export const confirmSellTradeThunk = createThunk<
-    void,
+    SellFiatTrade | undefined,
     ConfirmSellTradeThunkProps,
     { state: ConfirmSellTradeThunkState }
 >(
@@ -46,7 +47,28 @@ export const confirmSellTradeThunk = createThunk<
 
         if (!response) return;
 
-        dispatch(tradingSellActions.saveSelectedQuote(response));
+        const confirmedTrade: SellFiatTrade = {
+            bankAccount,
+            bankAccounts: selectedQuote.bankAccounts,
+            ...response,
+        };
+
+        if (confirmedTrade.orderId) {
+            dispatch(
+                tradingActions.saveTrade({
+                    tradeType: 'sell',
+                    data: confirmedTrade,
+                    date: new Date().toISOString(),
+                    key: confirmedTrade.orderId,
+                    sendAccountKey: account.key,
+                }),
+            );
+            dispatch(tradingSellActions.saveTransactionId(confirmedTrade.orderId));
+        }
+
+        dispatch(tradingSellActions.saveSelectedQuote(confirmedTrade));
         dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
+
+        return confirmedTrade;
     },
 );

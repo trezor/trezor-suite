@@ -13,8 +13,7 @@ const tradingCardSectionStyle = prepareNativeStyle<TradingCardSectionStyleProps>
         borderBottomWidth: 0,
         borderBottomColor: colors.surfaceBorderRaised,
         paddingHorizontal: spacings.sp20,
-        paddingTop: spacings.sp12,
-        paddingBottom: spacings.sp12,
+        paddingVertical: spacings.sp16,
         gap: spacings.sp8,
         extend: [
             {
@@ -52,7 +51,7 @@ export const TradingCardSection = ({
                     {titleAction}
                 </HStack>
             )}
-            <VStack>{children}</VStack>
+            <VStack spacing="sp4">{children}</VStack>
         </VStack>
     );
 };

@@ -5,7 +5,6 @@ import { AnimatedBox, Box, ScreenFooterGradient, VStack } from '@suite-native/at
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
     backgroundColor: utils.colors.surfaceFillPage,
 }));
@@ -22,19 +21,24 @@ type EarnScreenFooterProps = {
     children: ReactNode;
     estimatedRewards?: ReactNode;
     secondaryContent?: ReactNode;
+    noHorizontalPadding?: boolean;
 };
 
 export const EarnScreenFooter = ({
     children,
     estimatedRewards,
     secondaryContent,
+    noHorizontalPadding = false,
 }: EarnScreenFooterProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <AnimatedBox entering={SlideInDown}>
             <ScreenFooterGradient />
-            <Box style={applyStyle(screenFooterStyle)}>
+            <Box
+                paddingHorizontal={noHorizontalPadding ? undefined : 'sp16'}
+                style={applyStyle(screenFooterStyle)}
+            >
                 <VStack spacing="sp12">
                     <Box
                         style={estimatedRewards ? applyStyle(estimatedRewardsBoxStyle) : undefined}

@@ -28,6 +28,7 @@ export const TradingReceiveAccountsPickerScreen = () => {
     } = useAddCoinAccount();
 
     const data = useReceiveAccountsListData({ symbol });
+    const hasAccounts = data.length > 0;
 
     const flowType: AddCoinFlowType = 'trade';
 
@@ -40,10 +41,12 @@ export const TradingReceiveAccountsPickerScreen = () => {
     return (
         <Screen
             isScrollable={false}
+            noBottomPadding={hasAccounts}
+            hasBottomInset={!hasAccounts}
             header={
                 <DynamicScreenHeader
                     title={
-                        data.length > 0 ? (
+                        hasAccounts ? (
                             <Translation id="moduleTrading.accountScreen.titleStep1" />
                         ) : undefined
                     }

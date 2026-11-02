@@ -12,8 +12,9 @@ export type AccountTransactionsFetchStatusDetail =
           error: string;
       };
 
-export type AccountTransactionsFetchAllStatus = {
+export type AccountTransactionsHistoryStatus = {
     areAllTransactionsLoaded: boolean;
+    fetchedPages: { count: number; perPage: number };
 };
 
 export type TransactionsByAccount = {
@@ -25,7 +26,7 @@ export interface TransactionsState {
     phishing: { [key: AccountKey]: string[] };
     fetchStatusDetail: {
         [key: AccountKey]: AccountTransactionsFetchStatusDetail &
-            Partial<AccountTransactionsFetchAllStatus>;
+            Partial<AccountTransactionsHistoryStatus>;
     };
 }
 

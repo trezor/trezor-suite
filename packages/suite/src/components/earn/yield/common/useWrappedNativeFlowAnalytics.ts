@@ -6,6 +6,8 @@ import { type EvmPendingTxStatus, type WrappedNativeFlowType } from '@suite-comm
 import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
+
 // Wrap and unwrap share one attribute schema, so one payload type serves both events.
 type WrappedNativeFlowPayload = EventInstance<typeof events.yieldWrapEvent>['payload'];
 
@@ -28,6 +30,7 @@ export const useWrappedNativeFlowAnalytics = ({
     networkSymbol,
 }: UseWrappedNativeFlowAnalyticsParams) => {
     const { analytics } = useServices(injectDesktopAnalytics);
+    const deviceStatus = useEarnDeviceStatus();
     const hasReportedResolutionRef = useRef(false);
     const startRef = useRef<{ txid: string; startedAt: number } | null>(null);
 
@@ -43,8 +46,8 @@ export const useWrappedNativeFlowAnalytics = ({
     );
 
     const reportSubmit = useCallback(() => {
-        report({ type: 'submit', action: 'continue', networkSymbol });
-    }, [report, networkSymbol]);
+        report({ type: 'submit', action: 'continue', networkSymbol, deviceStatus });
+    }, [report, networkSymbol, deviceStatus]);
 
     // No `vaultId` — that is what separates these from the in-flow deposit-max / withdraw-max.
     const reportMaxClick = useCallback(() => {
@@ -66,7 +69,11 @@ export const useWrappedNativeFlowAnalytics = ({
     }, [txid]);
 
     useEffect(() => {
-        if (hasReportedResolutionRef.current || (status !== 'confirmed' && status !== 'failed')) {
+        if (
+            !txid ||
+            hasReportedResolutionRef.current ||
+            (status !== 'confirmed' && status !== 'failed')
+        ) {
             return;
         }
 
@@ -84,14 +91,18 @@ export const useWrappedNativeFlowAnalytics = ({
                       durationMs,
                   },
         );
-    }, [status, networkSymbol, report]);
+    }, [status, networkSymbol, report, txid]);
 
-    const latestRef = useCurrentRef({ status, networkSymbol });
+    const latestRef = useCurrentRef({ status, networkSymbol, txid });
 
     useEffect(
         () => () => {
             const snapshot = latestRef.current;
-            if (hasReportedResolutionRef.current || snapshot.status !== 'pending') {
+            if (
+                !snapshot.txid ||
+                hasReportedResolutionRef.current ||
+                snapshot.status !== 'pending'
+            ) {
                 return;
             }
 

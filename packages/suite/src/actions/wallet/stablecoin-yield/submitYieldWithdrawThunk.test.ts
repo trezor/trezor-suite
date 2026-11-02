@@ -7,6 +7,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWithdrawTransactionThunkState,
     type YieldFlowResolvedData,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -14,7 +15,11 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { asGetter } from '@trezor/dependency-injection';
 
-import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';
+import {
+    PUSH_TRANSACTION_FAILED_CAUSE,
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
+} from './signingHelpers';
 import { submitYieldWithdrawThunk } from './submitYieldWithdrawThunk';
 
 const mockComposeYieldWithdrawTransactionThunk = jest.fn();
@@ -22,7 +27,7 @@ const mockOpenDeferredModal = jest.fn();
 const mockSendYieldTransaction = jest.fn();
 
 const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid, fee: '31500000000' });
-const mockCancelledResult = { status: 'cancelled' as const };
+const mockCancelledResult = { status: 'cancelled' as const, stage: 'signing' as const };
 
 type SubmitYieldWithdrawThunkDeps = SendYieldTransactionDeps & { services: DesktopAnalyticsDep };
 type SubmitYieldWithdrawThunkState = ComposeYieldWithdrawTransactionThunkState &
@@ -95,6 +100,49 @@ const dispatchWithdraw = (
 };
 
 describe('submitYieldWithdrawThunk', () => {
+    it('reports an unexpected compose failure without exposing its message', async () => {
+        const report = jest.fn();
+        mockComposeYieldWithdrawTransactionThunk.mockImplementation(() => () => ({
+            unwrap: () => Promise.reject(new Error('private-compose-details')),
+        }));
+
+        await dispatchWithdraw(report);
+
+        expect(report).toHaveBeenCalledWith({
+            type: 'yield/withdraw',
+            payload: expect.objectContaining({
+                type: 'error',
+                errorMessage: 'submit-failed',
+            }),
+        });
+        expect(JSON.stringify(report.mock.calls)).not.toContain('private-compose-details');
+    });
+
+    it.each(['withdraw', 'redeem'] as const)(
+        'preserves the compose reason for %s',
+        async flowType => {
+            const report = jest.fn();
+            mockComposeYieldWithdrawTransactionThunk.mockImplementation(() => () => ({
+                unwrap: () => Promise.resolve({ type: 'error', reason: 'missing-vault-address' }),
+            }));
+
+            await dispatchWithdraw(report, { flowType });
+
+            expect(report).toHaveBeenCalledWith({
+                type: 'yield/withdraw',
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    operation: flowType,
+                    networkSymbol: 'eth',
+                    vaultId: 'vault-1',
+                    errorMessage: 'missing-vault-address',
+                },
+            });
+            expect(mockOpenDeferredModal).not.toHaveBeenCalled();
+        },
+    );
+
     beforeAll(() => {
         // The thunk logs every caught failure; the expected ones would clutter the test output.
         jest.spyOn(console, 'error').mockImplementation();
@@ -110,9 +158,33 @@ describe('submitYieldWithdrawThunk', () => {
                 }),
         }));
         mockOpenDeferredModal.mockImplementation(
-            () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'normal',
+                }),
         );
         mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xwithdraw'));
+    });
+
+    it('passes the selected fee level from simulation to signing', async () => {
+        mockOpenDeferredModal.mockImplementation(
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'low',
+                }),
+        );
+
+        await dispatchWithdraw(jest.fn());
+
+        expect(mockSendYieldTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({ selectedFee: null, selectedFeeLevel: 'low' }),
+        );
     });
 
     it('does not report an error when the user cancels the signing', async () => {
@@ -169,6 +241,20 @@ describe('submitYieldWithdrawThunk', () => {
             .filter(notificationsActions.addToast.match)
             .find(action => action.payload.type === 'tx-yield-withdraw');
         expect(toast?.payload).toMatchObject({ txid: '0xwithdraw' });
+        expect(
+            store.getActions().filter(transactionsActions.transactionBroadcastStatus.match),
+        ).toEqual([
+            expect.objectContaining({
+                payload: {
+                    account,
+                    flow: 'yield-withdraw',
+                    status: 'success',
+                    txid: '0xwithdraw',
+                    isCancellation: false,
+                    isRbf: false,
+                },
+            }),
+        ]);
     });
 
     it('persists the asset output converted at submit for a redeem', async () => {
@@ -197,6 +283,39 @@ describe('submitYieldWithdrawThunk', () => {
             tx: { type: 'redeem', amount: '100' },
             receiptAmount: '105',
         });
+        expect(
+            store.getActions().filter(transactionsActions.transactionBroadcastStatus.match),
+        ).toEqual([
+            expect.objectContaining({
+                payload: {
+                    account,
+                    flow: 'yield-redeem',
+                    status: 'success',
+                    txid: '0xwithdraw',
+                    isCancellation: false,
+                    isRbf: false,
+                },
+            }),
+        ]);
+        const toast = store
+            .getActions()
+            .filter(notificationsActions.addToast.match)
+            .find(action => action.payload.type === 'tx-yield-withdraw');
+        expect(toast?.payload).toMatchObject({ txid: '0xwithdraw' });
+    });
+
+    it.each(['withdraw', 'redeem'] as const)('keeps %s when broadcast fails', async flowType => {
+        mockSendYieldTransaction.mockRejectedValue(
+            new Error('private backend error', { cause: PUSH_TRANSACTION_FAILED_CAUSE }),
+        );
+        const store = await dispatchWithdraw(jest.fn(), { flowType });
+        expect(
+            store.getActions().filter(transactionsActions.transactionBroadcastStatus.match),
+        ).toEqual([
+            expect.objectContaining({
+                payload: { account, flow: `yield-${flowType}`, status: 'error' },
+            }),
+        ]);
     });
 
     it('still reports submit-failed when the signing throws', async () => {
@@ -217,5 +336,24 @@ describe('submitYieldWithdrawThunk', () => {
         expect(
             store.getActions().find(action => action.type === yieldActions.setError.type)?.payload,
         ).toMatchObject({ error: 'TR_EARN_YIELD_ERROR_GENERIC' });
+    });
+
+    it.each(['signing', 'review'] as const)('reports a cancellation at %s', async stage => {
+        const report = jest.fn();
+        mockSendYieldTransaction.mockResolvedValue({ status: 'cancelled', stage });
+        mockOpenDeferredModal.mockImplementation(
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'normal',
+                }),
+        );
+        await dispatchWithdraw(report);
+        expect(report).toHaveBeenCalledWith({
+            type: 'transaction/cancel',
+            payload: { txType: 'yield', networkSymbol: 'eth', stage },
+        });
     });
 });

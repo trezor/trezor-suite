@@ -21,7 +21,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { isPackageOnNpmRegistry } from './npm-registry.js';
-import { getTrezorPackageDir } from './trezor-package-path.js';
+import { getTrezorPackageDir } from './trezor-package-path.ts';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 

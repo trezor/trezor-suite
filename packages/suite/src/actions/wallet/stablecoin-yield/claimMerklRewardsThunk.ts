@@ -7,7 +7,6 @@ import {
     buildClaimCalldata,
     buildClaimTransactionReview,
     buildUnsignedClaimTransaction,
-    isUserCancelledSignErrorCode,
 } from '@suite-common/earn-stablecoin';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
@@ -22,10 +21,12 @@ import {
     type YieldEstimatedFeeLevel,
     estimateYieldFeeLevel,
     getYieldClaimRewardsSnapshot,
+    isEarnSigningCancelled,
     notifyEarnTransactionBroadcastThunk,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
     synchronizeSentTransactionThunk,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
@@ -209,6 +210,7 @@ export const claimMerklRewardsThunk = createThunk<
                 buildClaimTransactionReview({
                     unsignedTransaction: unsignedClaimTx,
                     selectedFee: userAcceptedTxSimulation.selectedFee,
+                    selectedFeeLevel: userAcceptedTxSimulation.selectedFeeLevel,
                     rewards,
                 });
 
@@ -261,7 +263,16 @@ export const claimMerklRewardsThunk = createThunk<
                     dispatch(closeModal());
 
                     const { code } = signingResponse.error;
-                    if (isUserCancelledSignErrorCode(code)) {
+                    if (isEarnSigningCancelled(signingResponse.error)) {
+                        extra.services.analytics.report({
+                            type: events.transactionCancelEvent.name,
+                            payload: {
+                                txType: 'yield',
+                                networkSymbol: account.symbol,
+                                stage: 'signing',
+                            },
+                        });
+
                         return null;
                     }
 
@@ -282,6 +293,15 @@ export const claimMerklRewardsThunk = createThunk<
                 );
 
                 if (!isPushConfirmed) {
+                    extra.services.analytics.report({
+                        type: events.transactionCancelEvent.name,
+                        payload: {
+                            txType: 'yield',
+                            networkSymbol: account.symbol,
+                            stage: 'review',
+                        },
+                    });
+
                     return null;
                 }
 
@@ -302,6 +322,13 @@ export const claimMerklRewardsThunk = createThunk<
                 dispatch(closeModal());
 
                 if (!pushResponse.success) {
+                    dispatch(
+                        transactionsActions.transactionBroadcastStatus({
+                            account,
+                            flow: 'merkl-claim',
+                            status: 'error',
+                        }),
+                    );
                     throw new Error(pushResponse.error.message, {
                         cause: PUSH_TRANSACTION_FAILED_CAUSE,
                     });
@@ -322,7 +349,7 @@ export const claimMerklRewardsThunk = createThunk<
                     notifyEarnTransactionBroadcastThunk({
                         account,
                         txid: pushResponse.payload.txid,
-                        flow: 'yield-claim',
+                        flow: 'merkl-claim',
                     }),
                 );
 

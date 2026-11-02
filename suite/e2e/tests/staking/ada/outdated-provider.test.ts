@@ -118,6 +118,17 @@ test.describe(
                         stakingSection.newProviderCardUpdateProviderButton,
                     ).toHaveTranslation('TR_EARN_UPDATE_PROVIDER');
                     await expect(stakingSection.startStakingButton).toBeHidden();
+                    await expect(stakingSection.newProviderCardLearnMoreLink).toHaveTranslation(
+                        'TR_LEARN_MORE',
+                    );
+                    await expect(stakingSection.newProviderCardLearnMoreLink).toHaveAttribute(
+                        'href',
+                        'https://trezor.io/support/troubleshooting/coins-tokens/fix-cardano-staking-that-s-no-longer-earning-rewards?utm_medium=web',
+                    );
+                    await expect(stakingSection.newProviderCardLearnMoreLink).toHaveAttribute(
+                        'target',
+                        '_blank',
+                    );
                 });
 
                 await test.step('Card button opens update provider modal', async () => {

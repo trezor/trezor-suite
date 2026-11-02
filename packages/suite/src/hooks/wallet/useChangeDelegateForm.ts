@@ -92,6 +92,7 @@ export const useChangeDelegateForm = ({
         onFeeLevelChange,
     } = useStakeCompose({
         ...methods,
+        formState,
         state,
     });
 
@@ -107,6 +108,7 @@ export const useChangeDelegateForm = ({
         onChange: onFeeLevelChange,
         composeRequest,
         ...methods,
+        formState,
     });
     const selectedFee = _selectedFee ?? 'normal';
 
@@ -119,14 +121,21 @@ export const useChangeDelegateForm = ({
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransactionThunk(values, composedTx));
+            const result = await dispatch(
+                signTransactionThunk({
+                    accountKey: account.key,
+                    formValues: values,
+                    transactionInfo: composedTx,
+                }),
+            );
 
             if (result?.success) {
                 clearForm();
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
 
     return {
         ...methods,

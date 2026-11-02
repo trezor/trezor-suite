@@ -2,7 +2,7 @@ import { type NavigatorScreenParams } from '@react-navigation/native';
 import { type RequireAllOrNone } from 'type-fest';
 
 import { type BackupType } from '@suite-common/suite-types';
-import { type TradingType } from '@suite-common/trading';
+import { type TradingAssetOption, type TradingType } from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -76,6 +76,7 @@ type DeviceCompromisedModalFailedCheck =
     | 'device-invariability'
     | 'device-authenticity'
     | 'entropy'
+    | 'entropy-discovery'
     | 'firmware-authenticity';
 
 type AccountDetailParams = {
@@ -127,6 +128,13 @@ export type YieldClaimParams = {
 
 export type WrappedNativeTokenPendingTxParams = {
     amount: string;
+    fee?: string;
+    submittedAt: number;
+    txid: string;
+};
+
+export type StakingPendingTxParams = {
+    amountInBaseUnits: string;
     fee?: string;
     submittedAt: number;
     txid: string;
@@ -231,7 +239,12 @@ export type SettingsStackParamList = {
 };
 
 export type ReceiveStackParamList = {
-    [ReceiveStackRoutes.ReceiveAccounts]: undefined;
+    [ReceiveStackRoutes.ReceiveCrossroads]: undefined;
+    [ReceiveStackRoutes.ReceiveDiscovery]: { asset: TradingAssetOption };
+    [ReceiveStackRoutes.ReceiveAccounts]: {
+        asset: TradingAssetOption;
+        closeActionType: CloseActionType;
+    };
     [ReceiveStackRoutes.ReceiveAddress]: AccountDetailParams;
     [ReceiveStackRoutes.ReceiveAddressVerification]: {
         accountKey: AccountKey;
@@ -540,6 +553,7 @@ export type RootStackParamList = {
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;
     [RootStackRoutes.MessageSystemExperiments]: undefined;
+    [RootStackRoutes.AppsEmbedding]: undefined;
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
     [RootStackRoutes.YieldVaultDetail]: { accountKey: AccountKey; tokenContract: TokenAddress };
     [RootStackRoutes.HowStakeWorksScreen]: {
@@ -551,6 +565,7 @@ export type RootStackParamList = {
     [RootStackRoutes.WrappedNativeTokenNavigator]: NavigatorScreenParams<WrappedNativeTokenStackParamList>;
     [RootStackRoutes.StakingForm]: {
         accountKey: AccountKey;
+        pendingTransaction?: StakingPendingTxParams;
     };
     [RootStackRoutes.EarnConsents]: {
         accountKey: AccountKey;
@@ -567,10 +582,14 @@ export type RootStackParamList = {
         stakeType: 'stake' | 'unstake' | 'claim';
         amountInBaseUnits: string;
     };
-    [RootStackRoutes.UnstakeFlow]: { accountKey: AccountKey };
+    [RootStackRoutes.UnstakeFlow]: {
+        accountKey: AccountKey;
+        pendingTransaction?: StakingPendingTxParams;
+    };
     [RootStackRoutes.StakingClaimReview]: {
         accountKey: AccountKey;
         symbol: NetworkSymbol;
+        pendingTransaction?: StakingPendingTxParams;
     };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;

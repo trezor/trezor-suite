@@ -40,10 +40,10 @@ const messageSystemMockFile = path.join(
 /**
  * A browserslist target specific to Suite Desktop, specifying  that Chromium version which is included in the current
  * version of Electron.
- * Note that this *has* to be a separate file. Specifying it via string (e.g.`browserslist:Chrome >= 150`) should be
+ * Note that this *has* to be a separate file. Specifying it via string (e.g.`browserslist:Chrome >= 152`) should be
  * possible, but due to a bug in Webpack, it gets overriden by any browserslist file.
  *
- * Electron 43 runs on Chromium 150 https://www.electronjs.org/blog/electron-43-0
+ * Electron 44 runs on Chromium 152 https://www.electronjs.org/blog/electron-44-0
  */
 const browserslistConfigPath = path.resolve(rendererDir, 'browserslist');
 

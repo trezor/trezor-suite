@@ -1,4 +1,4 @@
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const signTransactionDoge: TestCase = {
     method: 'signTransaction',
@@ -34,7 +34,7 @@ const signTransactionDoge: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['0a4cb7']),
+                refTxs: getRefTxs(['0a4cb7']),
             },
             result: {
                 signatures: [

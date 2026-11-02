@@ -33,7 +33,7 @@ const VALID_PAYLOAD = {
     coin: 'sol',
     serializedTx: '00aa',
     toAddress: 'recipient-base-address',
-    token: {
+    tokenTransfer: {
         mint: 'payload-token-mint',
         program: 'spl-token',
         decimals: 6,
@@ -43,6 +43,8 @@ const VALID_PAYLOAD = {
                 balance: '1',
             },
         ],
+        recipientAccountOwner: null,
+        recipientTokenAccounts: [],
     },
 };
 
@@ -52,7 +54,7 @@ const mockDecompiledInstructions = (instructions: unknown[]) =>
     } as any);
 
 const runMethod = (payload: Record<string, unknown> = VALID_PAYLOAD) =>
-    new SolanaComposeTransaction({ payload } as any).run({ sendCoreMessage: undefined } as any);
+    new SolanaComposeTransaction({ payload } as any).run();
 
 describe('solanaComposeTransaction', () => {
     beforeEach(() => {
@@ -111,7 +113,7 @@ describe('solanaComposeTransaction', () => {
     });
 
     it('returns a provided native serializedTx as is without decompiling it', async () => {
-        expect(await runMethod({ ...VALID_PAYLOAD, token: undefined })).toEqual({
+        expect(await runMethod({ ...VALID_PAYLOAD, tokenTransfer: undefined })).toEqual({
             serializedTx: VALID_PAYLOAD.serializedTx,
             additionalInfo: { tokenAccountInfo: undefined },
         });

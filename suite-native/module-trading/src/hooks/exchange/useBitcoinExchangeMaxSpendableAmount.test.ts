@@ -24,13 +24,13 @@ const BTC_SWAP_COMPOSE_TEMPLATE: BtcSwapComposeTemplate = {
 };
 
 describe('useBitcoinExchangeMaxSpendableAmount', () => {
-    const renderUseBitcoinExchangeMaxSpendableAmount = async (
+    const renderUseBitcoinExchangeMaxSpendableAmount = (
         maxSpendableAmount: string | undefined,
         tradingAccountKey: AccountKey,
     ) => {
         const tradingState = getInitializedTradingState('exchange');
 
-        return await renderHookWithTradingProvider(
+        return renderHookWithTradingProvider(
             () => useBitcoinExchangeMaxSpendableAmount(maxSpendableAmount),
             {
                 tradeType: 'exchange',

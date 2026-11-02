@@ -11,6 +11,7 @@ import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
     isYieldWithdrawFeeError,
     notifyEarnTransactionBroadcastThunk,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { createThunk } from '@trezor/redux-utils';
@@ -20,6 +21,7 @@ import {
     type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
+    isYieldPushError,
     sendYieldTransaction,
 } from './signingHelpers';
 
@@ -73,7 +75,7 @@ export const submitYieldWithdrawThunk = createThunk<
             if (composeResult.type === 'error') {
                 const isFeeError = isYieldWithdrawFeeError(composeResult.reason);
 
-                reportSubmitError(isFeeError ? 'fee-estimation-failed' : 'submit-failed');
+                reportSubmitError(composeResult.reason);
                 dispatch(
                     yieldActions.setError({
                         flowType,
@@ -119,7 +121,7 @@ export const submitYieldWithdrawThunk = createThunk<
                 return;
             }
 
-            const { selectedFee } = userAcceptedTxSimulation;
+            const { selectedFee, selectedFeeLevel } = userAcceptedTxSimulation;
             const reviewToken = flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
             const result = await sendYieldTransaction({
@@ -132,12 +134,22 @@ export const submitYieldWithdrawThunk = createThunk<
                 dispatch,
                 getState,
                 selectedFee,
+                selectedFeeLevel,
             });
 
             userAcceptedTxSimulation.resolve();
 
             // A deliberate user cancel — not reported as a failure.
             if (result.status === 'cancelled') {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: account.symbol,
+                        stage: result.stage,
+                    },
+                });
+
                 return;
             }
 
@@ -145,7 +157,7 @@ export const submitYieldWithdrawThunk = createThunk<
                 notifyEarnTransactionBroadcastThunk({
                     account,
                     txid: result.txid,
-                    flow: 'yield-withdraw',
+                    flow: `yield-${flowType}`,
                 }),
             );
 
@@ -175,6 +187,15 @@ export const submitYieldWithdrawThunk = createThunk<
                 }),
             );
         } catch (error) {
+            if (isYieldPushError(error)) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account: flowData.account,
+                        flow: `yield-${flowType}`,
+                        status: 'error',
+                    }),
+                );
+            }
             console.error(error);
             reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(

@@ -9,7 +9,6 @@ export * from './__fixtures__/exchangeQuotes';
 export * from './__fixtures__/fiat';
 export * from './__fixtures__/platforms';
 export * from './__fixtures__/precomposedTransaction';
-export * from './__fixtures__/residenceCheckState';
 export * from './__fixtures__/sellProviders';
 export * from './__fixtures__/sellQuotes';
 export * from './__fixtures__/tradeableAssets';

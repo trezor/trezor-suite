@@ -2,23 +2,25 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
+export type TradeNavigateEventFrom =
+    | 'sidebar'
+    | 'otc-banner'
+    | 'dashboard/header'
+    | 'dashboard/assets'
+    | 'dashboard/empty-wallet'
+    | 'dashboard/staking-dashboard'
+    | 'asset/header'
+    | 'earn-dashboard'
+    | 'account/header'
+    | 'account/tokens'
+    | 'account/tradebox'
+    | 'account/empty'
+    | 'buy/sell';
+
 type Attributes = {
     action: AttributeDef<'navigate' | 'cancel'>;
     type: AttributeDef<'exchange' | 'buy' | 'sell' | 'buy/sell' | 'concierge'>;
-    from: AttributeDef<
-        | 'sidebar'
-        | 'otc-banner'
-        | 'dashboard/header'
-        | 'dashboard/assets'
-        | 'dashboard/empty-wallet'
-        | 'dashboard/staking-dashboard'
-        | 'earn-dashboard'
-        | 'account/header'
-        | 'account/tokens'
-        | 'account/tradebox'
-        | 'account/empty'
-        | 'buy/sell'
-    >;
+    from: AttributeDef<TradeNavigateEventFrom>;
     networkSymbol?: AttributeDef<string>;
     contractAddress?: AttributeDef<string>;
 };
@@ -47,6 +49,7 @@ export const tradeNavigateEvent: EventDef<Attributes, EventType.TradeNavigate> =
                 { version: '26.5.2', notes: 'added `earn-dashboard` value' },
                 { version: '26.7.0', notes: 'added `sidebar` value' },
                 { version: '26.7.0', notes: 'added `otc-banner` value' },
+                { version: '26.11.0', notes: 'added `asset/header` value' },
             ],
             description:
                 'Location where the user initiated the trading action (e.g., `dashboard/header`, `account/tradebox`, `dashboard/assets`)',

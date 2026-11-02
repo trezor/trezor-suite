@@ -1,9 +1,8 @@
 import { A, pipe } from '@mobily/ts-belt';
 
+import { LANGUAGES, type Locale } from '@suite-common/locale';
 import {
     type BackupType,
-    LANGUAGES,
-    type Locale,
     type TrezorDevice,
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
@@ -160,9 +159,14 @@ export const selectSupportedDeviceLanguages = createMemoizedSelector(
     },
 );
 
+export const selectDeviceButtonRequestsByPath = (state: DeviceRootState) =>
+    state.device.buttonRequestsByPath;
+
+// Only the selected device's requests are shown; requests of other devices stay stored.
 export const selectDeviceButtonRequests = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => device?.buttonRequests ?? [],
+    [selectSelectedDevice, selectDeviceButtonRequestsByPath],
+    (device, buttonRequestsByPath) =>
+        returnStableArrayIfEmpty(device?.path ? buttonRequestsByPath[device.path] : undefined),
 );
 
 export const selectDeviceButtonRequestsCodes = createMemoizedSelector(
@@ -305,6 +309,14 @@ export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector
     [
         (_state, deviceId: TrezorDevice['id']) => deviceId,
         state => state.device.dismissedSecurityChecks?.firmwareAuthenticity,
+    ],
+    (deviceId, dismissedChecks) => !!(deviceId && dismissedChecks?.includes(deviceId)),
+);
+
+export const selectIsDiscoveryEntropyCheckDismissed = createMemoizedSelector(
+    [
+        (_state, deviceId: TrezorDevice['id']) => deviceId,
+        state => state.device.dismissedSecurityChecks?.discoveryEntropy,
     ],
     (deviceId, dismissedChecks) => !!(deviceId && dismissedChecks?.includes(deviceId)),
 );

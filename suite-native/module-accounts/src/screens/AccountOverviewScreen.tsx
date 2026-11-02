@@ -6,18 +6,19 @@ import { type NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
     type AccountsRootState,
     type TokensRootState,
-    selectAccountByKey,
     selectAccountDefiTokensCount,
     selectAccountManuallyHiddenTokensCount,
+    selectAccountNetworkType,
 } from '@suite-common/wallet-core';
-import { isAccountFailed } from '@suite-common/wallet-utils';
 import {
     AccountDiscoveryFailedBanner,
     type NativeAccountsRootState,
     selectAccountListSectionsWithZeroBalanceGroup,
+    selectAreTokensSupportedByAccount,
+    selectIsAccountDiscoveryFailed,
     useResolvedAccountKey,
 } from '@suite-native/accounts';
-import { VStack } from '@suite-native/atoms';
+import { Box, VStack } from '@suite-native/atoms';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 
 import { AccountEarnPromoBanner } from '../components/AccountOverview/AccountEarnPromoBanner';
@@ -61,8 +62,8 @@ export const AccountOverviewScreen = ({
             setParams: navigation.setParams,
         }) ?? routeAccountKey;
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const networkType = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkType(state, accountKey),
     );
     const sections = useSelector((state: NativeAccountsRootState) =>
         selectAccountListSectionsWithZeroBalanceGroup(state, accountKey),
@@ -73,18 +74,27 @@ export const AccountOverviewScreen = ({
     const manuallyHiddenTokens = useSelector((state: TokensRootState) =>
         selectAccountManuallyHiddenTokensCount(state, accountKey),
     );
+    const isFailed = useSelector((state: NativeAccountsRootState) =>
+        selectIsAccountDiscoveryFailed(state, accountKey),
+    );
+    const areTokensSupported = useSelector((state: NativeAccountsRootState) =>
+        selectAreTokensSupportedByAccount(state, accountKey),
+    );
 
     const tokenCount = sections.filter(item => item.type === 'token').length;
-    const isFailed = !!account && isAccountFailed(account);
 
     return (
         <Screen
             header={<AccountOverviewScreenHeader accountKey={accountKey} flowType={flowType} />}
             isScrollable={false}
             noHorizontalPadding
+            noBottomPadding
+            hasBottomInset={false}
         >
             {isFailed ? (
-                <AccountDiscoveryFailedBanner accountKey={accountKey} />
+                <Box paddingHorizontal="sp16">
+                    <AccountDiscoveryFailedBanner accountKey={accountKey} />
+                </Box>
             ) : (
                 <AccountOverviewTabContent
                     accountKey={accountKey}
@@ -92,16 +102,18 @@ export const AccountOverviewScreen = ({
                     flowType={flowType}
                     ListHeaderComponent={
                         <VStack spacing="sp16" marginBottom="sp16">
-                            <AccountEarnPromoBanner account={account} />
-                            <AccountOverviewTabBar
-                                activeTab={activeTab}
-                                flowType={flowType}
-                                networkType={account?.networkType}
-                                tokenCount={tokenCount}
-                                defiTokenCount={defiTokenCount}
-                                hiddenTokenCount={manuallyHiddenTokens}
-                                onTabChange={setActiveTab}
-                            />
+                            <AccountEarnPromoBanner accountKey={accountKey} />
+                            {areTokensSupported && (
+                                <AccountOverviewTabBar
+                                    activeTab={activeTab}
+                                    flowType={flowType}
+                                    networkType={networkType ?? undefined}
+                                    tokenCount={tokenCount}
+                                    defiTokenCount={defiTokenCount}
+                                    hiddenTokenCount={manuallyHiddenTokens}
+                                    onTabChange={setActiveTab}
+                                />
+                            )}
                         </VStack>
                     }
                 />

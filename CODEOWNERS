@@ -1,5 +1,7 @@
 /.github/workflows @vdovhanych
 
+/docs/adr/ @trezor/suite
+
 /docker @vdovhanych @mroz22
 
 /scripts @vdovhanych

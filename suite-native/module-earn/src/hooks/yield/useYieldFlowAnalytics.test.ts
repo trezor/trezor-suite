@@ -1,6 +1,7 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useYieldFlowAnalytics } from './useYieldFlowAnalytics';
@@ -13,6 +14,7 @@ const renderFlowAnalytics = async (
         networkSymbol: ethSymbol,
         vaultId: VAULT_ID,
     },
+    isDeviceConnected = true,
 ) => {
     const services: NativeAnalyticsDep = {
         analytics: mockNativeAnalytics(jest.fn()),
@@ -21,12 +23,35 @@ const renderFlowAnalytics = async (
     const view = await renderHookWithStoreProvider(useYieldFlowAnalytics, {
         initialProps: context,
         services,
+        preloadedState: {
+            deviceAuthorization: deviceAuthorizationInitialState,
+            device: { selectedDevice: { connected: isDeviceConnected } },
+        },
     });
 
     return { ...view, analytics: services.analytics };
 };
 
 describe('useYieldFlowAnalytics', () => {
+    it.each([true, false])(
+        'reports the connection state at submit (connected=%s)',
+        async connected => {
+            const { result, analytics } = await renderFlowAnalytics(undefined, connected);
+
+            await act(() => {
+                result.current.reportDeposit({ action: 'continue', type: 'approve' });
+                result.current.reportWithdraw({ action: 'continue', type: 'withdraw' });
+            });
+
+            expect(analytics.report).toHaveBeenCalledTimes(2);
+            for (const [event] of jest.mocked(analytics.report).mock.calls) {
+                expect(event).toMatchObject({
+                    payload: { deviceStatus: connected ? 'connected' : 'disconnected' },
+                });
+            }
+        },
+    );
+
     it('reports an interaction with the bound flow context', async () => {
         const { result, analytics } = await renderFlowAnalytics();
 
@@ -59,6 +84,7 @@ describe('useYieldFlowAnalytics', () => {
                 wrappedNative: true,
                 networkSymbol: ethSymbol,
                 vaultId: VAULT_ID,
+                deviceStatus: 'connected',
             },
         });
     });

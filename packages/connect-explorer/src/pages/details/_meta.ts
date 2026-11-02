@@ -1,0 +1,8 @@
+export default {
+    commonParams: 'Common parameters',
+    coins: 'Supported coins',
+    events: 'Events',
+    path: 'Path',
+    permissions: 'Permissions',
+    protobuf: 'Protobuf schema',
+};

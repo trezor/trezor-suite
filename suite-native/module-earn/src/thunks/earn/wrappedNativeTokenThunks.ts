@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import {
@@ -10,24 +11,28 @@ import {
     type WalletSettingsRootState,
     type WrappedNativeFlowType,
     type YieldFlowDisplayToken,
+    isEarnSigningCancelled,
     isWrappedNativeFlowSupported,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
     synchronizeSentTransactionThunk,
     trackWrappedNativeTokenThunk,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { createThunk } from '@trezor/redux-utils';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
 } from '../../utils/earn/deviceTransactionUtils';
+import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
 import { getPushErrorType } from '../yield/yieldTransactionThunks';
 
 const WRAPPED_NATIVE_TOKEN_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/wrapped-native-token`;
@@ -72,13 +77,22 @@ export type SignWrappedNativeTokenThunkState = DeviceRootState & WalletSettingsR
  * carried in the payload and the signed transaction is returned to the caller instead of being
  * stored in the yield session.
  */
+type SignWrappedNativeTokenThunkDeps = WithServices<NativeAnalyticsDep>;
+
 export const signWrappedNativeTokenThunk = createThunk<
     SignedWrappedNativeTokenTransaction,
     SignWrappedNativeTokenPayload,
-    { rejectValue: WrappedNativeTokenSignError; state: SignWrappedNativeTokenThunkState }
+    {
+        rejectValue: WrappedNativeTokenSignError;
+        state: SignWrappedNativeTokenThunkState;
+        extra: SignWrappedNativeTokenThunkDeps;
+    }
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/sign`,
-    async ({ account, token, amount, unsignedTransaction }, { getState, rejectWithValue }) => {
+    async (
+        { account, token, amount, unsignedTransaction },
+        { getState, rejectWithValue, extra },
+    ) => {
         const device = selectSelectedDevice(getState());
 
         if (!device || account.networkType !== 'ethereum') {
@@ -126,6 +140,13 @@ export const signWrappedNativeTokenThunk = createThunk<
         });
 
         if (!signingResponse.success) {
+            if (isEarnSigningCancelled(signingResponse.error)) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: { txType: 'yield', networkSymbol: account.symbol, stage: 'signing' },
+                });
+            }
+
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 errorCode: signingResponse.error.code,
@@ -145,7 +166,8 @@ export type PushWrappedNativeTokenThunkState = MevProtectionRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
 
-export type PushWrappedNativeTokenThunkDeps = SynchronizeSentTransactionThunkDeps;
+export type PushWrappedNativeTokenThunkDeps = SynchronizeSentTransactionThunkDeps &
+    WithServices<NativeAnalyticsDep>;
 
 export const pushWrappedNativeTokenThunk = createThunk<
     { txid: string },
@@ -157,7 +179,18 @@ export const pushWrappedNativeTokenThunk = createThunk<
     }
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/push`,
-    async ({ account, flowType, signedTransaction }, { dispatch, getState, rejectWithValue }) => {
+    async (
+        { account, flowType, signedTransaction },
+        { dispatch, getState, rejectWithValue, extra },
+    ) => {
+        reportTransactionCreated({
+            analytics: extra.services.analytics,
+            symbol: account.symbol,
+            precomposedTransaction: signedTransaction.precomposedTransaction,
+            formState: signedTransaction.formState,
+            txType: 'yield',
+        });
+
         const pushResponse = await pushYieldTransaction({
             tx: signedTransaction.serializedTx,
             account,
@@ -165,6 +198,16 @@ export const pushWrappedNativeTokenThunk = createThunk<
                 selectIsMevProtectionEnabled(getState()) &&
                 selectIsMevProtectionFeatureEnabled(getState()),
         });
+
+        dispatch(
+            transactionsActions.transactionBroadcastStatus({
+                account,
+                flow: flowType,
+                ...(pushResponse.success
+                    ? ({ status: 'success', txid: pushResponse.payload.txid } as const)
+                    : ({ status: 'error' } as const)),
+            }),
+        );
 
         if (!pushResponse.success) {
             return rejectWithValue({

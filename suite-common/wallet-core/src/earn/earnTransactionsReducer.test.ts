@@ -10,6 +10,7 @@ import {
 } from './earnTransactionsReducer';
 import { mockEarnTransactionsState, mockTrackedEarnTransaction } from '../../mocks';
 import { accountsActions } from '../accounts/accountsActions';
+import { transactionsActions } from '../transactions/transactionsActions';
 
 const account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),
@@ -46,7 +47,12 @@ describe('earnTransactionsReducer', () => {
     it('tracks a broadcast earn transaction under its account', () => {
         const state = earnTransactionsReducer(
             {},
-            earnTransactionsActions.trackEarnTransaction(stakeTx1),
+            transactionsActions.transactionBroadcastStatus({
+                account,
+                txid: stakeTx1.txid,
+                flow: stakeTx1.flow,
+                status: 'success',
+            }),
         );
 
         expect(selectTrackedEarnTransaction(toRootState(state), account.key, 'tx1')).toEqual(
@@ -63,7 +69,12 @@ describe('earnTransactionsReducer', () => {
     it('replaces the record when the same transaction is tracked again', () => {
         const state = earnTransactionsReducer(
             mockEarnTransactionsState([stakeTx1]),
-            earnTransactionsActions.trackEarnTransaction({ ...stakeTx1, flow: 'claim' }),
+            transactionsActions.transactionBroadcastStatus({
+                account,
+                txid: stakeTx1.txid,
+                flow: 'claim',
+                status: 'success',
+            }),
         );
 
         expect(state).toEqual(mockEarnTransactionsState([{ ...stakeTx1, flow: 'claim' }]));

@@ -29,9 +29,8 @@ on:
         type: "boolean"
         required: false
         default: false
-      # After migrating from testnet 3 to testnet 4 using `disable_cache_tx=true` should be required for tests where tx are used.
       disable_cache_tx:
-        description: "Disable Cache transactions (when `true` tests don't use cache for transactions)"
+        description: "Disable the websocket (blockchain-link) response cache (when `true` passes `-c` to docker-connect-test.sh). Referenced transactions always come from fixtures."
         type: "string"
         required: false
         default: "false"
@@ -62,12 +61,14 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
-          cache: yarn
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - run: echo "FOCUS_WORKSPACES=@trezor/connect-core" >> "$GITHUB_ENV"
       - if: ${{ inputs.testEnv == 'web' }}
         run: echo "FOCUS_WORKSPACES=$FOCUS_WORKSPACES @trezor/connect-web" >> "$GITHUB_ENV"

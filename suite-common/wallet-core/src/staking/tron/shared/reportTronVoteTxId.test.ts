@@ -1,19 +1,23 @@
 import { captureException, withScope } from '@sentry/core';
 
-import type { EARN_API_BASE_URL } from '@suite-common/earn-staking-api';
-
 import type { reportTronVoteTxId } from './reportTronVoteTxId';
 
 jest.mock('@sentry/core', () => ({ captureException: jest.fn(), withScope: jest.fn() }));
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    getEnvironment: () => 'desktop',
+    getSuiteVersion: () => '26.10.1',
+    isCodesignBuild: () => true,
+}));
 
 const TXID = 'a'.repeat(64);
+const SELECTED_BASE_URL = 'http://localhost:3001/staking/v1';
 
 const withScopeMock = withScope as jest.Mock;
 const captureExceptionMock = jest.mocked(captureException);
 const scope = { setTag: jest.fn(), setExtra: jest.fn() };
 
 let fetchSpy: jest.SpiedFunction<typeof fetch>;
-let reportBaseUrl: typeof EARN_API_BASE_URL;
 let report: typeof reportTronVoteTxId;
 
 // `createHttpClient` captures `globalThis.fetch` when the Earn API module is evaluated, so the
@@ -22,7 +26,8 @@ beforeAll(async () => {
     fetchSpy = jest
         .spyOn(globalThis, 'fetch')
         .mockRejectedValue(new Error('Unexpected fetch call'));
-    ({ EARN_API_BASE_URL: reportBaseUrl } = await import('@suite-common/earn-staking-api'));
+    const { earnStakingWorkerBaseUrl } = await import('@suite-common/earn-staking-api');
+    earnStakingWorkerBaseUrl.set(SELECTED_BASE_URL);
     ({ reportTronVoteTxId: report } = await import('./reportTronVoteTxId'));
 });
 
@@ -47,6 +52,7 @@ const expectReportFailureCaptured = () => {
     expect(captureExceptionMock).toHaveBeenCalledTimes(1);
     expect(scope.setTag).toHaveBeenCalledWith('error.code', 'tron_staking_txid_report_failed');
     expect(scope.setTag).toHaveBeenCalledWith('error.kind', 'vote');
+    expect(scope.setTag).toHaveBeenCalledWith('error.source', SELECTED_BASE_URL);
 };
 
 describe('reportTronVoteTxId', () => {
@@ -58,11 +64,12 @@ describe('reportTronVoteTxId', () => {
         expect(fetchSpy).toHaveBeenCalledTimes(1);
         const request = fetchSpy.mock.calls[0]?.[0] as Request;
         expect(request.method).toBe('POST');
-        expect(request.url).toBe(`${reportBaseUrl}/report`);
+        expect(request.url).toBe(`${SELECTED_BASE_URL}/report`);
         await expect(request.json()).resolves.toEqual({
             txid: TXID,
             network: 'tron',
             kind: 'vote',
+            suite: { version: '26.10.1', platform: 'desktop', build: 'prod' },
         });
         expect(captureExceptionMock).not.toHaveBeenCalled();
     });

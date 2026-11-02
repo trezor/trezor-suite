@@ -5,8 +5,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { TransactionReviewOutputCard } from './TransactionReviewOutputCard';
 
 describe('TransactionReviewOutputCard', () => {
-    const renderCard = async (outputState: TransactionReviewOutputState) =>
-        await renderWithBasicProvider(
+    const renderCard = (outputState: TransactionReviewOutputState) =>
+        renderWithBasicProvider(
             <TransactionReviewOutputCard title="Card title" outputState={outputState}>
                 <Text>Card content</Text>
             </TransactionReviewOutputCard>,

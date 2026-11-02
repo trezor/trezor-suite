@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { selectFlags, setFlag } from '@suite/flags';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
@@ -25,6 +26,7 @@ export const DashboardPromoBanner = () => {
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const flags = useSelector(selectFlags);
     const selectedDevice = useSelector(selectSelectedDevice);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
     const isOnboardingFeedbackBannerShown = useSelector(selectShouldShowOnboardingFeedbackBanner);
 
     const allPromoBanners = useSelector(state =>
@@ -45,7 +47,7 @@ export const DashboardPromoBanner = () => {
             return acc;
         }, []);
 
-    const eligibilityContext = { selectedDevice };
+    const eligibilityContext = { selectedDevice, isFinpromRestricted };
 
     const eligibleBannerTypes = deduplicatedBanners.reduce<DashboardBannerType[]>(
         (acc, feature) => {

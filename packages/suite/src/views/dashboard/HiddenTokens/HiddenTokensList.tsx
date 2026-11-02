@@ -1,19 +1,27 @@
 import { Translation } from '@suite/intl';
 import { selectHasHiddenWalletAssets } from '@suite-common/assets';
-import { Column, Text } from '@trezor/components';
+import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { AssetRowsSkeleton } from 'src/views/home/HomeAssetsTable/AssetRowsSkeleton';
+import { NoTokens } from 'src/views/wallet/tokens/common/NoTokens';
 
 import { HiddenTokensCard } from './HiddenTokensCard';
 
 export const HiddenTokensList = () => {
     const hasHiddenAssets = useSelector(selectHasHiddenWalletAssets);
+    const { isDiscoveryRunning } = useDiscovery();
+
+    if (!hasHiddenAssets && isDiscoveryRunning) {
+        return <AssetRowsSkeleton data-testid="@hidden-tokens/loading" />;
+    }
 
     if (!hasHiddenAssets) {
         return (
-            <Text intent="neutral" priority="secondary" data-testid="@hidden-tokens/empty">
-                <Translation id="TR_HIDDEN_TOKENS_EMPTY" />
-            </Text>
+            <NoTokens
+                title={<Translation id="TR_HIDDEN_TOKENS_EMPTY" />}
+                data-testid="@hidden-tokens/empty"
+            />
         );
     }
 

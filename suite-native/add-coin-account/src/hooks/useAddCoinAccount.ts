@@ -9,6 +9,7 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type AccountType,
@@ -22,7 +23,7 @@ import {
     reportWalletBalanceThunk,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getAvailableAccountTypes,
     isEvmNetwork,
@@ -119,6 +120,10 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
     const enabledDiscoveryNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
 
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
+    const isAssetsFirstEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
 
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const {
@@ -209,12 +214,14 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
 
     const navigateToSuccessorScreen = ({
         flowType,
+        accountKey,
         symbol,
         accountType,
         accountIndex,
         earnFlowParams,
     }: {
         flowType: AddCoinFlowType;
+        accountKey: AccountKey;
         symbol: NetworkSymbol;
         accountType: AccountType;
         accountIndex: number;
@@ -236,15 +243,24 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
                 });
                 break;
             case 'accounts':
-                navigation.replace(RootStackRoutes.AccountDetailStack, {
-                    screen: AccountDetailStackRoutes.AccountDetail,
-                    params: {
+                if (isAssetsFirstEnabled) {
+                    navigation.replace(RootStackRoutes.AccountOverview, {
+                        accountKey,
                         networkSymbol: symbol,
                         accountType,
                         accountIndex,
-                        closeActionType: 'close',
-                    },
-                });
+                    });
+                } else {
+                    navigation.replace(RootStackRoutes.AccountDetailStack, {
+                        screen: AccountDetailStackRoutes.AccountDetail,
+                        params: {
+                            networkSymbol: symbol,
+                            accountType,
+                            accountIndex,
+                            closeActionType: 'close',
+                        },
+                    });
+                }
                 break;
             case 'receive':
                 navigation.navigate(RootStackRoutes.ReceiveStack, {
@@ -403,10 +419,15 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             return;
         }
 
-        dispatch(accountsActions.createAccount(newAccountPayload, allNetworkSymbols));
+        const createAccountAction = accountsActions.createAccount(
+            newAccountPayload,
+            allNetworkSymbols,
+        );
+        dispatch(createAccountAction);
         dispatch(reportWalletBalanceThunk());
         navigateToSuccessorScreen({
             flowType,
+            accountKey: createAccountAction.payload.account.key,
             symbol,
             accountType,
             accountIndex: nextIndex,
@@ -471,6 +492,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
                 dispatch(reportWalletBalanceThunk());
                 navigateToSuccessorScreen({
                     flowType,
+                    accountKey: firstHiddenEmptyAccount.key,
                     symbol,
                     accountType,
                     accountIndex: firstHiddenEmptyAccount.index ?? accounts.length,

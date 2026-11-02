@@ -1,3 +1,5 @@
+import type { NetworkConfig } from '@trezor/network-module-types';
+
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export type LogoCandidate = { address: string; src: string; srcSet: string };
@@ -10,3 +12,8 @@ export const makeCacheKey = (coingeckoId: string, addressesKey: string) =>
 
 export const makeAddressKey = (coingeckoId: string, address: string) =>
     `${coingeckoId}::${address}`;
+
+export const hasForeignNativeAsset = (network: NetworkConfig) =>
+    !network.settlementLayer &&
+    !!network.nativeAssetCryptoId &&
+    network.nativeAssetCryptoId !== network.tradeCryptoId;

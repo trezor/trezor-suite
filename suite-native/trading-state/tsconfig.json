@@ -30,7 +30,10 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
+        { "path": "../config" },
         { "path": "../feature-flags" },
+        { "path": "../finprom" },
+        { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../sentry" },
         { "path": "../settings" },

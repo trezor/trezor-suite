@@ -14,8 +14,8 @@ jest.mock('@suite-common/message-system', () => {
 });
 
 describe('LegalGatewayContextMessage', () => {
-    const renderLegalGatewayContextMessage = async () =>
-        await renderWithStoreProvider(<LegalGatewayContextMessage />);
+    const renderLegalGatewayContextMessage = () =>
+        renderWithStoreProvider(<LegalGatewayContextMessage />);
 
     it('should render legal.gateway context message', async () => {
         const { getByText } = await renderLegalGatewayContextMessage();

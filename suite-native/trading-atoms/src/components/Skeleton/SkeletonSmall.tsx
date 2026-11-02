@@ -1,5 +1,3 @@
-import { useWindowDimensions } from 'react-native';
-
 import { BoxSkeleton } from '@suite-native/atoms';
 
 export type SkeletonSmallProps = {
@@ -12,8 +10,4 @@ const SKELETON_SMALL_HEIGHT = 20;
 export const SkeletonSmall = ({
     widthPercentage,
     height = SKELETON_SMALL_HEIGHT,
-}: SkeletonSmallProps) => {
-    const { width } = useWindowDimensions();
-
-    return <BoxSkeleton width={width * widthPercentage} height={height} />;
-};
+}: SkeletonSmallProps) => <BoxSkeleton width={`${widthPercentage * 100}%`} height={height} />;

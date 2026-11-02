@@ -15,7 +15,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { Sign } from 'src/components/suite/Sign';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
+
+import { TokenUrlBlur } from './TokenUrlBlur';
 
 const MAX_TOKEN_DISPLAYED_DECIMALS = 18;
 
@@ -35,6 +36,7 @@ export interface FormattedCryptoAmountProps {
      */
     isRawString?: boolean;
     isTabular?: boolean;
+    isSymbolSecondary?: boolean;
     'data-testid'?: string;
     className?: string;
 }
@@ -51,6 +53,7 @@ export const FormattedCryptoAmount = ({
     disableHiddenPlaceholder,
     isRawString,
     isTabular = true,
+    isSymbolSecondary = false,
     className,
     'data-testid': dataTest,
 }: FormattedCryptoAmountProps) => {
@@ -146,7 +149,13 @@ export const FormattedCryptoAmount = ({
             {formattedSymbol && (
                 <>
                     {' '}
-                    <BlurUrls text={formattedSymbol} />
+                    {isSymbolSecondary ? (
+                        <Text intent="neutral" priority="secondary">
+                            <TokenUrlBlur text={formattedSymbol} />
+                        </Text>
+                    ) : (
+                        <TokenUrlBlur text={formattedSymbol} />
+                    )}
                 </>
             )}
         </span>

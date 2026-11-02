@@ -53,6 +53,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { selectAccountLabel, sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { selectIsFinpromRestricted } from '@suite-native/finprom';
+import { type LocaleSliceRootState } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import {
     type SettingsSliceRootState,
@@ -150,9 +152,9 @@ export const selectIsTradingSlip24Enabled = (
 };
 
 export const selectIsTradingEnabled = (
-    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,
+    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState & LocaleSliceRootState,
 ) => {
-    if (!selectIsTradingEnabledForCountry(state)) {
+    if (selectIsFinpromRestricted(state) || !selectIsTradingEnabledForCountry(state)) {
         return false;
     }
 

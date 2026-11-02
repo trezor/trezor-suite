@@ -12,11 +12,11 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 describe('ProviderSheet', () => {
-    const renderProviderSheet = async (
+    const renderProviderSheet = (
         props: Partial<ProviderSheetProps<TradingType, TradingTradeType>> = {},
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <ProviderSheet
                 onClose={jest.fn()}
                 isVisible={true}

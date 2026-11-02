@@ -35,7 +35,7 @@ describe(requireForbiddenDeps.name, () => {
                 name: context.workspaceName,
                 dependencies: {
                     '@suite-common/wallet-core': 'workspace:*',
-                    '@suite-common/calldata': 'workspace:*',
+                    '@suite-common/example': 'workspace:*',
                     '@trezor/utils': 'workspace:*',
                 },
             }),
@@ -44,7 +44,7 @@ describe(requireForbiddenDeps.name, () => {
             new Map([
                 [context.workspaceName, workspaceDir],
                 ['@suite-common/wallet-core', join(repoRoot, 'suite-common', 'wallet-core')],
-                ['@suite-common/calldata', join(repoRoot, 'suite-common', 'calldata')],
+                ['@suite-common/example', join(repoRoot, 'suite-common', 'example')],
                 ['@trezor/utils', join(repoRoot, 'packages', 'utils')],
             ]),
         );
@@ -59,7 +59,7 @@ describe(requireForbiddenDeps.name, () => {
             'forbidden-deps': [
                 {
                     packageNamePattern: '^@suite-common/',
-                    except: ['@suite-common/calldata'],
+                    except: ['@suite-common/example'],
                     reason: 'Below the apps.',
                 },
             ],
@@ -78,13 +78,13 @@ describe(requireForbiddenDeps.name, () => {
         });
         writeConfig(context.workspaceDir, {
             'forbidden-deps': [
-                { packageNamePattern: '^@suite-common/calldata$', reason: 'Local policy.' },
+                { packageNamePattern: '^@suite-common/example$', reason: 'Local policy.' },
             ],
         });
 
         expect(await requireForbiddenDeps.verify(context)).toEqual([
             '@trezor/network-example: "@suite-common/wallet-core" is forbidden in dependencies. Reason: Parent policy.',
-            '@trezor/network-example: "@suite-common/calldata" is forbidden in dependencies. Reason: Local policy.',
+            '@trezor/network-example: "@suite-common/example" is forbidden in dependencies. Reason: Local policy.',
         ]);
     });
 
@@ -226,14 +226,14 @@ describe('forbidden package-name pattern exceptions', () => {
         expect(
             getForbiddenDependencyErrors({
                 dependencyOccurrences: [
-                    { field: 'dependencies', name: '@suite-common/calldata' },
+                    { field: 'dependencies', name: '@suite-common/example' },
                     { field: 'dependencies', name: '@suite-common/wallet-core' },
                 ],
                 dependencyRule: {
                     'forbidden-deps': [
                         {
                             packageNamePattern: '^@suite-common/',
-                            except: ['@suite-common/calldata'],
+                            except: ['@suite-common/example'],
                             reason: 'Below the apps.',
                         },
                     ],

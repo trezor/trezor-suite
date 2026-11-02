@@ -95,6 +95,7 @@ export function parseDisplayContent(json: any): NormalizedDisplayContent {
         ['content', 'content', 'paragraphs'], // original default
         ['Content', 'paragraphs'], // T3W1
         ['content', 'paragraphs'], // possible variation
+        ['paragraphs', 'paragraphs'],
     ]);
 
     if (!Array.isArray(paragraphs) || paragraphs.length < 1) {

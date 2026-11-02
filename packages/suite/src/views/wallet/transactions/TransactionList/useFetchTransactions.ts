@@ -1,24 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import { isPhishingTransaction } from '@suite-common/token-definitions';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
-    selectAccountTotalTransactions,
-    selectAccountTransactionsWithNulls,
-    selectActiveDustPhishingThreshold,
-    selectIsLoadingAccountTransactions,
-    selectPhishingTransactionsContext,
 } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { getSynchronize } from '@trezor/utils';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
-
-import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';
 
 const getPaging = (network: Account['networkType'], txFetched: number, txTotal: number) => {
     const perPage = getTxsPerPage(network);
@@ -145,103 +136,4 @@ export const useFetchTransactions = (
     );
 
     return { fetchNext, pagesFetched, fetchPage, fetchAll, isFetching, fetchedAll };
-};
-
-type UseVisibleTransactionsParams = {
-    account: Account;
-    numberOfPagesRequested: number;
-    enableFiltering?: boolean;
-};
-
-export const useVisibleTransactions = ({
-    account,
-    numberOfPagesRequested,
-    enableFiltering = false,
-}: UseVisibleTransactionsParams) => {
-    const allTransactions = useSelector(state =>
-        selectAccountTransactionsWithNulls(state, account.key),
-    );
-    const { isDiscoveryRunning } = useDiscovery();
-
-    const {
-        fetchedAll,
-        isFetching,
-        pagesFetched: allTransactionsPagesFetched,
-        fetchPage,
-    } = useFetchTransactions(account, allTransactions);
-    const allAccountTransactions = useSelector(state =>
-        selectAccountTotalTransactions(state, account.key),
-    );
-    const transactionsIsLoading = useSelector(state =>
-        selectIsLoadingAccountTransactions(state, account.key),
-    );
-    const { tokenDefinitions, txsMarkedAsNotScam, historicRates } = useSelector(state =>
-        selectPhishingTransactionsContext(state, account.key, account.symbol),
-    );
-    const dustThreshold = useSelector(selectActiveDustPhishingThreshold);
-
-    const visibleTransactions = useMemo(
-        () =>
-            enableFiltering
-                ? allTransactions.filter(
-                      transaction =>
-                          !isPhishingTransaction({
-                              transaction,
-                              tokenDefinitions,
-                              txsMarkedAsNotScam,
-                              historicRates,
-                              dustThreshold,
-                          }).isPhishing,
-                  )
-                : allTransactions,
-        [
-            enableFiltering,
-            allTransactions,
-            tokenDefinitions,
-            txsMarkedAsNotScam,
-            historicRates,
-            dustThreshold,
-        ],
-    );
-
-    const perPage = getTxsPerPage(account.networkType);
-    // NOTE: as the paging increases / all is fetched, the number of the "all transactions" increases as the visible transactions decrease
-    // that's how the estimate of the "totalPossiblyVisible" gets more an more accurate
-    const numberOfHiddenInTheBatch = allTransactions.length - visibleTransactions.length;
-    const totalPossiblyVisible = allAccountTransactions - numberOfHiddenInTheBatch;
-
-    useEffect(() => {
-        if (
-            enableFiltering &&
-            shouldAttemptToLoadNextPageForVisibleTransactions({
-                totalNumberOfTransactions: allAccountTransactions,
-                currentNumberOfVisibleTransactions: visibleTransactions.length,
-                currentNumberOfTransactions: allTransactions.length,
-                perPage,
-                numberOfPagesRequested,
-            })
-        ) {
-            fetchPage(allTransactionsPagesFetched + 1);
-        }
-    }, [
-        account.networkType,
-        allAccountTransactions,
-        allTransactions.length,
-        allTransactionsPagesFetched,
-        enableFiltering,
-        fetchPage,
-        fetchedAll,
-        numberOfPagesRequested,
-        perPage,
-        totalPossiblyVisible,
-        visibleTransactions.length,
-    ]);
-
-    return {
-        allTransactions,
-        visibleTransactions,
-        visibleTotal: totalPossiblyVisible,
-        isFetching: isDiscoveryRunning || isFetching || transactionsIsLoading,
-        isLoading: isDiscoveryRunning,
-    };
 };

@@ -2,15 +2,17 @@ import { useCallback, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import {
+    HOME_ASSET_ROW_LIMIT,
+    getHomeAssetRowLimit,
+    selectAreHomeAssetSmallBalancesDisplayed,
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
     selectHasShownWalletAssets,
+    selectHomeAssetGrouping,
     selectIsHomeAssetTableFoldable,
 } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    selectAreHomeAssetSmallBalancesShown,
-    selectHomeAssetsTableGrouping,
     setAreHomeAssetSmallBalancesShown,
     setHomeAssetsTableGrouping,
 } from '@suite-common/wallet-core';
@@ -19,30 +21,32 @@ import { Card, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 
+import { AssetRowsSkeleton } from './AssetRowsSkeleton';
 import { HomeAssetExpandRow } from './HomeAssetExpandRow';
 import { HomeAssetNetworkSection } from './HomeAssetNetworkSection';
 import { HomeAssetNewBanner } from './HomeAssetNewBanner';
 import { HomeAssetRow } from './HomeAssetRow';
+import { HomeAssetSmallBalancesHiddenRow } from './HomeAssetSmallBalancesHiddenRow';
+import { HomeAssetTableEmptyState } from './HomeAssetTableEmptyState';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_COL_WIDTHS } from './homeAssetTableLayout';
 
 const NO_NETWORKS: readonly NetworkSymbol[] = [];
-/** How many rows the table shows before it folds; mobile picks its own. */
-const HOME_ASSET_ROW_LIMIT = 8;
 
 export const HomeAssetTable = () => {
     const { dispatch } = useServices(injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
-    const grouping = useSelector(selectHomeAssetsTableGrouping);
-    const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesShown);
+    const grouping = useSelector(selectHomeAssetGrouping);
+    const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
     const hasAssets = useSelector(selectHasShownWalletAssets);
+    const { isDiscoveryRunning } = useDiscovery();
     const isFoldable = useSelector(state =>
         selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
     );
 
-    const rowLimit = isFoldable && !isExpanded ? HOME_ASSET_ROW_LIMIT : undefined;
+    const rowLimit = getHomeAssetRowLimit({ isFoldable, isExpanded });
 
     const assetKeys = useSelector(state => selectDisplayedWalletAssetKeys(state, rowLimit));
     const networkSymbols = useSelector(state =>
@@ -67,8 +71,8 @@ export const HomeAssetTable = () => {
         [dispatch],
     );
 
-    if (!hasAssets) {
-        return null;
+    if (!hasAssets && isDiscoveryRunning) {
+        return <AssetRowsSkeleton data-testid="@dashboard/home-asset-table/loading" />;
     }
 
     return (
@@ -94,6 +98,12 @@ export const HomeAssetTable = () => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
+                    {!hasAssets && <HomeAssetTableEmptyState />}
+                    {hasAssets && assetKeys.length === 0 && (
+                        <HomeAssetSmallBalancesHiddenRow
+                            onShowSmallBalances={() => changeSmallBalances(true)}
+                        />
+                    )}
                     {grouping === 'networks'
                         ? networkSymbols.map(symbol => (
                               <HomeAssetNetworkSection

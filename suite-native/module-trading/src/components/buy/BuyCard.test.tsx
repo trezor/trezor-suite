@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -38,15 +38,16 @@ describe('BuyCard', () => {
         featureFlags: createTradingFeatureFlags(),
     };
 
-    const renderForm = async () =>
-        await renderHookWithTradingProvider(() => useBuyForm(), { overrides, services });
+    const renderForm = () =>
+        renderHookWithTradingProvider(() => useBuyForm(), { overrides, services });
 
-    const renderBuyCard = async (
-        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
-    ) =>
-        await renderWithTradingProvider(<BuyCard isAmountInputActive={false} />, {
+    const renderBuyCard = (extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderWithTradingProvider(<BuyCard isAmountInputActive={false} />, {
             overrides: { ...overrides, ...extraOverrides },
-            services,
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

@@ -1,23 +1,40 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type HomeAssetsTableGrouping,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { type StaticSessionId } from '@trezor/device-utils';
+import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
     type HomeAssetTableState,
+    selectAreHomeAssetSmallBalancesDisplayed,
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
     selectDisplayedWalletAssetKeysOfNetwork,
     selectHiddenWalletAssetKeys,
+    selectHomeAssetGrouping,
     selectHomeAssetTotals,
     selectIsHomeAssetTableFoldable,
+    selectIsHomeAssetTableMenuAvailable,
     selectNetworkFiatValue,
     selectShownWalletAssetKeys,
     selectSmallBalanceSummary,
+    selectWalletAssetAccountCount,
     selectWalletAssetAmount,
+    selectWalletAssetAvailableAmount,
+    selectWalletAssetContractAddress,
+    selectWalletAssetFiatValue,
+    selectWalletAssetHiddenReason,
+    selectWalletAssetHoldings,
+    selectWalletAssetStakingAmount,
+    selectWalletAssetStakingRatio,
+    selectWalletAssetSymbol,
+    selectWalletAssetTokenSymbol,
 } from './homeAssetTableSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
@@ -27,6 +44,7 @@ const BTC = asNetworkSymbol('btc');
 const ETH = asNetworkSymbol('eth');
 const POL = asNetworkSymbol('pol');
 const DSOL = asNetworkSymbol('dsol');
+const ADA = asNetworkSymbol('ada');
 
 /** What the desktop table folds at; the selectors take whatever a platform passes. */
 const ROW_LIMIT = 8;
@@ -77,10 +95,12 @@ const mockRate = (
 type MockStateParams = {
     accounts: Account[];
     enabledNetworks?: Account['symbol'][];
+    hasBitcoinOnlyFirmware?: boolean;
     rates?: Record<string, { rate: number; usdRate?: number }>;
     knownTokens?: TokenAddress[];
     hiddenTokens?: TokenAddress[];
     areSmallBalancesShown?: boolean;
+    grouping?: HomeAssetsTableGrouping;
     shownTokens?: TokenAddress[];
     localCurrency?: BaseCurrencyCode;
 };
@@ -88,10 +108,12 @@ type MockStateParams = {
 const createState = ({
     accounts,
     enabledNetworks = [BTC, ETH, POL],
+    hasBitcoinOnlyFirmware = false,
     rates = {},
     knownTokens = [USDC_ON_ETH, USDC_ON_POL],
     hiddenTokens = [],
     areSmallBalancesShown = true,
+    grouping = 'default',
     shownTokens = [],
     localCurrency = 'usd',
 }: MockStateParams): HomeAssetTableState => {
@@ -100,13 +122,21 @@ const createState = ({
     };
 
     return {
-        device: { selectedDevice: { state: { staticSessionId: ALICE } } },
+        device: {
+            selectedDevice: {
+                state: { staticSessionId: ALICE },
+                firmwareType: hasBitcoinOnlyFirmware
+                    ? FirmwareType.BitcoinOnly
+                    : FirmwareType.Universal,
+            },
+        },
         wallet: {
             accounts,
             settings: {
                 enabledNetworks,
                 localCurrency,
                 areHomeAssetSmallBalancesShown: areSmallBalancesShown,
+                homeAssetsTableGrouping: grouping,
             },
             fiat: { current: rates, lastWeek: {}, historic: {} },
         },
@@ -115,6 +145,8 @@ const createState = ({
             [BTC]: { symbol: BTC, name: 'Bitcoin' },
             [ETH]: { symbol: ETH, name: 'Ethereum' },
             [POL]: { symbol: POL, name: 'Polygon PoS' },
+            [DSOL]: { symbol: DSOL, name: 'Solana Devnet' },
+            [ADA]: { symbol: ADA, name: 'Cardano' },
         },
     } as unknown as HomeAssetTableState;
 };
@@ -200,8 +232,39 @@ describe('the rows the table is given', () => {
             `${ALICE}/eth/${USDC_ON_ETH}`,
             `${ALICE}/eth/`,
             `${ALICE}/pol/${USDC_ON_POL}`,
-            `${ALICE}/pol/`,
         ]);
+    });
+
+    it('leaves out a coin with nothing on it, priced or not, but keeps the tokens held beside it', () => {
+        const stateWithAnEmptyCoin = (rates: MockStateParams['rates']) =>
+            createState({
+                accounts: [
+                    mockAccount({ symbol: BTC, balance: '2' }),
+                    mockAccount({
+                        symbol: ETH,
+                        index: 1,
+                        balance: '0',
+                        tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                    }),
+                ],
+                rates,
+            });
+
+        const priced = stateWithAnEmptyCoin({
+            ...mockRate(BTC, 1),
+            ...mockRate(ETH, 1),
+            ...mockRate(ETH, 1, USDC_ON_ETH),
+        });
+
+        expect(selectHomeAssetRowKeys(priced)).toEqual([
+            `${ALICE}/eth/${USDC_ON_ETH}`,
+            `${ALICE}/btc/`,
+        ]);
+        expect(selectHomeAssetRowKeys(stateWithAnEmptyCoin(mockRate(BTC, 1)))).toEqual([
+            `${ALICE}/btc/`,
+            `${ALICE}/eth/${USDC_ON_ETH}`,
+        ]);
+        expect(selectSmallBalanceSummary(priced)).toBeUndefined();
     });
 
     it('leaves out a network the user has not enabled', () => {
@@ -211,6 +274,25 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectHomeAssetRowKeys(state)).toEqual([]);
+    });
+
+    it('leaves out a network the device cannot use, enabled or not', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ symbol: BTC }),
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                }),
+            ],
+            hiddenTokens: [USDC_ON_ETH],
+            hasBitcoinOnlyFirmware: true,
+        });
+
+        expect(selectHomeAssetRowKeys(state)).toEqual([
+            getWalletAssetKey({ deviceState: ALICE, symbol: BTC }),
+        ]);
+        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([]);
     });
 
     it('leaves out a token nothing vouches for', () => {
@@ -387,9 +469,165 @@ describe('the total over the wallet', () => {
         ],
         rates: { ...mockRate(ETH, 3000), ...mockRate(BTC, 100000) },
     });
+    const ethereumKey = getWalletAssetKey({ deviceState: ALICE, symbol: ETH });
+    const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, symbol: BTC });
+    const cardanoKey = getWalletAssetKey({ deviceState: ALICE, symbol: ADA });
 
     it('adds up every asset of the wallet', () => {
         expect(selectHomeAssetTotals(state).fiatValue?.toFixed()).toBe('56000');
+    });
+
+    it('prices each asset on its own', () => {
+        expect(selectWalletAssetFiatValue(state, ethereumKey)?.toFixed()).toBe('6000');
+        expect(selectWalletAssetFiatValue(state, bitcoinKey)?.toFixed()).toBe('50000');
+    });
+
+    it('counts only the accounts that hold the selected asset', () => {
+        const tokenKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+        const stateWithThreeEthereumAccounts = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [{ contract: USDC_ON_ETH, balance: '1', symbol: 'USDC' }],
+                }),
+                mockAccount({ symbol: ETH, index: 1 }),
+                mockAccount({ symbol: ETH, index: 2 }),
+            ],
+        });
+
+        expect(selectWalletAssetAccountCount(stateWithThreeEthereumAccounts, tokenKey)).toBe(1);
+        expect(selectWalletAssetAccountCount(stateWithThreeEthereumAccounts, ethereumKey)).toBe(3);
+    });
+
+    it('lists the accounts that hold the selected asset, each with what it holds of it', () => {
+        const tokenKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+        const stateWithTwoHolders = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [{ contract: USDC_ON_ETH, balance: '1', symbol: 'USDC' }],
+                }),
+                mockAccount({
+                    symbol: ETH,
+                    index: 1,
+                    tokens: [{ contract: USDC_ON_ETH, balance: '0', symbol: 'USDC' }],
+                }),
+                mockAccount({
+                    symbol: ETH,
+                    index: 2,
+                    tokens: [{ contract: USDC_ON_ETH, balance: '5', symbol: 'USDC' }],
+                }),
+            ],
+        });
+
+        expect(
+            selectWalletAssetHoldings(stateWithTwoHolders, tokenKey).map(
+                ({ cryptoBalance }) => cryptoBalance,
+            ),
+        ).toEqual(['1', '5']);
+        expect(selectWalletAssetHoldings(stateWithTwoHolders, tokenKey)).toHaveLength(
+            selectWalletAssetAccountCount(stateWithTwoHolders, tokenKey),
+        );
+    });
+
+    it('separates available from staked, pending, and withdrawing balances', () => {
+        const staked = createState({
+            accounts: [
+                {
+                    ...mockAccount({ symbol: ETH, balance: '1' }),
+                    networkType: 'ethereum',
+                    misc: {
+                        stakingPools: [
+                            {
+                                name: 'Everstake',
+                                autocompoundBalance: '1000000000000000000',
+                                pendingBalance: '500000000000000000',
+                                pendingDepositedBalance: '250000000000000000',
+                                withdrawTotalAmount: '250000000000000000',
+                                claimableAmount: '0',
+                                depositedBalance: '0',
+                                restakedReward: '0',
+                            },
+                        ],
+                    },
+                } as Account,
+                {
+                    ...mockAccount({ symbol: ETH, index: 1, balance: '10', isVisible: false }),
+                    networkType: 'ethereum',
+                    misc: {
+                        stakingPools: [
+                            {
+                                name: 'Everstake',
+                                autocompoundBalance: '10000000000000000000',
+                                pendingBalance: '0',
+                                pendingDepositedBalance: '0',
+                                withdrawTotalAmount: '0',
+                                claimableAmount: '0',
+                                depositedBalance: '0',
+                                restakedReward: '0',
+                            },
+                        ],
+                    },
+                } as Account,
+            ],
+            rates: mockRate(ETH, 3000),
+        });
+
+        expect(selectWalletAssetAmount(staked, ethereumKey)).toBe('3');
+        expect(selectWalletAssetAvailableAmount(staked, ethereumKey)).toBe('1');
+        expect(selectWalletAssetStakingAmount(staked, ethereumKey)).toBe('2');
+        expect(selectWalletAssetStakingRatio(staked, ethereumKey)).toBeCloseTo(2 / 3);
+        expect(selectWalletAssetFiatValue(staked, ethereumKey)?.toFixed()).toBe('9000');
+    });
+
+    it('counts a delegating Cardano account whole as staked', () => {
+        const delegating = createState({
+            accounts: [
+                {
+                    ...mockAccount({ symbol: ADA, balance: '3' }),
+                    networkType: 'cardano',
+                    balance: '3000000',
+                    misc: { staking: { isActive: true } },
+                } as Account,
+                {
+                    ...mockAccount({ symbol: ADA, index: 1, balance: '1' }),
+                    networkType: 'cardano',
+                    balance: '1000000',
+                    misc: { staking: { isActive: false } },
+                } as Account,
+            ],
+            enabledNetworks: [ADA],
+        });
+
+        expect(selectWalletAssetAvailableAmount(delegating, cardanoKey)).toBe('1');
+        expect(selectWalletAssetStakingAmount(delegating, cardanoKey)).toBe('3');
+        expect(selectWalletAssetStakingRatio(delegating, cardanoKey)).toBeCloseTo(3 / 4);
+    });
+
+    it('leaves a pending send out of what a delegating Cardano account stakes', () => {
+        const sending = createState({
+            accounts: [
+                {
+                    ...mockAccount({ symbol: ADA, balance: '2.5' }),
+                    networkType: 'cardano',
+                    balance: '3000000',
+                    misc: { staking: { isActive: true } },
+                } as Account,
+            ],
+            enabledNetworks: [ADA],
+        });
+
+        expect(selectWalletAssetStakingAmount(sending, cardanoKey)).toBe('2.5');
+        expect(selectWalletAssetAvailableAmount(sending, cardanoKey)).toBe('0');
+        expect(selectWalletAssetStakingRatio(sending, cardanoKey)).toBe(1);
     });
 
     it('says nothing at all while no asset of the wallet can be priced', () => {
@@ -398,10 +636,53 @@ describe('the total over the wallet', () => {
         });
 
         expect(selectHomeAssetTotals(unpriced).fiatValue).toBeUndefined();
+        expect(selectWalletAssetFiatValue(unpriced, ethereumKey)).toBeUndefined();
+    });
+
+    it('is zero, and so is its change, once the wallet holds nothing', () => {
+        const empty = createState({
+            accounts: [mockAccount({ symbol: ETH, balance: '0' })],
+            rates: mockRate(ETH, 3000),
+        });
+        const { fiatValue, weekChange, weekChangePercent } = selectHomeAssetTotals(empty);
+
+        expect(fiatValue?.toFixed()).toBe('0');
+        expect(weekChange?.toFixed()).toBe('0');
+        expect(weekChangePercent?.toFixed()).toBe('0');
     });
 
     it('says nothing about a week ago when no rate for it is known', () => {
         expect(selectHomeAssetTotals(state).weekChange).toBeUndefined();
+    });
+});
+
+describe('the ticker of an asset', () => {
+    const state = createState({
+        accounts: [
+            mockAccount({
+                tokens: [
+                    { contract: USDC_ON_ETH, balance: '1', symbol: 'USDC' },
+                    { contract: UNKNOWN_TOKEN, balance: '1' },
+                ],
+            }),
+        ],
+        shownTokens: [UNKNOWN_TOKEN],
+    });
+    const tokenKey = (contractAddress: TokenAddress) =>
+        getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress });
+
+    it('is the token’s own ticker', () => {
+        expect(selectWalletAssetTokenSymbol(state, tokenKey(USDC_ON_ETH))).toBe('USDC');
+    });
+
+    it('is nothing for a token without one or for the network coin', () => {
+        expect(selectWalletAssetTokenSymbol(state, tokenKey(UNKNOWN_TOKEN))).toBeNull();
+        expect(
+            selectWalletAssetTokenSymbol(
+                state,
+                getWalletAssetKey({ deviceState: ALICE, symbol: ETH }),
+            ),
+        ).toBeNull();
     });
 });
 
@@ -550,6 +831,45 @@ describe('the tokens the table leaves out', () => {
         ]);
     });
 
+    it('still describes a hidden token, priced, for its own screen', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                }),
+            ],
+            rates: mockRate(ETH, 1, USDC_ON_ETH),
+            hiddenTokens: [USDC_ON_ETH],
+        });
+        const assetKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+
+        expect(selectWalletAssetSymbol(state, assetKey)).toBe(ETH);
+        expect(selectWalletAssetContractAddress(state, assetKey)).toBe(USDC_ON_ETH);
+        expect(selectWalletAssetFiatValue(state, assetKey)?.toFixed()).toBe('10');
+    });
+
+    it('says why a token is hidden, and nothing for one that is shown', () => {
+        const state = stateWithBitcoinBalance('1');
+        const getTokenKey = (contractAddress: TokenAddress) =>
+            getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress });
+
+        expect(selectWalletAssetHiddenReason(state, getTokenKey(USDC_ON_ETH))).toBe('hiddenByUser');
+        expect(selectWalletAssetHiddenReason(state, getTokenKey(UNKNOWN_TOKEN))).toBe(
+            'unrecognized',
+        );
+        expect(
+            selectWalletAssetHiddenReason(
+                state,
+                getWalletAssetKey({ deviceState: ALICE, symbol: BTC }),
+            ),
+        ).toBeUndefined();
+    });
+
     it('leaves out a hidden token on a network the user has not enabled', () => {
         const state = createState({
             accounts: [
@@ -590,17 +910,15 @@ describe('the small balances the switch hides', () => {
         expect(selectDisplayedWalletAssetKeys(stateWithSmallBalances(true))).toEqual([
             `${ALICE}/btc/`,
             `${ALICE}/eth/${USDC_ON_ETH}`,
-            `${ALICE}/eth/`,
         ]);
     });
 
     it('leaves out what is worth under a dollar while the switch is off', () => {
         const state = stateWithSmallBalances(false);
 
-        // The empty Ethereum account stays: it is the network, not a leftover.
-        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`, `${ALICE}/eth/`]);
+        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
         // What the wallet holds is unchanged — only what the table draws is.
-        expect(selectShownWalletAssetKeys(state)).toHaveLength(3);
+        expect(selectShownWalletAssetKeys(state)).toHaveLength(2);
     });
 
     it('leaves the wallet total alone, hidden or not', () => {
@@ -614,7 +932,6 @@ describe('the small balances the switch hides', () => {
     it('says how many there are and what they come to', () => {
         const summary = selectSmallBalanceSummary(stateWithSmallBalances(true));
 
-        // The Ethereum account holds nothing, and nothing is not a small balance.
         expect(summary?.assetCount).toBe(1);
         expect(summary?.fiatValue.toFixed()).toBe('0.5');
     });
@@ -657,10 +974,7 @@ describe('the small balances the switch hides', () => {
         });
 
         it('draws the line at a dollar, not at one of the currency', () => {
-            expect(selectDisplayedWalletAssetKeys(stateInCzk)).toEqual([
-                `${ALICE}/btc/`,
-                `${ALICE}/eth/`,
-            ]);
+            expect(selectDisplayedWalletAssetKeys(stateInCzk)).toEqual([`${ALICE}/btc/`]);
         });
 
         it('still says what they come to in the chosen currency', () => {
@@ -685,7 +999,7 @@ describe('the small balances the switch hides', () => {
                 areSmallBalancesShown: false,
             });
 
-            expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(2);
+            expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(1);
             expect(selectSmallBalanceSummary(state)).toBeUndefined();
         });
     });
@@ -697,7 +1011,7 @@ describe('the small balances the switch hides', () => {
                 accounts: [
                     mockAccount({
                         symbol: ETH,
-                        balance: '0',
+                        balance: '0.5',
                         tokens: [{ contract: UNKNOWN_TOKEN, balance: '999999' }],
                     }),
                     mockAccount({ symbol: BTC, index: 1, balance: '2' }),
@@ -707,7 +1021,7 @@ describe('the small balances the switch hides', () => {
                 areSmallBalancesShown,
             });
 
-        it('goes below everything that can be priced, even what is worth nothing', () => {
+        it('goes below everything that can be priced, even what is worth little', () => {
             expect(selectDisplayedWalletAssetKeys(stateWithAnUnpricedToken(true))).toEqual([
                 `${ALICE}/btc/`,
                 `${ALICE}/eth/`,
@@ -718,28 +1032,13 @@ describe('the small balances the switch hides', () => {
         it('is never a small balance, so the switch leaves it alone', () => {
             const state = stateWithAnUnpricedToken(false);
 
+            // The coin, worth 50c, is small; the unpriced token is not.
             expect(selectDisplayedWalletAssetKeys(state)).toEqual([
                 `${ALICE}/btc/`,
-                `${ALICE}/eth/`,
                 `${ALICE}/eth/${UNKNOWN_TOKEN}`,
             ]);
-            // Neither the empty account nor the unpriced token is small: nothing to count.
-            expect(selectSmallBalanceSummary(state)).toBeUndefined();
+            expect(selectSmallBalanceSummary(state)?.assetCount).toBe(1);
         });
-    });
-
-    it('never counts a coin with nothing on it: an empty account is the network, not a leftover', () => {
-        const state = createState({
-            accounts: [
-                mockAccount({ symbol: BTC, balance: '2' }),
-                mockAccount({ symbol: ETH, index: 1, balance: '0' }),
-            ],
-            rates: { ...mockRate(BTC, 1), ...mockRate(ETH, 1) },
-            areSmallBalancesShown: false,
-        });
-
-        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`, `${ALICE}/eth/`]);
-        expect(selectSmallBalanceSummary(state)).toBeUndefined();
     });
 
     it('says nothing when every balance is worth having', () => {
@@ -843,7 +1142,7 @@ describe('the fold a long table shows', () => {
     };
 
     it('says whether there is more than the limit to show, and only that', () => {
-        // Thirty tokens and two coins: more than eight, fewer than a hundred.
+        // Thirty tokens: more than eight, fewer than a hundred.
         const state = stateWithTokenCounts({ eth: 30, pol: 0 });
 
         expect(selectIsHomeAssetTableFoldable(state, ROW_LIMIT)).toBe(true);
@@ -851,21 +1150,21 @@ describe('the fold a long table shows', () => {
         expect(selectIsHomeAssetTableFoldable(state)).toBe(false);
         // Exactly the limit is not more than it.
         expect(
-            selectIsHomeAssetTableFoldable(stateWithTokenCounts({ eth: 6, pol: 0 }), ROW_LIMIT),
+            selectIsHomeAssetTableFoldable(stateWithTokenCounts({ eth: 8, pol: 0 }), ROW_LIMIT),
         ).toBe(false);
     });
 
     it('shows only the first few of a longer list', () => {
         const state = stateWithTokenCounts({ eth: 30, pol: 0 });
 
-        // Thirty tokens, and the two coins the accounts themselves hold.
-        expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(32);
+        // Thirty tokens; the coins the accounts hold nothing of are left out.
+        expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(30);
         expect(selectDisplayedWalletAssetKeys(state, ROW_LIMIT)).toHaveLength(ROW_LIMIT);
     });
 
     it('counts assets, not networks, and can leave a whole network out', () => {
-        // Seven on Ethereum plus its coin fills the fold exactly, so Polygon waits for "show more".
-        const state = stateWithTokenCounts({ eth: 7, pol: 3 });
+        // Eight on Ethereum fill the fold exactly, so Polygon waits for "show more".
+        const state = stateWithTokenCounts({ eth: 8, pol: 3 });
 
         expect(selectDisplayedNetworkSymbols(state)).toEqual([ETH, POL]);
         expect(selectDisplayedNetworkSymbols(state, ROW_LIMIT)).toEqual([ETH]);
@@ -876,7 +1175,7 @@ describe('the fold a long table shows', () => {
     });
 
     it('stops part way through a network when the fold runs out there', () => {
-        // Ethereum holds eleven rows; the fold takes eight of them and nothing else.
+        // Ethereum holds ten rows; the fold takes eight of them and nothing else.
         const state = stateWithTokenCounts({ eth: 10, pol: 3 });
 
         expect(selectDisplayedWalletAssetKeysOfNetwork(state, ETH, ROW_LIMIT)).toEqual(
@@ -888,7 +1187,37 @@ describe('the fold a long table shows', () => {
     it('hands every network its rows once the fold is past', () => {
         const state = stateWithTokenCounts({ eth: 6, pol: 6 });
 
-        expect(selectDisplayedWalletAssetKeysOfNetwork(state, ETH)).toHaveLength(7);
-        expect(selectDisplayedWalletAssetKeysOfNetwork(state, POL)).toHaveLength(7);
+        expect(selectDisplayedWalletAssetKeysOfNetwork(state, ETH)).toHaveLength(6);
+        expect(selectDisplayedWalletAssetKeysOfNetwork(state, POL)).toHaveLength(6);
+    });
+});
+
+describe('the menu over the table', () => {
+    // Bitcoin is worth 50c here: a small balance.
+    const stateWithMenuSettings = (hasBitcoinOnlyFirmware: boolean) =>
+        createState({
+            accounts: [mockAccount({ symbol: BTC, balance: '0.5' })],
+            rates: mockRate(BTC, 1),
+            hasBitcoinOnlyFirmware,
+            areSmallBalancesShown: false,
+            grouping: 'networks',
+        });
+
+    it('follows the saved settings on universal firmware', () => {
+        const state = stateWithMenuSettings(false);
+
+        expect(selectIsHomeAssetTableMenuAvailable(state)).toBe(true);
+        expect(selectHomeAssetGrouping(state)).toBe('networks');
+        expect(selectAreHomeAssetSmallBalancesDisplayed(state)).toBe(false);
+        expect(selectDisplayedWalletAssetKeys(state)).toEqual([]);
+    });
+
+    it('is not offered on Bitcoin-only firmware, which falls back to what it would set by default', () => {
+        const state = stateWithMenuSettings(true);
+
+        expect(selectIsHomeAssetTableMenuAvailable(state)).toBe(false);
+        expect(selectHomeAssetGrouping(state)).toBe('default');
+        expect(selectAreHomeAssetSmallBalancesDisplayed(state)).toBe(true);
+        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
     });
 });

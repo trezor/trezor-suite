@@ -6,10 +6,8 @@ import { CountryListItem, type CountryListItemProps } from './CountryListItem';
 describe('CountryListItem', () => {
     const usData = nonSanctionedRegional.countriesOptionsMap.get('US')!;
 
-    const renderCountryListItem = async (props: Partial<CountryListItemProps>) =>
-        await renderWithBasicProvider(
-            <CountryListItem onPress={jest.fn()} {...usData} {...props} />,
-        );
+    const renderCountryListItem = (props: Partial<CountryListItemProps>) =>
+        renderWithBasicProvider(<CountryListItem onPress={jest.fn()} {...usData} {...props} />);
 
     it('should render flag and name', async () => {
         const { getByLabelText, getByText } = await renderCountryListItem({});

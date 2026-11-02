@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/networks';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
@@ -34,6 +35,7 @@ type StakingPromoListItemProps = {
 };
 
 export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemProps) => {
+    const { PercentageFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
@@ -74,7 +76,7 @@ export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemPr
                                                 ? 'earn.aprPercentage'
                                                 : 'earn.apyPercentage'
                                         }
-                                        values={{ apy: rate }}
+                                        values={{ apy: PercentageFormatter.format(rate) }}
                                     />
                                 ) : (
                                     <Translation id="earn.notAvailableShort" />

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
-import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import type { AccountKey, FormState, TokenAddress } from '@suite-common/wallet-types';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -16,6 +16,7 @@ type UseMaxSpendableAmountProps = {
     formState?: FormState;
     enabled?: boolean;
     symbol?: NetworkSymbol | null;
+    assumeNewAccount?: boolean;
 };
 
 const buildDefaultFormState = ({ tokenContract }: { tokenContract?: TokenAddress }): FormState => ({
@@ -45,6 +46,7 @@ export const useMaxSpendableAmount = ({
     formState,
     enabled = true,
     symbol,
+    assumeNewAccount,
 }: UseMaxSpendableAmountProps) => {
     const { dispatch } = useServices(injectDispatch);
 
@@ -78,6 +80,7 @@ export const useMaxSpendableAmount = ({
                         {
                             formState: formState ?? buildDefaultFormState({ tokenContract }),
                             accountKey,
+                            assumeNewAccount,
                         },
                         { signal: controller.signal },
                     ),
@@ -87,7 +90,10 @@ export const useMaxSpendableAmount = ({
                     setMaxSpendableAmount(high ?? normal ?? low ?? economy);
                 }
             } catch {
-                if (controller.signal.aborted) return;
+                if (controller.signal.aborted) {
+                    return;
+                }
+
                 setMaxSpendableAmount(undefined);
             }
         };
@@ -97,7 +103,16 @@ export const useMaxSpendableAmount = ({
         return () => {
             controller.abort();
         };
-    }, [dispatch, accountKey, tokenContract, formState, tokenBalance, enabled, symbol]);
+    }, [
+        dispatch,
+        accountKey,
+        tokenContract,
+        formState,
+        tokenBalance,
+        enabled,
+        symbol,
+        assumeNewAccount,
+    ]);
 
     return { maxSpendableAmount };
 };

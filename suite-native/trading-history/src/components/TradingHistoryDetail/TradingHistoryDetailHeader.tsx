@@ -18,6 +18,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
@@ -46,6 +47,9 @@ type HeaderState =
 
 const HEADER_ARTWORK_SIZE = 120;
 const COMPACT_HEADER_ARTWORK_SIZE = 32;
+
+const compactHeaderStyle = prepareNativeStyle(() => ({ maxWidth: '100%' }));
+const compactTitleStyle = prepareNativeStyle(() => ({ flexShrink: 1 }));
 
 const getHeaderState = (tradeType: TradingType, status: TradingTransactionStatus): HeaderState => {
     switch (tradeType) {
@@ -317,6 +321,7 @@ export const TradingHistoryDetailHeader = ({ orderId }: TradingHistoryDetailHead
 };
 
 export const TradingHistoryDetailCompactHeader = ({ orderId }: TradingHistoryDetailHeaderProps) => {
+    const { applyStyle } = useNativeStyles();
     const { headerState } = useTradingHistoryDetailHeaderState(orderId);
 
     if (!headerState) {
@@ -325,6 +330,7 @@ export const TradingHistoryDetailCompactHeader = ({ orderId }: TradingHistoryDet
 
     return (
         <AnimatedHStack
+            style={applyStyle(compactHeaderStyle)}
             alignItems="center"
             spacing="sp8"
             entering={tradingHistoryDetailEnteringTransition}
@@ -339,7 +345,7 @@ export const TradingHistoryDetailCompactHeader = ({ orderId }: TradingHistoryDet
                 key={headerState}
                 variant="body-md-strong"
                 numberOfLines={1}
-                adjustsFontSizeToFit
+                style={applyStyle(compactTitleStyle)}
                 entering={tradingHistoryDetailEnteringTransition}
                 exiting={tradingHistoryDetailExitingTransition}
                 layout={tradingHistoryDetailLayoutTransition}

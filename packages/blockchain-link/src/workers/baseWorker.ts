@@ -160,7 +160,7 @@ export abstract class BaseWorker<API> {
             return true;
         }
         if (data.type === MESSAGES.DISCONNECT) {
-            await this.disconnect();
+            this.disconnect();
             this.post({ id, type: RESPONSES.DISCONNECTED, payload: true });
 
             return true;

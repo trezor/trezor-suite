@@ -89,10 +89,9 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
             await onboardingPage.completeOnboarding();
 
             await trezorUserEnv.stopBridge();
-            await devicePrompt.connectDevicePromptIsShown();
-
+            await expect(suite.window.getByTestId('@deviceStatus-disconnected')).toBeVisible();
             await trezorUserEnv.startBridge(BRIDGE_VERSION);
-            await expect(suite.window.getByTestId('@dashboard/index')).toBeVisible();
+            await expect(suite.window.getByTestId('@deviceStatus-connected')).toBeVisible();
         },
     );
 });

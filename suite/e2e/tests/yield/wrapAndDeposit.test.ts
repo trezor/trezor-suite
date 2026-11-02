@@ -134,7 +134,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowOnDisplay({
                     T3W1: {
-                        header: { title: 'Provider' },
+                        header: { title: 'Contract address' },
                         body: [['WETH']],
                         actions: { right_button: 'Confirm' },
                     },
@@ -333,7 +333,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Deposit' },
-                        body: [YIELD_WETH_VAULT_DISPLAY_NAME],
+                        body: [['Deposit to'], YIELD_WETH_VAULT_DISPLAY_NAME],
                         actions: { right_button: 'Continue' },
                     },
                     T3T1: {
@@ -378,7 +378,6 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                     nonce: '4',
                     balance: BALANCE_AFTER_DEPOSIT,
                     transactions: [
-                        { ...ETH_STAKE_CONFIRMED_TX, txid: DEPOSIT_TXID },
                         { ...ETH_STAKE_CONFIRMED_TX, txid: APPROVE_TXID },
                         ETH_STAKE_CONFIRMED_TX,
                         ETH_BASE_TX,
@@ -394,6 +393,16 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(toastSection.yieldDepositMessage).toHaveTranslation(
                     'TOAST_TX_DEPOSIT_PENDING',
                 );
+                blockbookMock.updateAccountState({
+                    transactions: [
+                        { ...ETH_STAKE_CONFIRMED_TX, txid: DEPOSIT_TXID },
+                        { ...ETH_STAKE_CONFIRMED_TX, txid: APPROVE_TXID },
+                        ETH_STAKE_CONFIRMED_TX,
+                        ETH_BASE_TX,
+                    ],
+                });
+                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
+
                 await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                     'TR_EARN_YIELD_DEPOSIT_COMPLETE',
                 );
@@ -407,8 +416,6 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
                     '8 trSHWETHp',
                 );
-
-                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
             });
 
             await test.step('Returning to the dashboard shows the deposited position', async () => {

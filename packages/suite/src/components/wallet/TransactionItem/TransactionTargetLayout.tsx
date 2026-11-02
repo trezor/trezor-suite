@@ -1,11 +1,9 @@
 import { type ReactNode } from 'react';
 
-import { Column, Text } from '@trezor/components';
+import { BlurWrapper, Column, Text } from '@trezor/components';
 
 import { HiddenPlaceholder } from 'src/components/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-
-import { BlurWrapper } from './TransactionItemBlurWrapper';
 
 type TransactionTargetLayoutProps = {
     addressLabel: ReactNode;

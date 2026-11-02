@@ -124,6 +124,27 @@ export const messages = {
     },
     moduleHome: {
         totalBalance: 'Total balance',
+        assets: {
+            title: 'Assets',
+            showMore: 'Show more',
+            showLess: 'Show less',
+            viewOptionsSheet: {
+                title: 'View options',
+                groupBy: 'Group by',
+                groupingDefault: 'Default',
+                groupingNetworks: 'By networks',
+                showSmallBalances: 'Show small balances',
+                smallBalancesSummary: '{count, plural, one {# asset} other {# assets}}',
+            },
+            newBanner: {
+                title: 'New! A simpler view of your assets',
+                description:
+                    'Each asset is totaled across every account that holds it. Click on it to see more details.',
+            },
+            feedback: {
+                title: 'How do you like the new asset table?',
+            },
+        },
         graphIgnoredNetworks:
             "{networksString} and all related tokens are included in your portfolio balance, but aren't currently supported in the graph.",
         emptyState: {
@@ -622,6 +643,7 @@ export const messages = {
         },
         permissions: {
             title: 'Permissions',
+            none: 'No permissions requested',
             coinHeading: '{coin} access',
             deviceHeading: 'Device access',
             read_address: 'View receive addresses',
@@ -681,9 +703,6 @@ export const messages = {
             methodNotAllowed: 'Method not allowed for security reasons.',
             methodCanceled: 'Call canceled by user.',
             unknownError: 'Unknown error occurred ({code}).',
-        },
-        bottomSheets: {
-            confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
         },
         trezorConnect: {
             title: 'Trezor Connect',
@@ -776,7 +795,6 @@ export const messages = {
             cta: 'Create wallet backup',
             continue: 'Continue anyway',
         },
-        confirmOnDeviceSheetTitle: 'Confirm on Trezor',
         toasts: {
             firmwareRevisionCheckOtherError: "Firmware authenticity check couldn't be performed.",
         },
@@ -979,10 +997,30 @@ export const messages = {
     },
     moduleReceive: {
         receiveTitle: 'Receive',
+        receiveDescription: '{assetName} on {networkName}',
         screenTitle: '{coinSymbol} Receive address',
         deviceCancelError: 'Address confirmation canceled.',
         destinationTag:
             "When sending {coinSymbol} to Trezor, your online exchange may require a memo/destination tag, but Trezor doesn't. Enter any random number to proceed. <link>Learn more</link>",
+        tabs: {
+            assets: 'Assets',
+            accounts: 'Accounts',
+        },
+        assetList: {
+            myAssets: 'My assets',
+            allAssets: 'All assets',
+        },
+        search: {
+            placeholder: 'Search by name or symbol',
+            noAssets:
+                'If the token uses a network supported by Trezor Suite, you can receive it using that network account instead.',
+            noAccounts: 'Check the spelling, or enable more networks to widen your search.',
+            viewAccounts: 'View accounts',
+        },
+        discovery: {
+            title: 'Getting your accounts ready',
+            subtitle: 'Turning on the {networkName} network and checking for your accounts.',
+        },
         receiveAddressCard: {
             alert: {
                 longCardanoAddress:
@@ -2016,12 +2054,11 @@ export const messages = {
         accountsScreen: {
             accountsTitle: 'Accounts',
             networkFilter: {
-                showAccountsOnTitle: 'Show accounts on',
                 applyButton: 'Apply',
                 clearButton: 'Clear filter',
                 showAllButton: 'Show all',
                 accountCount: '{count, plural, one {# account} other {# accounts}}',
-                title: 'Show assets on',
+                title: 'Filter by network',
             },
             title: 'My assets',
         },
@@ -2255,6 +2292,9 @@ export const messages = {
             feeLabel: 'Fee',
             dateLabel: 'Date',
             transactionOverviewTitle: 'Transaction overview',
+            transaction: 'Transaction',
+            coinsIncluded: '{count} {count, plural, one {coin} other {coins}} included',
+            tokensIncluded: '{count} {count, plural, one {token} other {tokens}} included',
             showMoreButton: 'and {amount} more',
             stellarTrustlineAdded: 'Established trustline to {assetCode}',
             stellarTrustlineRemoved: 'Removed trustline to {assetCode}',
@@ -2378,9 +2418,27 @@ export const messages = {
     },
     moduleAssets: {
         assetDetailScreen: {
-            headerTitle: 'Asset details',
+            priceSection: {
+                title: 'Market price',
+            },
+            settings: {
+                openButtonAccessibilityLabel: 'Asset settings',
+                network: 'Network',
+                accounts: 'Accounts',
+            },
             balanceSection: {
-                title: 'Your balance',
+                balanceTitle: 'Balance',
+                allAccountsButton: 'All accounts ({count})',
+            },
+            earnSection: {
+                title: 'Earn',
+                viewAll: 'View all',
+                available: 'Available',
+                staking: 'Staking',
+                banner: {
+                    title: 'Earn available',
+                    description: 'Earn up to {apy}% on your {symbol}.',
+                },
             },
         },
     },
@@ -2436,6 +2494,8 @@ export const messages = {
     graph: {
         retrievingData: 'Loading graph...',
         errorMessage: 'There are some problems loading the graph: ',
+        priceHistoryError: "Price history couldn't be loaded.",
+        priceHistoryEmpty: 'No price history for this period.',
         tryAgain: 'Try again',
         retrievengTakesLongerThanExpected:
             'Your balances are taking longer to load. \n Check your internet connection.',
@@ -2952,15 +3012,17 @@ export const messages = {
             },
         },
         earnConsentsScreen: {
-            maintained: 'Your staked funds are maintained by Everstake.',
+            maintained: 'Staking infrastructure is maintained by Everstake.',
             acknowledge: 'I acknowledge and consent to stake with Everstake.',
             title: 'Before you continue',
             delegatingCard: {
                 eth: {
+                    benefits:
+                        "Stake your {displaySymbol} to receive rewards and help enhance the network's security and stability.",
                     firstItem:
-                        'Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.',
+                        'Your private keys stay on your Trezor device. Only you can initiate staking and unstaking, and Everstake never has access to your private keys.',
                     secondItem:
-                        "When you stake, the responsibility for your funds' security transitions from your Trezor device to Everstake.",
+                        "Staked {displaySymbol} is held in Everstake's smart contracts and is subject to smart contract and operational risks that are not covered by your Trezor device's security protections.",
                 },
                 sol: {
                     firstItem:
@@ -3217,7 +3279,8 @@ export const messages = {
                 },
                 third: {
                     titleEthereum: 'Receive weekly rewards',
-                    titleSolana: 'Receive rewards every ~{days} days',
+                    titleSolana:
+                        'Receive rewards every ~{days, plural, one {# day} other {# days}}',
                     description: '~{apy}% APY',
                     title: 'Receive weekly rewards',
                 },
@@ -3755,7 +3818,12 @@ export const messages = {
                 availableOfTotal: '{available} / {total}',
             },
             allVotesUsed: 'All {count} {count, plural, one {vote} other {votes}} used',
-            unstakingCardTitle: 'Unstaking (~{days} days)',
+            unstakingCard: {
+                title: 'Unstaking',
+                readyInDaysAndHours:
+                    'In ~{days, plural, one {# day} other {# days}} {hours, plural, one {# hour} other {# hours}}',
+                readyInHours: 'In ~{hours, plural, one {# hour} other {# hours}}',
+            },
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
@@ -4789,6 +4857,7 @@ export const messages = {
             },
         },
         fees: {
+            levelUnavailable: 'Unavailable',
             levels: {
                 low: 'Low',
                 normal: 'Normal',
@@ -4824,6 +4893,9 @@ export const messages = {
                     errors: {
                         feeLimit: {
                             low: 'Gas limit must be at least {minGasLimit}',
+                            invalid: 'Enter a positive whole number.',
+                            unavailable:
+                                'Cannot validate the fee limit without a transaction estimate.',
                         },
                         decimals: 'Too many decimal places.',
                         feePerUnit: {
@@ -4886,6 +4958,8 @@ export const messages = {
                 tokenLabel: 'Token',
                 feeLimitLabel: 'Fee Limit',
                 feeLimitSummaryLabel: 'Summary',
+                feeLabel: 'Fee',
+                expectedFeeLabel: 'Expected fee',
                 noteLabel: 'Note',
                 transactionDataLabel: 'Data',
                 opReturnLabel: 'Hexadecimal message (OP_RETURN)',
@@ -4920,15 +4994,17 @@ export const messages = {
         precomposedTransaction: {
             errors: {
                 amountNotEnoughCurrencyFee:
-                    'Insufficient {networkDisplaySymbol} to cover the transaction fee',
+                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee.',
                 amountIsNotEnough: "You don't have enough funds.",
                 amountIsTooLow: 'Amount is too low.',
                 amountIsLessThanReserve: 'Recipient account requires minimum reserve to activate.',
                 stakeNotEnoughFunds: 'Insufficient funds for staking.',
+                stakeTxPreparationFailed:
+                    'The transaction could not be prepared. Make sure the account is up to date and try again.',
                 remainingBalanceLessThanRent:
                     'After sending this amount, your account will have SOL remaining lower than the rent.',
                 amountNotEnoughCurrencyFeeWithEthAmount:
-                    'Insufficient {networkDisplaySymbol} to cover the transaction fee',
+                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee.',
             },
         },
     },
@@ -4958,6 +5034,7 @@ export const messages = {
             btcOnlyFirmwareDescription:
                 'Swapping is not available with Bitcoin-only firmware. Switch to universal firmware to enable.',
             notAvailableInCountryTitle: 'Trading is not yet available in your country',
+            restrictedTitle: 'Trading is not available in your region',
         },
         providerLogo: 'Provider logo',
         quotesLoadingLabel: 'Searching for your best offer...',

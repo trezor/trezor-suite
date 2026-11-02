@@ -1,7 +1,9 @@
+import { BigNumber } from '@trezor/utils';
+
 import { type TrxStats } from '../../api/types';
 
 export const formatTronApr = (apr: number | null | undefined): number | null =>
-    apr != null ? Number(apr.toFixed(2)) : null;
+    apr != null ? new BigNumber(apr).decimalPlaces(2, BigNumber.ROUND_HALF_UP).toNumber() : null;
 
 export const getTronVotedApr = (
     stats: TrxStats | undefined,

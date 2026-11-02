@@ -1,6 +1,10 @@
 import { shallowEqual } from 'react-redux';
 
-import { type DeviceRootState } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectDeviceStaticSessionId,
+    selectHasBitcoinOnlyFirmware,
+} from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
 import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -10,21 +14,34 @@ import {
     type HiddenTokenReason,
     type WalletAssetKey,
     type WalletSettingsRootState,
+    getWalletAssetKey,
     selectAreHomeAssetSmallBalancesShown,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceAssetAccounts,
-    selectEnabledNetworks,
+    selectEnabledSupportedNetworks,
     selectHiddenAssetAccountKeySet,
     selectHiddenTokenReasons,
+    selectHomeAssetsTableGrouping,
     selectLastWeekFiatRates,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import {
+    type Account,
+    type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
     type Rate,
     type TokenAddress,
+    type TokenSymbol,
+    asBaseCurrencyAmount,
+    toTokenSymbol,
 } from '@suite-common/wallet-types';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    getAccountTotalStakingBalance,
+    getFiatRateKey,
+    isPositiveBalance,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
@@ -49,8 +66,9 @@ type WalletAsset = {
     amount: string;
     displaySymbol: string;
     name: string;
-    tokenSymbol: string | undefined;
+    tokenSymbol: TokenSymbol | null;
     tokenDecimals: number | undefined;
+    accountCount: number;
 };
 
 const groupWalletAssets = (
@@ -86,8 +104,10 @@ const groupWalletAssets = (
                 tokenName: tokenInfo?.name,
                 tokenSymbol: tokenInfo?.symbol,
             }),
-            tokenSymbol: tokenInfo?.symbol,
+            tokenSymbol: tokenInfo?.symbol === undefined ? null : toTokenSymbol(tokenInfo.symbol),
             tokenDecimals: tokenInfo?.decimals,
+            accountCount: held.filter(assetAccount => isPositiveBalance(assetAccount.cryptoBalance))
+                .length,
         });
     });
 
@@ -235,11 +255,13 @@ const byValue =
     };
 
 export const selectShownWalletAssetKeys = createMemoizedSelector(
-    [selectWalletAssets, selectWalletAssetValues, selectEnabledNetworks],
+    [selectWalletAssets, selectWalletAssetValues, selectEnabledSupportedNetworks],
     (assets, values, enabledNetworks): readonly WalletAssetKey[] =>
         returnStableArrayIfEmpty(
             [...assets.values()]
-                .filter(asset => enabledNetworks.includes(asset.symbol))
+                .filter(
+                    asset => enabledNetworks.includes(asset.symbol) && asset.cryptoBalance.gt(0),
+                )
                 .map(asset => asset.assetKey)
                 .sort(byValue(values)),
         ),
@@ -285,21 +307,12 @@ const selectUsdToBaseCurrencyRate = createMemoizedSelector(
 );
 
 /**
- * Under a dollar, as the spec draws the line, whatever currency is chosen: the values the table
- * already shows, against a dollar converted once. An asset nothing can price has no value to be under
- * it, so it is not small: it stays, sorted below the priced ones. Neither is a coin with nothing on
- * it: an empty account is the network the user enabled, not a leftover, and a token with nothing on
- * it never makes a row in the first place. Until the dollar can be converted nothing is small, which
- * is safe: small balances are shown by default.
+ * Assets worth under $1 in the selected currency. An unpriced asset is never small, and nothing is
+ * small until the USD rate is known, so nothing is hidden by mistake.
  */
 const selectSmallBalanceAssetKeySet = createMemoizedSelector(
-    [
-        selectShownWalletAssetKeys,
-        selectWalletAssets,
-        selectWalletAssetValues,
-        selectUsdToBaseCurrencyRate,
-    ],
-    (assetKeys, assets, values, usdToBaseCurrencyRate): ReadonlySet<WalletAssetKey> => {
+    [selectShownWalletAssetKeys, selectWalletAssetValues, selectUsdToBaseCurrencyRate],
+    (assetKeys, values, usdToBaseCurrencyRate): ReadonlySet<WalletAssetKey> => {
         const small = new Set<WalletAssetKey>();
 
         if (usdToBaseCurrencyRate === undefined) {
@@ -309,16 +322,6 @@ const selectSmallBalanceAssetKeySet = createMemoizedSelector(
         const threshold = SMALL_BALANCE_USD_VALUE.times(usdToBaseCurrencyRate);
 
         assetKeys.forEach(assetKey => {
-            const asset = assets.get(assetKey);
-
-            if (
-                asset !== undefined &&
-                asset.contractAddress === undefined &&
-                asset.cryptoBalance.isZero()
-            ) {
-                return;
-            }
-
             // Rates and balances are never negative, so neither is a value: no `abs` needed.
             if (values.get(assetKey)?.lt(threshold)) {
                 small.add(assetKey);
@@ -362,11 +365,25 @@ export const selectSmallBalanceSummary = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: haveSameSmallBalanceSummary } },
 );
 
+export const selectIsHomeAssetTableMenuAvailable = (state: HomeAssetTableState) =>
+    !selectHasBitcoinOnlyFirmware(state);
+
+/** The saved grouping, or the default one while the menu that sets it is not offered. */
+export const selectHomeAssetGrouping = (state: HomeAssetTableState): HomeAssetGrouping =>
+    selectIsHomeAssetTableMenuAvailable(state) ? selectHomeAssetsTableGrouping(state) : 'default';
+
+/**
+ * The saved switch, or shown while the menu holding it is not offered: nothing else could bring
+ * small balances back.
+ */
+export const selectAreHomeAssetSmallBalancesDisplayed = (state: HomeAssetTableState) =>
+    !selectIsHomeAssetTableMenuAvailable(state) || selectAreHomeAssetSmallBalancesShown(state);
+
 const selectAllDisplayedAssetKeys = createMemoizedSelector(
     [
         selectShownWalletAssetKeys,
         selectSmallBalanceAssetKeySet,
-        selectAreHomeAssetSmallBalancesShown,
+        selectAreHomeAssetSmallBalancesDisplayed,
     ],
     (assetKeys, small, areSmallBalancesShown): readonly WalletAssetKey[] =>
         areSmallBalancesShown
@@ -375,7 +392,7 @@ const selectAllDisplayedAssetKeys = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-/** How many rows the table may show before it folds; each platform passes its own. */
+/** How many rows the table may show before it folds, `HOME_ASSET_ROW_LIMIT` on both platforms. */
 const selectRowLimit = (_state: HomeAssetTableState, rowLimit?: number) => rowLimit;
 
 /** Whether the table has more to show than the limit allows: a boolean, so a reorder below it is no re-render. */
@@ -482,7 +499,7 @@ const selectSortedNetworkSymbols = createMemoizedSelector(
         ),
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
-const selectCappedAssetKeysByNetwork = createMemoizedSelector(
+export const selectCappedAssetKeysByNetwork = createMemoizedSelector(
     [selectSortedNetworkSymbols, selectDisplayedAssetKeysByNetwork, selectRowLimit],
     (symbols, byNetwork, rowLimit): ReadonlyMap<NetworkSymbol, readonly WalletAssetKey[]> => {
         if (rowLimit === undefined) {
@@ -547,43 +564,149 @@ export const selectNetworkFiatValue = createMemoizedSelector(
 
 const selectWalletAsset = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden = false,
-) => (isHidden ? selectHiddenWalletAssets(state) : selectWalletAssets(state)).get(assetKey);
+) => {
+    if (assetKey === undefined) {
+        return undefined;
+    }
+
+    const hiddenAsset = () => selectHiddenWalletAssets(state).get(assetKey);
+
+    return isHidden ? hiddenAsset() : (selectWalletAssets(state).get(assetKey) ?? hiddenAsset());
+};
+
+export const selectWalletAssetKey = createMemoizedSelector(
+    [
+        selectDeviceStaticSessionId,
+        (_state: HomeAssetTableState, networkSymbol: NetworkSymbol) => networkSymbol,
+        (
+            _state: HomeAssetTableState,
+            _networkSymbol: NetworkSymbol,
+            tokenContract?: TokenAddress,
+        ) => tokenContract,
+    ],
+    (deviceState, networkSymbol, tokenContract) =>
+        deviceState === null
+            ? undefined
+            : getWalletAssetKey({
+                  deviceState,
+                  symbol: networkSymbol,
+                  contractAddress: tokenContract,
+              }),
+);
 
 export const selectWalletAssetSymbol = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.symbol;
 
 export const selectWalletAssetContractAddress = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.contractAddress;
 
 export const selectWalletAssetDisplaySymbol = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.displaySymbol;
 
+export const selectWalletAssetName = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey | undefined,
+) => selectWalletAsset(state, assetKey)?.name;
+
 export const selectWalletAssetAmount = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.amount;
 
+export const selectWalletAssetAccountCount = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey | undefined,
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.accountCount ?? 0;
+
+export const selectWalletAssetHoldings = createMemoizedSelector(
+    [
+        selectDeviceAssetAccounts,
+        (_state: HomeAssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
+    ],
+    (assetAccounts, assetKey): readonly AssetAccount[] =>
+        returnStableArrayIfEmpty(
+            assetAccounts.filter(
+                assetAccount =>
+                    assetAccount.assetKey === assetKey &&
+                    isPositiveBalance(assetAccount.cryptoBalance),
+            ),
+        ),
+);
+
+// A Cardano delegation stakes what the account can spend, which a pending send has already
+// reduced, as the asset's amount has; its on-chain balance would count the send too.
+const getAssetStakingBalance = (account: Account) => {
+    if (account.networkType !== 'cardano') {
+        return getAccountTotalStakingBalance(account);
+    }
+
+    return account.misc?.staking?.isActive ? account.formattedBalance : null;
+};
+
+export const selectWalletAssetStakingAmount = createMemoizedSelector(
+    [selectVisibleDeviceAccounts, selectWalletAssetSymbol, selectWalletAssetContractAddress],
+    (accounts, networkSymbol, contractAddress) => {
+        if (networkSymbol === undefined || contractAddress !== undefined) {
+            return '0';
+        }
+
+        return accounts
+            .reduce(
+                (total, account) =>
+                    account.symbol === networkSymbol
+                        ? total.plus(getAssetStakingBalance(account) ?? 0)
+                        : total,
+                new BigNumber(0),
+            )
+            .toFixed();
+    },
+);
+
+export const selectWalletAssetStakingRatio = createMemoizedSelector(
+    [selectWalletAssetAmount, selectWalletAssetStakingAmount],
+    (totalAmount, stakingAmount) => {
+        if (
+            totalAmount === undefined ||
+            !isPositiveBalance(totalAmount) ||
+            !isPositiveBalance(stakingAmount)
+        ) {
+            return undefined;
+        }
+
+        return Number(stakingAmount) / Number(totalAmount);
+    },
+);
+
+export const selectWalletAssetAvailableAmount = createMemoizedSelector(
+    [selectWalletAssetAmount, selectWalletAssetStakingAmount],
+    (totalAmount, stakingAmount) =>
+        totalAmount === undefined
+            ? undefined
+            : new BigNumber(totalAmount).minus(stakingAmount).toFixed(),
+);
+
 export const selectWalletAssetTokenSymbol = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
-) => selectWalletAsset(state, assetKey, isHidden)?.tokenSymbol;
+) => selectWalletAsset(state, assetKey, isHidden)?.tokenSymbol ?? null;
 
 export const selectWalletAssetTokenDecimals = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.tokenDecimals;
 
@@ -611,7 +734,7 @@ const selectHiddenWalletAssetKeysByReason = createMemoizedSelector(
         selectHiddenWalletAssets,
         selectHiddenWalletAssetValues,
         selectHiddenTokenReasons,
-        selectEnabledNetworks,
+        selectEnabledSupportedNetworks,
     ],
     (
         assets,
@@ -661,8 +784,37 @@ export const selectHasHiddenWalletAssets = createMemoizedSelector(
     byReason => byReason.size > 0,
 );
 
+export const selectWalletAssetHiddenReason = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey | undefined,
+): HiddenTokenReason | undefined => {
+    const symbol = selectWalletAssetSymbol(state, assetKey);
+    const contractAddress = selectWalletAssetContractAddress(state, assetKey);
+
+    return symbol === undefined || contractAddress === undefined
+        ? undefined
+        : selectHiddenTokenReasons(state).get(symbol)?.get(contractAddress);
+};
+
+export const selectWalletAssetFiatValue = createMemoizedSelector(
+    [
+        selectWalletAssetValues,
+        selectHiddenWalletAssetValues,
+        (_state: HomeAssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
+    ],
+    (values, hiddenValues, assetKey): BaseCurrencyAmount | undefined => {
+        if (assetKey === undefined) {
+            return undefined;
+        }
+
+        const fiatValue = values.get(assetKey) ?? hiddenValues.get(assetKey);
+
+        return fiatValue === undefined ? undefined : asBaseCurrencyAmount(fiatValue);
+    },
+);
+
 export type HomeAssetTotals = {
-    /** Undefined while nothing the wallet holds can be priced — a total of zero would be a lie. */
+    /** Undefined while nothing the wallet holds can be priced; zero once it holds nothing at all. */
     fiatValue: BigNumber | undefined;
     weekChange: BigNumber | undefined;
     weekChangePercent: BigNumber | undefined;
@@ -671,6 +823,10 @@ export type HomeAssetTotals = {
 export const selectHomeAssetTotals = createMemoizedSelector(
     [selectShownWalletAssetKeys, selectWalletAssetValues, selectWalletAssetWeekAgoValues],
     (assetKeys, values, weekAgoValues): HomeAssetTotals => {
+        if (assetKeys.length === 0) {
+            return { fiatValue: ZERO, weekChange: ZERO, weekChangePercent: ZERO };
+        }
+
         const addUp = (
             priced: ReadonlyMap<WalletAssetKey, BigNumber>,
             keys: readonly WalletAssetKey[],

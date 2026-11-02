@@ -5,8 +5,8 @@ import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { useUpdateEffect } from './useUpdateEffect';
 
 describe('useUpdateEffect', () => {
-    const renderUseUpdateEffect = async (initialEffect: EffectCallback) =>
-        await renderHookWithBasicProvider(({ effect }) => useUpdateEffect(effect), {
+    const renderUseUpdateEffect = (initialEffect: EffectCallback) =>
+        renderHookWithBasicProvider(({ effect }) => useUpdateEffect(effect), {
             initialProps: { effect: initialEffect },
         });
 

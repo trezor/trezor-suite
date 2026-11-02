@@ -1,10 +1,12 @@
-# pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/f614e907b485bf0ea684552d626f2cc569313fe2
-# we need to use nixos-unstable to be able to use nodejs_24, once there is a stable release with it we can change.
+# Share the flake's pinned development toolchain with legacy nix-shell users.
 let
+  flakeLock = builtins.fromJSON (builtins.readFile ./flake.lock);
+  rootInputs = flakeLock.nodes.${flakeLock.root}.inputs;
+  nixpkgsSource = flakeLock.nodes.${rootInputs.nixpkgs}.locked;
   pkgs = import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/f614e907b485bf0ea684552d626f2cc569313fe2.tar.gz";
-    sha256 = "17m87ra13d3kwlrw8p4vv7w5yyq5pc2qlpl983r47cflw9mzgdz7";
+    url = "https://github.com/${nixpkgsSource.owner}/${nixpkgsSource.repo}/archive/${nixpkgsSource.rev}.tar.gz";
+    sha256 = nixpkgsSource.narHash;
    }) {
     system = builtins.currentSystem;
     config.allowUnfree = true;
@@ -17,20 +19,17 @@ let
   # unstable packages
   electron = electron_42;
   nodejs = nodejs_24;
-  # use older gcc. 10.2.0 with glibc 2.32 for node_modules bindings.
-  # electron-builder is packing the app with glibc 2.32, bindings should not be compiled with newer version.
-  gccPkgs = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4.tar.gz";
-    sha256 = "0l5b1libi46sc3ly7a5vj04098f63aj5jynxpz44sb396nncnivl";
-  }) {};
 
   useAndroid = builtins.getEnv "USE_ANDROID" == "1";
   androidEnv = if useAndroid then import ./.nix/android.nix { inherit pkgs; } else {};
+  useRust = builtins.getEnv "USE_RUST" == "1";
+  rustEnv = if useRust then import ./.nix/rust.nix { inherit pkgs; } else {};
   extraBuildInputs = pkgs.lib.concatLists [
     (if useAndroid then [ androidEnv.jdk androidEnv.androidSdk ] ++ androidEnv.extraPackages else [jre])
+    (if useRust then rustEnv.extraPackages else [])
   ];
 in
-  stdenvNoCC.mkDerivation {
+  stdenv.mkDerivation {
     name = "trezor-suite-dev";
     buildInputs = [
       bash
@@ -54,13 +53,10 @@ in
       shellcheck
       vips
     ] ++ extraBuildInputs
-      ++ lib.optionals stdenv.isLinux [
-      nsis openjpeg osslsigncode p7zip squashfsTools gccPkgs.gcc # binaries used by node_module: electron-builder
+      ++ lib.optionals stdenv.hostPlatform.isLinux [
+      nsis openjpeg osslsigncode p7zip squashfsTools # binaries used by node_module: electron-builder
       udev  # used by node_module: usb
-    ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
-      Cocoa
-      CoreServices
-    ]);
+    ];
 
     # used by patchelf for WabiSabiClientLibrary in dev mode (see webpack nixos-interpreter-plugin)
     NIX_PATCHELF_LIBRARY_PATH = "${openssl.out}/lib:${zlib}/lib:${gcc.cc.lib}/lib";
@@ -72,9 +68,9 @@ in
       export PATH="$PATH:$CURDIR/node_modules/.bin"
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
      '' + lib.optionalString useAndroid androidEnv.shellHook
-        + lib.optionalString stdenv.isDarwin ''
+        + lib.optionalString stdenv.hostPlatform.isDarwin ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
-    '' + lib.optionalString stdenv.isLinux ''
+    '' + lib.optionalString stdenv.hostPlatform.isLinux ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
       export ELECTRON_DISABLE_SANDBOX=1
       export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source

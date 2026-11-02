@@ -12,8 +12,8 @@ jest.mock('../../../hooks/buy/useBuyPreviewFlow', () => ({
 describe('BuyPreviewContinueButton', () => {
     const mockUseBuyPreviewFlow = jest.mocked(useBuyPreviewFlow);
 
-    const renderBuyPreviewContinueButton = async (companyName = 'MoonPay') =>
-        await renderWithTradingProvider(<BuyPreviewContinueButton companyName={companyName} />, {
+    const renderBuyPreviewContinueButton = (companyName = 'MoonPay') =>
+        renderWithTradingProvider(<BuyPreviewContinueButton companyName={companyName} />, {
             tradeType: 'buy',
         });
 

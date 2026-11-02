@@ -1,5 +1,5 @@
 // Monero GetAddress implementation
-import { type PermissionRequest } from '@trezor/connect-common';
+import type { DeviceButtonRequestCode, PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { Address } from '@trezor/connect-common/src/types/params';
 import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
@@ -67,7 +67,7 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         return 'Export Monero address';
     }
 
-    getButtonRequestData(code: string) {
+    getButtonRequestData(code: DeviceButtonRequestCode) {
         if (code === 'ButtonRequest_Address') {
             const { params } = this;
             // @ts-expect-error: indexing with noUncheckedIndexedAccess

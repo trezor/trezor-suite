@@ -22,11 +22,11 @@ jest.mock('@suite-common/message-system', () => {
 });
 
 describe('ProviderSheetHandle', () => {
-    const renderProviderSheetHandle = async (
+    const renderProviderSheetHandle = (
         props: Partial<ProviderSheetHandleProps> = {},
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <ProviderSheetHandle
                 onClose={jest.fn()}
                 shouldShowFilters={true}

@@ -162,10 +162,6 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
           device?: TrezorDevice;
       }
     | {
-          type: 'auth-confirm-error';
-          error?: string;
-      }
-    | {
           type:
               | 'settings-applied'
               | 'pin-changed'

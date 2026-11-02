@@ -1,9 +1,8 @@
-import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } from 'react';
+import { type Dispatch, type SetStateAction, useCallback, useEffect } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
-import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Icon, Input } from '@trezor/components';
 import { Row } from '@trezor/components/src/components/Flex/Flex';
@@ -19,23 +18,25 @@ import { ExportAction } from './ExportAction';
 import { FilterAction } from './FilterAction';
 
 interface TransactionListActionsProps {
-    account: Account;
+    accounts: readonly Account[];
+    symbol: NetworkSymbol;
     searchQuery: string;
-    setSearch: Dispatch<SetStateAction<string>>;
+    setSearch: (query: string) => void;
     setSelectedPage: Dispatch<SetStateAction<number>>;
     isExportable?: boolean;
     isTxFilteringEnabled?: boolean;
 }
 
 export const TransactionListActions = ({
-    account,
+    accounts,
+    symbol,
     searchQuery,
     setSearch,
     setSelectedPage,
     isExportable = true,
     isTxFilteringEnabled = true,
 }: TransactionListActionsProps) => {
-    const [hasFetchedAll, setHasFetchedAll] = useState(false);
+    const [singleAccount] = accounts;
 
     const transactionHistoryPrefill = useSelector(selectTransactionHistoryPrefill);
 
@@ -43,45 +44,19 @@ export const TransactionListActions = ({
     const { translationString } = useTranslation();
 
     const onSearch = useCallback(
-        async (query: string) => {
+        (query: string) => {
             setSelectedPage(1);
             setSearch(query);
-
-            if (!hasFetchedAll) {
-                setHasFetchedAll(true);
-
-                try {
-                    await dispatch(
-                        fetchAllTransactionsForAccountThunk({
-                            accountKey: account.key,
-                            noLoading: true,
-                        }),
-                    );
-                } catch {
-                    dispatch(
-                        notificationsActions.addToast({
-                            type: 'error',
-                            error: translationString('TR_SEARCH_FAIL'),
-                        }),
-                    );
-                }
-            }
         },
-        [account, dispatch, hasFetchedAll, setSearch, setSelectedPage, translationString],
+        [setSearch, setSelectedPage],
     );
-
-    useEffect(() => {
-        setHasFetchedAll(false);
-        setSearch('');
-    }, [account.symbol, account.index, account.accountType, setSearch]);
 
     useEffect(() => {
         if (transactionHistoryPrefill) {
             onSearch(transactionHistoryPrefill);
-            setSearch(transactionHistoryPrefill);
             dispatch(setTransactionHistoryPrefill(''));
         }
-    }, [transactionHistoryPrefill, setSearch, onSearch, account, dispatch]);
+    }, [transactionHistoryPrefill, onSearch, dispatch]);
 
     return (
         <Row gap={12}>
@@ -101,10 +76,12 @@ export const TransactionListActions = ({
                     />
                 }
             />
-            {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
-                <FilterAction symbol={account.symbol} />
+            {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(symbol) && (
+                <FilterAction symbol={symbol} />
             )}
-            {isExportable && <ExportAction account={account} searchQuery={searchQuery} />}
+            {isExportable && accounts.length === 1 && singleAccount && (
+                <ExportAction account={singleAccount} searchQuery={searchQuery} />
+            )}
         </Row>
     );
 };

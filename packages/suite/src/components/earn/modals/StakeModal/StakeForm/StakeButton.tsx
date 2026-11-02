@@ -3,10 +3,10 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { Translation } from '@suite/intl';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import {
+    isCardanoDrepIdCip129,
     selectAreFeesLoading,
     selectHasRunningDiscovery,
     selectVotingDelegationOption,
-    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -14,6 +14,7 @@ import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -24,6 +25,12 @@ type StakeButtonProps = {
 };
 
 export const StakeButton = ({ flow }: StakeButtonProps) => {
+    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const {
         account,
@@ -53,7 +60,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
 
     const isDrepValid =
         selectedVotingDelegation.type !== 'another_drep' ||
-        validateCardanoDrep(selectedVotingDelegation.drepId);
+        isCardanoDrepIdCip129(selectedVotingDelegation.drepId);
 
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
@@ -70,6 +77,20 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         !isFormInputsValid || isSubmitting || isSigning || (isDeviceConnected && isLocked());
 
     const onStakeClick = () => {
+        analytics.report({
+            type: earnFlowToEventTypeMap[flow],
+            payload: {
+                action: 'continue',
+                deviceStatus,
+                step: 'stake-form-modal',
+                currency,
+                networkSymbol: account.symbol,
+                ...(flow === EarnFlow.UpdateProvider && isCardano
+                    ? { votingDelegation: selectedVotingDelegation.type }
+                    : {}),
+            },
+        });
+
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -85,19 +106,6 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         } else {
             handleSubmit(onSubmit)();
         }
-
-        analytics.report({
-            type: earnFlowToEventTypeMap[flow],
-            payload: {
-                action: 'continue',
-                step: 'stake-form-modal',
-                currency,
-                networkSymbol: account.symbol,
-                ...(flow === EarnFlow.UpdateProvider && isCardano
-                    ? { votingDelegation: selectedVotingDelegation.type }
-                    : {}),
-            },
-        });
     };
 
     const isLoading =

@@ -2,7 +2,11 @@ import { useRef } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { type HomeAssetGrouping, selectSmallBalanceSummary } from '@suite-common/assets';
+import {
+    type HomeAssetGrouping,
+    selectIsHomeAssetTableMenuAvailable,
+    selectSmallBalanceSummary,
+} from '@suite-common/assets';
 import {
     GhostContainer,
     Icon,
@@ -105,9 +109,13 @@ const HomeAssetTableFilter = ({
     );
 };
 
-export const HomeAssetTableFilterHeader = (props: HomeAssetTableFilterProps) => (
-    <Row gap={8} alignItems="center">
-        <Translation id="TR_ASSET" />
-        <HomeAssetTableFilter {...props} />
-    </Row>
-);
+export const HomeAssetTableFilterHeader = (props: HomeAssetTableFilterProps) => {
+    const isMenuAvailable = useSelector(selectIsHomeAssetTableMenuAvailable);
+
+    return (
+        <Row gap={8} alignItems="center">
+            <Translation id="TR_ASSET" />
+            {isMenuAvailable && <HomeAssetTableFilter {...props} />}
+        </Row>
+    );
+};

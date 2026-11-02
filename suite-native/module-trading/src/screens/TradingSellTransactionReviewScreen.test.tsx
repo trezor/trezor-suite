@@ -1,6 +1,7 @@
 import { type RouteProp } from '@react-navigation/native';
 import { type Store } from '@reduxjs/toolkit';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import type { RootStackParamList, RootStackRoutes, StackProps } from '@suite-native/navigation';
@@ -111,7 +112,13 @@ describe('TradingSellTransactionReviewScreenTest', () => {
         ) => {
             const result = await renderWithTradingProvider(
                 <TradingSellTransactionReviewScreen route={route} navigation={mockNavigation} />,
-                { services: { analytics: mockNativeAnalytics(), store } },
+                {
+                    services: {
+                        analytics: mockNativeAnalytics(),
+                        store,
+                        networks: mockNetworksServices(),
+                    },
+                },
             );
 
             ({ unmount } = result);

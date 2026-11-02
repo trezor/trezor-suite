@@ -28,8 +28,8 @@ describe('LastErrorMessage', () => {
         }),
     } as const;
 
-    const renderLastErrorMessage = async (props: LastErrorMessageProps) =>
-        await renderWithStoreProvider(<LastErrorMessage {...props} />, { services: { store } });
+    const renderLastErrorMessage = (props: LastErrorMessageProps) =>
+        renderWithStoreProvider(<LastErrorMessage {...props} />, { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({ reducer });

@@ -1,4 +1,4 @@
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAtomValue } from 'jotai';
 
@@ -8,27 +8,28 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { toastsAtom } from '../toastsAtoms';
 import { Toast } from './Toast';
 
-const toastsContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
-    ({ spacings }, { topSafeAreaInset }) => ({
-        width: '100%',
+const toastsContainerStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
+    ({ spacings }, { insets }) => ({
         position: 'absolute',
+        left: insets.left,
+        right: insets.right,
         justifyContent: 'center',
         // top margin = screen top padding + screen header top padding
-        marginTop: Math.max(topSafeAreaInset, spacings.sp8) + spacings.sp8,
+        marginTop: Math.max(insets.top, spacings.sp8) + spacings.sp8,
         paddingHorizontal: spacings.sp16,
     }),
 );
 
 export const ToastRenderer = () => {
     const { applyStyle } = useNativeStyles();
-    const { top: topSafeAreaInset } = useSafeAreaInsets();
+    const insets = useSafeAreaInsets();
     const toasts = useAtomValue(toastsAtom);
 
     return (
         <Box
             pointerEvents="none"
             style={applyStyle(toastsContainerStyle, {
-                topSafeAreaInset,
+                insets,
             })}
         >
             <VStack alignItems="center">

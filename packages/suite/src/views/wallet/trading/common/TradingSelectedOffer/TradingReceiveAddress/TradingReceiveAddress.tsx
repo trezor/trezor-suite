@@ -50,10 +50,10 @@ export const TradingReceiveAddress = () => {
                 justifyContent="space-between"
                 padding={{
                     vertical: selectedAccount && receiveAddress ? 20 : 16,
-                    horizontal: 20,
+                    horizontal: 16,
                 }}
             >
-                <Text typographyStyle="body-md" align="start" intent="neutral" priority="secondary">
+                <Text typographyStyle="body-sm" align="start" intent="neutral" priority="secondary">
                     <Translation
                         id={
                             selectedAccount || !receiveAddress
@@ -66,7 +66,7 @@ export const TradingReceiveAddress = () => {
                     <Column alignItems="flex-end">
                         {selectedAccount && receiveAddress ? (
                             <Text
-                                typographyStyle="body-md"
+                                typographyStyle="body-sm"
                                 as="div"
                                 data-testid="@trading/selected-receive-account"
                                 ellipsisLineCount={1}
@@ -83,7 +83,7 @@ export const TradingReceiveAddress = () => {
                                 {receiveAddress ? (
                                     <Address
                                         value={receiveAddress}
-                                        typographyStyle="body-md"
+                                        typographyStyle="body-sm"
                                         intent="neutral"
                                         isTruncated
                                     />
@@ -100,7 +100,7 @@ export const TradingReceiveAddress = () => {
                         )}
                     </Column>
 
-                    <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
+                    <Icon as={CaretRightIcon} size={16} intent="neutral" priority="secondary" />
                 </Row>
             </Row>
         </GhostContainer>

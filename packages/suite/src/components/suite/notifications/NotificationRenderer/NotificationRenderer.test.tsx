@@ -4,6 +4,7 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, fireEvent, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -15,6 +16,8 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { NotificationRenderer } from './NotificationRenderer';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
+
+const networkIcon = mockNetworkIcon();
 
 type LocalizedNotificationEntry = NotificationEntry<TranslationKey>;
 type TradingErrorNotification = Extract<LocalizedNotificationEntry, { type: 'trading-error' }>;
@@ -72,7 +75,7 @@ const renderNotification = (notification: LocalizedNotificationEntry) => {
     });
 
     return renderWithProviders(
-        services,
+        { ...services, networks: { networkIcon } },
         <NotificationRenderer render={NotificationViewProbe} notification={notification} />,
     );
 };
@@ -85,7 +88,7 @@ const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 
     });
 
     return renderWithProviders(
-        services,
+        { ...services, networks: { networkIcon } },
         <NotificationRenderer render={MessageView} notification={notification} />,
     );
 };
@@ -98,7 +101,7 @@ const renderWrapToast = (payload: Omit<WrapNotification, 'context' | 'id'>) => {
         services: () => ({ analytics }),
     });
     renderWithProviders(
-        services,
+        { ...services, networks: { networkIcon } },
         <NotificationRenderer render={DismissableView} notification={notification} />,
     );
 
@@ -317,4 +320,30 @@ describe('NotificationRenderer transaction broadcasts', () => {
             expect(notificationView).toHaveAttribute('data-icon', 'piggy-bank');
         },
     );
+});
+
+describe('NotificationRenderer passphrase mismatch errors', () => {
+    it.each([
+        ['verify-address-error', 'Address verification error'],
+        ['sign-tx-error', 'Transaction signing error'],
+    ] as const)('renders %s with the passphrase mismatch message', (type, prefix) => {
+        renderNotification({ context: 'toast', id: 0, type, error: 'Passphrase is incorrect' });
+
+        expect(screen.getByTestId('notification-view')).toHaveTextContent(
+            `${prefix}: Passphrase doesn't match this wallet`,
+        );
+    });
+
+    it('keeps other errors unchanged', () => {
+        renderNotification({
+            context: 'toast',
+            id: 0,
+            type: 'sign-tx-error',
+            error: 'Unexpected response type: Failure',
+        });
+
+        expect(screen.getByTestId('notification-view')).toHaveTextContent(
+            'Transaction signing error: Unexpected response type: Failure',
+        );
+    });
 });

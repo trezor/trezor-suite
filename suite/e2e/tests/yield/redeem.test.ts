@@ -36,6 +36,8 @@ const buildEthAccountTokens = ({ usdcBalance, shareBalance }: BuildEthAccountTok
     { ...YIELD_USDC_VAULT_SHARE_TOKEN, balance: shareBalance },
 ];
 
+const REDEEM_TXID = '0x4444444444444444444444444444444444444444444444444444444444444444';
+
 test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
@@ -46,6 +48,7 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
     test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
         await onboardingPage.completeOnboarding();
         await blockbookMock.start('eth');
+        blockbookMock.setBroadcastTxid(REDEEM_TXID);
         blockbookMock.updateAccountState({
             txs: 3,
             nonce: '2',
@@ -122,11 +125,8 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Redeem' },
-                        body: [YIELD_USDC_VAULT_DISPLAY_NAME],
-                        actions: { right_button: 'Continue' },
-                    },
-                    T3T1: {
                         body: [['Redeem from'], YIELD_USDC_VAULT_DISPLAY_NAME],
+                        actions: { right_button: 'Continue' },
                     },
                 });
                 await device.pressYes();
@@ -159,6 +159,15 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await devicePrompt.sendButton.click();
 
                 await expect(yieldFlowSection.withdrawnToast).toBeVisible();
+                blockbookMock.updateAccountState({
+                    transactions: [
+                        { ...ETH_STAKE_CONFIRMED_TX, txid: REDEEM_TXID },
+                        ETH_STAKE_CONFIRMED_TX,
+                        ETH_BASE_TX,
+                    ],
+                });
+                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
+
                 await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                     'TR_EARN_YIELD_WITHDRAW_COMPLETE',
                 );
@@ -168,8 +177,6 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
                     `${REDEEM_PAYOUT_AMOUNT} USDC`,
                 );
-
-                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
             });
 
             await test.step('Dashboard shows the reduced position', async () => {

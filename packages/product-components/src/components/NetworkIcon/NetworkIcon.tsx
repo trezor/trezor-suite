@@ -1,15 +1,13 @@
+import { useSelector } from 'react-redux';
 import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import {
-    type NetworkIconSymbol,
-    getNetworkIconName,
-    isNetworkIconSymbol,
-    isTestnetNetworkIconSymbol,
-    networkIcons,
-} from '@suite-common/icons';
-import type { NetworkSymbol } from '@trezor/network-module-types';
+import { useServices } from '@trezor/dependency-injection';
+import type { NetworkConfigState, NetworkSymbol } from '@trezor/network-module-types';
+
+import { selectIsTestnet } from '../../network-display/networkDisplaySelectors';
+import { injectGetNetworkIcon, injectHasNetworkIcon } from '../../services/networkServices';
 
 export const allowedNetworkIconSizes = [8, 12, 16, 20, 24, 32, 40, 48, 64] as const;
 export type NetworkIconSize = (typeof allowedNetworkIconSizes)[number];
@@ -46,7 +44,7 @@ const StyledReactSVG = styled(ReactSVG)`
 ` as typeof ReactSVG;
 
 export interface NetworkIconProps {
-    networkSymbol: NetworkIconSymbol | NetworkSymbol;
+    networkSymbol: NetworkSymbol;
     size?: NetworkIconSize;
     'data-testid'?: string;
 }
@@ -56,20 +54,27 @@ export function NetworkIcon({
     size = 32,
     'data-testid': dataTestId,
 }: NetworkIconProps) {
-    if (!isNetworkIconSymbol(networkSymbol)) {
+    const { getNetworkIcon, hasNetworkIcon } = useServices(
+        injectGetNetworkIcon,
+        injectHasNetworkIcon,
+    );
+    const isTestnet = useSelector((state: NetworkConfigState) =>
+        selectIsTestnet(state, networkSymbol),
+    );
+
+    const src = hasNetworkIcon(networkSymbol) ? getNetworkIcon(networkSymbol) : undefined;
+
+    if (typeof src !== 'string' || !src) {
         // Not console.error: captureConsoleIntegration would report every unknown symbol to Sentry.
         console.warn(`Network icon for ${networkSymbol} not found`);
 
         return null;
     }
 
-    const iconName = getNetworkIconName(networkSymbol);
-    const isTestnet = isTestnetNetworkIconSymbol(networkSymbol);
-
     return (
         <IconWrapper $size={size} $isTestnet={isTestnet} data-testid={dataTestId}>
             <StyledReactSVG
-                src={networkIcons[iconName]}
+                src={src}
                 beforeInjection={svg => {
                     svg.setAttribute('width', `${size}px`);
                     svg.setAttribute('height', `${size}px`);

@@ -7,7 +7,7 @@ import {
 import { HandCoinsIcon, PiggyBankIcon, WalletIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApy } from 'src/hooks/earn/useFormatApy';
 
 import {
     type EarnInANutshellHighlight,
@@ -25,6 +25,7 @@ export const UpdateEarnInANutshellHighlights = ({
     networkSymbol,
     apy,
 }: UpdateEarnInANutshellHighlightsProps) => {
+    const formatApyValue = useFormatApy();
     const networkDisplaySymbol = getNetworkDisplaySymbol(networkSymbol);
 
     const highlights: EarnInANutshellHighlight[] = [

@@ -79,8 +79,8 @@ const services: NativeAnalyticsDep = {
 describe('useSellFlow', () => {
     let store: Store<State>;
 
-    const renderUseSellFlow = async () =>
-        await renderHookWithStoreProvider(() => useSellFlow(), {
+    const renderUseSellFlow = () =>
+        renderHookWithStoreProvider(() => useSellFlow(), {
             services: { ...services, store },
         });
 

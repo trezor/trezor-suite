@@ -1,3 +1,4 @@
+import { type CountryCode, isKnownCountryCode } from '@suite-common/geolocation';
 import { type Feature } from '@suite-common/suite-types';
 import { type FirmwareHashCheckTimeouts } from '@trezor/connect';
 
@@ -26,6 +27,25 @@ const getYieldVaultContractAddresses = (payload: Feature['payload']) => {
         .filter((address): address is string => typeof address === 'string' && address !== '')
         .map(address => address.toLowerCase());
 };
+
+const getPayloadCountries = (payload: Feature['payload'], key: string): CountryCode[] => {
+    const payloadCountries = payload?.[key];
+
+    if (!Array.isArray(payloadCountries)) {
+        return [];
+    }
+
+    return payloadCountries
+        .filter((code): code is string => typeof code === 'string')
+        .map(code => code.toUpperCase())
+        .filter(isKnownCountryCode);
+};
+
+export const getTradingResidenceWhitelist = (feature: Feature | undefined): CountryCode[] =>
+    getPayloadCountries(feature?.payload, 'allowedCountries');
+
+export const getFinpromRestrictedCountries = (feature: Feature | undefined): CountryCode[] =>
+    getPayloadCountries(feature?.payload, 'countries');
 
 type IsYieldFeatureApplicableForVaultParams = {
     feature: Feature;

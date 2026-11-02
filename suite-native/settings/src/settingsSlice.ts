@@ -1,6 +1,7 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs';
+import { type EarnStakingWorkerBaseUrl } from '@suite-common/earn-staking-api';
 import { isDetoxTestBuild } from '@suite-native/config';
 import { DEVICE } from '@trezor/connect';
 
@@ -17,6 +18,7 @@ export interface AppSettingsState {
     shouldShowAutoEjectAlert: boolean;
     hasAutoEjectAlertBeenDisplayed: boolean;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
+    earnStakingWorkerBaseUrl?: EarnStakingWorkerBaseUrl;
 }
 
 export type SettingsSliceRootState = {
@@ -36,6 +38,7 @@ export const appSettingsInitialState: AppSettingsState = {
     shouldShowAutoEjectAlert: false,
     hasAutoEjectAlertBeenDisplayed: false,
     earnYieldWorkerBaseUrl: undefined,
+    earnStakingWorkerBaseUrl: undefined,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
@@ -48,6 +51,7 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'experimentalFeatures',
     'hasAutoEjectAlertBeenDisplayed',
     'earnYieldWorkerBaseUrl',
+    'earnStakingWorkerBaseUrl',
 ];
 
 const appSettingsSlice = createSlice({
@@ -86,6 +90,12 @@ const appSettingsSlice = createSlice({
         setEarnWorkerEnvironment: (state, { payload }: PayloadAction<EarnYieldWorkerBaseUrl>) => {
             state.earnYieldWorkerBaseUrl = payload;
         },
+        setEarnStakingWorkerEnvironment: (
+            state,
+            { payload }: PayloadAction<EarnStakingWorkerBaseUrl>,
+        ) => {
+            state.earnStakingWorkerBaseUrl = payload;
+        },
     },
     extraReducers: builder => {
         builder.addCase(DEVICE.CONNECT, state => {
@@ -116,6 +126,9 @@ export const selectHasAutoEjectAlertBeenDisplayed = (state: SettingsSliceRootSta
 export const selectEarnYieldWorkerBaseUrl = (state: SettingsSliceRootState) =>
     state.appSettings.earnYieldWorkerBaseUrl;
 
+export const selectEarnStakingWorkerBaseUrl = (state: SettingsSliceRootState) =>
+    state.appSettings.earnStakingWorkerBaseUrl;
+
 export const selectIsFirmwareRevisionCheckEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.isFirmwareRevisionCheckEnabled;
 export const selectIsFirmwareHashCheckEnabled = (state: SettingsSliceRootState) =>
@@ -141,5 +154,6 @@ export const {
     setShouldShowAutoEjectAlert,
     setHasAutoEjectAlertBeenDisplayed,
     setEarnWorkerEnvironment,
+    setEarnStakingWorkerEnvironment,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

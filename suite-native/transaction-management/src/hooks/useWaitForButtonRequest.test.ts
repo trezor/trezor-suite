@@ -10,8 +10,8 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 describe('useWaitForButtonRequest.ts', () => {
-    const renderUseWaitForButtonRequest = async (initialCallback: jest.Mock) =>
-        await renderHookWithStoreProvider(
+    const renderUseWaitForButtonRequest = (initialCallback: jest.Mock) =>
+        renderHookWithStoreProvider(
             ({ onButtonRequest }) => useWaitForButtonRequest(onButtonRequest),
             {
                 initialProps: {

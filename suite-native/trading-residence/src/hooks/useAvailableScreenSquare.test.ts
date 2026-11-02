@@ -21,10 +21,8 @@ describe('useAvailableScreenSquare', () => {
             nativeEvent: { layout: { height, width, x: 0, y: 0 } },
         }) as LayoutChangeEvent;
 
-    const renderUseAvailableScreenSpace = async (maximumSize = MAXIMUM_SIZE) =>
-        await renderHookWithBasicProvider(() =>
-            useAvailableScreenSquare(MINIMUM_SIZE, maximumSize),
-        );
+    const renderUseAvailableScreenSpace = (maximumSize = MAXIMUM_SIZE) =>
+        renderHookWithBasicProvider(() => useAvailableScreenSquare(MINIMUM_SIZE, maximumSize));
 
     it('should return MAXIMUM_SIZE when totalAvailableHeight is larger than MAXIMUM_SIZE', async () => {
         // totalAvailableHeight = 1334 - 100 = 1234 which is > MAXIMUM_SIZE = 300

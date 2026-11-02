@@ -1,19 +1,21 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
 import type { MoneroNetworkSymbol } from '@trezor/network-monero-types';
 
-import { moneroCryptoIcons } from './cryptoIcons';
-import { moneroNetworkIcons } from './networkIcons';
-
 // Keep SVG loading lazy so registering assets does not load their files.
 const icons: Record<MoneroNetworkSymbol, NetworkIconAsset> = {
     xmr: {
-        getIcons: () => ({
-            coin: moneroCryptoIcons.xmr.getIcon(),
-            network: moneroNetworkIcons.xmr.getIcon(),
-        }),
+        getIcons: () => {
+            const coin = require('../assets/cryptoIcons/xmr.svg');
+            const network = require('../assets/networkIcons/xmr.svg');
+
+            return {
+                coin: coin.default ?? coin,
+                network: network.default ?? network,
+            };
+        },
         getIconPaths: () => ({
-            coin: moneroCryptoIcons.xmr.getIconPath(),
-            network: moneroNetworkIcons.xmr.getIconPath(),
+            coin: require.resolve('../assets/cryptoIcons/xmr.svg'),
+            network: require.resolve('../assets/networkIcons/xmr.svg'),
         }),
     },
 };

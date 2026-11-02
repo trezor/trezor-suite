@@ -19,6 +19,8 @@ export type Logger = {
     error(...args: unknown[]): void;
 };
 
+export type LoggerDep = { logger: Logger };
+
 export type CreateLogger = (prefix: string) => Logger;
 
 export type CreateLoggerDep = { createLogger?: CreateLogger };

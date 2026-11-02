@@ -10,7 +10,7 @@ const ONE_ETH = '1000000000000000000';
 const ONE_USDC = '1000000';
 
 describe('TransactionReviewOutputItemValues', () => {
-    const renderValues = async ({
+    const renderValues = ({
         accountKey = ETH_ACCOUNT_KEY,
         tokenContract,
         value = ONE_ETH,
@@ -19,7 +19,7 @@ describe('TransactionReviewOutputItemValues', () => {
         tokenContract?: TokenAddress;
         value?: string;
     } = {}) =>
-        await renderWithStoreProvider(
+        renderWithStoreProvider(
             <TransactionReviewOutputItemValues
                 accountKey={accountKey}
                 tokenContract={tokenContract}

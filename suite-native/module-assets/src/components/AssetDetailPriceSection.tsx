@@ -1,40 +1,19 @@
-import { useSelector } from 'react-redux';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { type AssetsRootState, selectAssetName } from '@suite-common/assets';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
-import { HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
+import { VStack } from '@suite-native/atoms';
+import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
+import { AssetPriceChart } from '@suite-native/price-chart';
 
 import { AssetDetailPrice } from './AssetDetailPrice';
 
-type AssetDetailPriceSectionProps = {
-    networkSymbol: NetworkSymbol;
-    tokenContract?: TokenAddress;
-};
-
-export const AssetDetailPriceSection = ({
-    networkSymbol,
-    tokenContract,
-}: AssetDetailPriceSectionProps) => {
-    const assetName = useSelector((state: AssetsRootState) =>
-        selectAssetName(state, networkSymbol, tokenContract),
-    );
+export const AssetDetailPriceSection = () => {
+    const { networkSymbol, tokenContract } =
+        useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
 
     return (
-        <VStack spacing="sp12" paddingHorizontal="sp16" paddingVertical="sp8">
-            <HStack alignItems="center" spacing="sp8">
-                <TokenIcon
-                    networkSymbol={networkSymbol}
-                    contractAddress={tokenContract}
-                    tokenSymbol={assetName}
-                    showNetworkIcon
-                    size="extraSmall"
-                />
-                <Text variant="body-md-strong">{assetName}</Text>
-            </HStack>
-
+        <VStack spacing="sp24" paddingTop="sp24">
             <AssetDetailPrice networkSymbol={networkSymbol} tokenContract={tokenContract} />
+            <AssetPriceChart networkSymbol={networkSymbol} tokenContract={tokenContract} />
         </VStack>
     );
 };

@@ -1,0 +1,14 @@
+{
+    "ignore-patterns": ["libDev", ".build-storybook"],
+    "ignores": [
+        "@babel/preset-env",
+        "@babel/preset-react",
+        "@babel/preset-typescript",
+        "@storybook/react-webpack5",
+        "@storybook/addon-links",
+        "@storybook/addon-docs",
+        "@suite/feature-feedback",
+        "@trezor/product-components",
+        "react-dom"
+    ]
+}

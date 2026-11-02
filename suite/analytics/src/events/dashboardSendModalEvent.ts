@@ -2,7 +2,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
-export type DashboardSendModalEventSource = 'page-header';
+export type DashboardSendModalEventSource = 'page-header' | 'asset-header';
 
 type Attributes = {
     source: AttributeDef<DashboardSendModalEventSource>;
@@ -15,9 +15,12 @@ export const dashboardSendModalEvent: EventDef<Attributes, EventType.DashboardSe
 
     attributes: {
         source: {
-            changelog: [{ version: '26.3.0', notes: 'added' }],
+            changelog: [
+                { version: '26.3.0', notes: 'added' },
+                { version: '26.11.0', notes: 'added `asset-header` value' },
+            ],
             description:
-                'Where the send modal was opened from: `page-header` from the main page header button',
+                'Where the send modal was opened from: `page-header` from the main page header button, `asset-header` from the asset detail page header button',
         },
     },
 };

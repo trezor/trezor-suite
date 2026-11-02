@@ -4,6 +4,7 @@ import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/
 import { toTokenAddress } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { type YieldFlowParams, YieldStackRoutes } from '@suite-native/navigation';
 import {
     act,
@@ -76,6 +77,8 @@ const renderWithdrawController = () => {
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(jest.fn()) };
     const store = createLightStore({
         reducer: {
+            deviceAuthorization: deviceAuthorizationReducer,
+            device: createStaticReducer({ selectedDevice: { connected: true } }),
             locale: createStaticReducer({
                 appLocaleCode: 'en-US',
                 systemLocaleCode: 'en-US',
@@ -93,6 +96,32 @@ const renderWithdrawController = () => {
 };
 
 describe('useYieldWithdrawController', () => {
+    it.each(['withdraw', 'redeem'] as const)(
+        'reports the classified compose failure for %s',
+        async operation => {
+            mockRouteParams.withdrawFlowType = operation;
+            const { services } = await renderWithdrawController();
+
+            await act(() =>
+                useYieldWithdrawFeesMock.mock.calls
+                    .at(-1)?.[0]
+                    .onComposeError?.('missing-vault-address'),
+            );
+
+            expect(services.analytics.report).toHaveBeenCalledWith({
+                type: 'yield/withdraw',
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    operation,
+                    networkSymbol: yieldFlowData.account.symbol,
+                    vaultId: yieldFlowData.vault.id,
+                    errorMessage: 'missing-vault-address',
+                },
+            });
+        },
+    );
+
     beforeEach(() => {
         jest.clearAllMocks();
         mockRouteParams = { accountKey: yieldFlowData.account.key, tokenContract };

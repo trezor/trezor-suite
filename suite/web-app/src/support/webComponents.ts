@@ -24,6 +24,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             ({ HiddenTokens }) => ({ default: HiddenTokens }),
         ),
     ),
+    'suite-asset': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/home/AssetDetail/AssetDetail').then(
+            ({ AssetDetail }) => ({ default: AssetDetail }),
+        ),
+    ),
     'suite-earn': lazy(() =>
         import(/* webpackChunkName: "earn" */ 'src/views/earn/index').then(({ Earn }) => ({
             default: Earn,
@@ -134,6 +139,12 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     'wallet-details': lazy(
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/details'),
     ),
+    // Debug only: trading form embed preview
+    'wallet-trade': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/trade/WalletTrade').then(
+            ({ WalletTrade }) => ({ default: WalletTrade }),
+        ),
+    ),
     'wallet-tokens': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/tokens')),
     'wallet-nfts': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/nfts')),
     'wallet-send': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/send')),
@@ -149,6 +160,9 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     ),
     'wallet-anonymize': lazy(
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/anonymize'),
+    ),
+    'wallet-coinjoin': lazy(
+        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/coinjoin'),
     ),
 
     // trading

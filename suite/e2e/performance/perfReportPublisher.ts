@@ -4,6 +4,7 @@ import { resolveRunUrl, upsertStickyPrComment } from '@trezor/e2e-utils';
 import {
     PERF_REPORT_MARKER,
     type ReportedMeasurement,
+    formatCommentSection,
     formatMarkdownReport,
     mergeMeasurements,
     perfReportComment,
@@ -35,22 +36,27 @@ type PublishArgs = {
     log: (message: string) => void;
 };
 
+const sectionContext = (args: PublishArgs) => ({
+    heading: sectionHeading(),
+    runUrl: resolveRunUrl(),
+    budgetsPath: args.budgetsPath,
+});
+
 /**
  * Rendered from what the section already reported plus this run's measurements. The section is read
  * again on every attempt, so a publish that lands between the read and the write is merged in rather
  * than dropped.
  */
-const buildSection = (existingBody: string | undefined, args: PublishArgs & { label: string }) =>
-    formatMarkdownReport(
+const buildCommentSection = (
+    existingBody: string | undefined,
+    args: PublishArgs & { label: string },
+) =>
+    formatCommentSection(
         mergeMeasurements(
             readSectionMeasurements({ body: existingBody, label: args.label }),
             args.measurements,
         ),
-        {
-            heading: sectionHeading(),
-            runUrl: resolveRunUrl(),
-            budgetsPath: args.budgetsPath,
-        },
+        sectionContext(args),
     );
 
 export const publishPerfReport = async (args: PublishArgs) => {
@@ -58,7 +64,7 @@ export const publishPerfReport = async (args: PublishArgs) => {
     const label = sectionKey();
 
     try {
-        writeStepSummary(buildSection(undefined, { ...args, label }));
+        writeStepSummary(formatMarkdownReport(measurements, sectionContext(args)));
     } catch (error) {
         log(`Failed to write the performance report to the run summary: ${error}`);
     }
@@ -70,8 +76,10 @@ export const publishPerfReport = async (args: PublishArgs) => {
                 perfReportComment({
                     existingBody,
                     label,
-                    section: buildSection(existingBody, { ...args, label }),
+                    section: buildCommentSection(existingBody, { ...args, label }),
                 }),
+            // Started only by a flow over its limit; once it exists, every job keeps its line current.
+            createIfMissing: measurements.some(measurement => measurement.report.overLimit),
             // Only this run's own measurements are checked for: another job merging into the same
             // section is not a loss, and demanding the whole section back would retry forever.
             holdsOwnContent: body => {

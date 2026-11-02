@@ -15,7 +15,6 @@ export * from './staking';
 export * from './walletBackupType';
 export type * from './sign';
 export type * from './thp';
-export * from './languages';
 export type * from './window';
 
 export type SuiteCompatibleAction<TPayload> = (

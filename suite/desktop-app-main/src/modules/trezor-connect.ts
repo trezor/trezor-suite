@@ -5,7 +5,7 @@ import TrezorConnect, {
     UI_EVENTS,
     UI_RESPONSE,
 } from '@trezor/connect';
-import { initLog } from '@trezor/connect-common';
+import { ERRORS, initLog } from '@trezor/connect-common';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BridgeTransport } from '@trezor/transport-common';
@@ -210,6 +210,15 @@ export const initBackground: ModuleInitBackground = ({
                 }
 
                 return (TrezorConnect[method] as any)(...params);
+            },
+            onRequestError: (method, error) => {
+                // init is the only method which actually throws an runtime error
+                if (method === 'init') {
+                    return;
+                }
+                logger.error(SERVICE_NAME, `onRequestError: ${method}: ${error}`);
+
+                return { success: false, error: ERRORS.serializeError(error) };
             },
             onAddListener: (eventName, listener) => {
                 logger.debug(SERVICE_NAME, `Add event listener ${eventName}`);

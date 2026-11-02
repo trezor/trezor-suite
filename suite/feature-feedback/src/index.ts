@@ -12,3 +12,5 @@ export {
 } from './components/FeedbackFormModalManager';
 
 export { initialState } from './featureFeedbackSlice';
+
+export { FeedbackCard, type FeedbackCardProps } from './components/FeedbackCard/FeedbackCard';

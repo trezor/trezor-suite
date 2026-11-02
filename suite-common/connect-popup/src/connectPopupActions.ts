@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type PermissionRequest } from '@trezor/connect';
+import { type DeviceUniquePath, type PermissionRequest } from '@trezor/connect';
 
 import {
     type AppRememberedPermission,
@@ -160,6 +160,11 @@ const setSelectedFee = createAction(
 
 const switchDevice = createAction(`${ACTION_PREFIX}/switchDevice`);
 
+const setCallDevicePath = createAction(
+    `${ACTION_PREFIX}/setCallDevicePath`,
+    (payload: DeviceUniquePath) => ({ payload }),
+);
+
 export const connectPopupActions = {
     initiateCall,
     requestPermissions,
@@ -179,5 +184,6 @@ export const connectPopupActions = {
     txSimulation,
     setSelectedFee,
     switchDevice,
+    setCallDevicePath,
     clearCall,
 } as const;

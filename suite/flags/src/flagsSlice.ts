@@ -1,5 +1,9 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import {
+    type AssetPriceChartRange,
+    INITIAL_ASSET_PRICE_CHART_RANGE,
+} from '@suite-common/price-chart';
 import { DEVICE } from '@trezor/connect';
 import {
     type ActionTypesDep,
@@ -18,6 +22,7 @@ export type FlagsState = {
     securityStepsHidden: boolean;
     dashboardGraphHidden: boolean;
     dashboardAssetsGridMode: boolean;
+    assetPriceChartRange: AssetPriceChartRange;
     showTEXDashboardPromoBanner: boolean;
     showTS7DashboardPromoBanner: boolean;
     showDefiYieldDashboardPromoBanner: boolean;
@@ -43,9 +48,6 @@ export type FlagsState = {
     hasSeenDisconnectTooltip: boolean;
     showNoDeviceEshopSidebarBanner: boolean;
     areNoDeviceEshopBannersDisabled: boolean;
-    // Temporary: both go with the asset-first experiment, along with the cards they dismiss.
-    homeAssetTableNewBannerClosed: boolean;
-    homeAssetTableFeedbackClosed: boolean;
     seenNewContentIndicators: Partial<Record<NewContentIndicatorId, true>>;
 };
 
@@ -65,6 +67,7 @@ export const flagsInitialState: FlagsState = {
     securityStepsHidden: false,
     dashboardGraphHidden: false,
     dashboardAssetsGridMode: true,
+    assetPriceChartRange: INITIAL_ASSET_PRICE_CHART_RANGE,
     showTEXDashboardPromoBanner: true,
     showTS7DashboardPromoBanner: true,
     showDefiYieldDashboardPromoBanner: true,
@@ -90,8 +93,6 @@ export const flagsInitialState: FlagsState = {
     hasSeenDisconnectTooltip: false,
     showNoDeviceEshopSidebarBanner: true,
     areNoDeviceEshopBannersDisabled: false,
-    homeAssetTableNewBannerClosed: false,
-    homeAssetTableFeedbackClosed: false,
     // In a fresh Suite, all content is new, so we don't need to distinguish individual features as "new" → mark all as seen.
     // See the unit test, which specifies this behavior.
     seenNewContentIndicators: typedObjectFromEntries(
@@ -108,6 +109,12 @@ const flagsSlice = createSliceWithExtraDeps({
             { payload }: PayloadAction<{ key: BooleanFlagKey; value: boolean }>,
         ) => {
             state[payload.key] = payload.value;
+        },
+        setAssetPriceChartRange: (
+            state: FlagsState,
+            { payload }: PayloadAction<AssetPriceChartRange>,
+        ) => {
+            state.assetPriceChartRange = payload;
         },
         markNewContentIndicatorAsSeen: (
             state: FlagsState,
@@ -138,12 +145,18 @@ const flagsSlice = createSliceWithExtraDeps({
     },
 });
 
-export const { markNewContentIndicatorAsSeen, setFlag, setNewContentIndicatorSeen } =
-    flagsSlice.actions;
+export const {
+    markNewContentIndicatorAsSeen,
+    setAssetPriceChartRange,
+    setFlag,
+    setNewContentIndicatorSeen,
+} = flagsSlice.actions;
 export const flagsActions = flagsSlice.actions;
 export const prepareFlagsReducer = flagsSlice.prepareReducer;
 
 export const selectFlags = (state: FlagsRootState) => state.flags;
+export const selectAssetPriceChartRange = (state: FlagsRootState) =>
+    state.flags.assetPriceChartRange;
 export const selectIsTEXDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTEXDashboardPromoBanner;
 export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>
@@ -172,10 +185,6 @@ export const selectAreNoDeviceEshopBannersDisabled = (state: FlagsRootState) =>
     state.flags.areNoDeviceEshopBannersDisabled;
 export const selectHasSeenDisconnectTooltip = (state: FlagsRootState) =>
     state.flags.hasSeenDisconnectTooltip;
-export const selectIsHomeAssetTableNewBannerClosed = (state: FlagsRootState) =>
-    state.flags.homeAssetTableNewBannerClosed;
-export const selectIsHomeAssetTableFeedbackClosed = (state: FlagsRootState) =>
-    state.flags.homeAssetTableFeedbackClosed;
 export const selectIsNewContentIndicatorVisible =
     (indicatorId: NewContentIndicatorId) => (state: FlagsRootState) =>
         state.flags.seenNewContentIndicators[indicatorId] !== true;

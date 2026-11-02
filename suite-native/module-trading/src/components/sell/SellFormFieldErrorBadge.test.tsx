@@ -34,12 +34,12 @@ describe('SellFormFieldErrorBadge', () => {
         wallet: { settings: { bitcoinAmountUnit } },
     });
 
-    const renderSellFormFieldErrorBadge = async (
+    const renderSellFormFieldErrorBadge = (
         props: SellFormFieldErrorBadgeProps,
         form: SellFormType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = getOverrides(),
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <SellFormFieldErrorBadge {...props} />
             </Form>,

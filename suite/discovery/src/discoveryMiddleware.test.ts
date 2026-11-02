@@ -100,7 +100,7 @@ type FixtureState = {
     router?: RouterStateOverrides;
     thp?: Partial<ThpState>;
     discovery?: Discovery;
-    persistentDeviceData?: Partial<PersistentDeviceDataState>;
+    persistentDeviceData?: PersistentDeviceDataState;
 };
 
 type FixtureStep = {
@@ -135,12 +135,28 @@ const selectedDevice = mockSuiteDevice({
 if (!isDeviceAcquired(selectedDevice)) {
     throw `${mockSuiteDevice.name}() must return an AcquiredDevice here.`;
 }
+const selectedDeviceId = selectedDevice.id;
+if (selectedDeviceId === null) {
+    throw `${mockSuiteDevice.name}() must return a device with id here.`;
+}
 const compromisedDevice: AcquiredDevice = {
     ...selectedDevice,
     authenticityChecks: {
         firmwareRevision: { success: false, error: 'revision-mismatch' },
         firmwareHash: { success: false, error: 'hash-mismatch' },
     },
+};
+
+const discoveryEntropyCheckFailedPersistentData: PersistentDeviceDataState = {
+    devices: [
+        {
+            ...defaultDevicePersistentData,
+            device_id: selectedDeviceId,
+            unit_color: selectedDevice.features.unit_color,
+            internal_model: selectedDevice.features.internal_model,
+            lastEntropyCheckResult: { success: true, discoveryCheckFailedPaths: ["m/84'/0'/0'"] },
+        },
+    ],
 };
 
 const unacquiredDevice = mockSuiteDevice({
@@ -216,6 +232,29 @@ const fixtures: Fixture[] = [
             {
                 action: deviceActions.selectDevice(compromisedDevice),
                 expectedCallCount: 0,
+            },
+        ],
+    },
+    {
+        description:
+            'does not start discovery when discovery entropy check failed, until it is dismissed and another trigger occurs',
+        state: {
+            router: { app: 'dashboard' },
+            persistentDeviceData: discoveryEntropyCheckFailedPersistentData,
+        },
+        steps: [
+            {
+                action: deviceActions.selectDevice(selectedDevice),
+                expectedCallCount: 0,
+            },
+            {
+                // Dismissing is not a trigger, the dismissing component ejects all wallets.
+                action: deviceActions.dismissDiscoveryEntropyCheck(selectedDeviceId),
+                expectedCallCount: 0,
+            },
+            {
+                action: deviceActions.selectDevice(selectedDevice),
+                expectedCallCount: 1,
             },
         ],
     },

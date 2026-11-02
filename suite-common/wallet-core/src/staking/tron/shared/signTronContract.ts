@@ -5,6 +5,7 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import * as tronUtils from '@trezor/network-tron/utils';
 
+import { isEarnSigningCancelled } from '../../../earn/earnTransactionAnalytics';
 import { type TronClaimContract } from '../actions/claim/claimContract';
 import { type TronFreezeContract } from '../actions/freeze/freezeContract';
 import { type TronUnstakeContract } from '../actions/unstake/unstakeContract';
@@ -70,9 +71,7 @@ export const signTronContract = async ({
     });
 
     if (!signed.success) {
-        const { code } = signed.error;
-
-        if (code === 'Failure_ActionCancelled' || code === 'Method_Cancel') {
+        if (isEarnSigningCancelled(signed.error)) {
             return { error: { kind: 'cancelled' } };
         }
 

@@ -1,19 +1,20 @@
 import { useLayoutEffect, useMemo } from 'react';
-import { FormProvider } from 'react-hook-form';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     CARDANO_ALWAYS_ABSTAIN_DREP_ID,
+    areCardanoDrepIdsEqual,
     getCardanoAccountDrepId,
     getCardanoCurrentVotingOption,
+    isCardanoDrepIdCip129,
     selectStakeVotingDelegation,
     selectVotingDelegationOption,
     stakeActions,
-    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Modal, Tooltip } from '@trezor/components';
@@ -22,6 +23,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import {
@@ -42,6 +44,7 @@ export const StakeChangeDelegateModalLoaded = ({
     selectedAccount,
 }: StakeChangeDelegateModalProps) => {
     const { account } = selectedAccount;
+    const deviceStatus = useEarnDeviceStatus();
 
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
@@ -106,6 +109,7 @@ export const StakeChangeDelegateModalLoaded = ({
                 type: events.stakingChangeDelegateEvent.name,
                 payload: {
                     action: 'continue',
+                    deviceStatus,
                     step: 'change-delegate-form-modal',
                     networkSymbol: account.symbol,
                 },
@@ -137,11 +141,11 @@ export const StakeChangeDelegateModalLoaded = ({
             case 'another_drep': {
                 const { drepId } = selectedVotingDelegation;
 
-                if (drepId === currentDrepId) {
+                if (areCardanoDrepIdsEqual(drepId, currentDrepId)) {
                     return { isDisabled: true, errorType: 'current_delegate' as const };
                 }
 
-                if (!validateCardanoDrep(drepId)) {
+                if (!isCardanoDrepIdCip129(drepId)) {
                     return { isDisabled: true, errorType: 'invalid_drep' as const };
                 }
 
@@ -184,9 +188,11 @@ export const StakeChangeDelegateModalLoaded = ({
         [currentVotingOption?.type],
     );
 
+    const { formState } = methods;
+
     return (
         <ChangeDelegateFormContext.Provider value={changeDelegateContextValues}>
-            <FormProvider {...methods}>
+            <Form form={methods} formState={formState}>
                 <Modal
                     heading={<Translation id="TR_STAKING_CHANGE_VOTING_PREFERENCE" />}
                     onCancel={handleCancel}
@@ -232,7 +238,7 @@ export const StakeChangeDelegateModalLoaded = ({
                         </Card>
                     </Column>
                 </Modal>
-            </FormProvider>
+            </Form>
         </ChangeDelegateFormContext.Provider>
     );
 };

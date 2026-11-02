@@ -6,7 +6,6 @@
         {
             "path": "../../packages/dependency-injection"
         },
-        { "path": "../../packages/env-utils" },
         { "path": "../../packages/redux-utils" }
     ]
 }

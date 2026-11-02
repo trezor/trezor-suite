@@ -25,7 +25,7 @@ type State = TradingRootState & CombinedSelectorsRootState;
 const btc1AccountKey = btc1NormalAccount.key;
 
 describe('useReceiveAccountPreselectionEffect', () => {
-    const renderUseReceiveAccountPreselectionEffect = async ({
+    const renderUseReceiveAccountPreselectionEffect = ({
         store,
         tradingType = 'buy',
         receiveAsset = btcAsset,
@@ -34,7 +34,7 @@ describe('useReceiveAccountPreselectionEffect', () => {
         tradingType?: 'buy' | 'exchange';
         receiveAsset?: TradeableAsset;
     }) =>
-        await renderHookWithStoreProvider(
+        renderHookWithStoreProvider(
             () =>
                 useReceiveAccountPreselectionEffect({
                     tradingType,

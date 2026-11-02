@@ -20,6 +20,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type AccountOverviewFlow } from './types';
 
@@ -35,9 +36,12 @@ type AccountOverviewScreenHeaderProps = {
 
 type AccountOverviewScreenHeaderContentProps = Pick<AccountOverviewScreenHeaderProps, 'accountKey'>;
 
+const headerContentStyle = prepareNativeStyle(() => ({ maxWidth: '100%' }));
+
 const AccountOverviewScreenHeaderContent = ({
     accountKey,
 }: AccountOverviewScreenHeaderContentProps) => {
+    const { applyStyle } = useNativeStyles();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -49,13 +53,12 @@ const AccountOverviewScreenHeaderContent = ({
     if (!account) return null;
 
     return (
-        <HStack alignItems="center" spacing="sp8">
+        <HStack alignItems="center" spacing="sp8" style={applyStyle(headerContentStyle)}>
             <TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} size="small" />
-            <VStack spacing={0} alignItems="flex-start">
+            <VStack spacing={0} flexShrink={1}>
                 <AccountLabel
                     account={account}
                     variant="body-md-strong"
-                    adjustsFontSizeToFit
                     numberOfLines={1}
                     showAccountTypeBadge
                 />

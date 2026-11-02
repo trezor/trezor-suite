@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 
 import styled, { css } from 'styled-components';
 
-import { isNetworkIconSymbol } from '@suite-common/icons';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
     type AllowedFrameProps,
@@ -12,6 +10,7 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import type { NetworkConfigState } from '@trezor/network-module-types';
 import { useAsyncMemo } from '@trezor/react-utils';
 
@@ -26,6 +25,10 @@ import {
     makeCacheKey,
     resolvedLogoCache,
 } from './tokenIconUtils';
+import {
+    injectGetTokenLogoIdentifiers,
+    injectHasNetworkIcon,
+} from '../../services/networkServices';
 import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
 
 const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number }>`
@@ -78,11 +81,15 @@ export const NonNativeTokenIcon = ({
     'data-testid': dataTestId,
     ...rest
 }: NonNativeTokenIconProps) => {
-    // resolves synchronously for everything except the first XLM token after a cold start
-    // so most icons render in the first frame without a placeholder flash
+    const { hasNetworkIcon, getTokenLogoIdentifiers } = useServices(
+        injectHasNetworkIcon,
+        injectGetTokenLogoIdentifiers,
+    );
+    // Resolves synchronously except for the first XLM token after a cold start,
+    // so most icons render in the first frame without a placeholder flash.
     const contractAddressArray = useAsyncMemo(
-        () => getAssetLogoContractAddresses(symbol, contractAddress),
-        [symbol, contractAddress],
+        () => getTokenLogoIdentifiers(symbol, contractAddress),
+        [symbol, contractAddress, getTokenLogoIdentifiers],
     );
 
     const { coingeckoId: coingeckoIdLogo, contractAddresses } = useSelector(
@@ -254,7 +261,7 @@ export const NonNativeTokenIcon = ({
 
     return (
         <Container $size={size} {...frameProps}>
-            {showNetworkIcon && symbol && isNetworkIconSymbol(symbol) ? (
+            {showNetworkIcon && symbol && hasNetworkIcon(symbol) ? (
                 <NetworkIconBadge networkSymbol={symbol} parentSize={size}>
                     {logo}
                 </NetworkIconBadge>

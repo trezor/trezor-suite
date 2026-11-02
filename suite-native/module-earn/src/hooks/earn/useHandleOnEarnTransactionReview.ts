@@ -7,11 +7,14 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     type AccountsRootState,
+    type FormDraftRootState,
     pushStakeTransactionThunk,
     selectAccountNetworkSymbol,
+    selectFormDraft,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
-import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { type AccountKey, type FormState } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     type RootStackRoutes,
@@ -25,22 +28,26 @@ import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecompo
 import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 import { signStakeTransactionThunk } from '../../thunks/staking/stakingThunks';
 import { type EarnFormDraftPrefix } from '../../types';
+import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
 type HandleOnEarnTransactionReviewProps = {
     accountKey: AccountKey;
     stakeType: EarnFormDraftPrefix;
+    isPushing: boolean;
 };
 
 export const useHandleOnEarnTransactionReview = ({
     accountKey,
     stakeType,
+    isPushing,
 }: HandleOnEarnTransactionReviewProps) => {
-    const { closeReview, markReviewNavigationSuccess } = useEarnReviewBackNavigation(
-        stakeType,
+    const { closeReview, markReviewNavigationSuccess } = useEarnReviewBackNavigation({
+        formType: stakeType,
         accountKey,
-    );
+        isPushing,
+    });
 
     const navigation = useNavigation<NavigationProps>();
     const handleReviewError = useHandleEarnReviewError(stakeType, navigation);
@@ -48,6 +55,11 @@ export const useHandleOnEarnTransactionReview = ({
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+
+    const formState = useSelector((state: FormDraftRootState) =>
+        selectFormDraft<FormState>(state, getFormDraftKey(stakeType, accountKey)),
+    );
+
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
 
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
@@ -73,19 +85,21 @@ export const useHandleOnEarnTransactionReview = ({
     }, [accountKey, dispatch, handleReviewError, precomposedTransaction, stakeType]);
 
     const handlePush = useCallback(async (): Promise<string | undefined> => {
+        if (networkSymbol && precomposedTransaction) {
+            reportTransactionCreated({
+                analytics,
+                symbol: networkSymbol,
+                precomposedTransaction,
+                formState: formState ?? { options: [] },
+                txType: 'stake',
+            });
+        }
+
         const response = await dispatch(
-            pushStakeTransactionThunk({ accountKey, isMevProtectionFeatureEnabled }),
+            pushStakeTransactionThunk({ accountKey, stakeType, isMevProtectionFeatureEnabled }),
         );
 
         if (isFulfilled(response)) {
-            analytics.report({
-                type: events.stakingConfirmEvent.name,
-                payload: {
-                    action: stakeType,
-                    networkSymbol: networkSymbol ?? undefined,
-                },
-            });
-
             return response.payload.txid;
         }
 
@@ -100,8 +114,10 @@ export const useHandleOnEarnTransactionReview = ({
         dispatch,
         handleReviewError,
         isMevProtectionFeatureEnabled,
-        networkSymbol,
         stakeType,
+        networkSymbol,
+        precomposedTransaction,
+        formState,
     ]);
 
     return { handleSign, handlePush, closeReview, markReviewNavigationSuccess };

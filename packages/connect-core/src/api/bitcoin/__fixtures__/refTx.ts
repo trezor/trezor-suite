@@ -2,11 +2,7 @@
 import { networks } from '@trezor/utxo-lib';
 
 // @ts-ignore
-import tx43d273 from '../../../../e2e/__txcache__/testnet/43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06.json';
-// @ts-ignore
-import tx70f987 from '../../../../e2e/__txcache__/testnet/70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e.json';
-// @ts-ignore
-import txba917a from '../../../../e2e/__txcache__/testnet/ba917a2b563966e324ab37ed7de5f5cd7503b970b0f0bb9a5208f5835557e99c.json';
+import txba917a from '../../../../e2e/__fixtures__/refTxs/testnet/ba917a2b563966e324ab37ed7de5f5cd7503b970b0f0bb9a5208f5835557e99c.json';
 
 const tx70f987blockbook = {
     txid: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
@@ -49,51 +45,7 @@ const ADDRESSES = {
     ],
 };
 
-export const validateReferencedTransactions = [
-    {
-        description:
-            'OrigTransaction and RefTransaction in protobuf format (strict fields validation)',
-        params: {
-            transactions: [
-                {
-                    hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
-                    ...tx70f987,
-                    // TODO
-                },
-                {
-                    hash: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
-                    ...tx43d273,
-                    inputs: [{ ...tx43d273.inputs[0], someExtraField: 'should-be-ignored' }],
-                    bin_outputs: tx43d273.bin_outputs.slice(0, 2).concat({
-                        ...tx43d273.bin_outputs[2],
-                        // @ts-expect-error
-                        someExtraField: 'should-be-ignored',
-                    }),
-                },
-            ],
-            inputs: [
-                {
-                    prev_hash: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
-                    prev_index: 1,
-                    orig_hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
-                    orig_index: 0,
-                },
-            ],
-            outputs: [], // irrelevant
-            addresses: {}, // irrelevant
-            coinInfo: { network: networks.testnet },
-        },
-        result: [
-            {
-                hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
-                ...tx70f987,
-            },
-            {
-                hash: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
-                ...tx43d273,
-            },
-        ],
-    },
+export const transformRawTransactions = [
     {
         description: 'transform AccountTransaction to RefTransaction',
         params: {
@@ -105,7 +57,7 @@ export const validateReferencedTransactions = [
                 },
             ],
             addresses: ADDRESSES,
-            outputs: [], // irrelevant
+            origTxids: [],
             coinInfo: { network: networks.testnet },
         },
         result: [
@@ -165,7 +117,7 @@ export const validateReferencedTransactions = [
                     },
                 ],
             },
-            outputs: [], // irrelevant
+            origTxids: ['70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e'],
             coinInfo: { network: networks.testnet },
         },
         result: [
@@ -256,7 +208,7 @@ export const validateReferencedTransactions = [
                     },
                 ],
             },
-            outputs: [], // irrelevant
+            origTxids: ['ba917a2b563966e324ab37ed7de5f5cd7503b970b0f0bb9a5208f5835557e99c'],
             coinInfo: { network: networks.testnet },
         },
         result: [
@@ -283,28 +235,6 @@ export const validateReferencedTransactions = [
         ],
     },
     {
-        description: 'throws on missing 43d273 tx data',
-        params: {
-            transactions: [
-                {
-                    hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
-                    ...tx70f987,
-                },
-            ],
-            inputs: [
-                {
-                    prev_hash: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
-                    prev_index: 1,
-                    orig_hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
-                    orig_index: 0,
-                },
-            ],
-            outputs: [], // irrelevant
-            coinInfo: { network: networks.testnet },
-        },
-        error: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06 not provided',
-    },
-    {
         description: 'AccountTransaction to OrigTransaction throws missing inputs data',
         params: {
             transactions: [
@@ -327,7 +257,7 @@ export const validateReferencedTransactions = [
                 },
             ],
             addresses: ADDRESSES,
-            outputs: [], // irrelevant
+            origTxids: ['70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e'],
             coinInfo: { network: networks.testnet },
         },
         error: 'invalid input at 70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e [0]',
@@ -349,7 +279,7 @@ export const validateReferencedTransactions = [
                     orig_index: 0,
                 },
             ],
-            outputs: [], // irrelevant
+            origTxids: ['70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e'],
             addresses: {}, // irrelevant
             coinInfo: { network: networks.testnet },
         },
@@ -370,7 +300,7 @@ export const validateReferencedTransactions = [
                     prev_index: 1,
                 },
             ],
-            outputs: [], // irrelevant
+            origTxids: [],
             addresses: {}, // irrelevant
             coinInfo: { network: networks.testnet },
         },
@@ -389,29 +319,9 @@ export const validateReferencedTransactions = [
                 },
             ],
             addresses: undefined,
-            outputs: [], // irrelevant
+            origTxids: ['70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e'],
             coinInfo: { network: networks.testnet },
         },
         error: 'addresses for 70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e not provided',
-    },
-    {
-        description: 'coverage: empty refTxs',
-        params: {
-            transactions: [],
-            inputs: [], // irrelevant
-            outputs: [], // irrelevant
-            coinInfo: { network: networks.testnet },
-        },
-        result: undefined,
-    },
-    {
-        description: 'coverage: refTxs not an array',
-        params: {
-            transactions: {},
-            inputs: [], // irrelevant
-            outputs: [], // irrelevant
-            coinInfo: { network: networks.testnet },
-        },
-        result: undefined,
     },
 ];

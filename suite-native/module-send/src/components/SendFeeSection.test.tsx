@@ -40,28 +40,25 @@ type RenderSendFeeSectionParams = {
     isFormValid?: boolean;
 };
 
-const renderSendFeeSection = async ({
+const renderSendFeeSection = ({
     feeInfo,
     feeStatus,
     isFormValid = true,
 }: RenderSendFeeSectionParams) =>
-    await renderWithStoreProvider(
-        <SendFeeSection accountKey={account.key} isFormValid={isFormValid} />,
-        {
-            preloadedState: {
-                wallet: {
-                    accounts: [account],
-                    fees: {
-                        [btcSymbol]: {
-                            status: feeStatus,
-                            data: feeInfo,
-                        },
+    renderWithStoreProvider(<SendFeeSection accountKey={account.key} isFormValid={isFormValid} />, {
+        preloadedState: {
+            wallet: {
+                accounts: [account],
+                fees: {
+                    [btcSymbol]: {
+                        status: feeStatus,
+                        data: feeInfo,
                     },
-                    send: { drafts: {} },
                 },
+                send: { drafts: {} },
             },
         },
-    );
+    });
 
 describe('SendFeeSection', () => {
     beforeEach(() => {

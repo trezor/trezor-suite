@@ -1,15 +1,21 @@
-import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
+import {
+    type CryptoAmountFormatterFormatStyle,
+    joinAmountWithSymbol,
+    useFormatters,
+} from '@suite-common/formatters';
+import { type SignValue } from '@suite-common/suite-types';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 
 import { type FormatterProps } from '../types';
 import { type DecimalTokenAmount } from '../utils';
-import { AmountText } from './AmountText';
+import { FormattedCryptoAmountText } from './FormattedCryptoAmountText';
 
 export type TokenAmountFormatterCommonProps = {
     tokenSymbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     isPhishingTransaction?: boolean;
+    signValue?: SignValue;
 } & FormatterProps<DecimalTokenAmount> &
     TextProps;
 
@@ -24,11 +30,8 @@ export type BaseTokenAmountFormatterProps = TokenAmountFormatterCommonProps & {
 export const BaseTokenAmountFormatter = ({
     value,
     tokenSymbol,
-    isDiscreetText = true,
     tokenDecimals,
     maxDisplayedDecimals,
-    variant = 'body-sm',
-    color = 'contentSecondary',
     isPhishingTransaction = false,
     formatStyle,
     ...rest
@@ -39,18 +42,20 @@ export const BaseTokenAmountFormatter = ({
 
     const { CryptoAmountFormatter: formatter } = useFormatters();
     const formattedValue = formatter.format(decimalValue, {
-        symbol: tokenSymbol ?? undefined,
+        // Token values are already decimal; a ticker matching a network must not change units.
+        smallestUnitsOverride: false,
+        withSymbol: false,
         maxDisplayedDecimals,
         formatStyle,
         tokenDecimals,
     });
+    const valueWithSymbol = tokenSymbol
+        ? joinAmountWithSymbol(formattedValue, tokenSymbol)
+        : formattedValue;
 
     return (
-        <AmountText
-            value={formattedValue}
-            isDiscreetText={isDiscreetText}
-            variant={variant}
-            color={color}
+        <FormattedCryptoAmountText
+            formattedValue={valueWithSymbol}
             isForcedDiscreetMode={isPhishingTransaction}
             {...rest}
         />

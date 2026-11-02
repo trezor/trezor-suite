@@ -117,6 +117,21 @@ describe('logger', () => {
             ['WARN(test2): B'],
         ]);
     });
+    it('--silent switch should mute the default level', () => {
+        const originalArgv = process.argv;
+        process.argv = [...originalArgv, '--silent', '--log-level=debug'];
+        try {
+            jest.isolateModules(() => {
+                const { Logger: IsolatedLogger } = jest.requireActual<{ Logger: typeof Logger }>(
+                    './logger',
+                );
+                const logger = new IsolatedLogger(undefined, testOptions);
+                expect(logger.level).toBe('mute');
+            });
+        } finally {
+            process.argv = originalArgv;
+        }
+    });
     it('.log() should use the "info" level', () => {
         const logger = new Logger('info', testOptions);
         logger.log('test', 'A');

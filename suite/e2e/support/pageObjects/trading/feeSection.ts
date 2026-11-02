@@ -1,11 +1,15 @@
 import { Locator, Page } from '@playwright/test';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
 export type FeeTypes = 'low' | 'economy' | 'normal' | 'high';
+
+const FIAT_FEE_PATTERN = /[≈~]\s*\$\s*\d+\.\d+/;
 
 type CalculateEthereumMaxFeeParams = {
     gasLimit: string;
@@ -107,11 +111,38 @@ export class FeeSection {
     @step()
     async expectBitcoinFeeCalculated() {
         await this.openCollapsibleFees();
+        await this.expectBitcoinFeeCardsCalculated();
+    }
 
-        const feePattern = /[≈~]\s*\$\s*\d+\.\d+/;
-        await expect(this.valueOnCard('economy')).toHaveText(feePattern);
-        await expect(this.valueOnCard('normal')).toHaveText(feePattern);
-        await expect(this.valueOnCard('high')).toHaveText(feePattern);
+    @step()
+    async expectBitcoinFeeCalculatedInNetworkFeeModal() {
+        await this.openNetworkFeeModal();
+        await this.expectBitcoinFeeCardsCalculated();
+        await this.closeNetworkFeeModal();
+    }
+
+    @step()
+    async expectNetworkFeeCalculated() {
+        await expect(this.networkFeeRow).toHaveText(FIAT_FEE_PATTERN);
+    }
+
+    @step()
+    async getComposedNetworkFee(symbol: NetworkSymbol) {
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
+        const composedFee = await this.page.getReduxObject(
+            'wallet.trading.composedTransactionInfo.composed.fee',
+        );
+
+        return subunitsToUnits({
+            value: asAmountSubunit(new BigNumber(composedFee)),
+            symbol,
+        }).toFixed();
+    }
+
+    private async expectBitcoinFeeCardsCalculated() {
+        await expect(this.valueOnCard('economy')).toHaveText(FIAT_FEE_PATTERN);
+        await expect(this.valueOnCard('normal')).toHaveText(FIAT_FEE_PATTERN);
+        await expect(this.valueOnCard('high')).toHaveText(FIAT_FEE_PATTERN);
     }
 
     @step()
@@ -146,17 +177,13 @@ export class FeeSection {
     calculateEthereumMaxFee({
         gasLimit,
         maxFeePerGas,
-        numberOfDecimals = 14,
+        numberOfDecimals = 18,
     }: CalculateEthereumMaxFeeParams) {
         const ratioToEthereum = 1e9;
-        const maxFeeInEthereum =
-            (parseFloat(gasLimit) * parseFloat(maxFeePerGas)) / ratioToEthereum;
+        const maxFeeInEthereum = new BigNumber(gasLimit).times(maxFeePerGas).div(ratioToEthereum);
         const maxFeeRounded = localizeNumber(maxFeeInEthereum, 'en-US', 0, numberOfDecimals);
         // This method is also providing detailed error message for troubleshooting expect if it fails
-        const errorMessageMaxCalculation = `expected to have max Fee: 
-"(parseFloat(${gasLimit}) * parseFloat(${maxFeePerGas})) / ${ratioToEthereum}"
-here are applied parseFloats:
-(${parseFloat(gasLimit)} * ${parseFloat(maxFeePerGas)}) / ${ratioToEthereum}
+        const errorMessageMaxCalculation = `expected to have max Fee: (${gasLimit} * ${maxFeePerGas}) / ${ratioToEthereum}
 before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
         return {
@@ -276,13 +303,12 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
     private async readEthereumCustomFees() {
         const gasLimit = (await this.ethereumFeeLimit.inputValue()).replace(/,/g, '');
         const maxFeePerGas = await this.ethereumMaxFeePerGas.inputValue();
-        const maxFeePerGasRounded = new BigNumber(maxFeePerGas)
-            .decimalPlaces(4, BigNumber.ROUND_UP)
-            .toFixed(4);
+        // Mirrors FeeRate, which ceils in floating point (17.42 renders as 17.4201).
+        const maxFeePerGasRounded = (Math.ceil(Number(maxFeePerGas) * 1e4) / 1e4).toFixed(4);
         const maxPriorityFeePerGas = await this.ethereumMaxPriorityFeePerGas.inputValue();
-        const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas)
-            .decimalPlaces(4, BigNumber.ROUND_UP)
-            .toFixed(4);
+        const maxPriorityFeePerGasRounded = (
+            Math.ceil(Number(maxPriorityFeePerGas) * 1e4) / 1e4
+        ).toFixed(4);
 
         return {
             gasLimit,

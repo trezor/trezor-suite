@@ -22,7 +22,7 @@ jest.mock('@suite-native/atoms', () => ({
 describe('Footer', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
-    const renderFooter = async (overrides: Partial<TradingState>) => {
+    const renderFooter = (overrides: Partial<TradingState>) => {
         const walletState = getWalletState();
         const preloadedState = {
             wallet: {
@@ -34,7 +34,7 @@ describe('Footer', () => {
             },
         };
 
-        return await renderWithStoreProvider(<Footer />, { preloadedState });
+        return renderWithStoreProvider(<Footer />, { preloadedState });
     };
 
     beforeEach(() => {

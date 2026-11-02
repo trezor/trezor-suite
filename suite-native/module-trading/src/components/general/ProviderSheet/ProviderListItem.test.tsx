@@ -24,12 +24,12 @@ const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
 };
 
 describe('ProviderListItem', () => {
-    const renderProviderListItem = async (
+    const renderProviderListItem = (
         quote: TradingTradeType,
         props?: Partial<ProviderListItemProps<TradingTradeType>>,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = baseOverrides,
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <ProviderListItem
                 isSelected={false}
                 onPress={jest.fn()}

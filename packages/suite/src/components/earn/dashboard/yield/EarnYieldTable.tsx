@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -35,12 +35,17 @@ import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { getYieldOpportunityAnchor } from '../../utils/getYieldOpportunityAnchor';
 import { useMerklRewards } from '../../yield/claim/hooks';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
+import { type YieldDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
 import { useYieldTableData } from './hooks/useYieldTableData';
 
 const emptyVaults: YieldDtoV2[] = [];
 
-export const EarnYieldTable = () => {
+type EarnYieldTableProps = {
+    onReady: (payload: YieldDashboardReadyPayload) => void;
+};
+
+export const EarnYieldTable = ({ onReady }: EarnYieldTableProps) => {
     const { isBelowLaptop } = useLayoutSize();
     const isCardLayout = isBelowLaptop;
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -66,9 +71,9 @@ export const EarnYieldTable = () => {
     const {
         yieldAccountOpportunities,
         yieldInactiveVaultOpportunities,
-        yieldAccounts,
         isYieldActive,
         hasAnyRewardsData,
+        availableVaultCount,
     } = useYieldTableData({
         availableVaults: availableVaults ?? emptyVaults,
         visibleAccounts,
@@ -103,39 +108,32 @@ export const EarnYieldTable = () => {
         shouldScrollWholeSection && routerAnchor ? routerAnchor : EarnAnchor.Yield,
     );
 
-    const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(yieldAccounts);
+    const { merklRewardsQuery, missingRateTickersQuery, isRewardsReady } =
+        useMerklRewards(visibleAccounts);
     const { accountsRewards } = merklRewardsQuery.data;
     const isClaimDisabled =
         claimMessageSystem.isDisabled ||
         !merklRewardsQuery.isSuccess ||
         accountsRewards.length === 0;
 
-    const hasFiredReadyEventRef = useRef(false);
     const hasClaimBanner = accountsRewards.length > 0;
-    const availableVaultCount = availableVaults?.length ?? 0;
     const isReadyToReport =
         !isYieldOpportunitiesLoading &&
         !isYieldOpportunitiesError &&
-        merklRewardsQuery.isSuccess &&
+        isRewardsReady &&
         !missingRateTickersQuery.isLoading;
 
     useEffect(() => {
-        if (!isReadyToReport || hasFiredReadyEventRef.current) {
-            return;
-        }
-        hasFiredReadyEventRef.current = true;
+        if (!isReadyToReport) return;
 
-        analytics.report({
-            type: events.yieldEarnDashboardReadyEvent.name,
-            payload: {
-                hasClaimBanner,
-                hasActivePosition: isYieldActive,
-                availableVaultCount,
-                hasShowMore: hasHiddenYieldAccountOpportunities,
-            },
+        onReady({
+            hasClaimBanner,
+            hasYieldPosition: isYieldActive,
+            availableVaultCount,
+            hasShowMore: hasHiddenYieldAccountOpportunities,
         });
     }, [
-        analytics,
+        onReady,
         isReadyToReport,
         hasClaimBanner,
         isYieldActive,

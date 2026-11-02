@@ -9,10 +9,11 @@
             "path": "../../suite-common/earn-stablecoin-defs"
         },
         {
-            "path": "../../suite-common/metadata-types"
+            "path": "../../suite-common/earn-staking-api"
         },
+        { "path": "../../suite-common/locale" },
         {
-            "path": "../../suite-common/suite-types"
+            "path": "../../suite-common/metadata-types"
         },
         { "path": "../../suite-common/trading" },
         { "path": "../desktop-app-api" },

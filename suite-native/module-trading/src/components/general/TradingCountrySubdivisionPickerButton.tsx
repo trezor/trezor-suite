@@ -5,7 +5,7 @@ import { Button, Text, VStack } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useCountrySubdivisionPickerControls } from '@suite-native/trading-residence';
-import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
+import { selectIsTradingResidenceWhitelistRequired } from '@suite-native/trading-state';
 import { type FormWithFiatCurrencyValues } from '@suite-native/trading-types';
 
 export type TradingCountrySubdivisionPickerButtonProps = {
@@ -15,7 +15,9 @@ export type TradingCountrySubdivisionPickerButtonProps = {
 export const TradingCountrySubdivisionPickerButton = ({
     testID,
 }: TradingCountrySubdivisionPickerButtonProps) => {
-    const isTradingResidenceCheckEnabled = useSelector(selectIsTradingResidenceCheckEnabled);
+    const isTradingResidenceWhitelistRequired = useSelector(
+        selectIsTradingResidenceWhitelistRequired,
+    );
     const { showSheet } = useCountrySubdivisionPickerControls();
     const { control } = useFormContext<FormWithFiatCurrencyValues>();
     const [country, countrySubdivision] = useWatch({
@@ -24,7 +26,7 @@ export const TradingCountrySubdivisionPickerButton = ({
     });
 
     if (
-        isTradingResidenceCheckEnabled ||
+        isTradingResidenceWhitelistRequired ||
         !isCountrySubdivisionEmpty(country?.value, countrySubdivision?.value)
     ) {
         return null;

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, useScrollDivider } from '@suite-native/atoms';
@@ -114,8 +114,8 @@ export const AccountOverviewTabContent = ({
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountOverview>>();
     const { analytics } = useServices(injectNativeAnalytics);
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
     );
     const isAssetDetailFeatureEnabled = useIsExperimentVariantActive({
         experimentId: ExperimentId.assetFirstHomeTable,
@@ -125,12 +125,12 @@ export const AccountOverviewTabContent = ({
     const handleSelect = useCallback<OnSelectAsset>(
         ({ tokenContract, tokenSymbol }) => {
             if (flowType === 'send') {
-                if (!account) return;
+                if (!networkSymbol) return;
                 analytics.report({
                     type: events.sendFlowEnteredEvent.name,
                     payload: {
                         location: 'dashboard',
-                        assetSymbol: account.symbol,
+                        assetSymbol: networkSymbol,
                         tokenContract,
                         tokenSymbol,
                     },
@@ -139,11 +139,13 @@ export const AccountOverviewTabContent = ({
                     screen: SendStackRoutes.SendOutputs,
                     params: { accountKey, tokenContract },
                 });
-            } else if (isAssetDetailFeatureEnabled && account) {
+            } else if (isAssetDetailFeatureEnabled) {
+                if (!networkSymbol) return;
+
                 navigation.navigate(RootStackRoutes.AssetsStack, {
                     screen: AssetsStackRoutes.AssetDetail,
                     params: {
-                        networkSymbol: account.symbol,
+                        networkSymbol,
                         tokenContract,
                     },
                 });
@@ -158,7 +160,7 @@ export const AccountOverviewTabContent = ({
                 });
             }
         },
-        [flowType, isAssetDetailFeatureEnabled, account, accountKey, analytics, navigation],
+        [flowType, isAssetDetailFeatureEnabled, networkSymbol, analytics, navigation, accountKey],
     );
 
     return (

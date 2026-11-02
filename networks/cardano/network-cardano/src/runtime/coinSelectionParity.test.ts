@@ -1,5 +1,6 @@
-import { coinSelection, trezorUtils } from '@fivebinaries/coin-selection';
 import { createHash } from 'crypto';
+
+import { coinSelection, trezorUtils } from '@trezor/network-cardano-coin-selection/runtime';
 
 import { parityCases, witnesses } from './__fixtures__/coinSelectionParity.fixture';
 

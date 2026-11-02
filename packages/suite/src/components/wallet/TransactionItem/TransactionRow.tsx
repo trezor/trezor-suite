@@ -132,19 +132,32 @@ export const CoinjoinRow = ({ transaction, useFiatValues }: CoinjoinRowProps) =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
 
+    const transactionAmount = new BigNumber(transaction.amount);
+    const formattedAmount = formatNetworkAmount(
+        transactionAmount.abs().toString(),
+        transaction.symbol,
+    );
+
     return (
         <TransactionTargetLayout
+            amount={
+                <FormattedCryptoAmount
+                    value={formattedAmount}
+                    symbol={transaction.symbol}
+                    signValue={transactionAmount}
+                />
+            }
             fiatAmount={
-                useFiatValues ? (
-                    <BaseCurrencyValue
-                        amount={formatNetworkAmount(
-                            new BigNumber(transaction.amount).abs().toString(),
-                            transaction.symbol,
-                        )}
-                        symbol={transaction.symbol}
-                        historicRate={historicRate}
-                        useHistoricRate
-                    />
+                useFiatValues && historicRate ? (
+                    <>
+                        <Sign value={transactionAmount} grayscale />
+                        <BaseCurrencyValue
+                            amount={formattedAmount}
+                            symbol={transaction.symbol}
+                            historicRate={historicRate}
+                            useHistoricRate
+                        />
+                    </>
                 ) : undefined
             }
             addressLabel={

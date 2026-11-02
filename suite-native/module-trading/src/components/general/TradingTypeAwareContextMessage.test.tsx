@@ -37,9 +37,9 @@ describe('TradingTypeAwareContextMessage', () => {
         },
     });
 
-    const renderTradingTypeAwareContextMessage = async (
+    const renderTradingTypeAwareContextMessage = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
-    ) => await renderWithTradingProvider(<TradingTypeAwareContextMessage />, { overrides });
+    ) => renderWithTradingProvider(<TradingTypeAwareContextMessage />, { overrides });
 
     it.each<[TradingType, string]>([
         ['buy', 'Trading buy message'],

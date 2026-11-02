@@ -10,6 +10,11 @@ type SolanaMemoProps = {
 };
 
 export const SolanaMemo = ({ close }: SolanaMemoProps) => {
+    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const {
         register,
         watch,

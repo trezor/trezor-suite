@@ -12,11 +12,7 @@ import {
 } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
-import {
-    DynamicScreenHeader,
-    useDisableIOSGesture,
-    useNavigationRemoveActionInterceptor,
-} from '@suite-native/navigation';
+import { DynamicScreenHeader, useInterceptNativeNavigation } from '@suite-native/navigation';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
@@ -252,8 +248,8 @@ export const FirmwareInstallationScreenContent = ({
 
     const buttonStyle = applyStyle(bottomButtonsContainerStyle);
 
-    useDisableIOSGesture();
-    useNavigationRemoveActionInterceptor({ isEnabled: !isError });
+    // Using useNavigationRemoveActionInterceptor breaks navigateToInitialScreen().
+    useInterceptNativeNavigation();
 
     useEffect(() => {
         if (isSheetOpen && !showConfirmOnDevice) {

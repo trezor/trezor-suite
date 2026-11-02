@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildClaimTransactionReview } from '@suite-common/earn-stablecoin';
 import {
@@ -11,6 +12,7 @@ import {
     type WalletSettingsRootState,
     type YieldRootState,
     formDraftActions,
+    isEarnSigningCancelled,
     isYieldTxReviewForFlow,
     selectAddressDisplayType,
     selectDeepCopyOfFormDraft,
@@ -18,20 +20,22 @@ import {
     selectYieldSession,
     selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import { getPushErrorType } from './yieldTransactionThunks';
 import type { YieldPushTransactionError } from './yieldTransactionThunks';
+import { getPushErrorType } from './yieldTransactionThunks';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
 } from '../../utils/earn/deviceTransactionUtils';
-import { getSelectedFeeFromUnsignedClaimTransaction } from '../../utils/yield/yieldClaimFeeUtils';
+import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
 import { buildYieldClaimRewards } from '../../utils/yield/yieldClaimReviewUtils';
 
 export const getYieldClaimFormDraftKey = (flowKey: string) => `yield-claim/${flowKey}`;
@@ -92,13 +96,19 @@ export type SignYieldClaimReviewThunkState = DeviceRootState &
     YieldRootState &
     WalletSettingsRootState;
 
+type SignYieldClaimReviewThunkDeps = WithServices<NativeAnalyticsDep>;
+
 export const signYieldClaimReviewThunk = createThunk<
     { serializedTx: string },
     SignYieldClaimReviewThunkPayload,
-    { rejectValue: YieldClaimSignTransactionError; state: SignYieldClaimReviewThunkState }
+    {
+        rejectValue: YieldClaimSignTransactionError;
+        state: SignYieldClaimReviewThunkState;
+        extra: SignYieldClaimReviewThunkDeps;
+    }
 >(
     `${EARN_MODULE_PREFIX}/signYieldClaimReviewThunk`,
-    async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {
+    async ({ account, flowKey }, { dispatch, getState, rejectWithValue, extra }) => {
         const session = selectYieldSession(getState(), 'claim', flowKey);
         const {
             action: { review },
@@ -117,7 +127,6 @@ export const signYieldClaimReviewThunk = createThunk<
         try {
             transactionReview = buildClaimTransactionReview({
                 rewards: buildYieldClaimRewards(review),
-                selectedFee: getSelectedFeeFromUnsignedClaimTransaction(review.unsignedTransaction),
                 unsignedTransaction: review.unsignedTransaction,
             });
         } catch (error) {
@@ -153,6 +162,13 @@ export const signYieldClaimReviewThunk = createThunk<
         });
 
         if (!signingResponse.success) {
+            if (isEarnSigningCancelled(signingResponse.error)) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: { txType: 'yield', networkSymbol: account.symbol, stage: 'signing' },
+                });
+            }
+
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 errorCode: signingResponse.error.code,
@@ -195,7 +211,8 @@ export type PushYieldClaimReviewThunkState = MevProtectionRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
 
-export type PushYieldClaimReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
+export type PushYieldClaimReviewThunkDeps = SynchronizeSentTransactionThunkDeps &
+    WithServices<NativeAnalyticsDep>;
 
 export const pushYieldClaimReviewThunk = createThunk<
     { txid: string },
@@ -207,7 +224,7 @@ export const pushYieldClaimReviewThunk = createThunk<
     }
 >(
     `${EARN_MODULE_PREFIX}/pushYieldClaimReviewThunk`,
-    async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {
+    async ({ account, flowKey }, { dispatch, getState, rejectWithValue, extra }) => {
         const session = selectYieldSession(getState(), 'claim', flowKey);
         const txReview = selectYieldTxReview(getState());
         const { precomposedForm, precomposedTx, serializedTx } = txReview;
@@ -232,6 +249,14 @@ export const pushYieldClaimReviewThunk = createThunk<
             });
         }
 
+        reportTransactionCreated({
+            analytics: extra.services.analytics,
+            symbol: account.symbol,
+            precomposedTransaction: precomposedTx,
+            formState: precomposedForm,
+            txType: 'yield',
+        });
+
         const pushResponse = await pushYieldTransaction({
             tx: serializedTx.tx,
             account,
@@ -241,6 +266,16 @@ export const pushYieldClaimReviewThunk = createThunk<
         });
 
         dispatch(yieldActions.discardTransaction());
+
+        dispatch(
+            transactionsActions.transactionBroadcastStatus({
+                account,
+                flow: 'merkl-claim',
+                ...(pushResponse.success
+                    ? ({ status: 'success', txid: pushResponse.payload.txid } as const)
+                    : ({ status: 'error' } as const)),
+            }),
+        );
 
         if (!pushResponse.success) {
             return rejectWithValue({

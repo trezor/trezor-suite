@@ -1,43 +1,28 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../http-client" },
-        { "path": "../networks" },
-        { "path": "../wallet-config" },
-        { "path": "../../packages/logger" },
         {
-            "path": "../../networks/bitcoin/network-bitcoin-assets"
+            "path": "../http-client"
         },
         {
-            "path": "../../networks/cardano/network-cardano-assets"
+            "path": "../networks"
         },
         {
-            "path": "../../networks/ethereum/network-ethereum-assets"
+            "path": "../wallet-config"
+        },
+        {
+            "path": "../../packages/logger"
         },
         {
             "path": "../../networks/network-module/network-module-types"
         },
         {
-            "path": "../../networks/monero/network-monero-assets"
+            "path": "../../packages/type-utils"
         },
-        {
-            "path": "../../networks/ripple/network-ripple-assets"
-        },
-        {
-            "path": "../../networks/solana/network-solana-assets"
-        },
-        {
-            "path": "../../networks/stellar/network-stellar-assets"
-        },
-        {
-            "path": "../../networks/tezos/network-tezos-assets"
-        },
-        {
-            "path": "../../networks/tron/network-tron-assets"
-        },
-        { "path": "../../packages/type-utils" },
         {
             "path": "../../packages/dependency-injection"
         }

@@ -1,6 +1,6 @@
-import type { trezorUtils } from '@fivebinaries/coin-selection';
+import type { trezorUtils } from '@trezor/network-cardano-coin-selection/runtime';
 
-export type { types } from '@fivebinaries/coin-selection';
+export type * as types from '@trezor/network-cardano-coin-selection/types';
 
 export type CardanoAddressParameters = Parameters<
     (typeof trezorUtils)['transformToTrezorOutputs']

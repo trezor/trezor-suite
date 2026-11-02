@@ -50,10 +50,12 @@ describe('APPS_EMBEDDING_CATALOG', () => {
     it('declares external origins as bare origins, because only the origin is matched', () => {
         const externalOrigins = APPS_EMBEDDING_CATALOG.flatMap(entry => {
             const desktopEntry = getPlatformSpecificEntry(entry, 'desktop');
+            const mobileEntry = getPlatformSpecificEntry(entry, 'mobile');
 
             return [
                 ...(desktopEntry?.redirectExternalOrigins ?? []),
                 ...(desktopEntry?.popupExternalOrigins ?? []),
+                ...(mobileEntry?.originWhitelist ?? []),
             ];
         });
 

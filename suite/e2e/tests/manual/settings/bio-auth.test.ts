@@ -56,7 +56,7 @@ test.describe.skip('Biometric authentication', { tag: ['@group=manual'] }, () =>
                 category: TestCategory.Security,
                 priority: TestPriority.Medium,
                 stream: TestStream.Wallet,
-                osMatrix: [TestOsMatrix.Linux, TestOsMatrix.Windows, TestOsMatrix.MacOSArm],
+                osMatrix: [TestOsMatrix.Linux, TestOsMatrix.Windows],
             }),
         },
         async () => {},

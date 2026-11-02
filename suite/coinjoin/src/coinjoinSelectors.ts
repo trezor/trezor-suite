@@ -8,7 +8,13 @@ import {
     selectFeatureConfig,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
+    type TransactionsRootState,
+    selectAccountByKey,
+    selectAccountTransactions,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { createWeakMapSelector } from '@trezor/redux-utils';
@@ -19,10 +25,10 @@ import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
     calculateAverageAnonymityGainPerRound,
-    cleanAnonymityGains,
     getMaxFeePerVbyte,
     getMaxRounds,
     getSkipRounds,
+    isCoinjoinSupportedSymbol,
 } from './coinjoinUtils';
 import {
     CLIENT_STATUS_FALLBACK,
@@ -32,6 +38,7 @@ import {
     SKIP_ROUNDS_BY_DEFAULT,
     UNECONOMICAL_COINJOIN_THRESHOLD,
     ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
+    getCoinjoinConfig,
 } from './config';
 
 export type CoinjoinRootState = {
@@ -100,6 +107,50 @@ export const selectTargetAnonymityByAccountKey = (
     if (!coinjoinAccount) return;
 
     return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
+};
+
+// Mixing needs a coordinator. The public ones shut down, so btc and test have one only when it is
+// passed at startup through `--state.wallet.coinjoin.debug.coinjoinConfigOverride.<symbol>`, while
+// regtest keeps its local one. The message-system flag can still turn coinjoin off remotely.
+export const selectIsMixingEnabled = (
+    state: CoinjoinRootState & MessageSystemRootState,
+    symbol: NetworkSymbol,
+) => {
+    if (!isCoinjoinSupportedSymbol(symbol) || selectIsFeatureDisabled(state, Feature.coinjoin)) {
+        return false;
+    }
+    const debug = selectCoinjoinDebug(state);
+    const config = getCoinjoinConfig(symbol, debug?.coinjoinServerEnvironment?.[symbol]);
+
+    // the same merge initCoinjoinServiceThunk hands to the client
+    return !!{ ...config, ...debug?.coinjoinConfigOverride?.[symbol] }.coordinatorUrl;
+};
+
+// Holding low-anonymity coins back only protects something where coins went through a coinjoin
+// round or can still go through one; any other Privacy account spends like a standard account.
+export const selectIsSpendingRestrictedByAccountKey = (
+    state: CoinjoinRootState & MessageSystemRootState & TransactionsRootState,
+    accountKey: AccountKey,
+) => {
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+    if (!coinjoinAccount) return false;
+
+    return (
+        selectIsMixingEnabled(state, coinjoinAccount.symbol) ||
+        selectAccountTransactions(state, accountKey).some(({ type }) => type === 'joint')
+    );
+};
+
+// Target anonymity as the spending path sees it. Mixing surfaces keep reading the stored target
+// through `selectTargetAnonymityByAccountKey`.
+export const selectEffectiveTargetAnonymityByAccountKey = (
+    state: CoinjoinRootState & MessageSystemRootState & TransactionsRootState,
+    accountKey: AccountKey | null,
+) => {
+    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey);
+    if (targetAnonymity === undefined || !accountKey) return targetAnonymity;
+
+    return selectIsSpendingRestrictedByAccountKey(state, accountKey) ? targetAnonymity : 1;
 };
 
 export const selectCurrentCoinjoinBalanceBreakdown = (
@@ -307,35 +358,6 @@ export const selectRoundsNeededByAccountKey = (
         (targetAnonymity - weightedAnonymity) /
             Math.max(averageAnonymityGainPerRound, MIN_ANONYMITY_GAINED_PER_ROUND),
     );
-};
-
-export const selectAnonymityGainToReportByAccountKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey,
-) => {
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    const lastReport = coinjoinAccount?.anonymityGains?.lastReportTimestamp;
-
-    if (!coinjoinAccount?.anonymityGains) {
-        return null;
-    }
-
-    const anonymityGains = cleanAnonymityGains(coinjoinAccount.anonymityGains.history);
-
-    // Report only results not reported before.
-    const gainsToReport = lastReport
-        ? anonymityGains.filter(level => level.timestamp > lastReport)
-        : anonymityGains;
-
-    if (!gainsToReport.length) {
-        return null;
-    }
-
-    // Report average value. Reporting values per round would compromise data privacy.
-    const average =
-        gainsToReport.reduce((total, current) => total + current.level, 0) / gainsToReport.length;
-
-    return parseFloat(average.toFixed(3));
 };
 
 export const selectRoundsLeftByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { useToggleDebugMode } from '@suite/debug';
 import { injectDesktopApi } from '@suite/desktop-app-api';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { openModal } from '@suite/modal';
 import { SettingsAnchor, closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
@@ -44,12 +45,14 @@ export const useAppShortcuts = () => {
     const autodetectTheme = useSelector(selectAutodetectTheme);
 
     const isBioAuthEnabled = useSelector(selectIsBioAuthEnabled);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
     const toggleDebugMode = useToggleDebugMode();
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const { altKey, metaKey, ctrlKey, shiftKey } = e;
         const isDeviceSelected = selectedDevice !== undefined;
+        const isTradingShortcutAllowed = isDeviceSelected && !isFinpromRestricted;
         const cmdOrCtrl = metaKey || ctrlKey;
         // Most shortcuts use ALT alone; exclude the other modifiers to avoid clashes.
         const altOnly = altKey && !shiftKey && !cmdOrCtrl;
@@ -167,19 +170,19 @@ export const useAppShortcuts = () => {
         }
 
         // press ALT + X to open Swap (exchange)
-        if (altOnly && e.code === KEYBOARD_CODE.KEY_X && isDeviceSelected) {
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_X && isTradingShortcutAllowed) {
             e.preventDefault();
             dispatch(gotoThunk({ routeName: 'wallet-trading-exchange', preserveParams: false }));
         }
 
         // press ALT + B to open Buy
-        if (altOnly && e.code === KEYBOARD_CODE.KEY_B && isDeviceSelected) {
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_B && isTradingShortcutAllowed) {
             e.preventDefault();
             dispatch(gotoThunk({ routeName: 'wallet-trading-buy', preserveParams: false }));
         }
 
         // press ALT + C to open Sell
-        if (altOnly && e.code === KEYBOARD_CODE.KEY_C && isDeviceSelected) {
+        if (altOnly && e.code === KEYBOARD_CODE.KEY_C && isTradingShortcutAllowed) {
             e.preventDefault();
             dispatch(gotoThunk({ routeName: 'wallet-trading-sell', preserveParams: false }));
         }

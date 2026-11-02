@@ -8,7 +8,7 @@ import {
     selectTheme,
     suiteSettingsActions,
 } from '@suite/settings';
-import { type Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

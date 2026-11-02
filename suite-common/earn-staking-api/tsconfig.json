@@ -6,6 +6,7 @@
         { "path": "../react-query" },
         { "path": "../wallet-types" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/utils" },
         { "path": "../wallet-config" }
     ]
 }

@@ -2,7 +2,7 @@ import { type Store } from '@reduxjs/toolkit';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeesRootState } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -54,7 +54,7 @@ describe('CustomFeeInputs', () => {
         return result.current;
     };
 
-    const renderCustomFeeInputs = async ({
+    const renderCustomFeeInputs = ({
         form,
         props,
     }: {
@@ -63,7 +63,7 @@ describe('CustomFeeInputs', () => {
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return await renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
+        return renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
             preloadedState: defaultState,
             services: { store },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,

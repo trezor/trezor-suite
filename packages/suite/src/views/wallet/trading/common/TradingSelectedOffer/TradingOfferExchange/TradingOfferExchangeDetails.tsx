@@ -1,11 +1,9 @@
 import { type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { ExperimentId, ExperimentWrapper } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     cryptoIdToNetwork,
-    selectTradingComposedTransactionInfo,
     selectTradingDisplayComposedFee,
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
@@ -15,11 +13,8 @@ import {
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
 
-import { getFeeTooltipTextId } from 'src/components/wallet/Fees/feeUtils';
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -27,16 +22,13 @@ import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/tradin
 import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
 import { TradingUtilsProviderKyc } from '../../TradingUtils/TradingUtilsProviderKyc';
+import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
 import { TradingExchangeMevProtectionInfoItem } from '../TradingInfo/TradingExchangeMevProtectionInfoItem';
 import { TradingExchangeMinimumReceivedInfoItem } from '../TradingInfo/TradingExchangeMinimumReceivedInfoItem';
 import { TradingExchangeRateInfoItem } from '../TradingInfo/TradingExchangeRateInfoItem';
 import { TradingExchangeSlippageInfoItem } from '../TradingInfo/TradingExchangeSlippageInfoItem';
-import {
-    TradingNetworkFeeInfoItem,
-    type TradingNetworkFeeInfoItemProps,
-} from '../TradingInfo/TradingNetworkFeeInfoItem';
+import { type TradingNetworkFeeInfoItemProps } from '../TradingInfo/TradingNetworkFeeInfoItem';
 import { TradingProviderInfoItem } from '../TradingInfo/TradingProviderInfoItem';
-import { TradingTrezorFeeInfoItem } from '../TradingInfo/TradingTrezorFeeInfoItem';
 
 type TradingOfferExchangeDetailsProps = {
     account: Account;
@@ -58,14 +50,7 @@ export const TradingOfferExchangeDetails = ({
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, exchangeQuote));
-    const { composed } = useSelector(selectTradingComposedTransactionInfo);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
-
-    const { symbol } = account;
-    const formattedNetworkFee = subunitsToUnits({
-        value: asAmountSubunit(new BigNumber(networkFee || '0')),
-        symbol,
-    }).toString();
 
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const { getAssetDecimals } = useTradingAssetDecimals();
@@ -101,14 +86,6 @@ export const TradingOfferExchangeDetails = ({
     return (
         <>
             <Column gap={8}>
-                <ExperimentWrapper
-                    id={ExperimentId.tradingShowTradeFee}
-                    components={[
-                        { variant: 'control', element: <></> },
-                        { variant: 'treatment', element: <TradingTrezorFeeInfoItem /> },
-                    ]}
-                />
-
                 {dexSlippage !== undefined && (
                     <>
                         <TradingExchangeSlippageInfoItem
@@ -126,13 +103,9 @@ export const TradingOfferExchangeDetails = ({
 
                 {!exchangeQuote.isDex && <TradingExchangeRateInfoItem rateType={rateType} />}
 
-                <TradingNetworkFeeInfoItem
-                    amount={formattedNetworkFee}
-                    symbol={symbol}
-                    tooltipTextId={getFeeTooltipTextId({
-                        networkType: account.networkType,
-                        isTronAccountActivation: !!composed?.accountActivationFee,
-                    })}
+                <TradingComposedNetworkFeeInfoItem
+                    account={account}
+                    fee={networkFee}
                     edit={networkFeeEdit}
                 />
 

@@ -41,6 +41,7 @@ Nested mandatory skills still apply within their stated scope.
 - Commits/PRs: [Git conventions](skills/git-and-commit-guidelines/SKILL.md).
   PR reviews: [PR review](skills/pr-review/SKILL.md).
   QA notes: [QA notes](skills/qa-notes/SKILL.md).
+  GitHub issues: [GitHub issues](skills/github-issues/SKILL.md).
   Style proposals: [Contribution guide](skills/skills-and-code-style-contribution/SKILL.md).
 
 The architecture and verification rules below supersede conflicting generalizations in the Packages
@@ -51,7 +52,8 @@ and killing development servers are not routine prerequisites.
 ## Architecture and code map
 
 This is a Yarn workspaces monorepo orchestrated by Nx. `package.json` also includes `networks/*/*`,
-`packages/connect-examples/*` and `scripts` workspaces. Read package names from manifests, not paths.
+`networks/network-module/*/*`, `packages/connect-examples/*` and `scripts` workspaces. Read package
+names from manifests, not paths.
 
 - `packages/` (`@trezor/*`): Reusable libraries: `connect` SDK,
   `connect-web`/`connect-webextension`/`connect-mobile` entry points, `transport*`,
@@ -172,6 +174,7 @@ them.
   reasoning level. In descriptions, put the prefix on the first line.
 
 Follow the [PR review](skills/pr-review/SKILL.md) skill for reviews and leave review outcomes as comments.
+When the user explicitly asks to create an issue, follow [GitHub issues](skills/github-issues/SKILL.md).
 
 ## Confidential data — never send it off the device
 
@@ -182,3 +185,7 @@ site, not just the field type, and check the whole repo for outbound reporting.
 Confidential (see `redactAccount`/`redactDevice` in `suite-common/logger/src/utils.ts`): device
 id/label/state, static session id, `session_id`; account descriptor/xpub/key, addresses, UTXOs, txids;
 exact balances/amounts; labels and free-form user text; passphrase/seed/PIN/wipe code.
+
+GitHub issue screenshots are the exception in [GitHub issues](skills/github-issues/SKILL.md): addresses,
+balances, txids, and labels from public QA and dev wallets may be attached. Seed words, PIN,
+passphrase, and wipe code still never leave the device.

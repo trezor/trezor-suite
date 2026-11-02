@@ -55,11 +55,14 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - name: Install deps and build libs
         # not installing @suite/desktop-app and @suite/desktop-app-main, because this is only the renderer process
         run: |
@@ -102,6 +105,10 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
+
+      - name: Restore develop Yarn cache
+        if: runner.os == 'Linux'
+        uses: ./.github/actions/restore-yarn-cache
 
       - name: Restore Electron renderer bundle
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
@@ -162,7 +169,7 @@ jobs:
     env:
       platform: win
     container:
-      image: electronuserland/builder:22-wine
+      image: electronuserland/builder:22-wine-10.26@sha256:7e725c402e1a950b901263107da1c63afae9a2db02d5eed97102bd68f0decb59
       options: --user 1001
     steps:
       - name: Checkout code
@@ -178,7 +185,8 @@ jobs:
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
 
       - name: Install native binaries for every target architecture
         uses: ./.github/actions/yarn-target-architectures

@@ -1,50 +1,96 @@
-import { Fragment, type JSX } from 'react';
+import { useSelector } from 'react-redux';
 
-import styled from 'styled-components';
-
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
+import { Translation } from '@suite/intl';
 import {
+    type TradingRootState,
     selectTradingComposedTransactionInfo,
+    selectTradingProviderCompanyName,
     selectTradingSellActiveTrade,
     selectTradingSellFormStep,
     selectTradingSellInfo,
+    selectTradingSellIsLoading,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
+    sellUtils,
+    useTradingUtils,
 } from '@suite-common/trading';
-import { selectAccounts } from '@suite-common/wallet-core';
-import { Card, Column, Divider } from '@trezor/components';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Card, Column, H2, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { ArrowSquareOutIcon } from '@trezor/icons';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useTradingSellBankAccountSelection } from 'src/hooks/wallet/trading/useTradingSellBankAccountSelection';
+import { useTradingSellConfirmFees } from 'src/hooks/wallet/trading/useTradingSellConfirmFees';
+import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
+import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
-import { TradingOfferSellBankAccount } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellBankAccount';
-import { TradingSelectedOfferSellTransaction } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellTransaction';
+import { type TradingOfferSellProps } from 'src/types/trading/tradingForm';
+import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
-import {
-    TradingSelectedOfferStepper,
-    type TradingSelectedOfferStepperItemProps,
-} from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferStepper';
-import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
-const Wrapper = styled.div`
-    ${TradingWrapper}
-`;
+import { TradingOfferSellSendButton } from './TradingOfferSellSendButton';
+import { TradingOfferSellWaitingForProvider } from './TradingOfferSellWaitingForProvider';
+import { TradingSellBankAccountInfoItem } from './TradingSellBankAccountInfoItem';
+import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
+import { getTradingNetworkFeeEdit } from '../TradingInfo/getTradingNetworkFeeEdit';
 
-export const TradingOfferSell = () => {
-    const accounts = useSelector(selectAccounts);
+const SELL_PROVIDER_CONFIRMATION_POLLING_INTERVAL_SECONDS = 10;
+
+export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOfferSellProps) => {
+    const { analytics } = useServices(injectDesktopAnalytics);
+    const { handleClick: handleRequestClick, disabled: isRequesting } = useAsyncClickHandler();
+    const { handleClick: handleSendClick, disabled: isSending } = useAsyncClickHandler();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
+    const { device } = useDevice();
+    const { account, confirmTrade, addBankAccount, sendTransaction } = useTradingSellTradeActions();
     const formStep = useSelector(selectTradingSellFormStep);
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
+    const trade = useSelector(selectTradingSellActiveTrade);
     const sellInfo = useSelector(selectTradingSellInfo);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
+    const isLoading = useSelector(selectTradingSellIsLoading);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { composed } = useSelector(selectTradingComposedTransactionInfo);
-    const trade = useSelector(selectTradingSellActiveTrade);
-    const { device } = useDevice();
+    const { feeInfo, composeFormState, applySelectedFee, assumeNewAccount } =
+        useTradingSellConfirmFees(account);
 
-    const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
+    useTradingWatchTrade({
+        account,
+        trade,
+        refreshIntervalSeconds: SELL_PROVIDER_CONFIRMATION_POLLING_INTERVAL_SECONDS,
+    });
+
     const selectedTrade = trade?.data ?? selectedQuote;
-    const isDeviceDisconnected = !device?.connected;
+    const providerName = useSelector((state: TradingRootState) =>
+        selectTradingProviderCompanyName(state, selectedTrade?.exchange, 'sell'),
+    );
+    const { selectedBankAccount, selectBankAccount } = useTradingSellBankAccountSelection(
+        selectedTrade?.bankAccounts,
+        trade?.data.bankAccount,
+    );
 
-    if (!selectedTrade) return null;
+    if (!selectedTrade || !account) {
+        return null;
+    }
+
+    const isPreviewStep = formStep === 'PREVIEW';
+    const isBankAccountStep = formStep === 'BANK_ACCOUNT';
+    const isSendStep = formStep === 'SEND_TRANSACTION';
+    const isPartnerReadyToReceive = sellUtils.isReadyToSendCrypto(selectedTrade);
+    const isSendDisabled = isLoading || !device?.connected || isDiscoveryRunning || isSending;
+
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
+        selectedTrade.cryptoCurrency,
+    );
+    const translationValues = {
+        providerName: providerName ?? '',
+        displaySymbol: coinSymbol ? getDisplaySymbol(coinSymbol, contractAddress) : '',
+    };
 
     const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
         amountInCrypto: quotesRequest?.amountInCrypto,
@@ -52,39 +98,68 @@ export const TradingOfferSell = () => {
         sendCurrency: selectedTrade.fiatCurrency,
         receiveAmount: selectedTrade.cryptoStringAmount ?? '',
         receiveCurrency: selectedTrade.cryptoCurrency,
-        networkFee: composed?.fee,
     };
 
-    const steps: (TradingSelectedOfferStepperItemProps & {
-        component: JSX.Element | null;
-    })[] = [
-        {
-            step: 'BANK_ACCOUNT',
-            translationId: 'TR_SELL_BANK_ACCOUNT_STEP',
-            isActive: formStep === 'BANK_ACCOUNT',
-            component: <TradingOfferSellBankAccount />,
-        },
-        {
-            step: 'SEND_TRANSACTION',
-            translationId: 'TR_SELL_CONFIRM_SEND_STEP',
-            isActive: formStep === 'SEND_TRANSACTION',
-            component: <TradingSelectedOfferSellTransaction />,
-        },
-    ];
+    const networkFeeEdit = getTradingNetworkFeeEdit({
+        account,
+        feeInfo,
+        composeFormState,
+        assumeNewAccount,
+        onConfirm: applySelectedFee,
+        isTokenTransfer: !!composed?.token,
+    });
+
+    const onConfirmAndSendClick = async () => {
+        const result = await sendTransaction();
+
+        analytics.report({
+            type: events.tradeSellEvent.name,
+            payload: {
+                action: result ? 'continue' : 'cancel',
+                step: 'confirm-and-send-transaction',
+            },
+        });
+    };
+
+    const onConfirmBankAccountClick = async () => {
+        if (!selectedBankAccount) {
+            return;
+        }
+
+        const confirmedTrade = await confirmTrade(selectedBankAccount);
+
+        if (confirmedTrade && sellUtils.isReadyToSendCrypto(confirmedTrade)) {
+            await onConfirmAndSendClick();
+        }
+    };
 
     return (
-        <Column gap={16}>
-            {isDeviceDisconnected && <ConnectDeviceGenericPromo />}
+        <Column width="100%" alignItems="center">
+            <Card width="100%" maxWidth="440px" data-testid="@trading/selected-offer">
+                <Column gap={20}>
+                    <Column gap={4} alignItems="start">
+                        <H2 typographyStyle="headline-sm">
+                            <Translation
+                                id={
+                                    isPreviewStep
+                                        ? 'TR_TRADING_SELL_CONFIRM_TITLE'
+                                        : 'TR_TRADING_SELL_SEND_TITLE'
+                                }
+                                values={translationValues}
+                            />
+                        </H2>
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            <Translation
+                                id={
+                                    isPreviewStep
+                                        ? 'TR_TRADING_SELL_CONFIRM_DESCRIPTION'
+                                        : 'TR_TRADING_SELL_SEND_DESCRIPTION'
+                                }
+                                values={translationValues}
+                            />
+                        </Text>
+                    </Column>
 
-            <Wrapper data-testid="@trading/selected-offer">
-                <Card>
-                    <TradingSelectedOfferStepper steps={steps} />
-                    <Divider margin={{ top: 20, bottom: 24 }} />
-                    {steps.map((step, index) => (
-                        <Fragment key={index}>{step.isActive && step.component}</Fragment>
-                    ))}
-                </Card>
-                <Card>
                     <TradingSelectedOfferInfo
                         type="sell"
                         selectedQuote={selectedTrade}
@@ -92,10 +167,72 @@ export const TradingOfferSell = () => {
                         quoteAmounts={quoteAmounts}
                         paymentMethod={selectedTrade.paymentMethod}
                         paymentMethodName={selectedTrade.paymentMethodName}
-                        selectedAccount={sendAccount}
+                        selectedAccount={account}
+                        networkFee={
+                            <TradingComposedNetworkFeeInfoItem
+                                account={account}
+                                fee={composed?.fee}
+                                edit={networkFeeEdit}
+                            />
+                        }
+                        bankAccount={
+                            selectedBankAccount && !isPreviewStep ? (
+                                <TradingSellBankAccountInfoItem
+                                    bankAccount={selectedBankAccount}
+                                    edit={
+                                        isBankAccountStep
+                                            ? {
+                                                  bankAccounts: selectedTrade.bankAccounts ?? [],
+                                                  onSelect: selectBankAccount,
+                                                  onAdd: addBankAccount,
+                                              }
+                                            : undefined
+                                    }
+                                />
+                            ) : undefined
+                        }
                     />
-                </Card>
-            </Wrapper>
+
+                    {isPreviewStep && (
+                        <Column gap={12}>
+                            <TradingFormOfferConfirmButton
+                                translationId="TR_TRADING_SELL_VIA"
+                                translationValues={translationValues}
+                                iconRight={ArrowSquareOutIcon}
+                                testId="@trading/offer/sell-button"
+                                isDisabled={isRequestDisabled || isRequesting}
+                                isLoading={isRequesting}
+                                onClick={() => handleRequestClick(requestTrade)}
+                            />
+
+                            <TradingKYCWarning />
+                        </Column>
+                    )}
+
+                    {isBankAccountStep && (
+                        <TradingOfferSellSendButton
+                            isLoading={isLoading || isSending}
+                            isDisabled={isSendDisabled || !selectedBankAccount}
+                            onClick={() => handleSendClick(onConfirmBankAccountClick)}
+                        />
+                    )}
+
+                    {isSendStep && !isPartnerReadyToReceive && (
+                        <TradingOfferSellWaitingForProvider
+                            providerName={translationValues.providerName}
+                            displaySymbol={translationValues.displaySymbol}
+                        />
+                    )}
+
+                    {isSendStep && isPartnerReadyToReceive && (
+                        <TradingOfferSellSendButton
+                            isLoading={isLoading || isSending}
+                            isDisabled={isSendDisabled}
+                            onClick={() => handleSendClick(onConfirmAndSendClick)}
+                        />
+                    )}
+                </Column>
+            </Card>
         </Column>
     );
 };

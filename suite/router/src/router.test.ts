@@ -6,6 +6,7 @@ import {
     getPrefixedURL,
     getRoute,
     getRouteHash,
+    isTradingRoute,
     stripPrefixedURL,
 } from './router';
 import type { RouteParams } from './routes';
@@ -123,6 +124,33 @@ describe('router', () => {
     });
 
     describe('getAppWithParams', () => {
+        it('asset params validation', () => {
+            const route = getRoute('suite-asset');
+
+            expect(getAppWithParams({ pathname: '/asset', hash: '#/btc' })).toEqual({
+                app: 'dashboard',
+                params: { symbol: 'btc' },
+                route,
+            });
+            expect(
+                getAppWithParams({
+                    pathname: '/asset',
+                    hash: '#/eth/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                }),
+            ).toEqual({
+                app: 'dashboard',
+                params: {
+                    symbol: 'eth',
+                    contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                },
+                route,
+            });
+            expect(getAppWithParams({ pathname: '/asset', hash: '#/btc-invalid' }).params).toBe(
+                undefined,
+            );
+            expect(getAppWithParams({ pathname: '/asset', hash: '' }).params).toBe(undefined);
+        });
+
         it('wallet params validation', () => {
             const resp = {
                 app: 'wallet',
@@ -268,6 +296,33 @@ describe('router', () => {
                 },
                 route: getRoute('earn-tron-stake'),
             });
+        });
+    });
+
+    describe('isTradingRoute', () => {
+        it.each([
+            'wallet-trading-buy',
+            'wallet-trading-sell',
+            'wallet-trading-exchange',
+            'wallet-trading-buy-confirm',
+            'wallet-trading-sell-detail',
+            'wallet-trading-exchange-detail',
+            'wallet-trading-concierge',
+            'wallet-trading-transactions',
+            'wallet-trading-redirect',
+        ] as const)('is true for %s', routeName => {
+            expect(isTradingRoute(routeName)).toBe(true);
+        });
+
+        it.each([
+            undefined,
+            'suite-index',
+            'suite-earn',
+            'wallet-index',
+            'wallet-staking',
+            'notifications-index',
+        ] as const)('is false for %s', routeName => {
+            expect(isTradingRoute(routeName)).toBe(false);
         });
     });
 });

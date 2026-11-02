@@ -22,8 +22,8 @@ type State = TradingRootState;
 describe('useDispatchProviderConfirmationStatus', () => {
     let store: Store<State>;
 
-    const renderUseDispatchProviderConfirmationStatus = async () =>
-        await renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), {
+    const renderUseDispatchProviderConfirmationStatus = () =>
+        renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), {
             services: { store },
         });
 

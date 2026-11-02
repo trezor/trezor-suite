@@ -33,4 +33,6 @@ export interface WalletSettings {
     addressDisplayType: AddressDisplayOptions;
     homeAssetsTableGrouping: HomeAssetsTableGrouping;
     areHomeAssetSmallBalancesShown: boolean;
+    isHomeAssetTableNewBannerClosed: boolean;
+    isHomeAssetTableFeedbackClosed: boolean;
 }

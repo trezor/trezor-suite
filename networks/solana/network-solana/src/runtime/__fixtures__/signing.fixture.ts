@@ -26,3 +26,13 @@ export const serializedV1Tx = `${v1Message}${'00'.repeat(64)}`;
 // its message header calls for, then the message. Legacy and v0 keep signatures first, so this
 // must not read as v1.
 export const serializedLegacyTx = `02${'00'.repeat(128)}${legacyCreateStakeAccountTx}`;
+
+// v1 with a config priority fee of 12_345 lamports and a compute unit limit of 200_000, and the
+// same transfer as v1Message. ComputeBudget instructions setting a unit price of 1_000_000
+// micro-lamports and a limit of 300_000 precede it. v1 ignores them, so the fee comes only from
+// the config. Generated with @solana/kit:
+//   setTransactionMessagePriorityFeeLamports, setTransactionMessageComputeUnitLimit,
+//   prepend the ComputeBudget instructions, compileTransactionMessage
+//   -> getCompiledTransactionMessageEncoder().encode
+export const v1WithConfigMessage =
+    '810100020700000000000000000000000000000000000000000000000000000000000000000000000304e7f64154f14373a327aa566574e7250d23f68cb1025f3f4fa7fbc23ea0cc7b0fefebc5a5c00a736483b0273c00926e64a17121016b248b05c73f7468bd2138ac00000000000000000000000000000000000000000000000000000000000000000306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a400000003930000000000000400d0300030009000300050002020c000340420f000000000002e093040000010200000040420f0000000000';

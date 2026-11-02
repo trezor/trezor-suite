@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/network-module/suite-common/suite-common-types"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        { "path": "../../packages/requirements" }
+    ]
+}

@@ -7,8 +7,8 @@ import {
 } from './ExchangeConfirmationTitle';
 
 describe('ExchangeConfirmationTitle', () => {
-    const renderTitle = async (props: ExchangeConfirmationTitleProps) =>
-        await renderWithBasicProvider(<ExchangeConfirmationTitle {...props} />);
+    const renderTitle = (props: ExchangeConfirmationTitleProps) =>
+        renderWithBasicProvider(<ExchangeConfirmationTitle {...props} />);
 
     it('should display approve title when flowType is approve', async () => {
         const { getByText } = await renderTitle({

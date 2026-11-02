@@ -1,7 +1,7 @@
 import { rescanCoinjoinAccountThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import type { Account } from 'src/types/wallet';
@@ -14,17 +14,12 @@ export const RescanAccount = ({ account }: RescanAccountProps) => {
     const { dispatch } = useServices(injectDispatch);
 
     return (
-        <SectionItem
-            title={<Translation id="TR_COINJOIN_ACCOUNT_RESCAN_TITLE" />}
-            description={<Translation id="TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION" />}
-            actions={
-                <SectionItem.Button
-                    isDisabled={account.status === 'initial' || account.syncing}
-                    onClick={() => dispatch(rescanCoinjoinAccountThunk(account.key, true))}
-                >
-                    <Translation id="TR_COINJOIN_ACCOUNT_RESCAN_ACTION" />
-                </SectionItem.Button>
-            }
-        />
+        <Button
+            isDisabled={account.status === 'initial' || account.syncing}
+            onClick={() => dispatch(rescanCoinjoinAccountThunk(account.key, true))}
+            minWidth={140}
+        >
+            <Translation id="TR_COINJOIN_ACCOUNT_RESCAN_ACTION" />
+        </Button>
     );
 };

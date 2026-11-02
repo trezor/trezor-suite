@@ -20,6 +20,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { WrappedNativeTokenReviewContent } from '../../components/earn/WrappedNativeTokenReviewContent';
 import { useWrappedNativeReviewPreview } from '../../hooks/earn/useWrappedNativeReviewPreview';
+import { useYieldFlowAnalytics } from '../../hooks/yield/useYieldFlowAnalytics';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { type YieldBroadcastTransaction } from '../../types';
 
@@ -37,7 +38,21 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
     const flowType: YieldWithdrawFlowType = route.params.withdrawFlowType ?? 'withdraw';
 
     const yieldFlowData = useYieldFlowData(route.params);
-    const { account, flowKey, resolutionStatus } = yieldFlowData;
+    const { account, flowKey, resolutionStatus, vault } = yieldFlowData;
+    const { reportWithdraw } = useYieldFlowAnalytics({
+        networkSymbol: account?.symbol,
+        vaultId: vault?.id,
+    });
+    const handleReviewError = useCallback(
+        (errorMessage: 'submit-failed' | 'push-failed') =>
+            reportWithdraw({
+                action: 'continue',
+                type: 'error',
+                operation: flowType,
+                errorMessage: `unwrap-${errorMessage}`,
+            }),
+        [flowType, reportWithdraw],
+    );
 
     const session = useSelector((state: YieldRootState) =>
         selectYieldSessionByFlowKey(state, flowType, flowKey),
@@ -99,6 +114,7 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
                 flowContext="in-flow"
                 flowType="unwrap"
                 onBroadcast={handleBroadcast}
+                onError={handleReviewError}
                 preview={preview}
                 spentToken={spentToken}
                 unsignedTransaction={review.unsignedTransaction}

@@ -1,6 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
-import { DEVICE } from '@trezor/connect-common';
+import { DEVICE, normalizeButtonRequestPayload } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { Logger } from '@trezor/logger';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
@@ -230,7 +230,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                     } else {
                         this.device.emit(DEVICE.BUTTON, {
                             device: this.device,
-                            payload: res.message,
+                            payload: normalizeButtonRequestPayload(res.message),
                         });
                     }
 

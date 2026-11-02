@@ -20,7 +20,7 @@ export const StakingDashboard = ({ selectedAccount, dashboard }: StakingDashboar
             account={selectedAccount}
         >
             {dashboard}
-            <EverstakeFooter />
+            <EverstakeFooter networkType={selectedAccount.account.networkType} />
         </WalletLayout>
     );
 };

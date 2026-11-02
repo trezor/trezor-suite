@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { selectIsOnboardingFeedbackBannerShown, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
@@ -24,6 +25,7 @@ export const EmptyWallet = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
     const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
 
     const clearOnboardingFeedbackBanner = () => {
@@ -88,15 +90,17 @@ export const EmptyWallet = () => {
                 </RoundedBorder>
             )}
             <Row gap={12} margin={{ top: 16 }}>
-                <Button
-                    intent="brand"
-                    iconLeft={CurrencyCircleDollarIcon}
-                    size="medium"
-                    onClick={handleBuy}
-                    data-testid="@dashboard/empty-wallet/buy"
-                >
-                    <Translation id="TR_BUY" />
-                </Button>
+                {!isFinpromRestricted && (
+                    <Button
+                        intent="brand"
+                        iconLeft={CurrencyCircleDollarIcon}
+                        size="medium"
+                        onClick={handleBuy}
+                        data-testid="@dashboard/empty-wallet/buy"
+                    >
+                        <Translation id="TR_BUY" />
+                    </Button>
+                )}
                 <Button
                     intent="brand"
                     iconLeft={ArrowDownIcon}

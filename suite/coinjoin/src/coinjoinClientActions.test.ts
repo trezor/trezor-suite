@@ -4,6 +4,7 @@ import { type SelectedAccountRootState, selectedAccountReducer } from '@suite/ac
 import { type LocksRootState, locksReducer } from '@suite/locks';
 import { type State as ModalReducerState, modalReducer } from '@suite/modal';
 import { type TorRootState, TorStatus, torActions, torReducer } from '@suite/tor';
+import { type DeviceReducerState } from '@suite-common/device';
 import {
     type MessageSystemRootState,
     prepareMessageSystemReducer,
@@ -66,7 +67,7 @@ const rootReducer = combineReducers({
     discreetMode: createReducer({ isActive: false }, () => {}),
     locks: locksReducer,
     device: createReducer(
-        { devices: [fixtures.DEVICE], selectedDevice: fixtures.DEVICE },
+        { devices: [fixtures.DEVICE], selectedDevice: fixtures.DEVICE, buttonRequestsByPath: {} },
         () => ({}),
     ),
     modal: modalReducer,
@@ -93,7 +94,11 @@ type State = AccountsRootState &
     MessageSystemRootState & {
         suite: Record<never, never>;
         discreetMode: { isActive: boolean };
-        device: { devices: TrezorDevice[]; selectedDevice: TrezorDevice };
+        device: {
+            devices: TrezorDevice[];
+            selectedDevice: TrezorDevice;
+            buttonRequestsByPath: DeviceReducerState['buttonRequestsByPath'];
+        };
         modal: ModalReducerState;
     };
 type Wallet = Partial<State['wallet']> & {
@@ -191,6 +196,13 @@ describe('coinjoinClientActions', () => {
 
             f.result.trezorConnectCalledWith.forEach((params, index) => {
                 expect(TrezorConnect.signTransaction.mock.calls[index]?.[0]).toMatchObject(params);
+            });
+
+            // toMatchObject ignores extra keys, assert the removed affiliate data explicitly
+            TrezorConnect.signTransaction.mock.calls.forEach(([params]) => {
+                params.inputs.forEach(input => expect(input).not.toHaveProperty('coinjoin_flags'));
+                expect(params.coinjoinRequest).not.toHaveProperty('mask_public_key');
+                expect(params.coinjoinRequest).not.toHaveProperty('signature');
             });
 
             expect(response).toMatchObject(f.result.response);
@@ -322,13 +334,6 @@ describe('coinjoinClientActions', () => {
         );
         expect(store.getState().wallet.coinjoin.debug).toMatchObject({
             coinjoinServerEnvironment: { test: 'public', regtest: 'localhost' },
-        });
-
-        store.dispatch(
-            setDebugSettings({ coinjoinServerEnvironment: { [testSymbol]: 'staging' } }),
-        );
-        expect(store.getState().wallet.coinjoin.debug).toMatchObject({
-            coinjoinServerEnvironment: { test: 'staging', regtest: 'localhost' },
         });
     });
 

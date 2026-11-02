@@ -3,8 +3,14 @@
 Icons for the native (mobile) app. General icon SVG sources live in `@trezor/icons` (`packages/icons/assets`).
 
 Coin and network SVGs live in `networks/<family>/network-<family>-assets/assets`.
-These packages export lazy icon loaders and filesystem-path readers through their indexes.
-`yarn generate-icons` updates the family loaders and the existing shared icon maps.
+Their typed asset maps contain literal, lazy SVG references and filesystem-path readers.
+Add or rename a network asset by updating its SVG file and the owning package's asset map.
+`yarn suite:cli generate-icons` optimizes SVGs and updates the general icon and payment-method
+logo maps. Its injected service owns SVG settings and generation rules; the CLI supplies
+filesystem access and logging. Network asset maps stay handwritten.
+
+`yarn suite:cli generate-icon-font` generates the mobile TTF font and JSON codepoint map.
+`yarn generate-icons` runs both generators and also regenerates web icons.
 
 ## How to add or update an icon
 

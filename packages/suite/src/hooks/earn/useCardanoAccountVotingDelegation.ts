@@ -4,6 +4,7 @@ import {
     DEFAULT_VOTING_OPTION,
     type VotingDelegationOption,
     hasCardanoLiveVoteDelegation,
+    isCardanoStakedWithFiveBinaries,
     selectStakeVotingDelegation,
     stakeActions,
 } from '@suite-common/wallet-core';
@@ -30,6 +31,7 @@ export const useSeededCardanoVotingDelegation = (
     const { dispatch } = useServices(injectDispatch);
     const accountVotingDelegation = useCardanoAccountVotingDelegation(account);
     const isCardanoAccount = account.networkType === 'cardano';
+    const resetsVotingDelegation = isCardanoStakedWithFiveBinaries(account);
     // Seeding is driven by the store rather than by a mount-once ref, so that a selection cleared
     // while this stays mounted - after signing, or on an account switch - is seeded again instead
     // of silently reading as the default.
@@ -44,7 +46,9 @@ export const useSeededCardanoVotingDelegation = (
         dispatch(
             stakeActions.setAccountVotingDelegation({
                 accountKey: account.key,
-                option: accountVotingDelegation ?? DEFAULT_VOTING_OPTION,
+                option: resetsVotingDelegation
+                    ? DEFAULT_VOTING_OPTION
+                    : (accountVotingDelegation ?? DEFAULT_VOTING_OPTION),
             }),
         );
     }, [
@@ -53,6 +57,7 @@ export const useSeededCardanoVotingDelegation = (
         isSelectionConfirmedForAccount,
         account.key,
         accountVotingDelegation,
+        resetsVotingDelegation,
     ]);
 
     return accountVotingDelegation;

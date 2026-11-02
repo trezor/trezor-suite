@@ -7,6 +7,7 @@ import {
 } from '@suite/settings';
 import {
     getIsDeviceIdValid,
+    selectIsDiscoveryEntropyCheckDismissed,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -21,6 +22,7 @@ import {
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import {
     selectIsDeviceInvariabilityCheckSuccess,
+    selectIsDiscoveryEntropyCheckFailed,
     selectIsEntropyCheckFailed,
 } from '@suite-common/persistent-device-data';
 
@@ -75,13 +77,6 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AuthenticityChecksR
     return hashCheckError;
 };
 
-export function selectIsDeviceCompromised(state: AuthenticityChecksRootState): boolean {
-    const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
-    const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
-
-    return revisionError !== null || hashError !== null;
-}
-
 /**
  * Determine hard failure of either of firmware authenticity checks to block access to device.
  */
@@ -100,14 +95,48 @@ export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (
 export const selectIsEntropyCheckEnabledAndFailed = (state: AuthenticityChecksRootState) => {
     const device = selectSelectedDevice(state);
     const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(state);
-    const isEntropyCheckDisabledByMessageSystem = selectIsFeatureDisabled(
-        state,
-        Feature.entropyCheck,
-    );
+    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.entropyCheck);
     const isEntropyCheckFailed = selectIsEntropyCheckFailed(state, device?.id);
 
-    return isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem && isEntropyCheckFailed;
+    return isEntropyCheckEnabled && !isDisabledByMessageSystem && isEntropyCheckFailed;
 };
+
+/**
+ * Return true if discovery entropy check has failed and is not disabled via settings nor message system.
+ * Dismissal is not taken into account.
+ */
+export const selectIsDiscoveryEntropyCheckEnabledAndFailed = (
+    state: AuthenticityChecksRootState,
+) => {
+    const device = selectSelectedDevice(state);
+    const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(state);
+    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.entropyCheckDiscovery);
+    const isDiscoveryEntropyCheckFailed = selectIsDiscoveryEntropyCheckFailed(state, device?.id);
+
+    return isEntropyCheckEnabled && !isDisabledByMessageSystem && isDiscoveryEntropyCheckFailed;
+};
+
+export const selectIsDiscoveryEntropyCheckEnabledAndUndismissedFailed = (
+    state: AuthenticityChecksRootState,
+) => {
+    const device = selectSelectedDevice(state);
+    const isDismissed = selectIsDiscoveryEntropyCheckDismissed(state, device?.id);
+
+    return !isDismissed && selectIsDiscoveryEntropyCheckEnabledAndFailed(state);
+};
+
+/**
+ * Whether any of the dismissable checks is failing and not dismissed.
+ * This selector is intended to alter the UI after dismissing a dismissable check, e.g. disable trade with a warning.
+ * TODO rename, include other checks for completeness.
+ */
+export function selectIsDeviceCompromised(state: AuthenticityChecksRootState): boolean {
+    const revisionError = selectFirmwareRevisionCheckErrorIfEnabled(state);
+    const hashError = selectFirmwareHashCheckErrorIfEnabled(state);
+    const isDiscoveryEntropyCheckFailed = selectIsDiscoveryEntropyCheckEnabledAndFailed(state);
+
+    return revisionError !== null || hashError !== null || isDiscoveryEntropyCheckFailed;
+}
 
 export const selectIsDeviceIdCheckEnabledAndFailed = (state: AuthenticityChecksRootState) => {
     const device = selectSelectedDevice(state);
@@ -152,22 +181,29 @@ export const selectShouldDisplayDeviceCompromised = (
     // Entropy check is not dismissible.
     if (isEntropyCheckEnabledAndFailed) return true;
 
-    // All the following checks are dismissible together by a shared mechanism.
+    // The following checks are dismissible together by a shared mechanism.
     const device = selectSelectedDevice(state);
     const isFirmwareAuthenticityCheckDismissed = selectIsFirmwareAuthenticityCheckDismissed(
         state,
         device?.id,
     );
-    if (isFirmwareAuthenticityCheckDismissed) return false;
+    if (!isFirmwareAuthenticityCheckDismissed) {
+        const isDeviceIdCheckFailed = selectIsDeviceIdCheckEnabledAndFailed(state);
+        const isDeviceInvariabilityCheckFailed = selectIsDeviceInvariabilityEnabledAndFailed(state);
+        const isFirmwareCheckEnabledAndFailed =
+            selectIsFirmwareAuthenticityCheckEnabledAndHardFailed(state);
 
-    const isDeviceIdCheckFailed = selectIsDeviceIdCheckEnabledAndFailed(state);
-    const isDeviceInvariabilityCheckFailed = selectIsDeviceInvariabilityEnabledAndFailed(state);
-    const isFirmwareCheckEnabledAndFailed =
-        selectIsFirmwareAuthenticityCheckEnabledAndHardFailed(state);
+        if (
+            isDeviceIdCheckFailed ||
+            isDeviceInvariabilityCheckFailed ||
+            isFirmwareCheckEnabledAndFailed
+        ) {
+            return true;
+        }
+    }
 
-    return (
-        isDeviceIdCheckFailed || isDeviceInvariabilityCheckFailed || isFirmwareCheckEnabledAndFailed
-    );
+    // Discovery entropy check is dismissible separately.
+    return selectIsDiscoveryEntropyCheckEnabledAndUndismissedFailed(state);
 };
 
 export const selectShouldRouterAppSkipAuthenticityCheck = (state: RouterRootState): boolean =>

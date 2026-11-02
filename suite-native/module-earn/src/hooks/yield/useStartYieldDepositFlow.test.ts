@@ -159,11 +159,11 @@ const wethHookParams: HookParams = {
     routeParams: wethRouteParams,
 };
 
-const renderUseStartYieldDepositFlow = async (
+const renderUseStartYieldDepositFlow = (
     store: Store<State>,
     hookParams: HookParams = defaultHookParams,
 ) =>
-    await renderHookWithStoreProvider(() => useStartYieldDepositFlow(hookParams), {
+    renderHookWithStoreProvider(() => useStartYieldDepositFlow(hookParams), {
         services: { store },
     });
 

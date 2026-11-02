@@ -1,13 +1,15 @@
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { buildClaimContract, buildClaimReviewForm } from './claimContract';
 import { type ClaimThunkArguments, composeTronClaimFeeLevelsThunk } from './composeClaim';
 import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
+import { transactionsActions } from '../../../../transactions/transactionsActions';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -27,13 +29,18 @@ interface SubmitClaimThunkArguments extends ClaimThunkArguments {
 
 type SubmitTronClaimThunkState = AddFakePendingTronTxThunkState;
 
+type SubmitTronClaimThunkDeps = WithServices<AnalyticsDep>;
+
 export const submitTronClaimThunk = createThunk<
     void,
     SubmitClaimThunkArguments,
-    { state: SubmitTronClaimThunkState }
+    { state: SubmitTronClaimThunkState; extra: SubmitTronClaimThunkDeps }
 >(
     `${TRON_STAKE_MODULE}/submitTronClaimThunk`,
-    async ({ account, device, requestPushApproval, onSigningStart, onSettled }, { dispatch }) => {
+    async (
+        { account, device, requestPushApproval, onSigningStart, onSettled },
+        { dispatch, extra },
+    ) => {
         const { key: accountKey } = account;
         const flow: TronFlow = 'claim';
 
@@ -93,9 +100,24 @@ export const submitTronClaimThunk = createThunk<
 
             onSigningStart?.();
 
-            const signResult = await signTronContract({ account, device, contract });
+            const signResult = await signTronContract({
+                account,
+                device,
+                contract,
+            });
 
             if ('error' in signResult) {
+                if (signResult.error.kind === 'cancelled') {
+                    extra.services.analytics.report({
+                        type: events.transactionCancelEvent.name,
+                        payload: {
+                            txType: 'stake',
+                            networkSymbol: account.symbol,
+                            stage: 'signing',
+                        },
+                    });
+                }
+
                 dispatch(
                     tronStakeActions.submitFinished({ accountKey, flow, error: signResult.error }),
                 );
@@ -112,6 +134,10 @@ export const submitTronClaimThunk = createThunk<
             const isPushApproved = await requestPushApproval();
 
             if (!isPushApproved) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: { txType: 'stake', networkSymbol: account.symbol, stage: 'review' },
+                });
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
@@ -130,6 +156,13 @@ export const submitTronClaimThunk = createThunk<
             });
 
             if (!pushResult.success) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account,
+                        flow,
+                        status: 'error',
+                    }),
+                );
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,

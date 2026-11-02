@@ -20,10 +20,8 @@ jest.mock('@suite-common/discreet-mode', () => ({
 // Both formatters expect `value` in human-readable units; base-unit amounts must be converted
 // by the caller.
 describe('ExactTokenAmountFormatter', () => {
-    const renderExactTokenAmountFormatter = async (
-        props: Partial<ExactTokenAmountFormatterProps>,
-    ) =>
-        await renderWithBasicProvider(
+    const renderExactTokenAmountFormatter = (props: Partial<ExactTokenAmountFormatterProps>) =>
+        renderWithBasicProvider(
             <ExactTokenAmountFormatter
                 tokenSymbol={'USDC' as TokenSymbol}
                 value={asDecimalTokenAmount('1234.56')}
@@ -57,16 +55,37 @@ describe('ExactTokenAmountFormatter', () => {
 });
 
 describe('CompactTokenAmountFormatter', () => {
-    const renderCompactTokenAmountFormatter = async (
-        props: Partial<CompactTokenAmountFormatterProps>,
-    ) =>
-        await renderWithBasicProvider(
+    const renderCompactTokenAmountFormatter = (props: Partial<CompactTokenAmountFormatterProps>) =>
+        renderWithBasicProvider(
             <CompactTokenAmountFormatter
                 tokenSymbol={'USDC' as TokenSymbol}
                 value={asDecimalTokenAmount('1234.56')}
                 {...props}
             />,
         );
+
+    it.each(['arb', 'eth', 'btc'])('keeps %s tokens in decimal token units', async symbol => {
+        const { getByTestId } = await renderCompactTokenAmountFormatter({
+            tokenSymbol: symbol as TokenSymbol,
+            value: asDecimalTokenAmount('20'),
+        });
+
+        expect(getByTestId('plain-text')).toHaveTextContent(`20.00 ${symbol}`);
+    });
+
+    it.each([
+        ['positive', '+20.00 ARB'],
+        ['negative', '-20.00 ARB'],
+        [undefined, '20.00 ARB'],
+    ] as const)('renders a token amount with %s direction', async (signValue, expected) => {
+        const { getByTestId } = await renderCompactTokenAmountFormatter({
+            tokenSymbol: 'ARB' as TokenSymbol,
+            value: asDecimalTokenAmount('20'),
+            signValue,
+        });
+
+        expect(getByTestId('plain-text')).toHaveTextContent(expected);
+    });
 
     it('should render compact formatted value', async () => {
         const { getByTestId } = await renderCompactTokenAmountFormatter({});

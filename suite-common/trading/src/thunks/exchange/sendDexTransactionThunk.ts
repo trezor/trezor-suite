@@ -4,6 +4,7 @@ import { type ExchangeTrade } from 'invity-api';
 import { type Account } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
+import { buildExchangeComposeInputs } from './buildExchangeComposeInputs';
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
@@ -16,14 +17,14 @@ import {
 } from '../../selectors/tradingSelectors';
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
-import { normalizeDexTransactionData } from '../../utils/exchange/normalizeDexTransactionData';
 import { tradingThunks } from '../common';
-import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendDexTransactionThunkProps = {
     account: Account;
     returnUrl: string;
+    decimals: number;
+    shouldSendInSats: boolean | undefined;
     setMaxOutputId?: number | undefined;
     isSlip24Active?: boolean;
 
@@ -48,6 +49,8 @@ export const sendDexTransactionThunk = createThunk<
         {
             account,
             returnUrl,
+            decimals,
+            shouldSendInSats,
             setMaxOutputId,
             nextStep,
             processResponseData,
@@ -60,10 +63,29 @@ export const sendDexTransactionThunk = createThunk<
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const providers = selectTradingExchangeProviders(getState());
+        const composeInputs =
+            selectedQuote &&
+            buildExchangeComposeInputs({
+                selectedQuote,
+                selectedTrade: selectedQuote,
+                networkType: account.networkType,
+                decimals,
+                shouldSendInSats,
+            });
+
+        if (selectedQuote?.dexTx && !composeInputs) {
+            return rejectWithValue({
+                type: 'error',
+                error: { id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA' },
+            });
+        }
 
         if (
-            !selectedQuote?.dexTx ||
+            !selectedQuote ||
+            !composeInputs ||
             !selectedQuote.receiveAddress ||
+            ((selectedQuote.status === 'APPROVAL_REQ' || selectedQuote.approvalType === 'ZERO') &&
+                !selectedQuote.dexTx) ||
             (selectedQuote.status !== 'APPROVAL_REQ' && selectedQuote.status !== 'CONFIRM')
         ) {
             console.error('Failed to send dex transaction - invalid quote');
@@ -83,33 +105,10 @@ export const sendDexTransactionThunk = createThunk<
             receiveAccountKey,
         });
 
-        let serializedTx: string | undefined;
-        if (selectedQuote.dexTx.data) {
-            try {
-                serializedTx = normalizeDexTransactionData({
-                    data: selectedQuote.dexTx.data,
-                    networkType: account.networkType,
-                });
-            } catch (error) {
-                console.error(error);
-
-                return rejectWithValue({
-                    type: 'error',
-                    error: { id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA' },
-                });
-            }
-        }
-
-        const recomposeInputs = buildRecomposeInputsFromTrade({
-            dexTx: selectedQuote.dexTx,
-            partnerPaymentExtraId: selectedQuote.partnerPaymentExtraId,
-            serializedTx,
-            networkType: account.networkType,
-        });
         const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
                 account,
-                ...recomposeInputs,
+                ...composeInputs.recomposeInputs,
                 setMaxOutputId,
                 signAndPushSendFormTransaction,
                 tradingFormState,

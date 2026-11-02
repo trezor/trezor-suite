@@ -94,7 +94,14 @@ export const YIELD_USDC_DEPOSITED_AMOUNT = '10';
 
 // Merkl protocol-incentive reward (MORPHO) claimable by the mocked account.
 const MORPHO_CONTRACT = '0x58D97B57BB95320F9a05dC918Aef65434969c2B2';
-export const YIELD_MERKL_CLAIM_REWARD = {
+export type YieldMerklClaimReward = {
+    token: { address: string; chainId: number; symbol: string; decimals: number };
+    amount: string;
+    claimable: string;
+    claimableUnits: string;
+};
+
+export const YIELD_MERKL_CLAIM_REWARD: YieldMerklClaimReward = {
     token: {
         address: MORPHO_CONTRACT,
         chainId: 1,
@@ -105,7 +112,15 @@ export const YIELD_MERKL_CLAIM_REWARD = {
     amount: '2500000000000000000',
     claimable: '2500000000000000000',
     claimableUnits: '2.5',
-} as const;
+};
+
+// Reward worth less than the claim network fee, so the claim page shows the fee warning.
+export const YIELD_MERKL_SMALL_CLAIM_REWARD: YieldMerklClaimReward = {
+    ...YIELD_MERKL_CLAIM_REWARD,
+    amount: '10000000000000',
+    claimable: '10000000000000',
+    claimableUnits: '0.00001',
+};
 
 // MORPHO token entry for the blockbook account state after the claim is confirmed.
 export const YIELD_CLAIMED_MORPHO_TOKEN = {
@@ -389,25 +404,28 @@ const BLOCKAID_CLAIM_RESPONSE = createBlockaidBenignResponse({
     },
 });
 
-const createMerklRewardsResponse = (entries: { chainId: number; address: string }[]) =>
+const createMerklRewardsResponse = (
+    entries: { chainId: number; address: string }[],
+    reward: YieldMerklClaimReward,
+) =>
     entries.map(({ chainId, address }) => ({
         chainId,
         address,
         rewards: [
             {
                 root: '0xdd919087d979f8b985e53c9c360709d2a751f8c5dabe3834a4552a49e3b836cd',
-                amount: YIELD_MERKL_CLAIM_REWARD.amount,
+                amount: reward.amount,
                 claimed: '0',
                 pending: '0',
-                token: YIELD_MERKL_CLAIM_REWARD.token,
+                token: reward.token,
                 proofs: [
                     '0x8e18f5e7ec457f26c11ed8659eda26b740a0dbe125e1276c675f89b9916cee5a',
                     '0x6da49a874e58d9268789b2c5d7fda203407321b8f2b985cc31cc83d07e683591',
                 ],
-                claimable: YIELD_MERKL_CLAIM_REWARD.claimable,
+                claimable: reward.claimable,
             },
         ],
-        totalClaimable: YIELD_MERKL_CLAIM_REWARD.claimable,
+        totalClaimable: reward.claimable,
     }));
 
 const YIELD_VAULTS_RESPONSE = {
@@ -640,6 +658,8 @@ const YIELD_VAULTS_RESPONSE = {
 };
 
 export class YieldMock {
+    private merklReward: YieldMerklClaimReward = YIELD_MERKL_CLAIM_REWARD;
+
     constructor(private readonly page: Page) {}
 
     @step()
@@ -735,9 +755,10 @@ export class YieldMock {
     // `reloadChainId` after the claim tx is confirmed (waitForMerklToResolveClaim), the mock
     // switches to empty rewards for good — the same way real Merkl reports a settled claim.
     @step()
-    async mockMerklRewards() {
+    async mockMerklRewards(reward: YieldMerklClaimReward = YIELD_MERKL_CLAIM_REWARD) {
         let isClaimSettled = false;
 
+        this.merklReward = reward;
         await this.page.route(MERKL_API_PATTERN, route => {
             const entries: { chainId: number; address: string; reloadChainId?: number }[] = route
                 .request()
@@ -748,9 +769,15 @@ export class YieldMock {
             }
 
             return route.fulfill({
-                json: isClaimSettled ? [] : createMerklRewardsResponse(entries),
+                json: isClaimSettled ? [] : createMerklRewardsResponse(entries, this.merklReward),
             });
         });
+    }
+
+    // Changes the reward served by mockMerklRewards; the app sees it once the rewards query refetches.
+    @step()
+    updateMerklReward(reward: YieldMerklClaimReward) {
+        this.merklReward = reward;
     }
 
     @step()

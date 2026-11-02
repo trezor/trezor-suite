@@ -134,6 +134,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         onFeeLevelChange,
     } = useStakeCompose({
         ...methods,
+        formState,
         state,
     });
 
@@ -148,6 +149,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         onChange: onFeeLevelChange,
         composeRequest,
         ...methods,
+        formState,
     });
     const selectedFee = _selectedFee ?? 'normal';
 
@@ -360,14 +362,22 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
     }, [clearErrors, composedLevels, getValues, setValue, selectedFee, currentRate]);
 
     const [isLoading, setIsLoading] = useState(false);
+
     // get response from TransactionReviewModal
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+
         if (composedTx?.type === 'final') {
             setIsLoading(true);
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk({
+                        accountKey: account.key,
+                        formValues: values,
+                        transactionInfo: composedTx,
+                    }),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -383,7 +393,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
                 setIsLoading(false);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const closeConfirmModal = () => {
@@ -398,7 +408,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         }
     };
 
-    const { isStakingDisabled, calculateFeeAndDeposit } = useCardanoStaking();
+    const { isStakingDisabled, calculateFeeAndDeposit } = useCardanoStaking({ account });
 
     useEffect(() => {
         calculateFeeAndDeposit('delegate');

@@ -11,7 +11,13 @@ export const sendConfirmedOnDeviceEvent: EventDef<Attributes, EventType.SendConf
     name: EventType.SendConfirmedOnDevice,
     descriptionTrigger:
         'User confirms the pending transaction directly on their Trezor device screen',
-    changelog: [{ version: '25.5.0', notes: 'added' }],
+    changelog: [
+        { version: '25.5.0', notes: 'added' },
+        {
+            version: '26.11.0',
+            notes: 'Only successful signing reports confirmation; cancellations, signing errors and timeouts are excluded. Reported before the send decision and broadcast.',
+        },
+    ],
 
     attributes: {
         assetSymbol: {

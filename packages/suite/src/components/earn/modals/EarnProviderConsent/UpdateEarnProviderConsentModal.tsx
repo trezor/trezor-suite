@@ -4,7 +4,6 @@ import {
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
@@ -34,7 +33,6 @@ export const UpdateEarnProviderConsentModal = ({
         yieldContext,
     });
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const providerName = getEarnProviderName(provider);
 
     return (
@@ -44,10 +42,7 @@ export const UpdateEarnProviderConsentModal = ({
                 <Translation id="TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED" values={{ providerName }} />
             }
             banners={
-                <StakingProviderConsentBanners
-                    networkType={account.networkType}
-                    displaySymbol={displaySymbol}
-                />
+                <StakingProviderConsentBanners account={account} flow={EarnFlow.UpdateProvider} />
             }
             consentText={
                 <Translation

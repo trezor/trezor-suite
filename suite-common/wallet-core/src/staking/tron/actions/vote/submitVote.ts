@@ -1,14 +1,16 @@
 import { captureException, withScope } from '@sentry/core';
 
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
 import { buildVoteContract, buildVoteReviewForm } from './voteContract';
 import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
+import { transactionsActions } from '../../../../transactions/transactionsActions';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -30,10 +32,12 @@ interface SubmitVoteThunkArguments extends VoteThunkArguments {
 
 type SubmitTronVoteThunkState = AddFakePendingTronTxThunkState;
 
+type SubmitTronVoteThunkDeps = WithServices<AnalyticsDep>;
+
 export const submitTronVoteThunk = createThunk<
     void,
     SubmitVoteThunkArguments,
-    { state: SubmitTronVoteThunkState }
+    { state: SubmitTronVoteThunkState; extra: SubmitTronVoteThunkDeps }
 >(
     `${TRON_STAKE_MODULE}/submitTronVoteThunk`,
     async (
@@ -47,7 +51,7 @@ export const submitTronVoteThunk = createThunk<
             onSigningStart,
             onSettled,
         },
-        { dispatch },
+        { dispatch, extra },
     ) => {
         const { key: accountKey } = account;
 
@@ -121,9 +125,24 @@ export const submitTronVoteThunk = createThunk<
 
             onSigningStart?.();
 
-            const signResult = await signTronContract({ account, device, contract });
+            const signResult = await signTronContract({
+                account,
+                device,
+                contract,
+            });
 
             if ('error' in signResult) {
+                if (signResult.error.kind === 'cancelled') {
+                    extra.services.analytics.report({
+                        type: events.transactionCancelEvent.name,
+                        payload: {
+                            txType: 'stake',
+                            networkSymbol: account.symbol,
+                            stage: 'signing',
+                        },
+                    });
+                }
+
                 dispatch(
                     tronStakeActions.submitFinished({ accountKey, flow, error: signResult.error }),
                 );
@@ -140,6 +159,10 @@ export const submitTronVoteThunk = createThunk<
             const isPushApproved = await requestPushApproval();
 
             if (!isPushApproved) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: { txType: 'stake', networkSymbol: account.symbol, stage: 'review' },
+                });
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
@@ -172,6 +195,13 @@ export const submitTronVoteThunk = createThunk<
             });
 
             if (!pushResult.success) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account,
+                        flow,
+                        status: 'error',
+                    }),
+                );
                 withScope(scope => {
                     scope.setTag('error.code', 'tron_staking_broadcast_failed_after_report');
                     scope.setTag('error.kind', 'vote');

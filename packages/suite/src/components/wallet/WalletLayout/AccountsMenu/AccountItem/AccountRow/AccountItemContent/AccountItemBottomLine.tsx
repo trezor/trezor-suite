@@ -33,7 +33,7 @@ export const AccountItemBottomLine = ({
                 </Text>
             )}
 
-            {shouldShowBalancePlaceholder && <BalancePlaceholder networkSymbol={account.symbol} />}
+            {shouldShowBalancePlaceholder && <BalancePlaceholder />}
         </>
     );
 };

@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-09-16T12:00:00+00:00",
-    "sequence": 158,
+    "timestamp": "2026-10-22T12:00:00+00:00",
+    "sequence": 163,
     "actions": [
         {
             "conditions": [
@@ -1627,8 +1627,48 @@
             "conditions": [
                 {
                     "environment": {
+                        "desktop": ">=26.10.1",
+                        "mobile": ">=26.10.1",
+                        "web": ">=26.10.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "7589ccfa-553e-4614-bb3d-c4d259593139",
+                "priority": 6,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "trading-experience",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
                         "desktop": "*",
-                        "mobile": "!",
+                        "mobile": ">=26.11.1",
                         "web": "*"
                     }
                 }
@@ -1958,6 +1998,82 @@
                     "domain": ["accounts.sol.normal", "accounts.sol.ledger", "accounts.sol.root"]
                 }
             }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": "*",
+                        "web": "!"
+                    },
+                    "os": {
+                        "macos": "!",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "!",
+                        "ios": "*",
+                        "chromeos": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "094db7ac-2f35-4468-9931-61a2908e86d2",
+                "priority": 1,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en": "Placeholder",
+                    "cs": "Placeholder",
+                    "es": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "pt": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "trading.restrictions.residenceWhitelistRequired",
+                        "flag": true,
+                        "payload": {
+                            "allowedCountries": [
+                                "AT",
+                                "BE",
+                                "BG",
+                                "BS",
+                                "CA",
+                                "CR",
+                                "CY",
+                                "CZ",
+                                "DE",
+                                "DK",
+                                "EE",
+                                "ES",
+                                "FI",
+                                "FR",
+                                "GR",
+                                "HR",
+                                "HU",
+                                "IE",
+                                "IT",
+                                "LI",
+                                "LT",
+                                "LU",
+                                "LV",
+                                "MT",
+                                "NL",
+                                "PL",
+                                "PT",
+                                "RO",
+                                "SE",
+                                "SI",
+                                "SK",
+                                "US"
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     ],
     "experiments": [
@@ -1966,7 +2082,7 @@
                 {
                     "environment": {
                         "desktop": "*",
-                        "mobile": "!",
+                        "mobile": ">=26.11.1",
                         "web": "*"
                     }
                 }
@@ -2009,30 +2125,6 @@
                     {
                         "variant": "B",
                         "percentage": 100
-                    }
-                ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "!",
-                        "web": "*"
-                    }
-                }
-            ],
-            "experiment": {
-                "id": "eef0ff6f-95da-4a7e-aae6-ccd589c32998",
-                "groups": [
-                    {
-                        "variant": "control",
-                        "percentage": 90
-                    },
-                    {
-                        "variant": "treatment",
-                        "percentage": 10
                     }
                 ]
             }

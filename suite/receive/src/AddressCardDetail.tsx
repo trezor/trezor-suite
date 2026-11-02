@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Address, AddressLabeling, copyAddressToClipboard } from '@suite/address';
@@ -7,7 +8,7 @@ import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
-import { Box, Button, Column, Grid, Row, Text, useMediaQuery } from '@trezor/components';
+import { Box, Button, Column, Grid, Row, Text, Tooltip, useMediaQuery } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CopyIcon, ShareNetworkIcon, ShieldCheckIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -24,6 +25,8 @@ type AddressCardDetailProps = {
     item: ReceiveAddressItem;
     accountKey: AccountKey;
     disabled: boolean;
+    isReceiveDisabled: boolean;
+    receiveDisabledReason: ReactNode;
     isVerifyLoading: boolean;
     isVerifyDisabled: boolean;
     onCopied: (path: string) => void;
@@ -34,6 +37,8 @@ export const AddressCardDetail = ({
     item,
     accountKey,
     disabled,
+    isReceiveDisabled,
+    receiveDisabledReason,
     isVerifyLoading,
     isVerifyDisabled,
     onCopied,
@@ -107,13 +112,14 @@ export const AddressCardDetail = ({
                                 address={item.address}
                                 label={item.label}
                                 typographyStyle={hasLabel ? 'headline-sm' : 'headline-md'}
-                                isAddressTruncated={false}
+                                isAddressTruncated={isReceiveDisabled}
                                 isDisplayValueMultiline
                                 addressDataTestId={hasLabel ? undefined : '@wallet/receive/address'}
                             />
                             {hasLabel && (
                                 <Address
                                     value={item.address}
+                                    isTruncated={isReceiveDisabled}
                                     typographyStyle="headline-sm"
                                     data-testid="@wallet/receive/address"
                                 />
@@ -121,42 +127,52 @@ export const AddressCardDetail = ({
                         </Column>
                     </Column>
                     <Row gap={12} flexWrap="wrap" width="100%">
-                        <Button
-                            size="large"
-                            iconLeft={CopyIcon}
-                            data-testid="@wallet/receive/copy-address-button"
-                            onClick={handleCopy}
-                        >
-                            <Translation id="TR_COPY_TO_CLIPBOARD" />
-                        </Button>
+                        <Tooltip content={receiveDisabledReason} isActive={isReceiveDisabled}>
+                            <Button
+                                size="large"
+                                iconLeft={CopyIcon}
+                                isDisabled={isReceiveDisabled}
+                                data-testid="@wallet/receive/copy-address-button"
+                                onClick={handleCopy}
+                            >
+                                <Translation id="TR_COPY_TO_CLIPBOARD" />
+                            </Button>
+                        </Tooltip>
                         {canShareAddress() && (
+                            <Tooltip content={receiveDisabledReason} isActive={isReceiveDisabled}>
+                                <Button
+                                    size="large"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    iconLeft={ShareNetworkIcon}
+                                    isDisabled={isReceiveDisabled}
+                                    data-testid="@wallet/receive/share-address-button"
+                                    onClick={handleShare}
+                                >
+                                    <Translation id="RECEIVE_SHARE" />
+                                </Button>
+                            </Tooltip>
+                        )}
+                        <Tooltip content={receiveDisabledReason} isActive={isReceiveDisabled}>
                             <Button
                                 size="large"
                                 intent="neutral"
                                 priority="secondary"
-                                iconLeft={ShareNetworkIcon}
-                                data-testid="@wallet/receive/share-address-button"
-                                onClick={handleShare}
+                                iconLeft={ShieldCheckIcon}
+                                isDisabled={disabled || isReceiveDisabled || isVerifyDisabled}
+                                isLoading={isVerifyLoading}
+                                data-testid="@wallet/receive/verify-address-button"
+                                onClick={() => onVerify(item.path)}
                             >
-                                <Translation id="RECEIVE_SHARE" />
+                                <Translation id="TR_VERIFY" />
                             </Button>
-                        )}
-                        <Button
-                            size="large"
-                            intent="neutral"
-                            priority="secondary"
-                            iconLeft={ShieldCheckIcon}
-                            isDisabled={disabled || isVerifyDisabled}
-                            isLoading={isVerifyLoading}
-                            data-testid="@wallet/receive/verify-address-button"
-                            onClick={() => onVerify(item.path)}
-                        >
-                            <Translation id="TR_VERIFY" />
-                        </Button>
+                        </Tooltip>
                     </Row>
                 </Column>
                 <Box aspectRatio="1" width={qrCodeSize} maxWidth="100%">
-                    <CoinQrCode value={item.address} symbol={account.symbol} />
+                    {!isReceiveDisabled && (
+                        <CoinQrCode value={item.address} symbol={account.symbol} />
+                    )}
                 </Box>
             </Grid>
         </Box>

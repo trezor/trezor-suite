@@ -13,6 +13,7 @@
     "dependencies": {
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/earn-stablecoin-api": "workspace:*",
+        "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

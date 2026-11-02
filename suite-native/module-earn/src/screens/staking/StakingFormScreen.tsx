@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -29,17 +29,26 @@ import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { StakingFormScreenFooter } from '../../components/staking/StakingFormScreenFooter';
 import { StakingNoBalanceContent } from '../../components/staking/StakingNoBalanceContent';
+import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
+import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useStakingForm } from '../../hooks/staking/useStakingForm';
+import { useStakingPendingTransaction } from '../../hooks/staking/useStakingPendingTransaction';
 import { isBalanceBelowStakingMinimum } from '../../utils/staking/isBalanceBelowStakingMinimum';
 
 export const StakingFormScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingForm>>();
-    const { accountKey } = route.params;
+    const { accountKey, pendingTransaction } = route.params;
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.StakingForm>>();
 
     const stakingForm = useStakingForm(accountKey);
+
+    const { isPending, pendingModal } = useStakingPendingTransaction({
+        accountKey,
+        pendingTransaction,
+        stakeType: 'stake',
+    });
     const isOnboardingConfirmed = useSelector((state: EarnOnboardingRootState) =>
         selectIsEarnOnboardingConfirmed(
             state,
@@ -51,19 +60,23 @@ export const StakingFormScreen = () => {
         selectAccountNetworkSymbol(state, accountKey),
     );
     const { analytics } = useServices(injectNativeAnalytics);
-    const currencyRef = useRef<'crypto' | 'fiat' | undefined>(undefined);
+    const deviceStatus = useEarnDeviceStatus();
+    const [currency, setCurrency] = useState<'crypto' | 'fiat'>('crypto');
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
-        currencyRef.current = activeView === 'primary' ? 'crypto' : 'fiat';
+        setCurrency(activeView === 'primary' ? 'crypto' : 'fiat');
     }, []);
-    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
-        type: events.stakingStakeEvent.name,
-        payload: {
-            action: 'cancel',
-            step: 'stake-form-modal',
-            networkSymbol: networkSymbol ?? undefined,
-            currency: currencyRef.current,
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics(
+        {
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'cancel',
+                step: 'stake-form-modal',
+                networkSymbol: networkSymbol ?? undefined,
+                currency,
+            },
         },
-    });
+        !isPending,
+    );
 
     if (!stakingForm) {
         return null;
@@ -93,9 +106,10 @@ export const StakingFormScreen = () => {
             type: events.stakingStakeEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 step: 'stake-form-modal',
                 networkSymbol: account.symbol,
-                currency: currencyRef.current,
+                currency,
             },
         });
         if (isOnboardingConfirmed) {
@@ -130,32 +144,41 @@ export const StakingFormScreen = () => {
                 <StakingFormScreenFooter
                     symbol={account.symbol}
                     amountValue={amountValue}
-                    isDisabled={!isValid || isFeeUnavailable || isPrecomposeError}
+                    isDisabled={!isValid || isFeeUnavailable || isPrecomposeError || isPending}
                     onPress={() => handleSubmit()}
                 />
             }
+            footerHorizontalPadding="sp16"
         >
-            <EarnAmountCard accountKey={accountKey} />
-            <Box marginTop="sp16">
-                <Form form={form}>
-                    <EarnOutputFields
-                        accountKey={accountKey}
-                        onCurrencyChange={handleCurrencyChange}
-                    />
-                </Form>
-            </Box>
-            {isValid && (
-                <Box marginTop="sp24">
-                    <FeeSelector
-                        accountKey={accountKey}
-                        updateThunk={updateFeeLevelThunk}
-                        selectedFee={formDraft?.selectedFee ?? 'normal'}
-                        selectedFeePerUnit={formDraft?.feePerUnit}
-                        formDraft={formDraft}
-                        formDraftKey={formDraftKey}
-                    />
+            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+                <EarnAmountCard accountKey={accountKey} />
+                <Box marginTop="sp16">
+                    <Form form={form}>
+                        <EarnOutputFields
+                            accountKey={accountKey}
+                            onCurrencyChange={handleCurrencyChange}
+                        />
+                    </Form>
                 </Box>
-            )}
+                {isValid && (
+                    <Box marginTop="sp24">
+                        <FeeSelector
+                            accountKey={accountKey}
+                            updateThunk={updateFeeLevelThunk}
+                            selectedFee={formDraft?.selectedFee ?? 'normal'}
+                            selectedFeePerUnit={formDraft?.feePerUnit}
+                            formDraft={formDraft}
+                            formDraftKey={formDraftKey}
+                        />
+                    </Box>
+                )}
+            </Box>
+
+            <StakingPendingTransactionModal
+                accountKey={accountKey}
+                pendingModal={pendingModal}
+                stakeType="stake"
+            />
         </Screen>
     );
 };

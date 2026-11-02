@@ -19,7 +19,7 @@ export const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
             [0, 1],
             [utils.colors.surfaceFillRaised, utils.colors.elementBorderFieldFocused],
         ) as RgbaColor,
-        borderWidth: interpolate(progress.value, [0, 1], [0, utils.borders.widths.large]),
+        borderWidth: interpolate(progress.value, [0, 1], [0, utils.borders.widths.small]),
         borderRadius: utils.borders.radii.r16,
     }));
 };

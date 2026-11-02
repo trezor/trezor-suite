@@ -1,10 +1,12 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { type TrezorDevice, type UserContextPayload } from '@suite-common/suite-types';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES } from '@suite-common/thp';
 import {
     type Device,
+    type DeviceButtonRequestCode,
+    type PROTO,
     UI_EVENTS,
     UI_REQUESTS,
     type UiRequestButtonData,
@@ -32,12 +34,20 @@ import {
 
 export type State = ModalState & { preserve?: boolean; preserveOnTxTimeout?: boolean };
 
+type DeviceContextWindowType =
+    | DeviceButtonRequestCode
+    | PROTO.WordRequestType
+    | typeof UI_REQUESTS.REQUEST_PIN
+    | typeof UI_REQUESTS.REQUEST_PASSPHRASE
+    | typeof UI_EVENTS.PIN_INVALID
+    | typeof UI_EVENTS.PASSPHRASE_ON_DEVICE;
+
 export type ModalState =
     | { context: typeof MODAL_CONTEXT_NONE }
     | {
           context: typeof MODAL_CONTEXT_DEVICE;
-          device: TrezorDevice | Device;
-          windowType?: string;
+          device: Device;
+          windowType: DeviceContextWindowType;
           data?: UiRequestButtonData;
           requestId?: string;
       }
@@ -72,6 +82,10 @@ const initialState: State = {
     context: MODAL_CONTEXT_NONE,
 };
 
+// The main process waits for this modal's answer before quitting; closing it from outside stalls the quit.
+const isAutoStartBeforeQuitModal = (state: State): boolean =>
+    state.context === MODAL_CONTEXT_USER && state.payload.type === 'auto-start-before-quit';
+
 export const modalReducer = (state: State = initialState, action: UnknownAction): State => {
     const requestId = typeof action.requestId === 'string' ? action.requestId : undefined;
 
@@ -79,7 +93,7 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
     if (deviceActions.deviceDisconnect.match(action)) {
         if (
             (state.context === MODAL_CONTEXT_DEVICE && action.payload.path === state.device.path) ||
-            state.context === MODAL_CONTEXT_USER
+            (state.context === MODAL_CONTEXT_USER && !isAutoStartBeforeQuitModal(state))
         ) {
             return initialState;
         }
@@ -194,7 +208,7 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
             return initialState;
         }
 
-        return state.preserve ? state : initialState;
+        return state.preserve || isAutoStartBeforeQuitModal(state) ? state : initialState;
     }
 
     if (preserveModal.match(action)) {
@@ -260,3 +274,6 @@ export const selectRecoveryWordRequestInputType = (state: ModalRootState) => {
             return null;
     }
 };
+
+export const selectDeviceContextWindowType = (state: ModalRootState) =>
+    state.modal.context === MODAL_CONTEXT_DEVICE ? state.modal.windowType : undefined;

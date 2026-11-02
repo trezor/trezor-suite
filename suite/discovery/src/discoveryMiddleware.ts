@@ -81,6 +81,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
         isTHPAutoconnectFinished || // now that the THP Autoconnect was finished, resume the delayed discovery
         routerAppChanged.match(action) || // may no longer be one of the apps where discovery is disabled
         deviceActions.dismissFirmwareAuthenticityCheck.match(action) || // may no longer be device compromised
+        // dismissDiscoveryEntropyCheck is intentionally not a trigger, the dismissing component ejects all wallets
         connectPopupCallInnerThunk.fulfilled.match(action) ||
         deviceActions.selectDevice.match(action) ||
         changeNetworks.match(action) ||

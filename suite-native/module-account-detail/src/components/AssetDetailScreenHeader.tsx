@@ -24,6 +24,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { type TokensRootState, isNetworkWithTokens } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectAssetTabOfAccountToken } from '../selectors';
 
@@ -36,20 +37,22 @@ type AssetDetailScreenHeaderContentProps = {
     account: Account;
 };
 
+const headerContentStyle = prepareNativeStyle(() => ({ maxWidth: '100%' }));
+
 const AssetDetailScreenHeaderContent = ({ account }: AssetDetailScreenHeaderContentProps) => {
+    const { applyStyle } = useNativeStyles();
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
         selectAccountFiatBalance(state, account.key),
     );
 
     return (
-        <HStack alignItems="center" spacing="sp8">
+        <HStack alignItems="center" spacing="sp8" style={applyStyle(headerContentStyle)}>
             <TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} size="small" />
 
-            <VStack spacing={0} alignItems="flex-start">
+            <VStack spacing={0} flexShrink={1}>
                 <AccountLabel
                     account={account}
                     variant="body-md-strong"
-                    adjustsFontSizeToFit
                     numberOfLines={1}
                     showAccountTypeBadge
                 />

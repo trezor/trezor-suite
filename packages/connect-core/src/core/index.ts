@@ -103,6 +103,12 @@ const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIden
     return device;
 };
 
+const getDeviceIdentity = (device: Device) => ({
+    path: device.getUniquePath(),
+    state: device.getState(),
+    instance: device.getInstance(),
+});
+
 /**
  * This function will run inside Device.run() after device will be acquired and initialized
  */
@@ -161,11 +167,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     try {
         const response = await method.run({ sendCoreMessage, createUiPromise: uiPromises.create });
 
-        return createResponseMessage(method.responseID, true, response, {
-            path: device.getUniquePath(),
-            state: device.getState(),
-            instance: device.getInstance(),
-        });
+        return createResponseMessage(method.responseID, true, response, getDeviceIdentity(device));
     } catch (error) {
         return Promise.reject(error);
     }
@@ -360,7 +362,14 @@ const onCallDevice = async (
             ) {
                 await deviceList.enumerate();
             }
-            messageResponse = createResponseMessage(method.responseID, false, { error });
+            // Like the success response in `inner`, so the host knows which device a failed call ran
+            // on. Runtime-only; the typed `Err` branch does not declare it.
+            messageResponse = createResponseMessage(
+                method.responseID,
+                false,
+                { error },
+                getDeviceIdentity(device),
+            );
         }
     } finally {
         // Work done
@@ -429,7 +438,7 @@ const onDeviceButtonHandler =
     ({ payload: request }: DeviceEvents['button']) => {
         const { sendCoreMessage } = context;
         const data =
-            typeof method?.getButtonRequestData === 'function' && request.code
+            typeof method?.getButtonRequestData === 'function'
                 ? method?.getButtonRequestData(request.code, request.name)
                 : undefined;
         // request view
@@ -842,6 +851,12 @@ export class Core extends EventEmitter {
                         this.sendCoreMessage.bind(this),
                         message.payload.callId,
                     );
+                    const registerEvents = registerDeviceEvents(coreContext);
+                    // The device gets a new path with every reboot. Respond with the last one whose
+                    // events reached the host, like device calls respond with the device they ran on.
+                    let lastDevice: Device | undefined;
+                    const getLastDeviceIdentity = () =>
+                        lastDevice ? getDeviceIdentity(lastDevice) : undefined;
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
@@ -850,16 +865,31 @@ export class Core extends EventEmitter {
                             selectDevice: path => selectDevice(coreContext, { path }),
                             log: this.coreLogger,
                             abortSignal: this.abortController.signal,
-                            registerEvents: registerDeviceEvents(coreContext),
+                            registerEvents: device => {
+                                lastDevice = device;
+                                registerEvents(device);
+                            },
                             uiPromises: coreContext.uiPromises,
                         },
                     })
                         .then(payload => {
-                            this.sendCoreMessage(createResponseMessage(message.id, true, payload));
+                            this.sendCoreMessage(
+                                createResponseMessage(
+                                    message.id,
+                                    true,
+                                    payload,
+                                    getLastDeviceIdentity(),
+                                ),
+                            );
                         })
                         .catch(error => {
                             this.sendCoreMessage(
-                                createResponseMessage(message.id, false, { error }),
+                                createResponseMessage(
+                                    message.id,
+                                    false,
+                                    { error },
+                                    getLastDeviceIdentity(),
+                                ),
                             );
                             this.coreLogger.error('onCallFirmwareUpdate', error);
                         });

@@ -6,6 +6,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { events } from '@suite-common/analytics';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    type ComposeYieldWithdrawErrorReason,
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getWithdrawRequestAmount,
@@ -23,7 +24,6 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import { useTransactionDetails } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
@@ -34,6 +34,7 @@ import { getYieldWithdrawAmountValidationError } from '../../../utils/yield/yiel
 import { useNavigateBackAnalytics } from '../../earn/useNavigateBackAnalytics';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingSheet } from '../useYieldPendingSheet';
+import { useYieldPendingTransactionDetails } from '../useYieldPendingTransactionDetails';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
 import { useYieldWithdrawFees } from '../useYieldWithdrawFees';
 
@@ -111,11 +112,22 @@ export const useYieldWithdrawController = () => {
         () => !!amount && !!maxAmount && new BigNumber(amount).gt(maxAmount),
         [amount, maxAmount],
     );
+    const onComposeError = useCallback(
+        (errorMessage: ComposeYieldWithdrawErrorReason) =>
+            reportWithdraw({
+                action: 'continue',
+                type: 'error',
+                operation: flowType,
+                errorMessage,
+            }),
+        [reportWithdraw, flowType],
+    );
     const withdrawFees = useYieldWithdrawFees({
         amount,
         flowType,
         flowData,
         flowKey,
+        onComposeError,
         isEnabled:
             resolutionStatus === 'resolved' &&
             !!amount &&
@@ -185,9 +197,11 @@ export const useYieldWithdrawController = () => {
     const isWithdrawPending = !!actionPendingTransaction;
     const { displayedPendingTransaction, isSheetPresented, handleSheetDismissed } =
         useYieldPendingSheet(actionPendingTransaction);
-    const { explorerUrl, openInBlockchain } = useTransactionDetails({
+    const { explorerUrl, openInBlockchain } = useYieldPendingTransactionDetails({
         accountKey: account?.key ?? null,
         txid: displayedPendingTransaction?.txid ?? null,
+        transactionType: displayedPendingTransaction?.type,
+        vaultId: vault?.id,
     });
     const isSubmitDisabled =
         !amount ||

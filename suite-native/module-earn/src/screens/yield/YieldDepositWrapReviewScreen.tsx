@@ -19,6 +19,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { WrappedNativeTokenReviewContent } from '../../components/earn/WrappedNativeTokenReviewContent';
 import { useWrappedNativeReviewPreview } from '../../hooks/earn/useWrappedNativeReviewPreview';
+import { useYieldFlowAnalytics } from '../../hooks/yield/useYieldFlowAnalytics';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { type YieldBroadcastTransaction } from '../../types';
 
@@ -34,7 +35,20 @@ export const YieldDepositWrapReviewScreen = () => {
     const { dispatch } = useServices(injectDispatch);
 
     const yieldFlowData = useYieldFlowData(route.params);
-    const { account, flowKey, resolutionStatus } = yieldFlowData;
+    const { account, flowKey, resolutionStatus, vault } = yieldFlowData;
+    const { reportDeposit } = useYieldFlowAnalytics({
+        networkSymbol: account?.symbol,
+        vaultId: vault?.id,
+    });
+    const handleReviewError = useCallback(
+        (errorMessage: 'submit-failed' | 'push-failed') =>
+            reportDeposit({
+                action: 'continue',
+                type: 'error',
+                errorMessage: `wrap-${errorMessage}`,
+            }),
+        [reportDeposit],
+    );
 
     const session = useSelector((state: YieldRootState) =>
         selectYieldSessionByFlowKey(state, 'deposit', flowKey),
@@ -96,6 +110,7 @@ export const YieldDepositWrapReviewScreen = () => {
                 flowContext="in-flow"
                 flowType="wrap"
                 onBroadcast={handleBroadcast}
+                onError={handleReviewError}
                 preview={preview}
                 spentToken={spentToken}
                 unsignedTransaction={review.unsignedTransaction}

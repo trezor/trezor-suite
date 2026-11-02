@@ -172,6 +172,54 @@ const parseFixtures: ParseFixture[] = [
             hash: null,
         },
     },
+    {
+        description: 'target the URL parser rejects',
+        input: '//[',
+        expected: {
+            protocol: null,
+            hostname: null,
+            pathname: null,
+            query: {},
+            search: null,
+            hash: null,
+        },
+    },
+    {
+        description: 'origin-form target whose leading // the URL parser reads as an authority',
+        input: '//enumerate',
+        expected: {
+            protocol: null,
+            hostname: null,
+            pathname: null,
+            query: {},
+            search: null,
+            hash: null,
+        },
+    },
+    {
+        description: 'origin-form target with an authority and a path',
+        input: '//example.com/status',
+        expected: {
+            protocol: null,
+            hostname: null,
+            pathname: null,
+            query: {},
+            search: null,
+            hash: null,
+        },
+    },
+    {
+        description: 'absolute target with a non-special scheme and no path',
+        input: 'foo://bar',
+        expected: {
+            protocol: 'foo:',
+            hostname: 'bar',
+            pathname: '',
+            query: {},
+            search: null,
+            hash: null,
+        },
+    },
 ];
 
 type FormatFixture = {

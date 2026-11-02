@@ -8,6 +8,11 @@ describe('getMobileStakingSupport', () => {
         expect(getMobileStakingSupport(asNetworkSymbol('sol'))).toBe('manage');
     });
 
+    it('manages staking on the Ethereum and Solana testnets', () => {
+        expect(getMobileStakingSupport(asNetworkSymbol('thod'))).toBe('manage');
+        expect(getMobileStakingSupport(asNetworkSymbol('dsol'))).toBe('manage');
+    });
+
     it('only views staking positions on Cardano and Tron', () => {
         expect(getMobileStakingSupport(asNetworkSymbol('ada'))).toBe('view');
         expect(getMobileStakingSupport(asNetworkSymbol('trx'))).toBe('view');

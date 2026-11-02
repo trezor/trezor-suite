@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import {
+    type TradingFormAccountRootState,
     selectIsTradingNetworkFeeMissing,
-    selectTradingSellProviders,
     selectTradingSendAccount,
     tradingSellActions,
 } from '@suite-common/trading';
@@ -9,15 +11,18 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectSellQuoteThunk } from 'src/actions/wallet/trading/sell/selectSellQuoteThunk';
-import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
 import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC';
 import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
-import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 
 export const TradingFormOfferSellActions = () => {
+    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const { dispatch } = useServices(injectDispatch);
     const context = useTradingFormContext<'sell'>();
     const {
@@ -26,9 +31,9 @@ export const TradingFormOfferSellActions = () => {
         shouldSendInSats,
         form: { state, helpers },
     } = context;
-    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'sell'));
-    const sellProviders = useSelector(selectTradingSellProviders);
-
+    const account = useSelector((reduxState: TradingFormAccountRootState) =>
+        selectTradingSendAccount(reduxState, 'sell'),
+    );
     const isNetworkFeeMissing = useSelector(selectIsTradingNetworkFeeMissing);
 
     const { outputs } = watch();
@@ -44,7 +49,7 @@ export const TradingFormOfferSellActions = () => {
           })
         : false;
 
-    const { quote, confirmButtonData, isBaseButtonDisabled } = useTradingFormOfferCommon<'sell'>();
+    const { quote, isBaseButtonDisabled } = useTradingFormOfferCommon<'sell'>();
 
     const isButtonDisabled =
         !account ||
@@ -56,28 +61,19 @@ export const TradingFormOfferSellActions = () => {
     const onSelectQuote = () => {
         if (!quote) return;
 
-        const provider = quote.exchange ? sellProviders?.[quote.exchange] : undefined;
-
-        if (provider?.flow === 'BANK_ACCOUNT') {
-            dispatch(tradingSellActions.setFormStep('BANK_ACCOUNT'));
-        } else {
-            dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
-        }
-
         dispatch(tradingSellActions.saveFormValues(getValues()));
         dispatch(selectSellQuoteThunk({ quote, fractionButton: helpers.fractionButton }));
     };
 
     return (
         <>
-            <TradingFormOfferConfirmButton
-                {...confirmButtonData}
-                onClick={onSelectQuote}
-                isDisabled={isButtonDisabled}
-                testId="@trading/form/sell-button"
-            />
-
-            {quote && <TradingKYCWarning />}
+            {!isButtonDisabled && (
+                <TradingFormOfferConfirmButton
+                    translationId="TR_CONTINUE"
+                    onClick={onSelectQuote}
+                    testId="@trading/form/sell-button"
+                />
+            )}
 
             <TradingFormOfferOTC />
         </>

@@ -2,6 +2,7 @@ import { type RouteProp } from '@react-navigation/native';
 import { type Store } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -175,7 +176,13 @@ describe('TradingExchangePreviewScreen', () => {
                 navigation={createNavigationProps()}
                 route={createRouteProps(isApproved)}
             />,
-            { services: { ...services, store: testStore } },
+            {
+                services: {
+                    ...services,
+                    store: testStore,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
 
         ({ unmount } = result);

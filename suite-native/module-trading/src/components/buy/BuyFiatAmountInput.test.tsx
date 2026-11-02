@@ -13,11 +13,11 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 describe('BuyFiatAmountInput', () => {
-    const renderFiatAmountInput = async (
+    const renderFiatAmountInput = (
         form: BuyFormType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <BuyFiatAmountInput />
             </Form>,

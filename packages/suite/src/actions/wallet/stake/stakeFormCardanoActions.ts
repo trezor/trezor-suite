@@ -1,6 +1,5 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import {
     type DesktopAnalyticsDep,
     type StakingCardanoPoolDelegationPayload,
@@ -24,15 +23,15 @@ import {
     type VotingDelegationOption,
     calculateStakeFormTransaction,
     composeStakingTransaction,
+    decodeCardanoDrepId,
     getCardanoAccountPoolId,
     hasCardanoLiveVoteDelegation,
     isCardanoStakedWithEverstake,
     isCardanoWithdrawalBlockedByMissingDrep,
-    parseDrepBech32,
+    isEarnSigningCancelled,
     selectBestCardanoPool,
     selectCardanoPoolsInfo,
     selectStakeVotingDelegation,
-    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -43,7 +42,6 @@ import {
     type PrecomposedTransaction,
     type PrecomposedTransactionError,
     type PrecomposedTransactionFinal,
-    type SelectedAccountStatus,
     type StakeFormState,
     type StakeType,
 } from '@suite-common/wallet-types';
@@ -125,12 +123,12 @@ const calculateTransaction = (
 
 const getConfirmedVoteDrep = (
     confirmedOption: VotingDelegationOption | undefined,
-): { type: PROTO.CardanoDRepType; hex?: string } => {
+): { type: PROTO.CardanoDRepType; hex?: string } | null => {
     switch (confirmedOption?.type) {
         case 'another_drep':
-            return parseDrepBech32(confirmedOption.drepId);
+            return decodeCardanoDrepId(confirmedOption.drepId);
         case 'everstake':
-            return parseDrepBech32(CARDANO_EVERSTAKE_DREP.bech32);
+            return { type: PROTO.CardanoDRepType.KEY_HASH, hex: CARDANO_EVERSTAKE_DREP.hex };
         case 'abstain':
         case 'current':
         case undefined:
@@ -200,15 +198,13 @@ export const prepareTxPlan = async ({
         confirmedOption?.type === 'current' && hasCardanoLiveVoteDelegation(account);
 
     if ((action === 'delegate' || action === 'voteDelegate') && !isKeepingCurrentVote) {
-        const isVotingToAnotherDrep = confirmedOption?.type === 'another_drep';
+        const dRep = getConfirmedVoteDrep(confirmedOption);
 
-        if (isVotingToAnotherDrep && !validateCardanoDrep(confirmedOption.drepId)) {
+        if (dRep === null) {
             return null;
         }
 
-        certificates.push(
-            ...getVotingCertificates(stakingPath, getConfirmedVoteDrep(confirmedOption)),
-        );
+        certificates.push(...getVotingCertificates(stakingPath, dRep));
     }
 
     if (action === 'deregister') {
@@ -254,17 +250,15 @@ export const prepareTxPlan = async ({
 
 const getTransactionData = (
     formValues: StakeFormState,
-    selectedAccount: SelectedAccountStatus,
+    account: Account,
     cardanoPools: AdaPools['pools'],
     votingDelegation?: AccountVotingDelegation,
 ) => {
     const { stakeType } = formValues;
 
-    if (selectedAccount.status !== 'loaded' || selectedAccount.account.networkType !== 'cardano') {
+    if (account.networkType !== 'cardano') {
         return;
     }
-
-    const { account } = selectedAccount;
 
     if (stakeType === 'stake') {
         return prepareTxPlan({ account, action: 'delegate', cardanoPools, votingDelegation });
@@ -328,22 +322,18 @@ const getComposeErrorLevels = (
     return Object.fromEntries(predefinedLevels.map(level => [level.label, errorLevel]));
 };
 
-type ComposeTransactionThunkState = SelectedAccountRootState & StakeRootState;
+type ComposeTransactionThunkState = StakeRootState;
 
 export const composeTransactionThunk =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
-        const selectedAccount = selectFullSelectedAccount(getState());
+        const { account } = formState;
         const cardanoPools = selectCardanoPoolsInfo(getState());
         const votingDelegation = selectStakeVotingDelegation(getState());
 
-        if (!selectedAccount.account) return;
-
-        if (selectedAccount.status !== 'loaded') return;
-
         const txData = await getTransactionData(
             formValues,
-            selectedAccount,
+            account,
             cardanoPools,
             votingDelegation,
         );
@@ -364,20 +354,12 @@ export const composeTransactionThunk =
         }
 
         if (txPlan?.type === 'error') {
-            return getComposeErrorLevels(
-                txPlan.error,
-                selectedAccount.account.symbol,
-                predefinedLevels,
-            );
+            return getComposeErrorLevels(txPlan.error, account.symbol, predefinedLevels);
         }
 
         if (txPlan?.type !== 'final') return;
 
-        const amountAda = calculateOutputAmount(
-            selectedAccount.account,
-            formValues.stakeType,
-            txPlan?.totalSpent,
-        );
+        const amountAda = calculateOutputAmount(account, formValues.stakeType, txPlan?.totalSpent);
 
         const firstOutput = formValues.outputs[0];
         if (!firstOutput) return;
@@ -439,35 +421,38 @@ const getPoolDelegation = (
     };
 };
 
-type SignTransactionThunkState = DeviceRootState & SelectedAccountRootState & StakeRootState;
+type SignTransactionThunkState = DeviceRootState & StakeRootState;
 
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
+type SignTransactionThunkParams = {
+    account: Account;
+    formValues: StakeFormState;
+    transactionInfo: PrecomposedTransactionFinal;
+};
+
 export const signTransactionThunk =
-    (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
+    ({ account, formValues, transactionInfo }: SignTransactionThunkParams) =>
     async (
         dispatch: Dispatch<UnknownAction>,
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const selectedAccount = selectFullSelectedAccount(getState());
         const cardanoPools = selectCardanoPoolsInfo(getState());
         const votingDelegation = selectStakeVotingDelegation(getState());
-        if (!selectedAccount?.account) return;
 
         const device = selectSelectedDevice(getState());
-        if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final') {
+        if (!device || transactionInfo?.type !== 'final') {
             return;
         }
 
-        const { account } = selectedAccount;
         if (account.networkType !== 'cardano') {
             return;
         }
 
         const txData = await getTransactionData(
             formValues,
-            selectedAccount,
+            account,
             cardanoPools,
             votingDelegation,
         );
@@ -516,13 +501,16 @@ export const signTransactionThunk =
         });
 
         if (!signedTx.success) {
-            extra.services.analytics.report({
-                type: events.transactionCancelEvent.name,
-                payload: {
-                    txType: 'stake',
-                    networkSymbol: account.symbol,
-                },
-            });
+            if (isEarnSigningCancelled(signedTx.error)) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'stake',
+                        networkSymbol: account.symbol,
+                        stage: 'signing',
+                    },
+                });
+            }
 
             // catch manual error from TransactionReviewModal
             if (signedTx.error.message === 'tx-cancelled') {

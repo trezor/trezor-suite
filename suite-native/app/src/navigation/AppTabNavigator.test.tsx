@@ -1,9 +1,9 @@
 import { deviceInitialState } from '@suite-common/device';
-import { messageSystemInitialState } from '@suite-common/message-system';
+import { Feature, messageSystemInitialState } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
 import {
     fireEvent,
@@ -38,8 +38,8 @@ const baseState = {
 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
 describe('AppTabNavigator', () => {
-    const renderTabs = async (overrides: Record<string, unknown> = {}) =>
-        await renderWithStoreProvider(<AppTabNavigator />, {
+    const renderTabs = (overrides: Record<string, unknown> = {}) =>
+        renderWithStoreProvider(<AppTabNavigator />, {
             preloadedState: mergePreloadedState(baseState, overrides),
             services,
         });
@@ -54,9 +54,6 @@ describe('AppTabNavigator', () => {
 
     it('should not render Trade tab when all trading flags are disabled', async () => {
         const { queryByText } = await renderTabs({
-            featureFlags: {
-                [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-            },
             messageSystem: mockMessageSystemStateWithFeatureFlags({
                 'trading.buy': false,
                 'trading.exchange': false,
@@ -70,9 +67,6 @@ describe('AppTabNavigator', () => {
 
     it('should render Trade tab when at least one trading flag is enabled', async () => {
         const { getByText, getByTestId } = await renderTabs({
-            featureFlags: {
-                [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-            },
             messageSystem: mockMessageSystemStateWithFeatureFlags({
                 'trading.buy': false,
                 'trading.exchange': true,
@@ -84,6 +78,17 @@ describe('AppTabNavigator', () => {
         await fireEvent.press(getByText(getTranslation('navigation.tabs.trade')));
 
         expect(getByTestId('@screen/Trading')).toBeTruthy();
+    });
+
+    it('should not render Trade tab when FinProm is restricted', async () => {
+        const { queryByText } = await renderTabs({
+            messageSystem: mockMessageSystemStateWithFeatureFlags(
+                { [Feature.finprom.presenceRestriction]: true },
+                { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+            ),
+        });
+
+        expect(queryByText(getTranslation('navigation.tabs.trade'))).toBe(null);
     });
 
     it('should render Earn tab', async () => {

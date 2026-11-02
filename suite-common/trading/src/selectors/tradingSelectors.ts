@@ -929,6 +929,8 @@ export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
     state.wallet.trading.buy.receiveAccountKey;
 export const selectTradingBuyReceiveAddress = (state: TradingRootState) =>
     state.wallet.trading.buy.receiveAddress;
+export const selectTradingBuyExtraField = (state: TradingRootState) =>
+    state.wallet.trading.buy.extraField;
 
 export const selectTradingBuyReceiveAccount = createMemoizedSelectorWithAccounts(
     [selectAccounts, selectTradingBuyReceiveAccountKey],

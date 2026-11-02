@@ -1,5 +1,7 @@
 ## Suite Sync Storage (Types)
 
+For what a storage means in Suite Sync, see [Storage](../../docs/features/suite-sync.md#storage) in the Suite Sync documentation.
+
 This package is the abstraction for storage. Suite Sync can in theory
 work with different library then Evolu. This is the abstraction that enables it.
 

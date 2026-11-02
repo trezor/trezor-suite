@@ -49,6 +49,10 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
     changelog: [
         { version: '26.5.0', notes: 'added' },
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
+        {
+            version: '26.11.0',
+            notes: 'Aligned exit handling and tracked skipped onboarding; info-only education does not emit funnel navigation.',
+        },
     ],
 
     attributes: {
@@ -78,7 +82,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         to: {
             description:
-                'Destination of the navigation. Also reports `account-detail` when leaving the wrap/unwrap pages — the account Tokens tab on desktop, the account detail screen on mobile',
+                'Navigation destination, including automatic onboarding skips. Wrap/unwrap exits use `account-detail`.',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -104,7 +108,13 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         vaultId: {
             description: 'Internal vault identifier (vault.id), unique per Morpho vault',
-            changelog: [{ version: '26.5.2', notes: 'added' }],
+            changelog: [
+                { version: '26.5.2', notes: 'added' },
+                {
+                    version: '26.11.0',
+                    notes: 'Mobile active-position navigation includes the selected vault ID.',
+                },
+            ],
         },
     },
 };

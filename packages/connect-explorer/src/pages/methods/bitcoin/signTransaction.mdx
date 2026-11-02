@@ -53,7 +53,7 @@ export const paramDescriptions = {
         'of [PROTO.PaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/definitions/messages-bitcoin.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)',
     refTxs:
         'of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/bitcoin/common.ts).\n' +
-        "> If you don't want to use build-in `blockbook` backend you can optionally provide those data from your own backend transformed to `Trezor` format.\n" +
+        '> Required for RBF and non-taproot accounts. Suite-hosted Connect fetches them automatically when not provided.' +
         '> Since Firmware 2.3.0/1.9.0 referenced transactions are required.\n' +
         '> Zcash refTxs should also contains `expiry`, `version_group_id` and `extra_data` fields.',
     locktime: '',
@@ -63,7 +63,7 @@ export const paramDescriptions = {
     overwintered: 'only for Zcash',
     timestamp: 'only for Capricoin, transaction timestamp,',
     branchId: 'only for Zcash, BRANCH_ID when overwintered is set',
-    push: 'Broadcast signed transaction to blockchain. Default is set to false',
+    push: 'Deprecated. Supported only when called through Trezor Suite (web/desktop/mobile); throws in @trezor/connect for Node. Use pushTransaction.',
     amountUnit: 'show amounts in BTC, mBTC, uBTC, sat',
     serialize:
         'default `true` serialize the full transaction, as opposed to only outputting the signatures',

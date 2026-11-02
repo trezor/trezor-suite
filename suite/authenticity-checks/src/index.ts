@@ -4,6 +4,8 @@ export {
     selectIsDeviceCompromised,
     selectIsDeviceIdCheckEnabledAndFailed,
     selectIsDeviceInvariabilityEnabledAndFailed,
+    selectIsDiscoveryEntropyCheckEnabledAndFailed,
+    selectIsDiscoveryEntropyCheckEnabledAndUndismissedFailed,
     selectIsEntropyCheckEnabledAndFailed,
     selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
     selectShouldDisplayDeviceCompromised,
@@ -11,6 +13,7 @@ export {
     selectShouldRetryFirmwareRevisionCheckError,
 } from './authenticityChecksSelectors';
 export {
+    selectIsDeviceAuthenticityCheckSupportedAndEnabled,
     selectShouldCheckDeviceAuthenticity,
     selectShouldRouterAppSkipInteractiveDeviceChecks,
     selectDeviceNeedsInteractiveDeviceChecks,

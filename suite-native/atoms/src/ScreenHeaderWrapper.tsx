@@ -17,8 +17,8 @@ const screenHeaderWrapperStyle = prepareNativeStyle<{
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: Math.max(insets.left, utils.spacings.sp16),
-    paddingRight: Math.max(insets.right, utils.spacings.sp16),
+    paddingLeft: insets.left + utils.spacings.sp16,
+    paddingRight: insets.right + utils.spacings.sp16,
     paddingTop: utils.spacings.sp8,
     paddingBottom: noBottomPadding ? 0 : utils.spacings.sp16,
 }));
@@ -26,13 +26,17 @@ const screenHeaderWrapperStyle = prepareNativeStyle<{
 export const ScreenHeaderWrapper = ({
     children,
     noBottomPadding = false,
+    style,
     ...rest
 }: ScreenHeaderWrapperProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
     return (
-        <Box style={applyStyle(screenHeaderWrapperStyle, { insets, noBottomPadding })} {...rest}>
+        <Box
+            {...rest}
+            style={[applyStyle(screenHeaderWrapperStyle, { insets, noBottomPadding }), style]}
+        >
             {children}
         </Box>
     );

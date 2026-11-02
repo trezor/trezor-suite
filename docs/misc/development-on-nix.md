@@ -9,9 +9,10 @@ Trezor Suite provides two ways to use Nix: a **Nix flake** (`flake.nix`) and a *
 - [Nix](https://nixos.org/download) installed with flakes enabled
 - Add `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf`
 
-### shell.nix
+### shell.nix (`nix-shell`)
 
 - [Nix](https://nixos.org/download) installed (no extra config needed)
+- Android and Rust tooling is opt-in via `USE_ANDROID=1` / `USE_RUST=1`, see [Optional plugins](#optional-plugins)
 
 ---
 
@@ -38,6 +39,14 @@ Includes everything in the default shell plus:
 
 ```bash
 nix develop .#android
+```
+
+### Rust shell (e.g. transport-bluetooth development)
+
+Includes everything in the default shell plus the Rust toolchain (`rustc`, `cargo`, `rustfmt`, `cargo-cross`).
+
+```bash
+nix develop .#rust
 ```
 
 ## Common Workflows
@@ -83,6 +92,17 @@ nix develop
 yarn test:unit
 ```
 
+### VS Code environment (flakes)
+
+Install the [nix-env-selector](https://marketplace.visualstudio.com/items?itemName=arrterian.nix-env-selector) extension and add the following to `.vscode/settings.json`:
+
+```json
+"nixEnvSelector.useFlakes": true,
+"nixEnvSelector.flakeShell": "rust"
+```
+
+Set `flakeShell` to `default`, `android`, or `rust` to match the shell you need. Reload VS Code after changing the settings. New terminals then open inside the selected shell.
+
 ---
 
 ## shell.nix
@@ -95,20 +115,39 @@ For environments without flakes, use `nix-shell` with the root [shell.nix](../..
 nix-shell
 ```
 
-### Android
+### Optional plugins
 
-Pass `USE_ANDROID=1` to include the Android SDK, JDK, and emulator:
+Plugins are enabled with environment variables set to `1`. They are defined in [.nix](../../.nix/) and add to the default shell.
+
+| Variable        | Plugin                                | Description                                       |
+| --------------- | ------------------------------------- | ------------------------------------------------- |
+| `USE_ANDROID=1` | [android.nix](../../.nix/android.nix) | Android shell (mobile development)                |
+| `USE_RUST=1`    | [rust.nix](../../.nix/rust.nix)       | Rust shell (e.g. transport-bluetooth development) |
+
+### Android
 
 ```bash
 USE_ANDROID=1 nix-shell
+yarn
+yarn native:start       # Start Metro bundler (in one terminal)
+yarn a                  # Run on Android (in another terminal)
 ```
 
-### Bluetooth transport development
+### Rust
 
-The [packages/transport-bluetooth](../../packages/transport-bluetooth/) package has its own shell with a Rust toolchain:
+Used by [packages/transport-bluetooth](../../packages/transport-bluetooth/):
 
 ```bash
-nix-shell packages/transport-bluetooth/shell.nix
+USE_RUST=1 nix-shell
+yarn workspace @trezor/transport-bluetooth dev:server
 ```
+
+### Combining plugins
+
+```bash
+USE_ANDROID=1 USE_RUST=1 nix-shell
+```
+
+The variables are read when `nix-shell` starts, so set them on the same command line (or `export` them first).
 
 ---

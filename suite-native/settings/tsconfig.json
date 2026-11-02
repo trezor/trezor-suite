@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/earn-stablecoin-defs"
         },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
         { "path": "../config" },
         { "path": "../../packages/connect" }
     ]

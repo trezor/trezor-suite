@@ -30,18 +30,14 @@ jest.mock(
 );
 
 type TradingFormOfferConfirmButtonProps = {
-    isDisabled: boolean;
     testId: string;
 };
 
 jest.mock(
     'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton',
     () => ({
-        TradingFormOfferConfirmButton: ({
-            isDisabled,
-            testId,
-        }: TradingFormOfferConfirmButtonProps) => (
-            <button data-testid={testId} disabled={isDisabled} />
+        TradingFormOfferConfirmButton: ({ testId }: TradingFormOfferConfirmButtonProps) => (
+            <button data-testid={testId} />
         ),
     }),
 );
@@ -90,24 +86,20 @@ describe('TradingFormOfferSellActions', () => {
         });
         mockUseTradingFormOfferCommon.mockReturnValue({
             quote: { orderId: 'test-order' },
-            confirmButtonData: {},
             isBaseButtonDisabled: false,
         });
     });
 
     it.each([
-        ['is enabled when the network fee is present', { fee: '12345' }, false],
-        ['is disabled when the network fee is missing', undefined, true],
-        ['is disabled when the network fee is an empty string', { fee: '' }, true],
+        ['is shown when the network fee is present', { fee: '12345' }, true],
+        ['is hidden when the network fee is missing', undefined, false],
+        ['is hidden when the network fee is an empty string', { fee: '' }, false],
     ] as [string, { fee: string } | undefined, boolean][])(
         'confirm button %s',
-        (_title, composed, expectedDisabled) => {
+        (_title, composed, expectedShown) => {
             renderWithNetworkFee(composed);
 
-            expect(screen.getByTestId('@trading/form/sell-button')).toHaveProperty(
-                'disabled',
-                expectedDisabled,
-            );
+            expect(!!screen.queryByTestId('@trading/form/sell-button')).toBe(expectedShown);
         },
     );
 });

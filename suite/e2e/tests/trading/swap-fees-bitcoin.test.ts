@@ -60,7 +60,8 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
             });
 
             await test.step('Set a custom fee on the review step', async () => {
-                await tradingPage.swapBestOfferButton.click();
+                await tradingPage.quotes.chooseCexOffer();
+                await tradingPage.clickSwapBestOfferWithRetry();
                 await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
                 await tradingPage.fees.openNetworkFeeModal();
                 await tradingPage.fees.switchModeButton('custom').click();

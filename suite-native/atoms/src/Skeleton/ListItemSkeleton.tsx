@@ -1,5 +1,4 @@
 import React from 'react';
-import { useWindowDimensions } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -26,23 +25,22 @@ export const ListItemSkeleton = () => {
         applyStyle,
         utils: { borders },
     } = useNativeStyles();
-    const { width: windowWidth } = useWindowDimensions();
 
     return (
         <Box style={applyStyle(skeletonContainer)}>
-            <BoxSkeleton width={windowWidth * MAIN_ITEM_WIDTH_RATIO} height={MAIN_ITEM_HEIGHT} />
+            <BoxSkeleton width={`${MAIN_ITEM_WIDTH_RATIO * 100}%`} height={MAIN_ITEM_HEIGHT} />
 
-            <VStack spacing="sp8" alignItems="flex-end">
+            <VStack
+                spacing="sp8"
+                alignItems="flex-end"
+                style={{ width: `${BOTTOM_SUB_ITEM_WIDTH_RATIO * 100}%` }}
+            >
                 <BoxSkeleton
-                    width={windowWidth * TOP_SUB_ITEM_WIDTH_RATIO}
+                    width={`${(TOP_SUB_ITEM_WIDTH_RATIO / BOTTOM_SUB_ITEM_WIDTH_RATIO) * 100}%`}
                     height={SUBITEM_HEIGHT}
                     borderRadius={borders.radii.r4}
                 />
-                <BoxSkeleton
-                    width={windowWidth * BOTTOM_SUB_ITEM_WIDTH_RATIO}
-                    height={SUBITEM_HEIGHT}
-                    borderRadius={borders.radii.r4}
-                />
+                <BoxSkeleton width="100%" height={SUBITEM_HEIGHT} borderRadius={borders.radii.r4} />
             </VStack>
         </Box>
     );

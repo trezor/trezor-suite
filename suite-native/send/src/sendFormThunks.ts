@@ -1,5 +1,6 @@
 import { isRejected } from '@reduxjs/toolkit';
 
+import { getTransactionCreatedEventPayload, events as sharedEvents } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import {
     type MevProtectionRootState,
@@ -145,7 +146,7 @@ export const cleanupSendFormThunk = createThunk<
         if (shouldDeleteDraft) dispatch(sendFormActions.removeDraft({ accountKey, tokenContract }));
 
         // todo: maybe not needed anymore
-        dispatch(deviceActions.removeButtonRequests({ device }));
+        dispatch(deviceActions.removeButtonRequests({ path: device?.path }));
     },
 );
 
@@ -180,7 +181,15 @@ export const updateSelectedFeeLevelThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/updateSelectedFeeLevelThunk`,
     (
-        { accountKey, tokenContract, feeLevelLabel, feePerUnit, feeLimit },
+        {
+            accountKey,
+            tokenContract,
+            feeLevelLabel,
+            feePerUnit,
+            feeLimit,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+        },
         { dispatch, getState },
     ) => {
         const draft = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
@@ -194,6 +203,13 @@ export const updateSelectedFeeLevelThunk = createThunk<
         }
         if (feeLimit) {
             draftCopy.feeLimit = feeLimit;
+        }
+
+        if (maxFeePerGas) {
+            draftCopy.maxFeePerGas = maxFeePerGas;
+        }
+        if (maxPriorityFeePerGas) {
+            draftCopy.maxPriorityFeePerGas = maxPriorityFeePerGas;
         }
 
         dispatch(sendFormActions.storeDraft({ accountKey, tokenContract, formState: draftCopy }));
@@ -277,6 +293,16 @@ export const sendTransactionThunk = createThunk<
                     hasDestinationTag: isNotNullOrUndefined(formValues.destinationTag),
                     wasAppLeftDuringReview,
                 },
+            });
+
+            extra.services.analytics.report({
+                type: sharedEvents.transactionCreatedEvent.name,
+                payload: getTransactionCreatedEventPayload({
+                    action: 'sent',
+                    account: selectedAccount,
+                    precomposedForm: formValues,
+                    tokens: tokenSymbol ?? '',
+                }),
             });
         }
 

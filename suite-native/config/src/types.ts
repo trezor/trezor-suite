@@ -10,7 +10,7 @@ export type LaunchArguments = {
     areExperimentalOnlyNetworksEnabled?: boolean;
     preloadedState?: string; // stringified object
     isFirmwareUpdateEnabled?: boolean;
-    isTradingResidenceCheckEnabled?: boolean;
+    isTradingResidenceWhitelistRequired?: boolean;
     isTradingDebugEnabled?: boolean;
     isN4w1BackupEnabled?: boolean;
 };

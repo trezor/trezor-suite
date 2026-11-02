@@ -1,6 +1,6 @@
-import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 
 import type { YieldPendingTransactionState } from '../yieldTypes';
 import {

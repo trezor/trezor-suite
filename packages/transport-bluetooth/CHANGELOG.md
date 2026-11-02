@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.5.1
+
+- fix: DeviceConnected notification when discovered device is already connected and paired.
+
 ### 0.5.0
 
 - feat: connection token authorization

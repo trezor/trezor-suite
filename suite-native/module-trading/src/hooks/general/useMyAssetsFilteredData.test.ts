@@ -87,13 +87,11 @@ const sections = [
 const preferredCurrencyUsdThreshold = asBaseCurrencyAmount(new BigNumber('0.1'));
 
 describe('useMyAssetsFilteredData', () => {
-    const renderFilter = async (
-        threshold: BaseCurrencyAmount | null = preferredCurrencyUsdThreshold,
-    ) => {
+    const renderFilter = (threshold: BaseCurrencyAmount | null = preferredCurrencyUsdThreshold) => {
         mockUseTradingMyAssets.mockReturnValue(sections);
         mockUsePreferredCurrencyUsdThreshold.mockReturnValue(threshold);
 
-        return await renderHook(() => useMyAssetsFilteredData('sell'));
+        return renderHook(() => useMyAssetsFilteredData('sell'));
     };
 
     it('groups each account assets by tradeability and low balance', async () => {

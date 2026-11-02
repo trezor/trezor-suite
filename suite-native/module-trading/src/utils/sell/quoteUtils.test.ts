@@ -11,8 +11,8 @@ import { useSellForm } from '../../hooks/sell/useSellForm';
 describe('quoteUtils', () => {
     let form: SellFormType;
 
-    const renderUseTradingSellForm = async () =>
-        await renderHookWithStoreProvider(() => useSellForm(), {
+    const renderUseTradingSellForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) },
         });
 

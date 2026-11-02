@@ -24,8 +24,8 @@ describe('useSellSendAssetChange', () => {
     let store: Store<TradingRootState>;
     let dispatchSpy: jest.SpyInstance;
 
-    const renderSellSendAssetChange = async () =>
-        await renderHookWithStoreProvider(
+    const renderSellSendAssetChange = () =>
+        renderHookWithStoreProvider(
             () => {
                 const form = useForm<SellFormValues>({ validation: sellFormValidationSchema });
 

@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../packages/eslint" }
+        { "path": "../packages/eslint" },
+        { "path": "../packages/requirements" }
     ]
 }

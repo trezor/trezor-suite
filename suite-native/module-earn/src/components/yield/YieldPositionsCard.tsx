@@ -22,13 +22,12 @@ import {
     selectYieldListItems,
 } from '../../earnScreenSelectors';
 import { useClaimRewardsWithFiat } from '../../hooks/yield/useClaimRewardsWithFiat';
-import { useReportYieldDashboardReadyEvent } from '../../hooks/yield/useReportYieldDashboardReadyEvent';
 import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 
 export const YieldPositionsCard = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
-    const { yieldOpportunities, isLoading: isYieldOpportunitiesLoading } = useYieldOpportunities();
+    const { yieldOpportunities } = useYieldOpportunities();
     const { claimRewardsWithFiat, isClaimLoading } = useClaimRewardsWithFiat();
 
     const positions = useSelector((state: EarnListRootState) =>
@@ -44,13 +43,6 @@ export const YieldPositionsCard = () => {
         openModal: openYieldPositionsSheet,
         closeModal: closeYieldPositionsSheet,
     } = useBottomSheetModal();
-
-    useReportYieldDashboardReadyEvent({
-        yieldOpportunities,
-        isLoading: isYieldOpportunitiesLoading || isClaimLoading,
-        positionsCount: positions.length,
-        claimItemsCount: claimItems.length,
-    });
 
     const isPositionsVisible = positions.length > 0;
     const isClaimRewardsVisible =

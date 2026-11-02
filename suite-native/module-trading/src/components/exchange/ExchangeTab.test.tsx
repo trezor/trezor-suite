@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -43,8 +43,14 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ExchangeTab', () => {
-    const renderExchangeTab = async () =>
-        await renderWithTradingProvider(<ExchangeTab />, { services, tradeType: 'exchange' });
+    const renderExchangeTab = () =>
+        renderWithTradingProvider(<ExchangeTab />, {
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
+            tradeType: 'exchange',
+        });
 
     beforeEach(() => {
         mockIsDeviceInViewOnlyMode = false;

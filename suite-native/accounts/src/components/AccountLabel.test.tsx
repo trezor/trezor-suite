@@ -58,8 +58,8 @@ describe('AccountLabel', () => {
         }),
     } as const;
 
-    const renderAccountLabel = async (props: AccountLabelPropsWithAccount) =>
-        await renderWithStoreProvider(<AccountLabel {...props} />, {
+    const renderAccountLabel = (props: AccountLabelPropsWithAccount) =>
+        renderWithStoreProvider(<AccountLabel {...props} />, {
             services: {
                 store: createLightStore({
                     reducer,

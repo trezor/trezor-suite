@@ -10,12 +10,17 @@ export type PerfMetricKey =
 // never enforced.
 export type PerfMetrics = Record<PerfMetricKey, number | null>;
 
-export type MetricUnit = 'ms' | 'count';
+/** A `score` is a 0-100 grade, not a quantity, so like a count it is printed as a bare number. */
+export type MetricUnit = 'ms' | 'count' | 'score';
 
-export type MetricDefinition = {
-    key: PerfMetricKey;
+/** Generic over the key and unit so the native report, with its own metrics, shares the rules. */
+export type MetricDefinition<
+    K extends string = PerfMetricKey,
+    U extends MetricUnit = MetricUnit,
+> = {
+    key: K;
     label: string;
-    unit: MetricUnit;
+    unit: U;
 };
 
 /** What each scenario costs today, keyed by scenario name. Reported for reference, never enforced. */
@@ -30,10 +35,13 @@ export type ScenarioLimits = Partial<Record<PerfMetricKey, number>>;
 /** Limits keyed by scenario name. */
 export type Limits = Record<string, ScenarioLimits>;
 
-export type MetricComparison = {
-    key: PerfMetricKey;
+export type MetricComparison<
+    K extends string = PerfMetricKey,
+    U extends MetricUnit = MetricUnit,
+> = {
+    key: K;
     label: string;
-    unit: MetricUnit;
+    unit: U;
     /** Reference only, never enforced. */
     baseline: number | null;
     current: number | null;
@@ -43,9 +51,12 @@ export type MetricComparison = {
     exceededLimit: boolean;
 };
 
-export type ScenarioComparison = {
+export type ScenarioComparison<
+    K extends string = PerfMetricKey,
+    U extends MetricUnit = MetricUnit,
+> = {
     scenario: string;
-    metrics: MetricComparison[];
+    metrics: MetricComparison<K, U>[];
     /**
      * A metric went over its limit. Reported loudly, but never turned into a test failure: a
      * performance number is not a reason to block a merge on its own, and a red report that everyone

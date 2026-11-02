@@ -62,6 +62,8 @@ const getOsName = () => {
     return '';
 };
 
+const getNativeOsVersion = () => `${Platform.Version}`;
+
 export const getJWSPublicKey = () => (isCodesignBuild() ? publicKey.codesign : publicKey.dev);
 
 export const envUtils: EnvUtils = {
@@ -89,5 +91,6 @@ export const envUtils: EnvUtils = {
     isLinux,
     isCodesignBuild,
     getOsName,
+    getNativeOsVersion,
     getJWSPublicKey,
 };

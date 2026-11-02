@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey, type FormState } from '@suite-common/wallet-types';
+import type { AccountKey, FormState } from '@suite-common/wallet-types';
 
 import { CustomFeeContent } from './CustomFeeContent';
 import { useCustomFee } from '../../../hooks/fees/useCustomFee';

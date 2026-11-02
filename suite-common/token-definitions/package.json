@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
@@ -34,7 +34,7 @@
         "@trezor/eslint": "workspace:*",
         "ajv": "^8.20.0",
         "jws": "^4.0.1",
-        "toml": "^4.1.2",
-        "zod": "4.6.5"
+        "toml": "^5.0.0",
+        "zod": "4.6.7"
     }
 }

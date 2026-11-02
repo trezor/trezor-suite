@@ -27,16 +27,19 @@ export const PERF_REPORT_MARKER = '<!-- PERF-E2E-REPORT -->';
 
 const PERF_REPORT_HEADING = '## ⚡️ Performance report (alpha)';
 
+const DASHBOARD_URL = 'https://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html';
+
 /**
- * What the numbers are worth. A measurement here is usually a single run on a shared CI runner, so
- * a difference has to be large before it means anything — said once, at the top, rather than hedged
- * into every section.
+ * Kept low-key until the numbers are trusted: the comment points at where the detail lives rather
+ * than repeating it. A pull request's own runs are not on the dashboard, which reads the rolling
+ * index of a branch, so it links the develop trend to compare against.
  */
 const PERF_REPORT_NOTE = [
     '> [!NOTE]',
-    '> **Alpha release:** The limits are still being calibrated, and each measurement is',
-    '> usually a single run on a shared CI runner, so expect noise between runs. Treat a',
-    '> number as a hint to look closer, not as a verdict.',
+    '> In development: the numbers are still being calibrated and are not a verdict on this',
+    "> pull request. Each job's summary has the details.",
+    '',
+    `📈 Trends on develop: [web](${DASHBOARD_URL}?platform=web&branch=develop) · [desktop](${DASHBOARD_URL}?platform=desktop&branch=develop)`,
 ].join('\n');
 
 const PERF_REPORT_PREAMBLE = `${PERF_REPORT_MARKER}\n${PERF_REPORT_HEADING}\n\n${PERF_REPORT_NOTE}`;
@@ -312,6 +315,20 @@ export const formatMarkdownReport = (
         ...overLimit.flatMap(measurement => overLimitShowcase(measurement, budgetsPath)),
         '',
         '</details>',
+        encodeMeasurements(measurements),
+    ].join('\n');
+};
+
+/** One line per job in the pull request comment; the job summary keeps the full report. */
+export const formatCommentSection = (
+    measurements: readonly ReportedMeasurement[],
+    { heading = 'e2e', runUrl }: Pick<MarkdownReportContext, 'heading' | 'runUrl'> = {},
+): string => {
+    const withinLimits = measurements.filter(measurement => !measurement.report.overLimit).length;
+    const title = runUrl ? `[${heading}](${runUrl})` : heading;
+
+    return [
+        `- ${title}: ${withinLimits}/${measurements.length} flows within limits`,
         encodeMeasurements(measurements),
     ].join('\n');
 };

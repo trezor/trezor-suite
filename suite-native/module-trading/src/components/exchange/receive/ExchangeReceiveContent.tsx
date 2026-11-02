@@ -7,6 +7,7 @@ import { ExchangeReceiveAccountCryptoBalance } from './ExchangeReceiveAccountCry
 import { ExchangeTradeableAssetPicker } from './ExchangeTradeableAssetPicker';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { useConvertFormValueToBaseUnit } from '../../../hooks/general/useConvertFormValueToBaseUnit';
+import { TradingBaseCurrencyAmountPlaceholder } from '../../general/TradingBaseCurrencyAmountPlaceholder';
 
 export const ExchangeReceiveContent = () => {
     const { control } = useExchangeFormContext();
@@ -23,15 +24,17 @@ export const ExchangeReceiveContent = () => {
     return (
         <>
             <ExchangeTradeableAssetPicker />
-            {!!receiveAsset?.cryptoId && (
-                <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
+            <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
+                {!!receiveAsset?.cryptoId && receiveCryptoAmountInBaseUnit ? (
                     <CryptoToFiatValueBadge
                         cryptoId={receiveAsset.cryptoId}
                         amount={receiveCryptoAmountInBaseUnit}
                     />
-                    <ExchangeReceiveAccountCryptoBalance />
-                </HStack>
-            )}
+                ) : (
+                    <TradingBaseCurrencyAmountPlaceholder />
+                )}
+                <ExchangeReceiveAccountCryptoBalance />
+            </HStack>
         </>
     );
 };

@@ -1,4 +1,5 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
@@ -106,6 +107,7 @@ export const AssetCard = ({
 
     const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
 
     const isStakingActive = useSelector(state =>
         selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
@@ -214,14 +216,16 @@ export const AssetCard = ({
                                     </AssetActionButton>
                                 )}
 
-                                <AssetActionButton
-                                    symbol={symbol}
-                                    routeName="wallet-trading-buy"
-                                    data-testid={`@dashboard/asset/${symbol}/buy-button`}
-                                    onClick={onBuyButtonClick}
-                                >
-                                    <Translation id="TR_BUY_BUY" />
-                                </AssetActionButton>
+                                {!isFinpromRestricted && (
+                                    <AssetActionButton
+                                        symbol={symbol}
+                                        routeName="wallet-trading-buy"
+                                        data-testid={`@dashboard/asset/${symbol}/buy-button`}
+                                        onClick={onBuyButtonClick}
+                                    >
+                                        <Translation id="TR_BUY_BUY" />
+                                    </AssetActionButton>
+                                )}
                             </Row>
                         </Row>
                     </Card>

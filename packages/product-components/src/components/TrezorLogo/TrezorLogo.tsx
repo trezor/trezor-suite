@@ -1,6 +1,6 @@
 import { ReactSVG } from 'react-svg';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import {
     type FrameProps,
@@ -24,6 +24,11 @@ type TrezorLogoType = (typeof trezorLogoTypes)[number];
 
 const SvgWrapper = styled.div<TransientProps<AllowedFrameProps>>`
     ${withFrameProps};
+
+    /* Not in beforeInjection: react-svg doesn't re-inject on theme change, the fill would go stale. */
+    svg {
+        fill: ${({ theme }) => theme.contentPrimary};
+    }
 `;
 
 export type TrezorLogoProps = AllowedFrameProps & {
@@ -38,7 +43,6 @@ export const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: T
         { ...rest, width, height },
         allowedTrezorLogoFrameProps,
     );
-    const theme = useTheme();
 
     return (
         <SvgWrapper {...frameProps}>
@@ -48,7 +52,6 @@ export const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: T
                     if (typeof height === 'number') {
                         svg.setAttribute('height', `${height}px`);
                     }
-                    svg.setAttribute('fill', theme.contentPrimary);
                 }}
                 loading={Loading}
             />

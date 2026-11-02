@@ -11,6 +11,10 @@ export const MODEL = {
     modelID: process.env.LLM_EXPLORATORY_TESTER_MODEL || 'z-ai/glm-5.3-flash',
 };
 
+// OpenRouter switches to the next model when the primary errors, e.g. Z.AI's shared pool 429s.
+// Must come from a different upstream and support tools, images and structured outputs.
+const FALLBACK_MODEL_ID = process.env.LLM_EXPLORATORY_TESTER_FALLBACK_MODEL || 'openai/gpt-6-luna';
+
 // Applied as the prompt `variant`; OpenRouter ignores provider `options` for effort.
 export const REASONING_EFFORT = process.env.LLM_EXPLORATORY_TESTER_EFFORT ?? 'high';
 
@@ -27,6 +31,7 @@ export const OPENCODE_CONFIG: Config = {
                 [MODEL.modelID]: {
                     attachment: true,
                     modalities: { input: ['text', 'image'], output: ['text'] },
+                    options: { models: [MODEL.modelID, FALLBACK_MODEL_ID] },
                 },
             },
         },

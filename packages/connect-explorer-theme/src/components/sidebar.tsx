@@ -17,7 +17,7 @@ import { LocaleSwitch } from './locale-switch';
 import { Menu } from './menu';
 import { useMenu } from '../contexts/menu';
 import { FocusedItemContext, OnFocusItemContext } from '../contexts/sidebar-focus';
-import { useConfig } from '../contexts/useConfig';
+import { useThemeConfig } from '../contexts/theme-config';
 import { renderComponent } from '../utils/render';
 
 const Container = styled.div`
@@ -29,37 +29,35 @@ const Container = styled.div`
 
 interface SideBarProps {
     docsDirectories: PageItem[];
-    flatDirectories: Item[];
     fullDirectories: Item[];
     asPopover?: boolean;
-    headings: Heading[];
+    toc: Heading[];
     includePlaceholder: boolean;
 }
 
 export function Sidebar({
     docsDirectories,
-    flatDirectories,
     fullDirectories,
     asPopover = false,
-    headings,
+    toc,
     includePlaceholder,
 }: SideBarProps): ReactElement {
-    const config = useConfig();
+    const themeConfig = useThemeConfig();
     const { menu, setMenu } = useMenu();
     const router = useRouter();
     const [focused, setFocused] = useState<null | string>(null);
     const [showSidebar, setSidebar] = useState(true);
     const [showToggleAnimation, setToggleAnimation] = useState(false);
 
-    const anchors = useMemo(() => headings.filter(v => v.depth === 2), [headings]);
+    const anchors = useMemo(() => toc.filter(v => v.depth === 2), [toc]);
     const sidebarRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const mounted = useMounted();
     useEffect(() => {
         if (menu) {
-            document.body.classList.add('nx-overflow-hidden', 'md:nx-overflow-auto');
+            document.body.classList.add('_overflow-hidden', 'md:_overflow-auto');
         } else {
-            document.body.classList.remove('nx-overflow-hidden', 'md:nx-overflow-auto');
+            document.body.classList.remove('_overflow-hidden', 'md:_overflow-auto');
         }
     }, [menu]);
 
@@ -89,8 +87,8 @@ export function Sidebar({
         setMenu(false);
     }, [router.asPath, setMenu]);
 
-    const hasI18n = config.i18n.length > 0;
-    const hasMenu = config.darkMode || hasI18n || config.sidebar.toggleButton;
+    const hasI18n = themeConfig.i18n.length > 0;
+    const hasMenu = themeConfig.darkMode || hasI18n || themeConfig.sidebar.toggleButton;
     const getDataToggleAnimation = () => {
         if (showToggleAnimation) {
             if (showSidebar) {
@@ -106,36 +104,32 @@ export function Sidebar({
     return (
         <>
             {includePlaceholder && asPopover ? (
-                <div className="max-xl:nx-hidden nx-h-0 nx-w-64 nx-shrink-0" />
+                <div className="max-xl:_hidden _h-0 _w-64 _shrink-0" />
             ) : null}
             {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
             <div
                 className={cn(
-                    'motion-reduce:nx-transition-none [transition:background-color_1.5s_ease]',
-                    menu
-                        ? 'nx-fixed nx-inset-0 nx-bg-black/80 dark:nx-bg-black/60'
-                        : 'nx-bg-transparent',
+                    'motion-reduce:_transition-none [transition:background-color_1.5s_ease]',
+                    menu ? '_fixed _inset-0 _bg-black/80 dark:_bg-black/60' : '_bg-transparent',
                 )}
                 onClick={() => setMenu(false)}
             />
             <Container
                 className={cn(
-                    'nextra-sidebar-container nx-flex nx-flex-col',
-                    'md:nx-shrink-0 motion-reduce:nx-transform-none',
-                    'nx-transform-gpu nx-transition-all nx-ease-in-out',
-                    'print:nx-hidden',
-                    showSidebar ? 'md:nx-w-64' : 'md:nx-w-20',
-                    asPopover ? 'md:nx-hidden' : 'md:nx-sticky md:nx-self-start',
+                    'nextra-sidebar-container _flex _flex-col',
+                    'md:_shrink-0 motion-reduce:_transform-none',
+                    '_transform-gpu _transition-all _ease-in-out',
+                    'print:_hidden',
+                    showSidebar ? 'md:_w-64' : 'md:_w-20',
+                    asPopover ? 'md:_hidden' : 'md:_sticky md:_self-start',
                     menu
                         ? 'max-md:[transform:translate3d(0,0,0)]'
                         : 'max-md:[transform:translate3d(0,-100%,0)]',
                 )}
                 ref={containerRef}
             >
-                <div className="nx-px-4 nx-pt-4 md:nx-hidden">
-                    {renderComponent(config.search.component, {
-                        directories: flatDirectories,
-                    })}
+                <div className="_px-4 _pt-4 md:_hidden">
+                    {renderComponent(themeConfig.search.component, {})}
                 </div>
                 <FocusedItemContext.Provider value={focused}>
                     <OnFocusItemContext.Provider
@@ -145,8 +139,8 @@ export function Sidebar({
                     >
                         <div
                             className={cn(
-                                'nx-overflow-y-auto nx-overflow-x-hidden',
-                                'nx-p-4 nx-grow md:nx-flex-1',
+                                '_overflow-y-auto _overflow-x-hidden',
+                                '_p-4 _grow md:_flex-1',
                                 showSidebar ? 'nextra-scrollbar' : 'no-scrollbar',
                             )}
                             ref={sidebarRef}
@@ -155,19 +149,19 @@ export function Sidebar({
                             {(!asPopover || !showSidebar) && (
                                 <Collapse isOpen={showSidebar} horizontal>
                                     <Menu
-                                        className="nextra-menu-desktop max-md:nx-hidden"
+                                        className="nextra-menu-desktop max-md:_hidden"
                                         // The sidebar menu, shows only the docs directories.
                                         directories={docsDirectories}
                                         // When the viewport size is larger than `md`, hide the anchors in
                                         // the sidebar when `floatTOC` is enabled.
-                                        anchors={config.toc.float ? [] : anchors}
+                                        anchors={themeConfig.toc.float ? [] : anchors}
                                         onlyCurrentDocs
                                     />
                                 </Collapse>
                             )}
                             {mounted && window.innerWidth < 768 && (
                                 <Menu
-                                    className="nextra-menu-mobile md:nx-hidden"
+                                    className="nextra-menu-mobile md:_hidden"
                                     // The mobile dropdown menu, shows all the directories.
                                     directories={fullDirectories}
                                     // Always show the anchor links on mobile (`md`).
@@ -181,41 +175,37 @@ export function Sidebar({
                 {hasMenu && (
                     <div
                         className={cn(
-                            'nx-sticky nx-bottom-0',
-                            'nx-mx-4 nx-py-4',
-                            'nx-flex nx-items-center nx-gap-2',
-                            'bg-page dark:nx-border-neutral-800',
+                            '_sticky _bottom-0',
+                            '_mx-4 _py-4',
+                            '_flex _items-center _gap-2',
+                            'bg-page dark:_border-neutral-800',
                             showSidebar
-                                ? cn(hasI18n && 'nx-justify-end', 'nx-border-t')
-                                : 'nx-py-4 nx-flex-wrap nx-justify-center',
+                                ? cn(hasI18n && '_justify-end', '_border-t')
+                                : '_py-4 _flex-wrap _justify-center',
                         )}
                         data-toggle-animation={getDataToggleAnimation()}
                     >
                         <LocaleSwitch
                             lite={!showSidebar}
-                            className={cn(showSidebar ? 'nx-grow' : 'max-md:nx-grow')}
+                            className={cn(showSidebar ? '_grow' : 'max-md:_grow')}
                         />
-                        {config.darkMode && (
-                            <div
-                                className={
-                                    showSidebar && !hasI18n ? 'nx-grow nx-flex nx-flex-col' : ''
-                                }
-                            >
-                                {renderComponent(config.themeSwitch.component, {
+                        {themeConfig.darkMode && (
+                            <div className={showSidebar && !hasI18n ? '_grow _flex _flex-col' : ''}>
+                                {renderComponent(themeConfig.themeSwitch.component, {
                                     lite: !showSidebar || hasI18n,
                                 })}
                             </div>
                         )}
-                        {config.sidebar.toggleButton && (
+                        {themeConfig.sidebar.toggleButton && (
                             <button
                                 title={showSidebar ? 'Hide sidebar' : 'Show sidebar'}
-                                className="max-md:nx-hidden nx-h-7 nx-rounded-md nx-transition-colors nx-text-gray-600 dark:nx-text-gray-400 nx-px-2 hover:nx-bg-gray-100 hover:nx-text-gray-900 dark:hover:nx-bg-primary-100/5 dark:hover:nx-text-gray-50"
+                                className="max-md:_hidden _h-7 _rounded-md _transition-colors _text-gray-600 dark:_text-gray-400 _px-2 hover:_bg-gray-100 hover:_text-gray-900 dark:hover:_bg-primary-100/5 dark:hover:_text-gray-50"
                                 onClick={() => {
                                     setSidebar(!showSidebar);
                                     setToggleAnimation(true);
                                 }}
                             >
-                                <ExpandIcon isOpen={showSidebar} />
+                                <ExpandIcon className={cn(showSidebar && '_rotate-180')} />
                             </button>
                         )}
                     </div>

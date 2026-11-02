@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TradingSellStepType } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -49,11 +50,11 @@ describe('SellCompletionView', () => {
         },
     });
 
-    const renderSellCompletionView = async (
+    const renderSellCompletionView = (
         props: Partial<SellCompletionViewProps> = {},
         formStep?: TradingSellStepType,
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <SellCompletionView
                 quote={banxaBankTransferSellQuote}
                 txnErrorString={null}
@@ -63,6 +64,7 @@ describe('SellCompletionView', () => {
             {
                 tradeType: 'sell',
                 overrides: getOverrides(formStep),
+                services: { networks: mockNetworksServices() },
             },
         );
 

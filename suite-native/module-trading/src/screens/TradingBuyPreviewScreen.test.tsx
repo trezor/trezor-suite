@@ -1,5 +1,6 @@
 import type { BuyTrade, ProviderMetadata } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -24,7 +25,7 @@ describe('TradingBuyPreviewScreen', () => {
         jest.clearAllMocks();
     });
 
-    const renderTradingBuyPreviewScreen = async ({
+    const renderTradingBuyPreviewScreen = ({
         providerMetadata,
         selectedQuote,
     }: {
@@ -35,9 +36,12 @@ describe('TradingBuyPreviewScreen', () => {
         tradingState.currentProviderMetadata = providerMetadata;
         tradingState.buy.selectedQuote = selectedQuote;
 
-        return await renderWithTradingProvider(<TradingBuyPreviewScreen />, {
+        return renderWithTradingProvider(<TradingBuyPreviewScreen />, {
             tradeType: 'buy',
-            services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
+            services: {
+                analytics: mockNativeAnalytics(mockAnalyticsReport),
+                networks: mockNetworksServices(),
+            },
             overrides: { wallet: { trading: tradingState } },
         });
     };

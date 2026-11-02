@@ -18,6 +18,7 @@ import { loadIndex } from './libs/loadIndex';
 import type { ILogger } from './libs/logger';
 import { type MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
+import { isValidProtocol } from './libs/protocol';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
 import { Store } from './libs/store';
@@ -25,6 +26,7 @@ import { clearAppCache } from './libs/user-data';
 import { initBackgroundModules, initModules } from './modules';
 // todo: why is this separated here? shoudlnt it be part of modules?
 import { initBioAuthModule } from './modules/bioAuthModule';
+import { isWebContentsOfInAppBrowser } from './modules/in-app-browser';
 import { mainThreadEmitter } from './modules/module';
 import { init as initTorModule } from './modules/tor';
 
@@ -76,6 +78,15 @@ export const createDesktopMainApp =
 
         app.on('web-contents-created', (_, contents) => {
             contents.on('will-navigate', (event, navigationUrl) => {
+                /**
+                 * The apps-embedding module installs its own origin-scoped guard on its view,
+                 * and that guard is what reports a block back to the renderer.
+                 * Deferring keeps the decision in one place.
+                 */
+                if (isWebContentsOfInAppBrowser(contents.id)) {
+                    return;
+                }
+
                 // See: https://www.electronjs.org/docs/latest/tutorial/security#13-disable-or-limit-navigation
 
                 deps.logger.error('electron', `Prevented unexpected redirect to: ${navigationUrl}`);
@@ -133,12 +144,20 @@ export const createDesktopMainApp =
                 global.customProtocolUrl = url;
                 handleFullStart();
             };
-            app.on('second-instance', handleFullStart);
+            const handleSecondInstance = (_event: Electron.Event, argv: string[]) => {
+                // Deeplink in daemon mode on Windows and Linux. The custom protocols module
+                // listens for it only once the UI is initialized, too late for this instance.
+                const protocols = process.env.PROTOCOLS as unknown as string[];
+                const url = argv.find(arg => isValidProtocol(arg, protocols));
+                if (url) global.customProtocolUrl = url;
+                handleFullStart();
+            };
+            app.on('second-instance', handleSecondInstance);
             app.on('activate', handleFullStart);
             app.on('open-url', openURL);
             mainThreadEmitter.on('app/show', handleFullStart);
             await waitForFullStart.promise;
-            app.off('second-instance', handleFullStart);
+            app.off('second-instance', handleSecondInstance);
             app.off('activate', handleFullStart);
             app.off('open-url', openURL);
             mainThreadEmitter.off('app/show', handleFullStart);

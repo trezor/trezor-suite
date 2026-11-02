@@ -11,6 +11,7 @@ import {
     notifyEarnTransactionBroadcastThunk,
     openYieldApproveModal,
     setYieldError,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { createThunk } from '@trezor/redux-utils';
@@ -20,6 +21,7 @@ import {
     type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
+    isYieldPushError,
     sendYieldTransaction,
 } from './signingHelpers';
 
@@ -53,6 +55,16 @@ export const submitYieldDepositThunk = createThunk<
             ).unwrap();
 
             if (result.type === 'error') {
+                extra.services.analytics.report({
+                    type: events.yieldDepositEvent.name,
+                    payload: {
+                        type: 'error',
+                        action: 'continue',
+                        networkSymbol: flowData.account.symbol,
+                        vaultId: flowData.vault.id,
+                        errorMessage: result.reason,
+                    },
+                });
                 setYieldError({
                     dispatch,
                     flowType,
@@ -115,7 +127,7 @@ export const submitYieldDepositThunk = createThunk<
                 return;
             }
 
-            const { selectedFee } = userAcceptedTxSimulation;
+            const { selectedFee, selectedFeeLevel } = userAcceptedTxSimulation;
 
             const sendResult = await sendYieldTransaction({
                 account: flowData.account,
@@ -127,12 +139,22 @@ export const submitYieldDepositThunk = createThunk<
                 dispatch,
                 getState,
                 selectedFee,
+                selectedFeeLevel,
             });
 
             userAcceptedTxSimulation.resolve();
 
             // A deliberate user cancel — not reported as a failure.
             if (sendResult.status === 'cancelled') {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: flowData.account.symbol,
+                        stage: sendResult.stage,
+                    },
+                });
+
                 return;
             }
 
@@ -159,6 +181,15 @@ export const submitYieldDepositThunk = createThunk<
                 }),
             );
         } catch (error) {
+            if (isYieldPushError(error)) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account: flowData.account,
+                        flow: 'yield-deposit',
+                        status: 'error',
+                    }),
+                );
+            }
             console.error(error);
             extra.services.analytics.report({
                 type: events.yieldDepositEvent.name,

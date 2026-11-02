@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 
@@ -7,7 +8,7 @@ import { ScreenHeader as ScreenHeaderComponent } from '../../components/ScreenHe
 
 const ScreenHeaderCustomContent = () => (
     <HStack alignItems="center">
-        <TokenIcon tokenSymbol="btc" networkSymbol="btc" size="small" />
+        <TokenIcon tokenSymbol="btc" networkSymbol={asNetworkSymbol('btc')} size="small" />
         <Text variant="body-md-strong" adjustsFontSizeToFit numberOfLines={1}>
             Bitcoin #1
         </Text>

@@ -6,6 +6,7 @@ import { Button, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { type StakingAccountStatus } from './hooks/useStakingAccountStatus';
+import { EarnBuyButton } from '../common/EarnBuyButton';
 
 type EarnStakingActionButtonsProps = {
     stakingStatus: StakingAccountStatus;
@@ -67,9 +68,7 @@ export const EarnStakingActionButtons = ({
                     </Button>
                 </Tooltip>
             ) : (
-                <Button intent="neutral" priority="secondary" size="small" onClick={onBuy}>
-                    <Translation id="TR_BUY" />
-                </Button>
+                <EarnBuyButton onClick={onBuy} />
             ))}
 
         {stakingStatus === 'staking-active' && (

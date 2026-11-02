@@ -18,6 +18,7 @@ interface Page {
     };
     frontMatter?: {
         title?: string;
+        sidebarTitle?: string;
         description?: string;
     };
     name: string;
@@ -33,7 +34,12 @@ export default function GuideIndex(): ReactNode {
             key={page.route}
         >
             <Card margin={{ bottom: 24 }}>
-                <H3>{page.meta?.title || page.frontMatter?.title || page.name}</H3>
+                <H3>
+                    {page.meta?.title ||
+                        page.frontMatter?.title ||
+                        page.frontMatter?.sidebarTitle ||
+                        page.name}
+                </H3>
                 <Paragraph>{page.frontMatter?.description}</Paragraph>
                 <BottomRow>
                     <Button

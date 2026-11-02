@@ -1,18 +1,24 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { freeze, isAnyOf, isDraft, original } from '@reduxjs/toolkit';
 
 import type { AccountKey } from '@suite-common/wallet-types';
-import { findTransaction } from '@suite-common/wallet-utils';
+import { isPending } from '@suite-common/wallet-utils';
+import { type AccountInfo } from '@trezor/connect';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createReducerWithExtraDeps,
 } from '@trezor/redux-utils';
 
+import { mergeTransactions } from './mergeTransactions';
 import { transactionsActions } from './transactionsActions';
-import type { TransactionsState } from './transactionsReducerTypes';
+import type {
+    AccountTransactionsHistoryStatus,
+    TransactionsState,
+} from './transactionsReducerTypes';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
+    hasTransactionsPageAfter,
 } from './transactionsThunks';
 import { accountsActions } from '../accounts/accountsActions';
 
@@ -29,6 +35,44 @@ const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => 
     }
 
     return state.transactions[accountKey];
+};
+
+/** What a fetched page adds to the account's history walk. Only pages fetched in order count. */
+type GetHistoryStatusAfterPageParams = {
+    status: Partial<AccountTransactionsHistoryStatus> | undefined;
+    page: number;
+    perPage: number;
+    result: AccountInfo | 'ALREADY_FETCHED';
+};
+
+const getHistoryStatusAfterPage = ({
+    status,
+    page,
+    perPage,
+    result,
+}: GetHistoryStatusAfterPageParams): Partial<AccountTransactionsHistoryStatus> => {
+    const { fetchedPages } = status ?? {};
+    const fetchedCount = fetchedPages?.perPage === perPage ? (fetchedPages?.count ?? 0) : 0;
+
+    if (page > fetchedCount + 1) {
+        return {};
+    }
+
+    return {
+        fetchedPages: { count: Math.max(page, fetchedCount), perPage },
+        ...(page >= fetchedCount &&
+            !hasTransactionsPageAfter(result, page) && { areAllTransactionsLoaded: true }),
+    };
+};
+
+const reopenHistoryWalk = (
+    detail: TransactionsState['fetchStatusDetail'][AccountKey] | undefined,
+) => {
+    if (!detail) return detail;
+
+    const { areAllTransactionsLoaded, ...rest } = detail;
+
+    return rest;
 };
 
 export type TransactionsReducerDeps = ActionTypesDep<'storageLoad'> &
@@ -51,65 +95,44 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;
+                const removedTxids = new Set(txs.map(tx => tx.txid));
 
                 const transactions = state.transactions[account.key];
                 if (transactions) {
+                    const isConfirmedRemoved = transactions.some(
+                        tx => !!tx && removedTxids.has(tx.txid) && !isPending(tx),
+                    );
+                    const detail = state.fetchStatusDetail[account.key];
+                    if (isConfirmedRemoved && detail) {
+                        const { areAllTransactionsLoaded, fetchedPages, ...rest } = detail;
+                        state.fetchStatusDetail[account.key] = rest;
+                    }
+
                     state.transactions[account.key] = transactions.filter(
-                        tx => !txs.some(t => t.txid === tx?.txid),
+                        tx => !tx || !removedTxids.has(tx.txid),
                     );
                 }
 
                 const phishing = state.phishing[account.key];
                 if (phishing) {
-                    state.phishing[account.key] = phishing.filter(
-                        tx => !txs.some(t => t.txid === tx),
-                    );
+                    state.phishing[account.key] = phishing.filter(txid => !removedTxids.has(txid));
                 }
             })
             .addCase(transactionsActions.addTransaction, (state, { payload }) => {
                 const { transactions, account, page, perPage } = payload;
                 if (transactions.length < 1) return;
-                initializeAccount(state, account.key);
-                const accountTxs = state.transactions[account.key];
+                const accountTxs = initializeAccount(state, account.key);
 
                 if (!accountTxs) return;
-                transactions.forEach((transaction, i) => {
-                    // first we need to make sure that transaction is not undefined, then check if transactionid matches
-                    const existingTx = findTransaction(transaction.txid, accountTxs);
-                    if (!existingTx) {
-                        // add a new transaction
-                        if (page && perPage) {
-                            // insert a tx object at correct index
-                            const txIndex = (page - 1) * perPage + i; // Needs to be same as TX_PER_PAGE
-                            accountTxs[txIndex] = transaction;
-                        } else {
-                            // no page arg, insert the tx at the beginning of the array
-                            accountTxs.unshift(transaction);
-                        }
-                    } else {
-                        // update the transaction if conditions are met
-                        const existingTxIndex = accountTxs.findIndex(
-                            t => t?.txid === existingTx.txid,
-                        );
-                        const existingBlockHeight = existingTx.blockHeight ?? 0;
-                        const incomingBlockHeight = transaction.blockHeight ?? 0;
-                        const existingIsPending = existingBlockHeight <= 0;
-                        const incomingIsPending = incomingBlockHeight <= 0;
-
-                        if (
-                            (existingIsPending && !incomingIsPending) ||
-                            (existingIsPending === incomingIsPending &&
-                                existingBlockHeight < incomingBlockHeight) ||
-                            (existingIsPending === incomingIsPending &&
-                                (existingTx.blockTime ?? 0) < (transaction.blockTime ?? 0)) ||
-                            (existingIsPending && !existingTx.rbfParams && transaction.rbfParams) ||
-                            (existingTx.deadline && !transaction.deadline)
-                        ) {
-                            // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
-                            accountTxs[existingTxIndex] = { ...transaction };
-                        }
-                    }
+                const nextTxs = mergeTransactions({
+                    storedTxs: isDraft(accountTxs) ? original(accountTxs) : accountTxs,
+                    transactions,
+                    page,
+                    perPage,
                 });
+                if (nextTxs) {
+                    state.transactions[account.key] = freeze(nextTxs, true);
+                }
             })
             .addCase(transactionsActions.markTransactionAsNotScam, (state, { payload }) => {
                 const { key, txid, isMarkedAsNotScam } = payload;
@@ -131,11 +154,21 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                 });
             })
 
-            .addCase(fetchTransactionsPageThunk.fulfilled, (state, { meta }) => {
-                state.fetchStatusDetail[meta.arg.accountKey] = {
-                    ...state.fetchStatusDetail[meta.arg.accountKey],
+            .addCase(fetchTransactionsPageThunk.fulfilled, (state, { meta, payload }) => {
+                const { accountKey, from } = meta.arg;
+                const detail = state.fetchStatusDetail[accountKey];
+                const status = from === undefined ? detail : reopenHistoryWalk(detail);
+
+                state.fetchStatusDetail[accountKey] = {
+                    ...status,
                     status: 'idle',
                     error: null,
+                    ...getHistoryStatusAfterPage({
+                        status,
+                        page: meta.arg.page,
+                        perPage: meta.arg.perPage,
+                        result: payload,
+                    }),
                 };
             })
             .addCase(fetchAllTransactionsForAccountThunk.fulfilled, (state, { meta }) => {

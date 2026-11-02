@@ -15,7 +15,6 @@ import {
 } from '../../utils/coordinatorUtils';
 import {
     compareOutpoint,
-    getAffiliateRequest,
     getRoundEvents,
     getRoundParams,
     getSigningSendDeadline,
@@ -87,16 +86,7 @@ const getTransactionData = (
     return {
         inputs,
         outputs,
-        affiliateRequest: {
-            ...getRoundParams(round.roundParameters),
-            ...(options.affiliationId
-                ? getAffiliateRequest(round.affiliateRequest)
-                : {
-                      mask_public_key: '',
-                      signature: '',
-                      coinjoin_flags_array: [],
-                  }),
-        },
+        coinjoinRequest: getRoundParams(round.roundParameters),
     };
 };
 
@@ -201,14 +191,6 @@ export const transactionSigning = async (
     const alreadyRequested = round.inputs.some(input => input.requested?.type === 'signature');
     if (alreadyRequested) {
         logger.error(`Signature request was not fulfilled`);
-
-        return round;
-    }
-
-    if (options.affiliationId && !round.affiliateRequest) {
-        logger.warn(`Missing affiliate request. Waiting for status`);
-        round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
-        round.transactionSignTries.push(Date.now());
 
         return round;
     }

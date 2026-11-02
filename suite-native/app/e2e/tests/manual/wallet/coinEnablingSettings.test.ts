@@ -20,7 +20,7 @@ describe.skip('Manual', () => {
             ],
             category: TestCategory.Settings,
             priority: TestPriority.Critical,
-            stream: TestStream.Wallet,
+            stream: TestStream.Network,
         },
         async () => {},
     );

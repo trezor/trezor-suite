@@ -5,7 +5,6 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from '../support/bridge';
-import { mockRemoteMessageSystem } from '../support/common';
 import { test as suiteTest } from '../support/fixtures';
 import { enhancePage } from '../support/testExtends/enhancePage';
 
@@ -32,6 +31,7 @@ const test = suiteTest.extend({
     },
     // Mirrors webSetup(), but with an absolute BASE_URL and explicit viewport —
     // CDP contexts carry neither the project baseURL nor the configured viewport.
+    // Real message-system config. E2E stubs it empty.
     page: async ({ context }, use) => {
         const suiteUrl = process.env.BASE_URL;
         if (!suiteUrl) {
@@ -45,7 +45,6 @@ const test = suiteTest.extend({
             window.Playwright = true;
         });
         await page.goto(suiteUrl);
-        await mockRemoteMessageSystem(page);
         enhancePage(page);
         await use(page);
     },

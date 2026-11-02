@@ -28,7 +28,6 @@ export const AccountDiscoveryFailedBanner = ({ accountKey }: AccountDiscoveryFai
 
     return (
         <BannerFull
-            marginHorizontal="sp16"
             intent="warning"
             title={translate('moduleAccountManagement.discoveryFailedBanner.title')}
             description={translate('moduleAccountManagement.discoveryFailedBanner.description')}

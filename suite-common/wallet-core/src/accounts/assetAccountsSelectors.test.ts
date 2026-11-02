@@ -27,6 +27,7 @@ const BOB = 'bobWallet@device:1' as StaticSessionId;
 const ETH = asNetworkSymbol('eth');
 const BTC = asNetworkSymbol('btc');
 const DSOL = asNetworkSymbol('dsol');
+const ADA = asNetworkSymbol('ada');
 
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const USDT_ON_ETH = '0xdac17f958d2ee523a2206206994597c13d831ec7' as TokenAddress;
@@ -39,6 +40,8 @@ type MockAccountParams = {
     balance?: string;
     isVisible?: boolean;
     tokens?: { contract: TokenAddress; balance: string; standard?: string }[];
+    networkType?: Account['networkType'];
+    misc?: Account['misc'];
 };
 
 const mockAccount = ({
@@ -48,6 +51,8 @@ const mockAccount = ({
     balance = '1',
     isVisible = true,
     tokens = [],
+    networkType,
+    misc,
 }: MockAccountParams = {}): Account =>
     ({
         key: `descriptor${index}-${symbol}-${deviceState}`,
@@ -57,6 +62,8 @@ const mockAccount = ({
         formattedBalance: balance,
         visible: isVisible,
         tokens,
+        networkType,
+        misc,
     }) as unknown as Account;
 
 type MockStateParams = {
@@ -195,6 +202,52 @@ describe('what becomes a assetAccount', () => {
         expect(accountsOfAsset(state, aliceCoin)).toEqual([
             expect.objectContaining({ cryptoBalance: '2.5', contractAddress: undefined }),
         ]);
+    });
+
+    it('is the account’s own coin with what it has staked', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    balance: '1',
+                    networkType: 'ethereum',
+                    misc: {
+                        stakingPools: [
+                            {
+                                name: 'Everstake',
+                                autocompoundBalance: '2000000000000000000',
+                                pendingBalance: '0',
+                                pendingDepositedBalance: '0',
+                                withdrawTotalAmount: '0',
+                                claimableAmount: '0',
+                                depositedBalance: '0',
+                                restakedReward: '0',
+                            },
+                        ],
+                    } as Account['misc'],
+                }),
+            ],
+        });
+
+        expect(accountsOfAsset(state, aliceCoin)).toEqual([
+            expect.objectContaining({ cryptoBalance: '3' }),
+        ]);
+    });
+
+    it('is the Cardano coin once, as its stake is the balance itself', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ADA,
+                    balance: '5',
+                    networkType: 'cardano',
+                    misc: { staking: { isActive: true } } as Account['misc'],
+                }),
+            ],
+        });
+
+        expect(
+            accountsOfAsset(state, getWalletAssetKey({ deviceState: ALICE, symbol: ADA })),
+        ).toEqual([expect.objectContaining({ cryptoBalance: '5' })]);
     });
 
     it('is each token the account holds', () => {

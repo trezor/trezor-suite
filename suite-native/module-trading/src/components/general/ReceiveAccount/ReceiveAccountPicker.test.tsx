@@ -41,13 +41,13 @@ jest.mock('@react-navigation/native', () => ({
 describe('ReceiveAccountPicker', () => {
     let store: Store<State>;
 
-    const renderReceiveAccountPicker = async (
+    const renderReceiveAccountPicker = (
         props: Partial<ReceiveAccountPickerProps>,
         overrides: PreloadedStatePartial<State> = defaultOverrides,
     ) => {
         store = createTradingTestStore({ overrides });
 
-        return await renderWithStoreProvider(
+        return renderWithStoreProvider(
             <ReceiveAccountPicker
                 symbol={asNetworkSymbol('btc')}
                 tradingType="buy"

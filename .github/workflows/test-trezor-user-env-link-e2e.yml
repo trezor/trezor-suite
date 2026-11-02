@@ -31,12 +31,14 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
-          cache: yarn
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
@@ -44,5 +46,5 @@ jobs:
 
       - name: Run e2e tests
         run: |
-          docker run -d --network=host ghcr.io/trezor/trezor-user-env:3eca66cae88ba0086826c519fd8df654ae5cf353
+          docker run -d --network=host ghcr.io/trezor/trezor-user-env:a3579d8e2f76d22115050b4d4146d0f66dc5fbbd
           yarn workspace @trezor/trezor-user-env-link test:e2e

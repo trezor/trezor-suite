@@ -1,10 +1,22 @@
+import styled from 'styled-components';
+
 import { Link, Paragraph, Row } from '@trezor/components';
+
+const ResetFiltersLink = styled.span`
+    flex-shrink: 0;
+
+    a {
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+`;
 
 type ResultsInfoProps = {
     filteredCount: number;
     totalCount: number;
-    platform: string;
-    query: string;
     hasActiveFilters?: boolean;
     onClearAll?: () => void;
 };
@@ -12,12 +24,10 @@ type ResultsInfoProps = {
 export const ResultsInfo = ({
     filteredCount,
     totalCount,
-    platform,
-    query,
     hasActiveFilters,
     onClearAll,
 }: ResultsInfoProps) => (
-    <Row gap={8} alignItems="center" flex="1" overflow="hidden">
+    <Row gap={8} alignItems="center" flex="1" minWidth={200} overflow="hidden">
         <Paragraph
             typographyStyle="body-xs"
             intent="neutral"
@@ -25,26 +35,17 @@ export const ResultsInfo = ({
             wordBreak="keep-all"
             textWrap="nowrap"
             ellipsisLineCount={1}
+            flex="1"
+            minWidth={0}
         >
-            Showing <strong>{filteredCount}</strong> of <strong>{totalCount}</strong> events
-            {platform !== 'all' ? (
-                <>
-                    {' '}
-                    for platform <strong>{platform}</strong>
-                </>
-            ) : null}
-            {query ? (
-                <>
-                    {' '}
-                    matching <strong>{query.trim()}</strong>
-                </>
-            ) : null}
-            .{' '}
-            {hasActiveFilters && onClearAll && (
-                <Link onClick={onClearAll} typographyStyle="body-xs">
-                    (clear filters)
-                </Link>
-            )}
+            Showing <strong>{filteredCount}</strong> of <strong>{totalCount}</strong> events.
         </Paragraph>
+        {hasActiveFilters && onClearAll && (
+            <ResetFiltersLink>
+                <Link onClick={onClearAll} typographyStyle="body-xs">
+                    reset filters
+                </Link>
+            </ResetFiltersLink>
+        )}
     </Row>
 );

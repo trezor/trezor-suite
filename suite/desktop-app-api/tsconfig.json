@@ -7,8 +7,12 @@
     "include": ["."],
     "references": [
         {
+            "path": "../../suite-common/apps-embedding"
+        },
+        {
             "path": "../../suite-common/platform-encryption"
         },
+        { "path": "../../suite-common/schemas" },
         { "path": "../tor-types" },
         { "path": "../../packages/type-utils" },
         {

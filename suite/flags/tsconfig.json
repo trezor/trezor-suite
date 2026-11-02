@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/price-chart"
+        },
+        {
             "path": "../../suite-common/test-utils"
         },
         { "path": "../../packages/connect" },

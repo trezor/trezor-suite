@@ -14,6 +14,7 @@ import {
     Textarea,
 } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
+import { isArrayMember } from '@trezor/utils';
 
 import { AttributeEditor } from './AttributeEditor';
 import { ChangelogEntriesEditor } from './ChangelogEntriesEditor';
@@ -38,13 +39,10 @@ export const EventForm = ({ formState, setFormState, eventChangelogError }: Even
         }
         const trimmed = formState.eventName.trim();
 
-        return (ANALYTICS_ALLOWED_DOMAINS as readonly string[]).includes(trimmed)
-            ? ''
-            : formState.eventName;
+        return isArrayMember(trimmed, ANALYTICS_ALLOWED_DOMAINS) ? '' : formState.eventName;
     })();
     const domainSelectValue =
-        domainFromEventName &&
-        (ANALYTICS_ALLOWED_DOMAINS as readonly string[]).includes(domainFromEventName)
+        domainFromEventName && isArrayMember(domainFromEventName, ANALYTICS_ALLOWED_DOMAINS)
             ? (domainOptions.find(o => o.value === domainFromEventName) ?? domainOptions[0])
             : domainOptions[0];
     const eventNameTrimmed = formState.eventName.trim();
@@ -90,9 +88,7 @@ export const EventForm = ({ formState, setFormState, eventChangelogError }: Even
                         const newPart = e.target.value;
                         const domain =
                             domainFromEventName &&
-                            (ANALYTICS_ALLOWED_DOMAINS as readonly string[]).includes(
-                                domainFromEventName,
-                            )
+                            isArrayMember(domainFromEventName, ANALYTICS_ALLOWED_DOMAINS)
                                 ? domainFromEventName
                                 : ANALYTICS_ALLOWED_DOMAINS[0];
                         setFormState(s => ({

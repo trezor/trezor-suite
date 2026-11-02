@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies -- build-time tooling belongs in devDependencies */
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import babel from '@rolldown/plugin-babel';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import { createRequire } from 'module';
@@ -15,6 +15,10 @@ import {
     isTanstackReactQueryDevTools,
     transportBrowserPing,
 } from '@trezor/suite/webpack/env';
+import {
+    reactCompilerOptions,
+    shouldCompileWithReactCompiler,
+} from '@trezor/suite/webpack/reactCompiler';
 import { sharedAliases as alias, noopCoreJsPlugin } from './viteShared';
 
 const require = createRequire(import.meta.url);
@@ -79,16 +83,12 @@ const flagsPlugin = (): Plugin => {
     };
 };
 
-const trezorLogosRequirePlugin = (): Plugin => ({
-    name: 'trezor-logos-require',
+const svgAssetsRequirePlugin = (): Plugin => ({
+    name: 'svg-assets-require',
     enforce: 'pre',
     transform(code, id) {
         const cleanId = id.split('?')[0] ?? id;
-        if (
-            !cleanId.includes(
-                'packages/product-components/src/components/TrezorLogo/trezorLogos.ts',
-            )
-        ) {
+        if (!/\.[cm]?[jt]sx?$/.test(cleanId)) {
             return null;
         }
 
@@ -96,6 +96,8 @@ const trezorLogosRequirePlugin = (): Plugin => ({
             /require\((['"`])([^'"`]+\.svg)\1\)/g,
             'new URL($1$2$1, import.meta.url).href',
         );
+
+        if (transformed === code) return null;
 
         return {
             code: transformed,
@@ -447,7 +449,7 @@ export default defineConfig({
         bufferPolyfillPlugin(),
         noopCoreJsPlugin(),
         guideMarkdownPlugin(),
-        trezorLogosRequirePlugin(),
+        svgAssetsRequirePlugin(),
         flagsPlugin(),
         staticAliasPlugin(),
         sessionsSharedWorkerPlugin(),
@@ -465,6 +467,12 @@ export default defineConfig({
                         fileName: false,
                     },
                 ],
+            ],
+            overrides: [
+                {
+                    include: shouldCompileWithReactCompiler,
+                    presets: [reactCompilerPreset(reactCompilerOptions)],
+                },
             ],
         }),
     ],
@@ -490,7 +498,7 @@ export default defineConfig({
         ENABLE_REDUX_LOGGER: true,
     },
     optimizeDeps: {
-        include: ['@trezor/suite', 'buffer'],
+        include: ['buffer'],
         exclude: [
             // Exclude WebAssembly modules
             '@trezor/crypto-utils',
@@ -498,6 +506,12 @@ export default defineConfig({
             // Exclude connect and transport to prevent pre-bundling issues with bridge URL construction and exports
             '@trezor/connect',
             '@trezor/transport',
+            // packages/suite is app source, not a dependency. A dep pre-bundle is built by a
+            // separate rolldown pass that runs none of the plugins above, so anything reached
+            // through the bare specifier would be served untransformed. Nothing in the app graph
+            // imports it that way today — it reaches packages/suite through the `src` alias — so
+            // this only saves the dev server from building a pre-bundle nobody consumes.
+            '@trezor/suite',
         ],
     },
     server: {

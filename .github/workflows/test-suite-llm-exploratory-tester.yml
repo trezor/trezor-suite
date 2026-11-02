@@ -68,7 +68,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -o pipefail
-          body=$(gh pr view "$PR_NUMBER" --json title,files --jq '{title, files: [.files[].path]}' |
+          body=$(gh pr view "$PR_NUMBER" --json title,body,files --jq '{title, body, files: [.files[].path]}' |
             jq '{
               model: "typesafe/jev-1.13",
               state: {
@@ -134,7 +134,9 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
-          cache: yarn
+
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
 
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils @trezor/suite-e2e

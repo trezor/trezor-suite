@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { EarnAnchor, useAnchor } from '@suite/router';
@@ -14,8 +16,13 @@ import { EarnStakingActivateRow } from './EarnStakingActivateRow';
 import { useStakingTableData } from './hooks/useStakingTableData';
 import { EarnProviderInfoBadge } from '../../providers/EarnProviderInfoBadge';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
+import { type StakingDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';
 
-export const EarnStakingTable = () => {
+type EarnStakingTableProps = {
+    onReady: (payload: StakingDashboardReadyPayload) => void;
+};
+
+export const EarnStakingTable = ({ onReady }: EarnStakingTableProps) => {
     const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Staking);
     const { isBelowLaptop } = useLayoutSize();
     const isCardLayout = isBelowLaptop;
@@ -30,7 +37,13 @@ export const EarnStakingTable = () => {
         isExpanded,
         toggleExpanded,
         hasAnyRewardsData,
+        hasStakingPosition,
+        availableStakingCount,
     } = useStakingTableData();
+
+    useEffect(() => {
+        onReady({ hasStakingPosition, availableStakingCount, hasShowMore: isExpandable });
+    }, [onReady, hasStakingPosition, availableStakingCount, isExpandable]);
 
     return (
         <Column gap={16}>

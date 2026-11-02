@@ -12,6 +12,7 @@ export type FirmwareStatus =
  */
 export type FirmwareCheckType =
     | 'Entropy'
+    | 'Entropy discovery'
     | 'Firmware hash'
     | 'Firmware revision'
     | 'Firmware version'

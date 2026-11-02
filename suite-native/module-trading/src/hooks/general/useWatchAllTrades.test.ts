@@ -66,8 +66,8 @@ describe('useWatchAllTrades', () => {
             },
         });
 
-    const renderUseWatchAllTrades = async (store: Store<State>) =>
-        await renderHookWithTradingProvider(() => useWatchAllTrades(), {
+    const renderUseWatchAllTrades = (store: Store<State>) =>
+        renderHookWithTradingProvider(() => useWatchAllTrades(), {
             services: { analytics: mockNativeAnalytics(), store },
         });
 

@@ -26,7 +26,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getSelectedFeeFromUnsignedClaimTransaction } from './yieldClaimFeeUtils';
 import { buildYieldClaimRewards } from './yieldClaimReviewUtils';
 
 type YieldActionReview = Extract<
@@ -330,9 +329,6 @@ export const buildYieldReviewPreview = (
                 const { availableRewards, formState, precomposedTransaction } =
                     buildClaimTransactionReview({
                         rewards: buildYieldClaimRewards(params.review),
-                        selectedFee: getSelectedFeeFromUnsignedClaimTransaction(
-                            params.review.unsignedTransaction,
-                        ),
                         unsignedTransaction: params.review.unsignedTransaction,
                     });
 

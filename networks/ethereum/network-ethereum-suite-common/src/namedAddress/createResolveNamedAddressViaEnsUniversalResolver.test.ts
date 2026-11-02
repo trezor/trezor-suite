@@ -102,6 +102,16 @@ describe('resolveNamedAddressOnchain', () => {
         );
     });
 
+    it('sends the lookup on the given backend identity', async () => {
+        succeedWith(ADDRESS_PROFILE);
+
+        await resolveNamedAddressOnchain('vitalik.eth', 'eth', { identity: 'deviceState' });
+
+        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+            expect.objectContaining({ identity: 'deviceState' }),
+        );
+    });
+
     it('normalizes the name before hashing it', async () => {
         succeedWith(ADDRESS_PROFILE, ADDRESS_PROFILE);
 

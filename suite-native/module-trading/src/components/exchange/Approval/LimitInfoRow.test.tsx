@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
@@ -16,10 +17,7 @@ describe('LimitInfoRow', () => {
         onPress: jest.fn(),
     };
 
-    const renderLimitInfoRow = async (
-        props: Partial<LimitInfoRowProps> = {},
-        quoteOverrides = {},
-    ) => {
+    const renderLimitInfoRow = (props: Partial<LimitInfoRowProps> = {}, quoteOverrides = {}) => {
         const walletState = getWalletState({ tradeType: 'exchange' });
         const preloadedState = {
             wallet: {
@@ -37,8 +35,9 @@ describe('LimitInfoRow', () => {
             },
         };
 
-        return await renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
+        return renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
             preloadedState,
+            services: { networks: mockNetworksServices() },
         });
     };
 

@@ -12,7 +12,7 @@ export const SOL_COMPUTE_UNIT_LIMIT = 200000;
 export const SOL_BASE_FEE = 5000n;
 export const SOL_MICROLAMPORTS_PER_LAMPORT = 1_000_000n;
 
-export const SOLANA_EPOCH_DAYS = 2;
+export const SOLANA_EPOCH_DAYS = 1;
 
 export const STAKE_ACCOUNT_V2_SIZE = 200;
 

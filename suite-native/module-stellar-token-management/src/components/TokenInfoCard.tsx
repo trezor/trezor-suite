@@ -1,5 +1,6 @@
 import { Pressable } from 'react-native';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
@@ -43,7 +44,7 @@ export const TokenInfoCard = ({
                         <VStack spacing="sp8" alignItems="flex-end">
                             <HStack alignItems="center" spacing="sp8">
                                 <TokenIcon
-                                    networkSymbol="xlm"
+                                    networkSymbol={asNetworkSymbol('xlm')}
                                     contractAddress={iconContractAddress}
                                     tokenSymbol={tokenName}
                                     size="extraSmall"

@@ -8,6 +8,7 @@ import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type ExchangeIssue,
@@ -26,6 +27,8 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingOfferExchange } from './TradingOfferExchange';
 import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+
+const networkIcon = mockNetworkIcon();
 
 const mockSendTransaction = jest.fn(() => Promise.resolve(true));
 const mockSignDataAndConfirm = jest.fn(() => Promise.resolve());
@@ -185,7 +188,7 @@ const renderOfferExchange = ({
             suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate },
         }),
     });
-    renderWithProviders(services, <TradingOfferExchange />);
+    renderWithProviders({ ...services, networks: { networkIcon } }, <TradingOfferExchange />);
 
     return { report, navigate };
 };

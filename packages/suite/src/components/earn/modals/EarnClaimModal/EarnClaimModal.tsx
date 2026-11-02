@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { FormProvider } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -23,6 +23,7 @@ import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useCardanoStaking } from 'src/hooks/earn/useCardanoStaking';
 import { useClaimForm } from 'src/hooks/earn/useClaimForm';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
@@ -33,6 +34,12 @@ type EarnClaimModalProps = {
 };
 
 export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
+    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
@@ -70,7 +77,9 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     // cardano specific logic
-    const { calculateFeeAndDeposit, withdrawingAvailable, fee, rewards } = useCardanoStaking();
+    const { calculateFeeAndDeposit, withdrawingAvailable, fee, rewards } = useCardanoStaking({
+        account,
+    });
     const isCardanoDrepDelegationRequired =
         isCardanoNetworkType &&
         !withdrawingAvailable.status &&
@@ -98,6 +107,16 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     }, [onClaimChange, claimableAmount]);
 
     const onClaimClick = () => {
+        analytics.report({
+            type: events.stakingClaimEvent.name,
+            payload: {
+                action: 'continue',
+                deviceStatus,
+                step: 'claim-form-modal',
+                networkSymbol: account.symbol,
+            },
+        });
+
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -108,15 +127,6 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
         }
 
         handleSubmit(signTx)();
-
-        analytics.report({
-            type: events.stakingClaimEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'claim-form-modal',
-                networkSymbol: account.symbol,
-            },
-        });
     };
 
     const onCancelClick = () => {
@@ -131,6 +141,8 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
             },
         });
     };
+
+    const { formState } = methods;
 
     const isLoading = isComposing || isSubmitting || isDiscoveryRunning || areFeesLoading;
 
@@ -181,123 +193,121 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
             // Disable shadow bottom to make `Fees` component fully visible
             shadowBottom={false}
         >
-            <FormProvider {...methods}>
-                <form onSubmit={onClaimClick}>
-                    <Column gap={16}>
-                        {isCardanoNetworkType ? (
-                            <>
-                                {isCardanoDrepDelegationRequired && (
-                                    <Banner
-                                        data-testid="@modal/claim/drep-delegation-banner"
-                                        intent="warning"
-                                        icon={WarningIcon}
-                                        description={
-                                            <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />
-                                        }
-                                    />
-                                )}
-                                {shouldShowCardanoWarning && shouldShowCardanoClaimRewardsCard && (
-                                    <Banner
-                                        data-testid="@modal/claim/fee-warning-banner"
-                                        intent="warning"
-                                        icon={WarningIcon}
-                                        description={
-                                            <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
-                                        }
-                                    />
-                                )}
+            <Form form={methods} formState={formState} onSubmit={onClaimClick}>
+                <Column gap={16}>
+                    {isCardanoNetworkType ? (
+                        <>
+                            {isCardanoDrepDelegationRequired && (
+                                <Banner
+                                    data-testid="@modal/claim/drep-delegation-banner"
+                                    intent="warning"
+                                    icon={WarningIcon}
+                                    description={
+                                        <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />
+                                    }
+                                />
+                            )}
+                            {shouldShowCardanoWarning && shouldShowCardanoClaimRewardsCard && (
+                                <Banner
+                                    data-testid="@modal/claim/fee-warning-banner"
+                                    intent="warning"
+                                    icon={WarningIcon}
+                                    description={
+                                        <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
+                                    }
+                                />
+                            )}
 
-                                <Card>
-                                    <Column gap={16} hasDivider>
-                                        {shouldShowCardanoClaimRewardsCard && (
-                                            <Row justifyContent="space-between">
-                                                <Column>
-                                                    <Paragraph typographyStyle="body-md">
-                                                        <Translation id="TR_STAKE_REWARDS" />
+                            <Card>
+                                <Column gap={16} hasDivider>
+                                    {shouldShowCardanoClaimRewardsCard && (
+                                        <Row justifyContent="space-between">
+                                            <Column>
+                                                <Paragraph typographyStyle="body-md">
+                                                    <Translation id="TR_STAKE_REWARDS" />
+                                                </Paragraph>
+                                            </Column>
+                                            <Column>
+                                                <Row gap={20} justifyContent="flex-end">
+                                                    <Paragraph typographyStyle="body-md-strong">
+                                                        <FormattedCryptoAmount
+                                                            data-testid="@modal/claim/rewards-amount"
+                                                            value={restakedReward}
+                                                            symbol={account.symbol}
+                                                        />
                                                     </Paragraph>
-                                                </Column>
-                                                <Column>
-                                                    <Row gap={20} justifyContent="flex-end">
-                                                        <Paragraph typographyStyle="body-md-strong">
-                                                            <FormattedCryptoAmount
-                                                                data-testid="@modal/claim/rewards-amount"
-                                                                value={restakedReward}
-                                                                symbol={account.symbol}
-                                                            />
-                                                        </Paragraph>
-                                                    </Row>
-                                                    <Row gap={20} justifyContent="flex-end">
-                                                        <Paragraph
-                                                            intent="neutral"
-                                                            priority="secondary"
-                                                            typographyStyle="body-sm"
-                                                        >
-                                                            <BaseCurrencyValue
-                                                                amount={restakedReward}
-                                                                symbol={account.symbol}
-                                                                showApproximationIndicator
-                                                            />
-                                                        </Paragraph>
-                                                    </Row>
-                                                </Column>
-                                            </Row>
-                                        )}
+                                                </Row>
+                                                <Row gap={20} justifyContent="flex-end">
+                                                    <Paragraph
+                                                        intent="neutral"
+                                                        priority="secondary"
+                                                        typographyStyle="body-sm"
+                                                    >
+                                                        <BaseCurrencyValue
+                                                            amount={restakedReward}
+                                                            symbol={account.symbol}
+                                                            showApproximationIndicator
+                                                        />
+                                                    </Paragraph>
+                                                </Row>
+                                            </Column>
+                                        </Row>
+                                    )}
 
-                                        <Fees
-                                            feeInfo={feeInfo}
-                                            account={account}
-                                            composedLevels={composedLevels}
-                                            changeFeeLevel={changeFeeLevel}
-                                            label="TR_NETWORK_FEE"
-                                        />
-                                    </Column>
-                                </Card>
-                            </>
-                        ) : (
-                            <>
-                                <SolanaStakingLimitBanner
-                                    account={account}
-                                    composedLevels={composedLevels}
-                                    type="claim"
-                                />
+                                    <Fees
+                                        feeInfo={feeInfo}
+                                        account={account}
+                                        composedLevels={composedLevels}
+                                        changeFeeLevel={changeFeeLevel}
+                                        label="TR_NETWORK_FEE"
+                                    />
+                                </Column>
+                            </Card>
+                        </>
+                    ) : (
+                        <>
+                            <SolanaStakingLimitBanner
+                                account={account}
+                                composedLevels={composedLevels}
+                                type="claim"
+                            />
 
-                                <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
-                                    <Paragraph typographyStyle="headline-sm">
-                                        <FormattedCryptoAmount
-                                            data-testid="@staking/claim-modal/amount"
-                                            value={claimableAmount}
-                                            symbol={account.symbol}
-                                        />
-                                    </Paragraph>
-                                    <Paragraph
-                                        typographyStyle="body-xs"
-                                        intent="neutral"
-                                        priority="secondary"
-                                    >
-                                        <BaseCurrencyValue
-                                            showApproximationIndicator
-                                            amount={claimableAmount}
-                                            symbol={account.symbol}
-                                        />
-                                    </Paragraph>
-                                </InfoItem>
+                            <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
+                                <Paragraph typographyStyle="headline-sm">
+                                    <FormattedCryptoAmount
+                                        data-testid="@staking/claim-modal/amount"
+                                        value={claimableAmount}
+                                        symbol={account.symbol}
+                                    />
+                                </Paragraph>
+                                <Paragraph
+                                    typographyStyle="body-xs"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    <BaseCurrencyValue
+                                        showApproximationIndicator
+                                        amount={claimableAmount}
+                                        symbol={account.symbol}
+                                    />
+                                </Paragraph>
+                            </InfoItem>
 
-                                <Fees
-                                    feeInfo={feeInfo}
-                                    account={account}
-                                    composedLevels={composedLevels}
-                                    changeFeeLevel={changeFeeLevel}
-                                    headerTypographyStyle="body-sm"
-                                />
-                            </>
-                        )}
+                            <Fees
+                                feeInfo={feeInfo}
+                                account={account}
+                                composedLevels={composedLevels}
+                                changeFeeLevel={changeFeeLevel}
+                                headerTypographyStyle="body-sm"
+                            />
+                        </>
+                    )}
 
-                        {errors[CRYPTO_INPUT] && (
-                            <Banner intent="critical" description={errors[CRYPTO_INPUT]?.message} />
-                        )}
-                    </Column>
-                </form>
-            </FormProvider>
+                    {errors[CRYPTO_INPUT] && (
+                        <Banner intent="critical" description={errors[CRYPTO_INPUT]?.message} />
+                    )}
+                </Column>
+            </Form>
         </Modal>
     );
 };

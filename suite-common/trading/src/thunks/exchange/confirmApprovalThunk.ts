@@ -20,7 +20,6 @@ import { logErrorThunk } from '../common/logErrorThunk';
 export type ConfirmApprovalThunkProps = {
     receiveAddress: string;
     account: Account;
-    extraField?: string;
     trade?: ExchangeTrade;
 
     processResponseData: (response: ExchangeTrade) => void;
@@ -34,10 +33,7 @@ export const confirmApprovalThunk = createThunk<
     { state: ConfirmApprovalThunkState }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmApproval`,
-    async (
-        { trade, receiveAddress, account, extraField, processResponseData },
-        { dispatch, getState },
-    ) => {
+    async ({ trade, receiveAddress, account, processResponseData }, { dispatch, getState }) => {
         const getCoinSymbol = (cryptoId: CryptoId) =>
             selectTradingCoinSymbolByCryptoId(getState(), cryptoId);
 
@@ -66,7 +62,6 @@ export const confirmApprovalThunk = createThunk<
             trade,
             receiveAddress,
             refundAddress,
-            extraField,
             returnUrl: undefined,
         });
 

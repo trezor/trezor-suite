@@ -15,7 +15,7 @@ import {
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
+import { arrayPartition, getSynchronize, toCanonicalDescriptor, versionUtils } from '@trezor/utils';
 
 import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
@@ -53,6 +53,14 @@ type DiscoverAccountsLocalParams = { coins: Request[]; entropyCheckResult?: Entr
 type CardanoTypeItem = Extract<AccountTypeItem, { symbol: 'ada' }>;
 
 type CardanoRequest = Request & { account: CardanoTypeItem };
+
+type GetDescriptorParams = {
+    coinInfo: CoinInfo;
+    bip43PathTemplate: string;
+    derivationType: CardanoDerivation | undefined;
+    index: number;
+    sendCoreMessage: MethodContext['sendCoreMessage'];
+};
 
 const isCardano = (account: AccountTypeItem): account is CardanoTypeItem =>
     account.symbol === 'ada';
@@ -205,7 +213,10 @@ export default class DiscoverAccounts extends AbstractMethod<
         );
 
         const [cardanoAccounts, otherAccounts] = arrayPartition(supported, isCardanoRequest);
-        const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(cardanoAccounts);
+        const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(
+            cardanoAccounts,
+            sendCoreMessage,
+        );
         const accounts = [...otherAccounts, ...filteredCardanoAccounts];
 
         accounts.forEach(({ account, skip }) => this.updateProgress(account, skip));
@@ -213,9 +224,9 @@ export default class DiscoverAccounts extends AbstractMethod<
         const counts = await Promise.all(
             accounts.map(account => this.discoverAccount(account, sendCoreMessage)),
         );
+        const empty = counts.reduce((sum, acc) => sum + acc.empty, 0);
         const nonempty = counts.reduce((sum, acc) => sum + acc.nonempty, 0);
         const failed = counts.filter(acc => acc.error).length;
-        const empty = counts.length - failed;
 
         return { empty, nonempty, failed };
     }
@@ -246,19 +257,23 @@ export default class DiscoverAccounts extends AbstractMethod<
     }
 
     /** This should have zero overhead thanks to descriptor caching */
-    private async filterCardanoDerivations(accounts: CardanoRequest[]) {
+    private async filterCardanoDerivations(
+        accounts: CardanoRequest[],
+        sendCoreMessage: MethodContext['sendCoreMessage'],
+    ) {
         const legacyRequest = accounts.find(a => a.account.type === 'legacy');
         const ledgerRequest = accounts.find(a => a.account.type === 'ledger');
         const filterableRequest = legacyRequest ?? ledgerRequest;
 
         const getDescriptor = (derivation: keyof typeof CARDANO_DERIVATIONS) =>
             filterableRequest &&
-            this.getDescriptor(
-                filterableRequest.coinInfo,
-                filterableRequest.account.path,
-                CARDANO_DERIVATIONS[derivation],
-                0,
-            ).then(({ descriptor }) => descriptor);
+            this.getDescriptor({
+                coinInfo: filterableRequest.coinInfo,
+                bip43PathTemplate: filterableRequest.account.path,
+                derivationType: CARDANO_DERIVATIONS[derivation],
+                index: 0,
+                sendCoreMessage,
+            }).then(({ descriptor }) => descriptor);
 
         // normal descriptor or undefined when no legacy/ledger was requested as in that case it's useless
         const normalDescriptor = await getDescriptor('normal');
@@ -286,12 +301,13 @@ export default class DiscoverAccounts extends AbstractMethod<
 
     private readonly descriptorLock = getSynchronize();
     private readonly descriptorCache: Record<string, AccountDescriptor | undefined> = {};
-    private async getDescriptor(
-        coinInfo: CoinInfo,
-        bip43PathTemplate: string,
-        derivationType: CardanoDerivation | undefined,
-        index: number,
-    ) {
+    private async getDescriptor({
+        coinInfo,
+        bip43PathTemplate,
+        derivationType,
+        index,
+        sendCoreMessage,
+    }: GetDescriptorParams) {
         const path = substituteBip43Path(bip43PathTemplate, index);
 
         const { address_n: _, ...descriptorRest } = await this.descriptorLock(async () => {
@@ -307,20 +323,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                     .getAccountDescriptor(coinInfo, address_n, derivationType);
                 this.descriptorCache[key] = descriptor;
 
-                // Perform continuous entropy check for standard wallet, if data are available
-                const knownXPubHashes = this.params.entropyCheckResult?.xpubHashes;
-                const { legacyXpub: xpub } = descriptor; // only Bitcoin-like accounts have it, and only those are checked for now
-                const isPassphraseEnabled = this.getDevice().features?.passphrase_protection;
-                const alwaysPassphrase = this.getDevice().features?.passphrase_always_on_device; // if this feature is on, then useEmptyPassphrase is not reliable
-                const isStandardWallet =
-                    !isPassphraseEnabled || (this.useEmptyPassphrase && !alwaysPassphrase);
-                if (xpub && knownXPubHashes && isStandardWallet) {
-                    const isValid = checkXPubWithHashes({ xpub, path, knownXPubHashes });
-                    if (!isValid) {
-                        // TODO monitor this, and if the check is reliable, throw error to fail the account discovery, have Suite handle it
-                        console.error(`Entropy check failed at getAccountDescriptor on ${path}`);
-                    }
-                }
+                this.checkEntropy({ xpub: descriptor.legacyXpub, path, sendCoreMessage });
             }
 
             return this.descriptorCache[key];
@@ -329,10 +332,42 @@ export default class DiscoverAccounts extends AbstractMethod<
         return { path, ...descriptorRest };
     }
 
+    /**
+     * Discovery entropy check: compares the xpub with hashes known from the wallet creation entropy check.
+     * The result is only reported via event and never interrupts the discovery; Suite handles failures.
+     * Wallet creation only checks standard wallet, so this check also runs only if we're sure that it's standard.
+     */
+    private checkEntropy({
+        xpub,
+        path,
+        sendCoreMessage,
+    }: {
+        xpub: string | undefined;
+        path: string;
+        sendCoreMessage: MethodContext['sendCoreMessage'];
+    }) {
+        const knownXPubHashes = this.params.entropyCheckResult?.xpubHashes;
+        const isPassphraseEnabled = this.getDevice().features?.passphrase_protection;
+        // If this feature is on, then useEmptyPassphrase is not a reliable indicator of empty wallet.
+        const alwaysPassphrase = this.getDevice().features?.passphrase_always_on_device;
+        const isStandardWallet =
+            !isPassphraseEnabled || (this.useEmptyPassphrase && !alwaysPassphrase);
+        if (!xpub || knownXPubHashes?.[path] === undefined || !isStandardWallet) return;
+
+        const success = checkXPubWithHashes({ xpub, path, knownXPubHashes });
+        sendCoreMessage(
+            createUiEventMessage(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, {
+                device: this.getDevice().toMessageObject(),
+                success,
+                path,
+            }),
+        );
+    }
+
     private async discoverAccount(
         request: Request,
         sendCoreMessage: MethodContext['sendCoreMessage'],
-    ): Promise<{ nonempty: number; error?: string }> {
+    ): Promise<{ empty: number; nonempty: number; error?: string }> {
         const { details, identity, pageSize, gap, protocols, coinInfo, derivation, offset, skip } =
             request;
         const { path: bip43, ...accountKey } = request.account;
@@ -342,7 +377,7 @@ export default class DiscoverAccounts extends AbstractMethod<
         if (singleAccount && skip > 0) {
             this.updateProgress(accountKey, skip, true);
 
-            return { nonempty: 0 };
+            return { empty: 0, nonempty: 0 };
         }
 
         const backendType = coinInfo.blockchainLink?.type;
@@ -361,33 +396,61 @@ export default class DiscoverAccounts extends AbstractMethod<
             const error = err.message;
             sendProgress({ ...accountKey, index, failed: true, error, path, backendType });
 
-            return { nonempty: 0, error };
+            return { empty: 0, nonempty: 0, error };
         }
 
-        let descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index);
+        const getAccountInfo = (descriptor: string, level = details) =>
+            blockchain.getAccountInfo({
+                // Blockbook rejects taproot descriptors that use `h` for hardened parts, so the
+                // backend always receives the canonical form.
+                descriptor: toCanonicalDescriptor(descriptor),
+                details: level,
+                pageSize,
+                protocols,
+                gap,
+            });
+
+        let empty = 0;
+
+        let descPromise = this.getDescriptor({
+            coinInfo,
+            bip43PathTemplate: bip43,
+            derivationType: derivation,
+            index: offset + index,
+            sendCoreMessage,
+        });
         descPromise.catch(() => {});
         while (true) {
             try {
                 const { descriptor, ...descRest } = await descPromise;
-                descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
+                descPromise = this.getDescriptor({
+                    coinInfo,
+                    bip43PathTemplate: bip43,
+                    derivationType: derivation,
+                    index: offset + index + 1,
+                    sendCoreMessage,
+                });
                 descPromise.catch(() => {});
 
-                const info = await blockchain.getAccountInfo({
-                    descriptor,
-                    details,
-                    pageSize,
-                    protocols,
-                    gap,
-                });
+                const info = await getAccountInfo(descriptor);
+
+                const last =
+                    singleAccount ||
+                    (info.empty &&
+                        // Suite 25.9.x let users add and use an account right after an empty one.
+                        (await descPromise
+                            .then(nextDesc => getAccountInfo(nextDesc.descriptor, 'basic'))
+                            .then(nextAccount => nextAccount.empty)
+                            .catch(() => true)));
 
                 // eslint-disable-next-line no-nested-ternary
                 const utxo = !utxoRequired
                     ? undefined
                     : info.empty
                       ? []
-                      : await blockchain.getAccountUtxo(descriptor);
+                      : await blockchain.getAccountUtxo(toCanonicalDescriptor(descriptor));
 
-                this.updateProgress(accountKey, index + 1, info.empty || singleAccount);
+                this.updateProgress(accountKey, index + 1, last);
                 sendProgress({
                     ...info,
                     descriptor,
@@ -397,12 +460,15 @@ export default class DiscoverAccounts extends AbstractMethod<
                     index,
                     backendType,
                     failed: false,
+                    last,
                 });
 
-                if (info.empty || singleAccount) {
+                if (info.empty) empty++;
+
+                if (last) {
                     await descPromise.catch(() => {});
 
-                    return { nonempty: index - skip + (info.empty ? 0 : 1) };
+                    return { empty, nonempty: index - skip - empty + 1 };
                 }
             } catch (err) {
                 const path = substituteBip43Path(bip43, offset + index);
@@ -411,7 +477,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 this.updateProgress(accountKey, index + 1, true);
                 sendProgress({ ...accountKey, index, failed, error, code, path, backendType });
 
-                return { nonempty: index - skip, error };
+                return { empty, nonempty: index - skip - empty, error };
             }
 
             index++;

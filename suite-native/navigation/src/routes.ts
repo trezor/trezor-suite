@@ -20,6 +20,7 @@ export enum RootStackRoutes {
     DevUtils = 'DevUtils',
     MessageSystemManager = 'MessageSystemManager',
     MessageSystemExperiments = 'MessageSystemExperiments',
+    AppsEmbedding = 'AppsEmbedding',
     SignAndVerify = 'SignAndVerify',
     SignAndVerifyStack = 'SignAndVerifyStack',
     TransactionDetailStack = 'TransactionDetailStack',
@@ -299,6 +300,8 @@ export enum WrappedNativeTokenStackRoutes {
 }
 
 export enum ReceiveStackRoutes {
+    ReceiveCrossroads = 'ReceiveCrossroads',
+    ReceiveDiscovery = 'ReceiveDiscovery',
     ReceiveAccounts = 'ReceiveAccounts',
     ReceiveAddress = 'ReceiveAddress',
     ReceiveAddressVerification = 'ReceiveAddressVerification',

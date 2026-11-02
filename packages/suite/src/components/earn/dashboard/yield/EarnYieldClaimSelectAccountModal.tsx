@@ -62,11 +62,6 @@ const COMPACT_REWARD_AMOUNT_OPTIONS = {
     minimumDisplayedValue: '0.0001',
 } as const;
 
-const RewardAmountsContainer = styled.span`
-    display: block;
-    width: 100%;
-`;
-
 const RewardAmountsText = styled.span`
     ${typography['body-xs']}
     display: block;
@@ -88,6 +83,7 @@ const RewardTokenAmounts = ({ rewardTokenAmounts }: RewardTokenAmountsProps) => 
         const compactAmount = isCompact
             ? getCompactAmount({ value: amount, ...COMPACT_REWARD_AMOUNT_OPTIONS })
             : null;
+
         const formattedAmount = CryptoAmountFormatter.format(compactAmount?.value ?? amount, {
             symbol,
             isBalance: true,
@@ -101,6 +97,7 @@ const RewardTokenAmounts = ({ rewardTokenAmounts }: RewardTokenAmountsProps) => 
     const compactRewardAmounts = rewardTokenAmounts
         .map(rewardTokenAmount => formatAmount(rewardTokenAmount, true))
         .join('\n');
+
     const fullRewardAmounts = rewardTokenAmounts
         .map(rewardTokenAmount => formatAmount(rewardTokenAmount, false))
         .join('\n');
@@ -109,15 +106,30 @@ const RewardTokenAmounts = ({ rewardTokenAmounts }: RewardTokenAmountsProps) => 
         <Tooltip
             as="span"
             display="inline-flex"
-            width="100%"
             isActive={compactRewardAmounts !== fullRewardAmounts}
-            content={fullRewardAmounts}
+            content={
+                <Column>
+                    {rewardTokenAmounts.map(rewardTokenAmount => (
+                        <HiddenPlaceholder
+                            key={`${rewardTokenAmount.amount} ${rewardTokenAmount.symbol}`}
+                        >
+                            {formatAmount(rewardTokenAmount, false)}
+                        </HiddenPlaceholder>
+                    ))}
+                </Column>
+            }
         >
-            <RewardAmountsContainer>
-                <RewardAmountsText data-testid="@earn/claim-select-account/reward-amounts">
-                    {compactRewardAmounts}
-                </RewardAmountsText>
-            </RewardAmountsContainer>
+            <Column data-testid="@earn/claim-select-account/reward-amounts">
+                {rewardTokenAmounts.map(rewardTokenAmount => (
+                    <RewardAmountsText
+                        key={`${rewardTokenAmount.amount} ${rewardTokenAmount.symbol}`}
+                    >
+                        <HiddenPlaceholder>
+                            {formatAmount(rewardTokenAmount, true)}
+                        </HiddenPlaceholder>
+                    </RewardAmountsText>
+                ))}
+            </Column>
         </Tooltip>
     );
 };
@@ -187,24 +199,34 @@ export const EarnYieldClaimSelectAccountModal = ({
                             onClick={() => handleOnSelect(accountRewards)}
                             data-testid={`@earn/claim-select-account/account/${accountRewards.account.symbol}-${accountRewards.account.accountType}-${accountRewards.account.index}`}
                         >
-                            <Row gap={16} flex="1" overflow="hidden">
+                            <Row flex="1" overflow="hidden">
                                 <TokenIcon symbol={accountRewards.account.symbol} size={32} />
-                                <Column flex="1" overflow="hidden" gap={2} alignItems="flex-start">
+
+                                <Column
+                                    flex="1"
+                                    overflow="hidden"
+                                    gap={2}
+                                    alignItems="flex-start"
+                                    padding={{ left: 16 }}
+                                >
                                     <AccountLabel
                                         account={accountRewards.account}
                                         showAccountTypeBadge
                                         accountTypeBadgeSize="small"
                                         typographyStyle="body-md-strong"
                                     />
+
                                     <RewardTokenAmounts rewardTokenAmounts={rewardTokenAmounts} />
                                 </Column>
                             </Row>
+
                             <Row gap={8} alignItems="center" flex="none">
                                 <Tooltip
                                     content={
                                         isDebugModeActive ? (
                                             <Column gap={8} alignItems="flex-start">
                                                 <DebugOnlyBadge />
+
                                                 <Text>
                                                     {accountRewards.totalClaimableFiatAmount.toFixed()}{' '}
                                                     {baseCurrency.toUpperCase()}
@@ -225,6 +247,7 @@ export const EarnYieldClaimSelectAccountModal = ({
                                         </Text>
                                     </HiddenPlaceholder>
                                 </Tooltip>
+
                                 <Icon
                                     as={CaretRightIcon}
                                     size={16}

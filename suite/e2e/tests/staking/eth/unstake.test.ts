@@ -10,6 +10,8 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 const ethSymbol = asNetworkSymbol('eth');
 
+const CLAIM_TXID = '0x2222222222222222222222222222222222222222222222222222222222222222';
+
 test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
@@ -187,6 +189,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Finish claiming', async () => {
+                blockbookMock.setBroadcastTxid(CLAIM_TXID);
                 await expect(stakingSection.claimModalAmount).toHaveText('3,234 ETH');
                 await stakingSection.claimModalButton.click();
                 await expect(devicePrompt.outputValueOf('data')).toHaveTranslation(

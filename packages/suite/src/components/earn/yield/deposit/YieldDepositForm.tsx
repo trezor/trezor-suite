@@ -6,6 +6,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getWrapReserveStatus,
     getYieldFlowStepSequence,
+    getYieldVaultContractAddress,
     splitYieldPendingTransaction,
     useFetchFees,
 } from '@suite-common/wallet-core';
@@ -15,7 +16,9 @@ import { useServices } from '@trezor/dependency-injection';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
+import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
 import { useYieldDepositContext } from './useYieldDepositContext';
 import { YieldActionStep } from '../common/YieldActionStep';
@@ -29,6 +32,7 @@ import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldWrapStep } from '../common/YieldWrapStep';
 
 export const YieldDepositForm = () => {
+    const deviceStatus = useEarnDeviceStatus();
     const { analytics } = useServices(injectDesktopAnalytics);
     const { CryptoAmountFormatter } = useFormatters();
 
@@ -82,6 +86,14 @@ export const YieldDepositForm = () => {
         content: wrapDisabledContent,
         variant: wrapDisabledVariant,
     } = useMessageSystemWrappedNative('wrap');
+
+    const {
+        isDisabled,
+        content: disabledContent,
+        variant: disabledVariant,
+    } = useMessageSystemYield('deposit', {
+        vaultContractAddress: getYieldVaultContractAddress(vault),
+    });
 
     const { approvalPendingTransaction, actionPendingTransaction: depositPendingTransaction } =
         splitYieldPendingTransaction(pendingTransaction, 'deposit');
@@ -190,11 +202,14 @@ export const YieldDepositForm = () => {
     };
 
     const handleOnApprovalSubmit = () => {
+        if (isDisabled) return;
+
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
                 type: approvalAction === 'revoke' ? 'revoke' : 'approve',
-                action: 'continue',
+                action: approvalAction === 'continue' ? 'skip' : 'continue',
+                ...(approvalAction !== 'continue' && { deviceStatus }),
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },
@@ -208,7 +223,7 @@ export const YieldDepositForm = () => {
             type: events.yieldDepositEvent.name,
             payload: {
                 type: 'approve',
-                action: 'cancel',
+                action: 'skip',
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },
@@ -218,11 +233,14 @@ export const YieldDepositForm = () => {
     };
 
     const handleOnRevoke = () => {
+        if (isDisabled) return;
+
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
                 type: 'revoke',
                 action: 'continue',
+                deviceStatus,
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },
@@ -246,12 +264,15 @@ export const YieldDepositForm = () => {
     };
 
     const handleOnDeposit = () => {
+        if (isDisabled) return;
+
         const apyBreakdown = getApyBreakdown(vault.rewardRate?.components);
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
                 type: 'deposit',
                 action: 'continue',
+                deviceStatus,
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
                 wrappedNative: flow.isWrappedNativeVault,
@@ -263,11 +284,14 @@ export const YieldDepositForm = () => {
     };
 
     const handleOnWrap = () => {
+        if (isDisabled) return;
+
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
                 type: 'wrap',
                 action: 'continue',
+                deviceStatus,
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },
@@ -327,6 +351,14 @@ export const YieldDepositForm = () => {
                                 <Translation id="TR_EARN_YIELD_DEPOSIT" />
                             </Text>
 
+                            {isDisabled && (
+                                <YieldDisabledBanner
+                                    type="deposit"
+                                    content={disabledContent}
+                                    variant={disabledVariant}
+                                />
+                            )}
+
                             {errorMessage && (
                                 <Banner
                                     intent="warning"
@@ -369,7 +401,7 @@ export const YieldDepositForm = () => {
                                         values={{ nativeSymbol }}
                                     />
                                 ),
-                                onEdit: returnToWrapStep,
+                                onEdit: isDisabled ? undefined : returnToWrapStep,
                                 // Wrapping may be disabled remotely; skipping it stays available so a
                                 // user with a wrapped-token balance can still finish the deposit.
                                 content: () => (
@@ -388,6 +420,7 @@ export const YieldDepositForm = () => {
                                             receivingAmount={liveAmount || '0'}
                                             isSubmitting={isSubmittingAction}
                                             isSubmitDisabled={
+                                                isDisabled ||
                                                 isWrapDisabled ||
                                                 hasBlockingAmountIssue ||
                                                 isNativeFeeInsufficient
@@ -398,7 +431,7 @@ export const YieldDepositForm = () => {
                                             onMaxClick={handleMaxClick}
                                             onSubmit={handleOnWrap}
                                             onSkip={
-                                                hasWrappedTokenBalance
+                                                !isDisabled && hasWrappedTokenBalance
                                                     ? handleOnSkipWrap
                                                     : undefined
                                             }
@@ -420,7 +453,7 @@ export const YieldDepositForm = () => {
                                         }
                                     />
                                 ),
-                                onEdit: handleOnModify,
+                                onEdit: isDisabled ? undefined : handleOnModify,
                                 content: () => (
                                     <YieldApproveStep
                                         token={token}
@@ -438,6 +471,7 @@ export const YieldDepositForm = () => {
                                         canRevokeAllowance={canRevokeAllowance}
                                         warning={renderApproveWarning()}
                                         isDisabled={
+                                            isDisabled ||
                                             isAmountEmpty ||
                                             isAmountInvalidDecimals ||
                                             isNativeFeeInsufficient ||
@@ -452,7 +486,7 @@ export const YieldDepositForm = () => {
                                         // An unreadable allowance coerces to '0', which would
                                         // otherwise hide Skip just when it is the only way on.
                                         onSkip={
-                                            canRevokeAllowance || hasAllowanceError
+                                            !isDisabled && (canRevokeAllowance || hasAllowanceError)
                                                 ? handleOnSkipApprove
                                                 : undefined
                                         }
@@ -492,11 +526,14 @@ export const YieldDepositForm = () => {
                                                     feeReserveTopUpRecommendation={
                                                         feeReserveTopUpRecommendation
                                                     }
-                                                    onModifyApproval={handleOnModify}
+                                                    onModifyApproval={
+                                                        isDisabled ? undefined : handleOnModify
+                                                    }
                                                 />
                                             ) : undefined
                                         }
                                         isDisabled={
+                                            isDisabled ||
                                             hasBlockingAmountIssue ||
                                             isApprovalInsufficient ||
                                             isNativeFeeInsufficient ||

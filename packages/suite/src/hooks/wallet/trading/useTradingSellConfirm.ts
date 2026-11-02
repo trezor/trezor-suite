@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { gotoThunk } from '@suite/router';
 import {
     selectTradingSellActiveTrade,
     selectTradingSellIsFromRedirect,
+    selectTradingSellIsLoading,
     selectTradingSellQuotesRequest,
+    selectTradingSellSelectedQuote,
     selectTradingSellTransactionId,
     tradingSellActions,
     tradingThunks,
@@ -12,7 +15,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 
 export const useTradingSellConfirm = () => {
@@ -24,6 +27,8 @@ export const useTradingSellConfirm = () => {
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
     const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);
     const transactionId = useSelector(selectTradingSellTransactionId);
+    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
+    const isLoading = useSelector(selectTradingSellIsLoading);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'sell' }));
@@ -48,4 +53,14 @@ export const useTradingSellConfirm = () => {
             dispatch(tradingSellActions.setIsFromRedirect(false));
         }
     }, [isFromRedirect, trade, transactionId, dispatch]);
+
+    const isRequestDisabled = isLoading || !selectedQuote;
+
+    const requestTrade = async () => {
+        if (!selectedQuote) return;
+
+        await dispatch(requestSellTradeThunk({ quote: selectedQuote }));
+    };
+
+    return { requestTrade, isRequestDisabled };
 };

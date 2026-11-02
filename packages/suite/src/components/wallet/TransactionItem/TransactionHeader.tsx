@@ -20,10 +20,10 @@ import {
 } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
+import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 import { WrapTxAmount } from 'src/components/suite/WrapTxAmount';
 import { type WalletAccountTransaction } from 'src/types/wallet';
-import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 type TransactionHeaderProps = {
     transaction: WalletAccountTransaction;
@@ -209,7 +209,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 : totalVotes;
 
             return (
-                <BlurUrls
+                <TokenUrlBlur
                     text={translationString('TR_TRON_TX_VOTED_VOTES', { votes: displayedVotes })}
                 />
             );
@@ -221,7 +221,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
         return (
             <>
-                <BlurUrls text={translationString(tronTransactionMessageId)} />
+                <TokenUrlBlur text={translationString(tronTransactionMessageId)} />
                 {isUnfreeze && <UnstakingTxAmount transaction={transaction} />}
             </>
         );
@@ -260,7 +260,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             : 'TR_STELLAR_TRUSTLINE_ADDED';
 
         return (
-            <BlurUrls
+            <TokenUrlBlur
                 text={translationString(translationId, {
                     assetCode: transaction.stellarSpecific.changeTrust.assetCode,
                 })}
@@ -290,7 +290,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
         if (fromSymbol && toSymbol && !transaction.cardanoSpecific) {
             return (
-                <BlurUrls
+                <TokenUrlBlur
                     text={translationString('TR_SWAP_TRANSACTION', { fromSymbol, toSymbol })}
                 />
             );
@@ -306,7 +306,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             : transactionSymbol;
 
     return (
-        <BlurUrls
+        <TokenUrlBlur
             text={translationString(getTransactionMessageId({ transaction, isPending }), {
                 symbol,
                 multiple: isMultiTokenTransaction,

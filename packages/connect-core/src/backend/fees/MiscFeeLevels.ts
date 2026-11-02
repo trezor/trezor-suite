@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/Fees.js
 
 import type { CoinInfo, FeeLevel } from '@trezor/connect-common';
+import { clamp } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { cloneObject } from '@trezor/utils/src/cloneObject';
 
@@ -33,10 +34,7 @@ export class MiscFeeLevels implements FeeLevels {
             // see: https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/src/workers/ripple/index.ts#L316
             const fee = new BigNumber(response.feePerUnit).toNumber();
 
-            const feePerUnit = Math.min(
-                this.coinInfo.maxFee,
-                Math.max(this.coinInfo.minFee, fee),
-            ).toString();
+            const feePerUnit = clamp(fee, this.coinInfo.minFee, this.coinInfo.maxFee).toString();
 
             this.level = { ...this.level, ...response, feePerUnit };
         } catch {

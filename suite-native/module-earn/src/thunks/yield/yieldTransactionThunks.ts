@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import {
@@ -12,6 +13,7 @@ import {
     type YieldFlowResolvedData,
     type YieldPositionFlowType,
     type YieldRootState,
+    isEarnSigningCancelled,
     isYieldSupported,
     isYieldTxReviewForFlow,
     isYieldWithdrawFlow,
@@ -20,16 +22,19 @@ import {
     selectYieldSession,
     selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
-import { createThunk } from '@trezor/redux-utils';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
 } from '../../utils/earn/deviceTransactionUtils';
+import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
 
 const YIELD_TRANSACTION_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/yield-transaction`;
 
@@ -61,15 +66,21 @@ export type SignYieldActionReviewThunkState = DeviceRootState &
     YieldRootState &
     WalletSettingsRootState;
 
+type SignYieldActionReviewThunkDeps = WithServices<NativeAnalyticsDep>;
+
 export const signYieldActionReviewThunk = createThunk<
     { serializedTx: string },
     YieldActionReviewThunkPayload,
-    { rejectValue: YieldSignTransactionError; state: SignYieldActionReviewThunkState }
+    {
+        rejectValue: YieldSignTransactionError;
+        state: SignYieldActionReviewThunkState;
+        extra: SignYieldActionReviewThunkDeps;
+    }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/signActionReview`,
     async (
         { flowData, flowKey, flowType, reviewToken, selectedFee },
-        { dispatch, getState, rejectWithValue },
+        { dispatch, getState, rejectWithValue, extra },
     ) => {
         const session = selectYieldSession(getState(), flowType, flowKey);
         const {
@@ -139,6 +150,17 @@ export const signYieldActionReviewThunk = createThunk<
         });
 
         if (!signingResponse.success) {
+            if (isEarnSigningCancelled(signingResponse.error)) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: flowData.account.symbol,
+                        stage: 'signing',
+                    },
+                });
+            }
+
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 errorCode: signingResponse.error.code,
@@ -181,7 +203,8 @@ export type PushYieldActionReviewThunkState = MevProtectionRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
 
-export type PushYieldActionReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
+export type PushYieldActionReviewThunkDeps = SynchronizeSentTransactionThunkDeps &
+    WithServices<NativeAnalyticsDep>;
 
 export const pushYieldActionReviewThunk = createThunk<
     { txid: string },
@@ -193,7 +216,7 @@ export const pushYieldActionReviewThunk = createThunk<
     }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/pushActionReview`,
-    async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {
+    async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue, extra }) => {
         const session = selectYieldSession(getState(), flowType, flowKey);
         const txReview = selectYieldTxReview(getState());
         const { precomposedForm, precomposedTx, serializedTx } = txReview;
@@ -218,6 +241,14 @@ export const pushYieldActionReviewThunk = createThunk<
             });
         }
 
+        reportTransactionCreated({
+            analytics: extra.services.analytics,
+            symbol: flowData.account.symbol,
+            precomposedTransaction: precomposedTx,
+            formState: precomposedForm,
+            txType: 'yield',
+        });
+
         const pushResponse = await pushYieldTransaction({
             tx: serializedTx.tx,
             account: flowData.account,
@@ -227,6 +258,16 @@ export const pushYieldActionReviewThunk = createThunk<
         });
 
         dispatch(yieldActions.discardTransaction());
+
+        dispatch(
+            transactionsActions.transactionBroadcastStatus({
+                account: flowData.account,
+                flow: `yield-${flowType}`,
+                ...(pushResponse.success
+                    ? ({ status: 'success', txid: pushResponse.payload.txid } as const)
+                    : ({ status: 'error' } as const)),
+            }),
+        );
 
         if (!pushResponse.success) {
             return rejectWithValue({

@@ -4,32 +4,32 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { TradingSettingsCard, type TradingSettingsCardProps } from './TradingSettingsCard';
 
 let mockIsTradingCountrySet: boolean;
-let mockIsTradingResidenceCheckEnabled: boolean;
+let mockIsTradingResidenceSelectionAvailable: boolean;
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingCountrySet: () => mockIsTradingCountrySet,
-    selectIsTradingResidenceCheckEnabled: () => mockIsTradingResidenceCheckEnabled,
+    selectIsTradingResidenceSelectionAvailable: () => mockIsTradingResidenceSelectionAvailable,
 }));
 
 describe('TradingSettingsCard', () => {
-    const renderTradingSettingsCard = async (props: Partial<TradingSettingsCardProps> = {}) =>
-        await renderWithStoreProvider(<TradingSettingsCard onPress={jest.fn()} {...props} />);
+    const renderTradingSettingsCard = (props: Partial<TradingSettingsCardProps> = {}) =>
+        renderWithStoreProvider(<TradingSettingsCard onPress={jest.fn()} {...props} />);
 
     beforeEach(() => {
         mockIsTradingCountrySet = false;
-        mockIsTradingResidenceCheckEnabled = false;
+        mockIsTradingResidenceSelectionAvailable = false;
     });
 
-    it('should not render trading settings button when selectIsTradingResidenceCheckEnabled is false', async () => {
+    it('should not render trading settings button when selectIsTradingResidenceSelectionAvailable is false', async () => {
         const { toJSON } = await renderTradingSettingsCard();
 
         expect(toJSON()).toBeNull();
     });
 
-    describe('when selectIsTradingResidenceCheckEnabled is true', () => {
+    describe('when selectIsTradingResidenceSelectionAvailable is true', () => {
         beforeEach(() => {
-            mockIsTradingResidenceCheckEnabled = true;
+            mockIsTradingResidenceSelectionAvailable = true;
         });
 
         it('should render "Enable trading" button when selectIsTradingCountrySet is false', async () => {

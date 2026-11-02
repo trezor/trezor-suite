@@ -5,6 +5,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 
+import { useEarnDeviceStatus } from '../earn/useEarnDeviceStatus';
+
 type YieldFlowAnalyticsContext = {
     networkSymbol: NetworkSymbol | undefined;
     vaultId: string | undefined;
@@ -24,6 +26,7 @@ type YieldWithdrawPayload = WithoutFlowContext<
 
 export const useYieldFlowAnalytics = ({ networkSymbol, vaultId }: YieldFlowAnalyticsContext) => {
     const { analytics } = useServices(injectNativeAnalytics);
+    const deviceStatus = useEarnDeviceStatus();
 
     const reportInteraction = useCallback(
         (payload: YieldInteractionPayload) => {
@@ -39,20 +42,36 @@ export const useYieldFlowAnalytics = ({ networkSymbol, vaultId }: YieldFlowAnaly
         (payload: YieldDepositPayload) => {
             analytics.report({
                 type: events.yieldDepositEvent.name,
-                payload: { networkSymbol, vaultId, ...payload },
+                payload: {
+                    networkSymbol,
+                    vaultId,
+                    ...payload,
+                    ...(payload.action === 'continue' &&
+                    ['deposit', 'approve', 'revoke', 'wrap'].includes(payload.type)
+                        ? { deviceStatus }
+                        : {}),
+                },
             });
         },
-        [analytics, networkSymbol, vaultId],
+        [analytics, networkSymbol, vaultId, deviceStatus],
     );
 
     const reportWithdraw = useCallback(
         (payload: YieldWithdrawPayload) => {
             analytics.report({
                 type: events.yieldWithdrawEvent.name,
-                payload: { networkSymbol, vaultId, ...payload },
+                payload: {
+                    networkSymbol,
+                    vaultId,
+                    ...payload,
+                    ...(payload.action === 'continue' &&
+                    ['withdraw', 'unwrap'].includes(payload.type)
+                        ? { deviceStatus }
+                        : {}),
+                },
             });
         },
-        [analytics, networkSymbol, vaultId],
+        [analytics, networkSymbol, vaultId, deviceStatus],
     );
 
     return { reportDeposit, reportInteraction, reportWithdraw };

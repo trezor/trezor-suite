@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { LANGUAGES, type Locale } from '@suite-common/suite-types';
+import { LANGUAGES, type Locale } from '@suite-common/locale';
 import { useAlert } from '@suite-native/alerts';
 import { useDeviceReadyEvents } from '@suite-native/device-authorization';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';

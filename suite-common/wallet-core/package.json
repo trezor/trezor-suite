@@ -13,12 +13,11 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@scure/base": "^2.0.0",
-        "@sentry/core": "10.69.0",
+        "@sentry/core": "10.75.2",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
-        "@suite-common/calldata": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/earn-staking-api": "workspace:*",
@@ -60,6 +59,7 @@
         "@trezor/network-solana-types": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/network-tron": "workspace:*",
+        "@trezor/network-tron-suite-common": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
@@ -70,6 +70,9 @@
         "react": "19.2.3",
         "react-hook-form": "^7.77.0",
         "react-redux": "9.3.0",
-        "viem": "^2.54.1"
+        "viem": "^2.57.2"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }

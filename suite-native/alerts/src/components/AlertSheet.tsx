@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Modal, StyleSheet, useWindowDimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     AnimatedPressable,
@@ -23,15 +23,16 @@ type AlertSheetProps = {
     alert: Alert;
 };
 
-const alertSheetContainerStyle = prepareNativeStyle<{ bottomInset: number }>(
-    (utils, { bottomInset }) => ({
+const alertSheetContainerStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
+    (utils, { insets }) => ({
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: utils.spacings.sp24,
         paddingVertical: utils.spacings.sp32,
-        marginHorizontal: utils.spacings.sp16,
+        marginLeft: insets.left + utils.spacings.sp16,
+        marginRight: insets.right + utils.spacings.sp16,
         borderRadius: utils.borders.radii.r16,
-        marginBottom: bottomInset + utils.spacings.sp16,
+        marginBottom: insets.bottom + utils.spacings.sp16,
         ...utils.boxShadows.small,
     }),
 );
@@ -58,7 +59,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
     const { hideAlert } = useAlert();
     const { applyStyle } = useNativeStyles();
     const { runShakeAnimation, shakeAnimatedStyle } = useShakeAnimation();
-    const { bottom } = useSafeAreaInsets();
+    const insets = useSafeAreaInsets();
     const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
     const {
@@ -134,7 +135,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                     style={shakeAnimatedStyle}
                     onStartShouldSetResponder={_ => true} // Stop the shake event trigger propagation.
                 >
-                    <Card style={applyStyle(alertSheetContainerStyle, { bottomInset: bottom })}>
+                    <Card style={applyStyle(alertSheetContainerStyle, { insets })}>
                         <VStack style={applyStyle(alertSheetContentStyle)}>
                             {pictogramVariant && (
                                 <Box alignItems="center">

@@ -33,7 +33,7 @@ import {
 import { ResultsInfo } from './components/ResultsInfo';
 import { ThemeSwitch } from './components/ThemeSwitch';
 import { VersionsSidebar } from './components/VersionsSidebar';
-import type { EventDoc } from './types';
+import { type EventDoc, searchFields as allSearchFields } from './types';
 import { getEventId, getVersionsWithEvents } from './utils/filterUtils';
 import { useFilteredEvents } from './utils/useFilteredEvents';
 
@@ -75,13 +75,13 @@ export const App = ({ theme }: AppProps) => {
         setSort,
         setPlatform,
         setVersion,
-        setSearchMode,
+        setSearchFields,
         clearAll,
         query,
         platform,
         sort,
         version,
-        searchMode,
+        searchFields,
         availableVersions,
         debouncedQuery,
         allEvents,
@@ -97,7 +97,12 @@ export const App = ({ theme }: AppProps) => {
         setIsSidebarLoading,
     } = useFilteredEvents();
 
-    const hasActiveFilters = !!query || platform !== 'all' || sort !== 'az' || version !== 'all';
+    const hasActiveFilters =
+        !!query ||
+        platform !== 'all' ||
+        sort !== 'az' ||
+        version !== 'all' ||
+        searchFields.length !== allSearchFields.length;
 
     const versionsWithEvents = useMemo(
         () => getVersionsWithEvents(filteredEvents),
@@ -181,10 +186,10 @@ export const App = ({ theme }: AppProps) => {
         () =>
             filteredEvents.map(event => (
                 <EventCardWrapper key={event.name} id={getEventId(event.name)}>
-                    <EventCard event={event} onEdit={handleEditEvent} />
+                    <EventCard event={event} query={debouncedQuery} onEdit={handleEditEvent} />
                 </EventCardWrapper>
             )),
-        [filteredEvents, handleEditEvent],
+        [filteredEvents, handleEditEvent, debouncedQuery],
     );
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
 
@@ -340,8 +345,6 @@ export const App = ({ theme }: AppProps) => {
                                 <ResultsInfo
                                     filteredCount={filteredEvents.length}
                                     totalCount={allEvents.length}
-                                    platform={platform}
-                                    query={debouncedQuery}
                                     hasActiveFilters={hasActiveFilters}
                                     onClearAll={clearAll}
                                 />
@@ -355,8 +358,8 @@ export const App = ({ theme }: AppProps) => {
                                     version={version}
                                     setVersion={setVersion}
                                     versions={availableVersions}
-                                    searchMode={searchMode}
-                                    setSearchMode={setSearchMode}
+                                    searchFields={searchFields}
+                                    setSearchFields={setSearchFields}
                                 />
                             </Row>
                         </ContentContainer>

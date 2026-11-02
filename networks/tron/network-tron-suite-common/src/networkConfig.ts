@@ -55,7 +55,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'tron',
         tradeCryptoId: 'tron',
-        fiatRateCryptoId: 'tron',
+        nativeAssetCryptoId: 'tron',
         yieldXyzId: 'tron',
         caipId: 'tron:0x2b6653dc',
     },

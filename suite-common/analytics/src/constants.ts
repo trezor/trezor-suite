@@ -24,6 +24,11 @@ export enum EventType {
     SettingsTestnetNetworksToggle = 'settings/testnet-networks-toggle',
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteSyncLabelCreated = 'suite-sync/label',
+
+    TransactionBroadcastStatus = 'transaction/broadcast-status',
+    TransactionCancel = 'transaction/cancel',
+    // eslint-disable-next-line local-rules/analytics-event-name
+    TransactionCreated = 'transaction-created',
     WalletConnectInit = 'wallet-connect/init',
     WalletConnectPaired = 'wallet-connect/paired',
     WalletConnectProposal = 'wallet-connect/proposal',
@@ -39,7 +44,14 @@ export enum EventType {
     PromoDashboardBanner = 'promo/dashboard-banner',
     GuideSupportChatOpened = 'guide/support-chat-opened',
     ReceiveEntryInteraction = 'receive/entry-interaction',
-    YieldEarnDashboardReady = 'yield/earn-dashboard-ready',
+    StakingStake = 'staking/stake',
+    StakingUnstake = 'staking/unstake',
+    StakingClaim = 'staking/claim',
+    AppFormPercentButtons = 'app/form-percent-buttons',
+    StakingNavigate = 'staking/navigate',
+    YieldEarnEntry = 'yield/earn-entry',
+    EarnDashboardReady = 'earn/dashboard-ready',
+    EarnTilePressed = 'earn/tile-pressed',
     YieldInteraction = 'yield/interaction',
     YieldNavigate = 'yield/navigate',
     YieldDeposit = 'yield/deposit',

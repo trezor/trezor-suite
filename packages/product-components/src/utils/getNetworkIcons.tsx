@@ -1,4 +1,4 @@
-import { isNetworkIconSymbol } from '@suite-common/icons';
+import type { HasNetworkIconDep } from '@trezor/network-assets-types';
 
 import { NetworkIcon } from '../components/NetworkIcon/NetworkIcon';
 import { NativeTokenIcon } from '../components/TokenIcon/NativeTokenIcon';
@@ -11,12 +11,15 @@ type GetNetworkIconsParams = {
     iconSize: TokenIconSize;
 };
 
-export const getNetworkIcons = ({ networks, iconSize, isToken = false }: GetNetworkIconsParams) =>
+export const getNetworkIcons = (
+    deps: HasNetworkIconDep,
+    { networks, iconSize, isToken = false }: GetNetworkIconsParams,
+) =>
     networks.map(({ symbol, name }) => ({
         symbol,
         name,
         icon:
-            !isToken && isNetworkIconSymbol(symbol) ? (
+            !isToken && deps.hasNetworkIcon(symbol) ? (
                 <NetworkIcon size={iconSize} networkSymbol={symbol} />
             ) : (
                 <NativeTokenIcon size={iconSize} symbol={symbol} />

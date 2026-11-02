@@ -1,16 +1,11 @@
 import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
-import {
-    type SharedValue,
-    useAnimatedStyle,
-    useDerivedValue,
-    withTiming,
-} from 'react-native-reanimated';
+import { type SharedValue, useDerivedValue } from 'react-native-reanimated';
 
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AnimatedBox } from '../Animated/AnimatedBox';
+import { AnimatedChevron } from '../Animated/AnimatedChevron';
 import { Box } from '../Box';
 import { Divider } from '../Divider';
 import { HStack, VStack } from '../Stack';
@@ -39,8 +34,6 @@ const dividerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
 }));
 
-const ANIMATION_DURATION = 200;
-
 export const AccordionItem = ({
     title,
     content,
@@ -52,16 +45,6 @@ export const AccordionItem = ({
     const { applyStyle } = useNativeStyles();
 
     const isOpened = useDerivedValue(() => currentIndexOpened.value === index);
-
-    const animatedChevronStyle = useAnimatedStyle(() => ({
-        transform: [
-            {
-                rotate: withTiming(`${isOpened.value ? -180 : 0}deg`, {
-                    duration: ANIMATION_DURATION,
-                }),
-            },
-        ],
-    }));
 
     const handlePress = () => {
         if (currentIndexOpened.value === index) {
@@ -80,9 +63,7 @@ export const AccordionItem = ({
                         {iconName && <Icon name={iconName} size="mediumLarge" />}
                         <Text variant="body-sm-strong">{title}</Text>
                     </HStack>
-                    <AnimatedBox style={animatedChevronStyle}>
-                        <Icon name="caretDown" size="mediumLarge" />
-                    </AnimatedBox>
+                    <AnimatedChevron isExpanded={isOpened} />
                 </HStack>
                 <Box>
                     <AccordionContent isOpened={isOpened} style={applyStyle(contentStyle)}>

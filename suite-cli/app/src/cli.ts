@@ -2,13 +2,14 @@ import TrezorConnect from '@trezor/connect';
 
 import { createCliCompositionRoot } from './createCliCompositionRoot';
 
-const { cliApp } = createCliCompositionRoot({ getTrezorConnect: () => TrezorConnect });
+const logger = console;
+const { cliApp } = createCliCompositionRoot({ getTrezorConnect: () => TrezorConnect, logger });
 
 cliApp(process.argv.slice(2))
     .then(exitCode => {
         process.exitCode = exitCode;
     })
     .catch(error => {
-        console.error(error);
+        logger.error(error);
         process.exitCode = 1;
     });

@@ -44,10 +44,7 @@ const getLifiMinAmountOut = (calldata: string | undefined) => {
 
 // Firmware strings on the DEX review pages.
 const deviceReview = {
-    providerTitle: 'Provider',
-    // The emulator still runs the previous FW release, which renders 'LiFI Diamond'.
-    // TODO: change to 'LI.FI' once trezor-user-env ships the firmware with the renamed provider.
-    providerName: 'LiFI Diamond',
+    contractAddressTitle: 'Contract address',
     intentTitle: 'Intent',
     intentValue: 'Swap',
     contractTitle: 'Confirm contract',
@@ -106,7 +103,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await expect(tradingPage.quotes.selectedProviderName).toHaveText(dexProvider);
                 await tradingPage.quotes.waitForSync();
 
-                await tradingPage.clickSwapDexBestOfferWithRetry();
+                await tradingPage.clickSwapBestOfferWithRetry();
             });
 
             await test.step('Read the standard fee on the review step', async () => {
@@ -198,7 +195,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(dexProvider);
                 await expect(device).toShowOnDisplay({
                     T3W1: {
-                        header: { title: deviceReview.providerTitle },
+                        header: { title: deviceReview.contractAddressTitle },
                         body: [[dexProvider]],
                         actions: { right_button: deviceReview.confirmButton },
                     },

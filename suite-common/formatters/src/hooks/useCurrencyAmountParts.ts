@@ -7,6 +7,7 @@ import { type CurrencyAmountParts, getCurrencyAmountParts } from '../utils/curre
 type UseCurrencyAmountPartsParams = {
     value?: string;
     locale: string;
+    isExact?: boolean;
 };
 
 /**
@@ -16,6 +17,7 @@ type UseCurrencyAmountPartsParams = {
 export const useCurrencyAmountParts = ({
     value = '0',
     locale,
+    isExact,
 }: UseCurrencyAmountPartsParams): CurrencyAmountParts => {
     const currency = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
@@ -25,5 +27,6 @@ export const useCurrencyAmountParts = ({
         locale,
         currency,
         isSatsValue: isBaseCurrencyInSats && currency === 'btc',
+        isExact,
     });
 };

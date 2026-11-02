@@ -3,13 +3,15 @@ import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsAppsEmbeddingAvailable } from '@suite/apps-embedding-demo';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import {
     NewContentIndicatorId,
     markNewContentIndicatorAsSeen,
     selectIsNewContentIndicatorVisible,
 } from '@suite/flags';
-import { type Route, selectRouteName } from '@suite/router';
+import { type Route, isTradingRoute, selectRouteName } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -68,7 +70,12 @@ export const Navigation = ({ children }: NavigationProps) => {
 
     const startRoute: Route['name'] = 'suite-index';
 
+    const isHomeTableActive = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
     const isAppsEmbeddingAvailable = useSelector(selectIsAppsEmbeddingAvailable);
 
     const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
@@ -91,6 +98,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     const isActivityOpen = routeName === 'notifications-index';
     const isEarnOpen = routeName !== undefined && EARN_ROUTES.includes(routeName);
     const isSwapOpen = routeName !== undefined && SWAP_ROUTES.includes(routeName);
+    const isTradingOpen = isTradingRoute(routeName);
     const hasActivityIndicator = hasUnseenNotifications && !isActivityOpen;
 
     useEffect(() => {
@@ -174,24 +182,28 @@ export const Navigation = ({ children }: NavigationProps) => {
         useMemo(
             () => [
                 {
-                    nameId: 'TR_DASHBOARD',
+                    nameId: isHomeTableActive ? 'TR_HOME' : 'TR_DASHBOARD',
                     icon: HouseIcon,
                     goToRoute: startRoute,
                     routes: [startRoute],
                     shortcut: ['MOD', 'ALT', 'KEY_0'],
                 },
-                ...(!isBtcOnly
+                ...(!isBtcOnly && !isFinpromRestricted
                     ? [
                           {
                               nameId: 'TR_TRADING_SWAP',
                               icon: RepeatIcon,
                               goToRoute: 'wallet-trading-exchange',
-                              routes: SWAP_ROUTES,
+                              isActive: isTradingOpen,
                               hasNewContentIndicator: isSwapNewContentIndicatorVisible,
                               isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
                               onClick: handleSwapNavigation,
                               shortcut: ['ALT', 'KEY_X'],
                           } as NavigationItemProps,
+                      ]
+                    : []),
+                ...(!isBtcOnly
+                    ? [
                           {
                               nameId: 'TR_EARN',
                               icon: PiggyBankIcon,
@@ -236,9 +248,12 @@ export const Navigation = ({ children }: NavigationProps) => {
                 },
             ],
             [
+                isHomeTableActive,
                 startRoute,
                 isBtcOnly,
+                isFinpromRestricted,
                 isAppsEmbeddingAvailable,
+                isTradingOpen,
                 handleSwapNavigation,
                 isSwapNewContentIndicatorVisible,
                 isEarnNewContentIndicatorVisible,

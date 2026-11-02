@@ -43,6 +43,7 @@ export type EarnReviewPushErrorPayload = {
 
 type UseEarnTransactionReviewParams<TSigned, TPushed> = {
     formType: ReviewFormType;
+    networkSymbol: string;
     /** External signal that a signed transaction is ready to push (session or local state). */
     isSigned: boolean;
     navigation: { pop: () => void };
@@ -65,6 +66,7 @@ type UseEarnTransactionReviewParams<TSigned, TPushed> = {
  */
 export const useEarnTransactionReview = <TSigned, TPushed>({
     formType,
+    networkSymbol,
     isSigned,
     navigation,
     onPushSuccess,
@@ -88,6 +90,7 @@ export const useEarnTransactionReview = <TSigned, TPushed>({
         useYieldActionReviewBackNavigation({
             onReviewLeave,
             reviewStatus: status,
+            networkSymbol,
         });
 
     const startReview = useCallback(async (): Promise<YieldReviewSigningResult> => {

@@ -87,9 +87,9 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                             </Column>
                         </DashboardSection>
                     ) : (
-                        <EmptyStakingCard />
+                        <EmptyStakingCard account={account} />
                     )}
-                    <Transactions />
+                    <Transactions account={account} />
                 </Column>
             }
         />

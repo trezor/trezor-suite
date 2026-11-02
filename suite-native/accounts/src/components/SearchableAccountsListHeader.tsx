@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { View } from 'react-native';
 import {
     type EntryExitAnimationFunction,
     FadeOut,
@@ -14,7 +13,7 @@ import { SEARCH_INPUT_ANIMATION_DURATION, SearchForm } from '@suite-native/searc
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AddAccountButton } from './AddAccountsButton';
-import { FilterCountBadge } from './FilterCountBadge';
+import { type NetworkFilter, NetworkFilterButton } from './NetworkFilterButton';
 
 export type SearchableAccountsListHeaderProps = {
     title: ReactNode;
@@ -25,12 +24,18 @@ export type SearchableAccountsListHeaderProps = {
     closeActionType?: CloseActionType;
     closeAction?: () => void;
     onAddAccount?: () => void;
-    onFilterPress?: () => void;
-    activeFilterCount?: number;
+    networkFilter: NetworkFilter;
     noPaddingTop?: boolean;
 };
 
 const HEADER_ANIMATION_DURATION = 100;
+const ICON_SIZE = 40;
+
+const titleStyle = prepareNativeStyle(() => ({ flexShrink: 1 }));
+
+const sideActionsStyle = prepareNativeStyle(({ spacings }) => ({
+    minWidth: 2 * ICON_SIZE + spacings.sp8,
+}));
 
 const searchFormContainerStyle = prepareNativeStyle<{ noPaddingTop: boolean }>(
     ({ spacings }, { noPaddingTop }) => ({
@@ -49,8 +54,7 @@ export const SearchableAccountsListHeader = ({
     closeActionType,
     closeAction,
     onAddAccount,
-    onFilterPress,
-    activeFilterCount = 0,
+    networkFilter,
     noPaddingTop = false,
 }: SearchableAccountsListHeaderProps) => {
     const isFirstRender = useSharedValue(true);
@@ -97,7 +101,12 @@ export const SearchableAccountsListHeader = ({
                     exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
                 >
                     <HStack alignItems="center">
-                        <HStack flex={1} alignItems="center" spacing="sp8">
+                        <HStack
+                            flex={1}
+                            alignItems="center"
+                            spacing="sp8"
+                            style={applyStyle(sideActionsStyle)}
+                        >
                             {closeActionType && (
                                 <GoBackIcon
                                     closeActionType={closeActionType}
@@ -112,7 +121,11 @@ export const SearchableAccountsListHeader = ({
                                 priority="secondary"
                             />
                         </HStack>
-                        <Text variant="body-md-strong" numberOfLines={1} adjustsFontSizeToFit>
+                        <Text
+                            variant="body-md-strong"
+                            numberOfLines={1}
+                            style={applyStyle(titleStyle)}
+                        >
                             {title}
                         </Text>
                         <HStack
@@ -120,22 +133,9 @@ export const SearchableAccountsListHeader = ({
                             justifyContent="flex-end"
                             alignItems="center"
                             spacing="sp8"
+                            style={applyStyle(sideActionsStyle)}
                         >
-                            {onFilterPress && (
-                                <View>
-                                    <IconButton
-                                        iconName="funnelSimple"
-                                        size="medium"
-                                        onPress={onFilterPress}
-                                        intent="neutral"
-                                        priority="secondary"
-                                        testID="@myAssets/networkFilterButton"
-                                    />
-                                    {activeFilterCount > 0 && (
-                                        <FilterCountBadge count={activeFilterCount} />
-                                    )}
-                                </View>
-                            )}
+                            <NetworkFilterButton filter={networkFilter} />
                             {flowType && (
                                 <AddAccountButton
                                     flowType={flowType}

@@ -12,6 +12,7 @@ type UseWrappedNativeFlowResolutionAnalyticsParams = {
     networkSymbol: NetworkSymbol | undefined;
     status: EvmPendingTxStatus | null;
     txid: string | null;
+    submittedAt?: number;
 };
 
 export const useWrappedNativeFlowResolutionAnalytics = ({
@@ -19,6 +20,7 @@ export const useWrappedNativeFlowResolutionAnalytics = ({
     networkSymbol,
     status,
     txid,
+    submittedAt,
 }: UseWrappedNativeFlowResolutionAnalyticsParams) => {
     const report = useWrappedNativeFlowReport(flowType);
     const hasReportedResolutionRef = useRef(false);
@@ -26,13 +28,13 @@ export const useWrappedNativeFlowResolutionAnalytics = ({
 
     useEffect(() => {
         if (txid && startRef.current?.txid !== txid) {
-            startRef.current = { txid, startedAt: Date.now() };
+            startRef.current = { txid, startedAt: submittedAt ?? Date.now() };
             hasReportedResolutionRef.current = false;
         }
-    }, [txid]);
+    }, [submittedAt, txid]);
 
     useEffect(() => {
-        if (hasReportedResolutionRef.current) {
+        if (!txid || hasReportedResolutionRef.current) {
             return;
         }
 
@@ -45,15 +47,19 @@ export const useWrappedNativeFlowResolutionAnalytics = ({
 
         hasReportedResolutionRef.current = true;
         report(payload);
-    }, [networkSymbol, report, status]);
+    }, [networkSymbol, report, status, txid]);
 
-    const latestRef = useCurrentRef({ status, networkSymbol });
+    const latestRef = useCurrentRef({ status, networkSymbol, txid });
 
     useEffect(
         () => () => {
             const snapshot = latestRef.current;
 
-            if (hasReportedResolutionRef.current || snapshot.status !== 'pending') {
+            if (
+                !snapshot.txid ||
+                hasReportedResolutionRef.current ||
+                snapshot.status !== 'pending'
+            ) {
                 return;
             }
 

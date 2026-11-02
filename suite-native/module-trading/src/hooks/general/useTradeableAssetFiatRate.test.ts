@@ -12,11 +12,11 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 describe('useTradeableAssetFiatRate', () => {
-    const renderTradeableAssetFiatRate = async (
+    const renderTradeableAssetFiatRate = (
         asset: TradeableAsset | undefined,
         shouldFetchCurrentRate?: boolean,
     ) =>
-        await renderHookWithStoreProvider(
+        renderHookWithStoreProvider(
             () => useTradeableAssetFiatRate(asset, { shouldFetchCurrentRate }),
             { preloadedState: createTradingPreloadedState() },
         );

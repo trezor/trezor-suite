@@ -22,10 +22,8 @@ const supportedFiatCurrencies: FiatCurrencyItem[] = [
 ];
 
 describe('useFiatCurrencyFilteredData', () => {
-    const renderUseFiatCurrencyFilteredData = async () =>
-        await renderHookWithBasicProvider(() =>
-            useFiatCurrencyFilteredData(supportedFiatCurrencies),
-        );
+    const renderUseFiatCurrencyFilteredData = () =>
+        renderHookWithBasicProvider(() => useFiatCurrencyFilteredData(supportedFiatCurrencies));
 
     it('should return section list data structure', async () => {
         const { result } = await renderUseFiatCurrencyFilteredData();

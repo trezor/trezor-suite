@@ -37,7 +37,8 @@ export type FirmwareCapability =
     | 'evolu'
     | 'monero'
     | 'telemetry'
-    | 'evmClearSigning';
+    | 'evmClearSigning'
+    | 'solanaV1Transaction';
 
 type RuleSelector = RequireAtLeastOne<{
     coin: Lowercase<string>[];

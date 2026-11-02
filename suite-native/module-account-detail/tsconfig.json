@@ -57,6 +57,7 @@
             "path": "../module-stellar-token-management"
         },
         { "path": "../navigation" },
+        { "path": "../performance-metrics" },
         { "path": "../qr-code" },
         { "path": "../suite-sync" },
         { "path": "../tokens" },
@@ -72,6 +73,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/utils" },
+        { "path": "../../suite-common/networks" },
         { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ]

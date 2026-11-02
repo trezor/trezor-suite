@@ -23,13 +23,11 @@ import {
     useExchangeIssue,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, H2 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { getSupportsAdjustableFees } from 'src/components/wallet/Fees/feeUtils';
 import { TRADING_DEX_SOURCE_ORIGIN } from 'src/constants/wallet/trading/txSimulation';
 import { useTradingExchangeConfirmFees } from 'src/hooks/wallet/trading/useTradingExchangeConfirmFees';
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
@@ -41,6 +39,7 @@ import { TradingOfferExchangeIssueBanner } from './TradingOfferExchangeIssueBann
 import { TradingOfferExchangeSimulationSubtitle } from './TradingOfferExchangeSimulationSubtitle';
 import { useExchangeIssueAnalytics } from './useExchangeIssueAnalytics';
 import { TradingInfoItem } from '../TradingInfo/TradingInfoItem';
+import { getTradingNetworkFeeEdit } from '../TradingInfo/getTradingNetworkFeeEdit';
 
 export const TradingOfferExchange = () => {
     const { handleClick, disabled } = useAsyncClickHandler();
@@ -99,17 +98,16 @@ export const TradingOfferExchange = () => {
     const { exchange, signData } = selectedTrade;
     const isSignData = formStep === 'SIGN_DATA' && !!signData;
 
-    const isNetworkFeeEditable = (account: Account) =>
-        !hasFixedPsbtFee(selectedTrade, account.networkType) &&
-        getSupportsAdjustableFees({
-            networkType: account.networkType,
-            isTokenTransfer: !!composed?.token,
-        });
-
-    const networkFeeEdit =
-        sendAccount && feeInfo && composeFormState && isNetworkFeeEditable(sendAccount)
-            ? { account: sendAccount, feeInfo, composeFormState, onConfirm: applySelectedFee }
-            : undefined;
+    const networkFeeEdit = sendAccount
+        ? getTradingNetworkFeeEdit({
+              account: sendAccount,
+              feeInfo,
+              composeFormState,
+              onConfirm: applySelectedFee,
+              isTokenTransfer: !!composed?.token,
+              hasFixedFee: hasFixedPsbtFee(selectedTrade, sendAccount.networkType),
+          })
+        : undefined;
 
     const simulatedReceiveAmount = getSimulatedReceiveAmount(
         simulationResult,

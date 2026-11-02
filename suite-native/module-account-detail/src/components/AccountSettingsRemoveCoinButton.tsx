@@ -9,7 +9,12 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Button, TrezorSuiteHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import {
+    AccountsStackRoutes,
+    AppTabsRoutes,
+    RootStackRoutes,
+    navigationContainerRef,
+} from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -21,7 +26,6 @@ export const AccountSettingsRemoveCoinButton = ({
     accountKey,
 }: AccountSettingsRemoveCoinButtonProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const navigateToInitialScreen = useNavigateToInitialScreen();
     const { showAlert, hideAlert } = useAlert();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -32,7 +36,20 @@ export const AccountSettingsRemoveCoinButton = ({
 
     const handleRemoveAccount = () => {
         dispatch(accountsActions.removeAccount([account]));
-        navigateToInitialScreen();
+        navigationContainerRef.reset({
+            index: 0,
+            routes: [
+                {
+                    name: RootStackRoutes.AppTabs,
+                    params: {
+                        screen: AppTabsRoutes.AccountsStack,
+                        params: {
+                            screen: AccountsStackRoutes.Accounts,
+                        },
+                    },
+                },
+            ],
+        });
     };
 
     const handleShowAlert = () => {

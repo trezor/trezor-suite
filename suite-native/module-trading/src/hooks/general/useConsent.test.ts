@@ -3,7 +3,7 @@ import { act, renderHook, waitFor } from '@suite-native/test-utils';
 import { useConsent } from './useConsent';
 
 describe('useConsent', () => {
-    const renderUseConsent = async () => await renderHook(() => useConsent());
+    const renderUseConsent = () => renderHook(() => useConsent());
 
     it('should initialize with isConsentRequested as false', async () => {
         const { result } = await renderUseConsent();

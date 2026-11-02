@@ -35,6 +35,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/labeling": "workspace:*",
         "@suite-native/link": "workspace:*",
+        "@suite-native/message-system": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
@@ -63,6 +64,6 @@
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
-        "@types/invity-api": "^1.1.22"
+        "@types/invity-api": "^1.1.23"
     }
 }

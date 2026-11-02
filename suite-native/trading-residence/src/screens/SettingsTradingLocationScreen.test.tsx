@@ -37,8 +37,8 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('TradingLocationSettingsScreen', () => {
-    const renderTradingLocationSettingsScreen = async () =>
-        await renderWithStoreProvider(<SettingsTradingLocationScreen />, {
+    const renderTradingLocationSettingsScreen = () =>
+        renderWithStoreProvider(<SettingsTradingLocationScreen />, {
             services: {
                 ...services,
                 store: createLightStore({

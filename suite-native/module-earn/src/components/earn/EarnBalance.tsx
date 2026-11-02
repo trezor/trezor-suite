@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { HStack, Text, VStack } from '@suite-native/atoms';
+import { DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -44,12 +44,13 @@ export const EarnBalance = () => {
             ) : (
                 <HStack spacing="sp4" alignItems="center">
                     {isFiatTotalIncomplete && <Text variant="headline-md">~</Text>}
-                    <BaseCurrencyAmountFormatter
-                        value={asBaseCurrencyAmount(new BigNumber(totalEarnFiatAmount))}
-                        variant="headline-md"
-                        isDiscreetText={false}
-                        isLoading={isFiatRatesLoading}
-                    />
+                    <DiscreetTextTrigger>
+                        <BaseCurrencyAmountFormatter
+                            value={asBaseCurrencyAmount(new BigNumber(totalEarnFiatAmount))}
+                            variant="headline-md"
+                            isLoading={isFiatRatesLoading}
+                        />
+                    </DiscreetTextTrigger>
                 </HStack>
             )}
         </VStack>

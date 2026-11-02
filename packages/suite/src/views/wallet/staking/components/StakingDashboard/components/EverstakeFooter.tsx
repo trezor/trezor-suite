@@ -1,15 +1,12 @@
-import { useMemo } from 'react';
-
 import styled from 'styled-components';
 
-import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 
 import { PoweredByBadge } from 'src/components/earn';
 import { getStakingGuideLink } from 'src/components/earn/utils/getStakingGuideLink';
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useSelector } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,14 +18,14 @@ const Wrapper = styled.div`
     margin-top: 32px;
 `;
 
-export const EverstakeFooter = () => {
-    const account = useSelector(selectSelectedAccount);
+type EverstakeFooterProps = {
+    networkType: NetworkType;
+};
+
+export const EverstakeFooter = ({ networkType }: EverstakeFooterProps) => {
     const { openNodeById } = useGuideOpenNode();
 
-    const moreInfoLink = useMemo(
-        () => getStakingGuideLink(account?.networkType),
-        [account?.networkType],
-    );
+    const moreInfoLink = getStakingGuideLink(networkType);
 
     return (
         <Wrapper>

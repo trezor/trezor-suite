@@ -74,7 +74,7 @@ interface CoinsTableProps {
 }
 
 export const CoinsTable = ({ category }: CoinsTableProps) => (
-    <Table className="nextra-scrollbar nx-mt-6">
+    <Table className="nextra-scrollbar _mt-6">
         <thead>
             <Tr>
                 <Th>

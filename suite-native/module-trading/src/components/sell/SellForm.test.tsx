@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -9,7 +9,6 @@ import {
     banxaBankTransferSellQuote,
     btcAsset,
     getBtcAccount,
-    residenceCheckDisabledState,
     sellQuotes,
 } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
@@ -43,21 +42,22 @@ const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = 
 };
 
 describe('SellForm', () => {
-    const renderFormHook = async (
-        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
-    ) =>
-        await renderHookWithTradingProvider(() => useSellForm(), {
+    const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderHookWithTradingProvider(() => useSellForm(), {
             services,
             tradeType: 'sell',
             overrides,
         });
 
-    const renderSellForm = async (
+    const renderSellForm = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
         form: SellFormType,
     ) =>
-        await renderWithTradingProvider(<SellForm />, {
-            services,
+        renderWithTradingProvider(<SellForm />, {
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
             tradeType: 'sell',
             overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
@@ -95,7 +95,6 @@ describe('SellForm', () => {
         beforeEach(async () => {
             overrides = {
                 wallet: { trading: { sell: { quotes: sellQuotes } } },
-                ...residenceCheckDisabledState,
             };
 
             const { result } = await renderFormHook(overrides);

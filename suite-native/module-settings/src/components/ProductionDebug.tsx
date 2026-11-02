@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 
 import { isDevUtilsEnabledAtom } from '@suite-native/storage';
 import { useToast } from '@suite-native/toasts';
@@ -13,7 +13,7 @@ type ProductionDebugProps = {
 let tapsCount = 0;
 
 export const ProductionDebug = ({ children }: ProductionDebugProps) => {
-    const setIsDevUtilsEnabled = useSetAtom(isDevUtilsEnabledAtom);
+    const [isDevUtilsEnabled, setIsDevUtilsEnabled] = useAtom(isDevUtilsEnabledAtom);
     const { showToast } = useToast();
 
     const handleTapsCount = () => {
@@ -21,12 +21,13 @@ export const ProductionDebug = ({ children }: ProductionDebugProps) => {
             tapsCount++;
         }
         if (tapsCount === 7) {
-            setIsDevUtilsEnabled(true);
+            tapsCount = 0;
             showToast({
                 intent: 'neutral',
-                message: 'Dev utils enabled.',
+                message: `Dev utils ${isDevUtilsEnabled ? 'disabled' : 'enabled'}.`,
                 icon: 'check',
             });
+            setIsDevUtilsEnabled(!isDevUtilsEnabled);
         }
     };
 

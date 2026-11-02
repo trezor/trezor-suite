@@ -1,5 +1,6 @@
 import type { MiddlewareAPI } from 'redux';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { coinjoinMiddleware } from '@suite/coinjoin';
 import { prepareDiscoveryMiddleware } from '@suite/discovery';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
@@ -32,7 +33,7 @@ import walletMiddleware from './walletMiddleware';
 
 export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps &
     TokenDefinitionsMiddlewareDeps & {
-        services: SuiteSyncDep & DbDep;
+        services: SuiteSyncDep & DbDep & DesktopAnalyticsDep;
     };
 
 export const getWalletMiddlewares = (

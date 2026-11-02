@@ -1,5 +1,6 @@
 import { type ExperimentalFeature } from '@suite/experimental';
 import { defaultEarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
+import { defaultEarnStakingWorkerBaseUrl } from '@suite-common/earn-staking-api';
 
 import { type SuiteSettingsRootState } from './settingsSlice';
 
@@ -14,8 +15,6 @@ export const selectAutodetectTheme = (state: SuiteSettingsRootState) =>
     state.suiteSettings.autodetect.theme;
 export const selectTorOnionLinks = (state: SuiteSettingsRootState) =>
     state.suiteSettings.torOnionLinks;
-export const selectIsCoinjoinReceiveWarningHidden = (state: SuiteSettingsRootState) =>
-    state.suiteSettings.isCoinjoinReceiveWarningHidden;
 export const selectIsUnlockedBootloaderAllowed = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isUnlockedBootloaderAllowed;
 export const selectDebugTransports = (state: SuiteSettingsRootState) =>
@@ -28,6 +27,8 @@ export const selectTradeServerEnvironment = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.tradeServerEnvironment;
 export const selectEarnYieldWorkerBaseUrl = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.earnYieldWorkerBaseUrl ?? defaultEarnYieldWorkerBaseUrl;
+export const selectEarnStakingWorkerBaseUrl = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.earnStakingWorkerBaseUrl ?? defaultEarnStakingWorkerBaseUrl;
 export const selectOAuthServerEnvironment = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.oauthServerEnvironment;
 export const selectExperimentalFeatures = (state: SuiteSettingsRootState) =>

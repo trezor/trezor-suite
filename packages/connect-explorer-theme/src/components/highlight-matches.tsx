@@ -28,7 +28,7 @@ export const HighlightMatches = memo<MatchArgs>(
                 const after = splitText.splice(0, regexp.lastIndex - result.index).join('');
                 content.push(
                     before,
-                    <span key={result.index} className="nx-text-primary-600">
+                    <span key={result.index} className="_text-primary-600">
                         {after}
                     </span>,
                 );

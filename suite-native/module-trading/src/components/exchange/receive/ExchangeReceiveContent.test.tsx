@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -48,16 +48,19 @@ describe('ExchangeReceiveContent', () => {
         },
     });
 
-    const renderForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
             services,
         });
 
-    const renderExchangeReceiveContent = async () =>
-        await renderWithStoreProvider(<ExchangeReceiveContent />, {
+    const renderExchangeReceiveContent = () =>
+        renderWithStoreProvider(<ExchangeReceiveContent />, {
             preloadedState,
-            services,
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
@@ -86,5 +89,17 @@ describe('ExchangeReceiveContent', () => {
         ).toHaveDisplayValue('0.00083554');
         expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeOnTheScreen();
         expect(getByText('- ' + usdcAsset.symbol)).toBeOnTheScreen();
+    });
+
+    it('should render base currency placeholder when no quote is loaded', async () => {
+        await act(() => {
+            form.setValue('sendAsset', usdcAsset);
+            form.setValue('receiveAsset', btcAsset);
+        });
+        const { getByText, queryByText } = await renderExchangeReceiveContent();
+
+        expect(getByText('$')).toBeOnTheScreen();
+        expect(getByText('0.0')).toBeOnTheScreen();
+        expect(queryByText(new RegExp(btcAsset.cryptoId))).not.toBeOnTheScreen();
     });
 });

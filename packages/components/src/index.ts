@@ -17,6 +17,8 @@ export * from './components/animations/LottieAnimation';
 export { recolorLottieAnimation } from './components/animations/recolorLottieAnimation';
 export * from './components/Flag/Flag';
 export { Badge, type BadgeProps, type BadgeSize, type BadgeIntent } from './components/Badge/Badge';
+export * from './components/BlurUrls/BlurUrls';
+export * from './components/BlurUrls/BlurWrapper';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
 export { Button, type ButtonProps, type ButtonIntent } from './components/buttons/Button/Button';
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
@@ -68,6 +70,7 @@ export {
     type GhostContainerProps,
 } from './components/GhostContainer/GhostContainer';
 export * from './components/Divider/Divider';
+export * from './components/SegmentedBar/SegmentedBar';
 export * from './components/Dropdown/Dropdown';
 export * from './components/Flex/Flex';
 export {
@@ -164,6 +167,7 @@ export * from './constants/keyboardEvents';
 export * from './utils/useScrollShadow';
 export * from './utils/transientProps';
 export { useMediaQuery } from './utils/useMediaQuery';
+export { useHeightAnimationOnChange } from './hooks/useHeightAnimationOnChange';
 export { commonFocusStyles } from './utils/utils';
 
 export { intermediaryTheme } from './config/colors';

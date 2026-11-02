@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -35,13 +35,13 @@ describe('SellCard', () => {
     let form: SellFormType;
     const preloadedState = createTradingPreloadedState({ tradeType: 'sell' });
 
-    const renderForm = async () =>
-        await renderHookWithStoreProvider(() => useSellForm(), {
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState,
             services,
         });
 
-    const renderSellCard = async (isAmountInputActive: boolean) => {
+    const renderSellCard = (isAmountInputActive: boolean) => {
         const cardPreloadedState = createTradingPreloadedState({
             tradeType: 'sell',
             overrides: {
@@ -49,14 +49,14 @@ describe('SellCard', () => {
             },
         });
 
-        return await renderWithStoreProvider(
-            <SellCard isAmountInputActive={isAmountInputActive} />,
-            {
-                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-                preloadedState: cardPreloadedState,
-                services,
+        return renderWithStoreProvider(<SellCard isAmountInputActive={isAmountInputActive} />, {
+            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            preloadedState: cardPreloadedState,
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
             },
-        );
+        });
     };
 
     beforeEach(async () => {

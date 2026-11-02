@@ -22,28 +22,28 @@ comparison actually compares, reusing the key helper that already exists (`getUt
 `getAccountKey`) rather than inventing one.
 
 ```ts
-// bad - simpleSearchTransactions.ts:239 rebuilds a deduped array per transaction, O(n²)
+// bad - simpleSearchTransactions.ts rebuilds a deduped array per transaction, O(n²)
 const found = transactions.filter(transaction => unique(txsToSearch).includes(transaction.txid));
 
-// good - advancedSearchTransactions.ts:23 - index once, O(1) per transaction
+// good - advancedSearchTransactions.ts - index once, O(1) per transaction
 const searchedTxIds = new Set(txsToSearch);
 
 const found = transactions.filter(transaction => searchedTxIds.has(transaction.txid));
 ```
 
-The costly instances span two files, so no grep finds them: `UtxoSelectionList.tsx:66` runs
-`accountTransactions.find()` per row while `UtxoSelection.tsx:112` runs `selectedUtxos.some(isSameUtxo)`
+The costly instances span two files, so no grep finds them: `UtxoSelectionList.tsx` runs
+`accountTransactions.find()` per row while `UtxoSelection.tsx` runs `selectedUtxos.some(isSameUtxo)`
 per row ([#25937](https://github.com/trezor/trezor-suite/pull/25937#discussion_r2939995684),
 [#26344](https://github.com/trezor/trezor-suite/pull/26344#discussion_r3027690127)).
 
 ## Keep a sort comparator to O(1) field reads
 
 A scan inside a comparator is strictly worse than the same scan in a `.map()` — you pay an extra `log n`
-factor — and allocating in one is nearly as bad: `utxoSortingUtils.ts:33` builds two `new BigNumber` per
-comparison, and `sortUtxos` runs bare in a hook body at `useUtxoSelection.ts:94`.
+factor — and allocating in one is nearly as bad: `utxoSortingUtils.ts` builds two `new BigNumber` per
+comparison, and `sortUtxos` runs bare in a hook body in `useUtxoSelection.ts`.
 
 ```ts
-// bad - utxoSortingUtils.ts:43 - getBlockTime scans txs, twice per comparison
+// bad - utxoSortingUtils.ts - getBlockTime scans txs, twice per comparison
 const sorted = [...utxos].sort((a, b) => getBlockTime(b, txs) - getBlockTime(a, txs));
 
 // good - index once, then the comparator is two Map reads
@@ -55,24 +55,27 @@ const sorted = utxos.toSorted((a, b) => blockTimeOf(b) - blockTimeOf(a));
 
 ## Don't spread the accumulator in `.reduce()` — use a `Map` or a keyed assign
 
-Each `{ ...acc }` copies everything accumulated so far, making the `reduce` O(n²) in allocations.
+Each `{ ...acc }` copies everything accumulated so far, making the `reduce` O(n²) in allocations. In a
+reducer, also check what the result is spread into: spreading the stored collection into a fresh object
+copies all of it on every action, however few keys arrive. Write the keys into the draft instead.
 
 ```ts
-// bad - fiatRatesReducer.ts:130 - one key per point of price history, merged in on every rate update
-const byTimestamp = rates.reduce(
-    (acc, rate) => ({ ...acc, [rate.lastTickerTimestamp]: rate.rate }),
-    {},
-);
+// bad - uses Map for rates, which is O(k), fine, though not as performant as mutating the draft.
+// main issue here: still spreads the rates on the top-level object.
+state['historic'][fiatRateKey] = {
+    ...state['historic'][fiatRateKey],
+    ...new Map(rates.map(rate => [rate.lastTickerTimestamp, rate.rate]));
+};
 
-// good - one insertion per rate
-const byTimestamp = new Map(rates.map(rate => [rate.lastTickerTimestamp, rate.rate]));
+// good - #31123 - reduce into the draft: one write per rate, and the map keeps its identity when nothing
+// new arrives
+state['historic'][fiatRateKey] = rates.reduce((historicRates, { lastTickerTimestamp, rate }) => {
+    if (rate !== undefined) {
+        historicRates[lastTickerTimestamp] = rate;
+    }
 
-// also good - a plain object, mutating the accumulator the reduce already owns
-const byTimestamp = rates.reduce<Record<string, number>>((acc, rate) => {
-    acc[rate.lastTickerTimestamp] = rate.rate;
-
-    return acc;
-}, {});
+    return historicRates;
+}, state['historic'][fiatRateKey] ?? {});
 ```
 
 ## Related skills

@@ -16,8 +16,8 @@ describe('TxValidityTimer', () => {
         onRetry: jest.fn(),
     };
 
-    const renderTimer = async (props: Partial<React.ComponentProps<typeof TxValidityTimer>> = {}) =>
-        await renderWithBasicProvider(<TxValidityTimer {...defaultProps} {...props} />);
+    const renderTimer = (props: Partial<React.ComponentProps<typeof TxValidityTimer>> = {}) =>
+        renderWithBasicProvider(<TxValidityTimer {...defaultProps} {...props} />);
 
     beforeEach(() => {
         jest.clearAllMocks();

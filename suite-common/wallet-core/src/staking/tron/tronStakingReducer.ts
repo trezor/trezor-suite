@@ -4,6 +4,7 @@ import {
     type AccountKey,
     type FormState,
     type PrecomposedTransactionFinal,
+    type TronResourceType,
 } from '@suite-common/wallet-types';
 
 import {
@@ -17,11 +18,14 @@ import { type SerializedTx } from '../../send/sendFormTypes';
 
 export const TRON_STAKE_PREFIX = '@suite-common/wallet-core/tron-stake';
 
+export type TronStakeFreezeResult = { amount: string; resourceType: TronResourceType };
+
 export type TronStakeState = {
     step: TronStakeStepId;
     isSubmitting: boolean;
     error: TronStakeError | null;
     pendingTxid: string | null;
+    freeze: TronStakeFreezeResult | null;
 };
 
 export type TronStakeTxReviewState = {
@@ -49,6 +53,7 @@ export const createTronStakeSession = (flow: TronFlow): TronStakeState => ({
     isSubmitting: false,
     error: null,
     pendingTxid: null,
+    freeze: null,
 });
 
 const initialTronStakeSessions = Object.fromEntries(
@@ -80,7 +85,11 @@ const getNextStep = (flow: TronFlow, step: TronStakeStepId): TronStakeStepId => 
 type SessionPayload = { accountKey: AccountKey; flow: TronFlow };
 type GoToStepPayload = SessionPayload & { step: TronStakeStepId };
 type PendingTransactionConfirmedPayload = SessionPayload & { txid: string };
-type SubmitFinishedPayload = SessionPayload & { txid?: string; error?: TronStakeError };
+type SubmitFinishedPayload = SessionPayload & {
+    txid?: string;
+    error?: TronStakeError;
+    freeze?: TronStakeFreezeResult;
+};
 type StorePrecomposedTransactionPayload = {
     precomposedTx: PrecomposedTransactionFinal;
     precomposedForm: FormState;
@@ -133,10 +142,12 @@ const tronStakeSlice = createSlice({
             action: PayloadAction<SessionPayload>,
         ) {
             const { accountKey, flow } = action.payload;
+            const session = getSession(state, accountKey, flow);
             setSession(state, accountKey, flow, {
-                ...getSession(state, accountKey, flow),
+                ...session,
                 pendingTxid: null,
                 error: { kind: 'confirmation-failed' },
+                freeze: session.step === 'freeze' ? null : session.freeze,
             });
         },
         reset(state: TronStakeReducerState, action: PayloadAction<SessionPayload>) {
@@ -152,12 +163,14 @@ const tronStakeSlice = createSlice({
             });
         },
         submitFinished(state: TronStakeReducerState, action: PayloadAction<SubmitFinishedPayload>) {
-            const { accountKey, flow, txid, error } = action.payload;
+            const { accountKey, flow, txid, error, freeze } = action.payload;
+            const session = getSession(state, accountKey, flow);
             setSession(state, accountKey, flow, {
-                ...getSession(state, accountKey, flow),
+                ...session,
                 isSubmitting: false,
                 pendingTxid: txid ?? null,
                 error: error && error.kind !== 'cancelled' ? error : null,
+                freeze: freeze ?? session.freeze,
             });
         },
         storePrecomposedTransaction(

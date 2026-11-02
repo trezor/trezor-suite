@@ -8,6 +8,10 @@ import {
     earnYieldWorkerBaseUrl,
 } from '@suite-common/earn-stablecoin-api';
 import {
+    defaultEarnStakingWorkerBaseUrl,
+    earnStakingWorkerBaseUrl,
+} from '@suite-common/earn-staking-api';
+import {
     type MessageSystemRootState,
     initMessageSystemThunk,
     prepareCachedEnvData,
@@ -44,6 +48,7 @@ import {
 } from '@suite-native/analytics-redux';
 import {
     type SettingsSliceRootState,
+    selectEarnStakingWorkerBaseUrl,
     selectEarnYieldWorkerBaseUrl,
     selectIsOnboardingFinished,
 } from '@suite-native/settings';
@@ -118,9 +123,12 @@ export const applicationInitThunk = createThunk<
 >(`${ACTION_PREFIX}/applicationInit`, async (_, { dispatch, getState }) => {
     await prepareCachedEnvData();
 
-    // apply the earn yield worker base url from debug settings (or the default for this build)
+    // Apply the earn worker base URLs from debug settings (or the defaults for this build).
     earnYieldWorkerBaseUrl.set(
         selectEarnYieldWorkerBaseUrl(getState()) ?? defaultEarnYieldWorkerBaseUrl,
+    );
+    earnStakingWorkerBaseUrl.set(
+        selectEarnStakingWorkerBaseUrl(getState()) ?? defaultEarnStakingWorkerBaseUrl,
     );
 
     dispatch(initAnalyticsThunk());

@@ -8,7 +8,8 @@ import {
 } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
-import { type Locale, type TrezorDevice } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -22,6 +23,8 @@ import {
     type EvmApprovalPurpose,
     findAccountsByAddress,
     getCardanoFingerprint,
+    getIsClearSignedEvmClaimFlow,
+    getIsUpdatedSendFlow,
     isAllowanceUnlimited,
     isEvmApprovalTxByTextSignature,
     isTestnet,
@@ -171,6 +174,12 @@ const getTranslationValues = (
     return null;
 };
 
+const getIsClearSignedClaim = (networkType: NetworkType, device?: TrezorDevice) =>
+    !!device && getIsClearSignedEvmClaimFlow(device, networkType);
+
+const getLegacyAddressLineType = (device?: TrezorDevice): OutputElementLine['type'] =>
+    device && !getIsUpdatedSendFlow(device) ? 'safe-address' : 'address';
+
 const getContractTitle = (
     networkType: NetworkType,
     isApprovalFlowSupported: boolean,
@@ -254,6 +263,14 @@ const getOutputTitle = (
         case 'note':
             return <Translation id="TR_TRON_NOTE" />;
         case 'data':
+            if (
+                evmTxType === 'claim' &&
+                !stakeType &&
+                !getIsClearSignedClaim(networkType, device)
+            ) {
+                return <Translation id="DATA" />;
+            }
+
             return <Translation id={translation ? translation.label : 'DATA'} />;
         case 'opreturn':
             return <Translation id="OP_RETURN" />;
@@ -408,7 +425,11 @@ const getOutputLines = ({
                 }
             }
 
-            if (evmTxType === 'claim' && type === 'data') {
+            if (
+                evmTxType === 'claim' &&
+                type === 'data' &&
+                getIsClearSignedClaim(networkType, device)
+            ) {
                 return [
                     {
                         id: 'data',
@@ -423,7 +444,7 @@ const getOutputLines = ({
             const defaultOutput = [
                 {
                     id: type,
-                    type: type === 'regular_legacy' ? 'address' : type,
+                    type: type === 'regular_legacy' ? getLegacyAddressLineType(device) : type,
                     value,
                 },
             ];

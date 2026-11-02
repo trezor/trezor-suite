@@ -5,7 +5,7 @@ import {
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { isNftToken } from '@suite-common/wallet-utils';
+import { getAccountTotalStakingBalance, isNftToken } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
@@ -63,6 +63,16 @@ export type AssetAccount = {
     tokenInfo: TokenInfo | undefined;
 };
 
+const getCoinBalance = (account: Account) => {
+    // Cardano stakes the balance itself, so adding its stake would count the coin twice.
+    const stakingBalance =
+        account.networkType === 'cardano' ? null : getAccountTotalStakingBalance(account);
+
+    return stakingBalance
+        ? new BigNumber(account.formattedBalance).plus(stakingBalance).toFixed()
+        : account.formattedBalance;
+};
+
 const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
     const toAssetAccount = (
         contractAddress: TokenAddress | undefined,
@@ -87,7 +97,7 @@ const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
         .filter(token => !isNftToken(token) && new BigNumber(token.balance ?? '0').gt(0))
         .map(token => toAssetAccount(token.contract as TokenAddress, token.balance ?? '0', token));
 
-    return [toAssetAccount(undefined, account.formattedBalance, undefined), ...tokenAccounts];
+    return [toAssetAccount(undefined, getCoinBalance(account), undefined), ...tokenAccounts];
 };
 
 export type AssetAccountsRootState = AccountsRootState &

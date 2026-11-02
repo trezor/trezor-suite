@@ -89,6 +89,7 @@ export const useStakingPromoNavigation = () => {
             type: events.stakingNavigateEvent.name,
             payload: {
                 action: 'cancel',
+                from: 'choose-account-sheet',
                 networkSymbol: chooseAccountSymbolRef.current ?? undefined,
             },
         });
@@ -172,6 +173,7 @@ export const useStakingPromoNavigation = () => {
             type: events.stakingNavigateEvent.name,
             payload: {
                 action: 'cancel',
+                from: 'enable-network-sheet',
                 networkSymbol: pendingEnableSymbolRef.current ?? undefined,
             },
         });

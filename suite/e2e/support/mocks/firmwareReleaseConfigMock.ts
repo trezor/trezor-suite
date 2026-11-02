@@ -6,8 +6,10 @@ import { type ConditionalRelease, type FirmwareRelease, FirmwareType } from '@tr
 import { type Model } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
+import { BRIDGE_VERSION } from '../bridge';
 import { step } from '../common';
 import { type DeviceFixture } from '../device';
+import { type TrezorUserEnv } from '../types';
 
 export const MOCKED_FIRMWARE_CHANGELOG = 'Firmware release mocked by the e2e test suite.';
 const RELEASE_CHANGELOG = `* ${MOCKED_FIRMWARE_CHANGELOG}`;
@@ -80,6 +82,7 @@ export class FirmwareReleaseConfigMock {
     constructor(
         private readonly page: Page,
         private readonly device: DeviceFixture,
+        private readonly trezorUserEnv: TrezorUserEnv,
     ) {}
 
     // Call before the analytics consent: that is when Connect initializes and reads the channel.
@@ -137,6 +140,14 @@ export class FirmwareReleaseConfigMock {
             action => window.store.dispatch(action),
             firmwareActions.setFirmwareChannel(CHANNEL),
         );
+    }
+
+    @step()
+    async startWithInstalledFirmware() {
+        await this.trezorUserEnv.stopBridge();
+        const installedVersion = await this.device.getFirmwareVersion();
+        await this.trezorUserEnv.startBridge(BRIDGE_VERSION);
+        await this.start(installedVersion);
     }
 
     // Connect falls back to the bundled config silently, and it only initializes after the

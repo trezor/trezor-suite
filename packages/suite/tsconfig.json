@@ -28,7 +28,6 @@
         {
             "path": "../../suite-common/bluetooth"
         },
-        { "path": "../../suite-common/calldata" },
         {
             "path": "../../suite-common/connect-init"
         },
@@ -72,7 +71,7 @@
         {
             "path": "../../suite-common/geolocation"
         },
-        { "path": "../../suite-common/icons" },
+        { "path": "../../suite-common/locale" },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -87,6 +86,9 @@
         },
         {
             "path": "../../suite-common/platform-encryption"
+        },
+        {
+            "path": "../../suite-common/price-chart"
         },
         {
             "path": "../../suite-common/react-query"
@@ -186,10 +188,12 @@
         {
             "path": "../../suite/feature-feedback"
         },
+        { "path": "../../suite/finprom" },
         {
             "path": "../../suite/firmware-upgrade"
         },
         { "path": "../../suite/flags" },
+        { "path": "../../suite/form" },
         { "path": "../../suite/forms" },
         { "path": "../../suite/github" },
         {
@@ -206,9 +210,11 @@
         },
         { "path": "../../suite/modal" },
         { "path": "../../suite/nfc" },
+        { "path": "../../suite/nfts" },
         {
             "path": "../../suite/onboarding-components"
         },
+        { "path": "../../suite/price-chart" },
         { "path": "../../suite/receive" },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },
@@ -249,7 +255,7 @@
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {
-            "path": "../../networks/network-module/network-module-suite-common-types"
+            "path": "../../networks/network-module/suite-common/suite-common-types"
         },
         {
             "path": "../../networks/ripple/network-ripple"

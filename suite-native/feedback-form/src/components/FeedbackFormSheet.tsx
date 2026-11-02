@@ -42,6 +42,11 @@ const descriptionInputStyle = prepareNativeStyle(() => ({
     minHeight: 80,
 }));
 
+const ratingRowStyle = prepareNativeStyle(() => ({
+    width: '100%',
+    maxWidth: 360,
+}));
+
 export const FeedbackFormSheet = ({
     ref,
     title,
@@ -90,7 +95,11 @@ export const FeedbackFormSheet = ({
                 </VStack>
             ) : (
                 <VStack spacing="sp16">
-                    <HStack spacing="sp8" justifyContent="space-between">
+                    <HStack
+                        spacing="sp8"
+                        justifyContent="space-between"
+                        style={applyStyle(ratingRowStyle)}
+                    >
                         {ratingOptions.map(({ id, emoji }) => (
                             <EmojiRatingButton
                                 key={id}

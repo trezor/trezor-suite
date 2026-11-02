@@ -16,11 +16,11 @@ import {
 } from './TradeableAssetAccountBalance';
 
 describe('TradeableAssetAccountBalance', () => {
-    const renderTradeableAssetAccountBalance = async (
+    const renderTradeableAssetAccountBalance = (
         props: Partial<TradeableAssetAccountBalanceProps> = {},
         preloadedState = {},
     ) =>
-        await renderWithStoreProvider(
+        renderWithStoreProvider(
             <TradeableAssetAccountBalance
                 asset={undefined}
                 account={undefined}

@@ -116,14 +116,14 @@ export const config: Config = {
         },
         {
             capabilities: ['coinjoin'],
-            methods: [
-                'authorizeCoinjoin',
-                'cancelCoinjoinAuthorization',
-                'getOwnershipId',
-                'getOwnershipProof',
-                'setBusy',
-                'unlockPath',
+            methods: ['authorizeCoinjoin', 'cancelCoinjoinAuthorization'],
+            min: { T1B1: '1.13.0', T2T1: '2.7.2' },
+            comment: [
+                'CoinJoinRequest without affiliate mask_public_key and signature is accepted since 1.13.0/2.7.2',
             ],
+        },
+        {
+            methods: ['getOwnershipId', 'getOwnershipProof', 'setBusy', 'unlockPath'],
             min: { T1B1: '1.12.1', T2T1: '2.5.3' },
         },
         {
@@ -189,6 +189,21 @@ export const config: Config = {
                 T3W1: '2.12.4',
             },
             comment: ['Solana off-chain message signing (OCMS v1) added in 2.12.4'],
+        },
+        {
+            capabilities: ['solanaV1Transaction'],
+            min: {
+                T1B1: '0',
+                T2T1: '2.13.1',
+                T2B1: '2.13.1',
+                T3B1: '2.13.1',
+                T3T1: '2.13.1',
+                T3W1: '2.13.1',
+            },
+            comment: [
+                'Solana v1 transaction format (SIMD-0385) added in 2.13.1.',
+                'Older firmware rejects v1 transactions as an unsupported version.',
+            ],
         },
         {
             capabilities: ['chunkify'],

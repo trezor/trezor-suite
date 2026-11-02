@@ -10,7 +10,11 @@ import {
     type ConnectPopupCall,
     type ConnectPopupCallWithState,
 } from './connectPopupTypes';
-import { canonicalizePermissionCoins } from './permissions';
+import {
+    canRememberPermissions,
+    canonicalizePermissionCoins,
+    isSameConnectApp,
+} from './permissions';
 
 export type ConnectPopupState = {
     activeCall?: ConnectPopupCall;
@@ -67,10 +71,13 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                                             'permission' in t,
                                     ),
                             )
+                            // Drop grants that are no longer remembered, e.g. the origin
+                            // `null` persisted by earlier versions, so the settings list
+                            // cannot show a grant that is ignored.
+                            .filter(canRememberPermissions)
                             // Grants persisted before coins were canonicalized at the
                             // source keep the mixed-case `coinInfo.shortcut` (e.g. `BTC`);
-                            // lowercase them on load. This reducer is shared, so it covers
-                            // both the web IDB store and native.
+                            // lowercase them on load.
                             .map(normalizeRememberedCoins);
                     }
                 },
@@ -195,8 +202,15 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(connectPopupActions.rememberAppPermissions, (state, { payload }) => {
+                if (!canRememberPermissions(payload)) {
+                    return;
+                }
+
                 const existing = state.permissions.find(p => p.origin === payload.origin);
-                if (!existing) {
+                if (!existing || !isSameConnectApp(existing, payload)) {
+                    // One app per origin: permissions remembered for another source type or
+                    // process of this origin are replaced, never extended.
+                    state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
                     state.permissions.push(payload);
 
                     return;
@@ -269,6 +283,11 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         state: 'switch-device',
                         timestamp: Date.now(),
                     };
+                }
+            })
+            .addCase(connectPopupActions.setCallDevicePath, (state, { payload }) => {
+                if (state.activeCall) {
+                    state.activeCall.devicePath = payload;
                 }
             });
     },

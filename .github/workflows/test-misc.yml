@@ -39,11 +39,15 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
+
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - run: yarn install --immutable
       - name: Check for Circular Imports
         # safedep/pmg covers also the `npx` running inside the shell script
@@ -63,11 +67,15 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
+
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - run: yarn install --immutable
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
@@ -91,11 +99,15 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
+
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - run: yarn install --immutable
       - name: Fuzz Tests - Transport sessions lock
         run: yarn workspace @trezor/transport-common test:fuzz
@@ -128,11 +140,15 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
+
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - run: yarn install --immutable
       - run: yarn generate-package @trezor/meow-package
       - run: rm -rf packages/meow-package
@@ -148,10 +164,14 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
+
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - run: yarn install --immutable
       - run: yarn tsx ./packages/components/scripts/test-img-paths-exist.ts

@@ -63,8 +63,8 @@ const ethSection = createAccountSection(ethAccount, 'ethereum' as CryptoId);
 describe('useSellFormDefaultAssets', () => {
     let store: Store<State>;
 
-    const renderSellFormWithDefaults = async () =>
-        await renderHookWithStoreProvider(
+    const renderSellFormWithDefaults = () =>
+        renderHookWithStoreProvider(
             () => {
                 const form = useSellForm();
                 useSellFormDefaultAssets(form);

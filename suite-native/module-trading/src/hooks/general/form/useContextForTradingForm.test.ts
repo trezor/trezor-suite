@@ -11,11 +11,11 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 describe('useContextForTradingForm', () => {
-    const renderUseContextForTradingForm = async (
+    const renderUseContextForTradingForm = (
         limits: TradingAmountLimitProps | undefined,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderHookWithTradingProvider(() => useContextForTradingForm(limits), {
+        renderHookWithTradingProvider(() => useContextForTradingForm(limits), {
             overrides,
         });
 

@@ -46,8 +46,8 @@ jest.mock('@suite-native/alerts', () => ({
 describe('useReceiveQRCodeActions', () => {
     const qrCodeView = {} as ViewShotRef;
 
-    const renderUseReceiveQRCodeActions = async () =>
-        await renderHookWithBasicProvider(() => useReceiveQRCodeActions(), { services });
+    const renderUseReceiveQRCodeActions = () =>
+        renderHookWithBasicProvider(() => useReceiveQRCodeActions(), { services });
 
     beforeEach(() => {
         jest.clearAllMocks();

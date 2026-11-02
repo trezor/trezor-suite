@@ -9,7 +9,7 @@
         "stream-browserify",
         "tsx",
         "virtual:common-fixtures",
-        "virtual:txcache",
+        "virtual:ref-txs",
         "vm-browserify"
     ]
 }

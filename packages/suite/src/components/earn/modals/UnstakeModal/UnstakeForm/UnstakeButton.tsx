@@ -1,18 +1,30 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    getStakingDataForNetwork,
+    selectAreFeesLoading,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
+import { BigNumber } from '@trezor/utils';
 
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 
 export const UnstakeButton = () => {
+    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { account, network, isComposing, formState, handleSubmit, watch, signTx, currency } =
         useWithdrawalFormContext();
@@ -27,12 +39,30 @@ export const UnstakeButton = () => {
 
     const isDeviceConnected = device?.connected && device?.available;
 
+    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
+    const isCardanoBalanceEmpty =
+        account.networkType === 'cardano' && new BigNumber(autocompoundBalance).lte(0);
+
     const isDisabled =
-        !(formIsValid && hasValues) || isSubmitting || (isDeviceConnected && isLocked());
+        !(formIsValid && hasValues) ||
+        isSubmitting ||
+        isCardanoBalanceEmpty ||
+        (isDeviceConnected && isLocked());
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
 
     const onWithdrawalClick = () => {
+        analytics.report({
+            type: events.stakingUnstakeEvent.name,
+            payload: {
+                action: 'continue',
+                deviceStatus,
+                step: 'unstake-form-modal',
+                currency,
+                networkSymbol: account.symbol,
+            },
+        });
+
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -43,16 +73,6 @@ export const UnstakeButton = () => {
         }
 
         handleSubmit(signTx)();
-
-        analytics.report({
-            type: events.stakingUnstakeEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'unstake-form-modal',
-                currency,
-                networkSymbol: account.symbol,
-            },
-        });
     };
 
     const isLoading = isComposing || isSubmitting || isDiscoveryRunning || areFeesLoading;

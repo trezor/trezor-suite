@@ -5,8 +5,8 @@ import { BuyPreviewInfoCard } from './BuyPreviewInfoCard';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('BuyPreviewInfoCard', () => {
-    const renderCard = async (quote = mercuryoApplePayBuyQuote) =>
-        await renderWithTradingProvider(<BuyPreviewInfoCard quote={quote} />, { tradeType: 'buy' });
+    const renderCard = (quote = mercuryoApplePayBuyQuote) =>
+        renderWithTradingProvider(<BuyPreviewInfoCard quote={quote} />, { tradeType: 'buy' });
 
     it('displays "you pay" label with formatted fiat amount', async () => {
         const { getByText } = await renderCard();

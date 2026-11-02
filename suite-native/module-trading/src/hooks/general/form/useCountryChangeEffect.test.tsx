@@ -53,8 +53,8 @@ describe('useCountryChangeEffect', () => {
         }),
     } as const;
 
-    const renderUseCountryChangeEffect = async (defaultValues: CountryFormValues) =>
-        await renderHookWithStoreProvider(
+    const renderUseCountryChangeEffect = (defaultValues: CountryFormValues) =>
+        renderHookWithStoreProvider(
             () => {
                 const form = useForm<CountryFormValues>({
                     defaultValues,

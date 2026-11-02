@@ -158,7 +158,7 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Withdraw' },
-                        body: [YIELD_WETH_VAULT_DISPLAY_NAME],
+                        body: [['Withdraw from'], YIELD_WETH_VAULT_DISPLAY_NAME],
                         actions: { right_button: 'Continue' },
                     },
                     T3T1: {
@@ -255,7 +255,7 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowOnDisplay({
                     T3W1: {
-                        header: { title: 'Provider' },
+                        header: { title: 'Contract address' },
                         body: [['WETH']],
                         actions: { right_button: 'Confirm' },
                     },

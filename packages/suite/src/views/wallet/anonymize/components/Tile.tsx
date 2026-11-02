@@ -1,57 +1,26 @@
 import { type ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { Card, IconCircle, type IconComponent, variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
-
-const containerGridStyle = css`
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0 14px;
-`;
 
 const Container = styled.div`
     padding: 16px;
     background: ${({ theme }) => theme.surfaceFillRaised};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        ${containerGridStyle}
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0 14px;
     }
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        ${containerGridStyle}
-    }
-`;
-
-const imageGridStyle = css`
-    width: 60px;
-    height: 60px;
-    grid-column: 1;
-    grid-row: 1/3;
 `;
 
 const Image = styled.div`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        ${imageGridStyle}
+        grid-column: 1;
+        grid-row: 1/3;
     }
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        width: 72px;
-        height: 72px;
-        grid-column: unset;
-        grid-row: unset;
-    }
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        ${imageGridStyle}
-    }
-`;
-
-const titleGridStyle = css`
-    grid-column: 2;
-    grid-row: 1;
-    margin: 0;
 `;
 
 const Title = styled.h3`
@@ -60,24 +29,10 @@ const Title = styled.h3`
     margin: 16px 0 8px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        ${titleGridStyle}
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0;
     }
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        grid-column: unset;
-        grid-row: unset;
-        margin: 16px 0 8px;
-    }
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        ${titleGridStyle}
-    }
-`;
-
-const descriptionGridStyle = css`
-    grid-column: 2;
-    grid-row: 2;
-    padding-top: 4px;
 `;
 
 const Description = styled.p`
@@ -85,17 +40,9 @@ const Description = styled.p`
     ${typography['body-sm']}
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        ${descriptionGridStyle}
-    }
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        grid-column: unset;
-        grid-row: unset;
-        padding-top: 0;
-    }
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        ${descriptionGridStyle}
+        grid-column: 2;
+        grid-row: 2;
+        padding-top: 4px;
     }
 `;
 

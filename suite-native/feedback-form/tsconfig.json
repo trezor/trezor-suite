@@ -4,11 +4,12 @@
     "references": [
         { "path": "../../suite-common/feedback" },
         { "path": "../atoms" },
+        { "path": "../icons" },
+        { "path": "../intl" },
         {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
-        { "path": "../intl" },
         { "path": "../test-utils" }
     ]
 }

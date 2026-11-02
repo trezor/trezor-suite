@@ -9,7 +9,18 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeesState } from '@suite-common/wallet-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { selectIsWrappedNativeFlowSupported, selectYieldGasReserve } from './yieldSelectors';
+import {
+    type YieldRootState,
+    initialStablecoinYieldState,
+    yieldActions,
+    yieldReducer,
+} from './yieldReducer';
+import {
+    selectIsWrappedNativeFlowSupported,
+    selectIsYieldTransactionInReview,
+    selectYieldApprovalInReview,
+    selectYieldGasReserve,
+} from './yieldSelectors';
 import { type FeesRootState } from '../fees/feesSelectors';
 
 const createState = (selectedDevice?: TrezorDevice): DeviceRootState => ({
@@ -98,4 +109,42 @@ describe('selectYieldGasReserve', () => {
 
         expect(second).toBe(first);
     });
+});
+
+describe('yield approval review context', () => {
+    it('has no approval context for a regular send or trading approval', () => {
+        const state: YieldRootState = { wallet: { stablecoinYield: initialStablecoinYieldState } };
+        expect(selectYieldApprovalInReview(state)).toBeNull();
+        expect(selectIsYieldTransactionInReview(state)).toBe(false);
+    });
+
+    it.each(['approve', 'revoke'] as const)(
+        'identifies %s from the active yield session',
+        txType => {
+            const modalState = {
+                amount: '1',
+                contractAddress: 'local-token',
+                spender: 'local-spender',
+                txType,
+            };
+            const yieldState = yieldReducer(
+                initialStablecoinYieldState,
+                yieldActions.initSession({ flowType: 'deposit', flowKey: 'local-flow' }),
+            );
+            const state: YieldRootState = {
+                wallet: {
+                    stablecoinYield: yieldReducer(
+                        yieldState,
+                        yieldActions.openApprovalModal({
+                            flowType: 'deposit',
+                            flowKey: 'local-flow',
+                            modalState,
+                        }),
+                    ),
+                },
+            };
+            expect(selectYieldApprovalInReview(state)).toEqual(modalState);
+            expect(selectIsYieldTransactionInReview(state)).toBe(true);
+        },
+    );
 });

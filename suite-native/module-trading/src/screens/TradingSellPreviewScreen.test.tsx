@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -23,15 +24,18 @@ describe('TradingSellPreviewScreen', () => {
         jest.clearAllMocks();
     });
 
-    const renderScreen = async ({ withQuote = true, withProvider = true } = {}) => {
+    const renderScreen = ({ withQuote = true, withProvider = true } = {}) => {
         const tradingState = getInitializedTradingState('sell');
         tradingState.sell.selectedQuote = withQuote ? moonpayCreditCardSellQuote : undefined;
         tradingState.sell.tradingAccountKey = eth1NormalAccount.key;
         tradingState.currentProviderMetadata = withProvider ? sellMoonpay : undefined;
 
-        return await renderWithTradingProvider(<TradingSellPreviewScreen />, {
+        return renderWithTradingProvider(<TradingSellPreviewScreen />, {
             tradeType: 'sell',
-            services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
+            services: {
+                analytics: mockNativeAnalytics(mockAnalyticsReport),
+                networks: mockNetworksServices(),
+            },
             overrides: { wallet: { trading: tradingState } },
         });
     };

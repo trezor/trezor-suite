@@ -5,7 +5,7 @@ import { useTheme } from 'styled-components';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useFormatters } from '@suite-common/formatters';
+import { truncateCryptoAmount, useFormatters } from '@suite-common/formatters';
 import {
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_AMOUNT_IN_CRYPTO,
@@ -71,6 +71,11 @@ const TradingFormInputCryptoAmountContent = ({
     cryptoSelectName,
     isInSats = false,
 }: TradingFormInputCryptoAmountContentProps) => {
+    // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const { translationString } = useTranslation();
     const theme = useTheme();
     const { CryptoAmountFormatter } = useFormatters();
@@ -101,7 +106,8 @@ const TradingFormInputCryptoAmountContent = ({
     const setShowReserveBanner = isExchangeOrSellContext ? context.setShowReserveBanner : undefined;
     const composeRequest = isTradingSellContext(context) ? context.composeRequest : undefined;
 
-    const cryptoSelect = getValues(cryptoSelectName);
+    const cryptoSelect = useWatch({ control, name: cryptoSelectName });
+    const isSendAssetMissing = isExchangeOrSellContext && !cryptoSelect;
     const outputToken = getValues('outputs')?.[0]?.token;
     const { contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.id);
     const decimals = isBuyContext
@@ -126,20 +132,23 @@ const TradingFormInputCryptoAmountContent = ({
 
     const cryptoInputRules = useMemo(
         () =>
-            getCryptoInputRules({
-                isBuyContext,
-                translationString,
-                shouldSendInSats: isInSats,
-                decimals,
-                amountLimits,
-                formatter: CryptoAmountFormatter,
-                validationAccount,
-                outputToken,
-                isNetworkReserveEnabled,
-                contractAddress,
-                feeInUnits,
-            }),
+            isSendAssetMissing
+                ? { validate: {} }
+                : getCryptoInputRules({
+                      isBuyContext,
+                      translationString,
+                      shouldSendInSats: isInSats,
+                      decimals,
+                      amountLimits,
+                      formatter: CryptoAmountFormatter,
+                      validationAccount,
+                      outputToken,
+                      isNetworkReserveEnabled,
+                      contractAddress,
+                      feeInUnits,
+                  }),
         [
+            isSendAssetMissing,
             isBuyContext,
             translationString,
             isInSats,
@@ -187,12 +196,16 @@ const TradingFormInputCryptoAmountContent = ({
             return;
         }
 
+        const truncatedCryptoAmount = truncateCryptoAmount(
+            new BigNumber(quoteCryptoAmount),
+            decimals,
+        );
         const filledAmount = isInSats
             ? unitsToSubunits({
-                  value: asAmountUnit(new BigNumber(quoteCryptoAmount)),
+                  value: asAmountUnit(truncatedCryptoAmount),
                   decimals,
               }).toFixed()
-            : quoteCryptoAmount;
+            : truncatedCryptoAmount.toFixed();
 
         if (filledAmount === getValues(cryptoInputName)) {
             return;
@@ -226,11 +239,13 @@ const TradingFormInputCryptoAmountContent = ({
         trigger([cryptoInputName]);
     }, [cryptoInputName, trigger, validationAccount.key]);
 
-    const isDerivedAmountLoading = !amountInCrypto && context.form.state.isFormLoading;
+    const isDerivedAmountLoading =
+        !amountInCrypto && !context.isAmountEmpty && context.form.state.isFormLoading;
 
     return (
         <NumberInput
             isClean
+            placeholderColor="contentSecondary"
             flex="1"
             name={cryptoInputName}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}

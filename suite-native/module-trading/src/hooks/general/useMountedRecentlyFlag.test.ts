@@ -5,8 +5,8 @@ import { RECENT_DURATION, useMountedRecentlyFlag } from './useMountedRecentlyFla
 jest.mock('./useMountedRecentlyFlag', () => jest.requireActual('./useMountedRecentlyFlag'));
 
 describe('useMountedRecentlyFlag', () => {
-    const renderUseMountedRecentlyFlag = async () =>
-        await renderHookWithBasicProvider(({ context }) => useMountedRecentlyFlag(context), {
+    const renderUseMountedRecentlyFlag = () =>
+        renderHookWithBasicProvider(({ context }) => useMountedRecentlyFlag(context), {
             initialProps: { context: 'context_1' },
         });
 

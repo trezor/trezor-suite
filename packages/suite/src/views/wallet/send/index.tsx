@@ -1,13 +1,13 @@
 import { type ReactNode } from 'react';
-import { FormProvider } from 'react-hook-form';
 
 import styled from 'styled-components';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import {
+    selectEffectiveTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
-    selectTargetAnonymityByAccountKey,
 } from '@suite/coinjoin';
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { selectIsMetadataProviderConnected } from '@suite/metadata';
 import { selectRouteName } from '@suite/router';
@@ -74,7 +74,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     const isMetadataProviderConnected = useSelector(selectIsMetadataProviderConnected);
     const metadataEnabled = isMetadataProviderConnected || isSuiteSyncEnabled;
     const targetAnonymity = useSelector(state =>
-        selectTargetAnonymityByAccountKey(state, accountKey),
+        selectEffectiveTargetAnonymityByAccountKey(state, accountKey),
     );
     const prison = useSelector(state => selectRegisteredUtxosByAccountKey(state, accountKey));
 
@@ -97,10 +97,12 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
         );
     }
 
+    const { formState } = sendContextValues.methods;
+
     return (
         <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
-                <FormProvider {...sendContextValues.methods}>
+                <Form form={sendContextValues.methods} formState={formState}>
                     <Column gap={24}>
                         <SendHeader />
 
@@ -123,7 +125,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
                     </Column>
 
                     {children}
-                </FormProvider>
+                </Form>
             </SendContext.Provider>
 
             <ConfirmEvmExplanationModal account={selectedAccount.account} route="wallet-send" />

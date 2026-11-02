@@ -1,3 +1,5 @@
+import { useFormatters } from '@suite-common/formatters';
+
 import { AmountText } from './AmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 import { type CryptoAmountFormatterProps } from './cryptoAmountFormatterTypes';
@@ -12,14 +14,16 @@ export const FormattedCryptoAmountText = ({
     variant = 'body-sm',
     color = 'contentSecondary',
     isLoading = false,
-    sign = null,
+    signValue,
     ...otherProps
 }: FormattedCryptoAmountTextProps) => {
+    const { SignValueFormatter } = useFormatters();
+
     if (formattedValue === null || isLoading) {
         return <EmptyAmountSkeleton variant={variant} />;
     }
 
-    const valueWithSign = !sign ? formattedValue : `${sign}${formattedValue}`;
+    const valueWithSign = `${SignValueFormatter.format(signValue)}${formattedValue}`;
 
     return (
         <AmountText

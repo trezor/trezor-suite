@@ -42,7 +42,7 @@ test.describe(
                     await expect(
                         page.getByText(/Maximum is (5000000|5,000,000)(\.00)? EUR/),
                     ).toBeVisible();
-                    await expect(tradingPage.buyBestOfferButton).toBeDisabled();
+                    await expect(tradingPage.buyBestOfferButton).toBeHidden();
                 });
 
                 await test.step('Input amount below minimum', async () => {
@@ -52,7 +52,7 @@ test.describe(
                     await expect(page.getByText('Receive account')).toBeVisible();
                     await tradingPage.inputs.fiatAmount.fill('0.01');
                     await expect(page.getByText('Minimum is 96.61 EUR')).toBeVisible();
-                    await expect(tradingPage.buyBestOfferButton).toBeDisabled();
+                    await expect(tradingPage.buyBestOfferButton).toBeHidden();
                 });
 
                 await test.step('Crypto error shows on the You get card, not You pay', async () => {
@@ -65,7 +65,7 @@ test.describe(
                         { values: { minimum: '0.00005 BTC' } },
                     );
                     await expect(tradingPage.inputs.youPayError).toBeHidden();
-                    await expect(tradingPage.buyBestOfferButton).toBeDisabled();
+                    await expect(tradingPage.buyBestOfferButton).toBeHidden();
                 });
 
                 await test.step('Empty quotes', async () => {
@@ -75,7 +75,7 @@ test.describe(
                     await expect(page.getByText('Receive account')).toBeVisible();
                     await tradingPage.inputs.fiatAmount.fill('5000');
                     await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
-                    await expect(tradingPage.buyBestOfferButton).toBeDisabled();
+                    await expect(tradingPage.buyBestOfferButton).toBeHidden();
                     await expect(tradingPage.quotes.selectedProvider).toBeHidden();
                     await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
                 });

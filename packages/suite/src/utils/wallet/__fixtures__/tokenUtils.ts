@@ -1,5 +1,4 @@
-import { type TokenDefinition, type TokenDefinitionsState } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenDefinition } from '@suite-common/token-definitions';
 import { type TokenInfo } from '@trezor/connect';
 
 export const getTokensFixtures = [
@@ -137,46 +136,5 @@ export const getTokensFixtures = [
             unverifiedWithBalance: [],
             unverifiedWithoutBalance: [],
         },
-    },
-];
-
-const TOKEN_DEFINITIONS = {
-    eth: {
-        coin: {
-            error: false,
-            isLoading: false,
-            data: ['0xa', '0xb'],
-            show: [],
-            hide: [],
-        },
-    },
-    sol: {
-        coin: {
-            error: false,
-            isLoading: false,
-            data: ['0xc', '0xd'],
-            show: [],
-            hide: [],
-        },
-    },
-} as TokenDefinitionsState;
-
-export const hasVisibleTokensFixtures = [
-    {
-        testName: 'no tokens',
-        symbol: 'eth' as NetworkSymbol,
-        tokens: [] as TokenInfo[],
-        tokenDefinitions: TOKEN_DEFINITIONS,
-        result: false,
-    },
-    {
-        testName: 'tokens with definitions and balance',
-        symbol: 'eth' as NetworkSymbol,
-        tokens: [
-            { contract: '0xa', balance: '100' },
-            { contract: '0xb', balance: '200' },
-        ] as TokenInfo[],
-        tokenDefinitions: TOKEN_DEFINITIONS,
-        result: true,
     },
 ];

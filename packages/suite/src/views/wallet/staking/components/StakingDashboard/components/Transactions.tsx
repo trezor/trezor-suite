@@ -1,17 +1,20 @@
-import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import {
     selectAccountStakeTypeTransactions,
     selectAccountTransactionsWithNulls,
     selectAreAllTransactionsLoaded,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { TransactionList } from 'src/views/wallet/transactions/TransactionList/TransactionList';
 
-export const Transactions = () => {
-    const selectedAccount = useSelector(selectFullSelectedAccount);
-    const accountKey = selectedAccount.account?.key ?? null;
+type TransactionsProps = {
+    account: Account;
+};
+
+export const Transactions = ({ account }: TransactionsProps) => {
+    const accountKey = account.key;
 
     const areAllTransactionsLoaded = useSelector(state =>
         Boolean(selectAreAllTransactionsLoaded(state, accountKey)),
@@ -21,11 +24,9 @@ export const Transactions = () => {
     );
     const stakeTxs = useSelector(state => selectAccountStakeTypeTransactions(state, accountKey));
 
-    if (selectedAccount.status !== 'loaded' || stakeTxs.length < 1) {
+    if (stakeTxs.length < 1) {
         return null;
     }
-
-    const { account } = selectedAccount;
 
     return (
         <TransactionList

@@ -18,6 +18,8 @@ import {
     deviceDisconnectHomeResetFixtures,
     deviceDisconnectNotOnHomeFixtures,
     deviceDisconnectOnHomeFixtures,
+    discoveryEntropyCheckFailFixtures,
+    discoveryEntropyCheckNoNavigationFixtures,
     thpPairingBlockedFixtures,
     thpPairingNavigationFixtures,
 } from './__fixtures__/deviceConnectionFixtures';
@@ -184,6 +186,30 @@ describe('deviceConnectionMiddleware', () => {
                         expectedNavigation.params,
                     );
                     expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+                },
+            );
+        });
+
+        describe('when discovery entropy check fails', () => {
+            it.each(discoveryEntropyCheckFailFixtures)(
+                '$description',
+                ({ action, expectedNavigation, initialState }) => {
+                    createMockStoreAndDispatch(initialState, action);
+
+                    expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
+                        expectedNavigation.route,
+                        expectedNavigation.params,
+                    );
+                    expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+                },
+            );
+
+            it.each(discoveryEntropyCheckNoNavigationFixtures)(
+                '$description',
+                ({ action, initialState }) => {
+                    createMockStoreAndDispatch(initialState, action);
+
+                    expect(navigationContainerRef.navigate).not.toHaveBeenCalled();
                 },
             );
         });

@@ -1,5 +1,3 @@
-import { type EvmFeeHex } from '@suite-common/schemas/src/evm';
-import { type YieldClaimUnsignedTransaction } from '@suite-common/wallet-core';
 import {
     type FeeInfo,
     type FormState,
@@ -7,7 +5,7 @@ import {
     type PrecomposedTransaction,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { calculateTotalGasCost, fromGwei, fromIntegerString } from '@suite-common/wallet-utils';
+import { calculateTotalGasCost, fromGwei } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -166,33 +164,4 @@ export const getYieldClaimFee = (feePreview: PrecomposedTransactionFinal): Yield
     }
 
     return null;
-};
-
-export const getSelectedFeeFromUnsignedClaimTransaction = ({
-    gasLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-}: YieldClaimUnsignedTransaction): EvmFeeHex => {
-    const gasLimitHex = fromIntegerString(gasLimit).toHex();
-
-    if (maxFeePerGas && maxPriorityFeePerGas) {
-        return {
-            type: 'eip1559',
-            gasLimit: gasLimitHex,
-            maxFeePerGas: fromIntegerString(maxFeePerGas).toHex(),
-            maxPriorityFeePerGas: fromIntegerString(maxPriorityFeePerGas).toHex(),
-            baseFeePerGas: '0x0',
-        };
-    }
-
-    if (gasPrice) {
-        return {
-            type: 'legacy',
-            gasLimit: gasLimitHex,
-            gasPrice: fromIntegerString(gasPrice).toHex(),
-        };
-    }
-
-    throw new Error('Claim transaction fee data is missing.');
 };

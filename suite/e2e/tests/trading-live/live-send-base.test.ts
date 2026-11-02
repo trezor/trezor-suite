@@ -172,7 +172,6 @@ test.describe(
                     tradingPage.fees.calculateEthereumMaxFee({
                         gasLimit,
                         maxFeePerGas,
-                        numberOfDecimals: 15,
                     });
 
                 await test.step('Verify Recipient address', async () => {
@@ -284,7 +283,6 @@ test.describe(
                     tradingPage.fees.calculateEthereumMaxFee({
                         gasLimit,
                         maxFeePerGas,
-                        numberOfDecimals: 18,
                     });
 
                 await test.step('Verify Recipient address', async () => {

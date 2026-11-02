@@ -26,13 +26,10 @@ import {
     getErc4626Contracts,
     getEvmPrivatePendingHint,
     getFiatRateKey,
-    isClaimTx,
     isNftTokenTransfer,
     isPending,
-    isStakeTx,
     isStakeTypeTx,
-    isUnstakeTx,
-    isYieldTypeTx,
+    isYieldVaultTx,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -51,7 +48,12 @@ import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 import { selectActiveDustPhishingThreshold } from '../phishing/phishingSelectors';
 import { isCardanoStakingTx } from '../staking/cardano/cardanoStakingUtils';
-import { isAccountStakingActive } from '../staking/shared/stakingUtils';
+import {
+    getTxStakeType,
+    isAccountStakingActive,
+    isAccountStakingActiveByHistory,
+} from '../staking/shared/stakingUtils';
+import { isTronStakingTx } from '../staking/tron/tronStakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     TransactionsRootState & AccountsRootState
@@ -96,6 +98,11 @@ export const selectAccountTransactionsWithNulls = (
 export const selectAccountTransactions = createMemoizedSelector(
     [selectAccountTransactionsWithNulls],
     transactions => returnStableArrayIfEmpty(transactions.filter(isNotNullOrUndefined)),
+);
+
+export const selectAccountTransactionsCount = createMemoizedSelector(
+    [selectAccountTransactions],
+    transactions => transactions.length,
 );
 
 export const selectPendingAccountAddresses = createMemoizedSelector(
@@ -251,14 +258,21 @@ export const selectAccountStakeTypeTransactions = createMemoizedSelector(
                 tx =>
                     isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId) ||
                     !!tx?.solanaSpecific?.stakeOperation?.type ||
-                    isCardanoStakingTx(tx),
+                    isCardanoStakingTx(tx) ||
+                    isTronStakingTx(tx),
             ),
         ),
 );
 
-export const selectAccountYieldTypeTransactions = createMemoizedSelector(
-    [selectAccountTransactions],
-    transactions => returnStableArrayIfEmpty(transactions.filter(isYieldTypeTx)),
+export const selectAccountYieldVaultTransactions = createMemoizedSelector(
+    [
+        selectAccountTransactions,
+        (_state, _accountKey: AccountKey, vaultContract: TokenAddress) => vaultContract,
+    ],
+    (transactions, vaultContract) =>
+        returnStableArrayIfEmpty(
+            transactions.filter(transaction => isYieldVaultTx(transaction, vaultContract)),
+        ),
 );
 
 export const hasPendingStakeTypeTransaction = createMemoizedSelector(
@@ -269,25 +283,19 @@ export const hasPendingStakeTypeTransaction = createMemoizedSelector(
 export const selectAccountStakeTransactions = createMemoizedSelector(
     [selectAccountTransactions],
     transactions =>
-        returnStableArrayIfEmpty(
-            transactions.filter(tx => isStakeTx(tx?.ethereumSpecific?.parsedData?.methodId)),
-        ),
+        returnStableArrayIfEmpty(transactions.filter(tx => getTxStakeType(tx) === 'stake')),
 );
 
 export const selectAccountUnstakeTransactions = createMemoizedSelector(
     [selectAccountTransactions],
     transactions =>
-        returnStableArrayIfEmpty(
-            transactions.filter(tx => isUnstakeTx(tx?.ethereumSpecific?.parsedData?.methodId)),
-        ),
+        returnStableArrayIfEmpty(transactions.filter(tx => getTxStakeType(tx) === 'unstake')),
 );
 
 export const selectAccountClaimTransactions = createMemoizedSelector(
     [selectAccountTransactions],
     transactions =>
-        returnStableArrayIfEmpty(
-            transactions.filter(tx => isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId)),
-        ),
+        returnStableArrayIfEmpty(transactions.filter(tx => getTxStakeType(tx) === 'claim')),
 );
 
 export const selectAccountIsStakingActive = createMemoizedSelector(
@@ -298,14 +306,9 @@ export const selectAccountIsStakingActive = createMemoizedSelector(
 export const selectAnyAccountIsStakingActive = createMemoizedSelector(
     [selectTransactions, (_: TransactionsRootState, accounts: Account[]) => accounts],
     (transactions, accounts) =>
-        accounts.some(account => {
-            const accountTransactions = transactions[account.key] ?? [];
-            const claimTransactions = accountTransactions.filter(tx =>
-                isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId),
-            );
-
-            return isAccountStakingActive(account, claimTransactions);
-        }),
+        accounts.some(account =>
+            isAccountStakingActiveByHistory(account, transactions[account.key] ?? []),
+        ),
 );
 
 export const selectAccountTransactionsFetchStatus = (

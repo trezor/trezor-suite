@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import {
     btc1NormalAccount,
     eth1NormalAccount,
@@ -8,10 +9,8 @@ import { TradingAccountCard } from './TradingAccountCard';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('TradingAccountCard', () => {
-    const renderCard = async (
-        overrides: Partial<React.ComponentProps<typeof TradingAccountCard>> = {},
-    ) =>
-        await renderWithTradingProvider(
+    const renderCard = (overrides: Partial<React.ComponentProps<typeof TradingAccountCard>> = {}) =>
+        renderWithTradingProvider(
             <TradingAccountCard
                 title="From"
                 account={eth1NormalAccount}
@@ -20,7 +19,10 @@ describe('TradingAccountCard', () => {
                 amount={undefined}
                 {...overrides}
             />,
-            { tradeType: 'exchange' },
+            {
+                tradeType: 'exchange',
+                services: { networks: mockNetworksServices() },
+            },
         );
 
     it('renders title', async () => {

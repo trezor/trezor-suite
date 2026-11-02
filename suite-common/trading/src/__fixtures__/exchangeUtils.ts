@@ -132,8 +132,6 @@ export const MIN_MAX_QUOTES_OK: ExchangeTrade[] = [
         fee: 'UNKNOWN',
         exchange: '1inch',
         isDex: true,
-        approvalGasEstimate: 57000,
-        swapGasEstimate: 189386,
         swapSlippage: '1',
     },
 ];

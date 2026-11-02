@@ -4,8 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.62.1";
-    old-gcc-nixpkgs.url = "github:NixOS/nixpkgs/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4"; # For GCC 10.2.0
+    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.64.0";
   };
 
   outputs =
@@ -14,7 +13,6 @@
       nixpkgs,
       flake-utils,
       playwright-web-flake,
-      old-gcc-nixpkgs,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (
@@ -22,9 +20,6 @@
       let
         overlay = final: prev: {
           inherit (playwright-web-flake.packages.${system}) playwright-test playwright-driver;
-
-          # Override GCC with older version
-          gccPkgs = import old-gcc-nixpkgs { system = prev.system; };
         };
 
         pkgs = import nixpkgs {
@@ -35,6 +30,7 @@
         };
 
         androidEnv = import ./.nix/android.nix { inherit pkgs; };
+        rustEnv = import ./.nix/rust.nix { inherit pkgs; };
 
         # Keep in sync with the electron version pinned in package.json
         electron = pkgs.electron_42;
@@ -65,22 +61,14 @@
           pkgs.playwright-test # From playwright-web-flake
           pkgs.vips
         ]
-        ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+        ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
           pkgs.nsis
           pkgs.p7zip
           pkgs.openjpeg
           pkgs.osslsigncode
           pkgs.squashfsTools
-          pkgs.gccPkgs.gcc # Older GCC
           pkgs.udev # used by node_module: usb
-        ]
-        ++ pkgs.lib.optionals pkgs.stdenv.isDarwin (
-          with pkgs.darwin.apple_sdk.frameworks;
-          [
-            Cocoa
-            CoreServices
-          ]
-        );
+        ];
 
         commonShellHook = ''
           export NODE_OPTIONS=--max_old_space_size=8192
@@ -92,10 +80,10 @@
           export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
           export PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}"
         ''
-        + pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
+        + pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
           export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
         ''
-        + pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+        + pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
           export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
           export npm_config_build_from_source=true
         '';
@@ -117,6 +105,15 @@
                 + androidEnv.nixLdHook
                 + androidEnv.shellHook;
             };
+
+            rustShell = pkgs.mkShell {
+              buildInputs = commonBuildInputs ++ rustEnv.extraPackages;
+
+              NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
+              NIX_CC = "${pkgs.gcc}";
+
+              shellHook = commonShellHook;
+            };
           in
           {
             default = pkgs.mkShell {
@@ -128,6 +125,7 @@
 
             android = androidShell;
             use_android = androidShell;
+            rust = rustShell;
           };
       }
     );

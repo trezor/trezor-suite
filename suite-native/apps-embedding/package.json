@@ -1,0 +1,33 @@
+{
+    "name": "@suite-native/apps-embedding",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
+        "test:unit": "yarn g:jest:native",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/apps-embedding": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/config": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "expo-web-browser": "~57.0.1",
+        "react": "19.2.3",
+        "react-native": "0.86.3",
+        "react-native-webview": "13.16.1",
+        "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils-store": "workspace:*"
+    }
+}

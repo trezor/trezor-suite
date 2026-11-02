@@ -21,7 +21,7 @@
             "path": "../network-cardano-types"
         },
         {
-            "path": "../../network-module/network-module-suite-common-types"
+            "path": "../../network-module/suite-common/suite-common-types"
         }
     ]
 }

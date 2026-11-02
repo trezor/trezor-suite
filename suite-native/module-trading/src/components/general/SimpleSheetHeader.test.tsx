@@ -4,8 +4,8 @@ import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { SimpleSheetHeader, type SimpleSheetHeaderProps } from './SimpleSheetHeader';
 
 describe('SimpleSheetHeader', () => {
-    const renderSimpleSheetHeader = async (props: SimpleSheetHeaderProps) =>
-        await renderWithBasicProvider(<SimpleSheetHeader {...props} />);
+    const renderSimpleSheetHeader = (props: SimpleSheetHeaderProps) =>
+        renderWithBasicProvider(<SimpleSheetHeader {...props} />);
 
     it('should render title', async () => {
         const { getByText } = await renderSimpleSheetHeader({

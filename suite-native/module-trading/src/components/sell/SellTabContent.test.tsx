@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -40,8 +40,14 @@ describe('SellTabContent', () => {
         }));
     });
 
-    const renderSellTabContent = async () =>
-        await renderWithTradingProvider(<SellTabContent />, { services, tradeType: 'sell' });
+    const renderSellTabContent = () =>
+        renderWithTradingProvider(<SellTabContent />, {
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
+            tradeType: 'sell',
+        });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);

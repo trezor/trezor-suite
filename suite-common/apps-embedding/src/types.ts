@@ -5,8 +5,17 @@ import { type HttpsUrl } from '@trezor/type-utils';
 export type AppsEmbeddingCommCapability = 'callbackUrls' | 'postMessage';
 
 /** What the host did with a `window.open` the embedded page attempted. */
-export type AppsEmbeddingWindowOpenOutcome =
-    'denied' | 'opened-in-app' | 'opened-in-system-browser';
+export type AppsEmbeddingWindowOpenOutcome = 'denied' | 'opened-in-app';
+
+/**
+ * Where an HTTP authentication challenge from the embedded site's server ended up:
+ * - `requested`: the host is asking the user for credentials;
+ * - `submitted` / `cancelled`: how the user answered;
+ * - `dismissed`: the challenge died before an answer, e.g. the page navigated away;
+ * - `refused`: the host turned it down without asking, by one of its own rules.
+ */
+export type AppsEmbeddingHttpAuthOutcome =
+    'requested' | 'submitted' | 'cancelled' | 'dismissed' | 'refused';
 
 export const AppsEmbeddingCallbackStatusSchema = z.enum(['success', 'failure']);
 export type AppsEmbeddingCallbackStatus = z.infer<typeof AppsEmbeddingCallbackStatusSchema>;
@@ -15,6 +24,21 @@ export type AppsEmbeddingCatalogEntryUrlParams = {
     /** The locale Suite runs in, as Suite stores it, e.g. `cs-CZ`. */
     locale: string;
 };
+
+export const ENTRY_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export const ENTRY_ID_MAX_LENGTH = 40;
+
+/**
+ * Catalog entry id. On desktop it decides which on-disk session the entry gets, so it ends up as a
+ * directory name — hence lowercase-only (macOS and Windows would fold two casings into one
+ * directory), no dots (`x.` and `x` are the same file on Windows) and a length cap (Chromium's own
+ * storage tree underneath it is deep enough to reach Windows' path limit).
+ *
+ * This is the renderer-side guard only. The main process re-checks the id and resolves it against
+ * the catalog before building any path: this schema runs in the preload, which is the renderer, and
+ * the `ipcMain` wrapper validates the sender frame rather than the payload.
+ */
+export const appsEmbeddingEntryId = z.string().max(ENTRY_ID_MAX_LENGTH).regex(ENTRY_ID_PATTERN);
 
 export type AppsEmbeddingCatalogEntry = {
     /**
@@ -66,58 +90,32 @@ export type AppsEmbeddingCatalogEntry = {
 
               /**
                * Whether the site keeps its cookies, localStorage, IndexedDB, cache and service
-               * workers between Suite restarts. Off by default: an entry that has no reason to be
-               * remembered is cheaper to reason about, and the showcase is mostly about first-load
-               * behavior.
+               * workers between visits and Suite restarts. Off by default, in which case everything
+               * the site stored is forgotten the moment it is closed: an entry that has no reason
+               * to be remembered is cheaper to reason about, and the showcase is mostly about
+               * first-load behavior.
                *
-               * Only the desktop host can honour it: it gives such an entry a session of its own on
-               * disk, one directory per entry, so entries cannot read each other's cookies. The
-               * other platforms have no such flag because persistence is not Suite's to control
-               * there: web embeds in an iframe inside Suite's own origin storage, which persists
-               * regardless, and on mobile the inline WebView is always incognito while the
-               * system-browser mode hands the site the real browser session.
-               *
-               * What persistence buys the site is worth knowing before setting this:
-               * - Nothing here is encrypted by Suite. Chromium encrypts cookie *values* through the
-               *   OS keychain; localStorage, IndexedDB and the cache are plain files, so the real
-               *   protection at rest is the user's disk encryption.
-               * - A popup the entry is allowed to open shares the session, so a third-party sheet
-               *   remembers the user across restarts too — Electron gives no way to split that.
-               * - Service workers survive the view being closed, so the site keeps a foothold that
-               *   can run on the next load.
+               * Only the desktop host gives such an entry a session of its own on disk, one
+               * directory per entry, so entries cannot read each other's cookies. Web has no such
+               * flag: an iframe lives in Suite's own origin storage, which persists regardless. The
+               * `mobile` record has a `persistSession` of its own, backed by a store that every
+               * persisting entry shares.
                */
               persistSession?: boolean;
 
               /**
                * Origins the embedded site may navigate to besides the origin of `url` — the
-               * allowlist of the host's `will-navigate` guard. Real flows leave their own
-               * origin: a redirect-based payment step, an OAuth screen, a 3-D Secure hop. Every
-               * off-origin navigation that is not declared here is blocked and reported, so a
-               * site with no business leaving its origin still cannot. The web iframe and the
-               * mobile hosts have no equivalent guard, which is why the list lives here.
+               * allowlist of the host's `will-navigate` and `will-redirect` guards. Real flows
+               * leave their own origin: a redirect-based payment step, an OAuth screen, a 3-D
+               * Secure hop. Every off-origin navigation that is not declared here — a server-side
+               * redirect included — is blocked and reported, so a site with no business leaving
+               * its origin still cannot. The web iframe and the mobile hosts have no equivalent
+               * guard, which is why the list lives here.
                *
                * Bare origins (scheme + host + port). Only the origin of each item is matched, so
                * a path would be silently ignored.
                */
               redirectExternalOrigins?: HttpsUrl[];
-
-              /**
-               * Where a permitted popup opens: the user's default browser instead of a window
-               * belonging to Suite. Off by default.
-               *
-               * Both destinations exist so they can be compared on real flows before one is
-               * dropped. The trade is not subtle: a system-browser window has no `window.opener`
-               * back to the embedded page and none of its cookies, so it only completes a flow
-               * that finishes by redirect — a sheet that posts its result through the opener
-               * hangs. In exchange the site's popup state lives in the browser the user already
-               * manages, so Suite stores nothing for it and [persistSession] does not reach it,
-               * and the popup runs as whoever the user is signed in as there rather than as an
-               * identity isolated to this entry.
-               *
-               * Only origins in [popupExternalOrigins] are affected — this decides where an
-               * allowed popup goes, never whether one is allowed.
-               */
-              openPopupInSystemBrowser?: boolean;
 
               /**
                * Origins the embedded site may open in a window of its own — the allowlist of the
@@ -134,6 +132,40 @@ export type AppsEmbeddingCatalogEntry = {
         | {
               kind: 'mobile';
               expectedBehavior: string;
+
+              /**
+               * Whether the site keeps its cookies, web storage and cache between openings and
+               * Suite restarts. Off by default, as on desktop: the inline WebView then opens the
+               * site in a non-persistent store (`incognito`), and the iOS system browser in an
+               * ephemeral `ASWebAuthenticationSession`, so nothing the site stored outlives the
+               * session.
+               *
+               * Unlike desktop, mobile has no store per entry: every persisting entry shares the
+               * app's default `WKWebsiteDataStore` on iOS and the app's single WebView profile on
+               * Android, where an incognito opening of any entry also clears that profile's
+               * cookies, cache, history and form data (its web storage survives). The Android
+               * system browser (Chrome Custom Tabs) cannot honour the flag at all: it runs in
+               * Chrome's own profile, which persists regardless.
+               */
+              persistSession?: boolean;
+
+              /**
+               * Origins the embedded site may navigate to besides the origin of `url` — the
+               * allowlist of the WebView host's navigation guard, and the mobile counterpart of
+               * [redirectExternalOrigins]. Every main-frame navigation off the list, a server-side
+               * redirect included, is blocked and reported; subframes are not held to it, as on
+               * desktop. The system browser has no guard.
+               *
+               * The guard is Suite's own `onShouldStartLoadWithRequest` handler, not the
+               * `originWhitelist` prop of `react-native-webview` the option is named after: the
+               * prop matches origin prefixes, applies to iframe loads as well on iOS, and opens
+               * whatever it refuses in another app or the system browser through `Linking.openURL`
+               * instead of blocking it.
+               *
+               * Same shape and matching as [redirectExternalOrigins]: bare origins, and only the
+               * origin of each item is matched.
+               */
+              originWhitelist?: HttpsUrl[];
           }
     )[];
 };
@@ -163,11 +195,17 @@ export type AppsEmbeddingEvent =
     | { type: 'load-failed'; detail: string }
     | { type: 'callback'; status: AppsEmbeddingCallbackStatus; url: string }
     | { type: 'message'; data: unknown }
+    // A message the host refused to take in — too large to be a structured message. `detail`
+    // carries the host's reason.
+    | { type: 'message-dropped'; detail: string }
     // One event with an outcome rather than an event per destination: the interesting part of the
     // log line is that the page reached for a window at all, and where it ended up is what the two
     // popup modes are being compared on.
     | { type: 'window-open-attempt'; url: string; outcome: AppsEmbeddingWindowOpenOutcome }
     | { type: 'navigation-blocked'; url: string }
+    // The origin that asked, never the url or what was typed: the log is the one place the
+    // credentials must not end up. `detail` carries the host's reason for a refusal.
+    | { type: 'http-auth'; origin: string; outcome: AppsEmbeddingHttpAuthOutcome; detail?: string }
     // Hosts without an inline viewport (the system browser) can only observe
     // the session being closed.
     | { type: 'closed'; detail: string };

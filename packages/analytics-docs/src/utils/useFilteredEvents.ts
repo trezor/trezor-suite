@@ -2,28 +2,72 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useDebounce } from '@trezor/react-utils';
 
-import type { SearchMode, Sort } from '../types';
+import { type SearchField, type Sort, searchFields } from '../types';
 import {
     compareVersionsDesc,
     eventHasVersion,
-    eventMatchesFullText,
-    eventNameMatchesQuery,
+    eventMatchesSearch,
     getAllVersions,
     getEventAddedVersion,
     getEventUpdatedVersion,
     getEventsFromJson,
+    normalizeSearchFields,
 } from './filterUtils';
 import { getParamsFromUrl, updateUrl } from './urlParams';
 
 const ANALYTICS_JSON_URL = `${import.meta.env.BASE_URL}analytics.json`;
 
-const SEARCH_MODE_STORAGE_KEY = 'analytics-docs:search-mode';
+const SEARCH_FIELDS_STORAGE_KEY = 'analytics-docs:search-in';
+const SEARCH_FIELDS_STORAGE_VERSION = 2;
+const DEFAULT_SEARCH_FIELDS: SearchField[] = [...searchFields];
 
-const getInitialSearchMode = (): SearchMode => {
-    if (typeof window === 'undefined') return 'fulltext';
-    const stored = window.localStorage.getItem(SEARCH_MODE_STORAGE_KEY);
+type StoredSearchFields = {
+    version: typeof SEARCH_FIELDS_STORAGE_VERSION;
+    fields: unknown;
+};
 
-    return stored === 'name' || stored === 'fulltext' ? stored : 'fulltext';
+const isSearchField = (value: unknown): value is SearchField =>
+    searchFields.some(field => field === value);
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null;
+
+const isStoredSearchFields = (value: unknown): value is StoredSearchFields =>
+    isRecord(value) &&
+    value.version === SEARCH_FIELDS_STORAGE_VERSION &&
+    Array.isArray(value.fields);
+
+const parseSearchFields = (value: unknown): SearchField[] => {
+    if (!Array.isArray(value)) return [];
+
+    return normalizeSearchFields(value.filter(isSearchField));
+};
+
+const migrateLegacySearchFields = (fields: SearchField[]): SearchField[] =>
+    normalizeSearchFields(fields.includes('runtimeType') ? fields : [...fields, 'runtimeType']);
+
+const getInitialSearchFields = (): SearchField[] => {
+    if (typeof window === 'undefined') return DEFAULT_SEARCH_FIELDS;
+
+    try {
+        const stored = window.localStorage.getItem(SEARCH_FIELDS_STORAGE_KEY);
+        if (stored === null) return DEFAULT_SEARCH_FIELDS;
+
+        const parsed: unknown = JSON.parse(stored);
+
+        if (isStoredSearchFields(parsed)) {
+            const selected = parseSearchFields(parsed.fields);
+
+            return selected.length > 0 ? selected : DEFAULT_SEARCH_FIELDS;
+        }
+
+        const legacy = parseSearchFields(parsed);
+        if (legacy.length === 0) return DEFAULT_SEARCH_FIELDS;
+
+        return migrateLegacySearchFields(legacy);
+    } catch {
+        return DEFAULT_SEARCH_FIELDS;
+    }
 };
 
 export const useFilteredEvents = () => {
@@ -33,7 +77,8 @@ export const useFilteredEvents = () => {
     const [debouncedQuery, setDebouncedQuery] = useState(initial.query);
     const [platform, setPlatform] = useState<string>(initial.platform);
     const [version, setVersion] = useState<string>(initial.version);
-    const [searchMode, setSearchMode] = useState<SearchMode>(getInitialSearchMode);
+    const [searchFieldsState, setSearchFieldsState] =
+        useState<SearchField[]>(getInitialSearchFields);
     const [isSidebarOpen, setIsSidebarOpen] = useState(initial.sidebarOpen);
     const [isLiveLogOpen, setIsLiveLogOpen] = useState(initial.liveLogOpen);
     const [isSidebarLoading, setIsSidebarLoading] = useState(false);
@@ -66,13 +111,32 @@ export const useFilteredEvents = () => {
         updateUrl(debouncedQuery, platform, sort, version, isSidebarOpen, isLiveLogOpen);
     }, [debouncedQuery, platform, sort, version, isSidebarOpen, isLiveLogOpen]);
 
+    const setSearchFields = (next: readonly SearchField[]) => {
+        const normalized = normalizeSearchFields(next);
+        if (normalized.length === 0) return;
+
+        setSearchFieldsState(current => {
+            const isSame =
+                current.length === normalized.length &&
+                current.every((field, index) => field === normalized[index]);
+
+            return isSame ? current : normalized;
+        });
+    };
+
     useEffect(() => {
         try {
-            window.localStorage.setItem(SEARCH_MODE_STORAGE_KEY, searchMode);
+            window.localStorage.setItem(
+                SEARCH_FIELDS_STORAGE_KEY,
+                JSON.stringify({
+                    version: SEARCH_FIELDS_STORAGE_VERSION,
+                    fields: searchFieldsState,
+                }),
+            );
         } catch {
             return;
         }
-    }, [searchMode]);
+    }, [searchFieldsState]);
 
     useEffect(() => {
         const id = setTimeout(() => setIsSidebarLoading(false), 200);
@@ -91,7 +155,7 @@ export const useFilteredEvents = () => {
         const id = setTimeout(() => setIsPlatformSortFiltering(false), 300);
 
         return () => clearTimeout(id);
-    }, [debouncedQuery, platform, sort, version]);
+    }, [debouncedQuery, platform, sort, version, searchFieldsState]);
 
     const isFiltering = isPlatformSortFiltering;
 
@@ -99,11 +163,7 @@ export const useFilteredEvents = () => {
         const byPlatformAndQuery = allEvents
             .filter(e => (platform === 'all' ? true : e.platform.includes(platform)))
             .filter(e => (version === 'all' ? true : eventHasVersion(e, version)))
-            .filter(e =>
-                searchMode === 'fulltext'
-                    ? eventMatchesFullText(normalizedQuery, e)
-                    : eventNameMatchesQuery(normalizedQuery, e),
-            );
+            .filter(e => eventMatchesSearch(normalizedQuery, e, searchFieldsState));
 
         return byPlatformAndQuery.sort((a, b) => {
             const an = a.name ?? '';
@@ -126,13 +186,14 @@ export const useFilteredEvents = () => {
 
             return an.localeCompare(bn);
         });
-    }, [allEvents, platform, version, normalizedQuery, sort, searchMode]);
+    }, [allEvents, platform, version, normalizedQuery, sort, searchFieldsState]);
 
     const clearAll = () => {
         setQuery('');
         setPlatform('all');
         setSort('az');
         setVersion('all');
+        setSearchFields(DEFAULT_SEARCH_FIELDS);
         setIsPlatformSortFiltering(true);
         setTimeout(() => setIsPlatformSortFiltering(false), 300);
     };
@@ -151,13 +212,13 @@ export const useFilteredEvents = () => {
         setSort,
         setPlatform,
         setVersion,
-        setSearchMode,
+        setSearchFields,
         clearAll,
         query,
         platform,
         sort,
         version,
-        searchMode,
+        searchFields: searchFieldsState,
         availableVersions,
         allEvents,
         debouncedQuery,

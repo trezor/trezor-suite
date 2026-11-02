@@ -4,7 +4,11 @@ import { type RouteProp, StackActions, useNavigation, useRoute } from '@react-na
 
 import { events } from '@suite-common/analytics';
 import { getNetwork } from '@suite-common/wallet-config';
-import { getYieldNativeFeeStatus, yieldActions } from '@suite-common/wallet-core';
+import {
+    type YieldDepositErrorReason,
+    getYieldNativeFeeStatus,
+    yieldActions,
+} from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import {
     type StackNavigationProps,
@@ -74,6 +78,7 @@ export const useYieldDepositController = () => {
         isFocused,
         pendingTransaction: session?.action.pendingTransaction,
         transactionType: 'deposit',
+        vaultId: yieldFlowData.vault?.id,
     });
     const isDepositPending = !!actionPendingTransaction;
     const isActionSubmitting = session?.action.isSubmitting ?? false;
@@ -123,11 +128,17 @@ export const useYieldDepositController = () => {
         !isNativeFeeInsufficient;
     const canPrepareDepositFee = canContinueDepositFlow && !isApprovalInsufficient;
 
+    const onComposeError = useCallback(
+        (errorMessage: YieldDepositErrorReason) =>
+            reportDeposit({ action: 'continue', type: 'error', errorMessage }),
+        [reportDeposit],
+    );
     const depositFee = useYieldDepositFees({
         amount: amountValue,
         flowData,
         flowKey,
         isEnabled: canPrepareDepositFee,
+        onComposeError,
     });
     const isSubmitDisabled =
         !canContinueDepositFlow ||

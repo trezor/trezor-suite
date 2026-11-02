@@ -19,10 +19,13 @@ const preloadedStateWithEthereum = preparePreloadedReduxState(
 
 const passphrase = process.env.TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE;
 const dexProviderName = 'LI.FI';
+// Needs an on-chain LI.FI USDC allowance above 0 and below the 6 USDC swap amount.
+const accountLabel = 'Ethereum #1';
 
 const prepareDexExchangeForm = async () => {
-    await tradingExchangeActions.selectSendAsset('USDC', 'Ethereum', 'USD Coin');
+    await tradingExchangeActions.selectSendAsset('USDC', 'Ethereum', 'USD Coin', 0);
     await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
+    await tradingExchangeActions.expectSelectedReceiveAccount(accountLabel);
     await tradingExchangeActions.setSendCryptoAmount('6');
     await tradingExchangeActions.selectProvider(dexProviderName, 'dex');
     await tradingExchangeActions.expectValidExchangeForm();

@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 
 import { Translation, messages } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE, selectModal, selectModalRequestId } from '@suite/modal';
+import { selectDeviceContextWindowType, selectModalRequestId } from '@suite/modal';
 import {
     getPassphraseMaxLength,
     selectDeviceModel,
@@ -12,7 +13,6 @@ import {
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
@@ -22,13 +22,10 @@ export const ConfirmPassphraseBeforeAction = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
     const requestId = useSelector(selectModalRequestId);
-    const modal = useSelector(selectModal);
+    const windowType = useSelector(selectDeviceContextWindowType);
 
     // Global passphrase modal: the device is ready once Connect raises REQUEST_PASSPHRASE.
-    const isDeviceLoading = !(
-        modal.context === MODAL_CONTEXT_DEVICE &&
-        modal.windowType === UI_REQUESTS.REQUEST_PASSPHRASE
-    );
+    const isDeviceLoading = !(windowType === UI_REQUESTS.REQUEST_PASSPHRASE);
 
     const intl = useIntl();
 

@@ -1,4 +1,4 @@
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const signTransactionSegwit: TestCase = {
     method: 'signTransaction',
@@ -32,7 +32,7 @@ const signTransactionSegwit: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['20912f']),
+                refTxs: getRefTxs(['20912f']),
             },
             result: {
                 serializedTx:
@@ -65,7 +65,7 @@ const signTransactionSegwit: TestCase = {
                         script_type: 'PAYTOP2SHWITNESS',
                     },
                 ],
-                refTxs: TX_CACHE(['20912f']),
+                refTxs: getRefTxs(['20912f']),
             },
             result: {
                 serializedTx:
@@ -111,7 +111,7 @@ const signTransactionSegwit: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['338e2d']),
+                refTxs: getRefTxs(['338e2d']),
             },
             result: {
                 serializedTx:

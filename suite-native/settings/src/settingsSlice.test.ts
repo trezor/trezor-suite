@@ -1,7 +1,10 @@
 import {
     type AppSettingsState,
+    appSettingsPersistWhitelist,
     appSettingsReducer,
+    selectEarnStakingWorkerBaseUrl,
     selectIsExperimentalFeatureEnabled,
+    setEarnStakingWorkerEnvironment,
     toggleExperimentalFeature,
 } from './settingsSlice';
 
@@ -39,5 +42,26 @@ describe('appSettingsSlice experimental features', () => {
         );
 
         expect(state.experimentalFeatures).toEqual(['suite-sync', 'slip24']);
+    });
+});
+
+describe('appSettingsSlice earn staking worker base URL', () => {
+    it('should have no base URL selected initially', () => {
+        expect(selectEarnStakingWorkerBaseUrl(asRootState(getInitialState()))).toBeUndefined();
+    });
+
+    it('should store the selected base URL', () => {
+        const state = appSettingsReducer(
+            getInitialState(),
+            setEarnStakingWorkerEnvironment('http://localhost:3001/staking/v1'),
+        );
+
+        expect(selectEarnStakingWorkerBaseUrl(asRootState(state))).toBe(
+            'http://localhost:3001/staking/v1',
+        );
+    });
+
+    it('should keep the selected base URL across app restarts', () => {
+        expect(appSettingsPersistWhitelist).toContain('earnStakingWorkerBaseUrl');
     });
 });

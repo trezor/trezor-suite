@@ -30,10 +30,10 @@ const services: NativeAnalyticsDep = {
 describe('BuyProviderPicker', () => {
     let form: BuyFormType;
 
-    const renderTradingProviderPicker = async (
+    const renderTradingProviderPicker = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <BuyProviderPicker />
             </Form>,

@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 
@@ -5,17 +6,18 @@ import { SellFromAccountCard, type SellFromAccountCardProps } from './SellFromAc
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('SellFromAccountCard', () => {
-    const renderSellFromAccountCard = async (
+    const renderSellFromAccountCard = (
         props: Partial<SellFromAccountCardProps> = {},
         tradingAccountKey = eth1NormalAccount.key,
     ) =>
-        await renderWithTradingProvider(<SellFromAccountCard {...props} />, {
+        renderWithTradingProvider(<SellFromAccountCard {...props} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {
                     trading: { sell: { tradingAccountKey } },
                 },
             },
+            services: { networks: mockNetworksServices() },
         });
 
     it('should render TradingAccountCard', async () => {

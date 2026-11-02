@@ -25,8 +25,11 @@ export const useClaimRewardsWithFiat = () => {
 
     const merklRewardsQueryEntries = useGetMerklRewardsQueryEntries(claimAccounts);
 
-    const { data: chainsRewards, isLoading: isMerklRewardsLoading } =
-        useGetMerklRewards(merklRewardsQueryEntries);
+    const {
+        data: chainsRewards,
+        isLoading: isMerklRewardsLoading,
+        isError: isMerklRewardsError,
+    } = useGetMerklRewards(merklRewardsQueryEntries);
 
     const rewardFiatRateKeys = useMemo(() => {
         const fiatRateKeys: CryptoBaseCurrencyPair[] = [];
@@ -64,5 +67,6 @@ export const useClaimRewardsWithFiat = () => {
     return {
         claimRewardsWithFiat: chainsRewardsWithFiat,
         isClaimLoading: merklRewardsQueryEntries.length > 0 && isMerklRewardsLoading,
+        isClaimError: merklRewardsQueryEntries.length > 0 && isMerklRewardsError,
     };
 };

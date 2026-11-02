@@ -8,7 +8,8 @@ test.describe('Onboarding - create wallet', { tag: ['@T1B1'] }, () => {
         setupEmulator: false,
     });
 
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, firmwareReleaseConfigMock }) => {
+        await firmwareReleaseConfigMock.startWithInstalledFirmware();
         await onboardingPage.disableNecessaryFirmwareChecks();
     });
 

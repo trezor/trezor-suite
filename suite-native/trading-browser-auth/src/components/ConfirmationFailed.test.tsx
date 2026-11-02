@@ -13,8 +13,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ConfirmationFailed', () => {
-    const renderConfirmationFailed = async () =>
-        await renderWithBasicProvider(<ConfirmationFailed />);
+    const renderConfirmationFailed = () => renderWithBasicProvider(<ConfirmationFailed />);
 
     it('should navigate back on button press', async () => {
         const { getByText } = await renderConfirmationFailed();

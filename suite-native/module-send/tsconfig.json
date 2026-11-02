@@ -7,6 +7,9 @@
         {
             "path": "../../suite-common/formatters"
         },
+        {
+            "path": "../../suite-common/message-system"
+        },
         { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-sync"
@@ -50,6 +53,7 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../performance-metrics" },
         { "path": "../qr-code" },
         { "path": "../send" },
         { "path": "../tokens" },

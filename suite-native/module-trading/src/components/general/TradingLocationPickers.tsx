@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { TradingLocationPickers as ResidenceTradingLocationPickers } from '@suite-native/trading-residence';
-import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
+import { selectIsTradingResidenceWhitelistRequired } from '@suite-native/trading-state';
 
 export type TradingLocationPickersProps = {
     context: 'buy' | 'sell' | 'concierge';
@@ -14,9 +14,11 @@ export const TradingLocationPickers = ({
     hideSubdivisionPicker,
     noBottomBorder,
 }: TradingLocationPickersProps) => {
-    const isTradingResidenceCheckEnabled = useSelector(selectIsTradingResidenceCheckEnabled);
+    const isTradingResidenceWhitelistRequired = useSelector(
+        selectIsTradingResidenceWhitelistRequired,
+    );
 
-    if (isTradingResidenceCheckEnabled) {
+    if (isTradingResidenceWhitelistRequired) {
         return null;
     }
 

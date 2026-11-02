@@ -32,8 +32,8 @@ describe('ReceiveAddressVerificationStackNavigator', () => {
         },
     } as const;
 
-    const renderNavigator = async () =>
-        await renderWithBasicProvider(
+    const renderNavigator = () =>
+        renderWithBasicProvider(
             <ReceiveAddressVerificationStackNavigator navigation={{} as never} route={route} />,
         );
 

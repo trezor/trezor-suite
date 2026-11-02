@@ -31,7 +31,6 @@ export interface TradingExchangeState {
     tradingAccountKey?: AccountKey;
     receiveAccountKey?: AccountKey;
     receiveAddress?: string;
-    extraField?: string;
     selectedQuote: ExchangeTrade | undefined;
     isFromRedirect: boolean;
     isLoading: boolean;
@@ -51,7 +50,6 @@ export const exchangeInitialState: TradingExchangeState = {
     tradingAccountKey: undefined,
     receiveAccountKey: undefined,
     receiveAddress: undefined,
-    extraField: undefined,
     selectedQuote: undefined,
     isFromRedirect: false,
     isLoading: false,
@@ -119,9 +117,6 @@ const tradingExchangeSlice = createSlice({
         },
         setReceiveAddress(state: TradingExchangeState, action: PayloadAction<string | undefined>) {
             state.receiveAddress = action.payload;
-        },
-        setExtraField(state: TradingExchangeState, action: PayloadAction<string | undefined>) {
-            state.extraField = action.payload;
         },
         saveSelectedQuote(
             state: TradingExchangeState,

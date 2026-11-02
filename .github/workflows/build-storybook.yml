@@ -30,27 +30,29 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
-          cache: yarn
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/components @trezor/product-components
+          yarn install --immutable
 
       - name: Build storybook
         env:
           ASSET_PREFIX: /components/develop
         run: |
           yarn workspace @trezor/components storybook-build
-      - name: Build product-components storybook
+      - name: Build Suite storybook
         env:
           ASSET_PREFIX: /product-components/develop
         run: |
-          yarn workspace @trezor/product-components storybook-build
+          yarn workspace @suite/storybook storybook-build
 
       - name: Upload suite storybook to dev.suite.sldev.cz
         env:
@@ -58,4 +60,4 @@ jobs:
           PRODUCT_COMPONENTS_DEPLOY_PATH: s3://dev.suite.sldev.cz/product-components/develop
         run: |
           aws s3 sync --delete ./packages/components/.build-storybook ${COMPONENTS_DEPLOY_PATH}
-          aws s3 sync --delete ./packages/product-components/.build-storybook ${PRODUCT_COMPONENTS_DEPLOY_PATH}
+          aws s3 sync --delete ./suite/storybook/.build-storybook ${PRODUCT_COMPONENTS_DEPLOY_PATH}

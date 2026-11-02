@@ -15,6 +15,9 @@ typescriptRuleTester.run('analytics-event-name', analyticsEventNameRule, {
         { code: "export enum EventType { Foo = 'settings/app-log-exported' }" },
         { code: "export enum EventType { Bar = 'dashboard/send-modal' }" },
         { code: "export enum EventType { Baz = 'wallet-connect/init' }" },
+        {
+            code: "export enum EventType { Tile = 'earn/tile-pressed', Dashboard = 'earn/dashboard-ready' }",
+        },
         { code: "export enum EventType { A = 'device/connect', B = 'receive/flow-entered' }" },
         { code: "export enum OtherEnum { X = 'anything' }" },
         { code: "const x = 'settings/foo';" },

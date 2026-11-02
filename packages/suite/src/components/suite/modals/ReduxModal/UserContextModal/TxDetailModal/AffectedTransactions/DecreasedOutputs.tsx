@@ -1,4 +1,5 @@
 import { Address } from '@suite/address';
+import { selectEffectiveTargetAnonymityByAccountKey } from '@suite/coinjoin';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -19,6 +20,7 @@ import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { useSelector } from 'src/hooks/suite';
 import { type RbfContextValues, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 type AmountRowProps = {
@@ -73,6 +75,11 @@ const ReducedAmount = ({ composedLevels, setMaxOutputId, account, selectedFee }:
 };
 
 export const DecreasedOutputs = () => {
+    // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const {
         showDecreasedOutputs,
         formValues,
@@ -84,6 +91,9 @@ export const DecreasedOutputs = () => {
         composeRequest,
         shouldSendInSats,
     } = useRbfContext();
+    const targetAnonymity = useSelector(state =>
+        selectEffectiveTargetAnonymityByAccountKey(state, account.key),
+    );
     const { selectedFee, setMaxOutputId } = getValues();
 
     // no set-max means that no output was decreased
@@ -96,7 +106,9 @@ export const DecreasedOutputs = () => {
         if (account.accountType === 'coinjoin') {
             if (coinjoinRegisteredUtxos.length > 0) {
                 return 'TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING';
-            } else {
+            }
+            // without held-back coins, a decreased output means the funds are really short
+            if (targetAnonymity && targetAnonymity > 1) {
                 return 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_RBF_WARNING';
             }
         }

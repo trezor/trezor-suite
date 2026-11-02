@@ -2,8 +2,8 @@
 
 import { act, renderHook, waitFor } from '@testing-library/react';
 
+import { type Locale } from '@suite-common/locale';
 import { QueryClient, QueryClientProvider, desktopQueryKeys } from '@suite-common/react-query';
-import type { Locale } from '@suite-common/suite-types';
 
 import { type IntlMessages, useIntlMessages } from './useIntlMessages';
 import csMessages from '../../translations/cs-CZ.json';

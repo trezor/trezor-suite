@@ -9,6 +9,7 @@ import { type DesktopDeviceState } from '@suite/device';
 import { type RouterState, type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
+import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import {
     type PersistentDeviceDataState,
     persistentDeviceDataInitialState,
@@ -41,6 +42,8 @@ import { findByTestId, renderWithProviders } from 'src/support/test-utils/hooksH
 
 import { Preloader } from './Preloader';
 import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+
+const networkIcon = mockNetworkIcon();
 
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),
@@ -201,7 +204,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
@@ -219,7 +222,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
@@ -237,7 +240,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
@@ -252,7 +255,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
@@ -268,7 +271,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
@@ -292,7 +295,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -308,7 +311,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -327,7 +330,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -346,7 +349,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -372,7 +375,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -400,7 +403,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -428,7 +431,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -457,7 +460,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -483,7 +486,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -509,7 +512,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -531,7 +534,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -553,7 +556,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -575,7 +578,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -602,7 +605,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -631,7 +634,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 
@@ -695,7 +698,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
         expect(findByTestId('@device-compromised')).not.toBeNull();
@@ -714,7 +717,7 @@ describe(`${Preloader.name} component`, () => {
             services: createServices,
         });
         const { unmount } = renderWithProviders(
-            services,
+            { ...services, networks: { networkIcon } },
             <Index app={services.store.getState().router.app} />,
         );
 

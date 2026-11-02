@@ -78,6 +78,20 @@ export const blockchainGetTransactions = async (api: TrezorConnect) => {
             raw.blockHash?.toLowerCase();
         });
     }
+
+    const rawTxs = await api.blockchainGetTransactions({
+        coin: 'btc',
+        txs: ['txid'],
+        hexOnly: true,
+    });
+    if (rawTxs.success) {
+        rawTxs.payload.forEach(raw => {
+            raw.txid.toLowerCase();
+            raw.hex.toLowerCase();
+            // @ts-expect-error amount not present
+            raw.amount.toLowerCase();
+        });
+    }
 };
 
 export const others = async (api: TrezorConnect) => {

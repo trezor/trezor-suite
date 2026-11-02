@@ -22,7 +22,7 @@ type RenderParams = {
     symbol?: string;
 };
 
-const renderMinAdaAmountInfo = async ({
+const renderMinAdaAmountInfo = ({
     balance = '1500000',
     feeLevels = {},
     isTokenSend = true,
@@ -30,7 +30,7 @@ const renderMinAdaAmountInfo = async ({
 }: RenderParams = {}) => {
     const account = mockWalletAccount({ symbol: asNetworkSymbol(symbol), balance });
 
-    return await renderWithStoreProvider(
+    return renderWithStoreProvider(
         <CardanoTokenSendMinAdaAmountInfo
             accountKey={account.key}
             tokenContract={isTokenSend ? tokenContract : undefined}

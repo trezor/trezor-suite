@@ -1,8 +1,9 @@
 import { type InputHTMLAttributes, type ReactElement, type Ref } from 'react';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { XIcon } from '@trezor/icons';
+import { type Color } from '@trezor/theme';
 
 import { type FrameProps } from '../../../utils/frameProps';
 import { Box } from '../../Box/Box';
@@ -27,8 +28,17 @@ const StyledInput = styled.input<{
     $isMasked?: boolean;
     $isClean?: boolean;
     $size: InputSize;
+    $placeholderColor?: Color;
 }>`
     ${commonInputStyles}
+
+    ${({ $placeholderColor, theme }) =>
+        $placeholderColor &&
+        css`
+            &::placeholder {
+                color: ${theme[$placeholderColor]};
+            }
+        `}
 
     padding: 0 ${({ $isClean }) => ($isClean ? 0 : INPUT_PADDING)}px;
     padding-top: ${({ $hasLabel, $size }) => ($hasLabel ? mapSizeToPaddingTop($size) : 0)}px;
@@ -52,6 +62,7 @@ export type InputProps = InputHTMLProps &
         onClear?: () => void;
         isMasked?: boolean;
         isClean?: boolean;
+        placeholderColor?: Color;
     };
 
 export const Input = ({
@@ -67,6 +78,7 @@ export const Input = ({
     onClear,
     isMasked,
     isClean,
+    placeholderColor,
     ...rest
 }: InputProps) => {
     const formCellProps = pickFormCellProps(rest);
@@ -115,6 +127,7 @@ export const Input = ({
                             $isMasked={isMasked}
                             $isClean={isClean}
                             $size={size}
+                            $placeholderColor={placeholderColor}
                             placeholder={label && !isClean ? placeholder || ' ' : placeholder}
                             data-testid={dataTest}
                             {...inputProps}

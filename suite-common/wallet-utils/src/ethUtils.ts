@@ -1,13 +1,13 @@
-import { Calldata } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type EvmTransactionPurpose,
     type PrecomposedTransactionFinal,
+    type TokenAddress,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { Calldata, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -189,22 +189,27 @@ export const isEvmApprovalTxByTextSignature = (
 export const isEvmYieldTxByTextSignature = (textSignature?: EvmTransactionPurpose) =>
     textSignature === 'deposit' || textSignature === 'withdraw' || textSignature === 'redeem';
 
-/**
- * DeFi yield flow transactions: vault deposit/withdraw/redeem, rewards claim, and the native
- * wrap/unwrap steps of the deposit/withdraw flows.
- */
-export const isYieldTypeTx = (transaction: WalletAccountTransaction): boolean => {
-    const purpose = getEvmTransactionPurpose({
-        networkSymbol: transaction.symbol,
-        to: getWrappedNativeTxTarget(transaction),
-        data: transaction.ethereumSpecific?.data,
-    });
+export const isYieldVaultTx = (
+    transaction: WalletAccountTransaction,
+    vaultContract: TokenAddress,
+): boolean => {
+    const normalizedVaultContract = vaultContract.toLowerCase();
 
-    return (
-        purpose === 'wrap' ||
-        purpose === 'unwrap' ||
-        purpose === 'claim' ||
-        isEvmYieldTxByTextSignature(purpose)
+    const isVaultCalled = transaction.details.vout.some(output =>
+        output.addresses?.some(address => address.toLowerCase() === normalizedVaultContract),
+    );
+
+    // A vault call routed through another contract still moves the vault's share token.
+    const isShareTokenTransferred = transaction.tokens.some(
+        token => token.contract.toLowerCase() === normalizedVaultContract,
+    );
+
+    if (!isVaultCalled && !isShareTokenTransferred) {
+        return false;
+    }
+
+    return isEvmYieldTxByTextSignature(
+        getEvmTransactionTextSignature(transaction.ethereumSpecific?.data),
     );
 };
 

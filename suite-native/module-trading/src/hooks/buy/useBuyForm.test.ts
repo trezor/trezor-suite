@@ -53,8 +53,8 @@ const btc2AccountKey = btc2legacyAccount.key;
 const accountDeviceState = btc1NormalAccount.deviceState;
 
 describe('useBuyForm', () => {
-    const renderUseTradingBuyForm = async (store: Store<State>) =>
-        await renderHookWithStoreProvider(() => useBuyForm(), { services: { store } });
+    const renderUseTradingBuyForm = (store: Store<State>) =>
+        renderHookWithStoreProvider(() => useBuyForm(), { services: { store } });
 
     const getInitializedStore = (amountInSats = false) => {
         const tradingState = getInitializedTradingState();

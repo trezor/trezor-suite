@@ -11,8 +11,8 @@ import { TrendUpIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { getBorderRadiusCssValue } from '@trezor/theme';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { getYieldOpportunityAnchor } from 'src/components/earn/utils/getYieldOpportunityAnchor';
+import { useFormatApy } from 'src/hooks/earn/useFormatApy';
 
 // The badge itself is not interactive, so a button carries the click and the focus ring.
 const BadgeButton = styled.button`
@@ -27,6 +27,8 @@ const BadgeButton = styled.button`
         ${commonFocusStyles}
     }
 `;
+
+const YIELD_BADGE_TEST_ID = '@earn/yield-badge';
 
 type YieldBadgeVariant = 'inactive' | 'active' | 'promo';
 
@@ -58,21 +60,47 @@ const variantConfigMap: Record<YieldBadgeVariant, YieldBadgeVariantConfig> = {
     },
 };
 
-type YieldBadgeProps = {
+/** Without an account the badge is a plain label: nothing to open on the Earn page for it. */
+type YieldBadgeNavigationProps =
+    | {
+          account: Account;
+          vaultId?: string;
+          analyticsFrom: 'account-tokens' | 'account-defi-tokens' | 'account-tradebox';
+      }
+    | { account?: undefined; vaultId?: undefined; analyticsFrom?: undefined };
+
+type YieldBadgeProps = YieldBadgeNavigationProps & {
     apy: number;
     /** `inactive` = eligible but not yielding, `active` = already yielding, `promo` = trade box teaser. */
     variant: YieldBadgeVariant;
-    account: Account;
-    vaultId: string;
-    analyticsFrom: 'account-tokens' | 'account-defi-tokens' | 'account-tradebox';
 };
 
 export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: YieldBadgeProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const formatApyValue = useFormatApy();
 
     const { translationId, iconLeft, priority, shouldAnchorAtVaultRow } = variantConfigMap[variant];
 
+    const badge = (
+        <Badge
+            intent="brand"
+            size="small"
+            priority={priority}
+            iconLeft={iconLeft}
+            // Tests reach the badge by this id: the button around it carries it when there is one.
+            data-testid={account === undefined ? YIELD_BADGE_TEST_ID : undefined}
+        >
+            <Translation id={translationId} values={{ apy: formatApyValue(apy) }} />
+        </Badge>
+    );
+
+    if (account === undefined) {
+        return badge;
+    }
+
     const goToEarnYield = () => {
+        if (!vaultId) return;
+
         // The row anchor scrolls to and highlights the vault row of this very account; the
         // Earn page falls back to scrolling the yield section when that row is not rendered.
         const anchor = shouldAnchorAtVaultRow
@@ -94,10 +122,8 @@ export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: Yi
     };
 
     return (
-        <BadgeButton type="button" onClick={goToEarnYield} data-testid="@earn/yield-badge">
-            <Badge intent="brand" size="small" priority={priority} iconLeft={iconLeft}>
-                <Translation id={translationId} values={{ apy: formatApyValue(apy) }} />
-            </Badge>
+        <BadgeButton type="button" onClick={goToEarnYield} data-testid={YIELD_BADGE_TEST_ID}>
+            {badge}
         </BadgeButton>
     );
 };

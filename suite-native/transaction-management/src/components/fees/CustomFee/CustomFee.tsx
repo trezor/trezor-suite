@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
-import { type AccountKey, type FormState } from '@suite-common/wallet-types';
+import type { AccountKey, FormState } from '@suite-common/wallet-types';
 import { AnimatedView, Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';

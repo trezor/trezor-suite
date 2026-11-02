@@ -3,28 +3,36 @@ import { useEffect, useState } from 'react';
 import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
-import { type Rating } from '@suite-common/feedback';
 import { Card, Column, Text } from '@trezor/components';
 
 import {
     EmojiRatingSelector as EmojiRatingSelectorComponent,
+    type EmojiRatingSelectorOption,
     type EmojiRatingSelectorProps,
 } from './EmojiRatingSelector';
+
+type ExampleValue = 'negative' | 'neutral' | 'positive';
+
+const exampleOptions: ReadonlyArray<EmojiRatingSelectorOption<ExampleValue>> = [
+    { id: 'negative', emoji: '🙁' },
+    { id: 'neutral', emoji: '😐' },
+    { id: 'positive', emoji: '🙂' },
+];
 
 const EmojiRatingSelectorStory = ({
     value: initialValue,
     onChange,
     ...args
-}: EmojiRatingSelectorProps) => {
-    const [value, setValue] = useState<Rating | undefined>(initialValue);
+}: EmojiRatingSelectorProps<ExampleValue>) => {
+    const [value, setValue] = useState<ExampleValue | undefined>(initialValue);
 
     useEffect(() => {
         setValue(initialValue);
     }, [initialValue]);
 
-    const handleChange = (rating: Rating) => {
-        setValue(rating);
-        onChange(rating);
+    const handleChange = (selectedValue: ExampleValue) => {
+        setValue(selectedValue);
+        onChange(selectedValue);
     };
 
     return (
@@ -40,14 +48,13 @@ const EmojiRatingSelectorStory = ({
     );
 };
 
-const meta: Meta<typeof EmojiRatingSelectorComponent> = {
+const meta: Meta<EmojiRatingSelectorProps<ExampleValue>> = {
     title: 'EmojiRatingSelector',
-    component: EmojiRatingSelectorComponent,
+    component: EmojiRatingSelectorComponent<ExampleValue>,
     parameters: {
         docs: {
             description: {
-                component:
-                    'Standalone emoji-based rating selector used by feedback flows across Suite.',
+                component: 'Generic emoji selector with caller-defined values and emoji options.',
             },
         },
     },
@@ -56,7 +63,7 @@ const meta: Meta<typeof EmojiRatingSelectorComponent> = {
             control: {
                 type: 'select',
             },
-            options: [undefined, '1', '2', '3', '4', '5'],
+            options: [undefined, ...exampleOptions.map(({ id }) => id)],
         },
         onChange: {
             table: {
@@ -68,9 +75,10 @@ const meta: Meta<typeof EmojiRatingSelectorComponent> = {
 
 export default meta;
 
-export const EmojiRatingSelector: StoryObj<typeof EmojiRatingSelectorComponent> = {
+export const EmojiRatingSelector: StoryObj<EmojiRatingSelectorProps<ExampleValue>> = {
     args: {
         value: undefined,
+        options: exampleOptions,
         onChange: action('onChange'),
         'data-testid': '@storybook/emoji-rating-selector',
     },

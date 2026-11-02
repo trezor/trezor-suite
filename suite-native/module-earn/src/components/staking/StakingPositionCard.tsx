@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -31,6 +32,7 @@ type StakingPositionCardProps = {
 };
 
 export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps) => {
+    const { PercentageFormatter } = useFormatters();
     const { symbol, accountKey, balance } = item;
 
     const reportStakingNavigate = useStakingNavigateAnalytics();
@@ -102,12 +104,12 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
                     <ZeroApyBadge />
                 ) : (
                     <Text variant="body-sm" color="contentSecondary">
-                        {isAdaStakedOutsideEverstake || !isApyAvailable(apy) ? (
+                        {isAdaStakedOutsideEverstake || apy == null || !isApyAvailable(apy) ? (
                             <ApyValue apy={null} withLabel />
                         ) : (
                             <Translation
                                 id={symbol === 'trx' ? 'earn.aprPercentage' : 'earn.apyPercentage'}
-                                values={{ apy }}
+                                values={{ apy: PercentageFormatter.format(apy) }}
                             />
                         )}
                     </Text>

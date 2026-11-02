@@ -6,6 +6,7 @@ import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 
+import { useEarnDeviceStatus } from './useEarnDeviceStatus';
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
 import { getWrappedNativeMaxInteractionElement } from '../../utils/earn/wrappedNativeAnalyticsUtils';
 
@@ -19,11 +20,17 @@ export const useWrappedNativeFlowAnalytics = ({
     networkSymbol,
 }: UseWrappedNativeFlowAnalyticsParams) => {
     const { analytics } = useServices(injectNativeAnalytics);
+    const deviceStatus = useEarnDeviceStatus();
     const report = useWrappedNativeFlowReport(flowType);
 
     const reportSubmit = useCallback(() => {
-        report({ type: 'submit', action: 'continue', networkSymbol });
-    }, [report, networkSymbol]);
+        report({
+            type: 'submit',
+            action: 'continue',
+            networkSymbol,
+            deviceStatus,
+        });
+    }, [report, networkSymbol, deviceStatus]);
 
     const reportSimulation = useCallback(
         (action: 'continue' | 'cancel') => {

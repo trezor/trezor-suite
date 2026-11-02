@@ -95,7 +95,7 @@ export const Card = ({
         rest,
         allowedCardFrameProps,
     ) as TransientAllowedFrameProps;
-    const isClickable = Boolean(onClick);
+    const isClickable = Boolean(onClick) || type === 'action';
 
     return (
         <Container
@@ -123,7 +123,7 @@ export const Card = ({
                             {header}
                         </Text>
                     </Box>
-                    <Divider margin={{}} />
+                    <Divider margin={{}} color="elementBorderNeutralSofter" />
                 </>
             )}
             <Box
@@ -136,7 +136,7 @@ export const Card = ({
             </Box>
             {footer && (
                 <>
-                    <Divider margin={{}} />
+                    <Divider margin={{}} color="elementBorderNeutralSofter" />
                     <Box padding={mapPaddingTypeToPadding({ paddingType })}>{footer}</Box>
                 </>
             )}

@@ -1,7 +1,7 @@
 import { ClientGeneratorsBuilder, defineConfig } from 'orval';
 import { resolve } from 'path';
 
-import { EARN_API_BASE_URL } from './src/constants';
+import { defaultEarnStakingWorkerBaseUrl } from './src/context';
 
 const camelCase = (value: string) => value.replace(/^[A-Z]/, char => char.toLowerCase());
 
@@ -31,7 +31,7 @@ const API_DIR = resolve(import.meta.dirname, './src/api');
 export default defineConfig({
     earn: {
         input: {
-            target: `${EARN_API_BASE_URL}/openapi`,
+            target: `${defaultEarnStakingWorkerBaseUrl}/openapi`,
         },
         output: {
             mode: 'split',

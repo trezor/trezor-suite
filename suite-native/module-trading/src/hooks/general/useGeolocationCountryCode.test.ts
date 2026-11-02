@@ -41,8 +41,8 @@ describe('useGeolocationCountryCode', () => {
             },
         });
 
-    const renderUseGeolocationCountryCode = async (store: Store<State>) =>
-        await renderHookWithStoreProvider(() => useGeolocationCountryCode(), {
+    const renderUseGeolocationCountryCode = (store: Store<State>) =>
+        renderHookWithStoreProvider(() => useGeolocationCountryCode(), {
             services: { store },
         });
 

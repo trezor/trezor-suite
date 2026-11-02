@@ -7,6 +7,7 @@ import {
     type ConnectExplorerServices,
     createConnectExplorerApp,
 } from './createConnectExplorerApp';
+import { createConnectExplorerNetworkIcon } from './createConnectExplorerNetworkIcon';
 import { connectExplorerNetworkConfig } from '../config/networks';
 import { createConnectExplorerReduxStore } from '../store/createConnectExplorerReduxStore';
 
@@ -14,7 +15,10 @@ type ConnectExplorerCompositionRoot = { app: ConnectExplorerApp };
 
 export const createConnectExplorerCompositionRoot = (): ConnectExplorerCompositionRoot => {
     const networkConfig: NetworkConfigs = typedObjectFromEntries(
-        connectExplorerNetworkConfig.map(network => [network.symbol, { name: network.name }]),
+        connectExplorerNetworkConfig.map(network => [
+            network.symbol,
+            { name: network.name, testnet: network.testnet },
+        ]),
     );
     const networkRouteToSymbolMap: NetworkRouteToSymbolMap = typedObjectFromEntries(
         connectExplorerNetworkConfig.flatMap(
@@ -26,7 +30,11 @@ export const createConnectExplorerCompositionRoot = (): ConnectExplorerCompositi
         networkConfig,
         networkRouteToSymbolMap,
     });
-    const services: ConnectExplorerServices = { connectExplorerReduxStore };
+    const networkIcon = createConnectExplorerNetworkIcon({
+        networkConfig: connectExplorerNetworkConfig,
+    });
+    const networks = { networkIcon, isWrappedNativeToken: () => false };
+    const services: ConnectExplorerServices = { connectExplorerReduxStore, networks };
     const app = createConnectExplorerApp({ services });
 
     return { app };

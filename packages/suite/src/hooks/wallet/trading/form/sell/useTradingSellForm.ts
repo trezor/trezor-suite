@@ -36,6 +36,14 @@ import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
 
 export const useTradingSellForm = (): TradingSellFormContextProps => {
+    // React Compiler: react-hook-form edits `formState.errors` in place, so the object keeps one
+    // identity until the next `reset` and a compiled `Object.keys` of it is never recomputed --
+    // `isFormInvalid` would miss every error added or cleared between resets. Naming `formState`,
+    // as the return value below does, cannot help: the guard compares the errors object itself.
+    // Remove once form validity derives from a value that changes identity when an error is added
+    // or cleared.
+    'use no memo';
+
     const type = 'sell';
     const { dispatch } = useServices(injectDispatch);
     const isLoading = useSelector(selectTradingSellIsLoading);
@@ -174,6 +182,10 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
             helpers,
         },
         ...methods,
+        // The spread copies react-hook-form's ref object, whose `formState` is replaced by a
+        // new proxy on every update. Naming it puts a moving dependency in the compiler's guard,
+        // so this context value is rebuilt when validation state changes.
+        formState,
         methods,
         composedLevels,
         feeInfo,

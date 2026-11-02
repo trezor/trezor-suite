@@ -32,8 +32,8 @@ describe('BuyReceiveAccountCryptoBalance', () => {
         return result.current;
     };
 
-    const renderComponent = async () =>
-        await renderWithStoreProvider(<BuyReceiveAccountCryptoBalance />, {
+    const renderComponent = () =>
+        renderWithStoreProvider(<BuyReceiveAccountCryptoBalance />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,
         });

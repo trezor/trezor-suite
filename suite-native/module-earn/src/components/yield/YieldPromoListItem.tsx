@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { useFormatters } from '@suite-common/formatters';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Box, BoxSkeleton, HStack, PressableOpacity, Text } from '@suite-native/atoms';
@@ -33,6 +34,7 @@ type YieldPromoListItemProps = {
 };
 
 export const YieldPromoListItem = ({ item, onPress }: YieldPromoListItemProps) => {
+    const { PercentageFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -74,7 +76,7 @@ export const YieldPromoListItem = ({ item, onPress }: YieldPromoListItemProps) =
                                 {isApyAvailable(item.apy) ? (
                                     <Translation
                                         id="earn.apyPercentage"
-                                        values={{ apy: item.apy }}
+                                        values={{ apy: PercentageFormatter.format(item.apy) }}
                                     />
                                 ) : (
                                     <Translation id="earn.notAvailableShort" />

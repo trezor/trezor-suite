@@ -16,16 +16,17 @@
         "api:update": "yarn api:generate && yarn lint:js --fix && yarn format"
     },
     "dependencies": {
-        "@sentry/core": "10.69.0",
+        "@sentry/core": "10.75.2",
         "@suite-common/http-client": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "zod": "4.6.5"
+        "@trezor/utils": "workspace:*",
+        "zod": "4.6.7"
     },
     "devDependencies": {
         "@suite-common/wallet-config": "workspace:*",
-        "orval": "8.33.0",
-        "prettier": "^3.9.6"
+        "orval": "8.41.0",
+        "prettier": "^3.9.9"
     }
 }

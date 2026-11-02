@@ -6,7 +6,7 @@ import {
     selectIsDeviceLanguageConfigurable,
     selectSupportedDeviceLanguages,
 } from '@suite-common/device';
-import { type Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
 import { Badge, Card, HStack, Select, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

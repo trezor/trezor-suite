@@ -1,12 +1,15 @@
 import type { CryptoId } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
+
 import { CryptoAmountRow, type CryptoAmountRowProps } from './CryptoAmountRow';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('CryptoAmountRow', () => {
-    const renderCryptoAmountRow = async (overriders: Partial<CryptoAmountRowProps>) =>
-        await renderWithTradingProvider(
+    const renderCryptoAmountRow = (overriders: Partial<CryptoAmountRowProps>) =>
+        renderWithTradingProvider(
             <CryptoAmountRow cryptoId={'bitcoin' as CryptoId} direction="from" {...overriders} />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     it('should render nothing for unknown cryptoId', async () => {

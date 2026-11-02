@@ -33,8 +33,8 @@ const preloadedState = {
 };
 
 describe('SettingsExperimentalScreen', () => {
-    const renderSettingsExperimentalScreen = async () =>
-        await renderWithStoreProvider(<SettingsExperimentalScreen />, { preloadedState });
+    const renderSettingsExperimentalScreen = () =>
+        renderWithStoreProvider(<SettingsExperimentalScreen />, { preloadedState });
 
     beforeEach(() => {
         mockExperimentalFeatures = {

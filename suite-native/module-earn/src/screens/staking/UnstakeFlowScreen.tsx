@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -28,37 +28,50 @@ import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/const
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { SolanaUnstakeAmountBoundsAlert } from '../../components/staking/SolanaUnstakeAmountBoundsAlert';
+import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
 import { UnstakeCanClaimAlert } from '../../components/staking/UnstakeCanClaimAlert';
 import { UnstakeFlowScreenHeader } from '../../components/staking/UnstakeFlowScreenHeader';
 import { UnstakingTimelineCard } from '../../components/staking/UnstakingTimelineCard';
+import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useSolanaStakingLimit } from '../../hooks/staking/useSolanaStakingLimit';
+import { useStakingPendingTransaction } from '../../hooks/staking/useStakingPendingTransaction';
 import { useUnstakeForm } from '../../hooks/staking/useUnstakeForm';
 
 export const UnstakeFlowScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.UnstakeFlow>>();
-    const { accountKey } = route.params;
+    const { accountKey, pendingTransaction } = route.params;
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.UnstakeFlow>>();
 
     const unstakeForm = useUnstakeForm(accountKey);
+
+    const { isPending, pendingModal } = useStakingPendingTransaction({
+        accountKey,
+        pendingTransaction,
+        stakeType: 'unstake',
+    });
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
     const { analytics } = useServices(injectNativeAnalytics);
-    const currencyRef = useRef<'crypto' | 'fiat' | undefined>(undefined);
+    const deviceStatus = useEarnDeviceStatus();
+    const [currency, setCurrency] = useState<'crypto' | 'fiat'>('crypto');
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
-        currencyRef.current = activeView === 'primary' ? 'crypto' : 'fiat';
+        setCurrency(activeView === 'primary' ? 'crypto' : 'fiat');
     }, []);
-    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
-        type: events.stakingUnstakeEvent.name,
-        payload: {
-            action: 'cancel',
-            step: 'unstake-form-modal',
-            networkSymbol: networkSymbol ?? undefined,
-            currency: currencyRef.current,
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics(
+        {
+            type: events.stakingUnstakeEvent.name,
+            payload: {
+                action: 'cancel',
+                step: 'unstake-form-modal',
+                networkSymbol: networkSymbol ?? undefined,
+                currency,
+            },
         },
-    });
+        !isPending,
+    );
 
     const { isLimitExceeded: isAccountLimitExceeded, formattedAmount: unstakeLimitAmount } =
         useSolanaStakingLimit({
@@ -73,7 +86,7 @@ export const UnstakeFlowScreen = () => {
         form,
         account,
         amountValue,
-        stakedBalance,
+        unstakableBalance,
         canClaim,
         claimableAmount,
         showNetworkFeeWarning,
@@ -96,9 +109,10 @@ export const UnstakeFlowScreen = () => {
             type: events.stakingUnstakeEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 step: 'unstake-form-modal',
                 networkSymbol: networkSymbol ?? undefined,
-                currency: currencyRef.current,
+                currency,
             },
         });
 
@@ -116,9 +130,11 @@ export const UnstakeFlowScreen = () => {
             footer={
                 <>
                     <ScreenFooterGradient />
-                    <Box paddingHorizontal="sp16" paddingBottom="sp16">
+                    <Box paddingBottom="sp16">
                         <Button
-                            isDisabled={!isValid || isFeeUnavailable || isPrecomposeError}
+                            isDisabled={
+                                !isValid || isFeeUnavailable || isPrecomposeError || isPending
+                            }
                             onPress={handleReviewAndSign}
                         >
                             <Translation id="earn.earnFormScreen.reviewAndSign" />
@@ -126,77 +142,89 @@ export const UnstakeFlowScreen = () => {
                     </Box>
                 </>
             }
+            footerHorizontalPadding="sp16"
         >
-            <EarnAmountCard
-                accountKey={accountKey}
-                label={<Translation id="earn.earnFormScreen.staked" />}
-                cryptoAmount={stakedBalance ?? undefined}
-            />
+            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+                <EarnAmountCard
+                    accountKey={accountKey}
+                    label={<Translation id="earn.earnFormScreen.staked" />}
+                    cryptoAmount={unstakableBalance ?? undefined}
+                />
 
-            {isAccountLimitExceeded && networkSymbol && (
+                {isAccountLimitExceeded && networkSymbol && (
+                    <Box marginTop="sp16">
+                        <BannerInline
+                            intent="info"
+                            title={
+                                <Translation
+                                    id="earn.unstakeFlowScreen.accountLimitBanner"
+                                    values={{
+                                        limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
+                                        amount: unstakeLimitAmount,
+                                        symbol: getNetworkDisplaySymbol(networkSymbol),
+                                    }}
+                                />
+                            }
+                        />
+                    </Box>
+                )}
+
                 <Box marginTop="sp16">
-                    <BannerInline
-                        intent="info"
-                        title={
-                            <Translation
-                                id="earn.unstakeFlowScreen.accountLimitBanner"
-                                values={{
-                                    limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
-                                    amount: unstakeLimitAmount,
-                                    symbol: getNetworkDisplaySymbol(networkSymbol),
-                                }}
-                            />
-                        }
-                    />
+                    <UnstakingTimelineCard accountKey={accountKey} />
                 </Box>
-            )}
 
-            <Box marginTop="sp16">
-                <UnstakingTimelineCard accountKey={accountKey} />
+                <Form form={form}>
+                    <Box marginTop="sp16">
+                        <EarnOutputFields
+                            accountKey={accountKey}
+                            maxButtonVariant="unstake"
+                            isWithdrawalFeesBannerVisible={false}
+                            unstakeInstantAmount={approximatedInstantEthAmount}
+                            onCurrencyChange={handleCurrencyChange}
+                        />
+                    </Box>
+                    <Box marginTop="sp16">
+                        <SolanaUnstakeAmountBoundsAlert
+                            account={account}
+                            amountValue={amountValue}
+                        />
+                    </Box>
+                </Form>
+                {showNetworkFeeWarning && (
+                    <Box marginTop="sp16">
+                        <BannerInline
+                            intent="warning"
+                            title={<Translation id="earn.earnFormScreen.networkFeeWarning" />}
+                        />
+                    </Box>
+                )}
+                {canClaim && networkSymbol && (
+                    <Box marginTop="sp16">
+                        <UnstakeCanClaimAlert
+                            claimableAmount={claimableAmount}
+                            symbol={networkSymbol}
+                        />
+                    </Box>
+                )}
+                {isValid && (
+                    <Box marginTop="sp24">
+                        <FeeSelector
+                            accountKey={accountKey}
+                            updateThunk={updateFeeLevelThunk}
+                            selectedFee={formDraft?.selectedFee ?? 'normal'}
+                            selectedFeePerUnit={formDraft?.feePerUnit}
+                            formDraft={formDraft}
+                            formDraftKey={formDraftKey}
+                        />
+                    </Box>
+                )}
             </Box>
 
-            <Form form={form}>
-                <Box marginTop="sp16">
-                    <EarnOutputFields
-                        accountKey={accountKey}
-                        maxButtonVariant="unstake"
-                        isWithdrawalFeesBannerVisible={false}
-                        unstakeInstantAmount={approximatedInstantEthAmount}
-                        onCurrencyChange={handleCurrencyChange}
-                    />
-                </Box>
-                <Box marginTop="sp16">
-                    <SolanaUnstakeAmountBoundsAlert account={account} amountValue={amountValue} />
-                </Box>
-            </Form>
-            {showNetworkFeeWarning && (
-                <Box marginTop="sp16">
-                    <BannerInline
-                        intent="warning"
-                        title={<Translation id="earn.earnFormScreen.networkFeeWarning" />}
-                    />
-                </Box>
-            )}
-            {canClaim && networkSymbol && (
-                <Box marginTop="sp16">
-                    <UnstakeCanClaimAlert
-                        claimableAmount={claimableAmount}
-                        symbol={networkSymbol}
-                    />
-                </Box>
-            )}
-            {isValid && (
-                <Box marginTop="sp24">
-                    <FeeSelector
-                        accountKey={accountKey}
-                        updateThunk={updateFeeLevelThunk}
-                        selectedFee={formDraft?.selectedFee ?? 'normal'}
-                        selectedFeePerUnit={formDraft?.feePerUnit}
-                        formDraft={formDraft}
-                        formDraftKey={formDraftKey}
-                    />
-                </Box>
-            )}
+            <StakingPendingTransactionModal
+                accountKey={accountKey}
+                pendingModal={pendingModal}
+                stakeType="unstake"
+            />
         </Screen>
     );
 };

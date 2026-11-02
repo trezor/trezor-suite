@@ -93,10 +93,13 @@ export const TokenTransferListItemValues = ({
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
                 tokenSymbol={
                     tokenTransfer.symbol
-                        ? toTokenSymbol(getDisplaySymbol(tokenTransfer.symbol))
+                        ? toTokenSymbol(
+                              getDisplaySymbol(tokenTransfer.symbol, tokenTransfer.contract),
+                          )
                         : null
                 }
                 tokenDecimals={tokenTransfer.decimals}
+                signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 isPhishingTransaction={isPhishingTransaction}

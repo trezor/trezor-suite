@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import {
     type AuthenticityChecksRootState,
+    selectIsDeviceAuthenticityCheckSupportedAndEnabled,
     selectShouldCheckDeviceAuthenticity,
     selectShouldRouterAppSkipInteractiveDeviceChecks,
 } from '@suite/authenticity-checks';
 import { selectSelectedDevice } from '@suite-common/device';
-import { getIsDeviceReadyForAuthenticityCheck } from '@suite-common/device-authenticity';
 import {
     type PersistentDeviceDataRootState,
     selectDeviceNeedsManualCheck,
@@ -31,8 +31,10 @@ export const useInteractiveDeviceChecksFlowState = () => {
     const shouldDoDeviceAuthenticityCheck = useSelector((state: AuthenticityChecksRootState) =>
         selectShouldCheckDeviceAuthenticity(state, selectedDevice),
     );
-    const isDeviceReadyForDeviceAuthenticityCheck =
-        getIsDeviceReadyForAuthenticityCheck(selectedDevice);
+    const isDeviceReadyAndDeviceAuthenticityCheckEnabled = useSelector(
+        (state: AuthenticityChecksRootState) =>
+            selectIsDeviceAuthenticityCheckSupportedAndEnabled(state, selectedDevice),
+    );
     const isSkippedRoute = useSelector(selectShouldRouterAppSkipInteractiveDeviceChecks);
 
     const isAnyCheckRequired = shouldDoManualDeviceCheck || shouldDoDeviceAuthenticityCheck;
@@ -50,10 +52,10 @@ export const useInteractiveDeviceChecksFlowState = () => {
     // Reset to step 1 (MDC) if the device disconnects, or any other reason why it no longer supports DAC.
     // Meanwhile, MDC can be performed with device in any state.
     useEffect(() => {
-        if (isAuthenticityCheckStepActive && !isDeviceReadyForDeviceAuthenticityCheck) {
+        if (isAuthenticityCheckStepActive && !isDeviceReadyAndDeviceAuthenticityCheckEnabled) {
             setIsAuthenticityCheckStepActive(false);
         }
-    }, [isAuthenticityCheckStepActive, isDeviceReadyForDeviceAuthenticityCheck]);
+    }, [isAuthenticityCheckStepActive, isDeviceReadyAndDeviceAuthenticityCheckEnabled]);
 
     // The flow is displayed (entered) when the checks are still required, but the DAC success screen is sticky,
     // so the flow shall be displayed until the user dismisses the DAC success.

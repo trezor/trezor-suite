@@ -4,8 +4,8 @@ import { getWalletState } from '@suite-native/trading-fixtures';
 import { BuyFiatCurrencySheet } from './BuyFiatCurrencySheet';
 
 describe('BuyFiatCurrencySheet', () => {
-    const renderBuyFiatCurrencySheet = async () =>
-        await renderWithStoreProvider(
+    const renderBuyFiatCurrencySheet = () =>
+        renderWithStoreProvider(
             <BuyFiatCurrencySheet onFiatSelect={jest.fn()} onClose={jest.fn()} isVisible={true} />,
             { preloadedState: { wallet: getWalletState({ tradeType: 'buy' }) } },
         );

@@ -8,12 +8,12 @@ import {
     selectAccountByKey,
     selectConvertedNetworkFeeLevelFeePerUnit,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type FeeLevelLabel,
-    type GeneralPrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
+import type {
+    AccountKey,
+    FeeLevelLabel,
+    GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useFeesFetching } from './useFeesFetching';
@@ -87,7 +87,11 @@ export const useFeeCalculation = ({
 
     // Use actual values if available, otherwise fall back to mocked values
     const totalAmount = selectedFeeLevelTransaction?.totalSpent ?? mockedTotalAmount;
-    const fee = selectedFeeLevelTransaction?.fee ?? mockedFee;
+    const selectedTransaction = feeLevels[selectedFeeLevel];
+    const fee =
+        selectedTransaction?.type === 'error'
+            ? null
+            : (selectedFeeLevelTransaction?.fee ?? mockedFee);
 
     return {
         form,

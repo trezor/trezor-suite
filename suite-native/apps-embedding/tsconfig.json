@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/apps-embedding"
+        },
+        {
+            "path": "../../suite-common/react-query"
+        },
+        { "path": "../atoms" },
+        { "path": "../config" },
+        { "path": "../intl" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils-store" }
+    ]
+}

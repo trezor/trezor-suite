@@ -20,6 +20,7 @@ export * from './hooks/useTradingExchangeWatchApproval';
 export * from './hooks/useTradingRefetchScheduler';
 export * from './hooks/useDexExchangeTxSimulation';
 export * from './hooks/usePreferredCurrencyUsdThreshold';
+export * from './hooks/useBoundTradingAccount';
 export {
     type TransactionStatus,
     type UseAllowanceTxTrackingParams,
@@ -36,9 +37,11 @@ export { tradingThunks } from './thunks/common';
 export type { LoadInitialDataThunkDeps } from './thunks/common/loadInitialDataThunk';
 export { exchangeThunks } from './thunks/exchange';
 export { sellThunks } from './thunks/sell';
+export * from './thunks/common/buildRecomposeInputsFromTrade';
 export * from './thunks/common/buildTradingComposeFormState';
 export * from './thunks/exchange/buildExchangeComposeInputs';
 export * from './selectors/tradingSelectors';
+export * from './selectors/tradeableAssetBalancesSelectors';
 export * from './hooks/useTradingDetail';
 export type * from './types/tradingDetail';
 export type * from './types';
@@ -53,6 +56,7 @@ export * from './utils/tradeableAssetGroupUtils';
 export * from './utils/tradeableAssetListUtils';
 export * from './utils/tradeOperationUtils';
 export * from './utils/tradeHistoryExportUtils';
+export * from './utils/exchange/canSwitchExchangeAssets';
 export * from './utils/exchange/composeDexTxSimulationAction';
 export * from './utils/exchange/exchangeUtils';
 export * from './utils/exchange/getExchangeIssue';

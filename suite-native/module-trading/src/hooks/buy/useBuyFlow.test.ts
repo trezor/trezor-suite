@@ -56,11 +56,11 @@ describe('useBuyFlow', () => {
             },
         });
 
-    const renderBuyForm = async () =>
-        await renderHookWithStoreProvider(() => useBuyForm(), { services: { ...services, store } });
+    const renderBuyForm = () =>
+        renderHookWithStoreProvider(() => useBuyForm(), { services: { ...services, store } });
 
-    const renderUseTradingBuyFlow = async () =>
-        await renderHookWithStoreProvider(() => useBuyFlow(buyForm), {
+    const renderUseTradingBuyFlow = () =>
+        renderHookWithStoreProvider(() => useBuyFlow(buyForm), {
             services: { ...services, store },
         });
 

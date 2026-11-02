@@ -1,14 +1,18 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useState } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     type VotingDelegationOption,
+    areCardanoDrepIdsEqual,
+    getCardanoAccountDrepId,
+    isCardanoDrepIdCip129,
+    normalizeCardanoDrepId,
     selectVotingDelegationOption,
     stakeActions,
     validateCardanoDrep,
 } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountWithNetworkType } from '@suite-common/wallet-types';
 import {
     Badge,
     type BadgeIntent,
@@ -23,11 +27,12 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { QuestionIcon } from '@trezor/icons';
+import { CheckIcon, QuestionIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
+import { InputError } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 
 export type VotingPreferenceOption = {
@@ -70,12 +75,30 @@ const getVotingOption = (type: VotingDelegationOption['type']): VotingDelegation
     }
 };
 
-const getDrepIdErrorId = (drepId: string, currentDrepId?: string | null): TranslationKey | null => {
+const getConvertedDrepId = (drepId: string, account: AccountWithNetworkType<'cardano'>) => {
+    const normalizedDrepId = normalizeCardanoDrepId(drepId);
+    if (normalizedDrepId === null) return null;
+
+    // The backend's legacy id needs its has_script flag to preserve the credential type.
+    return drepId.toLowerCase() === account.misc?.staking?.drep?.drep_id?.toLowerCase()
+        ? getCardanoAccountDrepId(account)
+        : normalizedDrepId;
+};
+
+const getDrepIdErrorId = (
+    drepId: string,
+    convertedDrepId: string | null,
+    currentDrepId?: string | null,
+): TranslationKey | null => {
     if (drepId === '') return null;
 
-    if (drepId === currentDrepId) return 'TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE';
+    if (areCardanoDrepIdsEqual(convertedDrepId ?? drepId, currentDrepId)) {
+        return 'TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE';
+    }
 
     if (!validateCardanoDrep(drepId)) return 'TR_STAKING_INVALID_DREP_ID';
+
+    if (!isCardanoDrepIdCip129(drepId)) return 'TR_STAKING_DREP_ID_LEGACY_FORMAT';
 
     return null;
 };
@@ -100,15 +123,17 @@ export const VotingPreferenceCard = ({
     );
     const { dispatch } = useServices(injectDispatch);
     const { translationString } = useTranslation();
+    const [isDrepIdConverted, setIsDrepIdConverted] = useState(false);
 
     if (account.networkType !== 'cardano') return null;
 
-    const drepIdErrorId =
-        selectedVotingDelegation.type === 'another_drep'
-            ? getDrepIdErrorId(selectedVotingDelegation.drepId, currentDrepId)
-            : null;
+    const drepId =
+        selectedVotingDelegation.type === 'another_drep' ? selectedVotingDelegation.drepId : '';
+    const convertedDrepId = getConvertedDrepId(drepId, account);
+    const drepIdErrorId = getDrepIdErrorId(drepId, convertedDrepId, currentDrepId);
 
     const handleOptionSelect = (type: VotingDelegationOption['type']) => {
+        setIsDrepIdConverted(false);
         dispatch(
             stakeActions.setAccountVotingDelegation({
                 accountKey: account.key,
@@ -118,12 +143,38 @@ export const VotingPreferenceCard = ({
     };
 
     const handleDrepIdChange = (value: string) => {
+        setIsDrepIdConverted(false);
         dispatch(
             stakeActions.setAccountVotingDelegation({
                 accountKey: account.key,
                 option: { type: 'another_drep', drepId: value },
             }),
         );
+    };
+
+    const handleDrepIdConvert = () => {
+        if (convertedDrepId === null) return;
+
+        handleDrepIdChange(convertedDrepId);
+        setIsDrepIdConverted(true);
+    };
+
+    const getDrepIdBottomText = () => {
+        if (drepIdErrorId === 'TR_STAKING_DREP_ID_LEGACY_FORMAT') {
+            return (
+                <InputError
+                    message={translationString(drepIdErrorId)}
+                    buttonProps={{
+                        onClick: handleDrepIdConvert,
+                        text: translationString('TR_STAKING_CONVERT_DREP_ID'),
+                    }}
+                />
+            );
+        }
+        if (drepIdErrorId) return <Translation id={drepIdErrorId} />;
+        if (isDrepIdConverted) return <Translation id="TR_STAKING_DREP_ID_CONVERTED" />;
+
+        return null;
     };
 
     return (
@@ -197,10 +248,11 @@ export const VotingPreferenceCard = ({
                                             value={selectedVotingDelegation.drepId}
                                             inputMode="text"
                                             hasError={drepIdErrorId !== null}
-                                            bottomText={
-                                                drepIdErrorId ? (
-                                                    <Translation id={drepIdErrorId} />
-                                                ) : null
+                                            bottomText={getDrepIdBottomText()}
+                                            bottomTextIconComponent={
+                                                isDrepIdConverted && !drepIdErrorId ? (
+                                                    <Icon as={CheckIcon} size={16} isDisabled />
+                                                ) : undefined
                                             }
                                             onChange={e => handleDrepIdChange(e.target.value)}
                                         />

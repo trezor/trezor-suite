@@ -18,7 +18,6 @@ import type { NativeSpacing } from '@trezor/theme';
 
 type RediscoveryNeededWarningProps = {
     margin?: NativeSpacing;
-    marginHorizontal?: NativeSpacing;
     marginBottom?: NativeSpacing;
 };
 
