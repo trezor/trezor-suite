@@ -1,13 +1,15 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type AllowanceTransactionType } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
+    getAllowanceAction,
     subunitsToUnits,
-    tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { fetchAllowance } from '../../allowance/fetchAllowance';
@@ -60,7 +62,7 @@ type OpenYieldApproveModalParams = YieldSessionDataPayload & {
     dispatch: Dispatch;
     amount: string;
     spender: string;
-    txType: 'approve' | 'revoke';
+    txType: AllowanceTransactionType;
 };
 
 type OpenYieldRevokeModalParams = YieldSessionDataPayload & {
@@ -366,41 +368,48 @@ export const submitYieldApproveThunk = createThunk<void, SubmitYieldApprovePaylo
                 tokenContractAddress,
                 coin: flowData.account.symbol,
             });
-            const requestSubunits = unitsToSubunits({
-                value: asAmountUnit(new BigNumber(requestAmount)),
-                decimals: flowData.token.decimals,
+            const allowanceAction = getAllowanceAction({
+                requestedAmount: requestAmount,
+                currentAllowanceAmount: subunitsToUnits({
+                    value: allowanceSubunits,
+                    decimals: flowData.token.decimals,
+                }).toFixed(),
+                shouldConsiderAllowance: true,
+                isRevokeRequired: false,
+                tokenContractAddress,
             });
 
-            if (allowanceSubunits.gte(requestSubunits)) {
-                dispatch(
-                    yieldActions.completeApproval({
-                        flowType,
+            switch (allowanceAction) {
+                case 'continue':
+                    dispatch(
+                        yieldActions.completeApproval({
+                            flowType,
+                            flowKey,
+                            amount,
+                        }),
+                    );
+
+                    return;
+                case 'revoke':
+                    dispatch(yieldActions.setRevokeRequired({ flowType, flowKey }));
+
+                    return;
+                case 'approve':
+                case 'increase':
+                    openYieldApproveModal({
+                        dispatch,
                         flowKey,
-                        amount,
-                    }),
-                );
+                        flowType,
+                        flowData,
+                        amount: requestAmount,
+                        spender,
+                        txType: 'approve',
+                    });
 
-                return;
+                    return;
+                default:
+                    exhaustive(allowanceAction);
             }
-
-            if (
-                allowanceSubunits.gt(0) &&
-                !tokenSupportsIncreasingAllowance(tokenContractAddress)
-            ) {
-                dispatch(yieldActions.setRevokeRequired({ flowType, flowKey }));
-
-                return;
-            }
-
-            openYieldApproveModal({
-                dispatch,
-                flowKey,
-                flowType,
-                flowData,
-                amount: requestAmount,
-                spender,
-                txType: 'approve',
-            });
         } catch {
             setYieldError({ dispatch, flowType, flowKey });
         } finally {

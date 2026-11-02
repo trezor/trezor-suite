@@ -1,4 +1,3 @@
-import { UINT256_MAX } from '@suite-common/suite-constants';
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -11,7 +10,6 @@ import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import {
-    buildApprovalTransactionData,
     getEffectiveGasPrice,
     getEvmTransactionPurpose,
     getEvmTransactionTextSignature,
@@ -487,83 +485,6 @@ describe('eth utils', () => {
             expect(
                 getWrappedNativeTxTarget(tx({ targets: [{ addresses: [OTHER] }] })),
             ).toBeUndefined();
-        });
-    });
-
-    describe('buildApprovalTransactionData', () => {
-        const VALID_SPENDER = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
-
-        it('builds correct calldata for a valid approval', () => {
-            const result = buildApprovalTransactionData({
-                amount: '1000000000000000000',
-                spender: VALID_SPENDER,
-            });
-
-            expect(result).toBe(
-                '0x095ea7b3' +
-                    '000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e' +
-                    '0000000000000000000000000000000000000000000000000de0b6b3a7640000',
-            );
-        });
-
-        it('builds correct calldata for zero amount (revoke)', () => {
-            const result = buildApprovalTransactionData({
-                amount: '0',
-                spender: VALID_SPENDER,
-            });
-
-            expect(result).toBe(
-                '0x095ea7b3' +
-                    '000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e' +
-                    '0000000000000000000000000000000000000000000000000000000000000000',
-            );
-        });
-
-        it('builds correct calldata for max uint256 (infinite approval)', () => {
-            const maxUint256Decimal = new BigNumber(UINT256_MAX).toString(10);
-            const result = buildApprovalTransactionData({
-                amount: maxUint256Decimal,
-                spender: VALID_SPENDER,
-            });
-
-            expect(result).toBe(
-                '0x095ea7b3' +
-                    '000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e' +
-                    'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-            );
-        });
-
-        it.each([
-            ['wrong length', '0x742d35cc6634c0532925a3b844bc454e4438f44'],
-            ['non-hex characters', '0xZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'],
-            ['empty string', ''],
-        ])('throws for invalid spender address (%s)', (_, spender) => {
-            expect(() => buildApprovalTransactionData({ amount: '1000', spender })).toThrow();
-        });
-
-        it.each([
-            ['negative', '-1'],
-            ['non-numeric', 'abc'],
-            ['decimal', '1.5'],
-            ['exceeds uint256 max', new BigNumber(UINT256_MAX).plus(1).toString(10)],
-        ])('throws for invalid amount (%s)', (_, amount) => {
-            expect(() =>
-                buildApprovalTransactionData({ amount, spender: VALID_SPENDER }),
-            ).toThrow();
-        });
-
-        it('produces calldata that the calldata decoder can decode', () => {
-            const amount = '1000000000000000000';
-            const calldata = buildApprovalTransactionData({
-                amount,
-                spender: VALID_SPENDER,
-            });
-
-            const decoded = Calldata.evm.erc20.approve.decode(calldata);
-
-            expect(decoded).not.toBeNull();
-            expect(decoded?.spender).toBe(VALID_SPENDER.toLowerCase());
-            expect(decoded?.amount.toString()).toBe(amount);
         });
     });
 

@@ -12,6 +12,7 @@ export { useSelector as useAccountsSelector } from './accounts/hooks/useSelector
 export * from './allowance/allowanceConstants';
 export * from './allowance/composeAllowanceTransactionThunk';
 export * from './allowance/fetchAllowance';
+export * from './allowance/useAllowanceTxTracking';
 export * from './blockchain/blockchainActions';
 export * from './blockchain/blockchainMiddleware';
 export * from './blockchain/blockchainReducer';
@@ -159,7 +160,6 @@ export * from './yield/thunks/yieldWithdrawThunks';
 export * from './yield/thunks/yieldWrapThunks';
 export * from './yield/utils/fetchWrappedNativeTokenInfo';
 export * from './yield/utils/getResolvedYieldFlowData';
-export * from './yield/utils/yieldApprovalActionUtils';
 export * from './yield/utils/yieldClaimRewards';
 export * from './yield/utils/yieldDeviceUtils';
 export * from './yield/utils/yieldFeeEstimation';

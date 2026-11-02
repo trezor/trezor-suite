@@ -1,19 +1,18 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
+
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
+import { selectTransactionByAccountKeyAndTxid } from '../transactions/transactionsSelectors';
 
 export type UseAllowanceTxTrackingParams = {
     accountKey: AccountKey | null;
 };
 
-export type TransactionStatus =
+export type AllowanceTransactionStatus =
     | {
           isPending: false;
           isConfirmed: false;
@@ -42,8 +41,8 @@ export const useAllowanceTxTracking = ({ accountKey }: UseAllowanceTxTrackingPar
         approvalTxid ? selectTransactionByAccountKeyAndTxid(state, accountKey, approvalTxid) : null,
     );
 
-    const status = useMemo<TransactionStatus>(() => {
-        const baseRetValue: TransactionStatus = {
+    const status = useMemo<AllowanceTransactionStatus>(() => {
+        const baseRetValue: AllowanceTransactionStatus = {
             isPending: false,
             isConfirmed: false,
             isFailed: false,

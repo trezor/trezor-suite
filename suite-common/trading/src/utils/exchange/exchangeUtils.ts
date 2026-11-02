@@ -28,8 +28,6 @@ import { type ExchangeInfo } from '../../reducers/exchangeReducer';
 import { type TradingExchangeAmountLimitProps } from '../../types';
 import { cryptoIdToNetwork, getUnusedAddressFromAccount, parseCryptoId } from '../../utils';
 
-export { tokenSupportsIncreasingAllowance };
-
 type GetAmountLimitsProps = {
     quotes: ExchangeTrade[];
     currency: string;

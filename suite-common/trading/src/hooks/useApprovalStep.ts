@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import type { AllowanceType } from '@suite-common/wallet-types';
+import type { AllowanceTransactionType } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
 export type ApprovalStep = 'REQUIRED' | 'APPROVED' | 'LOADING' | 'ERROR';
@@ -19,7 +19,7 @@ export interface ApprovalTxState {
 
 export interface UseApprovalStepParams {
     tx: ApprovalTxState;
-    currentApprovalType: AllowanceType;
+    currentTransactionType: AllowanceTransactionType;
     quoteStatus: ExchangeTrade['status'] | undefined;
     refreshQuotes: () => Promise<void>;
 }
@@ -30,21 +30,22 @@ export interface UseApprovalStepReturn {
 
 export const useApprovalStep = ({
     tx,
-    currentApprovalType,
+    currentTransactionType,
     quoteStatus,
     refreshQuotes,
 }: UseApprovalStepParams): UseApprovalStepReturn => {
     const [approvalStep, setApprovalStep] = useState<ApprovalStep | undefined>();
-    const [txApprovalType, setTxApprovalType] = useState<AllowanceType | null>(null);
+    const [trackedTransactionType, setTrackedTransactionType] =
+        useState<AllowanceTransactionType | null>(null);
 
     const refreshQuotesRef = useCurrentRef(refreshQuotes);
     const effectRunIdRef = useRef(0);
 
     useEffect(() => {
-        if (tx.approvalTxid && !txApprovalType) {
-            setTxApprovalType(currentApprovalType);
+        if (tx.approvalTxid && !trackedTransactionType) {
+            setTrackedTransactionType(currentTransactionType);
         }
-    }, [tx.approvalTxid, currentApprovalType, txApprovalType]);
+    }, [tx.approvalTxid, currentTransactionType, trackedTransactionType]);
 
     useEffect(() => {
         const thisRunId = ++effectRunIdRef.current;
@@ -66,8 +67,8 @@ export const useApprovalStep = ({
             return;
         }
 
-        if (status.isConfirmed && txApprovalType) {
-            setApprovalStep(txApprovalType === 'APPROVE' ? 'APPROVED' : 'REQUIRED');
+        if (status.isConfirmed && trackedTransactionType) {
+            setApprovalStep(trackedTransactionType === 'approve' ? 'APPROVED' : 'REQUIRED');
 
             refreshQuotesRef
                 .current()
@@ -79,10 +80,10 @@ export const useApprovalStep = ({
                         return;
                     }
                     setApprovalTxid(null);
-                    setTxApprovalType(null);
+                    setTrackedTransactionType(null);
                 });
         }
-    }, [tx, txApprovalType, refreshQuotesRef]);
+    }, [tx, trackedTransactionType, refreshQuotesRef]);
 
     useEffect(() => {
         if (tx.approvalTxid) return;

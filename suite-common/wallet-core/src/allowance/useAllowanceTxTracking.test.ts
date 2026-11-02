@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { combineReducers } from '@reduxjs/toolkit';
 
 import {
@@ -6,11 +9,11 @@ import {
     renderHookWithStoreProvider,
     testMocks,
 } from '@suite-common/test-utils';
-import { type TransactionsState } from '@suite-common/wallet-core';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useAllowanceTxTracking } from './useAllowanceTxTracking';
+import { type TransactionsState } from '../transactions/transactionsReducerTypes';
 
 const ACCOUNT_KEY = mockAccountKey({ descriptor: 'testAccountKey' });
 const TXID = 'test-txid-abc123';
