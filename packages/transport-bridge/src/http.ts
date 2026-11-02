@@ -120,7 +120,7 @@ export class TrezordNode {
         bundledVersion,
         port = 21328,
     }: {
-        api: 'legacy' | 'nusb' | 'udp' | AbstractApi;
+        api: 'legacy' | 'nusb' | 'udp' | 'hid' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
         bundledVersion?: string;
