@@ -1,6 +1,6 @@
 ---
 name: page-objects
-description: Page object structure and patterns for Suite E2E tests: naming suffixes, composition, @step decorators, fixture registration. Use when building locators or actions for test scenarios.
+description: 'Page object structure and patterns for Suite E2E tests: naming suffixes, composition, @step decorators, fixture registration. Use when building locators or actions for test scenarios.'
 ---
 
 # Page Objects: Structure and Patterns
@@ -20,6 +20,26 @@ Use clear suffixes to indicate page object type:
 - **`Input`** — Form component (TrezorInput)
 
 **Wrong**: `UserActions`, `PageHelper`, `Utils` — these obscure intent and break discoverability.
+
+---
+
+## Locator Initialization
+
+Initialize concrete `readonly` locators in the constructor to avoid TS2729 (`page` used before
+initialization). Parameterized locator functions can remain fields; they read `page` when called.
+
+```typescript
+export class HomeAssetsSection {
+    readonly table: Locator;
+
+    constructor(private readonly page: Page) {
+        this.table = page.getByTestId('@dashboard/home-asset-table');
+    }
+}
+```
+
+Playwright does not type-check. Follow the existing
+[type-check guidance](../../../../skills/development-commands/SKILL.md).
 
 ---
 
