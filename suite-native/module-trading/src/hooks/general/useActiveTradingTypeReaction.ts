@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { selectEnabledTradingTypes, tradingActions } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
@@ -16,15 +15,10 @@ export const useActiveTradingTypeReaction = () => {
     const tradingType = params?.tradingType;
 
     useEffect(() => {
-        let activeTradingType: TradingTypeWithConcierge = 'buy';
-
-        if (tradingType && enabledTradingTypes.includes(tradingType)) {
-            activeTradingType = tradingType;
-        } else if (enabledTradingTypes.length > 0) {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const first: TradingType = enabledTradingTypes[0];
-            activeTradingType = first;
-        }
+        const activeTradingType =
+            tradingType && enabledTradingTypes.includes(tradingType)
+                ? tradingType
+                : (enabledTradingTypes[0] ?? 'buy');
 
         dispatch(tradingActions.setActiveTradingType(activeTradingType));
 
