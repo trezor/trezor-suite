@@ -16,13 +16,11 @@ describe('createQueryClient', () => {
         const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
         const queryFn = () => Promise.reject(new Error('offline'));
 
-        await expect(queryClient.fetchQuery({ queryKey: ['loud'], queryFn })).rejects.toThrow(
-            'offline',
-        );
+        await expect(queryClient.query({ queryKey: ['loud'], queryFn })).rejects.toThrow('offline');
         expect(console.error).toHaveBeenCalledTimes(1);
 
         await expect(
-            queryClient.fetchQuery({ queryKey: ['quiet'], queryFn, meta: SILENT_QUERY_META }),
+            queryClient.query({ queryKey: ['quiet'], queryFn, meta: SILENT_QUERY_META }),
         ).rejects.toThrow('offline');
         expect(console.error).toHaveBeenCalledTimes(1);
 

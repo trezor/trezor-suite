@@ -121,7 +121,7 @@ export const refreshStakingProductInfoThunk = createThunk<
                 const previousInfo = getCachedStakingProductInfo(queryClient, productId);
 
                 try {
-                    await queryClient.fetchQuery({
+                    await queryClient.query({
                         ...getStakingProductInfoQueryOptions({
                             stakingProductRepository: staking.stakingProductRepository,
                             productId,

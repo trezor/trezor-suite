@@ -1,5 +1,10 @@
 import type { StakingProductId, StakingProductInfo } from '@suite-common/earn-staking-common';
-import { type QueryClient, SILENT_QUERY_META, commonQueryKeys } from '@suite-common/react-query';
+import {
+    type QueryClient,
+    SILENT_QUERY_META,
+    commonQueryKeys,
+    queryOptions,
+} from '@suite-common/react-query';
 
 import type { StakingProductRepositoryDep } from '../repository/createStakingProductRepository';
 
@@ -10,14 +15,15 @@ type StakingProductInfoQueryParams = StakingProductRepositoryDep & {
 export const getStakingProductInfoQueryOptions = ({
     stakingProductRepository,
     productId,
-}: StakingProductInfoQueryParams) => ({
-    queryKey: commonQueryKeys.stakingProductInfo(productId),
-    queryFn: (): Promise<StakingProductInfo> =>
-        stakingProductRepository.get(productId).fetchProductInfo({}),
-    gcTime: Infinity,
-    networkMode: 'always' as const,
-    meta: SILENT_QUERY_META,
-});
+}: StakingProductInfoQueryParams) =>
+    queryOptions({
+        queryKey: commonQueryKeys.stakingProductInfo(productId),
+        queryFn: (): Promise<StakingProductInfo> =>
+            stakingProductRepository.get(productId).fetchProductInfo({}),
+        gcTime: Infinity,
+        networkMode: 'always',
+        meta: SILENT_QUERY_META,
+    });
 
 export const getCachedStakingProductInfo = (
     queryClient: QueryClient,

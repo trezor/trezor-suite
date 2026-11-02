@@ -5,6 +5,7 @@ export {
     useInfiniteQuery,
     useMutation,
     useQueryClient,
+    queryOptions,
     type MutationOptions,
     type QueryOptions,
     type UseQueryOptions,
