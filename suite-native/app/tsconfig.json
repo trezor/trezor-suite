@@ -89,6 +89,7 @@
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../toasts" },
+        { "path": "../trading-consts" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
         {

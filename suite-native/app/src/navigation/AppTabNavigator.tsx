@@ -10,6 +10,7 @@ import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
 import { type AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
+import { DEFAULT_TRADING_TYPE } from '@suite-native/trading-consts';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
 
@@ -25,12 +26,11 @@ export const AppTabNavigator = () => {
     const tabItemOptions = isBitcoinOnlyFirmware ? rootTabsOptionsWithoutEarn : rootTabsOptions;
 
     const handleTradeTabPress = () => {
-        // Buy is the default tab when navigating to the Trading stack
         analytics.report({
             type: events.tradingNavigateEvent.name,
             payload: {
                 action: 'navigate',
-                type: 'buy',
+                type: DEFAULT_TRADING_TYPE,
                 from: 'trade',
             },
         });
