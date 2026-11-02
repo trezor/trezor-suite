@@ -9,7 +9,11 @@
 import * as crypto from 'crypto';
 import * as http from 'http';
 
-import { CALL_SOURCE_MCP, type ConnectProcessInfo } from '@suite-common/connect-popup';
+import {
+    CALL_SOURCE_MCP,
+    type ConnectProcessInfo,
+    UNKNOWN_PROCESS,
+} from '@suite-common/connect-popup';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
@@ -1176,7 +1180,12 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                 silent: call.silent,
                 sourceType: CALL_SOURCE_MCP,
                 origin: call.origin,
-                process: call.process ?? sessionProcessInfo,
+                // Without a process the prompt shows no badge at all, so a caller Suite knows
+                // nothing about — not even a declared name, or no session at all — would look
+                // cleaner than one it labels. It gets the placeholder for a caller Suite could
+                // not identify instead, as a desktop caller does, which is warned about and never
+                // remembered.
+                process: call.process ?? sessionProcessInfo ?? { ...UNKNOWN_PROCESS },
                 manifest: sessionManifest,
             });
 
