@@ -19,6 +19,7 @@ export * from './cloneObject';
 export * from './comparison';
 export * from './convertTaprootXpub';
 export * from './countBytesInString';
+export * from './csv';
 export * from './createCooldown';
 export * from './createDeferred';
 export * from './createDeferredManager';
