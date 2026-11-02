@@ -104,7 +104,6 @@
 !/suite-common/extra-dependencies
 !/suite-common/feedback
 !/suite-common/fiat-services
-!/suite-common/finprom
 !/suite-common/firmware
 !/suite-common/firmware-authenticity
 !/suite-common/flags
@@ -125,6 +124,7 @@
 !/suite-common/price-chart
 !/suite-common/react-query
 !/suite-common/receive
+!/suite-common/regions
 !/suite-common/schemas
 !/suite-common/sentry
 !/suite-common/sign-verify
@@ -189,7 +189,6 @@
 !/suite-native/feature-feedback
 !/suite-native/feature-flags
 !/suite-native/feedback-form
-!/suite-native/finprom
 !/suite-native/firmware
 !/suite-native/formatters
 !/suite-native/formatters-config
@@ -236,6 +235,7 @@
 !/suite-native/price-chart
 !/suite-native/qr-code
 !/suite-native/react-native-graph
+!/suite-native/regions
 !/suite-native/scrollview
 !/suite-native/search
 !/suite-native/send

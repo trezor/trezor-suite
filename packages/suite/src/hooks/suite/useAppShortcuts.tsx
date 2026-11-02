@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { useToggleDebugMode } from '@suite/debug';
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { openModal } from '@suite/modal';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { SettingsAnchor, closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -45,14 +45,14 @@ export const useAppShortcuts = () => {
     const autodetectTheme = useSelector(selectAutodetectTheme);
 
     const isBioAuthEnabled = useSelector(selectIsBioAuthEnabled);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
     const toggleDebugMode = useToggleDebugMode();
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const { altKey, metaKey, ctrlKey, shiftKey } = e;
         const isDeviceSelected = selectedDevice !== undefined;
-        const isTradingShortcutAllowed = isDeviceSelected && !isFinpromRestricted;
+        const isTradingShortcutAllowed = isDeviceSelected && !isRegionRestricted;
         const cmdOrCtrl = metaKey || ctrlKey;
         // Most shortcuts use ALT alone; exclude the other modifiers to avoid clashes.
         const altOnly = altKey && !shiftKey && !cmdOrCtrl;

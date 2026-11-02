@@ -11627,15 +11627,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/finprom@workspace:*, @suite-common/finprom@workspace:suite-common/finprom":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/finprom@workspace:suite-common/finprom"
-  dependencies:
-    "@suite-common/geolocation": "workspace:*"
-    "@suite-common/message-system": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/firmware-authenticity@workspace:*, @suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity":
   version: 0.0.0-use.local
   resolution: "@suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity"
@@ -11982,6 +11973,15 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/regions@workspace:*, @suite-common/regions@workspace:suite-common/regions":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/regions@workspace:suite-common/regions"
+  dependencies:
+    "@suite-common/geolocation": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -13584,16 +13584,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/finprom@workspace:*, @suite-native/finprom@workspace:suite-native/finprom":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/finprom@workspace:suite-native/finprom"
-  dependencies:
-    "@suite-common/finprom": "workspace:*"
-    "@suite-common/message-system": "workspace:*"
-    "@suite-native/intl": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@suite-native/firmware@workspace:*, @suite-native/firmware@workspace:suite-native/firmware":
   version: 0.0.0-use.local
   resolution: "@suite-native/firmware@workspace:suite-native/firmware"
@@ -14998,7 +14988,6 @@ __metadata:
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/finprom": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -15010,6 +14999,7 @@ __metadata:
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-stellar-token-management": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/regions": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
@@ -15245,6 +15235,16 @@ __metadata:
     react-native: "npm:0.86.3"
     react-native-gesture-handler: "npm:~2.32.0"
     react-native-reanimated: "npm:4.7.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/regions@workspace:*, @suite-native/regions@workspace:suite-native/regions":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/regions@workspace:suite-native/regions"
+  dependencies:
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/regions": "workspace:*"
+    "@suite-native/intl": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -15953,9 +15953,9 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/finprom": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
+    "@suite-native/regions": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/tokens": "workspace:*"
@@ -16708,17 +16708,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/finprom@workspace:*, @suite/finprom@workspace:suite/finprom":
-  version: 0.0.0-use.local
-  resolution: "@suite/finprom@workspace:suite/finprom"
-  dependencies:
-    "@suite-common/finprom": "workspace:*"
-    "@suite-common/locale": "workspace:*"
-    "@suite-common/message-system": "workspace:*"
-    "@suite/settings": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@suite/firmware-upgrade@workspace:*, @suite/firmware-upgrade@workspace:suite/firmware-upgrade":
   version: 0.0.0-use.local
   resolution: "@suite/firmware-upgrade@workspace:suite/firmware-upgrade"
@@ -17150,6 +17139,17 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/regions@workspace:*, @suite/regions@workspace:suite/regions":
+  version: 0.0.0-use.local
+  resolution: "@suite/regions@workspace:suite/regions"
+  dependencies:
+    "@suite-common/locale": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/regions": "workspace:*"
+    "@suite/settings": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -19670,7 +19670,6 @@ __metadata:
     "@suite/experimental": "workspace:*"
     "@suite/external-links": "workspace:*"
     "@suite/feature-feedback": "workspace:*"
-    "@suite/finprom": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/form": "workspace:*"
@@ -19691,6 +19690,7 @@ __metadata:
     "@suite/price-chart": "workspace:*"
     "@suite/receive": "workspace:*"
     "@suite/recovery": "workspace:*"
+    "@suite/regions": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/sentry": "workspace:*"
     "@suite/settings": "workspace:*"

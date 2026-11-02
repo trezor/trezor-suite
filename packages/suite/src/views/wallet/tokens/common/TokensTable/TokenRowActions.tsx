@@ -5,11 +5,11 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { useExternalLink } from '@suite/external-links';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -119,7 +119,7 @@ const TokenRowBasicActions = ({
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
     const { coins } = useSelector(selectTradingInfo);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const isDeviceLocked = isLocked(true);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
 
@@ -434,7 +434,7 @@ const TokenRowBasicActions = ({
                         icon: CurrencyCircleDollarIcon,
                         onClick: onBuyButtonClick,
                         isDisabled: !canBuyToken,
-                        isHidden: isFinpromRestricted,
+                        isHidden: isRegionRestricted,
                     },
                     {
                         label: <Translation id="TR_TRADING_SELL" />,
@@ -442,14 +442,14 @@ const TokenRowBasicActions = ({
                         icon: CurrencyCircleDollarIcon,
                         onClick: onSellButtonClick,
                         isDisabled: token.balance === '0' || !canSellToken,
-                        isHidden: isFinpromRestricted,
+                        isHidden: isRegionRestricted,
                     },
                     {
                         label: <Translation id="TR_TRADING_SWAP" />,
                         'data-testid': '@trading/tokens/swap-button',
                         icon: RepeatIcon,
                         onClick: onSwapButtonClick,
-                        isHidden: isFinpromRestricted || (type === 'defi' ? false : !isBelowTablet),
+                        isHidden: isRegionRestricted || (type === 'defi' ? false : !isBelowTablet),
                         isDisabled: !canSwapToken,
                     },
                     {
@@ -540,7 +540,7 @@ const TokenRowBasicActions = ({
                 ]}
             />
 
-            {type !== 'defi' && !isBelowTablet && !isFinpromRestricted && (
+            {type !== 'defi' && !isBelowTablet && !isRegionRestricted && (
                 <IconButton
                     isDisabled={!canSwapToken}
                     key="swap"

@@ -10,7 +10,7 @@ import { useLayout, useSelector } from 'src/hooks/suite';
 export const TradingRestricted = () => {
     const language = useSelector(selectLanguage);
     const content = useSelector(state =>
-        selectFeatureMessageContent(state, Feature.finprom.presenceRestriction, language),
+        selectFeatureMessageContent(state, Feature.regions.presenceRestriction, language),
     );
 
     useLayout('Trezor Suite', <PageHeader />);

@@ -1,2 +1,2 @@
-export { selectIsFinpromRestrictedByCountry } from './finpromSelectors';
+export { selectIsRegionRestrictedByCountry } from './regionsSelectors';
 export { getPlaceholderCountryFromLocale } from './placeholderPresence';

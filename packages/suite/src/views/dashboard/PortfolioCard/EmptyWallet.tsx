@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { selectIsOnboardingFeedbackBannerShown, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
@@ -25,7 +25,7 @@ export const EmptyWallet = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
 
     const clearOnboardingFeedbackBanner = () => {
@@ -90,7 +90,7 @@ export const EmptyWallet = () => {
                 </RoundedBorder>
             )}
             <Row gap={12} margin={{ top: 16 }}>
-                {!isFinpromRestricted && (
+                {!isRegionRestricted && (
                     <Button
                         intent="brand"
                         iconLeft={CurrencyCircleDollarIcon}

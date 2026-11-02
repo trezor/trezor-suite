@@ -95,7 +95,7 @@ describe('BiometricsScreen', () => {
         expect(mockNavigate).toHaveBeenCalledWith(OnboardingStackRoutes.TradingLocation);
     });
 
-    it('should redirect to Home screen on Skip press when FinProm is restricted', async () => {
+    it('should redirect to Home screen on Skip press when the region is restricted', async () => {
         store = createLightStore({
             reducer: {
                 featureFlags: featureFlagsReducer,
@@ -108,9 +108,9 @@ describe('BiometricsScreen', () => {
                     mockMessageSystemStateWithFeatureFlags(
                         {
                             'trading.restrictions.residenceWhitelistRequired': true,
-                            'finprom.presenceRestriction': true,
+                            'regions.presenceRestriction': true,
                         },
-                        { 'finprom.presenceRestriction': { countries: ['US'] } },
+                        { 'regions.presenceRestriction': { countries: ['US'] } },
                     ),
                 ),
                 wallet: createStaticReducer({

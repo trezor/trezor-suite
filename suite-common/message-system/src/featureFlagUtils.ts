@@ -44,7 +44,7 @@ const getPayloadCountries = (payload: Feature['payload'], key: string): CountryC
 export const getTradingResidenceWhitelist = (feature: Feature | undefined): CountryCode[] =>
     getPayloadCountries(feature?.payload, 'allowedCountries');
 
-export const getFinpromRestrictedCountries = (feature: Feature | undefined): CountryCode[] =>
+export const getRegionRestrictedCountries = (feature: Feature | undefined): CountryCode[] =>
     getPayloadCountries(feature?.payload, 'countries');
 
 type IsYieldFeatureApplicableForVaultParams = {

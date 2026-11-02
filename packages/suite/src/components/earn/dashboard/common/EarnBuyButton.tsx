@@ -1,7 +1,7 @@
 import { type MouseEvent } from 'react';
 
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { Button } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -12,9 +12,9 @@ type EarnBuyButtonProps = {
 };
 
 export const EarnBuyButton = ({ onClick, 'data-testid': dataTestId }: EarnBuyButtonProps) => {
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
 
-    if (isFinpromRestricted) {
+    if (isRegionRestricted) {
         return null;
     }
 

@@ -1,6 +1,6 @@
 import { type TradeNavigateEventFrom, events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { type TradingPrefilledFromAccount, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -42,9 +42,9 @@ export const TradeActions = ({
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
 
-    if (isFinpromRestricted || (!canBuy && !canSell)) {
+    if (isRegionRestricted || (!canBuy && !canSell)) {
         return null;
     }
 

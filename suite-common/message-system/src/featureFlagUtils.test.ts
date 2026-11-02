@@ -3,7 +3,7 @@ import fs from 'fs';
 import { type Feature, type MessageSystem } from '@suite-common/suite-types';
 
 import {
-    getFinpromRestrictedCountries,
+    getRegionRestrictedCountries,
     getTradingResidenceWhitelist,
     isYieldFeatureApplicableForVault,
     parseTimeoutThresholdsPerModel,
@@ -136,33 +136,33 @@ describe('getTradingResidenceWhitelist', () => {
     });
 });
 
-describe(getFinpromRestrictedCountries.name, () => {
-    const finpromFeature = (payload?: Feature['payload']): Feature => ({
-        domain: FeatureDefinitions.finprom.presenceRestriction,
+describe(getRegionRestrictedCountries.name, () => {
+    const regionsFeature = (payload?: Feature['payload']): Feature => ({
+        domain: FeatureDefinitions.regions.presenceRestriction,
         flag: true,
         payload,
     });
 
     it.each([
         ['undefined feature', undefined, []],
-        ['feature without payload', finpromFeature(), []],
-        ['countries not an array', finpromFeature({ countries: 'GB' }), []],
-        ['countries under the residence key', finpromFeature({ allowedCountries: ['GB'] }), []],
+        ['feature without payload', regionsFeature(), []],
+        ['countries not an array', regionsFeature({ countries: 'AU' }), []],
+        ['countries under the residence key', regionsFeature({ allowedCountries: ['AU'] }), []],
         [
             'non-string entries',
-            finpromFeature({ countries: ['GB', 1, null, {}, 'CZ'] }),
-            ['GB', 'CZ'],
+            regionsFeature({ countries: ['AU', 1, null, {}, 'CZ'] }),
+            ['AU', 'CZ'],
         ],
-        ['differently cased countries', finpromFeature({ countries: ['gb', 'Cz'] }), ['GB', 'CZ']],
+        ['differently cased countries', regionsFeature({ countries: ['au', 'Cz'] }), ['AU', 'CZ']],
         [
             'unknown and special codes',
-            finpromFeature({ countries: ['GB', 'ZZ', 'T1', 'XX', 'GBR', ''] }),
-            ['GB'],
+            regionsFeature({ countries: ['AU', 'ZZ', 'T1', 'XX', 'AUS', ''] }),
+            ['AU'],
         ],
     ] as const satisfies [string, Feature | undefined, readonly string[]][])(
         'returns countries for %s',
         (_description, feature, expected) => {
-            expect(getFinpromRestrictedCountries(feature)).toEqual(expected);
+            expect(getRegionRestrictedCountries(feature)).toEqual(expected);
         },
     );
 });
