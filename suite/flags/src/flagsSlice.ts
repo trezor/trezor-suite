@@ -34,6 +34,7 @@ export type FlagsState = {
     addAccountNetworksBannerClosed: boolean;
     stakeEthBannerClosed: boolean;
     earnEthBannerClosed: boolean;
+    earnTokenYieldBannerClosed: boolean;
     stakeSolBannerClosed: boolean;
     stakeCardanoBannerClosed: boolean;
     stakeTronBannerClosed: boolean;
@@ -79,6 +80,7 @@ export const flagsInitialState: FlagsState = {
     addAccountNetworksBannerClosed: false,
     stakeEthBannerClosed: false,
     earnEthBannerClosed: false,
+    earnTokenYieldBannerClosed: false,
     stakeSolBannerClosed: false,
     stakeCardanoBannerClosed: false,
     stakeTronBannerClosed: false,
