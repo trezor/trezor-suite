@@ -4,7 +4,6 @@ import { Keyboard } from 'react-native';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWithdrawErrorReason,
     type YieldWithdrawFlowType,
@@ -31,6 +30,7 @@ import { BigNumber } from '@trezor/utils';
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
 import { isAmountInputValueValid } from '../../../utils/yield/yieldFiatAmountUtils';
 import { getYieldWithdrawAmountValidationError } from '../../../utils/yield/yieldWithdrawUtils';
+import { useEarnAccountLabel } from '../../earn/useEarnAccountLabel';
 import { useNavigateBackAnalytics } from '../../earn/useNavigateBackAnalytics';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingSheet } from '../useYieldPendingSheet';
@@ -442,11 +442,12 @@ export const useYieldWithdrawController = () => {
         vault,
     ]);
 
+    const accountLabel = useEarnAccountLabel(yieldFlowData.account);
+
     if (yieldFlowData.resolutionStatus !== 'resolved' || !activeInputToken) {
         return { status: 'loading' as const };
     }
 
-    const resolvedAccount = yieldFlowData.account;
     const resolvedVault = yieldFlowData.vault;
     const underlyingTokenSymbol = toTokenSymbol(yieldFlowData.flowData.token.symbol);
     const vaultTokenSymbol = toTokenSymbol(yieldFlowData.flowData.receiptToken.symbol);
@@ -465,7 +466,7 @@ export const useYieldWithdrawController = () => {
         status: 'ready' as const,
         yieldFlowData,
         tokenContract: route.params.tokenContract,
-        accountLabel: resolvedAccount.accountLabel ?? getNetwork(resolvedAccount.symbol).name,
+        accountLabel,
         isInteractionBlocked: isWithdrawPending,
         disabledAlert: messageSystem.isDisabled
             ? { content: messageSystem.content, variant: messageSystem.variant }

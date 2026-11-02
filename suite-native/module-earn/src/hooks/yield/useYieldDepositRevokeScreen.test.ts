@@ -12,6 +12,10 @@ import { useYieldSession } from './useYieldSession';
 import { mockYieldPendingTransactionResult } from '../../../mocks/mockYieldPendingTransactionResult';
 import { updateYieldAllowanceSelectedFeeLevelThunk } from '../../thunks/yield/yieldApprovalThunks';
 
+jest.mock('../earn/useEarnAccountLabel', () => ({
+    useEarnAccountLabel: () => 'Account label',
+}));
+
 const resolvedFlow = mockResolvedYieldFlowData();
 const mockNavigation = { navigate: jest.fn() };
 const mockPrepareReview = jest.fn();

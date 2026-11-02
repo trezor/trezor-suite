@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     REVOKE_ALLOWANCE_AMOUNT,
     submitYieldRevokeThunk,
@@ -29,6 +28,7 @@ import { useYieldPendingTransactionTracking } from './useYieldPendingTransaction
 import { useYieldSession } from './useYieldSession';
 import { prepareYieldAllowanceReviewTransactionThunk } from '../../thunks/yield/yieldApprovalThunks';
 import { isYieldApprovalAllowanceUnlimited } from '../../utils/yield/yieldApprovalUtils';
+import { useEarnAccountLabel } from '../earn/useEarnAccountLabel';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositRevoke>;
 type NavigationProps = StackNavigationProps<
@@ -315,11 +315,12 @@ export const useYieldDepositRevokeScreen = () => {
         showYieldAlert,
     ]);
 
+    const accountLabel = useEarnAccountLabel(account);
+
     if (resolutionStatus !== 'resolved' || shouldShowMissingAmountError) {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
     const feeSelectorProps =
         revokeFeeTransaction !== null
             ? {

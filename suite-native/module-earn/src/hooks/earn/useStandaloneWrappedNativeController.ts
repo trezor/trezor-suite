@@ -21,6 +21,7 @@ import {
 } from '@suite-native/navigation';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
+import { useEarnAccountLabel } from './useEarnAccountLabel';
 import { useMessageSystemWrappedNative } from './useMessageSystemWrappedNative';
 import { useNavigateBackAnalytics } from './useNavigateBackAnalytics';
 import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow';
@@ -135,6 +136,8 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         },
     });
 
+    const accountLabel = useEarnAccountLabel(account);
+
     if (!account || !wrappedNative || account.networkType !== 'ethereum') {
         return { status: 'loading' as const };
     }
@@ -144,7 +147,7 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
     return {
         status: 'ready' as const,
         account,
-        accountLabel: account.accountLabel ?? getNetwork(account.symbol).name,
+        accountLabel,
         nativeSymbol,
         wrappedTokenSymbol: wrappedNative.symbol,
         wrappedTokenContract: toTokenAddress(wrappedNative.address),

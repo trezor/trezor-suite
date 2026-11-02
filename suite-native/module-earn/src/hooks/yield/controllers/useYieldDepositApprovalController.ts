@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     getYieldApprovalAction,
     getYieldNativeFeeStatus,
@@ -34,6 +33,7 @@ import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
+import { useEarnAccountLabel } from '../../earn/useEarnAccountLabel';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositApproval>;
 type NavigationProps = StackNavigationProps<
@@ -263,6 +263,8 @@ export const useYieldDepositApprovalController = () => {
         await handleSubmitApproval(amount);
     });
 
+    const accountLabel = useEarnAccountLabel(yieldFlowData.account);
+
     if (yieldFlowData.resolutionStatus !== 'resolved') {
         return { status: 'loading' as const };
     }
@@ -271,8 +273,7 @@ export const useYieldDepositApprovalController = () => {
         status: 'ready' as const,
         yieldFlowData,
         tokenContract: route.params.tokenContract,
-        accountLabel:
-            yieldFlowData.account.accountLabel ?? getNetwork(yieldFlowData.account.symbol).name,
+        accountLabel,
         isInteractionBlocked: isApprovalPending,
         disabledAlert: messageSystem.isDisabled
             ? { content: messageSystem.content, variant: messageSystem.variant }

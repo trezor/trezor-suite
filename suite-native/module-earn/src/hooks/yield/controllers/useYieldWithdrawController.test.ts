@@ -19,6 +19,10 @@ import { mockYieldFlowScreenBaseResult } from '../../../../mocks/mockYieldFlowSc
 import { useYieldPendingSheet } from '../useYieldPendingSheet';
 import { useYieldWithdrawFees } from '../useYieldWithdrawFees';
 
+jest.mock('../../earn/useEarnAccountLabel', () => ({
+    useEarnAccountLabel: () => 'Account label',
+}));
+
 const mockNavigate = jest.fn();
 const mockReplace = jest.fn();
 let mockRouteParams: YieldFlowParams & { withdrawFlowType?: 'withdraw' | 'redeem' };

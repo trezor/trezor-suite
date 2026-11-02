@@ -12,6 +12,10 @@ import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappe
 import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../useYieldWrappedNativeStep';
 
+jest.mock('../../earn/useEarnAccountLabel', () => ({
+    useEarnAccountLabel: () => 'Account label',
+}));
+
 const mockReplace = jest.fn();
 const mockRouteParams: {
     accountKey: string;

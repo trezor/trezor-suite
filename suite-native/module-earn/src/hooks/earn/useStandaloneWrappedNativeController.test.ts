@@ -18,6 +18,10 @@ import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from './useWrappedNativeTokenForm';
 import { useYieldDepositGasReserve } from '../yield/useYieldDepositGasReserve';
 
+jest.mock('./useEarnAccountLabel', () => ({
+    useEarnAccountLabel: () => 'Account label',
+}));
+
 const GAS_RESERVE = { minimum: '0.002', recommended: '0.005' };
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth'), formattedBalance: '0.2' });
 let mockRouteParams: { accountKey: string; pendingTransaction?: { amount: string } };

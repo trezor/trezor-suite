@@ -1,12 +1,13 @@
 import { type ReactNode } from 'react';
 
-import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { findToken } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { type CloseActionType, ScreenHeader } from '@suite-native/navigation';
+
+import { useEarnAccountLabel } from '../../hooks/earn/useEarnAccountLabel';
 
 type YieldFlowScreenHeaderProps = {
     account: Account;
@@ -24,7 +25,7 @@ export const YieldFlowScreenHeader = ({
     tokenContract,
 }: YieldFlowScreenHeaderProps) => {
     const token = findToken(account.tokens, tokenContract);
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = useEarnAccountLabel(account);
 
     return (
         <ScreenHeader

@@ -16,6 +16,7 @@ import {
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
+import { useEarnAccountLabel } from '../../earn/useEarnAccountLabel';
 import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappedNative';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
@@ -172,6 +173,8 @@ export const useYieldWithdrawUnwrapController = () => {
         }
     }, [flowType, isFocused, isSheetPresented, navigation, route.params, session?.step]);
 
+    const accountLabel = useEarnAccountLabel(yieldFlowData.account);
+
     if (yieldFlowData.resolutionStatus !== 'resolved' || !isWrappedNativeVault) {
         return { status: 'loading' as const };
     }
@@ -189,7 +192,7 @@ export const useYieldWithdrawUnwrapController = () => {
         status: 'ready' as const,
         yieldFlowData,
         tokenContract: route.params.tokenContract,
-        accountLabel: resolvedAccount.accountLabel ?? getNetwork(resolvedAccount.symbol).name,
+        accountLabel,
         nativeSymbol,
         wrappedTokenSymbol: toTokenSymbol(resolvedToken.symbol),
         wrappedTokenContract: toTokenAddress(resolvedToken.contractAddress ?? ''),

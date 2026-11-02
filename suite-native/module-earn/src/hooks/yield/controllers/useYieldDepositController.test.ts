@@ -53,6 +53,9 @@ jest.mock('../useReturnToYieldDepositWrapStep', () => ({
 jest.mock('../../earn/useNavigateBackAnalytics', () => ({
     useNavigateBackAnalytics: jest.fn(),
 }));
+jest.mock('../../earn/useEarnAccountLabel', () => ({
+    useEarnAccountLabel: () => 'Account label',
+}));
 
 const useYieldFlowScreenBaseMock = jest.mocked(useYieldFlowScreenBase);
 const useYieldPendingTransactionMock = jest.mocked(useYieldPendingTransaction);
@@ -167,6 +170,13 @@ describe('useYieldDepositController', () => {
         if (result.current.status !== 'ready') throw new Error('not ready');
         expect(result.current.footer.isDisabled).toBe(false);
         expect(result.current.isApprovalInsufficient).toBe(false);
+    });
+
+    it('shows the account label from the labeling store', async () => {
+        const { result } = await renderDepositController();
+
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        expect(result.current.accountLabel).toBe('Account label');
     });
 
     it('blocks the submit when the amount exceeds the allowance', async () => {

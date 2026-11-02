@@ -3,7 +3,6 @@ import { useCallback, useEffect } from 'react';
 import { type RouteProp, StackActions, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type YieldDepositErrorReason,
     getYieldNativeFeeStatus,
@@ -35,6 +34,7 @@ import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
 import { useYieldTxSimulationSheet } from './useYieldTxSimulationSheet';
+import { useEarnAccountLabel } from '../../earn/useEarnAccountLabel';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
@@ -253,6 +253,8 @@ export const useYieldDepositController = () => {
         dispatch(yieldActions.disposeSession({ flowType: 'deposit', flowKey }));
     }, [dispatch, flowKey, navigateToInitialScreen, session?.action.pendingTransaction]);
 
+    const accountLabel = useEarnAccountLabel(yieldFlowData.account);
+
     if (yieldFlowData.resolutionStatus !== 'resolved' || !isDepositSessionReady) {
         return { status: 'loading' as const };
     }
@@ -261,8 +263,7 @@ export const useYieldDepositController = () => {
         status: 'ready' as const,
         yieldFlowData,
         tokenContract: route.params.tokenContract,
-        accountLabel:
-            yieldFlowData.account.accountLabel ?? getNetwork(yieldFlowData.account.symbol).name,
+        accountLabel,
         isInteractionBlocked: isDepositPending,
         disabledAlert: messageSystem.isDisabled
             ? { content: messageSystem.content, variant: messageSystem.variant }

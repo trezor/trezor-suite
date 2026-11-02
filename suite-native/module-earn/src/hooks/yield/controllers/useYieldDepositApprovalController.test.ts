@@ -58,6 +58,9 @@ jest.mock('../useRefreshYieldDepositAllowanceOnIdle', () => ({
 jest.mock('../useReturnToYieldDepositWrapStep', () => ({
     useReturnToYieldDepositWrapStep: () => jest.fn(),
 }));
+jest.mock('../../earn/useEarnAccountLabel', () => ({
+    useEarnAccountLabel: () => 'Account label',
+}));
 
 const useYieldFlowScreenBaseMock = jest.mocked(useYieldFlowScreenBase);
 const useYieldPendingTransactionMock = jest.mocked(useYieldPendingTransaction);

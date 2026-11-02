@@ -16,6 +16,10 @@ import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../useYieldWrappedNativeStep';
 import { useYieldDepositWrapController } from './useYieldDepositWrapController';
 
+jest.mock('../../earn/useEarnAccountLabel', () => ({
+    useEarnAccountLabel: () => 'Account label',
+}));
+
 const mockReplace = jest.fn();
 const mockRouteParams = { accountKey: 'account-key', tokenContract: '0xtoken' };
 
