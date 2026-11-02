@@ -1,22 +1,32 @@
+import { LinearGradient } from 'expo-linear-gradient';
+
 import { Box, Button, Card, Divider, HStack, Image, Text, VStack } from '@suite-native/atoms';
-import { TS7_PROMO_BANNER_IMAGE } from '@suite-native/banners';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { useGetTrezorEshopCta } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { colorVariants } from '@trezor/theme';
+import { hexToRgba } from '@trezor/utils';
 
 const FULL_CONTAINER_HEIGHT = 190;
-const FULL_IMAGE_SIZE = 170;
+const FULL_IMAGE_SIZE = 161;
+
+const TS7_PROMO_IMAGE = require('../assets/ts7-promo-image.webp');
 
 const fullImageContainerStyle = prepareNativeStyle(utils => ({
     width: '100%',
     height: FULL_CONTAINER_HEIGHT,
     borderTopLeftRadius: utils.borders.radii.r8,
     borderTopRightRadius: utils.borders.radii.r8,
-    backgroundColor: utils.colors.surfaceFillModelessBrand,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+}));
+
+const backgroundGradientStyle = prepareNativeStyle(_ => ({
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
 }));
 
 const bulletPointValues: Array<{ icon: IconName; textId: TxKeyPath }> = [
@@ -29,12 +39,21 @@ export const GetTrezorCard = () => {
     const { applyStyle } = useNativeStyles();
     const handleGetTrezor = useGetTrezorEshopCta('settings');
 
+    const gradientStartColor = hexToRgba(colorVariants.standard.elementFillBrandSofter, 0.2);
+    const gradientEndColor = colorVariants.standard.surfaceFillModelessBrand;
+
     return (
         <Card>
             <VStack spacing="sp8">
                 <Box style={applyStyle(fullImageContainerStyle)}>
+                    <LinearGradient
+                        style={applyStyle(backgroundGradientStyle)}
+                        colors={[gradientStartColor, gradientEndColor]}
+                        start={{ x: 0, y: 0.5 }}
+                        end={{ x: 1, y: 0.5 }}
+                    />
                     <Image
-                        source={TS7_PROMO_BANNER_IMAGE}
+                        source={TS7_PROMO_IMAGE}
                         contentFit="contain"
                         width={FULL_IMAGE_SIZE}
                         height={FULL_IMAGE_SIZE}

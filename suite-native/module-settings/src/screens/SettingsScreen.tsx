@@ -20,7 +20,6 @@ export const SettingsScreen = () => {
         <Screen header={<DeviceManagerScreenHeader />}>
             <VStack spacing="sp40">
                 {shouldShowEshopPromo && !areGetTrezorPromoBannersDisabled && <GetTrezorCard />}
-
                 <GeneralSettings />
                 <FeaturesSettings />
                 <ConnectionSettings />
