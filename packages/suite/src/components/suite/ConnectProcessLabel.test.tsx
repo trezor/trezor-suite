@@ -10,6 +10,13 @@ import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 
 import { ConnectProcessLabel } from './ConnectProcessLabel';
 
+type TranslationProps = { id: string };
+
+jest.mock('@suite/intl', () => ({
+    ...jest.requireActual('@suite/intl'),
+    Translation: ({ id }: TranslationProps) => <span>{id}</span>,
+}));
+
 const renderLabel = (process: ConnectProcessInfo) =>
     render(
         <ThemeProvider>
@@ -47,28 +54,25 @@ describe('ConnectProcessLabel', () => {
         expect(await hoverLabel()).toHaveTextContent('/tmp/node');
     });
 
-    // Documents the behaviour today: the tooltip of the warning badge is the path, so a caller
-    // Suite could not identify gets a warning that explains nothing.
-    it('reveals nothing about a warned-about process without a path', async () => {
+    it('says that a warned-about process without a path could not be identified', async () => {
         renderLabel({ name: 'Claude Code', fullPath: '', warning: true });
 
         expect(getBadgeIcon()).toBe('Warning');
-        expect(await hoverLabel()).toBeUndefined();
+        expect(await hoverLabel()).toHaveTextContent('TR_CONNECT_PROCESS_UNIDENTIFIED');
     });
 
-    // Documents the behaviour today: the badge follows the warning flag alone, which the Linux
-    // lookup never sets, so a process without a path passes for an identified one.
-    it('shows a process without a path and without a warning on the neutral badge', async () => {
+    // The Linux lookup sets no warning, so a process it found no path for arrives without one.
+    it('warns about a process without a path even when it carries no warning', async () => {
         renderLabel({ name: 'node', fullPath: '', warning: false });
 
-        expect(getBadgeIcon()).toBe('AppWindow');
-        expect(await hoverLabel()).toBeUndefined();
+        expect(getBadgeIcon()).toBe('Warning');
+        expect(await hoverLabel()).toHaveTextContent('TR_CONNECT_PROCESS_UNIDENTIFIED');
     });
 
-    it('repeats the name of the placeholder for a caller that could not be identified', async () => {
+    it('says that the placeholder for a caller that could not be identified is not identified', async () => {
         renderLabel(UNKNOWN_PROCESS);
 
         expect(getBadgeIcon()).toBe('Warning');
-        expect(await hoverLabel()).toHaveTextContent('Unknown');
+        expect(await hoverLabel()).toHaveTextContent('TR_CONNECT_PROCESS_UNIDENTIFIED');
     });
 });
