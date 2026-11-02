@@ -19,8 +19,6 @@ import type { StepListItemState } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-export { getYieldApprovalAction, type YieldApprovalAction } from '@suite-common/wallet-core';
-
 const FIAT_DISPLAY_DECIMALS = 2;
 
 type AmountComparisonParams = {

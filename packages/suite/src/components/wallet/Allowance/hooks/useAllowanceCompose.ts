@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
-import { useMutation } from '@tanstack/react-query';
 
+import { useMutation } from '@suite-common/react-query';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     type ComposeAllowanceTransactionThunkParams,
+    type FeesRootState,
     composeAllowanceTransactionThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
@@ -25,16 +27,15 @@ import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef, useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 
-interface UseAllowanceComposeParams {
+type UseAllowanceComposeParams = {
     account: Account;
     contract: string;
     spender: string;
     amount: string;
     token?: TokenInfo;
-}
+};
 
 export const useAllowanceCompose = ({
     account,
@@ -48,7 +49,9 @@ export const useAllowanceCompose = ({
 
     const { networkType, symbol } = account;
 
-    const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
+    const rawFeeInfo = useSelector((state: FeesRootState) =>
+        selectRawNetworkFeeInfo(state, symbol),
+    );
     const feeInfo = useMemo(
         () => getConvertedOrDefaultFeeInfo({ networkType, feeInfo: rawFeeInfo }),
         [networkType, rawFeeInfo],

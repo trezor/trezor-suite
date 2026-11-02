@@ -1,22 +1,21 @@
-import { useEffect, useRef } from 'react';
-
-import { type DexApprovalType } from 'invity-api';
-
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
-import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
-import { type Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import {
+    type Account,
+    type AllowanceLimitType,
+    type AllowanceTransactionType,
+} from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { type AllowanceModalProvider } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/AllowanceModalProviderInfo';
-import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
-import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
-import { useAllowanceContext } from 'src/hooks/wallet/allowance';
+import { type AllowanceProvider } from 'src/components/wallet/Allowance/AllowanceProviderInfo';
+import { ApproveModal } from 'src/components/wallet/Allowance/ApproveModal';
+import { RevokeModal } from 'src/components/wallet/Allowance/RevokeModal';
 
 export type YieldApproveModalProps = {
     amount: string;
@@ -25,9 +24,45 @@ export type YieldApproveModalProps = {
     vaultId: string;
     spender: string;
     preapprovedAmount?: string;
-    txType: 'approve' | 'revoke';
+    txType: AllowanceTransactionType;
     onCancel: () => void;
     onSuccess: (txid: string) => void;
+};
+
+const ANALYTICS_APPROVAL_TYPE = {
+    minimal: 'MINIMAL',
+    unlimited: 'INFINITE',
+} as const satisfies Record<AllowanceLimitType, 'INFINITE' | 'MINIMAL'>;
+
+type GetVaultTokenLogoParams = {
+    networkSymbol: NetworkSymbol;
+    contractAddress: string;
+};
+
+const getVaultTokenLogo = ({
+    networkSymbol,
+    contractAddress,
+}: GetVaultTokenLogoParams): AllowanceProvider['logo'] => {
+    if (isWrappedNativeToken(networkSymbol, contractAddress)) {
+        return {
+            symbol: networkSymbol,
+            size: 20,
+            showNetworkIcon: true,
+            wrappedTokenIcon: 'network',
+        };
+    }
+
+    const coingeckoId = getCoingeckoId(networkSymbol);
+
+    if (!coingeckoId) {
+        return undefined;
+    }
+
+    return getAssetLogoUrl({
+        coingeckoId,
+        contractAddress: getContractAddressForNetworkSymbol(networkSymbol, contractAddress),
+        size: 80,
+    });
 };
 
 export const YieldApproveModal = ({
@@ -43,69 +78,19 @@ export const YieldApproveModal = ({
 }: YieldApproveModalProps) => {
     const { analytics } = useServices(injectDesktopAnalytics);
 
-    const {
-        state: { isApproveModalOpen, isRevokeModalOpen, openApproveModal, openRevokeModal },
-        tx: { approvalTxid, setApprovalTxid },
-    } = useAllowanceContext();
-    const handledTxidRef = useRef<string | null>(null);
-    const cryptoId = toTokenCryptoId(account.symbol, contractAddress);
-    const { networkId, contractAddress: parsedContract } = parseCryptoId(cryptoId);
     const { data: vaultName } = useYieldOpportunity(vaultId, {
         select: yieldOpportunity => yieldOpportunity.metadata.name,
     });
 
-    const provider: AllowanceModalProvider = {
+    const provider: AllowanceProvider = {
         name: vaultName,
         companyName: vaultName,
-        logo: isWrappedNativeToken(account.symbol, contractAddress)
-            ? {
-                  symbol: account.symbol,
-                  size: 20,
-                  showNetworkIcon: true,
-                  wrappedTokenIcon: 'network',
-              }
-            : getAssetLogoUrl({
-                  coingeckoId: networkId,
-                  contractAddress: parsedContract
-                      ? getContractAddressForNetworkSymbol(account.symbol, parsedContract)
-                      : undefined,
-                  size: 80,
-              }),
+        logo: getVaultTokenLogo({ networkSymbol: account.symbol, contractAddress }),
         label: 'TR_EARN_YIELD_VAULT',
         kind: 'vault',
     };
 
-    useEffect(() => {
-        switch (txType) {
-            case 'approve':
-                openApproveModal();
-
-                break;
-            case 'revoke':
-                openRevokeModal();
-
-                break;
-            default:
-                exhaustive(txType);
-        }
-    }, [openApproveModal, openRevokeModal, txType]);
-
-    useEffect(() => {
-        if (!approvalTxid || handledTxidRef.current === approvalTxid) {
-            return;
-        }
-
-        handledTxidRef.current = approvalTxid;
-
-        onSuccess(approvalTxid);
-        setApprovalTxid(null);
-    }, [approvalTxid, onSuccess, setApprovalTxid]);
-
-    const handleOnApproveConfirm = (approvalType: DexApprovalType) => {
-        // Approve flow exposes only INFINITE/MINIMAL choice; the other DexApprovalType
-        // values (ZERO is revoke, PRESET is unused here) can't be selected by the user.
-        if (approvalType !== 'INFINITE' && approvalType !== 'MINIMAL') return;
-
+    const handleOnApproveConfirm = (limitType: AllowanceLimitType) => {
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
@@ -113,7 +98,7 @@ export const YieldApproveModal = ({
                 action: 'continue',
                 networkSymbol: account.symbol,
                 vaultId,
-                approvalType,
+                approvalType: ANALYTICS_APPROVAL_TYPE[limitType],
             },
         });
     };
@@ -158,42 +143,43 @@ export const YieldApproveModal = ({
         onCancel();
     };
 
-    if (txType === 'approve' && isApproveModalOpen) {
-        return (
-            <ApproveModal
-                amount={amount}
-                cryptoId={cryptoId}
-                account={account}
-                provider={provider}
-                spender={spender}
-                showSpender
-                preapprovedAmount={preapprovedAmount}
-                heading="TR_APPROVAL_APPROVE_TOKEN_SPENDING"
-                description="TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION"
-                onCancel={handleOnApproveCancel}
-                onConfirm={handleOnApproveConfirm}
-            />
-        );
+    switch (txType) {
+        case 'approve':
+            return (
+                <ApproveModal
+                    amount={amount}
+                    account={account}
+                    tokenContractAddress={contractAddress}
+                    provider={provider}
+                    spender={spender}
+                    showSpender
+                    preapprovedAmount={preapprovedAmount}
+                    heading="TR_APPROVAL_APPROVE_TOKEN_SPENDING"
+                    description="TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION"
+                    onCancel={handleOnApproveCancel}
+                    onConfirm={handleOnApproveConfirm}
+                    onSent={onSuccess}
+                />
+            );
+        case 'revoke':
+            return (
+                <RevokeModal
+                    account={account}
+                    tokenContractAddress={contractAddress}
+                    provider={provider}
+                    spender={spender}
+                    showSpender
+                    preapprovedAmount={preapprovedAmount}
+                    approveAmount={amount}
+                    followedByApproval={false}
+                    heading="TR_APPROVAL_REVOKE_TOKEN_SPENDING"
+                    description="TR_EARN_YIELD_REVOKE_TOKEN_SPENDING_DESCRIPTION"
+                    onCancel={handleOnRevokeCancel}
+                    onConfirm={handleOnRevokeConfirm}
+                    onSent={onSuccess}
+                />
+            );
+        default:
+            return exhaustive(txType);
     }
-
-    if (txType === 'revoke' && isRevokeModalOpen) {
-        return (
-            <RevokeModal
-                cryptoId={cryptoId}
-                account={account}
-                provider={provider}
-                spender={spender}
-                showSpender
-                preapprovedAmount={preapprovedAmount}
-                approveAmount={amount}
-                followedByApproval={false}
-                heading="TR_APPROVAL_REVOKE_TOKEN_SPENDING"
-                description="TR_EARN_YIELD_REVOKE_TOKEN_SPENDING_DESCRIPTION"
-                onCancel={handleOnRevokeCancel}
-                onConfirm={handleOnRevokeConfirm}
-            />
-        );
-    }
-
-    return null;
 };

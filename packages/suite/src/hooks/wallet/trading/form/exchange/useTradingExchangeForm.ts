@@ -73,7 +73,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     );
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
-    const [isApproval, setIsApproval] = useState<boolean>(false);
     const [isLoadingQuote, setIsLoadingQuote] = useState<boolean>(false);
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
 
@@ -271,8 +270,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         tradingReceiveAddress,
         isLoadingQuote,
         setIsLoadingQuote,
-        isApproval,
-        setIsApproval,
         showReserveBanner,
         setShowReserveBanner,
     };

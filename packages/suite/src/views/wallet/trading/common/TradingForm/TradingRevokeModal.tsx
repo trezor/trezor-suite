@@ -4,28 +4,29 @@ import { type CryptoId } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import {
+    parseCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     tradeApi,
 } from '@suite-common/trading';
+import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
 
-import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
+import { RevokeModal } from 'src/components/wallet/Allowance/RevokeModal';
 import { useSelector } from 'src/hooks/suite';
-import { useAllowanceContext } from 'src/hooks/wallet/allowance';
+import { useTradingAllowanceContext } from 'src/hooks/wallet/trading/allowance/useTradingAllowanceContext';
 import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
-interface TradingRevokeModalProps {
+type TradingRevokeModalProps = {
     cryptoId: CryptoId;
-}
+};
 
 export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
-    const { state } = useAllowanceContext();
+    const { state, tx } = useTradingAllowanceContext();
     const context = useTradingFormContext();
     const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
     const { analytics } = useServices(injectDesktopAnalytics);
@@ -43,17 +44,15 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
             },
         });
 
-        if (isTradingExchangeContext(context)) {
-            context.setIsApproval(false);
+        state.closeRevokeModal();
 
-            if (selectedQuote?.receiveAddress) {
-                await context.confirmApproval({
-                    trade: { ...selectedQuote, approvalType: undefined },
-                    receiveAddress: selectedQuote.receiveAddress,
-                });
-            }
+        if (isTradingExchangeContext(context) && selectedQuote?.receiveAddress) {
+            await context.confirmApproval({
+                trade: { ...selectedQuote, approvalType: undefined },
+                receiveAddress: selectedQuote.receiveAddress,
+            });
         }
-    }, [analytics, getCryptoInfo, context, selectedQuote]);
+    }, [analytics, getCryptoInfo, state, context, selectedQuote]);
 
     const onConfirm = useCallback(() => {
         analytics.report({
@@ -66,6 +65,23 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
         });
     }, [analytics, getCryptoInfo]);
 
+    const onSendStart = useCallback(() => {
+        state.setIsWaitingForDevice(true);
+    }, [state]);
+
+    const onSent = useCallback(
+        (txid: string) => {
+            tx.setApprovalTxid(txid);
+            state.setIsWaitingForDevice(false);
+            state.closeRevokeModal();
+        },
+        [tx, state],
+    );
+
+    const onSendFailed = useCallback(() => {
+        state.setIsWaitingForDevice(false);
+    }, [state]);
+
     const revokeParams = useMemo(() => {
         if (!isTradingExchangeContext(context)) {
             return null;
@@ -74,10 +90,7 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
         const exchange = selectedQuote?.exchange;
         const provider = exchange ? providersInfo?.[exchange] : null;
 
-        const dexTxData = selectedQuote?.dexTx?.data;
-        const approvalData = Calldata.evm.erc20.approve.decode(dexTxData);
-        const spender = approvalData?.spender ?? null;
-
+        const spender = getErc20ApproveSpender(selectedQuote?.dexTx?.data) ?? null;
         const preapprovedAmount = selectedQuote?.preapprovedStringAmount;
         const approveAmount = selectedQuote?.sendStringAmount;
 
@@ -92,11 +105,12 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
     }
 
     const providerLogo = provider.logo ? tradeApi.getProviderLogoUrl(provider.logo) : undefined;
+    const { contractAddress: tokenContractAddress = '' } = parseCryptoId(cryptoId);
 
     return (
         <RevokeModal
-            cryptoId={cryptoId}
             account={account}
+            tokenContractAddress={tokenContractAddress}
             provider={{
                 ...provider,
                 logo: providerLogo,
@@ -109,6 +123,9 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
             heading="TR_APPROVAL_REVOKE_TOKEN_SPENDING"
             description="TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION"
             onConfirm={onConfirm}
+            onSendStart={onSendStart}
+            onSent={onSent}
+            onSendFailed={onSendFailed}
             onCancel={handleCancel}
         />
     );

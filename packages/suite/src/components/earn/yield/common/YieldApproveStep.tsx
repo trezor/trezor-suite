@@ -5,6 +5,7 @@ import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
+import type { AllowanceAction } from '@suite-common/wallet-types';
 import { Banner, Button, Column, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
@@ -16,9 +17,8 @@ import {
 } from './YieldAmountCard';
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
-import type { YieldApprovalAction } from '../yieldFlowUtils';
 
-const getApproveButtonTranslationId = (approvalAction: YieldApprovalAction) => {
+const getApproveButtonTranslationId = (approvalAction: AllowanceAction) => {
     switch (approvalAction) {
         case 'approve':
             return 'TR_EARN_YIELD_APPROVE_TOKEN_BUTTON';
@@ -43,7 +43,7 @@ export type YieldApproveStepProps = {
     approvedAmount?: string;
     isApprovedAmountLoading?: boolean;
     hasApprovedAmountError?: boolean;
-    approvalAction: YieldApprovalAction;
+    approvalAction: AllowanceAction;
     canRevokeAllowance: boolean;
     warning?: ReactNode;
     pendingApproveTransaction?: YieldPendingTransactionState;

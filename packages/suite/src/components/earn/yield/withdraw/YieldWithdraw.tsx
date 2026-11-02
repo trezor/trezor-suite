@@ -7,8 +7,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
-import { useAllowance } from 'src/hooks/wallet/allowance/useAllowance';
-import { AllowanceContext } from 'src/hooks/wallet/allowance/useAllowanceContext';
 
 import { YieldWithdrawForm } from './YieldWithdrawForm';
 import { useYieldWithdraw } from './useYieldWithdraw';
@@ -21,7 +19,6 @@ type YieldWithdrawProps = {
 };
 
 export const YieldWithdraw = ({ account, vault }: YieldWithdrawProps) => {
-    const allowanceContextValue = useAllowance({ account });
     const yieldWithdrawContextValues = useYieldWithdraw({ account, vault });
     const vaultContractAddress = yieldWithdrawContextValues
         ? getYieldVaultContractAddress(yieldWithdrawContextValues.vault)
@@ -41,19 +38,17 @@ export const YieldWithdraw = ({ account, vault }: YieldWithdrawProps) => {
     const isFormHidden = isDisabled && !yieldWithdrawContextValues.hasTransactionActivity;
 
     return (
-        <AllowanceContext.Provider value={allowanceContextValue}>
-            <Column gap={24}>
-                <ContextMessage context={Context.getEarnYield('withdraw')} />
-                {isFormHidden ? (
-                    <YieldDisabledBanner type="withdraw" content={content} variant={variant} />
-                ) : (
-                    <YieldWithdrawContext.Provider value={yieldWithdrawContextValues}>
-                        <Form form={yieldWithdrawContextValues.methods} formState={formState}>
-                            <YieldWithdrawForm />
-                        </Form>
-                    </YieldWithdrawContext.Provider>
-                )}
-            </Column>
-        </AllowanceContext.Provider>
+        <Column gap={24}>
+            <ContextMessage context={Context.getEarnYield('withdraw')} />
+            {isFormHidden ? (
+                <YieldDisabledBanner type="withdraw" content={content} variant={variant} />
+            ) : (
+                <YieldWithdrawContext.Provider value={yieldWithdrawContextValues}>
+                    <Form form={yieldWithdrawContextValues.methods} formState={formState}>
+                        <YieldWithdrawForm />
+                    </Form>
+                </YieldWithdrawContext.Provider>
+            )}
+        </Column>
     );
 };

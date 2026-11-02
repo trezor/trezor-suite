@@ -4,7 +4,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { CardList, Column, Image, Row, Text } from '@trezor/components';
 import { TokenIcon, type TokenIconProps } from '@trezor/product-components';
 
-export type AllowanceModalProvider = {
+export type AllowanceProvider = {
     name?: string;
     companyName?: string;
     logo?: string | TokenIconProps;
@@ -12,11 +12,11 @@ export type AllowanceModalProvider = {
     kind?: 'provider' | 'vault';
 };
 
-interface AllowanceModalProviderInfoProps {
-    provider: AllowanceModalProvider;
+type AllowanceProviderInfoProps = {
+    provider: AllowanceProvider;
     spender: string;
     showSpender?: boolean;
-}
+};
 
 const Logo = styled.div`
     display: grid;
@@ -25,11 +25,11 @@ const Logo = styled.div`
     gap: 8px;
 `;
 
-export const AllowanceModalProviderInfo = ({
+export const AllowanceProviderInfo = ({
     provider,
     spender,
     showSpender,
-}: AllowanceModalProviderInfoProps) => {
+}: AllowanceProviderInfoProps) => {
     const providerName = provider.companyName ?? provider.name;
 
     return (

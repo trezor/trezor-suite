@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { Form } from '@suite/form';
 import { type TradingFormAccountRootState, selectTradingSendAccount } from '@suite-common/trading';
 
-import { AllowanceContext, useAllowance } from 'src/hooks/wallet/allowance';
+import { TradingAllowanceContext } from 'src/hooks/wallet/trading/allowance/TradingAllowanceContext';
+import { useTradingAllowance } from 'src/hooks/wallet/trading/allowance/useTradingAllowance';
 import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/exchange/useTradingExchangeForm';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingExchangeFormInputs } from 'src/views/wallet/trading/common/TradingForm/TradingExchangeFormInputs';
@@ -14,19 +15,19 @@ export const TradingExchangeFormWrapper = () => {
     const account = useSelector((state: TradingFormAccountRootState) =>
         selectTradingSendAccount(state, 'exchange'),
     );
-    const allowanceContextValue = useAllowance({ account });
+    const allowanceContextValue = useTradingAllowance({ account });
 
     const { formState } = tradingExchangeContextValue.methods;
 
     return (
         <TradingFormContext.Provider value={tradingExchangeContextValue}>
-            <AllowanceContext.Provider value={allowanceContextValue}>
+            <TradingAllowanceContext.Provider value={allowanceContextValue}>
                 <Form form={tradingExchangeContextValue.methods} formState={formState}>
                     <TradingFormLayout>
                         <TradingExchangeFormInputs />
                     </TradingFormLayout>
                 </Form>
-            </AllowanceContext.Provider>
+            </TradingAllowanceContext.Provider>
         </TradingFormContext.Provider>
     );
 };
