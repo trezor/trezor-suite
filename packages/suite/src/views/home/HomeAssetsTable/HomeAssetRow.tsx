@@ -5,7 +5,6 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
     selectWalletAssetSymbol,
-    selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
@@ -35,7 +34,6 @@ export const HomeAssetRow = memo(function HomeAssetRow({
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
-    const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
 
     if (symbol === undefined) {
         return null;
@@ -56,14 +54,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
                     contractAddress={contractAddress}
                     displaySymbol={displaySymbol}
                     tokenSymbol={tokenSymbol}
-                    badge={
-                        <HomeAssetApyBadge
-                            symbol={symbol}
-                            contractAddress={contractAddress}
-                            tokenSymbol={tokenSymbol}
-                            tokenDecimals={tokenDecimals}
-                        />
-                    }
+                    badge={<HomeAssetApyBadge symbol={symbol} contractAddress={contractAddress} />}
                 />
             </Table.Cell>
 
