@@ -2,19 +2,12 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useFormatters } from '@suite-common/formatters';
 import {
     type TradingTradeType,
-    isBuyTrade,
-    isSellFiatTrade,
-    useFormatCryptoValue,
-    useTradingRequestedAmountShortfall,
+    useTradingFormattedRequestedAmountShortfall,
 } from '@suite-common/trading';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { localizePercentage } from '@suite-common/wallet-utils';
-import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Text } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
 
 type TradingRequestedAmountShortfallNoteProps = {
     quote: TradingTradeType;
@@ -24,40 +17,9 @@ export const TradingRequestedAmountShortfallNote = ({
     quote,
 }: TradingRequestedAmountShortfallNoteProps) => {
     const language = useSelector(selectLanguage);
-    const { BaseCurrencyAmountFormatter } = useFormatters();
-    const formatCryptoValue = useFormatCryptoValue();
-    const shortfall = useTradingRequestedAmountShortfall({ quote });
+    const shortfall = useTradingFormattedRequestedAmountShortfall({ quote });
 
     if (!shortfall) {
-        return null;
-    }
-
-    const fiatCurrency =
-        isBuyTrade(quote) || isSellFiatTrade(quote)
-            ? (quote.fiatCurrency?.toLowerCase() as BaseCurrencyCode | undefined)
-            : undefined;
-
-    const getFormattedShortfall = () => {
-        if (shortfall.cryptoShortfall) {
-            return formatCryptoValue(
-                shortfall.cryptoShortfall.amount,
-                shortfall.cryptoShortfall.cryptoId,
-            );
-        }
-
-        if (shortfall.fiatShortfall !== undefined && fiatCurrency) {
-            return BaseCurrencyAmountFormatter.format(
-                asBaseCurrencyAmount(new BigNumber(shortfall.fiatShortfall)),
-                { currency: fiatCurrency },
-            );
-        }
-
-        return undefined;
-    };
-
-    const formattedShortfall = getFormattedShortfall();
-
-    if (!formattedShortfall) {
         return null;
     }
 
@@ -75,7 +37,7 @@ export const TradingRequestedAmountShortfallNote = ({
         >
             <Translation
                 id="TR_TRADING_LESS_TO_RECEIVE_THAN_REQUESTED"
-                values={{ percent: formattedShortfallRatio, amount: formattedShortfall }}
+                values={{ percent: formattedShortfallRatio, amount: shortfall.formattedShortfall }}
             />
         </Text>
     );
