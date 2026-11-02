@@ -8,7 +8,7 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { type TradingFlowStackParamList, TradingFlowStackRoutes } from '@suite-native/navigation';
+import { type TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { act, renderWithStoreProvider, userEvent, waitFor } from '@suite-native/test-utils-store';
 import {
     createPrecomposedTxFinal,
@@ -56,7 +56,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: {},
-        }) as RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingExchangePreview>,
+        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangePreview>,
 }));
 
 const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
@@ -552,7 +552,7 @@ describe('TradingExchangePreviewScreen', () => {
                 expect(mockNavigate).toHaveBeenCalledTimes(1);
             });
             expect(mockNavigate).toHaveBeenCalledWith(
-                TradingFlowStackRoutes.TradingExchangeApproval,
+                TradingStackRoutes.TradingExchangeApproval,
                 {},
             );
         });

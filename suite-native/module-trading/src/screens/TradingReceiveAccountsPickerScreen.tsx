@@ -6,8 +6,8 @@ import {
     type AddCoinFlowType,
     DynamicScreenHeader,
     Screen,
-    type TradingFlowStackParamList,
-    type TradingFlowStackRoutes,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 
 import { AccountList } from '../components/general/AccountList/AccountList';
@@ -16,7 +16,7 @@ import { useReceiveAccountsListData } from '../hooks/general/useReceiveAccountsL
 export const TradingReceiveAccountsPickerScreen = () => {
     const {
         params: { symbol, tradingType },
-    } = useRoute<RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.ReceiveAccounts>>();
+    } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.ReceiveAccounts>>();
 
     const {
         onSelectedNetworkItem,

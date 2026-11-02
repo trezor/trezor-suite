@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
-import { TradingFlowStackRoutes } from '@suite-native/navigation';
+import { TradingStackRoutes } from '@suite-native/navigation';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
@@ -101,13 +101,10 @@ describe('AccountList', () => {
 
         await fireEvent.press(getByText('BTC Account #1'));
 
-        expect(navigationNavigate).toHaveBeenCalledWith(
-            TradingFlowStackRoutes.TradingReceiveAddress,
-            {
-                accountKey: btc1NormalAccount.key,
-                tradingType: 'buy',
-            },
-        );
+        expect(navigationNavigate).toHaveBeenCalledWith(TradingStackRoutes.TradingReceiveAddress, {
+            accountKey: btc1NormalAccount.key,
+            tradingType: 'buy',
+        });
         expect(selectBuySelectedReceiveAccount(store.getState())).toBeUndefined();
         expect(mockCloseTradingFlow).not.toHaveBeenCalled();
     });

@@ -12,13 +12,13 @@ import {
 } from '@suite-common/trading';
 import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { TradingFlowStackRoutes } from '@suite-native/navigation';
+import { TradingStackRoutes } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
-import { type TradingFlowStackNavigationProp } from '@suite-native/trading-types';
+import { type TradingStackNavigationProp } from '@suite-native/trading-types';
 
 import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
 
-type NavigationProp = TradingFlowStackNavigationProp<TradingFlowStackRoutes.TradingExchangePreview>;
+type NavigationProp = TradingStackNavigationProp<TradingStackRoutes.TradingExchangePreview>;
 
 type UseExchangeSignTransactionParams = {
     onSignTransactionNavigation: () => void;
@@ -62,7 +62,7 @@ export const useExchangeSignTransaction = ({
             ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
             : undefined;
 
-        navigation.navigate(TradingFlowStackRoutes.TradingExchangeTransactionReview, {
+        navigation.navigate(TradingStackRoutes.TradingExchangeTransactionReview, {
             accountKey: fromAccount.key,
             tokenContract,
             orderId: quote.orderId ?? '',

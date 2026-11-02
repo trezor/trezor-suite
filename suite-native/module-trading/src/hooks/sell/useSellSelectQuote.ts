@@ -16,7 +16,7 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type TabToStackCompositeNavigationProp,
-    TradingFlowStackRoutes,
+    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
@@ -68,8 +68,8 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
 
         const nextStep = () => {
             // bank account and txn handling will be done in the next step
-            navigation.navigate(RootStackRoutes.TradingFlowStack, {
-                screen: TradingFlowStackRoutes.TradingSellPreview,
+            navigation.navigate(RootStackRoutes.TradingStack, {
+                screen: TradingStackRoutes.TradingSellPreview,
             });
         };
 

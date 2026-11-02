@@ -8,11 +8,11 @@ import {
 } from '@suite-common/trading';
 import { sendFormActions, useAllowanceTxTracking } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import { Screen, TradingFlowStackRoutes } from '@suite-native/navigation';
+import { Screen, TradingStackRoutes } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { useTransactionStatusOverride } from '@suite-native/trading-debug';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
-import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
+import { type TradingStackScreenProps } from '@suite-native/trading-types';
 import {
     useNavigationRemoveInterceptorAlert,
     useTransactionDetails,
@@ -28,7 +28,7 @@ import { ExploreInBlockchainButton } from '../components/exchange/Confirmation/E
 import { useCloseTradingFlow } from '../hooks/general/useCloseTradingFlow';
 
 export type TradingConfirmingScreenProps =
-    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingConfirming>;
+    TradingStackScreenProps<TradingStackRoutes.TradingConfirming>;
 
 export const TradingConfirmingScreen = ({
     route: { params },
@@ -127,7 +127,7 @@ export const TradingConfirmingScreen = ({
                 index: 0,
                 routes: [
                     {
-                        name: TradingFlowStackRoutes.TradingExchangePreview,
+                        name: TradingStackRoutes.TradingExchangePreview,
                         params: { isApproved: true },
                     },
                 ],
@@ -151,7 +151,7 @@ export const TradingConfirmingScreen = ({
                 index: 0,
                 routes: [
                     {
-                        name: TradingFlowStackRoutes.TradingExchangeApproval,
+                        name: TradingStackRoutes.TradingExchangeApproval,
                         params: { isRevoked: flowType === 'revoke-and-approve' },
                     },
                 ],

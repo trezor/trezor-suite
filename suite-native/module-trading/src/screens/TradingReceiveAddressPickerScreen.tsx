@@ -7,8 +7,8 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
-    type TradingFlowStackParamList,
-    type TradingFlowStackRoutes,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 
 import { AddressList } from '../components/general/AccountList/AddressList';
@@ -17,9 +17,7 @@ export const TradingReceiveAddressPickerScreen = () => {
     const { translate } = useTranslate();
     const [searchQuery, setSearchQuery] = useState('');
     const { params } =
-        useRoute<
-            RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingReceiveAddress>
-        >();
+        useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.TradingReceiveAddress>>();
 
     return (
         <Screen

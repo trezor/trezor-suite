@@ -90,7 +90,7 @@ describe('ReceiveAccountPicker', () => {
         );
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
-        expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingStack', {
             screen: 'ReceiveAccounts',
             params: {
                 symbol: 'btc',
@@ -111,7 +111,7 @@ describe('ReceiveAccountPicker', () => {
         );
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
-        expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingStack', {
             screen: 'ReceiveAccounts',
             params: {
                 symbol: 'btc',

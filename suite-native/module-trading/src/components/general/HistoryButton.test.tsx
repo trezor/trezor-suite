@@ -73,7 +73,7 @@ describe('HistoryButton', () => {
                 getByText(getTranslation('moduleTrading.tradeHistory.list.title')),
             );
 
-            expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+            expect(mockNavigate).toHaveBeenCalledWith('TradingStack', {
                 screen: 'TradingHistory',
             });
         });

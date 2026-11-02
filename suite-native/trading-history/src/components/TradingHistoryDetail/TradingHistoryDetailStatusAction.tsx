@@ -17,8 +17,8 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
-    type TradingFlowStackParamList,
-    type TradingFlowStackRoutes,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -28,8 +28,8 @@ import {
 } from '../../utils/tradingHistoryDetailAnimations';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    TradingFlowStackParamList,
-    TradingFlowStackRoutes.TradingHistoryDetail,
+    TradingStackParamList,
+    TradingStackRoutes.TradingHistoryDetail,
     RootStackParamList
 >;
 

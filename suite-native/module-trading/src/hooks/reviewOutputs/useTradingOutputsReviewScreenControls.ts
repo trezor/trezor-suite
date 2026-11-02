@@ -7,7 +7,7 @@ import { type TradingType, isSilentSendRejection } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
-import { TradingFlowStackRoutes } from '@suite-native/navigation';
+import { TradingStackRoutes } from '@suite-native/navigation';
 import type {
     TradingExchangeAnalyticReportCallback,
     TradingSellAnalyticReportCallback,
@@ -157,7 +157,7 @@ export const useTradingOutputsReviewScreenControls = ({
         setIsBroadcasting(false);
 
         if (isDexExchange) {
-            navigation.popTo(TradingFlowStackRoutes.TradingExchangePreview, {});
+            navigation.popTo(TradingStackRoutes.TradingExchangePreview, {});
 
             return;
         }

@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getTranslation, localeReducer } from '@suite-native/intl';
-import { type ExchangeFlowType, TradingFlowStackRoutes } from '@suite-native/navigation';
+import { type ExchangeFlowType, TradingStackRoutes } from '@suite-native/navigation';
 import {
     act,
     createLightStore,
@@ -491,10 +491,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockTrezorConnectCancel).toHaveBeenCalledWith('tx-timeout');
             expect(store.getState().wallet.send.serializedTx).toBeUndefined();
             expect(mockPop).not.toHaveBeenCalled();
-            expect(mockPopTo).toHaveBeenCalledWith(
-                TradingFlowStackRoutes.TradingExchangePreview,
-                {},
-            );
+            expect(mockPopTo).toHaveBeenCalledWith(TradingStackRoutes.TradingExchangePreview, {});
             expect(
                 mockUseConfirmOnTrezorController.revealConfirmOnTrezorSheet,
             ).not.toHaveBeenCalled();

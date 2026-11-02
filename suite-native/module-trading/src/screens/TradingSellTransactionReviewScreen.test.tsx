@@ -4,12 +4,9 @@ import { type Store } from '@reduxjs/toolkit';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import {
-    type TradingFlowStackParamList,
-    type TradingFlowStackRoutes,
-} from '@suite-native/navigation';
+import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { type TradingRootState } from '@suite-native/trading-state';
-import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
+import { type TradingStackScreenProps } from '@suite-native/trading-types';
 
 import { TradingSellTransactionReviewScreen } from './TradingSellTransactionReviewScreen';
 import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
@@ -94,7 +91,7 @@ const createSellRouteParams = (tokenContract?: TokenAddress) => ({
 const createSellRoute = (params: ReturnType<typeof createSellRouteParams>) =>
     ({
         params,
-    }) as RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingSellTransactionReview>;
+    }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingSellTransactionReview>;
 
 describe('TradingSellTransactionReviewScreenTest', () => {
     let store: Store<State>;
@@ -109,7 +106,7 @@ describe('TradingSellTransactionReviewScreenTest', () => {
 
     describe('TradingSellTransactionReviewScreen', () => {
         const renderScreen = async (
-            route: TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingSellTransactionReview>['route'],
+            route: TradingStackScreenProps<TradingStackRoutes.TradingSellTransactionReview>['route'],
         ) => {
             const result = await renderWithTradingProvider(
                 <TradingSellTransactionReviewScreen route={route} navigation={mockNavigation} />,

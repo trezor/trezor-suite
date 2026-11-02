@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
-import { RootStackRoutes, Screen, TradingFlowStackRoutes } from '@suite-native/navigation';
+import { RootStackRoutes, Screen, TradingStackRoutes } from '@suite-native/navigation';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
 import { Footer } from '@suite-native/trading-provider-utils';
 import {
@@ -37,8 +37,8 @@ const TradingScreenContent = () => {
                 type: events.tradingSuccessEvent.name,
                 payload: { type: tradeToBeOpened.tradeType },
             });
-            navigation.navigate(RootStackRoutes.TradingFlowStack, {
-                screen: TradingFlowStackRoutes.TradingHistory,
+            navigation.navigate(RootStackRoutes.TradingStack, {
+                screen: TradingStackRoutes.TradingHistory,
             });
         }
     }, [tradeToBeOpened, navigation, analytics]);

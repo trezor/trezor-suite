@@ -384,7 +384,7 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(dispatchSpy).not.toHaveBeenCalled();
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingFlowStack', {
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
                 screen: 'ReceiveAccounts',
                 params: {
                     symbol: 'btc',
@@ -422,7 +422,7 @@ describe('useExchangeSelectQuote', () => {
                 nextStep();
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingFlowStack', {
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
                 screen: 'TradingExchangePreview',
                 params: {},
             });
@@ -468,7 +468,7 @@ describe('useExchangeSelectQuote', () => {
                 });
 
                 expect(dispatchSpy).not.toHaveBeenCalled();
-                expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingFlowStack', {
+                expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
                     screen: 'ReceiveAccounts',
                     params: {
                         symbol: 'btc',
@@ -521,7 +521,7 @@ describe('useExchangeSelectQuote', () => {
                 nextStep();
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingFlowStack', {
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
                 screen: 'TradingExchangePreview',
                 params: {},
             });
@@ -558,7 +558,7 @@ describe('useExchangeSelectQuote', () => {
                 nextStep();
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingFlowStack', {
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
                 screen: 'TradingExchangePreview',
                 params: {},
             });
@@ -593,7 +593,7 @@ describe('useExchangeSelectQuote', () => {
                 nextStep();
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingFlowStack', {
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
                 screen: 'TradingExchangeApproval',
                 params: {},
             });
@@ -634,7 +634,7 @@ describe('useExchangeSelectQuote', () => {
                 nextStep();
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingFlowStack', {
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
                 screen: 'TradingExchangeApproval',
                 params: {
                     shouldIncreaseLimit: true,
@@ -679,7 +679,7 @@ describe('useExchangeSelectQuote', () => {
                 nextStep();
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingFlowStack', {
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
                 screen: 'TradingExchangeRevoke',
                 params: {
                     shouldIncreaseLimit: true,
@@ -719,7 +719,7 @@ describe('useExchangeSelectQuote', () => {
                 nextStep();
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingFlowStack', {
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
                 screen: 'TradingExchangeRevoke',
                 params: {
                     shouldIncreaseLimit: false,

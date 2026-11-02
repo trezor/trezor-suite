@@ -14,14 +14,14 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Screen, TradingFlowStackRoutes } from '@suite-native/navigation';
+import { Screen, TradingStackRoutes } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { Footer } from '@suite-native/trading-provider-utils';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
 } from '@suite-native/trading-state';
-import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
+import { type TradingStackScreenProps } from '@suite-native/trading-types';
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
@@ -38,7 +38,7 @@ import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
 export type TradingExchangePreviewScreenProps =
-    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingExchangePreview>;
+    TradingStackScreenProps<TradingStackRoutes.TradingExchangePreview>;
 
 export const TradingExchangePreviewScreen = ({
     navigation,
@@ -123,7 +123,7 @@ export const TradingExchangePreviewScreen = ({
 
     useEffect(() => {
         if (quote?.status === 'APPROVAL_REQ') {
-            navigation.navigate(TradingFlowStackRoutes.TradingExchangeApproval, {});
+            navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {});
         }
     }, [navigation, quote?.status]);
 

@@ -4,10 +4,7 @@ import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
-import {
-    type TradingFlowStackParamList,
-    type TradingFlowStackRoutes,
-} from '@suite-native/navigation';
+import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { accounts } from '@suite-native/trading-fixtures';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
@@ -28,7 +25,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: { ...mockRouteParams },
-        }) as RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.ReceiveAccounts>,
+        }) as RouteProp<TradingStackParamList, TradingStackRoutes.ReceiveAccounts>,
 }));
 
 jest.mock('@suite-common/message-system', () => ({

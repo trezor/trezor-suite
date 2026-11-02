@@ -2,18 +2,18 @@ import type {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
     StackToStackCompositeScreenProps,
-    TradingFlowStackParamList,
-    TradingFlowStackRoutes,
+    TradingStackParamList,
+    TradingStackRoutes,
 } from '@suite-native/navigation';
 
-export type TradingFlowStackNavigationProp<
-    T extends keyof TradingFlowStackParamList = keyof TradingFlowStackParamList,
-> = StackToStackCompositeNavigationProps<TradingFlowStackParamList, T, RootStackParamList>;
+export type TradingStackNavigationProp<
+    T extends keyof TradingStackParamList = keyof TradingStackParamList,
+> = StackToStackCompositeNavigationProps<TradingStackParamList, T, RootStackParamList>;
 
-export type TradingFlowStackScreenProps<T extends keyof TradingFlowStackParamList> =
-    StackToStackCompositeScreenProps<TradingFlowStackParamList, T, RootStackParamList>;
+export type TradingStackScreenProps<T extends keyof TradingStackParamList> =
+    StackToStackCompositeScreenProps<TradingStackParamList, T, RootStackParamList>;
 
-export type TradingOutputsReviewScreenNavigationProp = TradingFlowStackNavigationProp<
-    | TradingFlowStackRoutes.TradingSellTransactionReview
-    | TradingFlowStackRoutes.TradingExchangeTransactionReview
+export type TradingOutputsReviewScreenNavigationProp = TradingStackNavigationProp<
+    | TradingStackRoutes.TradingSellTransactionReview
+    | TradingStackRoutes.TradingExchangeTransactionReview
 >;

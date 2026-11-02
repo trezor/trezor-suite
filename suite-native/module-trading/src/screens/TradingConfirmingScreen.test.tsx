@@ -11,7 +11,7 @@ import {
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { type TradingFlowStackParamList, TradingFlowStackRoutes } from '@suite-native/navigation';
+import { type TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
@@ -69,13 +69,13 @@ const mockNavigation = {
     getParent: () => mockParentNavigation,
 } as any;
 
-let routeParams: TradingFlowStackParamList[TradingFlowStackRoutes.TradingConfirming] = {
+let routeParams: TradingStackParamList[TradingStackRoutes.TradingConfirming] = {
     flowType: 'approve',
 };
 
 const mockUseRoute = () => ({
     key: 'route-key',
-    name: TradingFlowStackRoutes.TradingConfirming as const,
+    name: TradingStackRoutes.TradingConfirming as const,
     params: routeParams,
 });
 
@@ -106,9 +106,7 @@ describe('TradingConfirmingScreen', () => {
     let store: Store<State>;
 
     const renderScreen = (
-        routeProps: Partial<
-            TradingFlowStackParamList[TradingFlowStackRoutes.TradingConfirming]
-        > = {},
+        routeProps: Partial<TradingStackParamList[TradingStackRoutes.TradingConfirming]> = {},
     ) => {
         routeParams = {
             flowType: 'approve',
@@ -200,7 +198,7 @@ describe('TradingConfirmingScreen', () => {
             index: 0,
             routes: [
                 {
-                    name: TradingFlowStackRoutes.TradingExchangePreview,
+                    name: TradingStackRoutes.TradingExchangePreview,
                     params: { isApproved: true },
                 },
             ],
@@ -251,7 +249,7 @@ describe('TradingConfirmingScreen', () => {
             index: 0,
             routes: [
                 {
-                    name: TradingFlowStackRoutes.TradingExchangeApproval,
+                    name: TradingStackRoutes.TradingExchangeApproval,
                     params: { isRevoked: true },
                 },
             ],

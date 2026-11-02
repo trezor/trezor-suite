@@ -44,7 +44,7 @@ export enum RootStackRoutes {
     StellarManageTokenStack = 'StellarManageTokenStack',
     FeatureFeedbackModal = 'FeatureFeedbackModal',
     UnstakeFlow = 'UnstakeFlow',
-    TradingFlowStack = 'TradingFlowStack',
+    TradingStack = 'TradingStack',
     ActivityCenterStack = 'ActivityCenterStack',
 }
 
@@ -340,7 +340,7 @@ export enum SettingsStackRoutes {
     SettingsTradingLocation = 'SettingsTradingLocation',
 }
 
-export enum TradingFlowStackRoutes {
+export enum TradingStackRoutes {
     TradingExchangePreview = 'TradingExchangePreview',
     TradingExchangeApproval = 'TradingExchangeApproval',
     TradingExchangeRevoke = 'TradingExchangeRevoke',
