@@ -16,12 +16,12 @@ import {
 } from '@suite-common/trading';
 import { useWatch } from '@suite-native/forms';
 import {
+    type AppTabsParamList,
+    type AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
+    type TabToStackCompositeNavigationProp,
     TradingFlowStackRoutes,
-    type TradingStackParamList,
-    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -36,9 +36,9 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.Trading,
+type NavigationProps = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.Trading,
     RootStackParamList
 >;
 

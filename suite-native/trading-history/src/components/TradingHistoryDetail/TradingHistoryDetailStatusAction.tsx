@@ -19,7 +19,6 @@ import {
     type StackToStackCompositeNavigationProps,
     type TradingFlowStackParamList,
     type TradingFlowStackRoutes,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -91,11 +90,8 @@ export const TradingHistoryDetailStatusAction = ({
         }
 
         navigation.popTo(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.TradeStack,
-            params: {
-                screen: TradingStackRoutes.Trading,
-                params: { tradingType: tradeType },
-            },
+            screen: AppTabsRoutes.Trading,
+            params: { tradingType: tradeType },
         });
     };
 

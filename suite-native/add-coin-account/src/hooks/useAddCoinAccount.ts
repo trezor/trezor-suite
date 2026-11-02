@@ -304,7 +304,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
                 screen = AppTabsRoutes.AccountsStack;
                 break;
             case 'trade':
-                screen = AppTabsRoutes.TradeStack;
+                screen = AppTabsRoutes.Trading;
                 break;
             case 'earn':
                 screen = AppTabsRoutes.EarnStack;

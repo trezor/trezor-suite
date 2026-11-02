@@ -8,12 +8,12 @@ import { AnimatedBox, HStack, Text, buttonSizeToDimensionsMap } from '@suite-nat
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
+    type AppTabsParamList,
+    type AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
+    type TabToStackCompositeNavigationProp,
     TradingFlowStackRoutes,
-    type TradingStackParamList,
-    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectActiveTradingType, selectIsAmountInputActive } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -21,9 +21,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { useWatchAllTrades } from '../../hooks/general/useWatchAllTrades';
 
-export type NavigationProps = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.Trading,
+export type NavigationProps = TabToStackCompositeNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.Trading,
     RootStackParamList
 >;
 

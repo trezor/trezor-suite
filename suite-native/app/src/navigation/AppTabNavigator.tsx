@@ -8,7 +8,7 @@ import { AccountsStackNavigator } from '@suite-native/module-accounts';
 import { EarnStackNavigator } from '@suite-native/module-earn';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
-import { TradingStackNavigator } from '@suite-native/module-trading';
+import { TradingScreen } from '@suite-native/module-trading';
 import { type AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import { DEFAULT_TRADING_TYPE } from '@suite-native/trading-consts';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
@@ -51,8 +51,8 @@ export const AppTabNavigator = () => {
             <Tab.Screen name={AppTabsRoutes.AccountsStack} component={AccountsStackNavigator} />
             {isTradingEnabled && (
                 <Tab.Screen
-                    name={AppTabsRoutes.TradeStack}
-                    component={TradingStackNavigator}
+                    name={AppTabsRoutes.Trading}
+                    component={TradingScreen}
                     listeners={{
                         tabPress: handleTradeTabPress,
                     }}

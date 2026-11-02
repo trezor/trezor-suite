@@ -6,7 +6,6 @@ import {
     RootStackRoutes,
     type TradingFlowStackParamList,
     TradingFlowStackRoutes,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
@@ -95,13 +94,10 @@ describe('TradingTradeableAssetScreen', () => {
             );
 
             expect(navigation.popTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.TradeStack,
+                screen: AppTabsRoutes.Trading,
                 params: {
-                    screen: TradingStackRoutes.Trading,
-                    params: {
-                        tradingType,
-                        selectedTradeableAssetCryptoId: cryptoId,
-                    },
+                    tradingType,
+                    selectedTradeableAssetCryptoId: cryptoId,
                 },
             });
         },

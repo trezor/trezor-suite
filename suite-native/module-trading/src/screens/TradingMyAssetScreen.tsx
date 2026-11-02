@@ -9,7 +9,6 @@ import {
     Screen,
     ScreenHeader,
     type TradingFlowStackRoutes,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { type MyAsset, type TradingFlowStackScreenProps } from '@suite-native/trading-types';
 
@@ -52,14 +51,11 @@ export const TradingMyAssetScreen = ({ navigation, route }: TradingMyAssetScreen
             }
 
             navigation.popTo(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.TradeStack,
+                screen: AppTabsRoutes.Trading,
                 params: {
-                    screen: TradingStackRoutes.Trading,
-                    params: {
-                        tradingType,
-                        selectedMyAssetAccountKey: account.key,
-                        selectedMyAssetCryptoId: asset.cryptoId,
-                    },
+                    tradingType,
+                    selectedMyAssetAccountKey: account.key,
+                    selectedMyAssetCryptoId: asset.cryptoId,
                 },
             });
         },

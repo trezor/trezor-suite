@@ -20,8 +20,8 @@ const tabItemOptions: TabsOptions = {
         iconName: 'discover',
         focusedIconName: 'discoverFilled',
     },
-    [AppTabsRoutes.TradeStack]: {
-        routeName: AppTabsRoutes.TradeStack,
+    [AppTabsRoutes.Trading]: {
+        routeName: AppTabsRoutes.Trading,
         iconName: 'repeat',
         focusedIconName: 'repeat',
     },

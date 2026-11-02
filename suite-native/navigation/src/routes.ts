@@ -64,7 +64,7 @@ export enum ActivityCenterStackRoutes {
 export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
     AccountsStack = 'AccountsStack',
-    TradeStack = 'TradeStack',
+    Trading = 'Trading',
     EarnStack = 'EarnStack',
     Settings = 'Settings',
 }
@@ -338,10 +338,6 @@ export enum SettingsStackRoutes {
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',
     SettingsTradingLocation = 'SettingsTradingLocation',
-}
-
-export enum TradingStackRoutes {
-    Trading = 'Trading',
 }
 
 export enum TradingFlowStackRoutes {
