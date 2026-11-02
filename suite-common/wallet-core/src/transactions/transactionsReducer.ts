@@ -65,6 +65,16 @@ const getHistoryStatusAfterPage = ({
     };
 };
 
+const reopenHistoryWalk = (
+    detail: TransactionsState['fetchStatusDetail'][AccountKey] | undefined,
+) => {
+    if (!detail) return detail;
+
+    const { areAllTransactionsLoaded, ...rest } = detail;
+
+    return rest;
+};
+
 export type TransactionsReducerDeps = ActionTypesDep<'storageLoad'> &
     ReducersDep<'storageLoadTransactions'>;
 
@@ -145,15 +155,16 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             })
 
             .addCase(fetchTransactionsPageThunk.fulfilled, (state, { meta, payload }) => {
-                const { accountKey } = meta.arg;
+                const { accountKey, from } = meta.arg;
                 const detail = state.fetchStatusDetail[accountKey];
+                const status = from === undefined ? detail : reopenHistoryWalk(detail);
 
                 state.fetchStatusDetail[accountKey] = {
-                    ...detail,
+                    ...status,
                     status: 'idle',
                     error: null,
                     ...getHistoryStatusAfterPage({
-                        status: detail,
+                        status,
                         page: meta.arg.page,
                         perPage: meta.arg.perPage,
                         result: payload,
