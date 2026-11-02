@@ -1,25 +1,27 @@
-import { enhanceSignTx } from './enhanceSignTx';
+import { applyZcashSignTxDefaultsIfZcash } from './applyZcashSignTxDefaultsIfZcash';
 import { initBlockchain } from '../../backend/BlockchainLink';
 
-describe('api/bitcoin/enhanceSignTx', () => {
+describe(applyZcashSignTxDefaultsIfZcash.name, () => {
     it('zcash/zcash testnet', () => {
         ['ZEC', 'TAZ'].forEach(shortcut => {
             const coinInfo: any = { shortcut };
-            expect(enhanceSignTx({}, coinInfo)).toEqual({
+            expect(applyZcashSignTxDefaultsIfZcash({}, coinInfo)).toEqual({
                 overwintered: true,
                 version: 5,
                 version_group_id: 0x26a7270a,
                 branch_id: 0x77190ad9,
             });
 
-            expect(enhanceSignTx({ version: 4 }, coinInfo)).toEqual({
+            expect(applyZcashSignTxDefaultsIfZcash({ version: 4 }, coinInfo)).toEqual({
                 overwintered: true,
                 version: 4,
                 version_group_id: 0x26a7270a,
                 branch_id: 0x77190ad9,
             });
 
-            expect(enhanceSignTx({ version: 4, version_group_id: 1 }, coinInfo)).toEqual({
+            expect(
+                applyZcashSignTxDefaultsIfZcash({ version: 4, version_group_id: 1 }, coinInfo),
+            ).toEqual({
                 overwintered: true,
                 version: 4,
                 version_group_id: 1,
@@ -27,7 +29,10 @@ describe('api/bitcoin/enhanceSignTx', () => {
             });
 
             expect(
-                enhanceSignTx({ version: 4, version_group_id: 1, branch_id: 1 }, coinInfo),
+                applyZcashSignTxDefaultsIfZcash(
+                    { version: 4, version_group_id: 1, branch_id: 1 },
+                    coinInfo,
+                ),
             ).toEqual({
                 overwintered: true,
                 version: 4,
@@ -36,7 +41,7 @@ describe('api/bitcoin/enhanceSignTx', () => {
             });
 
             expect(
-                enhanceSignTx(
+                applyZcashSignTxDefaultsIfZcash(
                     { version: 1, version_group_id: 1, branch_id: 1, overwintered: false },
                     coinInfo,
                 ),
@@ -52,7 +57,7 @@ describe('api/bitcoin/enhanceSignTx', () => {
     it('zcash branch_id from backend', async () => {
         const coinInfo: any = { shortcut: 'ZEC', blockchainLink: { type: 'blockbook', url: [] } };
         await initBlockchain(coinInfo, () => {});
-        expect(enhanceSignTx({}, coinInfo)).toEqual({
+        expect(applyZcashSignTxDefaultsIfZcash({}, coinInfo)).toEqual({
             overwintered: true,
             version: 5,
             version_group_id: 0x26a7270a,
@@ -63,10 +68,10 @@ describe('api/bitcoin/enhanceSignTx', () => {
     it('zcash branch_id explicit option takes precedence over backend', async () => {
         const coinInfo: any = { shortcut: 'ZEC', blockchainLink: { type: 'blockbook', url: [] } };
         await initBlockchain(coinInfo, () => {});
-        expect(enhanceSignTx({ branch_id: 42 }, coinInfo).branch_id).toBe(42);
+        expect(applyZcashSignTxDefaultsIfZcash({ branch_id: 42 }, coinInfo).branch_id).toBe(42);
     });
 
     it('unrecognized coinInfo', () => {
-        expect(enhanceSignTx({ expiry: 1 }, {} as any)).toEqual({ expiry: 1 });
+        expect(applyZcashSignTxDefaultsIfZcash({ expiry: 1 }, {} as any)).toEqual({ expiry: 1 });
     });
 });
