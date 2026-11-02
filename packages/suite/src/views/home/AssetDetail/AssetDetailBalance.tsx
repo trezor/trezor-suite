@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
@@ -12,10 +14,13 @@ import {
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
+import { Card, Column, Row, Skeleton, Text, TextButton } from '@trezor/components';
+import { ArrowRightIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+
+import { AssetDetailAccountsModal } from './AssetDetailModals/AssetDetailAccountsModal';
 
 const HEADER_GAP = 24;
 const AMOUNT_GAP = 4;
@@ -59,6 +64,7 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
     const amount = useSelector(state => selectWalletAssetAmount(state, assetKey));
     const fiatValue = useSelector(state => selectWalletAssetFiatValue(state, assetKey));
     const accountCount = useSelector(state => selectWalletAssetAccountCount(state, assetKey));
+    const [isAccountsModalOpen, setIsAccountsModalOpen] = useState(false);
 
     if (symbol === undefined || amount === undefined) {
         return null;
@@ -77,9 +83,14 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
                         <Translation id="TR_ASSET_DETAIL_MY_BALANCE" />
                     </Text>
                     {accountCount > 0 && (
-                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                        <TextButton
+                            size="small"
+                            iconRight={ArrowRightIcon}
+                            onClick={() => setIsAccountsModalOpen(true)}
+                            data-testid="@asset-detail/balance/accounts"
+                        >
                             <Translation id="TR_ACCOUNT_COUNT" values={{ count: accountCount }} />
-                        </Text>
+                        </TextButton>
                     )}
                 </Row>
                 <Column gap={AMOUNT_GAP} alignItems="flex-start">
@@ -104,6 +115,12 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
                     </Text>
                 </Column>
             </Column>
+            {isAccountsModalOpen && (
+                <AssetDetailAccountsModal
+                    assetKey={assetKey}
+                    onClose={() => setIsAccountsModalOpen(false)}
+                />
+            )}
         </Card>
     );
 };
