@@ -13,6 +13,7 @@ import { AssetDetailHiddenBanner } from './AssetDetailHiddenBanner';
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
 import { AssetDetailStakingBanner } from './AssetDetailStakingBanner';
 import { AssetDetailTransactions } from './AssetDetailTransactions';
+import { AssetDetailYieldBanner } from './AssetDetailYieldBanner';
 import { AssetNotExists } from './AssetNotExists';
 import { selectRoutedAssetKey } from './selectRoutedAssetKey';
 
@@ -40,6 +41,7 @@ export const AssetDetail = () => {
                 <AssetDetailEarn assetKey={assetKey} />
             </Row>
             <AssetDetailStakingBanner assetKey={assetKey} />
+            <AssetDetailYieldBanner assetKey={assetKey} />
             <AssetDetailTransactions assetKey={assetKey} />
         </Column>
     );
