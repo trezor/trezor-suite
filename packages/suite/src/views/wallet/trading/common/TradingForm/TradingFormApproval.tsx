@@ -9,12 +9,13 @@ import {
     requiresTokenApproval,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
-    tokenSupportsIncreasingAllowance,
     tradingExchangeActions,
     useApprovalStep,
     useTradingUtils,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { type AllowanceTransactionType } from '@suite-common/wallet-types';
+import { tokenSupportsIncreasingAllowance } from '@suite-common/wallet-utils';
 import { Banner, Button, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
@@ -24,7 +25,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useSelector } from 'src/hooks/suite';
-import { useAllowanceContext } from 'src/hooks/wallet/allowance';
+import { useTradingAllowanceContext } from 'src/hooks/wallet/trading/allowance/useTradingAllowanceContext';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 
@@ -48,7 +49,7 @@ export const TradingFormApproval = () => {
     const context = useTradingFormContext<TradingExchangeType>();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
-    const { tx, state: allowanceState } = useAllowanceContext();
+    const { tx, state: allowanceState } = useTradingAllowanceContext();
 
     const {
         watch,
@@ -86,7 +87,7 @@ export const TradingFormApproval = () => {
 
     const { approvalStep } = useApprovalStep({
         tx,
-        currentApprovalType: allowanceState.approvalType,
+        currentTransactionType: allowanceState.transactionType,
         quoteStatus: selectedQuote?.status,
         refreshQuotes,
     });
@@ -105,11 +106,10 @@ export const TradingFormApproval = () => {
             },
         });
 
-        allowanceState.setApprovalType('APPROVE');
+        allowanceState.setTransactionType('approve');
 
         await approveTransaction(selectedQuote);
 
-        context.setIsApproval(true);
         allowanceState.openApproveModal();
     };
 
@@ -127,11 +127,10 @@ export const TradingFormApproval = () => {
             },
         });
 
-        allowanceState.setApprovalType('REVOKE');
+        allowanceState.setTransactionType('revoke');
 
         await revokeApproval(selectedQuote);
 
-        context.setIsApproval(true);
         allowanceState.openRevokeModal();
     };
 
@@ -194,15 +193,16 @@ export const TradingFormApproval = () => {
 
     const isActionButtonDisabled = (
         isButtonLoading: boolean,
-        blockingApprovalType: 'APPROVE' | 'REVOKE',
+        blockingTransactionType: AllowanceTransactionType,
     ) =>
         isButtonLoading ||
-        (approvalStep === 'LOADING' && allowanceState.approvalType === blockingApprovalType) ||
+        (approvalStep === 'LOADING' &&
+            allowanceState.transactionType === blockingTransactionType) ||
         isCommonButtonBusy;
 
-    const isApproveButtonDisabled = isActionButtonDisabled(isApproveButtonLoading, 'REVOKE');
-    const isSwapButtonDisabled = isActionButtonDisabled(isSwapButtonLoading, 'APPROVE');
-    const isRevokeButtonDisabled = isActionButtonDisabled(isRevokeButtonLoading, 'APPROVE');
+    const isApproveButtonDisabled = isActionButtonDisabled(isApproveButtonLoading, 'revoke');
+    const isSwapButtonDisabled = isActionButtonDisabled(isSwapButtonLoading, 'approve');
+    const isRevokeButtonDisabled = isActionButtonDisabled(isRevokeButtonLoading, 'approve');
 
     const isRefreshButtonDisabled =
         isRefreshButtonLoading || isFormLoading || isScheduledQuotesRefresh || isDiscoveryRunning;
@@ -362,7 +362,7 @@ export const TradingFormApproval = () => {
                     title={
                         <Translation
                             id={
-                                allowanceState.approvalType === 'APPROVE'
+                                allowanceState.transactionType === 'approve'
                                     ? 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL'
                                     : 'TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL'
                             }

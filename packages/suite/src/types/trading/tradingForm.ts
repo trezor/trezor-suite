@@ -182,8 +182,6 @@ export interface TradingExchangeFormContextProps
 
     isLoadingQuote: boolean;
     setIsLoadingQuote: (isLoadingQuote: boolean) => void;
-    isApproval: boolean;
-    setIsApproval: (isApproval: boolean) => void;
     methods: UseFormReturn<TradingExchangeFormProps>;
 
     showReserveBanner: boolean;

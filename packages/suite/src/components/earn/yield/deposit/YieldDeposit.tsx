@@ -7,8 +7,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
-import { useAllowance } from 'src/hooks/wallet/allowance/useAllowance';
-import { AllowanceContext } from 'src/hooks/wallet/allowance/useAllowanceContext';
 
 import { YieldDepositForm } from './YieldDepositForm';
 import { useYieldDeposit } from './useYieldDeposit';
@@ -21,7 +19,6 @@ type YieldDepositProps = {
 };
 
 export const YieldDeposit = ({ account, vault }: YieldDepositProps) => {
-    const allowanceContextValue = useAllowance({ account });
     const yieldDepositContextValues = useYieldDeposit({ account, vault });
     const vaultContractAddress = yieldDepositContextValues
         ? getYieldVaultContractAddress(yieldDepositContextValues.vault)
@@ -45,23 +42,21 @@ export const YieldDeposit = ({ account, vault }: YieldDepositProps) => {
     const { formState } = yieldDepositContextValues.methods;
 
     return (
-        <AllowanceContext.Provider value={allowanceContextValue}>
-            <Column gap={24}>
-                <ContextMessage context={Context.getEarnYield('deposit')} />
-                {isFormHidden ? (
-                    <YieldDisabledBanner
-                        type="deposit"
-                        content={isDisabled ? content : undefined}
-                        variant={isDisabled ? variant : undefined}
-                    />
-                ) : (
-                    <YieldDepositContext.Provider value={yieldDepositContextValues}>
-                        <Form form={yieldDepositContextValues.methods} formState={formState}>
-                            <YieldDepositForm />
-                        </Form>
-                    </YieldDepositContext.Provider>
-                )}
-            </Column>
-        </AllowanceContext.Provider>
+        <Column gap={24}>
+            <ContextMessage context={Context.getEarnYield('deposit')} />
+            {isFormHidden ? (
+                <YieldDisabledBanner
+                    type="deposit"
+                    content={isDisabled ? content : undefined}
+                    variant={isDisabled ? variant : undefined}
+                />
+            ) : (
+                <YieldDepositContext.Provider value={yieldDepositContextValues}>
+                    <Form form={yieldDepositContextValues.methods} formState={formState}>
+                        <YieldDepositForm />
+                    </Form>
+                </YieldDepositContext.Provider>
+            )}
+        </Column>
     );
 };

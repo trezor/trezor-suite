@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 
-import { type AllowanceType } from '@suite-common/wallet-types';
+import { type AllowanceTransactionType } from '@suite-common/wallet-types';
 
-export const useAllowanceState = () => {
-    const [approvalType, setApprovalType] = useState<AllowanceType>('APPROVE');
+export const useTradingAllowanceState = () => {
+    const [transactionType, setTransactionType] = useState<AllowanceTransactionType>('approve');
     const [isWaitingForDevice, setIsWaitingForDevice] = useState(false);
 
     const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
@@ -15,9 +15,9 @@ export const useAllowanceState = () => {
     const closeRevokeModal = useCallback(() => setIsRevokeModalOpen(false), []);
 
     return {
-        approvalType,
+        transactionType,
         isWaitingForDevice,
-        setApprovalType,
+        setTransactionType,
         setIsWaitingForDevice,
         isApproveModalOpen,
         isRevokeModalOpen,

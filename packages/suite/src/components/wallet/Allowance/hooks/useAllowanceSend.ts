@@ -12,14 +12,14 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 
-interface UseAllowanceSendParams {
+type UseAllowanceSendParams = {
     account: Account;
     methods: UseFormReturn<FormState>;
-}
+};
 
-interface SendParams {
+type SendParams = {
     composedTransaction: PrecomposedTransactionFinal;
-}
+};
 
 export const useAllowanceSend = ({ account, methods }: UseAllowanceSendParams) => {
     const { dispatch } = useServices(injectDispatch);

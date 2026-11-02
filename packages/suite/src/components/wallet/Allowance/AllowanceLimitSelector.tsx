@@ -1,9 +1,8 @@
 import { useRef } from 'react';
 
-import { type DexApprovalType } from 'invity-api';
-
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { type AllowanceLimitType } from '@suite-common/wallet-types';
 import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import {
@@ -21,50 +20,49 @@ import { CaretDownIcon, WarningIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
-import type { AllowanceModalProvider } from './AllowanceModalProviderInfo';
+import type { AllowanceProvider } from './AllowanceProviderInfo';
 
-interface ApproveModalTypeSelectorProps {
-    approvalType: DexApprovalType;
+type AllowanceLimitSelectorProps = {
+    limitType: AllowanceLimitType;
     isLoading: boolean;
-    data: string;
     networkSymbol: NetworkSymbol;
-    onSelect: (type: DexApprovalType) => void;
-    provider: AllowanceModalProvider;
+    onSelect: (limitType: AllowanceLimitType) => void;
+    provider: AllowanceProvider;
     token: TokenInfo;
     displayAmount: AmountSubunit;
     hasPreapprovedAmount: boolean;
-}
+};
 
-type SelectableType = Extract<DexApprovalType, 'INFINITE' | 'MINIMAL'>;
+type ProviderKind = NonNullable<AllowanceProvider['kind']>;
 
-const TYPE_LABEL_ID = {
-    INFINITE: 'TR_APPROVAL_VALUE_INFINITE',
-    MINIMAL: 'TR_APPROVAL_VALUE_MINIMAL',
-} as const satisfies Record<SelectableType, TranslationKey>;
+const LIMIT_TYPE_LABEL_ID = {
+    unlimited: 'TR_APPROVAL_VALUE_INFINITE',
+    minimal: 'TR_APPROVAL_VALUE_MINIMAL',
+} as const satisfies Record<AllowanceLimitType, TranslationKey>;
 
-type ProviderKind = NonNullable<AllowanceModalProvider['kind']>;
-
-const TYPE_INFO_ID = {
+const LIMIT_TYPE_INFO_ID = {
     provider: {
-        INFINITE: 'TR_APPROVAL_VALUE_INFINITE_INFO',
-        MINIMAL: 'TR_APPROVAL_VALUE_MINIMAL_INFO',
+        unlimited: 'TR_APPROVAL_VALUE_INFINITE_INFO',
+        minimal: 'TR_APPROVAL_VALUE_MINIMAL_INFO',
     },
     vault: {
-        INFINITE: 'TR_EARN_YIELD_APPROVAL_VALUE_INFINITE_INFO',
-        MINIMAL: 'TR_EARN_YIELD_APPROVAL_VALUE_MINIMAL_INFO',
+        unlimited: 'TR_EARN_YIELD_APPROVAL_VALUE_INFINITE_INFO',
+        minimal: 'TR_EARN_YIELD_APPROVAL_VALUE_MINIMAL_INFO',
     },
-} as const satisfies Record<ProviderKind, Record<SelectableType, TranslationKey>>;
+} as const satisfies Record<ProviderKind, Record<AllowanceLimitType, TranslationKey>>;
 
-const INFINITE_WARNING_ID = {
+const UNLIMITED_WARNING_ID = {
     provider: 'TR_APPROVAL_VALUE_INFINITE_WARNING',
     vault: 'TR_EARN_YIELD_APPROVAL_VALUE_INFINITE_WARNING',
 } as const satisfies Record<ProviderKind, TranslationKey>;
 
-const toSelectable = (type: DexApprovalType): SelectableType =>
-    type === 'INFINITE' ? 'INFINITE' : 'MINIMAL';
+const LIMIT_OPTION_TEST_ID = {
+    minimal: '@modal/approve/minimal-option',
+    unlimited: '@modal/approve/infinite-option',
+} as const satisfies Record<AllowanceLimitType, string>;
 
-export const ApproveModalTypeSelector = ({
-    approvalType,
+export const AllowanceLimitSelector = ({
+    limitType,
     isLoading,
     networkSymbol,
     onSelect,
@@ -72,7 +70,7 @@ export const ApproveModalTypeSelector = ({
     token,
     displayAmount,
     hasPreapprovedAmount,
-}: ApproveModalTypeSelectorProps) => {
+}: AllowanceLimitSelectorProps) => {
     const popoverRef = useRef<PopoverRef>(null);
     const displaySymbol = token.symbol
         ? getDisplaySymbol(token.symbol, token.contract)
@@ -86,22 +84,25 @@ export const ApproveModalTypeSelector = ({
         provider: provider.name,
     };
 
-    const handleSelect = (type: DexApprovalType) => {
-        onSelect(type);
+    const handleSelect = (nextLimitType: AllowanceLimitType) => {
+        onSelect(nextLimitType);
         popoverRef.current?.close();
     };
 
-    const renderDetails = (type: SelectableType) => (
+    const renderDetails = (type: AllowanceLimitType) => (
         <>
             <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                <Translation id={TYPE_INFO_ID[providerKind][type]} values={translationValues} />
+                <Translation
+                    id={LIMIT_TYPE_INFO_ID[providerKind][type]}
+                    values={translationValues}
+                />
             </Paragraph>
-            {type === 'INFINITE' && (
+            {type === 'unlimited' && (
                 <Text intent="warning" typographyStyle="body-sm">
                     <Row gap={8}>
                         <Icon as={WarningIcon} size={16} />
                         <Translation
-                            id={INFINITE_WARNING_ID[providerKind]}
+                            id={UNLIMITED_WARNING_ID[providerKind]}
                             values={{ send: displaySymbol }}
                         />
                     </Row>
@@ -110,12 +111,12 @@ export const ApproveModalTypeSelector = ({
         </>
     );
 
-    const renderOption = (type: SelectableType) => (
+    const renderOption = (type: AllowanceLimitType) => (
         <CardList.Item
             key={type}
             onClick={() => handleSelect(type)}
             width="100%"
-            data-testid={`@modal/approve/${type.toLowerCase()}-option`}
+            data-testid={LIMIT_OPTION_TEST_ID[type]}
         >
             <Column gap={4} flex="1" alignItems="flex-start">
                 <Row gap={8}>
@@ -126,7 +127,7 @@ export const ApproveModalTypeSelector = ({
                         placeholder={displaySymbol}
                     />
                     <Text typographyStyle="body-sm-strong">
-                        <Translation id={TYPE_LABEL_ID[type]} values={translationValues} />
+                        <Translation id={LIMIT_TYPE_LABEL_ID[type]} values={translationValues} />
                     </Text>
                 </Row>
                 {renderDetails(type)}
@@ -134,7 +135,6 @@ export const ApproveModalTypeSelector = ({
         </CardList.Item>
     );
 
-    const selectedType = toSelectable(approvalType);
     const trigger = (
         <CardList.Item isDisabled={isLoading} width="100%">
             <Column gap={4} flex="1">
@@ -158,14 +158,14 @@ export const ApproveModalTypeSelector = ({
                             data-testid="@modal/approve/limit-value"
                         >
                             <Translation
-                                id={TYPE_LABEL_ID[selectedType]}
+                                id={LIMIT_TYPE_LABEL_ID[limitType]}
                                 values={translationValues}
                             />
                         </Text>
                         <Icon as={CaretDownIcon} size={20} color="contentSecondary" />
                     </Row>
                 </Row>
-                {renderDetails(selectedType)}
+                {renderDetails(limitType)}
             </Column>
         </CardList.Item>
     );
@@ -185,8 +185,8 @@ export const ApproveModalTypeSelector = ({
                 <Menu
                     content={
                         <CardList width={420}>
-                            {renderOption('MINIMAL')}
-                            {renderOption('INFINITE')}
+                            {renderOption('minimal')}
+                            {renderOption('unlimited')}
                         </CardList>
                     }
                 />

@@ -1,32 +1,39 @@
 import { useCallback, useMemo } from 'react';
 
-import { type CryptoId, type DexApprovalType } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import {
+    parseCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     tradeApi,
 } from '@suite-common/trading';
+import { type AllowanceLimitType } from '@suite-common/wallet-types';
+import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
 
-import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
+import { ApproveModal } from 'src/components/wallet/Allowance/ApproveModal';
 import { useSelector } from 'src/hooks/suite';
-import { useAllowanceContext } from 'src/hooks/wallet/allowance';
+import { useTradingAllowanceContext } from 'src/hooks/wallet/trading/allowance/useTradingAllowanceContext';
 import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
-interface TradingApproveModalProps {
+type TradingApproveModalProps = {
     amount: string;
     cryptoId: CryptoId;
-}
+};
+
+const LIMIT_TYPE_ANALYTICS_ACTION = {
+    minimal: 'limit-exact',
+    unlimited: 'limit-unlimited',
+} as const satisfies Record<AllowanceLimitType, 'limit-exact' | 'limit-unlimited'>;
 
 export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalProps) => {
-    const { state } = useAllowanceContext();
+    const { state, tx } = useTradingAllowanceContext();
     const context = useTradingFormContext();
     const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
     const { analytics } = useServices(injectDesktopAnalytics);
@@ -44,17 +51,15 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
             },
         });
 
-        if (isTradingExchangeContext(context)) {
-            context.setIsApproval(false);
+        state.closeApproveModal();
 
-            if (selectedQuote?.receiveAddress) {
-                await context.confirmApproval({
-                    trade: { ...selectedQuote, approvalType: undefined },
-                    receiveAddress: selectedQuote.receiveAddress,
-                });
-            }
+        if (isTradingExchangeContext(context) && selectedQuote?.receiveAddress) {
+            await context.confirmApproval({
+                trade: { ...selectedQuote, approvalType: undefined },
+                receiveAddress: selectedQuote.receiveAddress,
+            });
         }
-    }, [analytics, getCryptoInfo, context, selectedQuote]);
+    }, [analytics, getCryptoInfo, state, context, selectedQuote]);
 
     const onConfirm = useCallback(() => {
         analytics.report({
@@ -67,21 +72,36 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
         });
     }, [analytics, getCryptoInfo]);
 
-    const onSelectApprovalType = useCallback(
-        (approvalType: DexApprovalType) => {
-            if (approvalType !== 'MINIMAL' && approvalType !== 'INFINITE') return;
-
+    const onSelectLimitType = useCallback(
+        (limitType: AllowanceLimitType) => {
             analytics.report({
                 type: events.tradeApprovalEvent.name,
                 payload: {
                     type: 'approve-modal',
-                    action: approvalType === 'MINIMAL' ? 'limit-exact' : 'limit-unlimited',
+                    action: LIMIT_TYPE_ANALYTICS_ACTION[limitType],
                     ...getCryptoInfo(),
                 },
             });
         },
         [analytics, getCryptoInfo],
     );
+
+    const onSendStart = useCallback(() => {
+        state.setIsWaitingForDevice(true);
+    }, [state]);
+
+    const onSent = useCallback(
+        (txid: string) => {
+            tx.setApprovalTxid(txid);
+            state.setIsWaitingForDevice(false);
+            state.closeApproveModal();
+        },
+        [tx, state],
+    );
+
+    const onSendFailed = useCallback(() => {
+        state.setIsWaitingForDevice(false);
+    }, [state]);
 
     const approveParams = useMemo(() => {
         if (!isTradingExchangeContext(context)) {
@@ -91,8 +111,7 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
         const exchange = selectedQuote?.exchange;
         const provider = exchange ? providersInfo?.[exchange] : null;
 
-        const approvalData = Calldata.evm.erc20.approve.decode(selectedQuote?.dexTx?.data);
-        const spender = approvalData?.spender ?? null;
+        const spender = getErc20ApproveSpender(selectedQuote?.dexTx?.data) ?? null;
         const preapprovedAmount = selectedQuote?.preapprovedStringAmount;
 
         return provider && spender ? { provider, spender, preapprovedAmount } : null;
@@ -106,12 +125,13 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
     }
 
     const providerLogo = provider.logo ? tradeApi.getProviderLogoUrl(provider.logo) : undefined;
+    const { contractAddress: tokenContractAddress = '' } = parseCryptoId(cryptoId);
 
     return (
         <ApproveModal
             amount={amount}
-            cryptoId={cryptoId}
             account={account}
+            tokenContractAddress={tokenContractAddress}
             provider={{
                 ...provider,
                 logo: providerLogo,
@@ -121,8 +141,11 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
             preapprovedAmount={preapprovedAmount}
             heading="TR_APPROVAL_APPROVE_TOKEN_SPENDING"
             description="TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING_DESCRIPTION"
-            onSelectApprovalType={onSelectApprovalType}
+            onSelectLimitType={onSelectLimitType}
             onConfirm={onConfirm}
+            onSendStart={onSendStart}
+            onSent={onSent}
+            onSendFailed={onSendFailed}
             onCancel={handleCancel}
         />
     );

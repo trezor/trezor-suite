@@ -29,7 +29,8 @@ import {
     useYieldGasReserve,
     yieldActions,
 } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AllowanceAction } from '@suite-common/wallet-types';
+import { getAllowanceAction } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
@@ -45,8 +46,6 @@ import { useSelector } from 'src/hooks/suite';
 
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
-    type YieldApprovalAction,
-    getYieldApprovalAction,
     getYieldModifyAmountInput,
     isAmountGreaterThan,
     shouldInitializeYieldAllowance,
@@ -88,7 +87,7 @@ export type UseYieldFlowResult = {
     pendingTransaction: YieldPendingTransactionState | null;
     allowanceAmount: string;
     allowanceStatus: YieldAllowanceStatus;
-    approvalAction: YieldApprovalAction;
+    approvalAction: AllowanceAction;
     canRevokeAllowance: boolean;
     hasWrappedTokenBalance: boolean;
     amountIssues: AmountIssue[];
@@ -613,9 +612,9 @@ export const useYieldFlow = ({
         openDeviceConnectionModal,
     ]);
 
-    const approvalAction = getYieldApprovalAction({
-        liveAmount,
-        allowanceAmount: session.approval.allowanceAmount,
+    const approvalAction = getAllowanceAction({
+        requestedAmount: liveAmount,
+        currentAllowanceAmount: session.approval.allowanceAmount,
         shouldConsiderAllowance: session.approval.origin === 'modify',
         isRevokeRequired: session.approval.isRevokeRequired,
         tokenContractAddress: token?.contractAddress,

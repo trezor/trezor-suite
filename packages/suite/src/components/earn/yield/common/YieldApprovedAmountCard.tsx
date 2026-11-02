@@ -4,7 +4,7 @@ import { Card, IconButton, Row, Text } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { ApprovedAmountValue } from './ApprovedAmountValue';
+import { AllowanceAmount } from 'src/components/wallet/Allowance/AllowanceAmount';
 
 type YieldApprovedAmountCardProps = {
     token: YieldFlowDisplayToken;
@@ -38,11 +38,13 @@ export const YieldApprovedAmountCard = ({
                         showNetworkIcon
                         isBordered={false}
                     />
-                    <ApprovedAmountValue
+                    <AllowanceAmount
                         amount={amount}
-                        token={token}
+                        symbol={token.symbol}
+                        decimals={token.decimals}
                         isLoading={isLoading}
                         hasError={hasError}
+                        data-testid="@yield/approve/approved-amount"
                     />
                     {onRevoke && (
                         <IconButton

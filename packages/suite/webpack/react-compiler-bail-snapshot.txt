@@ -45,7 +45,6 @@ packages/suite/src/hooks/earn/useWithdrawalForm.ts	bail	Support value blocks (co
 packages/suite/src/hooks/settings/backends/useBackendsForm.ts	partial	React Compiler has skipped optimizing this component because one or more React ESLint rules were disabled
 packages/suite/src/hooks/suite/useAppShortcuts.tsx	bail	Cannot access refs during render
 packages/suite/src/hooks/suite/useChangeDeviceLabel.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
-packages/suite/src/hooks/wallet/allowance/useAllowanceModal.ts	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause; (BuildHIR::node.lowerReorderableExpression) Expression type `CallExpression` cannot be safely reordered
 packages/suite/src/hooks/wallet/form/useCompose.ts	bail	(BuildHIR::node.lowerReorderableExpression) Expression type `MemberExpression` cannot be safely reordered
 packages/suite/src/hooks/wallet/form/useStakeCompose.ts	bail	(BuildHIR::node.lowerReorderableExpression) Expression type `MemberExpression` cannot be safely reordered
 packages/suite/src/hooks/wallet/form/useUtxoSelection.ts	opt-out	'use no memo'
