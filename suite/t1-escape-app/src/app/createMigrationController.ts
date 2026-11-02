@@ -572,9 +572,14 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             const { device } = state;
             if (!device) return;
 
+            // A coin whose field is left empty stays on the old device for now. With every field
+            // empty there is nothing to do, so each of them is refused as empty.
+            const coinsToMove = getCoinsToMove(state);
+            const coinsWithAddress = coinsToMove.filter(coin => !!inputs[coin]?.trim());
+            const coins = coinsWithAddress.length > 0 ? coinsWithAddress : coinsToMove;
+
             // Every address is checked before anything is composed or sent to the device, so
             // that all mistakes show at once and no coin is prepared on a half-filled form.
-            const coins = getCoinsToMove(state);
             const bitcoin = coins.includes('bitcoin')
                 ? validateDestination({
                       input: inputs.bitcoin ?? '',
@@ -620,6 +625,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             // The addresses themselves stay out of the log.
             diagnosticLog.info('flow', 'destinations accepted', {
                 coins,
+                skippedCoins: coinsToMove.filter(coin => !coins.includes(coin)),
                 ...(bitcoin?.success ? { bitcoinFormat: bitcoin.payload.format } : {}),
             });
             setState({

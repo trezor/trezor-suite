@@ -229,6 +229,12 @@ export const getCoinsToMove = ({ bitcoin, ethereum }: MigrationState): Coin[] =>
     ...ETHEREUM_CHAINS.filter(chain => hasEthereumToMove(ethereum[chain].addresses)),
 ];
 
+/** Coins with something to move whose destination field the user left empty. */
+export const getSkippedCoins = (state: MigrationState): Coin[] =>
+    getCoinsToMove(state).filter(coin =>
+        isEthereumChain(coin) ? !state.ethereum[coin].destination : !state.bitcoin.destination,
+    );
+
 export const INITIAL_BITCOIN_STATE: BitcoinState = {
     accounts: [],
     transfers: [],

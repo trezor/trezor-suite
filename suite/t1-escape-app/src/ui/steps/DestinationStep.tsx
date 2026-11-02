@@ -137,6 +137,13 @@ export const DestinationStep = ({
                     receive address on the display of your new Trezor.
                 </Paragraph>
                 <BulletList>
+                    {coins.length > 1 && (
+                        <BulletList.Item>
+                            To move only some of the coins, leave the fields of the others empty.
+                            They stay on the old Trezor, and a new run of this page can move them
+                            later.
+                        </BulletList.Item>
+                    )}
                     <BulletList.Item>
                         The old Trezor will show each address before it signs. Compare it there with
                         your new wallet, character by character.

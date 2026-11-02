@@ -79,7 +79,7 @@ export const TransfersStep = ({
     onEditDestinations,
     onFinish,
 }: TransfersStepProps) => {
-    // A chain has a destination exactly when it had something to move.
+    // A chain has a destination when it had something to move and the user did not skip it.
     const ethereumChains = ETHEREUM_CHAINS.flatMap(chain => {
         const { destination, transfers } = ethereum[chain];
 

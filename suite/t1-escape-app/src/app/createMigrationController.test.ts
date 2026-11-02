@@ -8,6 +8,7 @@ import {
     type MigrationControllerDeps,
     createMigrationController,
 } from './createMigrationController';
+import { getSkippedCoins } from './migrationState';
 import { mockHistoryTransaction } from '../../mocks/mockAccountInfo';
 import {
     type MockFundedEthereumAddressParams,
@@ -688,6 +689,84 @@ describe('migration controller', () => {
             expect(controller.getState().step).toBe('transfers');
             expect(controller.getState().bitcoin.transfers).toHaveLength(1);
             expect(controller.getState().ethereum.ethereum.transfers).toHaveLength(1);
+        });
+
+        it('moves only the coins whose address is filled in and leaves the others on the device', async () => {
+            const { controller, chain, reachDiscovery } = setup({
+                fundedEthereum: [
+                    { ethereumChain: 'ethereum', balance: ONE_ETHER },
+                    { ethereumChain: 'ethereum-classic', slip44: 61, balance: ONE_ETHER },
+                ],
+            });
+            await reachDiscovery();
+            controller.confirmDiscovery();
+
+            await controller.submitDestinations({
+                bitcoin: DESTINATION,
+                ethereum: '',
+                'ethereum-classic': '   ',
+            });
+
+            expect(controller.getState()).toMatchObject({
+                step: 'transfers',
+                bitcoin: { destinationError: undefined, transfers: { length: 1 } },
+                ethereum: {
+                    ethereum: {
+                        destination: undefined,
+                        destinationError: undefined,
+                        transfers: [],
+                    },
+                    'ethereum-classic': {
+                        destination: undefined,
+                        destinationError: undefined,
+                        transfers: [],
+                    },
+                },
+            });
+            expect(getSkippedCoins(controller.getState())).toEqual([
+                'ethereum',
+                'ethereum-classic',
+            ]);
+            for (const ethereumChain of ETHEREUM_CHAINS) {
+                expect(
+                    chain.backend.ethereum[ethereumChain].estimateGasPrice,
+                ).not.toHaveBeenCalled();
+            }
+        });
+
+        it('moves only ether when the bitcoin field is left empty', async () => {
+            const { controller, reachDiscovery, getEthereumTransfers } = setup({
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+            await reachDiscovery();
+            controller.confirmDiscovery();
+
+            await controller.submitDestinations({ ethereum: ETHEREUM_DESTINATION });
+
+            expect(controller.getState()).toMatchObject({
+                step: 'transfers',
+                bitcoin: { destination: undefined, transfers: [] },
+            });
+            expect(getEthereumTransfers()).toHaveLength(1);
+            expect(getSkippedCoins(controller.getState())).toEqual(['bitcoin']);
+        });
+
+        it('refuses every field as empty when no address is filled in', async () => {
+            const { controller, device, reachDiscovery } = setup({
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+            await reachDiscovery();
+            controller.confirmDiscovery();
+            const callsBefore = device.calls.length;
+
+            await controller.submitDestinations({ bitcoin: ' ' });
+
+            expect(controller.getState()).toMatchObject({
+                step: 'destination',
+                bitcoin: { destinationError: { type: 'empty' } },
+                ethereum: { ethereum: { destinationError: { type: 'empty' } } },
+            });
+            expect(device.calls).toHaveLength(callsBefore);
         });
 
         it('lets the addresses be changed only while nothing of any coin is signed', async () => {

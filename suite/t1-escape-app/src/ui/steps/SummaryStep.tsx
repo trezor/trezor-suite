@@ -4,7 +4,13 @@ import {
     type EthereumTransferSummary,
     summarizeEthereumTransfers,
 } from '../../app/ethereumTransferSummary';
-import type { EthereumChainState, EthereumTransfer, Transfer } from '../../app/migrationState';
+import {
+    type Coin,
+    type EthereumChainState,
+    type EthereumTransfer,
+    type Transfer,
+    isEthereumChain,
+} from '../../app/migrationState';
 import {
     type MigrationOutcome,
     type TransferSummary,
@@ -29,6 +35,8 @@ type SummaryStepProps = {
     isDeviceLocked: boolean;
     bitcoinTransfers: readonly Transfer[];
     ethereum: Record<EthereumChain, Pick<EthereumChainState, 'transfers' | 'addresses'>>;
+    /** Coins that had something to move but were left on the old device without a destination. */
+    skippedCoins: readonly Coin[];
     report?: WalletScanReport;
     onRefresh: () => void;
 };
@@ -38,6 +46,9 @@ const HEADLINES: Record<MigrationOutcome, string> = {
     pending: 'The transfers are not confirmed yet',
     incomplete: 'Not everything that was found has been transferred',
 };
+
+const getCoinLabel = (coin: Coin) =>
+    isEthereumChain(coin) ? ETHEREUM_CHAIN_DEFINITIONS[coin].label : 'Bitcoin';
 
 const getAccountLabel = ({ account }: Transfer) =>
     `${ACCOUNT_TYPE_DEFINITIONS[account.accountType].label} account #${account.accountIndex + 1}`;
@@ -166,6 +177,7 @@ export const SummaryStep = ({
     isDeviceLocked,
     bitcoinTransfers,
     ethereum,
+    skippedCoins,
     report,
     onRefresh,
 }: SummaryStepProps) => {
@@ -183,6 +195,8 @@ export const SummaryStep = ({
         ...ethereumSummaries
             .filter(({ hasTransfers }) => hasTransfers)
             .map(({ summary }) => summary),
+        // A skipped coin is still on the old device, so the run cannot count as complete.
+        ...skippedCoins.map(() => ({ hasPending: false, isEverythingConfirmed: false })),
     ]);
     const hasPending = outcome === 'pending';
     // The hex of a signed transaction is shown on the transfers screen only, and this screen
@@ -229,6 +243,21 @@ export const SummaryStep = ({
                         .map(({ chain, summary }) => (
                             <EthereumChainSummary key={chain} chain={chain} summary={summary} />
                         ))}
+
+                    {skippedCoins.length > 0 && (
+                        <Column gap={8}>
+                            <H3>Not moved</H3>
+                            <BulletList>
+                                {skippedCoins.map(coin => (
+                                    <BulletList.Item key={coin}>
+                                        {getCoinLabel(coin)}: no destination was entered, the coins
+                                        are still on the old Trezor. Move them in a new run of this
+                                        page.
+                                    </BulletList.Item>
+                                ))}
+                            </BulletList>
+                        </Column>
+                    )}
 
                     {hasPending && (
                         <Button priority="secondary" onClick={onRefresh}>

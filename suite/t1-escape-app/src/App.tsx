@@ -1,6 +1,6 @@
 import { Banner, Column } from '@trezor/components';
 
-import { getCoinsToMove, mapEthereumChains } from './app/migrationState';
+import { getCoinsToMove, getSkippedCoins, mapEthereumChains } from './app/migrationState';
 import { useMigration } from './app/useMigration';
 import { buildWalletScanReport } from './discovery/walletScanReport';
 import { ETHEREUM_CHAINS } from './ethereum/ethereumChain';
@@ -125,6 +125,7 @@ export const App = () => {
                         isDeviceLocked={state.isDeviceLocked}
                         bitcoinTransfers={state.bitcoin.transfers}
                         ethereum={state.ethereum}
+                        skippedCoins={getSkippedCoins(state)}
                         report={report}
                         onRefresh={controller.refreshTransfers}
                     />
