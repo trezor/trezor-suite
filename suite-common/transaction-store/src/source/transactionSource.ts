@@ -3,16 +3,23 @@ import type { Result } from '@trezor/type-utils';
 
 import type { StoredAccount, TransactionSourceErrorType } from '../transactionStoreTypes';
 
+/**
+ * Where the next page starts, in the source's own terms (a page number, a ledger marker, a
+ * cursor...). Opaque to the engine, which only hands it back to fetch that page.
+ */
+export type TransactionsPageCursor = { readonly [key: string]: unknown };
+
 export type TransactionsPage = {
     /** Newest first. */
     transactions: Transaction[];
-    hasNextPage: boolean;
+    /** The next, older page; `undefined` once this is the last one. */
+    nextPage?: TransactionsPageCursor;
 };
 
 export type FetchTransactionsPageParams = {
     account: StoredAccount;
-    /** 1 is the newest page. */
-    page: number;
+    /** The page the previous one pointed to; left out, the newest page. */
+    after?: TransactionsPageCursor;
 };
 
 /**

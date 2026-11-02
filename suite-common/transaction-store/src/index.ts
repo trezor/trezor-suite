@@ -32,6 +32,7 @@ export type {
     FetchTransactionsPageParams,
     TransactionSource,
     TransactionsPage,
+    TransactionsPageCursor,
 } from './source/transactionSource';
 export {
     type BlockchainLinkClient,

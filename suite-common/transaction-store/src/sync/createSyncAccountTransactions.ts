@@ -1,7 +1,7 @@
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import type { TransactionRepositoryDep } from '../repository/createTransactionRepository';
-import type { TransactionSourceDep } from '../source/transactionSource';
+import type { TransactionSourceDep, TransactionsPageCursor } from '../source/transactionSource';
 import type { SyncMode, TransactionSourceErrorType } from '../transactionStoreTypes';
 
 export type SyncAccountTransactionsDeps = TransactionRepositoryDep &
@@ -28,8 +28,10 @@ export const createSyncAccountTransactions =
         // A complete history only ever grows at its newest end.
         const isWalkingToTheEnd = mode === 'full' && !syncState.isComplete;
         let { isComplete } = syncState;
+        // Where the source said the next page starts; the newest page to begin with.
+        let nextPage: TransactionsPageCursor | undefined;
 
-        for (let page = 1; ; page++) {
+        for (;;) {
             const account = await deps.transactionRepository.selectAccount(accountKey);
 
             if (account === undefined) {
@@ -38,7 +40,7 @@ export const createSyncAccountTransactions =
 
             const pageResult = await deps.transactionSource.fetchTransactionsPage({
                 account,
-                page,
+                after: nextPage,
             });
 
             if (!pageResult.success) {
@@ -58,7 +60,7 @@ export const createSyncAccountTransactions =
                 return ok();
             }
 
-            const { transactions, hasNextPage } = pageResult.payload;
+            const { transactions } = pageResult.payload;
             const storedTxids = await deps.transactionRepository.selectStoredTxids({
                 accountKey,
                 txids: transactions.map(({ txid }) => txid),
@@ -66,7 +68,9 @@ export const createSyncAccountTransactions =
             // Each page is a write of its own, so lists fill in while a long history syncs.
             await deps.transactionRepository.upsertTransactions({ account, transactions });
 
-            if (!hasNextPage) {
+            nextPage = pageResult.payload.nextPage;
+
+            if (nextPage === undefined) {
                 isComplete = true;
                 break;
             }
