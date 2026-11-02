@@ -70,11 +70,6 @@ export const useCompose = <TFieldValues extends FormState>({
             setComposedLevels(undefined);
             // set ref for later use in useEffect
             composeRequestIDRef.current += 1;
-            // clear errors from previous compose process
-            const composeErrors = findComposeErrors(errors);
-            if (composeErrors.length > 0) {
-                clearErrors(composeErrors);
-            }
             // set field value for later use in updateComposedValues
             setComposeField(field);
             // start composing
@@ -83,7 +78,18 @@ export const useCompose = <TFieldValues extends FormState>({
             // store current request ID before async debounced process and compare it later. see explanation below
             const resultID = composeRequestIDRef.current;
             const result = await debounce(() => {
-                if (Object.keys(errors).length > 0) {
+                const errorCount = Object.values(errors).reduce(
+                    (count, error) =>
+                        count +
+                        (Array.isArray(error)
+                            ? error.reduce(
+                                  (sum, output) => sum + Object.keys(output ?? {}).length,
+                                  0,
+                              )
+                            : 1),
+                    0,
+                );
+                if (errorCount > findComposeErrors(errors).length) {
                     return Promise.resolve(undefined);
                 }
 
@@ -112,7 +118,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
             }
         },
-        [state, errors, debounce, clearErrors, getValues, dispatch],
+        [state, errors, debounce, getValues, dispatch],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)

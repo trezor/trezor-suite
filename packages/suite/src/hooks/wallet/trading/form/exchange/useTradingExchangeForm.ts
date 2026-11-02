@@ -6,6 +6,7 @@ import {
     TRADING_EXCHANGE_FORM,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
+    TRADING_FORM_PROVIDER_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeAmountLimitProps,
@@ -13,12 +14,14 @@ import {
     type TradingFormAccountRootState,
     getExchangeFromAddress,
     hasEip712SignDataType,
+    requiresTokenApproval,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeFormValues,
     selectTradingExchangeIsLoading,
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
+    selectTradingSelectedQuoteByFormValues,
     selectTradingSendAccount,
     selectTradingVerifiedAddress,
     tradingExchangeActions,
@@ -106,6 +109,11 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
             ],
         });
 
+    const provider = useWatch({ control, name: TRADING_FORM_PROVIDER_SELECT });
+    const formQuote = useSelector((state: TradingFormAccountRootState) =>
+        selectTradingSelectedQuoteByFormValues(state, 'exchange', { provider, exchangeType }),
+    );
+
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'exchange',
         cryptoId: receiveCryptoSelect?.id,
@@ -147,6 +155,8 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         methods,
         setShowReserveBanner,
         shouldSuppressComposeErrors: hasEip712SignDataType(selectedQuote),
+        isComposeErrorPending:
+            !!formQuote && requiresTokenApproval(formQuote) && !!receiveAddress && !selectedQuote,
     });
 
     const isFormLoadingBase = isInitialDataLoading || formState.isSubmitting || isLoading;
