@@ -17,9 +17,16 @@ type UseMaxSpendableAmountProps = {
     enabled?: boolean;
     symbol?: NetworkSymbol | null;
     assumeNewAccount?: boolean;
+    ethereumFixedGasLimit?: string;
 };
 
-const buildDefaultFormState = ({ tokenContract }: { tokenContract?: TokenAddress }): FormState => ({
+const buildDefaultFormState = ({
+    tokenContract,
+    ethereumFixedGasLimit,
+}: {
+    tokenContract?: TokenAddress;
+    ethereumFixedGasLimit?: string;
+}): FormState => ({
     outputs: [
         {
             type: 'payment',
@@ -38,6 +45,7 @@ const buildDefaultFormState = ({ tokenContract }: { tokenContract?: TokenAddress
     isCoinControlEnabled: false,
     hasCoinControlBeenOpened: false,
     selectedUtxos: [],
+    ethereumFixedGasLimit,
 });
 
 export const useMaxSpendableAmount = ({
@@ -47,6 +55,7 @@ export const useMaxSpendableAmount = ({
     enabled = true,
     symbol,
     assumeNewAccount,
+    ethereumFixedGasLimit,
 }: UseMaxSpendableAmountProps) => {
     const { dispatch } = useServices(injectDispatch);
 
@@ -78,7 +87,9 @@ export const useMaxSpendableAmount = ({
                 const { normal, economy, low, high } = await dispatch(
                     calculateFeeLevelsMaxAmountThunk(
                         {
-                            formState: formState ?? buildDefaultFormState({ tokenContract }),
+                            formState:
+                                formState ??
+                                buildDefaultFormState({ tokenContract, ethereumFixedGasLimit }),
                             accountKey,
                             assumeNewAccount,
                         },
@@ -112,6 +123,7 @@ export const useMaxSpendableAmount = ({
         enabled,
         symbol,
         assumeNewAccount,
+        ethereumFixedGasLimit,
     ]);
 
     return { maxSpendableAmount };

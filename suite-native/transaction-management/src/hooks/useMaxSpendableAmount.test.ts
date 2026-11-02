@@ -57,6 +57,7 @@ describe('useMaxSpendableAmount', () => {
         enabled,
         symbol,
         assumeNewAccount,
+        ethereumFixedGasLimit,
     }: Parameters<typeof useMaxSpendableAmount>[0]) =>
         renderHookWithStoreProvider(
             () =>
@@ -67,6 +68,7 @@ describe('useMaxSpendableAmount', () => {
                     enabled,
                     symbol,
                     assumeNewAccount,
+                    ethereumFixedGasLimit,
                 }),
             {
                 preloadedState: {
@@ -165,6 +167,27 @@ describe('useMaxSpendableAmount', () => {
                     formState: expect.any(Object),
                     accountKey: btcAccountKey,
                     assumeNewAccount: true,
+                },
+                expect.objectContaining({ signal: expect.any(AbortSignal) }),
+            );
+            expect(result.current.maxSpendableAmount).toBe('0.009');
+        });
+    });
+
+    it('should pass fixed gas limit in default form state when requested', async () => {
+        mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
+
+        const { result } = await renderUseMaxSpendableAmount({
+            accountKey: ethAccountKey,
+            symbol: etcSymbol,
+            ethereumFixedGasLimit: '250000',
+        });
+
+        await waitFor(() => {
+            expect(mockCalculateFeeLevelsMaxAmountThunk).toHaveBeenCalledWith(
+                {
+                    formState: expect.objectContaining({ ethereumFixedGasLimit: '250000' }),
+                    accountKey: ethAccountKey,
                 },
                 expect.objectContaining({ signal: expect.any(AbortSignal) }),
             );
