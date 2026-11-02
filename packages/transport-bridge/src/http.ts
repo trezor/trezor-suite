@@ -105,6 +105,7 @@ export class TrezordNode {
     }[];
     /** pending /call /read and /post sessions. can be aborted via /abort endpoint */
     private abortableSignals: { session: string; abort: () => void }[] = [];
+    private readonly allowedOrigins?: string[];
     private readonly requestedPort: number;
     private port?: number;
     server: HttpServer<never>[] = [];
@@ -119,18 +120,26 @@ export class TrezordNode {
         logger,
         bundledVersion,
         port = 21328,
+        allowedOrigins,
     }: {
         api: 'legacy' | 'nusb' | 'udp' | 'hid' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
         bundledVersion?: string;
         port?: number;
+        /**
+         * Hostnames whose pages, including every subdomain, may use this bridge instead of the
+         * default ones. A bridge with its own list also refuses requests without an `Origin`
+         * header, which the default one accepts for its status page.
+         */
+        allowedOrigins?: string[];
     }) {
         this.logger = logger;
         this.descriptors = [];
         this.bundledVersion = bundledVersion;
 
         this.listenSubscriptions = [];
+        this.allowedOrigins = allowedOrigins;
 
         this.core = createCore(api, this.logger);
 
@@ -266,7 +275,11 @@ export class TrezordNode {
         app.use([
             (req, res, next, context) => {
                 // directly navigating to status page of bridge in browser. when request is not issued by js, there is no origin header
+                // A bridge with its own allowlist makes no such exception: any page can send a
+                // request without the header, an image pointing at `/status-data` is enough to
+                // make the bridge enumerate devices.
                 if (
+                    !this.allowedOrigins &&
                     !req.headers.origin &&
                     req.headers.host &&
                     [
@@ -278,7 +291,7 @@ export class TrezordNode {
                 } else {
                     const isOriginAllowed = checkOrigin({
                         request: req,
-                        allowedOrigin: DEFAULT_ALLOWED_ORIGIN_SUFFIXES,
+                        allowedOrigin: this.allowedOrigins ?? DEFAULT_ALLOWED_ORIGIN_SUFFIXES,
                         pathname: req.url,
                         logger: context.logger,
                     });
