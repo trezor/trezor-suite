@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/assets" },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
         },
@@ -21,6 +22,7 @@
         },
         { "path": "../assets" },
         { "path": "../atoms" },
+        { "path": "../device" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },

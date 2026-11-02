@@ -1,6 +1,8 @@
 import { selectWalletAssetHasSpendableBalance } from '@suite-common/assets';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import {
     type AssetsStackParamList,
     type AssetsStackRoutes,
@@ -36,16 +38,32 @@ jest.mock('@suite-common/assets', () => ({
     selectWalletAssetHasSpendableBalance: jest.fn(),
 }));
 
+jest.mock('@suite-common/device', () => ({
+    ...jest.requireActual('@suite-common/device'),
+    selectIsPortfolioTrackerDevice: jest.fn(),
+}));
+
+jest.mock('@suite-native/device', () => ({
+    ...jest.requireActual('@suite-native/device'),
+    selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice: jest.fn(),
+}));
+
 jest.mock('@suite-common/receive', () => ({
     buildGlobalReceiveAssetOption: () => mockReceiveAsset,
 }));
 
 const mockHasSpendableBalance = jest.mocked(selectWalletAssetHasSpendableBalance);
+const mockIsPortfolioTrackerDevice = jest.mocked(selectIsPortfolioTrackerDevice);
+const mockHasFirmwareAuthenticityCheckHardFailed = jest.mocked(
+    selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
+);
 
 describe('AssetDetailActions', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockHasSpendableBalance.mockReturnValue(true);
+        mockIsPortfolioTrackerDevice.mockReturnValue(false);
+        mockHasFirmwareAuthenticityCheckHardFailed.mockReturnValue(false);
     });
 
     it('opens receive with the selected asset prefiltered', async () => {
@@ -82,5 +100,33 @@ describe('AssetDetailActions', () => {
 
         expect(queryByTestId('@assets/asset-detail/send-button')).toBeNull();
         expect(queryByTestId('@assets/asset-detail/receive-button')).not.toBeNull();
+    });
+
+    it('offers no send button on a portfolio tracker, which holds no keys to sign with', async () => {
+        mockIsPortfolioTrackerDevice.mockReturnValue(true);
+
+        const { queryByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
+
+        expect(queryByTestId('@assets/asset-detail/send-button')).toBeNull();
+        expect(queryByTestId('@assets/asset-detail/receive-button')).not.toBeNull();
+    });
+
+    it('offers no receive button once the firmware authenticity check hard fails', async () => {
+        mockHasFirmwareAuthenticityCheckHardFailed.mockReturnValue(true);
+
+        const { queryByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
+
+        expect(queryByTestId('@assets/asset-detail/receive-button')).toBeNull();
+        expect(queryByTestId('@assets/asset-detail/send-button')).not.toBeNull();
+    });
+
+    it('renders nothing once neither action is left to offer', async () => {
+        mockHasSpendableBalance.mockReturnValue(false);
+        mockHasFirmwareAuthenticityCheckHardFailed.mockReturnValue(true);
+
+        const { queryByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
+
+        expect(queryByTestId('@assets/asset-detail/receive-button')).toBeNull();
+        expect(queryByTestId('@assets/asset-detail/send-button')).toBeNull();
     });
 });
