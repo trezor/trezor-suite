@@ -36,10 +36,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { createThunk, injectDispatch } from '@trezor/redux-utils';
 
-import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { getYieldWithdrawFormDraftKey } from '../../utils/yield/yieldWithdrawUtils';
 import { useComposeErrorHandler } from '../earn/useComposeErrorHandler';
+import { useEarnFeeEstimationError } from '../earn/useEarnFeeEstimationError';
 
 type UseYieldWithdrawFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     onComposeError?: (reason: ComposeYieldWithdrawErrorReason) => void;
@@ -228,7 +228,7 @@ export const useYieldWithdrawFees = ({
         hasFeeEstimationError,
         retryFeeEstimation,
         setHasFeeEstimationError,
-    } = useYieldFeeEstimationError();
+    } = useEarnFeeEstimationError();
 
     const formDraftKey = useMemo(
         () => (flowKey ? getYieldWithdrawFormDraftKey(flowKey) : ''),

@@ -14,7 +14,6 @@ import {
     composeSolanaStakingTransactionFeeLevelsThunk,
     formDraftActions,
     selectAccountByKey,
-    selectAreFeesLoading,
     selectConvertedNetworkFeeInfo,
     selectDeepCopyOfFormDraft,
     useFormDraft,
@@ -27,7 +26,6 @@ import {
 import {
     type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
-    getFeeAvailability,
     hasNewCustomFee,
     isPrecomposedTransactionError,
     selectFeeLevels,
@@ -37,9 +35,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { createThunk, injectDispatch, injectGetState } from '@trezor/redux-utils';
 
+import { useEarnFeeEstimationError } from './useEarnFeeEstimationError';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type EarnFormDraftPrefix } from '../../types';
-import { useYieldFeeEstimationError } from '../yield/useYieldFeeEstimationError';
 
 export type UpdateEarnSelectedFeeLevelThunkState = FormDraftRootState;
 
@@ -103,15 +101,12 @@ export const useComposeEarnFees = ({
         hasFeeEstimationError,
         retryFeeEstimation,
         setHasFeeEstimationError,
-    } = useYieldFeeEstimationError();
+    } = useEarnFeeEstimationError();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
     const feeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
-    );
-    const areFeesLoading = useSelector((state: FeesRootState) =>
-        selectAreFeesLoading(state, account?.symbol),
     );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
     const isCurrentComposition =
@@ -125,25 +120,12 @@ export const useComposeEarnFees = ({
     const customMaxPriorityFeePerGas =
         selectedFee === 'custom' ? formDraft?.maxPriorityFeePerGas : undefined;
     const selectedFeeLevel = selectedFee ? feeLevels[selectedFee] : undefined;
-    const { isFeeUnavailable } = getFeeAvailability({
-        feeLevels,
-        selectedFee,
-        isLoading: areFeesLoading || isComposingFeeLevels,
-    });
 
     const composeFeeLevels = useCallback(
         async (requestId: number) => {
             if (requestId !== requestIdRef.current) return;
 
-            if (!formState || !account || !feeInfo) {
-                if (requestId === requestIdRef.current) {
-                    setIsComposingFeeLevels(false);
-                }
-
-                return;
-            }
-
-            setIsComposingFeeLevels(true);
+            if (!formState || !account || !feeInfo) return;
 
             const draftAtStart = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
                 FormState | undefined;
@@ -304,7 +286,6 @@ export const useComposeEarnFees = ({
     return {
         formDraft,
         formDraftKey,
-        isFeeUnavailable: formState !== undefined && !isComposingFeeLevels && isFeeUnavailable,
         hasFeeEstimationError,
         retryFeeEstimation,
         isComposingFeeLevels:

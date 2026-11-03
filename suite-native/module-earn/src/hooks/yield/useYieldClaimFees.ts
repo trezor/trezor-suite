@@ -34,13 +34,13 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebounce, useFreshRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import {
     getYieldClaimFormDraftKey,
     updateYieldClaimSelectedFeeLevelThunk,
 } from '../../thunks/yield/yieldClaimThunks';
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../../utils/yield/yieldClaimFeeUtils';
+import { useEarnFeeEstimationError } from '../earn/useEarnFeeEstimationError';
 
 export type PreparedYieldClaimAction = {
     feePreview: PrecomposedTransactionFinal;
@@ -96,7 +96,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         hasFeeEstimationError,
         retryFeeEstimation,
         setHasFeeEstimationError,
-    } = useYieldFeeEstimationError();
+    } = useEarnFeeEstimationError();
     const account = accountRewards?.account;
     const accountKey = account?.key;
     const claimFormDraftKey = useMemo(

@@ -53,8 +53,8 @@ jest.mock('../../components/earn/EarnAmountCard', () => ({ EarnAmountCard: () =>
 jest.mock('../../components/staking/StakingPendingTransactionModal', () => ({
     StakingPendingTransactionModal: () => null,
 }));
-jest.mock('../../components/yield/YieldFeeSection', () => ({
-    YieldFeeSection: () => null,
+jest.mock('../../components/earn/EarnFeeSection', () => ({
+    EarnFeeSection: () => null,
 }));
 
 const renderClaim = () => {
@@ -78,7 +78,6 @@ const renderClaim = () => {
 const createFeeState = (): ReturnType<typeof useComposeEarnFees> => ({
     formDraft: undefined,
     formDraftKey: 'claim-account',
-    isFeeUnavailable: false,
     hasFeeEstimationError: false,
     retryFeeEstimation: jest.fn(),
     isComposingFeeLevels: false,
@@ -112,21 +111,20 @@ describe('StakingClaimReviewScreen fee readiness', () => {
         },
     );
 
-    it.each([
-        { isFeeReady: false },
-        { isFeeReady: false, isFeeUnavailable: true },
-        { isFeeReady: false, hasFeeEstimationError: true },
-    ])('blocks a claim until usable fee recovery: %j', async feeState => {
-        jest.mocked(useComposeEarnFees).mockReturnValue({
-            ...createFeeState(),
-            ...feeState,
-        });
-        const view = await renderClaim();
+    it.each([{ isFeeReady: false }, { isFeeReady: false, hasFeeEstimationError: true }])(
+        'blocks a claim until usable fee recovery: %j',
+        async feeState => {
+            jest.mocked(useComposeEarnFees).mockReturnValue({
+                ...createFeeState(),
+                ...feeState,
+            });
+            const view = await renderClaim();
 
-        expect(
-            view.getByText(getTranslation('earn.claimReviewScreen.reviewAndSignButton')),
-        ).toBeDisabled();
-    });
+            expect(
+                view.getByText(getTranslation('earn.claimReviewScreen.reviewAndSignButton')),
+            ).toBeDisabled();
+        },
+    );
 
     it('blocks a claim that is not claimable yet', async () => {
         mockCanClaim = false;

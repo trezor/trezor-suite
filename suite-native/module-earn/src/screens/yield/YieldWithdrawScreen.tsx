@@ -18,9 +18,9 @@ import { FeeSelector } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EarnApproximateFiatAmount } from '../../components/earn/EarnApproximateFiatAmount';
+import { EarnFeeEstimationErrorAlert } from '../../components/earn/EarnFeeEstimationErrorAlert';
 import { EarnMaxSwitch } from '../../components/earn/EarnMaxSwitch';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
-import { YieldFeeEstimationErrorAlert } from '../../components/yield/YieldFeeEstimationErrorAlert';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldFormattedAmount } from '../../components/yield/YieldFormattedAmount';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
@@ -240,7 +240,7 @@ export const YieldWithdrawScreen = () => {
                     </Card>
 
                     {feeEstimationError && (
-                        <YieldFeeEstimationErrorAlert onRetry={feeEstimationError.onRetry} />
+                        <EarnFeeEstimationErrorAlert onRetry={feeEstimationError.onRetry} />
                     )}
 
                     {feeSelector && (

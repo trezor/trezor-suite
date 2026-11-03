@@ -25,13 +25,13 @@ import { useServices } from '@trezor/dependency-injection';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { SolanaUnstakeAmountBoundsAlert } from '../../components/staking/SolanaUnstakeAmountBoundsAlert';
 import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
 import { UnstakeCanClaimAlert } from '../../components/staking/UnstakeCanClaimAlert';
 import { UnstakeFlowScreenHeader } from '../../components/staking/UnstakeFlowScreenHeader';
 import { UnstakingTimelineCard } from '../../components/staking/UnstakingTimelineCard';
-import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useSolanaStakingLimit } from '../../hooks/staking/useSolanaStakingLimit';
@@ -208,7 +208,7 @@ export const UnstakeFlowScreen = () => {
                 )}
                 {isValid && (
                     <Box marginTop="sp24">
-                        <YieldFeeSection
+                        <EarnFeeSection
                             accountKey={accountKey}
                             fees={{
                                 hasFeeEstimationError,

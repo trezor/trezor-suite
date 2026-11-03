@@ -31,10 +31,10 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldClaimFlowFooter } from '../../components/yield/YieldClaimFlowFooter';
 import { YieldClaimRewardsCard } from '../../components/yield/YieldClaimRewardsCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
-import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../../components/yield/YieldTxSimulationBottomSheet';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
@@ -334,7 +334,7 @@ export const YieldClaimScreen = () => {
                         isLoading={isClaimRewardsLoading}
                     />
 
-                    <YieldFeeSection accountKey={account.key} fees={claimFee} />
+                    <EarnFeeSection accountKey={account.key} fees={claimFee} />
 
                     {shouldShowFeeWarning && (
                         <BannerFull

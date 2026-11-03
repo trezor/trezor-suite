@@ -5,11 +5,11 @@ import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { WrappedNativeFeeReserveBanner } from '../../components/earn/WrappedNativeFeeReserveBanner';
 import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
-import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessionTxSimulationSheet';
@@ -146,7 +146,7 @@ export const YieldDepositWrapScreen = () => {
 
                         {feeSection.isVisible && (
                             <Box paddingHorizontal="sp16">
-                                <YieldFeeSection accountKey={account.key} fees={feeSection.fees} />
+                                <EarnFeeSection accountKey={account.key} fees={feeSection.fees} />
                             </Box>
                         )}
                     </VStack>

@@ -1,24 +1,24 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { FeeSelector, type FeeSelectorProps } from '@suite-native/transaction-management';
 
-import { YieldFeeEstimationErrorAlert } from './YieldFeeEstimationErrorAlert';
+import { EarnFeeEstimationErrorAlert } from './EarnFeeEstimationErrorAlert';
 
-type YieldFees = Pick<FeeSelectorProps, 'formDraft' | 'formDraftKey' | 'selectedFee'> & {
+type EarnFees = Pick<FeeSelectorProps, 'formDraft' | 'formDraftKey' | 'selectedFee'> & {
     hasFeeEstimationError: boolean;
     isComposingFeeLevels?: boolean;
     retryFeeEstimation: () => void;
     updateFeeLevelThunk: FeeSelectorProps['updateThunk'];
 };
 
-type YieldFeeSectionProps = {
+type EarnFeeSectionProps = {
     accountKey: AccountKey;
-    fees: YieldFees;
+    fees: EarnFees;
     tokenContract?: TokenAddress;
 };
 
-export const YieldFeeSection = ({ accountKey, fees, tokenContract }: YieldFeeSectionProps) => {
+export const EarnFeeSection = ({ accountKey, fees, tokenContract }: EarnFeeSectionProps) => {
     if (fees.hasFeeEstimationError) {
-        return <YieldFeeEstimationErrorAlert onRetry={fees.retryFeeEstimation} />;
+        return <EarnFeeEstimationErrorAlert onRetry={fees.retryFeeEstimation} />;
     }
 
     return (

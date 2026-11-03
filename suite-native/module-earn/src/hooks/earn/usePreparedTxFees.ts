@@ -28,12 +28,12 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
 import { useComposeErrorHandler } from './useComposeErrorHandler';
+import { useEarnFeeEstimationError } from './useEarnFeeEstimationError';
 import {
     type YieldDepositFeeToken,
     buildYieldDepositFeeDraftState,
     buildYieldDepositFeePreview,
 } from '../../utils/yield/yieldDepositFeeUtils';
-import { useYieldFeeEstimationError } from '../yield/useYieldFeeEstimationError';
 
 export type ComposedTxBase = {
     symbol: NetworkSymbol;
@@ -122,7 +122,7 @@ export const usePreparedTxFees = <
         hasFeeEstimationError,
         retryFeeEstimation,
         setHasFeeEstimationError,
-    } = useYieldFeeEstimationError();
+    } = useEarnFeeEstimationError();
 
     const formDraft = useSelector((state: FormDraftRootState) =>
         formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
