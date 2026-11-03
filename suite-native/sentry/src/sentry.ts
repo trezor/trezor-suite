@@ -40,6 +40,8 @@ export const setSentryUser = (instanceId: string) => {
 };
 
 export const initSentry = () => {
+    const isSentryEnabled =
+        !isDebugEnv() || process.env.EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED === 'true';
     const isPerformanceEnabledOnAppStart = getPersistedSentryPerformanceConsent();
     let performanceTracesSampleRate = 0;
 
@@ -75,7 +77,7 @@ export const initSentry = () => {
         ignoreErrors,
 
         // You can put EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true to `.env.development.local` to debug Sentry locally.
-        enabled:
-            !isDebugEnv() || process.env.EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED === 'true',
+        enabled: isSentryEnabled,
+        enableNative: isSentryEnabled,
     });
 };
