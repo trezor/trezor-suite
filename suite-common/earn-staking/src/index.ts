@@ -3,15 +3,41 @@ export {
     type StakingCompositionRootDeps,
 } from './createStakingCompositionRoot';
 export {
+    STAKING_DEVICE_ACCESS_CANCEL_REASONS,
+    createStakingDeviceAccess,
+    type StakingDeviceAccess,
+    type StakingDeviceAccessCancelReason,
+    type StakingDeviceAccessDeps,
+} from './createStakingDeviceAccess';
+export {
+    broadcastStakingStepThunk,
+    type BroadcastStakingStepThunkDeps,
+    type BroadcastStakingStepThunkState,
+} from './engine/broadcastStakingStepThunk';
+export {
+    cancelStakingStepThunk,
+    type CancelStakingStepThunkDeps,
+    type CancelStakingStepThunkState,
+} from './engine/cancelStakingStepThunk';
+export {
     composeStakingStepThunk,
     type ComposeStakingStepThunkDeps,
     type ComposeStakingStepThunkState,
 } from './engine/composeStakingStepThunk';
 export {
+    discardStakingSessionThunk,
+    type DiscardStakingSessionThunkState,
+} from './engine/discardStakingSessionThunk';
+export {
     planStakingOperationThunk,
     type PlanStakingOperationThunkDeps,
     type PlanStakingOperationThunkState,
 } from './engine/planStakingOperationThunk';
+export {
+    signStakingStepThunk,
+    type SignStakingStepThunkDeps,
+    type SignStakingStepThunkState,
+} from './engine/signStakingStepThunk';
 export {
     STAKING_ENGINE_REJECTIONS,
     type StakingEngineRejection,

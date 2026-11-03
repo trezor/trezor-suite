@@ -27,7 +27,10 @@ import {
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
-import { createStakingCompositionRoot } from '@suite-common/earn-staking';
+import {
+    createStakingCompositionRoot,
+    createStakingDeviceAccess,
+} from '@suite-common/earn-staking';
 import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
@@ -165,6 +168,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const staking = createStakingCompositionRoot({
         platform: 'desktop',
         adapters: createStakingProductsCompositionRoot(),
+        deviceAccess: createStakingDeviceAccess({ getTrezorConnect: deps.getTrezorConnect }),
         dispatch: deps.dispatch,
     });
 

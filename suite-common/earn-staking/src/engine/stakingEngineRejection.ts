@@ -8,6 +8,7 @@ export const STAKING_ENGINE_REJECTIONS = [
     'step-expired',
     'step-in-flight',
     'adapter-failed',
+    'cancelled',
 ] as const;
 
 export type StakingEngineRejection = (typeof STAKING_ENGINE_REJECTIONS)[number];

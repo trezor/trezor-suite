@@ -85,6 +85,7 @@
         { "path": "../bluetooth" },
         { "path": "../device" },
         { "path": "../device-authorization" },
+        { "path": "../device-mutex" },
         { "path": "../device-onboarding" },
         { "path": "../discovery" },
         { "path": "../feature-feedback" },
