@@ -55,7 +55,7 @@ export const UNKNOWN_PROCESS = Object.freeze({
 export type ConnectCallSource = {
     origin: string;
     // Permissions the host declared up front (via ConnectSettings.requestedPermissions), carried on
-    // the handshake. Sanitized in connectPopupCallInnerThunk so the first consent covers the set.
+    // the handshake. Sanitized in CommonPopupFlow.initiateCall so the first consent covers the set.
     requestedPermissions?: PermissionRequest[];
 } & (
     | {
@@ -141,7 +141,7 @@ export type SelectAccountCandidate = {
 
 export const SELECT_ACCOUNT_PAGE_SIZE = 5;
 
-// Picker options derived from the `selectAccount` method params (by its methodHook).
+// Picker options derived from the `selectAccount` method params (by its popup flow).
 export type SelectAccountOptions = {
     symbol: NetworkSymbol;
     selectionType: 'single' | 'multi';
