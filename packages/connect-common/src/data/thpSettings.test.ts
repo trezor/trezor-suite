@@ -152,11 +152,11 @@ describe('data/thpSettings', () => {
             expect(result.appName).toBeUndefined();
         });
 
-        it('strips control characters from appName', () => {
+        it('replaces a control character in appName with a space', () => {
             const result = parseThpSettings({
                 thp: { appName: 'My\x00App', pairingMethods },
             });
-            expect(result.appName).toBe('MyApp');
+            expect(result.appName).toBe('My App');
         });
 
         it('drops appName exceeding 100 characters', () => {
@@ -173,11 +173,11 @@ describe('data/thpSettings', () => {
             expect(result.hostName).toBeUndefined();
         });
 
-        it('strips control characters from hostName', () => {
+        it('replaces a control character in hostName with a space', () => {
             const result = parseThpSettings({
                 thp: { hostName: 'My\x00Host', pairingMethods },
             });
-            expect(result.hostName).toBe('MyHost');
+            expect(result.hostName).toBe('My Host');
         });
     });
 });

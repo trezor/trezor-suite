@@ -4,14 +4,14 @@ export type SanitizeNameOptions = {
     maxLength?: number;
 };
 
-// eslint-disable-next-line no-control-regex
-const CONTROL_CHARS_REGEX = /[\x00-\x1F\x7F]/g;
-
 export const sanitizeName = (
     name: string,
     { maxLength }: SanitizeNameOptions = {},
 ): string | undefined => {
-    const sanitized = name.replace(CONTROL_CHARS_REGEX, '').replace(/\s+/g, ' ').trim();
+    const sanitized = name
+        .replace(/[\p{Cc}\p{Cs}\p{Cf}]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 
     if (sanitized.length === 0) {
         return undefined;

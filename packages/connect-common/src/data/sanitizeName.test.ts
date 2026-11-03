@@ -1,10 +1,7 @@
 import { MAX_NAME_LENGTH, sanitizeName } from './sanitizeName';
 
 // A caller picks its own name and Suite shows it on the consent prompt, so these are the rules that
-// decide what a user can be made to read there. Pinned as they stand today, including the two that
-// let a caller present itself under another app's name: a hidden character is removed, which
-// splices the name around it back together, and a name of nothing but invisible characters is kept
-// even though it renders as no name at all.
+// decide what a user can be made to read there.
 describe('sanitizeName', () => {
     const CODE_POINT = {
         NULL: '\u0000',
@@ -43,26 +40,24 @@ describe('sanitizeName', () => {
     });
 
     describe('control characters and lone surrogates', () => {
-        it("removes a control character, splicing the name into another app's name", () => {
-            expect(sanitizeName(`Clau${CODE_POINT.NULL}de Code`)).toBe('Claude Code');
+        it('replaces a control character with a space rather than splicing the name together', () => {
+            expect(sanitizeName(`Clau${CODE_POINT.NULL}de Code`)).toBe('Clau de Code');
         });
 
-        it('removes C0 controls and DEL but keeps a C1 control', () => {
+        it('replaces C0, C1 and DEL controls alike', () => {
             expect(
                 sanitizeName(
                     `A${CODE_POINT.UNIT_SEPARATOR}B${CODE_POINT.DELETE}C${CODE_POINT.CSI}D`,
                 ),
-            ).toBe(`ABC${CODE_POINT.CSI}D`);
+            ).toBe('A B C D');
         });
 
-        it('removes a newline and a tab instead of collapsing them into a space', () => {
-            expect(sanitizeName('Claude\n\tCode')).toBe('ClaudeCode');
+        it('collapses a newline and a tab into a single space', () => {
+            expect(sanitizeName('Claude\n\tCode')).toBe('Claude Code');
         });
 
-        it('keeps a lone surrogate', () => {
-            expect(sanitizeName(`Claude${CODE_POINT.LONE_SURROGATE}Code`)).toBe(
-                `Claude${CODE_POINT.LONE_SURROGATE}Code`,
-            );
+        it('replaces a lone surrogate with a space', () => {
+            expect(sanitizeName(`Claude${CODE_POINT.LONE_SURROGATE}Code`)).toBe('Claude Code');
         });
 
         it('keeps an astral character whose surrogate pair is intact', () => {
@@ -73,23 +68,17 @@ describe('sanitizeName', () => {
     });
 
     describe('invisible format characters', () => {
-        it('keeps a bidi override', () => {
-            expect(sanitizeName(`Claude${CODE_POINT.RTL_OVERRIDE} Code`)).toBe(
-                `Claude${CODE_POINT.RTL_OVERRIDE} Code`,
-            );
+        it('replaces a bidi override with a space', () => {
+            expect(sanitizeName(`Claude${CODE_POINT.RTL_OVERRIDE} Code`)).toBe('Claude Code');
         });
 
         it.each([
             ['a zero width space', CODE_POINT.ZERO_WIDTH_SPACE],
             ['a soft hyphen', CODE_POINT.SOFT_HYPHEN],
+            ['a byte order mark', CODE_POINT.BYTE_ORDER_MARK],
             ['a word joiner', CODE_POINT.WORD_JOINER],
-        ])("keeps %s, which renders as another app's name", (_label, codePoint) => {
-            expect(sanitizeName(`Clau${codePoint}de Code`)).toBe(`Clau${codePoint}de Code`);
-        });
-
-        // The only one of these the whitespace collapse already catches on its own.
-        it('replaces a byte order mark with a space', () => {
-            expect(sanitizeName(`Clau${CODE_POINT.BYTE_ORDER_MARK}de Code`)).toBe('Clau de Code');
+        ])("does not let %s splice the name into another app's name", (_label, codePoint) => {
+            expect(sanitizeName(`Clau${codePoint}de Code`)).toBe('Clau de Code');
         });
     });
 
@@ -98,13 +87,12 @@ describe('sanitizeName', () => {
             ['an empty string', ''],
             ['whitespace only', '   '],
             ['control characters only', `${CODE_POINT.NULL}${CODE_POINT.UNIT_SEPARATOR}`],
+            [
+                'zero width spaces only',
+                `${CODE_POINT.ZERO_WIDTH_SPACE}${CODE_POINT.ZERO_WIDTH_SPACE}`,
+            ],
         ])('drops %s', (_label, input) => {
             expect(sanitizeName(input)).toBeUndefined();
-        });
-
-        it('keeps a name of nothing but zero width spaces, which renders as nothing', () => {
-            const invisible = `${CODE_POINT.ZERO_WIDTH_SPACE}${CODE_POINT.ZERO_WIDTH_SPACE}`;
-            expect(sanitizeName(invisible)).toBe(invisible);
         });
     });
 

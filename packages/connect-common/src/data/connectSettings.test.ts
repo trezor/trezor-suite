@@ -107,9 +107,9 @@ describe('data/connectSettings', () => {
             expect(parseManifest({ ...baseManifest, appName: '   ' })).toBeUndefined();
         });
 
-        it('strips control characters from appName', () => {
+        it('replaces control characters in appName with spaces', () => {
             expect(parseManifest({ ...baseManifest, appName: 'Test\x00App\x1F' })?.appName).toBe(
-                'TestApp',
+                'Test App',
             );
         });
 
