@@ -9,7 +9,7 @@ export const tokenReceiveTokenUSDC = {
     balance: '10000000',
 } satisfies TokenInfo;
 
-export const tokenReceiveAccountInfoUSDC: AccountInfo = {
+export const tokenReceiveAccountInfoUSDC = {
     descriptor: '0x0000000000000000000000000000000000000001',
     balance: '0',
     availableBalance: '0',
@@ -21,4 +21,4 @@ export const tokenReceiveAccountInfoUSDC: AccountInfo = {
         transactions: [],
     },
     misc: { nonce: '0' },
-};
+} satisfies AccountInfo;
