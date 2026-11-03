@@ -25,11 +25,12 @@ import {
 } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useSelector } from 'src/hooks/suite';
+
+import { TransactionNotificationAmount } from './TransactionNotificationAmount';
 
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<TransactionNotificationType>;
@@ -138,17 +139,11 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                         token={transactionToken}
                         amount={
                             notificationAmount !== undefined ? (
-                                <FormattedCryptoAmount
-                                    value={notificationAmount}
-                                    symbol={
-                                        isSymbolRenderedBesideAmount
-                                            ? undefined
-                                            : (transactionToken?.symbol ?? symbol)
-                                    }
-                                    contractAddress={transactionToken?.contract}
-                                    tokenDecimals={transactionToken?.decimals}
-                                    isCompact
-                                    disableHiddenPlaceholder
+                                <TransactionNotificationAmount
+                                    amount={notificationAmount}
+                                    symbol={symbol}
+                                    token={transactionToken}
+                                    isSymbolRenderedBesideAmount={isSymbolRenderedBesideAmount}
                                 />
                             ) : undefined
                         }

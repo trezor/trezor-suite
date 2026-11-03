@@ -16,6 +16,7 @@ export { CompactTokenAmountFormatter } from './components/CompactTokenAmountForm
 export { ExactCryptoAmountFormatter } from './components/ExactCryptoAmountFormatter';
 export { ExactTokenAmountFormatter } from './components/ExactTokenAmountFormatter';
 export { NetworkDisplaySymbolNameFormatter } from './components/NetworkDisplaySymbolNameFormatter';
+export { NftTokenIdFormatter } from './components/NftTokenIdFormatter';
 export { TokenToFiatAmountFormatter } from './components/TokenToFiatAmountFormatter';
 export { SignValueFormatter } from './components/SignValueFormatter';
 export { FeeFormatter } from './components/FeeFormatter';

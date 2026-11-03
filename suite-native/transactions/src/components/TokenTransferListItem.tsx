@@ -10,9 +10,10 @@ import {
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
-import { isErc4626 } from '@suite-common/wallet-utils';
+import { getNftTokenId, isErc4626, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import {
     CompactTokenAmountFormatter,
+    NftTokenIdFormatter,
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
@@ -67,6 +68,24 @@ export const TokenTransferListItemValues = ({
         selectAccountTokenInfo(state, accountKey, tokenTransfer?.contract),
     );
 
+    const tokenSymbol = tokenTransfer.symbol
+        ? toTokenSymbol(getDisplaySymbol(tokenTransfer.symbol, tokenTransfer.contract))
+        : null;
+
+    if (isNftTokenTransfer(tokenTransfer)) {
+        return (
+            <NftTokenIdFormatter
+                value={getNftTokenId(tokenTransfer) ?? tokenTransfer.amount}
+                tokenSymbol={tokenSymbol}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                isPhishingTransaction={isPhishingTransaction}
+                variant="body-sm"
+                color="contentSecondary"
+            />
+        );
+    }
+
     if (!tokenTransfer?.amount || !tokenTransfer?.symbol) return;
 
     const isFailedTx = transaction.type === 'failed';
@@ -91,13 +110,7 @@ export const TokenTransferListItemValues = ({
             )}
             <CompactTokenAmountFormatter
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                tokenSymbol={
-                    tokenTransfer.symbol
-                        ? toTokenSymbol(
-                              getDisplaySymbol(tokenTransfer.symbol, tokenTransfer.contract),
-                          )
-                        : null
-                }
+                tokenSymbol={tokenSymbol}
                 tokenDecimals={tokenTransfer.decimals}
                 signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                 numberOfLines={1}
