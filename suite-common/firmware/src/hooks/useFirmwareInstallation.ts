@@ -2,15 +2,12 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import {
-    type ButtonRequest,
-    type FirmwareStatus,
-    type TrezorDevice,
-} from '@suite-common/suite-types';
+import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES, selectThpStep } from '@suite-common/thp';
 import {
     DEVICE,
     type Device,
+    type DeviceButtonRequestCode,
     type DeviceButtonRequestPayload,
     FirmwareType,
     UI_EVENTS,
@@ -63,14 +60,14 @@ export type FirmwareOperationStatus = {
 };
 
 // T1 emits ButtonRequest_ProtectCall (before bootloader) and ButtonRequest_FirmwareUpdate (in bootloader to confirm the installation) in reboot_and_wait flow:
-const expectedButtonRequestsForT1: ButtonRequest[] = [
+const expectedButtonRequestsForT1: DeviceButtonRequestCode[] = [
     'ButtonRequest_ProtectCall',
     'ButtonRequest_FirmwareUpdate',
 ];
 
 // T2,T3 devices emit ButtonRequest_Other (before bootloader & also in bootloader before starting the installation)
 // and ButtonRequest_FirmwareUpdate (to confirm the installation) in reboot_and_wait and reboot_and_upgrade flows:
-const expectedButtonRequestsForT2andT3: ButtonRequest[] = [
+const expectedButtonRequestsForT2andT3: DeviceButtonRequestCode[] = [
     'ButtonRequest_Other',
     'ButtonRequest_FirmwareUpdate',
 ];
@@ -86,7 +83,7 @@ const shouldShowReconnectPrompt = ({
     originalDevice,
     firmwareStatus,
 }: ShouldShowReconnectPromptParams) => {
-    if (buttonEvent?.code === undefined) {
+    if (!buttonEvent) {
         return false;
     }
 
@@ -98,8 +95,8 @@ const shouldShowReconnectPrompt = ({
     // This causes the UI to show the reconnect prompt, despite we are already done.
     const isThpButtonEvent =
         buttonEvent.code === 'ButtonRequest_Other' &&
-        buttonEvent?.name !== undefined &&
-        isArrayMember(buttonEvent?.name, THP_BUTTON_REQUESTS_NAMES);
+        buttonEvent.name &&
+        isArrayMember(buttonEvent.name, THP_BUTTON_REQUESTS_NAMES);
 
     if (isThpButtonEvent) {
         return false;
@@ -146,7 +143,7 @@ export const useFirmwareInstallation = () => {
     const deviceIsWaitingForConfirmationToInitiateConnection =
         reconnectEvent?.method === 'auto' && reconnectEvent.target === 'bootloader';
     const pinRequested = Boolean(
-        buttonEvent?.code && ['ButtonRequest_PinEntry'].includes(buttonEvent.code),
+        buttonEvent && ['ButtonRequest_PinEntry'].includes(buttonEvent.code),
     );
 
     const showReconnectPrompt =
@@ -167,7 +164,7 @@ export const useFirmwareInstallation = () => {
         // Show the confirmation pill before starting the installation using the "wait" or "manual" method,
         // after ReconnectDevicePrompt is closed and user selects the option to install firmware while in bootloader.
         // Also, in case the device is PIN-locked at the start of the process.
-        (buttonEvent?.code && ['ButtonRequest_FirmwareUpdate'].includes(buttonEvent.code)) ||
+        (buttonEvent && ['ButtonRequest_FirmwareUpdate'].includes(buttonEvent.code)) ||
         pinRequested ||
         // Show the confirmation pill right after ReconnectDevicePrompt is closed while using the "wait" or "manual" method,
         // before the user selects the option to install firmware while in bootloader

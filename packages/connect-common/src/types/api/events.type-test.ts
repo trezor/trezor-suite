@@ -19,7 +19,7 @@ export const events = (api: TrezorConnect) => {
         if (event.type === 'button') {
             const { payload } = event;
             payload.device.type.toLowerCase();
-            payload.code?.toLowerCase();
+            payload.code.toLowerCase();
             payload.pages?.toFixed();
 
             return;

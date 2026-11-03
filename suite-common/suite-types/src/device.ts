@@ -2,8 +2,7 @@ import { type DeviceMetadata } from '@suite-common/metadata-types';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import type {
     AuthenticateDeviceResult,
-    DeviceButtonRequest,
-    DeviceEvent,
+    DeviceButtonRequestPayload,
     DeviceState,
     EntropyCheckResult,
     Features,
@@ -21,21 +20,21 @@ import type { VersionArray } from '@trezor/utils';
 // Extend original ButtonRequestMessage from @trezor/connect
 // suite (deviceReducer) stores them in slightly different shape:
 // - device field from @trezor/connect is excluded
-// - code field (ButtonRequestType) is extended/combined with PinMatrixRequestType and WordRequestType (from DeviceMessage)
-// - code field also uses two custom ButtonRequests - UI_REQUESTS.REQUEST_PIN and UI_EVENTS.PIN_INVALID (TODO: it shouldn't)
+// - code field (DeviceButtonRequest) is extended/combined with PinMatrixRequestType and WordRequestType (from DeviceMessage)
+// - code field also uses two custom entries - UI_REQUESTS.REQUEST_PIN and UI_EVENTS.PIN_INVALID  (TODO: it shouldn't)
 
-// TODO: Suite should not define its own type for ButtonRequest. There should be
-// sufficient type exported from @trezor/connect;
+// TODO: name is confusing, consider renaming to something more descriptive.
+// this is not a ButtonRequest but rather collection of device workflow checkpoints.
 
-export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
-    code?:
-        | (typeof UI_REQUESTS)['REQUEST_PIN']
-        | (typeof UI_EVENTS)['PIN_INVALID']
-        | DeviceButtonRequest['payload']['code']
-        | NonNullable<PROTO.PinMatrixRequest>['type'];
+export type ButtonRequest = Omit<DeviceButtonRequestPayload, 'code'> & {
+    code:
+        | typeof UI_REQUESTS.REQUEST_PIN
+        | typeof UI_EVENTS.PIN_INVALID
+        | DeviceButtonRequestPayload['code']
+        | NonNullable<PROTO.PinMatrixRequest['type']>;
     // Firmware screen identifier (e.g. 'confirm_payment_request'). Stored from the button request
     // payload; used to distinguish screens that share the same generic code (ButtonRequest_Other).
-    name?: DeviceButtonRequest['payload']['name'];
+    name?: DeviceButtonRequestPayload['name'];
 };
 
 /**

@@ -2,7 +2,7 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
 import { PAYMENT_REQUEST_BUTTON_NAMES, selectAccountByKey } from '@suite-common/wallet-core';
-import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
+import { type DeviceButtonRequestCode, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
 import { type AppState } from 'src/types/suite';
 
@@ -52,7 +52,7 @@ const getAccountForButtonRequest = (state: AppState) => {
 };
 
 const shouldRemapToSignTx = (
-    code: string | undefined,
+    code: DeviceButtonRequestCode,
     name: string | undefined,
     state: AppState,
 ): boolean => {
