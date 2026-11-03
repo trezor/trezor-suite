@@ -248,7 +248,7 @@ export const EarnYieldAccountOpportunity = ({
         <FirmwareUpgradeNeededModal
             onClose={closeFirmwareModal}
             onUpdate={updateFirmware}
-            featureName={translationString('TR_EARN_DEFI_YIELD_TITLE')}
+            featureName={translationString('TR_EARN_DEFI_YIELD')}
         />
     );
 

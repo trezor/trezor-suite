@@ -105,7 +105,7 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
                                 typographyStyle="body-md-strong"
                                 ellipsisLineCount={isBelowMobile ? 0 : 1}
                             >
-                                <Translation id="TR_EARN_STAKING_DASHBOARD_TITLE" />
+                                <Translation id="TR_EARN_STAKING" />
                             </Text>
                             <AccountLabel
                                 account={account}
@@ -119,7 +119,7 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
                     </Row>
                 ) : (
                     <Text typographyStyle="body-md-strong">
-                        <Translation id="TR_EARN_STAKING_DASHBOARD_TITLE" />
+                        <Translation id="TR_EARN_STAKING" />
                     </Text>
                 )}
 

@@ -28,7 +28,7 @@ export const AssetStakingRow = ({
                 </Section>
             </Table.Cell>
             <Table.Cell padding={{ left: 0 }}>
-                <Translation id="TR_NAV_STAKING" />
+                <Translation id="TR_EARN_STAKING" />
             </Table.Cell>
             <Table.Cell colSpan={4}>
                 {stakingTotalBalance && (

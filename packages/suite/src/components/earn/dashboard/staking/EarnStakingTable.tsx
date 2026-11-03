@@ -51,7 +51,7 @@ export const EarnStakingTable = ({ onReady }: EarnStakingTableProps) => {
 
             <OutlineHighlight shouldHighlight={shouldHighlight}>
                 <DashboardSection
-                    heading={<Translation id="TR_EARN_STAKING_DASHBOARD_TITLE" />}
+                    heading={<Translation id="TR_EARN_STAKING" />}
                     subheading={<Translation id="TR_EARN_STAKING_DASHBOARD_TEXT" />}
                     actions={
                         <Column margin={isCardLayout ? { top: 8 } : undefined}>

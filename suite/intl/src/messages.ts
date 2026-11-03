@@ -9247,10 +9247,6 @@ export const messages = defineMessages({
         defaultMessage: 'Clear',
         description: 'Button resetting the Sign and Verify form after signing or verifying',
     },
-    TR_NAV_STAKING: {
-        defaultMessage: 'Staking',
-        id: 'TR_NAV_STAKING',
-    },
     TR_ACCOUNT_TYPE_SHELLEY: {
         defaultMessage: 'Shelley',
         id: 'TR_ACCOUNT_TYPE_SHELLEY',
@@ -10674,10 +10670,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_STAKING',
         defaultMessage: 'Staking',
     },
-    TR_EARN_STAKING_DASHBOARD_TITLE: {
-        id: 'TR_EARN_STAKING_DASHBOARD_TITLE',
-        defaultMessage: 'Staking',
-    },
     TR_EARN_STAKING_DASHBOARD_TEXT: {
         id: 'TR_EARN_STAKING_DASHBOARD_TEXT',
         defaultMessage: 'Stake your crypto to help secure the network and earn rewards in return.',
@@ -10938,10 +10930,6 @@ export const messages = defineMessages({
     TR_EARN_YIELD_UNWRAP_DISABLED: {
         id: 'TR_EARN_YIELD_UNWRAP_DISABLED',
         defaultMessage: 'Unwrapping is currently disabled.',
-    },
-    TR_EARN_DEFI_YIELD_TITLE: {
-        id: 'TR_EARN_DEFI_YIELD_TITLE',
-        defaultMessage: 'DeFi Yield',
     },
     TR_EARN_YIELD_PENDING_DEPOSIT: {
         id: 'TR_EARN_YIELD_PENDING_DEPOSIT',
