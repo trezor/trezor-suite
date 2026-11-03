@@ -7,23 +7,27 @@ type EstimateFeeParams = {
     networkType: NetworkType;
     feePerUnit: string | undefined;
     referenceFeeLevel: GeneralPrecomposedTransactionFinal | undefined;
+    feeLimit?: string;
 };
 
 export const estimateFee = ({
     networkType,
     feePerUnit,
     referenceFeeLevel,
+    feeLimit,
 }: EstimateFeeParams): string | null => {
-    if (!feePerUnit || !referenceFeeLevel) return null;
+    if (!feePerUnit) return null;
 
     const rate = new BigNumber(feePerUnit);
     const size = new BigNumber(
-        (networkType === 'ethereum' ? referenceFeeLevel.feeLimit : referenceFeeLevel.bytes) ?? 0,
+        (networkType === 'ethereum'
+            ? (feeLimit ?? referenceFeeLevel?.feeLimit)
+            : referenceFeeLevel?.bytes) ?? 0,
     );
     if (!rate.isFinite() || !rate.gt(0) || !size.isFinite() || !size.gt(0)) return null;
 
     if (networkType === 'ethereum') {
-        return calculateTotalGasCost(fromGwei(feePerUnit).toWei(), referenceFeeLevel.feeLimit);
+        return calculateTotalGasCost(fromGwei(feePerUnit).toWei(), size.toFixed());
     }
     if (networkType === 'bitcoin') return rate.times(size).toFixed(0, BigNumber.ROUND_CEIL);
 

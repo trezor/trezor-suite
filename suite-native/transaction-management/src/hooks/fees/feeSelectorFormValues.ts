@@ -34,7 +34,7 @@ export const getFeeSelectorFormValues = ({
         : getReferenceFeeLevel(feeLevels);
     const draftValues = {
         customFeePerUnit: formDraft?.feePerUnit,
-        customFeeLimit: formDraft?.feeLimit,
+        customFeeLimit: formDraft?.feeLimit || formDraft?.estimatedFeeLimit,
         customMaxFeePerGas: formDraft?.maxFeePerGas,
         customMaxPriorityFeePerGas: formDraft?.maxPriorityFeePerGas,
     };

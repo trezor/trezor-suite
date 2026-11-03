@@ -208,11 +208,14 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                     return;
                 }
 
-                const claimFormDraft = getClaimFormDraft({
-                    claimCalldata,
-                    contractAddress,
-                    formDraft: formDraftRef.current,
-                });
+                const claimFormDraft = {
+                    ...getClaimFormDraft({
+                        claimCalldata,
+                        contractAddress,
+                        formDraft: formDraftRef.current,
+                    }),
+                    estimatedFeeLimit: feeLevel.payload.feeLimit,
+                };
                 const claimFeeLevels = buildYieldClaimFeeLevels({
                     availableBalance: claimAccount.availableBalance,
                     feeInfo: currentFeeInfo,

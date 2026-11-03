@@ -154,6 +154,22 @@ describe('useYieldClaimFees', () => {
         expect(result.current.preparedAction).not.toBeNull();
     });
 
+    it('retains the estimated gas when every fee level exceeds the available balance', async () => {
+        buildYieldClaimFeeLevelsMock.mockReturnValue({
+            normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+        });
+        const { result } = await renderYieldClaimFees({
+            accountRewards: createAccountRewards(),
+            isEnabled: true,
+        });
+
+        await settleDebounce();
+
+        expect(result.current.formDraft?.estimatedFeeLimit).toBe('21000');
+        expect(result.current.isFeeUnavailable).toBe(true);
+        expect(result.current.preparedAction).toBeNull();
+    });
+
     it('does not re-prepare when rewards only get a new identity with unchanged values', async () => {
         const { result, rerender } = await renderYieldClaimFees({
             accountRewards: createAccountRewards(),

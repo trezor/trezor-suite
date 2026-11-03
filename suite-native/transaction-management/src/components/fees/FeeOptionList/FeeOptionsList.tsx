@@ -11,6 +11,7 @@ import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 export type FeeOptionsListProps = {
     feeLevels: GeneralPrecomposedLevels;
     symbol: NetworkSymbol;
+    estimatedFeeLimit?: string;
     isLoading?: boolean;
     onSelectedFeeLevel?: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
 };
@@ -18,6 +19,7 @@ export type FeeOptionsListProps = {
 export const FeeOptionsList = ({
     feeLevels,
     symbol,
+    estimatedFeeLimit,
     isLoading,
     onSelectedFeeLevel,
 }: FeeOptionsListProps) => {
@@ -38,6 +40,7 @@ export const FeeOptionsList = ({
                     feeKey={feeKey as NativeSupportedPredefinedFeeLevel}
                     feeLevel={feeLevel}
                     referenceFeeLevel={referenceFeeLevel}
+                    estimatedFeeLimit={estimatedFeeLimit}
                     symbol={symbol}
                     isInteractive={isMultipleOptionsDisplayed}
                     isLoading={isLoading}
