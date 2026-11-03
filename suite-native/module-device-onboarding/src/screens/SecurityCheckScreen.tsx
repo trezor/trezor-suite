@@ -18,11 +18,13 @@ import { SecuritySealDescription } from '../components/SecuritySealDescription';
 const cardStepperContentMap = (analytics: Analytics<AnalyticsNativeEvents>) =>
     ({
         1: {
-            header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step1.header" />,
+            header: (
+                <Translation id="moduleDeviceOnboarding.securityCheckScreen.trustedSource.header" />
+            ),
             secondaryButtonParameter: 'untrustedReseller',
             description: (
                 <Translation
-                    id="moduleDeviceOnboarding.securityCheckScreen.step1.description"
+                    id="moduleDeviceOnboarding.securityCheckScreen.trustedSource.description"
                     values={{
                         link: linkChunk => (
                             <Link
@@ -47,18 +49,32 @@ const cardStepperContentMap = (analytics: Analytics<AnalyticsNativeEvents>) =>
             icon: 'seal',
         },
         2: {
-            header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.header" />,
-            description: <SecuritySealDescription />,
-            icon: 'selectionSlash',
-            secondaryButtonParameter: 'securitySeal',
+            header: (
+                <Translation id="moduleDeviceOnboarding.securityCheckScreen.plasticWrap.header" />
+            ),
+            description: (
+                <Translation id="moduleDeviceOnboarding.securityCheckScreen.plasticWrap.description" />
+            ),
+            icon: 'sticker',
+            secondaryButtonParameter: 'plasticWrap',
         },
         3: {
-            header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.header" />,
+            header: (
+                <Translation id="moduleDeviceOnboarding.securityCheckScreen.packaging.header" />
+            ),
             description: (
-                <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.description" />
+                <Translation id="moduleDeviceOnboarding.securityCheckScreen.packaging.description" />
             ),
             icon: 'package',
             secondaryButtonParameter: 'packaging',
+        },
+        4: {
+            header: (
+                <Translation id="moduleDeviceOnboarding.securityCheckScreen.securitySeal.header" />
+            ),
+            description: <SecuritySealDescription />,
+            icon: 'trezorBody',
+            secondaryButtonParameter: 'securitySeal',
         },
     }) as const satisfies CardStepperMap<DeviceSuspicionCause>;
 

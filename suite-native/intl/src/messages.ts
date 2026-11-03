@@ -1799,12 +1799,22 @@ export const messages = {
         securityCheckScreen: {
             title: 'Security check',
             subtitle: 'We need to confirm your device is safe to use.',
-            step1: {
+            trustedSource: {
                 header: 'Trusted source',
                 description:
                     'My device was bought from the official Trezor Shop or a <link>trusted reseller</link>.',
             },
-            step2: {
+            plasticWrap: {
+                header: 'Plastic wrap',
+                description:
+                    'The clear plastic wrap around the box had the Trezor logo printed on it.',
+            },
+            packaging: {
+                header: 'Packaging',
+                description:
+                    'The package was sealed and intact, with no signs of tampering before unboxing.',
+            },
+            securitySeal: {
                 header: 'Holographic seal',
                 description:
                     'The <link>holographic seal</link> was intact when I unboxed my device.',
@@ -1816,11 +1826,6 @@ export const messages = {
                         'Ensure the holographic seal on your device was intact when unboxed, with no peeling, scratches, or damage.',
                     paragraph2: 'Proceed only if the seal was intact and undamaged.',
                 },
-            },
-            step3: {
-                header: 'Packaging',
-                description:
-                    'The package was sealed and intact, with no signs of tampering before unboxing.',
             },
             declineButton: "I'm not sure",
         },
