@@ -28,7 +28,13 @@ export const accountsActionsEvent: EventDef<Attributes, EventType.AccountsAction
 - \`wallet-trading-buy\`: trading buy tab
 - \`wallet-trading-exchange\`: trading exchange tab
 - \`wallet-trading-sell\`: trading sell tab`,
-            changelog: [{ version: '23.12.0', notes: 'added' }],
+            changelog: [
+                { version: '23.12.0', notes: 'added' },
+                {
+                    version: '26.11.0',
+                    notes: '`wallet-index` is no longer reported for sidebar account rows, they report `navigate/flow` instead',
+                },
+            ],
         },
         symbol: {
             description:
