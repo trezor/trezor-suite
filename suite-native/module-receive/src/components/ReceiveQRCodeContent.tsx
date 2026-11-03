@@ -1,3 +1,4 @@
+import { Box } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { QRCode } from '@suite-native/qr-code';
 
@@ -17,13 +18,15 @@ export const ReceiveQRCodeContent = ({
         paddingHorizontal={RECEIVE_QR_CODE_PADDING}
         paddingVertical={RECEIVE_QR_CODE_PADDING}
         centerIcon={
-            <TokenIcon
-                networkSymbol={networkSymbol}
-                contractAddress={tokenContract}
-                tokenSymbol={tokenSymbol}
-                showNetworkIcon={tokenContract !== undefined}
-                size="large"
-            />
+            <Box testID="@receive/qr-code-token-icon">
+                <TokenIcon
+                    networkSymbol={networkSymbol}
+                    contractAddress={tokenContract}
+                    tokenSymbol={tokenSymbol}
+                    showNetworkIcon={tokenContract !== undefined}
+                    size="large"
+                />
+            </Box>
         }
     />
 );

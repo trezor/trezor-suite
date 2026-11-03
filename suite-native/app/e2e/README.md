@@ -21,7 +21,7 @@ To run the tests locally, you need to have the following installed:
 With the debug config, the app is running in Expo dev-client and the JavaScript bundle is served from the local Metro server. This configuration is suitable for development and testing purposes because the Metro hot reloads make it easy to debug the test scenarios. To run the tests in debug mode, follow these steps:
 
 1. Navigate to the `suite-native/app` folder
-2. Generate Expo native code with `NODE_ENV=test yarn prebuild` to load `.env.test`.
+2. Generate Expo native code with `yarn prebuild:e2e` to load `.env.test`.
 3. Create a debug build:
     - (**Android**) `yarn build:e2e android.emu.debug`
     - (**iOS**) `yarn build:e2e ios.sim.debug`
@@ -39,7 +39,7 @@ The `EXPO_PUBLIC_IS_DETOX_BUILD=true` flag in `.env.test` configures Expo's deve
 To test the app in the release mode, you need to build the app with the release configuration. The JavaScript bundle is bundled within the app and the app is running in the standalone mode. To run the tests in the release mode, follow these steps:
 
 1. Navigate to the `suite-native/app` folder
-2. Generate Expo native code with `NODE_ENV=test yarn prebuild` to load `.env.test`.
+2. Generate Expo native code with `yarn prebuild:e2e` to load `.env.test`.
 3. Create a release build:
     - (**Android**) `yarn build:e2e android.emu.release`
     - (**iOS**) `yarn build:e2e ios.sim.release`
