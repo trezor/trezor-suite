@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenAddress } from '@suite-common/wallet-types';
+import { type FormState, toTokenAddress } from '@suite-common/wallet-types';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useFeeSelector } from './useFeeSelector';
@@ -123,5 +123,79 @@ it.each(['AMOUNT_NOT_ENOUGH_CURRENCY_FEE', 'TR_GENERIC_ERROR_TITLE'] as const)(
         );
         expect(result.current.shouldShowFeeUnavailableAlert).toBe(true);
         expect(result.current.isSubmittable).toBe(false);
+    },
+);
+
+it.each([
+    {
+        selectedFee: 'normal' as const,
+        estimatedFeeLimit: '200000',
+        expectedFee: '2000000000000000',
+    },
+    { selectedFee: 'normal' as const, estimatedFeeLimit: '', expectedFee: '450000000000000' },
+    {
+        selectedFee: 'custom' as const,
+        estimatedFeeLimit: '200000',
+        expectedFee: '1350000000000000',
+    },
+])(
+    'estimates unaffordable $selectedFee fees with saved gas estimate "$estimatedFeeLimit"',
+    async ({ selectedFee, estimatedFeeLimit, expectedFee }) => {
+        const wallet = getWalletState();
+        const formDraft: FormState = {
+            outputs: [],
+            selectedFee,
+            feePerUnit: '15',
+            feeLimit: '45000',
+            estimatedFeeLimit,
+            maxFeePerGas: '30',
+            maxPriorityFeePerGas: '2',
+            options: [],
+            isCoinControlEnabled: false,
+            hasCoinControlBeenOpened: false,
+            selectedUtxos: [],
+        };
+        const { result } = await renderHookWithStoreProvider(useFeeSelector, {
+            initialProps: {
+                accountKey: ETH_ACCOUNT_KEY,
+                selectedFee,
+                updateThunk: () => () => undefined,
+                formDraft,
+            },
+            preloadedState: {
+                wallet: {
+                    ...wallet,
+                    fees: {
+                        eth: {
+                            status: 'loaded',
+                            data: {
+                                blockHeight: 200,
+                                blockTime: 12,
+                                minFee: 1,
+                                maxFee: 100,
+                                minPriorityFee: 1,
+                                levels: [
+                                    { label: 'normal', feePerUnit: '10000000000', blocks: 2 },
+                                    { label: 'custom', feePerUnit: '0', blocks: -1 },
+                                ],
+                            },
+                        },
+                    },
+                    send: {
+                        ...wallet.send,
+                        feeLevels: {
+                            normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                            custom: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                        },
+                    },
+                },
+            },
+        });
+
+        expect(result.current.fee).toBe(expectedFee);
+        expect(result.current.shouldShowFeeUnavailableAlert).toBe(true);
+        expect(result.current.isSubmittable).toBe(false);
+        await act(() => result.current.form.setValue('customMaxFeePerGas', '99'));
+        expect(result.current.fee).toBe(expectedFee);
     },
 );

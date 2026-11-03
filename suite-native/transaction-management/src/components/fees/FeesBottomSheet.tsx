@@ -86,19 +86,17 @@ export const FeesBottomSheet = ({
     const isTrc20 = networkType === 'tron' && tokenContract !== undefined;
     const showCustomTab = networkType !== 'solana' && !isTrc20;
 
-    const [activeTab, setActiveTab] = useState<TabValue>(() =>
-        showCustomTab ? feeLevelToTab(form.getValues('feeLevel')) : 'standard',
-    );
     const selectedFeeLevel = useWatch({ control: form.control, name: 'feeLevel' });
+    const [activeTab, setActiveTab] = useState<TabValue>(() =>
+        showCustomTab ? feeLevelToTab(selectedFeeLevel) : 'standard',
+    );
     useEffect(() => {
         setActiveTab(showCustomTab ? feeLevelToTab(selectedFeeLevel) : 'standard');
     }, [selectedFeeLevel, showCustomTab]);
     const [customFeeLevels, setCustomFeeLevels] = useState<GeneralPrecomposedLevels>();
     const [customIsSubmittable, setCustomIsSubmittable] = useState(false);
 
-    const standardFeeRef = useRef(
-        form.getValues('feeLevel') === 'custom' ? 'normal' : form.getValues('feeLevel'),
-    );
+    const standardFeeRef = useRef(selectedFeeLevel === 'custom' ? 'normal' : selectedFeeLevel);
     const handleTabChange = (tab: TabValue) => {
         const selectedFee = form.getValues('feeLevel');
         if (tab === 'custom') {
@@ -206,6 +204,10 @@ export const FeesBottomSheet = ({
                     <FeeOptionsList
                         feeLevels={feeLevels}
                         symbol={symbol}
+                        estimatedFeeLimit={
+                            formDraft?.estimatedFeeLimit ||
+                            (formDraft?.selectedFee !== 'custom' ? formDraft?.feeLimit : undefined)
+                        }
                         isLoading={areFeesLoading}
                     />
                 )}

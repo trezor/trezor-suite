@@ -45,6 +45,7 @@ export type FeeOptionProps = {
     feeKey: NativeSupportedPredefinedFeeLevel;
     feeLevel: GeneralPrecomposedTransaction;
     referenceFeeLevel?: GeneralPrecomposedTransactionFinal;
+    estimatedFeeLimit?: string;
     symbol: NetworkSymbol;
     isInteractive?: boolean;
     isLoading?: boolean;
@@ -97,6 +98,7 @@ export const FeeOption = ({
     feeKey,
     feeLevel,
     referenceFeeLevel,
+    estimatedFeeLimit,
     symbol,
     isInteractive = true,
     isLoading = false,
@@ -153,7 +155,12 @@ export const FeeOption = ({
         : formattedEstimatedFeePerUnit;
     const estimatedFee =
         feeLevel.type === 'error' && isPrecomposedTransactionError(feeLevel.error)
-            ? estimateFee({ networkType, feePerUnit: networkFeePerUnit, referenceFeeLevel })
+            ? estimateFee({
+                  networkType,
+                  feePerUnit: networkFeePerUnit,
+                  referenceFeeLevel,
+                  feeLimit: referenceFeeLevel?.feeLimit ?? estimatedFeeLimit,
+              })
             : null;
     const fee = areFeeValuesComplete ? feeLevel.fee : estimatedFee;
 
