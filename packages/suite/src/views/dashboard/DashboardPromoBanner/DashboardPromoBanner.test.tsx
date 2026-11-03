@@ -38,7 +38,7 @@ const config: MessageSystem = {
             dismissible: true,
             variant: 'info',
             category: 'feature',
-            content: { en: 'Placeholder' },
+            content: { en: 'Placeholder', es: '', cs: '', de: '', fr: '', pt: '' },
             feature: [
                 { domain: Feature.banners.dashboard.promo, visibleBanner: bannerType, flag: true },
             ],
@@ -128,6 +128,9 @@ describe('DashboardPromoBanner targeting', () => {
 
                 expect(href.origin).toBe('https://trezor.io');
                 expect(href.pathname).toBe('/holiday-deals');
+                expect(href.searchParams.get('utm_source')).toBe('trezor-suite');
+                expect(href.searchParams.get('utm_campaign')).toBe('holiday-2026');
+                expect(href.searchParams.get('utm_content')).toBe(bannerType);
 
                 if (index > 0) {
                     await waitFor(() => {

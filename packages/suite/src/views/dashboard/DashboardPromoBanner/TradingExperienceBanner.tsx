@@ -5,6 +5,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { Banner } from './Banner';
+import { useBannerResponsiveValue } from './useBannerResponsiveValue';
 
 type TradingExperienceBannerProps = {
     onClose: () => void;
@@ -13,6 +14,7 @@ type TradingExperienceBannerProps = {
 
 export const TradingExperienceBanner = ({ onClose, onCTAClick }: TradingExperienceBannerProps) => {
     const { dispatch } = useServices(injectDispatch);
+    const getResponsiveValue = useBannerResponsiveValue();
 
     const handleCTAClick = () => {
         onCTAClick();
@@ -30,6 +32,7 @@ export const TradingExperienceBanner = ({ onClose, onCTAClick }: TradingExperien
             onClose={onClose}
             data-testid="@dashboard/promo-banner/trading-experience/button"
             backgroundColor="elementFillAccentVioletSofter"
+            isCloseButtonInverse={getResponsiveValue({ default: true, tablet: false })}
             image={
                 <Image
                     image="DASHBOARD_PROMO_BANNER_TRADING_EXPERIENCE"
