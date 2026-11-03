@@ -134,7 +134,10 @@ and registers concrete network modules; reusable packages do not import app asse
 
 ## Rejected alternatives
 
-No alternatives were considered in detail, as ideas such as tagging packages or keeping the current structure and relying on developers’ knowledge were rejected immediately for obvious reasons.
+1. **Keep the current structure (status quo).** Application assembly and reusable code remain mixed, making safe imports depend on developer knowledge. Cycle detection catches completed cycles, but does not prevent inappropriate dependencies from accumulating beforehand.
+2. **Enforce boundaries in the existing layout and rename later.** Tags, package allowlists and additional dependency checks could enforce the architecture, but require extra configuration while responsibilities remain less visible in directories and imports. Structural cleanup could be postponed indefinitely.
+3. **Extend and enforce the native `module-*` convention.** Application packages such as `app`, `state` and `suite-sync` do not naturally fit that prefix. This approach offers weaker structural visibility for a similar amount of migration work.
+4. **Extract reusable code into temporary `*-lego` scopes, then rename everything.** This introduces repeated moves and renames, and makes the final layout depend on completing the entire extraction. An opportunistic migration could leave these temporary scopes in place indefinitely.
 
 ## Consequences
 
