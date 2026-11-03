@@ -132,31 +132,83 @@ const readInvokeContractArgs = (data: xdr.InvokeContractArgs) => ({
 });
 
 /**
- * Reads a HostFunction from XDR. Only the invoke-contract host function is supported.
+ * Reads a ContractIDPreimage from XDR. Only the from-address preimage is supported.
  */
-const readHostFunction = (hostFunction: xdr.HostFunction) => {
-    if (hostFunction.type !== 'hostFunctionTypeInvokeContract') {
-        throw new Error(`Unsupported host function type: ${hostFunction.type}`);
+const readContractIdPreimage = (preimage: xdr.ContractIdPreimage) => {
+    if (preimage.type !== 'contractIdPreimageFromAddress') {
+        throw new Error(`Unsupported ContractIDPreimage type: ${preimage.type}`);
     }
 
     return {
-        type: xdr.HostFunctionType.fromName(hostFunction.type).value,
-        invoke_contract: readInvokeContractArgs(hostFunction.invokeContract),
+        type: xdr.ContractIdPreimageType.fromName(preimage.type).value,
+        from_address: {
+            address: readScAddress(preimage.fromAddress.address),
+            salt: Buffer.from(preimage.fromAddress.salt.value).toString('hex'),
+        },
     };
 };
 
 /**
- * Reads a SorobanAuthorizedFunction from XDR. Only the contract-fn variant is supported.
+ * Reads a ContractExecutable from XDR. Only the Wasm executable is supported.
  */
-const readAuthorizedFunction = (fn: xdr.SorobanAuthorizedFunction) => {
-    if (fn.type !== 'sorobanAuthorizedFunctionTypeContractFn') {
-        throw new Error(`Unsupported SorobanAuthorizedFunction type: ${fn.type}`);
+const readContractExecutable = (executable: xdr.ContractExecutable) => {
+    if (executable.type !== 'contractExecutableWasm') {
+        throw new Error(`Unsupported ContractExecutable type: ${executable.type}`);
     }
 
     return {
-        type: xdr.SorobanAuthorizedFunctionType.fromName(fn.type).value,
-        contract_fn: readInvokeContractArgs(fn.contractFn),
+        type: xdr.ContractExecutableType.fromName(executable.type).value,
+        wasm_hash: Buffer.from(executable.wasmHash.value).toString('hex'),
     };
+};
+
+/**
+ * Reads CreateContractArgsV2 (contract ID preimage, executable and constructor arguments) from XDR.
+ */
+const readCreateContractArgsV2 = (data: xdr.CreateContractArgsV2) => ({
+    contract_id_preimage: readContractIdPreimage(data.contractIdPreimage),
+    executable: readContractExecutable(data.executable),
+    constructor_args: data.constructorArgs.map(readScVal),
+});
+
+/**
+ * Reads a HostFunction from XDR. Only the invoke-contract and create-contract-v2 host
+ * functions are supported.
+ */
+const readHostFunction = (hostFunction: xdr.HostFunction) => {
+    const type = xdr.HostFunctionType.fromName(hostFunction.type).value;
+
+    switch (hostFunction.type) {
+        case 'hostFunctionTypeInvokeContract':
+            return { type, invoke_contract: readInvokeContractArgs(hostFunction.invokeContract) };
+        case 'hostFunctionTypeCreateContractV2':
+            return {
+                type,
+                create_contract_v2: readCreateContractArgsV2(hostFunction.createContractV2),
+            };
+        default:
+            throw new Error(`Unsupported host function type: ${hostFunction.type}`);
+    }
+};
+
+/**
+ * Reads a SorobanAuthorizedFunction from XDR. Only the contract-fn and create-contract-v2
+ * variants are supported.
+ */
+const readAuthorizedFunction = (fn: xdr.SorobanAuthorizedFunction) => {
+    const type = xdr.SorobanAuthorizedFunctionType.fromName(fn.type).value;
+
+    switch (fn.type) {
+        case 'sorobanAuthorizedFunctionTypeContractFn':
+            return { type, contract_fn: readInvokeContractArgs(fn.contractFn) };
+        case 'sorobanAuthorizedFunctionTypeCreateContractV2HostFn':
+            return {
+                type,
+                create_contract_v2_host_fn: readCreateContractArgsV2(fn.createContractV2HostFn),
+            };
+        default:
+            throw new Error(`Unsupported SorobanAuthorizedFunction type: ${fn.type}`);
+    }
 };
 
 /**
@@ -179,8 +231,18 @@ const readAddressCredentials = (credentials: xdr.SorobanAddressCredentials) => (
 });
 
 /**
- * Reads SorobanCredentials from XDR. Only source-account and address-v2 credentials are
- * supported; the legacy (to-be-deprecated) address credentials are intentionally rejected.
+ * Reads a SorobanDelegateSignature tree from XDR (recurses into nested delegates).
+ */
+const readDelegateSignature = (delegate: xdr.SorobanDelegateSignature): any => ({
+    address: readScAddress(delegate.address),
+    signature: readScVal(delegate.signature),
+    nested_delegates: delegate.nestedDelegates.map(readDelegateSignature),
+});
+
+/**
+ * Reads SorobanCredentials from XDR. Only source-account, address-v2 and
+ * address-with-delegates credentials are supported; the legacy (to-be-deprecated) address
+ * credentials are intentionally rejected.
  */
 const readCredentials = (credentials: xdr.SorobanCredentials) => {
     switch (credentials.type) {
@@ -190,6 +252,17 @@ const readCredentials = (credentials: xdr.SorobanCredentials) => {
             return {
                 type: xdr.SorobanCredentialsType.fromName(credentials.type).value,
                 address_v2: readAddressCredentials(credentials.addressV2),
+            };
+        case 'sorobanCredentialsAddressWithDelegates':
+            return {
+                type: xdr.SorobanCredentialsType.fromName(credentials.type).value,
+                address_with_delegates: {
+                    address_credentials: readAddressCredentials(
+                        credentials.addressWithDelegates.addressCredentials,
+                    ),
+                    delegates:
+                        credentials.addressWithDelegates.delegates.map(readDelegateSignature),
+                },
             };
         default:
             throw new Error(`Unsupported SorobanCredentials type: ${credentials.type}`);
