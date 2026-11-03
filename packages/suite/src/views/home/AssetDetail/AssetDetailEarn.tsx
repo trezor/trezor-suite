@@ -1,3 +1,4 @@
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
@@ -33,7 +34,7 @@ type AssetDetailEarnProps = {
 };
 
 export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const amount = useSelector(state => selectWalletAssetAmount(state, assetKey));
@@ -72,7 +73,18 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                             <TextButton
                                 size="small"
                                 iconRight={ArrowRightIcon}
-                                onClick={() => dispatch(gotoThunk({ routeName: 'suite-earn' }))}
+                                onClick={() => {
+                                    analytics.report({
+                                        type: events.navigateFlowEvent.name,
+                                        payload: {
+                                            action: 'navigate',
+                                            type: 'earn',
+                                            from: 'asset',
+                                            networkSymbol: symbol,
+                                        },
+                                    });
+                                    dispatch(gotoThunk({ routeName: 'suite-earn' }));
+                                }}
                                 data-testid="@asset-detail/earn/view-all"
                             >
                                 <Translation id="TR_VIEW_ALL" />
