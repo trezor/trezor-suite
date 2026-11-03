@@ -25,7 +25,7 @@ export const SendAccountsScreen = () => {
     const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProps>();
     const { params } = useRoute<RouteProp<SendStackParamList, SendStackRoutes.SendAccounts>>();
-    const tokenContract = params?.tokenContract;
+    const asset = params?.asset;
 
     const handleSelectAccount: OnSelectAccount = ({ account, hasAnyKnownTokens }) => {
         analytics.report({
@@ -33,7 +33,7 @@ export const SendAccountsScreen = () => {
             payload: { option: 'account' },
         });
 
-        if (hasAnyKnownTokens && params?.isAssetPreselected !== true) {
+        if (hasAnyKnownTokens && asset === undefined) {
             navigation.navigate(RootStackRoutes.AccountOverview, {
                 accountKey: account.key,
                 flowType: 'send',
@@ -44,7 +44,7 @@ export const SendAccountsScreen = () => {
 
         navigation.navigate(SendStackRoutes.SendOutputs, {
             accountKey: account.key,
-            tokenContract,
+            tokenContract: asset?.tokenContract,
         });
     };
 
@@ -61,8 +61,9 @@ export const SendAccountsScreen = () => {
             <AccountsListWithFilter
                 title={<Translation id="moduleSend.accountsList.title" />}
                 onSelectAccount={handleSelectAccount}
-                networksFilter={params?.networksFilter}
-                tokenContract={tokenContract}
+                networksFilter={asset ? [asset.networkSymbol] : undefined}
+                tokenContract={asset?.tokenContract}
+                hideNetworkFilter={asset !== undefined}
                 closeActionType="close"
                 closeAction={handleClose}
                 networkFilterType="send"

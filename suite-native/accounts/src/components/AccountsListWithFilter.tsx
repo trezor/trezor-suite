@@ -24,6 +24,7 @@ type AccountsListWithFilterProps = {
     closeAction?: () => void;
     onAddAccount?: () => void;
     networkFilterType: NetworkFilterType;
+    hideNetworkFilter?: boolean;
     noHeaderPaddingTop?: boolean;
     children?: ReactNode;
 };
@@ -38,13 +39,18 @@ export const AccountsListWithFilter = ({
     closeAction,
     onAddAccount,
     networkFilterType,
+    hideNetworkFilter = false,
     noHeaderPaddingTop,
     children,
 }: AccountsListWithFilterProps) => {
     const [searchValue, setSearchValue] = useState('');
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [filteredNetworks, setFilteredNetworks] = useState<NetworkSymbol[]>(networksFilter);
-    const networkFilter = { type: networkFilterType, filteredNetworks, setFilteredNetworks };
+    const networkFilter = {
+        type: networkFilterType,
+        filteredNetworks,
+        setFilteredNetworks,
+    };
 
     useEffect(() => {
         setFilteredNetworks(networksFilter);
@@ -91,6 +97,7 @@ export const AccountsListWithFilter = ({
                 closeAction={closeAction}
                 onAddAccount={onAddAccount}
                 networkFilter={networkFilter}
+                hideNetworkFilter={hideNetworkFilter}
                 noPaddingTop={noHeaderPaddingTop}
             />
             <AccountsList
@@ -104,11 +111,13 @@ export const AccountsListWithFilter = ({
                     <AccountsListEmptyPlaceholder isFilterEmpty={!searchValue.length} />
                 }
                 ListFooterComponent={
-                    <AccountsListFooter
-                        networkFilterType={networkFilterType}
-                        activeFilterCount={filteredNetworks.length}
-                        onClearFilters={() => setFilteredNetworks([])}
-                    />
+                    hideNetworkFilter ? undefined : (
+                        <AccountsListFooter
+                            networkFilterType={networkFilterType}
+                            activeFilterCount={filteredNetworks.length}
+                            onClearFilters={() => setFilteredNetworks([])}
+                        />
+                    )
                 }
             />
         </>
