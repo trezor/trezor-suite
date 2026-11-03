@@ -87,7 +87,6 @@ packages/suite/src/views/wallet/send/Outputs/TokenSelect/TokenSelect.tsx	opt-out
 packages/suite/src/views/wallet/send/SendHeader.tsx	opt-out	'use no memo'
 packages/suite/src/views/wallet/send/TotalSent/ReviewButton.tsx	opt-out	'use no memo'
 packages/suite/src/views/wallet/trading/common/TradingForm/TradingBuyFormInputs.tsx	bail	(BuildHIR::lowerAssignment) Handle computed properties in ObjectPattern
-packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormApproval.tsx	opt-out	'use no memo'
 packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInput.tsx	opt-out	'use no memo'
 packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInputBalance.tsx	opt-out	'use no memo'
 packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount.tsx	opt-out	'use no memo'
