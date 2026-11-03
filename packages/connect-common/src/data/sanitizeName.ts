@@ -5,9 +5,11 @@ export type SanitizeNameOptions = {
 };
 
 export const sanitizeName = (
-    name: string,
+    name: unknown,
     { maxLength }: SanitizeNameOptions = {},
 ): string | undefined => {
+    if (typeof name !== 'string') return undefined;
+
     const sanitized = name
         .replace(/[\p{Cc}\p{Cs}\p{Cf}]/gu, ' ')
         .replace(/\s+/g, ' ')

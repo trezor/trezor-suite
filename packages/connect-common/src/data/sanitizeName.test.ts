@@ -19,10 +19,6 @@ describe('sanitizeName', () => {
         GRINNING_FACE: '\u{1f600}',
     };
 
-    // The parameter is typed `string`, so nothing but the types keeps a caller that does not check
-    // its own input from reaching the function with something else.
-    const sanitizeUnchecked = (name: unknown) => sanitizeName(name as string);
-
     it('keeps a plain name as it is', () => {
         expect(sanitizeName('Claude Code')).toBe('Claude Code');
     });
@@ -34,8 +30,8 @@ describe('sanitizeName', () => {
             ['a number', 42],
             ['an object', { name: 'Claude Code' }],
             ['an array', ['Claude Code']],
-        ])('throws on %s', (_label, input) => {
-            expect(() => sanitizeUnchecked(input)).toThrow();
+        ])('drops %s instead of throwing', (_label, input) => {
+            expect(sanitizeName(input)).toBeUndefined();
         });
     });
 
