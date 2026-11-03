@@ -82,7 +82,11 @@ import {
     walletPersistTransform,
     walletStopPersistTransform,
 } from '@suite-native/storage';
-import { tradingInitialState, tradingSlice } from '@suite-native/trading-state';
+import {
+    migrateTradingAddTradeApiInstallSalt,
+    tradingInitialState,
+    tradingSlice,
+} from '@suite-native/trading-state';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';
@@ -170,9 +174,9 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const tradingPersistedReducer = preparePersistReducer({
         reducer: tradingReducer,
-        persistedKeys: ['trades', 'residence', 'tradingEnvironment'],
+        persistedKeys: ['trades', 'residence', 'tradingEnvironment', 'tradeApiInstallSalt'],
         key: 'trading',
-        version: 4,
+        version: 5,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState) return oldState;
@@ -189,6 +193,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
                 return rest;
             },
+            5: migrateTradingAddTradeApiInstallSalt,
         },
         storage: deps.mmkvStorage,
     });
