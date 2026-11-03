@@ -18,7 +18,7 @@ export const ReceiveQRCodeContent = ({
         paddingHorizontal={RECEIVE_QR_CODE_PADDING}
         paddingVertical={RECEIVE_QR_CODE_PADDING}
         centerIcon={
-            <Box testID="@receive/qr-code-token-icon">
+            <Box collapsable={false} testID="@receive/qr-code-token-icon">
                 <TokenIcon
                     networkSymbol={networkSymbol}
                     contractAddress={tokenContract}
