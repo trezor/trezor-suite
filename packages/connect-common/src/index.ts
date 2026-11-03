@@ -15,6 +15,8 @@ export {
     parseVersion,
     corsValidator,
 } from './data/connectSettings';
+export { MAX_NAME_LENGTH, sanitizeName } from './data/sanitizeName';
+export type { SanitizeNameOptions } from './data/sanitizeName';
 export * from './utils/debug';
 export * from './utils/definitionsUtils';
 export * from './utils/refTransactions';
