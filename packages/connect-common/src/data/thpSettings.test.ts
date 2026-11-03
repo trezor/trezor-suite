@@ -179,5 +179,12 @@ describe('data/thpSettings', () => {
             });
             expect(result.hostName).toBe('My Host');
         });
+
+        it('drops hostName exceeding 100 characters', () => {
+            const result = parseThpSettings({
+                thp: { hostName: 'A'.repeat(101), pairingMethods },
+            });
+            expect(result.hostName).toBeUndefined();
+        });
     });
 });

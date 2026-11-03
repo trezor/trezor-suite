@@ -103,13 +103,24 @@ describe('sanitizeName', () => {
         });
     });
 
-    describe('with a maxLength', () => {
+    describe("onTooLong: 'reject'", () => {
         it('keeps a name at the limit', () => {
             const name = 'a'.repeat(MAX_NAME_LENGTH);
-            expect(sanitizeName(name, { maxLength: MAX_NAME_LENGTH })).toBe(name);
+            expect(sanitizeName(name, { maxLength: MAX_NAME_LENGTH, onTooLong: 'reject' })).toBe(
+                name,
+            );
         });
 
         it('drops a name one code point over the limit', () => {
+            expect(
+                sanitizeName('a'.repeat(MAX_NAME_LENGTH + 1), {
+                    maxLength: MAX_NAME_LENGTH,
+                    onTooLong: 'reject',
+                }),
+            ).toBeUndefined();
+        });
+
+        it('is the default when no mode is given', () => {
             expect(
                 sanitizeName('a'.repeat(MAX_NAME_LENGTH + 1), { maxLength: MAX_NAME_LENGTH }),
             ).toBeUndefined();
@@ -119,7 +130,46 @@ describe('sanitizeName', () => {
             // 99 characters + one astral one: 100 code points, 101 UTF-16 units.
             const name = `${'a'.repeat(MAX_NAME_LENGTH - 1)}${CODE_POINT.GRINNING_FACE}`;
             expect(name).toHaveLength(MAX_NAME_LENGTH + 1);
-            expect(sanitizeName(name, { maxLength: MAX_NAME_LENGTH })).toBe(name);
+            expect(sanitizeName(name, { maxLength: MAX_NAME_LENGTH, onTooLong: 'reject' })).toBe(
+                name,
+            );
+        });
+    });
+
+    describe("onTooLong: 'truncate'", () => {
+        const truncate = (name: unknown) =>
+            sanitizeName(name, { maxLength: MAX_NAME_LENGTH, onTooLong: 'truncate' });
+
+        it('cuts a long name to the limit', () => {
+            expect(truncate('a'.repeat(500))).toBe('a'.repeat(MAX_NAME_LENGTH));
+        });
+
+        it('leaves a name within the limit untouched', () => {
+            expect(truncate('Claude Code')).toBe('Claude Code');
+        });
+
+        it('does not end the cut name with the space the cut landed on', () => {
+            const name = `${'a'.repeat(MAX_NAME_LENGTH - 1)} bbb`;
+            expect(truncate(name)).toBe('a'.repeat(MAX_NAME_LENGTH - 1));
+        });
+
+        it('does not cut in the middle of a character', () => {
+            // The 100th code point is the astral one; cutting by UTF-16 units would split its pair.
+            const name = `${'a'.repeat(MAX_NAME_LENGTH - 1)}${CODE_POINT.GRINNING_FACE}b`;
+            expect(truncate(name)).toBe(
+                `${'a'.repeat(MAX_NAME_LENGTH - 1)}${CODE_POINT.GRINNING_FACE}`,
+            );
+        });
+
+        it('drops a name left empty by the cut', () => {
+            // Unreachable after the whitespace collapse above, but the guard holds for maxLength 0.
+            expect(
+                sanitizeName('Claude Code', { maxLength: 0, onTooLong: 'truncate' }),
+            ).toBeUndefined();
+        });
+
+        it('drops a name that sanitizes to nothing before the cut is reached', () => {
+            expect(truncate(CODE_POINT.ZERO_WIDTH_SPACE.repeat(500))).toBeUndefined();
         });
     });
 
