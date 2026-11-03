@@ -12907,6 +12907,7 @@ __metadata:
     "@trezor/connect-core": "workspace:*"
     "@trezor/connect-mobile": "workspace:^"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/perf-e2e": "workspace:*"

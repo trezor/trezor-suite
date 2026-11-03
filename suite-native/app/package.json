@@ -209,6 +209,7 @@
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/connect-core": "workspace:*",
         "@trezor/connect-mobile": "workspace:^",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/perf-e2e": "workspace:*",
         "@types/lodash": "^4.17.16",
