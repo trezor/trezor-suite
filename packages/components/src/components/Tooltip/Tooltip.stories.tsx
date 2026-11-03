@@ -41,6 +41,7 @@ export const Tooltip: StoryObj<TooltipProps> = {
         offset: 10,
         hasArrow: false,
         hasIcon: false,
+        isUnderlined: false,
         delayHide: TOOLTIP_DELAY_SHORT,
         delayShow: TOOLTIP_DELAY_SHORT,
         ...getFramePropsStory(allowedTooltipFrameProps).args,
@@ -50,6 +51,9 @@ export const Tooltip: StoryObj<TooltipProps> = {
             type: 'boolean',
         },
         hasIcon: {
+            type: 'boolean',
+        },
+        isUnderlined: {
             type: 'boolean',
         },
         tooltipMaxWidth: {
