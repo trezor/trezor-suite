@@ -53,6 +53,7 @@ export const formatAddress = (address: string) => splitStringEveryNCharacters(ad
 const REGEXP_ADDRESS_CHUNKS = /((?:\S+\s){3}\S+)\s/g;
 const EVM_ADDRESS_PREFIX = '0x';
 export const DEVICE_RENDERED_EVM_INDENT = '  ';
+export const T3T1_FIRST_PAGE_KEY_LENGTH = 122;
 
 export const formatEvmAddress = (address: string) => {
     if (!address.startsWith(EVM_ADDRESS_PREFIX)) {

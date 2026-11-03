@@ -2,8 +2,14 @@ import { type Page } from '@playwright/test';
 
 import { TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
+import { DeviceFixture } from '../../support/device';
 import { expect, test } from '../../support/fixtures';
 import { ConnectPermissionsModal } from '../../support/pageObjects/connectPermissionsModal';
+
+const expectPopupAddressOnDisplay = async (popup: Page, device: DeviceFixture) => {
+    const address = await popup.getByTestId('@connect-address-confirmation/address/0').innerText();
+    await expect(device).toShowReceiveAddress(address, { lineFormat: 'fullLine' });
+};
 
 function getConnectExplorerUrlSldev(branch: string = 'develop') {
     return `https://dev.suite.sldev.cz/connect/${branch}/`;
@@ -74,6 +80,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
                 suite.getByTestId('@connect-address-confirmation/verify-button/0'),
             ).toBeDisabled();
             await suite.waitForTimeout(1000);
+            await expectPopupAddressOnDisplay(suite, device);
             await device.pressYes();
 
             await expect(
@@ -126,6 +133,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
                 suite.getByTestId('@connect-address-confirmation/verify-button/0'),
             ).toBeDisabled();
             await suite.waitForTimeout(1000);
+            await expectPopupAddressOnDisplay(suite, device);
             await device.pressYes();
 
             await expect(
@@ -273,6 +281,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
             await modal2.confirmButton.click();
             await suite2.getByTestId('@connect-address-confirmation/confirm-button').click();
             await suite2.waitForTimeout(1000);
+            await expectPopupAddressOnDisplay(suite2, device);
             await device.pressYes();
             await expect(
                 suite2.getByTestId('@connect-address-confirmation/verified-badge/0'),
@@ -319,6 +328,7 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
             await expect(
                 popup1.getByTestId('@connect-address-confirmation/verify-button/0'),
             ).toBeDisabled();
+            await expectPopupAddressOnDisplay(popup1, device);
             await device.pressYes();
 
             // focus connect-explorer again

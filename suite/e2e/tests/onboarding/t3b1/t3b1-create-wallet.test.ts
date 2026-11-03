@@ -37,17 +37,23 @@ test.describe('Onboarding - create wallet', { tag: ['@T3B1'] }, () => {
                 await onboardingPage.backup.passThroughShamirBackup({
                     shares: 3,
                     threshold: 2,
-                    deviceConfirmations: 3,
+                    deviceConfirmations: [
+                        "By continuing you agree to Trezor Company's terms and conditions.",
+                        'Wallet created.',
+                        'Your wallet backup contains multiple lists of words in a specific order (shares).',
+                    ],
                 });
             });
 
             await test.step('Set PIN', async () => {
                 await onboardingPage.pin.setPinButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay('Turn on PIN protection?');
                 await device.pressYes();
                 await device.inputPin('12');
                 await device.inputPin('12');
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectValuesOnDisplay('PIN protection turned on.');
                 await device.pressYes();
             });
 

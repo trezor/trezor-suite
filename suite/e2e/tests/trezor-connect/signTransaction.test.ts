@@ -1,8 +1,10 @@
 import TrezorConnect from '@trezor/connect-web';
 import { TestStream } from '@trezor/e2e-utils';
+import { Model } from '@trezor/trezor-user-env-link';
 
-import { test } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 test.describe('TrezorConnect.signTransaction', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
@@ -52,16 +54,60 @@ test.describe('TrezorConnect.signTransaction', { tag: ['@T3T1', '@T3W1', '@deskt
             await connectPermissionsModal.confirmButton.click();
 
             await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [
+                        transformAddress(
+                            'bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3',
+                            'fourTetragrams',
+                        ),
+                    ],
+                    actions: { right_button: 'Continue' },
+                },
+                T3T1: {
+                    header: { title: 'Address', subtitle: 'Recipient #1' },
+                },
+            });
             await device.pressContinue();
             await page
                 .getByTestId('@prompts/confirm-on-device/step/1/active')
                 .waitFor({ state: 'visible' });
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [['Amount'], ['0.0001 BTC']],
+                    actions: { right_button: 'Confirm' },
+                },
+                T3T1: {
+                    header: { title: 'Amount', subtitle: 'Recipient #1' },
+                    body: [['0.0001 BTC']],
+                },
+            });
             await device.pressContinue();
             await page
                 .getByTestId('@prompts/confirm-on-device/step/2/active')
                 .waitFor({ state: 'visible' });
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [
+                        ['Total amount'],
+                        ['0.0005 BTC'],
+                        ['incl. Transaction fee'],
+                        ['0.0004 BTC'],
+                    ],
+                    actions: { right_button: 'Hold to sign' },
+                },
+                T3T1: {
+                    header: { title: 'Summary' },
+                },
+            });
             await device.pressContinue();
 
+            if (device.model !== Model.T3W1) {
+                await device.expectToContainOnDisplay('Sign transaction');
+            }
             await device.pressYes();
 
             await page.getByText('Input does not match scriptPubKey').waitFor({ state: 'visible' });

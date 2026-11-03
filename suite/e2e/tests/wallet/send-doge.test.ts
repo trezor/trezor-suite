@@ -6,6 +6,7 @@ import { localizeNumber } from '@trezor/utils';
 import { formatAddressWithNewlines, replaceTemplatesInTranslation } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const signTxErrorMessage = replaceTemplatesInTranslation(
     messages.TOAST_SIGN_TX_ERROR.defaultMessage,
@@ -59,6 +60,16 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
             });
 
             await test.step('Verify info on modals and confirm', async () => {
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [transformAddress(recipientAddress, 'fourTetragrams')],
+                        actions: { right_button: 'Continue' },
+                    },
+                    T3T1: {
+                        header: { title: 'Address', subtitle: 'Recipient #1' },
+                    },
+                });
                 await device.pressYes();
                 await expect(devicePrompt.outputValueOf('amount')).toContainText(
                     `${localizeNumber(sendAmount)} DOGE`,
@@ -70,7 +81,46 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
                 await expect(devicePrompt.outputValueOf('address')).toHaveText(
                     formatAddressWithNewlines(recipientAddress),
                 );
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [
+                            ['Amount'],
+                            device.wrapText(`${localizeNumber(sendAmount)} DOGE`, {
+                                isAmount: true,
+                            }),
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
+                    T3T1: {
+                        header: { title: 'Amount', subtitle: 'Recipient #1' },
+                        body: [
+                            device.wrapText(`${localizeNumber(sendAmount)} DOGE`, {
+                                isAmount: true,
+                            }),
+                        ],
+                    },
+                });
                 await device.pressYes();
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [
+                            ['Total amount'],
+                            device.wrapText(`${totalAmount} DOGE`, { isAmount: true }),
+                        ],
+                        actions: { right_button: 'Hold to sign' },
+                    },
+                    T3T1: {
+                        header: { title: 'Summary' },
+                        body: [
+                            ['Total amount'],
+                            device.wrapText(`${totalAmount} DOGE`, { isAmount: true }),
+                            ['incl. Transaction fee'],
+                            [`${feeAmount} DOGE`],
+                        ],
+                    },
+                });
                 await device.pressYes();
             });
 

@@ -68,6 +68,7 @@ test.describe(
                     await expect(page.getByTestId('@prompts/confirm-on-device')).toBeVisible({
                         timeout: 30_000,
                     });
+                    await device.expectToContainOnDisplay('to check the authenticity of your');
                     await device.pressYes();
                     await page.getByTestId('@authenticity-check/continue-button').click();
                     await page.discoveryShouldFinish();

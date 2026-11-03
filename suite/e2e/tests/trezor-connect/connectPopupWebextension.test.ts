@@ -1,9 +1,10 @@
-import { type BrowserContext, chromium } from '@playwright/test';
+import { type BrowserContext, type Page, chromium } from '@playwright/test';
 import path from 'path';
 
 import { TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { mockRemoteMessageSystem } from '../../support/common';
+import { DeviceFixture } from '../../support/device';
 import { expect, test } from '../../support/fixtures';
 import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
 import { ConnectPermissionsModal } from '../../support/pageObjects/connectPermissionsModal';
@@ -11,6 +12,11 @@ import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
 import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
 import { SettingsPage } from '../../support/pageObjects/settings/settingsPage';
 import { enhancePage } from '../../support/testExtends/enhancePage';
+
+const expectPopupAddressOnDisplay = async (popup: Page, device: DeviceFixture) => {
+    const address = await popup.getByTestId('@connect-address-confirmation/address/0').innerText();
+    await expect(device).toShowReceiveAddress(address, { lineFormat: 'fullLine' });
+};
 
 function getSuiteWebUrl() {
     const baseUrl = process.env.BASE_URL;
@@ -166,6 +172,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
                     suite.getByTestId('@connect-address-confirmation/verify-button/0'),
                 ).toBeDisabled();
                 await suite.waitForTimeout(1000);
+                await expectPopupAddressOnDisplay(suite, device);
                 await device.pressYes();
 
                 await expect(
@@ -326,6 +333,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
                     suite2.getByTestId('@connect-address-confirmation/verify-button/0'),
                 ).toBeDisabled();
                 await suite2.waitForTimeout(1000);
+                await expectPopupAddressOnDisplay(suite2, device);
                 await device.pressYes();
 
                 await expect(
@@ -366,6 +374,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
                     suite.getByTestId('@connect-address-confirmation/verify-button/0'),
                 ).toBeDisabled();
                 await suite.waitForTimeout(1000);
+                await expectPopupAddressOnDisplay(suite, device);
                 await device.pressYes();
 
                 await expect(

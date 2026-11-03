@@ -30,9 +30,13 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1'] }, () => {
                 await onboardingPage.recoverWalletButton.click();
                 await onboardingPage.startRecoveryButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay(
+                    "agree to Trezor Company's terms and conditions.",
+                );
                 await device.pressYes();
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay('Select the number of words in your backup.');
                 await device.selectNumberOfWords(12);
 
                 await devicePrompt.confirmOnDevicePromptIsShown();

@@ -146,6 +146,16 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
                     REDEEM_MAX_FEE,
                 );
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Redeem' },
+                        body: [
+                            ['Maximum fee'],
+                            device.wrapText(REDEEM_MAX_FEE, { isAmount: true }),
+                        ],
+                        actions: { right_button: 'Hold to sign' },
+                    },
+                });
                 await devicePrompt.waitForFinalPromptAndConfirm();
 
                 blockbookMock.updateAccountState({

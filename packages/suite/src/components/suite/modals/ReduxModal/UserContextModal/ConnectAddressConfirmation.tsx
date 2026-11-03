@@ -158,7 +158,10 @@ export const ConnectAddressConfirmation = () => {
                                     gap={12}
                                 >
                                     <Row gap={12} alignItems="center" flex="1" minWidth={0}>
-                                        <Paragraph overflowWrap="anywhere">
+                                        <Paragraph
+                                            overflowWrap="anywhere"
+                                            data-testid={`@connect-address-confirmation/address/${index}`}
+                                        >
                                             {address.address}
                                         </Paragraph>
                                         {address.validated === 'valid' && (

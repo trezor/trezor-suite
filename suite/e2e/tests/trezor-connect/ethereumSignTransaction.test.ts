@@ -3,6 +3,7 @@ import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 test.describe(
     'TrezorConnect.ethereumSignTransaction',
@@ -48,11 +49,36 @@ test.describe(
                 await page
                     .getByTestId('@prompts/confirm-on-device/step/0/active')
                     .waitFor({ state: 'visible' });
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [
+                            transformAddress(
+                                '0xD6971aabeDC7f2A8113679199FE374aE1B1Aea96',
+                                'fullLine',
+                            ),
+                        ],
+                        actions: { right_button: 'Continue' },
+                    },
+                    T3T1: {
+                        header: { title: 'Address', subtitle: 'Recipient' },
+                    },
+                });
                 await device.pressContinue();
 
                 await page
                     .getByTestId('@prompts/confirm-on-device/step/1/active')
                     .waitFor({ state: 'visible' });
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [['Amount'], ['9.95909 USDT'], ['Maximum fee'], ['400 Wei ETH']],
+                        actions: { right_button: 'Hold to sign' },
+                    },
+                    T3T1: {
+                        header: { title: 'Summary' },
+                    },
+                });
                 await device.pressYes();
 
                 expect(await res).toMatchObject({ success: true });

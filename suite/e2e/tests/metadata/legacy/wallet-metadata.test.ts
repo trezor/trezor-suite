@@ -52,6 +52,7 @@ test.describe(
                     await dashboardPage.addUnusedHiddenWallet('abc');
 
                     await devicePrompt.confirmOnDevicePromptIsShown();
+                    await device.expectToContainOnDisplay('Enable labeling?');
                     await device.pressYes();
 
                     await dashboardPage.openDeviceSwitcher();
@@ -102,6 +103,7 @@ test.describe(
                 await test.step('Add passphrase wallet C and switch back to first wallet', async () => {
                     await dashboardPage.addUnusedHiddenWallet('C');
                     await devicePrompt.confirmOnDevicePromptIsShown();
+                    await device.expectToContainOnDisplay('Enable labeling?');
                     await device.pressNo();
                     await dashboardPage.openDeviceSwitcher();
                     await dashboardPage.walletAtIndex(standardWalletIndex).click();
@@ -111,6 +113,7 @@ test.describe(
                     await dashboardPage.openDeviceSwitcher();
                     await metadataPage.wallet.clickEditLabel(hiddenWalletIndex);
                     await devicePrompt.confirmOnDevicePromptIsShown();
+                    await device.expectToContainOnDisplay('Enable labeling?');
                     await device.pressYes();
                     await metadataPage.wallet.clickEditLabel(hiddenWalletIndex);
                     await metadataPage.wallet.fillLabelInput(

@@ -51,6 +51,7 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1', '@opti
                 await dashboardPage.addUnusedHiddenWallet('abc');
                 await expect(dashboardPage.passphraseInput).toBeHidden();
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay('Enable labeling?');
                 await device.pressYes();
             });
 

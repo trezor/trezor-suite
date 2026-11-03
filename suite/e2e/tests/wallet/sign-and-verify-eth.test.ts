@@ -3,6 +3,7 @@ import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -30,13 +31,28 @@ test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1', '@optional'] }, (
     test(
         'Signs message with Ethereum',
         { annotation: createTestAnnotation({ stream: TestStream.Network }) },
-        async ({ page, devicePrompt, walletPage }) => {
+        async ({ page, devicePrompt, walletPage, device }) => {
             await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
             await walletPage.walletExtraDropDown.click();
             await walletPage.signAndVerifyButton.click();
             await page.getByTestId('@sign-verify/message').fill(MESSAGE_SIGN);
             await page.getByTestId('@sign-verify/submit').click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Signing address' },
+                    body: [transformAddress(ADDRESS_SIGN, 'fullLine')],
+                    actions: { right_button: 'Continue' },
+                },
+            });
             await devicePrompt.waitForPromptAndConfirm(); // Confirm signing address
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Confirm message' },
+                    body: [[MESSAGE_SIGN]],
+                    actions: { right_button: 'Hold to confirm' },
+                },
+            });
             await devicePrompt.waitForPromptAndConfirm(); // Confirm message
             await expect(page.getByTestId('@sign-verify/signature')).toHaveValue(SIGNATURE_SIGN);
 
@@ -67,7 +83,22 @@ test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1', '@optional'] }, (
             await page.getByTestId('@sign-verify/signature').fill(SIGNATURE_SIGN);
             await page.getByTestId('@sign-verify/submit').click();
 
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Verify address' },
+                    body: [transformAddress(ADDRESS_SIGN, 'fullLine')],
+                    actions: { right_button: 'Continue' },
+                },
+            });
             await devicePrompt.waitForPromptAndConfirm(); // Confirm signing address
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Confirm message' },
+                    body: [[MESSAGE_SIGN]],
+                    actions: { right_button: 'Confirm' },
+                },
+            });
             await devicePrompt.waitForPromptAndConfirm(); // Confirm message
             await expect(device).toShowOnDisplay({
                 T3W1: {
