@@ -21,7 +21,6 @@ import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
 import {
     ClockIcon,
-    InfoIcon,
     PackageIcon,
     QuestionFilledIcon,
     SealCheckIcon,
@@ -46,10 +45,9 @@ import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/Cont
 import { SecurityCheckButton } from './components/SecurityCheckButton';
 import { SecurityCheckFail } from './components/SecurityCheckFail';
 import { SecurityCheckLayout } from './components/SecurityCheckLayout';
-import { SecurityChecklist } from './components/SecurityChecklist';
 import { SecurityConfirmationChecklist } from './components/SecurityConfirmationChecklist';
 import { ContactSupport } from './components/ctas';
-import { type SecurityChecklistItem, type SecurityConfirmationItem } from './types';
+import { type SecurityConfirmationItem } from './types';
 
 /*
 ABOUT THIS FILE:
@@ -73,12 +71,13 @@ The complexity is there because of the overlap:
 
 type CommonManualDeviceCheckProps = { onSuccess: () => void };
 
-const firmwareInstalledChecklist = [
+const firmwareInstalledConfirmationItems = [
     {
-        icon: <Icon size={24} as={InfoIcon} />,
-        content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_4" />,
+        id: 'used-before',
+        icon: SealCheckIcon,
+        content: <Translation id="TR_ONBOARDING_SECURITY_CHECK_USED_BEFORE" />,
     },
-] as const satisfies SecurityChecklistItem[];
+] as const satisfies SecurityConfirmationItem[];
 
 const getNoFirmwareConfirmationItems = (isBelowTablet: boolean) =>
     [
@@ -98,15 +97,14 @@ const getNoFirmwareConfirmationItems = (isBelowTablet: boolean) =>
             ),
         },
         {
-            id: 'package',
-            icon: PackageIcon,
-            content: <Translation id="TR_ONBOARDING_SECURITY_CHECK_PACKAGE" />,
-        },
-
-        {
             id: 'plastic-wrap',
             icon: StickerIcon,
             content: <Translation id="TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP" />,
+        },
+        {
+            id: 'package',
+            icon: PackageIcon,
+            content: <Translation id="TR_ONBOARDING_SECURITY_CHECK_PACKAGE" />,
         },
         {
             id: 'hologram',
@@ -137,13 +135,20 @@ const getNoFirmwareConfirmationItems = (isBelowTablet: boolean) =>
         },
     ] as const satisfies SecurityConfirmationItem[];
 
-type BaseLayoutWithFlowProps = {
+type CommonUILayoutProps = {
+    onPrimaryButtonClick: () => void;
+    PrimaryButtonWrapper: FC<PropsWithChildren>;
+    dataTestId: string;
+};
+
+type BaseLayoutWithFlowProps = CommonUILayoutProps & {
     heading: ReactNode;
     description?: ReactNode;
     secondaryButtonLabel: ReactNode;
     supportUrl: Url;
-    checklist: ReactNode;
-    primaryButton: ReactNode;
+    confirmationItems: readonly SecurityConfirmationItem[];
+    confirmationTooltip: ReactNode;
+    primaryButtonLabel: ReactNode;
 };
 
 /**
@@ -155,15 +160,27 @@ const BaseLayoutWithFlow = ({
     description,
     secondaryButtonLabel,
     supportUrl,
-    checklist,
-    primaryButton,
+    confirmationItems,
+    confirmationTooltip,
+    primaryButtonLabel,
+    onPrimaryButtonClick,
+    PrimaryButtonWrapper,
+    dataTestId,
 }: BaseLayoutWithFlowProps) => {
     const device = useSelector(selectSelectedDevice);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const [isFailed, setIsFailed] = useState(false);
+    const [confirmedItemIds, setConfirmedItemIds] = useState<string[]>([]);
+    const isVerticalLayout = useIsContentBelowBreakpoint(breakpoints.tablet);
 
     // Note: no need to persist failure, there are no details worth persisting, so we are persisting only explicit success or nothing.
     const handleRejectDevice = () => setIsFailed(true);
     const handleUndoRejectDevice = () => setIsFailed(false);
+
+    const handleToggleItem = (id: string) =>
+        setConfirmedItemIds(ids =>
+            ids.includes(id) ? ids.filter(confirmedId => confirmedId !== id) : [...ids, id],
+        );
 
     const humanizedModelColor = useMemo(
         () =>
@@ -171,6 +188,20 @@ const BaseLayoutWithFlow = ({
                 ? models[device?.features?.internal_model]?.colors?.[device?.features?.unit_color]
                 : null,
         [device],
+    );
+
+    const isConfirmed =
+        isDebugModeActive || confirmationItems.every(item => confirmedItemIds.includes(item.id));
+
+    const primaryButton = (
+        <SecurityCheckButton
+            onClick={onPrimaryButtonClick}
+            data-testid={dataTestId}
+            intent="brand"
+            isDisabled={!isConfirmed}
+        >
+            {primaryButtonLabel}
+        </SecurityCheckButton>
     );
 
     return isFailed ? (
@@ -219,7 +250,11 @@ const BaseLayoutWithFlow = ({
                         </Paragraph>
                     )}
                 </Column>
-                {checklist}
+                <SecurityConfirmationChecklist
+                    items={confirmationItems}
+                    confirmedItemIds={confirmedItemIds}
+                    onToggle={handleToggleItem}
+                />
             </Column>
             <ContentFlex
                 breakpoint={breakpoints.tablet}
@@ -234,16 +269,20 @@ const BaseLayoutWithFlow = ({
                 >
                     {secondaryButtonLabel}
                 </SecurityCheckButton>
-                {primaryButton}
+                {isConfirmed ? (
+                    <PrimaryButtonWrapper>{primaryButton}</PrimaryButtonWrapper>
+                ) : (
+                    <Tooltip
+                        content={confirmationTooltip}
+                        placement="bottom"
+                        width={isVerticalLayout ? '100%' : undefined}
+                    >
+                        {primaryButton}
+                    </Tooltip>
+                )}
             </ContentFlex>
         </SecurityCheckLayout>
     );
-};
-
-type CommonUILayoutProps = {
-    onPrimaryButtonClick: () => void;
-    PrimaryButtonWrapper: FC<PropsWithChildren>;
-    dataTestId: string;
 };
 
 /**
@@ -254,56 +293,19 @@ const UILayoutWithoutFirmware = ({
     PrimaryButtonWrapper,
     dataTestId,
 }: CommonUILayoutProps) => {
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const [confirmedItemIds, setConfirmedItemIds] = useState<string[]>([]);
     const { isBelowTablet } = useLayoutSize();
-    const isVerticalLayout = useIsContentBelowBreakpoint(breakpoints.tablet);
-
-    const handleToggleItem = (id: string) =>
-        setConfirmedItemIds(ids =>
-            ids.includes(id) ? ids.filter(confirmedId => confirmedId !== id) : [...ids, id],
-        );
-
-    const confirmationItems = getNoFirmwareConfirmationItems(isBelowTablet);
-    const isConfirmed =
-        isDebugModeActive || confirmationItems.every(item => confirmedItemIds.includes(item.id));
-
-    const setupButton = (
-        <SecurityCheckButton
-            onClick={onPrimaryButtonClick}
-            data-testid={dataTestId}
-            intent="brand"
-            isDisabled={!isConfirmed}
-        >
-            <Translation id="TR_SETUP_MY_TREZOR" />
-        </SecurityCheckButton>
-    );
 
     return (
         <BaseLayoutWithFlow
             heading={<Translation id="TR_ONBOARDING_SECURITY_CHECK" />}
             secondaryButtonLabel={<Translation id="TR_I_HAVE_DOUBTS" />}
             supportUrl={TREZOR_SUPPORT_IS_MY_DEVICE_SAFE}
-            checklist={
-                <SecurityConfirmationChecklist
-                    items={confirmationItems}
-                    confirmedItemIds={confirmedItemIds}
-                    onToggle={handleToggleItem}
-                />
-            }
-            primaryButton={
-                isConfirmed ? (
-                    <PrimaryButtonWrapper>{setupButton}</PrimaryButtonWrapper>
-                ) : (
-                    <Tooltip
-                        content={<Translation id="TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP" />}
-                        placement="bottom"
-                        width={isVerticalLayout ? '100%' : undefined}
-                    >
-                        {setupButton}
-                    </Tooltip>
-                )
-            }
+            confirmationItems={getNoFirmwareConfirmationItems(isBelowTablet)}
+            confirmationTooltip={<Translation id="TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP" />}
+            primaryButtonLabel={<Translation id="TR_SETUP_MY_TREZOR" />}
+            onPrimaryButtonClick={onPrimaryButtonClick}
+            PrimaryButtonWrapper={PrimaryButtonWrapper}
+            dataTestId={dataTestId}
         />
     );
 };
@@ -318,20 +320,17 @@ const UILayoutWithFirmware = ({
 }: CommonUILayoutProps) => (
     <BaseLayoutWithFlow
         heading={<Translation id="TR_USED_TREZOR_BEFORE" />}
-        secondaryButtonLabel={<Translation id="TR_I_HAVE_NOT_USED_IT" />}
+        description={<Translation id="TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_INSTALLED" />}
+        secondaryButtonLabel={<Translation id="TR_I_HAVE_DOUBTS" />}
         supportUrl={TREZOR_SUPPORT_FW_ALREADY_INSTALLED}
-        checklist={<SecurityChecklist items={firmwareInstalledChecklist} />}
-        primaryButton={
-            <PrimaryButtonWrapper>
-                <SecurityCheckButton
-                    data-testid={dataTestId}
-                    onClick={onPrimaryButtonClick}
-                    intent="brand"
-                >
-                    <Translation id="TR_YES_CONTINUE" />
-                </SecurityCheckButton>
-            </PrimaryButtonWrapper>
+        confirmationItems={firmwareInstalledConfirmationItems}
+        confirmationTooltip={
+            <Translation id="TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_CONFIRM_TOOLTIP" />
         }
+        primaryButtonLabel={<Translation id="TR_CONTINUE" />}
+        onPrimaryButtonClick={onPrimaryButtonClick}
+        PrimaryButtonWrapper={PrimaryButtonWrapper}
+        dataTestId={dataTestId}
     />
 );
 
@@ -428,6 +427,7 @@ const InitializedManualDeviceCheck = ({ onSuccess }: CommonManualDeviceCheckProp
 
     return (
         <UILayoutWithFirmware
+            key={device?.path}
             onPrimaryButtonClick={handleContinueButtonClick}
             PrimaryButtonWrapper={({ children }: PropsWithChildren) => children}
             dataTestId="@onboarding/complete-onboarding"

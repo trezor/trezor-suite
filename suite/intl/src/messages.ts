@@ -8797,22 +8797,28 @@ export const messages = defineMessages({
     TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP: {
         id: 'TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP',
         defaultMessage:
-            "Click to confirm you've carefully read and understood the instructions in each box below.",
+            'Complete these checks before setup to confirm your Trezor hasn’t been tampered with.',
         description: 'Tooltip on the disabled setup button until all security checks are confirmed',
     },
     TR_USED_TREZOR_BEFORE: {
         id: 'TR_USED_TREZOR_BEFORE',
         defaultMessage: 'Have you used this Trezor before?',
     },
-    TR_ONBOARDING_DEVICE_CHECK_4: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK_4',
+    TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_INSTALLED: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_INSTALLED',
         description: 'Shown only if device has firmware already installed',
-        defaultMessage:
-            'Firmware is already installed on this device. Continue only if you have used this Trezor before.',
+        defaultMessage: 'Firmware is already installed on this device.',
     },
-    TR_I_HAVE_NOT_USED_IT: {
-        id: 'TR_I_HAVE_NOT_USED_IT',
-        defaultMessage: "No, I haven't",
+    TR_ONBOARDING_SECURITY_CHECK_USED_BEFORE: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_USED_BEFORE',
+        description: 'Checkbox shown only if device has firmware already installed',
+        defaultMessage: "Yes, I've used this Trezor before.",
+    },
+    TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_CONFIRM_TOOLTIP: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_CONFIRM_TOOLTIP',
+        description:
+            'Tooltip on the disabled continue button until the user confirms they have used the device with firmware already installed',
+        defaultMessage: 'First confirm you’ve used this Trezor before.',
     },
     TR_I_HAVE_DOUBTS: {
         id: 'TR_I_HAVE_DOUBTS',
