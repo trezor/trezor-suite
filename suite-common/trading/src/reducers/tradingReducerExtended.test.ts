@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { type BuyTrade } from 'invity-api';
 
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -327,5 +328,55 @@ describe('Testing trading reducer', () => {
                 );
             });
         });
+    });
+
+    it.each([
+        { scenario: 'without a key', resavedApiKey: undefined },
+        { scenario: 'with another key', resavedApiKey: 'cd'.repeat(32) },
+    ])(
+        'keeps the API key of a saved trade when the trade is saved again $scenario',
+        ({ resavedApiKey }) => {
+            const trade = {
+                tradeType: 'buy' as const,
+                date: '2026-10-28',
+                key: 'tradeKey',
+                data: { paymentId: 'tradeKey', status: 'SUBMITTED' } as BuyTrade,
+                selectedAccountKey: undefined,
+                receiveAccountKey: undefined,
+            };
+            const savedState = tradingReducer(
+                initialState,
+                tradingActions.saveTrade({ ...trade, apiKey: 'ef'.repeat(32) }),
+            );
+
+            const state = tradingReducer(
+                savedState,
+                tradingActions.saveTrade({
+                    ...trade,
+                    data: { ...trade.data, receiveTxHash: 'receiveTxHash' },
+                    apiKey: resavedApiKey,
+                }),
+            );
+
+            expect(state.trades).toEqual([
+                {
+                    ...trade,
+                    data: { ...trade.data, receiveTxHash: 'receiveTxHash' },
+                    apiKey: 'ef'.repeat(32),
+                },
+            ]);
+        },
+    );
+
+    it('loads the stored install salt', () => {
+        const state = tradingReducer(
+            { ...initialState, tradeApiInstallSalt: 'cc'.repeat(32) },
+            {
+                type: mockActionType('storageLoad'),
+                payload: { tradeApiInstallSalt: 'aa'.repeat(32) },
+            },
+        );
+
+        expect(state.tradeApiInstallSalt).toBe('aa'.repeat(32));
     });
 });

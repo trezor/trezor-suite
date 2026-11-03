@@ -3,6 +3,7 @@ import { createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
+import { resolveTradeApiKey } from './setTradeApiKeyThunk';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
@@ -30,6 +31,7 @@ export type WatchTradeThunk = {
 type WatchTradeDataProps = {
     trade: TradingTransaction;
     refreshCount: number;
+    apiKey: string;
 };
 
 type WatchTradeDataResultProps<T extends TradingType> = {
@@ -47,8 +49,14 @@ const getDefinedWatchUpdates = <T extends TradingType>(
 const watchTradeData = async <T extends TradingType>({
     trade,
     refreshCount,
+    apiKey,
 }: WatchTradeDataProps): Promise<WatchTradeDataResultProps<T> | undefined> => {
-    const response = await tradeApi.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
+    const response = await tradeApi.watchTrade<T>(
+        trade.data,
+        trade.tradeType,
+        refreshCount,
+        apiKey,
+    );
 
     if (!response) {
         return;
@@ -85,7 +93,7 @@ export type WatchTradeThunkState = TradingRootState;
 export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: WatchTradeThunkState }>(
     `${TRADING_THUNK_PREFIX}/watchTrade`,
     async ({ account, trade, refreshCount }, { dispatch, getState }) => {
-        tradeApi.createApiKey(account.descriptor);
+        const apiKey = trade.apiKey ?? resolveTradeApiKey(account, dispatch, getState);
 
         const { tradeType } = trade;
 
@@ -94,6 +102,7 @@ export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: Watch
                 const data = await watchTradeData<typeof tradeType>({
                     trade,
                     refreshCount,
+                    apiKey,
                 });
 
                 if (!data) {
@@ -124,6 +133,7 @@ export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: Watch
                 const data = await watchTradeData<typeof tradeType>({
                     trade,
                     refreshCount,
+                    apiKey,
                 });
 
                 if (!data) {
@@ -159,6 +169,7 @@ export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: Watch
                 const data = await watchTradeData<typeof tradeType>({
                     trade,
                     refreshCount,
+                    apiKey,
                 });
 
                 if (!data) {

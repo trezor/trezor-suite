@@ -317,6 +317,44 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.payload).toEqual([mockPaymentRequest]);
         });
 
+        it('signs the exchange trade with the API key it was saved with', async () => {
+            tradeApi.getSignedTrade = jest.fn().mockResolvedValue(mockSignedExchangeTrade);
+            const tradeApiKey = 'trade-api-key';
+
+            const store = createMockStore({
+                exchange: {
+                    selectedQuote: mockExchangeQuote,
+                    exchangeInfo: mockExchangeInfo,
+                    receiveAccountKey: mockAccount.key,
+                    receiveAddress: mockExchangeQuote.receiveAddress,
+                },
+                trades: [
+                    {
+                        tradeType: 'exchange',
+                        date: '2026-11-04',
+                        key: mockExchangeQuote.orderId,
+                        data: mockExchangeQuote,
+                        sendAccountKey: mockAccount.key,
+                        apiKey: tradeApiKey,
+                    },
+                ],
+            });
+
+            await store.dispatch(
+                createPaymentRequestsThunk({
+                    type: 'exchange',
+                    account: mockAccount,
+                    composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockExchangeQuote.sendStringAmount,
+                }),
+            );
+
+            expect(tradeApi.getSignedTrade).toHaveBeenCalledWith(
+                expect.objectContaining({ type: 'exchange', id: mockExchangeQuote.orderId }),
+                tradeApiKey,
+            );
+        });
+
         it('should reject when exchange quote is missing orderId', async () => {
             const store = createMockStore({
                 exchange: {
@@ -483,12 +521,23 @@ describe('createPaymentRequestsThunk', () => {
         it('signs the whole-balance amount in the memo text', async () => {
             tradeApi.getSignedTrade = jest.fn().mockResolvedValue(mockSignedSellTrade);
 
+            const tradeApiKey = 'trade-api-key';
             const store = createMockStore({
                 sell: {
-                    selectedQuote: mockSellQuote,
+                    selectedQuote: { ...mockSellQuote, orderId: 'sell-order-123' },
                     sellInfo: mockSellProviders,
                 },
                 info: mockInfoCoins,
+                trades: [
+                    {
+                        tradeType: 'sell',
+                        date: '2026-10-30',
+                        key: 'sell-order-123',
+                        data: mockSellQuote,
+                        sendAccountKey: mockAccount.key,
+                        apiKey: tradeApiKey,
+                    },
+                ],
             });
 
             const result = await store.dispatch(
@@ -506,6 +555,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'sell',
                     memoText: 'Selling 0.00099 BTC for 50 USD',
                 }),
+                tradeApiKey,
             );
             expect(result.payload).toEqual([
                 expect.objectContaining({

@@ -14,6 +14,7 @@ import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { tradeApi } from '../../tradeApi';
 import { type TradingTransactionExchange } from '../../types';
 import { tradingThunks } from '../common';
 
@@ -310,6 +311,7 @@ describe('sendTransactionThunk', () => {
         const dateString = new Date().toISOString();
         jest.spyOn(Date.prototype, 'toISOString').mockImplementation(() => dateString);
         const sendDexTransactionThunkSpy = sendDexTransactionThunk as unknown as jest.Mock;
+        jest.spyOn(tradeApi, 'getCurrentApiKey').mockReturnValue('trade-api-key');
 
         const result = await store.dispatch(
             exchangeThunks.sendTransactionThunk({
@@ -354,6 +356,7 @@ describe('sendTransactionThunk', () => {
                 },
                 key: trade.data.orderId,
                 sendTxid: 'txid',
+                apiKey: 'trade-api-key',
             },
         ]);
         expect(store.getState().wallet.trading.exchange.transactionId).toBe(trade.data.orderId);

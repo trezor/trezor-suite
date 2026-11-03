@@ -1,9 +1,10 @@
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
+import { type SetTradeApiKeyThunkState, setTradeApiKeyThunk } from './setTradeApiKeyThunk';
 import {
     TRADE_API_RELOAD_DATA_AFTER_MS,
-    TRADING_FALLBACK_API_KEY,
+    TRADING_ANONYMOUS_ID,
     TRADING_THUNK_PREFIX,
 } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
@@ -12,7 +13,7 @@ import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     type TradingRootStateWithAccounts,
-    selectTradingAccountAccordingActiveSection,
+    selectTradeApiKeyAccount,
     selectTradingBuyInfo,
     selectTradingExchangeInfo,
     selectTradingInfo,
@@ -27,11 +28,11 @@ import { loadSellInfoThunk } from '../sell/loadSellInfoThunk';
 
 export interface LoadInitialDataThunkProps {
     activeSection: TradingType;
-    forcedApiKey?: string;
+    forcedAnonymousId?: string;
     forceReload?: boolean;
 }
 
-export type LoadInitialDataThunkState = TradingRootStateWithAccounts;
+export type LoadInitialDataThunkState = TradingRootStateWithAccounts & SetTradeApiKeyThunkState;
 
 export type LoadInitialDataThunkDeps = WithServices<{
     getSelectedAccount: () => SelectedAccountStatus;
@@ -46,12 +47,14 @@ export const loadInitialDataThunk = createThunk<
     { state: LoadInitialDataThunkState; extra: LoadInitialDataThunkDeps }
 >(
     `${TRADING_THUNK_PREFIX}/loadInitialData`,
-    async ({ activeSection, forcedApiKey, forceReload = false }, { dispatch, getState, extra }) => {
-        const selectedAccount = extra.services.getSelectedAccount();
-        const account = selectTradingAccountAccordingActiveSection(
+    async (
+        { activeSection, forcedAnonymousId, forceReload = false },
+        { dispatch, getState, extra },
+    ) => {
+        const account = selectTradeApiKeyAccount(
             getState(),
             activeSection,
-            selectedAccount,
+            extra.services.getSelectedAccount(),
         );
         const buyInfo = selectTradingBuyInfo(getState());
         const exchangeInfo = selectTradingExchangeInfo(getState());
@@ -61,8 +64,11 @@ export const loadInitialDataThunk = createThunk<
 
         dispatch(tradingActions.setTradingActiveSection(activeSection));
 
-        const apiKey = account?.descriptor || forcedApiKey || TRADING_FALLBACK_API_KEY;
-        tradeApi.createApiKey(apiKey);
+        if (account || activeSection === 'buy') {
+            dispatch(setTradeApiKeyThunk({ account }));
+        } else {
+            tradeApi.createAnonymousApiKey(forcedAnonymousId || TRADING_ANONYMOUS_ID);
+        }
 
         const tradeServerEnvironment = extra.services.getTradingEnvironment();
         if (tradeServerEnvironment) {

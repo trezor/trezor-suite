@@ -433,8 +433,14 @@ export const selectTradingExchangeSelectedQuoteIsDex = (state: TradingRootState)
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;
 
+export const selectTradeApiInstallSalt = (state: TradingRootState) =>
+    state.wallet.trading.tradeApiInstallSalt;
+
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.trading.trades);
+
+export const selectTradingTradeApiKey = (state: TradingRootState, tradeKey: string | undefined) =>
+    state.wallet.trading.trades.find(trade => trade.key === tradeKey)?.apiKey;
 
 export const selectTradedAccountKeys = createMemoizedSelector([selectTradingTrades], trades =>
     unique(
@@ -945,6 +951,15 @@ export const selectTradingBuyReceiveAccount = createMemoizedSelectorWithAccounts
         return accounts.find(account => account.key === receiveAccountKey);
     },
 );
+
+export const selectTradeApiKeyAccount = (
+    state: TradingRootStateWithAccounts,
+    activeSection: TradingType,
+    selectedAccount: SelectedAccountStatus,
+) =>
+    activeSection === 'buy'
+        ? selectTradingBuyReceiveAccount(state)
+        : selectTradingAccountAccordingActiveSection(state, activeSection, selectedAccount);
 
 export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
     state.wallet.trading.exchange.tradingAccountKey;

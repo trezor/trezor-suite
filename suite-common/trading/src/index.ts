@@ -43,6 +43,11 @@ export type * from './types';
 export * from './utils';
 export { createAssetOption } from './utils/createAssetOption';
 export * from './utils/apiKeyUtils';
+export {
+    createInstallTradeApiKey,
+    createSaltedTradeApiKey,
+    generateTradeApiInstallSalt,
+} from './utils/tradeApiSaltUtils';
 export * from './utils/tradingAccountUtils';
 export * from './utils/buy/buyUtils';
 export * from './utils/receiveAccountUtils';
