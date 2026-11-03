@@ -22,7 +22,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 import { type StakingMiddlewareDeps, prepareStakingMiddleware } from './stakingMiddleware';
 import { getCachedStakingProductInfo } from './stakingProductInfoQuery';
 import { type StakingRootState, stakingReducer } from './stakingReducer';
-import { mockStakingQueryClient } from '../../mocks';
+import { mockStakingDeviceAccess, mockStakingQueryClient } from '../../mocks';
 import { createStakingCompositionRoot } from '../createStakingCompositionRoot';
 import { selectStakingPositionsByAccount } from './stakingSelectors';
 
@@ -53,6 +53,7 @@ const initStore = (adapterOverrides: Partial<StakingProductAdapter> = {}) => {
             const staking = createStakingCompositionRoot({
                 platform: 'desktop',
                 adapters: [adapter],
+                deviceAccess: mockStakingDeviceAccess(),
                 dispatch: store.dispatch,
             });
             getExtra = () => ({ services: { staking, queryClient } });

@@ -7,8 +7,10 @@ import {
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createStakingCompositionRoot } from './createStakingCompositionRoot';
+import { mockStakingDeviceAccess } from '../mocks';
 import { stakingActions } from './state/stakingReducer';
 
+const deviceAccess = mockStakingDeviceAccess();
 const ethAdapter = mockStakingProductAdapter();
 const solAdapter = mockStakingProductAdapter({
     descriptor: mockStakingProductDescriptor({
@@ -33,10 +35,22 @@ describe('createStakingCompositionRoot', () => {
         const staking = createStakingCompositionRoot({
             platform: 'desktop',
             adapters: [ethAdapter, solAdapter],
+            deviceAccess,
             dispatch: createDispatch().dispatch,
         });
 
         expect(staking.stakingProductRepository.list()).toEqual([ethAdapter, solAdapter]);
+    });
+
+    it('exposes the device access it was given', () => {
+        const staking = createStakingCompositionRoot({
+            platform: 'desktop',
+            adapters: [ethAdapter],
+            deviceAccess,
+            dispatch: createDispatch().dispatch,
+        });
+
+        expect(staking.deviceAccess).toBe(deviceAccess);
     });
 
     it('loads the platform and the descriptors into the store', () => {
@@ -44,6 +58,7 @@ describe('createStakingCompositionRoot', () => {
         const staking = createStakingCompositionRoot({
             platform: 'mobile',
             adapters: [ethAdapter, solAdapter],
+            deviceAccess,
             dispatch,
         });
 
@@ -63,6 +78,7 @@ describe('createStakingCompositionRoot', () => {
         createStakingCompositionRoot({
             platform: 'desktop',
             adapters: [],
+            deviceAccess,
             dispatch,
         }).loadStakingProducts();
 

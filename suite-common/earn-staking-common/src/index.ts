@@ -1,9 +1,17 @@
 export { networkSymbolSchema, timestampSchema } from './primitiveSchemas';
 export type { StakingAccount } from './stakingAccount';
-export { StakingAdapterError, isStakingAdapterError } from './stakingAdapterError';
+export {
+    STAKING_SIGNING_ERROR_CODES,
+    StakingAdapterError,
+    getStakingSigningErrorCode,
+    isStakingAdapterError,
+    type StakingConnectFailure,
+    type StakingSigningErrorCode,
+} from './stakingAdapterError';
 export { stakingAmountSchema, type StakingAmount } from './stakingAmount';
 export {
     assertComposedStakingStep,
+    assertSignedStakingStep,
     assertStakingPlan,
     assertStakingPosition,
 } from './stakingAssertions';

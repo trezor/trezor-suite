@@ -1,3 +1,4 @@
+export { mockStakingDeviceAccess, mockStakingDeviceAccessRun } from './mockStakingDeviceAccess';
 export { mockStakingProductRepository } from './mockStakingProductRepository';
 export { mockStakingQueryClient } from './mockStakingQueryClient';
 export { mockStakingServices } from './mockStakingServices';

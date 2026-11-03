@@ -1,9 +1,15 @@
 import {
     assertComposedStakingStep,
+    assertSignedStakingStep,
     assertStakingPlan,
     assertStakingPosition,
 } from './stakingAssertions';
-import { mockComposedStakingStep, mockStakingPlan, mockStakingPosition } from '../mocks';
+import {
+    mockComposedStakingStep,
+    mockSignedStakingStep,
+    mockStakingPlan,
+    mockStakingPosition,
+} from '../mocks';
 
 describe('staking assertions', () => {
     it('accepts a valid position', () => {
@@ -42,5 +48,13 @@ describe('staking assertions', () => {
                 feeLevels: { normal: { type: 'final', fee: '1' } as never },
             }),
         ).toThrow(/feeLevels\.normal/);
+    });
+
+    it('accepts a valid signed step', () => {
+        expect(() => assertSignedStakingStep(mockSignedStakingStep())).not.toThrow();
+    });
+
+    it('names the empty serialized transaction of a signed step', () => {
+        expect(() => assertSignedStakingStep({ serializedTx: '' })).toThrow(/serializedTx/);
     });
 });

@@ -35,6 +35,7 @@ import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 
 import { type NativeServices } from './NativeServices';
+import { createNativeStakingDeviceAccess } from './createNativeStakingDeviceAccess';
 import { type NativeReduxStore } from './createReduxStore';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
@@ -94,6 +95,9 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     const staking = createStakingCompositionRoot({
         platform: 'mobile',
         adapters: createStakingProductsCompositionRoot(),
+        deviceAccess: createNativeStakingDeviceAccess({
+            getTrezorConnect: deps.getTrezorConnect,
+        }),
         dispatch: deps.dispatch,
     });
 

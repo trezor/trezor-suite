@@ -12,6 +12,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 import {
     type GetStakingStepContextParams,
     callStakingAdapter,
+    getCurrentStakingStepStatus,
     getStakingStepContext,
     isStakingSessionCurrent,
     warnStakingAdapterFailure,
@@ -150,5 +151,28 @@ describe('callStakingAdapter', () => {
         if (!result.success) warnStakingAdapterFailure('stake compose', result);
 
         expect(console.warn).toHaveBeenCalledWith('Staking stake compose failed: TypeError');
+    });
+});
+
+describe('getCurrentStakingStepStatus', () => {
+    it('reads the status of a step while the session is the one the thunk started with', () => {
+        const state = createState();
+        const composed = stakingReducer(
+            state.earn.staking,
+            stakingActions.stepComposed({ ...stake, composed: mockComposedStakingStep() }),
+        );
+        const replaced = stakingReducer(
+            composed,
+            stakingActions.sessionStarted({ session: { ...session, id: 'session-2' } }),
+        );
+
+        expect(getCurrentStakingStepStatus(state, session, 'stake')).toBe('pending');
+        expect(getCurrentStakingStepStatus({ earn: { staking: composed } }, session, 'stake')).toBe(
+            'composed',
+        );
+        expect(getCurrentStakingStepStatus({ earn: { staking: replaced } }, session, 'stake')).toBe(
+            null,
+        );
+        expect(getCurrentStakingStepStatus(state, session, 'vote')).toBeNull();
     });
 });

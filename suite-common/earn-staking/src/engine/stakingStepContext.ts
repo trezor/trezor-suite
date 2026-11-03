@@ -11,7 +11,11 @@ import type { StakingProductRepository } from '../repository/createStakingProduc
 import type { StakingRootState } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
 import { getStakingCurrentStep, selectStakingSession } from '../state/stakingSessionSelectors';
-import type { StakingSession, StakingSessionStep } from '../state/stakingSessionsReducer';
+import type {
+    StakingSession,
+    StakingSessionStep,
+    StakingSessionStepStatus,
+} from '../state/stakingSessionsReducer';
 
 export type StakingStepContext = {
     session: StakingSession;
@@ -92,4 +96,16 @@ export const warnStakingAdapterFailure = (
         failure.code ?? (failure.error instanceof Error ? failure.error.name : 'unknown error');
 
     console.warn(`Staking ${subject} failed: ${reason}`);
+};
+
+export const getCurrentStakingStepStatus = (
+    state: StakingRootState,
+    session: StakingSession,
+    stepId: string,
+): StakingSessionStepStatus | null => {
+    const current = selectStakingSession(state, session.key);
+
+    if (current?.id !== session.id) return null;
+
+    return current.steps.find(step => step.id === stepId)?.status ?? null;
 };
