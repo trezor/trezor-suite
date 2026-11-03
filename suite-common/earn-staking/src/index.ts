@@ -39,6 +39,12 @@ export {
     type SignStakingStepThunkState,
 } from './engine/signStakingStepThunk';
 export {
+    STAKING_CONFIRMATION_TRACKING_TIMEOUT_MS,
+    trackStakingStepConfirmationThunk,
+    type TrackStakingStepConfirmationThunkDeps,
+    type TrackStakingStepConfirmationThunkState,
+} from './engine/trackStakingStepConfirmationThunk';
+export {
     STAKING_ENGINE_REJECTIONS,
     type StakingEngineRejection,
 } from './engine/stakingEngineRejection';

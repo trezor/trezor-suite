@@ -1,13 +1,16 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    type FetchAndUpdateAccountThunkDeps,
-    type FetchAndUpdateAccountThunkState,
     fetchAndUpdateAccountThunk,
     notifyEarnTransactionBroadcastThunk,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
+import {
+    type TrackStakingStepConfirmationThunkDeps,
+    type TrackStakingStepConfirmationThunkState,
+    trackStakingStepConfirmationThunk,
+} from './trackStakingStepConfirmationThunk';
 import type { StakingDep } from '../stakingServices';
 import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
 import { getEarnTransactionFlow } from './getEarnTransactionFlow';
@@ -24,10 +27,11 @@ type BroadcastStakingStepParams = {
     sessionKey: StakingSessionKey;
 };
 
-export type BroadcastStakingStepThunkState = StakingRootState & FetchAndUpdateAccountThunkState;
+export type BroadcastStakingStepThunkState = StakingRootState &
+    TrackStakingStepConfirmationThunkState;
 
 export type BroadcastStakingStepThunkDeps = WithServices<StakingDep> &
-    FetchAndUpdateAccountThunkDeps;
+    TrackStakingStepConfirmationThunkDeps;
 
 export const broadcastStakingStepThunk = createThunk<
     { txid: string },
@@ -114,7 +118,11 @@ export const broadcastStakingStepThunk = createThunk<
             }),
         );
 
-        dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+        if (step.awaitConfirmation) {
+            dispatch(trackStakingStepConfirmationThunk({ sessionKey, stepId: step.id }));
+        } else {
+            dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+        }
 
         return { txid };
     },
