@@ -9575,17 +9575,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/flash-list@npm:2.3.0":
-  version: 2.3.0
-  resolution: "@shopify/flash-list@npm:2.3.0"
-  peerDependencies:
-    "@babel/runtime": "*"
-    react: "*"
-    react-native: "*"
-  checksum: 10/056e75590c599a5182e0e71042feeae63753e3256b6354503298bca366f30244c92f8f10182239b29b2f9cf111d589980b7c245d3d5eb44f375c3a9937d7b0b4
-  languageName: node
-  linkType: hard
-
 "@shopify/flash-list@npm:2.3.2":
   version: 2.3.2
   resolution: "@shopify/flash-list@npm:2.3.2"
@@ -13056,7 +13045,7 @@ __metadata:
   resolution: "@suite-native/assets@workspace:suite-native/assets"
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
-    "@shopify/flash-list": "npm:2.3.0"
+    "@shopify/flash-list": "npm:2.3.2"
     "@suite-common/assets": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
@@ -13086,7 +13075,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
     react: "npm:19.3.0"
-    react-native: "npm:0.88.0"
+    react-native: "npm:0.88.1"
     react-native-reanimated: "npm:4.7.1"
     react-redux: "npm:9.3.0"
   languageName: unknown
@@ -14911,7 +14900,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    expo-linear-gradient: "npm:~57.0.1"
+    expo-linear-gradient: "npm:~58.0.3"
     jotai: "npm:2.17.1"
     react: "npm:19.3.0"
     react-native: "npm:0.88.1"
@@ -29898,17 +29887,6 @@ __metadata:
     expo: "*"
     react: "*"
   checksum: 10/5bddf7a64e8fb7b7916ea48691b42afb0bdba611c22b4d6d430e33b5a28e9e0d74957f7f8627c8a96148665910f328b64742fc101b21277d489c5a96cec1807f
-  languageName: node
-  linkType: hard
-
-"expo-linear-gradient@npm:~57.0.1":
-  version: 57.0.2
-  resolution: "expo-linear-gradient@npm:57.0.2"
-  peerDependencies:
-    expo: "*"
-    react: "*"
-    react-native: "*"
-  checksum: 10/0f03b7f1cb3ee5ee221c94c06654c34b34fb3be0825def3e50da301e1310f95f910d66c31b54912b3fb3277a50f5b2706fb36c568bbf00b250f0e1a18b8cb91a
   languageName: node
   linkType: hard
 
