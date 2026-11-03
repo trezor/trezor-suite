@@ -1,5 +1,6 @@
 export * from './reducers';
 
+export { migrateTradingAddTradeApiInstallSalt } from './migrations/addTradeApiInstallSalt';
 export { prepareTradingMiddleware } from './middlewares/tradingMiddleware';
 export { prepareTradingLastErrorSentryMiddleware } from './middlewares/tradingLastErrorSentryMiddleware';
 
