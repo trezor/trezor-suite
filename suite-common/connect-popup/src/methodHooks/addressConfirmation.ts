@@ -1,4 +1,5 @@
 import { type Address, type CallMethodKeys, type PublicKey } from '@trezor/connect';
+import { toFirmwareDescriptor } from '@trezor/utils';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
@@ -23,6 +24,22 @@ const methodsPublicKey = [
     'tezosGetPublicKey',
 ];
 const methods = [...methodsAddress, ...methodsPublicKey];
+
+// `displayablePublicKey` is the per-coin canonical user-facing representation populated by
+// `@trezor/connect` (xpubSegwit/xpub for Bitcoin, base58 for Solana, hex for Tezos, etc.). The
+// user compares it against the device screen, which renders a taproot descriptor with `h` and a
+// trailing `#<checksum>`, so reproduce firmware's whole string here. Representations without a
+// key origin and without a checksum — every non-taproot one — pass through unchanged.
+const toDisplayedPublicKey = ({
+    displayablePublicKey,
+    descriptorChecksum,
+}: PublicKey & { descriptorChecksum?: string }) => {
+    const firmwareDescriptor = toFirmwareDescriptor(displayablePublicKey);
+
+    return descriptorChecksum === undefined
+        ? firmwareDescriptor
+        : `${firmwareDescriptor}#${descriptorChecksum}`;
+};
 
 const preCallHook = <M extends CallMethodKeys>({ method, payload }: PreCallHookParams<M>) => {
     if (methods.includes(method)) {
@@ -54,16 +71,13 @@ export async function postCallHook<M extends CallMethodKeys>({
     if (methods.includes(method) && response.success) {
         const bundledResponse = (
             Array.isArray(response.payload) ? response.payload : [response.payload]
-        ) as (Address | PublicKey)[];
+        ) as (Address | (PublicKey & { descriptorChecksum?: string }))[];
         const addresses = bundledResponse.map((item, index) => {
             const validatePayload =
                 'bundle' in originalPayload && Array.isArray(originalPayload.bundle)
                     ? originalPayload.bundle[index]
                     : originalPayload;
-            // `displayablePublicKey` is the per-coin canonical user-facing
-            // representation populated by `@trezor/connect` (xpubSegwit/xpub for
-            // Bitcoin, base58 for Solana, hex for Tezos, etc.).
-            const displayAddress = 'address' in item ? item.address : item.displayablePublicKey;
+            const displayAddress = 'address' in item ? item.address : toDisplayedPublicKey(item);
 
             return {
                 address: displayAddress,

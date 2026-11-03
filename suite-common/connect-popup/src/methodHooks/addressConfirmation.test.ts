@@ -24,15 +24,13 @@ const run = async (method: string, payload: unknown) => {
 };
 
 describe('addressConfirmation postCallHook', () => {
-    // Documents the bug: firmware renders the taproot descriptor with `h` and a trailing
-    // `#<checksum>`, the popup shows the canonical apostrophe form and drops the checksum.
-    it('shows a taproot descriptor in the canonical form, unlike firmware', async () => {
+    it('shows a taproot descriptor exactly as firmware renders it, checksum included', async () => {
         expect(
             await run('getPublicKey', {
                 displayablePublicKey: "tr([95d8f670/86'/0'/0']xpub6D1sa/<0;1>/*)",
                 descriptorChecksum: 'htg5lhe3',
             }),
-        ).toEqual(["tr([95d8f670/86'/0'/0']xpub6D1sa/<0;1>/*)"]);
+        ).toEqual(['tr([95d8f670/86h/0h/0h]xpub6D1sa/<0;1>/*)#htg5lhe3']);
     });
 
     it('leaves a representation without a checksum alone', async () => {
@@ -56,6 +54,6 @@ describe('addressConfirmation postCallHook', () => {
                 },
                 { displayablePublicKey: 'zpub6rFR7y4Q2AijBE' },
             ]),
-        ).toEqual(["tr([95d8f670/86'/0'/0']xpub6D1sa/<0;1>/*)", 'zpub6rFR7y4Q2AijBE']);
+        ).toEqual(['tr([95d8f670/86h/0h/0h]xpub6D1sa/<0;1>/*)#htg5lhe3', 'zpub6rFR7y4Q2AijBE']);
     });
 });
