@@ -2,6 +2,7 @@ export {
     createStakingCompositionRoot,
     type StakingCompositionRootDeps,
 } from './createStakingCompositionRoot';
+export { toPrecomposedLevels } from './fees/toPrecomposedLevels';
 export {
     createStakingProductRepository,
     injectStakingProductRepository,
@@ -45,6 +46,35 @@ export {
     selectStakingProductDescriptors,
     selectStakingProductDescriptorsBySymbol,
 } from './state/stakingSelectors';
+export {
+    getStakingSessionKey,
+    stakingSessionKeySchema,
+    type StakingSessionKey,
+    type StakingSessionKeyParams,
+} from './state/stakingSessionKey';
+export {
+    getStakingCurrentStep,
+    selectIsStakingSessionActive,
+    selectStakingCurrentStep,
+    selectStakingReview,
+    selectStakingSession,
+    selectStakingSessionsByAccount,
+    type StakingReview,
+} from './state/stakingSessionSelectors';
+export {
+    STAKING_ACTIVE_STEP_STATUSES,
+    STAKING_IN_FLIGHT_STEP_STATUSES,
+    STAKING_STEP_ERROR_KINDS,
+    hasStakingStepWithStatus,
+    isStakingReviewStep,
+    type StakingReviewStep,
+    type StakingSession,
+    type StakingSessionStep,
+    type StakingSessionStepStatus,
+    type StakingSessionsState,
+    type StakingStepError,
+    type StakingStepErrorKind,
+} from './state/stakingSessionsReducer';
 export {
     refreshStakingProductInfoThunk,
     syncAllStakingPositionsThunk,

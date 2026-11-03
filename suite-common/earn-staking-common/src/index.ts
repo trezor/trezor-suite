@@ -1,7 +1,29 @@
 export { networkSymbolSchema, timestampSchema } from './primitiveSchemas';
 export type { StakingAccount } from './stakingAccount';
+export { StakingAdapterError, isStakingAdapterError } from './stakingAdapterError';
 export { stakingAmountSchema, type StakingAmount } from './stakingAmount';
-export { assertStakingPlan, assertStakingPosition } from './stakingAssertions';
+export {
+    assertComposedStakingStep,
+    assertStakingPlan,
+    assertStakingPosition,
+} from './stakingAssertions';
+export {
+    STAKING_FEE_LEVEL_LABELS,
+    stakingCustomFeeSchema,
+    stakingErrorFeeLevelSchema,
+    stakingFeeLevelExtraValueSchema,
+    stakingFeeLevelLabelSchema,
+    stakingFeeLevelSchema,
+    stakingFeeLevelsSchema,
+    stakingFinalFeeLevelSchema,
+    type StakingCustomFee,
+    type StakingErrorFeeLevel,
+    type StakingFeeLevel,
+    type StakingFeeLevelExtraValue,
+    type StakingFeeLevelLabel,
+    type StakingFeeLevels,
+    type StakingFinalFeeLevel,
+} from './stakingFeeLevels';
 export {
     STAKING_OPERATIONS,
     STAKING_STEP_KINDS,
@@ -16,13 +38,17 @@ export {
 } from './stakingOperation';
 export {
     STAKING_STEP_REVIEWS,
+    composedStakingStepSchema,
+    signedStakingStepSchema,
     stakingPlanSchema,
+    stakingStepOutputSchema,
     stakingStepReviewSchema,
     stakingStepSchema,
     type ComposedStakingStep,
     type SignedStakingStep,
     type StakingPlan,
     type StakingStep,
+    type StakingStepOutput,
     type StakingStepReview,
 } from './stakingPlan';
 export {
@@ -60,6 +86,7 @@ export type {
     SignStepParams,
     StakingAmountBounds,
     StakingProductAdapter,
+    StakingStepParams,
 } from './stakingProductAdapter';
 export {
     STAKING_OPTION_KINDS,

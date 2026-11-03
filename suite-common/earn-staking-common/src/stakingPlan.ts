@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { stakingAmountSchema } from './stakingAmount';
+import { stakingFeeLevelsSchema } from './stakingFeeLevels';
 import {
     stakingOperationOptionsSchema,
     stakingOperationSchema,
@@ -34,12 +35,24 @@ export const stakingPlanSchema = z.strictObject({
 
 export type StakingPlan = z.infer<typeof stakingPlanSchema>;
 
-export type ComposedStakingStep = {
-    feeLevels: unknown;
-    unsignedTx: unknown;
-    expiresAt: number | null;
-};
+export const stakingStepOutputSchema = z.strictObject({
+    address: z.string().min(1),
+    amount: stakingAmountSchema,
+});
 
-export type SignedStakingStep = {
-    serializedTx: string;
-};
+export type StakingStepOutput = z.infer<typeof stakingStepOutputSchema>;
+
+export const composedStakingStepSchema = z.strictObject({
+    feeLevels: stakingFeeLevelsSchema,
+    outputs: z.array(stakingStepOutputSchema).readonly(),
+    unsignedTx: z.unknown(),
+    validityMs: z.number().int().positive().nullable(),
+});
+
+export type ComposedStakingStep = z.infer<typeof composedStakingStepSchema>;
+
+export const signedStakingStepSchema = z.strictObject({
+    serializedTx: z.string().min(1),
+});
+
+export type SignedStakingStep = z.infer<typeof signedStakingStepSchema>;

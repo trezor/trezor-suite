@@ -12,19 +12,26 @@ import {
     stakingInitialState,
     stakingReducer,
 } from '../src/state/stakingReducer';
+import type { StakingSession } from '../src/state/stakingSessionsReducer';
 
 type MockStakingStateParams = {
     platform?: StakingPlatform;
     descriptors?: readonly StakingProductDescriptor[];
     positions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
+    sessions?: readonly StakingSession[];
 };
 
 export const mockStakingState = ({
     platform = 'desktop',
     descriptors = [mockStakingProductDescriptor()],
     positions = {},
-}: MockStakingStateParams = {}): StakingState =>
-    Object.entries(positions).reduce(
+    sessions = [],
+}: MockStakingStateParams = {}): StakingState => {
+    const withProducts = stakingReducer(
+        stakingInitialState,
+        stakingActions.productsRegistered({ platform, descriptors }),
+    );
+    const withPositions = Object.entries(positions).reduce(
         (state, [accountKey, accountPositions]) =>
             accountPositions === undefined
                 ? state
@@ -35,8 +42,11 @@ export const mockStakingState = ({
                           positions: accountPositions,
                       }),
                   ),
-        stakingReducer(
-            stakingInitialState,
-            stakingActions.productsRegistered({ platform, descriptors }),
-        ),
+        withProducts,
     );
+
+    return sessions.reduce(
+        (state, session) => stakingReducer(state, stakingActions.sessionStarted({ session })),
+        withPositions,
+    );
+};

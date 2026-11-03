@@ -1,5 +1,9 @@
-import { assertStakingPlan, assertStakingPosition } from './stakingAssertions';
-import { mockStakingPlan, mockStakingPosition } from '../mocks';
+import {
+    assertComposedStakingStep,
+    assertStakingPlan,
+    assertStakingPosition,
+} from './stakingAssertions';
+import { mockComposedStakingStep, mockStakingPlan, mockStakingPosition } from '../mocks';
 
 describe('staking assertions', () => {
     it('accepts a valid position', () => {
@@ -23,5 +27,20 @@ describe('staking assertions', () => {
 
     it('names the invalid field of a plan', () => {
         expect(() => assertStakingPlan({ ...mockStakingPlan(), steps: [] })).toThrow(/steps/);
+    });
+
+    it('accepts a valid composed step', () => {
+        expect(() => assertComposedStakingStep(mockComposedStakingStep())).not.toThrow();
+    });
+
+    it('names the invalid fee level of a composed step', () => {
+        const composedStep = mockComposedStakingStep();
+
+        expect(() =>
+            assertComposedStakingStep({
+                ...composedStep,
+                feeLevels: { normal: { type: 'final', fee: '1' } as never },
+            }),
+        ).toThrow(/feeLevels\.normal/);
     });
 });
