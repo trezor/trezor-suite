@@ -1,9 +1,12 @@
 import {
+    type AbandonedResponse,
     type Descriptor,
     type HandleMessageParams,
     type HandleMessageResponse,
     type SessionsBackground,
     type SessionsBackgroundInterface,
+    TRANSPORT_ERROR,
+    error,
 } from '@trezor/transport-common';
 
 /**
@@ -16,6 +19,8 @@ import {
  */
 export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     private readonly background;
+    // in-flight handleMessage requests: port listener -> callback settling its promise
+    private readonly pendingRequests = new Map<(e: MessageEvent<any>) => void, () => void>();
     private readonly portListeners: Array<(e: MessageEvent<any>) => void> = [];
     // event -> caller listener -> its port wrappers. One entry per registration, so that
     // registering the same listener twice needs two off() calls, same as EventEmitter.
@@ -32,6 +37,14 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
         // to begin dispatching messages. Native implementations often do this implicitly.
         // For polyfilled SharedWorker, we need to call it explicitly.
         this.background.port.start();
+        // onmessageerror is a single assignable property, so it is registered once here instead of
+        // per request, where every new request detached the handler of the previous one. It does
+        // not settle anything: the event means that one message failed structured deserialization,
+        // it carries no request id to attribute that to, and the port stays usable afterwards.
+        this.background.port.onmessageerror = message => {
+            // not sure under what circumstances this error occurs. let's observe it during testing
+            console.error('background-browser onmessageerror,', message);
+        };
     }
 
     handleMessage<M extends HandleMessageParams>(params: M): Promise<HandleMessageResponse<M>> {
@@ -41,18 +54,29 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
             const onmessage = (message: MessageEvent<any>) => {
                 if (params.id === message.data.id) {
                     resolve(message.data);
-                    background.port.removeEventListener('message', onmessage);
+                    this.removePortListener(onmessage);
+                    this.pendingRequests.delete(onmessage);
                 }
             };
+            // called when the response can not be delivered anymore, because the listener above is
+            // being detached. Resolving with an error keeps the contract of
+            // SessionsBackground.handleMessage, which never leaves a client in a "hanged" state.
+            const abandon = () => {
+                this.removePortListener(onmessage);
+                const abandoned: AbandonedResponse = {
+                    ...error({ code: TRANSPORT_ERROR.UNEXPECTED_ERROR }),
+                    // SessionsClient assigns an id to every request it sends
+                    id: params.id!,
+                };
+                // the assertion is needed because HandleMessageResponse<M> is a conditional type
+                // over the generic M; the annotation above is what keeps the value type-checked
+                resolve(abandoned as HandleMessageResponse<M>);
+            };
 
+            this.pendingRequests.set(onmessage, abandon);
+            this.portListeners.push(onmessage);
             background.port.addEventListener('message', onmessage);
 
-            background.port.onmessageerror = message => {
-                // not sure under what circumstances this error occurs. let's observe it during testing
-                console.error('background-browser onmessageerror,', message);
-
-                background.port.removeEventListener('message', onmessage);
-            };
             background.port.postMessage(params);
         });
     }
@@ -100,6 +124,8 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     }
 
     dispose() {
+        // detaching the listeners below makes pending responses undeliverable, settle them first
+        this.settlePendingRequests();
         for (const listener of this.portListeners) {
             this.background.port.removeEventListener('message', listener);
         }
@@ -111,5 +137,11 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
         this.background.port.removeEventListener('message', listener);
         const idx = this.portListeners.indexOf(listener);
         if (idx !== -1) this.portListeners.splice(idx, 1);
+    }
+
+    private settlePendingRequests() {
+        const pending = [...this.pendingRequests.values()];
+        this.pendingRequests.clear();
+        pending.forEach(abandon => abandon());
     }
 }
