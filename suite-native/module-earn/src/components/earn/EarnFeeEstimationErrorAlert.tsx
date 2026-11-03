@@ -1,11 +1,11 @@
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-type YieldFeeEstimationErrorAlertProps = {
+type EarnFeeEstimationErrorAlertProps = {
     onRetry: () => void;
 };
 
-export const YieldFeeEstimationErrorAlert = ({ onRetry }: YieldFeeEstimationErrorAlertProps) => (
+export const EarnFeeEstimationErrorAlert = ({ onRetry }: EarnFeeEstimationErrorAlertProps) => (
     <BannerInline
         intent="critical"
         title={<Translation id="earn.feeEstimationFailed" />}

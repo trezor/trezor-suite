@@ -6,12 +6,12 @@ import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
+import { EarnFeeSection } from './EarnFeeSection';
 import { WrappedNativeFeeReserveBanner } from './WrappedNativeFeeReserveBanner';
 import { WrappedNativeTokenAmountInputCard } from './WrappedNativeTokenAmountInputCard';
 import { useStandaloneWrappedNativeController } from '../../hooks/earn/useStandaloneWrappedNativeController';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
 import { YieldDisabledAlert } from '../yield/YieldDisabledAlert';
-import { YieldFeeSection } from '../yield/YieldFeeSection';
 import { YieldFlowScreenHeader } from '../yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../yield/YieldSessionTxSimulationSheet';
@@ -100,7 +100,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                     />
 
                     {feeSection.isVisible && (
-                        <YieldFeeSection
+                        <EarnFeeSection
                             accountKey={account.key}
                             fees={feeSection.fees}
                             tokenContract={spentTokenContract}

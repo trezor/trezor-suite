@@ -30,8 +30,8 @@ import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/const
 import { BigNumber } from '@trezor/utils';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
-import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { useComposeEarnFees } from '../../hooks/earn/useComposeEarnFees';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
@@ -175,7 +175,7 @@ export const StakingClaimReviewScreen = () => {
                         label={<Translation id="earn.claimReviewScreen.amountLabel" />}
                         cryptoAmount={claimableAmount}
                     />
-                    <YieldFeeSection
+                    <EarnFeeSection
                         accountKey={accountKey}
                         fees={{
                             hasFeeEstimationError,

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-export const useYieldFeeEstimationError = () => {
+export const useEarnFeeEstimationError = () => {
     const [hasFeeEstimationError, setHasFeeEstimationError] = useState(false);
     const [feeEstimationRetryKey, setFeeEstimationRetryKey] = useState(0);
 

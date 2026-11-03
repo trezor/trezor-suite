@@ -4,9 +4,9 @@ import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
-import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessionTxSimulationSheet';
@@ -138,7 +138,7 @@ export const YieldWithdrawUnwrapScreen = () => {
 
                         {feeSection.isVisible && (
                             <Box paddingHorizontal="sp16">
-                                <YieldFeeSection
+                                <EarnFeeSection
                                     accountKey={account.key}
                                     fees={feeSection.fees}
                                     tokenContract={wrappedTokenContract}

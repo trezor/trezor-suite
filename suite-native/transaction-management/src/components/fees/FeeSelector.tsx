@@ -70,7 +70,7 @@ export const FeeSelector = (props: FeeSelectorProps) => {
                 networkType={networkType}
                 tokenContract={tokenContract}
                 areFeesLoading={areFeesLoading}
-                isSubmittable={isSubmittable && !areFeesLoading}
+                isSubmittable={isSubmittable}
                 formDraft={formDraft}
                 snapshotRef={snapshotRef}
                 confirmedRef={confirmedRef}

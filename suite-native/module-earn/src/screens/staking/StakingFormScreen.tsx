@@ -25,11 +25,11 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { StakingFormScreenFooter } from '../../components/staking/StakingFormScreenFooter';
 import { StakingNoBalanceContent } from '../../components/staking/StakingNoBalanceContent';
 import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
-import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useStakingForm } from '../../hooks/staking/useStakingForm';
@@ -164,7 +164,7 @@ export const StakingFormScreen = () => {
                 </Box>
                 {isValid && (
                     <Box marginTop="sp24">
-                        <YieldFeeSection
+                        <EarnFeeSection
                             accountKey={accountKey}
                             fees={{
                                 hasFeeEstimationError,
