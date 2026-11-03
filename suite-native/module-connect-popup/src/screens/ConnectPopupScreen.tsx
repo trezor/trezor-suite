@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+import {
+    connectPopupActions,
+    connectPopupAnswerRefusedDeeplinkCallThunk,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { type ConnectPopupCall } from '@suite-common/connect-popup/src/connectPopupTypes';
@@ -58,11 +62,32 @@ export const ConnectPopupScreen = () => {
         }
     }, [popupCall, navigation, addressConfirmation, dispatch]);
 
+    // The answer for a declined Connect 9 call is held back until the user has seen the reason, and
+    // the Close button is not the only way to leave: the system back gesture does not go through
+    // it. The calling app waits for the callback URL without a timeout, so the screen answers it on
+    // unmount as well. The thunk reads the call from the store, so an answer the Close button has
+    // already dispatched is not repeated.
+    useEffect(
+        () => () => {
+            dispatch(connectPopupAnswerRefusedDeeplinkCallThunk());
+        },
+        [dispatch],
+    );
+
     const isAddressConfirmation =
         !discoveryActive && validDevice && popupCall?.state === 'address-confirmation';
+
+    // A declined call does not need the device, so its reason is shown right away.
+    const isConnectV9Refusal =
+        popupCall?.state === 'call-error' && popupCall.isConnectV9Refusal === true;
     const isLoading =
-        discoveryActive || !validDevice || !popupCall || popupCall.state === 'ongoing';
+        !isConnectV9Refusal &&
+        (discoveryActive || !validDevice || !popupCall || popupCall.state === 'ongoing');
     const mainView = useMemo(() => {
+        if (isConnectV9Refusal) {
+            return <ConnectErrorMessage />;
+        }
+
         if (discoveryActive) {
             return (
                 <ConnectLoader
@@ -102,7 +127,7 @@ export const ConnectPopupScreen = () => {
                 title={<Translation id="moduleConnectPopup.connectionStatus.loading" />}
             />
         );
-    }, [validDevice, popupCall, discoveryActive, buttonRequests]);
+    }, [validDevice, popupCall, discoveryActive, buttonRequests, isConnectV9Refusal]);
 
     // The address confirmation has its own screen layout to show the confirm on Trezor sheet.
     if (isAddressConfirmation) {

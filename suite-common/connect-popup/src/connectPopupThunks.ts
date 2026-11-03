@@ -2,6 +2,7 @@ import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type LockDeviceDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -45,10 +46,18 @@ import {
     CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_WALLETCONNECT,
     type ConnectCallSource,
+    type ConnectSerializedError,
     SELECT_ACCOUNT_PAGE_SIZE,
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
+import {
+    getConnectAnalyticsNpmVersion,
+    getConnectV9Deeplink,
+    isConnectV9Source,
+} from './connectV9';
+import { toConnectV9ErrorPayload } from './connectV9ErrorPayload';
+import { ConnectV9RefusalError, selectConnectV9RefusalMessage } from './connectV9Refusal';
 import {
     cleanupAllTemporaryAccounts,
     compatibilityHooks,
@@ -82,13 +91,25 @@ const getCallParamNames = (payload: unknown): string[] =>
         ? Object.keys(payload).sort()
         : [];
 
+// Connect 9 apps read the error of a failed call from the payload. Suite desktop builds the payload
+// of its response itself (see useConnectPopupDesktop), so this one is what Connect 9 deeplink calls
+// get.
+const getFailedCallResponse = (source: ConnectCallSource, error: ConnectSerializedError) => ({
+    success: false as const,
+    error,
+    ...(isConnectV9Source(source) && { payload: toConnectV9ErrorPayload(error) }),
+});
+
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
     payload: DistributiveOmit<CallMethodParams<M>, 'method'>;
     source: ConnectCallSource;
 };
 
-export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
+// The message system is optional: without it, no call is declined by selectConnectV9RefusalMessage.
+export type ConnectPopupCallInnerThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    Partial<MessageSystemRootState>;
 
 export type ConnectPopupCallInnerThunkDeps = {
     services: AnalyticsDep & LockDeviceDep;
@@ -105,7 +126,13 @@ export const connectPopupCallInnerThunk = createThunk<
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ source, ...params }, { dispatch, getState, extra }) => {
+        // Before anything else, so that neither the method check nor a remembered permission
+        // answers the call differently.
+        const connectV9RefusalMessage = selectConnectV9RefusalMessage(getState(), source);
+
         try {
+            if (connectV9RefusalMessage) throw new ConnectV9RefusalError(connectV9RefusalMessage);
+
             const { method, payload } = compatibilityHooks({ ...params, source });
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
@@ -264,7 +291,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     appName: source.manifest.appName,
                     appUrl: source.manifest.appUrl,
                     appEmail: source.manifest.email,
-                    npmVersion: source.manifest.npmVersion,
+                    npmVersion: getConnectAnalyticsNpmVersion(source),
                     connectionType: source.type,
                     origin: source.origin,
                     paramNames: getCallParamNames(params.payload),
@@ -277,6 +304,16 @@ export const connectPopupCallInnerThunk = createThunk<
             if (error?.error === 'switching-device') {
                 // Do nothing, call will be restarted after device switch
                 return;
+            } else if (error instanceof ConnectV9RefusalError) {
+                // Instead of setError, which would show the modal for every call.
+                dispatch(
+                    connectPopupActions.refuseConnectV9Call({
+                        method: params.method,
+                        payload: params.payload,
+                        source,
+                        error: serializeError(error),
+                    }),
+                );
             } else if (
                 error?.code === 'Method_Cancel' ||
                 error?.code === 'Method_Unsupported' // handled by fallback mechanism in connect-web
@@ -298,21 +335,20 @@ export const connectPopupCallInnerThunk = createThunk<
                     appName: source.manifest.appName,
                     appUrl: source.manifest.appUrl,
                     appEmail: source.manifest.email,
-                    npmVersion: source.manifest.npmVersion,
+                    npmVersion: getConnectAnalyticsNpmVersion(source),
                     connectionType: source.type,
                     paramNames: getCallParamNames(params.payload),
                 },
             });
 
-            getPopupCallDeferred().resolve({
-                success: false,
-                error: serializeError(error),
-            });
+            getPopupCallDeferred().resolve(getFailedCallResponse(source, serializeError(error)));
         } finally {
             // Tear down any placeholder accounts created in preCallHooks even if the call threw
             // before postCallHooks ran, so they cannot leak into a later removeAccount payload.
             cleanupAllTemporaryAccounts(dispatch);
-            extra.services.lockDevice(false);
+            // A declined call never reaches the device, so it must not release a device lock that
+            // a call of Suite itself may hold at that moment.
+            if (!connectV9RefusalMessage) extra.services.lockDevice(false);
         }
     },
 );
@@ -389,6 +425,9 @@ export const connectPopupDeeplinkThunk = createThunk<
         return;
     }
 
+    // Before the call starts, because a call that ends before its first await, such as a declined
+    // call, is answered right away.
+    const callDeferred = getPopupCallDeferred(true);
     dispatch(
         connectPopupCallThunk({
             source: {
@@ -398,18 +437,44 @@ export const connectPopupDeeplinkThunk = createThunk<
                     appName: queryParams.appName ?? '',
                     appIcon: queryParams.appIcon ?? '',
                 },
+                ...getConnectV9Deeplink({ deeplinkUrl: parsedUrl, callbackUrl }),
             },
             method: method as CallMethodKeys,
             payload,
         }),
     );
-    const response = await getPopupCallDeferred(true).promise;
+    const response = await callDeferred.promise;
     callbackUrl.searchParams.set('response', JSON.stringify(response));
     dispatch(
         connectPopupActions.deeplinkCallback({
             callbackUrl: callbackUrl.toString(),
         }),
     );
+});
+
+type ConnectPopupAnswerRefusedDeeplinkCallThunkState = ConnectPopupStateRootState;
+
+/**
+ * Answers a declined deeplink call from a Connect 9 app, which is held back until the user has
+ * seen the reason. Both ways out of the screen — the Close button and leaving it — go through
+ * this, and it answers at most once: after the first answer the call is no longer in `call-error`,
+ * so the other way out is a no-op.
+ */
+export const connectPopupAnswerRefusedDeeplinkCallThunk = createThunk<
+    void,
+    void,
+    { state: ConnectPopupAnswerRefusedDeeplinkCallThunkState }
+>(`${CONNECT_POPUP_MODULE}/answerRefusedDeeplinkCallThunk`, (_, { dispatch, getState }) => {
+    const activeCall = selectConnectPopupCall(getState());
+    if (
+        activeCall?.state !== 'call-error' ||
+        !activeCall.isConnectV9Refusal ||
+        !activeCall.callbackUrl
+    )
+        return;
+
+    dispatch(connectPopupActions.finishCall());
+    dispatch(connectPopupActions.deeplinkCallback({ callbackUrl: activeCall.callbackUrl }));
 });
 
 type ConnectPopupVerifyAddressThunkState = DeviceRootState & ConnectPopupStateRootState;
@@ -1158,8 +1223,10 @@ export const connectPopupFinishCallThunk = createThunk<
     const activeCall = selectConnectPopupCall(getState());
 
     if (activeCall?.state === 'call-error' && isDeviceReconnectError(activeCall.error.code)) {
-        getPopupCallDeferred().resolve({ success: false, error: activeCall.error });
+        getPopupCallDeferred().resolve(getFailedCallResponse(activeCall.source, activeCall.error));
     }
 
+    // This is how the user closes the error modal, so a declined Connect 9 call has been seen.
+    dispatch(connectPopupActions.dismissConnectV9Refusal());
     dispatch(connectPopupActions.finishCall());
 });
