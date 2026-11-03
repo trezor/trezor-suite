@@ -35,7 +35,7 @@ type CoinGeckoMarketChartResponse = {
     prices?: CoinGeckoPricePair[];
 };
 
-const rateLimiter = new RateLimiter(1_000, 15_000);
+const rateLimiter = new RateLimiter(1_000, 15_000, 'coingecko');
 
 type FetchCoinGeckoOptions = {
     skipCache?: boolean;
@@ -50,6 +50,7 @@ const requestCoinGecko = (url: string, options: FetchCoinGeckoOptions = {}): Pro
         ? fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' }, signal: options.signal })
         : rateLimiter.limit(fetchSignal => fetchUrl(url, { signal: fetchSignal }), options.signal, {
               priority: options.priority,
+              label: url.replace(COINGECKO_API_BASE_URL, ''),
           });
 
 const fetchCoinGecko = async (url: string, options: FetchCoinGeckoOptions = {}) => {
