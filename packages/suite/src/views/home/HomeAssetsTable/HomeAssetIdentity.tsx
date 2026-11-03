@@ -1,12 +1,14 @@
 import { type ReactNode } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
+import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { Column, Row, TOOLTIP_DELAY_LONG, Text, TruncateWithTooltip } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
+import { useSelector } from 'src/hooks/suite';
 
 import { HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
 
@@ -26,6 +28,11 @@ export const HomeAssetIdentity = ({
     badge,
 }: HomeAssetIdentityProps) => {
     const { NetworkNameFormatter } = useFormatters();
+    const isIconFetchable = useSelector(
+        state =>
+            contractAddress === undefined ||
+            selectIsSpecificCoinDefinitionKnown(state, symbol, contractAddress),
+    );
 
     return (
         <Row gap={12} minWidth={0}>
@@ -34,6 +41,7 @@ export const HomeAssetIdentity = ({
                 contractAddress={contractAddress}
                 size={32}
                 showNetworkIcon
+                shouldTryToFetch={isIconFetchable}
                 placeholder={displaySymbol ?? ''}
             />
             <Column alignItems="flex-start" gap={HOME_ASSET_LINE_GAP} flex="1" minWidth={0}>
