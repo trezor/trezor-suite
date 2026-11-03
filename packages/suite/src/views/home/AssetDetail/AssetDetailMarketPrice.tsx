@@ -1,15 +1,21 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { AssetPriceChart, AssetPriceChartRangeSelector } from '@suite/price-chart';
-import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
 import {
-    type WalletAssetKey,
+    AssetPriceChart,
+    AssetPriceChartRangeSelector,
+    useAssetPriceChartState,
+} from '@suite/price-chart';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
+    selectIsTokenFiatRateAllowed,
 } from '@suite-common/wallet-core';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { Card, Column, Row, Text } from '@trezor/components';
+import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -18,26 +24,46 @@ import { FiatAmountHeadline } from 'src/views/home/HomeBalance/FiatAmountHeadlin
 import { AssetDetailPriceChange } from './AssetDetailPriceChange';
 
 type AssetDetailMarketPriceProps = {
-    assetKey: WalletAssetKey;
+    symbol: NetworkSymbol;
+    contractAddress?: TokenAddress;
 };
 
 /** What one unit of the asset costs, and how that moved over the week, styled as the Home total. */
-export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps) => {
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
-    const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
+export const AssetDetailMarketPrice = ({
+    symbol,
+    contractAddress,
+}: AssetDetailMarketPriceProps) => {
+    const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const baseCurrency = useSelector(selectBaseCurrency);
-    const fiatRateKey =
-        symbol === undefined ? undefined : getFiatRateKey(symbol, baseCurrency, contractAddress);
-    const rate = useSelector(state =>
-        fiatRateKey === undefined
-            ? undefined
-            : selectFiatRatesByFiatRateKey(state, fiatRateKey)?.rate,
+    const fiatRateKey = getFiatRateKey(symbol, baseCurrency, contractAddress);
+    const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+    const weekAgoRate = useSelector(
+        state => selectFiatRatesByFiatRateKey(state, fiatRateKey, 'lastWeek')?.rate,
     );
-    const weekAgoRate = useSelector(state =>
-        fiatRateKey === undefined
-            ? undefined
-            : selectFiatRatesByFiatRateKey(state, fiatRateKey, 'lastWeek')?.rate,
+    // Rates are fetched only for tokens with a known definition, so any other token never gets one.
+    const isRateFetched = useSelector(
+        state =>
+            contractAddress === undefined ||
+            selectIsTokenFiatRateAllowed(state, symbol, contractAddress),
     );
+    const {
+        points,
+        isError: isHistoryError,
+        isFetching: isHistoryFetching,
+        isUnavailable: isChartUnavailable,
+        isEmpty: isHistoryEmpty,
+    } = useAssetPriceChartState({
+        networkSymbol: symbol,
+        tokenContract: contractAddress,
+    });
+
+    // The query keeps the last history through a range that loads or fails, so the chart and
+    // its range picker stay in place.
+    const hasHistory = Array.isArray(points) && points.length > 0;
+
+    const rate = currentRate?.rate;
+    const isRateMissing = rate === undefined && (!isRateFetched || Boolean(currentRate?.error));
+    const isRateLoading = rate === undefined && !isRateMissing;
 
     const price = useMemo(() => (rate === undefined ? undefined : new BigNumber(rate)), [rate]);
     const weekChange = useMemo(() => {
@@ -50,9 +76,14 @@ export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps
         return { change, changePercent: change.div(weekAgoRate) };
     }, [price, weekAgoRate]);
 
-    // An asset with no market leaves the screen to its balance card, rather than a card with
-    // nothing in it.
-    if (symbol === undefined || price === undefined) {
+    // Without a price the chart is all the card has, so an asset without a history gives the
+    // card up to the balance card when the chart shows none: missing, empty, or failed. With no
+    // price to wait for, the card waits for the history, so it is never shown and taken away again.
+    const isChartMissing =
+        isChartUnavailable || isHistoryEmpty || (isHistoryError && !isHistoryFetching);
+    const isChartPending = isRateMissing && points === undefined;
+
+    if (price === undefined && !hasHistory && (isChartMissing || isChartPending)) {
         return null;
     }
 
@@ -69,11 +100,18 @@ export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps
                         <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                             <Translation id="TR_ASSET_DETAIL_MARKET_PRICE" />
                         </Text>
-                        <FiatAmountHeadline
-                            fiatValue={price}
-                            isExact
-                            data-testid="@asset-detail/market-price/fiat-amount"
-                        />
+                        {price !== undefined && (
+                            <FiatAmountHeadline
+                                fiatValue={price}
+                                isExact
+                                data-testid="@asset-detail/market-price/fiat-amount"
+                            />
+                        )}
+                        {isRateLoading && (
+                            <Row data-testid="@asset-detail/market-price/skeleton">
+                                <Skeleton width={180} height={56} animate={shouldAnimateSkeleton} />
+                            </Row>
+                        )}
                         {weekChange !== undefined && (
                             <AssetDetailPriceChange
                                 change={weekChange.change}

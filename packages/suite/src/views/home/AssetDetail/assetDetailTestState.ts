@@ -27,8 +27,26 @@ const mockRate = (rate: number) =>
         error: null,
     }) as CurrentRate;
 
-const mockEthRates = (rate: number | undefined) =>
-    rate === undefined ? {} : { [getFiatRateKey(ETH, 'usd')]: mockRate(rate) };
+/** A rate still on its way, or one that could not be loaded, holding no numbers yet. */
+export type PendingRateStatus = 'loading' | 'failed';
+
+const mockPendingRate = (status: PendingRateStatus) =>
+    ({
+        lastTickerTimestamp: 0 as Timestamp,
+        lastSuccessfulFetchTimestamp: 0 as Timestamp,
+        isLoading: status === 'loading',
+        error: status === 'failed' ? 'Failed to fetch' : null,
+    }) as CurrentRate;
+
+const mockEthRates = (rate: number | undefined, pendingStatus?: PendingRateStatus) => {
+    if (rate !== undefined) {
+        return { [getFiatRateKey(ETH, 'usd')]: mockRate(rate) };
+    }
+
+    return pendingStatus === undefined
+        ? {}
+        : { [getFiatRateKey(ETH, 'usd')]: mockPendingRate(pendingStatus) };
+};
 
 type EthAssetStateParams = {
     accounts: Account[];
@@ -36,6 +54,8 @@ type EthAssetStateParams = {
     ethRate?: number;
     /** What it cost a week ago. */
     ethWeekAgoRate?: number;
+    /** Where the price stands while there is no `ethRate`; no entry at all when left out. */
+    ethRateStatus?: PendingRateStatus;
 };
 
 /** A device holding ether in `accounts`, priced in dollars. */
@@ -43,6 +63,7 @@ export const getEthAssetState = ({
     accounts,
     ethRate,
     ethWeekAgoRate,
+    ethRateStatus,
 }: EthAssetStateParams): AppState => ({
     ...mockInitialAppState,
     networks: mockNetworksState([ETH]),
@@ -60,7 +81,7 @@ export const getEthAssetState = ({
         },
         fiat: {
             ...mockInitialAppState.wallet.fiat,
-            current: mockEthRates(ethRate),
+            current: mockEthRates(ethRate, ethRateStatus),
             lastWeek: mockEthRates(ethWeekAgoRate),
         },
     },
