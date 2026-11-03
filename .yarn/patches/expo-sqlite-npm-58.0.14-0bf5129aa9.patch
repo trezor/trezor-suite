@@ -1,0 +1,68 @@
+diff --git a/build/SQLiteDatabase.js b/build/SQLiteDatabase.js
+index bc83c9c1beb84210eb366e0ef1b6e209bdc92f0b..1fe41f465101b9f588824e6468b5eb71ddbaca81 100644
+--- a/build/SQLiteDatabase.js
++++ b/build/SQLiteDatabase.js
+@@ -1,6 +1,6 @@
+ import { Platform } from 'react-native';
+ import ExpoSQLite from './ExpoSQLite';
+-import { registerDatabaseForDevToolsAsync, unregisterDatabaseForDevToolsAsync } from './SQLiteDevToolsClient';
++import { unregisterDatabaseForDevToolsAsync } from './SQLiteDevToolsClient';
+ import { SQLiteSession } from './SQLiteSession';
+ import { SQLiteStatement } from './SQLiteStatement';
+ import { SQLiteTaggedQuery } from './SQLiteTaggedQuery';
+@@ -427,9 +427,6 @@ import { createDatabasePath } from './pathUtils';
+     const nativeDatabase = new ExpoSQLite.NativeDatabase(databasePath, openOptions);
+     await nativeDatabase.initAsync();
+     const database = new SQLiteDatabase(databasePath, openOptions, nativeDatabase);
+-    if (options?.useNewConnection !== true) {
+-        registerDatabaseForDevToolsAsync(database);
+-    }
+     return database;
+ }
+ /**
+@@ -447,9 +444,6 @@ import { createDatabasePath } from './pathUtils';
+     const nativeDatabase = new ExpoSQLite.NativeDatabase(databasePath, openOptions);
+     nativeDatabase.initSync();
+     const database = new SQLiteDatabase(databasePath, openOptions, nativeDatabase);
+-    if (options?.useNewConnection !== true) {
+-        registerDatabaseForDevToolsAsync(database);
+-    }
+     return database;
+ }
+ /**
+diff --git a/src/SQLiteDatabase.ts b/src/SQLiteDatabase.ts
+index 038939d51871ce81a86fd807554e6b3c20b7496d..cba76c44945f7ea9412452d24dc527381168ddb9 100644
+--- a/src/SQLiteDatabase.ts
++++ b/src/SQLiteDatabase.ts
+@@ -3,10 +3,7 @@ import { Platform } from 'react-native';
+ 
+ import ExpoSQLite from './ExpoSQLite';
+ import { type NativeDatabase, type SQLiteOpenOptions } from './NativeDatabase';
+-import {
+-  registerDatabaseForDevToolsAsync,
+-  unregisterDatabaseForDevToolsAsync,
+-} from './SQLiteDevToolsClient';
++import { unregisterDatabaseForDevToolsAsync } from './SQLiteDevToolsClient';
+ import { SQLiteSession } from './SQLiteSession';
+ import type {
+   SQLiteBindParams,
+@@ -608,9 +605,6 @@ export async function openDatabaseAsync(
+   const nativeDatabase = new ExpoSQLite.NativeDatabase(databasePath, openOptions);
+   await nativeDatabase.initAsync();
+   const database = new SQLiteDatabase(databasePath, openOptions, nativeDatabase);
+-  if (options?.useNewConnection !== true) {
+-    registerDatabaseForDevToolsAsync(database);
+-  }
+   return database;
+ }
+ 
+@@ -634,9 +628,6 @@ export function openDatabaseSync(
+   const nativeDatabase = new ExpoSQLite.NativeDatabase(databasePath, openOptions);
+   nativeDatabase.initSync();
+   const database = new SQLiteDatabase(databasePath, openOptions, nativeDatabase);
+-  if (options?.useNewConnection !== true) {
+-    registerDatabaseForDevToolsAsync(database);
+-  }
+   return database;
+ }
+ 

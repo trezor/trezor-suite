@@ -31,6 +31,13 @@ abort events with a null target on React Native. Introduced for
 Prevents the Expo dev client from hanging when Detox starts an Android test. Introduced in
 [#25924](https://github.com/trezor/trezor-suite/pull/25924).
 
+## expo-sqlite
+
+Disables automatic SQLite DevTools registration when opening databases, including in development
+builds. The inspector can send wallet database contents to Metro, which violates the requirement
+that confidential account data stay on the device. Patches both source and built entry points without
+changing connection options. Remove when upstream supports disabling registration and Suite uses it.
+
 ## react-native-webview
 
 Restores the `P = {}` default generic of the `WebView` class typings. Versions 14.0.0 to 15.x

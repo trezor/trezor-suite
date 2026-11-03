@@ -32,7 +32,7 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "expo": "~58.0.21",
-        "expo-sqlite": "~58.0.14",
+        "expo-sqlite": "patch:expo-sqlite@npm%3A58.0.14#~/.yarn/patches/expo-sqlite-npm-58.0.14-0bf5129aa9.patch",
         "react": "19.3.0",
         "react-native": "0.88.1",
         "react-redux": "9.3.0"

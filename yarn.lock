@@ -15528,7 +15528,7 @@ __metadata:
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     expo: "npm:~58.0.21"
-    expo-sqlite: "npm:~58.0.14"
+    expo-sqlite: "patch:expo-sqlite@npm%3A58.0.14#~/.yarn/patches/expo-sqlite-npm-58.0.14-0bf5129aa9.patch"
     react: "npm:19.3.0"
     react-native: "npm:0.88.1"
     react-redux: "npm:9.3.0"
@@ -30106,7 +30106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-sqlite@npm:~58.0.14":
+"expo-sqlite@npm:58.0.14":
   version: 58.0.14
   resolution: "expo-sqlite@npm:58.0.14"
   dependencies:
@@ -30116,6 +30116,19 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/4feac398f960022ec67123692bfef7970e1f78f2f8f9cd2ac363c8aa9cf674df22a13faaedc5059460309db44251324b3d56963bf9d6bbff6162853ccb049126
+  languageName: node
+  linkType: hard
+
+"expo-sqlite@patch:expo-sqlite@npm%3A58.0.14#~/.yarn/patches/expo-sqlite-npm-58.0.14-0bf5129aa9.patch":
+  version: 58.0.14
+  resolution: "expo-sqlite@patch:expo-sqlite@npm%3A58.0.14#~/.yarn/patches/expo-sqlite-npm-58.0.14-0bf5129aa9.patch::version=58.0.14&hash=69fd9b"
+  dependencies:
+    await-lock: "npm:^2.2.2"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10/1154b3ba80cf0cce5b83e55b9080c8dcee7acee55bf44fb32c40c814f15439cbc6d4be8e5b7aa73ed5a47b5aa5bb5866fee04890f8f05dc19138392e2d9a4365
   languageName: node
   linkType: hard
 
