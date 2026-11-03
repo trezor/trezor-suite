@@ -70,6 +70,7 @@ export type DeviceSuspicionCause =
     | 'deviceLooksDifferent'
     | 'firmwareAlreadyInstalled'
     | 'untrustedReseller'
+    | 'plasticWrap'
     | 'securitySeal'
     | 'packaging';
 

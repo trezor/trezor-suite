@@ -58,7 +58,7 @@ export const SecuritySealImages = () => {
             <BannerInline
                 intent="info"
                 title={
-                    <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.alertBox" />
+                    <Translation id="moduleDeviceOnboarding.securityCheckScreen.securitySeal.modal.alertBox" />
                 }
             />
         </VStack>

@@ -27,6 +27,7 @@ const causeToLinkMap = {
     deviceLooksDifferent: TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
     firmwareAlreadyInstalled: TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
     untrustedReseller: TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
+    plasticWrap: TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
     securitySeal: TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
     packaging: TREZOR_SUPPORT_DIFFERENT_PACKAGING,
 } as const satisfies Record<DeviceSuspicionCause, Url>;
