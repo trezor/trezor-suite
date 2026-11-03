@@ -19,6 +19,7 @@ import {
     prepareNewAccountPayload,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodAnyResponse, type CallMethodKeys } from '@trezor/connect';
+import { MAX_NAME_LENGTH, sanitizeName } from '@trezor/connect-common';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
@@ -30,6 +31,7 @@ import { type ConnectPopupStateRootState, selectConnectPopupCall } from './conne
 import {
     CALL_SOURCE_DEEPLINK,
     SELECT_ACCOUNT_PAGE_SIZE,
+    type ConnectCallSource,
     type SelectAccountCandidate,
     isDeviceReconnectError,
     isUtxoNetwork,
@@ -61,6 +63,47 @@ const getCallAttributes = ({ method, payload, source }: PopupFlowParams<CallMeth
     paramNames: getCallParamNames(payload),
 });
 
+const CONNECT_NAME_SANITIZE_OPTIONS = {
+    maxLength: MAX_NAME_LENGTH,
+    onTooLong: 'truncate',
+} as const;
+
+/**
+ * The single rule for the names the consent prompt shows for a caller: the `manifest.appName` the
+ * caller declared and the `process.name` the OS reported for it. Every call reaches a flow through
+ * `connectPopupCallInnerThunk`, so applying it here is what makes the rule the same for a web dapp,
+ * a webextension, a desktop-ws client, an MCP client, a WalletConnect peer and a deeplink, none of
+ * which have to be trusted to sanitize their own name.
+ *
+ * Over-long names are truncated rather than dropped, so a caller is labelled with a shortened name
+ * instead of none. A name that sanitizes to nothing becomes `''`, which `ConnectPermissionsModal`
+ * and `ConnectCallSource` already render as the caller's origin.
+ *
+ * The sanitized copy is what flows on from the thunk, so the stored grant, the success toast and
+ * the analytics event carry the sanitized name too. `isSameConnectApp` keys a remembered grant on
+ * source type, origin and `process.fullPath` and never on a name, so no grant can move because of
+ * this.
+ */
+export const sanitizeConnectCallSource = (source: ConnectCallSource): ConnectCallSource => {
+    const manifest = {
+        ...source.manifest,
+        appName: sanitizeName(source.manifest?.appName, CONNECT_NAME_SANITIZE_OPTIONS) ?? '',
+    };
+
+    if (!source.process) {
+        return { ...source, manifest };
+    }
+
+    return {
+        ...source,
+        manifest,
+        process: {
+            ...source.process,
+            name: sanitizeName(source.process.name, CONNECT_NAME_SANITIZE_OPTIONS) ?? '',
+        },
+    };
+};
+
 export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 export type ConnectPopupCallInnerThunkDeps = {
@@ -75,7 +118,13 @@ export const connectPopupCallInnerThunk = createThunk<
     void,
     PopupFlowParams<CallMethodKeys>,
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
->(`${CONNECT_POPUP_MODULE}/callThunk`, async (params, { dispatch, getState, extra }) => {
+>(`${CONNECT_POPUP_MODULE}/callThunk`, async (declaredParams, { dispatch, getState, extra }) => {
+    // Sanitized before anything reads a name off it, so the consent prompt, the toast, the
+    // analytics event and the remembered grant all carry the same sanitized name.
+    const params = {
+        ...declaredParams,
+        source: sanitizeConnectCallSource(declaredParams.source),
+    };
     const paramsCompat = applyRequestCompatibility(params);
     const flow = createPopupFlow(paramsCompat, { dispatch, getState });
 
