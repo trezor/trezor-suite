@@ -42,6 +42,7 @@ import {
     endUnfinishedDiscoveryThunk,
     runAdditionalDiscoveryThunk,
     runDiscoveryThunk,
+    startOrRestartDiscoveryThunk,
 } from './discoveryThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
@@ -699,6 +700,35 @@ describe(cancelDiscoveryThunk.name, () => {
 
         expect(TrezorConnect.cancel).not.toHaveBeenCalled();
         expect(getDiscoveryUpdates(actions)).toEqual([{ status: 'cancelled' }]);
+    });
+});
+
+describe(startOrRestartDiscoveryThunk.name, () => {
+    it('does not start another run over a run that is still in progress', async () => {
+        const state = createState({
+            status: 'progress',
+            total: 10,
+            progress: 1,
+            trigger: 'device-connect',
+        });
+
+        const actions = await run(state, dispatch =>
+            dispatch(startOrRestartDiscoveryThunk({ trigger: 'coin-toggle' })),
+        );
+
+        expect(getDiscoveryStarts(actions)).toEqual([]);
+    });
+
+    it('starts a new run once the previous run has ended', async () => {
+        const state = createState({ status: 'failed', trigger: 'device-connect' });
+
+        const actions = await run(state, dispatch =>
+            dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' })),
+        );
+
+        expect(getDiscoveryStarts(actions)).toEqual([
+            expect.objectContaining({ path: devicePath, trigger: 'retry' }),
+        ]);
     });
 });
 

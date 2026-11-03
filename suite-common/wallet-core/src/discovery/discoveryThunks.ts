@@ -1102,6 +1102,8 @@ export const startOrRestartDiscoveryThunk = createThunk<
 >(`${DISCOVERY_MODULE_PREFIX}/restart`, ({ trigger }, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
     if (!device) return;
+    if (isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) return;
+
     const staticSessionId = device.state?.staticSessionId;
     if (staticSessionId) {
         // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
