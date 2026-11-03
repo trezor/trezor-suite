@@ -59,6 +59,14 @@ const HomeAssetTableFilter = ({
         onSmallBalancesChange(!areSmallBalancesShown);
     };
 
+    const openHiddenTokens = () => {
+        analytics.report({
+            type: events.navigateFlowEvent.name,
+            payload: { action: 'navigate', type: 'hidden-tokens', from: 'dashboard' },
+        });
+        dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' }));
+    };
+
     return (
         <Popover
             ref={popoverRef}
@@ -99,8 +107,7 @@ const HomeAssetTableFilter = ({
                             label: <Translation id="TR_HIDDEN_TOKENS" />,
                             iconRight: CaretRightIcon,
                             hasSeparatorBefore: true,
-                            onClick: () =>
-                                dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' })),
+                            onClick: openHiddenTokens,
                             'data-testid': '@dashboard/home-asset/hidden-tokens',
                         },
                     ]}
