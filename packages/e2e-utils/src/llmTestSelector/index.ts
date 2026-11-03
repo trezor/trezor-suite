@@ -73,8 +73,9 @@ const DEFAULT_LLM_ANALYSIS_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/llm-analysis.json
 const DEFAULT_BASE_REF = 'origin/develop';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-// OpenRouter falls through to the next model when the previous one errors or is rate limited.
-const OPENROUTER_MODELS = ['z-ai/glm-5.3-flash', 'moonshotai/kimi-k2.7-code'];
+const OPENROUTER_MODEL = 'moonshotai/kimi-k2.7-code';
+// Keep requests on the model author's endpoints, allowed by the account's privacy settings.
+const OPENROUTER_PROVIDER_ORDER = ['moonshotai'];
 const OPENROUTER_MAX_TOKENS = 49152;
 
 const ALLOWED_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.css', '.json']);
@@ -134,9 +135,8 @@ const printUsage = (): void => {
             '',
             'Options:',
             '  --api-key, -k <key>        OpenRouter API key. Overrides the OPENROUTER_API_KEY',
-            '                             env variable. When provided, uses OpenRouter (GLM 5.3',
-            '                             Flash, Kimi K2.7 Code fallback) instead of the local',
-            '                             Claude Code CLI.',
+            '                             env variable. When provided, uses OpenRouter (Kimi',
+            '                             K2.7 Code) instead of the local Claude Code CLI.',
             `  --coverage-map <file>      Path to the coverage index JSON. Default: ${DEFAULT_INDEX_FILE}`,
             `  --llm-analysis <file>      Path to the LLM analysis JSON. Default: ${DEFAULT_LLM_ANALYSIS_FILE}`,
             '  --head-ref <ref>           Git ref for the PR head. Default: HEAD. Use pr-head',
@@ -528,7 +528,7 @@ const selectTestsViaCli = ({
     });
 
 // ---------------------------------------------------------------------------
-// LLM invocation — OpenRouter API (GLM 5.3 Flash, Kimi K2.7 Code fallback)
+// LLM invocation — OpenRouter API (Kimi K2.7 Code)
 // ---------------------------------------------------------------------------
 
 // Forced tool_choice errors on this model ("incompatible with thinking enabled") — auto + this instruction is the reliable alternative.
@@ -621,8 +621,9 @@ const selectTestsViaApi = async (
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                models: OPENROUTER_MODELS,
+                model: OPENROUTER_MODEL,
                 max_tokens: OPENROUTER_MAX_TOKENS,
+                provider: { order: OPENROUTER_PROVIDER_ORDER, allow_fallbacks: false },
                 tools: [RECOMMEND_TESTS_TOOL],
                 tool_choice: 'auto',
                 messages: [
@@ -951,7 +952,7 @@ const main = async () => {
         filteredAnalysis,
     );
 
-    log(apiKey ? 'Calling OpenRouter (GLM 5.3 Flash)...' : 'Calling local Claude Code CLI...');
+    log(apiKey ? 'Calling OpenRouter (Kimi K2.7 Code)...' : 'Calling local Claude Code CLI...');
 
     let llmResult: Omit<SelectionResult, 'changed_files'>;
     try {
