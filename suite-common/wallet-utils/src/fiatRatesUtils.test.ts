@@ -1,7 +1,9 @@
+import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type RatesByTimestamps,
+    type TickerResult,
     type Timestamp,
     type TokenAddress,
     type WalletAccountTransaction,
@@ -9,11 +11,14 @@ import {
 } from '@suite-common/wallet-types';
 
 import {
+    fetchTransactionsRates,
     getFiatRateKey,
     getFiatRateKeyFromTicker,
     roundTimestampToNearestPastHour,
     selectHistoricRatesByTransactions,
 } from './fiatRatesUtils';
+
+jest.mock('@suite-common/fiat-services', () => ({ getFiatRatesForTimestamps: jest.fn() }));
 
 const ethSymbol = asNetworkSymbol('eth');
 const btcSymbol = asNetworkSymbol('btc');
@@ -169,5 +174,40 @@ describe(selectHistoricRatesByTransactions.name, () => {
 
     it('selects nothing for no transactions', () => {
         expect(selectHistoricRatesByTransactions(historicRates, [])).toEqual({});
+    });
+});
+
+describe(fetchTransactionsRates.name, () => {
+    it('pairs each rate with the timestamp of its ticker when a rate is missing', async () => {
+        const thirdHour = asTimestamp(nextHour + 3600);
+        // The provider answered the first and the third hour only.
+        jest.mocked(getFiatRatesForTimestamps).mockResolvedValue({
+            ts: 0,
+            symbol: ethSymbol,
+            tickers: [
+                { ts: hour, rates: { usd: 2000 } },
+                { ts: thirdHour, rates: { usd: 2200 } },
+            ],
+        });
+        const rates: TickerResult[] = [];
+
+        await fetchTransactionsRates(
+            { symbol: ethSymbol },
+            [hour + 600, nextHour + 600, thirdHour + 600].map(asTimestamp),
+            'usd',
+            false,
+            rates,
+        );
+
+        expect(rates).toEqual([
+            {
+                tickerId: { symbol: ethSymbol },
+                localCurrency: 'usd',
+                rates: [
+                    { rate: 2000, lastTickerTimestamp: hour },
+                    { rate: 2200, lastTickerTimestamp: thirdHour },
+                ],
+            },
+        ]);
     });
 });

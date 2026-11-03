@@ -181,15 +181,11 @@ export const fetchTransactionsRates = async (
             rates.push({
                 tickerId,
                 localCurrency,
-                rates: results.tickers.map((ticker, index) => {
-                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                    const lastTickerTimestamp: Timestamp = uniqueTimestamps[index];
-
-                    return {
-                        rate: ticker?.rates[localCurrency],
-                        lastTickerTimestamp,
-                    };
-                }),
+                // Providers drop the tickers they have no rate for, so pair by timestamp, not by index.
+                rates: results.tickers.map(ticker => ({
+                    rate: ticker.rates[localCurrency],
+                    lastTickerTimestamp: asTimestamp(ticker.ts),
+                })),
             });
         }
     } catch (error) {

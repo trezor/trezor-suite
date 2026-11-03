@@ -3,11 +3,14 @@ import TrezorConnect from '@trezor/connect';
 
 import * as blockbookService from './blockbook';
 import * as coingeckoService from './coingecko';
-import { fetchCurrentFiatRates } from './rates';
+import { fetchCurrentFiatRates, getFiatRatesForTimestamps } from './rates';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
-    default: { blockchainGetCurrentFiatRates: jest.fn() },
+    default: {
+        blockchainGetCurrentFiatRates: jest.fn(),
+        blockchainGetFiatRatesForTimestamps: jest.fn(),
+    },
 }));
 jest.mock('./coingecko', () => ({ fetchCurrentFiatRates: jest.fn() }));
 jest.mock('./blockbook', () => ({ fetchCurrentFiatRates: jest.fn() }));
@@ -134,5 +137,36 @@ describe('fetchCurrentFiatRates', () => {
 
         expect(blockbookRates).toHaveBeenCalledWith('btc');
         expect(result).toMatchObject({ rate: 9000000, usdRate: 60000 });
+    });
+});
+
+describe(getFiatRatesForTimestamps.name, () => {
+    it('stamps each Blockbook ticker with the timestamp it answers and drops unknown rates', async () => {
+        /**
+         * Blockbook answers in request order:
+         * an unknown rate with the requested timestamp, a known one with the timestamp of its stored ticker.
+         */
+        jest.mocked(TrezorConnect.blockchainGetFiatRatesForTimestamps).mockResolvedValue({
+            success: true,
+            payload: {
+                tickers: [
+                    { ts: 1_000_120, rates: { usd: 100 } },
+                    { ts: 1_003_600, rates: { usd: -1 } },
+                    { ts: 1_007_260, rates: { usd: 300 } },
+                ],
+            },
+        } as never);
+
+        const result = await getFiatRatesForTimestamps(
+            { symbol: ETH },
+            [1_000_000, 1_003_600, 1_007_200],
+            'usd',
+            false,
+        );
+
+        expect(result?.tickers).toEqual([
+            { ts: 1_000_000, rates: { usd: 100 } },
+            { ts: 1_007_200, rates: { usd: 300 } },
+        ]);
     });
 });
