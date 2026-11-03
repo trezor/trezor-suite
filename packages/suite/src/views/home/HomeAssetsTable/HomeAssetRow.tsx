@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetContractAddress,
@@ -30,7 +31,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
     assetKey,
     hasBorderTop,
 }: HomeAssetRowProps) {
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
@@ -41,8 +42,18 @@ export const HomeAssetRow = memo(function HomeAssetRow({
         return null;
     }
 
-    const openAssetDetail = () =>
+    const openAssetDetail = () => {
+        analytics.report({
+            type: events.navigateFlowEvent.name,
+            payload: {
+                action: 'navigate',
+                type: 'asset',
+                from: 'home-asset-table',
+                networkSymbol: symbol,
+            },
+        });
         dispatch(gotoThunk({ routeName: 'suite-asset', params: { symbol, contractAddress } }));
+    };
 
     return (
         <Table.Row
