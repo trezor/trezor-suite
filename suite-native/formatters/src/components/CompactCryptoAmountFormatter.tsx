@@ -12,17 +12,18 @@ export const CompactCryptoAmountFormatter = ({
     isBalance = true,
     ...otherProps
 }: CompactCryptoAmountFormatterProps) => {
-    const { CryptoAmountFormatter: formatter } = useFormatters();
+    const { CryptoAmountFormatter } = useFormatters();
 
     const formattedValue =
-        value === null
-            ? null
-            : formatter.format(typeof value === 'number' ? value.toString() : value, {
-                  isBalance,
-                  symbol,
-                  isEllipsisAppended: false,
-                  formatStyle: 'compact-balance',
-              });
+        value === null ? null : (
+            <CryptoAmountFormatter
+                value={typeof value === 'number' ? value.toString() : value}
+                isBalance={isBalance}
+                symbol={symbol}
+                isEllipsisAppended={false}
+                formatStyle="compact-balance"
+            />
+        );
 
     return <FormattedCryptoAmountText formattedValue={formattedValue} {...otherProps} />;
 };

@@ -32,7 +32,8 @@ export const TransactionCompleteAmountValue = ({
                 color="contentPrimary"
                 numberOfLines={1}
                 isBalance={false}
-                isDiscreetText={false}
+                // Show the amount of the staking action the user just completed.
+                discreetMode="disabled"
             />
         </HStack>
     );

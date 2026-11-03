@@ -1,15 +1,8 @@
 import { type ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    type FiatRatesRootState,
-    type PhishingRootState,
-    type TransactionsRootState,
-    type WalletSettingsRootState,
-    selectIsPhishingTransaction,
-} from '@suite-common/wallet-core';
+import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import {
@@ -58,15 +51,6 @@ export const TokenTransferListItemValues = ({
         selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
     );
 
-    const { isPhishing: isPhishingTransaction } = useSelector(
-        (
-            state: TokenDefinitionsRootState &
-                TransactionsRootState &
-                FiatRatesRootState &
-                PhishingRootState,
-        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
-    );
-
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenTransfer?.contract),
     );
@@ -89,7 +73,6 @@ export const TokenTransferListItemValues = ({
                     ellipsizeMode="tail"
                     historicRate={historicRate}
                     useHistoricRate
-                    isForcedDiscreetMode={isPhishingTransaction}
                     style={applyStyle(failedTxStyle, { isFailedTx })}
                 />
             )}
@@ -106,7 +89,6 @@ export const TokenTransferListItemValues = ({
                 signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                isPhishingTransaction={isPhishingTransaction}
                 variant="body-sm"
                 color="contentSecondary"
             />

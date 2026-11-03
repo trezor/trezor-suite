@@ -36,7 +36,8 @@ export const TradingCoinAmountFormatter = ({
                 value={amount ?? '0'}
                 symbol={coinSymbol}
                 isBalance={false}
-                isDiscreetText={false}
+                // Trading amounts must remain readable so the user can evaluate the trade.
+                discreetMode="disabled"
                 {...textProps}
             />
         );
@@ -46,7 +47,8 @@ export const TradingCoinAmountFormatter = ({
         <ExactTokenAmountFormatter
             value={asDecimalTokenAmount(amount ?? '0')}
             tokenSymbol={coinSymbol as TokenSymbol}
-            isDiscreetText={false}
+            // Trading amounts must remain readable so the user can evaluate the trade.
+            discreetMode="disabled"
             {...textProps}
         />
     );

@@ -123,7 +123,8 @@ export const UtxoCard = ({
                                     value={utxo.amount}
                                     isBalance={false}
                                     symbol={symbol}
-                                    isDiscreetText={false}
+                                    // In the send form, users must always see real values, even when privacy mode is enabled.
+                                    discreetMode="disabled"
                                 />
                                 {fiatAmount && (
                                     <>
@@ -132,7 +133,8 @@ export const UtxoCard = ({
                                             color="contentSecondary"
                                             symbol={symbol}
                                             value={fiatAmount}
-                                            isDiscreetText={false}
+                                            // In the send form, users must always see real values, even when privacy mode is enabled.
+                                            discreetMode="disabled"
                                         />
                                     </>
                                 )}

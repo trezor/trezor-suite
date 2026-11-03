@@ -12,7 +12,7 @@ import {
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
-import { VStack } from '@suite-native/atoms';
+import { Discreet, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountHeaderFormatter,
     CompactCryptoAmountFormatter,
@@ -70,10 +70,12 @@ export const AssetDetailBalanceSection = () => {
             />
 
             <VStack spacing="sp4">
-                <BaseCurrencyAmountHeaderFormatter
-                    value={fiatValue ?? null}
-                    variant="headline-sm"
-                />
+                <Discreet textVariant="headline-sm">
+                    <BaseCurrencyAmountHeaderFormatter
+                        value={fiatValue ?? null}
+                        variant="headline-sm"
+                    />
+                </Discreet>
                 {tokenContract === undefined ? (
                     <CompactCryptoAmountFormatter
                         value={amount}

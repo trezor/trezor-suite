@@ -1,5 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
+import { DISCREET_PLACEHOLDER } from '@suite-common/discreet-mode';
 import { joinAmountWithSymbol } from '@suite-common/formatters';
 import CS_TRANSLATIONS from '@suite-native/intl/translations/cs-CZ.json';
 import EN_TRANSLATIONS from '@suite-native/intl/translations/en-US.json';
@@ -85,7 +86,8 @@ describe('App Settings - without device interactions [@noDevice]', () => {
     });
 
     it('Privacy & Security - Discreet Mode', async () => {
-        await onHome.assertIsDiscreetModeDisabled();
+        const visibleAmount = joinAmountWithSymbol('0', 'BTC');
+        await onHome.assertIsDiscreetModeDisabled('btc', visibleAmount);
 
         await onTabBar.navigateToSettings();
         await onSettings.openSection('privacy');
@@ -93,6 +95,18 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();
 
-        await onHome.assertIsDiscreetModeEnabled();
+        await onHome.assertIsDiscreetModeEnabled({
+            assetSymbol: 'btc',
+            visibleAmount,
+            redactedAmount: joinAmountWithSymbol(DISCREET_PLACEHOLDER, 'BTC'),
+        });
+
+        await onTabBar.navigateToSettings();
+        await onSettings.openSection('privacy');
+        await onSettings.toggleDiscreetMode();
+        await onTabBar.tapBackButton();
+        await onTabBar.navigateToHome();
+
+        await onHome.assertIsDiscreetModeDisabled('btc', visibleAmount);
     });
 });

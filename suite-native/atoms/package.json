@@ -12,6 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@expo/ui": "58.0.25",
         "@gorhom/bottom-sheet": "5.2.9",
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.31",
@@ -31,6 +32,7 @@
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "expo-blur": "~58.0.5",
         "expo-image": "~58.0.18",
         "expo-linear-gradient": "~58.0.3",
         "jotai": "2.17.1",
@@ -47,6 +49,7 @@
         "type-fest": "5.5.0"
     },
     "devDependencies": {
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils": "workspace:*",
+        "@suite-native/test-utils-store": "workspace:*"
     }
 }

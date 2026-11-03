@@ -17,6 +17,7 @@ export const AssetList = () => {
                     entering={isAssetListLoading ? FadeInDown : undefined}
                     layout={LinearTransition}
                     key={symbol}
+                    testID={`@assets/item/${symbol}`}
                 >
                     <AssetItem cryptoCurrencySymbol={symbol} />
                 </AnimatedView>

@@ -25,6 +25,7 @@ babel-preset-expo
 browserify-zlib
 expo
 expo-atlas
+expo-blur
 expo-build-properties
 expo-camera
 expo-clipboard

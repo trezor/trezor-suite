@@ -98,7 +98,8 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                             symbol={networkSymbol}
                             value={currentValue}
                             variant="body-sm-strong"
-                            isDiscreetText={false}
+                            // This is a public asset price, not the value of the user's holdings.
+                            discreetMode="disabled"
                             isLoading={isLoading || isUnderlyingAssetResolving}
                             numberOfLines={1}
                             adjustsFontSizeToFit

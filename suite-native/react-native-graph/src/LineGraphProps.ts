@@ -181,6 +181,12 @@ export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraph
     blurOverlay?: boolean;
 
     /**
+     * Override the blur intensity when blurOverlay is enabled.
+     * @default 2
+     */
+    enforceIntensity?: number;
+
+    /**
      * Show placeholder line
      */
     showPlaceholder?: boolean;

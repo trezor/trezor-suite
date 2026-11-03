@@ -1,24 +1,31 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { CompactCryptoAmountFormatter } from './CompactCryptoAmountFormatter';
 import { ExactCryptoAmountFormatter } from './ExactCryptoAmountFormatter';
-
-jest.mock('@suite-common/discreet-mode', () => ({
-    useDiscreetMode: () => ({
-        isDiscreetMode: false,
-    }),
-}));
 
 describe('Crypto amount formatters', () => {
     const ethSymbol = asNetworkSymbol('eth');
 
     it('renders exact value', async () => {
-        const { getByTestId } = await renderWithBasicProvider(
+        const { getByText } = await renderWithStoreProvider(
             <ExactCryptoAmountFormatter value="1.239" symbol={ethSymbol} />,
         );
 
-        expect(getByTestId('plain-text')).toHaveTextContent('1.239 ETH');
+        expect(getByText('1.239 ETH')).toBeVisible();
+    });
+
+    it('renders an exact subunit amount without the symbol', async () => {
+        const { getByText } = await renderWithStoreProvider(
+            <ExactCryptoAmountFormatter
+                value="1239000000000000001"
+                symbol={ethSymbol}
+                isBalance={false}
+                withSymbol={false}
+            />,
+        );
+
+        expect(getByText('1.239000000000000001')).toBeVisible();
     });
 
     it.each([
@@ -26,18 +33,10 @@ describe('Crypto amount formatters', () => {
         ['negative', '-1.23 ETH'],
         [undefined, '1.23 ETH'],
     ] as const)('renders a native amount with %s direction', async (signValue, expected) => {
-        const { getByTestId } = await renderWithBasicProvider(
+        const { getByText } = await renderWithStoreProvider(
             <CompactCryptoAmountFormatter value="1.239" symbol={ethSymbol} signValue={signValue} />,
         );
 
-        expect(getByTestId('plain-text')).toHaveTextContent(expected);
-    });
-
-    it('renders compact value with compact wrapper', async () => {
-        const { getByTestId } = await renderWithBasicProvider(
-            <CompactCryptoAmountFormatter value="1.239" symbol={ethSymbol} />,
-        );
-
-        expect(getByTestId('plain-text')).toHaveTextContent('1.23 ETH');
+        expect(getByText(expected)).toBeVisible();
     });
 });

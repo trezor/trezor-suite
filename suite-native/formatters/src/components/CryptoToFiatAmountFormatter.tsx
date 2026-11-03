@@ -2,7 +2,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TextProps } from '@suite-native/atoms';
 
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
-import { type FormatterProps } from '../types';
+import { type DiscreetMode, type FormatterProps } from '../types';
 import { BaseCurrencyAmountFormatter } from './BaseCurrencyAmountFormatter';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
@@ -11,8 +11,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
         historicRate?: number;
         useHistoricRate?: boolean;
         isBalance?: boolean;
-        isDiscreetText?: boolean;
-        isForcedDiscreetMode?: boolean;
+        discreetMode?: DiscreetMode;
         isLoading?: boolean;
     };
 

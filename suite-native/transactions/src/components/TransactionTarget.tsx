@@ -29,7 +29,6 @@ import { getTransactionValueSign } from '../utils';
 type TransactionListItemValuesProps = {
     accountKey: AccountKey;
     transaction: WalletAccountTransaction;
-    isPhishingTransaction: boolean;
     amount: string;
     operation?: SignOperator | null;
 };
@@ -46,7 +45,6 @@ const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailed
 export const TransactionListItemValues = ({
     accountKey,
     transaction,
-    isPhishingTransaction,
     amount,
     operation,
 }: TransactionListItemValuesProps) => {
@@ -68,13 +66,12 @@ export const TransactionListItemValues = ({
                 <EmptyAmountText />
             ) : (
                 <Box flexDirection="row">
-                    {!isFailedTx && !isPhishingTransaction && <SignValueFormatter value={sign} />}
+                    {!isFailedTx && <SignValueFormatter value={sign} />}
                     <CryptoToFiatAmountFormatter
                         value={amount}
                         symbol={transaction.symbol}
                         historicRate={historicRate}
                         useHistoricRate={!!historicRate}
-                        isForcedDiscreetMode={isPhishingTransaction}
                         style={applyStyle(failedTxStyle, { isFailedTx })}
                     />
                 </Box>
@@ -86,7 +83,6 @@ export const TransactionListItemValues = ({
                 numberOfLines={1}
                 signValue={operation ?? 'negative'}
                 adjustsFontSizeToFit
-                isForcedDiscreetMode={isPhishingTransaction}
                 variant="body-sm"
                 color="contentSecondary"
             />
@@ -97,7 +93,6 @@ export const TransactionListItemValues = ({
 type TransactionTargetProps = Target & {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    isPhishingTransaction?: boolean;
 };
 
 export const TransactionTarget = ({
@@ -105,7 +100,6 @@ export const TransactionTarget = ({
     type,
     payload,
     accountKey,
-    isPhishingTransaction,
 }: TransactionTargetProps) => {
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
 
@@ -142,7 +136,6 @@ export const TransactionTarget = ({
             amount={amount!}
             operation={operation}
             accountKey={accountKey}
-            isPhishingTransaction={!!isPhishingTransaction}
         />
     );
 };

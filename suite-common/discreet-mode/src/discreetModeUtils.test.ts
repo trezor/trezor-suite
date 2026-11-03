@@ -1,6 +1,27 @@
 import { DISCREET_PLACEHOLDER, redactNumericalSubstring } from './discreetModeUtils';
 
 describe('redactNumericalSubstring', () => {
+    it.each([
+        ['1 234 567,89 Kč', '### Kč'],
+        ['1\u00a0234\u00a0567,89 Kč', '### Kč'],
+        ['1\u202f234\u202f567,89 €', '### €'],
+        ["CHF 1'234'567.00", 'CHF ###'],
+        ['CHF 1’234’567.00', 'CHF ###'],
+        ['١٬٢٣٤٬٥٦٧٫٨٩', '###'],
+        ['12,30 Kč', '### Kč'],
+        ['-.,𝟙𝟚𝟛 BTC', '### BTC'],
+        ['foo---bar,,,', 'foo---bar,,,'],
+    ])('redacts the complete localized number in %s', (value, expected) => {
+        expect(redactNumericalSubstring(value)).toBe(expected);
+    });
+
+    it('handles long punctuation runs without quadratic backtracking', () => {
+        const punctuation = ','.repeat(100_000);
+
+        expect(redactNumericalSubstring(punctuation)).toBe(punctuation);
+        expect(redactNumericalSubstring(`${punctuation}١`)).toBe(DISCREET_PLACEHOLDER);
+    });
+
     it('replaces sole number with placeholder', () => {
         expect(redactNumericalSubstring(123)).toBe(DISCREET_PLACEHOLDER);
         expect(redactNumericalSubstring('123')).toBe(DISCREET_PLACEHOLDER);

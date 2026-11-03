@@ -10,6 +10,8 @@ jest.mock('./HoldToConfirmButton', () => ({
     HoldToConfirmButton: props => <MockView {...props} testID="HoldToConfirmButton" />,
 }));
 
-jest.mock('./DiscreetText/DiscreetCanvas', () => ({
-    DiscreetCanvas: () => null,
+// Keep the fallback composition real while replacing Expo's native views in Jest.
+jest.mock('expo-blur', () => ({
+    BlurTargetView: props => <MockView {...props} />,
+    BlurView: props => <MockView {...props} />,
 }));

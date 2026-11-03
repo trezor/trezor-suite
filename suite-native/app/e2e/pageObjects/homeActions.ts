@@ -2,7 +2,11 @@ import { expect as detoxExpect } from 'detox';
 
 import { waitForVisible } from '../support/utils';
 
-const graphHeaderDiscreetTextElement = element(by.id('discreet-text'));
+type AssertIsDiscreetModeEnabledParams = {
+    assetSymbol: string;
+    visibleAmount: string;
+    redactedAmount: string;
+};
 
 class HomeActions {
     async waitForScreen() {
@@ -34,12 +38,34 @@ class HomeActions {
         await detoxExpect(element(by.id('@screen/SelectNetwork'))).toBeVisible();
     }
 
-    async assertIsDiscreetModeDisabled() {
-        await waitFor(graphHeaderDiscreetTextElement).not.toBeVisible().withTimeout(10000);
+    async assertIsDiscreetModeDisabled(assetSymbol: string, visibleAmount: string) {
+        await this.scrollScreenToBottom();
+        await waitForVisible(by.id(`@assets/cryptoAmount/${assetSymbol}`));
+        await detoxExpect(element(by.id(`@assets/cryptoAmount/${assetSymbol}`))).toHaveText(
+            visibleAmount,
+        );
+        await detoxExpect(
+            element(by.id('discreet-text').withAncestor(by.id(`@assets/item/${assetSymbol}`))),
+        ).not.toExist();
     }
 
-    async assertIsDiscreetModeEnabled() {
-        await waitForVisible(graphHeaderDiscreetTextElement);
+    async assertIsDiscreetModeEnabled({
+        assetSymbol,
+        visibleAmount,
+        redactedAmount,
+    }: AssertIsDiscreetModeEnabledParams) {
+        await this.scrollScreenToBottom();
+        // React Native may hoist the native blur out of the Discreet layout wrapper.
+        const concealedAmount = element(
+            by.id('blur-native').withDescendant(by.id(`@assets/cryptoAmount/${assetSymbol}`)),
+        );
+        await waitForVisible(concealedAmount);
+        await detoxExpect(element(by.id(`@assets/cryptoAmount/${assetSymbol}`))).toHaveText(
+            redactedAmount,
+        );
+        await detoxExpect(
+            element(by.text(visibleAmount).withAncestor(by.id(`@assets/item/${assetSymbol}`))),
+        ).not.toExist();
     }
 }
 

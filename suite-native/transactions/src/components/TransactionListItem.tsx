@@ -1,16 +1,11 @@
 import { type ComponentType, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     type AccountsRootState,
-    type FiatRatesRootState,
-    type PhishingRootState,
-    type TransactionsRootState,
     createTargets,
     getTxStakeType,
     selectAccountByKey,
-    selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { EmptyAmountText } from '@suite-native/formatters';
@@ -42,15 +37,6 @@ export const TransactionListItem = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const { isPhishing: isPhishingTransaction } = useSelector(
-        (
-            state: TokenDefinitionsRootState &
-                TransactionsRootState &
-                FiatRatesRootState &
-                PhishingRootState,
-        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
-    );
-
     const hasTokensCount = transaction.tokens.length;
 
     const firstToken = transaction.tokens[0];
@@ -110,7 +96,6 @@ export const TransactionListItem = ({
                 <TransactionTarget
                     key={i}
                     accountKey={accountKey}
-                    isPhishingTransaction={isPhishingTransaction}
                     transaction={transaction}
                     {...target}
                 />
