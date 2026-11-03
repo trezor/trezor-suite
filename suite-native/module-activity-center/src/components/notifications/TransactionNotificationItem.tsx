@@ -10,18 +10,13 @@ import {
     type AccountsRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import { Divider, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
-    asDecimalTokenAmount,
-} from '@suite-native/formatters';
 import { Icon, type IconName, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { TransactionNotificationAmount } from './TransactionNotificationAmount';
 import { getTxNotificationFields } from './utils';
 
 type Props = {
@@ -79,7 +74,8 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
     const { DateFormatter, TimeFormatter } = useFormatters();
     const navigateToTransactionDetail = useNavigateToTransactionDetail();
 
-    const { type, descriptor, symbol, txid, amount, token } = getTxNotificationFields(notification);
+    const { type, descriptor, symbol, txid, amount, token, isNftTransfer } =
+        getTxNotificationFields(notification);
 
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccountByDescriptorAndNetworkSymbol(state, descriptor, symbol),
@@ -122,22 +118,14 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                                 tokenSymbol={token?.symbol || token?.name}
                                 size="tiny"
                             />
-                            {token?.symbol === undefined ? (
-                                <CompactCryptoAmountFormatter
-                                    value={amount}
-                                    symbol={symbol}
-                                    variant="body-xs"
-                                    color={contentColor}
-                                />
-                            ) : (
-                                <CompactTokenAmountFormatter
-                                    value={asDecimalTokenAmount(amount)}
-                                    tokenSymbol={toTokenSymbol(token.symbol)}
-                                    tokenDecimals={token.decimals}
-                                    variant="body-xs"
-                                    color={contentColor}
-                                />
-                            )}
+                            <TransactionNotificationAmount
+                                amount={amount}
+                                symbol={symbol}
+                                tokenSymbol={token?.symbol}
+                                tokenDecimals={token?.decimals}
+                                isNftTransfer={isNftTransfer}
+                                color={contentColor}
+                            />
                         </HStack>
                     )}
                     <Text variant="body-xs" color={contentColor}>

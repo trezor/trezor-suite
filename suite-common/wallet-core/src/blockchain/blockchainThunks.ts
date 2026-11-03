@@ -12,17 +12,15 @@ import {
 } from '@suite-common/wallet-config';
 import type { Account, CustomBackend, GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import {
-    asAmountSubunit,
     findAccountDevice,
     findAccountsByDescriptor,
     findAccountsByNetwork,
-    formatNetworkAmount,
     getAccountIdentity,
     getBackendFromSettings,
+    getTransactionNotificationAmount,
     isTrezorConnectBackendType,
     shouldSubscribeBlocks,
     shouldUseIdentities,
-    subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type BlockchainBlock,
@@ -32,7 +30,7 @@ import TrezorConnect, {
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import type { TimerId } from '@trezor/type-utils';
-import { BigNumber, arrayDistinct, arrayToDictionary } from '@trezor/utils';
+import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import {
@@ -417,17 +415,13 @@ export const onBlockchainNotificationThunk = createThunk<
 
         const token = tx.tokens?.[0];
 
-        const amount = token
-            ? subunitsToUnits({
-                  value: asAmountSubunit(new BigNumber(token.amount ?? '0')),
-                  decimals: token.decimals,
-              }).toString()
-            : formatNetworkAmount(tx.amount, account.symbol);
-
         dispatch(
             notificationsActions.addEvent({
                 type: 'tx-received',
-                amount,
+                amount: getTransactionNotificationAmount({
+                    transaction: tx,
+                    symbol: account.symbol,
+                }),
                 device: accountDevice,
                 token,
                 descriptor: account.descriptor,

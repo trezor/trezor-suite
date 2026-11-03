@@ -4,7 +4,7 @@ import { type DesktopAppUpdateState } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FormStateTradingExchange } from '@suite-common/wallet-types';
-import { type DEVICE, type TokenInfo } from '@trezor/connect';
+import { type DEVICE, type TokenInfo, type TokenTransfer } from '@trezor/connect';
 import type { Protocol } from '@trezor/network-module-suite-common-types';
 
 export type UnknownTranslationKey = string;
@@ -85,7 +85,9 @@ type UnwrapTransactionNotification = {
 
 type ReceivedTransactionNotification = {
     type: 'tx-received' | 'tx-confirmed';
-    token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol' | 'decimals'>;
+    /** For an NFT `standard`, the notification's `amount` is the token ID, not a quantity. */
+    token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol' | 'decimals'> &
+        Pick<TokenTransfer, 'standard'>;
 } & TransactionNotificationPayload;
 
 export type EarnTransactionStage = 'pending' | 'sped-up' | 'confirmed';

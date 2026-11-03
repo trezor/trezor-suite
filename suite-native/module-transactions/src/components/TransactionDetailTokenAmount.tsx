@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import { getNftTokenId, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import {
     ExactTokenAmountFormatter,
+    NftTokenIdFormatter,
     SignValueFormatter,
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
@@ -32,6 +34,20 @@ export const TransactionDetailTokenAmount = ({
     const { applyStyle } = useNativeStyles();
     const isFailedTx = transaction.type === 'failed';
     const signValue = getTransactionValueSign(tokenTransfer.type);
+
+    if (isNftTokenTransfer(tokenTransfer)) {
+        return (
+            <NftTokenIdFormatter
+                value={getNftTokenId(tokenTransfer) ?? tokenTransfer.amount}
+                tokenSymbol={tokenTransfer.symbol ?? null}
+                variant="headline-md"
+                color="contentPrimary"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={applyStyle(failedTxStyle, { isFailedTx })}
+            />
+        );
+    }
 
     return (
         <>
@@ -67,7 +83,8 @@ export const TransactionDetailTokenFiatAmount = ({
         selectTransactionFiatRate(state, transaction, tokenTransfer.contract),
     );
 
-    if (!historicRate || historicRate === 0) {
+    // A token ID has no fiat value.
+    if (!historicRate || historicRate === 0 || isNftTokenTransfer(tokenTransfer)) {
         return null;
     }
 

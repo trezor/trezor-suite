@@ -1,7 +1,12 @@
 import { addDays, startOfMonth } from 'date-fns';
 
 import { type SignOperator } from '@suite-common/suite-types';
-import { type NetworkFeature, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import {
+    type NetworkFeature,
+    type NetworkSymbol,
+    type NetworkType,
+    getNetworkType,
+} from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
@@ -32,7 +37,8 @@ import { SOLANA_BLOCKHASH_VALIDITY_MS } from '@trezor/network-solana/constants';
 import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
-import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
+import { asAmountSubunit } from './AmountTypes';
+import { convertAmountSubunitsToUnits, formatNetworkAmount, subunitsToUnits } from './amountUtils';
 import { fromGwei, fromWei } from './ethConverter';
 import { getEvmTransactionTextSignature } from './ethUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -916,6 +922,37 @@ export const getNftTokenId = (transfer: TokenTransfer) => {
 
     // use 0 index, haven't found an example where multiTokenValues.length > 1
     return firstValue.id;
+};
+
+type GetTransactionNotificationAmountParams = {
+    transaction: Pick<AccountTransaction, 'amount' | 'tokens'>;
+    symbol: NetworkSymbol;
+};
+
+/**
+ * Returns the amount a transaction notification shows, in main units: the first token transfer's,
+ * or the native one when there is none. For an NFT transfer it returns the token ID instead.
+ */
+export const getTransactionNotificationAmount = ({
+    transaction,
+    symbol,
+}: GetTransactionNotificationAmountParams) => {
+    const token = transaction.tokens[0];
+
+    if (!token) {
+        return formatNetworkAmount(transaction.amount, symbol);
+    }
+
+    // Blockbook reports 18 decimals for ERC-721 contracts, which have none, so dividing the ID
+    // would announce NFT #737 as a dust amount.
+    if (isNftTokenTransfer(token)) {
+        return getNftTokenId(token) ?? token.amount;
+    }
+
+    return subunitsToUnits({
+        value: asAmountSubunit(new BigNumber(token.amount ?? '0')),
+        decimals: token.decimals,
+    }).toString();
 };
 
 export const isSwapTransaction = (transaction: WalletAccountTransaction) => {

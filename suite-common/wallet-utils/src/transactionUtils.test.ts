@@ -7,6 +7,7 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type TokenTransfer } from '@trezor/connect';
 
 import * as fixtures from './__fixtures__/transactionUtils';
 import {
@@ -25,6 +26,7 @@ import {
     getPendingEvmNonceStatus,
     getRbfParams,
     getTargetAmount,
+    getTransactionNotificationAmount,
     getTransactionWithLowestNonce,
     groupJointTransactions,
     groupTokensTransactionsByContractAddress,
@@ -1265,6 +1267,65 @@ describe('transaction utils', () => {
 
         it('returns undefined when the form is missing', () => {
             expect(getDecreaseOutputId(buildBumpFeeRbfTx(true), undefined)).toBeUndefined();
+        });
+    });
+
+    describe('getTransactionNotificationAmount', () => {
+        const buildTokenTransfer = (tokenTransfer: Partial<TokenTransfer>): TokenTransfer => ({
+            type: 'recv',
+            standard: 'ERC20',
+            amount: '1500000',
+            from: TOKEN_RECIPIENT,
+            to: ACCOUNT_DESCRIPTOR,
+            contract: TOKEN_CONTRACT,
+            name: 'USD Coin',
+            symbol: 'USDC',
+            decimals: 6,
+            ...tokenTransfer,
+        });
+
+        it('returns the native amount in main units when there is no token transfer', () => {
+            const transaction = getWalletTransaction({ amount: '1500000000000000000', tokens: [] });
+
+            expect(getTransactionNotificationAmount({ transaction, symbol: ethSymbol })).toBe(
+                '1.5',
+            );
+        });
+
+        it('returns the first fungible token amount in main units', () => {
+            const transaction = getWalletTransaction({ tokens: [buildTokenTransfer({})] });
+
+            expect(getTransactionNotificationAmount({ transaction, symbol: ethSymbol })).toBe(
+                '1.5',
+            );
+        });
+
+        it('returns the ERC-721 token ID as is, ignoring the 18 decimals blockbook reports', () => {
+            const transaction = getWalletTransaction({
+                tokens: [buildTokenTransfer({ standard: 'ERC721', amount: '737', decimals: 18 })],
+            });
+
+            expect(getTransactionNotificationAmount({ transaction, symbol: ethSymbol })).toBe(
+                '737',
+            );
+        });
+
+        it('returns the ERC-1155 token ID from its multi-token values', () => {
+            const tokenId = '44395624018362851188';
+            const transaction = getWalletTransaction({
+                tokens: [
+                    buildTokenTransfer({
+                        standard: 'ERC1155',
+                        amount: '',
+                        decimals: 18,
+                        multiTokenValues: [{ id: tokenId, value: '1' }],
+                    }),
+                ],
+            });
+
+            expect(getTransactionNotificationAmount({ transaction, symbol: ethSymbol })).toBe(
+                tokenId,
+            );
         });
     });
 });

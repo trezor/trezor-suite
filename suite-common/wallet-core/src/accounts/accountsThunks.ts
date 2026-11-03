@@ -18,15 +18,13 @@ import {
 } from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
-    asAmountSubunit,
     findAccountDevice,
-    formatNetworkAmount,
     getAccountTransactions,
+    getTransactionNotificationAmount,
     isAccountOutdated,
     isDirectRpcBackendType,
     isPending,
     isTrezorConnectBackendType,
-    subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
@@ -36,7 +34,6 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
@@ -312,17 +309,13 @@ export const fetchAndUpdateAccountThunk = createThunk<
 
                 const token = tx.tokens?.[0];
 
-                const amount = token
-                    ? subunitsToUnits({
-                          value: asAmountSubunit(new BigNumber(token.amount ?? '0')),
-                          decimals: token.decimals,
-                      }).toString()
-                    : formatNetworkAmount(tx.amount, account.symbol);
-
                 dispatch(
                     notificationsActions.addEvent({
                         type: 'tx-confirmed',
-                        amount,
+                        amount: getTransactionNotificationAmount({
+                            transaction: tx,
+                            symbol: account.symbol,
+                        }),
                         token,
                         device: accountDevice,
                         descriptor: account.descriptor,
