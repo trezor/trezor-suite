@@ -58,12 +58,9 @@ const compareDisplayContent = async (
     device: DeviceFixture,
     expectedContent: NormalizedDisplayContent,
     errorMessage: string,
+    timeout: number,
 ) => {
     await test.step(`expected object: ${JSON.stringify(expectedContent)}`, () => {});
-
-    const contentRaw = await device.getDisplayContent();
-    const content = normalizeWhitespace(contentRaw);
-    const debugInfo = JSON.stringify(await device.getAnalyzedDisplayContent(), null, 2);
 
     const regexAndStringComparator = (expectedValue: any, actualValue: any) => {
         if (expectedValue instanceof RegExp && typeof actualValue === 'string') {
@@ -83,11 +80,20 @@ const compareDisplayContent = async (
         return undefined;
     };
 
-    return {
-        pass: isEqualWith(expectedContent, content, regexAndStringComparator),
-        message: () =>
-            `${errorMessage}. Diff:\n${diff(expectedContent, content)}\n\nAnalysis:\n${debugInfo}`,
-    };
+    let message = '';
+    try {
+        await baseExpect(async () => {
+            const contentRaw = await device.getDisplayContent();
+            const content = normalizeWhitespace(contentRaw);
+            const debugInfo = JSON.stringify(await device.getAnalyzedDisplayContent(), null, 2);
+            message = `${errorMessage}. Diff:\n${diff(expectedContent, content)}\n\nAnalysis:\n${debugInfo}`;
+            baseExpect(isEqualWith(expectedContent, content, regexAndStringComparator)).toBe(true);
+        }).toPass({ timeout });
+
+        return { pass: true, message: () => message };
+    } catch (error) {
+        return { pass: false, message: () => message || `${errorMessage}. ${error}` };
+    }
 };
 
 const hasOnlyPrimitiveValues = (
@@ -195,6 +201,7 @@ export const expect = baseExpect.extend({
             device,
             expectedContent,
             'expect Receive address to match',
+            this.timeout,
         );
     },
 
@@ -239,6 +246,7 @@ export const expect = baseExpect.extend({
             device,
             expectedContent,
             'expect Emulator display to match',
+            this.timeout,
         );
     },
 
