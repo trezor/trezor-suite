@@ -6,6 +6,7 @@ import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { BottomSheetModal, type BottomSheetModalRef, VStack } from '@suite-native/atoms';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
+import { TokenName } from '@suite-native/tokens';
 
 import { AssetSettingsAccountsAction } from './AssetSettingsAccountsAction';
 import { AssetSettingsDivider } from './AssetSettingsDivider';
@@ -34,7 +35,19 @@ export const AssetSettingsBottomSheet = ({
     const assetDisplaySymbol = getDisplaySymbol(tokenInfo?.symbol ?? networkSymbol, tokenContract);
 
     return (
-        <BottomSheetModal ref={ref} title={assetDisplaySymbol} isCloseDisplayed>
+        <BottomSheetModal
+            ref={ref}
+            title={
+                <TokenName
+                    isInline
+                    text={assetDisplaySymbol}
+                    networkSymbol={networkSymbol}
+                    tokenContract={tokenContract}
+                    variant="headline-sm"
+                />
+            }
+            isCloseDisplayed
+        >
             <VStack spacing="sp24" paddingBottom="sp16">
                 <VStack spacing="sp6">
                     <AssetSettingsNetworkSection networkSymbol={networkSymbol} />

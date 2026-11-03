@@ -1,7 +1,7 @@
 import { type TokenInfoBranded, type TokenSymbol } from '@suite-common/tokens';
 import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
-import { Box, Card, HStack, Text } from '@suite-native/atoms';
+import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
+import { Box, Card, HStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     ExactCryptoAmountFormatter,
@@ -11,6 +11,7 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { YieldBadge } from '@suite-native/module-earn';
+import { TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
@@ -72,9 +73,13 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                 <HStack alignItems="center" justifyContent="space-between" flex={1}>
                     <Box style={applyStyle(cardContentStyle)}>
                         <HStack>
-                            <Text variant="body-sm-strong" color="contentPrimary">
-                                {tokenSymbol}
-                            </Text>
+                            <TokenName
+                                text={tokenSymbol}
+                                networkSymbol={symbol}
+                                tokenContract={token?.contract}
+                                variant="body-sm-strong"
+                                color="contentPrimary"
+                            />
 
                             {yieldBadge && account && (
                                 <YieldBadge
@@ -86,9 +91,14 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                             )}
                         </HStack>
 
-                        <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
-                            {tokenName}
-                        </Text>
+                        <TokenName
+                            text={tokenName}
+                            networkSymbol={symbol}
+                            tokenContract={token?.contract}
+                            variant="body-sm"
+                            color="contentSecondary"
+                            numberOfLines={1}
+                        />
                     </Box>
 
                     <Box alignItems="flex-end" flexShrink={1}>
@@ -117,6 +127,8 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                             <ExactTokenAmountFormatter
                                 value={asDecimalTokenAmount(token.balance ?? '0')}
                                 tokenSymbol={tokenAmountSymbol}
+                                networkSymbol={symbol}
+                                tokenContract={token.contract}
                                 maxDisplayedDecimals={token.decimals}
                                 numberOfLines={1}
                                 adjustsFontSizeToFit

@@ -28,6 +28,8 @@ const TransactionReviewOutputItemCryptoAmount = ({
     if (tokenInfo !== null && value !== '') {
         return (
             <ExactTokenAmountFormatter
+                networkSymbol={symbol ?? undefined}
+                tokenContract={tokenInfo.contract}
                 variant="body-sm"
                 color="contentSecondary"
                 value={convertTokenValueToDecimal(value, tokenInfo.decimals)}

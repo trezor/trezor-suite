@@ -20,6 +20,7 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { TokenName } from '@suite-native/tokens';
 
 import { AssetDetailAccountListItem } from './AssetDetailAccountListItem';
 
@@ -63,9 +64,18 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                 <Translation
                     id="moduleAssets.assetDetailScreen.accountsSheet.subtitle"
                     values={{
-                        assetName: getDisplaySymbol(
-                            tokenInfo?.symbol ?? networkSymbol,
-                            tokenContract,
+                        assetName: (
+                            <TokenName
+                                isInline
+                                text={getDisplaySymbol(
+                                    tokenInfo?.symbol ?? networkSymbol,
+                                    tokenContract,
+                                )}
+                                networkSymbol={networkSymbol}
+                                tokenContract={tokenContract}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
                         ),
                         networkName: getNetwork(networkSymbol).name,
                     }}

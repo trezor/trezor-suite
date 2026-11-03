@@ -42,6 +42,8 @@ export const EarnEstimatedRewards = ({
             </Text>
             {tokenContract ? (
                 <CompactTokenAmountFormatter
+                    networkSymbol={symbol}
+                    tokenContract={tokenContract}
                     value={asDecimalTokenAmount(rewards)}
                     tokenSymbol={tokenInfo?.symbol ?? null}
                     tokenDecimals={tokenInfo?.decimals}

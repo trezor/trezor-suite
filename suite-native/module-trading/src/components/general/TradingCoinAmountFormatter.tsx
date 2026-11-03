@@ -2,8 +2,11 @@ import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
-import type { TokenSymbol } from '@suite-common/tokens';
-import { type TradingRootState, selectTradingCoinSymbolByCryptoId } from '@suite-common/trading';
+import {
+    type TradingRootState,
+    cryptoIdToNetworkAndContractAddress,
+    selectTradingCoinSymbolByCryptoId,
+} from '@suite-common/trading';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import type { TextProps } from '@suite-native/atoms';
 import {
@@ -26,6 +29,8 @@ export const TradingCoinAmountFormatter = ({
         selectTradingCoinSymbolByCryptoId(state, cryptoId),
     );
 
+    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
+
     if (!coinSymbol) {
         return null;
     }
@@ -45,6 +50,8 @@ export const TradingCoinAmountFormatter = ({
 
     return (
         <ExactTokenAmountFormatter
+            networkSymbol={network?.symbol}
+            tokenContract={contractAddress}
             value={asDecimalTokenAmount(amount ?? '0')}
             tokenSymbol={coinSymbol as TokenSymbol}
             // Trading amounts must remain readable so the user can evaluate the trade.

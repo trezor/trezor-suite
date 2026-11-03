@@ -100,6 +100,8 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
                     />
                 ) : (
                     <CompactTokenAmountFormatter
+                        networkSymbol={item.networkSymbol}
+                        tokenContract={item.tokenContractAddress}
                         value={asDecimalTokenAmount(item.tokenBalance)}
                         tokenSymbol={item.tokenSymbol}
                         tokenDecimals={item.token?.decimals}

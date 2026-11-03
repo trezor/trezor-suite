@@ -10,6 +10,7 @@ import {
     type YieldClaimAccountItem,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { AccountLabel } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
@@ -119,6 +120,8 @@ export const YieldClaimRewardsAccountCard = ({
                 <VStack spacing="sp1">
                     {item.summary.tokens.map(token => (
                         <CompactTokenAmountFormatter
+                            networkSymbol={item.summary.networkSymbol}
+                            tokenContract={toTokenAddress(token.contractAddress)}
                             key={`${token.symbol}:${token.contractAddress}`}
                             value={asDecimalTokenAmount(token.claimableAmount)}
                             tokenSymbol={toTokenSymbol(token.symbol)}

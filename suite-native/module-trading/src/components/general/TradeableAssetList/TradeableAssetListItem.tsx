@@ -45,6 +45,8 @@ export const TradeableAssetListItem = ({
             />
             {contractAddress ? (
                 <CompactTokenAmountFormatter
+                    networkSymbol={networkSymbol}
+                    tokenContract={contractAddress}
                     value={asDecimalTokenAmount(balance.cryptoAmount)}
                     tokenSymbol={symbol as TokenSymbol}
                     tokenDecimals={decimals}

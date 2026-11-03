@@ -35,6 +35,8 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
     const cryptoBalanceValue =
         tokenSymbol != null ? (
             <CompactTokenAmountFormatter
+                networkSymbol={symbol}
+                tokenContract={contract}
                 value={asDecimalTokenAmount(balance)}
                 tokenSymbol={tokenSymbol}
                 tokenDecimals={decimals}

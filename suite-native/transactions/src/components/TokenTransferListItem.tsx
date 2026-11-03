@@ -87,6 +87,8 @@ export const TokenTransferListItemValues = ({
                         : null
                 }
                 tokenDecimals={tokenTransfer.decimals}
+                networkSymbol={transaction.symbol}
+                tokenContract={tokenTransfer.contract}
                 signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                 numberOfLines={1}
                 ellipsizeMode="tail"

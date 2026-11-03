@@ -7,7 +7,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { TokenName, type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type AccountBalanceScreenHeaderProps = {
     accountKey: AccountKey;
@@ -36,7 +36,22 @@ export const AccountBalanceScreenHeader = ({
         <ScreenHeader
             customContent={
                 <Text variant="body-md-strong">
-                    <Translation id="moduleSend.outputs.title" values={{ assetName }} />
+                    <Translation
+                        id="moduleSend.outputs.title"
+                        values={{
+                            assetName: tokenInfo?.symbol ? (
+                                <TokenName
+                                    isInline
+                                    text={assetName}
+                                    networkSymbol={account.symbol}
+                                    tokenContract={tokenContract}
+                                    variant="body-md-strong"
+                                />
+                            ) : (
+                                assetName
+                            ),
+                        }}
+                    />
                 </Text>
             }
         />

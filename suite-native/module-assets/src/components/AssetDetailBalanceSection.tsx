@@ -95,6 +95,8 @@ export const AssetDetailBalanceSection = () => {
                     <CompactTokenAmountFormatter
                         value={asDecimalTokenAmount(amount)}
                         tokenSymbol={tokenSymbol}
+                        networkSymbol={networkSymbol}
+                        tokenContract={tokenContract}
                         tokenDecimals={tokenDecimals}
                         color="contentPrimary"
                         numberOfLines={1}

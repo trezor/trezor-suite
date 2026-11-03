@@ -6,9 +6,13 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerInline, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenSymbol, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import {
+    TokenIcon,
+    TokenSymbol,
+    type TokensRootState,
+    selectAccountTokenSymbol,
+} from '@suite-native/tokens';
 
 type ParagraphProps = {
     header: ReactNode;
@@ -45,7 +49,6 @@ export const TokenOfNetworkAlertBody = ({
             <TokenIcon
                 networkSymbol={symbol}
                 contractAddress={tokenContract}
-                tokenSymbol={tokenSymbol}
                 size="extraLarge"
                 showNetworkIcon
             />

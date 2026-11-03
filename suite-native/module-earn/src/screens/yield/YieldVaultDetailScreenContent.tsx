@@ -264,6 +264,8 @@ export const YieldVaultDetailScreenContent = ({
                             <DiscreetTextTrigger>
                                 <CompactTokenAmountFormatter
                                     value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
+                                    networkSymbol={account.symbol}
+                                    tokenContract={yieldToken.contract}
                                     tokenSymbol={yieldToken.symbol}
                                     tokenDecimals={yieldToken.decimals}
                                     color="contentPrimary"
@@ -294,6 +296,8 @@ export const YieldVaultDetailScreenContent = ({
                                         ? toTokenSymbol(wrappedNativeSymbol)
                                         : depositedPosition.tokenSymbol
                                 }
+                                networkSymbol={account.symbol}
+                                tokenContract={depositedPosition.contractAddress}
                                 tokenDecimals={depositedPosition.decimals}
                                 color="contentPrimary"
                                 variant="headline-sm"
@@ -338,6 +342,8 @@ export const YieldVaultDetailScreenContent = ({
                                         ? toTokenSymbol(wrappedNativeSymbol)
                                         : depositedPosition.tokenSymbol
                                 }
+                                networkSymbol={account.symbol}
+                                tokenContract={depositedPosition.contractAddress}
                                 tokenDecimals={depositedPosition.decimals}
                                 color="contentBrand"
                                 variant="headline-sm"

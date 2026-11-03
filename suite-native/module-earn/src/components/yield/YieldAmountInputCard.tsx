@@ -140,6 +140,8 @@ export const YieldAmountInputCard = ({
                             <Translation id="earn.yieldDepositFlowScreen.balance" />
                         </Text>
                         <CompactTokenAmountFormatter
+                            networkSymbol={symbol}
+                            tokenContract={tokenContract}
                             value={asDecimalTokenAmount(balance)}
                             tokenSymbol={tokenSymbol}
                             tokenDecimals={tokenDecimals}

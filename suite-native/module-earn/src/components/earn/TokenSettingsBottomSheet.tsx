@@ -55,6 +55,7 @@ import {
 import { isDevUtilsEnabledAtom } from '@suite-native/storage';
 import {
     type TokensRootState as NativeTokensRootState,
+    TokenName,
     selectAccountTokenInfo,
     selectIsUnrecognizedToken,
 } from '@suite-native/tokens';
@@ -150,6 +151,7 @@ export const TokenSettingsBottomSheet = forwardRef(
 
         const tokenBalance = token?.balance ?? '0';
         const tokenSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
+        const tokenTitle = token?.name ?? displaySymbol;
         const networkName = getNetwork(symbol).name;
 
         const isHidden = hiddenTokens.some(
@@ -230,7 +232,19 @@ export const TokenSettingsBottomSheet = forwardRef(
         };
 
         return (
-            <BottomSheetModal ref={ref} title={token?.name ?? displaySymbol} isCloseDisplayed>
+            <BottomSheetModal
+                ref={ref}
+                title={
+                    <TokenName
+                        isInline
+                        text={tokenTitle}
+                        networkSymbol={symbol}
+                        tokenContract={tokenContract}
+                        variant="headline-sm"
+                    />
+                }
+                isCloseDisplayed
+            >
                 <VStack spacing="sp16" paddingBottom="sp16">
                     <Card style={applyStyle(cardStyle)}>
                         <VStack>
@@ -278,6 +292,8 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     <VStack spacing={0} alignItems="flex-end">
                                         {tokenContract ? (
                                             <ExactTokenAmountFormatter
+                                                networkSymbol={symbol}
+                                                tokenContract={tokenContract}
                                                 value={asDecimalTokenAmount(tokenBalance)}
                                                 tokenSymbol={tokenSymbol}
                                                 variant="body-sm"

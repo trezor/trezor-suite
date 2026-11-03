@@ -315,6 +315,12 @@ export const useYieldTransactionReviewOutputs = ({
 
                         return (
                             <ExactTokenAmountFormatter
+                                networkSymbol={account.symbol}
+                                tokenContract={
+                                    output.token?.contract
+                                        ? toTokenAddress(output.token.contract)
+                                        : undefined
+                                }
                                 variant="body-sm"
                                 color="contentPrimary"
                                 textAlign="right"

@@ -1,5 +1,4 @@
-import { type TokenAddress } from '@suite-common/tokens';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -51,6 +50,48 @@ describe('TransactionReviewOutputItemValues', () => {
         expect(getByText('1 usdc')).toBeOnTheScreen();
         expect(getByText('$0.99')).toBeOnTheScreen();
     });
+
+    it.each([true, false])(
+        'keeps a URL-like symbol readable only when recognized (%s)',
+        async isRecognized => {
+            const wallet = mockWalletState();
+            const account = wallet.accounts.find(({ key }) => key === ETH_ACCOUNT_KEY)!;
+            const token = account.tokens?.[0];
+            if (!token) throw new Error('Expected the ETH account fixture to contain a token');
+            token.symbol = toTokenSymbol('token.example');
+
+            const { getByText, queryByLabelText } = await renderWithStoreProvider(
+                <TransactionReviewOutputItemValues
+                    accountKey={ETH_ACCOUNT_KEY}
+                    tokenContract={USDC_CONTRACT}
+                    value={ONE_USDC}
+                    translationKey="transactionManagement.review.outputs.summary.totalAmount"
+                />,
+                {
+                    preloadedState: {
+                        wallet,
+                        tokenDefinitions: {
+                            eth: {
+                                coin: {
+                                    data: isRecognized ? [USDC_CONTRACT] : [],
+                                    // Hiding a recognized token must not change its recognition status.
+                                    hide: [USDC_CONTRACT],
+                                    show: [],
+                                },
+                            },
+                        },
+                    },
+                },
+            );
+
+            if (isRecognized) {
+                expect(getByText('1 token.example')).toBeVisible();
+                expect(queryByLabelText('…')).toBeNull();
+            } else {
+                expect(queryByLabelText('…')).toBeOnTheScreen();
+            }
+        },
+    );
 
     it('should render only the label when the account is unknown', async () => {
         const { getByText, queryByText } = await renderValues({

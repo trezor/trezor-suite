@@ -1,7 +1,14 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
-import { type AccountKey, type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    type AccountKey,
+    type TokenAddress,
+    type TokenSymbol,
+    type TransactionReviewStatefulOutput,
+    toTokenAddress,
+} from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {
@@ -28,6 +35,9 @@ export const useTradingTransactionReviewOutputs = ({
     flowType,
     contentBuilder,
 }: UseTradingTransactionReviewOutputsProps) => {
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
     const getOutputTitle = useCallback(
         (output: TransactionReviewStatefulOutput) => {
             switch (output.type) {
@@ -222,6 +232,8 @@ export const useTradingTransactionReviewOutputs = ({
 
                         return (
                             <ExactTokenAmountFormatter
+                                networkSymbol={networkSymbol ?? undefined}
+                                tokenContract={toTokenAddress(output.token.contract)}
                                 variant="body-sm"
                                 color="contentPrimary"
                                 textAlign="right"
@@ -315,7 +327,7 @@ export const useTradingTransactionReviewOutputs = ({
                     return undefined;
             }
         },
-        [flowType, accountKey, tokenContract, contentBuilder],
+        [flowType, accountKey, tokenContract, contentBuilder, networkSymbol],
     );
 
     return { getOutputTitle, getOutputValue };

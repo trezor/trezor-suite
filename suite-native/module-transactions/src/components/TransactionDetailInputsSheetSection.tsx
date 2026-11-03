@@ -4,6 +4,7 @@ import { A, G } from '@mobily/ts-belt';
 
 import { type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import { ClipboardCopyMenu } from '@suite-native/clipboard';
 import {
@@ -20,6 +21,8 @@ type TransactionAddressAmountProps = {
     address: string;
     amount?: string;
     symbol: NetworkSymbol | TokenSymbol;
+    networkSymbol?: NetworkSymbol;
+    tokenContract?: TokenAddress;
     decimals?: number;
 };
 
@@ -32,6 +35,8 @@ const TransactionAddressAmount = ({
     amount,
     symbol,
     decimals,
+    networkSymbol,
+    tokenContract,
 }: TransactionAddressAmountProps) => (
     <Box>
         {address ? (
@@ -53,6 +58,8 @@ const TransactionAddressAmount = ({
                 />
             ) : (
                 <ExactTokenAmountFormatter
+                    networkSymbol={networkSymbol}
+                    tokenContract={tokenContract}
                     value={convertTokenValueToDecimal(amount, decimals ?? 0)}
                     tokenSymbol={symbol}
                     maxDisplayedDecimals={decimals}
@@ -90,33 +97,43 @@ export const TransactionDetailInputsSheetSection = ({
             )}
             <Card>
                 <Box flexDirection="row" justifyContent="space-between">
-                    {transfers.map(({ inputs, outputs, symbol, decimals }) => (
-                        <Fragment key={symbol}>
-                            <Box style={applyStyle(addressAmountColumnStyle)}>
-                                {inputs.map(({ address, amount }, index) => (
-                                    <TransactionAddressAmount
-                                        key={`${address}:${index}`}
-                                        address={address}
-                                        amount={amount}
-                                        symbol={symbol}
-                                        decimals={decimals}
-                                    />
-                                ))}
-                            </Box>
-                            <Icon name="caretCircleRight" color="contentDisabled" size="medium" />
-                            <Box style={applyStyle(addressAmountColumnStyle)}>
-                                {outputs.map(({ address, amount }, index) => (
-                                    <TransactionAddressAmount
-                                        key={`${address}:${index}`}
-                                        address={address}
-                                        amount={amount}
-                                        symbol={symbol}
-                                        decimals={decimals}
-                                    />
-                                ))}
-                            </Box>
-                        </Fragment>
-                    ))}
+                    {transfers.map(
+                        ({ inputs, outputs, symbol, decimals, networkSymbol, tokenContract }) => (
+                            <Fragment key={symbol}>
+                                <Box style={applyStyle(addressAmountColumnStyle)}>
+                                    {inputs.map(({ address, amount }, index) => (
+                                        <TransactionAddressAmount
+                                            key={`${address}:${index}`}
+                                            address={address}
+                                            amount={amount}
+                                            symbol={symbol}
+                                            networkSymbol={networkSymbol}
+                                            tokenContract={tokenContract}
+                                            decimals={decimals}
+                                        />
+                                    ))}
+                                </Box>
+                                <Icon
+                                    name="caretCircleRight"
+                                    color="contentDisabled"
+                                    size="medium"
+                                />
+                                <Box style={applyStyle(addressAmountColumnStyle)}>
+                                    {outputs.map(({ address, amount }, index) => (
+                                        <TransactionAddressAmount
+                                            key={`${address}:${index}`}
+                                            address={address}
+                                            amount={amount}
+                                            symbol={symbol}
+                                            networkSymbol={networkSymbol}
+                                            tokenContract={tokenContract}
+                                            decimals={decimals}
+                                        />
+                                    ))}
+                                </Box>
+                            </Fragment>
+                        ),
+                    )}
                 </Box>
             </Card>
         </Box>

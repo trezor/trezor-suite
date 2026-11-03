@@ -13,7 +13,7 @@ import {
     ScreenHeader,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenName, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { ReceiveAddressListButton } from './ReceiveAddressListButton';
 
@@ -65,7 +65,17 @@ export const ReceiveFreshAddressHeader = ({
                             deviceStaticSessionId={deviceStaticSessionId}
                             showAccountTypeBadge
                         />
-                        {tokenSymbol && <Text variant="body-md-strong">{` - ${tokenSymbol}`}</Text>}
+                        {tokenSymbol && (
+                            <HStack alignItems="center" spacing={0} flexShrink={1}>
+                                <Text variant="body-md-strong">{' - '}</Text>
+                                <TokenName
+                                    text={tokenSymbol}
+                                    networkSymbol={networkSymbol}
+                                    tokenContract={tokenContract}
+                                    variant="body-md-strong"
+                                />
+                            </HStack>
+                        )}
                     </HStack>
                 </>
             }

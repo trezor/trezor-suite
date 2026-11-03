@@ -11,6 +11,7 @@ import {
     type AccountsRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { Divider, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
@@ -131,6 +132,8 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                                 />
                             ) : (
                                 <CompactTokenAmountFormatter
+                                    networkSymbol={symbol}
+                                    tokenContract={toTokenAddress(token.contract)}
                                     value={asDecimalTokenAmount(amount)}
                                     tokenSymbol={toTokenSymbol(token.symbol)}
                                     tokenDecimals={token.decimals}

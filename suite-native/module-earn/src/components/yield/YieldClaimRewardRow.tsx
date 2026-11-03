@@ -1,6 +1,11 @@
 import { toTokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import {
+    type BaseCurrencyAmount,
+    asBaseCurrencyAmount,
+    toTokenAddress,
+    toTokenSymbol,
+} from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -56,6 +61,10 @@ export const YieldClaimRewardRow = ({
                 />
                 <Box flexShrink={1}>
                     <ExactTokenAmountFormatter
+                        networkSymbol={networkSymbol}
+                        tokenContract={
+                            tokenContractAddress ? toTokenAddress(tokenContractAddress) : undefined
+                        }
                         value={asDecimalTokenAmount(amount)}
                         tokenSymbol={toTokenSymbol(tokenSymbol)}
                         maxDisplayedDecimals={tokenDecimals}

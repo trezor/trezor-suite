@@ -31,6 +31,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const rowStyle = prepareNativeStyle(utils => ({
@@ -107,9 +108,7 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
                     <HStack flex={1} alignItems="center" spacing="sp8">
                         <Box flexShrink={1}>
-                            <Text variant="body-sm" numberOfLines={1}>
-                                {displaySymbol}
-                            </Text>
+                            <TokenName text={displaySymbol ?? ''} networkSymbol={symbol} tokenContract={contractAddress} variant="body-sm" numberOfLines={1} />
                         </Box>
                         <AssetYieldRateBadge
                             networkSymbol={symbol}
@@ -136,6 +135,8 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                         <CompactTokenAmountFormatter
                             value={asDecimalTokenAmount(amount)}
                             tokenSymbol={tokenSymbol}
+                            networkSymbol={symbol}
+                            tokenContract={contractAddress}
                             tokenDecimals={tokenDecimals}
                             variant="body-xs"
                             color="contentTertiary"

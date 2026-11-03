@@ -22,6 +22,7 @@ export type TradeableAssetAccountBalanceProps = {
 
 type TokenBalanceProps = {
     accountKey: Account['key'];
+    networkSymbol: NetworkSymbol;
     tokenAddress: TokenAddress;
     tokenDecimals?: number;
     symbol: string;
@@ -36,6 +37,7 @@ type AssetBalanceProps = {
 
 const TokenBalance = ({
     accountKey,
+    networkSymbol,
     tokenAddress,
     tokenDecimals,
     symbol,
@@ -48,6 +50,8 @@ const TokenBalance = ({
 
     return (
         <CompactTokenAmountFormatter
+            networkSymbol={networkSymbol}
+            tokenContract={tokenAddress}
             value={asDecimalTokenAmount(balance)}
             tokenSymbol={symbol as TokenSymbol}
             tokenDecimals={tokenDecimals}
@@ -66,6 +70,7 @@ const AssetBalance = ({ account, asset, testID }: AssetBalanceProps) => {
         <DiscreetTextTrigger>
             {tokenAddress ? (
                 <TokenBalance
+                    networkSymbol={account.symbol}
                     symbol={symbol}
                     accountKey={accountKey}
                     tokenAddress={tokenAddress}

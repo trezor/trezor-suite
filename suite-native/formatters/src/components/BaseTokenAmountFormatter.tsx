@@ -4,8 +4,10 @@ import {
     useFormatters,
 } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
-import { type TokenSymbol } from '@suite-common/tokens';
-import { type TextProps } from '@suite-native/atoms';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { BlurUrls, type TextProps } from '@suite-native/atoms';
+import { TokenName } from '@suite-native/tokens';
 
 import { type DiscreetMode, type FormatterProps } from '../types';
 import { type DecimalTokenAmount } from '../utils';
@@ -13,6 +15,8 @@ import { FormattedCryptoAmountText } from './FormattedCryptoAmountText';
 
 export type TokenAmountFormatterCommonProps = {
     tokenSymbol: TokenSymbol | null;
+    networkSymbol?: NetworkSymbol;
+    tokenContract?: TokenAddress;
     discreetMode?: DiscreetMode;
     signValue?: SignValue;
 } & FormatterProps<DecimalTokenAmount> &
@@ -29,6 +33,10 @@ export type BaseTokenAmountFormatterProps = TokenAmountFormatterCommonProps & {
 export const BaseTokenAmountFormatter = ({
     value,
     tokenSymbol,
+    networkSymbol,
+    tokenContract,
+    variant = 'body-sm',
+    color = 'contentSecondary',
     discreetMode = 'auto',
     tokenDecimals,
     maxDisplayedDecimals,
@@ -49,7 +57,24 @@ export const BaseTokenAmountFormatter = ({
                 formatStyle={formatStyle}
                 tokenDecimals={tokenDecimals}
             />
-            {tokenSymbol ? joinAmountWithSymbol('', tokenSymbol) : null}
+            {tokenSymbol &&
+                (networkSymbol ? (
+                    <TokenName
+                        isInline
+                        text={joinAmountWithSymbol('', tokenSymbol)}
+                        networkSymbol={networkSymbol}
+                        tokenContract={tokenContract}
+                        variant={variant}
+                        color={color}
+                    />
+                ) : (
+                    <BlurUrls
+                        isInline
+                        text={joinAmountWithSymbol('', tokenSymbol)}
+                        variant={variant}
+                        color={color}
+                    />
+                ))}
         </>
     );
 
@@ -57,6 +82,8 @@ export const BaseTokenAmountFormatter = ({
         <FormattedCryptoAmountText
             formattedValue={formattedValue}
             discreetMode={discreetMode}
+            variant={variant}
+            color={color}
             {...rest}
         />
     );

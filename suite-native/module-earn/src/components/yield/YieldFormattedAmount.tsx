@@ -1,5 +1,6 @@
 import { toTokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
@@ -38,6 +39,8 @@ export const YieldFormattedAmount = ({
     if (tokenContract) {
         return (
             <CompactTokenAmountFormatter
+                networkSymbol={networkSymbol}
+                tokenContract={toTokenAddress(tokenContract)}
                 value={asDecimalTokenAmount(value)}
                 tokenDecimals={tokenDecimals}
                 tokenSymbol={tokenSymbol ? toTokenSymbol(tokenSymbol) : null}

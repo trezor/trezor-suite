@@ -34,6 +34,8 @@ export const YieldWrappedNativeReceivingCard = ({
                     size="extraSmall"
                 />
                 <ExactTokenAmountFormatter
+                    networkSymbol={networkSymbol}
+                    tokenContract={tokenContract}
                     value={asDecimalTokenAmount(amount)}
                     tokenSymbol={tokenSymbol}
                     maxDisplayedDecimals={tokenDecimals}

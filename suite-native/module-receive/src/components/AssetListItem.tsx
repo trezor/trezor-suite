@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import {
@@ -87,6 +87,12 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                 secondaryValue={
                     balance && (
                         <CompactTokenAmountFormatter
+                            networkSymbol={asset.networkSymbol}
+                            tokenContract={
+                                asset.contractAddress
+                                    ? toTokenAddress(asset.contractAddress)
+                                    : undefined
+                            }
                             value={asDecimalTokenAmount(balance.cryptoAmount)}
                             tokenSymbol={toTokenSymbol(asset.symbol)}
                             numberOfLines={1}
