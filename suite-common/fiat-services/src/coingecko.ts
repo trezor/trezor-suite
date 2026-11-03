@@ -45,13 +45,24 @@ type FetchCoinGeckoOptions = {
 
 const NOT_FOUND_STATUS = 404;
 
-const requestCoinGecko = (url: string, options: FetchCoinGeckoOptions = {}): Promise<Response> =>
-    options.skipCache
-        ? fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' }, signal: options.signal })
-        : rateLimiter.limit(fetchSignal => fetchUrl(url, { signal: fetchSignal }), options.signal, {
-              priority: options.priority,
-              label: url.replace(COINGECKO_API_BASE_URL, ''),
-          });
+const requestCoinGecko = (url: string, options: FetchCoinGeckoOptions = {}): Promise<Response> => {
+    const label = url.replace(COINGECKO_API_BASE_URL, '');
+
+    if (options.skipCache) {
+        console.warn(`[coingecko queue] bypass (skipCache) ${label}`);
+
+        return fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' }, signal: options.signal });
+    }
+
+    return rateLimiter.limit(
+        fetchSignal => fetchUrl(url, { signal: fetchSignal }),
+        options.signal,
+        {
+            priority: options.priority,
+            label,
+        },
+    );
+};
 
 const fetchCoinGecko = async (url: string, options: FetchCoinGeckoOptions = {}) => {
     try {

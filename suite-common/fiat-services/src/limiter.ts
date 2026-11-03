@@ -21,8 +21,6 @@ type Job = {
 
 const STALL_LOG_INTERVAL_MS = 5_000;
 
-const isQueueLoggingEnabled = process.env.NODE_ENV !== 'production';
-
 // Poor man's rate limiter that slows down requests so there is a `delayMs` gap between them.
 export class RateLimiter {
     private readonly delayMs: number; // gap between each request
@@ -39,7 +37,7 @@ export class RateLimiter {
     }
 
     private log(message: string) {
-        if (this.name && isQueueLoggingEnabled) {
+        if (this.name) {
             console.warn(`[${this.name} queue] ${message}`);
         }
     }
