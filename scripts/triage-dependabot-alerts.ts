@@ -326,7 +326,10 @@ const renderIssueBody = (
                   '',
                   '### Possibly stale alerts',
                   '',
-                  'No installed version matches the vulnerable range, the lockfile is probably already fixed and the alert awaits a rescan:',
+                  'No installed version matches the vulnerable range, the lockfile is probably already fixed and the alert awaits a rescan.',
+                  'This is normal when regenerating the report with alerts partially fixed locally.',
+                  'May also be a bug in version matching → verify each version of these packages in `yarn.lock` and compare with their security alerts.',
+                  '',
                   staleAlerts
                       .map(
                           alert => `${renderAlertLink(alert)} \`${alert.dependency.package.name}\``,
@@ -361,10 +364,18 @@ const renderIssueBody = (
         '',
         '- **Explicit dependency**: bump it in all `package.json` files (or use `ncu` if installed locally), then `yarn`.',
         '- **Transitive dependency**: force the lockfile resolution of the offending descriptor, e.g. `yarn set resolution undici@npm:^1.2.3 npm:1.2.4` (see `yarn why <package>` for the descriptors).',
-        '- **Patched version outside the requested range** (marked ⚠️): the dependent package may break, as the fix crosses its semver range (note that for `0.x` versions, each minor is breaking). Prefer bumping the dependent package to a version that requires the fix. Otherwise force it knowingly via `yarn set resolution` or root `resolutions` and test the affected functionality.',
+        '- **Patched version outside the requested range** (marked ⚠️): the dependent package may break, as the fix crosses its semver range',
+        '  - Note that for `0.x` versions, each minor is considered breaking, as if it were major).',
+        '  - Prefer bumping the dependent package to a version that has the patched version in its requested range.',
+        '  - Otherwise force it via `yarn set resolution` or root package.json `resolutions`. In that case, this must be mentioned in Notes for QA.',
         '- **`npmMinimalAgeGate`**: if the patched version cannot be installed because it is too new, feel free to add an exception to `npmPreapprovedPackages` in `.yarnrc.yml`. Security fixes are a sensible override of this rule.',
         '',
         'Ultimately, it is up to the implementer how to proceed with the fixes.',
+        '',
+        '### Agent instructions',
+        '- Writing to `.yarnrc.yml` may be restricted. If the patched requires editing `.yarnrc.yml`, STOP, give instructions to a human to edit the file, and continue only after the edit is in place.',
+        '- After each package bump, run `yarn && yarn dedupe` and check the resulting `yarn.lock`.',
+        '- When forcing a package resolution, always read changelogs upstream and flag risky changes. Do not proceed if it would require bumping the major version.',
     ].join('\n');
 };
 
