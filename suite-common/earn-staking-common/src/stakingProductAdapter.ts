@@ -1,5 +1,6 @@
 import type { StakingAccount } from './stakingAccount';
 import type { StakingAmount } from './stakingAmount';
+import type { StakingCustomFee, StakingFeeLevelLabel } from './stakingFeeLevels';
 import type { StakingOperation, StakingOperationOptions } from './stakingOperation';
 import type {
     ComposedStakingStep,
@@ -36,18 +37,22 @@ export type PlanOperationParams = GetAmountBoundsParams & {
     amount: StakingAmount | null;
 };
 
-export type ComposeStepParams = {
+export type StakingStepParams = {
     account: StakingAccount;
     plan: StakingPlan;
     step: StakingStep;
 };
 
-export type SignStepParams = ComposeStepParams & {
-    composedStep: ComposedStakingStep;
-    feeLevel: string;
+export type ComposeStepParams = StakingStepParams & {
+    customFee: StakingCustomFee | null;
 };
 
-export type BroadcastStepParams = ComposeStepParams & {
+export type SignStepParams = StakingStepParams & {
+    composedStep: ComposedStakingStep;
+    feeLevel: StakingFeeLevelLabel;
+};
+
+export type BroadcastStepParams = StakingStepParams & {
     signedStep: SignedStakingStep;
 };
 

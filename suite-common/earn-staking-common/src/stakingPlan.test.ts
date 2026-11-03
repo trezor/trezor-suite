@@ -1,5 +1,14 @@
-import { stakingPlanSchema } from './stakingPlan';
-import { mockStakingPlan, mockStakingStep } from '../mocks';
+import {
+    composedStakingStepSchema,
+    signedStakingStepSchema,
+    stakingPlanSchema,
+} from './stakingPlan';
+import {
+    mockComposedStakingStep,
+    mockSignedStakingStep,
+    mockStakingPlan,
+    mockStakingStep,
+} from '../mocks';
 
 describe('stakingPlanSchema', () => {
     it('parses a plan unchanged', () => {
@@ -59,5 +68,64 @@ describe('stakingPlanSchema', () => {
         });
 
         expect(result.success).toBe(false);
+    });
+});
+
+describe('composedStakingStepSchema', () => {
+    it('parses a composed step unchanged', () => {
+        const composedStep = mockComposedStakingStep();
+
+        expect(composedStakingStepSchema.parse(composedStep)).toEqual(composedStep);
+    });
+
+    it('accepts a solana validity window and an opaque unsigned transaction', () => {
+        const composedStep = mockComposedStakingStep({
+            validityMs: 24_000,
+            unsignedTx: { message: 'AQAB', lastValidBlockHeight: 123 },
+        });
+
+        expect(composedStakingStepSchema.parse(composedStep)).toEqual(composedStep);
+    });
+
+    it('rejects a validity window that is not a positive integer', () => {
+        expect(
+            composedStakingStepSchema.safeParse(mockComposedStakingStep({ validityMs: 0 })).success,
+        ).toBe(false);
+        expect(
+            composedStakingStepSchema.safeParse(mockComposedStakingStep({ validityMs: 1.5 }))
+                .success,
+        ).toBe(false);
+    });
+
+    it('rejects an output without an address', () => {
+        const result = composedStakingStepSchema.safeParse(
+            mockComposedStakingStep({
+                outputs: [{ address: '', amount: '1' as never }],
+            }),
+        );
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['outputs', 0, 'address']);
+    });
+
+    it('rejects an expiry stamped by the adapter', () => {
+        const result = composedStakingStepSchema.safeParse({
+            ...mockComposedStakingStep(),
+            expiresAt: 1_777_000_000_000,
+        });
+
+        expect(result.success).toBe(false);
+    });
+});
+
+describe('signedStakingStepSchema', () => {
+    it('parses a signed step unchanged', () => {
+        const signedStep = mockSignedStakingStep();
+
+        expect(signedStakingStepSchema.parse(signedStep)).toEqual(signedStep);
+    });
+
+    it('rejects an empty serialized transaction', () => {
+        expect(signedStakingStepSchema.safeParse({ serializedTx: '' }).success).toBe(false);
     });
 });

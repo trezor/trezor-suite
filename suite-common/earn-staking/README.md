@@ -8,4 +8,8 @@ Both apps register the state as `state.earn.staking`, under the `earn` key that 
 
 Product info is server data, so it lives in the app's shared query client under `commonQueryKeys.stakingProductInfo`, fetched through the product adapters by `refreshStakingProductInfoThunk`; the redux state holds the platform, the descriptors and the positions only.
 
+Staking operations run as sessions, one per account, product and operation, keyed by `getStakingSessionKey`. A session holds the plan and one status-tagged entry per step: `pending`, `composed`, `signing`, `signed`, `broadcasting`, `awaiting`, `done` or `failed`. A recoverable error keeps the step where the next thunk can retry it and sits on the step as a kind and code; `failed` is an on-chain outcome. The review modal and screens read the step that is signing, signed or broadcasting through `selectStakingReview`, which is derived from the sessions, so nothing can go stale. Sessions are not persisted.
+
+`toPrecomposedLevels` turns a composed step into the precomposed levels the existing fee pickers accept.
+
 `@suite-common/earn-staking/mocks` holds test factories.

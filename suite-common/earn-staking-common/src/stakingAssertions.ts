@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-import { type StakingPlan, stakingPlanSchema } from './stakingPlan';
+import {
+    type ComposedStakingStep,
+    type StakingPlan,
+    composedStakingStepSchema,
+    stakingPlanSchema,
+} from './stakingPlan';
 import { type StakingPosition, stakingPositionSchema } from './stakingPosition';
 
 const isStakingValidationEnabled = process.env.NODE_ENV !== 'production';
@@ -20,3 +25,6 @@ export const assertStakingPosition = (position: StakingPosition): void =>
 
 export const assertStakingPlan = (plan: StakingPlan): void =>
     assertMatches(stakingPlanSchema, plan, 'Staking plan');
+
+export const assertComposedStakingStep = (composedStep: ComposedStakingStep): void =>
+    assertMatches(composedStakingStepSchema, composedStep, 'Composed staking step');
