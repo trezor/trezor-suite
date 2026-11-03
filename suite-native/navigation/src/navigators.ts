@@ -87,6 +87,11 @@ type AccountDetailParams = {
     closeActionType: CloseActionType;
 } & AccountIdentityParams;
 
+type AssetParams = {
+    networkSymbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
+};
+
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: { networksFilter?: NetworkSymbol[] } | undefined;
 };
@@ -102,10 +107,7 @@ export type SignAndVerifyStackParamList = {
 };
 
 export type AssetsStackParamList = {
-    [AssetsStackRoutes.AssetDetail]: {
-        networkSymbol: NetworkSymbol;
-        tokenContract?: TokenAddress;
-    };
+    [AssetsStackRoutes.AssetDetail]: AssetParams;
 };
 
 export type EarnStackParamList = {
@@ -272,13 +274,7 @@ export type ReceiveAddressVerificationStackParamList = {
 };
 
 export type SendStackParamList = {
-    [SendStackRoutes.SendAccounts]:
-        | {
-              networksFilter?: NetworkSymbol[];
-              tokenContract?: TokenAddress;
-              isAssetPreselected?: boolean;
-          }
-        | undefined;
+    [SendStackRoutes.SendAccounts]: { asset?: AssetParams } | undefined;
     [SendStackRoutes.SendOutputs]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;

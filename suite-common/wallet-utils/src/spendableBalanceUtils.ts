@@ -2,7 +2,6 @@ import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 
 import { isPositiveBalance } from './balanceUtils';
 import { findToken } from './sendFormUtils';
-import { isStellarContractToken } from './transactionUtils';
 
 type HasAccountOrTokenSpendableBalanceParams = {
     account: Account | null | undefined;
@@ -20,9 +19,7 @@ export const hasAccountOrTokenSpendableBalance = ({
     }
 
     const token = findToken(account.tokens, tokenContract);
-
-    // Stellar contract tokens do not have a send composer yet.
-    if (!token || isStellarContractToken(token)) return false;
+    if (!token) return false;
 
     return isPositiveBalance(token.balance ?? '0');
 };

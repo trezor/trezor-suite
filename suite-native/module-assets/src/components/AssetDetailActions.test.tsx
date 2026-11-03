@@ -1,7 +1,13 @@
-import { selectWalletAssetHasSpendableBalance } from '@suite-common/assets';
+import { selectWalletAssetAccounts } from '@suite-common/assets';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type TokenAddress,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { selectFilteredDeviceAccountListRows } from '@suite-native/accounts';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import {
     type AssetsStackParamList,
@@ -17,7 +23,21 @@ import { AssetDetailActions } from './AssetDetailActions';
 const mockNavigate = jest.fn();
 const mockNetworkSymbol = asNetworkSymbol('eth');
 const mockTokenContract = '0x1234567890123456789012345678901234567890' as TokenAddress;
+const mockAccount = mockWalletAccount({
+    descriptor: asAccountDescriptor('ethdefault'),
+    symbol: mockNetworkSymbol,
+});
+const mockSecondAccount = mockWalletAccount({
+    descriptor: asAccountDescriptor('ethsecond'),
+    symbol: mockNetworkSymbol,
+});
+const mockAccountKey = mockAccount.key;
 const mockReceiveAsset = { networkSymbol: mockNetworkSymbol };
+const getAccountRow = (accountKey: AccountKey) => ({
+    accountKey,
+    isFirst: true,
+    isLast: true,
+});
 const mockRouteParams: AssetsStackParamList[AssetsStackRoutes.AssetDetail] = {
     networkSymbol: mockNetworkSymbol,
     tokenContract: mockTokenContract,
@@ -35,7 +55,11 @@ jest.mock('@suite-common/assets', () => ({
     selectWalletAssetKey: () => 'asset-key',
     selectWalletAssetName: () => 'USD Coin',
     selectWalletAssetTokenSymbol: () => 'USDC',
-    selectWalletAssetHasSpendableBalance: jest.fn(),
+    selectWalletAssetAccounts: jest.fn(),
+}));
+
+jest.mock('@suite-native/accounts', () => ({
+    selectFilteredDeviceAccountListRows: jest.fn(),
 }));
 
 jest.mock('@suite-common/device', () => ({
@@ -52,7 +76,8 @@ jest.mock('@suite-common/receive', () => ({
     buildGlobalReceiveAssetOption: () => mockReceiveAsset,
 }));
 
-const mockHasSpendableBalance = jest.mocked(selectWalletAssetHasSpendableBalance);
+const mockAssetAccounts = jest.mocked(selectWalletAssetAccounts);
+const mockSendableAccountRows = jest.mocked(selectFilteredDeviceAccountListRows);
 const mockIsPortfolioTrackerDevice = jest.mocked(selectIsPortfolioTrackerDevice);
 const mockHasFirmwareAuthenticityCheckHardFailed = jest.mocked(
     selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
@@ -61,7 +86,8 @@ const mockHasFirmwareAuthenticityCheckHardFailed = jest.mocked(
 describe('AssetDetailActions', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockHasSpendableBalance.mockReturnValue(true);
+        mockAssetAccounts.mockReturnValue([]);
+        mockSendableAccountRows.mockReturnValue([]);
         mockIsPortfolioTrackerDevice.mockReturnValue(false);
         mockHasFirmwareAuthenticityCheckHardFailed.mockReturnValue(false);
     });
@@ -80,7 +106,29 @@ describe('AssetDetailActions', () => {
         });
     });
 
+    it('opens the receive address directly when the asset has one account', async () => {
+        mockAssetAccounts.mockReturnValue([mockAccount]);
+
+        const { getByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
+
+        fireEvent.press(getByTestId('@assets/asset-detail/receive-button'));
+
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.ReceiveStack, {
+            screen: ReceiveStackRoutes.ReceiveAddress,
+            params: {
+                accountKey: mockAccountKey,
+                tokenContract: mockTokenContract,
+                closeActionType: 'back',
+            },
+        });
+    });
+
     it('opens send with the selected network prefiltered', async () => {
+        mockSendableAccountRows.mockReturnValue([
+            getAccountRow(mockAccountKey),
+            getAccountRow(mockSecondAccount.key),
+        ]);
+
         const { getByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
 
         fireEvent.press(getByTestId('@assets/asset-detail/send-button'));
@@ -88,15 +136,28 @@ describe('AssetDetailActions', () => {
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.SendStack, {
             screen: SendStackRoutes.SendAccounts,
             params: {
-                networksFilter: [mockNetworkSymbol],
+                asset: { networkSymbol: mockNetworkSymbol, tokenContract: mockTokenContract },
+            },
+        });
+    });
+
+    it('opens send outputs directly when the asset has one account', async () => {
+        mockSendableAccountRows.mockReturnValue([getAccountRow(mockAccountKey)]);
+
+        const { getByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
+
+        fireEvent.press(getByTestId('@assets/asset-detail/send-button'));
+
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.SendStack, {
+            screen: SendStackRoutes.SendOutputs,
+            params: {
+                accountKey: mockAccountKey,
                 tokenContract: mockTokenContract,
             },
         });
     });
 
-    it('offers no send button while the asset has nothing to spend', async () => {
-        mockHasSpendableBalance.mockReturnValue(false);
-
+    it('offers no send button when there are no sendable accounts', async () => {
         const { queryByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
 
         expect(queryByTestId('@assets/asset-detail/send-button')).toBeNull();
@@ -104,6 +165,7 @@ describe('AssetDetailActions', () => {
     });
 
     it('offers no send button on a portfolio tracker, which holds no keys to sign with', async () => {
+        mockSendableAccountRows.mockReturnValue([getAccountRow(mockAccountKey)]);
         mockIsPortfolioTrackerDevice.mockReturnValue(true);
 
         const { queryByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
@@ -113,6 +175,7 @@ describe('AssetDetailActions', () => {
     });
 
     it('offers no receive button once the firmware authenticity check hard fails', async () => {
+        mockSendableAccountRows.mockReturnValue([getAccountRow(mockAccountKey)]);
         mockHasFirmwareAuthenticityCheckHardFailed.mockReturnValue(true);
 
         const { queryByTestId } = await renderWithStoreProvider(<AssetDetailActions />);
@@ -122,7 +185,6 @@ describe('AssetDetailActions', () => {
     });
 
     it('renders nothing once neither action is left to offer', async () => {
-        mockHasSpendableBalance.mockReturnValue(false);
         mockHasFirmwareAuthenticityCheckHardFailed.mockReturnValue(true);
 
         const { queryByTestId } = await renderWithStoreProvider(<AssetDetailActions />);

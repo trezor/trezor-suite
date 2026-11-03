@@ -9,10 +9,8 @@ import {
     selectAccountUnrecognizedTokens,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import {
-    hasAccountOrTokenSpendableBalance,
-    tryGetAccountIdentity,
-} from '@suite-common/wallet-utils';
+import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { hasAccountOrTokenMobileSpendableBalance } from '@suite-native/accounts';
 import { type AccountOverviewTab } from '@suite-native/navigation';
 import { type TokensRootState } from '@suite-native/tokens';
 import { createWeakMapSelector } from '@trezor/redux-utils';
@@ -74,5 +72,5 @@ export const selectHasAccountOrTokenSpendableBalance = (
 ): boolean => {
     const account = selectAccountByKey(state, accountKey);
 
-    return hasAccountOrTokenSpendableBalance({ account, tokenContract });
+    return hasAccountOrTokenMobileSpendableBalance({ account, tokenContract });
 };
