@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.11.0.2
+
+- add `tradeApiInstallSalt` (per-installation trade API salt) object store
+
 ## 26.11.0.1
 
 - drop `connect` permissions remembered for an MCP client under the name it declared as its process path (any MCP grant whose process path equals the process name, which also drops a grant keyed by a bare argv[0] once)
