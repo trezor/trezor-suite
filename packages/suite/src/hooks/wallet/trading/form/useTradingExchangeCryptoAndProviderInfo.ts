@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
     type TradingExchangeType,
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { useTradingFormContext } from './useTradingCommonForm';
 
@@ -37,3 +36,7 @@ export const useTradingExchangeCryptoAndProviderInfo = () => {
 
     return getCryptoInfo;
 };
+
+export type GetTradingExchangeCryptoInfo = ReturnType<
+    typeof useTradingExchangeCryptoAndProviderInfo
+>;

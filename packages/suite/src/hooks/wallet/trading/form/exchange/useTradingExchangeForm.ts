@@ -111,7 +111,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         cryptoId: receiveCryptoSelect?.id,
         nonSuiteAccount: false,
     });
-    const { receiveAddress } = tradingReceiveAddress;
     const isReceiveAddressFormValid =
         Object.keys(tradingReceiveAddress.form.formState.errors).length === 0;
 
@@ -200,11 +199,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         composeRequest,
     });
 
-    const { verifyAddress, confirmApproval, approveTransaction, revokeApproval } =
-        useExchangeApproval({
-            account,
-            receiveAddress,
-        });
+    const { verifyAddress } = useExchangeApproval({ account });
 
     const { confirmTrade } = useTradingExchangeTradeActions();
 
@@ -261,9 +256,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         setAmountLimits,
         verifyAddress,
         confirmTrade,
-        approveTransaction,
-        revokeApproval,
-        confirmApproval,
         refreshQuotes,
         isScheduledQuotesRefresh,
         fetchFeesAndCompose,

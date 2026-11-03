@@ -166,15 +166,6 @@ export interface TradingExchangeFormContextProps
         trade,
     }: TradingExchangeConfirmTradeProps) => Promise<ExchangeTrade | undefined>;
     verifyAddress: TradingVerifyAccountProps;
-    approveTransaction: (trade: ExchangeTrade) => Promise<boolean>;
-    revokeApproval: (trade: ExchangeTrade) => Promise<boolean>;
-    confirmApproval: ({
-        trade,
-        receiveAddress,
-    }: {
-        trade?: ExchangeTrade;
-        receiveAddress: string;
-    }) => Promise<ExchangeTrade | undefined>;
     refreshQuotes: () => Promise<void>;
     isScheduledQuotesRefresh: boolean;
     fetchFeesAndCompose: () => Promise<void>;

@@ -39,7 +39,6 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
 
     return {
         quote,
-        quoteAmounts,
         selectedAssetCryptoId,
         isBaseButtonDisabled,
     };

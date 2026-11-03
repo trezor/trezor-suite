@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { type ExchangeTrade } from 'invity-api';
 import styled, { type DefaultTheme } from 'styled-components';
 
 import { Address } from '@suite/address';
@@ -5,15 +8,18 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
-    type TradingExchangeType,
+    type TradingFormAccountRootState,
     requiresTokenApproval,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
-    tradingExchangeActions,
     useApprovalStep,
     useTradingUtils,
 } from '@suite-common/trading';
-import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    type FeesRootState,
+    selectAreFeesLoading,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
 import { type AllowanceTransactionType } from '@suite-common/wallet-types';
 import { tokenSupportsIncreasingAllowance } from '@suite-common/wallet-utils';
 import { Banner, Button, Column } from '@trezor/components';
@@ -23,11 +29,9 @@ import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
-import { useSelector } from 'src/hooks/suite';
 import { useTradingAllowanceContext } from 'src/hooks/wallet/trading/allowance/useTradingAllowanceContext';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
+import { useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
+import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 
 const TextButton = styled.div<{ $disabled: boolean }>`
     color: ${({ theme, $disabled }) =>
@@ -40,40 +44,37 @@ const TextButton = styled.div<{ $disabled: boolean }>`
     }
 `;
 
-export const TradingFormApproval = () => {
-    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
-    // render-time read of it freezes on the first render. Remove once these reads move to
-    // `useWatch` or out of render.
-    'use no memo';
+type TradingFormApprovalProps = {
+    isComposing: boolean;
+    isFormInvalid: boolean;
+    refreshQuotes: () => Promise<void>;
+    onSwap: (quote: ExchangeTrade) => void;
+    getCryptoInfo: GetTradingExchangeCryptoInfo;
+};
 
-    const context = useTradingFormContext<TradingExchangeType>();
+export const TradingFormApproval = ({
+    isComposing,
+    isFormInvalid,
+    refreshQuotes,
+    onSwap,
+    getCryptoInfo,
+}: TradingFormApprovalProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const { tx, state: allowanceState } = useTradingAllowanceContext();
 
-    const {
-        watch,
-        getValues,
-        approveTransaction,
-        revokeApproval,
-        refreshQuotes,
-        confirmApproval,
-        isScheduledQuotesRefresh,
-        isComposing,
-        form: {
-            state: { isFormLoading, isFormInvalid },
-            helpers,
-        },
-    } = context;
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
-    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'exchange'));
-
-    const { exchangeType, rateType } = watch();
-
-    const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
+    const account = useSelector((reduxState: TradingFormAccountRootState) =>
+        selectTradingSendAccount(reduxState, 'exchange'),
+    );
+    const { approveTransaction, revokeApproval, confirmApproval } = useExchangeApproval({
+        account,
+    });
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account?.symbol));
+    const areFeesLoading = useSelector((state: FeesRootState) =>
+        selectAreFeesLoading(state, account?.symbol),
+    );
 
     const { handleClick: handleApproveClick, disabled: isApproveButtonLoading } =
         useAsyncClickHandler();
@@ -157,15 +158,7 @@ export const TradingFormApproval = () => {
             return;
         }
 
-        dispatch(tradingExchangeActions.saveFormValues(getValues()));
-        dispatch(
-            selectExchangeQuoteThunk({
-                quote: selectedQuote,
-                exchangeType,
-                rateType,
-                fractionButton: helpers.fractionButton,
-            }),
-        );
+        onSwap(selectedQuote);
     };
 
     const onRefreshClick = async () => {
@@ -183,11 +176,9 @@ export const TradingFormApproval = () => {
 
     const isCommonButtonBusy =
         !account ||
-        isFormLoading ||
         isFormInvalid ||
         areFeesLoading ||
         isComposing ||
-        isScheduledQuotesRefresh ||
         isDiscoveryRunning ||
         allowanceState.isWaitingForDevice;
 
@@ -204,8 +195,7 @@ export const TradingFormApproval = () => {
     const isSwapButtonDisabled = isActionButtonDisabled(isSwapButtonLoading, 'approve');
     const isRevokeButtonDisabled = isActionButtonDisabled(isRevokeButtonLoading, 'approve');
 
-    const isRefreshButtonDisabled =
-        isRefreshButtonLoading || isFormLoading || isScheduledQuotesRefresh || isDiscoveryRunning;
+    const isRefreshButtonDisabled = isRefreshButtonLoading || isDiscoveryRunning;
 
     const isApprovalTxPreApproved =
         selectedQuote?.preapprovedStringAmount && selectedQuote.preapprovedStringAmount !== '0';
@@ -252,7 +242,6 @@ export const TradingFormApproval = () => {
                                         isLoading={
                                             isApproveButtonLoading ||
                                             isRevokeButtonLoading ||
-                                            isFormLoading ||
                                             areFeesLoading ||
                                             isComposing
                                         }
@@ -307,7 +296,6 @@ export const TradingFormApproval = () => {
                         isLoading={
                             isSwapButtonLoading ||
                             isRevokeButtonLoading ||
-                            isFormLoading ||
                             areFeesLoading ||
                             isComposing
                         }

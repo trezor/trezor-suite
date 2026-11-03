@@ -1,12 +1,12 @@
-import { useCallback, useMemo } from 'react';
-
-import { type CryptoId } from 'invity-api';
+import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import {
+    type TradingFormAccountRootState,
+    type TradingRootState,
     parseCryptoId,
-    selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
+    selectTradingProviderByNameAndTradeType,
     selectTradingSendAccount,
     tradeApi,
 } from '@suite-common/trading';
@@ -15,33 +15,34 @@ import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 
 import { ApproveModal } from 'src/components/wallet/Allowance/ApproveModal';
-import { useSelector } from 'src/hooks/suite';
 import { useTradingAllowanceContext } from 'src/hooks/wallet/trading/allowance/useTradingAllowanceContext';
+import { useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
 import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-
-type TradingApproveModalProps = {
-    amount: string;
-    cryptoId: CryptoId;
-};
+import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 
 const LIMIT_TYPE_ANALYTICS_ACTION = {
     minimal: 'limit-exact',
     unlimited: 'limit-unlimited',
 } as const satisfies Record<AllowanceLimitType, 'limit-exact' | 'limit-unlimited'>;
 
-export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalProps) => {
-    const { state, tx } = useTradingAllowanceContext();
-    const context = useTradingFormContext();
-    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
-    const { analytics } = useServices(injectDesktopAnalytics);
-    const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
-    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
-    const providersInfo = useSelector(selectTradingExchangeProviders);
+type TradingApproveModalProps = {
+    amount: string;
+    getCryptoInfo: GetTradingExchangeCryptoInfo;
+};
 
-    const handleCancel = useCallback(async () => {
+export const TradingApproveModal = ({ amount, getCryptoInfo }: TradingApproveModalProps) => {
+    const { state, tx } = useTradingAllowanceContext();
+    const account = useSelector((reduxState: TradingFormAccountRootState) =>
+        selectTradingSendAccount(reduxState, 'exchange'),
+    );
+    const { analytics } = useServices(injectDesktopAnalytics);
+    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
+    const providerInfo = useSelector((reduxState: TradingRootState) =>
+        selectTradingProviderByNameAndTradeType(reduxState, selectedQuote?.exchange, 'exchange'),
+    );
+    const { confirmApproval } = useExchangeApproval({ account });
+
+    const handleCancel = async () => {
         analytics.report({
             type: events.tradeApprovalEvent.name,
             payload: {
@@ -53,15 +54,15 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
 
         state.closeApproveModal();
 
-        if (isTradingExchangeContext(context) && selectedQuote?.receiveAddress) {
-            await context.confirmApproval({
+        if (selectedQuote?.receiveAddress) {
+            await confirmApproval({
                 trade: { ...selectedQuote, approvalType: undefined },
                 receiveAddress: selectedQuote.receiveAddress,
             });
         }
-    }, [analytics, getCryptoInfo, state, context, selectedQuote]);
+    };
 
-    const onConfirm = useCallback(() => {
+    const onConfirm = () => {
         analytics.report({
             type: events.tradeApprovalEvent.name,
             payload: {
@@ -70,62 +71,61 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
                 ...getCryptoInfo(),
             },
         });
-    }, [analytics, getCryptoInfo]);
+    };
 
-    const onSelectLimitType = useCallback(
-        (limitType: AllowanceLimitType) => {
-            analytics.report({
-                type: events.tradeApprovalEvent.name,
-                payload: {
-                    type: 'approve-modal',
-                    action: LIMIT_TYPE_ANALYTICS_ACTION[limitType],
-                    ...getCryptoInfo(),
-                },
-            });
-        },
-        [analytics, getCryptoInfo],
-    );
+    const onSelectLimitType = (limitType: AllowanceLimitType) => {
+        analytics.report({
+            type: events.tradeApprovalEvent.name,
+            payload: {
+                type: 'approve-modal',
+                action: LIMIT_TYPE_ANALYTICS_ACTION[limitType],
+                ...getCryptoInfo(),
+            },
+        });
+    };
 
-    const onSendStart = useCallback(() => {
+    const onSendStart = () => {
         state.setIsWaitingForDevice(true);
-    }, [state]);
+    };
 
-    const onSent = useCallback(
-        (txid: string) => {
-            tx.setApprovalTxid(txid);
-            state.setIsWaitingForDevice(false);
-            state.closeApproveModal();
-        },
-        [tx, state],
-    );
-
-    const onSendFailed = useCallback(() => {
+    const onSent = (txid: string) => {
+        tx.setApprovalTxid(txid);
         state.setIsWaitingForDevice(false);
-    }, [state]);
+        state.closeApproveModal();
+    };
 
-    const approveParams = useMemo(() => {
-        if (!isTradingExchangeContext(context)) {
+    const onSendFailed = () => {
+        state.setIsWaitingForDevice(false);
+    };
+
+    const getApproveParams = () => {
+        if (!selectedQuote?.send) {
             return null;
         }
 
-        const exchange = selectedQuote?.exchange;
-        const provider = exchange ? providersInfo?.[exchange] : null;
+        const spender = getErc20ApproveSpender(selectedQuote.dexTx?.data);
+        const { contractAddress: tokenContractAddress } = parseCryptoId(selectedQuote.send);
 
-        const spender = getErc20ApproveSpender(selectedQuote?.dexTx?.data) ?? null;
-        const preapprovedAmount = selectedQuote?.preapprovedStringAmount;
+        if (!providerInfo || !spender || !tokenContractAddress) {
+            return null;
+        }
 
-        return provider && spender ? { provider, spender, preapprovedAmount } : null;
-    }, [context, providersInfo, selectedQuote]);
+        return {
+            provider: providerInfo,
+            spender,
+            tokenContractAddress,
+            preapprovedAmount: selectedQuote.preapprovedStringAmount,
+        };
+    };
 
-    const { provider, spender, preapprovedAmount } =
-        useModalLastValidParams(approveParams, state.isApproveModalOpen) ?? {};
+    const modalParams = useModalLastValidParams(getApproveParams(), state.isApproveModalOpen);
 
-    if (!state.isApproveModalOpen || !provider || !spender || !account) {
+    if (!modalParams || !account) {
         return null;
     }
 
+    const { provider, spender, tokenContractAddress, preapprovedAmount } = modalParams;
     const providerLogo = provider.logo ? tradeApi.getProviderLogoUrl(provider.logo) : undefined;
-    const { contractAddress: tokenContractAddress = '' } = parseCryptoId(cryptoId);
 
     return (
         <ApproveModal
