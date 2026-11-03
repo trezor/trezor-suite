@@ -1,0 +1,25 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-common/recipient-history"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../intl" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/icons" },
+        {
+            "path": "../../packages/product-components"
+        }
+    ]
+}

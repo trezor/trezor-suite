@@ -7,6 +7,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { openDeferredModal } from '@suite/modal';
+import { RecipientHistoryNote, useRecipientHistoryNote } from '@suite/recipient-history';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import {
     type AddressCorrection,
@@ -37,7 +38,7 @@ import {
     isProgramDerivedAccount,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
+import { BottomText, Column, Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
@@ -154,6 +155,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     // Reverse resolution runs for every hex address typed; it is a bonus lookup, so it must not
     // announce itself or occupy the bottom text the way a name the user typed does.
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
+    const recipientHistoryNoteVariant = useRecipientHistoryNote({
+        accountKey: account.key,
+        recipientAddress: resolvedNamedAddress ?? address,
+    });
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
@@ -635,6 +640,27 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         return undefined;
     };
 
+    const addressHint = getBottomText();
+    const shouldShowRecipientHistoryNote =
+        !!recipientHistoryNoteVariant && !addressError && !isAddressWithLabel;
+    // Rows of their own, so the note never replaces what a name resolved to.
+    const bottomText = (addressHint || shouldShowRecipientHistoryNote) && (
+        <Column gap={4}>
+            {addressHint && (
+                <BottomText
+                    hasError={!!addressError}
+                    iconComponent={getBottomTextIconComponent()}
+                    data-testid="@send/address/hint"
+                >
+                    {addressHint}
+                </BottomText>
+            )}
+            {shouldShowRecipientHistoryNote && (
+                <RecipientHistoryNote variant={recipientHistoryNoteVariant} />
+            )}
+        </Column>
+    );
+
     return (
         <Input
             hasError={!!addressError}
@@ -705,8 +731,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     )}
                 </Row>
             }
-            bottomText={getBottomText()}
-            bottomTextIconComponent={getBottomTextIconComponent()}
+            bottomText={bottomText}
             data-testid={inputName}
             defaultValue={addressValue}
             maxLength={ADDRESS_MAX_LENGTH}

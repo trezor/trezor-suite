@@ -134,6 +134,7 @@
         "@suite/onboarding-components": "workspace:*",
         "@suite/price-chart": "workspace:*",
         "@suite/receive": "workspace:*",
+        "@suite/recipient-history": "workspace:*",
         "@suite/recovery": "workspace:*",
         "@suite/regions": "workspace:*",
         "@suite/router": "workspace:*",

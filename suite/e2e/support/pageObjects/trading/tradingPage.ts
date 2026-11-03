@@ -83,7 +83,7 @@ export class TradingPage {
     // Send fields and buttons
     readonly sendAddressInput: Locator;
     readonly sendAddressHint: Locator;
-    readonly sendAddressSecondaryHint: Locator;
+    readonly sendAddressRecipientHistoryNote: Locator;
     readonly sendAmountInput: Locator;
     readonly sendButton: Locator;
     readonly sendBalance: Locator;
@@ -139,8 +139,8 @@ export class TradingPage {
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
         const sendAddressBottomText = this.page.getByTestId('outputs.0.address/bottom-text');
         this.sendAddressHint = sendAddressBottomText.getByTestId('@send/address/hint');
-        this.sendAddressSecondaryHint = sendAddressBottomText.getByTestId(
-            '@send/address/secondary-hint',
+        this.sendAddressRecipientHistoryNote = sendAddressBottomText.getByTestId(
+            '@send/address/recipient-history-note',
         );
         this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
         this.sendButton = this.page.getByTestId('@send/review-button');
