@@ -13,13 +13,13 @@ import {
     selectAccountTransactionsFetchStatus,
     selectAccountTransactionsWithNulls,
     selectAreAllAccountTransactionsLoaded,
+    selectHistoryCoveredSince,
     selectIsPageAlreadyFetched,
     useDirectRpcHistoryState,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
     type MonthKey,
-    getHistoryCoveredSince,
     getOlderHistoryFrom,
     groupTransactionsByDate,
     isPending,
@@ -330,7 +330,9 @@ export const TransactionList = ({
     const visibleTransactionCount = data.filter(item => typeof item !== 'string').length;
     const hasInitialScanFailed = directRpcHistoryState === 'unscanned' && fetchStatus === 'error';
     const isHistoryUnscanned = directRpcHistoryState === 'unscanned' && !hasInitialScanFailed;
-    const historyCoveredSince = getHistoryCoveredSince(account);
+    const historyCoveredSince = useSelector((state: TransactionsRootState & AccountsRootState) =>
+        selectHistoryCoveredSince(state, accountKey),
+    );
     const [requestedVisibleCount, setRequestedVisibleCount] = useState<number>(txnsPerPage);
     const [autoFillLastPage, setAutoFillLastPage] = useState(
         initialPageNumber + YIELD_AUTO_FILL_PAGE_LIMIT - 1,

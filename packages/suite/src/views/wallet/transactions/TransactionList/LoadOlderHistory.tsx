@@ -3,8 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import { type TransactionsRootState, fetchTransactionsPageThunk } from '@suite-common/wallet-core';
-import { getHistoryCoveredSince, getOlderHistoryFrom } from '@suite-common/wallet-utils';
+import {
+    type AccountsRootState,
+    type TransactionsRootState,
+    fetchTransactionsPageThunk,
+    selectHistoryCoveredSince,
+} from '@suite-common/wallet-core';
+import { getOlderHistoryFrom } from '@suite-common/wallet-utils';
 import { Button, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -33,6 +38,13 @@ export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
     const loadedCounts = useSelector((state: TransactionsRootState) =>
         selectStoredTransactionCounts(state, olderAccounts),
     );
+    const coveredSince = useSelector((state: TransactionsRootState & AccountsRootState) => {
+        const coveredSinceDates = olderAccounts
+            .map(account => selectHistoryCoveredSince(state, account.key))
+            .filter(date => date !== undefined);
+
+        return coveredSinceDates.length > 0 ? Math.max(...coveredSinceDates) : undefined;
+    });
 
     if (olderAccounts.length === 0) return null;
 
@@ -62,13 +74,6 @@ export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
             setIsLoading(false);
         }
     };
-
-    // A step can find nothing, so the date the list reaches back to is what shows the press worked.
-    // With several accounts it is the latest of their dates, the one all of them reach.
-    const coveredSinceDates = olderAccounts
-        .map(getHistoryCoveredSince)
-        .filter(date => date !== undefined);
-    const coveredSince = coveredSinceDates.length > 0 ? Math.max(...coveredSinceDates) : undefined;
 
     return (
         <Column gap={32}>

@@ -26,6 +26,7 @@ import {
     getErc4626Contracts,
     getEvmPrivatePendingHint,
     getFiatRateKey,
+    getHistoryCoveredSince,
     isNftTokenTransfer,
     isPending,
     isStakeTypeTx,
@@ -364,6 +365,20 @@ export const selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp = create
         const lastTransaction = transactions[transactions.length - 1];
 
         return lastTransaction?.blockTime && lastTransaction.blockTime < timestamp;
+    },
+);
+
+export const selectHistoryCoveredSince = createMemoizedSelector(
+    [selectAccountByKey, selectAccountTransactions],
+    (account, transactions) => {
+        const coveredSince = account ? getHistoryCoveredSince(account) : undefined;
+        if (coveredSince === undefined) return undefined;
+
+        return transactions.reduce(
+            (oldest, tx) =>
+                !isPending(tx) && tx.blockTime ? Math.min(oldest, tx.blockTime) : oldest,
+            coveredSince,
+        );
     },
 );
 
