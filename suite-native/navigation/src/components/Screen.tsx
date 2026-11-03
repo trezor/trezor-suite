@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import { type ScrollViewProps, View, type ViewProps } from 'react-native';
+import { type LayoutChangeEvent, type ScrollViewProps, View, type ViewProps } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { type EdgeInsets } from 'react-native-safe-area-context';
@@ -9,7 +9,12 @@ import { useRoute } from '@react-navigation/native';
 import { type RequireOneOrNone } from 'type-fest';
 
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
-import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
+import {
+    Box,
+    ScreenTopEdgeFade,
+    isLiquidGlassAvailable,
+    useBannerAwareSafeAreaInsets,
+} from '@suite-native/atoms';
 import { KeyboardToolbar, KeyboardToolbarHost } from '@suite-native/keyboard';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color, type NativeSpacing } from '@trezor/theme';
@@ -38,6 +43,11 @@ export type ScreenProps = {
     focusedInputBottomOffset?: number;
     isFooterKeyboardAware?: boolean;
     hasBottomInset?: boolean;
+    /**
+     * Lets scrollable content pass under the header, so its Liquid Glass surfaces show through.
+     * Only applies where Liquid Glass is available, elsewhere the header stays above the content.
+     */
+    isHeaderFloating?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
     containerStyle?: ViewProps['style'];
 } & RequireOneOrNone<{
@@ -45,24 +55,32 @@ export type ScreenProps = {
     keyboardToolbarHostName?: string;
 }>;
 
+const getScreenTopPadding = (insets: EdgeInsets, isMessageBannerDisplayed: boolean, sp8: number) =>
+    // If the message banner is displayed, the app content is rendered right under the banner.
+    isMessageBannerDisplayed ? 0 : Math.max(insets.top, sp8);
+
 const screenContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
     insets: EdgeInsets;
     isMessageBannerDisplayed: boolean;
-}>((utils, { backgroundColor, insets, isMessageBannerDisplayed }) => ({
+    isHeaderFloating: boolean;
+}>((utils, { backgroundColor, insets, isMessageBannerDisplayed, isHeaderFloating }) => ({
     flex: 1,
     backgroundColor: utils.colors[backgroundColor],
-    paddingTop: Math.max(insets.top, utils.spacings.sp8),
-    extend: [
-        {
-            // If the message banner is displayed, the top padding has to be equal to 0
-            // to render the app content right under the banner.
-            condition: isMessageBannerDisplayed,
-            style: {
-                paddingTop: 0,
-            },
-        },
-    ],
+    // A floating header lets the content scroll up under the status bar, softened by a top fade.
+    paddingTop: isHeaderFloating
+        ? 0
+        : getScreenTopPadding(insets, isMessageBannerDisplayed, utils.spacings.sp8),
+}));
+
+const floatingHeaderStyle = prepareNativeStyle<{
+    insets: EdgeInsets;
+    isMessageBannerDisplayed: boolean;
+}>((utils, { insets, isMessageBannerDisplayed }) => ({
+    position: 'absolute',
+    top: getScreenTopPadding(insets, isMessageBannerDisplayed, utils.spacings.sp8),
+    left: 0,
+    right: 0,
 }));
 
 const screenContentStyle = prepareNativeStyle<{
@@ -71,17 +89,31 @@ const screenContentStyle = prepareNativeStyle<{
     applyBottomInset: boolean;
     bottomPadding: number;
     floatingTabBarHeight: number;
-}>((_, { insets, horizontalPadding, applyBottomInset, bottomPadding, floatingTabBarHeight }) => {
-    const { left, right, bottom } = insets;
-    const bottomInset = applyBottomInset ? bottom : 0;
+    floatingHeaderPadding: number;
+}>(
+    (
+        _,
+        {
+            insets,
+            horizontalPadding,
+            applyBottomInset,
+            bottomPadding,
+            floatingTabBarHeight,
+            floatingHeaderPadding,
+        },
+    ) => {
+        const { left, right, bottom } = insets;
+        const bottomInset = applyBottomInset ? bottom : 0;
 
-    return {
-        flexGrow: 1,
-        paddingLeft: left + horizontalPadding,
-        paddingRight: right + horizontalPadding,
-        paddingBottom: bottomInset + bottomPadding + floatingTabBarHeight,
-    };
-});
+        return {
+            flexGrow: 1,
+            paddingTop: floatingHeaderPadding,
+            paddingLeft: left + horizontalPadding,
+            paddingRight: right + horizontalPadding,
+            paddingBottom: bottomInset + bottomPadding + floatingTabBarHeight,
+        };
+    },
+);
 
 const screenFooterStyle = prepareNativeStyle<{
     insets: EdgeInsets;
@@ -111,8 +143,10 @@ export const Screen = ({
     focusedInputBottomOffset,
     isFooterKeyboardAware = true,
     hasBottomInset = true,
+    isHeaderFloating = false,
 }: ScreenProps) => {
     const [keyboardToolbarHeight, setKeyboardToolbarHeight] = useState(0);
+    const [floatingHeaderHeight, setFloatingHeaderHeight] = useState(0);
     const {
         applyStyle,
         utils: { spacings },
@@ -146,6 +180,26 @@ export const Screen = ({
     const shouldRenderDynamicScrollableHeader =
         isScreenHeaderPropDynamic(header) && !dynamicHeaderProps?.isCompactOnly;
 
+    const isHeaderFloatingApplied =
+        isHeaderFloating &&
+        isLiquidGlassAvailable &&
+        isScrollable &&
+        !!header &&
+        !isScreenHeaderPropDynamic(header);
+    const screenTopPadding = getScreenTopPadding(insets, isMessageBannerDisplayed, spacings.sp8);
+    const contentFloatingHeaderHeight = isHeaderFloatingApplied
+        ? screenTopPadding + floatingHeaderHeight
+        : 0;
+
+    // The pull-to-refresh spinner is placed relative to the content inset, not its padding. With a
+    // refresh control, the space under the floating header is therefore a content inset, so the
+    // spinner settles below the header instead of behind it.
+    const isFloatingHeaderSpaceInset = !!refreshControl && contentFloatingHeaderHeight > 0;
+
+    const handleFloatingHeaderLayout = (event: LayoutChangeEvent) => {
+        setFloatingHeaderHeight(event.nativeEvent.layout.height);
+    };
+
     return (
         <DynamicHeaderProvider scrollThreshold={dynamicHeaderProps?.scrollThreshold}>
             <View
@@ -155,16 +209,20 @@ export const Screen = ({
                         backgroundColor,
                         insets,
                         isMessageBannerDisplayed,
+                        isHeaderFloating: isHeaderFloatingApplied,
                     }),
                     containerStyle,
                 ]}
                 testID={`@screen/${name}`}
             >
                 <SystemBars style={systemThemeStyle ?? systemBarsStyle} />
-                {header}
+                {!isHeaderFloatingApplied && header}
                 <ScreenContentWrapper
                     isScrollable={isScrollable}
-                    hasHeader={!!header}
+                    // The floating header is separated from the content by its glass, not a divider.
+                    hasHeader={!!header && !isHeaderFloatingApplied}
+                    scrollIndicatorTopInset={contentFloatingHeaderHeight}
+                    contentInsetTop={isFloatingHeaderSpaceInset ? contentFloatingHeaderHeight : 0}
                     scrollIndicatorBottomInset={
                         (applyBottomInset && !footer ? insets.bottom : 0) +
                         contentFloatingTabBarHeight
@@ -183,11 +241,32 @@ export const Screen = ({
                             horizontalPadding,
                             bottomPadding,
                             floatingTabBarHeight: contentFloatingTabBarHeight,
+                            floatingHeaderPadding: isFloatingHeaderSpaceInset
+                                ? 0
+                                : contentFloatingHeaderHeight,
                         })}
                     >
                         {children}
                     </Box>
                 </ScreenContentWrapper>
+                {isHeaderFloatingApplied && (
+                    <ScreenTopEdgeFade
+                        solidHeight={screenTopPadding}
+                        fadeHeight={floatingHeaderHeight}
+                        backgroundColor={backgroundColor}
+                    />
+                )}
+                {isHeaderFloatingApplied && (
+                    <View
+                        onLayout={handleFloatingHeaderLayout}
+                        style={applyStyle(floatingHeaderStyle, {
+                            insets,
+                            isMessageBannerDisplayed,
+                        })}
+                    >
+                        {header}
+                    </View>
+                )}
                 {footer && (
                     <KeyboardStickyView
                         enabled={isFooterKeyboardAware}

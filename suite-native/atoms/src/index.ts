@@ -55,6 +55,7 @@ export * from './Card/CompactCardWithIconLayout';
 export * from './Card/PressableCardWithIconLayout';
 export * from './Card/TimelineDetailsCard';
 export * from './ScreenFooterGradient';
+export * from './ScreenTopEdgeFade';
 export * from './ScreenHeaderWrapper';
 export * from './ErrorMessage';
 export * from './Table';

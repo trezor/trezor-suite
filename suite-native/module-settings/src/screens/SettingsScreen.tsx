@@ -17,7 +17,7 @@ export const SettingsScreen = () => {
     const areGetTrezorPromoBannersDisabled = useSelector(selectAreGetTrezorPromoBannersDisabled);
 
     return (
-        <Screen header={<DeviceManagerScreenHeader />}>
+        <Screen header={<DeviceManagerScreenHeader />} isHeaderFloating>
             <VStack spacing="sp40">
                 {shouldShowEshopPromo && !areGetTrezorPromoBannersDisabled && <GetTrezorCard />}
                 <GeneralSettings />

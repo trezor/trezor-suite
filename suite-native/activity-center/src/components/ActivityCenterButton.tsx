@@ -3,7 +3,13 @@ import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { AnimatedPressable, Box, useButtonPressAnimatedStyle } from '@suite-native/atoms';
+import {
+    AnimatedPressable,
+    Box,
+    GlassBackground,
+    isLiquidGlassAvailable,
+    useButtonPressAnimatedStyle,
+} from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import {
     ActivityCenterStackRoutes,
@@ -20,17 +26,24 @@ type ActivityCenterButtonProps = {
 
 const BUTTON_SIZE = 56;
 
-const buttonStyle = prepareNativeStyle(utils => ({
-    width: BUTTON_SIZE,
-    height: BUTTON_SIZE,
-    backgroundColor: utils.colors.surfaceFillAction,
-    borderRadius: utils.borders.radii.r16,
-    borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.surfaceBorderAction,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...utils.boxShadows.small,
-}));
+const buttonStyle = prepareNativeStyle<{ hasGlassBackground: boolean }>(
+    (utils, { hasGlassBackground }) => ({
+        width: BUTTON_SIZE,
+        height: BUTTON_SIZE,
+        borderRadius: utils.borders.radii.r16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        extend: {
+            // The glass draws its own rim and shadow.
+            condition: !hasGlassBackground,
+            style: {
+                borderWidth: utils.borders.widths.small,
+                borderColor: utils.colors.surfaceBorderAction,
+                ...utils.boxShadows.small,
+            },
+        },
+    }),
+);
 
 const dotWrapperStyle = prepareNativeStyle(() => ({
     position: 'absolute',
@@ -42,14 +55,14 @@ export const ActivityCenterButton = ({
     hasUnseenNotifications = false,
 }: ActivityCenterButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);
-    const { applyStyle } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
         false,
-        'surfaceFillAction',
-        'surfaceFillActionPressed',
+        isLiquidGlassAvailable ? 'transparent' : 'surfaceFillAction',
+        isLiquidGlassAvailable ? 'elementFillNeutralSoft' : 'surfaceFillActionPressed',
     );
 
     const handlePress = () =>
@@ -62,8 +75,12 @@ export const ActivityCenterButton = ({
             onPress={handlePress}
             onPressIn={() => setIsPressed(true)}
             onPressOut={() => setIsPressed(false)}
-            style={[animatedPressStyle, applyStyle(buttonStyle)]}
+            style={[
+                animatedPressStyle,
+                applyStyle(buttonStyle, { hasGlassBackground: isLiquidGlassAvailable }),
+            ]}
         >
+            <GlassBackground shape="roundedRectangle" cornerRadius={utils.borders.radii.r16} />
             <Icon name="bell" size="large" color="contentPrimary" />
             {hasUnseenNotifications && (
                 <Box style={applyStyle(dotWrapperStyle)}>

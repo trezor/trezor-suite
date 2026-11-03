@@ -100,6 +100,7 @@ export const HomeScreen = () => {
                 header={<DeviceManagerScreenHeader />}
                 refreshControl={isAssetsFirstHomeScreenVisible ? undefined : refreshControl}
                 isScrollable={!isAssetsFirstHomeScreenVisible}
+                isHeaderFloating
                 noHorizontalPadding={doesHomeContentHandleHorizontalPadding}
             >
                 <HomeScreenContent
