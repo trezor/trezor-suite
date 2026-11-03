@@ -1,13 +1,53 @@
+import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type RatesByTimestamps,
+    type Timestamp,
+    type TokenAddress,
+    type WalletAccountTransaction,
+    asTimestamp,
+} from '@suite-common/wallet-types';
 
 import {
     getFiatRateKey,
     getFiatRateKeyFromTicker,
     roundTimestampToNearestPastHour,
+    selectHistoricRatesByTransactions,
 } from './fiatRatesUtils';
 
 const ethSymbol = asNetworkSymbol('eth');
+const btcSymbol = asNetworkSymbol('btc');
+const tokenAddress = '0x6b175474e89094c44da98b954eedeac495271d0f' as TokenAddress;
+
+const hour = asTimestamp(1_700_000_000 - (1_700_000_000 % 3600));
+const nextHour = asTimestamp(hour + 3600);
+
+const ethUsd = getFiatRateKey(ethSymbol, 'usd');
+const ethEur = getFiatRateKey(ethSymbol, 'eur');
+const ethTokenUsd = getFiatRateKey(ethSymbol, 'usd', tokenAddress);
+const btcUsd = getFiatRateKey(btcSymbol, 'usd');
+
+const historicRates: RatesByTimestamps = {
+    [ethUsd]: { [hour]: 2000, [nextHour]: 2100 },
+    [ethEur]: { [hour]: 1800 },
+    [ethTokenUsd]: { [hour]: 1 },
+    [btcUsd]: { [hour]: 40_000, [nextHour]: 41_000 },
+};
+
+const tokenTransfer: WalletAccountTransaction['tokens'][number] = {
+    type: 'sent',
+    amount: '1',
+    from: '0xfrom',
+    to: '0xto',
+    contract: tokenAddress,
+    decimals: 18,
+};
+
+const mockTransaction = (
+    symbol: WalletAccountTransaction['symbol'],
+    blockTime: WalletAccountTransaction['blockTime'],
+    tokens: WalletAccountTransaction['tokens'] = [],
+): WalletAccountTransaction => testMocks.getWalletTransaction({ symbol, blockTime, tokens });
 
 describe('fiat rates utils', () => {
     it('formats fiat rate key', () => {
@@ -39,5 +79,57 @@ describe('fiat rates utils', () => {
         const expected = new Date('2024-03-19T15:00:00Z').getTime() / 1000;
 
         expect(roundTimestampToNearestPastHour(timestamp as Timestamp)).toBe(expected);
+    });
+});
+
+describe(selectHistoricRatesByTransactions.name, () => {
+    it('selects coin and token rates of the transaction symbol at the rounded hour', () => {
+        const txs = [mockTransaction(ethSymbol, hour + 600, [tokenTransfer])];
+
+        expect(selectHistoricRatesByTransactions(historicRates, txs)).toEqual({
+            [ethUsd]: { [hour]: 2000 },
+            [ethEur]: { [hour]: 1800 },
+            [ethTokenUsd]: { [hour]: 1 },
+        });
+    });
+
+    it('selects the same rates for a transaction without token transfers', () => {
+        const txs = [mockTransaction(ethSymbol, hour + 600)];
+
+        expect(selectHistoricRatesByTransactions(historicRates, txs)).toEqual({
+            [ethUsd]: { [hour]: 2000 },
+            [ethEur]: { [hour]: 1800 },
+            [ethTokenUsd]: { [hour]: 1 },
+        });
+    });
+
+    it('selects rates of every symbol among the transactions', () => {
+        const txs = [mockTransaction(ethSymbol, nextHour), mockTransaction(btcSymbol, hour + 1)];
+
+        expect(selectHistoricRatesByTransactions(historicRates, txs)).toEqual({
+            [ethUsd]: { [nextHour]: 2100 },
+            [btcUsd]: { [hour]: 40_000 },
+        });
+    });
+
+    it('merges timestamps of several transactions under one key', () => {
+        const txs = [mockTransaction(btcSymbol, hour), mockTransaction(btcSymbol, nextHour + 59)];
+
+        expect(selectHistoricRatesByTransactions(historicRates, txs)).toEqual({
+            [btcUsd]: { [hour]: 40_000, [nextHour]: 41_000 },
+        });
+    });
+
+    it('skips transactions without a rate at their hour', () => {
+        const txs = [
+            mockTransaction(ethSymbol, nextHour + 3600),
+            mockTransaction(btcSymbol, undefined),
+        ];
+
+        expect(selectHistoricRatesByTransactions(historicRates, txs)).toEqual({});
+    });
+
+    it('selects nothing for no transactions', () => {
+        expect(selectHistoricRatesByTransactions(historicRates, [])).toEqual({});
     });
 });
