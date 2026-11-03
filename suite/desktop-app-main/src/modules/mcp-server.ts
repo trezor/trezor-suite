@@ -16,6 +16,7 @@ import {
 } from '@suite-common/connect-popup';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
+import { MAX_NAME_LENGTH, sanitizeName } from '@trezor/connect-common';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
 import { ipcMain } from '../ipcMain';
@@ -1100,16 +1101,12 @@ const readJsonBody = (req: http.IncomingMessage): Promise<unknown> =>
         req.on('error', reject);
     });
 
-const MAX_CLIENT_NAME_LENGTH = 100;
-
 /**
- * The name a client declares in `initialize`, which is unvalidated JSON from a local caller. Suite
- * renders it in the consent prompt and carries it in the session manifest, so anything but a string
- * is dropped instead of reaching the renderer. Control characters and lone surrogates are reduced to
- * spaces so the name stays the single line of text the prompt expects, invisible format characters
- * (bidi overrides, joiners) are removed so they can neither reorder the text around the name nor
- * split a word, and the length is bounded to what a badge can show, counted in code points so that
- * the cut never leaves half of a surrogate pair.
+ * The name a client declares in `initialize`, which is unvalidated JSON from a local caller. It
+ * goes through the same `sanitizeName` as every other name on the consent prompt, truncating so
+ * that a long name is shortened rather than dropped. Sanitized here and not only at the
+ * connect-popup choke point, because this name is also used where that choke point never sees it:
+ * the session manifest, the main-process log line and the `process.name` of a remembered grant.
  */
 const readDeclaredClientName = (params?: Record<string, unknown>) => {
     const clientInfo = params?.clientInfo;
@@ -1118,20 +1115,7 @@ const readDeclaredClientName = (params?: Record<string, unknown>) => {
             ? (clientInfo as { name?: unknown }).name
             : undefined;
 
-    if (typeof name !== 'string') return undefined;
-
-    const singleLineName = name
-        .replace(/\p{Cf}/gu, '')
-        .replace(/[\p{Cc}\p{Cs}]/gu, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    const declaredName = Array.from(singleLineName)
-        .slice(0, MAX_CLIENT_NAME_LENGTH)
-        .join('')
-        // The cut can land on a space, which would be shown as a trailing one.
-        .trim();
-
-    return declaredName || undefined;
+    return sanitizeName(name, { maxLength: MAX_NAME_LENGTH, onTooLong: 'truncate' });
 };
 
 export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
