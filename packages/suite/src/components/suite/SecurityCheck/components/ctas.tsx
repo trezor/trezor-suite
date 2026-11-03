@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { deviceActions } from '@suite-common/device';
+import { deviceActions, selectIsDeviceInitialized } from '@suite-common/device';
 import { ejectAllWalletsThunk } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -64,11 +66,16 @@ export const RetryButton = ({ onClick }: DismissButtonProps) => (
 
 export const DismissFwAuthenticityCheckButton = () => {
     const { device } = useDevice();
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const { dispatch } = useServices(injectDispatch);
 
     // device.id should always defined at this point, but if it weren't, fail-close by disabling dismissing.
     const deviceId = device?.id;
     if (typeof deviceId !== 'string') return null;
+
+    // For an initialized device, the check must be dismissible for emergency access to wallet.
+    // But if it hasn't been initialized yet, there's no point in onboarding such a device (creating a wallet).
+    if (!isDeviceInitialized) return null;
 
     const goToSuite = () => {
         dispatch(deviceActions.dismissFirmwareAuthenticityCheck(deviceId));
