@@ -325,6 +325,8 @@ jobs:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
           CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
           CURRENTS_RECORD_KEY: ${{ secrets.currents-record-key }}
+          TEST_ENV_LOG_PASSPHRASE: ${{ secrets.e2e-passphrase }}
+          TEST_ENV_LOG_PASSPHRASE_LIVE: ${{ secrets.e2e-passphrase-live }}
         with:
           destination: currents
           currents-workspace: "@trezor/suite-e2e"

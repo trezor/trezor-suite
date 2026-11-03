@@ -144,7 +144,7 @@ runner reduces them to one report in `artifacts/performance/perf-report.json` an
 
 Android E2E tests run on pull requests that change paths selected by the [Android E2E workflow](../../../.github/workflows/test-suite-native-e2e-android.yml), on `release-native/*` pushes, and when manually dispatched.
 
-For easier debugging of failing tests on the CI, the screenshots, screen recording and device log of every test attempt are attached to the test results in Currents, so you can see how the app behaved and what went wrong. The logs of the Docker test environment (trezor-user-env, regtest, quota-db, suite-sync) are attached to the run once per CI machine, as `test-env-logs-android-group-<N>.zip` on the run's Attachments tab.
+For easier debugging of failing tests on the CI, the screenshots, screen recording and device log of every test attempt are attached to the test results in Currents, so you can see how the app behaved and what went wrong. The logs of the Docker test environment (trezor-user-env, regtest, quota-db, suite-sync) are attached to the run once per CI machine, as `test-env-logs-android-group-<N>.zip` on the run's Attachments tab. The CI wallet passphrase is supplied through `TEST_ENV_LOG_PASSPHRASE` to [redact-test-env-logs.ts](../../../scripts/ci/redact-test-env-logs.ts), which replaces its text, escaped and hex representations with `<redacted>` in all environment logs. Public test mnemonics, PINs and other diagnostic data are retained. Upload is skipped if redaction fails.
 
 ## FAQ
 

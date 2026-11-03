@@ -1,5 +1,5 @@
 name: "Extract and Upload test environment Logs"
-description: "Extracts the logs of the Docker Compose services in COMPOSE_FILE, then uploads them as a GitHub artifact or attaches them to the Currents run"
+description: "Extracts Docker Compose logs, redacts wallet credentials supplied through TEST_ENV_LOG_PASSPHRASE, TEST_ENV_LOG_PASSPHRASE_LIVE and TEST_ENV_LOG_MNEMONIC, then uploads them to GitHub or Currents"
 inputs:
   destination:
     description: "github uploads an artifact; currents attaches a zip to the run and reads CURRENTS_RECORD_KEY, CURRENTS_PROJECT_ID, CURRENTS_CI_BUILD_ID and CURRENTS_MACHINE_ID"
@@ -32,8 +32,16 @@ runs:
           docker compose logs --no-color "$service" > "test-env-logs/$service.log" 2>&1 || true
         done
 
+    # Callers supply private wallet credentials; public test data remains useful for debugging.
+    # Both upload destinations require successful redaction of the copied files and Docker stdout.
+    - name: Redact secrets from the logs
+      id: redact
+      continue-on-error: true
+      shell: bash
+      run: node ./scripts/ci/redact-test-env-logs.ts test-env-logs
+
     - name: Upload logs of testing environment
-      if: inputs.destination == 'github'
+      if: inputs.destination == 'github' && steps.redact.outcome == 'success'
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       continue-on-error: true
       with:
@@ -42,7 +50,7 @@ runs:
         retention-days: 30
 
     - name: Attach logs of testing environment to the Currents run
-      if: inputs.destination == 'currents'
+      if: inputs.destination == 'currents' && steps.redact.outcome == 'success'
       continue-on-error: true
       shell: bash
       env:
