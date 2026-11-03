@@ -28,6 +28,7 @@ import {
     selectAccountYieldVaultTransactions,
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
+    selectHistoryCoveredSince,
     selectNonPhishingTransactionNotifications,
     selectTransactionsWithMissingRates,
 } from './transactionsSelectors';
@@ -452,5 +453,63 @@ describe('staking transaction selectors', () => {
                 ),
             ).toEqual([ethereumStake, solanaStake]);
         });
+    });
+});
+
+describe('selectHistoryCoveredSince', () => {
+    const WINDOW_START = 1_700_000_000;
+
+    const getCoveredSince = (
+        backendType: Account['backendType'],
+        transactions: WalletAccountTransaction[],
+    ) =>
+        selectHistoryCoveredSince(
+            {
+                wallet: {
+                    transactions: { transactions: { [ACCOUNT_KEY]: transactions } },
+                    accounts: [
+                        {
+                            ...ethAccount,
+                            networkType: 'ethereum',
+                            backendType,
+                            misc: { historyCoveredSince: WINDOW_START },
+                        },
+                    ],
+                },
+            } as unknown as TransactionsRootState & AccountsRootState,
+            ACCOUNT_KEY,
+        );
+
+    it('reaches back to a stored transaction older than the scanned window', () => {
+        const coveredSince = getCoveredSince('evm-rpc', [
+            testMocks.getWalletTransaction({ txid: 'a', blockTime: WINDOW_START + 10 }),
+            testMocks.getWalletTransaction({ txid: 'b', blockTime: WINDOW_START - 500 }),
+        ]);
+
+        expect(coveredSince).toBe(WINDOW_START - 500);
+    });
+
+    it('keeps the scanned window when every stored transaction is inside it', () => {
+        const coveredSince = getCoveredSince('evm-rpc', [
+            testMocks.getWalletTransaction({ blockTime: WINDOW_START + 10 }),
+        ]);
+
+        expect(coveredSince).toBe(WINDOW_START);
+    });
+
+    it('ignores pending transactions', () => {
+        const coveredSince = getCoveredSince('evm-rpc', [
+            testMocks.getWalletTransaction({ blockHeight: 0, blockTime: WINDOW_START - 500 }),
+        ]);
+
+        expect(coveredSince).toBe(WINDOW_START);
+    });
+
+    it('is undefined on a backend that serves the whole history', () => {
+        const coveredSince = getCoveredSince('blockbook', [
+            testMocks.getWalletTransaction({ blockTime: WINDOW_START - 500 }),
+        ]);
+
+        expect(coveredSince).toBeUndefined();
     });
 });
