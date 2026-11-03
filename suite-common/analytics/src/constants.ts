@@ -59,4 +59,5 @@ export enum EventType {
     YieldClaim = 'yield/claim',
     YieldWrap = 'yield/wrap',
     YieldUnwrap = 'yield/unwrap',
+    NavigateFlow = 'navigate/flow',
 }

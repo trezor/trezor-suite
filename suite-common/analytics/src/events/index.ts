@@ -10,6 +10,7 @@ export { deviceConnectionDeviceConfirmationEvent } from './deviceConnectionDevic
 export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundEvent';
 export { deviceConnectionDevicePairedEvent } from './deviceConnectionDevicePairedEvent';
 export { guideSupportChatOpenedEvent } from './guideSupportChatOpenedEvent';
+export { navigateFlowEvent } from './navigateFlowEvent';
 export {
     onboardingFeedbackBannerClickedEvent,
     type OnboardingFeedbackBannerOrigin,

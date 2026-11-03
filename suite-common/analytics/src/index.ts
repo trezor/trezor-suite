@@ -37,6 +37,12 @@ export { getTransactionCreatedEventPayload } from './utils/getTransactionCreated
 
 export { yieldEarnEntryEvent } from './events/yieldEarnEntryEvent';
 export { earnTilePressedEvent } from './events/earnTilePressedEvent';
+export {
+    NAVIGATE_FLOW_FROM,
+    navigateFlowEvent,
+    type NavigateFlowFrom,
+    type NavigateFlowType,
+} from './events/navigateFlowEvent';
 export { stakingNavigateEvent, type StakingNavigateFrom } from './events/stakingNavigateEvent';
 export { stakingStakeEvent, type StakingStakeStep } from './events/stakingStakeEvent';
 export { stakingUnstakeEvent, type StakingUnstakeStep } from './events/stakingUnstakeEvent';

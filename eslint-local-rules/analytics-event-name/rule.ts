@@ -11,6 +11,7 @@ const allowedDomains = new Set([
     'firmware',
     'guide',
     'menu',
+    'navigate',
     'onboarding',
     'passphrase',
     'promo',

@@ -1,5 +1,6 @@
 export {
     appFormPercentButtonsEvent,
+    navigateFlowEvent,
     stakingClaimEvent,
     stakingNavigateEvent,
     stakingStakeEvent,

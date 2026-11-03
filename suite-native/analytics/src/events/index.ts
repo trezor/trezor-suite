@@ -1,5 +1,6 @@
 export {
     earnTilePressedEvent,
+    navigateFlowEvent,
     stakingClaimEvent,
     stakingNavigateEvent,
     stakingStakeEvent,
