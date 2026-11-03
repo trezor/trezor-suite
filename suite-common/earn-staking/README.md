@@ -12,6 +12,8 @@ Staking operations run as sessions, one per account, product and operation, keye
 
 The engine thunks in `src/engine` drive a session step by step through the product adapter: plan, compose, sign, broadcast, cancel a step and discard a session. Signing runs inside the injected `StakingDeviceAccess`, `services.staking.deviceAccess`: a pass-through on desktop and web, where Connect already serialises device calls, and the prioritised device mutex on mobile. It is also the one place that cancels a device call. An adapter reports a device or app cancellation and the validity timeout as `StakingAdapterError` codes from `STAKING_SIGNING_ERROR_CODES`; everything else keeps its own code.
 
+Confirmation does not depend on a mounted page. `prepareStakingMiddleware` settles an awaiting step from the `addTransaction` that carries its mined transaction, failing it when the chain rejected the transaction, follows a bumped transaction to its new txid and fails a step whose transaction was replaced by a cancel. `trackStakingStepConfirmationThunk`, started by the broadcast thunk, seeds that check from the stored transactions and then polls the account at the network's block interval for up to fifteen minutes; afterwards the apps' own syncs keep feeding the middleware.
+
 `toPrecomposedLevels` turns a composed step into the precomposed levels the existing fee pickers accept.
 
 `@suite-common/earn-staking/mocks` holds test factories.

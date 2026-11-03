@@ -14,6 +14,7 @@ import {
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     blockchainInitialState,
+    feesInitialState,
     fetchAndUpdateAccountThunk,
     initialWalletSettingsState,
     stellarContractTokensInitialState,
@@ -30,6 +31,7 @@ import {
     type BroadcastStakingStepThunkState,
     broadcastStakingStepThunk,
 } from './broadcastStakingStepThunk';
+import { trackStakingStepConfirmationThunk } from './trackStakingStepConfirmationThunk';
 import {
     mockStakingProductRepository,
     mockStakingServices,
@@ -42,6 +44,9 @@ import { selectStakingSession } from '../state/stakingSessionSelectors';
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     fetchAndUpdateAccountThunk: jest.fn(() => () => Promise.resolve()),
+}));
+jest.mock('./trackStakingStepConfirmationThunk', () => ({
+    trackStakingStepConfirmationThunk: jest.fn(() => () => Promise.resolve()),
 }));
 
 const eth = mockStakingProductDescriptor();
@@ -102,6 +107,7 @@ const initStore = ({
                 stellarContractTokens: (state = stellarContractTokensInitialState) => state,
                 transactions: (state = transactionsInitialState) => state,
                 settings: (state = initialWalletSettingsState) => state,
+                fees: (state = feesInitialState) => state,
             }),
             device: (state = deviceInitialState) => state,
             notifications: (state = []) => state,
@@ -128,13 +134,14 @@ describe('broadcastStakingStepThunk', () => {
     beforeEach(() => {
         jest.spyOn(console, 'warn').mockImplementation(() => {});
         jest.mocked(fetchAndUpdateAccountThunk).mockClear();
+        jest.mocked(trackStakingStepConfirmationThunk).mockClear();
     });
 
     afterEach(() => {
         jest.restoreAllMocks();
     });
 
-    it('broadcasts the signed step, notifies the earn bookkeeping and refreshes the account', async () => {
+    it('broadcasts the signed step, notifies the earn bookkeeping and tracks the confirmation', async () => {
         const { store, adapter, actions } = initStore();
         const result = await broadcast(store);
 
@@ -155,10 +162,14 @@ describe('broadcastStakingStepThunk', () => {
                 payload: expect.objectContaining({ type: 'tx-staked', txid: 'tx1' }),
             }),
         );
-        expect(fetchAndUpdateAccountThunk).toHaveBeenCalledWith({ accountKey: account.key });
+        expect(trackStakingStepConfirmationThunk).toHaveBeenCalledWith({
+            sessionKey,
+            stepId: 'stake',
+        });
+        expect(fetchAndUpdateAccountThunk).not.toHaveBeenCalled();
     });
 
-    it('completes a step that needs no confirmation', async () => {
+    it('completes a step that needs no confirmation and refreshes the account once', async () => {
         const plainSession = mockStakingSession({ accountKey: account.key });
         const { store } = initStore({ staking: signedState(plainSession) });
 
@@ -168,6 +179,8 @@ describe('broadcastStakingStepThunk', () => {
             status: 'done',
             txid: 'tx1',
         });
+        expect(fetchAndUpdateAccountThunk).toHaveBeenCalledWith({ accountKey: account.key });
+        expect(trackStakingStepConfirmationThunk).not.toHaveBeenCalled();
     });
 
     it('refuses an expired signature and returns the step to composed', async () => {
