@@ -71,7 +71,7 @@ export const TronStakeComplete = ({
             </Button>
 
             <EarnFlowFeedbackCard
-                featureTitleId="TR_EARN_STAKING_DASHBOARD_TITLE"
+                featureTitleId="TR_EARN_STAKING"
                 analyticsCategory="staking"
                 context={`tron-${flow}`}
                 feature="staking"

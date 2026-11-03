@@ -16,11 +16,11 @@ type EarnDashboardDisabledSectionProps = {
 const SECTION_CONFIG: Record<EarnDashboardType, { anchor: string; titleId: TranslationKey }> = {
     staking: {
         anchor: EarnAnchor.Staking,
-        titleId: 'TR_EARN_STAKING_DASHBOARD_TITLE',
+        titleId: 'TR_EARN_STAKING',
     },
     yield: {
         anchor: EarnAnchor.Yield,
-        titleId: 'TR_EARN_DEFI_YIELD_TITLE',
+        titleId: 'TR_EARN_DEFI_YIELD',
     },
 };
 

@@ -97,7 +97,7 @@ export const YieldFlowComplete = ({
 
             {showFeedback && (
                 <EarnFlowFeedbackCard
-                    featureTitleId="TR_EARN_DEFI_YIELD_TITLE"
+                    featureTitleId="TR_EARN_DEFI_YIELD"
                     analyticsCategory="yield"
                     context={type}
                     provider={vaultId}

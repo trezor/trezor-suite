@@ -30,7 +30,7 @@ export const AccountItemLabel = ({
         case 'staking':
             return (
                 <Column alignItems="flex-start">
-                    <Translation id="TR_NAV_STAKING" />
+                    <Translation id="TR_EARN_STAKING" />
                     {isCardanoStakedWithFiveBinaries(account) && (
                         <Text
                             typographyStyle="body-sm"

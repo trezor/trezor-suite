@@ -94,7 +94,7 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
                 <FirmwareUpgradeNeededModal
                     onClose={closeFirmwareModal}
                     onUpdate={updateFirmware}
-                    featureName={translationString('TR_EARN_DEFI_YIELD_TITLE')}
+                    featureName={translationString('TR_EARN_DEFI_YIELD')}
                 />
             )}
             <Tooltip content={wrapDisabledContent} isActive={isWrapDisabled}>

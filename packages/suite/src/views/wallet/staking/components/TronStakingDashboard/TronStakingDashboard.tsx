@@ -32,7 +32,7 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
     const nowSeconds = useNow(UNSTAKING_REFRESH_INTERVAL_MS) / 1000;
 
     return (
-        <WalletLayout title="TR_NAV_STAKING" account={selectedAccount}>
+        <WalletLayout title="TR_EARN_STAKING" account={selectedAccount}>
             {isStakingActive ? (
                 <Column
                     gap={12}

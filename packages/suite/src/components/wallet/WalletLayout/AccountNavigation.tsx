@@ -75,7 +75,7 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
                     },
                 });
             },
-            title: <Translation id="TR_NAV_STAKING" />,
+            title: <Translation id="TR_EARN_STAKING" />,
             isHidden: !hasNetworkFeatures(account, 'staking'),
             'data-testid': '@wallet/menu/staking',
         },

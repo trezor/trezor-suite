@@ -172,7 +172,7 @@ export const EarnYieldTable = ({ onReady }: EarnYieldTableProps) => {
             <ContextMessage context={Context.getEarnDashboard('yield')} />
 
             <DashboardSection
-                heading={<Translation id="TR_EARN_DEFI_YIELD_TITLE" />}
+                heading={<Translation id="TR_EARN_DEFI_YIELD" />}
                 subheading={<Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />}
                 actions={<PoweredByBadge provider="morpho" />}
                 areActionsBelowSubheading={isCardLayout}

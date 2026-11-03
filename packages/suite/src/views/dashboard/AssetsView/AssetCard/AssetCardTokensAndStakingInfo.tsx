@@ -36,7 +36,7 @@ export const AssetCardTokensAndStakingInfo = ({
                         priority="secondary"
                     />
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                        <Translation id="TR_NAV_STAKING" />
+                        <Translation id="TR_EARN_STAKING" />
                     </Text>
                 </Row>
                 {assetStakingBalance && (
