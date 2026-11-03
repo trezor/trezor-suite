@@ -64,10 +64,6 @@ For example, these existing native packages share address UI. Here arrows mean *
 
 This convergence helps identify lego candidates, but the number of importers is not the rule. A lego can have only one consumer today, and app wiring can be shared by several entry points. The deciding factor is whether the code provides a reusable part or assembles a particular application. Dependencies must remain acyclic; lego code must not import app assembly.
 
-### Comparison with Nx apps and libs
-
-Nx's [apps and libs convention](https://nx.dev/docs/kb/folder-structure) is a useful analogy: `apps/mobile` wires an application together, while `libs/address` supplies reusable address UI. Nx also allows [app-specific feature libraries](https://nx.dev/docs/kb/project-dependency-rules), so an Nx `lib` is not automatically lego. Our app layer includes assembly packages such as `module-send`, even though they are imported packages rather than standalone applications. This ADR classifies responsibilities, not Nx project types.
-
 ### Examples in Suite
 
 These examples use current package names and describe their intended roles after separation:
