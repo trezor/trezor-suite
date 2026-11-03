@@ -1,4 +1,5 @@
 export {
+    appCopyToClipboardEvent,
     assetsActionsEvent,
     assetsTimeframeChangeEvent,
     assetsTransactionDetailEvent,

@@ -52,3 +52,7 @@ export { appFormPercentButtonsEvent } from './events/appFormPercentButtonsEvent'
 export { assetsTimeframeChangeEvent } from './events/assetsTimeframeChangeEvent';
 export { assetsTransactionDetailEvent } from './events/assetsTransactionDetailEvent';
 export { assetsActionsEvent } from './events/assetsActionsEvent';
+export {
+    appCopyToClipboardEvent,
+    type AppCopyToClipboardType,
+} from './events/appCopyToClipboardEvent';

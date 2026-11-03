@@ -1,4 +1,5 @@
 export {
+    appCopyToClipboardEvent,
     appFormPercentButtonsEvent,
     assetsActionsEvent,
     assetsTimeframeChangeEvent,

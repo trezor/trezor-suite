@@ -63,4 +63,5 @@ export enum EventType {
     AssetsTimeframeChange = 'assets/timeframe-change',
     AssetsTransactionDetail = 'assets/transaction-detail',
     AssetsActions = 'assets/actions',
+    AppCopyToClipboard = 'app/copy-to-clipboard',
 }
