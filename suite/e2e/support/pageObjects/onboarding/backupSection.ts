@@ -7,7 +7,7 @@ import { DevicePrompt } from '../devicePrompt';
 type PassThroughShamirBackupParams = {
     shares?: number;
     threshold?: number;
-    deviceConfirmations: number;
+    deviceConfirmations: string[];
 };
 
 type PassThroughBip39BackupParams = { deviceConfirmations: number };
@@ -72,10 +72,13 @@ export class BackupSection {
         await this.skipBackupButton.click();
         await this.skipBackupConfirmButton.click();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await expect(async () => {
-            await this.device.pressYes();
-            await expect(this.devicePrompt.confirmOnDevicePrompt).toBeHidden({ timeout: 1_000 });
-        }).toPass({ timeout: 15_000 });
+        await this.device.expectToContainOnDisplay("agree to Trezor Company's", {
+            shouldRunOnCanary: true,
+        });
+        await this.device.pressYes();
+        await this.device.expectToContainOnDisplay('Wallet created.', { shouldRunOnCanary: true });
+        await this.device.pressYes();
+        await expect(this.devicePrompt.confirmOnDevicePrompt).toBeHidden();
     }
 
     @step()
@@ -93,8 +96,9 @@ export class BackupSection {
         await this.createBackupButton.click();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        for (let i = 0; i < deviceConfirmations; i++) {
+        for (const screenText of deviceConfirmations) {
             await this.page.waitForTimeout(1000);
+            await this.device.expectToContainOnDisplay(screenText);
             await this.device.pressYes();
         }
 

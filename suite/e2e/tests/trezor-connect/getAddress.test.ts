@@ -4,6 +4,9 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const FIRST_ADDRESS = '1FH6ehAd5ZFXCM1cLGzHxK1s4dGdq1JusM';
+const SECOND_ADDRESS = '1Jxtem176sCXHnK7QCShoafF5VtWvMa7eq';
+
 test.describe('TrezorConnect.getAddress', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
 
@@ -49,6 +52,9 @@ test.describe('TrezorConnect.getAddress', { tag: ['@T3T1', '@T3W1', '@desktopOnl
                 // TODO: 'verifying' is not enough to ensure device call is already in progress, it is only set right after clicking the button.
                 // we can't use buttonRequests at the moment because of switching between DeviceContextModal and UserContextModal which causes animation flickering
                 await page.waitForTimeout(1000);
+                await expect(device).toShowReceiveAddress(FIRST_ADDRESS, {
+                    lineFormat: 'fullLine',
+                });
                 await device.pressYes();
 
                 await expect(
@@ -92,6 +98,9 @@ test.describe('TrezorConnect.getAddress', { tag: ['@T3T1', '@T3W1', '@desktopOnl
 
                 // TODO: 'verifying' is not enough to ensure device call is already in progress, it is only set right after clicking the button.
                 await page.waitForTimeout(1000);
+                await expect(device).toShowReceiveAddress(SECOND_ADDRESS, {
+                    lineFormat: 'fullLine',
+                });
                 await device.pressYes();
                 expect(await resMultiple).toMatchObject({ success: true });
             });
@@ -115,6 +124,9 @@ test.describe('TrezorConnect.getAddress', { tag: ['@T3T1', '@T3W1', '@desktopOnl
 
                 // TODO: 'verifying' is not enough to ensure device call is already in progress, it is only set right after clicking the button.
                 await page.waitForTimeout(1000);
+                await expect(device).toShowReceiveAddress(FIRST_ADDRESS, {
+                    lineFormat: 'fullLine',
+                });
                 await device.pressYes();
 
                 await expect(
@@ -124,6 +136,9 @@ test.describe('TrezorConnect.getAddress', { tag: ['@T3T1', '@T3W1', '@desktopOnl
                 // try to verify address and disconnect device during action
                 await page.getByTestId('@connect-address-confirmation/verify-button/0').click();
                 await page.waitForTimeout(1000);
+                await expect(device).toShowReceiveAddress(FIRST_ADDRESS, {
+                    lineFormat: 'fullLine',
+                });
                 await device.pressNo();
                 await page
                     .getByTestId('@connect-address-confirmation/error-badge/0')

@@ -1,8 +1,11 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
-import { test } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
+
+const recipientAddress = 'ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc';
 
 test.describe(
     'LTC send form with mocked blockbook',
@@ -33,7 +36,7 @@ test.describe(
         test(
             'spend output originating from mimble-wimble peg out tx',
             { annotation: createTestAnnotation({ stream: TestStream.Network }) },
-            async ({ page, devicePrompt, walletPage, tradingPage }) => {
+            async ({ page, devicePrompt, walletPage, tradingPage, device }) => {
                 await walletPage.openAccount({
                     symbol: asNetworkSymbol('ltc'),
                     type: 'normal',
@@ -42,11 +45,20 @@ test.describe(
                 await walletPage.openSendFormButton.click();
                 await page.getByTestId('@send/header-dropdown').click();
                 await page.getByTestId('@send/header-dropdown/broadcast').click();
-                await tradingPage.sendAddressInput.fill(
-                    'ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc',
-                );
+                await tradingPage.sendAddressInput.fill(recipientAddress);
                 await page.getByTestId('outputs.0.setMax').click();
                 await tradingPage.sendButton.click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [transformAddress(recipientAddress, 'fourTetragrams')],
+                        actions: { right_button: 'Continue' },
+                    },
+                    T3T1: {
+                        header: { title: 'Address', subtitle: 'Recipient #1' },
+                    },
+                });
                 await devicePrompt.waitForPromptAndConfirm();
             },
         );

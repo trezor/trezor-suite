@@ -1,5 +1,5 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
-import { MNEMONICS } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, Model } from '@trezor/trezor-user-env-link';
 
 import { test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -24,15 +24,20 @@ test.describe('Create additional share', { tag: ['@T2T1', '@T3T1'] }, () => {
                 stream: TestStream.Growth,
             }),
         },
-        async ({ settingsPage, device }) => {
+        async ({ settingsPage, device, devicePrompt }) => {
             await settingsPage.navigateTo('device');
             await settingsPage.deviceTab.createMultiShareBackupButton.click();
             await settingsPage.deviceTab.proceedMultiShareBackupModal();
 
-            // [device screen] check your backup?
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await device.expectToContainOnDisplay(
+                device.model === Model.T2T1
+                    ? 'Check your backup?'
+                    : "Let's do a wallet backup check.",
+            );
             await device.pressYes();
 
-            // [device screen] select the number of words in your backup
+            await device.expectToContainOnDisplay('Select the number of words in your backup.');
             await device.type('20');
 
             // [device screen] backup instructions
@@ -43,7 +48,9 @@ test.describe('Create additional share', { tag: ['@T2T1', '@T3T1'] }, () => {
             }
 
             // [device screen] create additional backup?
-            await device.expectToContainOnDisplay('Create additional backup?');
+            await device.expectToContainOnDisplay('Create additional backup?', {
+                shouldRunOnCanary: true,
+            });
             await device.pressYes();
             await device.readAndConfirmShamirMnemonic({
                 shares: 3,

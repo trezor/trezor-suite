@@ -1,8 +1,10 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
     const ADDRESS_INDEX_1 = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
@@ -46,7 +48,7 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
     test(
         'add and remove output in send form, toggle form options, input data',
         { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
-        async ({ page, device, tradingPage }) => {
+        async ({ page, device, tradingPage, devicePrompt }) => {
             // test adding and removing outputs
             await tradingPage.sendAmountInput.fill('0.3');
             await page.getByTestId('add-output').click();
@@ -70,8 +72,37 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
             await page.getByTestId('locktime-blockheight-input').fill('1000');
 
             await tradingPage.sendButton.click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [transformAddress(ADDRESS_INDEX_1, 'fourTetragrams')],
+                    actions: { right_button: 'Continue' },
+                },
+                T3T1: {
+                    header: { title: 'Address', subtitle: 'Recipient #1' },
+                },
+            });
             await device.pressYes();
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [['Amount'], ['0.6 REGTEST']],
+                    actions: { right_button: 'Confirm' },
+                },
+                T3T1: {
+                    header: { title: 'Amount', subtitle: 'Recipient #1' },
+                    body: [['0.6 REGTEST']],
+                },
+            });
             await device.pressYes();
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Confirm Locktime' },
+                    body: [['Locktime set to blockheight'], ['1000']],
+                    actions: { right_button: 'Confirm' },
+                },
+            });
             await device.pressYes();
 
             await expect(page.getByTestId('@send/copy-raw-transaction')).toBeVisible();
@@ -110,9 +141,55 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
             await page.getByTestId('outputs.1.dataAscii').fill('meow');
 
             await tradingPage.sendButton.click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [transformAddress(ADDRESS_INDEX_1, 'fourTetragrams')],
+                    actions: { right_button: 'Continue' },
+                },
+                T3T1: {
+                    header: { title: 'Address', subtitle: 'Recipient #1' },
+                },
+            });
             await device.pressYes();
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [['Amount'], ['0.1 REGTEST']],
+                    actions: { right_button: 'Confirm' },
+                },
+                T3T1: {
+                    header: { title: 'Amount', subtitle: 'Recipient #1' },
+                    body: [['0.1 REGTEST']],
+                },
+            });
             await device.pressYes();
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'OP_RETURN' },
+                    body: [['6d656f77']],
+                    actions: { right_button: 'Confirm' },
+                },
+            });
             await device.pressYes();
+            const fee = await devicePrompt.cryptoAmountOf('fee').innerText();
+            const total = new BigNumber(fee).plus('0.1').toString();
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [
+                        ['Total amount'],
+                        device.wrapText(`${total} REGTEST`, { isAmount: true }),
+                        ['incl. Transaction fee'],
+                        device.wrapText(`${fee} REGTEST`, { isAmount: true }),
+                    ],
+                    actions: { right_button: 'Hold to sign' },
+                },
+                T3T1: {
+                    header: { title: 'Summary' },
+                },
+            });
             await device.pressYes();
             await device.pressYes();
 

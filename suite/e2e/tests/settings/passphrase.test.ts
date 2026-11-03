@@ -15,6 +15,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ page, device, devicePrompt }) => {
             await page.getByTestId('@settings/device/passphrase-switch').click();
             await devicePrompt.confirmOnDevicePromptIsShown();
+            await device.expectToContainOnDisplay('Turn on passphrase protection?');
             await device.pressYes();
             await devicePrompt.confirmOnDevicePromptIsHidden();
 

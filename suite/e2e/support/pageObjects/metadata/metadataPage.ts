@@ -78,6 +78,7 @@ export class MetadataPage {
         options?: { skipVerification?: boolean },
     ) {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await this.device.expectToContainOnDisplay('Enable labeling?');
         await this.device.pressYes();
         await this.metadataProviderButton(provider).click();
 
@@ -123,6 +124,7 @@ export class MetadataPage {
             this.settingsPage.metadataSelectInputOption('legacy'),
         );
         await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await this.device.expectToContainOnDisplay('Enable labeling?');
         await this.device.pressYes();
     }
 

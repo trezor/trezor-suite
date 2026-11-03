@@ -5,6 +5,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -73,7 +74,31 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
             await test.step('Continue Swap flow towards Send section', async () => {
                 await tradingPage.confirmation.openConfirmAndSendModal();
                 await expect(devicePrompt.header.accountLabel).toHaveText('Bitcoin #2');
+                const recipientAddress = (
+                    await devicePrompt.outputValueOf('address').innerText()
+                ).replace(/\s/g, '');
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [transformAddress(recipientAddress, 'fourTetragrams')],
+                        actions: { right_button: 'Continue' },
+                    },
+                    T3T1: {
+                        header: { title: 'Address', subtitle: 'Recipient #1' },
+                    },
+                });
                 await devicePrompt.waitForPromptAndClick();
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [['Amount'], [`${sendAmount} BTC`]],
+                        actions: { right_button: 'Confirm' },
+                    },
+                    T3T1: {
+                        header: { title: 'Amount', subtitle: 'Recipient #1' },
+                        body: [[`${sendAmount} BTC`]],
+                    },
+                });
                 await devicePrompt.waitForPromptAndClick();
             });
 

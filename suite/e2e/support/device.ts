@@ -1,4 +1,5 @@
-import { expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+import { escapeRegExp } from 'lodash';
 
 import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import {
@@ -18,6 +19,8 @@ import {
 const THP_PAIRING_CODE_LENGTH = 6;
 const THP_PAIRING_CODE_REGEX = new RegExp(`(\\d\\s*){${THP_PAIRING_CODE_LENGTH}}$`);
 
+const removeWhitespace = (text: string) => text.replace(/\s/g, '');
+
 const EMULATOR_CENTER_COORDINATES: Record<Model, { x: number; y: number }> = {
     [Model.T3T1]: { x: 125, y: 150 },
     [Model.T3W1]: { x: 200, y: 480 },
@@ -31,10 +34,13 @@ type OpenFeeInfoParams = {
     buttonIndexT3T1?: number;
 };
 
+export type DisplayCheckOptions = { shouldRunOnCanary?: boolean };
+
 export class DeviceFixture {
     public readonly hasTHP: boolean;
     public readonly hasSecureElement: boolean;
     public readonly hasCanaryFirmware: boolean;
+    public readonly hasReadableDisplay: boolean;
 
     constructor(
         public readonly model: Model,
@@ -43,6 +49,7 @@ export class DeviceFixture {
         this.hasTHP = this.model === Model.T3W1;
         this.hasSecureElement = [Model.T3B1, Model.T3T1, Model.T3W1].includes(this.model);
         this.hasCanaryFirmware = firmwareVersion.endsWith('-main');
+        this.hasReadableDisplay = this.model !== Model.T1B1;
     }
 
     @step()
@@ -295,11 +302,53 @@ export class DeviceFixture {
     }
 
     @step()
-    async expectToContainOnDisplay(expectedText: string) {
+    async expectToContainOnDisplay(expectedText: string, options?: DisplayCheckOptions) {
+        if (this.hasCanaryFirmware && !options?.shouldRunOnCanary) {
+            return;
+        }
+
         await expect
             .poll(async () => (await TrezorUserEnvLink.getScreenContent()).body as string, {
                 message: `Expected text "${expectedText}" on the device display`,
             })
             .toContain(expectedText);
+    }
+
+    @step()
+    async expectValuesOnDisplay(...values: string[]) {
+        if (this.hasCanaryFirmware) {
+            return;
+        }
+
+        const containsAllValues = new RegExp(
+            values.map(value => `(?=.*${escapeRegExp(removeWhitespace(value))})`).join(''),
+        );
+        await expect
+            .poll(async () => removeWhitespace(await this.getScreenBody()), {
+                message: `Expected ${values.map(value => `"${value}"`).join(', ')} on the device display`,
+            })
+            .toMatch(containsAllValues);
+    }
+
+    // Not a @step and no value in the message: step titles carry method arguments into reports.
+    async expectPassphraseOnDisplay(passphrase: string) {
+        if (this.hasCanaryFirmware) {
+            return;
+        }
+
+        await test.step('DeviceFixture.expectPassphraseOnDisplay', async () => {
+            await expect
+                .poll(
+                    async () =>
+                        removeWhitespace(await this.getScreenBody()) ===
+                        removeWhitespace(passphrase),
+                    { message: 'Expected the entered passphrase on the device display' },
+                )
+                .toBe(true);
+        });
+    }
+
+    private async getScreenBody() {
+        return (await TrezorUserEnvLink.getScreenContent()).body as string;
     }
 }

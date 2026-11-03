@@ -5,25 +5,31 @@ import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
+const createWalletScreens = [
+    "By continuing, you agree to Trezor Company's Terms of Use.",
+    'Wallet created.',
+    'Back up your new wallet now.',
+];
+
 const testCases: {
     name: string;
     testCase: string;
     seedType: BackupType;
-    backup: { shares?: number; threshold?: number; deviceConfirmations: number };
+    backup: { shares?: number; threshold?: number; deviceConfirmations: string[] };
 }[] = [
     {
         name: 'Success (Shamir backup)',
         testCase:
             'Verify that a user can successfully create a wallet during the onboarding process.',
         seedType: 'shamir-advanced',
-        backup: { shares: 3, threshold: 2, deviceConfirmations: 3 },
+        backup: { shares: 3, threshold: 2, deviceConfirmations: createWalletScreens },
     },
     {
         name: 'Success (Single-share Backup)',
         testCase:
             'Verify that a user can successfully create a wallet with single-share backup during the onboarding process.',
         seedType: 'shamir-single',
-        backup: { deviceConfirmations: 3 },
+        backup: { deviceConfirmations: createWalletScreens },
     },
 ];
 
@@ -81,10 +87,14 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                 await test.step('Set PIN', async () => {
                     await onboardingPage.pin.setPinButton.click();
                     await devicePrompt.confirmOnDevicePromptIsShown();
+                    await device.expectToContainOnDisplay(
+                        'A PIN will be required to access this device.',
+                    );
                     await device.pressYes();
                     await device.inputPin('12');
                     await device.inputPin('12');
                     await devicePrompt.confirmOnDevicePromptIsShown();
+                    await device.expectToContainOnDisplay('PIN setup completed.');
                     await device.pressYes();
                 });
 

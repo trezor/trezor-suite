@@ -35,6 +35,7 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
             await test.step('Change display rotation', async () => {
                 await page.getByTestId('@settings/device/rotation-button/East').click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay('Change display orientation to east?');
                 await device.pressYes();
                 await devicePrompt.confirmOnDevicePromptIsHidden();
             });
@@ -44,10 +45,12 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
     test(
         'Device Wipe',
         { annotation: createTestAnnotation({ stream: TestStream.Firmware }) },
-        async ({ page, device }) => {
+        async ({ page, device, devicePrompt }) => {
             await page.getByTestId('@settings/device/open-wipe-modal-button').click();
             await page.getByTestId('@wipe/wipe-button').click();
             await page.getByTestId('@wipe/wipe-button').click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await device.expectToContainOnDisplay('Do you really want to wipe the device?');
             await device.pressYes();
             //TODO: Any verification?
         },

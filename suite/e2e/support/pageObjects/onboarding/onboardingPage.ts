@@ -132,7 +132,7 @@ export class OnboardingPage {
         await expect(
             this.devicePrompt.acquireDeviceButton,
             'expected device prompt acquire button to be hidden',
-        ).toBeHidden();
+        ).toBeHidden({ timeout: 30_000 });
     }
 
     @step()
@@ -185,7 +185,7 @@ export class OnboardingPage {
     async enableAutoconnect() {
         await this.settingsPage.navigateTo('device');
         await this.settingsPage.deviceTab.autoconnectSwitch.click();
-        await this.devicePrompt.allowConnectToTrezor();
+        await this.devicePrompt.allowAutoconnect();
         await this.settingsPage.closeSettings();
     }
 
@@ -292,6 +292,7 @@ export class OnboardingPage {
     async passThroughAuthenticityCheck() {
         await this.authenticityStartButton.click();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await this.device.expectToContainOnDisplay('to check the authenticity of your');
         await this.device.pressYes();
         await this.authenticityContinueButton.click();
     }

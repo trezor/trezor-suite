@@ -1,4 +1,4 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { Locator, Page, expect, test } from '@playwright/test';
 
 import { step } from '../common';
 import { DeviceFixture } from '../device';
@@ -96,6 +96,14 @@ export class DevicePrompt {
     @step()
     async allowConnectToTrezor() {
         await this.confirmOnDevicePromptIsShown({ timeout: 30_000 });
+        await this.device.expectToContainOnDisplay('to pair with this Trezor?');
+        await this.device.pressYes();
+    }
+
+    @step()
+    async allowAutoconnect() {
+        await this.confirmOnDevicePromptIsShown({ timeout: 30_000 });
+        await this.device.expectToContainOnDisplay('to connect automatically to this Trezor?');
         await this.device.pressYes();
     }
 
@@ -110,6 +118,19 @@ export class DevicePrompt {
         await this.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
         await this.confirmOnDeviceIsCompleted();
+    }
+
+    // Not a @step: step titles carry method arguments into reports.
+    async confirmPassphraseOnDevice(passphrase: string) {
+        await test.step('DevicePrompt.confirmPassphraseOnDevice', async () => {
+            await this.confirmOnDevicePromptIsShown();
+            await this.device.expectToContainOnDisplay('The next screen shows your passphrase.');
+            await this.device.pressYes();
+
+            await this.confirmOnDevicePromptIsShown();
+            await this.device.expectPassphraseOnDisplay(passphrase);
+            await this.device.pressYes();
+        });
     }
 
     @step()
@@ -131,7 +152,9 @@ export class DevicePrompt {
     async confirmSuiteSyncSetup() {
         // Prompt first: an earlier debuglink display read can drop the ButtonRequest
         await this.confirmOnDevicePromptIsShown();
-        await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
+        await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?', {
+            shouldRunOnCanary: true,
+        });
         await this.device.pressYes();
         // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
         await this.page.waitForTimeout(2_000);

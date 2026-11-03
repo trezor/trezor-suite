@@ -3,6 +3,7 @@ import { ElectronApplication, Page } from '@playwright/test';
 import { messages } from '@suite/intl';
 import TrezorConnect from '@trezor/connect-web';
 import { TestStream } from '@trezor/e2e-utils';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { DeviceFixture } from '../../support/device';
 import { expect, test } from '../../support/fixtures';
@@ -27,18 +28,26 @@ const resetAppFocusSpy = (electronApp: ElectronApplication) =>
 const getAppFocusCallCount = (electronApp: ElectronApplication): Promise<number> =>
     electronApp.evaluate(() => (global as any).__appFocusCalls ?? 0);
 
+const SIGNING_ADDRESS = '1FH6ehAd5ZFXCM1cLGzHxK1s4dGdq1JusM';
+const MESSAGE = 'hello';
+
 const signMessage = () =>
     TrezorConnect.signMessage({
         path: "m/44'/0'/0'/0/0",
         coin: 'btc',
-        message: 'hello',
+        message: MESSAGE,
     });
 
 const confirmSignMessageOnDevice = async (page: Page, device: DeviceFixture) => {
     await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
     // T3T1/T3W1: swipe through address screen, then message screen, then hold to confirm.
+    await device.expectValuesOnDisplay(SIGNING_ADDRESS);
     await device.pressContinue();
+    await device.expectToContainOnDisplay(MESSAGE);
     await device.pressContinue();
+    if (device.model !== Model.T3W1) {
+        await device.expectToContainOnDisplay('Confirm message');
+    }
     await device.pressYes();
     await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'hidden' });
 };
@@ -102,10 +111,7 @@ test.describe('TrezorConnect silent mode', { tag: ['@T3T1', '@T3W1', '@desktopOn
             await expect
                 .poll(() => getAppFocusCallCount(electronApp!), { timeout: 5000 })
                 .toBeGreaterThan(0);
-            await device.pressContinue();
-            await device.pressContinue();
-            await device.pressYes();
-            await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'hidden' });
+            await confirmSignMessageOnDevice(page, device);
 
             // Turn silent mode ON via the settings dropdown.
             await page.getByTestId(`@settings/connect-apps/0/dropdown`).click();
@@ -126,10 +132,7 @@ test.describe('TrezorConnect silent mode', { tag: ['@T3T1', '@T3W1', '@desktopOn
             // wait briefly so that chain can settle before asserting zero.
             await page.waitForTimeout(300);
             expect(await getAppFocusCallCount(electronApp!)).toBe(0);
-            await device.pressContinue();
-            await device.pressContinue();
-            await device.pressYes();
-            await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'hidden' });
+            await confirmSignMessageOnDevice(page, device);
         },
     );
 });

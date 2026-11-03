@@ -84,8 +84,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(page.getByText('Confirm passphrase')).toBeVisible();
                 await dashboardPage.passphraseInput.fill('abc');
                 await dashboardPage.passphraseSubmitButton.click();
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase, shows your address
+                await devicePrompt.confirmPassphraseOnDevice('abc');
             });
 
             await test.step('Verify displayed receive address', async () => {
@@ -103,6 +102,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
                 // Going straight to the device prompt proves no passphrase was requested again.
                 await devicePrompt.confirmOnDevicePromptIsShown();
 
+                await expect(device).toShowReceiveAddress(abcAddr);
                 await device.pressYes(); // confirm address
 
                 await expect(metadataPage.copyAddressButton).toBeVisible();

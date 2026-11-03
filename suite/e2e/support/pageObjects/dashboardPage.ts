@@ -193,9 +193,11 @@ export class DashboardPage {
         await expect(this.passphraseInput).toBeHidden();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await this.device.expectToContainOnDisplay('The next screen shows your passphrase.');
         await this.device.pressYes();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await this.device.expectPassphraseOnDisplay(passphrase);
 
         if (options?.skipDiscovery) {
             await this.device.pressYes();
@@ -221,11 +223,7 @@ export class DashboardPage {
         await this.passphraseSubmitButton.click();
         await expect(this.passphraseInput).toBeHidden();
 
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await this.device.pressYes();
-
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await this.device.pressYes();
+        await this.devicePrompt.confirmPassphraseOnDevice(passphrase);
 
         await this.passphraseInput.fill(passphrase);
         // Give Connect time to emit REQUEST_PASSPHRASE before we submit
@@ -233,22 +231,22 @@ export class DashboardPage {
         await this.page.waitForTimeout(2_000);
         await this.passphraseSubmitButton.click();
 
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await this.device.pressYes();
-
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await this.device.pressYes();
+        await this.devicePrompt.confirmPassphraseOnDevice(passphrase);
 
         // Prompt first: an earlier debuglink display read can drop the ButtonRequest
         if (options?.suiteSync === 'enable') {
             await this.devicePrompt.confirmOnDevicePromptIsShown();
-            await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
+            await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?', {
+                shouldRunOnCanary: true,
+            });
             await this.device.pressYes();
             // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
             await this.page.waitForTimeout(2000);
         } else if (options?.suiteSync === 'decline') {
             await this.devicePrompt.confirmOnDevicePromptIsShown();
-            await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
+            await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?', {
+                shouldRunOnCanary: true,
+            });
             await this.device.pressNo();
         }
 

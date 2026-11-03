@@ -48,6 +48,10 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
             // TODO: 'verifying' is not enough to ensure the device call is already in progress, it is
             // only set right after clicking the button (see getAddress.test.ts for the same caveat).
             await page.waitForTimeout(1000);
+            await expect(device).toShowReceiveAddress(
+                '0x3f2329C9ADFbcCd9A84f52c906E936A42dA18CB8',
+                { lineFormat: 'fullLine' },
+            );
             await device.pressYes();
             await expect(connectSelectAccountModal.verifiedBadge(0)).toBeVisible();
 

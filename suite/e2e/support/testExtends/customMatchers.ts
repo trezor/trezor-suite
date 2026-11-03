@@ -15,11 +15,13 @@ import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { formatAddress, formatEvmAddress, normalizeWhitespace } from '../common';
-import { DeviceFixture } from '../device';
+import { DeviceFixture, type DisplayCheckOptions } from '../device';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
 import { decodeQrCodes } from '../helpers/qrCodeDecoder';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'cardanoTetragrams' | 'fullLine';
+
+type ToShowReceiveAddressOptions = DisplayCheckOptions & { lineFormat?: LineFormats };
 
 type TranslationPrimitiveValues = Record<string, string | number>;
 type TranslationValues = Record<string, string | number | RegExp>;
@@ -59,7 +61,16 @@ const compareDisplayContent = async (
     expectedContent: NormalizedDisplayContent,
     errorMessage: string,
     timeout: number,
+    options?: DisplayCheckOptions,
 ) => {
+    if (device.hasCanaryFirmware && !options?.shouldRunOnCanary) {
+        return {
+            pass: true,
+            message: () =>
+                'Skipping display content check for canary firmware as it is frequently changing and breaking tests.',
+        };
+    }
+
     await test.step(`expected object: ${JSON.stringify(expectedContent)}`, () => {});
 
     const regexAndStringComparator = (expectedValue: any, actualValue: any) => {
@@ -177,9 +188,7 @@ export const expect = baseExpect.extend({
     async toShowReceiveAddress(
         device: DeviceFixture,
         expectedAddress: string,
-        options: { lineFormat: LineFormats } = {
-            lineFormat: 'fourTetragrams',
-        },
+        options: ToShowReceiveAddressOptions = {},
     ) {
         const transformedExpectedAddress = transformAddress(expectedAddress, options.lineFormat);
         const expectedContent =
@@ -202,6 +211,7 @@ export const expect = baseExpect.extend({
             expectedContent,
             'expect Receive address to match',
             this.timeout,
+            options,
         );
     },
 
@@ -212,14 +222,6 @@ export const expect = baseExpect.extend({
             [Model.T3T1]?: Partial<NormalizedDisplayContent>;
         },
     ) {
-        if (device.hasCanaryFirmware) {
-            return {
-                pass: true,
-                message: () =>
-                    'Skipping display content check for canary firmware as it is frequently changing and breaking tests.',
-            };
-        }
-
         // default T3W1 model
         let expectedContent = expected[Model.T3W1];
 

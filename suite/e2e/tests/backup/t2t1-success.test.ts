@@ -31,7 +31,11 @@ test.describe('Backup success', { tag: ['@T2T1'] }, () => {
             await devicePrompt.confirmOnDevicePromptIsShown();
 
             //await device.readAndConfirmMnemonic(); should be used here, but it is flaky
+            await device.expectToContainOnDisplay(
+                'Your wallet backup contains 12 words in a specific order.',
+            );
             await device.pressYes();
+            await device.expectToContainOnDisplay('Never put your backup anywhere digital.');
             await device.pressYes();
             await device.pressContinue();
             await device.pressContinue();
