@@ -6,8 +6,10 @@ import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetAccountCount,
     selectWalletAssetContractAddress,
+    selectWalletAssetExplorerUrl,
     selectWalletAssetHiddenReason,
     selectWalletAssetSymbol,
+    selectWalletAssetTokenInfo,
 } from '@suite-common/assets';
 import {
     DefinitionType,
@@ -17,6 +19,7 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, type AddressType } from '@suite-common/wallet-types';
+import { isWalletConnectSupportedNetwork } from '@suite-common/walletconnect';
 import {
     Column,
     Divider,
@@ -47,11 +50,7 @@ import { AssetDetailSignVerifyModal } from 'src/views/home/AssetDetail/AssetDeta
 
 import { AssetDetailMenuAddressField } from './AssetDetailMenuAddressField';
 import { AssetDetailMenuNetworkRow } from './AssetDetailMenuNetworkRow';
-import {
-    selectWalletAssetExplorerUrl,
-    selectWalletAssetSignVerifyAccounts,
-    selectWalletAssetTokenInfo,
-} from './assetDetailMenuSelectors';
+import { selectWalletAssetSignVerifyAccounts } from './assetDetailMenuSelectors';
 import { getAssetAddressFields } from './getAssetAddressFields';
 
 type AssetDetailMenuProps = {
@@ -171,7 +170,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
             label: <Translation id="TR_WALLETCONNECT" />,
             icon: LinkIcon,
             onClick: goToConnectedApps,
-            isHidden: getNetwork(symbol).caipId === undefined,
+            isHidden: !isWalletConnectSupportedNetwork(symbol),
             'data-testid': '@asset-detail/menu/walletconnect',
         },
         {

@@ -2093,6 +2093,7 @@ export const messages = {
             network: 'Network',
             balance: 'Balance',
             hideToken: 'Hide token',
+            showToken: 'Show token',
         },
         accountSettingsScreen: {
             coin: 'Network',
@@ -2431,10 +2432,15 @@ export const messages = {
                 openButtonAccessibilityLabel: 'Asset settings',
                 network: 'Network',
                 accounts: 'Accounts',
+                policyId: 'Policy ID',
+                viewInExplorer: 'View in explorer',
             },
             balanceSection: {
                 balanceTitle: 'Balance',
                 allAccountsButton: 'All accounts ({count})',
+            },
+            accountsSheet: {
+                subtitle: '{assetName} on {networkName}',
             },
             earnSection: {
                 title: 'Earn',

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import {
     type HomeAssetTableState,
@@ -20,28 +20,14 @@ import {
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import {
-    AccountsStackRoutes,
-    AppTabsRoutes,
-    type AssetsStackParamList,
-    type AssetsStackRoutes,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
+import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
 
+import { useOpenAssetDetailAccounts } from './AssetDetailAccountsBottomSheetProvider';
 import { AssetDetailSectionHeader } from './AssetDetailSectionHeader';
-
-type NavigationProps = StackToStackCompositeNavigationProps<
-    AssetsStackParamList,
-    AssetsStackRoutes.AssetDetail,
-    RootStackParamList
->;
 
 export const AssetDetailBalanceSection = () => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const navigation = useNavigation<NavigationProps>();
     const assetKey = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
@@ -61,19 +47,11 @@ export const AssetDetailBalanceSection = () => {
     const accountCount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetAccountCount(state, assetKey),
     );
+    const openAccountsModal = useOpenAssetDetailAccounts();
 
     if (amount === undefined) {
         return null;
     }
-
-    const handleAccountsPress = () =>
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.AccountsStack,
-            params: {
-                screen: AccountsStackRoutes.Accounts,
-                params: { networksFilter: [networkSymbol] },
-            },
-        });
 
     return (
         <VStack paddingHorizontal="sp20" spacing="sp16">
@@ -87,7 +65,7 @@ export const AssetDetailBalanceSection = () => {
                         values={{ count: accountCount }}
                     />
                 }
-                onPress={handleAccountsPress}
+                onPress={openAccountsModal}
                 testID="@assets/asset-detail/all-accounts-button"
             />
 

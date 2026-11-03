@@ -8,7 +8,7 @@ import {
     selectFormattedAccountType,
     selectIsCardanoStakedWithFiveBinaries,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {
@@ -19,16 +19,16 @@ import {
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 import {
     type NativeAccountsRootState,
     selectAccountFiatBalance,
-    selectActiveAndDefiTokensCount,
+    selectAccountHasAnyKnownTokens,
 } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 import { AccountLabel } from '../AccountLabel';
+import { AccountListTokenBadge } from './AccountListTokenBadge';
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
 import { ZeroApyBadge } from './ZeroApyBadge';
@@ -46,19 +46,6 @@ type AccountListItemProps = {
     shouldShowExactAmount?: boolean;
 };
 
-const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
-    const numberOfTokens = useSelector((state: NativeAccountsRootState) =>
-        selectActiveAndDefiTokensCount(state, accountKey),
-    );
-
-    return (
-        <Badge
-            size="small"
-            label={<Translation id="accountList.numberOfTokens" values={{ numberOfTokens }} />}
-        />
-    );
-});
-
 const AccountsListItemComponent = ({
     account,
     onPress,
@@ -74,8 +61,8 @@ const AccountsListItemComponent = ({
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
-    const accountHasKnownTokensWithBalance = useSelector(
-        (state: NativeAccountsRootState) => selectActiveAndDefiTokensCount(state, account.key) > 0,
+    const hasAnyKnownTokens = useSelector((state: NativeAccountsRootState) =>
+        selectAccountHasAnyKnownTokens(state, account.key),
     );
 
     const accountHasStaking = useSelector((state: StakeRootState) =>
@@ -91,15 +78,11 @@ const AccountsListItemComponent = ({
     );
 
     const handleOnPress = useCallback(() => {
-        onPress?.({
-            account,
-            hasAnyKnownTokens: accountHasKnownTokensWithBalance,
-        });
-    }, [account, accountHasKnownTokensWithBalance, onPress]);
+        onPress?.({ account, hasAnyKnownTokens });
+    }, [account, hasAnyKnownTokens, onPress]);
 
-    const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
-    const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
-    const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
+    const shouldShowAccountLabel = !isNetworkWithTokens(account.symbol) || !isNativeCoinOnly;
+    const shouldShowTokenBadge = hasAnyKnownTokens && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
     const shouldShowZeroApyBadge = isStakedWithFiveBinaries && !isNativeCoinOnly;
     const fiatBalanceValue =
@@ -157,7 +140,7 @@ const AccountsListItemComponent = ({
                             <StakingBadge networkSymbol={account.symbol} account={account} />
                         )
                     )}
-                    {shouldShowTokenBadge && <TokenBadge accountKey={account.key} />}
+                    {shouldShowTokenBadge && <AccountListTokenBadge accountKey={account.key} />}
                     {badges}
                 </>
             }

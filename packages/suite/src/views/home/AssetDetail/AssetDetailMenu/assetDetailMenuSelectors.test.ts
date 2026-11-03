@@ -1,4 +1,4 @@
-import { selectWalletAssetKey } from '@suite-common/assets';
+import { selectWalletAssetExplorerUrl, selectWalletAssetKey } from '@suite-common/assets';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
@@ -8,7 +8,6 @@ import { type StaticSessionId } from '@trezor/device-utils';
 
 import { type AppState } from 'src/reducers/store';
 
-import { selectWalletAssetExplorerUrl } from './assetDetailMenuSelectors';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;

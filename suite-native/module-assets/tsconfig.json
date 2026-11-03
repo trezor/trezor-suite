@@ -9,6 +9,9 @@
         },
         { "path": "../../suite-common/receive" },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -23,12 +26,19 @@
         { "path": "../accounts" },
         { "path": "../assets" },
         { "path": "../atoms" },
+        { "path": "../clipboard" },
         { "path": "../device" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
+        { "path": "../module-connect-popup" },
         { "path": "../navigation" },
         { "path": "../price-chart" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

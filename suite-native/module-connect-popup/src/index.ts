@@ -6,3 +6,4 @@ export * from './screens/WalletConnectSwitchAccountScreen';
 export * from './screens/WalletConnectPairScreen';
 export * from './hooks/useConnectPopupNavigation';
 export * from './hooks/useIsConnectPopupOpened';
+export * from './appConnectionSelectors';
