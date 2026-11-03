@@ -20,6 +20,7 @@ export const Text: TextStory = {
         variant: 'body-md',
         color: 'contentPrimary',
         textAlign: 'left',
+        isAllCaps: false,
     },
     argTypes: {
         children: {
@@ -32,6 +33,9 @@ export const Text: TextStory = {
         textAlign: {
             control: { type: 'select' },
             options: ['left', 'center', 'right'],
+        },
+        isAllCaps: {
+            control: { type: 'boolean' },
         },
         color: {
             control: { type: 'select' },
