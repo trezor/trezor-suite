@@ -2,6 +2,20 @@ export {
     createStakingCompositionRoot,
     type StakingCompositionRootDeps,
 } from './createStakingCompositionRoot';
+export {
+    composeStakingStepThunk,
+    type ComposeStakingStepThunkDeps,
+    type ComposeStakingStepThunkState,
+} from './engine/composeStakingStepThunk';
+export {
+    planStakingOperationThunk,
+    type PlanStakingOperationThunkDeps,
+    type PlanStakingOperationThunkState,
+} from './engine/planStakingOperationThunk';
+export {
+    STAKING_ENGINE_REJECTIONS,
+    type StakingEngineRejection,
+} from './engine/stakingEngineRejection';
 export { toPrecomposedLevels } from './fees/toPrecomposedLevels';
 export {
     createStakingProductRepository,
