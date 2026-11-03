@@ -19,12 +19,12 @@ describe('Native navigation smoke [@noDevice @iosOnly]', () => {
     it('uses system tabs and returns to the existing bar when disabled', async () => {
         await openApp({ args: { preloadedState } });
 
-        const accountsTab = getSystemTab(EN_TRANSLATIONS.navigation.tabs.accountsList);
+        const accountsTab = getSystemTab(EN_TRANSLATIONS['navigation.tabs.accountsList']);
         await waitForVisible(accountsTab);
         await accountsTab.tap();
         await detoxExpect(element(by.id('@screen/Accounts'))).toBeVisible();
 
-        await getSystemTab(EN_TRANSLATIONS.navigation.tabs.settings).tap();
+        await getSystemTab(EN_TRANSLATIONS['navigation.tabs.settings']).tap();
         await detoxExpect(element(by.id('@screen/Settings'))).toBeVisible();
         await device.takeScreenshot('native-navigation-ios');
 
