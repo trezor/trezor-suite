@@ -7,7 +7,6 @@
         "autolinking": {
             "android": {
                 "exclude": [
-                    "@expo/ui",
                     "expo-media-library",
                     "react-native-view-shot"
                 ]

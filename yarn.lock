@@ -8074,7 +8074,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/elements@npm:^2.9.5":
+"@react-navigation/elements@npm:2.9.8, @react-navigation/elements@npm:^2.9.5":
   version: 2.9.8
   resolution: "@react-navigation/elements@npm:2.9.8"
   dependencies:
@@ -15127,12 +15127,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/navigation@workspace:suite-native/navigation"
   dependencies:
+    "@expo/ui": "npm:58.0.25"
     "@react-navigation/bottom-tabs": "npm:7.13.0"
+    "@react-navigation/elements": "npm:2.9.8"
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@react-navigation/routers": "npm:^7.5.3"
     "@rozenite/react-navigation-plugin": "npm:^2.1.0"
     "@storybook/react-native": "npm:^10.6.2"
+    "@suite-common/icons": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
