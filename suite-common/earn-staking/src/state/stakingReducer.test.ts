@@ -9,7 +9,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 import { stakingActions, stakingInitialState, stakingReducer } from './stakingReducer';
 
 const eth = mockStakingProductDescriptor();
-const sol = mockStakingProductDescriptor({ symbol: asNetworkSymbol('sol'), type: 'native' });
+const sol = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('sol'), type: 'native' });
 const accountKey = mockAccountKey({ symbol: asNetworkSymbol('eth') });
 const otherAccountKey = mockAccountKey({ descriptor: 'other', symbol: asNetworkSymbol('eth') });
 

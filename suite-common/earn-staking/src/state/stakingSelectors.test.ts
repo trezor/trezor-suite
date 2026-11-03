@@ -19,7 +19,7 @@ import {
 import { mockStakingState } from '../../mocks';
 
 const eth = mockStakingProductDescriptor();
-const sol = mockStakingProductDescriptor({ symbol: asNetworkSymbol('sol'), type: 'native' });
+const sol = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('sol'), type: 'native' });
 const accountKey = mockAccountKey({ symbol: asNetworkSymbol('eth') });
 const unknownAccountKey = mockAccountKey({ descriptor: 'unknown', symbol: asNetworkSymbol('eth') });
 const ethPosition = mockStakingPosition();
@@ -77,7 +77,7 @@ describe('staking selectors', () => {
         expect(
             selectStakingProductDescriptor(
                 state,
-                mockStakingProductDescriptor({ symbol: asNetworkSymbol('ada') }).id,
+                mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('ada') }).id,
             ),
         ).toBeNull();
     });

@@ -70,7 +70,7 @@ export const syncStakingPositionsThunk = createThunk<
 );
 
 type SyncAllStakingPositionsParams = {
-    symbol?: NetworkSymbol;
+    networkSymbol?: NetworkSymbol;
 };
 
 export type SyncAllStakingPositionsThunkState = SyncStakingPositionsThunkState;
@@ -84,7 +84,7 @@ export const syncAllStakingPositionsThunk = createThunk<
 >(`${STAKING_MODULE_PREFIX}/syncAllStakingPositions`, async (params, { dispatch, getState }) => {
     const accounts = selectAccounts(getState()).filter(
         account =>
-            (params?.symbol === undefined || account.symbol === params.symbol) &&
+            (params?.networkSymbol === undefined || account.symbol === params.networkSymbol) &&
             selectIsStakingSupportedSymbol(getState(), account.symbol),
     );
 
@@ -112,12 +112,12 @@ export const refreshStakingProductInfoThunk = createThunk<
         const { queryClient, staking } = extra.services;
         const enabledNetworks = selectEnabledNetworks(getState());
         const descriptors = selectStakingProductDescriptors(getState()).filter(descriptor =>
-            enabledNetworks.includes(descriptor.symbol),
+            enabledNetworks.includes(descriptor.networkSymbol),
         );
         const changedSymbols = new Set<NetworkSymbol>();
 
         await Promise.all(
-            descriptors.map(async ({ id: productId, symbol }) => {
+            descriptors.map(async ({ id: productId, networkSymbol }) => {
                 const previousInfo = getCachedStakingProductInfo(queryClient, productId);
 
                 try {
@@ -130,7 +130,7 @@ export const refreshStakingProductInfoThunk = createThunk<
                     });
 
                     if (getCachedStakingProductInfo(queryClient, productId) !== previousInfo) {
-                        changedSymbols.add(symbol);
+                        changedSymbols.add(networkSymbol);
                     }
                 } catch (error) {
                     const message = error instanceof Error ? error.message : 'Unknown error';
@@ -141,7 +141,9 @@ export const refreshStakingProductInfoThunk = createThunk<
         );
 
         await Promise.all(
-            [...changedSymbols].map(symbol => dispatch(syncAllStakingPositionsThunk({ symbol }))),
+            [...changedSymbols].map(networkSymbol =>
+                dispatch(syncAllStakingPositionsThunk({ networkSymbol })),
+            ),
         );
     },
 );

@@ -32,7 +32,7 @@ import {
 } from '../../mocks';
 
 const eth = mockStakingProductDescriptor();
-const sol = mockStakingProductDescriptor({ symbol: asNetworkSymbol('sol'), type: 'native' });
+const sol = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('sol'), type: 'native' });
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const solAccount = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
 const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
@@ -63,8 +63,8 @@ const createDeps = (
 
                     return adapter;
                 }),
-                listBySymbol: mock(symbol =>
-                    adapters.filter(adapter => adapter.descriptor.symbol === symbol),
+                listBySymbol: mock(networkSymbol =>
+                    adapters.filter(adapter => adapter.descriptor.networkSymbol === networkSymbol),
                 ),
             }),
         }),
@@ -293,7 +293,7 @@ describe('syncAllStakingPositionsThunk', () => {
         wallet: { accounts: [ethAccount, solAccount, btcAccount] },
     };
 
-    const run = async (params?: { symbol: ReturnType<typeof asNetworkSymbol> }) => {
+    const run = async (params?: { networkSymbol: ReturnType<typeof asNetworkSymbol> }) => {
         const extra = createDeps([createAdapter(eth), createAdapter(sol)]);
         const getState = () => state;
         const { actions, dispatch } = createMockDispatch({ getState, extra });
@@ -310,6 +310,6 @@ describe('syncAllStakingPositionsThunk', () => {
     });
 
     it('limits the sync to one network', async () => {
-        expect(await run({ symbol: asNetworkSymbol('sol') })).toEqual([solAccount.key]);
+        expect(await run({ networkSymbol: asNetworkSymbol('sol') })).toEqual([solAccount.key]);
     });
 });
