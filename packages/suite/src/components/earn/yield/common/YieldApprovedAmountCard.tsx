@@ -42,6 +42,7 @@ export const YieldApprovedAmountCard = ({
                         amount={amount}
                         symbol={token.symbol}
                         decimals={token.decimals}
+                        contractAddress={token.contractAddress}
                         isLoading={isLoading}
                         hasError={hasError}
                         data-testid="@yield/approve/approved-amount"

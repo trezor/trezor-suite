@@ -48,6 +48,7 @@ export const AllowanceAmount = ({
                 value={amount}
                 symbol={symbol}
                 contractAddress={contractAddress}
+                tokenDecimals={decimals}
                 data-testid={dataTest}
             />
         </Text>
