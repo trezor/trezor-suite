@@ -14,7 +14,17 @@ import {
 
 type NftTab = 'shown' | 'hidden';
 
-export const Nfts = () => {
+type NftsToggle = {
+    isOpen: boolean;
+    collectionCount: number;
+    hiddenCount: number;
+};
+
+type NftsProps = {
+    onToggle?: (toggle: NftsToggle) => void;
+};
+
+export const Nfts = ({ onToggle }: NftsProps) => {
     const isNftSectionEnabled = useSelector(selectIsNftSectionEnabled);
     const shownCount = useSelector((state: NftState & SuiteSettingsRootState) =>
         isNftSectionEnabled ? selectShownNftCollectionCount(state) : 0,
@@ -23,6 +33,7 @@ export const Nfts = () => {
         isNftSectionEnabled ? selectHiddenNftCollectionCount(state) : 0,
     );
     const [chosenTab, setChosenTab] = useState<NftTab>();
+    const [isOpen, setIsOpen] = useState(false);
 
     if (shownCount === 0 && hiddenCount === 0) {
         return null;
@@ -30,10 +41,18 @@ export const Nfts = () => {
 
     const tab = chosenTab ?? (shownCount > 0 ? 'shown' : 'hidden');
 
+    const toggle = () => {
+        setIsOpen(!isOpen);
+        onToggle?.({ isOpen: !isOpen, collectionCount: shownCount, hiddenCount });
+    };
+
     return (
         <Card paddingType="none" data-testid="@dashboard/home-asset-nfts">
-            <Collapsible>
-                <Collapsible.Toggle data-testid="@dashboard/home-asset-nfts/toggle">
+            <Collapsible isOpen={isOpen}>
+                <Collapsible.Toggle
+                    onClick={toggle}
+                    data-testid="@dashboard/home-asset-nfts/toggle"
+                >
                     <Row
                         justifyContent="space-between"
                         alignItems="center"

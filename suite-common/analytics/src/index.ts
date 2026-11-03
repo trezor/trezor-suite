@@ -58,3 +58,4 @@ export {
 } from './events/appCopyToClipboardEvent';
 export { appExternalLinkEvent } from './events/appExternalLinkEvent';
 export { dashboardAssetListMenuEvent } from './events/dashboardAssetListMenuEvent';
+export { dashboardNftsEvent } from './events/dashboardNftsEvent';

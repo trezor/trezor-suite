@@ -12,6 +12,7 @@ export { connectPopupErrorEvent } from './connectPopupErrorEvent';
 export { connectPopupInitEvent } from './connectPopupInitEvent';
 export { connectPopupPermissionsEvent } from './connectPopupPermissionsEvent';
 export { dashboardAssetListMenuEvent } from './dashboardAssetListMenuEvent';
+export { dashboardNftsEvent } from './dashboardNftsEvent';
 export { deviceConnectionDeviceConfirmationEvent } from './deviceConnectionDeviceConfirmationEvent';
 export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundEvent';
 export { deviceConnectionDevicePairedEvent } from './deviceConnectionDevicePairedEvent';
