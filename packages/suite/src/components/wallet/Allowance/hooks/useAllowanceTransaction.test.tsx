@@ -270,6 +270,23 @@ describe('useAllowanceTransaction', () => {
         expect(mockSignAndPush).not.toHaveBeenCalled();
     });
 
+    it('does not approve a token the account does not hold', async () => {
+        const { result, callbacks } = renderAllowanceTransaction({
+            account: { ...ACCOUNT, tokens: [] },
+        });
+
+        await waitFor(() => expect(result.current.composedTransaction).toBeDefined());
+
+        expect(result.current.canSubmit).toBe(false);
+
+        await act(async () => {
+            await result.current.confirmAndSend();
+        });
+
+        expect(callbacks.onConfirm).not.toHaveBeenCalled();
+        expect(mockSignAndPush).not.toHaveBeenCalled();
+    });
+
     it('hands a cancel over to the caller', () => {
         const { result, callbacks } = renderAllowanceTransaction();
 

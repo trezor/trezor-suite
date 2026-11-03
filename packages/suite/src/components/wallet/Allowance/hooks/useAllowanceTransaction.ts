@@ -57,6 +57,8 @@ export const useAllowanceTransaction = ({
 
     const token = findToken(account.tokens, tokenContractAddress);
 
+    const isTokenResolved = type === 'revoke' || token !== undefined;
+
     const { inputAmount, allowanceAmount } =
         token && type === 'approve'
             ? getAllowanceAmountForLimit({ amount, limitType, token })
@@ -101,7 +103,8 @@ export const useAllowanceTransaction = ({
             values: errorMessage.values,
         };
     }, [selectedComposedLevel]);
-    const canSubmit = !isComposing && !!composedTransaction && !composedLevelsError;
+    const canSubmit =
+        isTokenResolved && !isComposing && !!composedTransaction && !composedLevelsError;
 
     const composeRequestRef = useCurrentRef(composeRequest);
     const callbacksRef = useCurrentRef({
@@ -126,7 +129,7 @@ export const useAllowanceTransaction = ({
     );
 
     const confirmAndSend = useCallback(async () => {
-        if (!composedTransaction) return;
+        if (!composedTransaction || !isTokenResolved) return;
 
         callbacksRef.current.onConfirm?.(limitType);
         callbacksRef.current.onSendStart?.();
@@ -144,7 +147,7 @@ export const useAllowanceTransaction = ({
         }
 
         callbacksRef.current.onSendFailed?.();
-    }, [composedTransaction, send, limitType, callbacksRef]);
+    }, [composedTransaction, isTokenResolved, send, limitType, callbacksRef]);
 
     const handleCancel = useCallback(() => {
         callbacksRef.current.onCancel?.();
