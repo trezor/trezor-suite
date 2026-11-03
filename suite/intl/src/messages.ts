@@ -1853,7 +1853,7 @@ export const messages = defineMessages({
         id: 'TR_ASSET_DETAIL_MARKET_PRICE',
     },
     TR_PRICE_CHART_LOAD_ERROR: {
-        defaultMessage: "Price history couldn't be loaded.",
+        defaultMessage: "We couldn't load the market data. Try again later.",
         id: 'TR_PRICE_CHART_LOAD_ERROR',
     },
     TR_PRICE_CHART_NO_HISTORY: {

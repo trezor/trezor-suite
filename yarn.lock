@@ -17092,6 +17092,7 @@ __metadata:
     "@suite/ui-animations": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/icons": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"

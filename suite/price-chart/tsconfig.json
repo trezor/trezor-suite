@@ -24,6 +24,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/icons" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" }
     ]
