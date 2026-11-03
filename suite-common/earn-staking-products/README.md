@@ -1,6 +1,6 @@
 # @suite-common/earn-staking-products
 
-The staking products: providers, network kits, the per-network product factories and `createStakingProductsCompositionRoot`, which builds the adapters the product repository registers. Products implement the contracts from `@suite-common/earn-staking-common` and receive everything an app owns, such as Connect and staking API data, as injected dependencies.
+The staking products: providers, network kits, the per-network product factories and `createStakingProductsCompositionRoot`, which builds the adapters the product repository registers. Products implement the contracts from `@suite-common/earn-staking-common` and receive everything an app owns, such as Connect, as injected dependencies. Staking API data comes from the generated client in `@suite-common/earn-staking-api`, whose schemas are the single source of truth; product factories take the client functions they use as a dependency, so tests mock them with `createMockDeps` and the composition root passes the real ones.
 
 `src/providers` is the provider registry: every provider as parsed `stakingProviderSchema` data with its status, links and on-chain identities per network symbol, plus `getStakingProvider` and `findStakingProviderByIdentity`. The identities are this package's own copies; nothing here imports the legacy constants in `wallet-config` or the network packages, which stay until the cleanup removes them.
 
