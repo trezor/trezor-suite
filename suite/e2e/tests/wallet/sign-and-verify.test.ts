@@ -122,7 +122,7 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
     test(
         'Verify message signed with standard Bitcoin signature format',
         { annotation: createTestAnnotation({ stream: TestStream.Network }) },
-        async ({ page, devicePrompt }) => {
+        async ({ page, devicePrompt, device }) => {
             await page.getByTestId('@sign-verify/navigation/verify').click();
             await page.getByTestId('@sign-verify/message').fill(MESSAGE);
             await page.getByTestId('@sign-verify/select-address').fill(ADDRESS);
@@ -131,6 +131,17 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await devicePrompt.waitForPromptAndConfirm(); // Confirm signing address
             await devicePrompt.waitForPromptAndConfirm(); // Confirm message
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Done' },
+                    body: [['The signature is', '\n', 'valid.']],
+                    actions: { right_button: 'Continue' },
+                },
+                T3T1: {
+                    header: { title: 'Success' },
+                    body: [['The signature is valid.']],
+                },
+            });
             await devicePrompt.waitForPromptAndConfirm(); // Confirmation that signature is valid
 
             await expect(page.getByTestId('@toast/verify-message-success')).toBeVisible();

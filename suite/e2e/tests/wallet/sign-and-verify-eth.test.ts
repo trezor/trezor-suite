@@ -56,7 +56,7 @@ test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1', '@optional'] }, (
     test(
         'Verify message signed with Ethereum',
         { annotation: createTestAnnotation({ stream: TestStream.Network }) },
-        async ({ page, devicePrompt, walletPage }) => {
+        async ({ page, devicePrompt, walletPage, device }) => {
             await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
             await walletPage.walletExtraDropDown.click();
             await walletPage.signAndVerifyButton.click();
@@ -69,6 +69,17 @@ test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1', '@optional'] }, (
 
             await devicePrompt.waitForPromptAndConfirm(); // Confirm signing address
             await devicePrompt.waitForPromptAndConfirm(); // Confirm message
+            await expect(device).toShowOnDisplay({
+                T3W1: {
+                    header: { title: 'Done' },
+                    body: [['The signature is', '\n', 'valid.']],
+                    actions: { right_button: 'Continue' },
+                },
+                T3T1: {
+                    header: { title: 'Success' },
+                    body: [['The signature is valid.']],
+                },
+            });
             await devicePrompt.waitForPromptAndConfirm(); // Confirmation that signature is valid
 
             await expect(page.getByTestId('@toast/verify-message-success')).toBeVisible();

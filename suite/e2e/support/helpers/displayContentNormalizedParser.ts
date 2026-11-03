@@ -72,8 +72,10 @@ export function parseDisplayContent(json: any): NormalizedDisplayContent {
         throw new Error(`Display content invalid: expected object, got ${typeof json}`);
     }
 
+    const root = json.component === 'SwipeUpScreen' ? json.content : json;
+
     // header can be json.header (T3T1) or json.Header (T3W1)
-    const headerObj = getFirstPresent(json, ['header', 'Header']);
+    const headerObj = getFirstPresent(root, ['header', 'Header']);
     if (!headerObj || typeof headerObj !== 'object') {
         throw new Error(`Display content invalid, missing header: ${JSON.stringify(json)}`);
     }
@@ -91,12 +93,14 @@ export function parseDisplayContent(json: any): NormalizedDisplayContent {
     const subtitle = extractTextish(subtitleCandidate);
 
     // paragraphs: try multiple likely paths
-    const paragraphs = getValueAtPaths(json, [
-        ['content', 'content', 'paragraphs'], // original default
-        ['Content', 'paragraphs'], // T3W1
-        ['content', 'paragraphs'], // possible variation
-        ['paragraphs', 'paragraphs'],
-    ]);
+    const statusMessage = extractTextish(getValueAtPaths(root, [['content', 'content', 'msg']]));
+    const paragraphs =
+        getValueAtPaths(root, [
+            ['content', 'content', 'paragraphs'], // original default
+            ['Content', 'paragraphs'], // T3W1
+            ['content', 'paragraphs'], // possible variation
+            ['paragraphs', 'paragraphs'],
+        ]) ?? (statusMessage === undefined ? undefined : [[statusMessage]]);
 
     if (!Array.isArray(paragraphs) || paragraphs.length < 1) {
         throw new Error(
@@ -110,7 +114,7 @@ export function parseDisplayContent(json: any): NormalizedDisplayContent {
     );
 
     // footer: could be footer.instruction or simple footer string/object
-    const footerCandidate = getValueAtPaths(json, [
+    const footerCandidate = getValueAtPaths(root, [
         ['footer', 'instruction'],
         ['Footer', 'instruction'],
         ['footer'],
@@ -119,7 +123,7 @@ export function parseDisplayContent(json: any): NormalizedDisplayContent {
     const footer = extractTextish(footerCandidate);
 
     // T3W1 has ActionBar with buttons instead of the footer
-    const actions = extractActionsFromActionBar(json);
+    const actions = extractActionsFromActionBar(root);
     const areActionsPresent = Object.keys(actions).length > 0;
 
     if (areActionsPresent && footer) {
