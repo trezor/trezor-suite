@@ -16,6 +16,7 @@ import {
  */
 export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     private readonly background;
+    private readonly portListeners: Array<(e: MessageEvent<any>) => void> = [];
 
     constructor(sessionsBackgroundUrl: string) {
         this.background = new SharedWorker(sessionsBackgroundUrl, {
@@ -53,26 +54,28 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     on(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
     on(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
     on(event: 'descriptors' | 'releaseRequest', listener: (descriptors: any) => void): void {
-        this.background.port.addEventListener(
-            'message',
-            (
-                e: MessageEvent<
-                    //  either standard response from sessions background (we ignore this one)
-                    | Awaited<ReturnType<SessionsBackground['handleMessage']>>
-                    // or artificially broadcasted message to all clients (see background-sharedworker)
-                    | { type: 'descriptors'; payload: Descriptor[] }
-                >,
-            ) => {
-                if (e && 'type' in e.data) {
-                    if (e.data.type === event) {
-                        listener(e.data.payload);
-                    }
+        const wrappedListener = (
+            e: MessageEvent<
+                //  either standard response from sessions background (we ignore this one)
+                | Awaited<ReturnType<SessionsBackground['handleMessage']>>
+                // or artificially broadcasted message to all clients (see background-sharedworker)
+                | { type: 'descriptors'; payload: Descriptor[] }
+            >,
+        ) => {
+            if (e && 'type' in e.data) {
+                if (e.data.type === event) {
+                    listener(e.data.payload);
                 }
-            },
-        );
+            }
+        };
+        this.portListeners.push(wrappedListener);
+        this.background.port.addEventListener('message', wrappedListener);
     }
 
     dispose() {
-        /* is it needed? */
+        for (const listener of this.portListeners) {
+            this.background.port.removeEventListener('message', listener);
+        }
+        this.portListeners.length = 0;
     }
 }
