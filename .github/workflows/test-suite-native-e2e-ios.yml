@@ -174,7 +174,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: ~/Library/Detox
-          key: detox-framework-${{ hashFiles('**/node_modules/detox/package.json') }}
+          key: detox-framework-${{ hashFiles('node_modules/detox/package.json') }}
 
       - name: Build Detox framework cache
         run: yarn exec detox clean-framework-cache && yarn exec detox build-framework-cache
