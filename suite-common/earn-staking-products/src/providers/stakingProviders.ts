@@ -28,7 +28,8 @@ export const getStakingProvider = (id: StakingProviderId): StakingProvider => {
 };
 
 export const findStakingProviderByIdentity = (
-    symbol: NetworkSymbol,
+    networkSymbol: NetworkSymbol,
     identity: string,
 ): StakingProvider | null =>
-    stakingProviders.find(provider => provider.identities[symbol]?.includes(identity)) ?? null;
+    stakingProviders.find(provider => provider.identities[networkSymbol]?.includes(identity)) ??
+    null;

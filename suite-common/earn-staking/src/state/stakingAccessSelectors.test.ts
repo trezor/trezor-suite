@@ -38,7 +38,7 @@ const disableFeatures = (domains: readonly string[]): MessageSystemState =>
 
 const manage = mockStakingProductDescriptor();
 const subset = mockStakingProductDescriptor({
-    symbol: asNetworkSymbol('sol'),
+    networkSymbol: asNetworkSymbol('sol'),
     type: 'native',
     platforms: {
         desktop: { access: 'manage', operations: ['stake', 'unstake'] },
@@ -46,7 +46,7 @@ const subset = mockStakingProductDescriptor({
     },
 });
 const readOnly = mockStakingProductDescriptor({
-    symbol: asNetworkSymbol('ada'),
+    networkSymbol: asNetworkSymbol('ada'),
     type: 'native',
     platforms: { desktop: { access: 'read-only' }, mobile: { access: 'hidden' } },
 });
@@ -71,7 +71,7 @@ const createState = ({ platform = 'desktop', disabled = [], viewOnly = false }: 
 
 describe('selectStakingProductAccess', () => {
     it('hides a product that is not registered', () => {
-        const unknown = mockStakingProductDescriptor({ symbol: asNetworkSymbol('trx') });
+        const unknown = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('trx') });
 
         expect(selectStakingProductAccess(createState(), unknown.id)).toEqual({
             access: 'hidden',

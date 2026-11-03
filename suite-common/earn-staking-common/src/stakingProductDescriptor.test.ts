@@ -1,14 +1,38 @@
+import { stakingAssetSymbolSchema } from './stakingProductAsset';
 import {
     stakingProductDescriptorObjectSchema,
     stakingProductDescriptorSchema,
 } from './stakingProductDescriptor';
 import { mockStakingProductDescriptor } from '../mocks';
 
+const polygonToken = {
+    kind: 'token',
+    symbol: stakingAssetSymbolSchema.parse('pol'),
+    contract: '0x455e53cbb86018ac2b8092fdcd39d8444affc3f6',
+} as const;
+
 describe('stakingProductDescriptorSchema', () => {
     it('parses a descriptor unchanged', () => {
         const descriptor = mockStakingProductDescriptor();
 
         expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
+    });
+
+    it('parses a token product whose id carries the token symbol', () => {
+        const descriptor = mockStakingProductDescriptor({ asset: polygonToken, type: 'native' });
+
+        expect(descriptor.id).toBe('eth:pol:everstake:native');
+        expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
+    });
+
+    it('rejects an id that does not match the asset', () => {
+        const result = stakingProductDescriptorSchema.safeParse({
+            ...mockStakingProductDescriptor(),
+            asset: polygonToken,
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['id']);
     });
 
     it('rejects an id that does not match symbol, provider and type', () => {

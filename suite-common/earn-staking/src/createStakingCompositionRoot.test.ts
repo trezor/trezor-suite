@@ -11,7 +11,10 @@ import { stakingActions } from './state/stakingReducer';
 
 const ethAdapter = mockStakingProductAdapter();
 const solAdapter = mockStakingProductAdapter({
-    descriptor: mockStakingProductDescriptor({ symbol: asNetworkSymbol('sol'), type: 'native' }),
+    descriptor: mockStakingProductDescriptor({
+        networkSymbol: asNetworkSymbol('sol'),
+        type: 'native',
+    }),
 });
 
 const createDispatch = () => {

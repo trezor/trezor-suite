@@ -21,7 +21,8 @@ export const selectStakingPlatform = (state: StakingRootState) =>
 
 const selectStakingProducts = (state: StakingRootState) => selectStakingState(state).products;
 
-const selectSymbolParam = (_state: StakingRootState, symbol: NetworkSymbol) => symbol;
+const selectNetworkSymbolParam = (_state: StakingRootState, networkSymbol: NetworkSymbol) =>
+    networkSymbol;
 
 export const selectStakingProductDescriptors = createWeakMapSelector(
     [selectStakingProducts],
@@ -30,9 +31,11 @@ export const selectStakingProductDescriptors = createWeakMapSelector(
 );
 
 export const selectStakingProductDescriptorsBySymbol = createWeakMapSelector(
-    [selectStakingProductDescriptors, selectSymbolParam],
-    (descriptors, symbol): readonly StakingProductDescriptor[] =>
-        returnStableArrayIfEmpty(descriptors.filter(descriptor => descriptor.symbol === symbol)),
+    [selectStakingProductDescriptors, selectNetworkSymbolParam],
+    (descriptors, networkSymbol): readonly StakingProductDescriptor[] =>
+        returnStableArrayIfEmpty(
+            descriptors.filter(descriptor => descriptor.networkSymbol === networkSymbol),
+        ),
 );
 
 export const selectStakingProductDescriptor = (
@@ -40,8 +43,10 @@ export const selectStakingProductDescriptor = (
     productId: StakingProductId,
 ): StakingProductDescriptor | null => selectStakingState(state).products[productId] ?? null;
 
-export const selectIsStakingSupportedSymbol = (state: StakingRootState, symbol: NetworkSymbol) =>
-    selectStakingProductDescriptorsBySymbol(state, symbol).length > 0;
+export const selectIsStakingSupportedSymbol = (
+    state: StakingRootState,
+    networkSymbol: NetworkSymbol,
+) => selectStakingProductDescriptorsBySymbol(state, networkSymbol).length > 0;
 
 const selectAccountPositions = (state: StakingRootState, accountKey: AccountKey) =>
     selectStakingState(state).positions[accountKey];

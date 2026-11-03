@@ -76,12 +76,23 @@ export {
     type StakingProductLimits,
 } from './stakingProductDescriptor';
 export {
+    getStakingAssetSymbol,
+    STAKING_ASSET_SYMBOL_PATTERN,
+    STAKING_PRODUCT_ASSET_KINDS,
+    stakingAssetSymbolSchema,
+    stakingProductAssetSchema,
+    type StakingAssetSymbol,
+    type StakingProductAsset,
+    type StakingProductAssetParams,
+} from './stakingProductAsset';
+export {
     getStakingProductId,
     parseStakingProductId,
     STAKING_PRODUCT_TYPES,
     stakingProductIdSchema,
     stakingProductTypeSchema,
     type StakingProductId,
+    type StakingProductIdInput,
     type StakingProductIdParts,
     type StakingProductType,
 } from './stakingProductId';

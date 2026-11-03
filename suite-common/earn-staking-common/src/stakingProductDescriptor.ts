@@ -4,6 +4,7 @@ import { networkSymbolSchema } from './primitiveSchemas';
 import { stakingAmountSchema } from './stakingAmount';
 import { stakingOperationSchema } from './stakingOperation';
 import { stakingProductPlatformsSchema } from './stakingPlatform';
+import { stakingProductAssetSchema } from './stakingProductAsset';
 import { stakingProductIdSchema, stakingProductTypeSchema } from './stakingProductId';
 import { stakingProviderIdSchema } from './stakingProvider';
 
@@ -37,7 +38,8 @@ export const STAKING_RATE_KINDS = ['apy', 'apr'] as const;
 
 export const stakingProductDescriptorObjectSchema = z.strictObject({
     id: stakingProductIdSchema,
-    symbol: networkSymbolSchema,
+    networkSymbol: networkSymbolSchema,
+    asset: stakingProductAssetSchema,
     providerId: stakingProviderIdSchema,
     type: stakingProductTypeSchema,
     operations: z.array(stakingOperationSchema).readonly(),
@@ -51,9 +53,11 @@ export const stakingProductDescriptorObjectSchema = z.strictObject({
 });
 
 export const stakingProductDescriptorSchema = stakingProductDescriptorObjectSchema.refine(
-    ({ id, symbol, providerId, type }) => id === `${symbol}:${providerId}:${type}`,
+    ({ id, networkSymbol, asset, providerId, type }) =>
+        id ===
+        `${networkSymbol}:${asset.kind === 'native' ? networkSymbol : asset.symbol}:${providerId}:${type}`,
     {
-        error: 'Expected the product id to match the symbol, provider and type',
+        error: 'Expected the product id to match the network symbol, asset, provider and type',
         path: ['id'],
     },
 );
