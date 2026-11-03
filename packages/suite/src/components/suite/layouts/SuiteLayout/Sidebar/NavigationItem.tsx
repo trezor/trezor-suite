@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
+import { type NavigateFlowFrom } from '@suite-common/analytics';
 import {
     Badge,
     Icon,
@@ -64,6 +65,7 @@ export type NavigationItemProps = {
     routes?: Route['name'][];
     goToRoute?: Route['name'];
     preserveParams?: boolean;
+    analyticsOrigin?: NavigateFlowFrom;
     isActive?: boolean;
     hasIndicator?: boolean;
     hasNewContentIndicator?: boolean;
@@ -94,6 +96,7 @@ const NavItem = ({
     'data-testid': dataTest,
     values,
     preserveParams,
+    analyticsOrigin,
     onClick,
     shortcut,
 }: NavigationItemProps) => {
@@ -110,6 +113,7 @@ const NavItem = ({
                 gotoThunk({
                     routeName: goToRoute,
                     ...(preserveParams === true ? { preserveParams } : undefined),
+                    ...(analyticsOrigin !== undefined ? { analyticsOrigin } : undefined),
                 }),
             );
         }

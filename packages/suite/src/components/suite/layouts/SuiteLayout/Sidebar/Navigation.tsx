@@ -208,6 +208,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                               nameId: 'TR_EARN',
                               icon: PiggyBankIcon,
                               goToRoute: 'suite-earn',
+                              analyticsOrigin: 'sidebar',
                               hasNewContentIndicator: isEarnNewContentIndicatorVisible,
                               isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
                               onClick: handleEarnNavigation,
