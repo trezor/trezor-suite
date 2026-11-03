@@ -5,6 +5,7 @@ import { type NativeTypographyStyle } from '@trezor/theme';
 import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { BaseCurrencyAmount, type FormattedBaseCurrencyAmount } from './BaseCurrencyAmount';
+import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 
 type BaseCurrencyAmountHeaderFormatterProps = FormatterProps<BaseCurrencyAmountValue | null> & {
     isDiscreetText?: boolean;
@@ -58,14 +59,20 @@ export const BaseCurrencyAmountHeaderFormatter = ({
     value,
     isDiscreetText = true,
     variant = 'headline-md',
-}: BaseCurrencyAmountHeaderFormatterProps) => (
-    <BaseCurrencyAmount value={value}>
-        {formattedAmount => (
-            <BaseCurrencyAmountContent
-                {...formattedAmount}
-                isDiscreetText={isDiscreetText}
-                variant={variant}
-            />
-        )}
-    </BaseCurrencyAmount>
-);
+}: BaseCurrencyAmountHeaderFormatterProps) => {
+    if (value === null) {
+        return <EmptyAmountSkeleton variant={variant} />;
+    }
+
+    return (
+        <BaseCurrencyAmount value={value}>
+            {formattedAmount => (
+                <BaseCurrencyAmountContent
+                    {...formattedAmount}
+                    isDiscreetText={isDiscreetText}
+                    variant={variant}
+                />
+            )}
+        </BaseCurrencyAmount>
+    );
+};
