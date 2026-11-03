@@ -17,6 +17,7 @@ type BannerProps = {
     onCTAClick: () => void;
     onClose: () => void;
     ctaHref?: string;
+    isCloseButtonInverse?: boolean;
     backgroundColor?: Color;
     imageBackgroundColor?: Color;
     'data-testid'?: string;
@@ -38,6 +39,7 @@ export const Banner = ({
     onCTAClick,
     onClose,
     ctaHref,
+    isCloseButtonInverse = false,
     backgroundColor = 'surfaceFillSunken',
     imageBackgroundColor = 'elementFillNeutralSofter',
     'data-testid': dataTestId,
@@ -92,6 +94,7 @@ export const Banner = ({
                         <Text
                             typographyStyle={getResponsiveValue({
                                 default: 'headline-sm',
+                                desktop: 'body-md',
                                 laptop: 'body-md',
                                 tablet: 'body-sm',
                             })}
@@ -145,6 +148,7 @@ export const Banner = ({
                 <IconButton
                     data-testid="@dashboard/promo-banner/close-button"
                     icon={XIcon}
+                    isInverse={isCloseButtonInverse}
                     intent="neutral"
                     priority="secondary"
                     size="small"
