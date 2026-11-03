@@ -1,5 +1,4 @@
 import { type ExchangeKYCType } from 'invity-api';
-import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Banner, Icon, Row, Text, Tooltip } from '@trezor/components';
@@ -13,10 +12,6 @@ import {
     KYC_REQUIRED,
     KYC_YES_REFUND,
 } from 'src/constants/wallet/trading/kyc';
-
-const TooltipText = styled.span`
-    text-decoration: underline dotted;
-`;
 
 type TradingUtilsKycProps = {
     kycType?: ExchangeKYCType;
@@ -57,20 +52,19 @@ export const TradingUtilsKyc = ({ kycType, isForComparator }: TradingUtilsKycPro
                         )
                     }
                     placement="bottom"
+                    isUnderlined
                 >
-                    <TooltipText>
-                        <Text typographyStyle="body-sm" color="contentBrand">
-                            <Row alignItems="center" gap={4}>
-                                <Icon
-                                    as={DetectiveIcon}
-                                    color="contentBrand"
-                                    size={12}
-                                    data-testid="@trading/kyc/no-kyc"
-                                />
-                                <Translation id="TR_TRADING_KYC_NO_KYC_LABEL" />
-                            </Row>
-                        </Text>
-                    </TooltipText>
+                    <Text typographyStyle="body-sm" color="contentBrand">
+                        <Row alignItems="center" gap={4}>
+                            <Icon
+                                as={DetectiveIcon}
+                                color="contentBrand"
+                                size={12}
+                                data-testid="@trading/kyc/no-kyc"
+                            />
+                            <Translation id="TR_TRADING_KYC_NO_KYC_LABEL" />
+                        </Row>
+                    </Text>
                 </Tooltip>
             );
         }
@@ -82,15 +76,13 @@ export const TradingUtilsKyc = ({ kycType, isForComparator }: TradingUtilsKycPro
         }
 
         return (
-            <Tooltip content={kycPolicyTranslation} placement="bottom">
-                <TooltipText>
-                    <Text color="contentWarning" typographyStyle="body-sm">
-                        <Row gap={4}>
-                            <Icon as={IdentificationCardIcon} color="contentWarning" size={12} />
-                            <Translation id="TR_TRADING_KYC_POLICY" />
-                        </Row>
-                    </Text>
-                </TooltipText>
+            <Tooltip content={kycPolicyTranslation} placement="bottom" isUnderlined>
+                <Text color="contentWarning" typographyStyle="body-sm">
+                    <Row gap={4}>
+                        <Icon as={IdentificationCardIcon} color="contentWarning" size={12} />
+                        <Translation id="TR_TRADING_KYC_POLICY" />
+                    </Row>
+                </Text>
             </Tooltip>
         );
     }
