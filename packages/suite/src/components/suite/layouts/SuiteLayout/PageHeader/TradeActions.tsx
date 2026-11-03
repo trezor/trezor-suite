@@ -1,7 +1,7 @@
 import { type TradeNavigateEventFrom, events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
-import { gotoThunk, selectIsAccountTabPage, selectRouteName } from '@suite/router';
+import { gotoThunk, selectIsAccountTabPage } from '@suite/router';
 import { type TradingPrefilledFromAccount, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { ButtonGroup, Row } from '@trezor/components';
@@ -41,7 +41,6 @@ export const TradeActions = ({
 }: TradeActionsProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
-    const currentRouteName = useSelector(selectRouteName);
     const isRegionRestricted = useSelector(selectIsRegionRestricted);
 
     if (isRegionRestricted || (!canBuy && !canSell)) {
@@ -49,13 +48,6 @@ export const TradeActions = ({
     }
 
     const goToWithAnalytics = (...[payload]: Parameters<typeof gotoThunk>) => {
-        if (currentRouteName === 'suite-index') {
-            analytics.report({
-                type: events.dashboardActionsEvent.name,
-                payload: { type: payload.routeName },
-            });
-        }
-
         if (isAccountTabPage && source.networkSymbol) {
             analytics.report({
                 type: events.accountsActionsEvent.name,
@@ -75,6 +67,15 @@ export const TradeActions = ({
         }
 
         goToWithAnalytics({ routeName, preserveParams: false });
+
+        if (source.from === 'dashboard/header') {
+            analytics.report({
+                type: events.navigateFlowEvent.name,
+                payload: { action: 'navigate', type, from: source.from },
+            });
+
+            return;
+        }
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

@@ -50,6 +50,10 @@ export const tradeNavigateEvent: EventDef<Attributes, EventType.TradeNavigate> =
                 { version: '26.7.0', notes: 'added `sidebar` value' },
                 { version: '26.7.0', notes: 'added `otc-banner` value' },
                 { version: '26.11.0', notes: 'added `asset/header` value' },
+                {
+                    version: '26.11.0',
+                    notes: '`dashboard/header` is no longer reported, the dashboard header reports `navigate/flow` instead',
+                },
             ],
             description:
                 'Location where the user initiated the trading action (e.g., `dashboard/header`, `account/tradebox`, `dashboard/assets`)',
