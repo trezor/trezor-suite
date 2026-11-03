@@ -106,31 +106,52 @@ export const buildHistoricRatesFromStorage = (storageHistoricRates: RatesByTimes
     return historicFiatRates;
 };
 
+// A fiat rate key without its fiat currency, so that every fiat currency of the ticker matches.
+const getFiatRateKeyPrefix = (symbol: NetworkSymbol, tokenAddress?: string) =>
+    tokenAddress ? `${symbol}-${tokenAddress}-` : `${symbol}-`;
+
 export const selectHistoricRatesByTransactions = (
     historicRates: RatesByTimestamps,
     txs: WalletAccountTransaction[],
 ) => {
     const selectedRates: RatesByTimestamps = {};
+    const timestampsByFiatRateKeyPrefix = new Map<string, Set<Timestamp>>();
 
     txs.forEach(tx => {
         const { symbol, blockTime, tokens } = tx;
         const timestamp = roundTimestampToNearestPastHour(asTimestamp(blockTime ?? 0));
+        const fiatRateKeyPrefixes = [
+            getFiatRateKeyPrefix(symbol),
+            ...tokens.map(token => getFiatRateKeyPrefix(symbol, token.contract)),
+        ];
 
-        typedObjectKeys(historicRates).forEach(fiatRateKey => {
-            if (
-                fiatRateKey.startsWith(symbol) ||
-                tokens.some(token => fiatRateKey.startsWith(`[${symbol}-${token.contract}]`))
-            ) {
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const historicRatesForKey: Record<Timestamp, number> = historicRates[fiatRateKey];
-                if (historicRatesForKey[timestamp]) {
-                    if (!selectedRates[fiatRateKey]) {
-                        selectedRates[fiatRateKey] = {};
-                    }
-                    const selectedRatesForKey: Record<Timestamp, number> =
-                        selectedRates[fiatRateKey];
-                    selectedRatesForKey[timestamp] = historicRatesForKey[timestamp];
+        fiatRateKeyPrefixes.forEach(fiatRateKeyPrefix => {
+            let timestamps = timestampsByFiatRateKeyPrefix.get(fiatRateKeyPrefix);
+            if (!timestamps) {
+                timestamps = new Set();
+                timestampsByFiatRateKeyPrefix.set(fiatRateKeyPrefix, timestamps);
+            }
+            timestamps.add(timestamp);
+        });
+    });
+
+    typedObjectKeys(historicRates).forEach(fiatRateKey => {
+        // Fiat currency codes contain no dash, token addresses can (Stellar `CODE-ISSUER`).
+        const fiatRateKeyPrefix = fiatRateKey.slice(0, fiatRateKey.lastIndexOf('-') + 1);
+        const timestamps = timestampsByFiatRateKeyPrefix.get(fiatRateKeyPrefix);
+        if (!timestamps) return;
+
+        const historicRatesForKey = historicRates[fiatRateKey];
+
+        if (!historicRatesForKey) return;
+
+        timestamps.forEach(timestamp => {
+            if (historicRatesForKey[timestamp]) {
+                if (!selectedRates[fiatRateKey]) {
+                    selectedRates[fiatRateKey] = {};
                 }
+                const selectedRatesForKey = selectedRates[fiatRateKey];
+                selectedRatesForKey[timestamp] = historicRatesForKey[timestamp];
             }
         });
     });
