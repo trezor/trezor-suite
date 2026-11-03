@@ -118,3 +118,6 @@ export const selectVisiblePromoBanners = createMemoizedSelector(
         return visibleBanners;
     },
 );
+
+export const selectHasVisiblePromoBanners = (state: PromoBannersRootState) =>
+    selectVisiblePromoBanners(state).length > 0;

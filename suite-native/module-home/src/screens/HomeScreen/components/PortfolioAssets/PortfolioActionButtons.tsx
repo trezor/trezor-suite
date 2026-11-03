@@ -11,7 +11,7 @@ export const PortfolioActionButtons = () => {
     if (!areTransferButtonsVisible) return null;
 
     return (
-        <VStack spacing="sp20">
+        <VStack spacing="sp20" paddingTop="sp20">
             <VStack paddingHorizontal="sp20">
                 <TransferButtons />
             </VStack>
