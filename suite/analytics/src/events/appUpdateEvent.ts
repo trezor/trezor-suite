@@ -4,6 +4,7 @@ import { EventType } from '../constants';
 import { type AppUpdateEventStatus } from '../definitions';
 
 type Attributes = {
+    fromVersion?: AttributeDef<string>;
     toVersion?: AttributeDef<string | undefined>;
     status: AttributeDef<AppUpdateEventStatus>;
     earlyAccessProgram: AttributeDef<boolean>;
@@ -18,9 +19,14 @@ export const appUpdateEvent: EventDef<Attributes, EventType.AppUpdate> = {
     changelog: [
         { version: '1.17.0', notes: 'added' },
         { version: '25.1.0', notes: 'updated' },
+        { version: '26.11.0', notes: 'documented `fromVersion` attribute, which was already sent' },
     ],
 
     attributes: {
+        fromVersion: {
+            changelog: [{ version: '26.11.0', notes: 'documented, it was already sent' }],
+            description: 'The version the application is updating from (e.g., `24.9.3`)',
+        },
         toVersion: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
             description: 'The target version the application is updating to (e.g., `24.10.1`)',

@@ -32,7 +32,10 @@ export const useReportOnboardingSuccessAnalytics = () => {
                 duration: onboardingAnalytics.startTimestamp
                     ? Date.now() - onboardingAnalytics.startTimestamp
                     : undefined,
-                ...onboardingAnalytics,
+                seed: onboardingAnalytics.seed,
+                firmware: onboardingAnalytics.firmware,
+                seedType: onboardingAnalytics.seedType,
+                recoveryStepBack: onboardingAnalytics.recoveryStepBack,
             },
         });
     }, [

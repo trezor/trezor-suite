@@ -159,10 +159,15 @@ const goToSuiteThunk =
         dispatch(startDiscoveryThunk({ device }));
         const reportAnalytics = () => {
             const { analytics } = extra.services;
-            const { startTime, ...onboardingAttributes } = onboardingAnalytics;
             const fullPayload = {
-                ...onboardingAttributes,
-                duration: Date.now() - startTime!,
+                firmware: onboardingAnalytics.firmware,
+                seed: onboardingAnalytics.seed,
+                seedType: onboardingAnalytics.seedType,
+                wasSelectTypeOpened: onboardingAnalytics.wasSelectTypeOpened,
+                recoveryType: onboardingAnalytics.recoveryType,
+                backup: onboardingAnalytics.backup,
+                pin: onboardingAnalytics.pin,
+                duration: Date.now() - onboardingAnalytics.startTime!,
                 device: device.features.internal_model,
                 unitPackaging: device.features.unit_packaging ?? 0,
             };

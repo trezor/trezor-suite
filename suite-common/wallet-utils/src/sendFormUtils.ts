@@ -66,7 +66,7 @@ export const calculateTotal = (amount: string, fee: string): string => {
     try {
         const total = new BigNumber(amount).plus(fee);
         if (total.isNaN()) {
-            console.error('calculateTotal: Amount is not a number', amount, fee);
+            console.error('calculateTotal: Amount is not a number');
 
             return '0';
         }
@@ -83,7 +83,7 @@ export const calculateMax = (availableBalance: string, fee: string): string => {
     try {
         const max = new BigNumber(availableBalance).minus(fee);
         if (max.isNaN()) {
-            console.error('calculateMax: Amount is not a number', availableBalance, fee);
+            console.error('calculateMax: Amount is not a number');
 
             return '0';
         }

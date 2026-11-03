@@ -9,6 +9,7 @@ import {
     cryptoIdToNetwork,
     getCurrencyLabel,
 } from '@suite-common/trading';
+import type { TradingBuyQuotePayload } from '@suite-native/analytics';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 import type { BuyFormType } from '@suite-native/trading-types';
 
@@ -91,7 +92,7 @@ export const tradingBuyFormToTradingBuyFormProps = (
 export const getAnalyticsTradingBuyPayload = ({
     quote,
     coinInfo,
-}: GetAnalyticsTradingBuyPayloadProps) => {
+}: GetAnalyticsTradingBuyPayloadProps): TradingBuyQuotePayload | null => {
     if (!coinInfo || !quote?.receiveCurrency) {
         return null;
     }

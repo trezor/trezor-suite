@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { selectAccountIncludingChosenInTrading } from '@suite/account';
-import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { events, injectDesktopAnalytics, redactRouterUrl } from '@suite/analytics';
 import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -20,7 +20,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
 import { type TxInfoState, isStakeState } from './utils';
