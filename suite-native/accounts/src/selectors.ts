@@ -440,6 +440,11 @@ export const selectActiveAndDefiTokensCount = createMemoizedSelector(
     (sections, defiCount) => sections.filter(item => item.type === 'token').length + defiCount,
 );
 
+export const selectAccountHasAnyKnownTokens = createMemoizedSelector(
+    [selectActiveAndDefiTokensCount],
+    numberOfTokens => numberOfTokens > 0,
+);
+
 export const selectFreshAccountAddress = createMemoizedSelector(
     [selectAccountByKey, selectPendingAccountAddresses, selectIsAccountUtxoBased],
     (account, pendingAddresses, isAccountUtxoBased) =>

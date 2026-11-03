@@ -12,6 +12,7 @@ import {
     ScreenHeader,
 } from '@suite-native/navigation';
 
+import { useOpenAssetDetailAccounts } from './AssetDetailAccountsBottomSheetProvider';
 import { AssetDetailScreenHeaderContent } from './AssetDetailScreenHeaderContent';
 import { AssetSettingsBottomSheet } from './AssetSettingsBottomSheet';
 
@@ -21,7 +22,8 @@ export const AssetDetailScreenHeader = () => {
     const assetTokenInfo = useSelector((state: AssetsRootState) =>
         selectAssetTokenInfo(state, networkSymbol, tokenContract),
     );
-    const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const openAccountsModal = useOpenAssetDetailAccounts();
     const { translate } = useTranslate();
     const assetDisplaySymbol = getDisplaySymbol(
         assetTokenInfo?.symbol ?? networkSymbol,
@@ -49,12 +51,10 @@ export const AssetDetailScreenHeader = () => {
                     />
                 }
             />
-
             <AssetSettingsBottomSheet
                 ref={bottomSheetRef}
-                assetDisplaySymbol={assetDisplaySymbol}
-                networkSymbol={networkSymbol}
-                tokenContract={tokenContract}
+                onOpenAccounts={openAccountsModal}
+                onClose={closeModal}
             />
         </>
     );

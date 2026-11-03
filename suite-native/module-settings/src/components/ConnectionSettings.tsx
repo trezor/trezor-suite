@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
     Box,
     Card,
@@ -14,10 +13,12 @@ import {
     TitledSection,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { WalletConnectPairBottomSheet } from '@suite-native/module-connect-popup';
+import {
+    WalletConnectPairBottomSheet,
+    selectIsAppConnectionAvailable,
+} from '@suite-native/module-connect-popup';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -31,11 +32,9 @@ export const ConnectionSettings = () => {
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
+    const isAppConnectionAvailable = useSelector(selectIsAppConnectionAvailable);
 
-    // show only for real devices that are ready to be used
-    if (isPortfolioTrackerDevice || !isDeviceReadyToUseAndAuthorized) {
+    if (!isAppConnectionAvailable) {
         return null;
     }
 

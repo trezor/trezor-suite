@@ -2,8 +2,8 @@ import { type JSX } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { getNetwork } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { isWalletConnectSupportedNetwork } from '@suite-common/walletconnect';
 import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
 import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
 
@@ -56,8 +56,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             },
             title: <Translation id="TR_WALLETCONNECT" />,
             icon: WalletConnectIcon,
-            // caipId marks networks with a WalletConnect adapter (see suite-common/walletconnect)
-            isHidden: account ? !getNetwork(account.symbol).caipId : true,
+            isHidden: account ? !isWalletConnectSupportedNetwork(account.symbol) : true,
         },
     ];
 

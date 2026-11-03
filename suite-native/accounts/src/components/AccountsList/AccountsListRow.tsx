@@ -1,10 +1,11 @@
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AssetAccount, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { AccountAssetListItem } from './AccountAssetListItem';
 import { AccountsListItem } from './AccountsListItem';
 import { type NativeAccountsRootState } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
@@ -45,6 +46,7 @@ type AccountsListRowProps = {
     isLast: boolean;
     hasBottomSpacing: boolean;
     onSelectAccount: OnSelectAccount;
+    assetAccount?: AssetAccount;
 };
 
 export const AccountsListRow = ({
@@ -53,6 +55,7 @@ export const AccountsListRow = ({
     isLast,
     hasBottomSpacing,
     onSelectAccount,
+    assetAccount,
 }: AccountsListRowProps) => {
     const account = useSelector((state: NativeAccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -65,7 +68,15 @@ export const AccountsListRow = ({
 
     return (
         <View style={applyStyle(rowStyle, { isFirst, isLast, hasBottomSpacing })}>
-            <AccountsListItem account={account} onPress={onSelectAccount} />
+            {assetAccount ? (
+                <AccountAssetListItem
+                    account={account}
+                    assetAccount={assetAccount}
+                    onPress={onSelectAccount}
+                />
+            ) : (
+                <AccountsListItem account={account} onPress={onSelectAccount} />
+            )}
         </View>
     );
 };
