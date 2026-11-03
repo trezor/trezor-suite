@@ -78,6 +78,7 @@ export {
     pickFormCellProps,
     type FormCellProps,
 } from './components/form/FormCell/FormCell';
+export { BottomText } from './components/form/BottomText';
 export * from './components/form/Input/Input';
 export * from './components/form/Radio/Radio';
 export * from './components/form/Range/Range';

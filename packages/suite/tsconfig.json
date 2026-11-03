@@ -221,6 +221,9 @@
         },
         { "path": "../../suite/price-chart" },
         { "path": "../../suite/receive" },
+        {
+            "path": "../../suite/recipient-history"
+        },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/regions" },
         { "path": "../../suite/router" },

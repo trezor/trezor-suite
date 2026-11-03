@@ -12002,6 +12002,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/recipient-history@workspace:*, @suite-common/recipient-history@workspace:suite-common/recipient-history":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/recipient-history@workspace:suite-common/recipient-history"
+  dependencies:
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/regions@workspace:*, @suite-common/regions@workspace:suite-common/regions":
   version: 0.0.0-use.local
   resolution: "@suite-common/regions@workspace:suite-common/regions"
@@ -17167,6 +17180,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/recipient-history@workspace:*, @suite/recipient-history@workspace:suite/recipient-history":
+  version: 0.0.0-use.local
+  resolution: "@suite/recipient-history@workspace:suite/recipient-history"
+  dependencies:
+    "@suite-common/networks": "workspace:*"
+    "@suite-common/recipient-history": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/recovery@workspace:*, @suite/recovery@workspace:suite/recovery":
   version: 0.0.0-use.local
   resolution: "@suite/recovery@workspace:suite/recovery"
@@ -19733,6 +19765,7 @@ __metadata:
     "@suite/onboarding-components": "workspace:*"
     "@suite/price-chart": "workspace:*"
     "@suite/receive": "workspace:*"
+    "@suite/recipient-history": "workspace:*"
     "@suite/recovery": "workspace:*"
     "@suite/regions": "workspace:*"
     "@suite/router": "workspace:*"
