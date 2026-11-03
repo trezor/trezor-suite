@@ -57,3 +57,4 @@ export {
     type AppCopyToClipboardType,
 } from './events/appCopyToClipboardEvent';
 export { appExternalLinkEvent } from './events/appExternalLinkEvent';
+export { dashboardAssetListMenuEvent } from './events/dashboardAssetListMenuEvent';

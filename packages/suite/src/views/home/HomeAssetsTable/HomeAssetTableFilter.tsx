@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
@@ -38,12 +39,24 @@ const HomeAssetTableFilter = ({
     onSmallBalancesChange,
 }: HomeAssetTableFilterProps) => {
     const popoverRef = useRef<PopoverRef>(null);
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const smallBalances = useSelector(selectSmallBalanceSummary);
 
     const choose = (chosen: HomeAssetGrouping) => {
+        analytics.report({
+            type: events.dashboardAssetListMenuEvent.name,
+            payload: { type: 'grouping', value: chosen === 'networks' ? 'by-networks' : 'default' },
+        });
         onGroupingChange(chosen);
         popoverRef.current?.close();
+    };
+
+    const toggleSmallBalances = () => {
+        analytics.report({
+            type: events.dashboardAssetListMenuEvent.name,
+            payload: { type: 'show-small-balances', value: !areSmallBalancesShown },
+        });
+        onSmallBalancesChange(!areSmallBalancesShown);
     };
 
     return (
@@ -80,7 +93,7 @@ const HomeAssetTableFilter = ({
                             isHidden: smallBalances === undefined,
                             hasSeparatorBefore: true,
                             closeOnClick: false,
-                            onClick: () => onSmallBalancesChange(!areSmallBalancesShown),
+                            onClick: toggleSmallBalances,
                         },
                         {
                             label: <Translation id="TR_HIDDEN_TOKENS" />,
