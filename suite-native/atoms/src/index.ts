@@ -104,3 +104,5 @@ export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSw
 export { type AlertBoxIntent } from './BannerFull/types';
 
 export * from './useScrollDivider';
+export * from './LiquidGlass/GlassBackground';
+export * from './LiquidGlass/isLiquidGlassAvailable';

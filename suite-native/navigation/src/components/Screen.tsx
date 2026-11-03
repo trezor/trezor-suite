@@ -15,6 +15,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color, type NativeSpacing } from '@trezor/theme';
 
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
+import { useFloatingTabBarHeight } from '../hooks/useFloatingTabBarHeight';
 import { useIsBottomInsetApplicable } from '../hooks/useIsBottomInsetApplicable';
 import { type DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
 import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
@@ -69,7 +70,8 @@ const screenContentStyle = prepareNativeStyle<{
     horizontalPadding: number;
     applyBottomInset: boolean;
     bottomPadding: number;
-}>((_, { insets, horizontalPadding, applyBottomInset, bottomPadding }) => {
+    floatingTabBarHeight: number;
+}>((_, { insets, horizontalPadding, applyBottomInset, bottomPadding, floatingTabBarHeight }) => {
     const { left, right, bottom } = insets;
     const bottomInset = applyBottomInset ? bottom : 0;
 
@@ -77,7 +79,7 @@ const screenContentStyle = prepareNativeStyle<{
         flexGrow: 1,
         paddingLeft: left + horizontalPadding,
         paddingRight: right + horizontalPadding,
-        paddingBottom: bottomInset + bottomPadding,
+        paddingBottom: bottomInset + bottomPadding + floatingTabBarHeight,
     };
 });
 
@@ -85,8 +87,9 @@ const screenFooterStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     applyBottomInset: boolean;
     horizontalPadding: number;
-}>((_, { insets, applyBottomInset, horizontalPadding }) => ({
-    paddingBottom: applyBottomInset ? insets.bottom : 0,
+    floatingTabBarHeight: number;
+}>((_, { insets, applyBottomInset, horizontalPadding, floatingTabBarHeight }) => ({
+    paddingBottom: (applyBottomInset ? insets.bottom : 0) + floatingTabBarHeight,
     paddingLeft: insets.left + horizontalPadding,
     paddingRight: insets.right + horizontalPadding,
 }));
@@ -117,11 +120,14 @@ export const Screen = ({
 
     const insets = useBannerAwareSafeAreaInsets();
     const isBottomInsetApplicable = useIsBottomInsetApplicable();
+    const floatingTabBarHeight = useFloatingTabBarHeight();
     const activeKeyboardToolbarHeight = keyboardToolbarComponent ? keyboardToolbarHeight : 0;
 
     const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
     const applyBottomInset = isBottomInsetApplicable && hasBottomInset;
+    // Non-scrollable screens render their own lists, which handle the tab bar overlap themselves.
+    const contentFloatingTabBarHeight = isScrollable && !footer ? floatingTabBarHeight : 0;
     const systemBarsStyle = useAndroidNavigationBarStyle({ backgroundColor });
 
     const isMessageBannerDisplayed = useSelector(selectIsAnyBannerMessageActive);
@@ -159,7 +165,10 @@ export const Screen = ({
                 <ScreenContentWrapper
                     isScrollable={isScrollable}
                     hasHeader={!!header}
-                    scrollIndicatorBottomInset={applyBottomInset && !footer ? insets.bottom : 0}
+                    scrollIndicatorBottomInset={
+                        (applyBottomInset && !footer ? insets.bottom : 0) +
+                        contentFloatingTabBarHeight
+                    }
                     focusedInputBottomOffset={focusedInputBottomOffset}
                     refreshControl={refreshControl}
                     isDynamicHeader={isScreenHeaderPropDynamic(header)}
@@ -173,6 +182,7 @@ export const Screen = ({
                             applyBottomInset: applyBottomInset && !footer,
                             horizontalPadding,
                             bottomPadding,
+                            floatingTabBarHeight: contentFloatingTabBarHeight,
                         })}
                     >
                         {children}
@@ -188,6 +198,7 @@ export const Screen = ({
                             horizontalPadding: footerHorizontalPadding
                                 ? spacings[footerHorizontalPadding]
                                 : 0,
+                            floatingTabBarHeight,
                         })}
                     >
                         {footer}

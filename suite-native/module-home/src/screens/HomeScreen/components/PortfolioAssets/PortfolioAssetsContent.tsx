@@ -10,8 +10,10 @@ import {
 } from '@suite-common/assets';
 import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
 import { Box, useBottomSheetModal } from '@suite-native/atoms';
+import { useFloatingTabBarHeight } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { exhaustive } from '@trezor/type-utils';
 
 import { PortfolioAssetListItem } from './PortfolioAssetListItem';
@@ -24,6 +26,12 @@ import {
     type PortfolioAssetListEntry,
     selectPortfolioAssetListEntries,
 } from './portfolioAssetListSelectors';
+
+const listContentStyle = prepareNativeStyle<{ floatingTabBarHeight: number }>(
+    (_, { floatingTabBarHeight }) => ({
+        paddingBottom: floatingTabBarHeight,
+    }),
+);
 
 const getEntryKey = (entry: PortfolioAssetListEntry) => {
     switch (entry.type) {
@@ -63,6 +71,8 @@ export const PortfolioAssetsContent = () => {
     const isMenuAvailable = useSelector(selectIsHomeAssetTableMenuAvailable);
     const { bottomSheetRef, openModal } = useBottomSheetModal();
     const { dispatch } = useServices(injectDispatch);
+    const floatingTabBarHeight = useFloatingTabBarHeight();
+    const { applyStyle } = useNativeStyles();
 
     const toggleIsListExpanded = () => setIsListExpanded(previous => !previous);
 
@@ -82,6 +92,7 @@ export const PortfolioAssetsContent = () => {
                 keyExtractor={getEntryKey}
                 getItemType={getEntryType}
                 ItemSeparatorComponent={PortfolioAssetListSeparator}
+                contentContainerStyle={applyStyle(listContentStyle, { floatingTabBarHeight })}
                 // Switching the grouping inserts network headers above the rows; anchoring on a row
                 // would scroll away from them.
                 maintainVisibleContentPosition={{ disabled: true }}

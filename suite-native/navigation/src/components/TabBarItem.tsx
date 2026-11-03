@@ -22,7 +22,7 @@ const tabBarItemStyle = prepareNativeStyle(_ => ({
 const tabBarItemContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: utils.spacings.sp8,
+    paddingVertical: utils.spacings.sp6,
 }));
 
 export const TabBarItem = ({
@@ -53,14 +53,14 @@ export const TabBarItem = ({
                 <Icon
                     name={isFocused ? focusedIconName : iconName}
                     size="large"
-                    color={isFocused ? 'contentBrand' : 'contentDisabled'}
+                    color={isFocused ? 'contentBrand' : 'contentSecondary'}
                 />
                 {title && (
                     <Text
                         maxFontSizeMultiplier={TITLE_MAX_FONT_MULTIPLIER}
                         variant="body-xs"
                         textAlign="center"
-                        color={isFocused ? 'contentBrand' : 'contentDisabled'}
+                        color={isFocused ? 'contentBrand' : 'contentSecondary'}
                         testID={`@tabBar/${testID}/title`}
                     >
                         {title}
