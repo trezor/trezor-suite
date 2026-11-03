@@ -5,7 +5,8 @@ import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { Skeleton } from '@trezor/components';
+import { Button, Skeleton } from '@trezor/components';
+import { ArrowsClockwiseIcon } from '@trezor/icons';
 
 import { CHART_HEIGHT, ChartFrame } from './ChartFrame';
 import { ChartNote } from './ChartNote';
@@ -22,18 +23,40 @@ export type AssetPriceChartProps = {
 
 export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChartProps) => {
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
-    const { points, isLoading, isError, isUnavailable, isEmpty } = useAssetPriceChartState({
-        networkSymbol,
-        tokenContract,
-    });
+    const { points, isLoading, isError, isFetching, refetch, isUnavailable, isEmpty } =
+        useAssetPriceChartState({ networkSymbol, tokenContract });
 
     if (isUnavailable) {
         return null;
     }
 
+    const skeleton = (
+        <ChartFrame data-testid="@price-chart/skeleton">
+            <Skeleton width="100%" height={CHART_HEIGHT} animate={shouldAnimateSkeleton} />
+        </ChartFrame>
+    );
+
+    if (isError && isFetching) {
+        return skeleton;
+    }
+
     if (isError) {
         return (
-            <ChartNote data-testid="@price-chart/error">
+            <ChartNote
+                data-testid="@price-chart/error"
+                action={
+                    <Button
+                        size="small"
+                        intent="neutral"
+                        priority="secondary"
+                        iconLeft={ArrowsClockwiseIcon}
+                        onClick={() => refetch()}
+                        data-testid="@price-chart/refresh"
+                    >
+                        <Translation id="REFRESH" />
+                    </Button>
+                }
+            >
                 <Translation id="TR_PRICE_CHART_LOAD_ERROR" />
             </ChartNote>
         );
@@ -46,12 +69,6 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
             </ChartNote>
         );
     }
-
-    const skeleton = (
-        <ChartFrame data-testid="@price-chart/skeleton">
-            <Skeleton width="100%" height={CHART_HEIGHT} animate={shouldAnimateSkeleton} />
-        </ChartFrame>
-    );
 
     if (isLoading || points === undefined || points === null) {
         return skeleton;

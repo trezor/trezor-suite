@@ -21,6 +21,7 @@
         "@suite/ui-animations": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",

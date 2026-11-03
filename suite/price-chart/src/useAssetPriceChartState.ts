@@ -21,6 +21,8 @@ export const useAssetPriceChartState = ({
         data: points,
         isLoading,
         isError,
+        isFetching,
+        refetch,
     } = useAssetPriceHistoryQuery({
         ticker: { symbol: networkSymbol, tokenAddress: tokenContract },
         fiatCurrency,
@@ -31,6 +33,8 @@ export const useAssetPriceChartState = ({
         points,
         isLoading,
         isError,
+        isFetching,
+        refetch,
         isUnavailable: points === null,
         isEmpty: points?.length === 0,
     };

@@ -3,6 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { fireEvent, screen } from '@testing-library/react';
 
 import { setAssetPriceChartRange } from '@suite/flags';
+import { messages } from '@suite/intl';
 import {
     AssetPriceChartRange,
     type AssetPricePoint,
@@ -29,8 +30,8 @@ const mockUseAssetPriceHistoryQuery = jest.mocked(useAssetPriceHistoryQuery);
 const historyQuery = (data: AssetPricePoint[] | null | undefined, isLoading = false) =>
     ({ data, isLoading }) as ReturnType<typeof useAssetPriceHistoryQuery>;
 
-const failedHistoryQuery = () =>
-    ({ data: undefined, isLoading: false, isError: true }) as ReturnType<
+const failedHistoryQuery = (data?: AssetPricePoint[], isFetching = false) =>
+    ({ data, isLoading: false, isError: true, isFetching }) as ReturnType<
         typeof useAssetPriceHistoryQuery
     >;
 
@@ -181,14 +182,27 @@ describe('the market price on the asset screen', () => {
             expect(screen.getByTestId('@price-chart/range')).toBeInTheDocument();
         });
 
-        it('says the history failed to load and keeps the range picker, so another range can be picked', () => {
+        it('says the history failed to load, offers to refresh it and keeps the range picker, so another range can be picked', () => {
             mockUseAssetPriceHistoryQuery.mockReturnValue(failedHistoryQuery());
 
             renderMarketPrice(getInitialState({ ethRate: 3000 }));
 
             expect(screen.getByTestId('@price-chart/error')).toBeInTheDocument();
+            expect(screen.getByTestId('@price-chart/refresh')).toHaveTextContent(
+                messages.REFRESH.defaultMessage,
+            );
             expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
             expect(screen.getByTestId('@price-chart/range')).toBeInTheDocument();
+        });
+
+        it('holds its place with a skeleton while a failed range loads again, even when an earlier history is kept', () => {
+            mockUseAssetPriceHistoryQuery.mockReturnValue(failedHistoryQuery(PRICE_HISTORY, true));
+
+            renderMarketPrice(getInitialState({ ethRate: 3000 }));
+
+            expect(screen.getByTestId('@price-chart/skeleton')).toBeInTheDocument();
+            expect(screen.queryByTestId('@price-chart/error')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
         });
 
         it('says there is no history for the period and keeps the range picker, so another range can be picked', () => {
