@@ -121,7 +121,7 @@ export const Navigation = ({ children }: NavigationProps) => {
 
     const handleSwapNavigation = useCallback(() => {
         analytics.report({
-            type: events.tradeNavigateEvent.name,
+            type: events.navigateFlowEvent.name,
             payload: {
                 action: 'navigate',
                 type: 'exchange',
