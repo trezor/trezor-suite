@@ -57,6 +57,9 @@ export class TradingActions {
         // `scrollScreenToBottom` is not used because it accidentally clicks on links at the bottom on iOS.
         const howTradingWorksButton = element(by.text('How trading works'));
         await scrollUntilVisible(howTradingWorksButton, { scrollVisibilityThreshold: 100 });
+        // The screen content scrolls under the floating tab bar, so the button can be "visible" while
+        // still covered by the bar. The button is the last item, scroll it out from under the bar.
+        await element(by.id('@screen/mainScrollView')).scroll(300, 'down');
         await howTradingWorksButton.tap();
         await this.closeBottomSheet();
     }

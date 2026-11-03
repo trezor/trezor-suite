@@ -1,4 +1,4 @@
-import { type PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { type PropsWithChildren, useEffect, useState } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
 import {
     KeyboardStickyView,
@@ -6,8 +6,6 @@ import {
     useReanimatedKeyboardAnimation,
 } from 'react-native-keyboard-controller';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-
-import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 
 import { AnimatedView } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -56,7 +54,6 @@ export const KeyboardToolbar = ({
     isVisible = true,
 }: PropsWithChildren<KeyboardToolbarProps>) => {
     const [height, setHeight] = useState(0);
-    const tabBarHeight = useContext(BottomTabBarHeightContext) ?? 0;
     const isKeyboardVisible = useKeyboardState(state => state.isVisible);
     const { height: keyboardHeight } = useReanimatedKeyboardAnimation();
     const hiddenProgress = useSharedValue(isVisible ? 0 : 1);
@@ -72,7 +69,7 @@ export const KeyboardToolbar = ({
     const animatedVisibilityStyle = useAnimatedStyle(() => ({
         transform: [
             {
-                translateY: hiddenProgress.value * (height + tabBarHeight - keyboardHeight.value),
+                translateY: hiddenProgress.value * (height - keyboardHeight.value),
             },
         ],
     }));
@@ -86,7 +83,7 @@ export const KeyboardToolbar = ({
     return (
         <KeyboardStickyView
             style={applyStyle(keyboardToolbarStyle)}
-            offset={{ closed: height + tabBarHeight, opened: tabBarHeight }}
+            offset={{ closed: height, opened: 0 }}
             onLayout={handleLayout}
             pointerEvents={isInteractive ? 'auto' : 'none'}
             accessibilityElementsHidden={!isInteractive}

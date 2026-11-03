@@ -9,7 +9,7 @@ import { EarnPromoList } from '../../components/earn/EarnPromoList';
 import { EarnScreenHeader } from '../../components/earn/EarnScreenHeader';
 
 const EarnScreenContent = () => (
-    <Screen header={<DeviceManagerScreenHeader />}>
+    <Screen header={<DeviceManagerScreenHeader />} isHeaderFloating>
         <VStack spacing="sp24">
             <ContextMessage context={Context.getEarnDashboard('staking')} />
             <ContextMessage context={Context.getEarnDashboard('yield')} />

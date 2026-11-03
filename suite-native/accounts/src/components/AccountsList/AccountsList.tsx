@@ -7,7 +7,7 @@ import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
-import { useIsBottomInsetApplicable } from '@suite-native/navigation';
+import { useFloatingTabBarHeight, useIsBottomInsetApplicable } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListRow } from './AccountsListRow';
@@ -38,8 +38,9 @@ const contentStyle = prepareNativeStyle(({ spacings }) => ({
 const footerStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     isBottomInsetApplicable: boolean;
-}>((_, { insets, isBottomInsetApplicable }) => ({
-    paddingBottom: isBottomInsetApplicable ? insets.bottom : 0,
+    floatingTabBarHeight: number;
+}>((_, { insets, isBottomInsetApplicable, floatingTabBarHeight }) => ({
+    paddingBottom: (isBottomInsetApplicable ? insets.bottom : 0) + floatingTabBarHeight,
 }));
 
 export const AccountsList = ({
@@ -55,6 +56,7 @@ export const AccountsList = ({
 
     const insets = useBannerAwareSafeAreaInsets();
     const isBottomInsetApplicable = useIsBottomInsetApplicable();
+    const floatingTabBarHeight = useFloatingTabBarHeight();
     const { applyStyle } = useNativeStyles();
 
     const accountListRows = useSelector((state: NativeAccountsRootState & NetworksRootState) =>
@@ -84,7 +86,13 @@ export const AccountsList = ({
                 ListHeaderComponent={ListHeaderComponent}
                 ListEmptyComponent={ListEmptyComponent}
                 ListFooterComponent={
-                    <Box style={applyStyle(footerStyle, { insets, isBottomInsetApplicable })}>
+                    <Box
+                        style={applyStyle(footerStyle, {
+                            insets,
+                            isBottomInsetApplicable,
+                            floatingTabBarHeight,
+                        })}
+                    >
                         {ListFooterComponent}
                     </Box>
                 }

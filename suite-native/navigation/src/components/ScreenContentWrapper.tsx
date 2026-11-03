@@ -1,4 +1,4 @@
-import React, { type ReactNode, useRef } from 'react';
+import React, { type ReactNode, useEffect, useRef } from 'react';
 import { type ScrollViewProps } from 'react-native';
 import {
     KeyboardAwareScrollView,
@@ -18,6 +18,9 @@ type ScreenContentProps = {
     children: ReactNode;
     isScrollable: boolean;
     hasHeader: boolean;
+    scrollIndicatorTopInset?: number;
+    // Space above the content, which is part of the scrollable area and offsets a refresh control.
+    contentInsetTop?: number;
     scrollIndicatorBottomInset: number;
     focusedInputBottomOffset?: number;
     isDynamicHeader?: boolean;
@@ -30,6 +33,8 @@ export const ScreenContentWrapper = ({
     children,
     isScrollable,
     hasHeader,
+    scrollIndicatorTopInset = 0,
+    contentInsetTop = 0,
     scrollIndicatorBottomInset,
     focusedInputBottomOffset,
     refreshControl,
@@ -41,6 +46,17 @@ export const ScreenContentWrapper = ({
 
     const { scrollDivider, handleScroll } = useScrollDivider({ left, right });
     const { handleDynamicHeaderScroll } = useDynamicHeader();
+
+    const wasContentInsetTopApplied = useRef(false);
+
+    // The inset is measured after the first render. Scroll the content from under the inset once,
+    // since the scroll offset does not follow an inset that is added later.
+    useEffect(() => {
+        if (contentInsetTop <= 0 || wasContentInsetTopApplied.current) return;
+
+        wasContentInsetTopApplied.current = true;
+        scrollViewRef.current?.scrollTo({ y: -contentInsetTop, animated: false });
+    }, [contentInsetTop]);
 
     const scrollHandler = (() => {
         if (hasHeader && isDynamicHeader) {
@@ -65,8 +81,14 @@ export const ScreenContentWrapper = ({
                 refreshControl={refreshControl}
                 keyboardShouldPersistTaps="handled"
                 contentInsetAdjustmentBehavior="never"
+                contentInset={contentInsetTop > 0 ? { top: contentInsetTop } : undefined}
                 automaticallyAdjustsScrollIndicatorInsets={false}
-                scrollIndicatorInsets={{ left, right, bottom: scrollIndicatorBottomInset }}
+                scrollIndicatorInsets={{
+                    top: scrollIndicatorTopInset,
+                    left,
+                    right,
+                    bottom: scrollIndicatorBottomInset,
+                }}
                 contentContainerStyle={applyStyle(screenContentWrapperStyle)}
                 onScroll={scrollHandler}
                 testID="@screen/mainScrollView"

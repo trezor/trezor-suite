@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { View } from 'react-native';
 
 import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import type { Meta, StoryObj } from '@storybook/react-native';
+
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TabBar as TabBarComponent } from '../../components/TabBar';
 import { AppTabsRoutes } from '../../routes';
@@ -37,10 +40,16 @@ const tabItemOptions: TabsOptions = {
     },
 };
 
+// The tab bar floats at the bottom of its parent, so it needs a container with some height.
+const storyContainerStyle = prepareNativeStyle(() => ({
+    height: 120,
+}));
+
 const routes = Object.keys(tabItemOptions).map(name => ({ key: name, name }));
 
 const InteractiveTabBar = () => {
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+    const { applyStyle } = useNativeStyles();
 
     const props = {
         state: { index: selectedTabIndex, routes },
@@ -55,7 +64,11 @@ const InteractiveTabBar = () => {
         },
     } as unknown as BottomTabBarProps;
 
-    return <TabBarComponent {...props} tabItemOptions={tabItemOptions} />;
+    return (
+        <View style={applyStyle(storyContainerStyle)}>
+            <TabBarComponent {...props} tabItemOptions={tabItemOptions} />
+        </View>
+    );
 };
 
 const meta: Meta<typeof TabBarComponent> = {

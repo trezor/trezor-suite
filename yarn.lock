@@ -13063,6 +13063,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
+    "@expo/ui": "npm:57.0.21"
     "@gorhom/bottom-sheet": "npm:5.2.9"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.31"
@@ -13823,7 +13824,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/keyboard@workspace:suite-native/keyboard"
   dependencies:
-    "@react-navigation/bottom-tabs": "npm:7.13.0"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"

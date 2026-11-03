@@ -15,7 +15,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/bottom-tabs": "7.13.0",
         "@suite-native/atoms": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",

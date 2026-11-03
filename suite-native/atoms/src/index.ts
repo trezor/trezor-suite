@@ -55,6 +55,7 @@ export * from './Card/CompactCardWithIconLayout';
 export * from './Card/PressableCardWithIconLayout';
 export * from './Card/TimelineDetailsCard';
 export * from './ScreenFooterGradient';
+export * from './ScreenTopEdgeFade';
 export * from './ScreenHeaderWrapper';
 export * from './ErrorMessage';
 export * from './Table';
@@ -104,3 +105,5 @@ export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSw
 export { type AlertBoxIntent } from './BannerFull/types';
 
 export * from './useScrollDivider';
+export * from './LiquidGlass/GlassBackground';
+export * from './LiquidGlass/isLiquidGlassAvailable';
