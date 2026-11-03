@@ -157,7 +157,13 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
         setTokenStatus(TokenManagementAction.SHOW);
     };
 
-    const openExplorer = () => window.open(explorerUrl, '_blank');
+    const openExplorer = () => {
+        analytics.report({
+            type: events.appExternalLinkEvent.name,
+            payload: { from: 'asset-detail', type: 'viewInExplorer' },
+        });
+        window.open(explorerUrl, '_blank');
+    };
 
     const addressFields = getAssetAddressFields(tokenInfo);
 

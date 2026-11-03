@@ -1,5 +1,6 @@
 export { accountsInfoEvent } from './accountsInfoEvent';
 export { appCopyToClipboardEvent } from './appCopyToClipboardEvent';
+export { appExternalLinkEvent } from './appExternalLinkEvent';
 export { appFormPercentButtonsEvent } from './appFormPercentButtonsEvent';
 export { assetsActionsEvent } from './assetsActionsEvent';
 export { assetsTimeframeChangeEvent } from './assetsTimeframeChangeEvent';

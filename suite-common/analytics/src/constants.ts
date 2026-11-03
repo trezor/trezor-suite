@@ -64,4 +64,5 @@ export enum EventType {
     AssetsTransactionDetail = 'assets/transaction-detail',
     AssetsActions = 'assets/actions',
     AppCopyToClipboard = 'app/copy-to-clipboard',
+    AppExternalLink = 'app/external-link',
 }

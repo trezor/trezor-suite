@@ -56,3 +56,4 @@ export {
     appCopyToClipboardEvent,
     type AppCopyToClipboardType,
 } from './events/appCopyToClipboardEvent';
+export { appExternalLinkEvent } from './events/appExternalLinkEvent';
