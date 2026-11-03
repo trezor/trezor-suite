@@ -45,7 +45,7 @@ export default class SelectAccount extends AbstractMethod<'selectAccount', Param
         super(message, { coinInfo, addressSelection: payload.addressSelection });
 
         // The picker UI, account derivation and on-device verification are handled entirely by the
-        // host (Suite) via a methodHook. This method neither uses the device nor blocks: it returns
+        // host (Suite) via a popup flow. This method neither uses the device nor blocks: it returns
         // immediately so its call is freed, letting the host make its own nested device calls
         // (derive/verify) while the picker is open. The host overrides the response with the user's
         // selection once they confirm — the value returned here is only a placeholder.
