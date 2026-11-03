@@ -28,6 +28,13 @@ export type FlagsState = {
     showDefiYieldDashboardPromoBanner: boolean;
     showETHVaultDashboardPromoBanner: boolean;
     showTradingExperienceDashboardPromoBanner: boolean;
+    showBFH26TS7AccessoryPackDashboardPromoBanner: boolean;
+    showBFH26KeepMetalDashboardPromoBanner: boolean;
+    showBFH26TS3GiftDashboardPromoBanner: boolean;
+    showBFH26TS3BackupDashboardPromoBanner: boolean;
+    showBFH26TS7CompleteKitDashboardPromoBanner: boolean;
+    showBFH26EGiftCardDashboardPromoBanner: boolean;
+    showBFH26TS7UpgradeDashboardPromoBanner: boolean;
     showOnboardingFeedbackBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     activateAssetsBannerClosed: boolean;
@@ -74,6 +81,13 @@ export const flagsInitialState: FlagsState = {
     showDefiYieldDashboardPromoBanner: true,
     showETHVaultDashboardPromoBanner: true,
     showTradingExperienceDashboardPromoBanner: true,
+    showBFH26TS7AccessoryPackDashboardPromoBanner: true,
+    showBFH26KeepMetalDashboardPromoBanner: true,
+    showBFH26TS3GiftDashboardPromoBanner: true,
+    showBFH26TS3BackupDashboardPromoBanner: true,
+    showBFH26TS7CompleteKitDashboardPromoBanner: true,
+    showBFH26EGiftCardDashboardPromoBanner: true,
+    showBFH26TS7UpgradeDashboardPromoBanner: true,
     showOnboardingFeedbackBanner: false,
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,

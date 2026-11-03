@@ -10426,6 +10426,62 @@ export const messages = defineMessages({
         id: 'TR_DASHBOARD_REFERRAL_BUTTON',
         defaultMessage: 'Earn $20 per referral',
     },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_TITLE',
+        defaultMessage: 'Complete your setup',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 7 Accessory Pack. Save 33%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_TITLE',
+        defaultMessage: 'Back up your wallet',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_DESCRIPTION',
+        defaultMessage: 'Trezor Keep Metal, in stainless steel. Save 30%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_TITLE',
+        defaultMessage: 'A gift for someone close',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 3. Save 34%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_TITLE',
+        defaultMessage: 'Get a backup device',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 3. Save 34% until 5 Jan.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_TITLE',
+        defaultMessage: 'Gift the full setup',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 7 Complete Kit. Save 35%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_TITLE',
+        defaultMessage: 'Give a Trezor eGift Card',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_DESCRIPTION',
+        defaultMessage: 'Delivered by email. Let them choose.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_TITLE',
+        defaultMessage: 'Your next Trezor',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_DESCRIPTION',
+        defaultMessage: 'Upgrade to Trezor Safe 7. Save 28%.',
+    },
     TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',
         defaultMessage: 'Introducing Trezor Safe 7',

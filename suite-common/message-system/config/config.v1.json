@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-10-22T12:00:00+00:00",
-    "sequence": 163,
+    "timestamp": "2026-11-02T12:30:31+00:00",
+    "sequence": 164,
     "actions": [
         {
             "conditions": [
@@ -1618,6 +1618,286 @@
                     {
                         "domain": "dashboard.promoBanner",
                         "visibleBanner": "eth-vault",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.11.0",
+                        "mobile": "!",
+                        "web": ">=26.11.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "8ce443ae-ec58-411a-a01e-c75f0fd5b738",
+                "priority": 13,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-accessory-pack",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.11.0",
+                        "mobile": "!",
+                        "web": ">=26.11.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "42bc6006-d937-496e-ae71-eceb480b1e8e",
+                "priority": 12,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-keep-metal",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.11.0",
+                        "mobile": "!",
+                        "web": ">=26.11.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "49151600-e831-4889-8489-ce6d76ad4add",
+                "priority": 11,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts3-gift",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.11.0",
+                        "mobile": "!",
+                        "web": ">=26.11.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "77bee242-a511-4b7b-8b08-781345b8391a",
+                "priority": 10,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts3-backup",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.11.0",
+                        "mobile": "!",
+                        "web": ">=26.11.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "0b172f26-25a2-4070-9ea2-e866a03cf2c0",
+                "priority": 9,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-complete-kit",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.11.0",
+                        "mobile": "!",
+                        "web": ">=26.11.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "4676d61a-836b-450d-b383-1ac331a0ecc8",
+                "priority": 8,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-egift-card",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.11.0",
+                        "mobile": "!",
+                        "web": ">=26.11.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "9b54d7f3-ad1c-43a7-a452-28c2fe3a1b77",
+                "priority": 7,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-upgrade",
                         "flag": true
                     }
                 ]

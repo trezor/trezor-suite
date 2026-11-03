@@ -5,6 +5,24 @@ export const IMAGES = {
     CONFIRM_FW_INSTALLATION_SCREEN_T1B1: 'confirm-fw-installation-screen-t1b1.png',
     CONNECTOR: 'connector.webp',
     CONNECT_DEVICE: 'connect-device.svg',
+    DASHBOARD_PROMO_BANNER_BFH26_TS7_ACCESSORY_PACK:
+        'dashboard-promo-banner/bfh26-ts7-accessory-pack.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_TS7_ACCESSORY_PACK_2x:
+        'dashboard-promo-banner/bfh26-ts7-accessory-pack@2x.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_KEEP_METAL: 'dashboard-promo-banner/bfh26-keep-metal.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_KEEP_METAL_2x: 'dashboard-promo-banner/bfh26-keep-metal@2x.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_TS3_GIFT: 'dashboard-promo-banner/bfh26-ts3-gift.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_TS3_GIFT_2x: 'dashboard-promo-banner/bfh26-ts3-gift@2x.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_TS3_BACKUP: 'dashboard-promo-banner/bfh26-ts3-backup.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_TS3_BACKUP_2x: 'dashboard-promo-banner/bfh26-ts3-backup@2x.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_TS7_COMPLETE_KIT:
+        'dashboard-promo-banner/bfh26-ts7-complete-kit.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_TS7_COMPLETE_KIT_2x:
+        'dashboard-promo-banner/bfh26-ts7-complete-kit@2x.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_EGIFT_CARD: 'dashboard-promo-banner/bfh26-egift-card.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_EGIFT_CARD_2x: 'dashboard-promo-banner/bfh26-egift-card@2x.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_TS7_UPGRADE: 'dashboard-promo-banner/bfh26-ts7-upgrade.webp',
+    DASHBOARD_PROMO_BANNER_BFH26_TS7_UPGRADE_2x: 'dashboard-promo-banner/bfh26-ts7-upgrade@2x.webp',
     DASHBOARD_PROMO_BANNER_DEFI_YIELD: 'dashboard-promo-banner/defi-yield.webp',
     DASHBOARD_PROMO_BANNER_DEFI_YIELD_2x: 'dashboard-promo-banner/defi-yield@2x.webp',
     DASHBOARD_PROMO_BANNER_ETH_VAULT: 'dashboard-promo-banner/eth-vault.webp',
