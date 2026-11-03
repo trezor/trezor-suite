@@ -203,6 +203,8 @@ export type AppsEmbeddingEvent =
     // popup modes are being compared on.
     | { type: 'window-open-attempt'; url: string; outcome: AppsEmbeddingWindowOpenOutcome }
     | { type: 'navigation-blocked'; url: string }
+    // A subresource the page asked for and never got, e.g. a script refused by its server.
+    | { type: 'request-failed'; url: string; detail: string }
     // The origin that asked, never the url or what was typed: the log is the one place the
     // credentials must not end up. `detail` carries the host's reason for a refusal.
     | { type: 'http-auth'; origin: string; outcome: AppsEmbeddingHttpAuthOutcome; detail?: string }

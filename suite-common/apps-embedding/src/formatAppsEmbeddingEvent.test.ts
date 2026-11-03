@@ -57,6 +57,16 @@ const fixtures: { description: string; event: AppsEmbeddingEvent; expected: stri
         expected: 'navigation blocked — https://elsewhere.example/',
     },
     {
+        description: 'request-failed',
+        event: {
+            type: 'request-failed',
+            url: 'https://pay.google.com/gp/p/js/pay.js',
+            detail: 'script, net::ERR_BLOCKED_BY_ORB',
+        },
+        expected:
+            'request failed — https://pay.google.com/gp/p/js/pay.js (script, net::ERR_BLOCKED_BY_ORB)',
+    },
+    {
         description: 'requested http-auth',
         event: { type: 'http-auth', origin: 'https://guides.example', outcome: 'requested' },
         expected: 'HTTP auth requested — https://guides.example',

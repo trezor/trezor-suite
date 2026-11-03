@@ -13,10 +13,12 @@ import {
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { type ILogger } from '../../../libs/logger';
+import { type MainWindowProxy } from '../../../libs/main-window-proxy';
 import { resolveDirectoryInUserDataDir } from '../../../libs/user-data';
 import { IN_APP_BROWSER_DIRECTORY, IN_APP_BROWSER_SESSION_PARTITION } from '../config';
 import { SERVICE_NAME } from '../constants';
-import { activeViewContext, inAppBrowserContext } from '../context';
+import { activeViewContext, inAppBrowserContext, inAppBrowserWebContentsIds } from '../context';
+import { sendEventToRenderer } from './general';
 import { denyLocalNetworkRequests } from './localNetwork';
 
 /**
@@ -79,6 +81,50 @@ function denyDownloads(inAppBrowserSession: Session, logger: ILogger): void {
         logger.warn(SERVICE_NAME, `Denied a download from ${item.getURL()}`);
         event.preventDefault();
     });
+}
+
+/**
+ * Cancelled requests are routine rather than failures:
+ * a page aborts its own fetches, and a navigation drops whatever was still in flight.
+ */
+const ABORTED_REQUEST_ERROR = 'net::ERR_ABORTED';
+
+// Frame loads are reported by the view's `did-fail-load` and redirect guard.
+const FRAME_RESOURCE_TYPES = ['mainFrame', 'subFrame'];
+
+/**
+ * Reports every subresource the page or its popups asked for and never got.
+ * A page built by a script that did not arrive renders blank and still fires `did-finish-load`:
+ * Google answers the Google Pay entry's `pay.js` with a 403 on most Tor exits, which Chromium then blocks,
+ * and without this the log shows nothing but a successful load.
+ * - Only requests of a live view or popup: a late failure of a closed page would otherwise land in the log of the next one.
+ * - A listener rather than a setter, so it is installed where a session is created and this runs once.
+ */
+function reportFailedRequests(
+    inAppBrowserSession: Session,
+    mainWindowProxy: MainWindowProxy,
+    logger: ILogger,
+): void {
+    inAppBrowserSession.webRequest.onErrorOccurred(
+        ({ webContentsId, url, resourceType, error }) => {
+            if (
+                webContentsId === undefined ||
+                !inAppBrowserWebContentsIds.has(webContentsId) ||
+                error === ABORTED_REQUEST_ERROR ||
+                FRAME_RESOURCE_TYPES.includes(resourceType)
+            ) {
+                return;
+            }
+
+            logger.warn(SERVICE_NAME, `Failed to load ${resourceType} ${url}: ${error}`);
+            sendEventToRenderer(mainWindowProxy, {
+                type: 'request-failed',
+                url,
+                resourceType,
+                error,
+            });
+        },
+    );
 }
 
 /**
@@ -228,7 +274,7 @@ export async function followTorSettings(
  * creating a partition just to route it.
  */
 async function getInMemorySession(): Promise<Session> {
-    const { inMemorySession: recorded, logger } = await inAppBrowserContext.get();
+    const { inMemorySession: recorded, mainWindowProxy, logger } = await inAppBrowserContext.get();
 
     if (recorded) {
         return recorded;
@@ -239,6 +285,7 @@ async function getInMemorySession(): Promise<Session> {
     denyAllPermissions(inMemorySession, logger);
     denyDownloads(inMemorySession, logger);
     denyLocalNetworkRequests(inMemorySession, logger);
+    reportFailedRequests(inMemorySession, mainWindowProxy, logger);
     setPlainChromeUserAgent(inMemorySession);
     await inAppBrowserContext.insert(() => ({ inMemorySession }));
 
@@ -252,7 +299,7 @@ async function getInMemorySession(): Promise<Session> {
  * removes the question of whether `fromPath` would create a nested parent itself.
  */
 export async function getPersistentSession(entryId: string): Promise<Result<Session, string>> {
-    const { sessions, logger } = await inAppBrowserContext.get();
+    const { sessions, mainWindowProxy, logger } = await inAppBrowserContext.get();
     const cached = sessions.get(entryId);
 
     if (cached) {
@@ -291,6 +338,7 @@ export async function getPersistentSession(entryId: string): Promise<Result<Sess
     denyAllPermissions(inAppBrowserSession, logger);
     denyDownloads(inAppBrowserSession, logger);
     denyLocalNetworkRequests(inAppBrowserSession, logger);
+    reportFailedRequests(inAppBrowserSession, mainWindowProxy, logger);
     setPlainChromeUserAgent(inAppBrowserSession);
     sessions.set(entryId, inAppBrowserSession);
 

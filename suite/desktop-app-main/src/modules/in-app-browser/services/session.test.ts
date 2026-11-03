@@ -1,6 +1,7 @@
 import {
     type DownloadItem,
     type Event,
+    type OnErrorOccurredListenerDetails,
     type ProxyConfig,
     type Session,
     type WebContents,
@@ -20,7 +21,8 @@ import {
 import { Logger } from '../../../libs/logger';
 import { MainWindowProxy } from '../../../libs/main-window-proxy';
 import { type Store } from '../../../libs/store';
-import { inAppBrowserContext } from '../context';
+import { type StrictBrowserWindow } from '../../../typed-electron';
+import { inAppBrowserContext, inAppBrowserWebContentsIds } from '../context';
 import { type MockSession, mockSession } from '../mocks/mockSession';
 import { mockTorSettings } from '../mocks/mockTorSettings';
 
@@ -85,6 +87,17 @@ const getWillDownloadListener = (created: MockSession) => {
     }
 
     const [, listener] = registration;
+
+    return listener;
+};
+
+const getErrorOccurredListener = (created: MockSession) => {
+    const [registration] = jest.mocked(created.webRequest.onErrorOccurred).mock.calls;
+    const listener = registration?.[0];
+
+    if (typeof listener !== 'function') {
+        throw new Error('no onErrorOccurred listener was installed');
+    }
 
     return listener;
 };
@@ -226,6 +239,93 @@ describe('in-app browser sessions and Tor', () => {
                 .mock.calls.filter(([event]) => event === 'will-download');
 
             expect(registrations).toHaveLength(1);
+        });
+    });
+
+    describe('failed requests', () => {
+        const LIVE_WEB_CONTENTS_ID = 7;
+        const mainWindowSend = jest.fn();
+
+        const failedRequest = (
+            overrides: Partial<OnErrorOccurredListenerDetails> = {},
+        ): OnErrorOccurredListenerDetails => ({
+            id: 1,
+            url: 'https://pay.google.com/gp/p/js/pay.js',
+            method: 'GET',
+            webContentsId: LIVE_WEB_CONTENTS_ID,
+            resourceType: 'script',
+            referrer: 'https://gpay-live-demo.web.app/',
+            timestamp: 0,
+            fromCache: false,
+            error: 'net::ERR_BLOCKED_BY_ORB',
+            ...overrides,
+        });
+
+        beforeEach(async () => {
+            const mainWindowProxy = new MainWindowProxy();
+
+            mainWindowProxy.setInstance({
+                isDestroyed: () => false,
+                webContents: { isDestroyed: () => false, send: mainWindowSend },
+            } as unknown as StrictBrowserWindow);
+
+            await inAppBrowserContext.insert(() => ({ mainWindowProxy }));
+            inAppBrowserWebContentsIds.add(LIVE_WEB_CONTENTS_ID);
+        });
+
+        afterEach(() => {
+            inAppBrowserWebContentsIds.clear();
+        });
+
+        /**
+         * The case behind this: Google refuses `pay.js` over Tor,
+         * and the page then renders blank while its own load succeeds.
+         */
+        it.each([
+            { name: 'the in-memory', isPersistent: false },
+            { name: 'a persistent', isPersistent: true },
+        ])('reports a script a live page never got in $name session', async ({ isPersistent }) => {
+            await resolveSessionForOpen(isPersistent ? getPersistentEntry() : undefined);
+            const created = isPersistent ? persistentSession : inMemorySession;
+
+            getErrorOccurredListener(created)(failedRequest());
+
+            expect(mainWindowSend).toHaveBeenCalledWith('in-app-browser/event', {
+                type: 'request-failed',
+                url: 'https://pay.google.com/gp/p/js/pay.js',
+                resourceType: 'script',
+                error: 'net::ERR_BLOCKED_BY_ORB',
+            });
+        });
+
+        it('leaves out cancelled requests, which pages and navigations abort routinely', async () => {
+            await resolveSessionForOpen(undefined);
+
+            getErrorOccurredListener(inMemorySession)(failedRequest({ error: 'net::ERR_ABORTED' }));
+
+            expect(mainWindowSend).not.toHaveBeenCalled();
+        });
+
+        it.each(['mainFrame', 'subFrame'] as const)(
+            'leaves out a failed %s load, which the view reports itself',
+            async resourceType => {
+                await resolveSessionForOpen(undefined);
+
+                getErrorOccurredListener(inMemorySession)(failedRequest({ resourceType }));
+
+                expect(mainWindowSend).not.toHaveBeenCalled();
+            },
+        );
+
+        it.each([
+            { name: 'a page that is no longer live', webContentsId: LIVE_WEB_CONTENTS_ID + 1 },
+            { name: 'no page at all', webContentsId: undefined },
+        ])('leaves out a request of $name', async ({ webContentsId }) => {
+            await resolveSessionForOpen(undefined);
+
+            getErrorOccurredListener(inMemorySession)(failedRequest({ webContentsId }));
+
+            expect(mainWindowSend).not.toHaveBeenCalled();
         });
     });
 

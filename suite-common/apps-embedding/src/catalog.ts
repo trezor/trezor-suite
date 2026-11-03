@@ -114,13 +114,25 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
             {
                 kind: 'web',
                 expectedBehavior:
-                    'Frames fine (no frame-ancestors as of 2026-09). The button loads from pay.google.com; opening the payment sheet needs a popup — observe whether it opens or is blocked.',
+                    'Frames fine (no frame-ancestors as of 2026-09). The button loads from pay.google.com and opens the payment sheet in a window of its own, which the sandbox lets escape it: the sheet starts on a Google sign-in page, as it would from an unsandboxed frame.',
                 allow: 'payment',
+                /**
+                 * The sheet opens in a window of its own and posts the result back through window.opener;
+                 * without allow-popups the click is refused in the frame.
+                 * The window inherits the frame's sandbox, opaque origin included, and Google's sheet then stays blank,
+                 * hence allow-popups-to-escape-sandbox.
+                 */
+                sandbox: [
+                    'allow-forms',
+                    'allow-scripts',
+                    'allow-popups',
+                    'allow-popups-to-escape-sandbox',
+                ],
             },
             {
                 kind: 'desktop',
                 expectedBehavior:
-                    'Loads in the WebContentsView. The sheet opens as a child window of Suite because pay.google.com is in popupExternalOrigins; where a popup is refused the site falls back to a top-level redirect, which redirectExternalOrigins permits. Any hop off both lists is blocked and shows up in the log. This entry persists its session, so a Google sign-in survives a restart — for the popup too — until its data is forgotten from the catalog row. Compare with the system-browser variant below.',
+                    'Loads in the WebContentsView. The sheet opens as a child window of Suite because pay.google.com is in popupExternalOrigins; where a popup is refused the site falls back to a top-level redirect, which redirectExternalOrigins permits. Any hop off both lists is blocked and shows up in the log. This entry persists its session, so a Google sign-in survives a restart — for the popup too — until its data is forgotten from the catalog row. Compare with the system-browser variant below. With Tor on, Google answers pay.js with a 403 on most exits (checked 2026-11-03), so the button never appears and the page stays blank; the log reports the script as a failed request.',
                 // A signed-in Google account is what makes the sheet reachable at all on a second
                 // run, so this is the entry where persistence is worth demonstrating.
                 persistSession: true,

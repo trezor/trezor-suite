@@ -95,6 +95,15 @@ either IP version, however the address is spelled, and to names reserved for loc
 The page sees `ERR_BLOCKED_BY_CLIENT`, as for a blocked tracker. The filter judges the host in the URL: a public name that resolves to a
 local address passes, which only the resolver can see and which Chromium's own local-network checks exist for.
 
+#### Failed requests
+
+A page can fail without failing to load: when the script that builds it never arrives, it renders blank and `did-finish-load` still fires.
+The Google Pay entry does exactly that with Tor on, since Google answers its `pay.js` with a 403 on most exits and Chromium then blocks the
+response (`ERR_BLOCKED_BY_ORB`). Every session this module creates therefore also reports each subresource of a live view or popup that ended
+in a network error, as a `request-failed` event in the renderer's log and a warning in Suite's own. Cancelled requests (`ERR_ABORTED`) are left
+out as routine, and so are frame loads, which `did-fail-load` reports for the view. An HTTP error status alone is not a failed request: the page
+gets the response and decides what to do with it.
+
 ### One call at a time
 
 `ipcMain` runs handlers as the calls land, and an open awaits a session, the teardown of the previous view and the proxy before it creates its view, so two opens landing together would both tear down nothing and leave the first view attached to the window, loading and never closed, behind the second. Everything that creates or takes down a view — open, close, forget data, a change of the Tor settings, a renderer reload, the window going away, quit — runs through one queue in `init.ts`, so each call sees the previous one completed. The bounds and visibility handlers stay outside it: they act on whichever view is active at the time.

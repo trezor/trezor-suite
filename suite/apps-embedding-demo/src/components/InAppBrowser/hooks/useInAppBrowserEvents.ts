@@ -51,6 +51,13 @@ export function useInAppBrowserEvents({ onEvent, onNavigationState }: UseHostEve
                 case 'navigation-blocked':
                     onEventRef.current({ type: 'navigation-blocked', url: event.url });
                     break;
+                case 'request-failed':
+                    onEventRef.current({
+                        type: 'request-failed',
+                        url: event.url,
+                        detail: `${event.resourceType}, ${event.error}`,
+                    });
+                    break;
                 default:
                     exhaustive(event);
             }

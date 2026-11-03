@@ -244,4 +244,11 @@ export type InAppBrowserHostEvent =
           url: string;
           outcome: 'denied' | 'opened-in-app';
       }
-    | { type: 'navigation-blocked'; url: string };
+    | { type: 'navigation-blocked'; url: string }
+    /**
+     * A subresource of the page or of its popups that never arrived — a script refused by the
+     * server, a connection that failed — which would otherwise leave the page blank with nothing in
+     * the log. `resourceType` and `error` are Electron's `webRequest` values, e.g. `script` and
+     * `net::ERR_BLOCKED_BY_ORB`.
+     */
+    | { type: 'request-failed'; url: string; resourceType: string; error: string };
