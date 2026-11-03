@@ -18,9 +18,13 @@ export const dashboardSendModalEvent: EventDef<Attributes, EventType.DashboardSe
             changelog: [
                 { version: '26.3.0', notes: 'added' },
                 { version: '26.11.0', notes: 'added `asset-header` value' },
+                {
+                    version: '26.11.0',
+                    notes: '`page-header` is no longer reported, the dashboard header reports `navigate/flow` instead',
+                },
             ],
             description:
-                'Where the send modal was opened from: `page-header` from the main page header button, `asset-header` from the asset detail page header button',
+                'Where the send modal was opened from: `page-header` from the main page header button (no longer reported), `asset-header` from the asset detail page header button',
         },
     },
 };
