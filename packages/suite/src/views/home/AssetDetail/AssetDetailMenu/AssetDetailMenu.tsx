@@ -1,5 +1,6 @@
 import { type ReactElement, useRef, useState } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
@@ -59,7 +60,7 @@ type AssetDetailMenuProps = {
 };
 
 export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const accountCount = useSelector(state => selectWalletAssetAccountCount(state, assetKey));
@@ -81,6 +82,21 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
     }
 
     const closeMenu = () => dropdownRef.current?.close();
+
+    const reportMenuOpen = (isOpen: boolean) => {
+        if (!isOpen) {
+            return;
+        }
+
+        analytics.report({
+            type: events.assetsActionsEvent.name,
+            payload: {
+                action: 'more-menu',
+                networkSymbol: symbol,
+                ...(contractAddress ? { contractAddress } : {}),
+            },
+        });
+    };
 
     const addressFieldLabels: Record<AddressType, ReactElement> = {
         contract: <Translation id={getTokenAddressTranslationId(getNetwork(symbol).networkType)} />,
@@ -205,6 +221,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
                 placement={{ position: 'bottom', alignment: 'end' }}
                 tooltip={{ content: <Translation id="TR_SHOW_MORE" /> }}
                 minWidth={280}
+                onOpenChange={reportMenuOpen}
                 content={
                     <Column alignItems="stretch">
                         <AssetDetailMenuNetworkRow symbol={symbol} />

@@ -1,4 +1,5 @@
 export {
+    assetsActionsEvent,
     assetsTimeframeChangeEvent,
     assetsTransactionDetailEvent,
     earnTilePressedEvent,

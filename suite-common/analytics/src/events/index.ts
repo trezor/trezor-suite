@@ -1,5 +1,6 @@
 export { accountsInfoEvent } from './accountsInfoEvent';
 export { appFormPercentButtonsEvent } from './appFormPercentButtonsEvent';
+export { assetsActionsEvent } from './assetsActionsEvent';
 export { assetsTimeframeChangeEvent } from './assetsTimeframeChangeEvent';
 export { assetsTransactionDetailEvent } from './assetsTransactionDetailEvent';
 export { coinSignMessageEvent } from './coinSignMessageEvent';

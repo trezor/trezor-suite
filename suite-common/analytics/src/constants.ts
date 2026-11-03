@@ -62,4 +62,5 @@ export enum EventType {
     NavigateFlow = 'navigate/flow',
     AssetsTimeframeChange = 'assets/timeframe-change',
     AssetsTransactionDetail = 'assets/transaction-detail',
+    AssetsActions = 'assets/actions',
 }

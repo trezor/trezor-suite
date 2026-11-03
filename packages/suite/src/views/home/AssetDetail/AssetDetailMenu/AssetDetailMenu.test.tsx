@@ -5,6 +5,8 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { initialState as selectedAccountInitialState } from '@suite/account';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type GotoThunkDeps, routerReducer } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { selectWalletAssetKey } from '@suite-common/assets';
@@ -16,6 +18,7 @@ import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -104,6 +107,8 @@ const getInitialState = (accounts: Account[]): AppState => ({
     },
 });
 
+const mockReport = jest.fn();
+
 const renderMenu = (accounts: Account[], symbol: NetworkSymbol, contractAddress?: TokenAddress) => {
     const initialState = getInitialState(accounts);
     const reducer: Reducer<AppState> = (state = initialState, action) => ({
@@ -111,10 +116,16 @@ const renderMenu = (accounts: Account[], symbol: NetworkSymbol, contractAddress?
         router: routerReducer(state.router, action),
         tokenDefinitions: tokenDefinitionsReducer(state.tokenDefinitions, action),
     });
-    const { services } = createTestCompositionRoot<GotoThunkDeps, AppState>({
+    const { services } = createTestCompositionRoot<
+        GotoThunkDeps & WithServices<DesktopAnalyticsDep>,
+        AppState
+    >({
         preloadedState: initialState,
         reducer,
-        services: () => ({ suiteRouterHistory: mockSuiteRouterHistory() }),
+        services: () => ({
+            suiteRouterHistory: mockSuiteRouterHistory(),
+            analytics: mockDesktopAnalytics(mockReport),
+        }),
     });
     const assetKey = selectWalletAssetKey(services.store.getState(), symbol, contractAddress);
 
@@ -136,6 +147,22 @@ const openMenu = async () => {
 };
 
 describe('AssetDetailMenu', () => {
+    beforeEach(() => {
+        mockReport.mockClear();
+    });
+
+    it('reports opening the menu', async () => {
+        renderMenu([ethereumAccount], ETH, USDC_ON_ETH);
+
+        await openMenu();
+
+        expect(mockReport).toHaveBeenCalledTimes(1);
+        expect(mockReport).toHaveBeenCalledWith({
+            type: events.assetsActionsEvent.name,
+            payload: { action: 'more-menu', networkSymbol: ETH, contractAddress: USDC_ON_ETH },
+        });
+    });
+
     it('describes a token with its network, accounts and contract, and offers every action', async () => {
         renderMenu([ethereumAccount, bitcoinAccount], ETH, USDC_ON_ETH);
 

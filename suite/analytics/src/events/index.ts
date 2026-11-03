@@ -1,5 +1,6 @@
 export {
     appFormPercentButtonsEvent,
+    assetsActionsEvent,
     assetsTimeframeChangeEvent,
     assetsTransactionDetailEvent,
     navigateFlowEvent,

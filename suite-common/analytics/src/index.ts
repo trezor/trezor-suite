@@ -51,3 +51,4 @@ export { stakingClaimEvent, type StakingClaimStep } from './events/stakingClaimE
 export { appFormPercentButtonsEvent } from './events/appFormPercentButtonsEvent';
 export { assetsTimeframeChangeEvent } from './events/assetsTimeframeChangeEvent';
 export { assetsTransactionDetailEvent } from './events/assetsTransactionDetailEvent';
+export { assetsActionsEvent } from './events/assetsActionsEvent';
