@@ -61,4 +61,5 @@ export enum EventType {
     YieldUnwrap = 'yield/unwrap',
     NavigateFlow = 'navigate/flow',
     AssetsTimeframeChange = 'assets/timeframe-change',
+    AssetsTransactionDetail = 'assets/transaction-detail',
 }

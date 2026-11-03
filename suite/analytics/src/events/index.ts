@@ -1,6 +1,7 @@
 export {
     appFormPercentButtonsEvent,
     assetsTimeframeChangeEvent,
+    assetsTransactionDetailEvent,
     navigateFlowEvent,
     stakingClaimEvent,
     stakingNavigateEvent,

@@ -22,6 +22,7 @@ interface TransactionGroupedListProps {
     /** Rows of several accounts, or of one asset's transfers, each name their account. */
     isAccountShown?: boolean;
     isBumpFeeAllowed?: boolean;
+    onTransactionDetailOpen?: (transaction: WalletAccountTransaction) => void;
 }
 
 export const TransactionGroupedList = ({
@@ -31,6 +32,7 @@ export const TransactionGroupedList = ({
     isPending,
     isAccountShown = false,
     isBumpFeeAllowed = true,
+    onTransactionDetailOpen,
 }: TransactionGroupedListProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const network = getNetwork(symbol);
@@ -73,6 +75,7 @@ export const TransactionGroupedList = ({
                             accountType={account.accountType}
                             index={index}
                             isAccountShown={isAccountShown}
+                            onTransactionDetailOpen={onTransactionDetailOpen}
                             disableBumpFee={
                                 !isBumpFeeAllowed ||
                                 (network.networkType === 'ethereum'
