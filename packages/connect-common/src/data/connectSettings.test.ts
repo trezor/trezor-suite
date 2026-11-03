@@ -117,9 +117,11 @@ describe('data/connectSettings', () => {
             expect(parseManifest({ ...baseManifest, appName: '\x00\x1F\x7F' })).toBeUndefined();
         });
 
-        it('accepts long appName without length limit', () => {
-            const longName = 'A'.repeat(200);
-            expect(parseManifest({ ...baseManifest, appName: longName })?.appName).toBe(longName);
+        // Truncating rather than rejecting keeps a desktop-ws client with an over-long appName
+        // connected — `connect-ws` destroys the socket when `parseManifest` returns undefined.
+        it('truncates a long appName to 100 characters instead of dropping the manifest', () => {
+            const manifest = parseManifest({ ...baseManifest, appName: 'A'.repeat(200) });
+            expect(manifest?.appName).toBe('A'.repeat(100));
         });
     });
 
