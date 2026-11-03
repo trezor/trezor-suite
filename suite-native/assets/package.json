@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@react-navigation/native": "7.1.31",
-        "@shopify/flash-list": "2.3.0",
+        "@shopify/flash-list": "2.3.2",
         "@suite-common/assets": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
@@ -42,7 +42,7 @@
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
         "react": "19.3.0",
-        "react-native": "0.88.0",
+        "react-native": "0.88.1",
         "react-native-reanimated": "4.7.1",
         "react-redux": "9.3.0"
     },
