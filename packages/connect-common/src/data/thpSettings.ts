@@ -13,13 +13,13 @@ export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): T
     }
 
     if (typeof thp?.hostName === 'string') {
-        settings.hostName = sanitizeName(thp.hostName, MAX_NAME_LENGTH);
+        settings.hostName = sanitizeName(thp.hostName, { maxLength: MAX_NAME_LENGTH });
     }
 
     if (typeof thp?.appName === 'string') {
-        settings.appName = sanitizeName(thp.appName, MAX_NAME_LENGTH);
+        settings.appName = sanitizeName(thp.appName, { maxLength: MAX_NAME_LENGTH });
     } else if (typeof manifest?.appName === 'string') {
-        settings.appName = sanitizeName(manifest.appName, MAX_NAME_LENGTH);
+        settings.appName = sanitizeName(manifest.appName, { maxLength: MAX_NAME_LENGTH });
     }
 
     if (Array.isArray(thp?.knownCredentials)) {
