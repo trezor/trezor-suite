@@ -153,17 +153,26 @@ export class OnboardingPage {
 
         await this.pairTHP();
 
-        await this.completeOnboardingButton.click();
+        await this.passInitializedDeviceCheck();
         await this.page.discoveryShouldFinish();
     }
 
     @step()
     async passDeviceCheck() {
-        await this.setupDeviceButton.waitFor();
+        await this.confirmDeviceCheckAndContinue(this.setupDeviceButton);
+    }
+
+    @step()
+    async passInitializedDeviceCheck() {
+        await this.confirmDeviceCheckAndContinue(this.completeOnboardingButton);
+    }
+
+    private async confirmDeviceCheckAndContinue(continueButton: Locator) {
+        await continueButton.waitFor();
         for (const checkbox of await this.deviceCheckCheckboxes.all()) {
             await checkbox.click();
         }
-        await this.setupDeviceButton.click();
+        await continueButton.click();
     }
 
     @step()

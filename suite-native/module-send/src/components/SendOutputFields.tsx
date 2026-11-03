@@ -29,6 +29,7 @@ type SendOutputFieldsProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
     maxAmount?: string;
+    maxAmountForReserve?: string;
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -40,6 +41,7 @@ export const SendOutputFields = ({
     accountKey,
     tokenContract,
     maxAmount,
+    maxAmountForReserve,
 }: SendOutputFieldsProps) => {
     const { applyStyle } = useNativeStyles();
     const { control } = useFormContext<SendOutputsFormValues>();
@@ -59,7 +61,7 @@ export const SendOutputFields = ({
         contractAddress: tokenContract,
         amount,
         balance: formattedBalance,
-        maxAmount,
+        maxAmount: maxAmountForReserve ?? maxAmount,
     });
 
     return (

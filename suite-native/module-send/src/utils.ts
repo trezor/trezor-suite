@@ -5,8 +5,11 @@ import {
     type AccountKey,
     type FormOptions,
     type FormState,
+    type GeneralPrecomposedTransaction,
     type TokenAddress,
+    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     AccountDetailStackRoutes,
     AppTabsRoutes,
@@ -16,6 +19,7 @@ import {
 } from '@suite-native/navigation';
 import { type Utxo } from '@trezor/blockchain-link-types';
 import { type FeeLevel } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import { type SendOutputFieldName, type SendOutputsFormValues } from './sendOutputsFormSchema';
 
@@ -23,6 +27,40 @@ export const getOutputFieldName = <TField extends SendOutputFieldName>(
     index: number,
     field: TField,
 ): `outputs.${number}.${TField}` => `outputs.${index}.${field}`;
+
+type GetSendFeeStatusParams = {
+    feeLevel: GeneralPrecomposedTransaction | undefined;
+    symbol: NetworkSymbol;
+    availableBalance: string;
+    networkReserve?: string;
+    amount: string;
+};
+
+type SendFeeStatus = {
+    isFeeReady: boolean;
+    maxAmountForReserve?: string;
+};
+
+export const getSendFeeStatus = ({
+    feeLevel,
+    symbol,
+    availableBalance,
+    networkReserve,
+    amount,
+}: GetSendFeeStatusParams): SendFeeStatus => {
+    if (!isFinalPrecomposedTransaction(feeLevel)) return { isFeeReady: false };
+    if (!networkReserve) return { isFeeReady: true };
+
+    const maxAmountForReserve = new BigNumber(formatNetworkAmount(availableBalance, symbol))
+        .minus(networkReserve)
+        .minus(formatNetworkAmount(feeLevel.fee, symbol))
+        .toFixed();
+
+    return {
+        isFeeReady: new BigNumber(feeLevel.max ?? amount).lte(maxAmountForReserve),
+        maxAmountForReserve,
+    };
+};
 
 type GetSendMaxAmountParams = {
     isTokenFlow: boolean;

@@ -1,4 +1,13 @@
+import { tokenReceiveAccountInfoUSDC } from './tokenReceiveAccountInfoUSDC';
+
 export const getAccountInfoMockedResponses = {
+    eth: {
+        [tokenReceiveAccountInfoUSDC.descriptor]: {
+            id: 1,
+            success: true,
+            payload: tokenReceiveAccountInfoUSDC,
+        },
+    },
     ada: {
         d507c8f866691bd96e131334c355188b1a1d0b2fa0ab11545075aab332d77d9eb19657ad13ee581b56b0f8d744d66ca356b93d42fe176b3de007d53e9c4c4e7a:
             {

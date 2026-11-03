@@ -34,14 +34,21 @@ yarn run -T babel "$1" --out-dir "$1" --extensions ".js" --config-file "$SCRIPT_
 # fail to resolve under a consumer's NodeNext moduleResolution — the named exports silently vanish.
 # The .js pipeline above already gets this right because babel-plugin-sanitize-internal-imports does
 # the src->lib rewrite in the same pass, ahead of add-js-extension.
+#
+# src must match a whole path segment here, mirroring internalSrcSpecifier in
+# babel-plugin-sanitize-internal-imports.js: a @trezor/<pkg>/src-prefixed address such as
+# src-maps/ is not an internal import and must not become lib-maps/, or the .d.ts would point
+# somewhere else than the .js emitted from the same specifier. The segment terminator (/, a
+# bundler ?query or #fragment, or the closing quote) is captured and put back, because sed BRE
+# has no lookahead.
 # Determine the operating system, then execute the appropriate command based on the OS:
 OS="$(uname)"
 if [[ "$OS" == "Darwin" ]]; then
     # macOS command with -i '' for in-place editing without backup and -E for extended regex.
-    find "$1" -name "*.d.ts" -type f -exec sed -i '' "s|@trezor/\([^/]*\)/src|@trezor/\1/lib|g" {} +
+    find "$1" -name "*.d.ts" -type f -exec sed -i '' "s|@trezor/\([^/]*\)/src\([^A-Za-z0-9_.-]\)|@trezor/\1/lib\2|g" {} +
 else
     # Linux command with -i and -E for in-place editing without backup (GNU sed syntax) and extended regex.
-    find "$1" -name "*.d.ts" -type f -exec sed -i "s|@trezor/\([^/]*\)/src|@trezor/\1/lib|g" {} +
+    find "$1" -name "*.d.ts" -type f -exec sed -i "s|@trezor/\([^/]*\)/src\([^A-Za-z0-9_.-]\)|@trezor/\1/lib\2|g" {} +
 fi
 
 # Transform .d.ts files using Babel (adds runtime .js / /index.js extensions to relative and, thanks

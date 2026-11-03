@@ -8797,22 +8797,28 @@ export const messages = defineMessages({
     TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP: {
         id: 'TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP',
         defaultMessage:
-            "Click to confirm you've carefully read and understood the instructions in each box below.",
+            'Complete these checks before setup to confirm your Trezor hasn’t been tampered with.',
         description: 'Tooltip on the disabled setup button until all security checks are confirmed',
     },
     TR_USED_TREZOR_BEFORE: {
         id: 'TR_USED_TREZOR_BEFORE',
         defaultMessage: 'Have you used this Trezor before?',
     },
-    TR_ONBOARDING_DEVICE_CHECK_4: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK_4',
+    TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_INSTALLED: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_INSTALLED',
         description: 'Shown only if device has firmware already installed',
-        defaultMessage:
-            'Firmware is already installed on this device. Continue only if you have used this Trezor before.',
+        defaultMessage: 'Firmware is already installed on this device.',
     },
-    TR_I_HAVE_NOT_USED_IT: {
-        id: 'TR_I_HAVE_NOT_USED_IT',
-        defaultMessage: "No, I haven't",
+    TR_ONBOARDING_SECURITY_CHECK_USED_BEFORE: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_USED_BEFORE',
+        description: 'Checkbox shown only if device has firmware already installed',
+        defaultMessage: "Yes, I've used this Trezor before.",
+    },
+    TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_CONFIRM_TOOLTIP: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_CONFIRM_TOOLTIP',
+        description:
+            'Tooltip on the disabled continue button until the user confirms they have used the device with firmware already installed',
+        defaultMessage: 'First confirm you’ve used this Trezor before.',
     },
     TR_I_HAVE_DOUBTS: {
         id: 'TR_I_HAVE_DOUBTS',
@@ -10419,6 +10425,62 @@ export const messages = defineMessages({
     TR_DASHBOARD_REFERRAL_BUTTON: {
         id: 'TR_DASHBOARD_REFERRAL_BUTTON',
         defaultMessage: 'Earn $20 per referral',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_TITLE',
+        defaultMessage: 'Complete your setup',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 7 Accessory Pack. Save 33%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_TITLE',
+        defaultMessage: 'Back up your wallet',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_DESCRIPTION',
+        defaultMessage: 'Trezor Keep Metal, in stainless steel. Save 30%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_TITLE',
+        defaultMessage: 'A gift for someone close',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 3. Save 34%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_TITLE',
+        defaultMessage: 'Get a backup device',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 3. Save 34% until 5 Jan.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_TITLE',
+        defaultMessage: 'Gift the full setup',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 7 Complete Kit. Save 35%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_TITLE',
+        defaultMessage: 'Give a Trezor eGift Card',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_DESCRIPTION',
+        defaultMessage: 'Delivered by email. Let them choose.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_TITLE',
+        defaultMessage: 'Your next Trezor',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_DESCRIPTION',
+        defaultMessage: 'Upgrade to Trezor Safe 7. Save 28%.',
     },
     TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',

@@ -55,17 +55,18 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
     return amountBigNumber.lt(dustThreshold);
 };
 
+const getFeeAdjustedMaxSendAmount = (maxSendAmountByFeeLevel: FeeLevelsMaxAmount) => {
+    const maxSendAmounts = Object.values(maxSendAmountByFeeLevel).filter(isNotNullOrUndefined);
+
+    return maxSendAmounts.length > 0 ? BigNumber.max(...maxSendAmounts).toFixed() : undefined;
+};
+
 type HasSufficientBalanceParams = {
     amount: string;
-    isSendMaxSelected: boolean;
     context?: SendFormFormContext;
 };
 
-const hasSufficientBalance = ({
-    amount,
-    isSendMaxSelected,
-    context,
-}: HasSufficientBalanceParams): boolean => {
+const hasSufficientBalance = ({ amount, context }: HasSufficientBalanceParams): boolean => {
     if (!amount || !context) {
         return true;
     }
@@ -78,12 +79,8 @@ const hasSufficientBalance = ({
         return !availableBalance || amountBigNumber.lte(availableBalance);
     }
 
-    const normalMaxSendAmount = maxSendAmountByFeeLevel?.normal;
-
-    // Send Max may proceed when only the economy fee leaves enough balance.
-    const feeAdjustedMaxSendAmount = isSendMaxSelected
-        ? (maxSendAmountByFeeLevel?.economy ?? normalMaxSendAmount)
-        : normalMaxSendAmount;
+    const feeAdjustedMaxSendAmount =
+        maxSendAmountByFeeLevel && getFeeAdjustedMaxSendAmount(maxSendAmountByFeeLevel);
 
     if (feeAdjustedMaxSendAmount) {
         return amountBigNumber.lte(feeAdjustedMaxSendAmount);
@@ -206,17 +203,8 @@ const outputSchema = yup.object({
         .test(
             'is-higher-than-balance',
             'You don’t have enough balance to send this amount.',
-            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const isSendMaxSelected = isNotNullOrUndefined(
-                    this.from?.[1]?.value.setMaxOutputId,
-                );
-
-                return hasSufficientBalance({
-                    amount: value,
-                    isSendMaxSelected,
-                    context,
-                });
-            },
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
+                hasSufficientBalance({ amount: value, context }),
         )
         .test(
             'ripple-higher-than-reserve',
@@ -259,7 +247,7 @@ const outputSchema = yup.object({
         .test(
             'network-reserve',
             'Not enough funds remaining after reserving network fees',
-            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
                 if (!value || !context) return true;
 
                 const {
@@ -275,12 +263,8 @@ const outputSchema = yup.object({
                 const availableBalanceInFormUnits = formatNetworkAmount(availableBalance, symbol);
                 if (new BigNumber(value).gt(availableBalanceInFormUnits)) return true;
 
-                const isSendMaxSelected = isNotNullOrUndefined(
-                    this.from?.[1]?.value.setMaxOutputId,
-                );
-                const maxSendAmount = isSendMaxSelected
-                    ? maxSendAmountByFeeLevel?.economy
-                    : maxSendAmountByFeeLevel?.normal;
+                const maxSendAmount =
+                    maxSendAmountByFeeLevel && getFeeAdjustedMaxSendAmount(maxSendAmountByFeeLevel);
 
                 if (!maxSendAmount) return true;
 

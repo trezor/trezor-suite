@@ -5,6 +5,7 @@ import { A, G } from '@mobily/ts-belt';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
+import { ClipboardCopyMenu } from '@suite-native/clipboard';
 import {
     AddressFormatter,
     ExactCryptoAmountFormatter,
@@ -33,7 +34,13 @@ const TransactionAddressAmount = ({
     decimals,
 }: TransactionAddressAmountProps) => (
     <Box>
-        <AddressFormatter value={address} variant="body-sm" format="short" />
+        {address ? (
+            <ClipboardCopyMenu value={address}>
+                <AddressFormatter value={address} variant="body-sm" format="short" />
+            </ClipboardCopyMenu>
+        ) : (
+            <AddressFormatter value={address} variant="body-sm" format="short" />
+        )}
         {amount &&
             (isNetworkSymbol(symbol) ? (
                 <ExactCryptoAmountFormatter

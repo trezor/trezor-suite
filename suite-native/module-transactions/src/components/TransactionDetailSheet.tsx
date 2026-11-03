@@ -9,6 +9,7 @@ import {
     Text,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { ClipboardCopyMenu } from '@suite-native/clipboard';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
@@ -86,11 +87,15 @@ export const TransactionDetailSheet = ({
             <BottomSheetModal
                 ref={bottomSheetRef}
                 title={title}
-                subtitle={
-                    <Translation
-                        id="transactions.TransactionDetailScreen.sheetSubtitle"
-                        values={{ transactionId }}
-                    />
+                subtitleContent={
+                    <ClipboardCopyMenu value={transactionId}>
+                        <Text variant="body-sm" color="contentSecondary">
+                            <Translation
+                                id="transactions.TransactionDetailScreen.sheetSubtitle"
+                                values={{ transactionId }}
+                            />
+                        </Text>
+                    </ClipboardCopyMenu>
                 }
                 isCloseDisplayed
             >

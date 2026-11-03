@@ -9,6 +9,7 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { SendOutputsScreen } from './SendOutputsScreen';
 import { useSendForm } from '../hooks/useSendForm';
+import { getSendFeeStatus } from '../utils';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -54,14 +55,34 @@ type RenderScreenParams = {
     selectedFee: FeeLevelLabel;
     selectedTransaction?: GeneralPrecomposedTransaction;
     normalTransaction?: GeneralPrecomposedTransaction;
+    networkReserve?: string;
+    amount?: string;
+    availableBalance?: string;
 };
 
 const renderScreen = ({
     selectedFee,
     selectedTransaction,
     normalTransaction = feeError,
-}: RenderScreenParams) =>
-    renderWithStoreProvider(
+    networkReserve,
+    amount = '1',
+    availableBalance = '2000000000000000000',
+}: RenderScreenParams) => {
+    jest.mocked(useSendForm).mockReturnValue({
+        form: { formState: { isValid: true, isSubmitting: false }, setValue: jest.fn() },
+        handleSubmitSendForm: jest.fn(),
+        network: { networkType: 'ethereum' },
+        isResolvingNamedAddress: false,
+        ...getSendFeeStatus({
+            feeLevel: selectedTransaction,
+            symbol: account.symbol,
+            availableBalance,
+            amount,
+            networkReserve,
+        }),
+    } as unknown as NonNullable<ReturnType<typeof useSendForm>>);
+
+    return renderWithStoreProvider(
         <SendOutputsScreen
             route={{
                 key: 'send',
@@ -85,17 +106,9 @@ const renderScreen = ({
             },
         },
     );
+};
 
 describe('SendOutputsScreen selected fee readiness', () => {
-    beforeEach(() => {
-        jest.mocked(useSendForm).mockReturnValue({
-            form: { formState: { isValid: true, isSubmitting: false }, setValue: jest.fn() },
-            handleSubmitSendForm: jest.fn(),
-            network: { networkType: 'ethereum' },
-            isResolvingNamedAddress: false,
-        } as unknown as NonNullable<ReturnType<typeof useSendForm>>);
-    });
-
     it.each(['low', 'custom'] as const)(
         'offers review for confirmed %s even when Normal is unaffordable',
         async selectedFee => {
@@ -115,6 +128,48 @@ describe('SendOutputsScreen selected fee readiness', () => {
             });
 
             expect(view.queryByTestId('@send/form-submit-button')).toBeNull();
+        },
+    );
+
+    it.each([
+        ['normal', '1000000000000000', false],
+        ['low', '500000000000000', true],
+        ['custom', '1500000000000000', false],
+    ] as const)(
+        'offers review for %s only when its fee preserves the reserve',
+        async (selectedFee, fee, ready) => {
+            const view = await renderScreen({
+                selectedFee,
+                selectedTransaction: { ...finalTransaction, fee },
+                networkReserve: '0.001',
+                amount: '0.9985',
+                availableBalance: '1000000000000000000',
+            });
+            if (ready) expect(view.getByTestId('@send/form-submit-button')).toBeOnTheScreen();
+            else expect(view.queryByTestId('@send/form-submit-button')).toBeNull();
+        },
+    );
+
+    it.each([
+        ['high', '2000000000000000', '0.997'],
+        ['custom', '2500000000000000', '0.9965'],
+    ] as const)(
+        'keeps Review available for Send Max with %s despite the Normal-filled amount',
+        async (selectedFee, fee, max) => {
+            const view = await renderScreen({
+                selectedFee,
+                selectedTransaction: {
+                    ...finalTransaction,
+                    fee,
+                    max,
+                    totalSpent: '999000000000000000',
+                },
+                networkReserve: '0.001',
+                amount: '0.998',
+                availableBalance: '1000000000000000000',
+            });
+
+            expect(view.getByTestId('@send/form-submit-button')).toBeOnTheScreen();
         },
     );
 });
