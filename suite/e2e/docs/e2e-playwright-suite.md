@@ -124,7 +124,9 @@ Some tests must run on specific Firmware version. That version is setup and defi
 
 Results contains traces, metadata, logs, screenshots, videos and various useful information for debugging.
 Traces contain electron logs of our desktop suit app. Both in CI, currents and local env (`suite/e2e/test-results`).
-CI runs attach the test environment logs to the Currents run, one `test-env-logs-<machine>.zip` per group on the run's Attachments tab. Logs of `trezor-user-env` are separated by Log entry `- - - STARTING TEST trading/swap-tokens.test.ts` and `- - - FINISHING TEST trading/swap-tokens.test.ts`
+CI runs attach the test environment logs to the Currents run, one `test-env-logs-<machine>.zip` per group on the run's Attachments tab. Wallet passphrases supplied by CI are replaced with `<redacted>` by [redact-test-env-logs.ts](../../../scripts/ci/redact-test-env-logs.ts), including their escaped and hex representations. Public test mnemonics, PINs, device identifiers and other protocol fields remain available for debugging. Logs of `trezor-user-env` are separated by Log entry `- - - STARTING TEST trading/swap-tokens.test.ts` and `- - - FINISHING TEST trading/swap-tokens.test.ts`
+
+The upload action reads `TEST_ENV_LOG_PASSPHRASE` and `TEST_ENV_LOG_PASSPHRASE_LIVE`, wired to the same secrets as the tests. A caller using a private mnemonic must also supply `TEST_ENV_LOG_MNEMONIC`; its words are redacted individually for backup/recovery output. New private credentials or log encodings must be added to this configuration and its regression tests before uploading logs. Upload is skipped if redaction fails.
 
 - trezor-user-env-debugging.log
 - tenv-emulator-bridge-debugging.log

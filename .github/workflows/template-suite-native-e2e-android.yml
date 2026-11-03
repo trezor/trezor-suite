@@ -183,6 +183,7 @@ jobs:
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          TEST_ENV_LOG_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
         with:
           destination: currents
           currents-workspace: "@suite-native/app"
