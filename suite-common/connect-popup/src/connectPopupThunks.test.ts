@@ -28,6 +28,14 @@ import {
     connectPopupLoadSelectAccountPageThunk,
 } from './connectPopupThunks';
 import {
+    CALL_SOURCE_DEEPLINK,
+    CALL_SOURCE_DESKTOP_WS,
+    CALL_SOURCE_MCP,
+    CALL_SOURCE_WALLETCONNECT,
+    CALL_SOURCE_WEB,
+    type ConnectCallSource,
+} from './connectPopupTypes';
+import {
     CommonPopupFlow,
     type PopupFlowParams,
     type PopupFlowPayload,
@@ -410,5 +418,95 @@ describe('connectPopupCallInnerThunk', () => {
             error: expect.objectContaining({ code: 'Method_Unsupported' }),
         });
         expect(lockDevice).toHaveBeenCalledWith(false);
+    });
+
+    // The names on the consent prompt come from the caller, and these pin what reaches a flow
+    // today: whatever the caller picked, for every source alike. `parseManifest` cannot cover the web
+    // and webextension sources, because it runs in the dapp's own page, and nothing sanitizes a
+    // deeplink or a WalletConnect name at all.
+    describe('caller-picked names', () => {
+        const CODE_POINT = {
+            NULL: '\u0000',
+            ZERO_WIDTH_SPACE: '\u200b',
+            GRINNING_FACE: '\u{1f600}',
+        };
+
+        // The source a flow is constructed with is what it dispatches to the consent prompt.
+        const sourceAtPrompt = async (source: ConnectCallSource) => {
+            const run = jest.spyOn(CommonPopupFlow.prototype, 'run').mockResolvedValue({
+                success: true,
+                payload: {},
+            } as never);
+
+            await runCallThunk({ method: 'verifyMessage', payload: {} as never, source });
+
+            const { source: prompted } = run.mock.contexts[0] as PopupFlowParams<CallMethodKeys>;
+
+            return prompted;
+        };
+
+        const sourceWithAppName = (type: ConnectCallSource['type'], appName: unknown) =>
+            ({
+                type,
+                origin: 'https://dapp.example',
+                manifest: { appName, appUrl: 'https://dapp.example', email: 'a@example.com' },
+            }) as unknown as ConnectCallSource;
+
+        it.each([
+            ['a web dapp', CALL_SOURCE_WEB],
+            ['a desktop-ws client', CALL_SOURCE_DESKTOP_WS],
+            ['an MCP client', CALL_SOURCE_MCP],
+            ['a WalletConnect peer', CALL_SOURCE_WALLETCONNECT],
+            ['a deeplink', CALL_SOURCE_DEEPLINK],
+        ] as const)('shows the name %s picked for itself as it is', async (_label, type) => {
+            const prompted = await sourceAtPrompt(
+                sourceWithAppName(type, `Clau${CODE_POINT.NULL}de Code`),
+            );
+
+            // The control character reaches the prompt, which renders the name as exactly
+            // `Claude Code` — the name of another app.
+            expect(prompted?.manifest.appName).toBe(`Clau${CODE_POINT.NULL}de Code`);
+        });
+
+        it('shows the OS-reported process name of a desktop caller as it is', async () => {
+            const prompted = await sourceAtPrompt({
+                type: CALL_SOURCE_DESKTOP_WS,
+                origin: 'ws://localhost',
+                manifest: { appName: 'Some App' },
+                process: {
+                    name: `Tre${CODE_POINT.NULL}zor\n\tSuite`,
+                    fullPath: '/usr/bin/trezor-suite',
+                    warning: false,
+                },
+            });
+
+            expect(prompted?.process?.name).toBe(`Tre${CODE_POINT.NULL}zor\n\tSuite`);
+            // The permission-matching key is the process path, never the name.
+            expect(prompted?.process?.fullPath).toBe('/usr/bin/trezor-suite');
+        });
+
+        it('shows a name of two zero-width characters as no name at all', async () => {
+            const invisible = CODE_POINT.ZERO_WIDTH_SPACE.repeat(2);
+            const prompted = await sourceAtPrompt(sourceWithAppName(CALL_SOURCE_WEB, invisible));
+
+            // The name is not falsy, so `ConnectPermissionsModal` and `ConnectCallSource` do not
+            // fall back to `source.origin`: the prompt labels the caller with nothing to read.
+            expect(prompted?.manifest.appName).toBe(invisible);
+        });
+
+        it('lets a name that is not a string reach the renderer', async () => {
+            const notAString = { toString: () => 'Claude Code' };
+            const prompted = await sourceAtPrompt(sourceWithAppName(CALL_SOURCE_WEB, notAString));
+
+            // An object rendered as a React child throws.
+            expect(prompted?.manifest.appName).toBe(notAString);
+        });
+
+        it('shows a long name in full, however long it is', async () => {
+            const name = `${'a'.repeat(99)}${CODE_POINT.GRINNING_FACE}b`;
+            const prompted = await sourceAtPrompt(sourceWithAppName(CALL_SOURCE_DEEPLINK, name));
+
+            expect(prompted?.manifest.appName).toBe(name);
+        });
     });
 });
