@@ -19,7 +19,9 @@ export const sanitizeName = (
         return undefined;
     }
 
-    if (maxLength !== undefined && sanitized.length > maxLength) {
+    // Counted in code points, so a name is not rejected for an astral character taking two
+    // UTF-16 units.
+    if (maxLength !== undefined && Array.from(sanitized).length > maxLength) {
         return undefined;
     }
 

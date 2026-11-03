@@ -115,11 +115,11 @@ describe('sanitizeName', () => {
             ).toBeUndefined();
         });
 
-        it('counts the limit in UTF-16 units, so an astral character costs two', () => {
+        it('measures the limit in code points, not UTF-16 units', () => {
             // 99 characters + one astral one: 100 code points, 101 UTF-16 units.
             const name = `${'a'.repeat(MAX_NAME_LENGTH - 1)}${CODE_POINT.GRINNING_FACE}`;
             expect(name).toHaveLength(MAX_NAME_LENGTH + 1);
-            expect(sanitizeName(name, { maxLength: MAX_NAME_LENGTH })).toBeUndefined();
+            expect(sanitizeName(name, { maxLength: MAX_NAME_LENGTH })).toBe(name);
         });
     });
 
