@@ -25,6 +25,7 @@ import {
     testMocks,
     wireEnabledNetworksMock,
 } from '@suite-common/test-utils';
+import { tradingActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ChangeCoinVisibilityThunkState,
@@ -54,6 +55,7 @@ import {
     earnOnboardingReducer,
     fiatRatesReducer,
     sendFormReducer,
+    tradingReducer,
     transactionsReducer,
     walletSettingsReducer,
 } from 'src/reducers/wallet';
@@ -218,6 +220,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any): State
             prevState?.wallet?.earnOnboarding,
             action || ({ type: 'foo' } as any),
         ),
+        trading: tradingReducer(prevState?.wallet?.trading, action || ({ type: 'foo' } as any)),
         formDrafts: {},
     },
 });
@@ -685,6 +688,51 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.forgetDeviceThunk(dev1));
 
         expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toBeUndefined();
+    });
+
+    it('should load the trade API install salt created by the database migration', async () => {
+        const store = mockStore(db, getInitialState());
+        store.dispatch((await preloadStore())!);
+        const reloadedStore = mockStore(db, getInitialState());
+        reloadedStore.dispatch((await preloadStore())!);
+
+        const { tradeApiInstallSalt } = store.getState().wallet.trading;
+        expect(tradeApiInstallSalt).toMatch(/^[0-9a-f]{64}$/);
+        expect(reloadedStore.getState().wallet.trading.tradeApiInstallSalt).toBe(
+            tradeApiInstallSalt,
+        );
+    });
+
+    it('should keep the stored API key of a trade when it is saved again without it', async () => {
+        const store = mockStore(db, getInitialState());
+        const trade = {
+            tradeType: 'buy' as const,
+            date: '2026-10-30',
+            key: 'tradeKey',
+            data: { paymentId: 'tradeKey', status: 'LOGIN_REQUEST' as const },
+            selectedAccountKey: undefined,
+            receiveAccountKey: undefined,
+        };
+
+        store.dispatch(tradingActions.saveTrade({ ...trade, apiKey: 'trade-api-key' }));
+        store.dispatch(
+            tradingActions.saveTrade({
+                ...trade,
+                data: { ...trade.data, status: 'SUBMITTED' as const },
+            }),
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const reloadedStore = mockStore(db, getInitialState());
+        reloadedStore.dispatch((await preloadStore())!);
+        expect(reloadedStore.getState().wallet.trading.trades).toEqual([
+            {
+                ...trade,
+                data: { ...trade.data, status: 'SUBMITTED' as const },
+                apiKey: 'trade-api-key',
+            },
+        ]);
     });
 
     it('should remove legacy labels migration flag on forgetDevice', async () => {

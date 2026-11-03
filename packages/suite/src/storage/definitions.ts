@@ -175,6 +175,10 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: TradingTransaction;
     };
+    tradeApiInstallSalt: {
+        key: 'tradeApiInstallSalt';
+        value: string;
+    };
     metadata: {
         key: 'state';
         value: MetadataState;
