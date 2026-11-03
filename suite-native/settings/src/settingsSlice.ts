@@ -5,7 +5,7 @@ import { type EarnStakingWorkerBaseUrl } from '@suite-common/earn-staking-api';
 import { isDetoxTestBuild } from '@suite-native/config';
 import { DEVICE } from '@trezor/connect';
 
-export type ExperimentalFeature = 'suite-sync' | 'slip24';
+export type ExperimentalFeature = 'suite-sync' | 'slip24' | 'native-navigation';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;

@@ -1663,6 +1663,10 @@ export const messages = {
                 description:
                     'View transaction details on your Trezor in a human-readable format before confirming.',
             },
+            nativeNavigation: {
+                title: 'Native navigation',
+                description: 'Use system tab bars on iOS and Android.',
+            },
             noneAvailable: {
                 title: 'None available',
                 subtitle: 'No experimental features currently available.',
