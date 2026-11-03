@@ -1,6 +1,5 @@
 import { type ExchangeTrade } from 'invity-api';
 
-import { type Account } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
@@ -10,7 +9,6 @@ import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelec
 import { tradeApi } from '../../tradeApi';
 
 export type WatchExchangeApprovalThunkProps = {
-    account: Account;
     refreshCount: number;
 };
 
@@ -23,14 +21,12 @@ export const watchExchangeApprovalThunk = createThunk<
     { state: WatchExchangeApprovalThunkState }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/watchExchangeApproval`,
-    async ({ account, refreshCount }, { dispatch, getState }) => {
+    async ({ refreshCount }, { dispatch, getState }) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
 
         if (!selectedQuote) {
             return undefined;
         }
-
-        tradeApi.createApiKey(account.descriptor);
 
         const response = await tradeApi.watchTrade<'exchange'>(
             selectedQuote,

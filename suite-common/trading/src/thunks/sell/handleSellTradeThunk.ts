@@ -44,6 +44,7 @@ export const handleSellTradeThunk = createThunk<
             return;
         }
 
+        const apiKey = tradeApi.getCurrentApiKey();
         const response = await tradeApi.doSellTrade({
             trade: { ...trade, refundAddress: getUnusedAddressFromAccount(account).address },
             returnUrl,
@@ -88,6 +89,7 @@ export const handleSellTradeThunk = createThunk<
                     date: new Date().toISOString(),
                     key: response.trade.orderId,
                     sendAccountKey: account.key,
+                    apiKey,
                 }),
             );
             dispatch(tradingSellActions.saveTransactionId(response.trade.orderId));

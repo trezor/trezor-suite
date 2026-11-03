@@ -16,6 +16,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { type TradingSendRejectedProps } from '../../types';
 import { logErrorThunk } from '../common/logErrorThunk';
 
@@ -59,6 +60,7 @@ export const signDataAndConfirmThunk = createThunk<
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
+        const apiKey = tradeApi.getCurrentApiKey();
 
         if (!selectedQuote?.signData) {
             dispatch(
@@ -131,6 +133,7 @@ export const signDataAndConfirmThunk = createThunk<
                 data: trade,
                 sendAccountKey,
                 receiveAccountKey,
+                apiKey,
             }),
         );
 

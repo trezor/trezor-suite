@@ -20,6 +20,7 @@ import { initialState, tradingCommonReducer } from './tradingCommonReducer';
 
 type StorageActionPayload = {
     tradingTrades?: TradingTransaction[];
+    tradeApiInstallSalt?: string;
 };
 
 export type TradingReducerDeps = ActionTypesDep<'storageLoad'>;
@@ -35,6 +36,8 @@ const tradingSlice = createSliceWithExtraDeps({
                 (state, action: PayloadAction<StorageActionPayload>) => ({
                     ...state,
                     trades: action.payload.tradingTrades ?? state.trades,
+                    tradeApiInstallSalt:
+                        action.payload.tradeApiInstallSalt ?? state.tradeApiInstallSalt,
                 }),
             )
             .addCase(buyThunks.handleRequestThunk.pending, state => {

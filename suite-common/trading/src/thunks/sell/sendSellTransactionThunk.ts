@@ -10,6 +10,7 @@ import { type TradingRootState, tradingActions } from '../../reducers/tradingCom
 import {
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
+    selectTradingTradeApiKey,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
 import { getTradingFormState } from '../../utils';
@@ -109,7 +110,10 @@ export const sendSellTransactionThunk = createThunk<
             destinationPaymentExtraId,
         };
 
-        const response = await tradeApi.doSellConfirm(tradeRequest);
+        const apiKey =
+            selectTradingTradeApiKey(getState(), selectedTrade.orderId) ??
+            tradeApi.getCurrentApiKey();
+        const response = await tradeApi.doSellConfirm(tradeRequest, apiKey);
 
         if (!response) {
             return rejectWithValue({
@@ -135,6 +139,7 @@ export const sendSellTransactionThunk = createThunk<
                 key: response.orderId,
                 data: response,
                 sendAccountKey: account.key,
+                apiKey,
             }),
         );
         dispatch(tradingSellActions.saveTransactionId(selectedTrade.orderId));

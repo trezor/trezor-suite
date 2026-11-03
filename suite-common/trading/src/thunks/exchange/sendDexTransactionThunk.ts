@@ -15,6 +15,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { tradingThunks } from '../common';
@@ -63,6 +64,7 @@ export const sendDexTransactionThunk = createThunk<
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const providers = selectTradingExchangeProviders(getState());
+        const apiKey = tradeApi.getCurrentApiKey();
         const composeInputs =
             selectedQuote &&
             buildExchangeComposeInputs({
@@ -148,6 +150,7 @@ export const sendDexTransactionThunk = createThunk<
                     data: trade,
                     sendAccountKey,
                     receiveAccountKey,
+                    apiKey,
                 }),
             );
             dispatch(tradingExchangeActions.saveTransactionId(trade.orderId));

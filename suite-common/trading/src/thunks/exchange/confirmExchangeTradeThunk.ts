@@ -84,6 +84,7 @@ export const confirmExchangeTradeThunk = createThunk<
         }
 
         const confirmRequestTimestamp = Date.now();
+        const apiKey = tradeApi.getCurrentApiKey();
         const rawResponse = await tradeApi.doExchangeTrade(
             {
                 trade,
@@ -139,6 +140,7 @@ export const confirmExchangeTradeThunk = createThunk<
                         data: response,
                         sendAccountKey,
                         receiveAccountKey,
+                        apiKey,
                     }),
                 );
                 dispatch(tradingExchangeActions.saveTransactionId(response.orderId));
@@ -188,6 +190,7 @@ export const confirmExchangeTradeThunk = createThunk<
                 data: response,
                 sendAccountKey,
                 receiveAccountKey,
+                apiKey,
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(response.orderId));

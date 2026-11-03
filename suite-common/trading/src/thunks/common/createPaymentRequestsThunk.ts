@@ -29,6 +29,7 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
+    selectTradingTradeApiKey,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
 import { type TradingSendRejectedProps, type TradingTradeSellExchangeType } from '../../types';
@@ -126,17 +127,21 @@ export const createPaymentRequestsThunk = createThunk<
                 const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
                 const receiveSlip44 = getSlip44ByPath(validatePath(pathPurchase));
 
+                const tradeApiKey = selectTradingTradeApiKey(getState(), quote.orderId);
                 const trade = await tradeApi.getSignedTrade<
                     ExchangeTradeSigned,
                     CreateTradeSignatureRequestExchange
-                >({
-                    type: 'exchange',
-                    id: quote.orderId,
-                    nonce,
-                    sendSlip44,
-                    receiveSlip44,
-                    outputs,
-                });
+                >(
+                    {
+                        type: 'exchange',
+                        id: quote.orderId,
+                        nonce,
+                        sendSlip44,
+                        receiveSlip44,
+                        outputs,
+                    },
+                    tradeApiKey,
+                );
 
                 const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
                 const sendStringAmount = formattedMaxAmount ?? trade?.sendStringAmount;
@@ -236,17 +241,21 @@ export const createPaymentRequestsThunk = createThunk<
 
                 const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
 
+                const tradeApiKey = selectTradingTradeApiKey(getState(), quote.orderId);
                 const trade = await tradeApi.getSignedTrade<
                     SellFiatTradeSigned,
                     CreateTradeSignatureRequestSell
-                >({
-                    type: 'sell',
-                    id: quote.paymentId,
-                    sendSlip44,
-                    nonce,
-                    outputs,
-                    memoText,
-                });
+                >(
+                    {
+                        type: 'sell',
+                        id: quote.paymentId,
+                        sendSlip44,
+                        nonce,
+                        outputs,
+                        memoText,
+                    },
+                    tradeApiKey,
+                );
 
                 const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
                 const sendStringAmount = formattedMaxAmount ?? trade?.cryptoStringAmount;

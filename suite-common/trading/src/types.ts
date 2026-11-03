@@ -138,6 +138,7 @@ export type TradingPaymentMethodListProps = {
 type TradingCommonTransaction = {
     date: string;
     key?: string;
+    apiKey?: string;
 };
 export type TradingTransactionBuy = TradingCommonTransaction & {
     tradeType: TradingBuyType;

@@ -10,7 +10,7 @@ import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingSellState, sellInitialState } from '../../reducers/sellReducer';
-import { initialState } from '../../reducers/tradingCommonReducer';
+import { initialState, tradingActions } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
 import { type TradingTransactionSell } from '../../types';
@@ -236,6 +236,31 @@ describe('sendSellTransactionThunk', () => {
                 },
             });
         });
+    });
+
+    it('should confirm the sell with the API key the trade was created with', async () => {
+        const { store, account, trade, mockNextStep } = getMocks();
+        const tradeApiKey = 'ef'.repeat(32);
+        store.dispatch(tradingActions.saveTrade({ ...trade, apiKey: tradeApiKey }));
+        const doSellConfirmSpy = jest
+            .spyOn(tradeApi, 'doSellConfirm')
+            .mockResolvedValue({ ...trade.data, status: 'SUBMITTED', orderId: 'orderId' });
+
+        await store.dispatch(
+            sellThunks.sendTransactionThunk({
+                account,
+                trade: { ...trade.data },
+                decimals: getNetwork(account.symbol).decimals,
+                shouldSendInSats: false,
+                nextStep: mockNextStep,
+                signAndPushSendFormTransaction: jest.fn(),
+            }),
+        );
+
+        expect(doSellConfirmSpy).toHaveBeenCalledWith(
+            expect.objectContaining({ orderId: 'orderId', txid: 'txid' }),
+            tradeApiKey,
+        );
     });
 
     it('should send transaction, save trade and call next step', async () => {

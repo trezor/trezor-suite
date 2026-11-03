@@ -36,7 +36,6 @@ describe('confirmApprovalThunk', () => {
     });
 
     tradeApi.setServersEnvironment = () => {};
-    tradeApi.createApiKey = () => {};
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
         const quoteNotTyped = MIN_MAX_QUOTES_OK[0];
