@@ -6,6 +6,7 @@ export {
     assetsTimeframeChangeEvent,
     assetsTransactionDetailEvent,
     dashboardAssetListMenuEvent,
+    dashboardAssetTableEvent,
     dashboardNftsEvent,
     navigateFlowEvent,
     stakingClaimEvent,

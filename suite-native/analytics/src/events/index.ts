@@ -5,6 +5,7 @@ export {
     assetsTimeframeChangeEvent,
     assetsTransactionDetailEvent,
     dashboardAssetListMenuEvent,
+    dashboardAssetTableEvent,
     dashboardNftsEvent,
     earnTilePressedEvent,
     navigateFlowEvent,

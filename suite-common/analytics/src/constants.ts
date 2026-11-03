@@ -67,4 +67,5 @@ export enum EventType {
     AppExternalLink = 'app/external-link',
     DashboardAssetListMenu = 'dashboard/asset-list-menu',
     DashboardNfts = 'dashboard/nfts',
+    DashboardAssetTable = 'dashboard/asset-table',
 }

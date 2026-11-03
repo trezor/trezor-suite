@@ -59,3 +59,4 @@ export {
 export { appExternalLinkEvent } from './events/appExternalLinkEvent';
 export { dashboardAssetListMenuEvent } from './events/dashboardAssetListMenuEvent';
 export { dashboardNftsEvent } from './events/dashboardNftsEvent';
+export { dashboardAssetTableEvent } from './events/dashboardAssetTableEvent';

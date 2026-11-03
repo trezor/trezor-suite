@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     HOME_ASSET_ROW_LIMIT,
@@ -36,7 +37,7 @@ import { HOME_ASSET_CELL_PADDING, HOME_ASSET_COL_WIDTHS } from './homeAssetTable
 const NO_NETWORKS: readonly NetworkSymbol[] = [];
 
 export const HomeAssetTable = () => {
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
     const grouping = useSelector(selectHomeAssetGrouping);
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
@@ -118,7 +119,13 @@ export const HomeAssetTable = () => {
                     {isFoldable && (
                         <HomeAssetExpandRow
                             isExpanded={isExpanded}
-                            onToggle={() => setIsExpanded(!isExpanded)}
+                            onToggle={() => {
+                                analytics.report({
+                                    type: events.dashboardAssetTableEvent.name,
+                                    payload: { action: isExpanded ? 'show-less' : 'show-more' },
+                                });
+                                setIsExpanded(!isExpanded);
+                            }}
                         />
                     )}
                 </Table.Body>
