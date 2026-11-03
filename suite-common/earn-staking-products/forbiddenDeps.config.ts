@@ -10,10 +10,6 @@ export const forbiddenDepsConfig: ForbiddenDepsConfig = {
             packageNamePattern: '^@suite-common/wallet-core$',
             reason: 'Products never dispatch. Everything an app owns arrives as an injected dependency.',
         },
-        {
-            packageNamePattern: '^@suite-common/earn-staking-api$',
-            reason: 'Products receive staking API data as an injected dependency.',
-        },
     ],
     'allowed-only-in': {
         packages: ['@trezor/suite', '@suite-native/state'],
