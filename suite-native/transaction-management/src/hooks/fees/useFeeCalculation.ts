@@ -12,6 +12,7 @@ import type {
     AccountKey,
     FeeLevelLabel,
     GeneralPrecomposedTransactionFinal,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
@@ -22,6 +23,7 @@ import { selectFeeLevels } from '../../selectors';
 
 type UseFeeCalculationParams = {
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
     selectedFee?: FeeLevelLabel;
     selectedFeePerUnit?: string;
     selectedSetMaxOutputId?: number;
@@ -29,6 +31,7 @@ type UseFeeCalculationParams = {
 
 export const useFeeCalculation = ({
     accountKey,
+    tokenContract,
     selectedFee,
     selectedFeePerUnit,
     selectedSetMaxOutputId,
@@ -43,6 +46,7 @@ export const useFeeCalculation = ({
 
     const form = useFeesForm({
         accountKey,
+        tokenContract,
         defaultFeeLevel: selectedFee,
         defaultFeePerUnit: selectedFeePerUnit,
     });

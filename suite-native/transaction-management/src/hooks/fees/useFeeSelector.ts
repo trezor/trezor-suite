@@ -133,7 +133,9 @@ export const useFeeSelector = ({
                     return;
                 }
 
-                if (isTrc20 && customParams.customFeeLimit) {
+                if (isTrc20) {
+                    if (!customParams.customFeeLimit) return;
+
                     await dispatch(
                         updateFeeLimitThunk({
                             accountKey,

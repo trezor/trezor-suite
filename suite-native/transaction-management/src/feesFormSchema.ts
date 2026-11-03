@@ -13,6 +13,7 @@ export type FeesFormContext = {
     minimalFeeLimit?: string;
     translate?: Translate;
     isEip1559Fee: boolean;
+    isTrc20?: boolean;
 };
 
 const FeeLevelLabels: Array<FeeLevelLabel> = ['economy', 'low', 'normal', 'high', 'custom'];
@@ -53,9 +54,10 @@ export const feesFormValidationSchema = yup.object({
             return true;
         })
         .test('fee-too-low', 'Fee is too low.', function (value) {
-            const { networkFeeInfo, translate, isEip1559Fee } = this.options
+            const { networkFeeInfo, translate, isEip1559Fee, isTrc20 } = this.options
                 .context as FeesFormContext;
-            if (!value || isEip1559Fee) return true;
+            // TRC20 edits the spending cap; its per-transaction energy price has no network rate bounds.
+            if (!value || isEip1559Fee || isTrc20) return true;
 
             if (!networkFeeInfo) return false;
             const { minFee } = networkFeeInfo;
@@ -72,9 +74,9 @@ export const feesFormValidationSchema = yup.object({
             return true;
         })
         .test('fee-too-high', 'Fee is too high.', function (value) {
-            const { networkFeeInfo, translate, isEip1559Fee } = this.options
+            const { networkFeeInfo, translate, isEip1559Fee, isTrc20 } = this.options
                 .context as FeesFormContext;
-            if (!value || isEip1559Fee) return true;
+            if (!value || isEip1559Fee || isTrc20) return true;
 
             if (!networkFeeInfo) return false;
 
@@ -94,11 +96,12 @@ export const feesFormValidationSchema = yup.object({
         .required(),
     customFeeLimit: yup
         .string()
-        .when(['feeLevel', '$symbol'], {
-            is: (feeLevel: string, symbol: NetworkSymbol | undefined) =>
-                feeLevel === 'custom' &&
-                !!symbol &&
-                ['ethereum', 'tron'].includes(getNetwork(symbol).networkType),
+        .when(['feeLevel', '$symbol', '$isTrc20'], {
+            is: (feeLevel: string, symbol: NetworkSymbol | undefined, isTrc20: boolean) =>
+                isTrc20 ||
+                (feeLevel === 'custom' &&
+                    !!symbol &&
+                    ['ethereum', 'tron'].includes(getNetwork(symbol).networkType)),
             then: schema => schema.required(),
         })
         .test(

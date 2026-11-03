@@ -13,6 +13,7 @@ import type {
     AccountKey,
     FeeLevelLabel,
     PrecomposedTransactionFinal,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type UseFormReturn, useForm } from '@suite-native/forms';
@@ -59,12 +60,14 @@ const syncCustomFeeDefaults = (
 
 export type UseFeesFormProps = {
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
     defaultFeeLevel?: FeeLevelLabel;
     defaultFeePerUnit?: string;
 };
 
 export const useFeesForm = ({
     accountKey,
+    tokenContract,
     defaultFeeLevel,
     defaultFeePerUnit,
 }: UseFeesFormProps) => {
@@ -84,8 +87,10 @@ export const useFeesForm = ({
         selectIsEip1559Fee(state, account?.symbol),
     );
 
+    const normalNetworkFee = networkFeeInfo?.levels?.find(level => level.label === 'normal');
     const trimmedFeePerUnit = getFeeValue({
-        feeRate: defaultFeePerUnit,
+        feeRate:
+            defaultFeePerUnit || normalNetworkFee?.maxFeePerGas || normalNetworkFee?.feePerUnit,
         symbol: account?.symbol,
     });
 
@@ -113,6 +118,7 @@ export const useFeesForm = ({
             minimalFeeLimit,
             translate,
             isEip1559Fee,
+            isTrc20: networkType === 'tron' && !!tokenContract,
         },
     });
 
