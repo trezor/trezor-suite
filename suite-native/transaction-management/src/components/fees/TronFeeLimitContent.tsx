@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { VStack } from '@suite-native/atoms';
-import { TextInputField, useFormContext } from '@suite-native/forms';
+import { TextInputField, useFormContext, useFormState } from '@suite-native/forms';
 import { integerTransformer } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
@@ -15,11 +15,8 @@ type TronFeeLimitContentProps = {
 
 export const TronFeeLimitContent = ({ onSubmittableChange }: TronFeeLimitContentProps) => {
     const { translate } = useTranslate();
-    const {
-        formState: { isValid },
-        setValue,
-        trigger,
-    } = useFormContext<FeesFormValues>();
+    const { control, setValue, trigger } = useFormContext<FeesFormValues>();
+    const { isValid } = useFormState({ control });
     const debounce = useDebounce();
 
     useEffect(() => {

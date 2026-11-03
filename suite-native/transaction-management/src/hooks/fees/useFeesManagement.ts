@@ -30,6 +30,7 @@ export const useFeesManagement = ({
 }: UseFeesManagementParams) => {
     const feeCalculation = useFeeCalculation({
         accountKey,
+        tokenContract,
         selectedFee,
         selectedFeePerUnit,
         selectedSetMaxOutputId,
