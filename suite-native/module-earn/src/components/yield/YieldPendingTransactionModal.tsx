@@ -298,13 +298,15 @@ export const YieldPendingTransactionModal = ({
                                     symbol={accountSymbol}
                                     color="contentPrimary"
                                     isBalance={false}
-                                    isDiscreetText={false}
+                                    // The user must be able to review the transaction fee in crypto.
+                                    discreetMode="disabled"
                                 />
                                 <CryptoToFiatAmountFormatter
                                     value={fee}
                                     symbol={accountSymbol}
                                     color="contentSecondary"
-                                    isDiscreetText={false}
+                                    // Show the fiat equivalent so the user can assess the transaction fee.
+                                    discreetMode="disabled"
                                     textAlign="right"
                                 />
                             </VStack>

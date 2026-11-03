@@ -1,4 +1,4 @@
-import { Box, Text, VStack } from '@suite-native/atoms';
+import { Box, Discreet, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const fiatValueStyle = prepareNativeStyle(utils => ({
@@ -23,7 +23,11 @@ export const TransactionDetailTargetsSection = ({
             <VStack spacing="sp16" alignItems="center" justifyContent="center">
                 {icon}
 
-                {topTarget && <Box flexDirection="row">{topTarget}</Box>}
+                {topTarget && (
+                    <Discreet textVariant="headline-md">
+                        <Box flexDirection="row">{topTarget}</Box>
+                    </Discreet>
+                )}
             </VStack>
 
             {bottomTarget && (

@@ -131,6 +131,7 @@
         "browserify-zlib": "^0.2.0",
         "crypto-browserify": "3.12.1",
         "expo": "~58.0.21",
+        "expo-blur": "~58.0.5",
         "expo-build-properties": "~58.0.11",
         "expo-camera": "~58.0.14",
         "expo-clipboard": "~58.0.4",

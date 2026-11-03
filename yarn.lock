@@ -12933,6 +12933,7 @@ __metadata:
     dotenv: "npm:18.0.6"
     expo: "npm:~58.0.21"
     expo-atlas: "npm:0.5.0"
+    expo-blur: "npm:~58.0.5"
     expo-build-properties: "npm:~58.0.11"
     expo-camera: "npm:~58.0.14"
     expo-clipboard: "npm:~58.0.4"
@@ -13086,6 +13087,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
+    "@expo/ui": "npm:58.0.25"
     "@gorhom/bottom-sheet": "npm:5.2.9"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.31"
@@ -13101,11 +13103,13 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:^"
     "@suite-native/test-utils": "workspace:*"
+    "@suite-native/test-utils-store": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
+    expo-blur: "npm:~58.0.5"
     expo-image: "npm:~58.0.18"
     expo-linear-gradient: "npm:~58.0.3"
     jotai: "npm:2.17.1"
@@ -13674,6 +13678,7 @@ __metadata:
   resolution: "@suite-native/formatters@workspace:suite-native/formatters"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -29680,6 +29685,17 @@ __metadata:
   bin:
     expo-atlas: build/src/cli/bin.js
   checksum: 10/01570366a3e19402a34cfa3884de60c30288edb33560a6a47b24f12d4d1a31e671126b824fd28a5ec6d3b5a711129fe4cbf2249438f7ff6a74b9d301cc907331
+  languageName: node
+  linkType: hard
+
+"expo-blur@npm:~58.0.5":
+  version: 58.0.5
+  resolution: "expo-blur@npm:58.0.5"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10/0a394a7d0476a919c9b974b4845df5462f90652efeb4478692dccf44759978e16e01bcacef817e52affba6270ae5b18955c932fad3bb4efdbf9776806b3b7658
   languageName: node
   linkType: hard
 

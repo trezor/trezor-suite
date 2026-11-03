@@ -241,7 +241,7 @@ export const FeeOption = ({
                                     value={fee}
                                     symbol={symbol}
                                     isLoading={isLoading}
-                                    isDiscreetText={false}
+                                    discreetMode="disabled"
                                 />
                                 <ExactCryptoAmountFormatter
                                     variant="body-sm"
@@ -252,7 +252,7 @@ export const FeeOption = ({
                                     adjustsFontSizeToFit
                                     numberOfLines={1}
                                     isLoading={isLoading}
-                                    isDiscreetText={false}
+                                    discreetMode="disabled"
                                 />
                             </VStack>
                         )}

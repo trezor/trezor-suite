@@ -1,5 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, PressableOpacity, Text } from '@suite-native/atoms';
+import { Blur, Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
@@ -51,34 +51,35 @@ export const TransactionDetailListItem = ({
             onPress={handleNavigation}
             style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
         >
-            <Box flexDirection="row" alignItems="center" flex={1}>
-                <Box marginRight="sp16">
-                    <TokenIcon
-                        networkSymbol={transaction.symbol}
-                        contractAddress={tokenTransfer?.contract}
-                        tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
-                    />
+            <Blur isBlurred={isPhishingTransaction}>
+                <Box flexDirection="row" alignItems="center" flex={1}>
+                    <Box marginRight="sp16">
+                        <TokenIcon
+                            networkSymbol={transaction.symbol}
+                            contractAddress={tokenTransfer?.contract}
+                            tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
+                        />
+                    </Box>
+                    <Box style={applyStyle(CoinNameContainerStyle)}>
+                        <Text>{tokenTransfer?.name ?? 'Ethereum'}</Text>
+                    </Box>
                 </Box>
-                <Box style={applyStyle(CoinNameContainerStyle)}>
-                    <Text>{tokenTransfer?.name ?? 'Ethereum'}</Text>
+                <Box style={applyStyle(valuesContainerStyle)}>
+                    {tokenTransfer ? (
+                        <TokenTransferListItemValues
+                            accountKey={accountKey}
+                            tokenTransfer={tokenTransfer}
+                            transaction={transaction}
+                        />
+                    ) : (
+                        <TransactionListItemValues
+                            accountKey={accountKey}
+                            transaction={transaction}
+                            amount={transaction.amount}
+                        />
+                    )}
                 </Box>
-            </Box>
-            <Box style={applyStyle(valuesContainerStyle)}>
-                {tokenTransfer ? (
-                    <TokenTransferListItemValues
-                        accountKey={accountKey}
-                        tokenTransfer={tokenTransfer}
-                        transaction={transaction}
-                    />
-                ) : (
-                    <TransactionListItemValues
-                        accountKey={accountKey}
-                        transaction={transaction}
-                        amount={transaction.amount}
-                        isPhishingTransaction={isPhishingTransaction}
-                    />
-                )}
-            </Box>
+            </Blur>
         </PressableOpacity>
     );
 };

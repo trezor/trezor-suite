@@ -26,7 +26,8 @@ export const TronFeeValue = ({
                     symbol={symbol}
                     isBalance
                     isLoading={areFeesLoading}
-                    isDiscreetText={false}
+                    // Show the TRX burn amount so the user can assess the transaction cost.
+                    discreetMode="disabled"
                     testID="@transactionManagement/tron-fee-crypto-amount"
                 />
                 {!areFeesLoading && (
@@ -41,7 +42,8 @@ export const TronFeeValue = ({
                     symbol={symbol}
                     isBalance
                     isLoading={areFeesLoading}
-                    isDiscreetText={false}
+                    // Show the fiat equivalent of the TRX burn cost.
+                    discreetMode="disabled"
                 />
             </HStack>
         );
@@ -63,7 +65,8 @@ export const TronFeeValue = ({
             symbol={symbol}
             isBalance
             isLoading
-            isDiscreetText={false}
+            // Keep fee loading presentation independent of balance privacy.
+            discreetMode="disabled"
             testID="@transactionManagement/tron-fee-crypto-amount"
         />
     );

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useFormatters } from '@suite-common/formatters';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountLabel } from '@suite-native/accounts';
-import { DiscreetText, HStack, Text } from '@suite-native/atoms';
+import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { type TransactionSubtitleProps } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -12,11 +12,7 @@ const accountLabelStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,
 }));
 
-export const AssetTransactionSubtitle = ({
-    accountKey,
-    blockTime,
-    isPhishingTransaction,
-}: TransactionSubtitleProps) => {
+export const AssetTransactionSubtitle = ({ accountKey, blockTime }: TransactionSubtitleProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -27,8 +23,6 @@ export const AssetTransactionSubtitle = ({
     if (!account) {
         return null;
     }
-
-    const TimeTextComponent = isPhishingTransaction ? DiscreetText : Text;
 
     return (
         <HStack alignItems="center" spacing="sp4">
@@ -41,13 +35,9 @@ export const AssetTransactionSubtitle = ({
                 style={applyStyle(accountLabelStyle)}
             />
             {blockTime !== null && (
-                <TimeTextComponent
-                    isForcedDiscreetMode={isPhishingTransaction}
-                    variant="body-sm"
-                    color="contentSecondary"
-                >
+                <Text variant="body-sm" color="contentSecondary">
                     {`· ${TimeFormatter.format(blockTime)}`}
-                </TimeTextComponent>
+                </Text>
             )}
         </HStack>
     );

@@ -2,15 +2,29 @@ import { createContext, useContext } from 'react';
 
 export const DISCREET_PLACEHOLDER = '###';
 
-const numericalSubstringRegex = /[\d\-.,]*\d+[.\d]*/g;
+// Match a whole localized number, including separators between digit groups, so
+// "1 234 567,89 Kč" becomes "### Kč" rather than "### ### ### Kč".
+// Unicode decimal digits and decimal/grouping separators cover localized amounts.
+// Match leading punctuation as its own token: requiring digits after an unbounded
+// punctuation prefix makes the regex retry that prefix at every character if no digit follows.
+const numericalSubstringRegex = /[-.,]+|\p{Nd}+(?:[.,'’ \u00a0\u202f\u066b\u066c]\p{Nd}+)*\.?/gu;
+const startsWithDigitRegex = /^\p{Nd}/u;
 
-/**
- * Search the input for all numerical substrings and replace them with DISCREET_PLACEHOLDER.
- * @param value whole string value, usually number with symbol, or just number
- * @returns redacted string
- */
+/** Replace numerical substrings with a uniform placeholder, preserving surrounding text. */
 export const redactNumericalSubstring = (value: string | number): string =>
-    String(value).replace(numericalSubstringRegex, DISCREET_PLACEHOLDER);
+    String(value).replace(
+        numericalSubstringRegex,
+        (match: string, offset: number, input: string) => {
+            if (startsWithDigitRegex.test(match)) {
+                return DISCREET_PLACEHOLDER;
+            }
+
+            // Two UTF-16 code units also cover decimal digits outside the BMP.
+            const nextCharacter = input.slice(offset + match.length, offset + match.length + 2);
+
+            return startsWithDigitRegex.test(nextCharacter) ? '' : match;
+        },
+    );
 
 type RedactNumbersContextData = { shouldRedactNumbers: boolean };
 

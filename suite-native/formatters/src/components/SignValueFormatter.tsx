@@ -7,7 +7,7 @@ import { type FormatterProps } from '../types';
 type SignValueFormatterProps = FormatterProps<SignValue | undefined> & TextProps;
 
 export const SignValueFormatter = ({ value, ...textProps }: SignValueFormatterProps) => {
-    const { SignValueFormatter: Formatter } = useFormatters();
+    const formatters = useFormatters();
 
     if (!value) return null;
 
@@ -16,7 +16,7 @@ export const SignValueFormatter = ({ value, ...textProps }: SignValueFormatterPr
     return (
         <Text color={signColor} {...textProps}>
             {/* Trailing whitespace to offset a following value. */}
-            <Formatter value={value} />{' '}
+            <formatters.SignValueFormatter value={value} />{' '}
         </Text>
     );
 };

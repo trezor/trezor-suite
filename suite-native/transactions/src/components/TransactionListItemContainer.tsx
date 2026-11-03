@@ -17,7 +17,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
-import { Badge, Box, DiscreetText, HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import { Badge, Blur, Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { type TypedTokenTransfer } from '@suite-native/tokens';
@@ -88,7 +88,6 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
 export type TransactionSubtitleProps = {
     accountKey: AccountKey;
     blockTime: number | null;
-    isPhishingTransaction: boolean;
 };
 
 type TransactionListItemContainerProps = {
@@ -150,8 +149,6 @@ export const TransactionListItemContainer = ({
     const coinSymbol = isPhishingTransaction ? undefined : symbol;
     const contractAddress = isPhishingTransaction ? undefined : tokenTransfer?.contract;
 
-    const DateTextComponent = isPhishingTransaction ? DiscreetText : Text;
-
     return (
         <PressableOpacity
             onPress={handleNavigateToTransactionDetail}
@@ -164,57 +161,67 @@ export const TransactionListItemContainer = ({
                 justifyContent="space-between"
             >
                 <Box style={applyStyle(descriptionBoxStyle)}>
-                    <TransactionIcon
-                        symbol={coinSymbol}
-                        contractAddress={contractAddress}
-                        tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
-                        transactionType={transactionType}
-                        stakeOperationType={stakeOperationType}
-                        isAnimated={isTransactionPending}
-                    />
+                    <Blur isBlurred={isPhishingTransaction}>
+                        <TransactionIcon
+                            symbol={coinSymbol}
+                            contractAddress={contractAddress}
+                            tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
+                            transactionType={transactionType}
+                            stakeOperationType={stakeOperationType}
+                            isAnimated={isTransactionPending}
+                        />
+                    </Blur>
                     <Box marginLeft="sp16" flex={1}>
-                        <HStack alignItems="center" spacing="sp4">
-                            <Box style={applyStyle(titleStyle)}>
-                                <TransactionName
-                                    transaction={transaction}
-                                    isPending={isTransactionPending}
-                                    numberOfLines={2}
-                                    style={applyStyle(transactionNameStyle)}
-                                />
-                                {isPhishingTransaction && (
-                                    <Badge
-                                        label={<Translation id="transactions.phishing.badge" />}
-                                        size="small"
-                                        icon="warning"
-                                        intent="critical"
-                                    />
-                                )}
-                            </Box>
-                            {hasTokens && <Badge label={tokensLabel} size="small" />}
-                        </HStack>
-
-                        {SubtitleComponent ? (
-                            <SubtitleComponent
-                                accountKey={accountKey}
-                                blockTime={transactionBlockTime}
-                                isPhishingTransaction={isPhishingTransaction}
-                            />
-                        ) : (
-                            <DateTextComponent
-                                isForcedDiscreetMode={isPhishingTransaction}
-                                variant="body-sm"
-                                color="contentSecondary"
+                        <Box style={applyStyle(titleStyle)}>
+                            <Blur
+                                isBlurred={isPhishingTransaction}
+                                style={applyStyle(transactionNameStyle)}
                             >
-                                {DateTimeFormatter.format(transactionBlockTime)}
-                            </DateTextComponent>
-                        )}
+                                <HStack alignItems="center" spacing="sp4">
+                                    <TransactionName
+                                        transaction={transaction}
+                                        isPending={isTransactionPending}
+                                        numberOfLines={2}
+                                        style={applyStyle(transactionNameStyle)}
+                                    />
+                                    {hasTokens && <Badge label={tokensLabel} size="small" />}
+                                </HStack>
+                            </Blur>
+                            {isPhishingTransaction && (
+                                <Badge
+                                    label={<Translation id="transactions.phishing.badge" />}
+                                    size="small"
+                                    icon="warning"
+                                    intent="critical"
+                                />
+                            )}
+                        </Box>
+
+                        <Blur isBlurred={isPhishingTransaction}>
+                            {SubtitleComponent ? (
+                                <SubtitleComponent
+                                    accountKey={accountKey}
+                                    blockTime={transactionBlockTime}
+                                />
+                            ) : (
+                                !!transactionBlockTime && (
+                                    <Text variant="body-sm" color="contentSecondary">
+                                        {DateTimeFormatter.format(transactionBlockTime)}
+                                    </Text>
+                                )
+                            )}
+                        </Blur>
                     </Box>
                 </Box>
-                <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>
+                <Box style={applyStyle(valuesContainerStyle)}>
+                    <Blur isBlurred={isPhishingTransaction}>{children}</Blur>
+                </Box>
             </Box>
 
             {!!stakeOperationType && (
-                <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
+                <Blur isBlurred={isPhishingTransaction}>
+                    <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
+                </Blur>
             )}
         </PressableOpacity>
     );

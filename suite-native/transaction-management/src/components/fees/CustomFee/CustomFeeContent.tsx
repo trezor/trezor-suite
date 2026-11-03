@@ -37,7 +37,7 @@ export const CustomFeeContent = ({
                         value={feeValue}
                         isLoading={isFeeLoading}
                         symbol={symbol}
-                        isDiscreetText={false}
+                        discreetMode="disabled"
                     />
                     <ExactCryptoAmountFormatter
                         value={feeValue}
@@ -45,7 +45,7 @@ export const CustomFeeContent = ({
                         variant="body-md"
                         isLoading={isFeeLoading}
                         isBalance={false}
-                        isDiscreetText={false}
+                        discreetMode="disabled"
                     />
                 </VStack>
             )}

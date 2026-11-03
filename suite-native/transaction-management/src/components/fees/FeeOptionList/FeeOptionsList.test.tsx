@@ -72,6 +72,7 @@ describe('FeeOptionsList', () => {
     };
 
     const reducer = {
+        discreetMode: createStaticReducer({ isActive: false }),
         locale: localeReducer,
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),

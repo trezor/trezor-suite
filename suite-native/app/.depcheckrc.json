@@ -9,6 +9,7 @@
         "@react-native/metro-config",
         "@trezor/react-native-usb",
         "@walletconnect/react-native-compat",
+        "expo-blur",
         "expo-build-properties",
         "expo-camera",
         "expo-clipboard",

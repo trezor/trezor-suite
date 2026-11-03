@@ -328,7 +328,8 @@ export const useYieldTransactionReviewOutputs = ({
                                 )}
                                 tokenSymbol={output.token?.symbol as TokenSymbol}
                                 maxDisplayedDecimals={output.token?.decimals}
-                                isDiscreetText={false}
+                                // The user must be able to verify token amounts before signing the yield transaction.
+                                discreetMode="disabled"
                             />
                         );
                     };

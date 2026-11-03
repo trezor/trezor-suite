@@ -2311,7 +2311,8 @@ export const amountUnitChange = [
         store: {
             bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
         },
-        actions: [{ type: 'input', element: 'outputs.0.amount', value: '111' }],
+        // Enter the amount atomically so slow typing cannot trigger intermediate compositions.
+        actions: [{ type: 'paste', element: 'outputs.0.amount', value: '111' }],
         finalResult: {
             composeTransactionCalls: 1,
             formValues: {

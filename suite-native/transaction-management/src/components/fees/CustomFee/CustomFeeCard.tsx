@@ -52,7 +52,8 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     value={customFeeTransaction.fee}
                                     symbol={symbol}
                                     variant="body-md"
-                                    isDiscreetText={false}
+                                    // Show the custom fee in fiat so the user can assess its cost.
+                                    discreetMode="disabled"
                                 />
                                 <ExactCryptoAmountFormatter
                                     value={customFeeTransaction?.fee}
@@ -61,7 +62,8 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     variant="body-sm"
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
-                                    isDiscreetText={false}
+                                    // Show the exact crypto fee so the user can review the custom fee selection.
+                                    discreetMode="disabled"
                                 />
                             </VStack>
                         </HStack>

@@ -41,7 +41,8 @@ export const YieldFormattedAmount = ({
                 value={asDecimalTokenAmount(value)}
                 tokenDecimals={tokenDecimals}
                 tokenSymbol={tokenSymbol ? toTokenSymbol(tokenSymbol) : null}
-                isDiscreetText={false}
+                // Keep transaction amounts and allowance limits readable during yield actions.
+                discreetMode="disabled"
                 {...textProps}
             />
         );
@@ -51,7 +52,8 @@ export const YieldFormattedAmount = ({
         <CompactCryptoAmountFormatter
             value={value}
             symbol={networkSymbol}
-            isDiscreetText={false}
+            // Keep transaction amounts and allowance limits readable during yield actions.
+            discreetMode="disabled"
             {...textProps}
         />
     );
