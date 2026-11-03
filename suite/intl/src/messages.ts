@@ -762,6 +762,57 @@ export const messages = defineMessages({
         defaultMessage: 'If the provider is compromised, all your {send} may be taken.',
         id: 'TR_APPROVAL_VALUE_INFINITE_WARNING',
     },
+    TR_APPROVAL_STEP_APPROVE_TITLE: {
+        defaultMessage: 'Approve spending',
+        id: 'TR_APPROVAL_STEP_APPROVE_TITLE',
+    },
+    TR_APPROVAL_STEP_APPROVE_DESCRIPTION: {
+        defaultMessage: 'Let the provider access your {symbol} to process your swap.',
+        id: 'TR_APPROVAL_STEP_APPROVE_DESCRIPTION',
+    },
+    TR_APPROVAL_STEP_INCREASE_TITLE: {
+        defaultMessage: 'Increase approved limit',
+        id: 'TR_APPROVAL_STEP_INCREASE_TITLE',
+    },
+    TR_APPROVAL_STEP_INCREASE_DESCRIPTION: {
+        defaultMessage:
+            'Your current limit is too low. Let the provider access more {symbol} to process your swap.',
+        id: 'TR_APPROVAL_STEP_INCREASE_DESCRIPTION',
+    },
+    TR_APPROVAL_STEP_REVOKE_TITLE: {
+        defaultMessage: 'Revoke approval spending',
+        id: 'TR_APPROVAL_STEP_REVOKE_TITLE',
+    },
+    TR_APPROVAL_STEP_REVOKE_DESCRIPTION: {
+        defaultMessage:
+            'To swap more {symbol}, first revoke your current approval. {symbol} requires this before approving a higher limit.',
+        id: 'TR_APPROVAL_STEP_REVOKE_DESCRIPTION',
+    },
+    TR_APPROVAL_STEP_DONE_APPROVE: {
+        defaultMessage: 'Approval',
+        id: 'TR_APPROVAL_STEP_DONE_APPROVE',
+    },
+    TR_APPROVAL_STEP_DONE_REVOKE: {
+        defaultMessage: 'Revoke',
+        id: 'TR_APPROVAL_STEP_DONE_REVOKE',
+    },
+    TR_APPROVAL_STEP_PENDING_HINT: {
+        defaultMessage: "Don't leave yet. You'll sign the swap in a few seconds.",
+        id: 'TR_APPROVAL_STEP_PENDING_HINT',
+    },
+    TR_APPROVAL_REQUIRED: {
+        defaultMessage: 'Approval required',
+        id: 'TR_APPROVAL_REQUIRED',
+    },
+    TR_APPROVAL_REQUIRED_TOOLTIP: {
+        defaultMessage:
+            "Approval lets the provider use only the {symbol} amount you choose. It's needed because you picked a decentralized exchange, which never holds your funds. Your {symbol} stays in your wallet until the swap.",
+        id: 'TR_APPROVAL_REQUIRED_TOOLTIP',
+    },
+    TR_APPROVAL_LIMIT_MODAL_HEADING: {
+        defaultMessage: 'Choose approval limit',
+        id: 'TR_APPROVAL_LIMIT_MODAL_HEADING',
+    },
     TR_APPROVAL_DATA: {
         defaultMessage: 'Approval transaction data',
         id: 'TR_APPROVAL_DATA',
