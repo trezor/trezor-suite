@@ -6,6 +6,7 @@
 export const ANALYTICS_ALLOWED_DOMAINS = [
     'accounts',
     'app',
+    'assets',
     'coin',
     'dashboard',
     'device',

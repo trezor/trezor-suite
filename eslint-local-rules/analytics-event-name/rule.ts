@@ -3,6 +3,7 @@ import type { Rule } from 'eslint';
 const allowedDomains = new Set([
     'accounts',
     'app',
+    'assets',
     'coin',
     'dashboard',
     'device',

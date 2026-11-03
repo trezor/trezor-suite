@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { AssetPriceChart, AssetPriceChartRangeSelector } from '@suite/price-chart';
 import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
@@ -10,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Card, Column, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -23,6 +25,7 @@ type AssetDetailMarketPriceProps = {
 
 /** What one unit of the asset costs, and how that moved over the week, styled as the Home total. */
 export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps) => {
+    const { analytics } = useServices(injectDesktopAnalytics);
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const baseCurrency = useSelector(selectBaseCurrency);
@@ -85,6 +88,16 @@ export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps
                     <AssetPriceChartRangeSelector
                         networkSymbol={symbol}
                         tokenContract={contractAddress}
+                        onRangeChange={timeframe =>
+                            analytics.report({
+                                type: events.assetsTimeframeChangeEvent.name,
+                                payload: {
+                                    timeframe,
+                                    networkSymbol: symbol,
+                                    ...(contractAddress ? { contractAddress } : {}),
+                                },
+                            })
+                        }
                     />
                 </Row>
                 <AssetPriceChart networkSymbol={symbol} tokenContract={contractAddress} />

@@ -1,4 +1,5 @@
 export {
+    assetsTimeframeChangeEvent,
     earnTilePressedEvent,
     navigateFlowEvent,
     stakingClaimEvent,

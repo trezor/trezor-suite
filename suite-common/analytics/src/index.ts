@@ -49,3 +49,4 @@ export { stakingUnstakeEvent, type StakingUnstakeStep } from './events/stakingUn
 export { stakingClaimEvent, type StakingClaimStep } from './events/stakingClaimEvent';
 
 export { appFormPercentButtonsEvent } from './events/appFormPercentButtonsEvent';
+export { assetsTimeframeChangeEvent } from './events/assetsTimeframeChangeEvent';
