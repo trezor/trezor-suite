@@ -180,12 +180,20 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 if (
                     state.activeCall?.state === 'finished' ||
                     state.activeCall?.state === 'address-confirmation'
-                )
+                ) {
                     state.activeCall = {
                         ...state.activeCall,
                         state: 'deeplink-callback',
                         callbackUrl: payload.callbackUrl,
                     };
+                } else if (
+                    state.activeCall?.state === 'call-error' ||
+                    state.activeCall?.state === 'error'
+                ) {
+                    // Keep the error on screen; connectPopupFinishCallThunk opens the callback
+                    // once the user has seen it and closed the popup.
+                    state.activeCall.callbackUrl = payload.callbackUrl;
+                }
             })
             .addCase(connectPopupActions.setError, (state, { payload }) => {
                 if (state.activeCall && state.activeCall.state !== 'error') {
@@ -193,6 +201,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         ...state.activeCall,
                         state: 'call-error',
                         error: payload,
+                        // A held callback belongs to an earlier call, e.g. one still kept in
+                        // `deeplink-callback`; this error gets its own.
+                        callbackUrl: undefined,
                     };
                 } else {
                     state.activeCall = {

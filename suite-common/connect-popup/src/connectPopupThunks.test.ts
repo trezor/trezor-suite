@@ -260,4 +260,20 @@ describe('connectPopupFinishCallThunk', () => {
         await expect(deferred.promise).resolves.toEqual({ success: false, error });
         expect(selectConnectPopupCall(store.getState())?.state).toBe('finished');
     });
+
+    it('opens the deeplink callback of a failed call when its popup is closed', () => {
+        const store = initStore();
+        store.dispatch(
+            connectPopupActions.setError(serializeError(TypedError('Failure_ActionCancelled'))),
+        );
+        store.dispatch(connectPopupActions.deeplinkCallback({ callbackUrl: 'app://callback' }));
+        expect(selectConnectPopupCall(store.getState())?.state).toBe('call-error');
+
+        store.dispatch(connectPopupFinishCallThunk());
+
+        expect(selectConnectPopupCall(store.getState())).toMatchObject({
+            state: 'deeplink-callback',
+            callbackUrl: 'app://callback',
+        });
+    });
 });

@@ -1148,7 +1148,8 @@ export const connectPopupCancelThunk = createThunk<
 
 export type ConnectPopupFinishCallThunkState = ConnectPopupStateRootState;
 
-// Closing the popup of a call that ended with a device error answers its caller with that error.
+// Closing the popup of a failed call answers its caller: a call that ended with a device error
+// gets that error, and a deeplink gets the callback it held back while the error was shown.
 // Otherwise the caller never gets a response and every popup call queued after it keeps waiting.
 export const connectPopupFinishCallThunk = createThunk<
     void,
@@ -1162,4 +1163,11 @@ export const connectPopupFinishCallThunk = createThunk<
     }
 
     dispatch(connectPopupActions.finishCall());
+
+    if (
+        (activeCall?.state === 'call-error' || activeCall?.state === 'error') &&
+        activeCall.callbackUrl
+    ) {
+        dispatch(connectPopupActions.deeplinkCallback({ callbackUrl: activeCall.callbackUrl }));
+    }
 });
