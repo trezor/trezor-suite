@@ -47,8 +47,9 @@ export function useNetworkFeeOptions({
                 : null;
             // Needed only for Solana because of fee estimation on compose Tx
             const fee = hasTransactionInfo ? transactionInfo.fee : level.feePerTx;
+            const feePerUnit = hasTransactionInfo ? transactionInfo.feePerByte : level.feePerUnit;
 
-            return { networkAmount, fee };
+            return { networkAmount, fee, feePerUnit };
         };
 
         const buildBasicFeeOptions = (level: FeeLevel) => {
@@ -75,11 +76,13 @@ export function useNetworkFeeOptions({
 
             case 'bitcoin':
                 return filteredLevels.map(level => {
+                    const { feePerUnit } = getNetworkAmount(level);
                     const basicFeeOption = buildBasicFeeOptions(level);
 
                     return {
                         ...basicFeeOption,
                         blocks: level.blocks,
+                        feePerUnit,
                     };
                 });
 
