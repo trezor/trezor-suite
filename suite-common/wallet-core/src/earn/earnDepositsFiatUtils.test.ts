@@ -77,6 +77,16 @@ describe(getEarnPositionFiatAmount.name, () => {
         expect(getEarnPositionFiatAmount(adaPosition, undefined)).toBeNull();
     });
 
+    it('values testnet positions at zero instead of reporting a missing rate', () => {
+        const hoodiPosition: EarnFiatPosition = {
+            tickerId: { symbol: asNetworkSymbol('thod') },
+            fiatRateKey: asCryptoBaseCurrencyCode('thod-usd'),
+            balance: '32',
+        };
+
+        expect(getEarnPositionFiatAmount(hoodiPosition, undefined)?.toFixed()).toBe('0');
+    });
+
     it('looks up token positions by their token rate key', () => {
         const fiatAmount = getEarnPositionFiatAmount(
             usdcPosition,
