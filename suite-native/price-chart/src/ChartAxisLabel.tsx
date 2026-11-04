@@ -1,51 +1,70 @@
 import { useState } from 'react';
-import { View } from 'react-native';
+import { FadeIn } from 'react-native-reanimated';
 
-import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { AnimatedBox, Box } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
-type ChartAxisLabelProps = {
-    x: number;
-    value: number;
-    graphWidth: number;
+import { type GraphExtreme } from './getGraphExtremes';
+
+type LabelPositionStyleParams = {
+    left: number;
+    isMeasured: boolean;
 };
 
-const axisLabelStyle = prepareNativeStyle<{ left: number; isMeasured: boolean }>(
+const labelPositionStyle = prepareNativeStyle<LabelPositionStyleParams>(
     (_, { left, isMeasured }) => ({
         position: 'absolute',
         left,
+        // Hidden until both widths are known, so the label never flashes at an unclamped position.
         opacity: isMeasured ? 1 : 0,
     }),
 );
 
-export const ChartAxisLabel = ({ x, value, graphWidth }: ChartAxisLabelProps) => {
-    const { applyStyle, utils } = useNativeStyles();
-    const { isDiscreetMode } = useDiscreetMode();
-    const [labelWidth, setLabelWidth] = useState(0);
-    const padding = utils.spacings.sp8;
-    const left = Math.max(
-        padding,
-        Math.min((graphWidth * x) / 100, graphWidth - labelWidth - padding),
-    );
+type GetLabelLeftParams = {
+    relativeX: number;
+    rowWidth: number;
+    labelWidth: number;
+    edgeGap: number;
+};
 
-    if (isDiscreetMode) return null;
+// The label starts where its point lies, but never runs past either edge of the graph.
+const getLabelLeft = ({ relativeX, rowWidth, labelWidth, edgeGap }: GetLabelLeftParams) =>
+    Math.max(edgeGap, Math.min(rowWidth * relativeX, rowWidth - labelWidth - edgeGap));
+
+type ChartAxisLabelProps = {
+    extreme: GraphExtreme;
+};
+
+/** The fiat value of a graph's high or low, written where the line reaches it. */
+export const ChartAxisLabel = ({ extreme: { value, relativeX } }: ChartAxisLabelProps) => {
+    const [rowWidth, setRowWidth] = useState(0);
+    const [labelWidth, setLabelWidth] = useState(0);
+
+    const { applyStyle, utils } = useNativeStyles();
+
+    const left = getLabelLeft({ relativeX, rowWidth, labelWidth, edgeGap: utils.spacings.sp8 });
+    const isMeasured = rowWidth > 0 && labelWidth > 0;
 
     return (
-        <View
-            style={applyStyle(axisLabelStyle, {
-                left,
-                isMeasured: graphWidth > 0 && labelWidth > 0,
-            })}
-            onLayout={event => setLabelWidth(event.nativeEvent.layout.width)}
+        <AnimatedBox
+            flex={1}
+            entering={FadeIn}
+            onLayout={event => setRowWidth(event.nativeEvent.layout.width)}
         >
-            <BaseCurrencyAmountFormatter
-                value={asBaseCurrencyAmount(new BigNumber(value))}
-                variant="body-xs"
-                color="contentDisabled"
-            />
-        </View>
+            <Box
+                style={applyStyle(labelPositionStyle, { left, isMeasured })}
+                onLayout={event => setLabelWidth(event.nativeEvent.layout.width)}
+            >
+                <BaseCurrencyAmountFormatter
+                    value={asBaseCurrencyAmount(new BigNumber(value))}
+                    variant="body-xs"
+                    color="contentDisabled"
+                    discreetMode="disabled"
+                />
+            </Box>
+        </AnimatedBox>
     );
 };

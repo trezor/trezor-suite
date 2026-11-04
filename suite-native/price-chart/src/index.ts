@@ -1,2 +1,4 @@
 export { AssetPriceChart, type AssetPriceChartProps } from './AssetPriceChart';
-export { ChartAxisLabel } from './ChartAxisLabel';
+export { GraphExtremesProvider } from './GraphExtremesContext';
+export { HighExtremeLabel } from './HighExtremeLabel';
+export { LowExtremeLabel } from './LowExtremeLabel';

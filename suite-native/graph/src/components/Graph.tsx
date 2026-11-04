@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PixelRatio } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
@@ -11,12 +11,15 @@ import {
 } from '@suite-common/graph';
 import { Box, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { ChartAxisLabel } from '@suite-native/price-chart';
+import {
+    GraphExtremesProvider,
+    HighExtremeLabel,
+    LowExtremeLabel,
+} from '@suite-native/price-chart';
 import { type GraphPoint, LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type TimerId } from '@trezor/type-utils';
 
-import { getExtremaFromGraphPoints } from '../utils';
 import { GraphError } from './GraphError';
 import { SelectionDotWithLine } from './SelectionDotWithLine';
 import { TransactionEvent } from './TransactionEvent';
@@ -86,13 +89,12 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         utils: { colors },
     } = useNativeStyles();
     const [delayedLoading, setDelayedLoading] = useState(false);
-    const [graphWidth, setGraphWidth] = useState(0);
 
     const { isDiscreetMode } = useDiscreetMode();
 
     const arePointsEmpty = points.length <= 1;
 
-    const areLabelsHidden = loading || !!error || arePointsEmpty;
+    const areLabelsHidden = loading || !!error || isDiscreetMode;
     const showBlurredGraph = !loading && !!error;
 
     useEffect(() => {
@@ -112,68 +114,44 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         };
     }, [loading]);
 
-    const extremaFromGraphPoints = useMemo(() => getExtremaFromGraphPoints(points), [points]);
-    const axisLabels = useMemo(() => {
-        if (areLabelsHidden) return;
-        if (extremaFromGraphPoints?.max && extremaFromGraphPoints?.min) {
-            return {
-                TopAxisLabel: () => (
-                    <ChartAxisLabel
-                        graphWidth={graphWidth}
-                        x={extremaFromGraphPoints.max.x}
-                        value={extremaFromGraphPoints.max.value}
-                    />
-                ),
-                BottomAxisLabel: () => (
-                    <ChartAxisLabel
-                        graphWidth={graphWidth}
-                        x={extremaFromGraphPoints.min.x}
-                        value={extremaFromGraphPoints.min.value}
-                    />
-                ),
-            };
-        }
-    }, [extremaFromGraphPoints, areLabelsHidden, graphWidth]);
-
     // For some reason, 16 feels better than 0
     const panGestureDelay = 16;
 
     return (
-        <Box
-            style={applyStyle(graphWrapperStyle)}
-            onLayout={event => setGraphWidth(event.nativeEvent.layout.width)}
-        >
+        <Box style={applyStyle(graphWrapperStyle)}>
             <Box
                 alignSelf="stretch"
                 pointerEvents={isDiscreetMode ? 'none' : 'auto'}
                 accessibilityElementsHidden={isDiscreetMode}
                 importantForAccessibility={isDiscreetMode ? 'no-hide-descendants' : 'auto'}
             >
-                <LineGraph<GroupedBalanceMovementEventPayload>
-                    style={applyStyle(graphStyle, { loading, error })}
-                    points={points}
-                    color={colors.borderBrand}
-                    animated={animated || isDiscreetMode}
-                    verticalPadding={20}
-                    enablePanGesture={!isDiscreetMode}
-                    SelectionDot={SelectionDotWithLine}
-                    TopAxisLabel={axisLabels?.TopAxisLabel}
-                    BottomAxisLabel={axisLabels?.BottomAxisLabel}
-                    onPointSelected={onPointSelected as any /* because of ExtendedGraphPoint */}
-                    onGestureEnd={onGestureEnd}
-                    onGestureStart={onGestureStart}
-                    panGestureDelay={panGestureDelay}
-                    events={events}
-                    EventComponent={TransactionEvent}
-                    EventTooltipComponent={TransactionEventTooltip}
-                    onEventHover={triggerHaptics}
-                    lineThickness={getAccessibilityLineThickness()}
-                    loading={delayedLoading}
-                    loadingLineColor={colors.borderNeutral}
-                    blurOverlay={showBlurredGraph || isDiscreetMode}
-                    enforceIntensity={isDiscreetMode ? 8 : undefined}
-                    showPlaceholder={arePointsEmpty}
-                />
+                <GraphExtremesProvider points={points} isHidden={areLabelsHidden}>
+                    <LineGraph<GroupedBalanceMovementEventPayload>
+                        style={applyStyle(graphStyle, { loading, error })}
+                        points={points}
+                        color={colors.borderBrand}
+                        animated={animated || isDiscreetMode}
+                        verticalPadding={20}
+                        enablePanGesture={!isDiscreetMode}
+                        SelectionDot={SelectionDotWithLine}
+                        TopAxisLabel={HighExtremeLabel}
+                        BottomAxisLabel={LowExtremeLabel}
+                        onPointSelected={onPointSelected as any /* because of ExtendedGraphPoint */}
+                        onGestureEnd={onGestureEnd}
+                        onGestureStart={onGestureStart}
+                        panGestureDelay={panGestureDelay}
+                        events={events}
+                        EventComponent={TransactionEvent}
+                        EventTooltipComponent={TransactionEventTooltip}
+                        onEventHover={triggerHaptics}
+                        lineThickness={getAccessibilityLineThickness()}
+                        loading={delayedLoading}
+                        loadingLineColor={colors.borderNeutral}
+                        blurOverlay={showBlurredGraph || isDiscreetMode}
+                        enforceIntensity={isDiscreetMode ? 8 : undefined}
+                        showPlaceholder={arePointsEmpty}
+                    />
+                </GraphExtremesProvider>
             </Box>
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>
