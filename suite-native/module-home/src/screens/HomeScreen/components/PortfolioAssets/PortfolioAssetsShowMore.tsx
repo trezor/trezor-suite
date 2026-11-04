@@ -5,6 +5,7 @@ import {
     type HomeAssetTableState,
     selectIsHomeAssetTableFoldable,
 } from '@suite-common/assets';
+import { selectIsAssetListLoading } from '@suite-native/assets';
 import { Divider } from '@suite-native/atoms';
 
 import { PortfolioAssetsCardSegment } from './PortfolioAssetsCardSegment';
@@ -19,6 +20,7 @@ export const PortfolioAssetsShowMore = ({ isExpanded, onPress }: PortfolioAssets
     const isFoldable = useSelector((state: HomeAssetTableState) =>
         selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
     );
+    const isAssetListLoading = useSelector(selectIsAssetListLoading);
 
     if (!isFoldable) {
         return null;
@@ -27,7 +29,11 @@ export const PortfolioAssetsShowMore = ({ isExpanded, onPress }: PortfolioAssets
     return (
         <PortfolioAssetsCardSegment isLast>
             <Divider />
-            <PortfolioAssetsShowMoreButton isExpanded={isExpanded} onPress={onPress} />
+            <PortfolioAssetsShowMoreButton
+                isExpanded={isExpanded}
+                isLoading={isAssetListLoading}
+                onPress={onPress}
+            />
         </PortfolioAssetsCardSegment>
     );
 };

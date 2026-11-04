@@ -10,6 +10,7 @@ import {
     selectIsHomeAssetTableMenuAvailable,
 } from '@suite-common/assets';
 import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
+import { selectIsAssetListLoading } from '@suite-native/assets';
 import { Box, useBottomSheetModal } from '@suite-native/atoms';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -55,6 +56,7 @@ export const PortfolioAssetsContent = () => {
     const isFoldable = useSelector((state: HomeAssetTableState) =>
         selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
     );
+    const isAssetListLoading = useSelector(selectIsAssetListLoading);
     const isMenuAvailable = useSelector(selectIsHomeAssetTableMenuAvailable);
     const { bottomSheetRef, openModal } = useBottomSheetModal();
     const { dispatch } = useServices(injectDispatch);
@@ -70,11 +72,13 @@ export const PortfolioAssetsContent = () => {
         }
     };
 
+    const isLoadingSkeletonVisible = isAssetListLoading && (!isFoldable || isListExpanded);
+
     const renderEntry = ({ item, index }: RenderEntryParams) => (
         <PortfolioAssetsCardSegment
             isFirst={index === 0}
-            // Show more closes the card when the list is foldable.
-            isLast={index === entries.length - 1 && !isFoldable}
+            // The skeleton or Show more closes the card when present.
+            isLast={index === entries.length - 1 && !isFoldable && !isLoadingSkeletonVisible}
         >
             {renderEntryContent(item)}
         </PortfolioAssetsCardSegment>
@@ -99,6 +103,9 @@ export const PortfolioAssetsContent = () => {
                 renderItem={renderEntry}
                 keyExtractor={getEntryKey}
                 getItemType={getEntryType}
+                // FlashList re-renders rows only when `data` or `extraData` changes. The skeleton can
+                // disappear while `data` stays the same, and the last row must then round its corners.
+                extraData={isLoadingSkeletonVisible}
                 ItemSeparatorComponent={PortfolioAssetListSeparator}
                 // Switching the grouping inserts network headers above the rows; anchoring on a row
                 // would scroll away from them.
@@ -107,6 +114,9 @@ export const PortfolioAssetsContent = () => {
                 ListFooterComponent={
                     <PortfolioAssetsListFooter
                         isListExpanded={isListExpanded}
+                        isListEmpty={entries.length === 0}
+                        isFoldable={isFoldable}
+                        isLoadingSkeletonVisible={isLoadingSkeletonVisible}
                         onShowMorePress={toggleIsListExpanded}
                     />
                 }

@@ -51,6 +51,10 @@ const BTC_NETWORK_HEADER = '@home/portfolio-assets/network/btc';
 const SMALL_BALANCES_SWITCH = '@home/portfolio-assets/view-options/small-balances';
 const NEW_BANNER = '@home/portfolio-assets/new-banner';
 const FEEDBACK = '@home/portfolio-assets/feedback';
+const LOADING_SKELETON = '@home/portfolio-assets/loading-skeleton';
+const SHOW_MORE = '@home/portfolio-assets/show-more';
+const SHOW_MORE_LOADING = '@home/portfolio-assets/show-more/loading';
+const DEVICE_PATH = 'devicePath';
 
 const walletSettingsReducer = prepareWalletSettingsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -69,6 +73,7 @@ type CreateStoreParams = {
     areSmallBalancesShown?: boolean;
     isNewBannerClosed?: boolean;
     isFeedbackClosed?: boolean;
+    isDiscoveryRunning?: boolean;
 };
 
 // The Ethereum account's coin is one row, so `ethAssetCount - 1` tokens make up the rest.
@@ -81,6 +86,7 @@ const createStore = ({
     areSmallBalancesShown = true,
     isNewBannerClosed = false,
     isFeedbackClosed = false,
+    isDiscoveryRunning = false,
 }: CreateStoreParams) => {
     const tokenContracts = Array.from({ length: Math.max(ethAssetCount - 1, 0) }, (_, index) =>
         getTokenContract(index + 1),
@@ -105,7 +111,11 @@ const createStore = ({
     return createLightStore({
         reducer: {
             device: createStaticReducer({
-                selectedDevice: { state: { staticSessionId: DEVICE_STATE }, firmwareType },
+                selectedDevice: {
+                    path: DEVICE_PATH,
+                    state: { staticSessionId: DEVICE_STATE },
+                    firmwareType,
+                },
             }),
             discreetMode: createStaticReducer({ isActive: false }),
             locale: localeReducer,
@@ -116,6 +126,11 @@ const createStore = ({
             wallet: combineReducers({
                 accounts: createStaticReducer([...ethAccounts, ...btcAccounts]),
                 settings: walletSettingsReducer,
+                discovery: createStaticReducer(
+                    isDiscoveryRunning
+                        ? { [DEVICE_PATH]: { status: 'progress', total: 1, progress: 0 } }
+                        : {},
+                ),
                 fiat: createStaticReducer({
                     current:
                         ethUsdRate === undefined
@@ -404,5 +419,44 @@ describe('PortfolioAssetsContent', () => {
         expect(
             screen.queryByTestId('@home/portfolio-assets/view-options/grouping/networks'),
         ).toBeNull();
+    });
+
+    it('shows the loading skeleton under a list that does not fold while discovery runs', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 3, isDiscoveryRunning: true });
+
+        expect(screen.getByTestId(LOADING_SKELETON)).toBeTruthy();
+    });
+
+    it('shows the loading skeleton under a folded list only once it is expanded', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 9, isDiscoveryRunning: true });
+
+        expect(screen.queryByTestId(LOADING_SKELETON)).toBeNull();
+
+        await fireEvent.press(screen.getByTestId(SHOW_MORE));
+
+        expect(screen.getByTestId(LOADING_SKELETON)).toBeTruthy();
+    });
+
+    it('hides the loading skeleton once discovery is finished', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 3 });
+
+        expect(screen.queryByTestId(LOADING_SKELETON)).toBeNull();
+    });
+
+    it('shows the loading balances caption on show more and show less while discovery runs', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 9, isDiscoveryRunning: true });
+
+        expect(screen.getByTestId(SHOW_MORE_LOADING)).toBeTruthy();
+
+        await fireEvent.press(screen.getByTestId(SHOW_MORE));
+
+        expect(screen.getByText(getTranslation('moduleHome.assets.showLess'))).toBeTruthy();
+        expect(screen.getByTestId(SHOW_MORE_LOADING)).toBeTruthy();
+    });
+
+    it('hides the loading balances caption once discovery is finished', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 9 });
+
+        expect(screen.queryByTestId(SHOW_MORE_LOADING)).toBeNull();
     });
 });
