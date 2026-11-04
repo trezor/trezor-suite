@@ -1,5 +1,9 @@
 import type { SuiteReadyPayload } from '@suite/analytics';
-import { type DesktopUpdateRootState } from '@suite/desktop-update';
+import {
+    type DesktopUpdateRootState,
+    selectDesktopUpdateAllowPrerelease,
+    selectDesktopUpdateAutomaticUpdateEnabled,
+} from '@suite/desktop-update';
 import {
     type LegacyLabelingVisibleRootState,
     selectIsLegacyLabelingVisible,
@@ -19,7 +23,10 @@ import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
-import { type DiscreetModeRootState } from '@suite-common/discreet-mode';
+import {
+    type DiscreetModeRootState,
+    selectIsDiscreteModeActive,
+} from '@suite-common/discreet-mode';
 import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
@@ -36,6 +43,8 @@ import {
 import {
     type BlockchainRootState,
     type WalletSettingsRootState,
+    selectBaseCurrency,
+    selectBitcoinAmountUnit,
     selectCustomBackends,
 } from '@suite-common/wallet-core';
 import {
@@ -104,9 +113,9 @@ export const getSuiteReadyPayload = async (
         customBackends: selectCustomBackends(state)
             .map(({ symbol }) => symbol)
             .filter(symbol => state.wallet.settings.enabledNetworks.includes(symbol)),
-        localCurrency: state.wallet.settings.localCurrency,
-        bitcoinUnit: UNIT_ABBREVIATIONS[state.wallet.settings.bitcoinAmountUnit],
-        discreetMode: state.discreetMode.isActive,
+        localCurrency: selectBaseCurrency(state),
+        bitcoinUnit: UNIT_ABBREVIATIONS[selectBitcoinAmountUnit(state)],
+        discreetMode: selectIsDiscreteModeActive(state),
         screenWidth: getScreenWidth(),
         screenHeight: getScreenHeight(),
         platformLanguages: getPlatformLanguages().join(','),
@@ -116,7 +125,7 @@ export const getSuiteReadyPayload = async (
         rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),
         theme: selectTheme(state),
         suiteVersion: process.env.VERSION || '',
-        earlyAccessProgram: state.desktopUpdate.allowPrerelease,
+        earlyAccessProgram: selectDesktopUpdateAllowPrerelease(state),
         experimentalFeatures: selectExperimentalFeatures(state),
         browserName: getBrowserName(),
         browserVersion: getBrowserVersion(),
@@ -129,7 +138,7 @@ export const getSuiteReadyPayload = async (
         autodetectLanguage: selectAutodetectLanguage(state),
         autodetectTheme: selectAutodetectTheme(state),
 
-        isAutomaticUpdateEnabled: state.desktopUpdate.isAutomaticUpdateEnabled,
+        isAutomaticUpdateEnabled: selectDesktopUpdateAutomaticUpdateEnabled(state),
 
         experimentVariants: formatExperimentVariantsForAnalytics(experimentVariants),
 
