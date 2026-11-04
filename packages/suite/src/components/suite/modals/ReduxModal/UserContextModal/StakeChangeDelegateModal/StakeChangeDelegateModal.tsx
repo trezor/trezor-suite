@@ -65,6 +65,8 @@ export const StakeChangeDelegateModalLoaded = ({
         composedLevels,
         selectedFee,
         isComposing,
+        hasComposeError,
+        retryCompose,
         methods,
         handleSubmit,
         signTx,
@@ -173,6 +175,10 @@ export const StakeChangeDelegateModalLoaded = ({
             return <Translation id="TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP" />;
         }
 
+        if (hasComposeError) {
+            return <Translation id="TR_STAKING_ERROR_GENERIC" />;
+        }
+
         return composeErrorMessage;
     }, [
         isVotingDisabled,
@@ -180,6 +186,7 @@ export const StakeChangeDelegateModalLoaded = ({
         isSelectionInvalid,
         errorType,
         composeErrorMessage,
+        hasComposeError,
     ]);
 
     const options = useMemo(
@@ -213,6 +220,17 @@ export const StakeChangeDelegateModalLoaded = ({
                     }
                 >
                     <Column gap={16}>
+                        {hasComposeError && (
+                            <Banner
+                                intent="critical"
+                                description={<Translation id="TR_STAKING_ERROR_GENERIC" />}
+                                rightContent={
+                                    <Banner.Button onClick={() => retryCompose()}>
+                                        <Translation id="TR_RETRY" />
+                                    </Banner.Button>
+                                }
+                            />
+                        )}
                         <CurrentVotingPreference account={account} />
                         <VotingPreferenceCard
                             account={account}
