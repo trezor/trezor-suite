@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { AccountLabel } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
@@ -15,6 +16,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { type AccountType } from '@suite-common/wallet-config';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Column, H3, Icon, Modal, Paragraph, Row, SubTabs, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleIcon } from '@trezor/icons';
@@ -41,6 +43,7 @@ export const ConnectSelectAccount = () => {
     const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const popupCall = useSelector(selectConnectPopupCall);
+    const accounts = useSelector(selectAccounts);
 
     // Load the first page once the picker opens (the Connect method only sets up the state).
     const isSelectAccount = popupCall?.state === 'select-account';
@@ -160,6 +163,23 @@ export const ConnectSelectAccount = () => {
     const onFinish = () => dispatch(connectPopupResolveSelectAccountThunk({ confirmed: false }));
 
     const rows = exported ? selectedCandidates : pageCandidates;
+
+    const getLabel = (candidate: SelectAccountCandidate) => {
+        const account = accounts.find(a => a.key === candidate.accountKey);
+
+        return account ? (
+            <AccountLabel account={account} />
+        ) : (
+            <Translation
+                id={
+                    isManualAddressPhase
+                        ? 'TR_CONNECT_SELECT_ACCOUNT_ADDRESS_LABEL'
+                        : 'TR_CONNECT_SELECT_ACCOUNT_LABEL'
+                }
+                values={{ index: candidate.accountIndex + 1 }}
+            />
+        );
+    };
 
     let descriptionKey: TranslationKey = 'TR_CONNECT_SELECT_ACCOUNT_DESCRIPTION';
     if (exported) {
@@ -296,16 +316,7 @@ export const ConnectSelectAccount = () => {
                                 <SelectAccountRow
                                     key={`${candidate.accountTypeKey}-${candidate.accountIndex}`}
                                     candidate={candidate}
-                                    label={
-                                        <Translation
-                                            id={
-                                                isManualAddressPhase
-                                                    ? 'TR_CONNECT_SELECT_ACCOUNT_ADDRESS_LABEL'
-                                                    : 'TR_CONNECT_SELECT_ACCOUNT_LABEL'
-                                            }
-                                            values={{ index: candidate.accountIndex + 1 }}
-                                        />
-                                    }
+                                    label={getLabel(candidate)}
                                     interactionMode={rowInteractionMode}
                                     disabled={isVerifying}
                                     discovering={isDiscovering}
