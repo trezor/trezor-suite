@@ -11431,6 +11431,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_ERROR_GENERIC',
         defaultMessage: 'Something went wrong. Try again later.',
     },
+    TR_STAKING_VOTE_NO_CONFIDENCE: {
+        id: 'TR_STAKING_VOTE_NO_CONFIDENCE',
+        defaultMessage: 'No confidence',
+    },
     TR_STAKING_VOTE_LET_EVERSTAKE_VOTE: {
         id: 'TR_STAKING_VOTE_LET_EVERSTAKE_VOTE',
         defaultMessage: 'Let Everstake vote for you',

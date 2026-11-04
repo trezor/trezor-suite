@@ -12,5 +12,6 @@ export const MIN_CARDANO_BALANCE_FOR_STAKING = MIN_CARDANO_AMOUNT_FOR_STAKING.pl
 );
 
 export const CARDANO_ALWAYS_ABSTAIN_DREP_ID = 'drep_always_abstain';
+export const CARDANO_ALWAYS_NO_CONFIDENCE_DREP_ID = 'drep_always_no_confidence';
 
 export const DEFAULT_VOTING_OPTION: VotingDelegationOption = { type: 'abstain' };
