@@ -30,14 +30,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    getYieldAllowanceFormDraftKey,
-    updateYieldAllowanceSelectedFeeLevelThunk,
-} from '../../thunks/yield/yieldApprovalThunks';
+import { getYieldAllowanceFormDraftKey } from '../../thunks/yield/yieldApprovalThunks';
 import {
     buildYieldAllowanceFormState,
     getYieldAllowanceFeeState,
 } from '../../utils/yield/yieldApprovalUtils';
+import { updateEarnSelectedFeeLevelThunk } from '../earn/useComposeEarnFees';
 
 export type YieldAllowanceFeeTransaction = {
     allowanceAmount: string;
@@ -185,6 +183,6 @@ export const useYieldAllowanceFees = ({
         isComposingAllowanceFee,
         isFeeUnavailable,
         selectedFee,
-        updateFeeLevelThunk: updateYieldAllowanceSelectedFeeLevelThunk,
+        updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };
 };

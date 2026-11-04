@@ -10,7 +10,7 @@ import { useYieldFlowData } from './useYieldFlowData';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
 import { useYieldSession } from './useYieldSession';
 import { mockYieldPendingTransactionResult } from '../../../mocks/mockYieldPendingTransactionResult';
-import { updateYieldAllowanceSelectedFeeLevelThunk } from '../../thunks/yield/yieldApprovalThunks';
+import { updateEarnSelectedFeeLevelThunk } from '../earn/useComposeEarnFees';
 
 const resolvedFlow = mockResolvedYieldFlowData();
 const mockNavigation = { navigate: jest.fn() };
@@ -82,7 +82,7 @@ describe('revoke submit analytics', () => {
             isComposingAllowanceFee: false,
             isFeeUnavailable: false,
             selectedFee: 'normal',
-            updateFeeLevelThunk: updateYieldAllowanceSelectedFeeLevelThunk,
+            updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
         });
         mockPrepareReview.mockResolvedValue({
             type: 'test/prepare/fulfilled',
@@ -119,7 +119,7 @@ describe('revoke submit analytics', () => {
             isComposingAllowanceFee: false,
             isFeeUnavailable: true,
             selectedFee: 'normal',
-            updateFeeLevelThunk: updateYieldAllowanceSelectedFeeLevelThunk,
+            updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
         });
         const { result, analytics } = await renderRevoke();
 

@@ -3,7 +3,6 @@ import {
     REVOKE_ALLOWANCE_AMOUNT,
     type YieldFlowResolvedData,
     type YieldRootState,
-    formDraftActions,
     selectDeepCopyOfFormDraft,
     selectYieldSession,
     sendFormActions,
@@ -16,11 +15,7 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
-import {
-    type NativeSendRootState,
-    type UpdateSelectedFeeLevelThunkParams,
-    selectFeeLevels,
-} from '@suite-native/transaction-management';
+import { type NativeSendRootState, selectFeeLevels } from '@suite-native/transaction-management';
 import { createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -164,46 +159,5 @@ export const prepareYieldAllowanceReviewTransactionThunk = createThunk<
                 accountKey: flowData.account.key,
             }),
         );
-    },
-);
-
-export type UpdateYieldAllowanceSelectedFeeLevelThunkState = FormDraftRootState;
-
-export const updateYieldAllowanceSelectedFeeLevelThunk = createThunk<
-    void,
-    UpdateSelectedFeeLevelThunkParams,
-    { state: UpdateYieldAllowanceSelectedFeeLevelThunkState }
->(
-    `${EARN_MODULE_PREFIX}/updateYieldAllowanceSelectedFeeLevelThunk`,
-    (
-        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey, maxFeePerGas, maxPriorityFeePerGas },
-        { dispatch, getState },
-    ) => {
-        if (!formDraftKey) return;
-
-        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
-            FormState | undefined;
-
-        if (!formDraft) return;
-
-        formDraft.selectedFee = feeLevelLabel;
-
-        if (feePerUnit) {
-            formDraft.feePerUnit = feePerUnit;
-        }
-
-        if (feeLimit) {
-            formDraft.feeLimit = feeLimit;
-        }
-
-        if (maxFeePerGas) {
-            formDraft.maxFeePerGas = maxFeePerGas;
-        }
-
-        if (maxPriorityFeePerGas) {
-            formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        }
-
-        dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
     },
 );
