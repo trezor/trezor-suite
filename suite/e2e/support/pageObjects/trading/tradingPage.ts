@@ -5,7 +5,7 @@ import { messages } from '@suite/intl';
 import type { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { TradingApprovalModal } from './approvalModal';
+import { TradingApprovalStepsSection } from './approvalStepsSection';
 import { TradingAssetPicker } from './assetsModal';
 import { TradingConfirmationModal } from './confirmationModal';
 import { TradingTransactionsSection } from './transactionsSection';
@@ -60,7 +60,7 @@ export class TradingPage {
     readonly receiveAccount: TradingReceiveAccount;
     readonly quotes: TradingQuotesSection;
     readonly confirmation: TradingConfirmationModal;
-    readonly approvalModal: TradingApprovalModal;
+    readonly approvalSteps: TradingApprovalStepsSection;
     readonly inputs: TradingFormInputs;
     readonly transactionDetailSidebar: TransactionDetailSidebar;
 
@@ -72,7 +72,6 @@ export class TradingPage {
     readonly sellBestOfferButton: Locator;
     readonly swapBestOfferButton: Locator;
     readonly kycWarning: Locator;
-    readonly approveSpendingButton: Locator;
     readonly pendingApprovalTransactionLabel: Locator;
     readonly pendingApprovalTransactionIdLabel: Locator;
     readonly pendingApprovalTransactionId: Locator;
@@ -114,7 +113,7 @@ export class TradingPage {
         this.receiveAccount = new TradingReceiveAccount(page);
         this.quotes = new TradingQuotesSection(page);
         this.confirmation = new TradingConfirmationModal(page, devicePrompt);
-        this.approvalModal = new TradingApprovalModal(page);
+        this.approvalSteps = new TradingApprovalStepsSection(page);
         this.inputs = new TradingFormInputs(page);
         this.transactionDetailSidebar = new TransactionDetailSidebar(page);
 
@@ -125,7 +124,6 @@ export class TradingPage {
         this.sellBestOfferButton = this.page.getByTestId('@trading/form/sell-button');
         this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
         this.kycWarning = this.page.getByTestId('@trading/form/kyc-warning');
-        this.approveSpendingButton = this.page.getByTestId('@trading/form/approve-button');
         this.pendingApprovalTransactionLabel = this.page.getByTestId('@pending-transaction/title');
         this.pendingApprovalTransactionIdLabel = this.page.getByTestId(
             '@pending-transaction/txid/label',
