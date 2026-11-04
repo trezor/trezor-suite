@@ -230,6 +230,85 @@ describe('tradingExchangeReducer', () => {
         });
     });
 
+    describe('approvalFlow', () => {
+        const STEPS = ['revoke', 'approve', 'swap'] as const;
+
+        it('stores the step plan', () => {
+            const state = tradingExchangeReducer(
+                undefined,
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+            );
+
+            expect(state.approvalFlow).toEqual({ steps: STEPS, completedSteps: [] });
+        });
+
+        it('records completed steps', () => {
+            const actions = [
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+                tradingExchangeActions.completeApprovalFlowStep('revoke'),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow?.completedSteps).toEqual(['revoke']);
+        });
+
+        it('records a completed step only once', () => {
+            const actions = [
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+                tradingExchangeActions.completeApprovalFlowStep('revoke'),
+                tradingExchangeActions.completeApprovalFlowStep('revoke'),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow?.completedSteps).toEqual(['revoke']);
+        });
+
+        it('starts a new flow without completed steps', () => {
+            const actions = [
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+                tradingExchangeActions.completeApprovalFlowStep('revoke'),
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow?.completedSteps).toEqual([]);
+        });
+
+        it('keeps the step plan when the selected quote is replaced', () => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(changellyExchangeQuote),
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+                tradingExchangeActions.saveSelectedQuote({
+                    ...changellyExchangeQuote,
+                    status: 'APPROVAL_PENDING',
+                }),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow?.steps).toEqual(STEPS);
+        });
+
+        it.each([
+            ['clearApprovalFlow', tradingExchangeActions.clearApprovalFlow()],
+            ['clearQuotes', tradingExchangeActions.clearQuotes()],
+            ['clearQuotesAndParams', tradingExchangeActions.clearQuotesAndParams()],
+            [
+                'setTradingAccountKey(undefined)',
+                tradingExchangeActions.setTradingAccountKey(undefined),
+            ],
+        ])('is cleared by %s', (_, clearAction) => {
+            const actions = [tradingExchangeActions.startApprovalFlow([...STEPS]), clearAction];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow).toBeUndefined();
+        });
+    });
+
     describe('selectedQuoteTimestamp', () => {
         const SELECTED_QUOTE_TIMESTAMP = new Date('2026-10-23T10:00:00Z').getTime();
 

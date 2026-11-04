@@ -359,6 +359,36 @@ describe('confirmApprovalThunk', () => {
             expect(getExchangeState(store).formStep).not.toBe('SEND_TRANSACTION');
             expect(response).toEqual(tradeResponse);
         });
+
+        it('should keep the approval type and tx hash the response omits', async () => {
+            const { store, receiveAddress, account, trade, mockProcessResponseData } = getMocks();
+            const sentTrade: ExchangeTrade = {
+                ...trade,
+                status: 'APPROVAL_PENDING',
+                approvalType: 'ZERO',
+                approvalSendTxHash: '0xtxid',
+            };
+            const tradeResponse: ExchangeTrade = {
+                ...trade,
+                status: 'APPROVAL_PENDING',
+                orderId: 'orderId',
+            };
+
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+            await dispatchThunk(store, {
+                receiveAddress,
+                account,
+                trade: sentTrade,
+                processResponseData: mockProcessResponseData,
+            });
+
+            expect(getExchangeState(store).selectedQuote).toEqual({
+                ...tradeResponse,
+                approvalType: 'ZERO',
+                approvalSendTxHash: '0xtxid',
+            });
+        });
     });
 
     it('should save quote and set formStep to SIGN_DATA when response status is SIGN_DATA', async () => {
