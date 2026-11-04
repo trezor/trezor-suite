@@ -22,23 +22,23 @@ describe('stakingFeeLevelSchema', () => {
         expect(stakingFeeLevelSchema.parse(level)).toEqual(level);
     });
 
-    it('parses a solana level with a compute limit and a review flag', () => {
+    it('parses a solana level with a compute limit', () => {
         const level = mockStakingFinalFeeLevel({
             fee: '5000' as never,
             totalSpent: '1000005000' as never,
             feePerUnit: '50',
             feeLimit: '200000',
-            extras: { isDeviceReviewOnly: true },
+            extras: {},
         });
 
         expect(stakingFeeLevelSchema.parse(level)).toEqual(level);
     });
 
-    it('keeps the empty cardano rate and a missing limit', () => {
+    it('keeps the missing cardano rate and limit as null', () => {
         const level = mockStakingFinalFeeLevel({
             fee: '174345' as never,
             totalSpent: '2174345' as never,
-            feePerUnit: '',
+            feePerUnit: null,
             feeLimit: null,
             extras: {},
         });
@@ -84,13 +84,34 @@ describe('stakingFeeLevelSchema', () => {
         expect(result.success).toBe(false);
     });
 
-    it('rejects a structured extra', () => {
+    it('rejects an extra the fee pickers do not read', () => {
         const result = stakingFeeLevelSchema.safeParse(
             mockStakingFinalFeeLevel({ extras: { solanaTxMeta: { rentLamports: '0' } } as never }),
         );
 
         expect(result.success).toBe(false);
-        expect(result.error?.issues[0]?.path).toEqual(['extras', 'solanaTxMeta']);
+        expect(result.error?.issues[0]?.path).toEqual(['extras']);
+    });
+
+    it('rejects an extra of the wrong type', () => {
+        const result = stakingFeeLevelSchema.safeParse(
+            mockStakingFinalFeeLevel({ extras: { maxFeePerGas: 30 } as never }),
+        );
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['extras', 'maxFeePerGas']);
+    });
+
+    it('rejects a rate or a limit that is not a number', () => {
+        const rate = stakingFeeLevelSchema.safeParse(mockStakingFinalFeeLevel({ feePerUnit: '' }));
+        const limit = stakingFeeLevelSchema.safeParse(
+            mockStakingFinalFeeLevel({ feeLimit: '1.5' }),
+        );
+
+        expect(rate.success).toBe(false);
+        expect(rate.error?.issues[0]?.path).toEqual(['feePerUnit']);
+        expect(limit.success).toBe(false);
+        expect(limit.error?.issues[0]?.path).toEqual(['feeLimit']);
     });
 });
 
@@ -105,6 +126,15 @@ describe('stakingFeeLevelsSchema', () => {
         const feeLevels = { normal: mockStakingFinalFeeLevel() };
 
         expect(stakingFeeLevelsSchema.parse(feeLevels)).toEqual(feeLevels);
+    });
+
+    it('requires a normal level', () => {
+        const empty = stakingFeeLevelsSchema.safeParse({});
+        const customOnly = stakingFeeLevelsSchema.safeParse({ custom: mockStakingFinalFeeLevel() });
+
+        expect(empty.success).toBe(false);
+        expect(empty.error?.issues[0]?.path).toEqual(['normal']);
+        expect(customOnly.success).toBe(false);
     });
 
     it('rejects an unknown label', () => {
@@ -141,7 +171,19 @@ describe('stakingCustomFeeSchema', () => {
         expect(stakingCustomFeeSchema.parse({ feePerUnit: '25' })).toEqual({ feePerUnit: '25' });
     });
 
-    it('rejects an empty rate', () => {
+    it('rejects a rate that is not a number', () => {
         expect(stakingCustomFeeSchema.safeParse({ feePerUnit: '' }).success).toBe(false);
+        expect(stakingCustomFeeSchema.safeParse({ feePerUnit: '5 gwei' }).success).toBe(false);
+    });
+
+    it('takes the EIP-1559 pair together or not at all', () => {
+        const halfPair = stakingCustomFeeSchema.safeParse({ feePerUnit: '5', maxFeePerGas: '30' });
+
+        expect(halfPair.success).toBe(false);
+        expect(halfPair.error?.issues[0]?.path).toEqual(['maxPriorityFeePerGas']);
+        expect(
+            stakingCustomFeeSchema.safeParse({ feePerUnit: '5', maxPriorityFeePerGas: '1' })
+                .success,
+        ).toBe(false);
     });
 });
