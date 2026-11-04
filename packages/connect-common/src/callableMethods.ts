@@ -1,9 +1,4 @@
-import type { CallMethodKeys } from './events/call';
-import type { TrezorConnectManagement } from './types/api/management';
-
-type AssertNever<T extends never> = T;
-
-const connectManagementMethods = [
+export const connectManagementMethods = [
     'getFirmwareHash',
     'resetDevice',
     'loadDevice',
@@ -31,11 +26,6 @@ const connectManagementMethods = [
     'evoluSignRegistrationRequest',
     'evoluGetDelegatedIdentityKey',
 ] as const;
-
-type ManagementKey = keyof TrezorConnectManagement;
-type ManagementItem = (typeof connectManagementMethods)[number];
-export type ManagementMissingGuard = AssertNever<Exclude<ManagementKey, ManagementItem>>;
-export type ManagementExtraGuard = AssertNever<Exclude<ManagementItem, ManagementKey>>;
 
 const connectPublicCallableMethodGroups = {
     device: [
@@ -122,11 +112,6 @@ const connectPublicCallableMethodGroups = {
 } as const;
 
 export const connectPublicCallableMethods = Object.values(connectPublicCallableMethodGroups).flat();
-
-type PublicKey = Exclude<CallMethodKeys, keyof TrezorConnectManagement>;
-type PublicItem = (typeof connectPublicCallableMethods)[number];
-export type PublicMissingGuard = AssertNever<Exclude<PublicKey, PublicItem>>;
-export type PublicExtraGuard = AssertNever<Exclude<PublicItem, PublicKey>>;
 
 export const connectCallableMethods = [
     ...connectPublicCallableMethods,
