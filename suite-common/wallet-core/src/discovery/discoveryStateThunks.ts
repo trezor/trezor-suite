@@ -1,12 +1,35 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { type DeviceUniquePath } from '@trezor/connect';
-import { type WithServices, createThunk } from '@trezor/redux-utils';
+import { type WithServices, createOwnedAction, createThunk } from '@trezor/redux-utils';
 
-import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
-import { type DiscoveryRootState } from './discoveryReducer';
+import { DISCOVERY_MODULE_PREFIX } from './discoveryActions';
 import { selectDiscoveryByDevicePath } from './discoverySelectors';
+import { type DiscoveryRootState } from './discoveryTypes';
 import { getDiscoveryOutcome, getReportableErrorCode, hasDiscoveryEnded } from './discoveryUtils';
+
+// Private on purpose: a discovery may only change through updateDiscoveryThunk and deleteDiscoveryThunk,
+// which report the outcome of the run. Reducers and middlewares get the matchers.
+const { create: updateDiscovery, matcher: updateDiscoveryMatcher } = createOwnedAction(
+    `${DISCOVERY_MODULE_PREFIX}/update`,
+    (status: DiscoveryStatus, path: DeviceUniquePath) => ({
+        payload: {
+            status,
+            path,
+        },
+    }),
+);
+
+const { create: deleteDiscovery, matcher: deleteDiscoveryMatcher } = createOwnedAction(
+    `${DISCOVERY_MODULE_PREFIX}/delete`,
+    (path: DeviceUniquePath) => ({
+        payload: {
+            path,
+        },
+    }),
+);
+
+export { deleteDiscoveryMatcher, updateDiscoveryMatcher };
 
 const DEVICE_CANCELLATION_ERROR_CODES = ['Failure_ActionCancelled', 'Failure_PinCancelled'];
 
@@ -28,7 +51,7 @@ export const updateDiscoveryThunk = createThunk<
     `${DISCOVERY_MODULE_PREFIX}/updateDiscovery`,
     ({ status, path, isSilent = false }, { dispatch, getState, extra }) => {
         const previousDiscovery = selectDiscoveryByDevicePath(getState(), path);
-        dispatch(discoveryActions.updateDiscovery(status, path));
+        dispatch(updateDiscovery(status, path));
 
         const outcome = getDiscoveryOutcome(status);
         const trigger = previousDiscovery?.trigger;
@@ -70,7 +93,7 @@ export const deleteDiscoveryThunk = createThunk<
     { state: DeleteDiscoveryThunkState; extra: DeleteDiscoveryThunkDeps }
 >(`${DISCOVERY_MODULE_PREFIX}/deleteDiscovery`, (path, { dispatch, getState, extra }) => {
     const deletedDiscovery = selectDiscoveryByDevicePath(getState(), path);
-    dispatch(discoveryActions.deleteDiscovery(path));
+    dispatch(deleteDiscovery(path));
 
     // Forgetting a device deletes its discovery, which ends a run that has no outcome yet.
     const trigger = deletedDiscovery?.trigger;

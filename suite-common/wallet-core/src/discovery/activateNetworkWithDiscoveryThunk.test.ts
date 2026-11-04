@@ -23,7 +23,7 @@ import {
     activateNetworkWithDiscoveryThunk,
 } from './activateNetworkWithDiscoveryThunk';
 import { discoveryActions } from './discoveryActions';
-import { updateDiscoveryThunk } from './discoveryStateThunks';
+import { updateDiscoveryMatcher, updateDiscoveryThunk } from './discoveryStateThunks';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
 import { initialWalletSettingsState } from '../settings/walletSettingsReducer';
 
@@ -222,16 +222,17 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
             success: false,
             error: { message: 'Device disconnected', wasCancelled: false },
         });
-        expect(actions).toContainEqual(
-            discoveryActions.updateDiscovery(
-                {
+        expect(actions).toContainEqual({
+            type: updateDiscoveryMatcher.type,
+            payload: {
+                status: {
                     status: 'failed',
                     error: 'Device disconnected',
                     errorCode: 'Device_Disconnected',
                 },
-                devicePath,
-            ),
-        );
+                path: devicePath,
+            },
+        });
     });
 
     it('restores network visibility when activation fails', async () => {
@@ -257,16 +258,17 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
             [{ symbol: networkSymbol, shouldBeVisible: true }],
             [{ symbol: networkSymbol, shouldBeVisible: false }],
         ]);
-        expect(actions).toContainEqual(
-            discoveryActions.updateDiscovery(
-                {
+        expect(actions).toContainEqual({
+            type: updateDiscoveryMatcher.type,
+            payload: {
+                status: {
                     status: 'failed',
                     error: 'Network activation failed',
                     errorCode: 'Failure_UnknownCode',
                 },
-                devicePath,
-            ),
-        );
+                path: devicePath,
+            },
+        });
         expect(mockRunAdditionalDiscovery).not.toHaveBeenCalled();
     });
 

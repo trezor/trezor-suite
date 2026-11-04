@@ -3,9 +3,9 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { createThunk } from '@trezor/redux-utils';
 
 import { DISCOVERY_MODULE_PREFIX } from './discoveryActions';
-import { type DiscoveryRootState } from './discoveryReducer';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { cancelDiscoveryForRestartThunk, startDiscoveryThunk } from './discoveryThunks';
+import { type DiscoveryRootState } from './discoveryTypes';
 import { forgetDisconnectedDevicesThunk } from '../device/deviceThunks';
 
 type EjectAllWalletsThunkParams = {
