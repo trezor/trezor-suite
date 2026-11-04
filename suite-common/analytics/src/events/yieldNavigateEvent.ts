@@ -8,6 +8,7 @@ type Attributes = {
     from: AttributeDef<
         | 'earn-dashboard'
         | 'account-banner'
+        | 'asset-detail-banner'
         | 'account-tokens'
         | 'account-defi-tokens'
         | 'account-tradebox'
@@ -63,7 +64,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         from: {
             description:
-                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen and `deposit-legal-modal` = consents screen (named after their desktop counterparts); `choose-account-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only as an origin, `account-defi-tokens` and `claim-select-account-modal` are desktop-only; `account-tokens` = yield badge on the account Tokens tab or the token row actions there, `account-defi-tokens` also covers the yield badge and token row actions on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box',
+                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen and `deposit-legal-modal` = consents screen (named after their desktop counterparts); `choose-account-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only as an origin, `account-defi-tokens` and `claim-select-account-modal` are desktop-only; `account-tokens` = yield badge on the account Tokens tab or the token row actions there, `account-defi-tokens` also covers the yield badge and token row actions on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box, `asset-detail-banner` = ETH or token yield banner on the Home asset detail (desktop-only)',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -77,6 +78,10 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
                 {
                     version: '26.8.1',
                     notes: '`wrap-form` / `unwrap-form` reported from mobile as well',
+                },
+                {
+                    version: '26.11.0',
+                    notes: 'added `asset-detail-banner` value (desktop)',
                 },
             ],
         },
