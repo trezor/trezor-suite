@@ -1,5 +1,8 @@
 name: "[Bot] stale PR & Issues monitor"
 
+permissions:
+  contents: read
+
 on:
   schedule:
     - cron: "0 17 * * *" # Daily at 5pm UTC

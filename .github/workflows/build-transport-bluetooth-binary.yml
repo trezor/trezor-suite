@@ -1,5 +1,8 @@
 name: "[Build] transport-bluetooth binary"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:

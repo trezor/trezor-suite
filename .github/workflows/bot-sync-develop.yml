@@ -1,5 +1,8 @@
 name: "[Bot] Sync develop branch"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 

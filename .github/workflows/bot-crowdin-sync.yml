@@ -1,5 +1,8 @@
 name: "[Bot] Crowdin translations update"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -22,6 +25,8 @@ concurrency:
 
 jobs:
   crowdin-sync:
+    permissions:
+      contents: write
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:

@@ -1,6 +1,9 @@
 name: "[Check]: mdBook dry-run build validation"
 # Only a dry-run check if the mdBook docs are buildable; the deploy pipeline onto trezor.io is not here in github actions.
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     paths:

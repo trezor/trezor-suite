@@ -2,6 +2,9 @@ name: "[Test] Release Suite Report orchestration"
 # Orchestration workflow that triggers relevant release workflows to create full report in GitHub
 # Desktop, Web and Manual regression suites are run in parallel with reporter enabled
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 
@@ -11,12 +14,17 @@ concurrency:
 
 jobs:
   call-test-suite-manual-release:
+    permissions:
+      contents: read
     uses: ./.github/workflows/test-suite-manual-release.yml
     secrets:
       TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
       TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
   call-test-suite-web-desktop-e2e-release:
+    permissions:
+      id-token: write
+      contents: read
     uses: ./.github/workflows/test-suite-web-desktop-e2e-release.yml
     secrets:
       CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}

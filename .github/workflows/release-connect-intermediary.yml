@@ -1,5 +1,8 @@
 name: "[Release] connect create intermediary release branch"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -14,6 +17,8 @@ on:
 
 jobs:
   create-intermediary-branch:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

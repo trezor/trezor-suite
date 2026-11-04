@@ -1,5 +1,8 @@
 name: "[Release] suite-native develop"
 
+permissions:
+  contents: read
+
 on:
   schedule:
     # Run every hour at 21 minutes past the hour (UTC).

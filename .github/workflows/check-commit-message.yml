@@ -1,5 +1,8 @@
 name: "[Check]: Commit messages"
 
+permissions:
+  contents: read
+
 on: [pull_request]
 
 concurrency:

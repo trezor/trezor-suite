@@ -1,5 +1,8 @@
 name: "[Bot] Set Release iteration on Close/Merge PR & Issue"
 
+permissions:
+  contents: read
+
 on:
   issues:
     types: [closed]

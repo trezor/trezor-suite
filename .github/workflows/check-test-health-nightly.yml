@@ -1,5 +1,8 @@
 name: "[Check] Test Health Nightly"
 
+permissions:
+  contents: read
+
 # Nightly scheduled check on develop branch
 on:
   schedule:
