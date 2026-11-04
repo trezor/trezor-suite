@@ -8,7 +8,9 @@ import {
 import {
     type TradingExchangeType,
     type TradingSellType,
+    type TradingSignAndPushError,
     type TradingSignAndPushSendFormTransactionProps,
+    getSignAndPushRejectionError,
     parseCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
@@ -432,7 +434,7 @@ export const signTradingTransactionThunk = createThunk<
     BlockbookTransaction | undefined,
     TradingSignAndPushSendFormTransactionProps,
     {
-        rejectValue: SignTransactionError | SignTransactionTimeoutError | undefined;
+        rejectValue: SignTransactionError | SignTransactionTimeoutError;
         state: SignTradingTransactionThunkState;
     }
 >(
@@ -462,7 +464,7 @@ export const signTradingTransactionThunk = createThunk<
         const signTransactionResponse = deviceAccessResponse.payload;
 
         if (isRejected(signTransactionResponse)) {
-            return rejectWithValue(signTransactionResponse.payload);
+            return rejectWithValue(getSignAndPushRejectionError(signTransactionResponse));
         }
 
         return fulfillWithValue(signTransactionResponse.payload.signedTx);
@@ -486,7 +488,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
     Ok<{ txid: string }>,
     SignAndPushSendFormTransactionThunkParams,
     {
-        rejectValue: unknown;
+        rejectValue: TradingSignAndPushError;
         state: SignAndPushSendFormTransactionThunkState;
         extra: SignAndPushSendFormTransactionThunkDeps;
     }
@@ -511,7 +513,12 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         );
 
         if (isRejected(enhanceResponse)) {
-            return rejectWithValue(enhanceResponse.payload);
+            return rejectWithValue(
+                enhanceResponse.payload ?? {
+                    error: 'enhance-transaction-failed',
+                    message: enhanceResponse.error.message ?? 'Unknown error',
+                },
+            );
         }
 
         const enhancedPrecomposedTransaction = enhanceResponse.payload;
@@ -526,14 +533,14 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         );
 
         if (isRejected(signResult)) {
-            return rejectWithValue(signResult.payload ?? signResult.error);
+            return rejectWithValue(getSignAndPushRejectionError(signResult));
         }
 
         // We need to wait until the user approves sending the transaction before pushing it
         const pushApproval = await waitForPushApprovalPromise();
 
         if (!pushApproval) {
-            return rejectWithValue('Push approval not received');
+            return rejectWithValue({ error: 'push-approval-rejected' });
         }
 
         const isMevProtectionEnabled =
@@ -544,7 +551,18 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         );
 
         if (isRejected(pushResult)) {
-            return rejectWithValue(pushResult.error);
+            return rejectWithValue(
+                pushResult.payload ?? {
+                    error: 'push-transaction-failed',
+                    metadata: {
+                        success: false,
+                        error: {
+                            code: 'Failure_UnknownCode',
+                            message: pushResult.error.message ?? 'Unknown error',
+                        },
+                    },
+                },
+            );
         }
 
         dispatch(

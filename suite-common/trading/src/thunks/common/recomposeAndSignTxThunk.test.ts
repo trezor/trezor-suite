@@ -19,6 +19,7 @@ import { type RecomposeAndSignTxThunkState } from './recomposeAndSignTxThunk';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { type TradingFulfillValue } from '../../types';
 
 import { tradingThunks } from './index';
 
@@ -701,14 +702,41 @@ describe('recomposeAndSignTxThunk', () => {
     it.each([
         { signingResult: undefined, expectedType: 'sign-cancelled' },
         {
-            signingResult: { success: false, error: { code: 'sign-transaction-timeout' } },
+            signingResult: { success: false, error: { error: 'push-approval-rejected' } },
+            expectedType: 'sign-cancelled',
+        },
+        {
+            signingResult: {
+                success: false,
+                error: { error: 'sign-transaction-timeout', message: 'Signing process timed out.' },
+            },
             expectedType: 'sign-transaction-timeout',
         },
         {
-            signingResult: { success: false, error: { code: 'sign-transaction-failed' } },
+            signingResult: {
+                success: false,
+                error: {
+                    error: 'sign-transaction-failed',
+                    errorCode: 'Device_Disconnected',
+                    message: 'Device disconnected',
+                },
+            },
             expectedType: 'sign-tx-error',
         },
-    ])(
+        {
+            signingResult: {
+                success: false,
+                error: {
+                    error: 'push-transaction-failed',
+                    metadata: {
+                        success: false,
+                        error: { code: 'Backend_Error', message: 'Blockhash not found' },
+                    },
+                },
+            },
+            expectedType: 'sign-tx-error',
+        },
+    ] satisfies { signingResult: TradingFulfillValue; expectedType: string }[])(
         'should reject as $expectedType when signing returns $signingResult',
         async ({ signingResult, expectedType }) => {
             const { store, account, tradingFormState } = getMocks();
