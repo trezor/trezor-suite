@@ -29,11 +29,13 @@ import {
     type BaseCurrencyOption,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
+    type PrecomposedTransactionError,
 } from '@suite-common/wallet-types';
 import { type PROTO, type TokenInfo } from '@trezor/connect';
+import { type ERRORS } from '@trezor/connect-common';
 import { type SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';
 import { type NetworkSymbol } from '@trezor/network-module-types';
-import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
+import { type Err, type Ok } from '@trezor/type-utils';
 
 import type * as constants from './constants';
 
@@ -282,12 +284,41 @@ export type MinimalExchangeFormProps = {
 
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
 
-export type TradingSendRejectedProps<TranslationKey extends string = string> = {
+/**
+ * What went wrong in a trading flow, independent of how a platform words it.
+ */
+export type TradingErrorCode =
+    | 'cannot-send-transaction'
+    | 'cannot-create-transaction'
+    | 'compose-failed'
+    | 'missing-composed-data'
+    | 'missing-fee-level'
+    | 'incorrect-serialized-data'
+    | 'refresh-transaction-failed'
+    | 'no-response'
+    | 'invalid-response'
+    | 'payment-requests-failed'
+    | 'device-not-connected'
+    | 'nonce-failed'
+    | 'verify-address-failed';
+
+/**
+ * The original failure behind a trading error, kept so consumers can show or report it.
+ */
+export type TradingErrorCause =
+    | { source: 'send-form'; error: TradingSignAndPushError }
+    | {
+          source: 'precompose';
+          errorMessage: NonNullable<PrecomposedTransactionError['errorMessage']>;
+      }
+    | { source: 'connect'; code?: ERRORS.ErrorCode; message: string }
+    | { source: 'invity'; message: string }
+    | { source: 'unexpected'; message?: string };
+
+export type TradingError = {
     type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout' | 'sign-cancelled';
-    error: {
-        id: TranslationKey;
-        values?: Record<string, PrimitiveType>;
-    };
+    code: TradingErrorCode;
+    cause?: TradingErrorCause;
 };
 
 export type TradingExchangeUserConsentProps = {

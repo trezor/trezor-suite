@@ -17,7 +17,8 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
-import { type TradingSendRejectedProps } from '../../types';
+import { type TradingError } from '../../types';
+import { getConnectErrorCause } from '../../utils/tradingErrorUtils';
 import { logErrorThunk } from '../common/logErrorThunk';
 
 export type SignDataAndConfirmThunkProps = {
@@ -30,9 +31,9 @@ export type SignDataAndConfirmThunkProps = {
     nextStep: () => void;
 };
 
-const signDataRejectedValue: TradingSendRejectedProps = {
+const signDataRejectedValue: TradingError = {
     type: 'sign-tx-error',
-    error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+    code: 'cannot-send-transaction',
 };
 
 export type SignDataAndConfirmThunkState = TradingRootState;
@@ -41,7 +42,7 @@ export const signDataAndConfirmThunk = createThunk<
     undefined,
     SignDataAndConfirmThunkProps,
     {
-        rejectValue: TradingSendRejectedProps;
+        rejectValue: TradingError;
         state: SignDataAndConfirmThunkState;
     }
 >(
@@ -112,7 +113,10 @@ export const signDataAndConfirmThunk = createThunk<
                 }),
             );
 
-            return rejectWithValue(signDataRejectedValue);
+            return rejectWithValue({
+                ...signDataRejectedValue,
+                cause: getConnectErrorCause(result.error),
+            });
         }
 
         const trade = {

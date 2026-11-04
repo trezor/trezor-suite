@@ -1,4 +1,4 @@
-import { isRejectedWithValue } from '@reduxjs/toolkit';
+import { isRejected } from '@reduxjs/toolkit';
 import { type SellFiatTrade } from 'invity-api';
 
 import { type Account } from '@suite-common/wallet-types';
@@ -13,7 +13,9 @@ import {
     selectTradingTradeApiKey,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
+import { type TradingError } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { toSendTransactionTradingError } from '../../utils/tradingErrorUtils';
 import { tradingThunks } from '../common';
 import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
@@ -34,7 +36,7 @@ export type SendSellTransactionThunkState = TradingRootState;
 export const sendSellTransactionThunk = createThunk<
     undefined,
     SendSellTransactionThunkProps,
-    { state: SendSellTransactionThunkState }
+    { rejectValue: TradingError; state: SendSellTransactionThunkState }
 >(
     `${TRADING_SELL_THUNK_PREFIX}/sendTransaction`,
     async (
@@ -60,7 +62,7 @@ export const sendSellTransactionThunk = createThunk<
         if (!selectedTrade?.orderId || !destinationAddress || !selectedTrade.cryptoStringAmount) {
             return rejectWithValue({
                 type: 'error',
-                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                code: 'cannot-send-transaction',
             });
         }
         const tradingFormState = getTradingFormState({
@@ -89,16 +91,12 @@ export const sendSellTransactionThunk = createThunk<
             }),
         );
 
-        if (isRejectedWithValue(recomposeAndSignTx) || !recomposeAndSignTx.payload?.success) {
-            const { payload } = recomposeAndSignTx;
-
-            return rejectWithValue({
-                type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
-                error:
-                    payload && 'error' in payload
-                        ? payload.error
-                        : { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
-            });
+        if (isRejected(recomposeAndSignTx)) {
+            return rejectWithValue(
+                toSendTransactionTradingError(
+                    recomposeAndSignTx.payload ?? recomposeAndSignTx.error,
+                ),
+            );
         }
 
         // send txid to the server as confirmation
@@ -118,17 +116,15 @@ export const sendSellTransactionThunk = createThunk<
         if (!response) {
             return rejectWithValue({
                 type: 'error',
-                error: { id: 'TR_TRADING_NO_RESPONSE' },
+                code: 'no-response',
             });
         }
 
         if (response.error || !response.status || !response.orderId) {
             return rejectWithValue({
                 type: 'error',
-                error: {
-                    id: 'TR_TRADING_INVALID_RESPONSE',
-                    values: response.error && { error: `(${response.error})` },
-                },
+                code: 'invalid-response',
+                cause: response.error ? { source: 'invity', message: response.error } : undefined,
             });
         }
 

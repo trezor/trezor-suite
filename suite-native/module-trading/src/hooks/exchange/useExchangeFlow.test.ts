@@ -315,7 +315,7 @@ describe('useExchangeFlow', () => {
             const mockOnError = jest.fn();
             const error = {
                 type: 'sign-tx-error',
-                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                code: 'cannot-send-transaction',
             };
 
             mockSignDataAndConfirmThunk.mockImplementation(() => ({

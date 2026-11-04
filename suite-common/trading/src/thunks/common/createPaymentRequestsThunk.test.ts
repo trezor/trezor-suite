@@ -377,7 +377,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
 
@@ -402,7 +402,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
 
@@ -430,7 +430,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
 
@@ -464,7 +464,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
     });
@@ -589,7 +589,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
             expect(tradeApi.getSignedTrade).not.toHaveBeenCalled();
         });
@@ -614,7 +614,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
 
@@ -645,7 +645,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
     });
@@ -673,7 +673,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
     });

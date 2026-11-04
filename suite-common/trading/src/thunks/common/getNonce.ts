@@ -3,14 +3,15 @@ import TrezorConnect from '@trezor/connect';
 import { createThunk } from '@trezor/redux-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { type TradingSendRejectedProps } from '../../types';
+import { type TradingError } from '../../types';
+import { getConnectErrorCause } from '../../utils/tradingErrorUtils';
 
 export type GetNonceThunkState = DeviceRootState;
 
 export const getNonceThunk = createThunk<
     string,
     void,
-    { rejectValue: TradingSendRejectedProps; state: GetNonceThunkState }
+    { rejectValue: TradingError; state: GetNonceThunkState }
 >(
     `${TRADING_THUNK_PREFIX}/getNonce`,
     async (_, { getState, rejectWithValue, fulfillWithValue }) => {
@@ -19,9 +20,7 @@ export const getNonceThunk = createThunk<
         if (!device) {
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_DEVICE_NOT_CONNECTED',
-                },
+                code: 'device-not-connected',
             });
         }
 
@@ -30,9 +29,8 @@ export const getNonceThunk = createThunk<
         if (!nonceResponse.success) {
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_NONCE_ERROR',
-                },
+                code: 'nonce-failed',
+                cause: getConnectErrorCause(nonceResponse.error),
             });
         }
 

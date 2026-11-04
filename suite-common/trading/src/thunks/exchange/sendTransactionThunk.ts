@@ -1,4 +1,4 @@
-import { isRejectedWithValue } from '@reduxjs/toolkit';
+import { isRejected } from '@reduxjs/toolkit';
 import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@trezor/redux-utils';
@@ -18,8 +18,9 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
-import { type TradingSendRejectedProps } from '../../types';
+import { type TradingError } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { toSendTransactionTradingError } from '../../utils/tradingErrorUtils';
 import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 
 export type SendTransactionThunkProps = {
@@ -35,7 +36,7 @@ export const sendTransactionThunk = createThunk<
     undefined,
     SendTransactionThunkProps,
     {
-        rejectValue: TradingSendRejectedProps;
+        rejectValue: TradingError;
         state: SendTransactionThunkState;
     }
 >(
@@ -86,14 +87,14 @@ export const sendTransactionThunk = createThunk<
 
                 return;
             } catch (error) {
-                return rejectWithValue(error);
+                return rejectWithValue(toSendTransactionTradingError(error));
             }
         }
 
         if (!selectedTrade?.orderId || !selectedTrade.sendStringAmount || !sendAddress) {
             return rejectWithValue({
                 type: 'error',
-                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                code: 'cannot-send-transaction',
             });
         }
 
@@ -125,16 +126,12 @@ export const sendTransactionThunk = createThunk<
             }),
         );
 
-        if (isRejectedWithValue(recomposeAndSignTx) || !recomposeAndSignTx.payload?.success) {
-            const { payload } = recomposeAndSignTx;
-
-            return rejectWithValue({
-                type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
-                error:
-                    payload && 'error' in payload && 'id' in payload.error
-                        ? payload.error
-                        : { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
-            });
+        if (isRejected(recomposeAndSignTx)) {
+            return rejectWithValue(
+                toSendTransactionTradingError(
+                    recomposeAndSignTx.payload ?? recomposeAndSignTx.error,
+                ),
+            );
         }
 
         dispatch(

@@ -82,7 +82,7 @@ describe('fetchSelectedProviderQuoteThunk', () => {
 
         expect(result).toMatchObject({
             type: fetchSelectedProviderQuoteThunk.rejected.type,
-            payload: { type: 'error', error: { id: 'TR_TRADING_REFRESH_TRANSACTION_FAILED' } },
+            payload: { type: 'error', code: 'refresh-transaction-failed' },
         });
     });
 

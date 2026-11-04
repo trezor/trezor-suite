@@ -3,8 +3,8 @@ import { type Store } from '@reduxjs/toolkit';
 import { type DeviceRootState } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
+    type TradingError,
     type TradingRootStateWithDeviceAndAccounts,
-    type TradingSendRejectedProps,
 } from '@suite-common/trading';
 import {
     type AccountsRootState,
@@ -44,7 +44,7 @@ type State = TradingRootState &
 const mockComposeTradingTransaction = jest.fn();
 const mockSendTransactionResult = jest.fn<
     {
-        payload?: TradingSendRejectedProps;
+        payload?: TradingError;
         meta: { requestId: string; requestStatus: 'fulfilled' | 'rejected' };
         error?: { message: string };
     },
