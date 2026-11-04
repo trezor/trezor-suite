@@ -70,7 +70,10 @@ const getInitialState = ({ isBannerClosed = false } = {}): AppState => ({
         accounts: [ethereumAccount],
         settings: { ...mockInitialAppState.wallet.settings, enabledNetworks: [ETH] },
     },
-    flags: { ...mockInitialAppState.flags, earnTokenYieldBannerClosed: isBannerClosed },
+    flags: {
+        ...mockInitialAppState.flags,
+        closedTokenYieldBanners: isBannerClosed ? { [`${ETH}-${USDC_ON_ETH}`]: true } : {},
+    },
 });
 
 type MockVaultParams = {
