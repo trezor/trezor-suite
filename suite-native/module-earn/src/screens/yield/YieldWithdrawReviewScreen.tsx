@@ -5,15 +5,12 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    type FormDraftRootState,
     type YieldActionReviewState,
     type YieldRootState,
     type YieldWithdrawFlowType,
     getYieldWithdrawInputToken,
-    selectFormDraft,
     selectYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
-import { type FormState } from '@suite-common/wallet-types';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -23,8 +20,6 @@ import {
 import { YieldWithdrawReviewContent } from '../../components/yield/YieldWithdrawReviewContent';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
-import { getSelectedEvmFeeFromFormDraft } from '../../utils/yield/yieldSelectedFeeUtils';
-import { getYieldWithdrawFormDraftKey } from '../../utils/yield/yieldWithdrawUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawReview>;
 type NavigationProps = StackNavigationProps<
@@ -52,10 +47,6 @@ export const YieldWithdrawReviewScreen = () => {
     const session = useSelector((state: YieldRootState) =>
         selectYieldSessionByFlowKey(state, flowType, flowKey),
     );
-    const formDraftKey = flowKey ? getYieldWithdrawFormDraftKey(flowKey) : '';
-    const formDraft = useSelector((state: FormDraftRootState) =>
-        formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
-    );
 
     const actionReview = session?.action.review;
     const review = useMemo(
@@ -69,9 +60,8 @@ export const YieldWithdrawReviewScreen = () => {
 
         return getYieldWithdrawInputToken({ flowData, flowType });
     }, [flowData, flowType]);
-    const selectedFee = useMemo(() => getSelectedEvmFeeFromFormDraft(formDraft), [formDraft]);
     const preview = useMemo(() => {
-        if (!review || !device || !flowData || !reviewToken || !selectedFee || vaultName === null) {
+        if (!review || !device || !flowData || !reviewToken || vaultName === null) {
             return null;
         }
 
@@ -80,11 +70,10 @@ export const YieldWithdrawReviewScreen = () => {
             flowData,
             review,
             reviewToken,
-            selectedFee,
             type: 'withdraw',
             vaultName,
         });
-    }, [device, flowData, review, reviewToken, selectedFee, vaultName]);
+    }, [device, flowData, review, reviewToken, vaultName]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {
@@ -97,10 +86,10 @@ export const YieldWithdrawReviewScreen = () => {
             return;
         }
 
-        if (!review || !selectedFee || session?.step !== 'action') {
+        if (!review || session?.step !== 'action') {
             navigation.navigate(YieldStackRoutes.YieldWithdraw, route.params);
         }
-    }, [navigation, resolutionStatus, review, route.params, selectedFee, session?.step]);
+    }, [navigation, resolutionStatus, review, route.params, session?.step]);
 
     if (resolutionStatus !== 'resolved' || !flowData || !review || !reviewToken || !preview) {
         return null;

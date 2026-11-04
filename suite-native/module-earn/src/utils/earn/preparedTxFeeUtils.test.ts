@@ -3,7 +3,6 @@ import { type FeeInfo, type FormState } from '@suite-common/wallet-types';
 
 import {
     buildPreparedTxFeeDraftState,
-    buildPreparedTxFeeFormDraft,
     buildPreparedTxFeeLevels,
     buildPreparedTxFeePreview,
     buildPreparedTxSelectedFeeUnsignedTransaction,
@@ -284,50 +283,6 @@ describe('buildPreparedTxSelectedFeeUnsignedTransaction', () => {
                 unsignedTransaction: 'not-json',
             }),
         ).toBeNull();
-    });
-});
-
-describe('buildPreparedTxFeeFormDraft', () => {
-    const formState: FormState = {
-        outputs: [],
-        selectedFee: 'normal',
-        feePerUnit: '1',
-        feeLimit: '21000',
-        maxFeePerGas: '1',
-        maxPriorityFeePerGas: '0.5',
-        options: [],
-        isCoinControlEnabled: false,
-        hasCoinControlBeenOpened: false,
-        selectedUtxos: [],
-    };
-
-    it('preserves existing custom EIP-1559 fee fields', () => {
-        const currentFormDraft: FormState = {
-            outputs: [],
-            selectedFee: 'custom',
-            feePerUnit: '7',
-            feeLimit: '30000',
-            maxFeePerGas: '8',
-            maxPriorityFeePerGas: '2',
-            options: [],
-            isCoinControlEnabled: false,
-            hasCoinControlBeenOpened: false,
-            selectedUtxos: [],
-        };
-
-        expect(
-            buildPreparedTxFeeFormDraft({
-                currentFormDraft,
-                formState,
-                selectedFee: 'custom',
-            }),
-        ).toMatchObject({
-            selectedFee: 'custom',
-            feePerUnit: '7',
-            feeLimit: '30000',
-            maxFeePerGas: '8',
-            maxPriorityFeePerGas: '2',
-        });
     });
 });
 
