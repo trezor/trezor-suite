@@ -1,4 +1,5 @@
 import { expect as detoxExpect } from 'detox';
+import { writeFile } from 'node:fs/promises';
 
 import EN_TRANSLATIONS from '@suite-native/intl/translations/en-US.json';
 
@@ -18,6 +19,11 @@ const getSystemTab = (label: string) => element(by.label(label).withAncestor(by.
 describe('Native navigation smoke [@noDevice @iosOnly]', () => {
     it('uses system tabs and returns to the existing bar when disabled', async () => {
         await openApp({ args: { preloadedState } });
+        await device.takeScreenshot('native-navigation-ios-initial');
+        await writeFile(
+            'artifacts/native-navigation-ios-initial.xml',
+            await device.generateViewHierarchyXml(),
+        );
 
         const accountsTab = getSystemTab(EN_TRANSLATIONS['navigation.tabs.accountsList']);
         await waitForVisible(accountsTab);
