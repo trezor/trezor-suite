@@ -8,10 +8,10 @@ import {
 } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+
+import { AssetSettingsAction } from './AssetSettingsAction';
 
 type AssetSettingsExplorerActionProps = {
     networkSymbol: NetworkSymbol;
@@ -40,17 +40,11 @@ export const AssetSettingsExplorerAction = ({
     };
 
     return (
-        <PressableOpacity
-            accessibilityRole="button"
+        <AssetSettingsAction
+            iconName="arrowUpRight"
+            label={<Translation id="moduleAssets.assetDetailScreen.settings.viewInExplorer" />}
             onPress={handleOpenExplorer}
             testID="@asset-detail/settings/explorer-button"
-        >
-            <HStack alignItems="center" spacing="sp16" paddingVertical="sp12">
-                <Icon name="arrowUpRight" size="medium" />
-                <Text variant="body-md">
-                    <Translation id="moduleAssets.assetDetailScreen.settings.viewInExplorer" />
-                </Text>
-            </HStack>
-        </PressableOpacity>
+        />
     );
 };

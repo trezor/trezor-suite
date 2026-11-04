@@ -12,11 +12,11 @@ import {
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
+
+import { AssetSettingsAction } from './AssetSettingsAction';
 
 type AssetSettingsHideTokenActionProps = {
     networkSymbol: NetworkSymbol;
@@ -51,23 +51,19 @@ export const AssetSettingsHideTokenAction = ({
     };
 
     return (
-        <PressableOpacity
-            accessibilityRole="button"
+        <AssetSettingsAction
+            iconName={isHiddenByUser ? 'eye' : 'eyeSlash'}
+            label={
+                <Translation
+                    id={
+                        isHiddenByUser
+                            ? 'moduleAccountManagement.tokenSettings.showToken'
+                            : 'moduleAccountManagement.tokenSettings.hideToken'
+                    }
+                />
+            }
             onPress={handleToggleTokenVisibility}
             testID={`@asset-detail/settings/${isHiddenByUser ? 'show' : 'hide'}-token-button`}
-        >
-            <HStack alignItems="center" spacing="sp16" paddingVertical="sp12">
-                <Icon name={isHiddenByUser ? 'eye' : 'eyeSlash'} size="medium" />
-                <Text variant="body-md">
-                    <Translation
-                        id={
-                            isHiddenByUser
-                                ? 'moduleAccountManagement.tokenSettings.showToken'
-                                : 'moduleAccountManagement.tokenSettings.hideToken'
-                        }
-                    />
-                </Text>
-            </HStack>
-        </PressableOpacity>
+        />
     );
 };

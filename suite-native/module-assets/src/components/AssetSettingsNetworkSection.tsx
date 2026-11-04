@@ -15,7 +15,7 @@ export const AssetSettingsNetworkSection = ({
             <Translation id="moduleAssets.assetDetailScreen.settings.network" />
         </Text>
         <HStack alignItems="center" spacing="sp8">
-            <Text variant="body-md">{getNetwork(networkSymbol).name}</Text>
+            <Text variant="body-sm">{getNetwork(networkSymbol).name}</Text>
             <NetworkIcon symbol={networkSymbol} size={20} />
         </HStack>
     </HStack>
