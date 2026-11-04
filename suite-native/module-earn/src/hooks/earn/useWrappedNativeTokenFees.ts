@@ -58,62 +58,58 @@ export const useWrappedNativeTokenFees = ({
                 return { type: 'error', reason: 'unsupported-network' };
             }
 
-            try {
-                // There is no background fee-info sync on mobile (desktop has one), so fresh
-                // levels must be fetched before composing — the compose thunk reads them from
-                // the store and errors with `missing-fee-level` when the network has none yet.
-                await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
+            // There is no background fee-info sync on mobile (desktop has one), so fresh
+            // levels must be fetched before composing — the compose thunk reads them from
+            // the store and errors with `missing-fee-level` when the network has none yet.
+            await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
 
-                const composePayload = {
-                    account,
-                    token: {
-                        contractAddress: wrappedNative.address,
-                        decimals: wrappedNative.decimals,
-                    },
-                };
-                const result =
-                    flowType === 'wrap'
-                        ? await dispatch(
-                              composeYieldWrapTransactionThunk({
-                                  ...composePayload,
-                                  wrapAmount: composeAmount,
-                              }),
-                          ).unwrap()
-                        : await dispatch(
-                              composeYieldUnwrapTransactionThunk({
-                                  ...composePayload,
-                                  unwrapAmount: composeAmount,
-                              }),
-                          ).unwrap();
+            const composePayload = {
+                account,
+                token: {
+                    contractAddress: wrappedNative.address,
+                    decimals: wrappedNative.decimals,
+                },
+            };
+            const result =
+                flowType === 'wrap'
+                    ? await dispatch(
+                          composeYieldWrapTransactionThunk({
+                              ...composePayload,
+                              wrapAmount: composeAmount,
+                          }),
+                      ).unwrap()
+                    : await dispatch(
+                          composeYieldUnwrapTransactionThunk({
+                              ...composePayload,
+                              unwrapAmount: composeAmount,
+                          }),
+                      ).unwrap();
 
-                if (result.type !== 'action-ready') {
-                    return { type: 'error', reason: result.reason };
-                }
-
-                const spentToken =
-                    flowType === 'wrap'
-                        ? {
-                              contractAddress: null,
-                              decimals: getNetwork(account.symbol).decimals,
-                              symbol: getNetworkDisplaySymbol(account.symbol),
-                          }
-                        : {
-                              contractAddress: wrappedNative.address,
-                              decimals: wrappedNative.decimals,
-                              symbol: wrappedNative.symbol,
-                          };
-
-                return {
-                    type: 'ready',
-                    transaction: {
-                        symbol: account.symbol,
-                        token: spentToken,
-                        unsignedTransaction: result.unsignedTransaction,
-                    },
-                };
-            } catch {
-                return { type: 'error', reason: 'fee-estimation-failed' };
+            if (result.type !== 'action-ready') {
+                return { type: 'error', reason: result.reason };
             }
+
+            const spentToken =
+                flowType === 'wrap'
+                    ? {
+                          contractAddress: null,
+                          decimals: getNetwork(account.symbol).decimals,
+                          symbol: getNetworkDisplaySymbol(account.symbol),
+                      }
+                    : {
+                          contractAddress: wrappedNative.address,
+                          decimals: wrappedNative.decimals,
+                          symbol: wrappedNative.symbol,
+                      };
+
+            return {
+                type: 'ready',
+                transaction: {
+                    symbol: account.symbol,
+                    token: spentToken,
+                    unsignedTransaction: result.unsignedTransaction,
+                },
+            };
         },
         [account, dispatch, flowType],
     );

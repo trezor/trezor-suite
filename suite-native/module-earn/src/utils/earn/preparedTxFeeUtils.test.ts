@@ -2,12 +2,12 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FormState } from '@suite-common/wallet-types';
 
 import {
-    buildYieldDepositFeeDraftState,
-    buildYieldDepositFeeFormDraft,
-    buildYieldDepositFeeLevels,
-    buildYieldDepositFeePreview,
-    buildYieldDepositSelectedFeeUnsignedTransaction,
-} from './yieldDepositFeeUtils';
+    buildPreparedTxFeeDraftState,
+    buildPreparedTxFeeFormDraft,
+    buildPreparedTxFeeLevels,
+    buildPreparedTxFeePreview,
+    buildPreparedTxSelectedFeeUnsignedTransaction,
+} from './preparedTxFeeUtils';
 
 const baseUnsignedTransaction = {
     from: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
@@ -82,9 +82,9 @@ const eip1559FeeInfo: FeeInfo = {
     ],
 };
 
-describe('buildYieldDepositFeePreview', () => {
+describe('buildPreparedTxFeePreview', () => {
     it('builds an EIP-1559 maximum fee preview from backend transaction', () => {
-        const result = buildYieldDepositFeePreview(
+        const result = buildPreparedTxFeePreview(
             JSON.stringify({
                 ...baseUnsignedTransaction,
                 type: 2,
@@ -104,7 +104,7 @@ describe('buildYieldDepositFeePreview', () => {
     });
 
     it('builds a legacy gas price fee preview from backend transaction', () => {
-        const result = buildYieldDepositFeePreview(
+        const result = buildPreparedTxFeePreview(
             JSON.stringify({
                 ...baseUnsignedTransaction,
                 gasPrice: '0x59682f00',
@@ -120,17 +120,17 @@ describe('buildYieldDepositFeePreview', () => {
     });
 
     it('returns null for unsupported unsigned transaction payload', () => {
-        expect(buildYieldDepositFeePreview('not-json')).toBeNull();
+        expect(buildPreparedTxFeePreview('not-json')).toBeNull();
     });
 
     it('returns null when the backend transaction has no fee fields', () => {
-        expect(buildYieldDepositFeePreview(JSON.stringify(baseUnsignedTransaction))).toBeNull();
+        expect(buildPreparedTxFeePreview(JSON.stringify(baseUnsignedTransaction))).toBeNull();
     });
 });
 
-describe('buildYieldDepositFeeLevels', () => {
+describe('buildPreparedTxFeeLevels', () => {
     it('derives EIP-1559 fee levels from the base deposit transaction', () => {
-        const result = buildYieldDepositFeeLevels({
+        const result = buildPreparedTxFeeLevels({
             amount: '1.25',
             feeInfo: eip1559FeeInfo,
             gasLimit: '21000',
@@ -174,9 +174,9 @@ describe('buildYieldDepositFeeLevels', () => {
     });
 });
 
-describe('buildYieldDepositSelectedFeeUnsignedTransaction', () => {
+describe('buildPreparedTxSelectedFeeUnsignedTransaction', () => {
     it('updates legacy fee fields without changing non-fee transaction fields', () => {
-        const result = buildYieldDepositSelectedFeeUnsignedTransaction({
+        const result = buildPreparedTxSelectedFeeUnsignedTransaction({
             feeInfo: legacyFeeInfo,
             currentFormDraft: buildFormDraft({ selectedFee: 'high' }),
             unsignedTransaction: JSON.stringify({
@@ -194,7 +194,7 @@ describe('buildYieldDepositSelectedFeeUnsignedTransaction', () => {
     });
 
     it('rebuilds a custom EIP-1559 fee and removes legacy fee fields', () => {
-        const result = buildYieldDepositSelectedFeeUnsignedTransaction({
+        const result = buildPreparedTxSelectedFeeUnsignedTransaction({
             feeInfo: eip1559FeeInfo,
             currentFormDraft: buildFormDraft({
                 selectedFee: 'custom',
@@ -222,7 +222,7 @@ describe('buildYieldDepositSelectedFeeUnsignedTransaction', () => {
     });
 
     it('falls back from incomplete custom fee to normal and removes EIP-1559 fee fields', () => {
-        const result = buildYieldDepositSelectedFeeUnsignedTransaction({
+        const result = buildPreparedTxSelectedFeeUnsignedTransaction({
             feeInfo: legacyFeeInfo,
             currentFormDraft: buildFormDraft({
                 selectedFee: 'custom',
@@ -250,7 +250,7 @@ describe('buildYieldDepositSelectedFeeUnsignedTransaction', () => {
     });
 
     it('falls back from partial EIP-1559 custom fee to normal EIP-1559 fee', () => {
-        const result = buildYieldDepositSelectedFeeUnsignedTransaction({
+        const result = buildPreparedTxSelectedFeeUnsignedTransaction({
             feeInfo: eip1559FeeInfo,
             currentFormDraft: buildFormDraft({
                 selectedFee: 'custom',
@@ -279,7 +279,7 @@ describe('buildYieldDepositSelectedFeeUnsignedTransaction', () => {
 
     it('returns null for unsupported unsigned transaction payload', () => {
         expect(
-            buildYieldDepositSelectedFeeUnsignedTransaction({
+            buildPreparedTxSelectedFeeUnsignedTransaction({
                 feeInfo: legacyFeeInfo,
                 unsignedTransaction: 'not-json',
             }),
@@ -287,7 +287,7 @@ describe('buildYieldDepositSelectedFeeUnsignedTransaction', () => {
     });
 });
 
-describe('buildYieldDepositFeeFormDraft', () => {
+describe('buildPreparedTxFeeFormDraft', () => {
     const formState: FormState = {
         outputs: [],
         selectedFee: 'normal',
@@ -316,7 +316,7 @@ describe('buildYieldDepositFeeFormDraft', () => {
         };
 
         expect(
-            buildYieldDepositFeeFormDraft({
+            buildPreparedTxFeeFormDraft({
                 currentFormDraft,
                 formState,
                 selectedFee: 'custom',
@@ -331,9 +331,9 @@ describe('buildYieldDepositFeeFormDraft', () => {
     });
 });
 
-describe('buildYieldDepositFeeDraftState', () => {
+describe('buildPreparedTxFeeDraftState', () => {
     it('adds a custom fee level when the custom fee draft is complete', () => {
-        const result = buildYieldDepositFeeDraftState({
+        const result = buildPreparedTxFeeDraftState({
             amount: '1.25',
             currentFormDraft: buildFormDraft({
                 selectedFee: 'custom',

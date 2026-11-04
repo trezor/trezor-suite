@@ -15,38 +15,38 @@ type ParsedUnsignedEvmTransaction = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
 
-export type YieldDepositFeeToken = {
+export type PreparedTxFeeToken = {
     contractAddress?: string | null;
     decimals: number;
     symbol: string;
 };
 
-type BuildYieldDepositFeeLevelsParams = {
+type BuildPreparedTxFeeLevelsParams = {
     amount: string;
     feeInfo: FeeInfo;
     gasLimit: string;
     symbol: NetworkSymbol;
-    token: YieldDepositFeeToken;
+    token: PreparedTxFeeToken;
     unsignedTransaction: string;
 };
 
-type BuildYieldDepositFeeFormDraftParams = {
+type BuildPreparedTxFeeFormDraftParams = {
     currentFormDraft?: FormState;
     formState: FormState;
     selectedFee: FeeLevelLabel;
 };
 
-type BuildYieldDepositFeeDraftStateParams = BuildYieldDepositFeeLevelsParams & {
+type BuildPreparedTxFeeDraftStateParams = BuildPreparedTxFeeLevelsParams & {
     currentFormDraft?: FormState;
 };
 
-type BuildYieldDepositSelectedFeeUnsignedTransactionParams = {
+type BuildPreparedTxSelectedFeeUnsignedTransactionParams = {
     currentFormDraft?: FormState;
     feeInfo: FeeInfo;
     unsignedTransaction: string;
 };
 
-type BuildYieldDepositFeeDraftStateResult = {
+type BuildPreparedTxFeeDraftStateResult = {
     feeLevels: PrecomposedLevels;
     formDraft: FormState;
     selectedFeeUnsignedTransaction: string;
@@ -101,13 +101,10 @@ const parseRawUnsignedEvmTransaction = (unsignedTransaction: string) => {
     return { parsedTransaction, rawTransaction };
 };
 
-const isYieldDepositEip1559FeeInfo = (feeInfo: FeeInfo) =>
+const isPreparedTxEip1559FeeInfo = (feeInfo: FeeInfo) =>
     feeInfo.levels.some(feeLevel => feeLevel.maxFeePerGas && feeLevel.maxPriorityFeePerGas);
 
-const getYieldDepositFeeState = (
-    currentFormDraft: FormState | undefined,
-    isEip1559Fee: boolean,
-) => {
+const getPreparedTxFeeState = (currentFormDraft: FormState | undefined, isEip1559Fee: boolean) => {
     const hasCompleteCustomFee =
         currentFormDraft?.selectedFee === 'custom' &&
         !!currentFormDraft.feePerUnit &&
@@ -142,7 +139,7 @@ const getYieldDepositFeeState = (
     };
 };
 
-const getYieldDepositFeeLevel = (feeInfo: FeeInfo, selectedFee: FeeLevelLabel) =>
+const getPreparedTxFeeLevel = (feeInfo: FeeInfo, selectedFee: FeeLevelLabel) =>
     feeInfo.levels.find(level => level.label === selectedFee) ??
     feeInfo.levels.find(level => level.label === 'normal');
 
@@ -174,7 +171,7 @@ const buildUnsignedTransactionWithFeeFields = (
     };
 };
 
-export const buildYieldDepositFeePreview = (
+export const buildPreparedTxFeePreview = (
     unsignedTransaction: string,
 ): PrecomposedTransactionFinal | null => {
     const tx = parseUnsignedEvmTransactionForSigning(unsignedTransaction);
@@ -186,14 +183,14 @@ export const buildYieldDepositFeePreview = (
     return buildPrecomposedTransaction(tx);
 };
 
-export const buildYieldDepositFeeLevels = ({
+export const buildPreparedTxFeeLevels = ({
     amount,
     feeInfo,
     gasLimit,
     symbol,
     token,
     unsignedTransaction,
-}: BuildYieldDepositFeeLevelsParams): PrecomposedLevels =>
+}: BuildPreparedTxFeeLevelsParams): PrecomposedLevels =>
     Object.fromEntries(
         feeInfo.levels
             .filter(feeLevel => feeLevel.label !== 'custom')
@@ -210,11 +207,11 @@ export const buildYieldDepositFeeLevels = ({
             }),
     );
 
-export const buildYieldDepositSelectedFeeUnsignedTransaction = ({
+export const buildPreparedTxSelectedFeeUnsignedTransaction = ({
     currentFormDraft,
     feeInfo,
     unsignedTransaction,
-}: BuildYieldDepositSelectedFeeUnsignedTransactionParams): string | null => {
+}: BuildPreparedTxSelectedFeeUnsignedTransactionParams): string | null => {
     const parsedUnsignedTransaction = parseRawUnsignedEvmTransaction(unsignedTransaction);
 
     if (!parsedUnsignedTransaction) {
@@ -223,11 +220,11 @@ export const buildYieldDepositSelectedFeeUnsignedTransaction = ({
 
     const { parsedTransaction, rawTransaction } = parsedUnsignedTransaction;
     const isEip1559Fee =
-        isYieldDepositEip1559FeeInfo(feeInfo) ||
+        isPreparedTxEip1559FeeInfo(feeInfo) ||
         !!(parsedTransaction.maxFeePerGas && parsedTransaction.maxPriorityFeePerGas);
-    const { customFee, selectedFee } = getYieldDepositFeeState(currentFormDraft, isEip1559Fee);
+    const { customFee, selectedFee } = getPreparedTxFeeState(currentFormDraft, isEip1559Fee);
     const gasLimit = fromHex(parsedTransaction.gasLimit).toBigNumber().toFixed(0);
-    const feeLevel = customFee ? customFee : getYieldDepositFeeLevel(feeInfo, selectedFee);
+    const feeLevel = customFee ? customFee : getPreparedTxFeeLevel(feeInfo, selectedFee);
 
     if (!feeLevel) {
         return null;
@@ -241,11 +238,11 @@ export const buildYieldDepositSelectedFeeUnsignedTransaction = ({
     return JSON.stringify(buildUnsignedTransactionWithFeeFields(rawTransaction, feeFields));
 };
 
-export const buildYieldDepositFeeFormDraft = ({
+export const buildPreparedTxFeeFormDraft = ({
     currentFormDraft,
     formState,
     selectedFee,
-}: BuildYieldDepositFeeFormDraftParams): FormState => {
+}: BuildPreparedTxFeeFormDraftParams): FormState => {
     const shouldPreserveCustomFeeFields =
         selectedFee === 'custom' && !!currentFormDraft?.feePerUnit && !!currentFormDraft.feeLimit;
     const feeFields = shouldPreserveCustomFeeFields ? currentFormDraft : formState;
@@ -260,23 +257,23 @@ export const buildYieldDepositFeeFormDraft = ({
     };
 };
 
-export const buildYieldDepositFeeDraftState = ({
+export const buildPreparedTxFeeDraftState = ({
     currentFormDraft,
     ...feeLevelParams
-}: BuildYieldDepositFeeDraftStateParams): BuildYieldDepositFeeDraftStateResult | null => {
+}: BuildPreparedTxFeeDraftStateParams): BuildPreparedTxFeeDraftStateResult | null => {
     try {
-        const feeLevels = buildYieldDepositFeeLevels(feeLevelParams);
-        const { selectedFee } = getYieldDepositFeeState(
+        const feeLevels = buildPreparedTxFeeLevels(feeLevelParams);
+        const { selectedFee } = getPreparedTxFeeState(
             currentFormDraft,
-            isYieldDepositEip1559FeeInfo(feeLevelParams.feeInfo),
+            isPreparedTxEip1559FeeInfo(feeLevelParams.feeInfo),
         );
-        const feeLevel = getYieldDepositFeeLevel(feeLevelParams.feeInfo, selectedFee);
+        const feeLevel = getPreparedTxFeeLevel(feeLevelParams.feeInfo, selectedFee);
 
         if (!feeLevel) {
             return null;
         }
 
-        const selectedFeeUnsignedTransaction = buildYieldDepositSelectedFeeUnsignedTransaction({
+        const selectedFeeUnsignedTransaction = buildPreparedTxSelectedFeeUnsignedTransaction({
             currentFormDraft,
             feeInfo: feeLevelParams.feeInfo,
             unsignedTransaction: feeLevelParams.unsignedTransaction,
@@ -286,7 +283,7 @@ export const buildYieldDepositFeeDraftState = ({
             return null;
         }
 
-        const selectedFeePreview = buildYieldDepositFeePreview(selectedFeeUnsignedTransaction);
+        const selectedFeePreview = buildPreparedTxFeePreview(selectedFeeUnsignedTransaction);
 
         if (!selectedFeePreview) {
             return null;
@@ -311,7 +308,7 @@ export const buildYieldDepositFeeDraftState = ({
                           custom: selectedFeePreview,
                       }
                     : feeLevels,
-            formDraft: buildYieldDepositFeeFormDraft({
+            formDraft: buildPreparedTxFeeFormDraft({
                 currentFormDraft,
                 formState,
                 selectedFee,
