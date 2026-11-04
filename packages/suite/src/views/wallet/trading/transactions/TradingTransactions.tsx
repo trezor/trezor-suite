@@ -1,17 +1,17 @@
 import { useSelector } from 'react-redux';
 
-import { selectDeviceTradingTrades } from '@suite-common/trading';
+import { selectDeviceHasTradingTrades } from '@suite-common/trading';
 
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingTransactionsEmptyState } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsEmptyState';
 import { TradingTransactionsList } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsList';
 
 export const TradingTransactions = () => {
-    const trades = useSelector(selectDeviceTradingTrades);
+    const hasTrades = useSelector(selectDeviceHasTradingTrades);
 
     return (
         <TradingContainer>
-            {trades.length > 0 ? <TradingTransactionsList /> : <TradingTransactionsEmptyState />}
+            {hasTrades ? <TradingTransactionsList /> : <TradingTransactionsEmptyState />}
         </TradingContainer>
     );
 };
