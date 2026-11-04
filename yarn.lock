@@ -11571,6 +11571,7 @@ __metadata:
   dependencies:
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/earn-staking-common": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/requirements": "workspace:*"

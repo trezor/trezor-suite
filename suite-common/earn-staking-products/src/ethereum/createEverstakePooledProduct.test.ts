@@ -5,6 +5,7 @@ import {
     mockStakingPlan,
     mockStakingStep,
 } from '@suite-common/earn-staking-common/mocks';
+import { mockEthereumStakingAccount } from '@suite-common/wallet-types/mocks';
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
@@ -48,14 +49,25 @@ describe('createEverstakePooledProduct', () => {
         expect(deps.getEthereumValidatorsQueue).toHaveBeenCalledTimes(1);
     });
 
-    it('derives no position yet', () => {
+    it('derives the position of an account with an Everstake pool', () => {
         const product = createEverstakePooledProduct({
             networkSymbol: asNetworkSymbol('eth'),
             ...createDeps(),
         });
 
         expect(
-            product.getPosition({ account: mockStakingAccount(), productInfo: null }),
+            product.getPosition({
+                account: mockEthereumStakingAccount('active'),
+                productInfo: null,
+                transactions: [],
+            }),
+        ).toMatchObject({ productId: 'eth:eth:everstake:pooled', status: 'active' });
+        expect(
+            product.getPosition({
+                account: mockStakingAccount(),
+                productInfo: null,
+                transactions: [],
+            }),
         ).toBeNull();
     });
 

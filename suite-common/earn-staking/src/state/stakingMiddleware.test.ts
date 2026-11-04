@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
 import {
@@ -10,12 +10,14 @@ import {
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type AccountsRootState,
+    type TransactionsRootState,
     type WalletSettingsRootState,
     accountsActions,
     changeNetworks,
     handleEarnTransactionReplacementThunk,
     initialWalletSettingsState,
     transactionsActions,
+    transactionsInitialState,
 } from '@suite-common/wallet-core';
 import type {
     PrecomposedTransactionFinalBumpFeeRbf,
@@ -40,7 +42,10 @@ import { createStakingCompositionRoot } from '../createStakingCompositionRoot';
 import { selectStakingPositionsByAccount } from './stakingSelectors';
 import { selectStakingSession } from './stakingSessionSelectors';
 
-type StakingMiddlewareTestState = StakingRootState & AccountsRootState & WalletSettingsRootState;
+type StakingMiddlewareTestState = StakingRootState &
+    AccountsRootState &
+    TransactionsRootState &
+    WalletSettingsRootState;
 
 const eth = mockStakingProductDescriptor();
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
@@ -48,6 +53,20 @@ const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const position = mockStakingPosition();
 
 const flushThunks = () => new Promise(resolve => setTimeout(resolve, 0));
+
+const transactionsReducer = (
+    state: StakingMiddlewareTestState['wallet']['transactions'] = transactionsInitialState,
+    action: UnknownAction,
+): StakingMiddlewareTestState['wallet']['transactions'] =>
+    transactionsActions.addTransaction.match(action)
+        ? {
+              ...state,
+              transactions: {
+                  ...state.transactions,
+                  [action.payload.account.key]: action.payload.transactions,
+              },
+          }
+        : state;
 
 const initStore = (
     adapterOverrides: Partial<StakingProductAdapter> = {},
@@ -82,6 +101,7 @@ const initStore = (
             earn: combineReducers({ staking: stakingReducer }),
             wallet: combineReducers({
                 accounts: (state = [ethAccount, btcAccount]) => state,
+                transactions: transactionsReducer,
                 settings: (state = initialWalletSettingsState) => state,
             }),
         },
@@ -110,6 +130,7 @@ describe('prepareStakingMiddleware', () => {
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
             productInfo: null,
+            transactions: [],
         });
         expect(selectStakingPositionsByAccount(store.getState(), ethAccount.key)).toEqual([
             position,
@@ -149,6 +170,7 @@ describe('prepareStakingMiddleware', () => {
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
             productInfo: mockStakingProductInfo(),
+            transactions: [],
         });
     });
 
@@ -232,6 +254,43 @@ describe('prepareStakingMiddleware', () => {
             expect(adapter.getPosition).toHaveBeenCalledWith({
                 account: ethAccount,
                 productInfo: null,
+                transactions: [createTransaction()],
+            });
+        });
+
+        it('passes the pending transaction, then the mined one, with the account updates', async () => {
+            const { store, staking, adapter } = initStore();
+            const pending = createTransaction({ blockHeight: undefined });
+            const mined = createTransaction();
+
+            staking.loadStakingProducts();
+            await flushThunks();
+
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    account: ethAccount,
+                    transactions: [pending],
+                }),
+            );
+            store.dispatch(accountsActions.updateAccount(ethAccount));
+            await flushThunks();
+
+            expect(adapter.getPosition).toHaveBeenLastCalledWith({
+                account: ethAccount,
+                productInfo: null,
+                transactions: [pending],
+            });
+
+            store.dispatch(
+                transactionsActions.addTransaction({ account: ethAccount, transactions: [mined] }),
+            );
+            store.dispatch(accountsActions.updateAccount(ethAccount));
+            await flushThunks();
+
+            expect(adapter.getPosition).toHaveBeenLastCalledWith({
+                account: ethAccount,
+                productInfo: null,
+                transactions: [mined],
             });
         });
 

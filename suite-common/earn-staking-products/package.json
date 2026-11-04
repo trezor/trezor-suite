@@ -20,6 +20,7 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@suite-common/wallet-types": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/requirements": "workspace:*"
     }

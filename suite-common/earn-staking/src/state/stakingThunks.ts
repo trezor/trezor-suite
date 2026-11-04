@@ -2,8 +2,10 @@ import { assertStakingPosition } from '@suite-common/earn-staking-common';
 import type { QueryClientDep } from '@suite-common/react-query';
 import {
     type AccountsRootState,
+    type TransactionsRootState,
     type WalletSettingsRootState,
     selectAccountByKey,
+    selectAccountTransactions,
     selectAccounts,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
@@ -30,7 +32,9 @@ type SyncStakingPositionsParams = {
     accountKey: AccountKey;
 };
 
-export type SyncStakingPositionsThunkState = StakingRootState & AccountsRootState;
+export type SyncStakingPositionsThunkState = StakingRootState &
+    AccountsRootState &
+    TransactionsRootState;
 
 export type SyncStakingPositionsThunkDeps = WithServices<StakingDep & QueryClientDep>;
 
@@ -45,6 +49,8 @@ export const syncStakingPositionsThunk = createThunk<
 
         if (!account) return;
 
+        const transactions = selectAccountTransactions(getState(), accountKey);
+
         const adapters = extra.services.staking.stakingProductRepository.listBySymbol(
             account.symbol,
         );
@@ -56,6 +62,7 @@ export const syncStakingPositionsThunk = createThunk<
                     extra.services.queryClient,
                     adapter.descriptor.id,
                 ),
+                transactions,
             });
 
             if (position === null) return [];

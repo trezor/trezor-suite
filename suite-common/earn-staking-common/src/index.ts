@@ -141,6 +141,7 @@ export {
     type StakingProductInfo,
     type StakingProductTarget,
 } from './stakingProductInfo';
+export { isPendingStakingTransaction, type StakingTransaction } from './stakingTransaction';
 export {
     stakingProviderIdSchema,
     stakingProviderLinksSchema,
