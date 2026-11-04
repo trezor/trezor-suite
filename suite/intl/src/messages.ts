@@ -11724,6 +11724,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_VOTE_ABSTAIN_DESCRIPTION',
         defaultMessage: "Stay neutral — your voting power won't count for or against proposals.",
     },
+    TR_STAKING_ERROR_GENERIC: {
+        id: 'TR_STAKING_ERROR_GENERIC',
+        defaultMessage: 'Something went wrong. Try again later.',
+    },
     TR_STAKING_VOTE_LET_EVERSTAKE_VOTE: {
         id: 'TR_STAKING_VOTE_LET_EVERSTAKE_VOTE',
         defaultMessage: 'Let Everstake vote for you',

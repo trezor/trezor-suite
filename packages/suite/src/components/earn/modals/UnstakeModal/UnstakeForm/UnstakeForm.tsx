@@ -35,6 +35,8 @@ export const UnstakeForm = () => {
         changeFeeLevel,
         feeInfo,
         composedLevels,
+        hasComposeError,
+        retryCompose,
         methods,
         onCryptoAmountChange,
         getValues,
@@ -207,6 +209,24 @@ export const UnstakeForm = () => {
                         />
                     </InfoItem>
                 )}
+                {(isCardanoNetwork && showError) || hasComposeError ? (
+                    <Column gap={16}>
+                        {isCardanoNetwork && showError && (
+                            <Banner intent="critical" description={inputError?.message} />
+                        )}
+                        {hasComposeError && (
+                            <Banner
+                                intent="critical"
+                                description={<Translation id="TR_STAKING_ERROR_GENERIC" />}
+                                rightContent={
+                                    <Banner.Button onClick={() => retryCompose()}>
+                                        <Translation id="TR_RETRY" />
+                                    </Banner.Button>
+                                }
+                            />
+                        )}
+                    </Column>
+                ) : null}
             </Column>
         </Form>
     );
