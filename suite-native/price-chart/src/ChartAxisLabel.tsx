@@ -7,7 +7,7 @@ import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
-type AxisLabelProps = {
+type ChartAxisLabelProps = {
     x: number;
     value: number;
     graphWidth: number;
@@ -21,7 +21,7 @@ const axisLabelStyle = prepareNativeStyle<{ left: number; isMeasured: boolean }>
     }),
 );
 
-export const AxisLabel = ({ x, value, graphWidth }: AxisLabelProps) => {
+export const ChartAxisLabel = ({ x, value, graphWidth }: ChartAxisLabelProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
     const [labelWidth, setLabelWidth] = useState(0);

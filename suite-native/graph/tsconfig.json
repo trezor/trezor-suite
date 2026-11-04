@@ -4,9 +4,6 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/discreet-mode"
-        },
-        {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/graph" },
@@ -34,6 +31,7 @@
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../price-chart" },
         { "path": "../react-native-graph" },
         { "path": "../storage" },
         { "path": "../theme" },
