@@ -16,7 +16,6 @@ import {
     isEarnSigningCancelled,
     isYieldSupported,
     isYieldTxReviewForFlow,
-    isYieldWithdrawFlow,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
     selectYieldSession,
@@ -25,7 +24,6 @@ import {
     transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
-import { type EvmSelectedFee } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
@@ -43,7 +41,6 @@ type YieldActionReviewThunkPayload = {
     flowKey: string;
     flowType: YieldPositionFlowType;
     reviewToken?: YieldFlowDisplayToken;
-    selectedFee?: EvmSelectedFee | null;
 };
 
 type YieldSignTransactionError = {
@@ -79,7 +76,7 @@ export const signYieldActionReviewThunk = createThunk<
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/signActionReview`,
     async (
-        { flowData, flowKey, flowType, reviewToken, selectedFee },
+        { flowData, flowKey, flowType, reviewToken },
         { dispatch, getState, rejectWithValue, extra },
     ) => {
         const session = selectYieldSession(getState(), flowType, flowKey);
@@ -95,13 +92,6 @@ export const signYieldActionReviewThunk = createThunk<
             });
         }
 
-        if (isYieldWithdrawFlow(flowType) && !selectedFee) {
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                message: 'Fee information is missing for the transaction.',
-            });
-        }
-
         if (!isYieldSupported(device, { flowType, vaultToken: flowData.token })) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
@@ -114,7 +104,7 @@ export const signYieldActionReviewThunk = createThunk<
         try {
             transactionReview = buildStablecoinYieldTransactionReview({
                 amount: review.amount,
-                selectedFee: selectedFee ?? null,
+                selectedFee: null,
                 symbol: flowData.account.symbol,
                 token: reviewToken ?? flowData.token,
                 unsignedTransaction: review.unsignedTransaction,

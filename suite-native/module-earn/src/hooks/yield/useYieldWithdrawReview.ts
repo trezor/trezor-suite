@@ -1,19 +1,16 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    type FormDraftRootState,
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldRootState,
     type YieldWithdrawFlowType,
     isYieldTxReviewForFlow,
-    selectFormDraft,
     selectYieldTxReview,
 } from '@suite-common/wallet-core';
-import { type FormState } from '@suite-common/wallet-types';
 import type {
     StackNavigationProps,
     YieldStackParamList,
@@ -27,8 +24,6 @@ import {
     pushYieldActionReviewThunk,
     signYieldActionReviewThunk,
 } from '../../thunks/yield/yieldTransactionThunks';
-import { getSelectedEvmFeeFromFormDraft } from '../../utils/yield/yieldSelectedFeeUtils';
-import { getYieldWithdrawFormDraftKey } from '../../utils/yield/yieldWithdrawUtils';
 import { useEarnTransactionReview } from '../earn/useEarnTransactionReview';
 
 type NavigationProps = StackNavigationProps<
@@ -64,18 +59,9 @@ export const useYieldWithdrawReview = ({
 
     const txReview = useSelector((state: YieldRootState) => selectYieldTxReview(state));
 
-    const formDraftKey = getYieldWithdrawFormDraftKey(flowKey);
-    const formDraft = useSelector((state: FormDraftRootState) =>
-        selectFormDraft<FormState>(state, formDraftKey),
-    );
-
     // A leftover signed tx from a previous review of the same account must not appear
     // as signed here, hence the flow identity and `notBefore` guard.
     const [reviewOpenedAt] = useState(() => Date.now());
-
-    // The withdraw amount is signed with the fee the user picked on the form screen, unlike the
-    // other yield actions, which sign the fee their compose step baked into the transaction.
-    const selectedFee = useMemo(() => getSelectedEvmFeeFromFormDraft(formDraft), [formDraft]);
 
     const isWithdrawSigned =
         isYieldTxReviewForFlow(txReview, {
@@ -93,10 +79,9 @@ export const useYieldWithdrawReview = ({
                     flowKey,
                     flowType,
                     reviewToken,
-                    selectedFee,
                 }),
             ),
-        [dispatch, flowData, flowKey, flowType, reviewToken, selectedFee],
+        [dispatch, flowData, flowKey, flowType, reviewToken],
     );
 
     const pushAction = useCallback(

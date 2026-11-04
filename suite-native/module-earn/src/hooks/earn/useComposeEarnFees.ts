@@ -39,7 +39,7 @@ import { useEarnFeeEstimationError } from './useEarnFeeEstimationError';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type EarnFormDraftPrefix } from '../../types';
 
-export type UpdateEarnSelectedFeeLevelThunkState = FormDraftRootState;
+export type UpdateEarnSelectedFeeLevelThunkState = FormDraftRootState & NativeSendRootState;
 
 export const updateEarnSelectedFeeLevelThunk = createThunk<
     void,
@@ -47,29 +47,25 @@ export const updateEarnSelectedFeeLevelThunk = createThunk<
     { state: UpdateEarnSelectedFeeLevelThunkState }
 >(
     `${EARN_MODULE_PREFIX}/updateSelectedFeeLevelThunk`,
-    (
-        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey, maxFeePerGas, maxPriorityFeePerGas },
-        { dispatch, getState },
-    ) => {
+    ({ feeLevelLabel, formDraftKey }, { dispatch, getState }) => {
         if (!formDraftKey) return;
         const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey);
-        if (!formDraft) return;
+        const preview = selectFeeLevels(getState())[feeLevelLabel];
+        if (!formDraft || !isFinalPrecomposedTransaction(preview)) return;
 
-        formDraft.selectedFee = feeLevelLabel;
-        if (feePerUnit) {
-            formDraft.feePerUnit = feePerUnit;
-        }
-        if (feeLimit) {
-            formDraft.feeLimit = feeLimit;
-        }
-        if (maxFeePerGas) {
-            formDraft.maxFeePerGas = maxFeePerGas;
-        }
-        if (maxPriorityFeePerGas) {
-            formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        }
-
-        dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
+        dispatch(
+            formDraftActions.storeDraft({
+                key: formDraftKey,
+                formDraft: {
+                    ...formDraft,
+                    selectedFee: feeLevelLabel,
+                    feePerUnit: preview.feePerByte,
+                    feeLimit: preview.feeLimit ?? '',
+                    maxFeePerGas: preview.maxFeePerGas,
+                    maxPriorityFeePerGas: preview.maxPriorityFeePerGas,
+                },
+            }),
+        );
     },
 );
 

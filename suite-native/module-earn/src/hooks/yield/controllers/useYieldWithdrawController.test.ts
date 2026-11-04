@@ -1,5 +1,9 @@
+import { createElement } from 'react';
+
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/wallet-core/mocks';
 import { toTokenAddress } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -11,11 +15,14 @@ import {
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
+import { FeeSelector } from '@suite-native/transaction-management';
 
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
 import { useYieldWithdrawController } from './useYieldWithdrawController';
 import { mockYieldFlowScreenBaseResult } from '../../../../mocks/mockYieldFlowScreenBaseResult';
+import { YieldWithdrawScreen } from '../../../screens/yield/YieldWithdrawScreen';
 import { useYieldPendingSheet } from '../useYieldPendingSheet';
 import { useYieldWithdrawFees } from '../useYieldWithdrawFees';
 
@@ -28,6 +35,11 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: () => ({ navigate: mockNavigate, replace: mockReplace, goBack: jest.fn() }),
     useRoute: () => ({ params: mockRouteParams }),
 }));
+jest.mock('./useYieldWithdrawController', () => {
+    const actual = jest.requireActual('./useYieldWithdrawController');
+
+    return { ...actual, useYieldWithdrawController: jest.fn(actual.useYieldWithdrawController) };
+});
 jest.mock('./useYieldFlowScreenBase');
 jest.mock('../useYieldWithdrawFees');
 jest.mock('../useYieldPendingSheet');
@@ -43,6 +55,7 @@ jest.mock('@suite-native/formatters', () => ({
 }));
 jest.mock('@suite-native/transaction-management', () => ({
     ...jest.requireActual('@suite-native/transaction-management'),
+    FeeSelector: jest.fn(() => null),
     useTransactionDetails: () => ({ explorerUrl: null, openInBlockchain: jest.fn() }),
 }));
 
@@ -61,6 +74,7 @@ const withdrawFees = {
     hasFeeEstimationError: false,
     isComposingWithdrawFee: false,
     isFeeUnavailable: false,
+    isWithdrawFeeReady: false,
     preparedAction: null,
     retryFeeEstimation: jest.fn(),
     selectedFee: undefined,
@@ -130,6 +144,74 @@ describe('useYieldWithdrawController', () => {
         );
         useYieldWithdrawFeesMock.mockReturnValue(withdrawFees);
         useYieldPendingSheetMock.mockReturnValue(pendingSheet);
+    });
+
+    it('blocks the continue handler when the selected fee is unavailable', async () => {
+        useYieldWithdrawFeesMock.mockReturnValue({
+            ...withdrawFees,
+            formDraft: { selectedFee: 'normal' } as NonNullable<typeof withdrawFees.formDraft>,
+            isFeeUnavailable: true,
+            preparedAction: { amount: '1', unsignedTransaction: '{}' },
+        });
+        const { result } = await renderWithdrawController();
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        await act(
+            () =>
+                result.current.status === 'ready' && result.current.amountForm.onAmountChange('1'),
+        );
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        expect(result.current.footer.isDisabled).toBe(true);
+        await act(() => result.current.status === 'ready' && result.current.footer.onContinue());
+        expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('continues when the shared fee state is ready for the current amount', async () => {
+        useYieldWithdrawFeesMock.mockReturnValue({
+            ...withdrawFees,
+            formDraft: { selectedFee: 'normal' } as NonNullable<typeof withdrawFees.formDraft>,
+            isWithdrawFeeReady: true,
+            preparedAction: { amount: '1', unsignedTransaction: '{}' },
+        });
+        const { result } = await renderWithdrawController();
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        await act(
+            () =>
+                result.current.status === 'ready' && result.current.amountForm.onAmountChange('1'),
+        );
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        expect(result.current.footer.isDisabled).toBe(false);
+        await act(() => result.current.status === 'ready' && result.current.footer.onContinue());
+        expect(mockNavigate).toHaveBeenCalledWith(
+            YieldStackRoutes.YieldWithdrawReview,
+            expect.anything(),
+        );
+    });
+
+    it('forwards the withdrawal Custom builder to the fee picker', async () => {
+        const getCustomFeeLevel = jest.fn();
+        useYieldWithdrawFeesMock.mockReturnValue({
+            ...withdrawFees,
+            formDraft: { selectedFee: 'normal' } as NonNullable<typeof withdrawFees.formDraft>,
+            getCustomFeeLevel,
+        });
+        const { result } = await renderWithdrawController();
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        expect(result.current.feeSelector?.getCustomFeeLevel).toBe(getCustomFeeLevel);
+        jest.mocked(useYieldWithdrawController).mockReturnValue(result.current);
+        try {
+            await renderWithStoreProvider(createElement(YieldWithdrawScreen), {
+                services: { analytics: mockNativeAnalytics(), networks: mockNetworksServices() },
+                preloadedState: { messageSystem: messageSystemInitialState },
+            });
+            expect(FeeSelector).toHaveBeenCalledWith(
+                expect.objectContaining({ getCustomFeeLevel }),
+                undefined,
+            );
+        } finally {
+            jest.mocked(useYieldWithdrawController).mockImplementation(
+                jest.requireActual('./useYieldWithdrawController').useYieldWithdrawController,
+            );
+        }
     });
 
     it('starts in the flow type carried by the route', async () => {

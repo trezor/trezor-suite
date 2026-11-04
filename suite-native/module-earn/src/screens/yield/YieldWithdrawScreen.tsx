@@ -252,6 +252,8 @@ export const YieldWithdrawScreen = () => {
                             selectedFeePerUnit={feeSelector.formDraft.feePerUnit}
                             formDraft={feeSelector.formDraft}
                             formDraftKey={feeSelector.formDraftKey}
+                            getCustomFeeLevel={feeSelector.getCustomFeeLevel}
+                            isLoading={footer.isLoading}
                         />
                     )}
 

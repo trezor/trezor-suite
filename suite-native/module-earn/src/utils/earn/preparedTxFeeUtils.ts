@@ -7,9 +7,11 @@ import {
     type FeeLevelLabel,
     type FormState,
     type PrecomposedLevels,
+    type PrecomposedTransaction,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { calculateTotalGasCost, fromHex } from '@suite-common/wallet-utils';
+import { calculateTotalGasCost, fromHex, isEip1559 } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 type ParsedUnsignedEvmTransaction = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
@@ -30,18 +32,18 @@ type BuildPreparedTxFeeLevelsParams = {
     unsignedTransaction: string;
 };
 
-type BuildPreparedTxFeeFormDraftParams = {
-    currentFormDraft?: FormState;
-    formState: FormState;
-    selectedFee: FeeLevelLabel;
-};
-
 type BuildPreparedTxFeeDraftStateParams = BuildPreparedTxFeeLevelsParams & {
     currentFormDraft?: FormState;
+    availableBalance?: string;
 };
 
+type PreparedTxFeeFields = Pick<
+    FormState,
+    'selectedFee' | 'feePerUnit' | 'feeLimit' | 'maxFeePerGas' | 'maxPriorityFeePerGas'
+>;
+
 type BuildPreparedTxSelectedFeeUnsignedTransactionParams = {
-    currentFormDraft?: FormState;
+    currentFormDraft?: PreparedTxFeeFields;
     feeInfo: FeeInfo;
     unsignedTransaction: string;
 };
@@ -101,10 +103,12 @@ const parseRawUnsignedEvmTransaction = (unsignedTransaction: string) => {
     return { parsedTransaction, rawTransaction };
 };
 
-const isPreparedTxEip1559FeeInfo = (feeInfo: FeeInfo) =>
-    feeInfo.levels.some(feeLevel => feeLevel.maxFeePerGas && feeLevel.maxPriorityFeePerGas);
+const isPreparedTxEip1559FeeInfo = (feeInfo: FeeInfo) => isEip1559(feeInfo.levels[0]);
 
-const getPreparedTxFeeState = (currentFormDraft: FormState | undefined, isEip1559Fee: boolean) => {
+const getPreparedTxFeeState = (
+    currentFormDraft: PreparedTxFeeFields | undefined,
+    isEip1559Fee: boolean,
+) => {
     const hasCompleteCustomFee =
         currentFormDraft?.selectedFee === 'custom' &&
         !!currentFormDraft.feePerUnit &&
@@ -190,7 +194,7 @@ export const buildPreparedTxFeeLevels = ({
     symbol,
     token,
     unsignedTransaction,
-}: BuildPreparedTxFeeLevelsParams): PrecomposedLevels =>
+}: BuildPreparedTxFeeLevelsParams) =>
     Object.fromEntries(
         feeInfo.levels
             .filter(feeLevel => feeLevel.label !== 'custom')
@@ -219,9 +223,7 @@ export const buildPreparedTxSelectedFeeUnsignedTransaction = ({
     }
 
     const { parsedTransaction, rawTransaction } = parsedUnsignedTransaction;
-    const isEip1559Fee =
-        isPreparedTxEip1559FeeInfo(feeInfo) ||
-        !!(parsedTransaction.maxFeePerGas && parsedTransaction.maxPriorityFeePerGas);
+    const isEip1559Fee = isPreparedTxEip1559FeeInfo(feeInfo);
     const { customFee, selectedFee } = getPreparedTxFeeState(currentFormDraft, isEip1559Fee);
     const gasLimit = fromHex(parsedTransaction.gasLimit).toBigNumber().toFixed(0);
     const feeLevel = customFee ? customFee : getPreparedTxFeeLevel(feeInfo, selectedFee);
@@ -238,81 +240,101 @@ export const buildPreparedTxSelectedFeeUnsignedTransaction = ({
     return JSON.stringify(buildUnsignedTransactionWithFeeFields(rawTransaction, feeFields));
 };
 
-export const buildPreparedTxFeeFormDraft = ({
-    currentFormDraft,
-    formState,
-    selectedFee,
-}: BuildPreparedTxFeeFormDraftParams): FormState => {
-    const shouldPreserveCustomFeeFields =
-        selectedFee === 'custom' && !!currentFormDraft?.feePerUnit && !!currentFormDraft.feeLimit;
-    const feeFields = shouldPreserveCustomFeeFields ? currentFormDraft : formState;
+const applyPreparedTxFeeBalance = (
+    preview: PrecomposedTransactionFinal,
+    unsignedTransaction: string,
+    availableBalance: string | undefined,
+): PrecomposedTransaction => {
+    if (availableBalance === undefined) return preview;
 
-    return {
-        ...formState,
-        selectedFee,
-        feePerUnit: feeFields.feePerUnit,
-        feeLimit: feeFields.feeLimit,
-        maxFeePerGas: feeFields.maxFeePerGas,
-        maxPriorityFeePerGas: feeFields.maxPriorityFeePerGas,
-    };
+    const balance = new BigNumber(availableBalance);
+    const transaction = parseUnsignedEvmTransactionForSigning(unsignedTransaction);
+    const cost = new BigNumber(preview.fee).plus(
+        fromHex(transaction?.value ?? '0x0').toBigNumber(),
+    );
+
+    return balance.isFinite() && cost.lte(balance)
+        ? preview
+        : { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' };
+};
+
+type BuildPreparedTxCustomFeeLevelParams = BuildPreparedTxSelectedFeeUnsignedTransactionParams & {
+    availableBalance?: string;
+    estimatedFeeLimit: string;
+};
+
+export const buildPreparedTxCustomFeeLevel = ({
+    availableBalance,
+    estimatedFeeLimit,
+    ...params
+}: BuildPreparedTxCustomFeeLevelParams): PrecomposedTransaction | undefined => {
+    const unsignedTransaction = buildPreparedTxSelectedFeeUnsignedTransaction(params);
+    if (!unsignedTransaction) return;
+
+    const preview = buildPreparedTxFeePreview(unsignedTransaction);
+
+    return preview
+        ? applyPreparedTxFeeBalance(
+              { ...preview, estimatedFeeLimit },
+              unsignedTransaction,
+              availableBalance,
+          )
+        : undefined;
 };
 
 export const buildPreparedTxFeeDraftState = ({
     currentFormDraft,
+    availableBalance,
     ...feeLevelParams
 }: BuildPreparedTxFeeDraftStateParams): BuildPreparedTxFeeDraftStateResult | null => {
     try {
         const feeLevels = buildPreparedTxFeeLevels(feeLevelParams);
-        const { selectedFee } = getPreparedTxFeeState(
+        let { selectedFee } = getPreparedTxFeeState(
             currentFormDraft,
             isPreparedTxEip1559FeeInfo(feeLevelParams.feeInfo),
         );
-        const feeLevel = getPreparedTxFeeLevel(feeLevelParams.feeInfo, selectedFee);
 
-        if (!feeLevel) {
-            return null;
+        // An amount change may need more gas than the confirmed Custom limit.
+        if (
+            selectedFee === 'custom' &&
+            new BigNumber(currentFormDraft?.feeLimit ?? 0).lt(feeLevelParams.gasLimit)
+        ) {
+            selectedFee = 'normal';
         }
 
         const selectedFeeUnsignedTransaction = buildPreparedTxSelectedFeeUnsignedTransaction({
-            currentFormDraft,
+            currentFormDraft: currentFormDraft && { ...currentFormDraft, selectedFee },
             feeInfo: feeLevelParams.feeInfo,
             unsignedTransaction: feeLevelParams.unsignedTransaction,
         });
-
-        if (!selectedFeeUnsignedTransaction) {
-            return null;
-        }
+        if (!selectedFeeUnsignedTransaction) return null;
 
         const selectedFeePreview = buildPreparedTxFeePreview(selectedFeeUnsignedTransaction);
-
-        if (!selectedFeePreview) {
-            return null;
-        }
+        if (!selectedFeePreview) return null;
 
         const { formState } = buildStablecoinYieldTransactionReview({
             amount: feeLevelParams.amount,
-            selectedFee: buildEvmSelectedFee({
-                feeLevel,
-                gasLimit: feeLevelParams.gasLimit,
-            }),
+            selectedFee: null,
+            selectedFeeLevel: selectedFee,
             symbol: feeLevelParams.symbol,
             token: feeLevelParams.token,
-            unsignedTransaction: feeLevelParams.unsignedTransaction,
+            unsignedTransaction: selectedFeeUnsignedTransaction,
         });
+        const previews =
+            selectedFee === 'custom' ? { ...feeLevels, custom: selectedFeePreview } : feeLevels;
 
         return {
-            feeLevels:
-                selectedFee === 'custom'
-                    ? {
-                          ...feeLevels,
-                          custom: selectedFeePreview,
-                      }
-                    : feeLevels,
-            formDraft: buildPreparedTxFeeFormDraft({
-                currentFormDraft,
-                formState,
-                selectedFee,
-            }),
+            feeLevels: Object.fromEntries(
+                Object.entries(previews).map(([label, preview]) => [
+                    label,
+                    applyPreparedTxFeeBalance(
+                        { ...preview, estimatedFeeLimit: feeLevelParams.gasLimit },
+                        feeLevelParams.unsignedTransaction,
+                        availableBalance,
+                    ),
+                ]),
+            ),
+            formDraft: { ...formState, estimatedFeeLimit: feeLevelParams.gasLimit },
             selectedFeeUnsignedTransaction,
         };
     } catch {

@@ -10,20 +10,20 @@ import {
     selectFormDraft,
 } from '@suite-common/wallet-core';
 import {
-    type FeeInfo,
     type FeeLevelLabel,
     type FormState,
     type GeneralPrecomposedLevels,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import {
+    type CustomFeeLevelBuilder,
     type NativeSendRootState,
     getFeeAvailability,
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
-import { useDebounce } from '@trezor/react-utils';
+import { useDebounce, useFreshRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
@@ -31,6 +31,7 @@ import { useComposeErrorHandler } from './useComposeErrorHandler';
 import { useEarnFeeEstimationError } from './useEarnFeeEstimationError';
 import {
     type PreparedTxFeeToken,
+    buildPreparedTxCustomFeeLevel,
     buildPreparedTxFeeDraftState,
     buildPreparedTxFeePreview,
 } from '../../utils/earn/preparedTxFeeUtils';
@@ -55,6 +56,8 @@ export type PreparedTx<TComposed extends ComposedTxBase> = {
 };
 
 type BaseActionContext<TComposed extends ComposedTxBase> = {
+    composeTransaction: (amount: string) => Promise<ComposeTxResult<TComposed, string>>;
+    formDraftKey: string;
     amount: string;
     baseFeePreview: PrecomposedTransactionFinal;
     transaction: TComposed;
@@ -62,6 +65,8 @@ type BaseActionContext<TComposed extends ComposedTxBase> = {
 
 type UsePreparedTxFeesParams<TComposed extends ComposedTxBase, TReason extends string> = {
     amount: string | undefined;
+    availableBalance?: string;
+    contextKey?: string;
     /**
      * Composes the base transaction for the debounced amount. Thrown failures use fallbackReason. Every error is surfaced as a retryable alert; a failure that only
      * disables the submit button leaves the user with no way to proceed.
@@ -77,15 +82,6 @@ type UsePreparedTxFeesParams<TComposed extends ComposedTxBase, TReason extends s
     symbol: NetworkSymbol | undefined;
 };
 
-const getFeeInfoRevision = (feeInfo: FeeInfo | null | undefined) =>
-    feeInfo?.levels
-        .map(({ baseFeePerGas, blocks, feePerUnit, label, maxFeePerGas, maxPriorityFeePerGas }) =>
-            [label, feePerUnit, blocks, maxFeePerGas, maxPriorityFeePerGas, baseFeePerGas].join(
-                ':',
-            ),
-        )
-        .join('|') ?? '';
-
 /**
  * Debounce-composes a transaction while the user types, re-prices it across fee levels, and
  * stores them so the shared `<FeeSelector>` can render and change them. The flow-specific part
@@ -96,8 +92,10 @@ export const usePreparedTxFees = <
     TReason extends string = never,
 >({
     amount,
+    availableBalance,
     composeTransaction,
     formDraftKey,
+    contextKey = formDraftKey,
     hasInvalidContext,
     isEnabled,
     symbol,
@@ -109,7 +107,7 @@ export const usePreparedTxFees = <
     const requestIdRef = useRef(0);
     const { reportError: reportComposeError, resetError: resetComposeError } =
         useComposeErrorHandler({
-            contextKey: formDraftKey,
+            contextKey,
             onError: onComposeError,
         });
     const [baseActionContext, setBaseActionContext] = useState<BaseActionContext<TComposed> | null>(
@@ -131,12 +129,8 @@ export const usePreparedTxFees = <
     );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
 
-    const feeLevelsRef = useRef(feeLevels);
-    feeLevelsRef.current = feeLevels;
+    const feeLevelsRef = useFreshRef(feeLevels);
     const storedFeeLevelsRef = useRef<GeneralPrecomposedLevels | null>(null);
-    const feeInfoRef = useRef(feeInfo);
-    feeInfoRef.current = feeInfo;
-    const feeInfoRevision = useMemo(() => getFeeInfoRevision(feeInfo), [feeInfo]);
 
     const clearFeeLevels = useCallback(() => {
         if (storedFeeLevelsRef.current && feeLevelsRef.current === storedFeeLevelsRef.current) {
@@ -144,7 +138,7 @@ export const usePreparedTxFees = <
         }
 
         storedFeeLevelsRef.current = null;
-    }, [dispatch]);
+    }, [dispatch, feeLevelsRef]);
 
     const clearFeeStore = useCallback(() => {
         clearFeeLevels();
@@ -211,6 +205,8 @@ export const usePreparedTxFees = <
 
             resetComposeError();
             setBaseActionContext({
+                composeTransaction,
+                formDraftKey,
                 amount: composeAmount,
                 baseFeePreview,
                 transaction: result.transaction,
@@ -221,37 +217,44 @@ export const usePreparedTxFees = <
             clearFeeState,
             composeTransaction,
             fallbackReason,
+            formDraftKey,
             reportComposeError,
             resetComposeError,
             setHasFeeEstimationError,
         ],
     );
 
-    const feeDraftState = useMemo(() => {
-        const currentFeeInfo = feeInfoRef.current;
+    const currentBaseActionContext =
+        baseActionContext !== null &&
+        baseActionContext.amount === amount &&
+        baseActionContext.formDraftKey === formDraftKey &&
+        baseActionContext.composeTransaction === composeTransaction
+            ? baseActionContext
+            : null;
 
+    const feeDraftState = useMemo(() => {
         if (
-            !baseActionContext ||
-            !feeInfoRevision ||
-            !currentFeeInfo ||
-            !baseActionContext.baseFeePreview.feeLimit
+            !currentBaseActionContext ||
+            !feeInfo?.levels.length ||
+            !currentBaseActionContext.baseFeePreview.feeLimit
         ) {
             return null;
         }
 
         return buildPreparedTxFeeDraftState({
             currentFormDraft: formDraft,
-            amount: baseActionContext.amount,
-            feeInfo: currentFeeInfo,
-            gasLimit: baseActionContext.baseFeePreview.feeLimit,
-            symbol: baseActionContext.transaction.symbol,
-            token: baseActionContext.transaction.token,
-            unsignedTransaction: baseActionContext.transaction.unsignedTransaction,
+            availableBalance,
+            amount: currentBaseActionContext.amount,
+            feeInfo,
+            gasLimit: currentBaseActionContext.baseFeePreview.feeLimit,
+            symbol: currentBaseActionContext.transaction.symbol,
+            token: currentBaseActionContext.transaction.token,
+            unsignedTransaction: currentBaseActionContext.transaction.unsignedTransaction,
         });
-    }, [baseActionContext, feeInfoRevision, formDraft]);
+    }, [availableBalance, currentBaseActionContext, feeInfo, formDraft]);
 
     const preparedTx = useMemo((): PreparedTx<TComposed> | null => {
-        if (!baseActionContext) {
+        if (!currentBaseActionContext) {
             return null;
         }
 
@@ -261,10 +264,10 @@ export const usePreparedTxFees = <
 
         const unsignedTransaction =
             feeDraftState?.selectedFeeUnsignedTransaction ??
-            baseActionContext.transaction.unsignedTransaction;
+            currentBaseActionContext.transaction.unsignedTransaction;
         const feePreview =
-            unsignedTransaction === baseActionContext.transaction.unsignedTransaction
-                ? baseActionContext.baseFeePreview
+            unsignedTransaction === currentBaseActionContext.transaction.unsignedTransaction
+                ? currentBaseActionContext.baseFeePreview
                 : buildPreparedTxFeePreview(unsignedTransaction);
 
         if (!feePreview) {
@@ -272,15 +275,15 @@ export const usePreparedTxFees = <
         }
 
         return {
-            amount: baseActionContext.amount,
+            amount: currentBaseActionContext.amount,
             feePreview,
-            transaction: baseActionContext.transaction,
+            transaction: currentBaseActionContext.transaction,
             unsignedTransaction,
         };
-    }, [baseActionContext, feeDraftState, feeInfo, formDraft]);
+    }, [currentBaseActionContext, feeDraftState, feeInfo, formDraft]);
 
     useEffect(() => {
-        if (!baseActionContext) {
+        if (!currentBaseActionContext) {
             return;
         }
 
@@ -310,7 +313,15 @@ export const usePreparedTxFees = <
                 }),
             );
         }
-    }, [baseActionContext, clearFeeLevels, dispatch, feeDraftState, formDraft, formDraftKey]);
+    }, [
+        currentBaseActionContext,
+        clearFeeLevels,
+        dispatch,
+        feeDraftState,
+        feeLevelsRef,
+        formDraft,
+        formDraftKey,
+    ]);
 
     const selectedFee: FeeLevelLabel =
         feeDraftState?.formDraft.selectedFee ?? formDraft?.selectedFee ?? 'normal';
@@ -320,10 +331,14 @@ export const usePreparedTxFees = <
         selectedFee,
         isLoading: isPreparingFee,
     });
-    const isFeeUnavailable =
-        (!!baseActionContext && !feeDraftState && !isPreparingFee) ||
-        feeAvailability.isFeeUnavailable;
-    const isCurrentFeePreparing = canCompose && !!amount && isPreparingFee;
+    const shouldHaveFeeDraft = !!currentBaseActionContext && !isPreparingFee;
+    const hasMissingFeeDraft = shouldHaveFeeDraft && !feeDraftState;
+    const isFeeUnavailable = hasMissingFeeDraft || feeAvailability.isFeeUnavailable;
+    const isCurrentFeePreparing =
+        canCompose &&
+        !!amount &&
+        !hasFeeEstimationError &&
+        (isPreparingFee || !currentBaseActionContext);
     const isFeeReady = isEnabled && preparedTx?.amount === amount && !isFeeUnavailable;
 
     useEffect(() => {
@@ -365,7 +380,32 @@ export const usePreparedTxFees = <
         [clearFeeStore],
     );
 
+    const getCustomFeeLevel = useCallback<CustomFeeLevelBuilder>(
+        feeLevel => {
+            if (!canCompose || isCurrentFeePreparing || !currentBaseActionContext || !feeInfo) {
+                return;
+            }
+
+            return buildPreparedTxCustomFeeLevel({
+                availableBalance,
+                currentFormDraft: {
+                    selectedFee: 'custom',
+                    feePerUnit: feeLevel.feePerUnit,
+                    feeLimit:
+                        feeLevel.feeLimit || currentBaseActionContext.baseFeePreview.feeLimit || '',
+                    maxFeePerGas: feeLevel.maxFeePerGas,
+                    maxPriorityFeePerGas: feeLevel.maxPriorityFeePerGas,
+                },
+                feeInfo,
+                estimatedFeeLimit: currentBaseActionContext.baseFeePreview.feeLimit || '',
+                unsignedTransaction: currentBaseActionContext.transaction.unsignedTransaction,
+            });
+        },
+        [availableBalance, canCompose, currentBaseActionContext, feeInfo, isCurrentFeePreparing],
+    );
+
     return {
+        getCustomFeeLevel,
         formDraft,
         formDraftKey,
         hasFeeEstimationError,

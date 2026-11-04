@@ -137,9 +137,9 @@ export const useYieldWithdrawController = () => {
     const {
         fee: withdrawFee,
         formDraft: withdrawFeeFormDraft,
+        isWithdrawFeeReady,
         hasFeeEstimationError,
         isComposingWithdrawFee,
-        isFeeUnavailable,
         preparedAction,
     } = withdrawFees;
     const feeFiatConverters = useCryptoFiatConverters({
@@ -160,8 +160,7 @@ export const useYieldWithdrawController = () => {
             isAmountValidationErrorDisplayed ||
             !withdrawFee ||
             resolutionStatus !== 'resolved' ||
-            preparedAction?.amount !== amount ||
-            preparedAction.flowType !== flowType
+            !isWithdrawFeeReady
         ) {
             return false;
         }
@@ -180,17 +179,10 @@ export const useYieldWithdrawController = () => {
         isAmountValidationErrorDisplayed,
         amountFiatConverters,
         feeFiatConverters,
-        preparedAction,
+        isWithdrawFeeReady,
         resolutionStatus,
         withdrawFee,
-        flowType,
     ]);
-
-    const isWithdrawReviewReady =
-        !!amount &&
-        preparedAction?.amount === amount &&
-        preparedAction.flowType === flowType &&
-        !!withdrawFeeFormDraft;
 
     const pendingTransaction = session?.action.pendingTransaction ?? null;
     const { actionPendingTransaction } = splitYieldPendingTransaction(pendingTransaction, flowType);
@@ -208,9 +200,7 @@ export const useYieldWithdrawController = () => {
         isWithdrawPending ||
         isAmountTooHigh ||
         isAmountValidationErrorDisplayed ||
-        !isWithdrawReviewReady ||
-        isComposingWithdrawFee ||
-        isFeeUnavailable ||
+        !isWithdrawFeeReady ||
         messageSystem.isDisabled;
 
     useYieldPendingTransactionTracking({
@@ -400,7 +390,7 @@ export const useYieldWithdrawController = () => {
     );
 
     const handleContinue = useCallback(() => {
-        if (!flowKey || !isWithdrawReviewReady || !preparedAction || messageSystem.isDisabled) {
+        if (!flowKey || isSubmitDisabled || !preparedAction) {
             return;
         }
 
@@ -432,8 +422,7 @@ export const useYieldWithdrawController = () => {
         dispatch,
         flowType,
         flowKey,
-        messageSystem.isDisabled,
-        isWithdrawReviewReady,
+        isSubmitDisabled,
         isWrappedNativeVault,
         navigation,
         preparedAction,
@@ -505,6 +494,7 @@ export const useYieldWithdrawController = () => {
             ? {
                   formDraft: withdrawFeeFormDraft,
                   formDraftKey: withdrawFees.formDraftKey,
+                  getCustomFeeLevel: withdrawFees.getCustomFeeLevel,
                   selectedFee: withdrawFees.selectedFee,
                   updateFeeLevelThunk: withdrawFees.updateFeeLevelThunk,
               }
