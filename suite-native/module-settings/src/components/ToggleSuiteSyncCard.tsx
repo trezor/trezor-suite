@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { injectTurnOffSuiteSync, injectTurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { useAlert } from '@suite-native/alerts';
@@ -26,7 +26,7 @@ export const ToggleSuiteSyncCard = () => {
 
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const selectedDevice = useSelector(selectSelectedDevice);
+    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
 
     const showSuiteSyncDisableConfirmationAlert = () => {
         showAlert({
@@ -54,7 +54,7 @@ export const ToggleSuiteSyncCard = () => {
             showSuiteSyncDisableConfirmationAlert();
         } else {
             const result = await turnOnSuiteSync({
-                deviceStaticSessionId: selectedDevice?.state?.staticSessionId,
+                deviceStaticSessionId: deviceStaticSessionId ?? undefined,
             });
 
             analytics.report({
