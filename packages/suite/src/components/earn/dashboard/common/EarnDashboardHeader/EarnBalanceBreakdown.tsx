@@ -1,5 +1,3 @@
-import { useTheme } from 'styled-components';
-
 import { Translation } from '@suite/intl';
 import {
     selectEarnTotalFiatAmount,
@@ -10,7 +8,7 @@ import {
     useEarnMissingRateTickersQuery,
     useYieldOpportunities,
 } from '@suite-common/wallet-core';
-import { Card, Column, ProgressBar, Text } from '@trezor/components';
+import { Card, Column, SegmentedBar, Text } from '@trezor/components';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -23,8 +21,6 @@ const STAKING_COLOR = 'contentBrand' satisfies Color;
 const YIELD_COLOR = 'elementFillBrandBold' satisfies Color;
 
 export const EarnBalanceBreakdown = () => {
-    const theme = useTheme();
-
     const { yieldOpportunities } = useYieldOpportunities();
     const { isFiatRatesLoading } = useEarnMissingRateTickersQuery();
 
@@ -65,11 +61,11 @@ export const EarnBalanceBreakdown = () => {
                     </HiddenPlaceholder>
                 ) : (
                     <Column gap={16} width="100%" alignItems="stretch">
-                        <ProgressBar
-                            value={ratio}
-                            max={1}
-                            backgroundColor={theme[YIELD_COLOR]}
-                            foregroundColor={theme[STAKING_COLOR]}
+                        <SegmentedBar
+                            segments={[
+                                { value: ratio, color: STAKING_COLOR },
+                                { value: 1 - ratio, color: YIELD_COLOR },
+                            ]}
                         />
 
                         <Column gap={8}>
