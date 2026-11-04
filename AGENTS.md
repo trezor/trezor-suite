@@ -62,17 +62,15 @@ names from manifests, not paths.
 - `suite-common/` (`@suite-common/*`): Shared wallet/domain logic, including `wallet-core`,
   `device`, `message-system`. May use shared peers and reusable `@trezor/*` libraries; must not
   depend on desktop/web or native app code.
-- `suite-app/` (`@suite-app/*`): Desktop/web application assembly. Currently contains `web-app`,
-  the web composition root; reusable features and network modules must not depend on app assembly.
-- `suite/` (`@suite/*`): Desktop/web features and applications awaiting migration; may use peers,
+- `suite-app/` (`@suite-app/*`): Desktop/web application assembly. `web-app` is the web
+  composition root. `desktop-app` owns Electron packaging, distribution and installers, composed
+  from `desktop-app-renderer` (React entry point) and `desktop-app-main` (main and preload processes).
+  Reusable features and network modules must not depend on app assembly.
+- `suite/` (`@suite/*`): Desktop/web features and application code awaiting migration; may use peers,
   shared logic and reusable libraries, never native app code. `suite/e2e` is the Playwright
-  workspace (`@trezor/suite-e2e`). `desktop-app` is the Electron application root for packaging,
-  distribution and installers.
-  `desktop-app` is assembled from `desktop-app-renderer` (Electron renderer process, desktop React
-  entry point), `desktop-app-main` (Electron main and preload processes) and
-  `desktop-app-native-bindings` (compiled OS bindings). Both applications use `app-assets` (static
-  assets and their generation) and `desktop-app-api` (desktop API contract), whose Electron
-  implementation is `desktop-app-api-electron`.
+  workspace (`@trezor/suite-e2e`). The applications use `app-assets` (static assets and generation),
+  `desktop-app-api` (desktop API contract), `desktop-app-api-electron` (Electron implementation)
+  and `desktop-app-native-bindings` (compiled OS bindings).
 - `suite-native/` (`@suite-native/*`): Mobile features and `app` (Expo/React Native); may use peers,
   shared logic and reusable libraries, never desktop/web app code.
 - `packages/suite`: Remaining app-layer exception to the `packages/` convention. It contains the

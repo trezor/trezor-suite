@@ -32,7 +32,7 @@ const repoRoot = findRepoRoot(process.cwd());
  * Repo-root-relative directories whose files the React Compiler compiles
  * - E.g. `packages/suite` would cover `packages/suite/src/...`
  * - An entry must be reachable from BOTH the web and the desktop entry graph, which are disjoint
- * (`suite-app/web-app/src/index.ts` vs `suite/desktop-app-renderer/src/index.tsx`).
+ * (`suite-app/web-app/src/index.ts` vs `suite-app/desktop-app-renderer/src/index.tsx`).
  */
 export const REACT_COMPILER_PATHS: readonly string[] = [
     // Wave 1a. Already compiled in production on mobile, where `experiments.reactCompiler` covers

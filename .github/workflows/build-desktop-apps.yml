@@ -64,18 +64,18 @@ jobs:
           version: v0.32.0
           config-file: .github/pmg-config.yml
       - name: Install deps and build libs
-        # not installing @suite/desktop-app and @suite/desktop-app-main, because this is only the renderer process
+        # not installing @suite-app/desktop-app and @suite-app/desktop-app-main, because this is only the renderer process
         run: |
-          yarn workspaces focus trezor-suite @suite/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite-app/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
       - name: Build Electron Renderer bundle
-        run: yarn workspace @suite/desktop-app-renderer build
+        run: yarn workspace @suite-app/desktop-app-renderer build
       - name: Cache Electron renderer bundle
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: suite/desktop-app/build
+          path: suite-app/desktop-app/build
           key: renderer-bundle-${{ github.sha }}
 
   suite-desktop:
@@ -113,7 +113,7 @@ jobs:
       - name: Restore Electron renderer bundle
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: suite/desktop-app/build
+          path: suite-app/desktop-app/build
           key: renderer-bundle-${{ github.sha }}
           fail-on-cache-miss: true
 
@@ -125,7 +125,7 @@ jobs:
       # safedep/pmg not available on macOS (that's ok, it already guards the `build-and-cache-renderer` job)
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite-app/desktop-app @suite-app/desktop-app-renderer @suite-app/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -135,18 +135,18 @@ jobs:
           CSC_FOR_PULL_REQUEST: ${{ matrix.platform == 'mac' && 'true' || 'false' }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          yarn workspace @suite/desktop-app build:app
+          yarn workspace @suite-app/desktop-app build:app
           if [ "${{ matrix.platform }}" = "mac" ]; then
             # One electron-builder run per arch: in a combined run, the x64 DMG is created while the arm64 app is
             # being packaged and signed, and on GitHub macOS runners its `hdiutil create`/`attach` then intermittently
             # fails with "Device not configured" (since electron-builder 27). latest-mac.yml lists only arm64 here.
-            yarn workspace @suite/desktop-app build:app:electron --publish never --mac --x64
-            yarn workspace @suite/desktop-app build:app:electron --publish never --mac --arm64
+            yarn workspace @suite-app/desktop-app build:app:electron --publish never --mac --x64
+            yarn workspace @suite-app/desktop-app build:app:electron --publish never --mac --arm64
           else
-            yarn workspace @suite/desktop-app build:app:electron:${{ matrix.platform }}
+            yarn workspace @suite-app/desktop-app build:app:electron:${{ matrix.platform }}
           fi
-          bash suite/desktop-app-main/scripts/gnupg-sign.sh
-          mv suite/desktop-app/build-electron/* .
+          bash suite-app/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite-app/desktop-app/build-electron/* .
 
       - name: Upload suite-desktop production artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -203,7 +203,7 @@ jobs:
 
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite-app/desktop-app @suite-app/desktop-app-renderer @suite-app/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
 
       - name: Build libs
@@ -216,9 +216,9 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         # Caching would be beneficial here as well, maybe not possible: the container interferes actions/cache (even in docker root mode).
         run: |
-          yarn workspace @suite/desktop-app build:${{env.platform}}
-          bash suite/desktop-app-main/scripts/gnupg-sign.sh
-          mv suite/desktop-app/build-electron/* .
+          yarn workspace @suite-app/desktop-app build:${{env.platform}}
+          bash suite-app/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite-app/desktop-app/build-electron/* .
 
       - name: Upload suite-desktop production artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

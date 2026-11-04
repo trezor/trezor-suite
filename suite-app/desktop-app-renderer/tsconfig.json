@@ -16,20 +16,22 @@
         {
             "path": "../../suite-common/react-query"
         },
-        { "path": "../analytics" },
-        { "path": "../debug" },
-        { "path": "../desktop-app-api" },
-        { "path": "../desktop-app-api-electron" },
-        { "path": "../desktop-update" },
-        { "path": "../flags" },
-        { "path": "../github" },
-        { "path": "../intl" },
+        { "path": "../../suite/analytics" },
+        { "path": "../../suite/debug" },
+        { "path": "../../suite/desktop-app-api" },
         {
-            "path": "../platform-encryption-electron"
+            "path": "../../suite/desktop-app-api-electron"
         },
-        { "path": "../router" },
-        { "path": "../sentry" },
-        { "path": "../tor-desktop" },
+        { "path": "../../suite/desktop-update" },
+        { "path": "../../suite/flags" },
+        { "path": "../../suite/github" },
+        { "path": "../../suite/intl" },
+        {
+            "path": "../../suite/platform-encryption-electron"
+        },
+        { "path": "../../suite/router" },
+        { "path": "../../suite/sentry" },
+        { "path": "../../suite/tor-desktop" },
         { "path": "../../packages/components" },
         {
             "path": "../../packages/connect-electron"

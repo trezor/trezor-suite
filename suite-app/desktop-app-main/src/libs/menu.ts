@@ -19,7 +19,7 @@ type BuildMainMenuParams = {
     logger: ILogger;
 };
 
-// for those wondering why is this a function, it is because otherwise app.name used in the template has incorrect value @suite/desktop-app instead of "Trezor Suite"
+// for those wondering why is this a function, it is because otherwise app.name used in the template has incorrect value @suite-app/desktop-app instead of "Trezor Suite"
 export const buildMainMenu = ({ mainWindowProxy, logger }: BuildMainMenuParams) => {
     // { role: 'fileMenu' }
     const fileMenu: MenuItem = {

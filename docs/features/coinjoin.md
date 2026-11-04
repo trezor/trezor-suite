@@ -9,7 +9,7 @@ Suite has no default coordinator for Bitcoin and Testnet. Coinjoin works only in
 1. Start Electron with the coordinator. Use `.test.` instead of `.btc.` for Testnet. The override applies only to this launch.
 
     ```bash
-    yarn workspace @suite/desktop-app dev:run \
+    yarn workspace @suite-app/desktop-app dev:run \
         '--state.wallet.coinjoin.debug.coinjoinConfigOverride.btc.coordinatorUrl=https://<coordinator>/wabisabi/' \
         '--state.wallet.coinjoin.debug.coinjoinConfigOverride.btc.wabisabiBackendUrl=https://<coordinator>/'
     ```

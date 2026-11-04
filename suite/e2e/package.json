@@ -50,7 +50,6 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/debug": "workspace:*",
-        "@suite/desktop-app": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/intl": "workspace:^",
         "@suite/labeling": "workspace:*",

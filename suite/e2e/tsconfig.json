@@ -61,7 +61,6 @@
         },
         { "path": "../analytics" },
         { "path": "../debug" },
-        { "path": "../desktop-app" },
         { "path": "../flags" },
         { "path": "../intl" },
         { "path": "../labeling" },

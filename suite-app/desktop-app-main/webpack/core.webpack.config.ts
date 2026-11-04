@@ -59,7 +59,7 @@ const threads = sync(`${threadPath}/**/*.ts`).map(globMatch => {
 const winHelloChildProcessKey = 'winHelloChildProcess'; // must match the expected /dist filename that WinHelloProcessManager requires
 const winHelloChildProcessPath = path.join(
     __dirname,
-    '../../desktop-app-native-bindings/src/winHelloChildProcess.ts',
+    '../../../suite/desktop-app-native-bindings/src/winHelloChildProcess.ts',
 );
 
 /* **** RUNTIME REQUIRE DEPENDENCIES ****
@@ -68,7 +68,7 @@ const winHelloChildProcessPath = path.join(
  must be listed in desktop-app/package.json "dependencies"
 
  But how do I tell?
- 1. Run `yarn workspace @suite/desktop-app build:app`
+ 1. Run `yarn workspace @suite-app/desktop-app build:app`
  2. find any occurrences of your local trezor-suite repo path in dist/**.js
     (if any, Suite will likely crash when executed on another computer).
 */

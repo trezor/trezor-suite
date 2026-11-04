@@ -39,7 +39,7 @@
     - [@trezor/suite](./packages/suite/index.md)
         - [send form](./packages/suite/send.md)
         - [send form architecture](./packages/suite/send/ARCHITECTURE.md)
-    - [@suite/desktop-app](./packages/desktop-app/index.md)
+    - [@suite-app/desktop-app](./packages/desktop-app/index.md)
         - [debugging](./packages/desktop-app/debugging.md)
         - [runtime flags](./packages/desktop-app/runtime-flags.md)
         - [anonymous mode](./packages/desktop-app/anon-mode.md)

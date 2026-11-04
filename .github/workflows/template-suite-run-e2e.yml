@@ -172,7 +172,7 @@ jobs:
 
       - name: Extract build artifact (desktop)
         if: inputs.download-artifact-name != '' && !contains(inputs.download-artifact-name, 'webextension')
-        run: tar -xzf ${{ github.workspace }}/artifact-download/app-build.tar.gz -C ${{ github.workspace }}/suite/desktop-app
+        run: tar -xzf ${{ github.workspace }}/artifact-download/app-build.tar.gz -C ${{ github.workspace }}/suite-app/desktop-app
 
       - name: Extract build artifact (webextension)
         if: inputs.download-artifact-name != '' && contains(inputs.download-artifact-name, 'webextension')
@@ -190,7 +190,7 @@ jobs:
       - name: Install PW Dependencies
         shell: bash
         run: |
-          yarn workspaces focus @trezor/suite-e2e
+          yarn workspaces focus @trezor/suite-e2e @suite-app/desktop-app
 
       - name: Install Playwright Browsers
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit != 'true'

@@ -49,7 +49,7 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
     'type-check': {
         command: /^yarn g:tsc --build.*$/,
         ignoredPackages: [
-            '@suite/desktop-app',
+            '@suite-app/desktop-app',
             'connect-example-electron-main',
             'connect-mobile-example',
             'connect-example-node',

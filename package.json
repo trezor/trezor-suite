@@ -33,7 +33,7 @@
         "_______ Start Scripts _______": "Here are standalone scripts for running individual applications for development.",
         "suite:dev": "yarn workspace @suite-app/web-app dev",
         "suite:dev:vite": "yarn workspace @suite-app/web-app dev:vite",
-        "suite:dev:desktop": "yarn workspace @suite/desktop-app dev",
+        "suite:dev:desktop": "yarn workspace @suite-app/desktop-app dev",
         "analytics:docs-dev": "node scripts/analytics-docs-dev.mjs",
         "native:start": "yarn workspace @suite-native/app start",
         "connect:explorer": "yarn workspace @trezor/connect-explorer dev",

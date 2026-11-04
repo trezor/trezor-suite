@@ -104,7 +104,7 @@ export const createBaseConfig = ({
 }: BaseConfigOptions): webpack.Configuration => {
     /**
      * Assemble release name for Sentry
-     * Same definition is in suite/desktop-app-main/webpack/core.webpack.config.ts
+     * Same definition is in suite-app/desktop-app-main/webpack/core.webpack.config.ts
      */
     const sentryRelease = `${suiteVersion}.${suiteType}${
         isCodesignBuild ? '.codesign' : ''
@@ -244,7 +244,7 @@ export const createBaseConfig = ({
                                         shippedProposals: true,
                                         /*
                                          `entry` rewrites the global `import 'core-js/actual'`, imported in
-                                         suite-app/web-app & suite/desktop-app-renderer, to only those polyfills that the
+                                         suite-app/web-app & suite-app/desktop-app-renderer, to only those polyfills that the
                                          browserslist targets lack, instead of shipping all the ~440 core-js features.
                                         */
                                         useBuiltIns: 'entry',

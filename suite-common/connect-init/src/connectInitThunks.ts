@@ -185,7 +185,7 @@ export const connectInitThunk = createThunk<
 
     const { transports: debugTransports, showConnectLogs, definitionsChannel } = getDebugSettings();
     const thp = getThpSettings();
-    // desktop thp appName/hostName enhanced in ./suite/desktop-app-main/src/modules/trezor-connect.ts
+    // desktop thp appName/hostName enhanced in ./suite-app/desktop-app-main/src/modules/trezor-connect.ts
     if (thpHostName !== undefined) {
         thp.hostName = thpHostName;
     }
