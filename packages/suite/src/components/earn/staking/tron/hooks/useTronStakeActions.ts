@@ -8,6 +8,7 @@ import {
     type TronStakeError,
     type TronStakeFreezeResult,
     type TronStakeStepId,
+    type TronStakeSubmittedAmount,
     getCurrentVoteAllocations,
     getTronStakingRewards,
     getTronWithdrawableBalance,
@@ -44,6 +45,7 @@ export interface TronStakeActions {
     error: TronStakeError | null;
     pendingTxid: string | null;
     freeze: TronStakeFreezeResult | null;
+    submitted: TronStakeSubmittedAmount | null;
 }
 
 export const useTronStakeActions = ({
@@ -54,7 +56,7 @@ export const useTronStakeActions = ({
     const { device } = useDevice();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { stats } = useTronStakingStats();
-    const { step, isSubmitting, error, pendingTxid, freeze } = useSelector(state =>
+    const { step, isSubmitting, error, pendingTxid, freeze, submitted } = useSelector(state =>
         selectTronStakeSession(state, account.key, flow),
     );
 
@@ -241,5 +243,6 @@ export const useTronStakeActions = ({
         error,
         pendingTxid,
         freeze,
+        submitted,
     };
 };
