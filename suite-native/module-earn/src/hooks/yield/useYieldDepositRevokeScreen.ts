@@ -97,21 +97,15 @@ export const useYieldDepositRevokeScreen = () => {
             modalState: approvalModalState,
         };
     }, [approvalModalState]);
-    const canComposeRevokeFee = revokePendingTransaction === undefined;
-    const {
-        formDraft: revokeFeeFormDraft,
-        formDraftKey: revokeFeeFormDraftKey,
-        isAllowanceFeeReady,
-        isComposingAllowanceFee,
-        selectedFee: selectedRevokeFee,
-        updateFeeLevelThunk: updateRevokeFeeLevelThunk,
-    } = useYieldAllowanceFees({
+    const canComposeRevokeFee = isFocused && revokePendingTransaction === undefined;
+    const revokeFees = useYieldAllowanceFees({
         flowData,
         flowKey,
         draftTransactionType: 'revoke',
         isEnabled: canComposeRevokeFee,
         transaction: revokeFeeTransaction,
     });
+    const { isAllowanceFeeReady, isComposingFeeLevels } = revokeFees;
     const isRevokeScreenBusy =
         revokePendingTransaction !== undefined || isPreparingReview || isPreparingRevoke;
     const hasPreparedRevokeTransaction = revokeFeeTransaction !== null;
@@ -126,7 +120,7 @@ export const useYieldDepositRevokeScreen = () => {
     const canReviewRevoke =
         hasApprovedAllowanceAmount && isRevokeFeeReadyForReview && !isRevokeScreenBusy;
     const isSubmitDisabled = !canReviewRevoke;
-    const isSubmitLoading = isPreparingReview || isPreparingRevoke || isComposingAllowanceFee;
+    const isSubmitLoading = isPreparingReview || isPreparingRevoke || isComposingFeeLevels;
     useShowYieldTransactionFailureAlert({
         error: session?.error,
         flowKey,
@@ -320,18 +314,7 @@ export const useYieldDepositRevokeScreen = () => {
     }
 
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
-    const feeSelectorProps =
-        revokeFeeTransaction !== null
-            ? {
-                  accountKey: account.key,
-                  tokenContract: route.params.tokenContract,
-                  updateThunk: updateRevokeFeeLevelThunk,
-                  selectedFee: selectedRevokeFee,
-                  selectedFeePerUnit: revokeFeeFormDraft?.feePerUnit,
-                  formDraft: revokeFeeFormDraft,
-                  formDraftKey: revokeFeeFormDraftKey,
-              }
-            : null;
+    const feeSection = revokeFeeTransaction !== null ? revokeFees : null;
     const pendingModal =
         revokePendingTransaction && pendingModalProps
             ? {
@@ -349,7 +332,7 @@ export const useYieldDepositRevokeScreen = () => {
         account,
         accountLabel,
         approvedAmount: isApprovedAmountUnlimited ? null : approvedAllowanceAmount,
-        feeSelectorProps,
+        feeSection,
         handleReviewAndSign,
         isApprovedAmountUnlimited,
         isSubmitDisabled,

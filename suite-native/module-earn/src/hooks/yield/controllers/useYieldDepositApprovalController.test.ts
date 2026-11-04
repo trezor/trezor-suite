@@ -135,6 +135,8 @@ describe('useYieldDepositApprovalController', () => {
         useYieldApprovalFeesMock.mockReturnValue({
             formDraft: null,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: true,
             selectedFee: undefined,
             updateFeeLevelThunk: jest.fn(),
@@ -147,6 +149,30 @@ describe('useYieldDepositApprovalController', () => {
         const { result } = await renderApprovalController();
 
         expect(result.current.status).toBe('ready');
+    });
+
+    it('pauses approval estimates while another screen owns the fee levels', async () => {
+        useYieldFlowScreenBaseMock.mockReturnValue(buildScreenBase({ isFocused: false }));
+
+        await renderApprovalController();
+
+        expect(useYieldApprovalFeesMock).toHaveBeenLastCalledWith(
+            expect.objectContaining({ isEnabled: false }),
+        );
+    });
+
+    it('pauses approval estimates while the approval is pending', async () => {
+        useYieldPendingTransactionMock.mockReturnValue(
+            mockYieldPendingTransactionResult({
+                pendingTransaction: { type: 'approve', txid: '0xpending', amount: '5' },
+            }),
+        );
+
+        await renderApprovalController();
+
+        expect(useYieldApprovalFeesMock).toHaveBeenLastCalledWith(
+            expect.objectContaining({ isEnabled: false }),
+        );
     });
 
     it('offers the skip only while the approve step shows an approved amount', async () => {
@@ -173,6 +199,8 @@ describe('useYieldDepositApprovalController', () => {
         useYieldApprovalFeesMock.mockReturnValue({
             formDraft: null,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: false,
             selectedFee: undefined,
             updateFeeLevelThunk: jest.fn(),

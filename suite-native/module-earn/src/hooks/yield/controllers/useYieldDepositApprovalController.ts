@@ -120,7 +120,7 @@ export const useYieldDepositApprovalController = () => {
         amount: amountValue,
         approvalLimitType,
         flowKey,
-        isEnabled: isValid,
+        isEnabled: isValid && isFocused && !isApprovalPending,
         flowData,
         tokenContract: route.params.tokenContract,
     });
@@ -300,6 +300,9 @@ export const useYieldDepositApprovalController = () => {
         feeReserveAlert: getYieldFeeReserveAlert({ nativeFeeStatus, gasReserve }),
         feeSection: {
             isVisible: isValid && !!amountValue,
+            hasFeeEstimationError: approvalFees.hasFeeEstimationError,
+            isComposingFeeLevels: approvalFees.isComposingFeeLevels,
+            retryFeeEstimation: approvalFees.retryFeeEstimation,
             formDraft: approvalFees.formDraft,
             formDraftKey: approvalFees.formDraftKey,
             selectedFee: approvalFees.selectedFee,

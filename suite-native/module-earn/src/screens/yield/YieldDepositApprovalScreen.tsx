@@ -4,8 +4,8 @@ import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldAmountInputCard } from '../../components/yield/YieldAmountInputCard';
 import { YieldDepositApprovalLimitBottomSheet } from '../../components/yield/YieldDepositApprovalLimitBottomSheet';
 import { YieldDepositApprovedAmountCard } from '../../components/yield/YieldDepositApprovedAmountCard';
@@ -156,14 +156,10 @@ export const YieldDepositApprovalScreen = () => {
 
                         {feeSection.isVisible && (
                             <Box paddingHorizontal="sp16">
-                                <FeeSelector
+                                <EarnFeeSection
                                     accountKey={account.key}
                                     tokenContract={tokenContract}
-                                    updateThunk={feeSection.updateFeeLevelThunk}
-                                    selectedFee={feeSection.selectedFee}
-                                    selectedFeePerUnit={feeSection.formDraft?.feePerUnit}
-                                    formDraft={feeSection.formDraft}
-                                    formDraftKey={feeSection.formDraftKey}
+                                    fees={feeSection}
                                 />
                             </Box>
                         )}
