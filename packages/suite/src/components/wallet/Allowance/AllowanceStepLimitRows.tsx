@@ -42,7 +42,6 @@ export const AllowanceStepLimitRows = ({
                 <Row gap={8}>
                     <AllowanceAmount
                         amount={limitAmount}
-                        symbol={token.symbol}
                         decimals={token.decimals}
                         contractAddress={token.contractAddress}
                         typographyStyle="body-sm-strong"

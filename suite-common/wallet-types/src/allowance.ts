@@ -12,3 +12,7 @@ export type AllowanceLimitType = 'minimal' | 'unlimited';
  * `approve` and `increase` both end in an approve transaction; `continue` needs none.
  */
 export type AllowanceAction = AllowanceTransactionType | 'increase' | 'continue';
+
+export type AllowanceStepVariant = Exclude<AllowanceAction, 'continue'>;
+
+export type AllowanceStepState = 'active' | 'pending' | 'done';
