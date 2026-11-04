@@ -142,6 +142,18 @@ describe('useAllowanceTransaction', () => {
         mockSignAndPush.mockClear();
     });
 
+    it('cancels when the token is not among the account tokens', () => {
+        const { callbacks } = renderAllowanceTransaction({ account: { ...ACCOUNT, tokens: [] } });
+
+        expect(callbacks.onCancel).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not cancel when the token is resolved', () => {
+        const { callbacks } = renderAllowanceTransaction();
+
+        expect(callbacks.onCancel).not.toHaveBeenCalled();
+    });
+
     it('composes an approval of exactly the requested amount by default', async () => {
         const { result } = renderAllowanceTransaction();
 

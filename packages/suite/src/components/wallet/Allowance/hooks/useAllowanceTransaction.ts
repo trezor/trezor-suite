@@ -153,6 +153,13 @@ export const useAllowanceTransaction = ({
         callbacksRef.current.onCancel?.();
     }, [callbacksRef]);
 
+    const isTokenMissing = token?.symbol === undefined;
+    useEffect(() => {
+        if (isTokenMissing) {
+            callbacksRef.current.onCancel?.();
+        }
+    }, [isTokenMissing, callbacksRef]);
+
     return {
         limitType,
         isComposing,
