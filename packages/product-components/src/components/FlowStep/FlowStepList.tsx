@@ -7,7 +7,7 @@ import { Column } from '@trezor/components';
 import { type FlowStepState } from './FlowStep';
 
 const StepConnectorLine = styled.div<{ $isPreviousStepDone: boolean }>`
-    width: 2px;
+    width: 4px;
     height: 16px;
     margin-left: 24px;
     background: ${({ theme, $isPreviousStepDone }) =>
