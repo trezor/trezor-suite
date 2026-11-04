@@ -11,7 +11,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CustomFeeLabel } from './CustomFeeLabel';
-import { selectFeeLevels } from '../../../selectors';
+import { selectCustomFeeLevel } from '../../../selectors';
 
 export type CustomFeeCardProps = {
     accountKey: AccountKey;
@@ -26,9 +26,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const feeLevels = useSelector(selectFeeLevels);
-
-    const customFeeTransaction = feeLevels.custom;
+    const customFeeTransaction = useSelector(selectCustomFeeLevel);
 
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
