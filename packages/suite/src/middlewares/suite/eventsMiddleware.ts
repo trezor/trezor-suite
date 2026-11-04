@@ -4,7 +4,11 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 import { routerAppChanged, selectRouterApp } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
+import {
+    notificationsActions,
+    removeAccountEventsThunk,
+    selectNotifications,
+} from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
 import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
 import { type Dispatch } from '@trezor/redux-utils';
@@ -40,11 +44,9 @@ const eventsMiddleware =
                 selectSelectedDevice(api.getState()),
             );
 
-            const toRemove = api
-                .getState()
-                .notifications.filter(
-                    n => n.type === DEVICE.CONNECT_UNACQUIRED && device.path === n.device.path,
-                );
+            const toRemove = selectNotifications(api.getState()).filter(
+                n => n.type === DEVICE.CONNECT_UNACQUIRED && device.path === n.device.path,
+            );
             if (toRemove.length > 0) api.dispatch(notificationsActions.remove(toRemove));
 
             if (!device.features) {
@@ -81,14 +83,12 @@ const eventsMiddleware =
         if (deviceActions.selectDevice.match(action)) {
             // Find and mark all notification associated (new connected!, update required etc)
             if (!action.payload) return action;
-            const notifications = api
-                .getState()
-                .notifications.filter(
-                    n =>
-                        n.type === DEVICE.CONNECT &&
-                        !n.seen &&
-                        deviceUtils.isSelectedDevice(action.payload, n.device),
-                );
+            const notifications = selectNotifications(api.getState()).filter(
+                n =>
+                    n.type === DEVICE.CONNECT &&
+                    !n.seen &&
+                    deviceUtils.isSelectedDevice(action.payload, n.device),
+            );
             if (notifications.length > 0) {
                 api.dispatch(notificationsActions.resetUnseen(notifications));
             }
@@ -100,7 +100,7 @@ const eventsMiddleware =
         ) {
             // remove notifications associated with disconnected device
             // api.dispatch(addEvent({ type: 'disconnected-device' }));
-            const { notifications } = api.getState();
+            const notifications = selectNotifications(api.getState());
             const devices = selectDevices(prevState);
             const affectedDevices = deviceActions.forgetDevice.match(action)
                 ? devices.filter(

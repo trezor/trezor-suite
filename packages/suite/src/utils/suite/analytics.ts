@@ -46,6 +46,8 @@ import {
     selectBaseCurrency,
     selectBitcoinAmountUnit,
     selectCustomBackends,
+    selectIsMevProtectionEnabled,
+    selectIsNetworkReserveEnabled,
 } from '@suite-common/wallet-core';
 import {
     getOsName,
@@ -142,7 +144,7 @@ export const getSuiteReadyPayload = async (
 
         experimentVariants: formatExperimentVariantsForAnalytics(experimentVariants),
 
-        mevProtection: state.wallet.settings.mevProtection,
-        networkReserve: state.wallet.settings.networkReserve,
+        mevProtection: selectIsMevProtectionEnabled(state),
+        networkReserve: selectIsNetworkReserveEnabled(state),
     };
 };
