@@ -143,6 +143,9 @@ jobs:
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils @trezor/suite-e2e
 
+      - name: Build Message System Config
+        run: yarn message-system-sign-config
+
       - name: Install Playwright Chromium
         run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
 
