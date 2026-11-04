@@ -3,10 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { RNHostView, TabView, ZStack } from '@expo/ui/swift-ui';
-import { frame, onGeometryChange } from '@expo/ui/swift-ui/modifiers';
+import { background, frame, onGeometryChange } from '@expo/ui/swift-ui/modifiers';
 import { BottomTabBarHeightContext, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { SafeAreaProviderCompat } from '@react-navigation/elements';
-import { type Route } from '@react-navigation/native';
+import { type Route, useTheme } from '@react-navigation/native';
 
 import { NativeIOSTabScene } from './NativeIOSTabScene';
 import { useNativeTabOptions } from './useNativeTabOptions';
@@ -32,6 +32,7 @@ export const NativeIOSTab = ({
     tabItemOptions,
 }: NativeIOSTabProps) => {
     const [sceneBottom, setSceneBottom] = useState<number>();
+    const { colors } = useTheme();
     const { label, testID, systemImage } = useNativeTabOptions({
         route,
         options: descriptor.options,
@@ -48,6 +49,8 @@ export const NativeIOSTab = ({
             <ZStack
                 modifiers={[
                     frame({ maxWidth: Infinity, maxHeight: Infinity }),
+                    // Paint the native safe area without changing the scene's measured bounds.
+                    background(colors.background),
                     onGeometryChange(geometry => setSceneBottom(geometry.y + geometry.height)),
                 ]}
             >
