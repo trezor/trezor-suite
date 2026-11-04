@@ -22,7 +22,7 @@ import { schedulePolledNetworkSync } from './polledNetworkSync';
 // Be very careful when adding new stuff here, it could affect performance a lot on mobile
 export const blockchainMiddleware = createMiddleware((action, { dispatch, next, getState }) => {
     if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT)) {
-        dispatch(onBlockchainConnectThunk({ symbol: action.payload.coin.shortcut }));
+        dispatch(onBlockchainConnectThunk(action.payload));
     } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK)) {
         const networksWithPendingTransactions = selectNetworksWithPendingTxs(getState());
         const symbol = action.payload.coin.shortcut.toLowerCase();

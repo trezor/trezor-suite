@@ -1,5 +1,5 @@
 import { type Account } from '@suite-common/wallet-types';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getWrappedNativeAddress } from '@trezor/network-ethereum-suite-common';
@@ -27,7 +27,7 @@ export const fetchWrappedNativeTokenInfo = async ({
     const response = await Promise.race([
         TrezorConnect.getAccountInfo({
             coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
+            identity: getAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'tokenBalances',
             contractFilter: wrappedNativeContract,

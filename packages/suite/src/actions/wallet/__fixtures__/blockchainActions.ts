@@ -11,7 +11,11 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
-import { type BlockchainBlock, type BlockchainNotification } from '@trezor/connect-common';
+import type {
+    BlockchainBlock,
+    BlockchainInfo,
+    BlockchainNotification,
+} from '@trezor/connect-common';
 import { type DeepPartial } from '@trezor/type-utils';
 
 const DEFAULT_ACCOUNT = {
@@ -255,11 +259,16 @@ type OnConnectFixture = {
     description: string;
     connect?: ConnectFixtures;
     initialState?: FixtureState;
-    symbol: string;
+    info: BlockchainInfo;
     actions: UnknownAction[];
     blockchainEstimateFee: number;
-    blockchainSubscribe: number;
+    blockchainSubscribe: any[];
 };
+
+const getBlockchainInfo = (symbol: string) =>
+    ({
+        coin: { shortcut: symbol },
+    }) as BlockchainInfo;
 
 // Fake timer handle seeded into blockchain[symbol].syncTimeout by the onDisconnect fixtures.
 export const MOCK_SYNC_TIMEOUT = 42;
@@ -494,100 +503,100 @@ export const init: InitFixture[] = [
 export const onConnect: OnConnectFixture[] = [
     {
         description: 'unknown coin',
-        symbol: 'btc-invalid',
+        info: getBlockchainInfo('btc-invalid'),
         actions: [],
         blockchainEstimateFee: 0,
-        blockchainSubscribe: 0,
+        blockchainSubscribe: [],
     },
     {
         description: 'successful, no accounts, no subscriptions',
-        symbol: 'btc',
+        info: getBlockchainInfo('btc'),
         actions: [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 0,
+        blockchainSubscribe: [[{ blocks: true }]],
     },
     {
         description: 'successful, different coin accounts, no subscriptions',
         initialState: {
-            accounts: [{ symbol: 'ltc' }],
+            accounts: [{ symbol: 'ltc', deviceState: 'foobar' }],
         },
-        symbol: 'btc',
+        info: getBlockchainInfo('btc'),
         actions: [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 0,
+        blockchainSubscribe: [[{ blocks: true }]],
     },
     {
         description: 'successful with subscription',
         initialState: {
-            accounts: [{ symbol: 'btc', history: {} }],
+            accounts: [{ symbol: 'btc', history: {}, deviceState: 'foobar' }],
             blockchain: {
                 btc: {
                     reconnection: { id: 1 },
                 },
             },
         },
-        symbol: 'btc',
+        info: getBlockchainInfo('btc'),
         actions: [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 1,
+        blockchainSubscribe: [[{ blocks: true }], [{ blocks: false, accounts: [{}] }]],
     },
     {
         description: 'successful, fee levels sorted',
         initialState: {
-            accounts: [{ symbol: 'btc', history: {} }],
+            accounts: [{ symbol: 'btc', history: {}, deviceState: 'foobar' }],
         },
         // order: estimateFee
         connect: [
             { payload: { levels: [{ label: 'normal' }, { label: 'high' }, { label: 'low' }] } },
         ],
-        symbol: 'btc',
+        info: getBlockchainInfo('btc'),
         actions: [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 1,
+        blockchainSubscribe: [[{ blocks: true }], [{ blocks: false, accounts: [{}] }]],
     },
     {
         description: 'successful, blockchainEstimateFee errored',
         initialState: {
-            accounts: [{ symbol: 'btc', history: {} }],
+            accounts: [{ symbol: 'btc', history: {}, deviceState: 'foobar' }],
         },
         // order: estimateFee > subscribe > estimateFee
         connect: [{ success: false }, undefined, { success: false }],
-        symbol: 'btc',
+        info: getBlockchainInfo('btc'),
         actions: [
             { type: updateFeeInfoThunk.rejected.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 1,
+        blockchainSubscribe: [[{ blocks: true }], [{ blocks: false, accounts: [{}] }]],
     },
     {
         description: 'successful, ETH blockchainEstimateFee errored',
         initialState: {
-            accounts: [{ symbol: 'eth', history: {}, deviceState: 'abc' }],
+            accounts: [{ symbol: 'eth', history: {}, deviceState: 'foobar' }],
         },
         // order: estimateFee > subscribe > subscribe > estimateFee
         connect: [{ success: false }, undefined, undefined, { success: false }],
-        symbol: 'eth',
+        info: getBlockchainInfo('eth'),
         actions: [
             { type: updateFeeInfoThunk.rejected.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 2,
+        blockchainSubscribe: [[{ blocks: true }], [{ blocks: false, accounts: [{}] }]],
     },
 ];
 

@@ -11,6 +11,7 @@ import {
     calculateTotal,
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
+    getAccountIdentity,
     getExternalComposeOutput,
     isTestnet,
     networkAmountToSmallestUnit,
@@ -290,6 +291,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             const accountResponse = await TrezorConnect.getAccountInfo({
                 descriptor: address,
                 coin: asCoinSymbol(account.symbol),
+                identity: getAccountIdentity(account),
                 suppressBackupWarning: true,
                 stellarClassicTokens:
                     account.networkType === 'stellar' && tokenInfo?.standard === 'STELLAR-CLASSIC'
@@ -523,6 +525,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
             const destinationAccount = await TrezorConnect.getAccountInfo({
                 descriptor: firstSignOutput.address,
                 coin: asCoinSymbol(selectedAccount.symbol),
+                identity: getAccountIdentity(selectedAccount),
                 suppressBackupWarning: true,
             });
 

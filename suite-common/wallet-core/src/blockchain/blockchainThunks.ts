@@ -21,7 +21,6 @@ import {
     getBackendFromSettings,
     isTrezorConnectBackendType,
     shouldSubscribeBlocks,
-    shouldUseIdentities,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
@@ -29,7 +28,7 @@ import TrezorConnect, {
     type BlockchainError,
     type BlockchainNotification,
 } from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
+import { type BlockchainInfo, asCoinSymbol } from '@trezor/connect-common';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import type { TimerId } from '@trezor/type-utils';
 import { BigNumber, arrayDistinct, arrayToDictionary } from '@trezor/utils';
@@ -150,61 +149,62 @@ export const initBlockchainThunk = createThunk<
 const isAccountSubscribable = (account: Account) =>
     !account.failed && isTrezorConnectBackendType(account.backendType);
 
-type SubscribeBlockchainThunkParams = {
-    symbol: NetworkSymbol;
-    onConnect?: boolean;
-};
-
 export type SubscribeBlockchainThunkState = AccountsRootState;
 
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
 export const subscribeBlockchainThunk = createThunk<
     unknown,
-    SubscribeBlockchainThunkParams,
+    { symbol: NetworkSymbol },
     { state: SubscribeBlockchainThunkState }
->(
-    `${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`,
-    async ({ symbol, onConnect }, { getState }) => {
-        const useIdentities = shouldUseIdentities(symbol);
-        // Don't subscribe to blocks for Solana, this is too intensive
-        const blocks = shouldSubscribeBlocks(symbol);
+>(`${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`, async ({ symbol }) => {
+    // Don't subscribe to blocks for Solana, this is too intensive
+    const blocks = shouldSubscribeBlocks(symbol);
+    const coin = asCoinSymbol(symbol);
 
-        if (onConnect && useIdentities) {
-            await TrezorConnect.blockchainSubscribe({ coin: asCoinSymbol(symbol), blocks });
-        }
+    await TrezorConnect.blockchainSubscribe({ coin, blocks });
+});
+
+export type SubscribeAccountsThunkState = AccountsRootState;
+
+export const subscribeAccountsThunk = createThunk<
+    unknown,
+    { symbol: NetworkSymbol; identity: string | undefined },
+    { state: SubscribeAccountsThunkState }
+>(
+    `${BLOCKCHAIN_MODULE_PREFIX}/subscribeAccountsThunk`,
+    async ({ symbol, identity }, { getState }) => {
+        const coin = asCoinSymbol(symbol);
+
+        const accountsToSubscribe = findAccountsByNetwork(symbol, selectAccounts(getState()))
+            .filter(isAccountSubscribable) // do not subscribe accounts with unsupported backend type
+            .filter(account => !identity || getAccountIdentity(account) === identity);
 
         // do NOT subscribe if there are no accounts
         // it leads to websocket disconnection
-        const accountsToSubscribe = findAccountsByNetwork(
-            symbol,
-            selectAccounts(getState()),
-        ).filter(isAccountSubscribable); // do not subscribe accounts with unsupported backend type
         if (!accountsToSubscribe.length) return;
 
-        const paramsArray = useIdentities
-            ? Object.entries(arrayToDictionary(accountsToSubscribe, getAccountIdentity, true)).map(
-                  ([identity, accounts]) => ({
-                      accounts,
-                      coin: asCoinSymbol(symbol),
-                      identity,
-                      blocks: false,
-                  }),
-              )
-            : [{ accounts: accountsToSubscribe, coin: asCoinSymbol(symbol), blocks }];
+        const paramsArray = Object.entries(
+            arrayToDictionary(accountsToSubscribe, getAccountIdentity, true),
+        ).map(([identityKey, accounts]) => ({
+            accounts,
+            coin,
+            identity: identityKey,
+            blocks: false,
+        }));
 
-        return Promise.all(paramsArray.map(params => TrezorConnect.blockchainSubscribe(params)));
+        await Promise.all(paramsArray.map(params => TrezorConnect.blockchainSubscribe(params)));
     },
 );
 
-type UnsubscribeBlockchainThunkState = AccountsRootState;
+type UnsubscribeAccountsThunkState = AccountsRootState;
 
 // called from WalletMiddleware after ACCOUNT.REMOVE action
-export const unsubscribeBlockchainThunk = createThunk<
+export const unsubscribeAccountsThunk = createThunk<
     unknown,
     Account[],
-    { state: UnsubscribeBlockchainThunkState }
->(`${BLOCKCHAIN_MODULE_PREFIX}/unsubscribeBlockchainThunk`, (removedAccounts, { getState }) => {
+    { state: UnsubscribeAccountsThunkState }
+>(`${BLOCKCHAIN_MODULE_PREFIX}/unsubscribeAccountsThunk`, (removedAccounts, { getState }) => {
     // collect unique symbols
     const symbols = removedAccounts.map(({ symbol }) => symbol).filter(arrayDistinct);
     const allAccounts = selectAccounts(getState());
@@ -218,28 +218,23 @@ export const unsubscribeBlockchainThunk = createThunk<
             isAccountSubscribable,
         ); // do not unsubscribe accounts with unsupported backend type
 
-        if (shouldUseIdentities(symbol)) {
-            const accountIdentities = arrayToDictionary(
-                accountsToSubscribe,
-                getAccountIdentity,
-                true,
-            );
+        const accountIdentities = arrayToDictionary(accountsToSubscribe, getAccountIdentity, true);
 
-            const transformedRemovedAccounts = removedAccounts
-                .filter(acc => acc.symbol === symbol)
-                .map(getAccountIdentity)
-                .filter(arrayDistinct)
-                .map(identity => ({
-                    symbol,
-                    identity,
-                    blocks: false,
-                    accounts: accountIdentities[identity] ?? [],
-                }));
+        const transformedRemovedAccounts = removedAccounts
+            .filter(acc => acc.symbol === symbol)
+            .map(getAccountIdentity)
+            .filter(arrayDistinct)
+            .map(identity => ({
+                symbol,
+                identity,
+                blocks: false,
+                accounts: accountIdentities[identity] ?? [],
+            }));
 
-            return [...transformedRemovedAccounts, { symbol, blocks: true, accounts: [] }];
-        } else {
-            return [{ symbol, accounts: accountsToSubscribe, blocks: true }];
-        }
+        // Keep the default backend (blocks) connected while the network still has accounts.
+        return accountsToSubscribe.length
+            ? transformedRemovedAccounts
+            : [...transformedRemovedAccounts, { symbol, blocks: true, accounts: [] }];
     });
 
     return Promise.all(
@@ -330,22 +325,30 @@ type OnBlockchainConnectThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
 export const onBlockchainConnectThunk = createThunk<
     void,
-    string,
+    BlockchainInfo,
     {
         state: OnBlockchainConnectThunkState;
         extra: OnBlockchainConnectThunkDeps;
     }
->(`${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`, async (symbol, { dispatch }) => {
-    const network = getNetworkOptional(symbol.toLowerCase());
-    if (!network) return;
+>(
+    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
+    async ({ coin: { shortcut }, identity }, { dispatch }) => {
+        const network = getNetworkOptional(shortcut.toLowerCase());
+        if (!network) return;
 
-    await dispatch(getOrFetchRawFeeInfoThunk({ networkSymbol: network.symbol }));
+        if (!identity) {
+            // Update fees only when 'main' blockchain was connected
+            await dispatch(getOrFetchRawFeeInfoThunk({ networkSymbol: network.symbol }));
+        }
 
-    await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, onConnect: true }));
-    // update accounts for connected network
-    await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
-    dispatch(blockchainActions.connected(network.symbol));
-});
+        await dispatch(subscribeBlockchainThunk({ symbol: network.symbol }));
+        await dispatch(subscribeAccountsThunk({ symbol: network.symbol, identity }));
+
+        // update accounts for connected network
+        await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
+        dispatch(blockchainActions.connected(network.symbol));
+    },
+);
 
 type OnBlockMinedThunkState = SyncAccountsWithBlockchainThunkState;
 

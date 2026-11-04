@@ -11,6 +11,7 @@ import {
 import {
     datetimeToLocktime,
     formatNetworkAmount,
+    getAccountIdentity,
     getBitcoinComposeOutputs,
     getUnusedChangeAddress,
     getUtxoOutpoint,
@@ -369,6 +370,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
                 selectedAccount.accountType !== 'coinjoin' && missingTxs.length
                     ? await TrezorConnect.blockchainGetTransactions({
                           coin: asCoinSymbol(selectedAccount.symbol),
+                          identity: getAccountIdentity(selectedAccount),
                           txs: missingTxs,
                           hexOnly: true,
                       }).then(response => (response.success ? response.payload : []))

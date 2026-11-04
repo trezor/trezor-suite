@@ -52,7 +52,7 @@ export const getSettledResolveDirection = ({
 export type ResolveNamedAddressQueryParams = GetNamedAddressSupportDep & {
     value: string;
     symbol: NetworkSymbol | null | undefined;
-    /** Backend identity the lookup rides on; see `tryGetAccountIdentity`. */
+    /** Backend identity the lookup rides on; see `getAccountIdentity`. */
     identity?: string;
 };
 

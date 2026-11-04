@@ -83,7 +83,8 @@ describe('prepareBlockchainSubscriptionMiddleware', () => {
         expect(subscribe).toHaveBeenCalledWith({
             accounts: [expect.objectContaining({ descriptor: account.descriptor })],
             coin: 'ada',
-            blocks: true,
+            blocks: false,
+            identity: account.deviceState,
         });
     });
 
@@ -103,7 +104,7 @@ describe('prepareBlockchainSubscriptionMiddleware', () => {
         await waitForThunks();
 
         expect(subscribe).toHaveBeenCalledWith(
-            expect.objectContaining({ coin: 'ada', blocks: true }),
+            expect.objectContaining({ coin: 'ada', blocks: false }),
         );
     });
 
@@ -115,7 +116,7 @@ describe('prepareBlockchainSubscriptionMiddleware', () => {
         await waitForThunks();
 
         expect(subscribe).toHaveBeenCalledWith(
-            expect.objectContaining({ coin: 'ada', blocks: true }),
+            expect.objectContaining({ coin: 'ada', blocks: false }),
         );
     });
 

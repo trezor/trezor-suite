@@ -2,7 +2,7 @@ import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBlockchainState } from '@suite-common/wallet-core';
-import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { getAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 
 import { useBackendReconnection } from 'src/hooks/settings/backends';
@@ -65,7 +65,7 @@ export const BackendDisconnected = () => {
         account,
     } = selectedAccount;
 
-    const identity = tryGetAccountIdentity(account);
+    const identity = getAccountIdentity(account);
 
     const networkBlockchain = blockchain[symbol as keyof typeof blockchain];
     const chain =
