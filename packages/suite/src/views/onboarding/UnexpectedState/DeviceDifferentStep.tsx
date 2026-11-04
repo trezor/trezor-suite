@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceInternalModel } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
@@ -8,16 +8,12 @@ import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 export const DeviceDifferentStep = () => {
     const { resetOnboarding, enableOnboardingReducer } = useOnboarding();
-    const device = useSelector(selectSelectedDevice);
+    const deviceModelInternal = useSelector(selectDeviceInternalModel);
 
     return (
         <OnboardingCard
             heading={<Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING" />}
-            icon={
-                mapTrezorModelToFilledIcon[
-                    device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL
-                ]
-            }
+            icon={mapTrezorModelToFilledIcon[deviceModelInternal || DEFAULT_FLAGSHIP_MODEL]}
             description={
                 <>
                     <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1" />{' '}

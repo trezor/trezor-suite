@@ -1,7 +1,7 @@
 import { type JSX } from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceInternalModel } from '@suite-common/device';
 import { Banner } from '@trezor/components';
 import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
@@ -14,15 +14,13 @@ type ConnectDevicePromoProps = {
 };
 
 const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => {
-    const selectedDevice = useSelector(selectSelectedDevice);
-    const selectedDeviceModelInternal =
-        selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
+    const deviceModelInternal = useSelector(selectDeviceInternalModel);
 
     return (
         <Banner
             intent="warning"
             data-testid="@warning/trezorNotConnected"
-            icon={mapTrezorModelToIcon[selectedDeviceModelInternal]}
+            icon={mapTrezorModelToIcon[deviceModelInternal || DEFAULT_FLAGSHIP_MODEL]}
             title={title}
             description={description}
         />

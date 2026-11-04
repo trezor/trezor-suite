@@ -1,5 +1,7 @@
-import { useDevice } from '@suite/device';
+import { useSelector } from 'react-redux';
+
 import { Translation } from '@suite/intl';
+import { selectDeviceInternalModel } from '@suite-common/device';
 import { ArrowsClockwiseIcon, TrezorBodyIcon } from '@trezor/icons';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
@@ -10,8 +12,7 @@ import { UpdateGoToSettingsDescription } from '../troubleshooting/tips/UpdateGoT
 
 /* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */
 export const DeviceBootloader = () => {
-    const { device } = useDevice();
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = useSelector(selectDeviceInternalModel);
 
     const tipDescription = getHowToGetFromBootloaderInstructionsMap({ deviceModelInternal });
 
