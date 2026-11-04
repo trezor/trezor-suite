@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { selectDesktopUpdate } from '@suite/desktop-update';
+import { selectDesktopUpdateEnabled } from '@suite/desktop-update';
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { LabelingSettings } from '@suite/labeling';
@@ -70,7 +70,7 @@ export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
     );
 
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const desktopUpdate = useSelector(selectDesktopUpdate);
+    const isDesktopUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
     const hasContentBelowMobileWidth = useIsContentBelowBreakpoint(breakpoints.mobile);
@@ -160,7 +160,7 @@ export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
                 title={<Translation id="TR_SETTINGS_ADVANCED" />}
                 icon={ShieldWarningIcon}
             >
-                {desktopUpdate.enabled && <EarlyAccess />}
+                {isDesktopUpdateEnabled && <EarlyAccess />}
                 <AddressDisplay />
                 {isNetworkReserveSettingsVisible && <NetworkReserve />}
                 <TestnetNetworks />

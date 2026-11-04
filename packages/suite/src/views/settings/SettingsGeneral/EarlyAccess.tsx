@@ -1,5 +1,5 @@
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { openEarlyAccessSetup, selectDesktopUpdate } from '@suite/desktop-update';
+import { openEarlyAccessSetup, selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { Row } from '@trezor/components';
@@ -10,11 +10,11 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useSelector } from 'src/hooks/suite';
 
 export const EarlyAccess = () => {
-    const desktopUpdate = useSelector(selectDesktopUpdate);
+    const allowPrerelease = useSelector(selectDesktopUpdateAllowPrerelease);
     const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     const setupEarlyAccess = () => {
-        dispatch(openEarlyAccessSetup(desktopUpdate.allowPrerelease));
+        dispatch(openEarlyAccessSetup(allowPrerelease));
         desktopApi.cancelUpdate(); // stop downloading the update if it is in progress to prevent confusing state switching
     };
 
@@ -27,18 +27,14 @@ export const EarlyAccess = () => {
                     shouldHighlight={shouldHighlight}
                     title={
                         <Translation
-                            id={
-                                desktopUpdate.allowPrerelease
-                                    ? 'TR_EARLY_ACCESS_ENABLED'
-                                    : 'TR_EARLY_ACCESS'
-                            }
+                            id={allowPrerelease ? 'TR_EARLY_ACCESS_ENABLED' : 'TR_EARLY_ACCESS'}
                         />
                     }
                     description={
                         <Row alignItems="center">
                             <Translation
                                 id={
-                                    desktopUpdate.allowPrerelease
+                                    allowPrerelease
                                         ? 'TR_EARLY_ACCESS_DESCRIPTION_ENABLED'
                                         : 'TR_EARLY_ACCESS_DESCRIPTION'
                                 }
@@ -53,7 +49,7 @@ export const EarlyAccess = () => {
                         >
                             <Translation
                                 id={
-                                    desktopUpdate.allowPrerelease
+                                    allowPrerelease
                                         ? 'TR_EARLY_ACCESS_DISABLE'
                                         : 'TR_EARLY_ACCESS_ENABLE'
                                 }
