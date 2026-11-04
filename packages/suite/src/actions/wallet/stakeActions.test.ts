@@ -37,18 +37,31 @@ const mockCardanoSignTransactionThunk = jest.fn();
 const mockNotifyEarnTransactionBroadcastThunk = jest.fn();
 const mockAddFakePendingCardanoTxThunk = jest.fn();
 const mockSyncAccountsWithBlockchainThunk = jest.fn();
+const mockSolanaSignTransactionThunk = jest.fn();
+const mockAddFakePendingSolanaStakeTxThunk = jest.fn();
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     notifyEarnTransactionBroadcastThunk: (params: unknown) =>
         mockNotifyEarnTransactionBroadcastThunk(params),
     addFakePendingCardanoTxThunk: (params: unknown) => mockAddFakePendingCardanoTxThunk(params),
+    addFakePendingSolanaStakeTxThunk: (params: unknown) =>
+        mockAddFakePendingSolanaStakeTxThunk(params),
     syncAccountsWithBlockchainThunk: (symbol: unknown) =>
         mockSyncAccountsWithBlockchainThunk(symbol),
 }));
 
 jest.mock('./stake/stakeFormCardanoActions', () => ({
     signTransactionThunk: (params: unknown) => mockCardanoSignTransactionThunk(params),
+}));
+
+jest.mock('./stake/stakeFormSolanaActions', () => ({
+    signTransactionThunk: (params: unknown) => mockSolanaSignTransactionThunk(params),
+}));
+
+jest.mock('@suite/modal', () => ({
+    ...jest.requireActual('@suite/modal'),
+    openDeferredModal: () => () => Promise.resolve(true),
 }));
 
 jest.mock('@trezor/connect', () => {
@@ -92,7 +105,12 @@ const transactionInfo: PrecomposedTransactionFinal = {
     outputsPermutation: [],
 };
 
-const createStakeFlow = () => {
+const solanaAccount: Account = mockWalletAccount({
+    symbol: asNetworkSymbol('sol'),
+    descriptor: asAccountDescriptor('earnSolDescriptor'),
+});
+
+const createStakeFlow = (flowAccount: Account = account) => {
     const stakeReducer = prepareStakeReducer(undefined);
     let actions: unknown[] = [];
 
@@ -103,7 +121,7 @@ const createStakeFlow = () => {
             device: { ...deviceInitialState, selectedDevice: mockSuiteDevice() },
             messageSystem: messageSystemInitialState,
             wallet: {
-                accounts: [account],
+                accounts: [flowAccount],
                 settings: initialWalletSettingsState,
                 stake: (actions as UnknownAction[]).reduce(stakeReducer, stakeInitialState),
                 transactions: transactionsInitialState,
@@ -125,10 +143,10 @@ const createStakeFlow = () => {
     return { ...mockDispatch, getState, extra };
 };
 
-const signStakeTransaction = async () => {
-    const flow = createStakeFlow();
+const signStakeTransaction = async (flowAccount: Account = account) => {
+    const flow = createStakeFlow(flowAccount);
 
-    await signTransactionThunk({ accountKey: account.key, formValues, transactionInfo })(
+    await signTransactionThunk({ accountKey: flowAccount.key, formValues, transactionInfo })(
         flow.dispatch,
         flow.getState,
         flow.extra,
@@ -146,6 +164,7 @@ describe('signTransactionThunk', () => {
         mockNotifyEarnTransactionBroadcastThunk.mockReturnValue({ type: 'mock/notify' });
         mockAddFakePendingCardanoTxThunk.mockReturnValue({ type: 'mock/addFakePendingTx' });
         mockSyncAccountsWithBlockchainThunk.mockReturnValue({ type: 'mock/sync' });
+        mockAddFakePendingSolanaStakeTxThunk.mockReturnValue({ type: 'mock/addFakePendingSolTx' });
         pushTransactionMock.mockResolvedValue({ success: true, payload: { txid: TXID } });
     });
 
@@ -174,6 +193,29 @@ describe('signTransactionThunk', () => {
         });
         expect(mockNotifyEarnTransactionBroadcastThunk).toHaveBeenCalledWith(
             expect.objectContaining({ account, txid: TXID, flow: 'stake' }),
+        );
+    });
+
+    it('records the pending Solana stake with the blockhash validity of the signed transaction', async () => {
+        const solanaTxMeta = {
+            deviceAmountLamports: '1002282880',
+            feeLamports: '5000',
+            rentLamports: '2282880',
+            feeIncludingRentLamports: '2287880',
+            hasSplitInstruction: false,
+            lastValidBlockHeight: 4200,
+        };
+        mockSolanaSignTransactionThunk.mockReturnValue(() =>
+            Promise.resolve({ serializedTx: SIGNED_TX, solanaTxMeta }),
+        );
+
+        await signStakeTransaction(solanaAccount);
+
+        expect(mockAddFakePendingSolanaStakeTxThunk).toHaveBeenCalledWith(
+            expect.objectContaining({
+                txid: TXID,
+                precomposedTransaction: expect.objectContaining({ solanaTxMeta }),
+            }),
         );
     });
 
