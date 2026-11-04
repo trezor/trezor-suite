@@ -45,10 +45,13 @@ describe('Token Receive [@noDevice]', () => {
         await detoxExpect(
             element(
                 by
-                    .label(
-                        `${portfolioTrackerUSDCTokenAccount.symbol}:${tokenReceiveTokenUSDC.contract}`,
-                    )
-                    .withAncestor(receiveScreen),
+                    .id('@receive/qr-code-token-icon')
+                    .withAncestor(receiveScreen)
+                    .withDescendant(
+                        by.label(
+                            `${portfolioTrackerUSDCTokenAccount.symbol}:${tokenReceiveTokenUSDC.contract}`,
+                        ),
+                    ),
             ),
         ).toBeVisible();
     });
