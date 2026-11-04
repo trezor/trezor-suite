@@ -7,7 +7,7 @@ import {
     type TradingAssetSellOption,
     createAssetNativeTokenOption,
     parseCryptoId,
-    selectTradingInfo,
+    selectTradingCoins,
     useTradingAssets,
 } from '@suite-common/trading';
 import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
@@ -29,7 +29,7 @@ export function useTradingDefaultSellAsset({
 }: UseTradingDefaultSellAssetProps) {
     const findAccountOrToken = useTradingFindAccountOrToken();
     const { createAssetOptionFromCryptoId, resolveAssetTokenOption } = useTradingAssets();
-    const { coins } = useSelector(selectTradingInfo);
+    const coins = useSelector(selectTradingCoins);
     const accountOrToken = useMemo(() => {
         if (!cryptoId || !accountKey) {
             return null;
