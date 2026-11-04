@@ -128,6 +128,7 @@ export const messages = {
             title: 'Assets',
             showMore: 'Show more',
             showLess: 'Show less',
+            loadingBalances: 'Loading balances',
             viewOptionsSheet: {
                 title: 'View options',
                 groupBy: 'Group by',
