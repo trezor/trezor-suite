@@ -37,6 +37,9 @@ export type DeviceStatus =
     | 'firmware-corrupted'
     | 'unknown';
 
+export const getIsFirmwareUpdateRequired = (device?: TrezorDevice | Device) =>
+    device?.firmware === 'required';
+
 export const getStatus = (device: TrezorDevice): DeviceStatus => {
     if (!device.connected) {
         return 'disconnected';
@@ -76,7 +79,7 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
         if (device.mode === 'seedless') {
             return 'seedless';
         }
-        if (device.firmware === 'required') {
+        if (getIsFirmwareUpdateRequired(device)) {
             return 'firmware-required';
         }
         if (device.status === 'occupied') {

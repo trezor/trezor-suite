@@ -1,12 +1,15 @@
 import { G } from '@mobily/ts-belt';
 import * as semver from 'semver';
 
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInternalModel,
     getDeviceLanguage,
     getDeviceMode,
     getIsDeviceDescriptorApiTypeBluetooth,
+    getIsDeviceInitialized,
     getIsDevicePinProtected,
+    getIsFirmwareUpdateRequired,
 } from '@suite-common/suite-utils';
 import type { AnalyticsNativeEvents } from '@suite-native/analytics';
 import { events } from '@suite-native/analytics';
@@ -62,6 +65,26 @@ export const getIsDeviceSetupSupported = (model: DeviceModelInternal) => {
         default:
             return exhaustive(model);
     }
+};
+
+/**
+ * Returns true if the firmware must be updated before the device can be used in the app.
+ * Bootloader mode and uninitialized devices have their own flows. Devices without setup
+ * support (T1B1) show the unsupported firmware alert from `useDetectDeviceError`.
+ */
+export const getShouldForceFirmwareUpdate = (device: TrezorDevice | Device) => {
+    if (!device.features || device.mode === 'bootloader') return false;
+    if (!getIsDeviceInitialized({ deviceMode: device.mode, deviceFeatures: device.features })) {
+        return false;
+    }
+
+    const deviceModel = getDeviceInternalModel(device);
+    if (!getIsDeviceSetupSupported(deviceModel)) return false;
+
+    return (
+        getIsFirmwareUpdateRequired(device) ||
+        !isFirmwareVersionSupported(getFirmwareVersionArray(device), deviceModel)
+    );
 };
 
 export const reportDeviceConnectionAnalytics = (

@@ -20,6 +20,7 @@
         { "path": "../bluetooth" },
         { "path": "../device" },
         { "path": "../device-authorization" },
+        { "path": "../device-manager" },
         { "path": "../device-mutex" },
         { "path": "../firmware" },
         { "path": "../forms" },

@@ -10,7 +10,7 @@ import { ContextMessage } from '@suite/message-system';
 import { isRecoveryInProgress } from '@suite/recovery';
 import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device-authenticity';
 import { Context } from '@suite-common/message-system';
-import { getIsDeviceRemembered } from '@suite-common/suite-utils';
+import { getIsDeviceRemembered, getIsFirmwareUpdateRequired } from '@suite-common/suite-utils';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -69,7 +69,7 @@ const deviceSettingsUnavailable = (device?: TrezorDevice) => {
     const wrongDeviceMode =
         (device?.mode && ['seedless'].includes(device.mode)) ||
         (device?.features !== undefined && isRecoveryInProgress(device?.features));
-    const firmwareUpdateRequired = device?.firmware === 'required';
+    const firmwareUpdateRequired = getIsFirmwareUpdateRequired(device);
 
     return wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
 };
