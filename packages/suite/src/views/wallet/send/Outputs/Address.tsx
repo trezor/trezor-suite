@@ -23,6 +23,10 @@ import {
     selectNetworkSymbolForProtocol,
 } from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
+import {
+    isPossiblePoisoning,
+    selectAccountRecipientHistory,
+} from '@suite-common/recipient-history';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import {
@@ -51,6 +55,7 @@ import {
     HELP_CENTER_EVM_ADDRESS_CHECKSUM,
     HELP_CENTER_EVM_SEND_TO_CONTRACT_URL,
     HELP_CENTER_SOLANA_HELP_URL,
+    HELP_CENTER_ZERO_VALUE_ATTACKS,
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -159,6 +164,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         accountKey: account.key,
         recipientAddress: resolvedNamedAddress ?? address,
     });
+    const recipientHistory = useSelector(state =>
+        selectAccountRecipientHistory(state, account.key),
+    );
+    // A ref because the validators read it from the closure of the previous render.
+    const poisoningWarningDismissedAddress = useRef<string | undefined>(undefined);
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
@@ -294,6 +304,26 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         return;
     }
 
+    const isUndismissedPossiblePoisoning = (recipient: string) =>
+        !!recipientHistory &&
+        recipient !== poisoningWarningDismissedAddress.current &&
+        isPossiblePoisoning({ address: recipient, history: recipientHistory, networkType });
+
+    const getPoisoningWarningProps = (
+        checkedAddressName: typeof inputName | typeof resolvedAddressInputName,
+    ) => ({
+        buttonProps: {
+            onClick: async () => {
+                poisoningWarningDismissedAddress.current = getValues(checkedAddressName);
+                if (await trigger(inputName)) {
+                    composeTransaction();
+                }
+            },
+            text: translationString('TR_I_UNDERSTAND_THE_RISK'),
+        },
+        learnMoreUrl: HELP_CENTER_ZERO_VALUE_ATTACKS,
+    });
+
     const getInputErrorProps = (): {
         learnMoreUrl?: InputErrorProps['learnMoreUrl'];
         buttonProps?: InputErrorProps['buttonProps'];
@@ -352,6 +382,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
                 return {};
             }
+            case 'addressPoisoning':
+                return getPoisoningWarningProps(inputName);
+            case 'resolvedAddressPoisoning':
+                return getPoisoningWarningProps(resolvedAddressInputName);
             case 'solAssociatedAccountCheck':
                 if (!isExternalAddressCheckWarningDismissed) {
                     return {
@@ -427,6 +461,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
                 if (!addressValidator.isAddressValid(value, symbol)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
+                }
+            },
+            addressPoisoning: (value: string) => {
+                if (!namedAddress.isNameLike(value) && isUndismissedPossiblePoisoning(value)) {
+                    return translationString('TR_ADDRESS_POSSIBLE_POISONING');
                 }
             },
             evmChecks: async (checkedAddress: string) => {
@@ -521,6 +560,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     if (isContract) {
                         return translationString('TR_EVM_ADDRESS_IS_CONTRACT');
                     }
+                }
+            },
+            // A name only resolves to the address it sends to in evmChecks, so this must follow it.
+            resolvedAddressPoisoning: (value: string) => {
+                const resolvedAddress = getValues(resolvedAddressInputName);
+                if (
+                    namedAddress.isNameLike(value) &&
+                    resolvedAddress &&
+                    isUndismissedPossiblePoisoning(resolvedAddress)
+                ) {
+                    return translationString('TR_ADDRESS_POSSIBLE_POISONING');
                 }
             },
             solAssociatedAccountCheck: async (value: string) => {
@@ -643,8 +693,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const addressHint = getBottomText();
     const shouldShowRecipientHistoryNote =
         !!recipientHistoryNoteVariant && !addressError && !isAddressWithLabel;
+    // The warning asks to check every character, which needs the address the name resolved to.
+    const shouldShowResolvedAddress =
+        addressError?.type === 'resolvedAddressPoisoning' && !!resolvedNamedAddress;
     // Rows of their own, so the note never replaces what a name resolved to.
-    const bottomText = (addressHint || shouldShowRecipientHistoryNote) && (
+    const bottomText = (addressHint ||
+        shouldShowRecipientHistoryNote ||
+        shouldShowResolvedAddress) && (
         <Column gap={4}>
             {addressHint && (
                 <BottomText
@@ -653,6 +708,14 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     data-testid="@send/address/hint"
                 >
                     {addressHint}
+                </BottomText>
+            )}
+            {shouldShowResolvedAddress && (
+                <BottomText data-testid="@send/address/resolved-address">
+                    <Translation
+                        id="TR_ENS_WALLET_ADDRESS"
+                        values={{ address: resolvedNamedAddress }}
+                    />
                 </BottomText>
             )}
             {shouldShowRecipientHistoryNote && (

@@ -12007,6 +12007,7 @@ __metadata:
   resolution: "@suite-common/recipient-history@workspace:suite-common/recipient-history"
   dependencies:
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -19702,6 +19703,7 @@ __metadata:
     "@suite-common/price-chart": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
+    "@suite-common/recipient-history": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
