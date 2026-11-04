@@ -1,7 +1,7 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { routerAppChanged } from '@suite/router';
+import { routerAppChanged, selectRouterApp } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
@@ -25,7 +25,7 @@ const eventsMiddleware =
         // pass action
         next(action);
 
-        if (routerAppChanged.match(action) && prevState.router.app === 'notifications') {
+        if (routerAppChanged.match(action) && selectRouterApp(prevState) === 'notifications') {
             // Leaving notification app. Mark all unseen notifications as seen
             api.dispatch(notificationsActions.resetUnseen());
         }

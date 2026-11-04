@@ -11,7 +11,7 @@ import { type PROTO, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 import { type Dispatch } from '@trezor/redux-utils';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { selectOnboarding } from 'src/selectors/onboarding/onboardingSelectors';
+import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { type AppState } from 'src/types/suite';
 
 const onboardingMiddleware =
@@ -22,7 +22,7 @@ const onboardingMiddleware =
             firmwareActions.setStatus.match(action) && action.payload === 'done';
 
         const firmware = selectFirmware(api.getState());
-        const onboarding = selectOnboarding(api.getState());
+        const isOnboardingActive = selectIsOnboardingActive(api.getState());
 
         // Having just installed FW, we can mark the device as known, so that Manual Device Check is not seen again.
         // In case of fresh/factory-reset device, it would be duplicate.
@@ -31,7 +31,7 @@ const onboardingMiddleware =
             api.dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
         }
 
-        if (isFwInstallationDone && onboarding.isActive && firmware.status === 'thp-pairing') {
+        if (isFwInstallationDone && isOnboardingActive && firmware.status === 'thp-pairing') {
             // After the THP pairing is finished we want to jump to the next step automatically.
             // User already drifted away from the installation flow and is not aware that THP is actually in the middle
             // of the Firmware installation.

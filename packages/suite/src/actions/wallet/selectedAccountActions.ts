@@ -17,6 +17,7 @@ import {
     accountsActions,
     blockchainActions,
     feesActions,
+    selectAccounts,
     selectDeviceAccounts,
     selectDiscoveryForSelectedDevice,
     selectEnabledNetworks,
@@ -113,7 +114,7 @@ const getAccountState = (state: SelectedAccountState): SelectedAccountStatus => 
     }
 
     // get selected account
-    const account = getSelectedAccount(device.state.staticSessionId, state.wallet.accounts, params);
+    const account = getSelectedAccount(device.state.staticSessionId, selectAccounts(state), params);
     // account does exist
     if (account?.visible) {
         if (account.backendType === 'coinjoin') {
