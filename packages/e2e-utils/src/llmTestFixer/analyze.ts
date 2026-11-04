@@ -7,7 +7,8 @@ import { prettifyError } from 'zod';
 import { error, log } from '../logger';
 import { loadLedger, runAgent } from './common';
 import { reportToSlack } from './errors';
-import { AnalysisReportJsonSchema, AnalysisReportSchema } from './schemas';
+import { checkNightlyRuns } from './nightlyRuns';
+import { type AnalysisReport, AnalysisReportJsonSchema, AnalysisReportSchema } from './schemas';
 
 const MODEL = 'claude-opus-4-8';
 const MAX_BUDGET_USD = 10;
@@ -21,6 +22,28 @@ function buildLedgerPromptSection(ledgerPath: string): string {
     }
 
     return `\n\n---\n\n## Known-failures ledger\n\nFailures seen on previous runs. Follow the matching rules in the prompt.\n\n\`\`\`json\n${JSON.stringify(ledger.entries, null, 2)}\n\`\`\`\n`;
+}
+
+async function writeReportIfNightlyRunsClean(reportJsonPath: string): Promise<boolean> {
+    const nightlyRunsCheck = await checkNightlyRuns();
+
+    if (!nightlyRunsCheck.isClean) {
+        log(`Nightly runs need analysis: ${nightlyRunsCheck.reason}.`);
+
+        return false;
+    }
+
+    const report: AnalysisReport = {
+        runDate: new Date().toISOString().slice(0, 10),
+        webRunId: nightlyRunsCheck.webRunId,
+        desktopRunId: nightlyRunsCheck.desktopRunId,
+        fixTasks: [],
+        skipped: [],
+    };
+    writeFileSync(reportJsonPath, `${JSON.stringify(report, null, 2)}\n`);
+    log('Nightly runs have no failing or pending tests — analysis skipped.');
+
+    return true;
 }
 
 async function main(): Promise<void> {
@@ -38,12 +61,18 @@ async function main(): Promise<void> {
 
     const botDir = join(root, 'packages/e2e-utils/src/llmTestFixer');
     const reportDir = join(botDir, 'reports');
+    const reportJsonPath = join(reportDir, 'report.json');
+
+    mkdirSync(reportDir, { recursive: true });
+
+    if (await writeReportIfNightlyRunsClean(reportJsonPath)) {
+        return;
+    }
+
     const ledgerPath = join(root, 'ledger.json');
     const analysisPromptPath = join(botDir, 'ANALYSIS_AGENT.md');
     const analysisPromptWithLedger =
         readFileSync(analysisPromptPath, 'utf-8') + buildLedgerPromptSection(ledgerPath);
-
-    mkdirSync(reportDir, { recursive: true });
 
     log('Starting nightly test failure analysis...');
 
@@ -89,7 +118,6 @@ async function main(): Promise<void> {
         process.exit(1);
     }
 
-    const reportJsonPath = join(reportDir, 'report.json');
     const report = AnalysisReportSchema.safeParse(result.structured_output);
     if (!report.success) {
         writeFileSync(reportJsonPath, `${JSON.stringify(result.structured_output, null, 2)}\n`);
