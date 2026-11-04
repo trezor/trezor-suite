@@ -2,7 +2,12 @@ import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { type AllowanceLimitType, type AllowanceTransactionType } from '@suite-common/wallet-types';
+import {
+    type AllowanceLimitType,
+    type AllowanceStepState,
+    type AllowanceStepVariant,
+    type AllowanceTransactionType,
+} from '@suite-common/wallet-types';
 import { Button, Column, Text, TextButton } from '@trezor/components';
 import { FlowStep } from '@trezor/product-components';
 
@@ -10,11 +15,7 @@ import { AllowanceStepLimitRows } from './AllowanceStepLimitRows';
 import { AllowanceStepRow } from './AllowanceStepRow';
 import { type AllowanceStepToken } from './AllowanceStepToken';
 
-export type AllowanceStepVariant = 'approve' | 'increase' | 'revoke';
-
-export type AllowanceStepStatus = 'active' | 'pending' | 'done';
-
-const STEP_TEXT_ID = {
+export const ALLOWANCE_STEP_TEXT_ID = {
     approve: {
         title: 'TR_APPROVAL_STEP_APPROVE_TITLE',
         description: 'TR_APPROVAL_STEP_APPROVE_DESCRIPTION',
@@ -46,7 +47,7 @@ const VARIANT_TRANSACTION_TYPE = {
 
 export type AllowanceStepCardProps = {
     variant: AllowanceStepVariant;
-    status: AllowanceStepStatus;
+    state: AllowanceStepState;
     step: number;
     totalSteps: number;
     token: AllowanceStepToken;
@@ -66,7 +67,7 @@ export type AllowanceStepCardProps = {
 
 export const AllowanceStepCard = ({
     variant,
-    status,
+    state,
     step,
     totalSteps,
     token,
@@ -83,10 +84,10 @@ export const AllowanceStepCard = ({
     onContinue,
     'data-testid': dataTest,
 }: AllowanceStepCardProps) => {
-    const textIds = STEP_TEXT_ID[variant];
-    const isPending = status === 'pending';
+    const textIds = ALLOWANCE_STEP_TEXT_ID[variant];
+    const isPending = state === 'pending';
 
-    if (status === 'done') {
+    if (state === 'done') {
         return (
             <FlowStep
                 state="done"
@@ -140,7 +141,12 @@ export const AllowanceStepCard = ({
                                 intent="brand"
                                 isUnderlined
                             >
-                                <Address isTruncated isChunked={false} value={txid} />
+                                <Address
+                                    isTruncated
+                                    isChunked={false}
+                                    value={txid}
+                                    data-testid="@approval-step/txid-value"
+                                />
                             </TextButton>
                         ) : (
                             <Translation id="TR_UNKNOWN" />

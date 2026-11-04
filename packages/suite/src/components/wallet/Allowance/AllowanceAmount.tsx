@@ -7,7 +7,7 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 
 type AllowanceAmountProps = {
     amount: string;
-    symbol: string;
+    symbol?: string;
     decimals: number;
     contractAddress?: string | null;
     typographyStyle?: TypographyStyle;
