@@ -1,4 +1,8 @@
-import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import {
+    getDisplaySymbol,
+    getNetworkDisplaySymbol,
+    getNetworkDisplaySymbolName,
+} from '@suite-common/wallet-config';
 import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, HStack, Text } from '@suite-native/atoms';
 import {
@@ -68,12 +72,18 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                 <HStack alignItems="center" justifyContent="space-between" flex={1}>
                     <Box style={applyStyle(cardContentStyle)}>
                         <HStack>
-                            <TokenSymbol
-                                networkSymbol={symbol}
-                                tokenContract={token?.contract}
-                                variant="body-sm-strong"
-                                color="contentPrimary"
-                            />
+                            {token ? (
+                                <TokenSymbol
+                                    networkSymbol={symbol}
+                                    tokenContract={token.contract}
+                                    variant="body-sm-strong"
+                                    color="contentPrimary"
+                                />
+                            ) : (
+                                <Text variant="body-sm-strong" color="contentPrimary">
+                                    {getNetworkDisplaySymbol(symbol)}
+                                </Text>
+                            )}
 
                             {yieldBadge && account && (
                                 <YieldBadge

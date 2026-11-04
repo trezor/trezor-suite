@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import type { TokenAddress } from '@suite-common/tokens';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountNetworkSymbol,
@@ -54,13 +54,15 @@ export const ReceiveDestinationTagInfo = ({
                                 textPressedColor="contentSecondary"
                             />
                         ),
-                        coinSymbol: (
+                        coinSymbol: tokenContract ? (
                             <TokenSymbol
                                 isInline
                                 networkSymbol={accountSymbol}
                                 tokenContract={tokenContract}
                                 variant="body-xs"
                             />
+                        ) : (
+                            getNetworkDisplaySymbol(accountSymbol)
                         ),
                     }}
                 />

@@ -16,6 +16,7 @@ type TokenDetailBottomSheetProps = {
     issuerDomain: string;
     issuerAddress: string;
     iconContractAddress: TokenAddress | undefined;
+    tokenContract: TokenAddress;
     onClose: () => void;
 };
 
@@ -26,6 +27,7 @@ export const TokenDetailBottomSheet = ({
     issuerDomain,
     issuerAddress,
     iconContractAddress,
+    tokenContract,
     onClose,
 }: TokenDetailBottomSheetProps) => (
     <BottomSheetModal ref={bottomSheetRef} onDismiss={onClose}>
@@ -41,12 +43,12 @@ export const TokenDetailBottomSheet = ({
                     <TokenUrlBlur
                         text={tokenName}
                         networkSymbol={asNetworkSymbol('xlm')}
-                        tokenContract={iconContractAddress}
+                        tokenContract={tokenContract}
                     />
                     <TokenUrlBlur
                         text={assetCode}
                         networkSymbol={asNetworkSymbol('xlm')}
-                        tokenContract={iconContractAddress}
+                        tokenContract={tokenContract}
                         variant="body-sm"
                         color="contentSecondary"
                     />

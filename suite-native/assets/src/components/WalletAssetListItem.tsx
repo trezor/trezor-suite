@@ -14,6 +14,7 @@ import {
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type WalletAssetKey, selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { AssetYieldRateBadge } from '@suite-native/earn';

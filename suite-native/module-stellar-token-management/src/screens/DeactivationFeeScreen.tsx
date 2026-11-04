@@ -109,6 +109,7 @@ export const DeactivationFeeScreen = () => {
                             tokenName={tokenName}
                             issuerDomain={issuerDomain}
                             iconContractAddress={iconContractAddress}
+                            tokenContract={tokenContract}
                             onPress={openTokenDetail}
                         />
 
@@ -166,6 +167,7 @@ export const DeactivationFeeScreen = () => {
                     issuerDomain={issuerDomain}
                     issuerAddress={issuerAddress}
                     iconContractAddress={iconContractAddress}
+                    tokenContract={tokenContract}
                     onClose={closeTokenDetail}
                 />
             </ConfirmOnTrezorWrapper>

@@ -12,6 +12,7 @@ type TokenInfoCardProps = {
     tokenName: string;
     issuerDomain: string;
     iconContractAddress: TokenAddress | undefined;
+    tokenContract: TokenAddress;
     onPress: () => void;
 };
 
@@ -25,6 +26,7 @@ export const TokenInfoCard = ({
     tokenName,
     issuerDomain,
     iconContractAddress,
+    tokenContract,
     onPress,
 }: TokenInfoCardProps) => {
     const { applyStyle } = useNativeStyles();
@@ -53,7 +55,7 @@ export const TokenInfoCard = ({
                                 <TokenUrlBlur
                                     text={tokenName}
                                     networkSymbol={asNetworkSymbol('xlm')}
-                                    tokenContract={iconContractAddress}
+                                    tokenContract={tokenContract}
                                 />
                             </HStack>
                             <Text variant="body-md">{issuerDomain}</Text>

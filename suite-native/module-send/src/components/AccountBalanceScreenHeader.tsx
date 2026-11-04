@@ -33,13 +33,15 @@ export const AccountBalanceScreenHeader = ({
                     <Translation
                         id="moduleSend.outputs.title"
                         values={{
-                            assetName: (
+                            assetName: tokenContract ? (
                                 <TokenSymbol
                                     isInline
                                     networkSymbol={account.symbol}
                                     tokenContract={tokenContract}
                                     variant="body-md-strong"
                                 />
+                            ) : (
+                                getNetworkDisplaySymbol(account.symbol)
                             ),
                         }}
                     />

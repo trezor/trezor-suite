@@ -117,6 +117,7 @@ export const ActivationFeeScreen = () => {
                             tokenName={tokenName}
                             issuerDomain={issuerDomain}
                             iconContractAddress={iconContractAddress}
+                            tokenContract={tokenContract}
                             onPress={openTokenDetail}
                         />
 
@@ -200,6 +201,7 @@ export const ActivationFeeScreen = () => {
                     issuerDomain={issuerDomain}
                     issuerAddress={issuerAddress}
                     iconContractAddress={iconContractAddress}
+                    tokenContract={tokenContract}
                     onClose={closeTokenDetail}
                 />
             </ConfirmOnTrezorWrapper>

@@ -7,7 +7,7 @@ import {
     selectWalletAssetHoldings,
     selectWalletAssetKey,
 } from '@suite-common/assets';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BottomSheetModal, type BottomSheetModalRef, Card, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -59,7 +59,7 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                 <Translation
                     id="moduleAssets.assetDetailScreen.accountsSheet.subtitle"
                     values={{
-                        assetName: (
+                        assetName: tokenContract ? (
                             <TokenSymbol
                                 isTruncated
                                 isInline
@@ -68,6 +68,8 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                                 variant="body-sm"
                                 color="contentSecondary"
                             />
+                        ) : (
+                            getNetworkDisplaySymbol(networkSymbol)
                         ),
                         networkName: getNetwork(networkSymbol).name,
                     }}

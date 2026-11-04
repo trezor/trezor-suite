@@ -65,7 +65,7 @@ export const ReceiveFreshAddressHeader = ({
                             deviceStaticSessionId={deviceStaticSessionId}
                             showAccountTypeBadge
                         />
-                        {tokenSymbol && (
+                        {tokenSymbol && tokenContract && (
                             <HStack alignItems="center" spacing={0} flexShrink={1}>
                                 <Text variant="body-md-strong">{' - '}</Text>
                                 <TokenSymbol

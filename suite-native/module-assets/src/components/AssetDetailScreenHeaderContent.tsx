@@ -1,6 +1,6 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
@@ -27,14 +27,20 @@ export const AssetDetailScreenHeaderContent = ({
             />
 
             <VStack spacing={0} flexShrink={1}>
-                <TokenSymbol
-                    isTruncated
-                    networkSymbol={networkSymbol}
-                    tokenContract={tokenContract}
-                    variant="body-md-strong"
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                />
+                {tokenContract ? (
+                    <TokenSymbol
+                        isTruncated
+                        networkSymbol={networkSymbol}
+                        tokenContract={tokenContract}
+                        variant="body-md-strong"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    />
+                ) : (
+                    <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
+                        {getNetworkDisplaySymbol(networkSymbol)}
+                    </Text>
+                )}
                 <Text
                     variant="body-xs"
                     color="contentSecondary"
