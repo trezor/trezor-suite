@@ -6,16 +6,13 @@ import {
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
 import {
-    type FormDraftRootState,
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
     type WalletSettingsRootState,
     type YieldRootState,
-    formDraftActions,
     isEarnSigningCancelled,
     isYieldTxReviewForFlow,
     selectAddressDisplayType,
-    selectDeepCopyOfFormDraft,
     selectIsMevProtectionEnabled,
     selectYieldSession,
     selectYieldTxReview,
@@ -23,9 +20,8 @@ import {
     transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
-import { type Account, type FormState } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
-import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import type { YieldPushTransactionError } from './yieldTransactionThunks';
@@ -50,47 +46,6 @@ type YieldClaimSignTransactionError = {
     errorCode?: string;
     message?: string;
 };
-
-export type UpdateYieldClaimSelectedFeeLevelThunkState = FormDraftRootState;
-
-export const updateYieldClaimSelectedFeeLevelThunk = createThunk<
-    void,
-    UpdateSelectedFeeLevelThunkParams,
-    { state: UpdateYieldClaimSelectedFeeLevelThunkState }
->(
-    `${EARN_MODULE_PREFIX}/updateYieldClaimSelectedFeeLevelThunk`,
-    (
-        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey, maxFeePerGas, maxPriorityFeePerGas },
-        { dispatch, getState },
-    ) => {
-        if (!formDraftKey) return;
-
-        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
-            FormState | undefined;
-
-        if (!formDraft) return;
-
-        formDraft.selectedFee = feeLevelLabel;
-
-        if (feePerUnit) {
-            formDraft.feePerUnit = feePerUnit;
-        }
-
-        if (feeLimit) {
-            formDraft.feeLimit = feeLimit;
-        }
-
-        if (maxFeePerGas) {
-            formDraft.maxFeePerGas = maxFeePerGas;
-        }
-
-        if (maxPriorityFeePerGas) {
-            formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        }
-
-        dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
-    },
-);
 
 export type SignYieldClaimReviewThunkState = DeviceRootState &
     YieldRootState &
