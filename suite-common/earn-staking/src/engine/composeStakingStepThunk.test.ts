@@ -115,6 +115,19 @@ describe('composeStakingStepThunk', () => {
         expect(adapter.composeStep).toHaveBeenCalledWith(expect.objectContaining({ customFee }));
     });
 
+    it('rejects an invalid custom fee before the adapter sees it', async () => {
+        const adapter = createAdapter(mock(() => Promise.resolve(composed)));
+        const state = createState();
+        const { actions, result } = await run(() => state, createExtra(adapter), {
+            sessionKey,
+            customFee: { feePerUnit: '25', maxFeePerGas: '30' },
+        });
+
+        expect(result.payload).toBe('invalid-custom-fee');
+        expect(adapter.composeStep).not.toHaveBeenCalled();
+        expect(actions).toEqual([]);
+    });
+
     it('recomposes a step that is already composed', async () => {
         const recomposed = mockComposedStakingStep({ validityMs: 24_000 });
         const adapter = createAdapter(mock(() => Promise.resolve(recomposed)));

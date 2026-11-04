@@ -1,7 +1,6 @@
 import type {
     ComposedStakingStep,
     StakingFeeLevel,
-    StakingFeeLevelExtraValue,
     StakingStepOutput,
 } from '@suite-common/earn-staking-common';
 import type {
@@ -10,12 +9,6 @@ import type {
     PrecomposedTransactionError,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-
-const getStringExtra = (value: StakingFeeLevelExtraValue | undefined) =>
-    typeof value === 'string' ? value : undefined;
-
-const getNumberExtra = (value: StakingFeeLevelExtraValue | undefined) =>
-    typeof value === 'number' ? value : undefined;
 
 const toPrecomposedTransaction = (
     level: StakingFeeLevel,
@@ -33,10 +26,10 @@ const toPrecomposedTransaction = (
         type: 'final',
         fee: level.fee,
         totalSpent: level.totalSpent,
-        feePerByte: level.feePerUnit,
+        feePerByte: level.feePerUnit ?? '',
         feeLimit: level.feeLimit ?? undefined,
         max: level.max ?? undefined,
-        bytes: getNumberExtra(level.extras.bytes) ?? 0,
+        bytes: level.extras.bytes ?? 0,
         inputs: [],
         outputs: outputs.map(output => ({
             address: output.address,
@@ -44,9 +37,9 @@ const toPrecomposedTransaction = (
             script_type: 'PAYTOADDRESS',
         })),
         outputsPermutation: outputs.map((_output, index) => index),
-        estimatedFeeLimit: getStringExtra(level.extras.estimatedFeeLimit),
-        maxFeePerGas: getStringExtra(level.extras.maxFeePerGas),
-        maxPriorityFeePerGas: getStringExtra(level.extras.maxPriorityFeePerGas),
+        estimatedFeeLimit: level.extras.estimatedFeeLimit,
+        maxFeePerGas: level.extras.maxFeePerGas,
+        maxPriorityFeePerGas: level.extras.maxPriorityFeePerGas,
     } satisfies PrecomposedTransactionFinal;
 };
 

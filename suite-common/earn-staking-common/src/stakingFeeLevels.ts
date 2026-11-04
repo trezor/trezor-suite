@@ -17,18 +17,27 @@ export const stakingFeeLevelLabelSchema = z.enum(STAKING_FEE_LEVEL_LABELS);
 
 export type StakingFeeLevelLabel = z.infer<typeof stakingFeeLevelLabelSchema>;
 
-export const stakingFeeLevelExtraValueSchema = z.union([z.string(), z.number(), z.boolean()]);
+export const stakingFeeRateSchema = z.string().regex(/^\d+(\.\d+)?$/);
 
-export type StakingFeeLevelExtraValue = z.infer<typeof stakingFeeLevelExtraValueSchema>;
+export const stakingFeeLimitSchema = z.string().regex(/^\d+$/);
+
+export const stakingFeeLevelExtrasSchema = z.strictObject({
+    bytes: z.number().int().nonnegative().optional(),
+    estimatedFeeLimit: stakingFeeLimitSchema.optional(),
+    maxFeePerGas: stakingFeeRateSchema.optional(),
+    maxPriorityFeePerGas: stakingFeeRateSchema.optional(),
+});
+
+export type StakingFeeLevelExtras = z.infer<typeof stakingFeeLevelExtrasSchema>;
 
 export const stakingFinalFeeLevelSchema = z.strictObject({
     type: z.literal('final'),
     fee: stakingAmountSchema,
     totalSpent: stakingAmountSchema,
-    feePerUnit: z.string(),
-    feeLimit: z.string().nullable(),
+    feePerUnit: stakingFeeRateSchema.nullable(),
+    feeLimit: stakingFeeLimitSchema.nullable(),
     max: stakingAmountSchema.nullable(),
-    extras: z.record(z.string(), stakingFeeLevelExtraValueSchema),
+    extras: stakingFeeLevelExtrasSchema,
 });
 
 export type StakingFinalFeeLevel = z.infer<typeof stakingFinalFeeLevelSchema>;
@@ -53,18 +62,25 @@ export const stakingFeeLevelSchema = z.discriminatedUnion('type', [
 
 export type StakingFeeLevel = z.infer<typeof stakingFeeLevelSchema>;
 
-export const stakingFeeLevelsSchema = z.partialRecord(
-    stakingFeeLevelLabelSchema,
-    stakingFeeLevelSchema,
-);
+export const stakingFeeLevelsSchema = z
+    .partialRecord(stakingFeeLevelLabelSchema, stakingFeeLevelSchema)
+    .refine(levels => levels.normal !== undefined, {
+        message: 'A normal fee level is required',
+        path: ['normal'],
+    });
 
 export type StakingFeeLevels = z.infer<typeof stakingFeeLevelsSchema>;
 
-export const stakingCustomFeeSchema = z.strictObject({
-    feePerUnit: z.string().min(1),
-    feeLimit: z.string().optional(),
-    maxFeePerGas: z.string().optional(),
-    maxPriorityFeePerGas: z.string().optional(),
-});
+export const stakingCustomFeeSchema = z
+    .strictObject({
+        feePerUnit: stakingFeeRateSchema,
+        feeLimit: stakingFeeLimitSchema.optional(),
+        maxFeePerGas: stakingFeeRateSchema.optional(),
+        maxPriorityFeePerGas: stakingFeeRateSchema.optional(),
+    })
+    .refine(fee => (fee.maxFeePerGas === undefined) === (fee.maxPriorityFeePerGas === undefined), {
+        message: 'maxFeePerGas and maxPriorityFeePerGas are set together or not at all',
+        path: ['maxPriorityFeePerGas'],
+    });
 
 export type StakingCustomFee = z.infer<typeof stakingCustomFeeSchema>;

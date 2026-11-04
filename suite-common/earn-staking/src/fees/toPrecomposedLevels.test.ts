@@ -46,12 +46,12 @@ describe('toPrecomposedLevels', () => {
         });
     });
 
-    it('keeps the tron bandwidth as bytes and the cardano rate empty', () => {
+    it('keeps the tron bandwidth as bytes and maps a missing rate to the empty one', () => {
         const levels = toPrecomposedLevels(
             mockComposedStakingStep({
                 feeLevels: {
                     normal: mockStakingFinalFeeLevel({
-                        feePerUnit: '',
+                        feePerUnit: null,
                         feeLimit: null,
                         extras: { bytes: 283 },
                     }),

@@ -2,6 +2,7 @@ import {
     type ComposedStakingStep,
     type StakingCustomFee,
     assertComposedStakingStep,
+    stakingCustomFeeSchema,
 } from '@suite-common/earn-staking-common';
 import type { AccountsRootState } from '@suite-common/wallet-core';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
@@ -37,6 +38,13 @@ export const composeStakingStepThunk = createThunk<
 >(
     `${STAKING_ENGINE_ACTION_PREFIX}/composeStakingStep`,
     async ({ sessionKey, customFee }, { dispatch, getState, extra, rejectWithValue }) => {
+        const parsedCustomFee =
+            customFee === undefined ? null : stakingCustomFeeSchema.safeParse(customFee);
+
+        if (parsedCustomFee !== null && !parsedCustomFee.success) {
+            return rejectWithValue('invalid-custom-fee');
+        }
+
         const stepContext = selectStakingStepContext(getState(), sessionKey);
 
         if (!stepContext.success) {
@@ -55,7 +63,7 @@ export const composeStakingStepThunk = createThunk<
                 account,
                 plan: session.plan,
                 step: planStep,
-                customFee: customFee ?? null,
+                customFee: parsedCustomFee === null ? null : parsedCustomFee.data,
             }),
         );
 
