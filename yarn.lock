@@ -15458,6 +15458,7 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/transport-native-bluetooth": "workspace:*"
     "@trezor/type-utils": "workspace:*"

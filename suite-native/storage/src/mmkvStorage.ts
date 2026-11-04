@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { type MMKV, createMMKV } from 'react-native-mmkv';
+import { type MMKV, type createMMKV } from 'react-native-mmkv';
 import RNRestart from 'react-native-restart';
 
 import { captureMessage } from '@sentry/react-native';
@@ -18,7 +18,9 @@ export const clearStorage = ({ mmkvInstance }: { mmkvInstance: MMKV | null }) =>
     RNRestart.restart();
 };
 
-const alertUser = ({ mmkvInstance }: { mmkvInstance: MMKV | null }) => {
+export type AlertStorageLoadFailure = (params: { mmkvInstance: MMKV | null }) => void;
+
+export const alertStorageLoadFailure: AlertStorageLoadFailure = ({ mmkvInstance }) => {
     // If storage can't load, app is never set as ready so we need to hide splash screen here to make the alert visible.
     SplashScreen.hideAsync();
     Alert.alert(
@@ -42,20 +44,10 @@ const alertUser = ({ mmkvInstance }: { mmkvInstance: MMKV | null }) => {
     );
 };
 
-const tryInitStorage = (encryptionKey: string) => {
-    try {
-        return createMMKV({
-            id: ENCRYPTED_STORAGE_ID,
-            encryptionKey,
-        });
-    } catch (error) {
-        alertUser({ mmkvInstance: null });
-        // rethrow error so it can be caught by Sentry
-        throw error;
-    }
+export type MMKVStorageDeps = EnsureEncryptionKeyDep & {
+    createMMKV: typeof createMMKV;
+    alertStorageLoadFailure: AlertStorageLoadFailure;
 };
-
-type MMKVStorageDeps = EnsureEncryptionKeyDep;
 
 type GetMMKVRaw = {
     getMMKV: () => Promise<MMKV>;
@@ -68,6 +60,19 @@ export type MMKVStorageDep = { mmkvStorage: MMKVStorage };
 export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
     let mmkv: MMKV | null = null;
 
+    const tryInitStorage = (encryptionKey: string) => {
+        try {
+            return deps.createMMKV({
+                id: ENCRYPTED_STORAGE_ID,
+                encryptionKey,
+            });
+        } catch (error) {
+            deps.alertStorageLoadFailure({ mmkvInstance: null });
+            // rethrow error so it can be caught by Sentry
+            throw error;
+        }
+    };
+
     const ensureMMKV = async () => {
         if (mmkv !== null) {
             return mmkv;
@@ -76,7 +81,7 @@ export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
         const encryptionKey = await deps.ensureEncryptionKey();
 
         if (encryptionKey === null) {
-            alertUser({ mmkvInstance: mmkv });
+            deps.alertStorageLoadFailure({ mmkvInstance: mmkv });
             throw new Error('Encryption key is unreadable!');
         }
 

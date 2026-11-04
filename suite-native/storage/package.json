@@ -39,5 +39,8 @@
         "react-native-mmkv": "~4.3.2",
         "react-native-restart": "0.0.27",
         "redux-persist": "6.0.0"
+    },
+    "devDependencies": {
+        "@trezor/dependency-injection": "workspace:*"
     }
 }
