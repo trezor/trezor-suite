@@ -24,6 +24,7 @@ export enum EventType {
     DashboardReceiveModalOptions = 'dashboard/receive-modal/options',
     DashboardSendModal = 'dashboard/send-modal',
     DashboardSendModalOptions = 'dashboard/send-modal/options',
+    DeviceChangeHomescreen = 'device/change-homescreen',
     // eslint-disable-next-line local-rules/analytics-event-name
     DeviceConnect = 'device-connect',
     // eslint-disable-next-line local-rules/analytics-event-name
