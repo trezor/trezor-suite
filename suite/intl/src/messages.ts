@@ -11752,6 +11752,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_VOTE_LET_EVERSTAKE_VOTE_DESCRIPTION',
         defaultMessage: 'Your stake pool operator votes on your behalf.',
     },
+    TR_STAKING_VOTE_NO_CONFIDENCE: {
+        id: 'TR_STAKING_VOTE_NO_CONFIDENCE',
+        defaultMessage: 'No confidence',
+    },
     TR_STAKING_VOTE_CHOOSE_OWN_DREP: {
         id: 'TR_STAKING_VOTE_CHOOSE_OWN_DREP',
         defaultMessage: 'Choose your own DRep',

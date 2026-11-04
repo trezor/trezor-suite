@@ -20,7 +20,10 @@ import {
 import { PROTO } from '@trezor/connect';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
-import { CARDANO_ALWAYS_ABSTAIN_DREP_ID } from './cardanoStakingConstants';
+import {
+    CARDANO_ALWAYS_ABSTAIN_DREP_ID,
+    CARDANO_ALWAYS_NO_CONFIDENCE_DREP_ID,
+} from './cardanoStakingConstants';
 import { type VotingDelegationOption } from './cardanoStakingTypes';
 
 export function isSupportedAdaStakingNetworkSymbol(
@@ -171,6 +174,8 @@ export const getCardanoCurrentVotingOption = (
             return undefined;
         case CARDANO_ALWAYS_ABSTAIN_DREP_ID:
             return { type: 'abstain' };
+        case CARDANO_ALWAYS_NO_CONFIDENCE_DREP_ID:
+            return { type: 'no_confidence' };
         case CARDANO_EVERSTAKE_DREP.bech32:
             return { type: 'everstake' };
         default:

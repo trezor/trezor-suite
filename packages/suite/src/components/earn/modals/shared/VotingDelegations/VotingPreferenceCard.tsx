@@ -64,6 +64,8 @@ const getVotingOption = (type: VotingDelegationOption['type']): VotingDelegation
     switch (type) {
         case 'abstain':
             return { type: 'abstain' };
+        case 'no_confidence':
+            return { type: 'no_confidence' };
         case 'everstake':
             return { type: 'everstake' };
         case 'another_drep':

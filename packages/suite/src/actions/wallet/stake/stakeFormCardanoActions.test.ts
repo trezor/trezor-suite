@@ -354,6 +354,19 @@ describe('prepareTxPlan', () => {
             },
         );
 
+        it('encodes a confirmed no-confidence option without treating it as a custom DRep', async () => {
+            await prepare(action, {
+                accountKey: STAKE_READY_ACCOUNT_KEY,
+                option: { type: 'no_confidence' },
+            });
+
+            expect(getVoteDelegationCertificate()?.dRep).toEqual({
+                type: PROTO.CardanoDRepType.NO_CONFIDENCE,
+                keyHash: undefined,
+                scriptHash: undefined,
+            });
+        });
+
         it('delegates the vote to the custom DRep when the drepId is valid', async () => {
             await prepare(action, {
                 accountKey: STAKE_READY_ACCOUNT_KEY,
