@@ -9,6 +9,7 @@ import {
     selectRouterUrl,
 } from '@suite/router';
 import { onSuiteReady } from '@suite/suite-lifecycle';
+import { NAVIGATE_FLOW_FROM } from '@suite-common/analytics';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdateThunk } from '@suite-common/firmware';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
@@ -28,6 +29,7 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import {
@@ -172,10 +174,22 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
             }
 
             if (selectRouteName(state) === 'suite-earn' && prevRouteName !== 'suite-earn') {
-                analytics.report({
-                    type: events.yieldEarnEntryEvent.name,
-                    payload: { from: prevRouteName ?? 'unknown' },
-                });
+                const { analyticsOrigin } = action.payload;
+
+                if (
+                    analyticsOrigin !== undefined &&
+                    isArrayMember(analyticsOrigin, NAVIGATE_FLOW_FROM)
+                ) {
+                    analytics.report({
+                        type: events.navigateFlowEvent.name,
+                        payload: { action: 'navigate', type: 'earn', from: analyticsOrigin },
+                    });
+                } else {
+                    analytics.report({
+                        type: events.yieldEarnEntryEvent.name,
+                        payload: { from: prevRouteName ?? 'unknown' },
+                    });
+                }
             }
         } else if (anchorChange.match(action)) {
             if (action.payload) {

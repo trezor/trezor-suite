@@ -34,7 +34,6 @@ export { createBackupEvent } from './createBackupEvent';
 export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddressConfirmOnTrezorEvent';
 export { createReceiveAddressCopyAddressEvent } from './createReceiveAddressCopyAddressEvent';
 export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShowAddressEvent';
-export { dashboardActionsEvent } from './dashboardActionsEvent';
 export { dashboardActivateAssetsModalEvent } from './dashboardActivateAssetsModalEvent';
 export { dashboardReceiveModalEvent } from './dashboardReceiveModalEvent';
 export { dashboardReceiveModalOptionsEvent } from './dashboardReceiveModalOptionsEvent';

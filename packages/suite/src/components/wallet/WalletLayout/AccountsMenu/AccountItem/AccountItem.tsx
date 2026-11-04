@@ -1,9 +1,11 @@
 import { memo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { gotoThunk } from '@suite/router';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
@@ -53,7 +55,7 @@ export const AccountItem = memo(
         isFiatLoading,
         onClick,
     }: AccountItemProps) => {
-        const { analytics } = useServices(injectDesktopAnalytics);
+        const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
         const { accountType, index, symbol } = account;
 
         const goToWithAnalytics = useGoToWithAnalytics(account);
@@ -67,14 +69,24 @@ export const AccountItem = memo(
                 return;
             }
 
-            goToWithAnalytics({
-                routeName: getRoute(type),
-                params: {
-                    symbol,
-                    accountIndex: index,
-                    accountType,
-                },
-            });
+            const params = { symbol, accountIndex: index, accountType };
+
+            if (type === 'coin') {
+                analytics.report({
+                    type: events.navigateFlowEvent.name,
+                    payload: {
+                        action: 'navigate',
+                        type: 'account-detail',
+                        from: 'tab',
+                        networkSymbol: symbol,
+                    },
+                });
+                dispatch(gotoThunk({ routeName: getRoute(type), params }));
+
+                return;
+            }
+
+            goToWithAnalytics({ routeName: getRoute(type), params });
 
             if (type === 'staking') {
                 analytics.report({

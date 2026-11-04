@@ -38,6 +38,7 @@ export type RouterRootState = {
 export type LocationChangePayload = RouterPathOptional & {
     anchor?: AnchorType;
     settingsBackRoute?: SettingsBackRoute;
+    analyticsOrigin?: string;
 } & RouterAppWithParams;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<RouterRootState>();
@@ -75,8 +76,9 @@ const routerSlice = createSlice({
             state: RouterState,
             action: PayloadAction<LocationChangePayload>,
         ) => {
+            const { analyticsOrigin: _analyticsOrigin, ...location } = action.payload;
             state.loaded = true;
-            Object.assign(state, action.payload);
+            Object.assign(state, location);
         },
         anchorChange: (state: RouterState, action: PayloadAction<AnchorType | undefined>) => {
             state.anchor = action.payload;
@@ -142,6 +144,7 @@ export type RouterAction =
           payload: RouterPathOptional & {
               anchor?: AnchorType;
               settingsBackRoute?: SettingsBackRoute;
+              analyticsOrigin?: string;
           } & RouterAppWithParams;
       }
     | {

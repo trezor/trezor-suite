@@ -142,7 +142,7 @@ describe('Navigation new-content indicators', () => {
         fireEvent.click(screen.getByTestId(swapButton));
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
-            type: events.tradeNavigateEvent.name,
+            type: events.navigateFlowEvent.name,
             payload: { action: 'navigate', type: 'exchange', from: 'sidebar' },
         });
     });
@@ -179,7 +179,7 @@ describe('Navigation new-content indicators', () => {
             expect(analytics.report.mock.calls).toEqual([
                 [
                     {
-                        type: events.tradeNavigateEvent.name,
+                        type: events.navigateFlowEvent.name,
                         payload: { action: 'navigate', type: 'exchange', from: 'sidebar' },
                     },
                 ],
@@ -191,7 +191,7 @@ describe('Navigation new-content indicators', () => {
                 ],
                 [
                     {
-                        type: events.tradeNavigateEvent.name,
+                        type: events.navigateFlowEvent.name,
                         payload: { action: 'navigate', type: 'exchange', from: 'sidebar' },
                     },
                 ],

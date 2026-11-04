@@ -15,6 +15,10 @@ export const yieldEarnEntryEvent: EventDef<Attributes, EventType.YieldEarnEntry>
             version: '26.11.0',
             notes: 'Shared by desktop and mobile; replaces mobile earn/navigate.',
         },
+        {
+            version: '26.11.0',
+            notes: 'Desktop entries from the sidebar report `navigate/flow` instead.',
+        },
     ],
 
     attributes: {

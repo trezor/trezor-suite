@@ -30,6 +30,7 @@ import { type SuiteRouterHistoryDep } from './suiteRouterHistory';
  */
 type OnLocationChangeThunkParams = RouterPathOptional & {
     anchor?: AnchorType;
+    analyticsOrigin?: string;
 };
 
 type OnLocationChangeThunkState = LocksRootState & ModalRootState & RouterRootState;
@@ -78,6 +79,7 @@ type GotoPayload = {
     params?: RouteParams;
     preserveParams?: boolean;
     anchor?: AnchorType;
+    analyticsOrigin?: string;
 };
 
 export type GotoThunkState = LocksRootState & ModalRootState & RouterRootState;
@@ -90,7 +92,10 @@ export const gotoThunk = createThunk<
     { state: GotoThunkState; extra: GotoThunkDeps }
 >(
     '@router/goto',
-    ({ routeName, params, preserveParams, anchor }, { dispatch, getState, extra }) => {
+    (
+        { routeName, params, preserveParams, anchor, analyticsOrigin },
+        { dispatch, getState, extra },
+    ) => {
         const hasRouterLock = selectIsRouterLocked(getState());
 
         if (hasRouterLock) {
@@ -116,7 +121,7 @@ export const gotoThunk = createThunk<
             return;
         }
 
-        dispatch(onLocationChangeThunk({ pathname, hash, anchor }));
+        dispatch(onLocationChangeThunk({ pathname, hash, anchor, analyticsOrigin }));
         if (route?.isForegroundApp) {
             dispatch(lockRouter(true));
 
