@@ -415,6 +415,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
                         symbol,
                         accountIndex,
                         accountTypeKey: activeTab.key,
+                        accountKey: existing.key,
                         ...(includeValue
                             ? resolveCandidateValue(mode, isUtxo, existing)
                             : { path: existing.path }),
