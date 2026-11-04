@@ -1,5 +1,8 @@
 name: "[Bot] Set project status approved/needs-qa on Close/Merge PR & Issue"
 
+permissions:
+  contents: read
+
 on:
   issues:
     types: [closed]

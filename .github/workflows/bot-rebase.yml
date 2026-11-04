@@ -1,5 +1,8 @@
 name: "[Bot] rebase pull request"
 
+permissions:
+  contents: read
+
 on:
   issue_comment:
     types: [created]
@@ -10,6 +13,9 @@ concurrency:
 
 jobs:
   rebase-pr:
+    permissions:
+      contents: read
+      pull-requests: write
     name: Rebase pull request
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase') && github.repository == 'trezor/trezor-suite'

@@ -1,5 +1,8 @@
 name: "[Bot] update TOR binary"
 
+permissions:
+  contents: read
+
 on:
   schedule:
     - cron: "0 0 1 * *"

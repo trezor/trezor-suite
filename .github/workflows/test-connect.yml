@@ -1,5 +1,8 @@
 name: "[Test] connect core e2e"
 
+permissions:
+  contents: read
+
 # run only if there are changes in connect or related libs paths
 on:
   schedule:

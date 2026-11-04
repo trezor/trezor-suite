@@ -1,5 +1,8 @@
 name: "[Check] Test Health"
 
+permissions:
+  contents: read
+
 # run only if there are changes in suite or related libs paths - equal settings as PR e2e test job
 on:
   pull_request:

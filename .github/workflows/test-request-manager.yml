@@ -1,5 +1,8 @@
 name: "[Test] request-manager"
 
+permissions:
+  contents: read
+
 on:
   schedule:
     # Runs at midnight UTC every day at 01:00 AM CET

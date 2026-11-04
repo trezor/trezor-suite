@@ -1,5 +1,8 @@
 name: "[Release] connect bump versions"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:

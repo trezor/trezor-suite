@@ -1,6 +1,9 @@
 name: "[Test] Release Suite Sanity test publisher"
 # Runs Playwright reporter, creating manual regressions release suite in GitHub"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:

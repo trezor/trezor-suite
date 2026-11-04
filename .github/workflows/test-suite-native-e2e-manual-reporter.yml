@@ -1,6 +1,9 @@
 name: "[Test] Release Suite Native Sanity test publisher"
 # Runs Native reporter, creating manual regressions release suite in GitHub"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:

@@ -1,5 +1,8 @@
 name: "[Test] connect custom e2e setup"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
