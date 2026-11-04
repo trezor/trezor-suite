@@ -8,9 +8,15 @@ import { getAvailableAccountTypes } from '@suite-common/wallet-utils';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { type SelectionType } from '@trezor/connect-common/src/types/api/selectAccount';
 
-import { CommonPopupFlow, type PopupFlowPayload, type PopupFlowResponse } from './CommonPopupFlow';
+import {
+    CommonPopupFlow,
+    type PopupFlowAnswer,
+    type PopupFlowPayload,
+    type PopupFlowResponse,
+} from './CommonPopupFlow';
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
+import { selectConnectPopupCallWithState } from '../connectPopupReducer';
 import {
     type SelectAccountOptions,
     type SelectAccountTypeTab,
@@ -112,16 +118,17 @@ export class SelectAccount extends CommonPopupFlow<'selectAccount'> {
     }
 
     // Drives the `selectAccount` picker. The Connect method itself is a no-op that returns
-    // immediately, so by the time this runs the call has already returned — which is what makes it
-    // safe for the picker to fire nested Connect calls (deriving new indices, verifying addresses on
-    // device) without colliding with an in-flight call. We keep the call "ongoing" by blocking on
-    // getPermissionDeferred, which connectPopupResolveSelectAccountThunk resolves (confirm) or
-    // rejects (cancel).
-    protected async postCall(response: PopupFlowResponse<'selectAccount'>) {
-        if (!response.success) return false;
+    // immediately, so by the time the picker shows the call has already returned — which is what
+    // makes it safe for the picker to fire nested Connect calls (deriving new indices, verifying
+    // addresses on device) without colliding with an in-flight call.
+    protected async callMethod(payload: PopupFlowPayload<'selectAccount'>) {
+        const response = await super.callMethod(payload);
+        if (!response.success) return response;
 
         const options = buildOptions(this.payload);
-
+        // Resolved once the user connects, by connectPopupResolveSelectAccountThunk. A cancel rejects
+        // it instead, which the call flow maps to Method_Cancel.
+        const pickerDeferred = getPermissionDeferred(true);
         this.dispatch(
             connectPopupActions.selectAccount({
                 options,
@@ -135,13 +142,36 @@ export class SelectAccount extends CommonPopupFlow<'selectAccount'> {
                 exported: false,
             }),
         );
+        await pickerDeferred.promise;
 
-        // Block until the user connects. connectPopupResolveSelectAccountThunk delivers the
-        // selection to the app, flips the picker into its `exported` phase (keeping the modal open
-        // so the user can still verify the exported addresses on device, like
-        // ConnectAddressConfirmation), and resolves this deferred. A cancel rejects it instead,
-        // which the call flow maps to Method_Cancel.
-        await getPermissionDeferred(true).promise;
+        const candidates =
+            selectConnectPopupCallWithState(this.getState(), 'select-account')?.candidates ?? [];
+
+        // Always an array, even for a 'single' selection — mirrors eth_requestAccounts. `address`
+        // and `xpub` are mutually exclusive per candidate (see SelectAccountCandidate).
+        return {
+            success: true,
+            payload: candidates
+                .filter(c => c.selected && (c.address || c.xpub))
+                .map(c => ({
+                    symbol: c.symbol,
+                    path: c.path,
+                    address: c.address,
+                    xpub: c.xpub,
+                    // undefined for custom (non-built-in) account-type tabs — no real AccountType
+                    accountType: options.accountTypeTabs.find(tab => tab.key === c.accountTypeKey)
+                        ?.accountType,
+                    mac: c.mac,
+                })),
+        } as PopupFlowAnswer;
+    }
+
+    // Keeps the picker open in its `exported` phase, so the user can keep verifying the exported
+    // addresses on device (mirrors ConnectAddressConfirmation).
+    protected postCall(response: PopupFlowResponse<'selectAccount'>) {
+        if (!response.success) return false;
+
+        this.dispatch(connectPopupActions.updateSelectAccount({ exported: true }));
 
         return true;
     }
