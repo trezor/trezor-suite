@@ -12,7 +12,7 @@ import {
     getDefaultCountrySubdivision,
     getSupportedFiatCurrencyWithFallback,
     regional,
-    selectTradingInfo,
+    selectTradingCoins,
     useTradingAssets,
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -25,7 +25,7 @@ export const useTradingBuyFormDefaultValues = (
     buyInfo: TradingBuyInfoSelector | undefined,
 ): TradingBuyFormDefaultValuesProps => {
     const isTorEnabled = useSelector(selectIsTorEnabled);
-    const { coins } = useSelector(selectTradingInfo);
+    const coins = useSelector(selectTradingCoins);
     const { createAssetOptionFromCryptoId } = useTradingAssets();
 
     const country = !isTorEnabled
