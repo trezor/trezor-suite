@@ -5,8 +5,9 @@ import {
     type HomeAssetTableState,
     selectIsHomeAssetTableFoldable,
 } from '@suite-common/assets';
-import { Divider, VStack } from '@suite-native/atoms';
+import { Divider } from '@suite-native/atoms';
 
+import { PortfolioAssetsCardSegment } from './PortfolioAssetsCardSegment';
 import { PortfolioAssetsShowMoreButton } from './PortfolioAssetsShowMoreButton';
 
 type PortfolioAssetsShowMoreProps = {
@@ -24,11 +25,9 @@ export const PortfolioAssetsShowMore = ({ isExpanded, onPress }: PortfolioAssets
     }
 
     return (
-        <>
+        <PortfolioAssetsCardSegment isLast>
             <Divider />
-            <VStack alignItems="center" paddingVertical="sp12">
-                <PortfolioAssetsShowMoreButton isExpanded={isExpanded} onPress={onPress} />
-            </VStack>
-        </>
+            <PortfolioAssetsShowMoreButton isExpanded={isExpanded} onPress={onPress} />
+        </PortfolioAssetsCardSegment>
     );
 };

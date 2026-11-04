@@ -66,7 +66,7 @@ export const PortfolioAssetsFeedback = () => {
         <CollapsibleBox
             isCollapsed={isClosed && !isSubmitted}
             paddingHorizontal="sp16"
-            paddingVertical="sp16"
+            paddingTop="sp12"
             testID="@home/portfolio-assets/feedback"
         >
             <FeedbackCard
