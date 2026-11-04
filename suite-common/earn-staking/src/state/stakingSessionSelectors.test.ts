@@ -64,7 +64,7 @@ const idle = toRootState(
 );
 const signingFreeze = toRootState(
     [
-        stakingActions.stepComposed({ ...freeze, composed: mockComposedStakingStep() }),
+        stakingActions.stepComposed({ ...freeze, attemptId, composed: mockComposedStakingStep() }),
         stakingActions.stepSigning({
             ...freeze,
             attemptId,
@@ -75,7 +75,7 @@ const signingFreeze = toRootState(
 );
 const signedClaimLater = toRootState(
     [
-        stakingActions.stepComposed({ ...claim, composed: mockComposedStakingStep() }),
+        stakingActions.stepComposed({ ...claim, attemptId, composed: mockComposedStakingStep() }),
         stakingActions.stepSigning({
             ...claim,
             attemptId,
@@ -133,6 +133,7 @@ describe('staking session selectors', () => {
             [
                 stakingActions.stepComposed({
                     ...freeze,
+                    attemptId,
                     stepId: 'vote',
                     composed: mockComposedStakingStep(),
                 }),
@@ -278,7 +279,11 @@ describe('selectStakingStepContext', () => {
     it('rejects a complete session', () => {
         const state = createState();
         const complete = [
-            stakingActions.stepComposed({ ...stake, composed: mockComposedStakingStep() }),
+            stakingActions.stepComposed({
+                ...stake,
+                attemptId,
+                composed: mockComposedStakingStep(),
+            }),
             stakingActions.stepSigning({
                 ...stake,
                 attemptId,

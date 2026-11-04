@@ -1,6 +1,4 @@
-import { isAction } from '@reduxjs/toolkit';
-
-const attemptId = 'attempt-1';
+import { type Middleware, type UnknownAction, combineReducers, isAction } from '@reduxjs/toolkit';
 
 import {
     type ComposedStakingStep,
@@ -15,10 +13,10 @@ import {
     mockStakingProductDescriptor,
     mockStakingStep,
 } from '@suite-common/earn-staking-common/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
-import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import {
     type ComposeStakingStepThunkDeps,
@@ -32,9 +30,11 @@ import {
     mockStakingSession,
     mockStakingState,
 } from '../../mocks';
-import { stakingActions, stakingReducer } from '../state/stakingReducer';
+import { type StakingState, stakingActions, stakingReducer } from '../state/stakingReducer';
 import { getStakingSessionKey } from '../state/stakingSessionKey';
+import { selectStakingSession } from '../state/stakingSessionSelectors';
 
+const attemptId = 'attempt-1';
 const eth = mockStakingProductDescriptor();
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const plan = mockStakingPlan({
@@ -47,40 +47,63 @@ const session = mockStakingSession({ plan, accountKey: account.key });
 const sessionKey = session.key;
 const freeze = { sessionKey, stepId: 'freeze' };
 const composed = mockComposedStakingStep();
+const anyAttempt = { ...freeze, attemptId: expect.any(String) as string };
 
-const createAdapter = (composeStep: StakingProductAdapter['composeStep']) =>
-    mockStakingProductAdapter({ descriptor: eth, composeStep });
-
-const createExtra = (adapter: StakingProductAdapter): ComposeStakingStepThunkDeps => ({
-    services: {
-        staking: mockStakingServices({
-            stakingProductRepository: mockStakingProductRepository({ get: mock(() => adapter) }),
-        }),
-    },
-});
-
-const createState = (
-    staking = mockStakingState({ descriptors: [eth], sessions: [session] }),
-): ComposeStakingStepThunkState => ({
-    earn: { staking },
-    wallet: { accounts: [account] },
-});
-
-const sliceActions = (actions: unknown[]) =>
-    actions.filter(
-        action => isAction(action) && !action.type.startsWith(STAKING_ENGINE_ACTION_PREFIX),
-    );
-
-const run = async (
-    getState: () => ComposeStakingStepThunkState,
-    extra: ComposeStakingStepThunkDeps,
-    params: Parameters<typeof composeStakingStepThunk>[0] = { sessionKey },
-) => {
-    const { actions, dispatch } = createMockDispatch({ getState, extra });
-    const result = await composeStakingStepThunk(params)(dispatch, getState, extra);
-
-    return { actions: sliceActions(actions), result };
+type InitStoreParams = {
+    composeStep?: StakingProductAdapter['composeStep'];
+    staking?: StakingState;
 };
+
+const initStore = ({
+    composeStep = mock(() => Promise.resolve(composed)),
+    staking = mockStakingState({ descriptors: [eth], sessions: [session] }),
+}: InitStoreParams = {}) => {
+    const adapter = mockStakingProductAdapter({ descriptor: eth, composeStep });
+    const actions: UnknownAction[] = [];
+    const recorder: Middleware = () => next => action => {
+        if (isAction(action) && !action.type.startsWith(STAKING_ENGINE_ACTION_PREFIX)) {
+            actions.push(action);
+        }
+
+        return next(action);
+    };
+    const root = createTestCompositionRoot<
+        ComposeStakingStepThunkDeps,
+        ComposeStakingStepThunkState
+    >({
+        services: () => ({
+            staking: mockStakingServices({
+                stakingProductRepository: mockStakingProductRepository({
+                    get: mock(() => adapter),
+                }),
+            }),
+        }),
+        middleware: [recorder],
+        reducer: {
+            earn: combineReducers({ staking: stakingReducer }),
+            wallet: combineReducers({ accounts: (state = [account]) => state }),
+        },
+        preloadedState: { earn: { staking } },
+    });
+
+    return { store: root.services.store, adapter, actions };
+};
+
+type Store = ReturnType<typeof initStore>['store'];
+
+const getStep = (store: Store, key = sessionKey) =>
+    selectStakingSession(store.getState(), key)?.steps[0];
+
+const compose = (
+    store: Store,
+    params: Parameters<typeof composeStakingStepThunk>[0] = { sessionKey },
+) => store.dispatch(composeStakingStepThunk(params));
+
+const composedState = (step: ComposedStakingStep = composed) =>
+    stakingReducer(
+        mockStakingState({ descriptors: [eth], sessions: [session] }),
+        stakingActions.stepComposed({ ...freeze, attemptId, composed: step }),
+    );
 
 describe('composeStakingStepThunk', () => {
     beforeEach(() => {
@@ -92,35 +115,40 @@ describe('composeStakingStepThunk', () => {
     });
 
     it('composes the current step through the adapter', async () => {
-        const adapter = createAdapter(mock(() => Promise.resolve(composed)));
-        const state = createState();
-        const { actions, result } = await run(() => state, createExtra(adapter));
+        const { store, adapter, actions } = initStore();
+        const result = await compose(store);
 
         expect(composeStakingStepThunk.fulfilled.match(result)).toBe(true);
-        expect(result.payload).toBe(composed);
+        expect(result.payload).toEqual(composed);
         expect(adapter.composeStep).toHaveBeenCalledWith({
             account,
             plan,
             step: plan.steps[0],
             customFee: null,
         });
-        expect(actions).toEqual([stakingActions.stepComposed({ ...freeze, composed })]);
+        expect(actions).toEqual([
+            stakingActions.stepComposing(anyAttempt),
+            stakingActions.stepComposed({ ...anyAttempt, composed }),
+        ]);
+        expect(getStep(store)).toMatchObject({
+            status: 'composed',
+            composed,
+            composeAttemptId: expect.any(String),
+        });
     });
 
     it('passes a custom fee to the adapter', async () => {
-        const adapter = createAdapter(mock(() => Promise.resolve(composed)));
+        const { store, adapter } = initStore();
         const customFee = { feePerUnit: '25', feeLimit: '220000' };
-        const state = createState();
 
-        await run(() => state, createExtra(adapter), { sessionKey, customFee });
+        await compose(store, { sessionKey, customFee });
 
         expect(adapter.composeStep).toHaveBeenCalledWith(expect.objectContaining({ customFee }));
     });
 
     it('rejects an invalid custom fee before the adapter sees it', async () => {
-        const adapter = createAdapter(mock(() => Promise.resolve(composed)));
-        const state = createState();
-        const { actions, result } = await run(() => state, createExtra(adapter), {
+        const { store, adapter, actions } = initStore();
+        const result = await compose(store, {
             sessionKey,
             customFee: { feePerUnit: '25', maxFeePerGas: '30' },
         });
@@ -132,23 +160,22 @@ describe('composeStakingStepThunk', () => {
 
     it('recomposes a step that is already composed', async () => {
         const recomposed = mockComposedStakingStep({ validityMs: 24_000 });
-        const adapter = createAdapter(mock(() => Promise.resolve(recomposed)));
-        const state = createState(
-            stakingReducer(
-                createState().earn.staking,
-                stakingActions.stepComposed({ ...freeze, composed }),
-            ),
-        );
-        const { actions, result } = await run(() => state, createExtra(adapter));
+        const { store, actions } = initStore({
+            composeStep: mock(() => Promise.resolve(recomposed)),
+            staking: composedState(),
+        });
+        const result = await compose(store);
 
-        expect(result.payload).toBe(recomposed);
-        expect(actions).toEqual([stakingActions.stepComposed({ ...freeze, composed: recomposed })]);
+        expect(result.payload).toEqual(recomposed);
+        expect(actions).toEqual([
+            stakingActions.stepComposing(anyAttempt),
+            stakingActions.stepComposed({ ...anyAttempt, composed: recomposed }),
+        ]);
     });
 
     it('rejects an unknown session', async () => {
-        const adapter = createAdapter(mock(() => Promise.resolve(composed)));
-        const state = createState();
-        const { actions, result } = await run(() => state, createExtra(adapter), {
+        const { store, adapter, actions } = initStore();
+        const result = await compose(store, {
             sessionKey: getStakingSessionKey({
                 accountKey: account.key,
                 productId: eth.id,
@@ -162,119 +189,136 @@ describe('composeStakingStepThunk', () => {
     });
 
     it('rejects a step that is past composing', async () => {
-        const adapter = createAdapter(mock(() => Promise.resolve(composed)));
-        const state = createState(
-            [
-                stakingActions.stepComposed({ ...freeze, composed }),
+        const { store, adapter, actions } = initStore({
+            staking: stakingReducer(
+                composedState(),
                 stakingActions.stepSigning({
                     ...freeze,
                     attemptId,
                     feeLevel: 'normal',
                     signingStartedAt: 1,
                 }),
-            ].reduce(stakingReducer, createState().earn.staking),
-        );
-        const { result } = await run(() => state, createExtra(adapter));
+            ),
+        });
+        const result = await compose(store);
 
         expect(result.payload).toBe('step-not-ready');
         expect(adapter.composeStep).not.toHaveBeenCalled();
+        expect(actions).toEqual([]);
     });
 
     it('rejects a complete session', async () => {
-        const adapter = createAdapter(mock(() => Promise.resolve(composed)));
-        const stake = {
-            sessionKey: mockStakingSession({ accountKey: account.key }).key,
-            stepId: 'stake',
-        };
-        const state = createState(
-            [
+        const stakeSession = mockStakingSession({ accountKey: account.key });
+        const stake = { sessionKey: stakeSession.key, stepId: 'stake', attemptId };
+        const { store } = initStore({
+            staking: [
                 stakingActions.stepComposed({ ...stake, composed }),
-                stakingActions.stepSigning({
-                    ...stake,
-                    attemptId,
-                    feeLevel: 'normal',
-                    signingStartedAt: 1,
-                }),
-                stakingActions.stepSigned({ ...stake, attemptId, signed: mockSignedStakingStep() }),
-                stakingActions.stepBroadcasting({ ...stake, attemptId }),
-                stakingActions.stepBroadcast({ ...stake, attemptId, txid: 'tx1' }),
+                stakingActions.stepSigning({ ...stake, feeLevel: 'normal', signingStartedAt: 1 }),
+                stakingActions.stepSigned({ ...stake, signed: mockSignedStakingStep() }),
+                stakingActions.stepBroadcasting(stake),
+                stakingActions.stepBroadcast({ ...stake, txid: 'tx1' }),
             ].reduce(
                 stakingReducer,
-                mockStakingState({
-                    descriptors: [eth],
-                    sessions: [mockStakingSession({ accountKey: account.key })],
-                }),
+                mockStakingState({ descriptors: [eth], sessions: [stakeSession] }),
             ),
-        );
-        const { result } = await run(() => state, createExtra(adapter), {
-            sessionKey: stake.sessionKey,
         });
+        const result = await compose(store, { sessionKey: stakeSession.key });
 
         expect(result.payload).toBe('step-not-ready');
     });
 
     it('records an adapter failure on the step with its code', async () => {
-        const adapter = createAdapter(
-            mock(() => Promise.reject(new StakingAdapterError('gas-estimate-failed'))),
-        );
-        const state = createState();
-        const { actions, result } = await run(() => state, createExtra(adapter));
+        const { store, actions } = initStore({
+            composeStep: mock(() => Promise.reject(new StakingAdapterError('gas-estimate-failed'))),
+        });
+        const result = await compose(store);
 
         expect(result.payload).toBe('adapter-failed');
         expect(actions).toEqual([
+            stakingActions.stepComposing(anyAttempt),
             stakingActions.stepComposeFailed({
-                ...freeze,
+                ...anyAttempt,
                 error: { kind: 'compose-failed', code: 'gas-estimate-failed' },
             }),
         ]);
+        expect(getStep(store)).toMatchObject({
+            status: 'pending',
+            error: { kind: 'compose-failed', code: 'gas-estimate-failed' },
+        });
         expect(console.warn).toHaveBeenCalledWith(
             'Staking step freeze compose failed: gas-estimate-failed',
         );
     });
 
     it('records any other failure without a code', async () => {
-        const adapter = createAdapter(mock(() => Promise.reject(new Error('network down'))));
-        const state = createState();
-        const { actions } = await run(() => state, createExtra(adapter));
+        const { store, actions } = initStore({
+            composeStep: mock(() => Promise.reject(new Error('network down'))),
+        });
+
+        await compose(store);
 
         expect(actions).toEqual([
+            stakingActions.stepComposing(anyAttempt),
             stakingActions.stepComposeFailed({
-                ...freeze,
+                ...anyAttempt,
                 error: { kind: 'compose-failed', code: null },
             }),
         ]);
     });
 
     it('drops the result when the session was replaced meanwhile', async () => {
-        let state = createState();
-        const adapter = createAdapter(
-            mock(() => {
-                state = createState(
-                    stakingReducer(
-                        state.earn.staking,
-                        stakingActions.sessionStarted({ session: { ...session, id: 'session-2' } }),
-                    ),
+        let store: Store | null = null;
+        const started = initStore({
+            composeStep: mock(() => {
+                store?.dispatch(
+                    stakingActions.sessionStarted({ session: { ...session, id: 'session-2' } }),
                 );
 
                 return Promise.resolve(composed);
             }),
-        );
-        const { actions, result } = await run(() => state, createExtra(adapter));
+        });
+
+        store = started.store;
+
+        const result = await compose(store);
 
         expect(result.payload).toBe('session-replaced');
-        expect(actions).toEqual([]);
+        expect(started.actions.filter(stakingActions.stepComposed.match)).toEqual([]);
+        expect(getStep(store)).toMatchObject({ status: 'pending', composeAttemptId: null });
+    });
+
+    it('drops the result when a newer compose started meanwhile', async () => {
+        let store: Store | null = null;
+        const newer = mockComposedStakingStep({ validityMs: 24_000 });
+        let calls = 0;
+        const started = initStore({
+            composeStep: mock(async () => {
+                calls += 1;
+
+                if (calls > 1) return newer;
+
+                await store?.dispatch(composeStakingStepThunk({ sessionKey })).unwrap();
+
+                return composed;
+            }),
+        });
+
+        store = started.store;
+
+        const result = await compose(store);
+
+        expect(result.payload).toBe('attempt-superseded');
+        expect(getStep(store)).toMatchObject({ status: 'composed', composed: newer });
+        expect(started.actions.filter(stakingActions.stepComposed.match)).toHaveLength(1);
     });
 
     it('throws on an invalid composed step outside production', async () => {
         const invalid = { ...composed, validityMs: 0 } as ComposedStakingStep;
-        const state = createState();
-        const { actions, result } = await run(
-            () => state,
-            createExtra(createAdapter(mock(() => Promise.resolve(invalid)))),
-        );
+        const { store, actions } = initStore({ composeStep: mock(() => Promise.resolve(invalid)) });
+        const result = await compose(store);
 
         expect(composeStakingStepThunk.rejected.match(result)).toBe(true);
         expect(result.payload).toBeUndefined();
-        expect(actions).toEqual([]);
+        expect(actions.filter(stakingActions.stepComposed.match)).toEqual([]);
     });
 });

@@ -18,7 +18,10 @@ import type { StakingDep } from '../stakingServices';
 import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import { selectStakingPosition, selectStakingProductDescriptor } from '../state/stakingSelectors';
 import { type StakingSessionKey, getStakingSessionKey } from '../state/stakingSessionKey';
-import { selectIsStakingSessionActive } from '../state/stakingSessionSelectors';
+import {
+    selectIsStakingSessionActive,
+    selectStakingSession,
+} from '../state/stakingSessionSelectors';
 import type { StakingSessionStep } from '../state/stakingSessionStep';
 import type { StakingSession } from '../state/stakingSessionsReducer';
 
@@ -31,6 +34,7 @@ const toPendingStep = (step: StakingStep): StakingSessionStep => ({
     review: step.review,
     error: null,
     status: 'pending',
+    composeAttemptId: null,
 });
 
 type PlanStakingOperationParams = {
@@ -77,6 +81,8 @@ export const planStakingOperationThunk = createThunk<
 
         const adapter = extra.services.staking.stakingProductRepository.get(productId);
 
+        const createdAt = Date.now();
+
         const planned = await callStakingAdapter(() =>
             adapter.planOperation({
                 account,
@@ -105,10 +111,14 @@ export const planStakingOperationThunk = createThunk<
             accountKey,
             plan: planned.payload,
             steps: planned.payload.steps.map(toPendingStep),
-            createdAt: Date.now(),
+            createdAt,
         };
 
         dispatch(stakingActions.sessionStarted({ session }));
+
+        if (selectStakingSession(getState(), sessionKey)?.id !== session.id) {
+            return rejectWithValue('attempt-superseded');
+        }
 
         return sessionKey;
     },

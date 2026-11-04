@@ -10,6 +10,7 @@ export const STAKING_ENGINE_REJECTIONS = [
     'adapter-failed',
     'cancelled',
     'invalid-custom-fee',
+    'attempt-superseded',
 ] as const;
 
 export type StakingEngineRejection = (typeof STAKING_ENGINE_REJECTIONS)[number];

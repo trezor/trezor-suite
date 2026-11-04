@@ -23,6 +23,7 @@ export const mockStakingSessionStep = (
     review: 'app-and-device',
     error: null,
     status: 'pending',
+    composeAttemptId: null,
     ...overrides,
 });
 

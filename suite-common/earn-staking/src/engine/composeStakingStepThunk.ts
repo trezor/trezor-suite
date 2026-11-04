@@ -15,8 +15,10 @@ import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
 import {
     selectIsStakingSessionCurrent,
+    selectStakingSessionStep,
     selectStakingStepContext,
 } from '../state/stakingSessionSelectors';
+import { transitionStakingStep } from '../state/stakingStepTransition';
 
 type ComposeStakingStepParams = {
     sessionKey: StakingSessionKey;
@@ -37,7 +39,10 @@ export const composeStakingStepThunk = createThunk<
     }
 >(
     `${STAKING_ENGINE_ACTION_PREFIX}/composeStakingStep`,
-    async ({ sessionKey, customFee }, { dispatch, getState, extra, rejectWithValue }) => {
+    async (
+        { sessionKey, customFee },
+        { dispatch, getState, extra, rejectWithValue, requestId: attemptId },
+    ) => {
         const parsedCustomFee =
             customFee === undefined ? null : stakingCustomFeeSchema.safeParse(customFee);
 
@@ -54,7 +59,24 @@ export const composeStakingStepThunk = createThunk<
         const { session, step, planStep, account } = stepContext.context;
         const adapter = extra.services.staking.stakingProductRepository.get(session.plan.productId);
 
-        if (step.status !== 'pending' && step.status !== 'composed') {
+        if (transitionStakingStep(step, { type: 'composing', attemptId }) === null) {
+            return rejectWithValue('step-not-ready');
+        }
+
+        const attempt = { sessionKey, stepId: step.id, attemptId };
+
+        const isAttemptComposing = () => {
+            const current = selectStakingSessionStep(getState(), session, step.id);
+
+            return (
+                (current?.status === 'pending' || current?.status === 'composed') &&
+                current.composeAttemptId === attemptId
+            );
+        };
+
+        dispatch(stakingActions.stepComposing(attempt));
+
+        if (!isAttemptComposing()) {
             return rejectWithValue('step-not-ready');
         }
 
@@ -71,13 +93,16 @@ export const composeStakingStepThunk = createThunk<
             return rejectWithValue('session-replaced');
         }
 
+        if (!isAttemptComposing()) {
+            return rejectWithValue('attempt-superseded');
+        }
+
         if (!composed.success) {
             warnStakingAdapterFailure(`step ${step.id} compose`, composed);
 
             dispatch(
                 stakingActions.stepComposeFailed({
-                    sessionKey,
-                    stepId: step.id,
+                    ...attempt,
                     error: { kind: 'compose-failed', code: composed.code },
                 }),
             );
@@ -87,13 +112,7 @@ export const composeStakingStepThunk = createThunk<
 
         assertComposedStakingStep(composed.payload);
 
-        dispatch(
-            stakingActions.stepComposed({
-                sessionKey,
-                stepId: step.id,
-                composed: composed.payload,
-            }),
-        );
+        dispatch(stakingActions.stepComposed({ ...attempt, composed: composed.payload }));
 
         return composed.payload;
     },

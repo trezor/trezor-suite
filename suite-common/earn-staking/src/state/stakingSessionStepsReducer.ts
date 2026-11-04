@@ -44,12 +44,22 @@ const stakingSessionStepsSlice = createSlice({
     name: STAKING_SESSIONS_ACTION_PREFIX,
     initialState: stakingSessionStepsInitialState,
     reducers: {
+        stepComposing(
+            state: StakingSessionStep[],
+            { payload }: StakingStepActionPayload<'composing'>,
+        ) {
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'composing',
+                attemptId: payload.attemptId,
+            });
+        },
         stepComposed(
             state: StakingSessionStep[],
             { payload }: StakingStepActionPayload<'composed'>,
         ) {
             applyStakingStepEvent(state, payload.stepId, {
                 type: 'composed',
+                attemptId: payload.attemptId,
                 composed: payload.composed,
             });
         },
@@ -59,6 +69,7 @@ const stakingSessionStepsSlice = createSlice({
         ) {
             applyStakingStepEvent(state, payload.stepId, {
                 type: 'compose-failed',
+                attemptId: payload.attemptId,
                 error: payload.error,
             });
         },
@@ -157,6 +168,7 @@ export const stakingSessionStepsActions = stakingSessionStepsSlice.actions;
 export const stakingSessionStepsReducer = stakingSessionStepsSlice.reducer;
 
 export const isStakingSessionStepAction = isAnyOf(
+    stakingSessionStepsActions.stepComposing,
     stakingSessionStepsActions.stepComposed,
     stakingSessionStepsActions.stepComposeFailed,
     stakingSessionStepsActions.stepSigning,

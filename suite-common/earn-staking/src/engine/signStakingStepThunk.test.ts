@@ -39,6 +39,7 @@ import type { StakingDeviceAccess } from '../createStakingDeviceAccess';
 import { stakingActions, stakingReducer } from '../state/stakingReducer';
 import { selectStakingSession } from '../state/stakingSessionSelectors';
 
+const attemptId = 'attempt-1';
 const eth = mockStakingProductDescriptor();
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const session = mockStakingSession({ accountKey: account.key });
@@ -89,7 +90,11 @@ const initStore = ({
                         ? started
                         : stakingReducer(
                               started,
-                              stakingActions.stepComposed({ ...stake, composed: composedStep }),
+                              stakingActions.stepComposed({
+                                  ...stake,
+                                  attemptId,
+                                  composed: composedStep,
+                              }),
                           ),
             },
         },
