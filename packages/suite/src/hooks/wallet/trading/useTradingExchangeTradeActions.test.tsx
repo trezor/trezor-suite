@@ -205,7 +205,7 @@ describe('useTradingExchangeTradeActions', () => {
         it('adds no toast of its own when the signing was cancelled', async () => {
             rejectSendWith({
                 type: 'sign-cancelled',
-                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                code: 'cannot-send-transaction',
             });
             const { getActions, result } = renderActions();
 
@@ -218,7 +218,7 @@ describe('useTradingExchangeTradeActions', () => {
         it('reports an error nothing else has reported', async () => {
             rejectSendWith({
                 type: 'sign-tx-error',
-                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                code: 'cannot-send-transaction',
             });
             const { getActions, result } = renderActions();
 

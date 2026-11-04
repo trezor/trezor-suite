@@ -3,6 +3,7 @@ import { isRejected } from '@reduxjs/toolkit';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    type ComposeFeeLevelsError,
     type ComposeSendFormTransactionFeeLevelsThunkState,
     type FeesRootState,
     composeSendFormTransactionFeeLevelsThunk,
@@ -21,7 +22,7 @@ import { buildTradingComposeFormState } from './buildTradingComposeFormState';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import { selectTradingComposedTransactionInfo } from '../../selectors/tradingSelectors';
-import type { TradingSendRejectedProps } from '../../types';
+import type { TradingError, TradingErrorCause } from '../../types';
 
 export type ComposeTradingTransactionThunkProps = {
     account: Account;
@@ -41,6 +42,18 @@ export type ComposeTradingTransactionResult = {
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
 };
 
+type PrecomposeErrorMessage = Extract<TradingErrorCause, { source: 'precompose' }>['errorMessage'];
+
+const getPrecomposeCause = (
+    errorMessage: PrecomposeErrorMessage | undefined,
+): TradingErrorCause | undefined => errorMessage && { source: 'precompose', errorMessage };
+
+const getComposeFailure = (composeError: ComposeFeeLevelsError | undefined): TradingError => ({
+    type: 'sign-tx-error',
+    code: composeError?.message ? 'compose-failed' : 'missing-fee-level',
+    cause: composeError && { source: 'send-form', error: composeError },
+});
+
 export type ComposeTradingTransactionThunkState = ComposeSendFormTransactionFeeLevelsThunkState &
     DeviceRootState &
     FeesRootState &
@@ -50,7 +63,7 @@ export const composeTradingTransactionThunk = createThunk<
     ComposeTradingTransactionResult,
     ComposeTradingTransactionThunkProps,
     {
-        rejectValue: TradingSendRejectedProps;
+        rejectValue: TradingError;
         state: ComposeTradingTransactionThunkState;
     }
 >(
@@ -78,9 +91,7 @@ export const composeTradingTransactionThunk = createThunk<
         if (!composed || !feeInfo) {
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_TRADING_MISSING_COMPOSED_DATA',
-                },
+                code: 'missing-composed-data',
             });
         }
 
@@ -109,37 +120,18 @@ export const composeTradingTransactionThunk = createThunk<
             );
 
             if (isRejected(composeSendFormTransactionFeeLevelsThunk)(normalLevels)) {
-                const composeError = normalLevels.payload;
-
-                return rejectWithValue({
-                    type: 'sign-tx-error',
-                    error: composeError?.message
-                        ? {
-                              id: 'TR_TRADING_COMPOSE_FAILED',
-                              values: { error: composeError.message },
-                          }
-                        : {
-                              id: 'TR_TRADING_MISSING_FEE_LEVEL',
-                          },
-                });
+                return rejectWithValue(getComposeFailure(normalLevels.payload));
             }
 
             const normalLevel = normalLevels.payload?.normal;
 
             if (normalLevel?.type !== 'final' || !normalLevel.feeLimit) {
-                const error: TradingSendRejectedProps['error'] =
-                    normalLevel?.type === 'error' && normalLevel?.errorMessage
-                        ? {
-                              id: normalLevel.errorMessage.id,
-                              values: normalLevel.errorMessage.values,
-                          }
-                        : {
-                              id: 'TR_TRADING_MISSING_FEE_LEVEL',
-                          };
-
                 return rejectWithValue({
                     type: 'sign-tx-error',
-                    error,
+                    code: 'missing-fee-level',
+                    cause: getPrecomposeCause(
+                        normalLevel?.type === 'error' ? normalLevel.errorMessage : undefined,
+                    ),
                 });
             }
 
@@ -157,46 +149,27 @@ export const composeTradingTransactionThunk = createThunk<
         );
 
         if (isRejected(composeSendFormTransactionFeeLevelsThunk)(composedLevels)) {
-            const composeError = composedLevels.payload;
-
-            return rejectWithValue({
-                type: 'sign-tx-error',
-                error: composeError?.message
-                    ? {
-                          id: 'TR_TRADING_COMPOSE_FAILED',
-                          values: { error: composeError.message },
-                      }
-                    : {
-                          id: 'TR_TRADING_MISSING_FEE_LEVEL',
-                      },
-            });
+            return rejectWithValue(getComposeFailure(composedLevels.payload));
         }
 
         if (!selectedFee) {
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_TRADING_MISSING_FEE_LEVEL',
-                },
+                code: 'missing-fee-level',
             });
         }
 
         const precomposedToSign = composedLevels.payload[selectedFee];
 
         if (precomposedToSign?.type !== 'final') {
-            const error: TradingSendRejectedProps['error'] =
-                precomposedToSign?.type === 'error' && precomposedToSign.errorMessage
-                    ? {
-                          id: precomposedToSign.errorMessage.id,
-                          values: precomposedToSign.errorMessage.values,
-                      }
-                    : {
-                          id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
-                      };
-
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error,
+                code: 'cannot-create-transaction',
+                cause: getPrecomposeCause(
+                    precomposedToSign?.type === 'error'
+                        ? precomposedToSign.errorMessage
+                        : undefined,
+                ),
             });
         }
 

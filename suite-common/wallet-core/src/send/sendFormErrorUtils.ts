@@ -2,9 +2,6 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { type SendFormError, type SendFormErrorCause } from './sendFormTypes';
 
-/**
- * Reads the original failure from any send form error, whatever shape its step uses.
- */
 export const getSendFormErrorCause = (sendFormError: SendFormError): SendFormErrorCause => {
     switch (sendFormError.error) {
         case 'fee-levels-compose-failed':

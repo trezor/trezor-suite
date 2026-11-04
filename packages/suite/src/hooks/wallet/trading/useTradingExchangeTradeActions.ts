@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useDevice } from '@suite/device';
-import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { type DeviceRootState } from '@suite-common/device';
 import {
@@ -11,12 +10,10 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
     exchangeThunks,
-    isSendRejectedError,
-    isSilentSendRejection,
+    isTradingError,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeSelectedQuoteTimestamp,
@@ -27,6 +24,8 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useTradingErrorToast } from './useTradingErrorToast';
+
 import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingExchangeTradeRequest } from '#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
@@ -36,7 +35,7 @@ import { type TradingExchangeConfirmTradeProps } from '#src/types/trading/tradin
 
 export const useTradingExchangeTradeActions = () => {
     const { dispatch } = useServices(injectDispatch);
-    const { translationString } = useTranslation();
+    const { showTradingErrorToast } = useTradingErrorToast();
     const { device } = useDevice();
 
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
@@ -151,18 +150,11 @@ export const useTradingExchangeTradeActions = () => {
 
             return true;
         } catch (e) {
-            if (!isSendRejectedError<TranslationKey>(e)) {
+            if (!isTradingError(e)) {
                 return false;
             }
 
-            if (!isSilentSendRejection(e.type)) {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: e.type,
-                        error: translationString(e.error.id, e.error.values),
-                    }),
-                );
-            }
+            showTradingErrorToast(e);
 
             return false;
         }
@@ -231,13 +223,8 @@ export const useTradingExchangeTradeActions = () => {
 
             isConfirmed = !!confirmedTrade;
         } catch (e) {
-            if (isSendRejectedError<TranslationKey>(e) && !isSilentSendRejection(e.type)) {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: e.type,
-                        error: translationString(e.error.id, e.error.values),
-                    }),
-                );
+            if (isTradingError(e)) {
+                showTradingErrorToast(e);
             }
         }
 
