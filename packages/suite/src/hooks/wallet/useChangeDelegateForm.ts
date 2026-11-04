@@ -1,12 +1,18 @@
 import { createContext, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { selectSelectedAccountKey } from '@suite/account';
+import { useTranslation } from '@suite/intl';
+import { MODAL_CONTEXT_USER, closeModal, openModal, selectModal } from '@suite/modal';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
     selectBaseCurrency,
     selectRawNetworkFeeInfo,
+    selectStake,
     selectVotingDelegationOption,
+    stakeActions,
 } from '@suite-common/wallet-core';
 import {
     type ChangeDelegateFormState,
@@ -15,7 +21,7 @@ import {
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
 import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
 import { useSelector } from '#src/hooks/suite';
@@ -35,7 +41,8 @@ type UseChangeDelegateFormsProps = {
 export const useChangeDelegateForm = ({
     selectedAccount,
 }: UseChangeDelegateFormsProps): ChangeDelegateContextValues => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getState } = useServices(injectDispatch, injectGetState);
+    const { translationString } = useTranslation();
 
     const { account, network } = selectedAccount;
 
@@ -87,6 +94,7 @@ export const useChangeDelegateForm = ({
 
     const {
         isLoading: isComposing,
+        hasComposeError,
         composeRequest,
         composedLevels,
         onFeeLevelChange,
@@ -123,19 +131,68 @@ export const useChangeDelegateForm = ({
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
 
         if (composedTx?.type === 'final') {
-            const result = await dispatch(
+            const signingModal = selectModal(getState());
+            const signing = dispatch(
                 signTransactionThunk({
                     accountKey: account.key,
                     formValues: values,
                     transactionInfo: composedTx,
                 }),
             );
+            const signRequest = selectStake(getState()).precomposedTx;
+            const result = await signing.catch((error: unknown) => {
+                const currentStake = selectStake(getState());
+                if (
+                    !signRequest ||
+                    currentStake.precomposedTx !== signRequest ||
+                    currentStake.accountKey !== account.key
+                )
+                    return undefined;
+
+                const modal = selectModal(getState());
+                dispatch(stakeActions.dispose());
+                if (selectSelectedAccountKey(getState()) !== account.key) return undefined;
+
+                // Device and review modals may belong to a newer flow.
+                if (
+                    signingModal.context !== MODAL_CONTEXT_USER ||
+                    signingModal.payload.type !== 'change-delegate' ||
+                    modal.context !== MODAL_CONTEXT_USER ||
+                    modal.payload !== signingModal.payload
+                )
+                    return undefined;
+
+                dispatch(closeModal());
+                dispatch(openModal({ type: 'change-delegate' }));
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'sign-tx-error',
+                        error: translationString('TR_STAKING_ERROR_GENERIC'),
+                    }),
+                );
+                // Connect rejection messages may include confidential account data.
+                console.warn(
+                    'Change delegate signing failed',
+                    error instanceof Error ? error.name : 'UnknownError',
+                );
+
+                return undefined;
+            });
 
             if (result?.success) {
                 clearForm();
             }
         }
-    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
+    }, [
+        getValues,
+        composedLevels,
+        dispatch,
+        getState,
+        account.key,
+        clearForm,
+        selectedFee,
+        translationString,
+    ]);
 
     return {
         ...methods,
@@ -146,6 +203,8 @@ export const useChangeDelegateForm = ({
         register,
         baseCurrencyCode,
         composedLevels,
+        hasComposeError,
+        retryCompose: composeRequest,
         isComposing,
         selectedFee,
         clearForm,

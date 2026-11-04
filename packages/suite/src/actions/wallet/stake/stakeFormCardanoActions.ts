@@ -357,7 +357,22 @@ export const composeTransactionThunk =
             return getComposeErrorLevels(txPlan.error, account.symbol, predefinedLevels);
         }
 
-        if (txPlan?.type !== 'final') return;
+        if (txPlan?.type !== 'final') {
+            const isKeepingCurrentVote =
+                votingDelegation?.accountKey === account.key &&
+                votingDelegation.option.type === 'current' &&
+                hasCardanoLiveVoteDelegation(account);
+
+            if (formValues.stakeType === 'change-delegate' && !isKeepingCurrentVote) {
+                return getComposeErrorLevels(
+                    'TR_GENERIC_ERROR_TITLE',
+                    account.symbol,
+                    predefinedLevels,
+                );
+            }
+
+            return;
+        }
 
         const amountAda = calculateOutputAmount(account, formValues.stakeType, txPlan?.totalSpent);
 
