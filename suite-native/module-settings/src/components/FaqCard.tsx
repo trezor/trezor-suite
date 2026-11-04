@@ -1,17 +1,17 @@
-import { type ComponentProps, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    AccordionItemList,
+    AccordionItemText,
     AccordionList,
     Box,
-    BulletList,
     BulletListItem,
     Card,
-    Text,
     VStack,
 } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
-import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 import { isAndroid } from '@trezor/env-utils';
@@ -21,48 +21,48 @@ import {
     TREZOR_SUPPORT_TRADING_URL,
 } from '@trezor/urls';
 
-const AccordionContentText = ({
-    translationKey,
-    values = {},
-}: {
-    translationKey: TxKeyPath;
-    values?: ComponentProps<typeof Translation>['values'];
-}) => (
-    <Text variant="body-xs">
-        <Translation id={translationKey} values={values} />
-    </Text>
-);
-
 const getAndroidFaqItems = (coinLabel: string) => [
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.0.question" />,
         content: (
-            <AccordionContentText
-                translationKey="moduleSettings.faq.usbEnabled.0.answer"
-                values={{
-                    coinLabel,
-                }}
-            />
+            <AccordionItemText>
+                <Translation
+                    id="moduleSettings.faq.usbEnabled.0.answer"
+                    values={{
+                        coinLabel,
+                    }}
+                />
+            </AccordionItemText>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.1.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.1.answer" />,
+        content: (
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.usbEnabled.1.answer" />
+            </AccordionItemText>
+        ),
     },
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.2.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.2.answer" />,
+        content: (
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.usbEnabled.2.answer" />
+            </AccordionItemText>
+        ),
     },
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.3.question" />,
         content: (
             <VStack spacing="sp4">
-                <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.android.3.answer.subtitle" />
+                <AccordionItemText>
+                    <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.subtitle" />
+                </AccordionItemText>
                 <Box>
-                    <Text variant="body-xs">
+                    <AccordionItemText>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.cabled.title" />
-                    </Text>
-                    <BulletList textVariant="body-xs">
+                    </AccordionItemText>
+                    <AccordionItemList>
                         <BulletListItem>
                             <Translation id="moduleSettings.faq.usbEnabled.3.answer.0" />
                         </BulletListItem>
@@ -75,13 +75,13 @@ const getAndroidFaqItems = (coinLabel: string) => [
                         <BulletListItem>
                             <Translation id="moduleSettings.faq.usbEnabled.3.answer.3" />
                         </BulletListItem>
-                    </BulletList>
+                    </AccordionItemList>
                 </Box>
                 <Box>
-                    <Text variant="body-xs">
+                    <AccordionItemText>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.title" />
-                    </Text>
-                    <BulletList textVariant="body-xs">
+                    </AccordionItemText>
+                    <AccordionItemList>
                         <BulletListItem>
                             <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.0" />
                         </BulletListItem>
@@ -103,28 +103,30 @@ const getAndroidFaqItems = (coinLabel: string) => [
                         <BulletListItem>
                             <Translation id="moduleSettings.faq.bluetoothEnabled.android.3.answer.wireless.6" />
                         </BulletListItem>
-                    </BulletList>
+                    </AccordionItemList>
                 </Box>
-                <AccordionContentText
-                    translationKey="moduleSettings.faq.bluetoothEnabled.android.3.answer.footer"
-                    values={{
-                        link: chunk => (
-                            <Link
-                                label={chunk}
-                                textVariant="body-xs"
-                                href={`${TREZOR_SUPPORT_DEVICE_URL}#open-chat`}
-                                isUnderlined
-                            />
-                        ),
-                    }}
-                />
+                <AccordionItemText>
+                    <Translation
+                        id="moduleSettings.faq.bluetoothEnabled.android.3.answer.footer"
+                        values={{
+                            link: chunk => (
+                                <Link
+                                    label={chunk}
+                                    textVariant="body-sm"
+                                    href={`${TREZOR_SUPPORT_DEVICE_URL}#open-chat`}
+                                    isUnderlined
+                                />
+                            ),
+                        }}
+                    />
+                </AccordionItemText>
             </VStack>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.4.question" />,
         content: (
-            <BulletList textVariant="body-xs">
+            <AccordionItemList>
                 <BulletListItem>
                     <Translation id="moduleSettings.faq.usbEnabled.4.answer.0" />
                 </BulletListItem>
@@ -140,20 +142,32 @@ const getAndroidFaqItems = (coinLabel: string) => [
                 <BulletListItem>
                     <Translation id="moduleSettings.faq.bluetoothEnabled.android.4.answer.4" />
                 </BulletListItem>
-            </BulletList>
+            </AccordionItemList>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.5.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.5.answer" />,
+        content: (
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.usbEnabled.5.answer" />
+            </AccordionItemText>
+        ),
     },
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.6.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.6.answer" />,
+        content: (
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.usbEnabled.6.answer" />
+            </AccordionItemText>
+        ),
     },
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.7.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.7.answer" />,
+        content: (
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.usbEnabled.7.answer" />
+            </AccordionItemText>
+        ),
     },
 ];
 
@@ -161,13 +175,17 @@ const getIosFaqItems = (coinLabel: string) => [
     {
         title: <Translation id="moduleSettings.faq.bluetoothEnabled.ios.0.question" />,
         content: (
-            <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.0.answer" />
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.bluetoothEnabled.ios.0.answer" />
+            </AccordionItemText>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.bluetoothEnabled.ios.1.question" />,
         content: (
-            <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.1.answer" />
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.bluetoothEnabled.ios.1.answer" />
+            </AccordionItemText>
         ),
     },
     {
@@ -180,20 +198,24 @@ const getIosFaqItems = (coinLabel: string) => [
             />
         ),
         content: (
-            <AccordionContentText
-                translationKey="moduleSettings.faq.bluetoothEnabled.ios.2.answer"
-                values={{
-                    coinLabel,
-                }}
-            />
+            <AccordionItemText>
+                <Translation
+                    id="moduleSettings.faq.bluetoothEnabled.ios.2.answer"
+                    values={{
+                        coinLabel,
+                    }}
+                />
+            </AccordionItemText>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.question" />,
         content: (
             <VStack spacing="sp4">
-                <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.5.answer" />
-                <BulletList textVariant="body-xs">
+                <AccordionItemText>
+                    <Translation id="moduleSettings.faq.bluetoothEnabled.ios.5.answer" />
+                </AccordionItemText>
+                <AccordionItemList>
                     <BulletListItem>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.0" />
                     </BulletListItem>
@@ -215,45 +237,55 @@ const getIosFaqItems = (coinLabel: string) => [
                     <BulletListItem>
                         <Translation id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.6" />
                     </BulletListItem>
-                </BulletList>
-                <AccordionContentText
-                    translationKey="moduleSettings.faq.bluetoothEnabled.ios.3.answer.footer"
-                    values={{
-                        link: chunk => (
-                            <Link
-                                label={chunk}
-                                textVariant="body-xs"
-                                href={`${TREZOR_SUPPORT_BLUETOOTH_TROUBLESHOOTING}#open-chat`}
-                                isUnderlined
-                            />
-                        ),
-                    }}
-                />
+                </AccordionItemList>
+                <AccordionItemText>
+                    <Translation
+                        id="moduleSettings.faq.bluetoothEnabled.ios.3.answer.footer"
+                        values={{
+                            link: chunk => (
+                                <Link
+                                    label={chunk}
+                                    textVariant="body-sm"
+                                    href={`${TREZOR_SUPPORT_BLUETOOTH_TROUBLESHOOTING}#open-chat`}
+                                    isUnderlined
+                                />
+                            ),
+                        }}
+                    />
+                </AccordionItemText>
             </VStack>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.bluetoothEnabled.ios.4.question" />,
         content: (
-            <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.4.answer" />
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.bluetoothEnabled.ios.4.answer" />
+            </AccordionItemText>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.bluetoothEnabled.ios.5.question" />,
         content: (
-            <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.5.answer" />
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.bluetoothEnabled.ios.5.answer" />
+            </AccordionItemText>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.bluetoothEnabled.ios.6.question" />,
         content: (
-            <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.6.answer" />
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.bluetoothEnabled.ios.6.answer" />
+            </AccordionItemText>
         ),
     },
     {
         title: <Translation id="moduleSettings.faq.bluetoothEnabled.ios.7.question" />,
         content: (
-            <AccordionContentText translationKey="moduleSettings.faq.bluetoothEnabled.ios.7.answer" />
+            <AccordionItemText>
+                <Translation id="moduleSettings.faq.bluetoothEnabled.ios.7.answer" />
+            </AccordionItemText>
         ),
     },
 ];
@@ -269,19 +301,21 @@ export const FaqCard = () => {
             itemsData.push({
                 title: <Translation id="moduleSettings.faq.trading.question" />,
                 content: (
-                    <AccordionContentText
-                        translationKey="moduleSettings.faq.trading.answer"
-                        values={{
-                            link: chunk => (
-                                <Link
-                                    label={chunk}
-                                    textVariant="body-xs"
-                                    href={TREZOR_SUPPORT_TRADING_URL}
-                                    isUnderlined
-                                />
-                            ),
-                        }}
-                    />
+                    <AccordionItemText>
+                        <Translation
+                            id="moduleSettings.faq.trading.answer"
+                            values={{
+                                link: chunk => (
+                                    <Link
+                                        label={chunk}
+                                        textVariant="body-sm"
+                                        href={TREZOR_SUPPORT_TRADING_URL}
+                                        isUnderlined
+                                    />
+                                ),
+                            }}
+                        />
+                    </AccordionItemText>
                 ),
             });
         }
@@ -291,9 +325,7 @@ export const FaqCard = () => {
 
     return (
         <Card>
-            <VStack>
-                <AccordionList items={items} />
-            </VStack>
+            <AccordionList items={items} />
         </Card>
     );
 };

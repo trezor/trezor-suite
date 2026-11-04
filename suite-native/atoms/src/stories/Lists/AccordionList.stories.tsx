@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
+import { AccordionItemText } from '../../Accordion/AccordionItemText';
 import {
     AccordionList as AccordionListComponent,
     type AccordionListProps,
 } from '../../Accordion/AccordionList';
-import { Text } from '../../Text';
 
 type AccordionListStory = StoryObj<AccordionListProps>;
 
@@ -19,7 +19,7 @@ const meta: Meta<AccordionListProps> = {
                 ...args,
                 items: args.items.map(item => ({
                     ...item,
-                    content: <Text variant="body-xs">{item.content}</Text>,
+                    content: <AccordionItemText>{item.content}</AccordionItemText>,
                 })),
             };
 

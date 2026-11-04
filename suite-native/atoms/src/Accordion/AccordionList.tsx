@@ -12,13 +12,13 @@ export const AccordionList = ({ items }: AccordionListProps) => {
 
     return (
         <VStack spacing="sp16">
-            {items.map((accordion, index) => (
+            {items.map((item, index) => (
                 <AccordionItem
                     key={index}
                     currentIndexOpened={openedAccordionIndex}
                     index={index}
                     isDividerDisplayed={index !== items.length - 1}
-                    {...accordion}
+                    {...item}
                 />
             ))}
         </VStack>
