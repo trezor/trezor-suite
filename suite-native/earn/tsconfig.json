@@ -12,6 +12,9 @@
             "path": "../../suite-common/earn-staking-api"
         },
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {
@@ -29,7 +32,15 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../atoms" },
         { "path": "../intl" },
-        { "path": "../../packages/utils" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils-store" },
+        {
+            "path": "../../networks/ethereum/network-ethereum"
+        }
     ]
 }
