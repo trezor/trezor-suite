@@ -20,6 +20,7 @@ import {
     asTimestamp,
 } from '@suite-common/wallet-types';
 import {
+    MOCK_CARDANO_EVERSTAKE_POOL,
     mockAccountToken,
     mockWalletAccount,
     networkSpecificDefaultCardano,
@@ -80,7 +81,15 @@ const createAdaAccount = (descriptor: string, balance: string, visible = true) =
             balance,
             visible,
         },
-        networkSpecificDefaultCardano,
+        {
+            ...networkSpecificDefaultCardano,
+            misc: {
+                staking: {
+                    ...networkSpecificDefaultCardano.misc.staking,
+                    poolId: MOCK_CARDANO_EVERSTAKE_POOL,
+                },
+            },
+        },
     );
 
 const createFiveBinariesAdaAccount = (descriptor: string, visible = true): Account => {
