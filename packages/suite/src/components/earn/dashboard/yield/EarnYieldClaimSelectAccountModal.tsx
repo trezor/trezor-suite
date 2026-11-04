@@ -241,6 +241,8 @@ export const EarnYieldClaimSelectAccountModal = ({
                                             isTabular
                                             data-testid="@earn/claim-select-account/fiat-amount"
                                         >
+                                            {!accountRewards.isTotalClaimableFiatAmountComplete &&
+                                                '≈ '}
                                             {BaseCurrencyAmountFormatter.format(
                                                 accountRewards.totalClaimableFiatAmount,
                                             )}
