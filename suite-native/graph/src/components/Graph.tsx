@@ -11,12 +11,12 @@ import {
 } from '@suite-common/graph';
 import { Box, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { ChartAxisLabel } from '@suite-native/price-chart';
 import { type GraphPoint, LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type TimerId } from '@trezor/type-utils';
 
 import { getExtremaFromGraphPoints } from '../utils';
-import { AxisLabel } from './AxisLabel';
 import { GraphError } from './GraphError';
 import { SelectionDotWithLine } from './SelectionDotWithLine';
 import { TransactionEvent } from './TransactionEvent';
@@ -118,14 +118,14 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         if (extremaFromGraphPoints?.max && extremaFromGraphPoints?.min) {
             return {
                 TopAxisLabel: () => (
-                    <AxisLabel
+                    <ChartAxisLabel
                         graphWidth={graphWidth}
                         x={extremaFromGraphPoints.max.x}
                         value={extremaFromGraphPoints.max.value}
                     />
                 ),
                 BottomAxisLabel: () => (
-                    <AxisLabel
+                    <ChartAxisLabel
                         graphWidth={graphWidth}
                         x={extremaFromGraphPoints.min.x}
                         value={extremaFromGraphPoints.min.value}
