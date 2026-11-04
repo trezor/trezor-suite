@@ -164,12 +164,7 @@ export const StakingManagementStakedCard = ({
     const tronVotes = useSelector((state: AccountsRootState) =>
         selectTronVotesByAccountKey(state, accountKey),
     );
-    const tronApr = formatTronApr(
-        getTronVotedApr(
-            tronStats.data,
-            tronVotes.map(({ address }) => address),
-        ) ?? tronMaxApr,
-    );
+    const tronApr = formatTronApr(getTronVotedApr(tronStats.data, tronVotes) ?? tronMaxApr);
     const isAdaStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
         selectIsCardanoStakedWithFiveBinaries(state, accountKey),
     );

@@ -53,8 +53,8 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
 
     const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '0';
     const hasStake = new BigNumber(stakedBalance).gt(0);
-    const votedAddresses = getTronVotes(account).map(vote => vote.address);
-    const apr = votedAddresses.length > 0 ? getTronVotedApr(stats.data, votedAddresses) : maxApr;
+    const votes = getTronVotes(account);
+    const apr = votes.length > 0 ? getTronVotedApr(stats.data, votes) : maxApr;
     const remainingVotes = getTronAvailableVotingPower(account);
     const totalVotes = getTronTotalVotingPower(account);
     const hasRemainingVotes = new BigNumber(remainingVotes).gt(0);

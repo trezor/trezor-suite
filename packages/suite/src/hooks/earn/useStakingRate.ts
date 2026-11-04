@@ -37,12 +37,7 @@ export const useStakingRate = ({ symbol, accountKey }: UseStakingRateProps): Sta
         return { rate: formatTronApr(maxApr) };
     }
 
-    const votes = getTronVotes(account);
-
-    const votedApr = getTronVotedApr(
-        stats.data,
-        votes.map(({ address }) => address),
-    );
+    const votedApr = getTronVotedApr(stats.data, getTronVotes(account));
 
     const apr = votedApr ?? maxApr;
 
