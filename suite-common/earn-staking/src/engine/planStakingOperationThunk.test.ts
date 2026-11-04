@@ -33,6 +33,7 @@ import {
 import { type StakingState, stakingActions, stakingReducer } from '../state/stakingReducer';
 import { getStakingSessionKey } from '../state/stakingSessionKey';
 import { selectStakingSession } from '../state/stakingSessionSelectors';
+import type { StakingSessionStep } from '../state/stakingSessionStep';
 
 const attemptId = 'attempt-1';
 const eth = mockStakingProductDescriptor();
@@ -101,7 +102,7 @@ type Store = ReturnType<typeof initStore>['store'];
 const planStake = (store: Store, overrides: Partial<typeof params> = {}) =>
     store.dispatch(planStakingOperationThunk({ ...params, ...overrides }));
 
-const pendingStep = (step: (typeof plan.steps)[number]) => ({
+const pendingStep = (step: (typeof plan.steps)[number]): StakingSessionStep => ({
     id: step.id,
     kind: step.kind,
     awaitConfirmation: step.awaitConfirmation,

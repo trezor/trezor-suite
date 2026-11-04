@@ -10,15 +10,20 @@ import {
 } from './stakingConfirmation';
 import { mockStakingSession, mockStakingSessionStep } from '../../mocks';
 import { stakingActions } from '../state/stakingReducer';
+import type { StakingStepTransaction } from '../state/stakingSessionStep';
 import type { StakingSession } from '../state/stakingSessionsReducer';
 
 const eth = mockStakingProductDescriptor();
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
-const awaitingSession = (txid: string, sessionOverrides: Partial<StakingSession> = {}) =>
+const awaitingSession = (
+    txid: string,
+    sessionOverrides: Partial<StakingSession> = {},
+    replacements: readonly StakingStepTransaction[] = [],
+) =>
     mockStakingSession({
         accountKey: account.key,
-        steps: [{ ...mockStakingSessionStep(), status: 'awaiting', txid }],
+        steps: [{ ...mockStakingSessionStep(), status: 'awaiting', txid, replacements }],
         ...sessionOverrides,
     });
 
@@ -40,12 +45,19 @@ const createTransaction = (
     ...overrides,
 });
 
-describe('getStakingStepSettlement', () => {
-    const awaiting = { sessionKey: awaitingSession('tx1').key, stepId: 'stake', txid: 'tx1' };
+const stake = awaitingSession('tx1');
+const original: StakingStepTransaction = { txid: 'tx1', isCancellation: false };
+const bump: StakingStepTransaction = { txid: 'tx1b', isCancellation: false };
+const cancel: StakingStepTransaction = { txid: 'tx1c', isCancellation: true };
+const awaiting = { sessionKey: stake.key, stepId: 'stake', transactions: [original] };
+const replaced = { ...awaiting, transactions: [original, bump, cancel] };
 
+describe('getStakingStepSettlement', () => {
     it('confirms a mined transaction', () => {
         expect(getStakingStepSettlement(awaiting, createTransaction())).toEqual({
-            ...awaiting,
+            sessionKey: stake.key,
+            stepId: 'stake',
+            txid: 'tx1',
             outcome: 'confirmed',
         });
     });
@@ -61,13 +73,30 @@ describe('getStakingStepSettlement', () => {
     });
 
     it('fails a transaction the chain rejected', () => {
-        expect(getStakingStepSettlement(awaiting, createTransaction({ type: 'failed' }))).toEqual({
-            ...awaiting,
-            outcome: 'failed',
+        expect(
+            getStakingStepSettlement(awaiting, createTransaction({ type: 'failed' }))?.outcome,
+        ).toBe('failed');
+    });
+
+    it('settles on whichever of the step transactions mined', () => {
+        expect(getStakingStepSettlement(replaced, createTransaction({ txid: 'tx1b' }))).toEqual({
+            sessionKey: stake.key,
+            stepId: 'stake',
+            txid: 'tx1b',
+            outcome: 'confirmed',
+        });
+        expect(
+            getStakingStepSettlement(replaced, createTransaction({ txid: 'tx1' }))?.outcome,
+        ).toBe('confirmed');
+        expect(getStakingStepSettlement(replaced, createTransaction({ txid: 'tx1c' }))).toEqual({
+            sessionKey: stake.key,
+            stepId: 'stake',
+            txid: 'tx1c',
+            outcome: 'replaced',
         });
     });
 
-    it('waits while the transaction is missing, pending or another one', () => {
+    it('waits while the transaction is missing, pending or not one of the step', () => {
         expect(getStakingStepSettlement(awaiting, null)).toBeNull();
         expect(
             getStakingStepSettlement(awaiting, createTransaction({ blockHeight: undefined })),
@@ -76,12 +105,17 @@ describe('getStakingStepSettlement', () => {
             getStakingStepSettlement(awaiting, createTransaction({ blockHeight: -1 })),
         ).toBeNull();
         expect(getStakingStepSettlement(awaiting, createTransaction({ txid: 'tx2' }))).toBeNull();
+        expect(
+            getStakingStepSettlement(
+                replaced,
+                createTransaction({ txid: 'tx1c', blockHeight: -1 }),
+            ),
+        ).toBeNull();
     });
 });
 
 describe('settleStakingSteps', () => {
-    it('settles every awaiting step whose transaction is in the batch', () => {
-        const stake = awaitingSession('tx1');
+    it('settles every awaiting step with a mined transaction in the batch', () => {
         const claim = awaitingSession('tx2', {
             id: 'session-2',
             plan: { ...stake.plan, operation: 'claim' },
@@ -90,47 +124,50 @@ describe('settleStakingSteps', () => {
             id: 'session-3',
             plan: { ...stake.plan, operation: 'unstake' },
         });
+        const vote = awaitingSession(
+            'tx4',
+            { id: 'session-4', plan: { ...stake.plan, operation: 'vote' } },
+            [{ txid: 'tx4c', isCancellation: true }],
+        );
 
         expect(
             settleStakingSteps({
-                sessions: [stake, claim, unstake],
+                sessions: [stake, claim, unstake, vote],
                 transactions: [
                     createTransaction({ txid: 'tx1' }),
                     createTransaction({ txid: 'tx2', type: 'failed' }),
                     createTransaction({ txid: 'tx3', blockHeight: undefined }),
+                    createTransaction({ txid: 'tx4c' }),
                 ],
             }),
         ).toEqual([
             { sessionKey: stake.key, stepId: 'stake', txid: 'tx1', outcome: 'confirmed' },
             { sessionKey: claim.key, stepId: 'stake', txid: 'tx2', outcome: 'failed' },
+            { sessionKey: vote.key, stepId: 'stake', txid: 'tx4c', outcome: 'replaced' },
         ]);
     });
 });
 
 describe('getStakingStepSettlementAction', () => {
-    const stake = awaitingSession('tx1');
+    const settlement = { sessionKey: stake.key, stepId: 'stake', txid: 'tx1' };
 
     it('maps the outcome to the step action', () => {
-        expect(
-            getStakingStepSettlementAction({
-                sessionKey: stake.key,
-                stepId: 'stake',
-                txid: 'tx1',
-                outcome: 'confirmed',
+        expect(getStakingStepSettlementAction({ ...settlement, outcome: 'confirmed' })).toEqual(
+            stakingActions.stepConfirmed(settlement),
+        );
+        expect(getStakingStepSettlementAction({ ...settlement, outcome: 'failed' })).toEqual(
+            stakingActions.stepFailed({
+                ...settlement,
+                error: { kind: 'confirmation-failed', code: null },
             }),
-        ).toEqual(stakingActions.stepConfirmed({ sessionKey: stake.key, stepId: 'stake' }));
+        );
         expect(
-            getStakingStepSettlementAction({
-                sessionKey: stake.key,
-                stepId: 'stake',
-                txid: 'tx1',
-                outcome: 'failed',
-            }),
+            getStakingStepSettlementAction({ ...settlement, txid: 'tx1c', outcome: 'replaced' }),
         ).toEqual(
             stakingActions.stepFailed({
-                sessionKey: stake.key,
-                stepId: 'stake',
-                error: { kind: 'confirmation-failed', code: null },
+                ...settlement,
+                txid: 'tx1c',
+                error: { kind: 'replaced', code: null },
             }),
         );
     });

@@ -51,7 +51,7 @@ const eth = mockStakingProductDescriptor();
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const session = mockStakingSession({
     accountKey: account.key,
-    steps: [{ ...mockStakingSessionStep(), status: 'awaiting', txid: 'tx1' }],
+    steps: [{ ...mockStakingSessionStep(), status: 'awaiting', txid: 'tx1', replacements: [] }],
 });
 const { key: sessionKey } = session;
 const params = { sessionKey, stepId: 'stake' };
@@ -93,7 +93,10 @@ const transactionsReducer = (
           }
         : state;
 
-const initStore = (storedTransactions: WalletAccountTransaction[] = []) => {
+const initStore = (
+    storedTransactions: WalletAccountTransaction[] = [],
+    trackedSession = session,
+) => {
     const adapter = mockStakingProductAdapter({
         descriptor: eth,
         getPosition: mock(() => position),
@@ -137,7 +140,7 @@ const initStore = (storedTransactions: WalletAccountTransaction[] = []) => {
             tokenDefinitions: (state = {}) => state,
         },
         preloadedState: {
-            earn: { staking: mockStakingState({ descriptors: [eth], sessions: [session] }) },
+            earn: { staking: mockStakingState({ descriptors: [eth], sessions: [trackedSession] }) },
             wallet: {
                 transactions: {
                     ...transactionsInitialState,
@@ -190,6 +193,26 @@ describe('trackStakingStepConfirmationThunk', () => {
         expect(fetchAndUpdateAccountThunk).not.toHaveBeenCalled();
         expect(adapter.getPosition).toHaveBeenCalled();
         expect(selectStakingPositionsByAccount(store.getState(), account.key)).toEqual([position]);
+    });
+
+    it('settles on a replacement of the step when that one is mined', async () => {
+        const bumped = mockStakingSession({
+            accountKey: account.key,
+            steps: [
+                {
+                    ...mockStakingSessionStep(),
+                    status: 'awaiting',
+                    txid: 'tx1',
+                    replacements: [{ txid: 'tx1b', isCancellation: false }],
+                },
+            ],
+        });
+        const { store } = initStore([createTransaction({ txid: 'tx1b' })], bumped);
+
+        await store.dispatch(trackStakingStepConfirmationThunk(params));
+
+        expect(getStep(store)).toMatchObject({ status: 'done', txid: 'tx1b' });
+        expect(fetchAndUpdateAccountThunk).not.toHaveBeenCalled();
     });
 
     it('confirms the step once a refresh brings the mined transaction', async () => {
@@ -296,6 +319,6 @@ describe('trackStakingStepConfirmationThunk', () => {
         await tracking;
 
         expect(fetchAndUpdateAccountThunk).toHaveBeenCalledTimes(1);
-        expect(getStep(store)).toMatchObject({ status: 'awaiting', txid: 'tx1' });
+        expect(getStep(store)).toMatchObject({ status: 'awaiting', txid: 'tx1', replacements: [] });
     });
 });

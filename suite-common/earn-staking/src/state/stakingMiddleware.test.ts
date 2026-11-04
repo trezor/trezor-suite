@@ -155,7 +155,9 @@ describe('prepareStakingMiddleware', () => {
     describe('confirmation', () => {
         const session = mockStakingSession({
             accountKey: ethAccount.key,
-            steps: [{ ...mockStakingSessionStep(), status: 'awaiting', txid: 'tx1' }],
+            steps: [
+                { ...mockStakingSessionStep(), status: 'awaiting', txid: 'tx1', replacements: [] },
+            ],
         });
         const { key: sessionKey } = session;
         const awaiting = () => mockStakingState({ descriptors: [eth], sessions: [session] });
@@ -267,28 +269,75 @@ describe('prepareStakingMiddleware', () => {
             );
             await flushThunks();
 
-            expect(getStep(store)).toMatchObject({ status: 'awaiting', txid: 'tx1' });
+            expect(getStep(store)).toMatchObject({
+                status: 'awaiting',
+                txid: 'tx1',
+                replacements: [],
+            });
             expect(adapter.getPosition).not.toHaveBeenCalled();
         });
 
-        it('follows a bumped transaction', () => {
+        it('keeps a bumped transaction next to the original and confirms on either', async () => {
             const { store } = initStore({}, awaiting());
 
             store.dispatch(replacement(bumpFee, 'tx1b'));
 
-            expect(getStep(store)).toMatchObject({ status: 'awaiting', txid: 'tx1b' });
+            expect(getStep(store)).toMatchObject({
+                status: 'awaiting',
+                txid: 'tx1',
+                replacements: [{ txid: 'tx1b', isCancellation: false }],
+            });
+
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    account: ethAccount,
+                    transactions: [createTransaction({ txid: 'tx1b' })],
+                }),
+            );
+            await flushThunks();
+
+            expect(getStep(store)).toMatchObject({ status: 'done', txid: 'tx1b' });
         });
 
-        it('fails a step whose transaction was replaced by a cancel', () => {
+        it('fails a step only once its cancel replacement is mined', async () => {
             const { store } = initStore({}, awaiting());
 
             store.dispatch(replacement(cancel, 'tx1c'));
 
             expect(getStep(store)).toMatchObject({
-                status: 'failed',
+                status: 'awaiting',
                 txid: 'tx1',
+                replacements: [{ txid: 'tx1c', isCancellation: true }],
+            });
+
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    account: ethAccount,
+                    transactions: [createTransaction({ txid: 'tx1c' })],
+                }),
+            );
+            await flushThunks();
+
+            expect(getStep(store)).toMatchObject({
+                status: 'failed',
+                txid: 'tx1c',
                 error: { kind: 'replaced', code: null },
             });
+        });
+
+        it('confirms a step whose original outran its cancel replacement', async () => {
+            const { store } = initStore({}, awaiting());
+
+            store.dispatch(replacement(cancel, 'tx1c'));
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    account: ethAccount,
+                    transactions: [createTransaction({ txid: 'tx1' })],
+                }),
+            );
+            await flushThunks();
+
+            expect(getStep(store)).toMatchObject({ status: 'done', txid: 'tx1' });
         });
 
         it('ignores a replacement that was not broadcast', () => {
@@ -296,7 +345,11 @@ describe('prepareStakingMiddleware', () => {
 
             store.dispatch(replacement(bumpFee, null));
 
-            expect(getStep(store)).toMatchObject({ status: 'awaiting', txid: 'tx1' });
+            expect(getStep(store)).toMatchObject({
+                status: 'awaiting',
+                txid: 'tx1',
+                replacements: [],
+            });
         });
 
         it('follows a transaction replaced in the store', () => {
@@ -310,7 +363,11 @@ describe('prepareStakingMiddleware', () => {
                 }),
             );
 
-            expect(getStep(store)).toMatchObject({ status: 'awaiting', txid: 'tx1b' });
+            expect(getStep(store)).toMatchObject({
+                status: 'awaiting',
+                txid: 'tx1',
+                replacements: [{ txid: 'tx1b', isCancellation: false }],
+            });
         });
     });
 });

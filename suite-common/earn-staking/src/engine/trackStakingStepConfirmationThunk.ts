@@ -12,10 +12,15 @@ import { createThunk } from '@trezor/redux-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
-import { getStakingStepSettlement, getStakingStepSettlementAction } from './stakingConfirmation';
+import {
+    type StakingStepSettlement,
+    getStakingStepSettlement,
+    getStakingStepSettlementAction,
+} from './stakingConfirmation';
 import type { StakingRootState } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
 import { selectAwaitingStakingStep } from '../state/stakingSessionSelectors';
+import { getStakingStepTransactions } from '../state/stakingSessionStep';
 import { syncStakingPositionsThunk } from '../state/stakingThunks';
 
 export const STAKING_CONFIRMATION_TRACKING_TIMEOUT_MS = 15 * 60 * 1000;
@@ -48,13 +53,20 @@ export const trackStakingStepConfirmationThunk = createThunk<
 
             if (awaiting === null) return;
 
-            const settlement = getStakingStepSettlement(
-                { sessionKey, stepId, txid: awaiting.step.txid },
-                selectTransactionByAccountKeyAndTxid(
-                    getState(),
-                    awaiting.session.accountKey,
-                    awaiting.step.txid,
-                ),
+            const transactions = getStakingStepTransactions(awaiting.step);
+
+            const settlement = transactions.reduce<StakingStepSettlement | null>(
+                (found, { txid }) =>
+                    found ??
+                    getStakingStepSettlement(
+                        { sessionKey, stepId, transactions },
+                        selectTransactionByAccountKeyAndTxid(
+                            getState(),
+                            awaiting.session.accountKey,
+                            txid,
+                        ),
+                    ),
+                null,
             );
 
             if (settlement !== null) {

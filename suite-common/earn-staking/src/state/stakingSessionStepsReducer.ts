@@ -30,7 +30,7 @@ const applyStakingStepEvent = (
     const index = steps.findIndex(step => step.status !== 'done');
     const step = steps[index];
 
-    if (step === undefined || step.id !== stepId) return;
+    if (step?.id !== stepId) return;
 
     const next = transitionStakingStep(step, event);
 
@@ -142,23 +142,28 @@ const stakingSessionStepsSlice = createSlice({
                 code: payload.code,
             });
         },
-        stepTxidReplaced(
+        stepReplacementBroadcast(
             state: StakingSessionStep[],
-            { payload }: StakingStepActionPayload<'txid-replaced'>,
+            { payload }: StakingStepActionPayload<'replacement-broadcast'>,
         ) {
             applyStakingStepEvent(state, payload.stepId, {
-                type: 'txid-replaced',
+                type: 'replacement-broadcast',
                 txid: payload.txid,
+                isCancellation: payload.isCancellation,
             });
         },
         stepConfirmed(
             state: StakingSessionStep[],
             { payload }: StakingStepActionPayload<'confirmed'>,
         ) {
-            applyStakingStepEvent(state, payload.stepId, { type: 'confirmed' });
+            applyStakingStepEvent(state, payload.stepId, { type: 'confirmed', txid: payload.txid });
         },
         stepFailed(state: StakingSessionStep[], { payload }: StakingStepActionPayload<'failed'>) {
-            applyStakingStepEvent(state, payload.stepId, { type: 'failed', error: payload.error });
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'failed',
+                txid: payload.txid,
+                error: payload.error,
+            });
         },
     },
 });
@@ -179,7 +184,7 @@ export const isStakingSessionStepAction = isAnyOf(
     stakingSessionStepsActions.stepBroadcasting,
     stakingSessionStepsActions.stepBroadcast,
     stakingSessionStepsActions.stepBroadcastFailed,
-    stakingSessionStepsActions.stepTxidReplaced,
+    stakingSessionStepsActions.stepReplacementBroadcast,
     stakingSessionStepsActions.stepConfirmed,
     stakingSessionStepsActions.stepFailed,
 );

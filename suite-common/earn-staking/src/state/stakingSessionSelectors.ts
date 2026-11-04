@@ -8,9 +8,12 @@ import type { StakingRootState } from './stakingReducer';
 import type { StakingSessionKey } from './stakingSessionKey';
 import {
     STAKING_ACTIVE_STEP_STATUSES,
+    type StakingAwaitingStep,
     type StakingReviewStep,
     type StakingSessionStep,
     type StakingSessionStepStatus,
+    type StakingStepTransaction,
+    getStakingStepTransactions,
     isStakingReviewStep,
 } from './stakingSessionStep';
 import { type StakingSession, hasStakingStepWithStatus } from './stakingSessionsReducer';
@@ -63,7 +66,7 @@ export const selectIsStakingSessionActive = (
 export type AwaitingStakingStep = {
     sessionKey: StakingSessionKey;
     stepId: string;
-    txid: string;
+    transactions: readonly StakingStepTransaction[];
 };
 
 export const getAwaitingStakingSteps = (
@@ -72,7 +75,13 @@ export const getAwaitingStakingSteps = (
     sessions.flatMap(session =>
         session.steps.flatMap(step =>
             step.status === 'awaiting'
-                ? [{ sessionKey: session.key, stepId: step.id, txid: step.txid }]
+                ? [
+                      {
+                          sessionKey: session.key,
+                          stepId: step.id,
+                          transactions: getStakingStepTransactions(step),
+                      },
+                  ]
                 : [],
         ),
     );
@@ -88,9 +97,9 @@ export const selectAwaitingStakingStepsByTxid = (
     accountKey: AccountKey,
     txid: string,
 ): readonly AwaitingStakingStep[] =>
-    selectAwaitingStakingSteps(state, accountKey).filter(step => step.txid === txid);
-
-export type StakingAwaitingStep = Extract<StakingSessionStep, { status: 'awaiting' }>;
+    selectAwaitingStakingSteps(state, accountKey).filter(step =>
+        step.transactions.some(transaction => transaction.txid === txid),
+    );
 
 export type AwaitingStakingStepContext = {
     session: StakingSession;
