@@ -6,6 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 import {
     HOME_ASSET_ROW_LIMIT,
     type HomeAssetTableState,
+    selectIsHomeAssetTableFoldable,
     selectIsHomeAssetTableMenuAvailable,
 } from '@suite-common/assets';
 import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
@@ -17,6 +18,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { PortfolioAssetListItem } from './PortfolioAssetListItem';
 import { PortfolioAssetListSeparator } from './PortfolioAssetListSeparator';
 import { PortfolioAssetNetworkHeader } from './PortfolioAssetNetworkHeader';
+import { PortfolioAssetsCardSegment } from './PortfolioAssetsCardSegment';
 import { PortfolioAssetsListFooter } from './PortfolioAssetsListFooter';
 import { PortfolioAssetsListHeader } from './PortfolioAssetsListHeader';
 import { PortfolioAssetsViewOptionsSheet } from './PortfolioAssetsViewOptionsSheet';
@@ -40,17 +42,7 @@ const getEntryType = (entry: PortfolioAssetListEntry) => entry.type;
 
 type RenderEntryParams = {
     item: PortfolioAssetListEntry;
-};
-
-const renderEntry = ({ item }: RenderEntryParams) => {
-    switch (item.type) {
-        case 'network':
-            return <PortfolioAssetNetworkHeader symbol={item.symbol} />;
-        case 'asset':
-            return <PortfolioAssetListItem assetKey={item.assetKey} />;
-        default:
-            return exhaustive(item);
-    }
+    index: number;
 };
 
 export const PortfolioAssetsContent = () => {
@@ -60,11 +52,37 @@ export const PortfolioAssetsContent = () => {
     const entries = useSelector((state: HomeAssetTableState) =>
         selectPortfolioAssetListEntries(state, rowLimit),
     );
+    const isFoldable = useSelector((state: HomeAssetTableState) =>
+        selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
+    );
     const isMenuAvailable = useSelector(selectIsHomeAssetTableMenuAvailable);
     const { bottomSheetRef, openModal } = useBottomSheetModal();
     const { dispatch } = useServices(injectDispatch);
 
-    const toggleIsListExpanded = () => setIsListExpanded(previous => !previous);
+    const renderEntryContent = (entry: PortfolioAssetListEntry) => {
+        switch (entry.type) {
+            case 'network':
+                return <PortfolioAssetNetworkHeader symbol={entry.symbol} />;
+            case 'asset':
+                return <PortfolioAssetListItem assetKey={entry.assetKey} />;
+            default:
+                return exhaustive(entry);
+        }
+    };
+
+    const renderEntry = ({ item, index }: RenderEntryParams) => (
+        <PortfolioAssetsCardSegment
+            isFirst={index === 0}
+            // Show more closes the card when the list is foldable.
+            isLast={index === entries.length - 1 && !isFoldable}
+        >
+            {renderEntryContent(item)}
+        </PortfolioAssetsCardSegment>
+    );
+
+    const toggleIsListExpanded = () => {
+        setIsListExpanded(previous => !previous);
+    };
 
     const changeSmallBalances = (areShown: boolean) => {
         if (areShown) {

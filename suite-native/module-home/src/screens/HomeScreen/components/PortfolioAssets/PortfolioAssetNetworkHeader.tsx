@@ -26,8 +26,8 @@ export const PortfolioAssetNetworkHeader = ({ symbol }: PortfolioAssetNetworkHea
             alignItems="center"
             justifyContent="space-between"
             spacing="sp8"
-            paddingHorizontal="sp20"
-            paddingTop="sp16"
+            paddingHorizontal="sp16"
+            paddingTop="sp12"
             paddingBottom="sp4"
             testID={`@home/portfolio-assets/network/${symbol}`}
         >
@@ -38,7 +38,7 @@ export const PortfolioAssetNetworkHeader = ({ symbol }: PortfolioAssetNetworkHea
                 <BaseCurrencyAmountFormatter
                     value={asBaseCurrencyAmount(new BigNumber(fiatValue))}
                     variant="body-xs"
-                    color="contentSecondary"
+                    color="contentTertiary"
                 />
             )}
         </HStack>

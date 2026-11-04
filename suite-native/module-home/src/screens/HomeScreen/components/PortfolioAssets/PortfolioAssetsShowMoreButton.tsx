@@ -1,5 +1,18 @@
-import { Button } from '@suite-native/atoms';
+import { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+
+import { AnimatedBox, PressableOpacity, Text } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+const CARET_ANIMATION_DURATION = 200;
+
+const rowStyle = prepareNativeStyle(utils => ({
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: utils.spacings.sp16,
+}));
 
 type PortfolioAssetsShowMoreButtonProps = {
     isExpanded: boolean;
@@ -9,16 +22,37 @@ type PortfolioAssetsShowMoreButtonProps = {
 export const PortfolioAssetsShowMoreButton = ({
     isExpanded,
     onPress,
-}: PortfolioAssetsShowMoreButtonProps) => (
-    <Button
-        size="small"
-        intent="neutral"
-        priority="secondary"
-        onPress={onPress}
-        testID="@home/portfolio-assets/show-more"
-    >
-        <Translation
-            id={isExpanded ? 'moduleHome.assets.showLess' : 'moduleHome.assets.showMore'}
-        />
-    </Button>
-);
+}: PortfolioAssetsShowMoreButtonProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    const caretStyle = useAnimatedStyle(
+        () => ({
+            transform: [
+                {
+                    rotate: withTiming(isExpanded ? '-180deg' : '0deg', {
+                        duration: CARET_ANIMATION_DURATION,
+                    }),
+                },
+            ],
+        }),
+        [isExpanded],
+    );
+
+    return (
+        <PressableOpacity
+            onPress={onPress}
+            style={applyStyle(rowStyle)}
+            accessibilityRole="button"
+            testID="@home/portfolio-assets/show-more"
+        >
+            <Text variant="body-md-strong" color="contentSecondary">
+                <Translation
+                    id={isExpanded ? 'moduleHome.assets.showLess' : 'moduleHome.assets.showMore'}
+                />
+            </Text>
+            <AnimatedBox style={caretStyle}>
+                <Icon name="caretDown" size="medium" color="contentSecondary" />
+            </AnimatedBox>
+        </PressableOpacity>
+    );
+};

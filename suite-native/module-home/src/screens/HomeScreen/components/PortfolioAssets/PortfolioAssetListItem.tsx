@@ -35,7 +35,7 @@ const rowStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: utils.spacings.sp12,
-    paddingHorizontal: utils.spacings.sp20,
+    paddingHorizontal: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp12,
 }));
 

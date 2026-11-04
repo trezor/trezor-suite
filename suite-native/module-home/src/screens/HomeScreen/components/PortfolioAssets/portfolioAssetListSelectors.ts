@@ -11,16 +11,12 @@ import { createWeakMapSelector } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 export type PortfolioAssetListEntry =
-    | { type: 'network'; symbol: NetworkSymbol }
-    | { type: 'asset'; assetKey: WalletAssetKey; isInNetworkGroup: boolean };
+    { type: 'network'; symbol: NetworkSymbol } | { type: 'asset'; assetKey: WalletAssetKey };
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
 
-const toAssetEntries = (
-    assetKeys: readonly WalletAssetKey[],
-    isInNetworkGroup: boolean,
-): PortfolioAssetListEntry[] =>
-    assetKeys.map(assetKey => ({ type: 'asset', assetKey, isInNetworkGroup }));
+const toAssetEntries = (assetKeys: readonly WalletAssetKey[]): PortfolioAssetListEntry[] =>
+    assetKeys.map(assetKey => ({ type: 'asset', assetKey }));
 
 export const selectPortfolioAssetListEntries = createMemoizedSelector(
     [
@@ -37,11 +33,11 @@ export const selectPortfolioAssetListEntries = createMemoizedSelector(
     ): readonly PortfolioAssetListEntry[] => {
         switch (grouping) {
             case 'default':
-                return toAssetEntries(assetKeys, false);
+                return toAssetEntries(assetKeys);
             case 'networks':
                 return networkSymbols.flatMap((symbol): PortfolioAssetListEntry[] => [
                     { type: 'network', symbol },
-                    ...toAssetEntries(assetKeysByNetwork.get(symbol) ?? [], true),
+                    ...toAssetEntries(assetKeysByNetwork.get(symbol) ?? []),
                 ]);
             default:
                 return exhaustive(grouping);
