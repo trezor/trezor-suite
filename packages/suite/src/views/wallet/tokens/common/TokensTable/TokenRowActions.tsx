@@ -25,7 +25,7 @@ import {
     type TradingType,
     getTradingPrefilledFromAccountData,
     getUnusedAddressFromAccount,
-    selectTradingInfo,
+    selectTradingCoins,
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
@@ -118,7 +118,7 @@ const TokenRowBasicActions = ({
 
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
-    const { coins } = useSelector(selectTradingInfo);
+    const coins = useSelector(selectTradingCoins);
     const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const isDeviceLocked = isLocked(true);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
