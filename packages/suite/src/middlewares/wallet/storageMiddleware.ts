@@ -9,6 +9,7 @@ import { debugActions } from '@suite/debug';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
 import {
     type FlagsRootState,
+    closeTokenYieldBanner,
     markNewContentIndicatorAsSeen,
     setAssetPriceChartRange,
     setFlag,
@@ -575,6 +576,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         isAnyOf(
             suiteSettingsActions.setLanguage,
             setFlag,
+            closeTokenYieldBanner,
             setAssetPriceChartRange,
             markNewContentIndicatorAsSeen,
             setNewContentIndicatorSeen,
