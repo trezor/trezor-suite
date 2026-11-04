@@ -147,6 +147,14 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
         );
     };
 
+    const hideToken = () => {
+        analytics.report({
+            type: events.assetsActionsEvent.name,
+            payload: { action: 'hide-token', networkSymbol: symbol, contractAddress },
+        });
+        setTokenStatus(TokenManagementAction.HIDE);
+    };
+
     const showToken = () => {
         if (hiddenReason === 'unrecognized') {
             setIsUnhideModalOpen(true);
@@ -199,7 +207,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
         {
             label: <Translation id="TR_HIDE_TOKEN" />,
             icon: EyeSlashIcon,
-            onClick: () => setTokenStatus(TokenManagementAction.HIDE),
+            onClick: hideToken,
             isHidden: contractAddress === undefined || hiddenReason !== undefined,
             'data-testid': '@asset-detail/menu/hide-token',
         },

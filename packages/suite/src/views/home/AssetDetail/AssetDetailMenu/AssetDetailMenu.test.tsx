@@ -254,6 +254,18 @@ describe('AssetDetailMenu', () => {
         });
     });
 
+    it('reports hiding the token', async () => {
+        renderMenu([ethereumAccount], ETH, USDC_ON_ETH);
+
+        await openMenu();
+        await userEvent.click(screen.getByTestId('@asset-detail/menu/hide-token'));
+
+        expect(mockReport).toHaveBeenLastCalledWith({
+            type: events.assetsActionsEvent.name,
+            payload: { action: 'hide-token', networkSymbol: ETH, contractAddress: USDC_ON_ETH },
+        });
+    });
+
     it('warns before showing a token nothing vouches for', async () => {
         const services = renderMenu([unrecognizedTokenAccount], ETH, UNKNOWN_TOKEN);
 
