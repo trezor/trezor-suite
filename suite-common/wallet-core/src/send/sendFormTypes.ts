@@ -35,6 +35,11 @@ export type ComposeFeeLevelsError = {
     message?: string;
 };
 
+export type EnhanceTransactionError = {
+    error: 'enhance-transaction-failed';
+    message: string;
+};
+
 export type SignTransactionError = {
     error: 'sign-transaction-failed';
     errorCode?: CONNECT_ERRORS.ErrorCode;
@@ -54,6 +59,7 @@ export type PushTransactionError = {
 
 export type SendFormError =
     | ComposeFeeLevelsError
+    | EnhanceTransactionError
     | SignTransactionError
     | SignTransactionTimeoutError
     | PushTransactionError;
