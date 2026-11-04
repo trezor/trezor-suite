@@ -27,8 +27,7 @@ env:
   WINDOWS_SIGN_CERTIFICATE_NAME: ${{ secrets.WINDOWS_SIGN_CERTIFICATE_NAME }}
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
@@ -126,6 +125,9 @@ jobs:
           gh release create --repo trezor/trezor-suite --draft v${VERSION}  --title "v${VERSION}" ./Trezor-Suite* latest*
 
   suite-desktop-autoupdate-release:
+    permissions:
+      id-token: write
+      contents: read
     if: github.repository == 'trezor/trezor-suite-release'
     name: Release suite-desktop auto-update to staging data.trezor.io
     environment: suite-production
@@ -171,6 +173,9 @@ jobs:
           ./scripts/generate-s3-index.sh staging-data.trezor.io suite/releases/desktop/v${{ steps.extract-version.outputs.VERSION }}
 
   build-web:
+    permissions:
+      id-token: write
+      contents: read
     if: github.repository == 'trezor/trezor-suite-release'
     name: Build suite-web and deploy to staging-suite.trezor.io
     environment: suite-production

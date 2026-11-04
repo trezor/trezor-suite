@@ -1,8 +1,7 @@
 name: "[Release] connect create release branch"
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 on:
   workflow_dispatch:

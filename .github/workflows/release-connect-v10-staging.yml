@@ -1,8 +1,7 @@
 name: "[Release] connect v10 staging"
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 on:
   workflow_dispatch:
@@ -45,6 +44,9 @@ jobs:
 
   # This job deploys to staging-connect.trezor.io/10.x.x
   deploy-staging-semantic-version:
+    permissions:
+      id-token: write
+      contents: read
     needs: [extract-version, check-version-match]
     environment: staging-connect
     name: "Deploying to staging-connect.trezor.io/${{ needs.extract-version.outputs.version }}"
@@ -74,6 +76,9 @@ jobs:
 
   # This job deploys to staging-connect.trezor.io/10
   deploy-staging-v10:
+    permissions:
+      id-token: write
+      contents: read
     needs: [extract-version, check-version-match]
     environment: staging-connect
     name: "Deploying to staging-connect.trezor.io/10"

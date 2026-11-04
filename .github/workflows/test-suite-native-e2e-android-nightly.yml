@@ -1,9 +1,7 @@
 name: "[Test] suite-native Android E2E Nightly"
 
 permissions:
-  id-token: write # for fetching the OIDC token (needed for aws s3 actions)
-  contents: read # read attached artifacts from tests
-  actions: write # upload/download artifacts
+  contents: read
 
 on:
   schedule:
@@ -16,6 +14,9 @@ concurrency:
 
 jobs:
   prepare_android_test_app:
+    permissions:
+      id-token: write
+      contents: read
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-suite-native-prepare-test-app-android.yml
     secrets:

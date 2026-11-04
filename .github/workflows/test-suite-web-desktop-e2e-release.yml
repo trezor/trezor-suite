@@ -4,8 +4,7 @@ name: "[Test] Release Suite Web & Desktop e2e tests"
 # Runs full e2e test suite for Suite Desktop and Suite Web
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 on:
   push:
@@ -146,10 +145,16 @@ jobs:
   # ── Web ────────────────────────────────────────────────────────────────────
 
   build-web:
+    permissions:
+      id-token: write
+      contents: read
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/build-suite-web-e2e.yml
 
   build-connect:
+    permissions:
+      id-token: write
+      contents: read
     needs: [extract-branch]
     runs-on: ubuntu-latest
     timeout-minutes: 60

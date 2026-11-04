@@ -1,8 +1,7 @@
 name: "[Test] transport e2e"
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 on:
   schedule:
@@ -73,6 +72,9 @@ jobs:
           echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
   build-deploy:
+    permissions:
+      id-token: write
+      contents: read
     needs: [extract-branch]
     runs-on: ubuntu-latest
     steps:
