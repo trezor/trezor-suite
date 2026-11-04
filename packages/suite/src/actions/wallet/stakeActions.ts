@@ -360,6 +360,7 @@ export const signTransactionThunk =
             if (serializedTx?.error?.message === 'tx-timeout') {
                 return;
             }
+            dispatch(stakeActions.requestSignTransaction());
             // close modal manually since UI_EVENTS.CLOSE_UI_WINDOW was blocked
             dispatch(closeModal());
 
