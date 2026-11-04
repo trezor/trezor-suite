@@ -129,6 +129,8 @@ const getConfirmedVoteDrep = (
             return decodeCardanoDrepId(confirmedOption.drepId);
         case 'everstake':
             return { type: PROTO.CardanoDRepType.KEY_HASH, hex: CARDANO_EVERSTAKE_DREP.hex };
+        case 'no_confidence':
+            return { type: PROTO.CardanoDRepType.NO_CONFIDENCE };
         case 'abstain':
         case 'current':
         case undefined:
