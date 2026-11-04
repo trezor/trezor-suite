@@ -351,6 +351,11 @@ export const routes = [
         app: 'wallet',
     },
     {
+        name: 'wallet-trading-exchange-approval',
+        pattern: '/accounts/coinmarket/exchange/approval',
+        app: 'wallet',
+    },
+    {
         name: 'wallet-trading-redirect',
         pattern: '/coinmarket-redirect',
         app: 'wallet',

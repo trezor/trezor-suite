@@ -10,6 +10,7 @@ type TradingSection = {
     form: TradingRoute;
     detail: TradingRoute;
     confirm: TradingRoute;
+    approval?: TradingRoute;
 };
 
 const tradingSections = {
@@ -27,13 +28,14 @@ const tradingSections = {
         form: 'wallet-trading-exchange',
         detail: 'wallet-trading-exchange-detail',
         confirm: 'wallet-trading-exchange-confirm',
+        approval: 'wallet-trading-exchange-approval',
     },
 } as const satisfies Record<TradingType, TradingSection>;
 
 export const getTradingFormRoute = (tradeType: TradingType): TradingRoute =>
     tradingSections[tradeType].form;
 
-const sections = Object.values(tradingSections);
+const sections: TradingSection[] = Object.values(tradingSections);
 const topLevelRoutes: TradingRoute[] = [...sections.map(s => s.form), 'wallet-trading-concierge'];
 const detailRoutes: TradingRoute[] = sections.map(s => s.detail);
 
@@ -47,7 +49,9 @@ export const isTradingTransactionsRoute = (route?: TradingRoute): boolean =>
     route === TRANSACTIONS_ROUTE;
 
 const getSectionFormRoute = (route?: TradingRoute): TradingRoute =>
-    sections.find(s => s.detail === route || s.confirm === route)?.form ?? 'suite-index';
+    sections.find(
+        ({ form, ...subRoutes }) => route !== undefined && Object.values(subRoutes).includes(route),
+    )?.form ?? 'suite-index';
 
 export const getBackRoute = (
     route?: TradingRoute,

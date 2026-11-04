@@ -12,6 +12,7 @@ import {
 import { getRequiredRoute } from '@suite/router/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
+    type ApprovalFlowState,
     type TradingState,
     createInstallTradeApiKey,
     createSaltedTradeApiKey,
@@ -321,6 +322,38 @@ describe('tradingMiddleware', () => {
 
         expect(store.getState().wallet.trading.exchange.tradingAccountKey).toBe(boundAccountKey);
     });
+
+    const approvalFlow: ApprovalFlowState = { steps: ['approve', 'swap'], completedSteps: [] };
+
+    it.each([
+        ['clears', 'the form', tradingMiddlewareFixtures.TRADING_EXCHANGE_ROUTE, undefined],
+        [
+            'keeps',
+            'the confirm route',
+            tradingMiddlewareFixtures.TRADING_EXCHANGE_CONFIRM_ROUTE,
+            approvalFlow,
+        ],
+    ] as const)(
+        '%s the approval flow when %s is entered from the approval route',
+        (_, __, routeChange, expected) => {
+            const store = initStore(
+                getInitialState({
+                    trading: {
+                        ...initialState,
+                        exchange: {
+                            ...initialState.exchange,
+                            approvalFlow,
+                        },
+                    },
+                    router: tradingMiddlewareFixtures.TRADING_EXCHANGE_APPROVAL_ROUTE,
+                }),
+            );
+
+            store.dispatch(routerLocationChange({ ...routeChange }));
+
+            expect(store.getState().wallet.trading.exchange.approvalFlow).toEqual(expected);
+        },
+    );
 
     it('should reset trading account keys when the trading redirect is entered from outside the trading section', () => {
         const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
