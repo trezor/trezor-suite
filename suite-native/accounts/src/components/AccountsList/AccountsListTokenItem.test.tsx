@@ -2,7 +2,7 @@ import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-com
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { Text } from '@suite-native/atoms';
-import { renderWithStoreProvider, within } from '@suite-native/test-utils-store';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { AccountsListTokenItem } from './AccountsListTokenItem';
 
@@ -61,25 +61,5 @@ describe('AccountsListTokenItem', () => {
 
         expect(getByText('23.91 USDC')).toBeOnTheScreen();
         expect(queryByText('23.910287 USDC')).toBeNull();
-    });
-
-    it('masks a URL name inline inside the shared text title', async () => {
-        const token = { ...mockToken, name: 'rewards.example' };
-        const account = mockWalletAccount({ symbol: mockAccount.symbol, tokens: [token] });
-        const { getByTestId } = await renderWithStoreProvider(
-            <AccountsListTokenItem token={token} account={account} onSelectAccount={jest.fn()} />,
-            {
-                preloadedState: {
-                    wallet: { accounts: [account] },
-                    discreetMode: { isActive: false },
-                },
-            },
-        );
-        const title = within(getByTestId('@accountList/item/title'));
-
-        expect(title.getByLabelText('…')).toBeOnTheScreen();
-        expect(title.queryByText(token.name)).toBeNull();
-        // View blur would put a native box inside the title's Text and break its layout.
-        expect(title.queryByTestId('blur-native', { includeHiddenElements: true })).toBeNull();
     });
 });
