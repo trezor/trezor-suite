@@ -173,7 +173,8 @@ const mockRefreshes = (store: () => Store, batches: (WalletAccountTransaction[] 
 describe('trackStakingStepConfirmationThunk', () => {
     beforeEach(() => {
         jest.useFakeTimers();
-        fetchAndUpdateAccountThunkMock.mockClear();
+        fetchAndUpdateAccountThunkMock.mockReset();
+        fetchAndUpdateAccountThunkMock.mockImplementation(() => () => Promise.resolve());
     });
 
     afterEach(() => {
@@ -257,6 +258,27 @@ describe('trackStakingStepConfirmationThunk', () => {
         await jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
         await tracking;
 
+        expect(fetchAndUpdateAccountThunk).toHaveBeenCalledTimes(1);
+    });
+
+    it('ends its last wait at the deadline instead of a full poll interval later', async () => {
+        let isSettled = false;
+
+        fetchAndUpdateAccountThunkMock.mockImplementationOnce(() => () => {
+            jest.setSystemTime(Date.now() + STAKING_CONFIRMATION_TRACKING_TIMEOUT_MS - 1_000);
+
+            return Promise.resolve();
+        });
+
+        const { store } = initStore();
+        const tracking = store.dispatch(trackStakingStepConfirmationThunk(params)).then(() => {
+            isSettled = true;
+        });
+
+        await jest.advanceTimersByTimeAsync(1_000);
+
+        expect(isSettled).toBe(true);
+        await tracking;
         expect(fetchAndUpdateAccountThunk).toHaveBeenCalledTimes(1);
     });
 

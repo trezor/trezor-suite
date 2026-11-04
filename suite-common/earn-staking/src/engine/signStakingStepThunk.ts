@@ -10,16 +10,15 @@ import type { AccountsRootState } from '@suite-common/wallet-core';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import type { StakingDep } from '../stakingServices';
+import { callStakingAdapter, warnStakingAdapterFailure } from './callStakingAdapter';
 import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
 import type { StakingEngineRejection } from './stakingEngineRejection';
-import {
-    callStakingAdapter,
-    getCurrentStakingStepStatus,
-    getStakingStepContext,
-    warnStakingAdapterFailure,
-} from './stakingStepContext';
 import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
+import {
+    selectStakingStepContext,
+    selectStakingStepStatus,
+} from '../state/stakingSessionSelectors';
 
 type SignStakingStepParams = {
     sessionKey: StakingSessionKey;
@@ -41,19 +40,14 @@ export const signStakingStepThunk = createThunk<
 >(
     `${STAKING_ENGINE_ACTION_PREFIX}/signStakingStep`,
     async ({ sessionKey, feeLevel }, { dispatch, getState, extra, rejectWithValue }) => {
-        const { stakingProductRepository } = extra.services.staking;
+        const stepContext = selectStakingStepContext(getState(), sessionKey);
 
-        const resolved = getStakingStepContext({
-            state: getState(),
-            sessionKey,
-            stakingProductRepository,
-        });
-
-        if (!resolved.success) {
-            return rejectWithValue(resolved.rejection);
+        if (!stepContext.success) {
+            return rejectWithValue(stepContext.rejection);
         }
 
-        const { session, step, planStep, account, adapter } = resolved.context;
+        const { session, step, planStep, account } = stepContext.context;
+        const adapter = extra.services.staking.stakingProductRepository.get(session.plan.productId);
 
         if (step.status !== 'composed') {
             return rejectWithValue('step-not-ready');
@@ -82,7 +76,7 @@ export const signStakingStepThunk = createThunk<
 
         const signed = await callStakingAdapter(() =>
             extra.services.staking.deviceAccess.run(() => {
-                if (getCurrentStakingStepStatus(getState(), session, step.id) !== 'signing') {
+                if (selectStakingStepStatus(getState(), session, step.id) !== 'signing') {
                     throw new StakingAdapterError(STAKING_SIGNING_ERROR_CODES.cancelled);
                 }
 
@@ -130,7 +124,7 @@ export const signStakingStepThunk = createThunk<
             return rejectWithValue('adapter-failed');
         }
 
-        if (getCurrentStakingStepStatus(getState(), session, step.id) !== 'signing') {
+        if (selectStakingStepStatus(getState(), session, step.id) !== 'signing') {
             reportSigningCancelled();
 
             return rejectWithValue('cancelled');

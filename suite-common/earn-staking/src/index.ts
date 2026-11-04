@@ -100,26 +100,33 @@ export {
 } from './state/stakingSessionKey';
 export {
     getStakingCurrentStep,
+    selectAwaitingStakingStep,
+    selectAwaitingStakingSteps,
+    selectAwaitingStakingStepsByTxid,
     selectIsStakingSessionActive,
     selectStakingCurrentStep,
     selectStakingReview,
     selectStakingSession,
     selectStakingSessionsByAccount,
+    selectStakingStepStatus,
     type StakingReview,
 } from './state/stakingSessionSelectors';
 export {
     STAKING_ACTIVE_STEP_STATUSES,
     STAKING_IN_FLIGHT_STEP_STATUSES,
     STAKING_STEP_ERROR_KINDS,
-    hasStakingStepWithStatus,
     isStakingReviewStep,
+    stakingSessionStepsReducer,
     type StakingReviewStep,
-    type StakingSession,
     type StakingSessionStep,
     type StakingSessionStepStatus,
-    type StakingSessionsState,
     type StakingStepError,
     type StakingStepErrorKind,
+} from './state/stakingSessionStepsReducer';
+export {
+    hasStakingStepWithStatus,
+    type StakingSession,
+    type StakingSessionsState,
 } from './state/stakingSessionsReducer';
 export {
     refreshStakingProductInfoThunk,

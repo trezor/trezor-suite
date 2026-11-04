@@ -4,7 +4,8 @@ import {
     mockStakingPlan,
     mockStakingStep,
 } from '@suite-common/earn-staking-common/mocks';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import {
@@ -15,12 +16,19 @@ import {
 } from './stakingReducer';
 import { getStakingSessionKey } from './stakingSessionKey';
 import {
+    getAwaitingStakingSteps,
     getStakingCurrentStep,
+    selectAwaitingStakingStep,
+    selectAwaitingStakingSteps,
+    selectAwaitingStakingStepsByTxid,
     selectIsStakingSessionActive,
+    selectIsStakingSessionCurrent,
     selectStakingCurrentStep,
     selectStakingReview,
     selectStakingSession,
     selectStakingSessionsByAccount,
+    selectStakingStepContext,
+    selectStakingStepStatus,
 } from './stakingSessionSelectors';
 import { mockStakingSession, mockStakingState } from '../../mocks';
 
@@ -146,6 +154,53 @@ describe('staking session selectors', () => {
         expect(selectIsStakingSessionActive(signedClaimLater, claimSession.key)).toBe(true);
     });
 
+    it('selects a step with its session only while it awaits confirmation', () => {
+        expect(selectAwaitingStakingStep(awaitingFreeze, stakeSession.key, 'freeze')).toEqual({
+            session: selectStakingSession(awaitingFreeze, stakeSession.key),
+            step: {
+                id: 'freeze',
+                kind: 'freeze',
+                awaitConfirmation: true,
+                review: 'app-and-device',
+                error: null,
+                status: 'awaiting',
+                txid: 'tx1',
+            },
+        });
+        expect(selectAwaitingStakingStep(signingFreeze, stakeSession.key, 'freeze')).toBeNull();
+        expect(selectAwaitingStakingStep(awaitingFreeze, stakeSession.key, 'vote')).toBeNull();
+        expect(selectAwaitingStakingStep(awaitingFreeze, claimSession.key, 'freeze')).toBeNull();
+    });
+
+    it('lists the awaiting steps of an account with their txids', () => {
+        const freezeAwaiting = { sessionKey: stakeSession.key, stepId: 'freeze', txid: 'tx1' };
+
+        expect(getAwaitingStakingSteps([stakeSession, claimSession])).toEqual([]);
+        expect(selectAwaitingStakingSteps(awaitingFreeze, accountKey)).toEqual([freezeAwaiting]);
+        expect(selectAwaitingStakingSteps(awaitingFreeze, accountKey)).toBe(
+            selectAwaitingStakingSteps(awaitingFreeze, accountKey),
+        );
+        expect(selectAwaitingStakingSteps(idle, accountKey)).toBe(
+            selectAwaitingStakingSteps(idle, otherAccountKey),
+        );
+        expect(selectAwaitingStakingStepsByTxid(awaitingFreeze, accountKey, 'tx1')).toEqual([
+            freezeAwaiting,
+        ]);
+        expect(selectAwaitingStakingStepsByTxid(awaitingFreeze, accountKey, 'tx9')).toEqual([]);
+        expect(selectAwaitingStakingStepsByTxid(awaitingFreeze, otherAccountKey, 'tx1')).toEqual(
+            [],
+        );
+    });
+
+    it('reads a step status only while the session is the one the caller holds', () => {
+        expect(selectStakingStepStatus(idle, stakeSession, 'freeze')).toBe('pending');
+        expect(selectStakingStepStatus(signingFreeze, stakeSession, 'freeze')).toBe('signing');
+        expect(
+            selectStakingStepStatus(idle, { ...stakeSession, id: 'replaced' }, 'freeze'),
+        ).toBeNull();
+        expect(selectStakingStepStatus(idle, stakeSession, 'missing')).toBeNull();
+    });
+
     it('reviews the step that is signing, signed or broadcasting', () => {
         expect(selectStakingReview(idle)).toBeNull();
 
@@ -165,5 +220,78 @@ describe('staking session selectors', () => {
 
     it('stops reviewing a step once it is broadcast', () => {
         expect(selectStakingReview(awaitingFreeze)).toBeNull();
+    });
+});
+
+describe('selectStakingStepContext', () => {
+    const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+    const session = mockStakingSession({ accountKey: account.key });
+    const stake = { sessionKey: session.key, stepId: 'stake' };
+
+    const createState = (
+        sessions = [session],
+        accounts = [account],
+    ): StakingRootState & AccountsRootState => ({
+        earn: { staking: mockStakingState({ sessions }) },
+        wallet: { accounts },
+    });
+
+    it('resolves the session, its current step, the plan step and the account', () => {
+        expect(selectStakingStepContext(createState(), session.key)).toEqual({
+            success: true,
+            context: {
+                session,
+                step: session.steps[0],
+                planStep: session.plan.steps[0],
+                account,
+            },
+        });
+    });
+
+    it('rejects an unknown session', () => {
+        const unknownKey = getStakingSessionKey({
+            accountKey: account.key,
+            productId: session.plan.productId,
+            operation: 'unstake',
+        });
+
+        expect(selectStakingStepContext(createState(), unknownKey)).toEqual({
+            success: false,
+            rejection: 'session-not-found',
+        });
+    });
+
+    it('rejects a complete session', () => {
+        const state = createState();
+        const complete = [
+            stakingActions.stepComposed({ ...stake, composed: mockComposedStakingStep() }),
+            stakingActions.stepSigning({ ...stake, feeLevel: 'normal', signingStartedAt: 1 }),
+            stakingActions.stepSigned({ ...stake, signed: mockSignedStakingStep() }),
+            stakingActions.stepBroadcasting(stake),
+            stakingActions.stepBroadcast({ ...stake, txid: 'tx1' }),
+        ].reduce(stakingReducer, state.earn.staking);
+
+        expect(
+            selectStakingStepContext({ ...state, earn: { staking: complete } }, session.key),
+        ).toEqual({ success: false, rejection: 'step-not-ready' });
+    });
+
+    it('rejects a session whose account is gone', () => {
+        expect(selectStakingStepContext(createState([session], []), session.key)).toEqual({
+            success: false,
+            rejection: 'account-not-found',
+        });
+    });
+
+    it('tells a replaced session from the one a thunk started with', () => {
+        const state = createState();
+        const replaced = stakingReducer(
+            state.earn.staking,
+            stakingActions.sessionStarted({ session: { ...session, id: 'session-2' } }),
+        );
+
+        expect(selectIsStakingSessionCurrent(state, session)).toBe(true);
+        expect(selectIsStakingSessionCurrent({ earn: { staking: replaced } }, session)).toBe(false);
+        expect(selectIsStakingSessionCurrent(createState([]), session)).toBe(false);
     });
 });

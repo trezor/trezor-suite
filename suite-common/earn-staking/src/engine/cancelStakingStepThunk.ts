@@ -5,9 +5,9 @@ import { type WithServices, createThunk } from '@trezor/redux-utils';
 import type { StakingDep } from '../stakingServices';
 import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
 import type { StakingEngineRejection } from './stakingEngineRejection';
-import { getStakingStepContext } from './stakingStepContext';
 import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
+import { selectStakingStepContext } from '../state/stakingSessionSelectors';
 
 type CancelStakingStepParams = {
     sessionKey: StakingSessionKey;
@@ -28,19 +28,13 @@ export const cancelStakingStepThunk = createThunk<
 >(
     `${STAKING_ENGINE_ACTION_PREFIX}/cancelStakingStep`,
     ({ sessionKey }, { dispatch, getState, extra, rejectWithValue }) => {
-        const { stakingProductRepository } = extra.services.staking;
+        const stepContext = selectStakingStepContext(getState(), sessionKey);
 
-        const resolved = getStakingStepContext({
-            state: getState(),
-            sessionKey,
-            stakingProductRepository,
-        });
-
-        if (!resolved.success) {
-            return rejectWithValue(resolved.rejection);
+        if (!stepContext.success) {
+            return rejectWithValue(stepContext.rejection);
         }
 
-        const { step, account } = resolved.context;
+        const { step, account } = stepContext.context;
 
         if (step.status === 'signing') {
             extra.services.staking.deviceAccess.cancel('tx-cancelled');

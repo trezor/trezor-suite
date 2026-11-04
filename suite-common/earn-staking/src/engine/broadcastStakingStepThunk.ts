@@ -12,16 +12,13 @@ import {
     trackStakingStepConfirmationThunk,
 } from './trackStakingStepConfirmationThunk';
 import type { StakingDep } from '../stakingServices';
+import { callStakingAdapter, warnStakingAdapterFailure } from './callStakingAdapter';
 import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
 import { getEarnTransactionFlow } from './getEarnTransactionFlow';
 import type { StakingEngineRejection } from './stakingEngineRejection';
-import {
-    callStakingAdapter,
-    getStakingStepContext,
-    warnStakingAdapterFailure,
-} from './stakingStepContext';
 import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
+import { selectStakingStepContext } from '../state/stakingSessionSelectors';
 
 type BroadcastStakingStepParams = {
     sessionKey: StakingSessionKey;
@@ -44,19 +41,14 @@ export const broadcastStakingStepThunk = createThunk<
 >(
     `${STAKING_ENGINE_ACTION_PREFIX}/broadcastStakingStep`,
     async ({ sessionKey }, { dispatch, getState, extra, rejectWithValue }) => {
-        const { stakingProductRepository } = extra.services.staking;
+        const stepContext = selectStakingStepContext(getState(), sessionKey);
 
-        const resolved = getStakingStepContext({
-            state: getState(),
-            sessionKey,
-            stakingProductRepository,
-        });
-
-        if (!resolved.success) {
-            return rejectWithValue(resolved.rejection);
+        if (!stepContext.success) {
+            return rejectWithValue(stepContext.rejection);
         }
 
-        const { session, step, planStep, account, adapter } = resolved.context;
+        const { session, step, planStep, account } = stepContext.context;
+        const adapter = extra.services.staking.stakingProductRepository.get(session.plan.productId);
 
         if (step.status !== 'signed') {
             return rejectWithValue('step-not-ready');

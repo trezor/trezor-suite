@@ -4,7 +4,6 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import {
-    getAwaitingStakingSteps,
     getStakingStepSettlement,
     getStakingStepSettlementAction,
     settleStakingSteps,
@@ -39,23 +38,6 @@ const createTransaction = (
     deviceState: account.deviceState,
     symbol: account.symbol,
     ...overrides,
-});
-
-describe('getAwaitingStakingSteps', () => {
-    it('lists the awaiting steps of every session with their txids', () => {
-        const stake = awaitingSession('tx1');
-        const claim = awaitingSession('tx2', {
-            id: 'session-2',
-            plan: { ...stake.plan, operation: 'claim' },
-        });
-        const idle = mockStakingSession({ accountKey: account.key, id: 'session-3' });
-
-        expect(getAwaitingStakingSteps([stake, idle, claim])).toEqual([
-            { sessionKey: stake.key, stepId: 'stake', txid: 'tx1' },
-            { sessionKey: claim.key, stepId: 'stake', txid: 'tx2' },
-        ]);
-        expect(getAwaitingStakingSteps([idle])).toEqual([]);
-    });
 });
 
 describe('getStakingStepSettlement', () => {

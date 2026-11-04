@@ -8,11 +8,9 @@ import {
 import type { AccountKey } from '@suite-common/wallet-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotUndefined } from '@trezor/utils';
 
 import type { StakingRootState } from './stakingReducer';
-
-const isDefined = <T>(value: T | undefined): value is T => value !== undefined;
 
 const selectStakingState = (state: StakingRootState) => state.earn.staking;
 
@@ -27,7 +25,7 @@ const selectNetworkSymbolParam = (_state: StakingRootState, networkSymbol: Netwo
 export const selectStakingProductDescriptors = createWeakMapSelector(
     [selectStakingProducts],
     (products): readonly StakingProductDescriptor[] =>
-        returnStableArrayIfEmpty(Object.values(products).filter(isDefined)),
+        returnStableArrayIfEmpty(Object.values(products).filter(isNotUndefined)),
 );
 
 export const selectStakingProductDescriptorsBySymbol = createWeakMapSelector(
@@ -55,7 +53,7 @@ export const selectStakingPositionsByAccount = createWeakMapSelector(
     [selectAccountPositions],
     (positions): readonly StakingPosition[] =>
         returnStableArrayIfEmpty(
-            positions === undefined ? undefined : Object.values(positions).filter(isDefined),
+            positions === undefined ? undefined : Object.values(positions).filter(isNotUndefined),
         ),
 );
 
