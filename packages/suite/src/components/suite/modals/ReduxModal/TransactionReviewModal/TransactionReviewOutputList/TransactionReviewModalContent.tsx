@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { selectTradingExchangeSelectedQuoteSwapSlippage } from '@suite-common/trading';
 import {
     type SerializedTx,
     selectSendFormReviewButtonRequestsCount,
@@ -60,7 +60,7 @@ export const TransactionReviewModalContent = ({
 }: TransactionReviewModalContentProps) => {
     const { symbol, networkType } = account;
     const device = useSelector(selectSelectedDevice);
-    const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
+    const swapSlippage = useSelector(selectTradingExchangeSelectedQuoteSwapSlippage);
 
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);

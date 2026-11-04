@@ -7,7 +7,7 @@ import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useYieldVaultName } from '@suite-common/earn-stablecoin';
-import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { selectTradingExchangeSelectedQuoteSwapSlippage } from '@suite-common/trading';
 import { selectYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
@@ -48,7 +48,7 @@ export const TransactionReviewModalBody = ({
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
     const yieldTxReview = useSelector(selectYieldTxReview);
-    const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
+    const swapSlippage = useSelector(selectTradingExchangeSelectedQuoteSwapSlippage);
 
     const isYield = Boolean(yieldTxReview);
     const vaultName = useYieldVaultName({ enabled: isYield, account, precomposedForm });
