@@ -10,6 +10,7 @@ import {
     type DesktopUpdateRootState,
     UpdateState,
     desktopUpdateActions,
+    selectDesktopUpdateAllowPrerelease,
 } from './desktopUpdateReducer';
 
 type AvailableThunkState = DesktopUpdateRootState;
@@ -19,8 +20,7 @@ type AvailableThunkDeps = WithServices<DesktopAnalyticsDep>;
 export const availableThunk =
     (info: UpdateInfo) =>
     (dispatch: Dispatch, getState: () => AvailableThunkState, extra: AvailableThunkDeps) => {
-        // eslint-disable-next-line no-restricted-syntax
-        const { allowPrerelease } = getState().desktopUpdate;
+        const allowPrerelease = selectDesktopUpdateAllowPrerelease(getState());
 
         const payload = getAppUpdatePayload({
             status: AppUpdateEventStatus.Available,
