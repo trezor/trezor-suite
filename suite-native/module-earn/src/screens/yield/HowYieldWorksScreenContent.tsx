@@ -7,6 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, TimelineDetailsCard, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { useMessageSystemYield } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
@@ -24,7 +25,6 @@ import { useHowYieldWorksPreset } from '../../components/earn/HowEarnWorks/yield
 import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
-import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.HowYieldWorks>;
 

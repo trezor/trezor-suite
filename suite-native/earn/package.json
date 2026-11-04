@@ -1,0 +1,32 @@
+{
+    "name": "@suite-native/earn",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
+        "test:unit": "yarn g:jest:native",
+        "test:unit:coverage": "yarn g:jest:native --coverage",
+        "test:unit:watch": "yarn g:jest:native --watch",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/earn-stablecoin": "workspace:*",
+        "@suite-common/earn-stablecoin-api": "workspace:*",
+        "@suite-common/earn-staking-api": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "react": "19.3.0",
+        "react-redux": "9.3.0"
+    }
+}

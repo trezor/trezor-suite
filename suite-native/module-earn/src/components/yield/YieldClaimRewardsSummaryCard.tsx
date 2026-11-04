@@ -21,13 +21,13 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { useMessageSystemYield } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
 
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
-import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../../hooks/yield/useStablecoinYieldFirmwareUpdateAlert';
 import { EarnClaimTokenIconSet } from '../earn/EarnClaimTokenIconSet';
 

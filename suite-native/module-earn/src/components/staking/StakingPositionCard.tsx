@@ -15,13 +15,13 @@ import {
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';
+import { getStakingRateLabelType, useStakingRate } from '@suite-native/earn';
 import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { useStakingDetailNavigation } from '../../hooks/staking/useStakingDetailNavigation';
 import { useStakingNavigateAnalytics } from '../../hooks/staking/useStakingNavigateAnalytics';
-import { useStakingRate } from '../../hooks/staking/useStakingRate';
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
 import { EarnTronVotingAlert } from '../earn/EarnTronVotingAlert';
@@ -108,7 +108,11 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
                             <ApyValue apy={null} withLabel />
                         ) : (
                             <Translation
-                                id={symbol === 'trx' ? 'earn.aprPercentage' : 'earn.apyPercentage'}
+                                id={
+                                    getStakingRateLabelType(symbol) === 'apr'
+                                        ? 'earn.aprPercentage'
+                                        : 'earn.apyPercentage'
+                                }
                                 values={{ apy: PercentageFormatter.format(apy) }}
                             />
                         )}

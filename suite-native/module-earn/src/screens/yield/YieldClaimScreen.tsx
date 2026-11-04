@@ -16,6 +16,7 @@ import {
 import { selectAccountLabel } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerFull, Box, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { useMessageSystemYield } from '@suite-native/earn';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -39,7 +40,6 @@ import { YieldPendingTransactionModal } from '../../components/yield/YieldPendin
 import { YieldTxSimulationBottomSheet } from '../../components/yield/YieldTxSimulationBottomSheet';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
-import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
 import { useShowYieldTransactionFailureAlert } from '../../hooks/yield/useShowYieldTransactionFailureAlert';
 import {
     type PreparedYieldClaimAction,

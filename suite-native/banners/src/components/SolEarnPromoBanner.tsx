@@ -1,7 +1,8 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { useStakingRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
-import { useFormattedEarnRate, useStakingRate } from '@suite-native/module-earn';
+import { useFormattedEarnRate } from '@suite-native/module-earn';
 
 import { EarnPromoBanner } from './EarnPromoBanner';
 

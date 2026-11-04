@@ -43,6 +43,7 @@
         { "path": "../banners" },
         { "path": "../bip329" },
         { "path": "../device" },
+        { "path": "../earn" },
         { "path": "../feature-feedback" },
         { "path": "../formatters" },
         { "path": "../forms" },

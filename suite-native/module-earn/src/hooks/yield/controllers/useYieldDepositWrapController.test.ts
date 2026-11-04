@@ -5,12 +5,12 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
+import { useMessageSystemYield } from '@suite-native/earn';
 import { YieldStackRoutes } from '@suite-native/navigation';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { mockYieldWrappedNativeStepResult } from '../../../../mocks/mockYieldWrappedNativeStepResult';
 import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappedNative';
-import { useMessageSystemYield } from '../useMessageSystemYield';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../useYieldWrappedNativeStep';
@@ -27,7 +27,10 @@ jest.mock('@react-navigation/native', () => ({
 }));
 jest.mock('../useYieldFlowData');
 jest.mock('../useYieldWrappedNativeStep');
-jest.mock('../useMessageSystemYield');
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
+    useMessageSystemYield: jest.fn(),
+}));
 jest.mock('../useYieldDepositGasReserve');
 jest.mock('../../earn/useMessageSystemWrappedNative');
 
