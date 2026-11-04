@@ -8,9 +8,6 @@
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/networks" },
         {
-            "path": "../../suite-common/wallet-config"
-        },
-        {
             "path": "../../suite-common/wallet-constants"
         },
         {
@@ -26,7 +23,6 @@
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../confirm-on-trezor" },
-        { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../formatters" },
         { "path": "../icons" },

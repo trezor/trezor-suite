@@ -14,6 +14,7 @@ import {
     selectIsDeviceThpLocked,
     selectIsDiscoveryEntropyCheckDismissed,
     selectIsFirmwareAuthenticityCheckDismissed,
+    selectIsPortfolioTrackerDevice,
     selectIsUnacquiredDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -112,6 +113,10 @@ export const selectIsDeviceReadyToUseAndAuthorized = (
 
     return isDeviceReadyToUse && isDeviceConnectedAndAuthorized && !isDiscoveredDeviceAccountless;
 };
+
+export const selectIsAppConnectionAvailable = (
+    state: DeviceRootState & AccountsRootState & DiscoveryRootState,
+) => !selectIsPortfolioTrackerDevice(state) && selectIsDeviceReadyToUseAndAuthorized(state);
 
 export const selectIsDeviceConnectedAndThpUnlocked = createMemoizedSelector(
     [selectIsDeviceConnected, selectIsDeviceThpLocked, selectThpAutoconnectStep],
