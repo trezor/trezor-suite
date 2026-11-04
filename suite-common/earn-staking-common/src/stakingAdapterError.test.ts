@@ -41,12 +41,13 @@ describe('getStakingSigningErrorCode', () => {
         );
     });
 
-    it('keeps the connect code, or the message when there is none, for any other failure', () => {
+    it('keeps the connect code for any other failure', () => {
         expect(getStakingSigningErrorCode({ error: 'Invalid', code: 'Failure_DataError' })).toBe(
             'Failure_DataError',
         );
-        expect(getStakingSigningErrorCode({ error: 'Device disconnected' })).toBe(
-            'Device disconnected',
-        );
+    });
+
+    it('never lets a message stand in for a missing code', () => {
+        expect(getStakingSigningErrorCode({ error: 'Device disconnected' })).toBe('signing-failed');
     });
 });

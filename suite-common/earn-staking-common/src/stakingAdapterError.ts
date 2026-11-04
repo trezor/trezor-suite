@@ -16,6 +16,7 @@ export const isStakingAdapterError = (error: unknown): error is StakingAdapterEr
 export const STAKING_SIGNING_ERROR_CODES = {
     cancelled: 'signing-cancelled',
     expired: 'signing-expired',
+    failed: 'signing-failed',
 } as const;
 
 export type StakingSigningErrorCode =
@@ -44,5 +45,5 @@ export const getStakingSigningErrorCode = ({ error, code }: StakingConnectFailur
         return STAKING_SIGNING_ERROR_CODES.cancelled;
     }
 
-    return code ?? error;
+    return code ?? STAKING_SIGNING_ERROR_CODES.failed;
 };
