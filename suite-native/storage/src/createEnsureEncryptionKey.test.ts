@@ -11,13 +11,12 @@ jest.mock('expo-crypto', () => ({ getRandomBytes: jest.fn(() => new Uint8Array(1
 jest.mock('expo-secure-store', () => ({ getItemAsync: jest.fn(), setItemAsync: jest.fn() }));
 
 describe('createEnsureEncryptionKey', () => {
-    it('shows the storage alert without replacing the key when both SecureStore reads fail', async () => {
+    it('rejects storage initialization without replacing the key when both SecureStore reads fail', async () => {
         jest.mocked(SecureStore.getItemAsync).mockRejectedValue(new Error('Keychain unavailable'));
         jest.mocked(SecureStore.setItemAsync).mockResolvedValue(undefined);
         const deps = createMockDeps<MMKVStorageDeps>({
             ensureEncryptionKey: createEnsureEncryptionKey(),
             createMMKV: null,
-            alertStorageLoadFailure: () => {},
         });
         const storage = createMMKVStorage(deps);
 
@@ -26,7 +25,5 @@ describe('createEnsureEncryptionKey', () => {
         expect(SecureStore.getItemAsync).toHaveBeenCalledTimes(2);
         expect(getRandomBytes).not.toHaveBeenCalled();
         expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
-        expect(deps.alertStorageLoadFailure).toHaveBeenCalledTimes(1);
-        expect(deps.alertStorageLoadFailure).toHaveBeenCalledWith({ mmkvInstance: null });
     });
 });

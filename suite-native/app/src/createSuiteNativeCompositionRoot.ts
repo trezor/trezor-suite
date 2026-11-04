@@ -11,13 +11,10 @@ import {
     extraDependencies,
     prepareRootReducers,
 } from '@suite-native/state';
-import {
-    alertStorageLoadFailure,
-    createEnsureEncryptionKey,
-    createMMKVStorage,
-} from '@suite-native/storage';
+import { clearStorage, createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
 import TrezorConnect from '@trezor/connect';
 
+import { createAlertStorageLoadFailure } from './createAlertStorageLoadFailure';
 import { type NativeApp, createNativeApp } from './createNativeApp';
 
 type SuiteNativeCompositionRoot = {
@@ -29,11 +26,7 @@ export const createSuiteNativeCompositionRoot = (
     preloadedState = launchArguments.preloadedState as PreloadedState,
 ): SuiteNativeCompositionRoot => {
     const ensureEncryptionKey = createEnsureEncryptionKey();
-    const mmkvStorage = createMMKVStorage({
-        ensureEncryptionKey,
-        createMMKV,
-        alertStorageLoadFailure,
-    });
+    const mmkvStorage = createMMKVStorage({ ensureEncryptionKey, createMMKV });
     const { store, injectServicesIntoReduxExtra } = createReduxStore({
         // Passing runtime dependencies into reducer setup is an anti-pattern: reducers should
         // remain pure and receive runtime data through action payloads, not services or extra.
@@ -60,5 +53,10 @@ export const createSuiteNativeCompositionRoot = (
     // Inject them after construction to break the cycle, before the app starts persistence.
     injectServicesIntoReduxExtra(services);
 
-    return { app: createNativeApp({ services }) };
+    const alertStorageLoadFailure = createAlertStorageLoadFailure({
+        clearStorage,
+        reloadApp: services.reloadApp,
+    });
+
+    return { app: createNativeApp({ services, alertStorageLoadFailure }) };
 };

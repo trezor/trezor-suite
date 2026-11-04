@@ -15449,12 +15449,10 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     expo-crypto: "npm:~57.0.1"
     expo-secure-store: "npm:~57.0.1"
-    expo-splash-screen: "npm:~57.0.4"
     jotai: "npm:2.17.1"
     react: "npm:19.2.3"
     react-native: "npm:0.86.3"
     react-native-mmkv: "npm:~4.3.2"
-    react-native-restart: "npm:0.0.27"
     redux-persist: "npm:6.0.0"
   languageName: unknown
   linkType: soft

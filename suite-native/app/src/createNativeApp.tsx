@@ -13,9 +13,10 @@ import {
 } from '@suite-native/state';
 
 import { PureApp } from './App';
+import { type AlertStorageLoadFailureDep } from './createAlertStorageLoadFailure';
 import { disableRTL } from './rtl';
 
-type NativeAppDeps = {
+type NativeAppDeps = AlertStorageLoadFailureDep & {
     services: NativeServices & HydrateReduxStoreDep & NativeReduxStoreDep & StorePersistorDep;
 };
 
@@ -30,8 +31,9 @@ export const createNativeApp = (deps: NativeAppDeps): NativeApp => {
         try {
             await deps.services.getMMKVStorage();
         } catch (error) {
-            // Storage shows the recovery alert; do not hydrate with default state.
+            // Do not hydrate with default state; let the user restart the app or clear its storage.
             Sentry.captureException(error);
+            deps.alertStorageLoadFailure();
 
             return;
         }

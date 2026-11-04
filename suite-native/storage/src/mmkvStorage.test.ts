@@ -12,7 +12,6 @@ describe('createMMKVStorage', () => {
         const deps = createMockDeps<MMKVStorageDeps>({
             ensureEncryptionKey: () => encryptionKeyPromise,
             createMMKV: () => mockMMKV(),
-            alertStorageLoadFailure: null,
         });
         const storage = createMMKVStorage(deps);
 
@@ -45,7 +44,6 @@ describe('createMMKVStorage', () => {
         const deps = createMockDeps<MMKVStorageDeps>({
             ensureEncryptionKey: () => encryptionKeyPromise,
             createMMKV: () => mockMMKV(),
-            alertStorageLoadFailure: () => {},
         });
         deps.createMMKV.mockImplementationOnce(() => {
             throw error;
@@ -53,28 +51,22 @@ describe('createMMKVStorage', () => {
         const storage = createMMKVStorage(deps);
 
         await expect(storage.getMMKV()).rejects.toBe(error);
-        expect(deps.alertStorageLoadFailure).toHaveBeenCalledTimes(1);
-        expect(deps.alertStorageLoadFailure).toHaveBeenCalledWith({ mmkvInstance: null });
 
         const instance = await storage.getMMKV();
 
         expect(await storage.getMMKV()).toBe(instance);
         expect(deps.createMMKV).toHaveBeenCalledTimes(2);
-        expect(deps.alertStorageLoadFailure).toHaveBeenCalledTimes(1);
     });
 
     it('does not create MMKV when the encryption key is unreadable', async () => {
         const deps = createMockDeps<MMKVStorageDeps>({
             ensureEncryptionKey: () => Promise.resolve(null),
             createMMKV: null,
-            alertStorageLoadFailure: () => {},
         });
         const storage = createMMKVStorage(deps);
 
         await expect(storage.getMMKV()).rejects.toThrow('Encryption key is unreadable!');
 
         expect(deps.createMMKV).not.toHaveBeenCalled();
-        expect(deps.alertStorageLoadFailure).toHaveBeenCalledTimes(1);
-        expect(deps.alertStorageLoadFailure).toHaveBeenCalledWith({ mmkvInstance: null });
     });
 });

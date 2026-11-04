@@ -1,52 +1,13 @@
-import { Alert } from 'react-native';
 import { type MMKV, type createMMKV } from 'react-native-mmkv';
-import RNRestart from 'react-native-restart';
 
-import { captureMessage } from '@sentry/react-native';
-import * as SplashScreen from 'expo-splash-screen';
 import { type Storage } from 'redux-persist';
 
-import { unecryptedJotaiStorage } from './atomWithUnecryptedStorage';
 import { type EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
 
 export const ENCRYPTED_STORAGE_ID = 'trezorSuite-app-storage';
 
-export const clearStorage = ({ mmkvInstance }: { mmkvInstance: MMKV | null }) => {
-    captureMessage('User triggered Clear App Storage action.', 'error');
-    unecryptedJotaiStorage.clearAll();
-    mmkvInstance?.clearAll();
-    RNRestart.restart();
-};
-
-export type AlertStorageLoadFailure = (params: { mmkvInstance: MMKV | null }) => void;
-
-export const alertStorageLoadFailure: AlertStorageLoadFailure = ({ mmkvInstance }) => {
-    // If storage can't load, app is never set as ready so we need to hide splash screen here to make the alert visible.
-    SplashScreen.hideAsync();
-    Alert.alert(
-        'Unable to load app data',
-        'Try restarting the app. If the issue persists, you may need to clear the app’s storage. This won’t affect assets on your Trezor device.',
-        [
-            {
-                text: 'Clear app storage',
-                onPress: () => clearStorage({ mmkvInstance }),
-                style: 'destructive',
-            },
-            {
-                text: 'Restart app',
-                onPress: () => {
-                    RNRestart.restart();
-                },
-                isPreferred: true,
-                style: 'default',
-            },
-        ],
-    );
-};
-
 export type MMKVStorageDeps = EnsureEncryptionKeyDep & {
     createMMKV: typeof createMMKV;
-    alertStorageLoadFailure: AlertStorageLoadFailure;
 };
 
 type GetMMKVRaw = {
@@ -60,19 +21,6 @@ export type MMKVStorageDep = { mmkvStorage: MMKVStorage };
 export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
     let mmkv: MMKV | null = null;
 
-    const tryInitStorage = (encryptionKey: string) => {
-        try {
-            return deps.createMMKV({
-                id: ENCRYPTED_STORAGE_ID,
-                encryptionKey,
-            });
-        } catch (error) {
-            deps.alertStorageLoadFailure({ mmkvInstance: null });
-            // rethrow error so it can be caught by Sentry
-            throw error;
-        }
-    };
-
     const ensureMMKV = async () => {
         if (mmkv !== null) {
             return mmkv;
@@ -81,12 +29,14 @@ export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
         const encryptionKey = await deps.ensureEncryptionKey();
 
         if (encryptionKey === null) {
-            deps.alertStorageLoadFailure({ mmkvInstance: mmkv });
             throw new Error('Encryption key is unreadable!');
         }
 
         // Another caller may have initialized storage while we awaited the encryption key.
-        mmkv ??= tryInitStorage(encryptionKey);
+        mmkv ??= deps.createMMKV({
+            id: ENCRYPTED_STORAGE_ID,
+            encryptionKey,
+        });
 
         return mmkv;
     };

@@ -1,4 +1,5 @@
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import { injectReloadApp } from '@suite-common/suite-types';
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { injectMMKVStorage } from '@suite-native/services';
 import { clearStorage } from '@suite-native/storage';
@@ -6,7 +7,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 export const DangerZoneCard = () => {
-    const { getMMKVStorage, dispatch } = useServices(injectMMKVStorage, injectDispatch);
+    const { getMMKVStorage, reloadApp, dispatch } = useServices(
+        injectMMKVStorage,
+        injectReloadApp,
+        injectDispatch,
+    );
 
     return (
         <Card>
@@ -19,6 +24,7 @@ export const DangerZoneCard = () => {
                         onPress={() => {
                             getMMKVStorage().then(mmkv => {
                                 clearStorage({ mmkvInstance: mmkv });
+                                reloadApp();
                             });
                         }}
                     >

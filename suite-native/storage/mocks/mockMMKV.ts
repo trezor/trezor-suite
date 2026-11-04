@@ -31,7 +31,9 @@ export const mockMMKV = (): MMKV => {
         getBuffer: mockNotExpected<MMKV['getBuffer']>('getBuffer'),
         contains: mockNotExpected<MMKV['contains']>('contains'),
         getAllKeys: mockNotExpected<MMKV['getAllKeys']>('getAllKeys'),
-        clearAll: mockNotExpected<MMKV['clearAll']>('clearAll'),
+        clearAll: mock<MMKV['clearAll']>(() => {
+            values.clear();
+        }),
         recrypt: mockNotExpected<MMKV['recrypt']>('recrypt'),
         encrypt: mockNotExpected<MMKV['encrypt']>('encrypt'),
         decrypt: mockNotExpected<MMKV['decrypt']>('decrypt'),
