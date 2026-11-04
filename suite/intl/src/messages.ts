@@ -673,10 +673,6 @@ export const messages = defineMessages({
         defaultMessage: 'Approve {displaySymbol} spending',
         id: 'TR_APPROVAL_APPROVE_TOKEN_SPENDING',
     },
-    TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING_DESCRIPTION: {
-        defaultMessage: 'Approve provider to spend your {displaySymbol} to swap.',
-        id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING_DESCRIPTION',
-    },
     TR_APPROVAL_REVOKE_TOKEN_SPENDING: {
         defaultMessage: 'Revoke {displaySymbol} spending',
         id: 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
@@ -707,17 +703,9 @@ export const messages = defineMessages({
             'The spending limit is too low. Revoke the current spending limit and approve a higher amount.',
         id: 'TR_APPROVAL_MODAL_REVOKE_BANNER',
     },
-    TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON: {
-        defaultMessage: 'Set & approve spending',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON',
-    },
     TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON: {
         defaultMessage: 'Revoke approval',
         id: 'TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON',
-    },
-    TR_EXCHANGE_APPROVAL_FORM_INCREASE_BUTTON: {
-        defaultMessage: 'Increase approval',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_INCREASE_BUTTON',
     },
     TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON: {
         defaultMessage: 'Refresh',

@@ -3,12 +3,23 @@ import { useTradingAllowanceModal } from 'src/hooks/wallet/trading/allowance/use
 import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 
 type TradingRevokeModalProps = {
+    isOpen: boolean;
+    onClose: () => void;
+    onSent: (txid: string) => void;
     getCryptoInfo: GetTradingExchangeCryptoInfo;
 };
 
-export const TradingRevokeModal = ({ getCryptoInfo }: TradingRevokeModalProps) => {
-    const { account, modalParams, onConfirm, onSendStart, onSent, onSendFailed, onCancel } =
-        useTradingAllowanceModal({ type: 'revoke', getCryptoInfo });
+export const TradingRevokeModal = ({
+    isOpen,
+    onClose,
+    onSent,
+    getCryptoInfo,
+}: TradingRevokeModalProps) => {
+    const { account, modalParams, onConfirm, onCancel } = useTradingAllowanceModal({
+        isOpen,
+        onClose,
+        getCryptoInfo,
+    });
 
     if (!modalParams || !account) {
         return null;
@@ -26,9 +37,7 @@ export const TradingRevokeModal = ({ getCryptoInfo }: TradingRevokeModalProps) =
             heading="TR_APPROVAL_REVOKE_TOKEN_SPENDING"
             description="TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION"
             onConfirm={onConfirm}
-            onSendStart={onSendStart}
             onSent={onSent}
-            onSendFailed={onSendFailed}
             onCancel={onCancel}
         />
     );

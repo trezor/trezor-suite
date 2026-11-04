@@ -1,5 +1,3 @@
-import { type ReactNode } from 'react';
-
 import { type CryptoId, type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
@@ -11,17 +9,12 @@ import {
 } from '@suite-common/test-utils';
 import { initialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type AllowanceTransactionType } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 
 import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { type AppState } from 'src/reducers/store';
 
-import {
-    TradingAllowanceContext,
-    type TradingAllowanceContextValue,
-} from './TradingAllowanceContext';
 import { useTradingAllowanceModal } from './useTradingAllowanceModal';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
@@ -30,7 +23,9 @@ const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const mockConfirmApproval = mock((_params: unknown) => Promise.resolve(undefined));
 
 jest.mock('src/hooks/wallet/trading/form/exchange/useExchangeApproval', () => ({
-    useExchangeApproval: () => ({ confirmApproval: mockConfirmApproval }),
+    useExchangeApproval: () => ({
+        confirmApproval: mockConfirmApproval,
+    }),
 }));
 
 jest.mock('@suite-common/trading', () => {
@@ -81,27 +76,10 @@ const getCryptoInfo = mock<GetTradingExchangeCryptoInfo>(() => ({
     selectedFee: 'normal',
 }));
 
-const createContextValue = (type: AllowanceTransactionType, isOpen: boolean) => {
-    const value = {
-        tx: { setApprovalTxid: mock() },
-        state: {
-            isApproveModalOpen: type === 'approve' && isOpen,
-            isRevokeModalOpen: type === 'revoke' && isOpen,
-            closeApproveModal: mock(),
-            closeRevokeModal: mock(),
-            setIsWaitingForDevice: mock(),
-        },
-    };
-
-    return value as unknown as TradingAllowanceContextValue & typeof value;
-};
-
 const renderAllowanceModal = ({
-    type,
     isOpen = true,
     selectedQuote = QUOTE,
 }: {
-    type: AllowanceTransactionType;
     isOpen?: boolean;
     selectedQuote?: ExchangeTrade;
 }) => {
@@ -128,19 +106,14 @@ const renderAllowanceModal = ({
         preloadedState,
         services: () => ({ analytics }),
     });
-    const context = createContextValue(type, isOpen);
-    const wrapper = ({ children }: { children: ReactNode }) => (
-        <TradingAllowanceContext.Provider value={context}>
-            {children}
-        </TradingAllowanceContext.Provider>
-    );
+    const onClose = mock();
 
     const { result } = renderHookWithStoreProvider(
-        () => useTradingAllowanceModal({ type, getCryptoInfo }),
-        { services, wrapper },
+        () => useTradingAllowanceModal({ isOpen, onClose, getCryptoInfo }),
+        { services },
     );
 
-    return { result, context, analytics };
+    return { result, onClose, analytics };
 };
 
 describe('useTradingAllowanceModal', () => {
@@ -149,7 +122,7 @@ describe('useTradingAllowanceModal', () => {
     });
 
     it('derives the modal params from the selected quote', () => {
-        const { result } = renderAllowanceModal({ type: 'approve' });
+        const { result } = renderAllowanceModal({});
 
         expect(result.current.account).toBe(ACCOUNT);
         expect(result.current.modalParams).toEqual({
@@ -166,14 +139,13 @@ describe('useTradingAllowanceModal', () => {
     });
 
     it('has no params while the modal is closed', () => {
-        const { result } = renderAllowanceModal({ type: 'approve', isOpen: false });
+        const { result } = renderAllowanceModal({ isOpen: false });
 
         expect(result.current.modalParams).toBeNull();
     });
 
     it('has no params for a quote without approve calldata', () => {
         const { result } = renderAllowanceModal({
-            type: 'revoke',
             selectedQuote: { ...QUOTE, dexTx: undefined },
         });
 
@@ -181,7 +153,7 @@ describe('useTradingAllowanceModal', () => {
     });
 
     it('reports modal analytics with the crypto info', () => {
-        const { result, analytics } = renderAllowanceModal({ type: 'revoke' });
+        const { result, analytics } = renderAllowanceModal({});
 
         result.current.onConfirm();
 
@@ -195,30 +167,8 @@ describe('useTradingAllowanceModal', () => {
         });
     });
 
-    it('tracks the sent transaction and closes the modal', () => {
-        const { result, context } = renderAllowanceModal({ type: 'approve' });
-
-        result.current.onSendStart();
-        expect(context.state.setIsWaitingForDevice).toHaveBeenCalledWith(true);
-
-        result.current.onSent('0xtxid');
-        expect(context.tx.setApprovalTxid).toHaveBeenCalledWith('0xtxid');
-        expect(context.state.setIsWaitingForDevice).toHaveBeenLastCalledWith(false);
-        expect(context.state.closeApproveModal).toHaveBeenCalled();
-        expect(context.state.closeRevokeModal).not.toHaveBeenCalled();
-    });
-
-    it('releases the device wait when sending fails', () => {
-        const { result, context } = renderAllowanceModal({ type: 'revoke' });
-
-        result.current.onSendFailed();
-
-        expect(context.state.setIsWaitingForDevice).toHaveBeenCalledWith(false);
-        expect(context.state.closeRevokeModal).not.toHaveBeenCalled();
-    });
-
     it('cancelling closes the modal and drops the pending approval type on the quote', async () => {
-        const { result, context, analytics } = renderAllowanceModal({ type: 'revoke' });
+        const { result, onClose, analytics } = renderAllowanceModal({});
 
         await act(async () => {
             await result.current.onCancel();
@@ -227,7 +177,7 @@ describe('useTradingAllowanceModal', () => {
         expect(analytics.report).toHaveBeenCalledWith(
             expect.objectContaining({ payload: expect.objectContaining({ action: 'cancel' }) }),
         );
-        expect(context.state.closeRevokeModal).toHaveBeenCalled();
+        expect(onClose).toHaveBeenCalled();
         expect(mockConfirmApproval).toHaveBeenCalledWith({
             trade: { ...QUOTE, approvalType: undefined },
             receiveAddress: QUOTE.receiveAddress,
@@ -236,7 +186,6 @@ describe('useTradingAllowanceModal', () => {
 
     it('cancelling without a receive address does not contact the provider', async () => {
         const { result } = renderAllowanceModal({
-            type: 'approve',
             selectedQuote: { ...QUOTE, receiveAddress: undefined },
         });
 

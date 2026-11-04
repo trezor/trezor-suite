@@ -11,7 +11,6 @@ import {
     selectTradingSendAccount,
     tradeApi,
 } from '@suite-common/trading';
-import { type AllowanceTransactionType } from '@suite-common/wallet-types';
 import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 
@@ -19,8 +18,6 @@ import { type AllowanceProvider } from 'src/components/wallet/Allowance/Allowanc
 import { useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
 import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
 import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-
-import { useTradingAllowanceContext } from './useTradingAllowanceContext';
 
 type TradeApprovalAction = EventInstance<typeof events.tradeApprovalEvent>['payload']['action'];
 
@@ -33,19 +30,20 @@ type TradingAllowanceModalParams = {
 };
 
 type UseTradingAllowanceModalParams = {
-    type: AllowanceTransactionType;
+    isOpen: boolean;
+    onClose: () => void;
     getCryptoInfo: GetTradingExchangeCryptoInfo;
 };
 
 /**
- * Everything the Trade approve and revoke modals share: the send account, the modal params
- * derived from the selected DEX quote, analytics reporting and the allowance context wiring.
+ * The Trade revoke modal wiring: the send account, the modal params derived from the selected
+ * DEX quote and analytics reporting.
  */
 export const useTradingAllowanceModal = ({
-    type,
+    isOpen,
+    onClose,
     getCryptoInfo,
 }: UseTradingAllowanceModalParams) => {
-    const { state, tx } = useTradingAllowanceContext();
     const { analytics } = useServices(injectDesktopAnalytics);
     const account = useSelector((reduxState: TradingFormAccountRootState) =>
         selectTradingSendAccount(reduxState, 'exchange'),
@@ -56,14 +54,11 @@ export const useTradingAllowanceModal = ({
     );
     const { confirmApproval } = useExchangeApproval({ account });
 
-    const isOpen = type === 'approve' ? state.isApproveModalOpen : state.isRevokeModalOpen;
-    const closeModal = type === 'approve' ? state.closeApproveModal : state.closeRevokeModal;
-
     const reportAction = (action: TradeApprovalAction) => {
         analytics.report({
             type: events.tradeApprovalEvent.name,
             payload: {
-                type: `${type}-modal`,
+                type: 'revoke-modal',
                 action,
                 ...getCryptoInfo(),
             },
@@ -103,23 +98,9 @@ export const useTradingAllowanceModal = ({
         reportAction('continue');
     };
 
-    const onSendStart = () => {
-        state.setIsWaitingForDevice(true);
-    };
-
-    const onSent = (txid: string) => {
-        tx.setApprovalTxid(txid);
-        state.setIsWaitingForDevice(false);
-        closeModal();
-    };
-
-    const onSendFailed = () => {
-        state.setIsWaitingForDevice(false);
-    };
-
     const onCancel = async () => {
         reportAction('cancel');
-        closeModal();
+        onClose();
 
         if (selectedQuote?.receiveAddress) {
             await confirmApproval({
@@ -132,11 +113,7 @@ export const useTradingAllowanceModal = ({
     return {
         account,
         modalParams,
-        reportAction,
         onConfirm,
-        onSendStart,
-        onSent,
-        onSendFailed,
         onCancel,
     };
 };

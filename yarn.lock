@@ -12390,7 +12390,6 @@ __metadata:
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
-    "@trezor/react-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
