@@ -127,7 +127,10 @@ describe('staking session selectors', () => {
 
     it('selects the first step that is not done', () => {
         const doneFreeze = toRootState(
-            stakingReducer(awaitingFreeze.earn.staking, stakingActions.stepConfirmed(freeze)),
+            stakingReducer(
+                awaitingFreeze.earn.staking,
+                stakingActions.stepConfirmed({ ...freeze, txid: 'tx1' }),
+            ),
         );
         const complete = toRootState(
             [
@@ -180,6 +183,7 @@ describe('staking session selectors', () => {
                 error: null,
                 status: 'awaiting',
                 txid: 'tx1',
+                replacements: [],
             },
         });
         expect(selectAwaitingStakingStep(signingFreeze, stakeSession.key, 'freeze')).toBeNull();
@@ -188,7 +192,11 @@ describe('staking session selectors', () => {
     });
 
     it('lists the awaiting steps of an account with their txids', () => {
-        const freezeAwaiting = { sessionKey: stakeSession.key, stepId: 'freeze', txid: 'tx1' };
+        const freezeAwaiting = {
+            sessionKey: stakeSession.key,
+            stepId: 'freeze',
+            transactions: [{ txid: 'tx1', isCancellation: false }],
+        };
 
         expect(getAwaitingStakingSteps([stakeSession, claimSession])).toEqual([]);
         expect(selectAwaitingStakingSteps(awaitingFreeze, accountKey)).toEqual([freezeAwaiting]);

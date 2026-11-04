@@ -36,7 +36,7 @@ const stepsByStatus: Record<StakingSessionStepStatus, StakingSessionStep> = {
     signing: { ...base, status: 'signing', ...signable },
     signed: { ...base, status: 'signed', ...signable, signed },
     broadcasting: { ...base, status: 'broadcasting', ...signable, signed },
-    awaiting: { ...base, status: 'awaiting', txid: 'tx1' },
+    awaiting: { ...base, status: 'awaiting', txid: 'tx1', replacements: [] },
     done: { ...base, status: 'done', txid: 'tx1' },
     failed: { ...base, status: 'failed', txid: 'tx1', error: confirmationFailed },
 };
@@ -57,9 +57,9 @@ const events: Record<StakingStepEvent['type'], StakingStepEvent> = {
     broadcasting: { type: 'broadcasting', attemptId },
     broadcast: { type: 'broadcast', attemptId, txid: 'tx1' },
     'broadcast-failed': { type: 'broadcast-failed', attemptId, code: null },
-    'txid-replaced': { type: 'txid-replaced', txid: 'tx2' },
-    confirmed: { type: 'confirmed' },
-    failed: { type: 'failed', error: confirmationFailed },
+    'replacement-broadcast': { type: 'replacement-broadcast', txid: 'tx2', isCancellation: false },
+    confirmed: { type: 'confirmed', txid: 'tx1' },
+    failed: { type: 'failed', txid: 'tx1', error: confirmationFailed },
 };
 
 const acceptedFrom: Record<StakingStepEvent['type'], readonly StakingSessionStepStatus[]> = {
@@ -74,7 +74,7 @@ const acceptedFrom: Record<StakingStepEvent['type'], readonly StakingSessionStep
     broadcasting: ['signed'],
     broadcast: ['broadcasting'],
     'broadcast-failed': ['broadcasting'],
-    'txid-replaced': ['awaiting'],
+    'replacement-broadcast': ['awaiting'],
     confirmed: ['awaiting'],
     failed: ['awaiting'],
 };
@@ -210,16 +210,48 @@ describe('transitionStakingStep', () => {
         });
     });
 
-    it('settles an awaiting step on its txid', () => {
-        expect(transitionStakingStep(stepsByStatus.awaiting, events['txid-replaced'])).toEqual({
-            ...stepsByStatus.awaiting,
-            txid: 'tx2',
+    it('keeps every replacement once and settles on the transaction that mined', () => {
+        const bumped = transitionStakingStep(
+            stepsByStatus.awaiting,
+            events['replacement-broadcast'],
+        );
+        const cancelled = transitionStakingStep(stepsByStatus.awaiting, {
+            type: 'replacement-broadcast',
+            txid: 'tx1c',
+            isCancellation: true,
         });
+
+        expect(bumped).toEqual({
+            ...stepsByStatus.awaiting,
+            replacements: [{ txid: 'tx2', isCancellation: false }],
+        });
+        expect(transitionStakingStep(bumped as never, events['replacement-broadcast'])).toBeNull();
         expect(transitionStakingStep(stepsByStatus.awaiting, events.confirmed)).toEqual(
             stepsByStatus.done,
         );
+        expect(transitionStakingStep(bumped as never, { type: 'confirmed', txid: 'tx2' })).toEqual({
+            ...stepsByStatus.done,
+            txid: 'tx2',
+        });
         expect(transitionStakingStep(stepsByStatus.awaiting, events.failed)).toEqual(
             stepsByStatus.failed,
         );
+        expect(
+            transitionStakingStep(cancelled as never, { type: 'confirmed', txid: 'tx1c' }),
+        ).toBeNull();
+        expect(
+            transitionStakingStep(cancelled as never, {
+                type: 'failed',
+                txid: 'tx1c',
+                error: { kind: 'replaced', code: null },
+            }),
+        ).toEqual({
+            ...stepsByStatus.failed,
+            txid: 'tx1c',
+            error: { kind: 'replaced', code: null },
+        });
+        expect(
+            transitionStakingStep(stepsByStatus.awaiting, { type: 'confirmed', txid: 'tx9' }),
+        ).toBeNull();
     });
 });

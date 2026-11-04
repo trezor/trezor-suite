@@ -352,7 +352,7 @@ describe('staking engine', () => {
         expect(selectStakingSession(store.getState(), sessionKey)).toBeNull();
     });
 
-    it('follows a fee bump and confirms the step under the new txid', async () => {
+    it('confirms a bumped step on whichever of its transactions mines', async () => {
         const { store } = initStore();
 
         await planStake(store);
@@ -361,10 +361,11 @@ describe('staking engine', () => {
         replace(store, bumpFee, 'tx-freeze-bumped');
         expect(getStep(store, 'freeze')).toMatchObject({
             status: 'awaiting',
-            txid: 'tx-freeze-bumped',
+            txid: 'tx-freeze',
+            replacements: [{ txid: 'tx-freeze-bumped', isCancellation: false }],
         });
 
-        mine(store, createTransaction({ txid: 'tx-freeze' }));
+        mine(store, createTransaction({ txid: 'tx-freeze-other', blockHeight: undefined }));
         expect(getStep(store, 'freeze')?.status).toBe('awaiting');
 
         mine(store, createTransaction({ txid: 'tx-freeze-bumped' }));
@@ -374,6 +375,18 @@ describe('staking engine', () => {
             status: 'done',
             txid: 'tx-freeze-bumped',
         });
+    });
+
+    it('confirms a bumped step when the original outruns the bump', async () => {
+        const { store } = initStore();
+
+        await planStake(store);
+        await runStep(store);
+        replace(store, bumpFee, 'tx-freeze-bumped');
+        mine(store, createTransaction({ txid: 'tx-freeze' }));
+        await settleTracking();
+
+        expect(getStep(store, 'freeze')).toMatchObject({ status: 'done', txid: 'tx-freeze' });
     });
 
     it('fails the step when the chain rejects the transaction, and the session can be discarded', async () => {
@@ -398,18 +411,39 @@ describe('staking engine', () => {
         expect(selectStakingSession(store.getState(), sessionKey)).toBeNull();
     });
 
-    it('fails the step when its transaction is replaced by a cancel', async () => {
-        const { store } = initStore();
+    it('fails the step once its cancel replacement mines, and confirms it when the original mines instead', async () => {
+        const cancelled = initStore();
 
-        await planStake(store);
-        await runStep(store);
-        replace(store, cancelRbf, 'tx-freeze-cancelled');
+        await planStake(cancelled.store);
+        await runStep(cancelled.store);
+        replace(cancelled.store, cancelRbf, 'tx-freeze-cancelled');
         await settleTracking();
 
-        expect(getStep(store, 'freeze')).toMatchObject({
+        expect(getStep(cancelled.store, 'freeze')).toMatchObject({
+            status: 'awaiting',
+            replacements: [{ txid: 'tx-freeze-cancelled', isCancellation: true }],
+        });
+
+        mine(cancelled.store, createTransaction({ txid: 'tx-freeze-cancelled' }));
+        await settleTracking();
+
+        expect(getStep(cancelled.store, 'freeze')).toMatchObject({
             status: 'failed',
-            txid: 'tx-freeze',
+            txid: 'tx-freeze-cancelled',
             error: { kind: 'replaced', code: null },
+        });
+
+        const outran = initStore();
+
+        await planStake(outran.store);
+        await runStep(outran.store);
+        replace(outran.store, cancelRbf, 'tx-freeze-cancelled');
+        mine(outran.store, createTransaction({ txid: 'tx-freeze' }));
+        await settleTracking();
+
+        expect(getStep(outran.store, 'freeze')).toMatchObject({
+            status: 'done',
+            txid: 'tx-freeze',
         });
     });
 

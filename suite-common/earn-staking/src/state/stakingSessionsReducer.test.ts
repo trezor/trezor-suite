@@ -19,7 +19,7 @@ import {
     stakingSessionsInitialState,
     stakingSessionsReducer,
 } from './stakingSessionsReducer';
-import { mockStakingSession } from '../../mocks';
+import { mockStakingSession, mockStakingSessionStep } from '../../mocks';
 
 const plan = mockStakingPlan({
     operation: 'stake',
@@ -30,7 +30,10 @@ const plan = mockStakingPlan({
 });
 const session = mockStakingSession({ plan });
 const { key: sessionKey } = session;
-const stepBase = getStakingStepBase(session.steps[0]);
+const stepBase = getStakingStepBase(
+    mockStakingSessionStep({ id: 'freeze', kind: 'freeze', awaitConfirmation: true }),
+);
+const voteBase = getStakingStepBase(mockStakingSessionStep({ id: 'vote', kind: 'vote' }));
 const freeze = { sessionKey, stepId: 'freeze' };
 const vote = { sessionKey, stepId: 'vote' };
 const composed = mockComposedStakingStep();
@@ -55,7 +58,7 @@ const awaitingFreeze = reduce(
     broadcastingFreeze,
     actions.stepBroadcast({ ...freeze, attemptId, txid: 'tx1' }),
 );
-const doneFreeze = reduce(awaitingFreeze, actions.stepConfirmed(freeze));
+const doneFreeze = reduce(awaitingFreeze, actions.stepConfirmed({ ...freeze, txid: 'tx1' }));
 const broadcastingVote = reduce(
     doneFreeze,
     actions.stepComposed({ ...vote, attemptId, composed }),
@@ -361,6 +364,7 @@ describe('stakingSessionsReducer', () => {
                 ...stepBase,
                 status: 'awaiting',
                 txid: 'tx1',
+                replacements: [],
             });
         });
 
@@ -371,7 +375,7 @@ describe('stakingSessionsReducer', () => {
             );
 
             expect(getStep(state, 'vote')).toEqual({
-                ...getStakingStepBase(session.steps[1]),
+                ...voteBase,
                 status: 'done',
                 txid: 'tx2',
             });
@@ -384,20 +388,26 @@ describe('stakingSessionsReducer', () => {
         });
     });
 
-    describe('stepTxidReplaced', () => {
-        it('follows a bumped transaction', () => {
-            const state = reduce(
-                awaitingFreeze,
-                actions.stepTxidReplaced({ ...freeze, txid: 'tx1b' }),
-            );
+    describe('stepReplacementBroadcast', () => {
+        const bump = actions.stepReplacementBroadcast({
+            ...freeze,
+            txid: 'tx1b',
+            isCancellation: false,
+        });
 
-            expect(getStep(state, 'freeze')).toMatchObject({ status: 'awaiting', txid: 'tx1b' });
+        it('keeps a replacement next to the original transaction', () => {
+            const state = reduce(awaitingFreeze, bump);
+
+            expect(getStep(state, 'freeze')).toMatchObject({
+                status: 'awaiting',
+                txid: 'tx1',
+                replacements: [{ txid: 'tx1b', isCancellation: false }],
+            });
+            expect(reduce(state, bump)).toBe(state);
         });
 
         it('ignores a confirmed step', () => {
-            expect(reduce(doneFreeze, actions.stepTxidReplaced({ ...freeze, txid: 'tx1b' }))).toBe(
-                doneFreeze,
-            );
+            expect(reduce(doneFreeze, bump)).toBe(doneFreeze);
         });
     });
 
@@ -412,7 +422,9 @@ describe('stakingSessionsReducer', () => {
         });
 
         it('ignores a step that is not awaiting', () => {
-            expect(reduce(awaitingFreeze, actions.stepConfirmed(vote))).toBe(awaitingFreeze);
+            expect(reduce(awaitingFreeze, actions.stepConfirmed({ ...vote, txid: 'tx2' }))).toBe(
+                awaitingFreeze,
+            );
         });
     });
 
@@ -422,7 +434,7 @@ describe('stakingSessionsReducer', () => {
         it('fails an awaiting step and keeps its txid', () => {
             const state = reduce(
                 awaitingFreeze,
-                actions.stepFailed({ ...freeze, error: confirmationFailed }),
+                actions.stepFailed({ ...freeze, txid: 'tx1', error: confirmationFailed }),
             );
 
             expect(getStep(state, 'freeze')).toEqual({
@@ -437,7 +449,7 @@ describe('stakingSessionsReducer', () => {
             expect(
                 reduce(
                     composedFreeze,
-                    actions.stepFailed({ ...freeze, error: confirmationFailed }),
+                    actions.stepFailed({ ...freeze, txid: 'tx1', error: confirmationFailed }),
                 ),
             ).toBe(composedFreeze);
         });

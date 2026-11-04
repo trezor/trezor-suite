@@ -9,6 +9,7 @@ import {
     type StakingSessionStep,
     type StakingStepError,
     getStakingStepBase,
+    getStakingStepTransactions,
 } from './stakingSessionStep';
 
 export type StakingStepEvent =
@@ -28,9 +29,9 @@ export type StakingStepEvent =
     | { type: 'broadcasting'; attemptId: string }
     | { type: 'broadcast'; attemptId: string; txid: string }
     | { type: 'broadcast-failed'; attemptId: string; code: string | null }
-    | { type: 'txid-replaced'; txid: string }
-    | { type: 'confirmed' }
-    | { type: 'failed'; error: StakingStepError };
+    | { type: 'replacement-broadcast'; txid: string; isCancellation: boolean }
+    | { type: 'confirmed'; txid: string }
+    | { type: 'failed'; txid: string; error: StakingStepError };
 
 export type StakingStepEventType = StakingStepEvent['type'];
 
@@ -172,10 +173,20 @@ export const transitionStakingStep = (
         case 'broadcast': {
             if (step.status !== 'broadcasting' || step.attemptId !== event.attemptId) return null;
 
+            if (step.awaitConfirmation) {
+                return {
+                    ...getStakingStepBase(step),
+                    error: null,
+                    status: 'awaiting',
+                    txid: event.txid,
+                    replacements: [],
+                };
+            }
+
             return {
                 ...getStakingStepBase(step),
                 error: null,
-                status: step.awaitConfirmation ? 'awaiting' : 'done',
+                status: 'done',
                 txid: event.txid,
             };
         }
@@ -184,32 +195,50 @@ export const transitionStakingStep = (
 
             return toComposed(step, { kind: 'broadcast-failed', code: event.code });
         }
-        case 'txid-replaced': {
+        case 'replacement-broadcast': {
             if (step.status !== 'awaiting') return null;
 
+            const known = getStakingStepTransactions(step);
+
+            if (known.some(transaction => transaction.txid === event.txid)) {
+                return null;
+            }
+
             return {
-                ...getStakingStepBase(step),
-                status: 'awaiting',
-                txid: event.txid,
+                ...step,
+                replacements: [
+                    ...step.replacements,
+                    { txid: event.txid, isCancellation: event.isCancellation },
+                ],
             };
         }
         case 'confirmed': {
             if (step.status !== 'awaiting') return null;
 
+            const mined = getStakingStepTransactions(step).find(
+                transaction => transaction.txid === event.txid,
+            );
+
+            if (mined === undefined || mined.isCancellation) return null;
+
             return {
                 ...getStakingStepBase(step),
                 status: 'done',
-                txid: step.txid,
+                txid: event.txid,
             };
         }
         case 'failed': {
             if (step.status !== 'awaiting') return null;
 
+            if (!getStakingStepTransactions(step).some(({ txid }) => txid === event.txid)) {
+                return null;
+            }
+
             return {
                 ...getStakingStepBase(step),
                 error: event.error,
                 status: 'failed',
-                txid: step.txid,
+                txid: event.txid,
             };
         }
     }

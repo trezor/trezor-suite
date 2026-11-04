@@ -88,12 +88,12 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
 
             awaitingSteps.forEach(step =>
                 dispatch(
-                    precomposedTransaction.rbfType === 'bump-fee'
-                        ? stakingActions.stepTxidReplaced({ ...step, txid })
-                        : stakingActions.stepFailed({
-                              ...step,
-                              error: { kind: 'replaced', code: null },
-                          }),
+                    stakingActions.stepReplacementBroadcast({
+                        sessionKey: step.sessionKey,
+                        stepId: step.stepId,
+                        txid,
+                        isCancellation: precomposedTransaction.rbfType === 'cancel',
+                    }),
                 ),
             );
         }
@@ -105,7 +105,14 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
         const awaitingSteps = selectAwaitingStakingStepsByTxid(getState(), key, txid);
 
         awaitingSteps.forEach(step =>
-            dispatch(stakingActions.stepTxidReplaced({ ...step, txid: tx.txid })),
+            dispatch(
+                stakingActions.stepReplacementBroadcast({
+                    sessionKey: step.sessionKey,
+                    stepId: step.stepId,
+                    txid: tx.txid,
+                    isCancellation: false,
+                }),
+            ),
         );
     }
 

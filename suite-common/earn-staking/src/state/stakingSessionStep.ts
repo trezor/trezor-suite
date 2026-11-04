@@ -22,6 +22,11 @@ export type StakingStepError = {
     code: string | null;
 };
 
+export type StakingStepTransaction = {
+    txid: string;
+    isCancellation: boolean;
+};
+
 export type StakingSessionStepBase = {
     id: string;
     kind: StakingStepKind;
@@ -45,7 +50,7 @@ export type StakingSessionStep = StakingSessionStepBase &
         | ({ status: 'signing' } & StakingSignableStep)
         | ({ status: 'signed'; signed: SignedStakingStep } & StakingSignableStep)
         | ({ status: 'broadcasting'; signed: SignedStakingStep } & StakingSignableStep)
-        | { status: 'awaiting'; txid: string }
+        | { status: 'awaiting'; txid: string; replacements: readonly StakingStepTransaction[] }
         | { status: 'done'; txid: string | null }
         | { status: 'failed'; txid: string }
     );
@@ -71,6 +76,16 @@ export const STAKING_IN_FLIGHT_STEP_STATUSES: readonly StakingSessionStepStatus[
 
 export const isStakingReviewStep = (step: StakingSessionStep): step is StakingReviewStep =>
     step.status === 'signing' || step.status === 'signed' || step.status === 'broadcasting';
+
+export type StakingAwaitingStep = Extract<StakingSessionStep, { status: 'awaiting' }>;
+
+// The broadcast transaction first, then every replacement in broadcast order.
+export const getStakingStepTransactions = (
+    step: StakingAwaitingStep,
+): readonly StakingStepTransaction[] => [
+    { txid: step.txid, isCancellation: false },
+    ...step.replacements,
+];
 
 export const getStakingStepBase = (step: StakingSessionStep): StakingSessionStepBase => ({
     id: step.id,
