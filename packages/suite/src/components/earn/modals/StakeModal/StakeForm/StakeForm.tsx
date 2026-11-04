@@ -2,6 +2,7 @@ import { Form } from '@suite/form';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { Card, Column } from '@trezor/components';
 
+import { StakePreparationError } from '#src/components/earn/forms/StakePreparationError';
 import { Fees } from '#src/components/wallet/Fees/Fees';
 import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
 
@@ -26,6 +27,8 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
         changeFeeLevel,
         feeInfo,
         composedLevels,
+        hasComposeError,
+        retryCompose,
         isStakingDisabled,
         methods,
     } = useStakeFormContext();
@@ -69,6 +72,8 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
                         headerTypographyStyle="body-sm"
                     />
                 </Card>
+
+                {hasComposeError && <StakePreparationError onRetry={retryCompose} />}
 
                 {isCardanoNetwork && (
                     <CardanoStakeWarningBanner

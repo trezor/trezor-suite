@@ -44,6 +44,8 @@ jest.mock('#src/hooks/earn/useStakeForm', () => ({
         onSubmit: mockSubmit,
         handleSubmit: (callback: () => void) => callback,
         formState: { errors: {}, isSubmitting: false },
+        selectedFee: 'normal',
+        composedLevels: { normal: { type: 'final' } },
         watch: () => '1',
         currency: 'crypto',
     }),

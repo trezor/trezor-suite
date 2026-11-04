@@ -134,9 +134,8 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 if (
                     !errorMessage ||
                     !isTranslationKey(errorMessage.id) ||
-                    ((errorMessage.id === 'TR_GENERIC_ERROR_TITLE' ||
-                        errorMessage.id === 'TR_STAKE_TX_PREPARATION_FAILED') &&
-                        (values.stakeType === 'unstake' || values.stakeType === 'change-delegate'))
+                    composed.error === 'TR_STAKE_TX_PREPARATION_FAILED' ||
+                    errorMessage.id === 'TR_GENERIC_ERROR_TITLE'
                 ) {
                     // Unclassified failures need a retryable error instead of a field validation error.
                     console.warn('Stake compose returned an unclassified error');

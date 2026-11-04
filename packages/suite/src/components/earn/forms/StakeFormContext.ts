@@ -12,6 +12,8 @@ export type StakeContextValues = UseFormReturn<StakeFormState> &
     BaseStakeContextValues & {
         methods: UseFormReturn<StakeFormState>;
         formState: ReactHookFormState<StakeFormState>;
+        hasComposeError: boolean;
+        retryCompose: () => Promise<void>;
         removeDraft: (key: string) => void;
         isDraft: boolean;
         amountLimits?: AmountLimitsString;

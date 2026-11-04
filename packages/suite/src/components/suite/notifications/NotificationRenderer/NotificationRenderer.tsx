@@ -207,7 +207,14 @@ export const NotificationRenderer = ({
             return renderNotificationView(render, notification, {
                 variant: 'error',
                 message: 'TOAST_SIGN_TX_ERROR',
-                values: { error: getErrorValue(notification.error) },
+                values: {
+                    error:
+                        notification.error === 'TR_STAKE_TX_PREPARATION_FAILED' ? (
+                            <Translation id="TR_STAKE_TX_PREPARATION_FAILED" />
+                        ) : (
+                            getErrorValue(notification.error)
+                        ),
+                },
             });
 
         case 'verify-address-error':

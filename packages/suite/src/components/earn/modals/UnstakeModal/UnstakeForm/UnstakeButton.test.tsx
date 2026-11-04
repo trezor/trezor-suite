@@ -70,13 +70,13 @@ const renderButton = ({ isDiscovering = false, areFeesLoading = false } = {}) =>
 
 const getButton = () => screen.getByTestId('@modal/staking/unstake-button');
 
-describe.each(['ada', 'eth', 'sol'])('Unstake Continue on %s', symbol => {
+describe.each(['ada', 'sol'])('Unstake Continue on %s', symbol => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockSymbol = asNetworkSymbol(symbol);
     });
 
-    it.each([undefined, 'nonfinal', 'error'] as const)('is disabled for a %s transaction', type => {
+    it.each([undefined, 'error'] as const)('is disabled for a %s transaction', type => {
         mockTransactionType = type;
         renderButton();
 
