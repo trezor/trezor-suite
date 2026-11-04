@@ -26,7 +26,9 @@ export const useYieldClaimFeeWarning = ({
 
     if (isClaimPending || !accountRewards || fee === null) return null;
 
-    const totalFiatClaimableAmount = accountRewards.totalClaimableFiatAmount;
+    const totalFiatClaimableAmount = accountRewards.isTotalClaimableFiatAmountComplete
+        ? accountRewards.totalClaimableFiatAmount
+        : null;
 
     return getClaimFeeWarning({ feeFiatAmount, totalFiatClaimableAmount });
 };

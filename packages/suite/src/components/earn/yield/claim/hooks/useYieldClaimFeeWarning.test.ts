@@ -69,6 +69,7 @@ const accountRewards: YieldAccountRewards = {
         },
     ],
     totalClaimableFiatAmount: asBaseCurrencyAmount(new BigNumber('2.5')),
+    isTotalClaimableFiatAmountComplete: true,
 };
 
 type RenderParams = Partial<Parameters<typeof useYieldClaimFeeWarning>[0]>;
@@ -111,6 +112,17 @@ describe('useYieldClaimFeeWarning', () => {
         expect(mockEstimateYieldFeeLevel).toHaveBeenCalledWith(
             expect.objectContaining({ coin: ethSymbol, from: SENDER }),
         );
+    });
+
+    it('reports an unverifiable value instead of a fee warning when a reward has no fiat rate', async () => {
+        mockFeeLevel(EXPENSIVE_FEE_PER_UNIT);
+
+        const { result } = renderClaimFeeWarning({
+            accountRewards: { ...accountRewards, isTotalClaimableFiatAmountComplete: false },
+        });
+
+        await waitFor(() => expect(mockEstimateYieldFeeLevel).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(result.current).toBe('unverifiable-rewards-value'));
     });
 
     it('does not warn when the estimated fee is below the claimable rewards', async () => {
