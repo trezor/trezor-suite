@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/graph" },

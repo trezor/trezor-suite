@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/discreet-mode"
-        },
-        {
             "path": "../../suite-common/price-chart"
         },
         { "path": "../../suite-common/tokens" },
