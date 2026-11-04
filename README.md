@@ -1,5 +1,7 @@
 # TREZOR SUITE MONOREPO
 
+This is the oldest opened PR at this point, I don't believe it will be merged any time soon :thinking:
+
 Welcome to the Trezor Suite repository! This repository contains the source code for 3 projects:
 
 -   **Connect** - tool that offers developers an easy way to integrate Trezor's functionality into their own applications
