@@ -23,6 +23,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../../suite-common/walletconnect" },
         { "path": "../accounts" },
         { "path": "../assets" },
         { "path": "../atoms" },
@@ -32,7 +33,6 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../module-connect-popup" },
         { "path": "../navigation" },
         { "path": "../price-chart" },
         {

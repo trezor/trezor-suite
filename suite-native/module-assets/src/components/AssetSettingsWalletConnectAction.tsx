@@ -3,11 +3,9 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { isWalletConnectSupportedNetwork } from '@suite-common/walletconnect';
+import { selectIsAppConnectionAvailable } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import {
-    type AppConnectionState,
-    selectIsWalletConnectAvailable,
-} from '@suite-native/module-connect-popup';
 import {
     type AssetsStackParamList,
     type AssetsStackRoutes,
@@ -34,11 +32,9 @@ export const AssetSettingsWalletConnectAction = ({
     onClose,
 }: AssetSettingsWalletConnectActionProps) => {
     const navigation = useNavigation<NavigationProps>();
-    const isWalletConnectAvailable = useSelector((state: AppConnectionState) =>
-        selectIsWalletConnectAvailable(state, networkSymbol),
-    );
+    const isAppConnectionAvailable = useSelector(selectIsAppConnectionAvailable);
 
-    if (!isWalletConnectAvailable) {
+    if (!isWalletConnectSupportedNetwork(networkSymbol) || !isAppConnectionAvailable) {
         return null;
     }
 

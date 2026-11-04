@@ -13,12 +13,10 @@ import {
     TitledSection,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { selectIsAppConnectionAvailable } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    WalletConnectPairBottomSheet,
-    selectIsAppConnectionAvailable,
-} from '@suite-native/module-connect-popup';
+import { WalletConnectPairBottomSheet } from '@suite-native/module-connect-popup';
 import {
     type RootStackParamList,
     RootStackRoutes,
