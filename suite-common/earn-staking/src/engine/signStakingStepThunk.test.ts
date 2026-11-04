@@ -169,10 +169,11 @@ describe('signStakingStepThunk', () => {
     });
 
     it('rejects a fee level that is missing or not final', async () => {
+        const { low: _low, ...feeLevels } = mockStakingFeeLevels({
+            custom: mockStakingErrorFeeLevel(),
+        });
         const { store, adapter } = initStore({
-            composedStep: mockComposedStakingStep({
-                feeLevels: mockStakingFeeLevels({ custom: mockStakingErrorFeeLevel() }),
-            }),
+            composedStep: mockComposedStakingStep({ feeLevels }),
         });
 
         expect((await sign(store, 'low')).payload).toBe('step-not-ready');

@@ -31,7 +31,7 @@ export const mockStakingErrorFeeLevel = (
 });
 
 export const mockStakingFeeLevels = (overrides: StakingFeeLevels = {}): StakingFeeLevels => ({
-    economy: mockStakingFinalFeeLevel({
+    low: mockStakingFinalFeeLevel({
         fee: stakingAmountSchema.parse('220000000000000'),
         totalSpent: stakingAmountSchema.parse('1000220000000000000'),
         feePerUnit: '1',
