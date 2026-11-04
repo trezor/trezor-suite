@@ -130,7 +130,7 @@ export interface RunSpec {
     spec: string;
     /** Aggregate stats returned directly by the run endpoint. */
     results?: {
-        stats?: { failures?: number; passes?: number };
+        stats?: { failures?: number; passes?: number; pending?: number };
         tests?: RunTest[];
     };
 }
@@ -146,9 +146,14 @@ export interface RunResponse {
     data: RunData;
 }
 
+export type RunCompletionState = 'COMPLETE' | 'IN_PROGRESS' | 'CANCELED' | 'TIMEOUT';
+
 export interface RunListItem {
     runId: string;
     projectId: string;
+    createdAt: string;
+    completionState: RunCompletionState;
+    meta: { ciBuildId: string };
 }
 
 export interface RunsListResponse {

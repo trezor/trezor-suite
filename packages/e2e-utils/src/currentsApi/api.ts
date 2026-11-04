@@ -6,8 +6,10 @@ import type {
     ActionsListResponse,
     RawInstanceTest,
     RunData,
+    RunListItem,
     RunResponse,
     RunTest,
+    RunsListResponse,
     TestExplorerItem,
     TestResultItem,
     TestResultsResponse,
@@ -326,6 +328,31 @@ export async function getLatestRunIdOnBranch(
         }
         throw err;
     }
+}
+
+type GetRunsOnBranchParams = {
+    projectId: string;
+    branch: string;
+    tag: string;
+    limit: number;
+};
+
+export async function getRunsOnBranch({
+    projectId,
+    branch,
+    tag,
+    limit,
+}: GetRunsOnBranchParams): Promise<RunListItem[]> {
+    const query = new URLSearchParams({
+        'branches[]': branch,
+        'tags[]': tag,
+        limit: String(limit),
+    });
+    const response = await currentsRequest<RunsListResponse>(
+        `/projects/${projectId}/runs?${query.toString()}`,
+    );
+
+    return response.data;
 }
 
 /**
