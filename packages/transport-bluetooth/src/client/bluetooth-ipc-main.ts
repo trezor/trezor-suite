@@ -19,7 +19,6 @@ import type {
  */
 export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements BluetoothIpcApi {
     private state: BluetoothIpcState = { knownDevices: [] };
-    private shouldScan = false;
     private scanOwners = new Set<ScanOwner>();
     private scanPromise: Promise<unknown> = Promise.resolve();
     private initialSettings: TrezorBluetoothSettings;
@@ -84,10 +83,10 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
         const emitAdapterState = ({ state }: { state: BluetoothAdapterState }) => {
             this.emit('adapter-event', state);
-            if (state === 'enabled' && this.shouldScan) {
+            if (state === 'enabled' && this.scanOwners.size > 0) {
                 // auto restart scan if adapter becomes enabled
                 this.serializeScan(async () => {
-                    if (!this.shouldScan) return;
+                    if (this.scanOwners.size === 0) return;
                     await api.send('start_scan');
                 }).catch(error => {
                     console.warn('Auto start_scan error', error);
@@ -166,7 +165,6 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     }
 
     async dispose() {
-        this.shouldScan = false;
         this.scanOwners.clear();
         this.createApiController?.abort(new Error('Disposed during initialization'));
         await this.lazyApi.dispose();
@@ -175,7 +173,6 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     }
 
     startScan(owner: ScanOwner) {
-        this.shouldScan = true;
         this.scanOwners.add(owner);
 
         return this.serializeScan(async () => {
@@ -202,10 +199,8 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
             return Promise.resolve(this.result());
         }
 
-        this.shouldScan = false;
-
         return this.serializeScan(async () => {
-            if (this.shouldScan || this.scanOwners.size > 0) {
+            if (this.scanOwners.size > 0) {
                 return this.result();
             }
 
