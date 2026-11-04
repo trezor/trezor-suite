@@ -10,7 +10,6 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
-import { getCurrentResource } from '../unstake/unstakeUtils';
 
 const REDUCTION_LABEL: Record<TronResourceType, TranslationKey> = {
     bandwidth: 'TR_EARN_TRON_BANDWIDTH_REDUCTION',
@@ -27,10 +26,7 @@ export const TronUnstakeSummaryCard = () => {
 
     const { amount, resourceType } = submitted;
     const gain = getResourceGain(amount, resourceType, account.misc.tronResources);
-    const reduction = Math.min(
-        gain !== null ? Math.round(gain) : 0,
-        getCurrentResource(account, resourceType),
-    );
+    const reduction = gain !== null ? Math.round(gain) : 0;
 
     return (
         <Card type="contrast" paddingType="none" data-testid="@staking/tron-complete/summary-card">
