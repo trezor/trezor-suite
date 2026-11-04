@@ -490,15 +490,16 @@ export const useYieldWithdrawController = () => {
         feeEstimationError: hasFeeEstimationError
             ? { onRetry: withdrawFees.retryFeeEstimation }
             : null,
-        feeSelector: withdrawFeeFormDraft
-            ? {
-                  formDraft: withdrawFeeFormDraft,
-                  formDraftKey: withdrawFees.formDraftKey,
-                  getCustomFeeLevel: withdrawFees.getCustomFeeLevel,
-                  selectedFee: withdrawFees.selectedFee,
-                  updateFeeLevelThunk: withdrawFees.updateFeeLevelThunk,
-              }
-            : null,
+        feeSelector:
+            withdrawFeeFormDraft && !hasFeeEstimationError
+                ? {
+                      formDraft: withdrawFeeFormDraft,
+                      formDraftKey: withdrawFees.formDraftKey,
+                      getCustomFeeLevel: withdrawFees.getCustomFeeLevel,
+                      selectedFee: withdrawFees.selectedFee,
+                      updateFeeLevelThunk: withdrawFees.updateFeeLevelThunk,
+                  }
+                : null,
         warning: {
             isAmountTooHigh: !isAmountValidationErrorDisplayed && isAmountTooHigh,
             isMaxWithdrawInfoVisible,
