@@ -4,6 +4,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { isWindows } from '@trezor/env-utils';
 
 import { BaseProcess, type Status } from './BaseProcess';
+import { electronOrigin } from '../../config';
 import type { ILogger } from '../logger';
 import { getSwitchValue } from '../process-switches';
 
@@ -57,7 +58,7 @@ export class BluetoothProcess extends BaseProcess {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${this.token}`,
-                    Origin: 'https://electron.trezor.io',
+                    Origin: electronOrigin,
                 },
             });
             this.logger.debug(this.logTopic, `Checking status (${resp.status})`);

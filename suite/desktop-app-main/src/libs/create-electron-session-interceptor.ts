@@ -1,5 +1,8 @@
 import { session } from 'electron';
 
+import { isWhitelistedHost } from '@trezor/utils';
+
+import { electronOrigin, localhostDomains } from '../config';
 import { hasSwitch } from './process-switches';
 
 /**
@@ -52,12 +55,32 @@ export const createElectronSessionInterceptor = (): RequestInterceptor => {
         callback({ cancel: false });
     };
 
+    const handleBeforeSendHeaders = (
+        details: Electron.OnBeforeSendHeadersListenerDetails,
+        callback: (response: Electron.BeforeSendResponse) => void,
+    ) => {
+        // HTTP requests of the packaged `file:` renderer carry no `origin`. Add it for localhost requests.
+        if (
+            details.frame?.url.startsWith('file:') &&
+            isWhitelistedHost(new URL(details.url).hostname, localhostDomains)
+        ) {
+            callback({ requestHeaders: { ...details.requestHeaders, Origin: electronOrigin } });
+
+            return;
+        }
+
+        // An empty response keeps the request headers as they are.
+        callback({});
+    };
+
     // Adds listener for electron-updater session.
     const updaterSession = session.fromPartition('electron-updater');
     updaterSession.webRequest.onBeforeRequest(filter, handleRequest);
 
     // Adds listener for electron default session.
     session.defaultSession.webRequest.onBeforeRequest(filter, handleRequest);
+    // Electron keeps one onBeforeSendHeaders listener per session, this module owns it.
+    session.defaultSession.webRequest.onBeforeSendHeaders(filter, handleBeforeSendHeaders);
 
     const onBeforeRequest = (listener: BeforeRequestListener) => {
         beforeRequestListeners.push(listener);
