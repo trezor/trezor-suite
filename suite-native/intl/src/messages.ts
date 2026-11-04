@@ -88,7 +88,7 @@ export const messages = {
                 required: 'Field is mandatory',
             },
             string: {
-                max: 'Number of characters exceeded',
+                max: 'Character limit exceeded',
             },
         },
     },
@@ -737,6 +737,9 @@ export const messages = {
                     'To connect to the app, activate at least one supported network in Settings.',
             },
         },
+        bottomSheets: {
+            confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
+        },
     },
     moduleDevice: {
         incompatibleFirmwareModalAppendix: {
@@ -806,6 +809,7 @@ export const messages = {
                     'Charge your Trezor to at least {percentage}% to prevent interruptions.',
             },
         },
+        confirmOnDeviceSheetTitle: 'Confirm on Trezor',
     },
     moduleDeviceBootloaderMode: {
         bootloaderScreen: {
@@ -2060,6 +2064,7 @@ export const messages = {
                 showAllButton: 'Show all',
                 accountCount: '{count, plural, one {# account} other {# accounts}}',
                 title: 'Filter by network',
+                showAccountsOnTitle: 'Show accounts on',
             },
             title: 'My assets',
         },
@@ -2185,7 +2190,8 @@ export const messages = {
                 },
                 apyBreakdown: {
                     autoCompounded: 'Automatically added and compounded.',
-                    manualCompound: 'Bonus rewards, claimed separately in the Earn tab.',
+                    manualCompound:
+                        'Bonus rewards are offered for a limited time and claimed separately in the Earn tab.',
                     footerApy: 'APY may change over time.',
                     footerApyApr: 'APY and APR rates can change over time.',
                     footer: 'APY may change over time.',
@@ -2430,6 +2436,7 @@ export const messages = {
             balanceSection: {
                 balanceTitle: 'Balance',
                 allAccountsButton: 'All accounts ({count})',
+                title: 'Your balance',
             },
             earnSection: {
                 title: 'Earn',
@@ -2441,6 +2448,7 @@ export const messages = {
                     description: 'Earn up to {apy}% on your {symbol}.',
                 },
             },
+            headerTitle: 'Asset details',
         },
     },
     device: {
@@ -3013,7 +3021,7 @@ export const messages = {
             },
         },
         earnConsentsScreen: {
-            maintained: 'Staking infrastructure is maintained by Everstake.',
+            maintained: 'Your staked funds are maintained by Everstake.',
             acknowledge: 'I acknowledge and consent to stake with Everstake.',
             title: 'Before you continue',
             delegatingCard: {
@@ -3021,9 +3029,9 @@ export const messages = {
                     benefits:
                         "Stake your {displaySymbol} to receive rewards and help enhance the network's security and stability.",
                     firstItem:
-                        'Your private keys stay on your Trezor device. Only you can initiate staking and unstaking, and Everstake never has access to your private keys.',
+                        'Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.',
                     secondItem:
-                        "Staked {displaySymbol} is held in Everstake's smart contracts and is subject to smart contract and operational risks that are not covered by your Trezor device's security protections.",
+                        "When you stake, the responsibility for your funds' security transitions from your Trezor device to Everstake.",
                 },
                 sol: {
                     firstItem:
@@ -3825,6 +3833,7 @@ export const messages = {
                     'In ~{days, plural, one {# day} other {# days}} {hours, plural, one {# hour} other {# hours}}',
                 readyInHours: 'In ~{hours, plural, one {# hour} other {# hours}}',
             },
+            unstakingCardTitle: 'Unstaking (~{days} days)',
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
@@ -3961,12 +3970,12 @@ export const messages = {
         providerSheet: {
             title: 'Providers',
             fixed: {
-                title: 'Fixed-rate CEX',
+                title: 'Fixed-rate offers',
                 titleOffers: 'Fixed-rate offers',
                 description: 'Lock in your rate for 15 minutes by paying a higher fee.',
             },
             float: {
-                title: 'Floating-rate CEX',
+                title: 'Floating-rate offers',
                 titleOffers: 'Floating-rate offers',
                 description: 'Get an estimated rate that may adjust with real-time market changes.',
             },
@@ -4089,7 +4098,7 @@ export const messages = {
             amountLabel: 'You get',
             amountNotAvailableAlert: {
                 title: 'Not available yet',
-                description: "For now, swaps only let you enter the amount you're paying.",
+                description: "Currently, swaps only let you enter the amount you're paying.",
             },
         },
         fiatCurrencySheet: {
@@ -4995,7 +5004,7 @@ export const messages = {
         precomposedTransaction: {
             errors: {
                 amountNotEnoughCurrencyFee:
-                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee.',
+                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee',
                 amountIsNotEnough: "You don't have enough funds.",
                 amountIsTooLow: 'Amount is too low.',
                 amountIsLessThanReserve: 'Recipient account requires minimum reserve to activate.',
@@ -5005,7 +5014,7 @@ export const messages = {
                 remainingBalanceLessThanRent:
                     'After sending this amount, your account will have SOL remaining lower than the rent.',
                 amountNotEnoughCurrencyFeeWithEthAmount:
-                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee.',
+                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee',
             },
         },
     },
