@@ -243,6 +243,8 @@ jobs:
           EDITED_SPECS: ${{ needs.determine-strategy.outputs.edited-specs }}
           LLM_SPEC: ${{ needs.run-llm-analysis.outputs.spec-list }}
         run: |
+          # Missing recommendation paths can produce only commas; treat these as no selection.
+          LLM_SPEC=$(echo "$LLM_SPEC" | tr ',' '\n' | sed '/^[[:space:]]*$/d' | sort -u | paste -sd,)
           if [[ "$STRATEGY" == "specific-tests" ]]; then
             echo "Using direct spec list from strategy determination: $DIRECT_SPEC"
             echo "spec-list=$DIRECT_SPEC" >> "$GITHUB_OUTPUT"
