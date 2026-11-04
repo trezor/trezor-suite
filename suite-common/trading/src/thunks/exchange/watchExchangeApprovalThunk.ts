@@ -42,7 +42,10 @@ export const watchExchangeApprovalThunk = createThunk<
             ...selectedQuote,
             status: response.status,
             error: response.error,
-            approvalType: undefined,
+            approvalType:
+                response.status === 'APPROVAL_REQ' && selectedQuote.approvalType === 'ZERO'
+                    ? selectedQuote.approvalType
+                    : undefined,
         };
 
         dispatch(tradingExchangeActions.saveSelectedQuote(updatedQuote));

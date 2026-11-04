@@ -92,6 +92,7 @@ import {
     isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
+import { getApprovalFlowStepStatuses } from '../utils/exchange/approvalFlowUtils';
 import {
     getDisplayNetworkFee,
     hasEip712SignDataType,
@@ -423,6 +424,19 @@ export const selectTradingBuySelectedQuote = (state: TradingRootState) =>
 
 export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote;
+
+export const selectTradingExchangeApprovalFlow = (state: TradingRootState) =>
+    state.wallet.trading.exchange.approvalFlow;
+
+export const selectTradingExchangeApprovalFlowSteps = createMemoizedSelector(
+    [selectTradingExchangeApprovalFlow, selectTradingExchangeSelectedQuote],
+    (approvalFlow, selectedQuote) =>
+        getApprovalFlowStepStatuses(
+            approvalFlow?.steps ?? [],
+            selectedQuote,
+            approvalFlow?.completedSteps,
+        ),
+);
 
 export const selectTradingExchangeSelectedQuoteSwapSlippage = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote?.swapSlippage;

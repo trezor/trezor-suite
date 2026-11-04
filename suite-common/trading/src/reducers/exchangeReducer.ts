@@ -15,6 +15,10 @@ import {
     type TradingExchangeFormProps,
     type TradingExchangeStepType,
 } from '../types';
+import {
+    type ApprovalFlowState,
+    type ApprovalFlowStepType,
+} from '../utils/exchange/approvalFlowUtils';
 
 export interface ExchangeInfo {
     providerInfos: Record<string, ExchangeProviderInfo>;
@@ -33,6 +37,7 @@ export interface TradingExchangeState {
     receiveAddress?: string;
     selectedQuote: ExchangeTrade | undefined;
     selectedQuoteTimestamp?: number;
+    approvalFlow: ApprovalFlowState | undefined;
     isFromRedirect: boolean;
     isLoading: boolean;
     dexQuoteApprovalPrefetchLoadingQuoteId: string | undefined;
@@ -53,6 +58,7 @@ export const exchangeInitialState: TradingExchangeState = {
     receiveAddress: undefined,
     selectedQuote: undefined,
     selectedQuoteTimestamp: undefined,
+    approvalFlow: undefined,
     isFromRedirect: false,
     isLoading: false,
     dexQuoteApprovalPrefetchLoadingQuoteId: undefined,
@@ -89,6 +95,7 @@ const tradingExchangeSlice = createSlice({
             state.quotes = [];
             state.selectedQuote = undefined;
             state.selectedQuoteTimestamp = undefined;
+            state.approvalFlow = undefined;
         },
         clearQuotesAndParams(state: TradingExchangeState) {
             state.quotes = [];
@@ -96,6 +103,7 @@ const tradingExchangeSlice = createSlice({
             state.formValues = undefined;
             state.selectedQuote = undefined;
             state.selectedQuoteTimestamp = undefined;
+            state.approvalFlow = undefined;
             state.amountLimits = undefined;
         },
         setTradingAccountKey(
@@ -111,6 +119,7 @@ const tradingExchangeSlice = createSlice({
                 state.quotesRequest = undefined;
                 state.selectedQuote = undefined;
                 state.selectedQuoteTimestamp = undefined;
+                state.approvalFlow = undefined;
             }
             state.tradingAccountKey = action.payload;
         },
@@ -135,6 +144,25 @@ const tradingExchangeSlice = createSlice({
                 state.selectedQuoteTimestamp = undefined;
             }
             state.selectedQuote = action.payload;
+        },
+        startApprovalFlow(
+            state: TradingExchangeState,
+            action: PayloadAction<ApprovalFlowStepType[]>,
+        ) {
+            state.approvalFlow = { steps: action.payload, completedSteps: [] };
+        },
+        completeApprovalFlowStep(
+            state: TradingExchangeState,
+            action: PayloadAction<ApprovalFlowStepType>,
+        ) {
+            if (!state.approvalFlow || state.approvalFlow.completedSteps.includes(action.payload)) {
+                return;
+            }
+
+            state.approvalFlow.completedSteps.push(action.payload);
+        },
+        clearApprovalFlow(state: TradingExchangeState) {
+            state.approvalFlow = undefined;
         },
         setSelectedQuoteTimestamp(state: TradingExchangeState, action: PayloadAction<number>) {
             state.selectedQuoteTimestamp = action.payload;
