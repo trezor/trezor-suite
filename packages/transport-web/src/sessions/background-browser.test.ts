@@ -76,4 +76,36 @@ describe('BrowserSessionsBackground', () => {
             id: 1,
         });
     });
+
+    test('dispose() detaches every tracked listener and closes the port', () => {
+        const background = new BrowserSessionsBackground('sessions-background.js');
+        background.on('descriptors', jest.fn());
+        background.on('releaseRequest', jest.fn());
+        void background.handleMessage({ type: 'handshake', id: 1 });
+
+        background.dispose();
+
+        expect(port.listenerCount).toBe(0);
+        expect(port.removeEventListener).toHaveBeenCalledTimes(3);
+        expect(port.close).toHaveBeenCalledTimes(1);
+    });
+
+    test('answered requests do not accumulate port listeners', async () => {
+        const background = new BrowserSessionsBackground('sessions-background.js');
+
+        for (let id = 1; id <= 15; id++) {
+            const request = background.handleMessage({ type: 'handshake', id });
+            port.emit({ success: true, payload: undefined, id });
+            await expect(request).resolves.toEqual({ success: true, payload: undefined, id });
+        }
+
+        expect(port.listenerCount).toBe(0);
+        expect(port.removeEventListener).toHaveBeenCalledTimes(15);
+
+        // each answered request also dropped its entry from the tracked listeners, so dispose()
+        // has nothing stale left to detach
+        background.dispose();
+        expect(port.removeEventListener).toHaveBeenCalledTimes(15);
+        expect(port.close).toHaveBeenCalledTimes(1);
+    });
 });

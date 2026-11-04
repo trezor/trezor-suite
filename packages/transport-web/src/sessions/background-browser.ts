@@ -131,6 +131,11 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
         }
         this.portListeners.length = 0;
         this.listenerMap.clear();
+        // closes the page side of the port: broadcasts from the worker stop being delivered and
+        // queued here, and the port becomes collectable. The worker keeps its own entangled port
+        // in the module-level `ports` array either way (background-sharedworker) - that array is
+        // never pruned, so one entry per constructed instance stays there for the worker's life.
+        this.background.port.close();
     }
 
     private removePortListener(listener: (e: MessageEvent<any>) => void) {
