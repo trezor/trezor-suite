@@ -1,44 +1,31 @@
+import type { Ok } from '@trezor/type-utils';
+
 import type { CORE_CALL, CORE_CALL_CANCEL } from './core-call';
 import { type SerializedError, serializeError } from '../constants/errors';
 import type { TrezorConnectCallable } from '../types/api/callable';
 import type { DeviceState, DeviceUniquePath } from '../types/device';
 import type { CommonParams, DeviceIdentity } from '../types/params';
 
-// conditionally unwrap TrezorConnect api method Success<T> response
-type UnwrappedResponse<Response> =
-    Response extends Promise<infer R>
-        ? R extends { success: true; payload: infer P }
-            ? P
-            : never
-        : void;
-
-// https://github.com/microsoft/TypeScript/issues/32164
-// there is no native way how to get Parameters<Fn> for overloaded function
-// current TrezorConnect api methods have exactly 2 overloads (if any)
-type OverloadedMethod<Method, Params extends Record<string, string>> = Method extends {
+// `Parameters` and `ReturnType` only see the last overload (https://github.com/microsoft/TypeScript/issues/32164).
+// Callable methods have at most two overloads; a method without overloads matches both signatures.
+type CallSignatures<Method, Params> = Method extends {
     (params: infer P1): infer R1;
     (params: infer P2): infer R2;
 }
-    ? ((params: P1 & Params) => R1) | ((params: P2 & Params) => R2) // - method IS overloaded, result depends on params (example: getAddress)
-    : Method extends (...args: infer P) => infer R
-      ? (params: Params & P[0]) => R // - method in NOT overloaded, one set of params and one set of result (example: signTransaction)
-      : never;
+    ? ((params: P1 & Params) => R1) | ((params: P2 & Params) => R2)
+    : never;
 
-type UnwrappedMethod<Method, Params extends Record<string, string>> = Method extends () => infer R
-    ? (params: Params & CommonParams) => R // - method doesn't have params (example: dispose, disableWebUSB)
-    : OverloadedMethod<Method, Params>;
-
-// map TrezorConnect api with unwrapped methods
 type CallApi = {
-    [K in keyof TrezorConnectCallable]: UnwrappedMethod<TrezorConnectCallable[K], { method: K }>;
+    [M in CallMethodKeys]: CallSignatures<TrezorConnectCallable[M], { method: M } & CommonParams>;
 };
 
 export type CallMethodKeys = keyof TrezorConnectCallable;
-export type CallMethodUnion = CallApi[CallMethodKeys];
+type CallMethodUnion = CallApi[CallMethodKeys];
 export type CallMethodPayload = Parameters<CallMethodUnion>[0];
 export type CallMethodParams<M extends CallMethodKeys> = Parameters<CallApi[M]>[0];
-export type CallMethodResponse<M extends CallMethodKeys> = UnwrappedResponse<
-    ReturnType<CallApi[M]>
+type OkPayload<R> = R extends Ok<infer P> ? P : never;
+export type CallMethodResponse<M extends CallMethodKeys> = OkPayload<
+    Awaited<ReturnType<CallApi[M]>>
 >;
 export type CallMethodAnyResponse = ReturnType<CallMethodUnion>;
 
