@@ -1,10 +1,10 @@
-name: "[Bot] Set project status approved/needs-qa on Close/Merge PR & Issue"
+name: "[Bot] Set project status approved/needs-qa on Close/Merge/Unlabel PR & Issue"
 
 on:
   issues:
-    types: [closed]
+    types: [closed, unlabeled]
   pull_request:
-    types: [closed]
+    types: [closed, unlabeled]
 
 env:
   NOQA_LABEL: no-QA
@@ -34,27 +34,40 @@ jobs:
             echo "event_type=pull_request" >> $GITHUB_OUTPUT
           fi
 
+          if [ "${{ github.event.action }}" == "unlabeled" ]; then
+            echo "should_update=${{ github.event.label.name == env.NOQA_LABEL }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == "pull_request" ] && [ "${{ github.event.pull_request.merged }}" != "true" ]; then
+            echo "should_update=false" >> $GITHUB_OUTPUT
+          else
+            echo "should_update=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Skip if PR closed without merge
         if: |
+          github.event.action == 'closed' &&
           steps.context.outputs.event_type == 'pull_request' &&
           steps.context.outputs.is_merged == 'false'
         run: |
           echo "PR was closed without merging — skipping."
           exit 0
 
-      - name: Generate GitHub App token
+      - name: Skip if removed label is not ${{ env.NOQA_LABEL }}
         if: |
-          steps.context.outputs.event_type == 'issue' ||
-          steps.context.outputs.is_merged == 'true'
+          github.event.action == 'unlabeled' &&
+          steps.context.outputs.should_update == 'false'
+        run: |
+          echo "Removed label is not '${{ env.NOQA_LABEL }}' — skipping."
+          exit 0
+
+      - name: Generate GitHub App token
+        if: steps.context.outputs.should_update == 'true'
         id: trezor-bot-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
       - name: Get project item ID
-        if: |
-          steps.context.outputs.event_type == 'issue' ||
-          steps.context.outputs.is_merged == 'true'
+        if: steps.context.outputs.should_update == 'true'
         id: get-item
         env:
           GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
@@ -119,34 +132,31 @@ jobs:
           echo "current_status=$CURRENT_STATUS" >> $GITHUB_OUTPUT
           echo "Current status option ID: $CURRENT_STATUS"
 
-      - name: Skip if already approved
-        if: |
-          (steps.context.outputs.event_type == 'issue' || steps.context.outputs.is_merged == 'true') &&
-          steps.get-item.outputs.item_found == 'true' &&
-          steps.get-item.outputs.current_status == env.APPROVED_OPTION_ID
-        run: |
-          echo "⏭️ Status is already 'Approved' — skipping update."
-
       - name: Determine target status
-        if: |
-          (steps.context.outputs.event_type == 'issue' || steps.context.outputs.is_merged == 'true') &&
-          steps.get-item.outputs.item_found == 'true' &&
-          steps.get-item.outputs.current_status != env.APPROVED_OPTION_ID
+        if: steps.get-item.outputs.item_found == 'true'
         id: target-status
         run: |
-          if [ "${{ steps.context.outputs.has_noqa_label }}" == "true" ]; then
+          CURRENT_STATUS="${{ steps.get-item.outputs.current_status }}"
+
+          if [ "${{ github.event.action }}" == "unlabeled" ]; then
+            if [ "$CURRENT_STATUS" != "${{ env.APPROVED_OPTION_ID }}" ]; then
+              echo "⏭️ Status is not '✅ Approved' — skipping update."
+              exit 0
+            fi
+            echo "option_id=${{ env.NEEDS_QA_OPTION_ID }}" >> $GITHUB_OUTPUT
+            echo "status_name=🤝 Needs QA" >> $GITHUB_OUTPUT
+          elif [ "$CURRENT_STATUS" == "${{ env.APPROVED_OPTION_ID }}" ]; then
+            echo "⏭️ Status is already '✅ Approved' — skipping update."
+          elif [ "${{ steps.context.outputs.has_noqa_label }}" == "true" ]; then
             echo "option_id=${{ env.APPROVED_OPTION_ID }}" >> $GITHUB_OUTPUT
-            echo "status_name=Approved" >> $GITHUB_OUTPUT
+            echo "status_name=✅ Approved" >> $GITHUB_OUTPUT
           else
             echo "option_id=${{ env.NEEDS_QA_OPTION_ID }}" >> $GITHUB_OUTPUT
-            echo "status_name=Needs QA" >> $GITHUB_OUTPUT
+            echo "status_name=🤝 Needs QA" >> $GITHUB_OUTPUT
           fi
 
       - name: Set project status
-        if: |
-          (steps.context.outputs.event_type == 'issue' || steps.context.outputs.is_merged == 'true') &&
-          steps.get-item.outputs.item_found == 'true' &&
-          steps.get-item.outputs.current_status != env.APPROVED_OPTION_ID
+        if: steps.target-status.outputs.option_id != ''
         env:
           GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
         run: |
