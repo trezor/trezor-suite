@@ -155,6 +155,9 @@ export type SelectAccountOptions = {
     requireOnDeviceVerification: boolean;
     minCount: number;
     maxCount?: number;
+    // Picking an account in the 'account' phase of `addressSelection: 'manual'` ends the selection
+    // instead of listing the account's addresses, for flows which need a whole account.
+    isAccountOnly?: boolean;
 };
 
 type TxSimulationConnectPopupCallLoaded = {
@@ -221,8 +224,8 @@ type ConnectPopupCallLoaded = {
           // UTXO `addressSelection: 'manual'` only: a two-phase flow — pick an account, then pick
           // one of its addresses. Undefined for every other mode (no account-drill-in phase).
           manualPhase?: 'account' | 'address';
-          // Set once `manualPhase === 'address'`: the BIP44 index of the account chosen in the
-          // 'account' phase, whose used addresses are now being listed.
+          // The BIP44 index of the account chosen in the 'account' phase, whose used addresses are
+          // then listed (unless `options.isAccountOnly`).
           manualAccountIndex?: number;
           // false while selecting, true once the selection has been sent to the app; in the
           // exported phase the modal stays open so the user can keep verifying on device.

@@ -167,9 +167,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         await this.enableNetworks(consentPermissions);
         await this.waitForDevice();
 
-        const payload = await this.preCall(methodInfo.precomposed);
-        const response = await this.callMethod(payload);
-        const isPostCallOngoing = await this.postCall(response as PopupFlowResponse<M>);
+        const { response, isPostCallOngoing } = await this.process(methodInfo.precomposed);
 
         if (!response.success) {
             throw response.error;
@@ -179,6 +177,15 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         }
 
         return response;
+    }
+
+    /** Prepares, makes and handles the call, also on behalf of a flow which delegates its call. */
+    async process(txSigningPrecomposed?: PrecomposedTransactionFinal) {
+        const payload = await this.preCall(txSigningPrecomposed);
+        const response = await this.callMethod(payload);
+        const isPostCallOngoing = await this.postCall(response as PopupFlowResponse<M>);
+
+        return { response, isPostCallOngoing };
     }
 
     // Applies to every flow, however it describes its call.

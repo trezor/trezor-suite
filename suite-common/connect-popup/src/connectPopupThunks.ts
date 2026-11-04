@@ -704,6 +704,13 @@ export const connectPopupSelectManualAccountThunk = createThunk<
         const call = selectConnectPopupCall(getState());
         if (call?.state !== 'select-account' || call.options.addressSelection !== 'manual') return;
 
+        if (call.options.isAccountOnly) {
+            dispatch(connectPopupActions.updateSelectAccount({ manualAccountIndex: accountIndex }));
+            getPermissionDeferred().resolve();
+
+            return;
+        }
+
         dispatch(
             connectPopupActions.updateSelectAccount({
                 manualPhase: 'address',
