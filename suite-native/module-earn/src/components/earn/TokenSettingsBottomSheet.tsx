@@ -147,11 +147,8 @@ export const TokenSettingsBottomSheet = forwardRef(
 
         if (!account || !symbol) return null;
 
-        const displaySymbol = getDisplaySymbol(account.symbol);
-
         const tokenBalance = token?.balance ?? '0';
         const tokenSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
-        const tokenTitle = token?.name ?? displaySymbol;
         const networkName = getNetwork(symbol).name;
 
         const isHidden = hiddenTokens.some(
@@ -237,7 +234,6 @@ export const TokenSettingsBottomSheet = forwardRef(
                 title={
                     <TokenName
                         isInline
-                        text={tokenTitle}
                         networkSymbol={symbol}
                         tokenContract={tokenContract}
                         variant="headline-sm"

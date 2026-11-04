@@ -2,7 +2,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type StellarTokenInfo, toTokenAddress } from '@suite-common/wallet-types';
 import { Box, PressableOpacity } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
-import { TokenName } from '@suite-native/tokens';
+import { TokenUrlBlur } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type InactiveTokenListItemProps = {
@@ -42,12 +42,12 @@ export const InactiveTokenListItem = ({ token, onPress }: InactiveTokenListItemP
                     />
                 </Box>
                 <Box flex={1}>
-                    <TokenName
+                    <TokenUrlBlur
                         text={token.name || token.symbol || ''}
                         networkSymbol={asNetworkSymbol('xlm')}
                         tokenContract={toTokenAddress(token.contract)}
                     />
-                    <TokenName
+                    <TokenUrlBlur
                         text={token.symbol ?? ''}
                         networkSymbol={asNetworkSymbol('xlm')}
                         tokenContract={toTokenAddress(token.contract)}

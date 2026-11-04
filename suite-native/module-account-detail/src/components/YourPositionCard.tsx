@@ -1,6 +1,5 @@
-import { type TokenInfoBranded, type TokenSymbol } from '@suite-common/tokens';
-import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, HStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
@@ -11,7 +10,7 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { YieldBadge } from '@suite-native/module-earn';
-import { TokenName } from '@suite-native/tokens';
+import { TokenName, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
@@ -50,12 +49,8 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
 
     if (!symbol) return null;
 
-    const tokenSymbol = token?.symbol ?? getDisplaySymbol(symbol);
-    const tokenName = token?.name ?? getNetworkDisplaySymbolName(symbol);
     const balance = token?.balance ?? account?.formattedBalance ?? '0';
-    const tokenAmountSymbol = token?.symbol
-        ? (getDisplaySymbol(token.symbol) as TokenSymbol)
-        : null;
+    const tokenAmountSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
 
     return (
         <Card style={applyStyle(cardStyle)} noShadow>
@@ -73,8 +68,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                 <HStack alignItems="center" justifyContent="space-between" flex={1}>
                     <Box style={applyStyle(cardContentStyle)}>
                         <HStack>
-                            <TokenName
-                                text={tokenSymbol}
+                            <TokenSymbol
                                 networkSymbol={symbol}
                                 tokenContract={token?.contract}
                                 variant="body-sm-strong"
@@ -92,7 +86,6 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                         </HStack>
 
                         <TokenName
-                            text={tokenName}
                             networkSymbol={symbol}
                             tokenContract={token?.contract}
                             variant="body-sm"

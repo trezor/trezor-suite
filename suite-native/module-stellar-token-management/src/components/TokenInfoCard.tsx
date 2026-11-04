@@ -5,7 +5,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenName } from '@suite-native/tokens';
+import { TokenUrlBlur } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TokenInfoCardProps = {
@@ -50,7 +50,7 @@ export const TokenInfoCard = ({
                                     tokenSymbol={tokenName}
                                     size="extraSmall"
                                 />
-                                <TokenName
+                                <TokenUrlBlur
                                     text={tokenName}
                                     networkSymbol={asNetworkSymbol('xlm')}
                                     tokenContract={iconContractAddress}

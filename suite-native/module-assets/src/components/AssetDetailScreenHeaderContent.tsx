@@ -4,7 +4,7 @@ import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
-import { TokenName } from '@suite-native/tokens';
+import { TokenSymbol } from '@suite-native/tokens';
 
 type AssetDetailScreenHeaderContentProps = {
     assetDisplaySymbol: string;
@@ -27,8 +27,8 @@ export const AssetDetailScreenHeaderContent = ({
             />
 
             <VStack spacing={0} flexShrink={1}>
-                <TokenName
-                    text={assetDisplaySymbol}
+                <TokenSymbol
+                    isTruncated
                     networkSymbol={networkSymbol}
                     tokenContract={tokenContract}
                     variant="body-md-strong"

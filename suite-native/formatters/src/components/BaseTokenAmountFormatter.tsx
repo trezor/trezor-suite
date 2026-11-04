@@ -6,8 +6,8 @@ import {
 import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
-import { BlurUrls, type TextProps } from '@suite-native/atoms';
-import { TokenName } from '@suite-native/tokens';
+import { type TextProps } from '@suite-native/atoms';
+import { TokenUrlBlur } from '@suite-native/tokens';
 
 import { type DiscreetMode, type FormatterProps } from '../types';
 import { type DecimalTokenAmount } from '../utils';
@@ -57,24 +57,16 @@ export const BaseTokenAmountFormatter = ({
                 formatStyle={formatStyle}
                 tokenDecimals={tokenDecimals}
             />
-            {tokenSymbol &&
-                (networkSymbol ? (
-                    <TokenName
-                        isInline
-                        text={joinAmountWithSymbol('', tokenSymbol)}
-                        networkSymbol={networkSymbol}
-                        tokenContract={tokenContract}
-                        variant={variant}
-                        color={color}
-                    />
-                ) : (
-                    <BlurUrls
-                        isInline
-                        text={joinAmountWithSymbol('', tokenSymbol)}
-                        variant={variant}
-                        color={color}
-                    />
-                ))}
+            {tokenSymbol && (
+                <TokenUrlBlur
+                    isInline
+                    text={joinAmountWithSymbol('', tokenSymbol)}
+                    networkSymbol={networkSymbol}
+                    tokenContract={tokenContract}
+                    variant={variant}
+                    color={color}
+                />
+            )}
         </>
     );
 

@@ -3,7 +3,7 @@ import { Blur, Box, PressableOpacity } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import {
-    TokenName,
+    TokenUrlBlur,
     type TypedTokenTransfer,
     type WalletAccountTransaction,
 } from '@suite-native/tokens';
@@ -65,7 +65,7 @@ export const TransactionDetailListItem = ({
                         />
                     </Box>
                     <Box style={applyStyle(CoinNameContainerStyle)}>
-                        <TokenName
+                        <TokenUrlBlur
                             text={tokenTransfer?.name ?? 'Ethereum'}
                             networkSymbol={transaction.symbol}
                             tokenContract={tokenTransfer?.contract}

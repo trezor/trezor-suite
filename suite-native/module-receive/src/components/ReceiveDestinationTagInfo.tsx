@@ -11,7 +11,7 @@ import type { AccountKey } from '@suite-common/wallet-types';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { TokenName, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenSymbol } from '@suite-native/tokens';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
 type ReceiveDestinationTagInfoProps = {
@@ -23,9 +23,6 @@ export const ReceiveDestinationTagInfo = ({
     tokenContract,
     accountKey,
 }: ReceiveDestinationTagInfoProps) => {
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, accountKey, tokenContract),
-    );
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -58,9 +55,8 @@ export const ReceiveDestinationTagInfo = ({
                             />
                         ),
                         coinSymbol: (
-                            <TokenName
+                            <TokenSymbol
                                 isInline
-                                text={tokenSymbol ?? getDisplaySymbol(accountSymbol)}
                                 networkSymbol={accountSymbol}
                                 tokenContract={tokenContract}
                                 variant="body-xs"

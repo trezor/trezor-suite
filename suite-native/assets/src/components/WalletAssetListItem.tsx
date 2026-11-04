@@ -6,7 +6,6 @@ import {
     type HomeAssetTableState,
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetFiatValue,
     selectWalletAssetSymbol,
     selectWalletAssetTokenDecimals,
@@ -31,7 +30,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokenName } from '@suite-native/tokens';
+import { TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const rowStyle = prepareNativeStyle(utils => ({
@@ -52,9 +51,6 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
     );
     const contractAddress = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetContractAddress(state, assetKey),
-    );
-    const displaySymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetDisplaySymbol(state, assetKey),
     );
     const tokenSymbol = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetTokenSymbol(state, assetKey),
@@ -108,7 +104,7 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
                     <HStack flex={1} alignItems="center" spacing="sp8">
                         <Box flexShrink={1}>
-                            <TokenName text={displaySymbol ?? ''} networkSymbol={symbol} tokenContract={contractAddress} variant="body-sm" numberOfLines={1} />
+                            <TokenSymbol isTruncated networkSymbol={symbol} tokenContract={contractAddress} variant="body-sm" numberOfLines={1} />
                         </Box>
                         <AssetYieldRateBadge
                             networkSymbol={symbol}

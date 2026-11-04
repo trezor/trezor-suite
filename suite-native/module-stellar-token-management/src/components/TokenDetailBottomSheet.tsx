@@ -7,7 +7,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenName } from '@suite-native/tokens';
+import { TokenUrlBlur } from '@suite-native/tokens';
 
 type TokenDetailBottomSheetProps = {
     bottomSheetRef: RefObject<BottomSheetModalMethods | null>;
@@ -38,12 +38,12 @@ export const TokenDetailBottomSheet = ({
                     size="large"
                 />
                 <VStack>
-                    <TokenName
+                    <TokenUrlBlur
                         text={tokenName}
                         networkSymbol={asNetworkSymbol('xlm')}
                         tokenContract={iconContractAddress}
                     />
-                    <TokenName
+                    <TokenUrlBlur
                         text={assetCode}
                         networkSymbol={asNetworkSymbol('xlm')}
                         tokenContract={iconContractAddress}

@@ -3,10 +3,9 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { BottomSheetModal, type BottomSheetModalRef, VStack } from '@suite-native/atoms';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
-import { TokenName } from '@suite-native/tokens';
+import { TokenSymbol } from '@suite-native/tokens';
 
 import { AssetSettingsAccountsAction } from './AssetSettingsAccountsAction';
 import { AssetSettingsDivider } from './AssetSettingsDivider';
@@ -32,15 +31,14 @@ export const AssetSettingsBottomSheet = ({
     const tokenInfo = useSelector((state: AssetsRootState) =>
         selectAssetTokenInfo(state, networkSymbol, tokenContract),
     );
-    const assetDisplaySymbol = getDisplaySymbol(tokenInfo?.symbol ?? networkSymbol, tokenContract);
 
     return (
         <BottomSheetModal
             ref={ref}
             title={
-                <TokenName
+                <TokenSymbol
+                    isTruncated
                     isInline
-                    text={assetDisplaySymbol}
                     networkSymbol={networkSymbol}
                     tokenContract={tokenContract}
                     variant="headline-sm"
