@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDevicePath } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -48,7 +48,7 @@ type PinActionProps = {
 export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const { isDeviceConnectionGuardVisible } = useDeviceConnectionGuard();
 
-    const device = useSelector(selectSelectedDevice);
+    const devicePath = useSelector(selectDevicePath);
     const navigation = useNavigation();
     const { showToast } = useToast();
     const { showAlert } = useAlert();
@@ -94,7 +94,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
         const result = await requestPrioritizedDeviceAccess(() =>
             TrezorConnect.changePin({
                 device: {
-                    path: device?.path,
+                    path: devicePath,
                 },
                 remove,
             }),
@@ -132,13 +132,13 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
                 navigation.goBack();
             }
         }
-    }, [analytics, type, device?.path, showSuccess, onSuccess, handleError, navigation]);
+    }, [analytics, type, devicePath, showSuccess, onSuccess, handleError, navigation]);
 
     useFocusEffect(
         useCallback(() => {
             if (!isDeviceConnectionGuardVisible) handlePinAction();
 
-            // handlePinAction is excluded as it depends on device object that could unintentionally trigger the useEffect
+            // handlePinAction is excluded as it depends on device path that could unintentionally trigger the useEffect
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [isDeviceConnectionGuardVisible]),
     );
