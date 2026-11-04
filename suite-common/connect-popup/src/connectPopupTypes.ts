@@ -126,6 +126,7 @@ export type SelectAccountCandidate = {
     symbol: NetworkSymbol;
     accountIndex: number;
     accountTypeKey: string; // SelectAccountTypeTab.key of the tab this row belongs to
+    accountKey?: AccountKey; // set when Suite already has the account of this row
     path: string; // serialized derivation path of the address/account
     address?: string; // mutually exclusive with `xpub`
     xpub?: string; // mutually exclusive with `address` — set only in `options.mode === 'xpub'`
