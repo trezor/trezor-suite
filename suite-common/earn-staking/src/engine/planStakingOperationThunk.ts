@@ -11,15 +11,16 @@ import type { AccountKey } from '@suite-common/wallet-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { getWeakRandomId } from '@trezor/utils';
 
+import { callStakingAdapter, warnStakingAdapterFailure } from './callStakingAdapter';
 import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
 import type { StakingEngineRejection } from './stakingEngineRejection';
-import { callStakingAdapter, warnStakingAdapterFailure } from './stakingStepContext';
 import type { StakingDep } from '../stakingServices';
 import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import { selectStakingPosition, selectStakingProductDescriptor } from '../state/stakingSelectors';
 import { type StakingSessionKey, getStakingSessionKey } from '../state/stakingSessionKey';
 import { selectIsStakingSessionActive } from '../state/stakingSessionSelectors';
-import type { StakingSession, StakingSessionStep } from '../state/stakingSessionsReducer';
+import type { StakingSessionStep } from '../state/stakingSessionStepsReducer';
+import type { StakingSession } from '../state/stakingSessionsReducer';
 
 const STAKING_SESSION_ID_LENGTH = 10;
 

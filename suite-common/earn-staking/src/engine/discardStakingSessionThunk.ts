@@ -5,10 +5,8 @@ import type { StakingEngineRejection } from './stakingEngineRejection';
 import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
 import { selectStakingSession } from '../state/stakingSessionSelectors';
-import {
-    STAKING_IN_FLIGHT_STEP_STATUSES,
-    hasStakingStepWithStatus,
-} from '../state/stakingSessionsReducer';
+import { STAKING_IN_FLIGHT_STEP_STATUSES } from '../state/stakingSessionStepsReducer';
+import { hasStakingStepWithStatus } from '../state/stakingSessionsReducer';
 
 type DiscardStakingSessionParams = {
     sessionKey: StakingSessionKey;

@@ -1,3 +1,5 @@
+import { type ERRORS } from '@trezor/connect-common';
+
 export class StakingAdapterError extends Error {
     readonly code: string;
 
@@ -9,7 +11,7 @@ export class StakingAdapterError extends Error {
 }
 
 export const isStakingAdapterError = (error: unknown): error is StakingAdapterError =>
-    error instanceof StakingAdapterError;
+    error instanceof StakingAdapterError && error.name === 'StakingAdapterError';
 
 export const STAKING_SIGNING_ERROR_CODES = {
     cancelled: 'signing-cancelled',
@@ -23,7 +25,7 @@ const SIGNING_CANCELLED_CONNECT_CODES = [
     'Failure_ActionCancelled',
     'Failure_PinCancelled',
     'Method_Cancel',
-];
+] as const satisfies ERRORS.ErrorCode[];
 
 export type StakingConnectFailure = {
     error: string;
@@ -31,9 +33,14 @@ export type StakingConnectFailure = {
 };
 
 export const getStakingSigningErrorCode = ({ error, code }: StakingConnectFailure): string => {
-    if (error === 'tx-timeout') return STAKING_SIGNING_ERROR_CODES.expired;
+    if (error === 'tx-timeout') {
+        return STAKING_SIGNING_ERROR_CODES.expired;
+    }
 
-    if (error === 'tx-cancelled' || SIGNING_CANCELLED_CONNECT_CODES.includes(code ?? '')) {
+    if (
+        error === 'tx-cancelled' ||
+        SIGNING_CANCELLED_CONNECT_CODES.some(cancelledCode => cancelledCode === code)
+    ) {
         return STAKING_SIGNING_ERROR_CODES.cancelled;
     }
 

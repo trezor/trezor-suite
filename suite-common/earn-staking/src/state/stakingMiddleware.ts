@@ -7,17 +7,16 @@ import {
     handleEarnTransactionReplacementThunk,
     transactionsActions,
 } from '@suite-common/wallet-core';
-import type { Account, AccountKey } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
-import {
-    getAwaitingStakingSteps,
-    getStakingStepSettlementAction,
-    settleStakingSteps,
-} from '../engine/stakingConfirmation';
+import { getStakingStepSettlementAction, settleStakingSteps } from '../engine/stakingConfirmation';
 import type { StakingDep } from '../stakingServices';
 import { type StakingRootState, stakingActions } from './stakingReducer';
-import { selectStakingSessionsByAccount } from './stakingSessionSelectors';
+import {
+    selectAwaitingStakingStepsByTxid,
+    selectStakingSessionsByAccount,
+} from './stakingSessionSelectors';
 import {
     refreshStakingProductInfoThunk,
     syncAllStakingPositionsThunk,
@@ -62,13 +61,9 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
         dispatch(syncAllStakingPositionsThunk());
     }
 
-    const getAwaitingSteps = (accountKey: AccountKey, txid: string) =>
-        getAwaitingStakingSteps(selectStakingSessionsByAccount(getState(), accountKey)).filter(
-            step => step.txid === txid,
-        );
-
     if (transactionsActions.addTransaction.match(action)) {
         const { account, transactions } = action.payload;
+
         const settlements = settleStakingSteps({
             sessions: selectStakingSessionsByAccount(getState(), account.key),
             transactions,
@@ -85,7 +80,13 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
         const { account, precomposedTransaction, txid } = action.meta.arg;
 
         if (txid !== null) {
-            getAwaitingSteps(account.key, precomposedTransaction.prevTxid).forEach(step =>
+            const awaitingSteps = selectAwaitingStakingStepsByTxid(
+                getState(),
+                account.key,
+                precomposedTransaction.prevTxid,
+            );
+
+            awaitingSteps.forEach(step =>
                 dispatch(
                     precomposedTransaction.rbfType === 'bump-fee'
                         ? stakingActions.stepTxidReplaced({ ...step, txid })
@@ -101,7 +102,9 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
     if (transactionsActions.replaceTransaction.match(action)) {
         const { key, txid, tx } = action.payload;
 
-        getAwaitingSteps(key, txid).forEach(step =>
+        const awaitingSteps = selectAwaitingStakingStepsByTxid(getState(), key, txid);
+
+        awaitingSteps.forEach(step =>
             dispatch(stakingActions.stepTxidReplaced({ ...step, txid: tx.txid })),
         );
     }

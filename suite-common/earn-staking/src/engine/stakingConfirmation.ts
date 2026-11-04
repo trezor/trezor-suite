@@ -2,29 +2,15 @@ import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 
 import { stakingActions } from '../state/stakingReducer';
-import type { StakingSessionKey } from '../state/stakingSessionKey';
+import {
+    type AwaitingStakingStep,
+    getAwaitingStakingSteps,
+} from '../state/stakingSessionSelectors';
 import type { StakingSession } from '../state/stakingSessionsReducer';
-
-export type AwaitingStakingStep = {
-    sessionKey: StakingSessionKey;
-    stepId: string;
-    txid: string;
-};
 
 export type StakingStepSettlement = AwaitingStakingStep & {
     outcome: 'confirmed' | 'failed';
 };
-
-export const getAwaitingStakingSteps = (
-    sessions: readonly StakingSession[],
-): AwaitingStakingStep[] =>
-    sessions.flatMap(session =>
-        session.steps.flatMap(step =>
-            step.status === 'awaiting'
-                ? [{ sessionKey: session.key, stepId: step.id, txid: step.txid }]
-                : [],
-        ),
-    );
 
 export const getStakingStepSettlement = (
     awaiting: AwaitingStakingStep,

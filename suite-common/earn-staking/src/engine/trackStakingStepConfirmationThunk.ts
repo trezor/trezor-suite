@@ -15,7 +15,7 @@ import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
 import { getStakingStepSettlement, getStakingStepSettlementAction } from './stakingConfirmation';
 import type { StakingRootState } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
-import { selectStakingSession } from '../state/stakingSessionSelectors';
+import { selectAwaitingStakingStep } from '../state/stakingSessionSelectors';
 import { syncStakingPositionsThunk } from '../state/stakingThunks';
 
 export const STAKING_CONFIRMATION_TRACKING_TIMEOUT_MS = 15 * 60 * 1000;
@@ -43,47 +43,38 @@ export const trackStakingStepConfirmationThunk = createThunk<
     async ({ sessionKey, stepId }, { dispatch, getState }) => {
         const deadline = Date.now() + STAKING_CONFIRMATION_TRACKING_TIMEOUT_MS;
 
-        const getAwaitingStep = () => {
-            const session = selectStakingSession(getState(), sessionKey);
-            const step = session?.steps.find(candidate => candidate.id === stepId);
-
-            return session !== null && step?.status === 'awaiting'
-                ? { accountKey: session.accountKey, txid: step.txid }
-                : null;
-        };
-
         while (Date.now() < deadline) {
-            const awaiting = getAwaitingStep();
+            const awaiting = selectAwaitingStakingStep(getState(), sessionKey, stepId);
 
             if (awaiting === null) return;
 
             const settlement = getStakingStepSettlement(
-                { sessionKey, stepId, txid: awaiting.txid },
+                { sessionKey, stepId, txid: awaiting.step.txid },
                 selectTransactionByAccountKeyAndTxid(
                     getState(),
-                    awaiting.accountKey,
-                    awaiting.txid,
+                    awaiting.session.accountKey,
+                    awaiting.step.txid,
                 ),
             );
 
             if (settlement !== null) {
                 dispatch(getStakingStepSettlementAction(settlement));
-                dispatch(syncStakingPositionsThunk({ accountKey: awaiting.accountKey }));
+                dispatch(syncStakingPositionsThunk({ accountKey: awaiting.session.accountKey }));
 
                 return;
             }
 
-            await dispatch(fetchAndUpdateAccountThunk({ accountKey: awaiting.accountKey }));
+            await dispatch(fetchAndUpdateAccountThunk({ accountKey: awaiting.session.accountKey }));
 
-            if (getAwaitingStep() === null) return;
+            if (selectAwaitingStakingStep(getState(), sessionKey, stepId) === null) return;
 
-            const account = selectAccountByKey(getState(), awaiting.accountKey);
+            const account = selectAccountByKey(getState(), awaiting.session.accountKey);
 
-            await resolveAfter(
-                getPollIntervalMs(
-                    selectConvertedNetworkFeeInfo(getState(), account?.symbol)?.blockTime,
-                ),
+            const pollIntervalMs = getPollIntervalMs(
+                selectConvertedNetworkFeeInfo(getState(), account?.symbol)?.blockTime,
             );
+
+            await resolveAfter(Math.min(pollIntervalMs, deadline - Date.now()));
         }
     },
 );

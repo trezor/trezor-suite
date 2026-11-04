@@ -7,16 +7,15 @@ import type { AccountsRootState } from '@suite-common/wallet-core';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import type { StakingDep } from '../stakingServices';
+import { callStakingAdapter, warnStakingAdapterFailure } from './callStakingAdapter';
 import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
 import type { StakingEngineRejection } from './stakingEngineRejection';
-import {
-    callStakingAdapter,
-    getStakingStepContext,
-    isStakingSessionCurrent,
-    warnStakingAdapterFailure,
-} from './stakingStepContext';
 import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
+import {
+    selectIsStakingSessionCurrent,
+    selectStakingStepContext,
+} from '../state/stakingSessionSelectors';
 
 type ComposeStakingStepParams = {
     sessionKey: StakingSessionKey;
@@ -38,19 +37,14 @@ export const composeStakingStepThunk = createThunk<
 >(
     `${STAKING_ENGINE_ACTION_PREFIX}/composeStakingStep`,
     async ({ sessionKey, customFee }, { dispatch, getState, extra, rejectWithValue }) => {
-        const { stakingProductRepository } = extra.services.staking;
+        const stepContext = selectStakingStepContext(getState(), sessionKey);
 
-        const resolved = getStakingStepContext({
-            state: getState(),
-            sessionKey,
-            stakingProductRepository,
-        });
-
-        if (!resolved.success) {
-            return rejectWithValue(resolved.rejection);
+        if (!stepContext.success) {
+            return rejectWithValue(stepContext.rejection);
         }
 
-        const { session, step, planStep, account, adapter } = resolved.context;
+        const { session, step, planStep, account } = stepContext.context;
+        const adapter = extra.services.staking.stakingProductRepository.get(session.plan.productId);
 
         if (step.status !== 'pending' && step.status !== 'composed') {
             return rejectWithValue('step-not-ready');
@@ -65,7 +59,7 @@ export const composeStakingStepThunk = createThunk<
             }),
         );
 
-        if (!isStakingSessionCurrent(getState(), session)) {
+        if (!selectIsStakingSessionCurrent(getState(), session)) {
             return rejectWithValue('session-replaced');
         }
 
