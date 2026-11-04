@@ -14,14 +14,14 @@ const preloadedState = preparePreloadedReduxState(onboardingCompletedState, {
     locale: { appLocaleCode: 'en-US' },
 });
 
-// SwiftUI exposes its system tab labels, rather than custom tab button identifiers.
+// iOS 26 exposes two accessibility copies of each system tab at the same activation point.
 const getSystemTab = (label: string) =>
     element(
         by
             .label(label)
             .and(by.traits(['button']))
             .withAncestor(by.type('UITabBar')),
-    );
+    ).atIndex(0);
 
 describe('Native navigation smoke [@noDevice @iosOnly]', () => {
     it('uses system tabs and returns to the existing bar when disabled', async () => {
