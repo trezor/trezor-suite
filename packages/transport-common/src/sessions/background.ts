@@ -110,7 +110,8 @@ export class SessionsBackground
             // background should never stay in "hanged" state
             return {
                 ...error({ code: ERRORS.UNEXPECTED_ERROR }),
-                id: message.type,
+                // the id is what clients pair the response with, see BrowserSessionsBackground
+                id: message.id,
             } as HandleMessageResponse<M>;
         } finally {
             if (result?.success && result.payload) {

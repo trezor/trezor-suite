@@ -321,11 +321,10 @@ describe('sessions', () => {
         expect(backgroundDisposeCalls).toBe(15);
     });
 
-    // TODO: the catch-all error response carries `id: message.type`, the request type string
-    // instead of the numeric request id the message came with. A client pairing responses by
-    // that id (see BrowserSessionsBackground) can never match it, so the request this response
-    // is meant to unblock stays in a "hanged" state anyway.
-    test('unexpected error response carries the request type as its id', async () => {
+    // The catch-all error response used to carry `id: message.type`, which a client pairing
+    // responses by the numeric request id (see BrowserSessionsBackground) can never match,
+    // so the request it is meant to unblock stayed in a "hanged" state instead.
+    test('unexpected error response is paired with the request id', async () => {
         const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
 
         // unknown message type, handled by the `default` branch which throws
@@ -334,7 +333,7 @@ describe('sessions', () => {
         expect(response).toEqual({
             success: false,
             error: { code: 'unexpected error' },
-            id: 'bogus',
+            id: 7,
         });
 
         consoleError.mockRestore();
