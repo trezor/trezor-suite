@@ -32,5 +32,5 @@ export const factoryPrivileged = <
         (core as any)[method] = (params: any) => core.call({ ...params, method });
     }
 
-    return core as ExtendedPrivilegedAPI<C>;
+    return core as unknown as ExtendedPrivilegedAPI<C>;
 };
