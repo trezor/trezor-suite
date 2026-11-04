@@ -116,7 +116,16 @@ export const composeTransaction =
             formValues,
             formState,
             predefinedLevels,
-            calculateStakingTransaction,
+            (availableBalance, output, feeLevel, compareWithAmount, symbol) =>
+                calculateStakingTransaction(
+                    availableBalance,
+                    stakeType === 'stake' && output.type === 'send-max'
+                        ? { type: 'send-max', address: output.address }
+                        : output,
+                    feeLevel,
+                    compareWithAmount,
+                    symbol,
+                ),
             undefined,
             customFeeLimit,
         );
