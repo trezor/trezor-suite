@@ -43,6 +43,8 @@ type WithdrawalContextValues = WithdrawalContextValuesBase & {
     unstakableBalance: string;
     /** A Cardano account with nothing spendable cannot pay the deregistration fee. */
     isCardanoBalanceEmpty: boolean;
+    hasComposeError: boolean;
+    retryCompose: () => Promise<void>;
     amountLimits: AmountLimitProps;
     approximatedInstantEthAmount?: string | null;
     setRatioAmount: (divisor: number) => void;
@@ -182,6 +184,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
 
     const {
         isLoading: isComposing,
+        hasComposeError,
         composeRequest,
         composedLevels,
         onFeeLevelChange,
@@ -337,6 +340,8 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         onFiatAmountChange,
         baseCurrencyCode,
         composedLevels,
+        hasComposeError,
+        retryCompose: composeRequest,
         isComposing,
         selectedFee,
         clearForm,
