@@ -6,17 +6,17 @@ import {
 } from '@suite-common/wallet-core';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import {
-    type TrackStakingStepConfirmationThunkDeps,
-    type TrackStakingStepConfirmationThunkState,
-    trackStakingStepConfirmationThunk,
-} from './trackStakingStepConfirmationThunk';
 import type { StakingDep } from '../stakingServices';
 import { callStakingAdapter, warnStakingAdapterFailure } from './callStakingAdapter';
 import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
 import { getEarnTransactionFlow } from './getEarnTransactionFlow';
 import type { StakingEngineRejection } from './stakingEngineRejection';
-import { type StakingRootState, stakingActions } from '../state/stakingReducer';
+import {
+    type TrackStakingStepConfirmationThunkDeps,
+    type TrackStakingStepConfirmationThunkState,
+    trackStakingStepConfirmationThunk,
+} from './trackStakingStepConfirmationThunk';
+import { stakingActions } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
 import { selectStakingStepContext } from '../state/stakingSessionSelectors';
 
@@ -24,8 +24,7 @@ type BroadcastStakingStepParams = {
     sessionKey: StakingSessionKey;
 };
 
-export type BroadcastStakingStepThunkState = StakingRootState &
-    TrackStakingStepConfirmationThunkState;
+export type BroadcastStakingStepThunkState = TrackStakingStepConfirmationThunkState;
 
 export type BroadcastStakingStepThunkDeps = WithServices<StakingDep> &
     TrackStakingStepConfirmationThunkDeps;
