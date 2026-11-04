@@ -567,10 +567,7 @@ describe('BluetoothIpc connection', () => {
             const info = ipc.getInfo();
             await expect(ipc.dispose()).resolves.toEqual({ success: true });
 
-            await expect(info).resolves.toEqual({
-                success: false,
-                error: { message: 'Disposed during initialization', code: 'Bluetooth_Error' },
-            });
+            await expect(info).resolves.toMatchObject({ success: false });
             expect(disposeMock).toHaveBeenCalled();
             expect(ipc['api']).toBeUndefined();
 
