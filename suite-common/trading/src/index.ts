@@ -68,6 +68,7 @@ export * from './utils/exchange/signDataUtils';
 export * from './utils/sell/sellUtils';
 export * from './utils/signature/signatureUtils';
 export * from './utils/countryUtils';
+export * from './utils/tradingErrorUtils';
 export * from './utils/typeGuards';
 export * from './utils/slippageFormValidationSchema';
 export * from './utils/formatSlippagePercent';

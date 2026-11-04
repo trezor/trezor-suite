@@ -1,4 +1,3 @@
-import { type SerializedError } from '@reduxjs/toolkit';
 import type {
     BtcSwapComposeTemplate,
     BuyCryptoPaymentMethod,
@@ -23,6 +22,7 @@ import type {
 import { type CountryCode } from '@suite-common/geolocation';
 import { type Network } from '@suite-common/networks';
 import { type TokenAddress } from '@suite-common/tokens';
+import { type SendFormError } from '@suite-common/wallet-core';
 import {
     type Account,
     type AccountKey,
@@ -359,4 +359,14 @@ export type TradingVerifiedAddress =
       }
     | undefined;
 
-export type TradingFulfillValue = Ok<{ txid: string }> | Err<SerializedError> | undefined;
+export type PushApprovalRejectedError = {
+    error: 'push-approval-rejected';
+};
+
+export type TradingSignAndPushError = SendFormError | PushApprovalRejectedError;
+
+/**
+ * Result of signing and pushing a trading transaction.
+ * `undefined` means the flow stopped and the user was already informed, so nothing is left to report.
+ */
+export type TradingFulfillValue = Ok<{ txid: string }> | Err<TradingSignAndPushError> | undefined;

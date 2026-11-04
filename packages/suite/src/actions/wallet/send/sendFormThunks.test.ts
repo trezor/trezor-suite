@@ -96,7 +96,7 @@ const precomposedTransaction: PrecomposedTransactionFinal = {
 };
 const analytics = mockDesktopAnalytics();
 
-const send = async () => {
+const signAndPush = async () => {
     const getState = mock<() => SignAndPushSendFormTransactionThunkState>();
     const extra: SignAndPushSendFormTransactionThunkDeps = {
         actions: { onModalCancel: closeModal },
@@ -111,14 +111,16 @@ const send = async () => {
     };
     const { actions, dispatch } = createMockDispatch({ getState, extra });
 
-    await signAndPushSendFormTransactionThunk({
+    const result = await signAndPushSendFormTransactionThunk({
         selectedAccount: account,
         formState,
         precomposedTransaction,
     })(dispatch, getState, extra).unwrap();
 
-    return actions;
+    return { actions, result };
 };
+
+const send = async () => (await signAndPush()).actions;
 
 const rejectedSign = (payload: SignTransactionError | SignTransactionTimeoutError) => () =>
     Promise.resolve({
@@ -258,5 +260,45 @@ describe('Send device confirmation and Earn allowance cancellation', () => {
         await send();
         expect(cancelEvents()).toEqual([]);
         expect(confirmedEvents()).toEqual([]);
+    });
+});
+
+describe('signAndPushSendFormTransactionThunk result', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockIsYieldTransaction = false;
+        mockPushSuccess = false;
+        mockEnhanceTransaction.mockImplementation(() => () => {
+            const result = Promise.resolve(precomposedTransaction);
+
+            return Object.assign(result, { unwrap: () => result });
+        });
+        mockSignTransaction.mockImplementation(
+            () => () =>
+                Promise.resolve({
+                    type: 'test/sign/fulfilled',
+                    payload: { serializedTx: 'signed' },
+                    meta: { requestStatus: 'fulfilled', requestId: 'test-sign' },
+                }),
+        );
+        mockOpenReview.mockImplementation(() => () => Promise.resolve(true));
+    });
+
+    it('returns the original timeout error when signing times out', async () => {
+        const timeoutError: SignTransactionTimeoutError = {
+            error: 'sign-transaction-timeout',
+            message: 'Signing process timed out.',
+        };
+        mockSignTransaction.mockImplementation(() => rejectedSign(timeoutError));
+
+        const { result } = await signAndPush();
+
+        expect(result).toEqual({ success: false, error: timeoutError });
+    });
+
+    it('returns the original push error when pushing fails', async () => {
+        const { result } = await signAndPush();
+
+        expect(result).toEqual({ success: false, error: { error: 'push-transaction-failed' } });
     });
 });

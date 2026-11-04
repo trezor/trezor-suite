@@ -331,13 +331,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
 
             // Keep the modal open to show the expired transaction state.
             if (signResponse.payload?.error === 'sign-transaction-timeout') {
-                return {
-                    success: false,
-                    error: {
-                        code: 'sign-transaction-timeout',
-                        message: signResponse.payload.message,
-                    },
-                };
+                return { success: false, error: signResponse.payload };
             }
 
             if (
@@ -407,7 +401,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         if (isRejected(pushResponse)) {
             dispatch(sendFormActions.clearSignedTransactionData());
 
-            return pushResponse.payload?.metadata;
+            return pushResponse.payload && { success: false, error: pushResponse.payload };
         }
 
         const result = pushResponse.payload;
