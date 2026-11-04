@@ -74,7 +74,7 @@ describe('toPrecomposedLevels', () => {
         const levels = toPrecomposedLevels(
             mockComposedStakingStep({
                 feeLevels: {
-                    economy: mockStakingErrorFeeLevel(),
+                    low: mockStakingErrorFeeLevel(),
                     normal: mockStakingFinalFeeLevel(),
                     high: mockStakingErrorFeeLevel({
                         error: 'TR_STAKE_TX_PREPARATION_FAILED',
@@ -84,7 +84,7 @@ describe('toPrecomposedLevels', () => {
             }),
         );
 
-        expect(levels.economy).toEqual({
+        expect(levels.low).toEqual({
             type: 'error',
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
             errorMessage: {
@@ -97,6 +97,6 @@ describe('toPrecomposedLevels', () => {
             error: 'TR_STAKE_TX_PREPARATION_FAILED',
             errorMessage: undefined,
         });
-        expect(Object.keys(levels)).toEqual(['economy', 'normal', 'high']);
+        expect(Object.keys(levels)).toEqual(['low', 'normal', 'high']);
     });
 });

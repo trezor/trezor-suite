@@ -4,9 +4,10 @@ import type { FeeLevel } from '@trezor/connect-common';
 
 import { stakingAmountSchema } from './stakingAmount';
 
+// Bitcoin's economy tier has no staking counterpart: every staking
+// network composes low, normal and high, or a single normal level.
 export const STAKING_FEE_LEVEL_LABELS = [
     'low',
-    'economy',
     'normal',
     'high',
     'custom',

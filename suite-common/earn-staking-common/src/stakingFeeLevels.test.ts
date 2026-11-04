@@ -96,10 +96,7 @@ describe('stakingFeeLevelSchema', () => {
 
 describe('stakingFeeLevelsSchema', () => {
     it('parses every level a compose can return', () => {
-        const feeLevels = mockStakingFeeLevels({
-            low: mockStakingFinalFeeLevel({ feePerUnit: '0.5' }),
-            custom: mockStakingErrorFeeLevel(),
-        });
+        const feeLevels = mockStakingFeeLevels({ custom: mockStakingErrorFeeLevel() });
 
         expect(stakingFeeLevelsSchema.parse(feeLevels)).toEqual(feeLevels);
     });
@@ -116,13 +113,15 @@ describe('stakingFeeLevelsSchema', () => {
         expect(result.success).toBe(false);
     });
 
-    it('names every fee level label connect knows', () => {
+    it('uses connect labels and leaves out the bitcoin-only economy tier', () => {
         const labels: readonly FeeLevel['label'][] = STAKING_FEE_LEVEL_LABELS;
-        const connectLabel: FeeLevel['label'] = 'economy';
-        const stakingLabel: StakingFeeLevelLabel = connectLabel;
+        const stakingLabel: StakingFeeLevelLabel = 'low';
 
-        expect(labels).toHaveLength(5);
-        expect(stakingLabel).toBe('economy');
+        expect(labels).toEqual(['low', 'normal', 'high', 'custom']);
+        expect(stakingLabel).toBe('low');
+        expect(
+            stakingFeeLevelsSchema.safeParse({ economy: mockStakingFinalFeeLevel() }).success,
+        ).toBe(false);
     });
 });
 
