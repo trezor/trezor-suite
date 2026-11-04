@@ -184,6 +184,18 @@ describe('signTransactionThunk', () => {
         expect(selectStake(getState()).precomposedTx).toBeUndefined();
     });
 
+    it('forgets the review account when signing is cancelled on the device', async () => {
+        mockCardanoSignTransactionThunk.mockReturnValue(() =>
+            Promise.resolve({ success: false, error: { message: 'Failure_ActionCancelled' } }),
+        );
+
+        const { getState } = await signStakeTransaction();
+
+        expect(pushTransactionMock).not.toHaveBeenCalled();
+        expect(selectStakeAccountKey(getState())).toBeUndefined();
+        expect(selectStake(getState()).precomposedTx).toBeUndefined();
+    });
+
     it('keeps the review account for a retry when signing times out', async () => {
         mockCardanoSignTransactionThunk.mockReturnValue(() =>
             Promise.resolve({ success: false, error: { message: 'tx-timeout' } }),
