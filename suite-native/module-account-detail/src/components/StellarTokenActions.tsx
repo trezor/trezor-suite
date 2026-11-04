@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isZero } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
@@ -42,14 +42,14 @@ export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenA
 
     const [isComposingFees, setIsComposingFees] = useState(false);
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const networkType = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkType(state, accountKey),
     );
     const tokenBalance = useSelector((state: TokensRootState) =>
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 
-    if (account?.networkType !== 'stellar' || !tokenContract) {
+    if (networkType !== 'stellar' || !tokenContract) {
         return null;
     }
 

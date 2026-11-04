@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     type AccountsRootState,
-    selectAccountByKey,
+    selectAccountNetworkSymbol,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -25,10 +25,10 @@ export const AccountDetailEmptyState = ({
     tokenContract,
     isRecentWindowEmpty,
 }: AccountDetailEmptyStateProps) => {
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
     );
-    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account?.symbol);
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(networkSymbol);
     const isUnrecognizedToken = useSelector(
         (state: TokenDefinitionsRootState & AccountsRootState) =>
             selectIsUnrecognizedToken(state, accountKey, tokenContract),

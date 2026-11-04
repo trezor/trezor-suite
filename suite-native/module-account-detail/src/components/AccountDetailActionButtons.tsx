@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, HStack } from '@suite-native/atoms';
@@ -41,8 +41,8 @@ export const AccountDetailActionButtons = ({
     const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProp>();
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
     );
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
@@ -56,14 +56,14 @@ export const AccountDetailActionButtons = ({
             selectHasAccountOrTokenSpendableBalance(state, accountKey, tokenContract),
     );
 
-    if (!account) return null;
+    if (networkSymbol === null) return null;
 
     const handleReceive = () => {
         analytics.report({
             type: events.receiveFlowEnteredEvent.name,
             payload: {
                 location: 'accountDetail',
-                assetSymbol: account.symbol,
+                assetSymbol: networkSymbol,
                 tokenSymbol: token?.symbol,
                 tokenContract,
             },
@@ -83,7 +83,7 @@ export const AccountDetailActionButtons = ({
             type: events.sendFlowEnteredEvent.name,
             payload: {
                 location: 'accountDetail',
-                assetSymbol: account.symbol,
+                assetSymbol: networkSymbol,
                 tokenSymbol: token?.symbol,
                 tokenContract,
             },
