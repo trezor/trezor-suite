@@ -1,5 +1,5 @@
 import { ContextMessage } from '@suite/message-system';
-import { selectRouter } from '@suite/router';
+import { selectRouteName } from '@suite/router';
 import { Context } from '@suite-common/message-system';
 import {
     isSupportedAdaStakingNetworkSymbol,
@@ -29,28 +29,28 @@ type AccountBannersProps = {
 };
 
 export const AccountBanners = ({ account }: AccountBannersProps) => {
-    const { route } = useSelector(selectRouter);
+    const routeName = useSelector(selectRouteName);
 
     return (
         <Column gap={12}>
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && (
+                routeName === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('eth')} />
                 )}
             {account?.symbol &&
                 isSupportedSolStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && (
+                routeName === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('sol')} />
                 )}
             {account?.symbol &&
                 isSupportedTronStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && (
+                routeName === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('trx')} />
                 )}
             {account?.symbol &&
                 isSupportedAdaStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && (
+                routeName === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('ada')} />
                 )}
             <BackendDisconnected />
