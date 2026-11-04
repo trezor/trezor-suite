@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TradeExchangeAction, events, injectDesktopAnalytics } from '@suite/analytics';
@@ -25,7 +26,7 @@ import {
     useExchangeIssue,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { Button, Card, Column, H2, Row } from '@trezor/components';
+import { Button, Card, Column, H2, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowsClockwiseIcon } from '@trezor/icons';
 import { useAsyncClickHandler, useIsPastDeadline } from '@trezor/react-utils';
@@ -45,7 +46,11 @@ import { useExchangeIssueAnalytics } from './useExchangeIssueAnalytics';
 import { TradingInfoItem } from '../TradingInfo/TradingInfoItem';
 import { getTradingNetworkFeeEdit } from '../TradingInfo/getTradingNetworkFeeEdit';
 
-export const TradingOfferExchange = () => {
+type TradingOfferExchangeProps = {
+    stepLabel?: ReactNode;
+};
+
+export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) => {
     const { handleClick, disabled } = useAsyncClickHandler();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
@@ -163,109 +168,112 @@ export const TradingOfferExchange = () => {
     };
 
     return (
-        <Column width="100%" alignItems="center">
-            <Card width="100%" maxWidth="440px" data-testid="@trading/selected-offer">
-                <Column gap={20}>
-                    <Column gap={4} alignItems="start">
-                        <Row justifyContent="space-between" alignItems="center" width="100%">
-                            <H2 typographyStyle="headline-sm">
-                                <Translation id="TR_TRADING_REVIEW_SWAP" />
-                            </H2>
-                            {providerTransactionDeadline !== undefined && (
-                                <TxValidityCountdownBadge
-                                    deadline={providerTransactionDeadline}
-                                    pastDeadlineMessage="TR_TRADING_QUOTE_EXPIRED_TITLE"
-                                    data-testid="@trading/offer/validity-timer"
-                                />
-                            )}
-                        </Row>
-                        <TradingOfferExchangeSimulationSubtitle
-                            isSimulationEnabled={isSimulationEnabled}
-                            isSimulationLoading={isSimulationLoading}
-                            hasSimulationError={!!simulationError}
-                        />
-                    </Column>
-                    <TradingInfoItem
-                        key={amountLabels.sendLabel}
-                        account={sendAccount}
-                        label={amountLabels.sendLabel}
-                        currency={selectedTrade.send}
-                        amount={selectedTrade.sendStringAmount}
+        <Card width="100%" data-testid="@trading/selected-offer">
+            <Column gap={20}>
+                <Column gap={4} alignItems="start">
+                    {stepLabel && (
+                        <Text typographyStyle="body-sm-strong" case="small-caps" intent="brand">
+                            {stepLabel}
+                        </Text>
+                    )}
+                    <Row justifyContent="space-between" alignItems="center" width="100%">
+                        <H2 typographyStyle="headline-sm">
+                            <Translation id="TR_TRADING_REVIEW_SWAP" />
+                        </H2>
+                        {providerTransactionDeadline !== undefined && (
+                            <TxValidityCountdownBadge
+                                deadline={providerTransactionDeadline}
+                                pastDeadlineMessage="TR_TRADING_QUOTE_EXPIRED_TITLE"
+                                data-testid="@trading/offer/validity-timer"
+                            />
+                        )}
+                    </Row>
+                    <TradingOfferExchangeSimulationSubtitle
+                        isSimulationEnabled={isSimulationEnabled}
+                        isSimulationLoading={isSimulationLoading}
+                        hasSimulationError={!!simulationError}
                     />
-
-                    <TradingInfoItem
-                        key={amountLabels.receiveLabel}
-                        account={receiveAccount}
-                        label={amountLabels.receiveLabel}
-                        currency={selectedTrade.receive}
-                        amount={receiveAmount}
-                        isAmountLoading={isSimulationLoading}
-                        receiveAddress={selectedTrade.receiveAddress}
-                        isReceive
-                    />
-                    {sendAccount && (
-                        <TradingOfferExchangeDetails
-                            account={sendAccount}
-                            exchangeQuote={selectedTrade}
-                            receiveAmount={receiveAmount}
-                            providers={providers as TradingExchangeProvidersInfoProps}
-                            exchange={exchange}
-                            networkFeeEdit={networkFeeEdit}
-                        />
-                    )}
-
-                    {issue && (
-                        <TradingOfferExchangeIssueBanner
-                            issue={issue}
-                            isContinueDisabled={isConfirmDisabled || disabled}
-                            isContinueLoading={isLoading || disabled}
-                            onContinueAnywayClick={() => handleClick(() => onConfirmAndSendClick())}
-                        />
-                    )}
-
-                    {isProviderTransactionExpired && (
-                        <Button
-                            data-testid="@trading/offer/refresh-transaction"
-                            iconLeft={ArrowsClockwiseIcon}
-                            intent="warning"
-                            priority="secondary"
-                            isLoading={disabled}
-                            isDisabled={isLoading || disabled}
-                            onClick={() => handleClick(refreshSelectedQuote)}
-                            size="large"
-                            width="100%"
-                        >
-                            <Translation id="TR_TRADING_REFRESH_TRANSACTION" />
-                        </Button>
-                    )}
-
-                    {!isProviderTransactionExpired && issue && (
-                        <Button
-                            data-testid="@trading/offer/back-to-trade-form"
-                            intent="neutral"
-                            isDisabled={isLoading || disabled}
-                            onClick={onBackToTradeFormClick}
-                            size="large"
-                            width="100%"
-                        >
-                            <Translation id="TR_TRADING_BACK_TO_TRADE_FORM" />
-                        </Button>
-                    )}
-
-                    {!isProviderTransactionExpired && !issue && (
-                        <Button
-                            data-testid="@trading/offer/confirm-on-trezor-and-send"
-                            isLoading={isLoading || disabled}
-                            isDisabled={isConfirmDisabled || disabled}
-                            onClick={() => handleClick(() => onConfirmAndSendClick())}
-                            size="large"
-                            width="100%"
-                        >
-                            <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
-                        </Button>
-                    )}
                 </Column>
-            </Card>
-        </Column>
+                <TradingInfoItem
+                    key={amountLabels.sendLabel}
+                    account={sendAccount}
+                    label={amountLabels.sendLabel}
+                    currency={selectedTrade.send}
+                    amount={selectedTrade.sendStringAmount}
+                />
+
+                <TradingInfoItem
+                    key={amountLabels.receiveLabel}
+                    account={receiveAccount}
+                    label={amountLabels.receiveLabel}
+                    currency={selectedTrade.receive}
+                    amount={receiveAmount}
+                    isAmountLoading={isSimulationLoading}
+                    receiveAddress={selectedTrade.receiveAddress}
+                    isReceive
+                />
+                {sendAccount && (
+                    <TradingOfferExchangeDetails
+                        account={sendAccount}
+                        exchangeQuote={selectedTrade}
+                        receiveAmount={receiveAmount}
+                        providers={providers as TradingExchangeProvidersInfoProps}
+                        exchange={exchange}
+                        networkFeeEdit={networkFeeEdit}
+                    />
+                )}
+
+                {issue && (
+                    <TradingOfferExchangeIssueBanner
+                        issue={issue}
+                        isContinueDisabled={isConfirmDisabled || disabled}
+                        isContinueLoading={isLoading || disabled}
+                        onContinueAnywayClick={() => handleClick(() => onConfirmAndSendClick())}
+                    />
+                )}
+
+                {isProviderTransactionExpired && (
+                    <Button
+                        data-testid="@trading/offer/refresh-transaction"
+                        iconLeft={ArrowsClockwiseIcon}
+                        intent="warning"
+                        priority="secondary"
+                        isLoading={disabled}
+                        isDisabled={isLoading || disabled}
+                        onClick={() => handleClick(refreshSelectedQuote)}
+                        size="large"
+                        width="100%"
+                    >
+                        <Translation id="TR_TRADING_REFRESH_TRANSACTION" />
+                    </Button>
+                )}
+
+                {!isProviderTransactionExpired && issue && (
+                    <Button
+                        data-testid="@trading/offer/back-to-trade-form"
+                        intent="neutral"
+                        isDisabled={isLoading || disabled}
+                        onClick={onBackToTradeFormClick}
+                        size="large"
+                        width="100%"
+                    >
+                        <Translation id="TR_TRADING_BACK_TO_TRADE_FORM" />
+                    </Button>
+                )}
+
+                {!isProviderTransactionExpired && !issue && (
+                    <Button
+                        data-testid="@trading/offer/confirm-on-trezor-and-send"
+                        isLoading={isLoading || disabled}
+                        isDisabled={isConfirmDisabled || disabled}
+                        onClick={() => handleClick(() => onConfirmAndSendClick())}
+                        size="large"
+                        width="100%"
+                    >
+                        <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
+                    </Button>
+                )}
+            </Column>
+        </Card>
     );
 };
