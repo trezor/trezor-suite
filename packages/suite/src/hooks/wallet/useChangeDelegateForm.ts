@@ -128,19 +128,13 @@ export const useChangeDelegateForm = ({
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
 
         if (composedTx?.type === 'final') {
-            try {
-                const result = await dispatch(
-                    signTransactionThunk({
-                        accountKey: account.key,
-                        formValues: values,
-                        transactionInfo: composedTx,
-                    }),
-                );
-
-                if (result?.success) {
-                    clearForm();
-                }
-            } catch (error) {
+            const result = await dispatch(
+                signTransactionThunk({
+                    accountKey: account.key,
+                    formValues: values,
+                    transactionInfo: composedTx,
+                }),
+            ).catch((error: unknown) => {
                 dispatch(stakeActions.requestSignTransaction());
                 dispatch(
                     notificationsActions.addToast({
@@ -152,6 +146,12 @@ export const useChangeDelegateForm = ({
                     'Change delegate signing failed',
                     error instanceof Error ? error.name : 'UnknownError',
                 );
+
+                return undefined;
+            });
+
+            if (result?.success) {
+                clearForm();
             }
         }
     }, [
