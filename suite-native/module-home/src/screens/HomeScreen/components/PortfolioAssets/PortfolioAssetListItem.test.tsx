@@ -11,6 +11,8 @@ import { PortfolioAssetListItem } from './PortfolioAssetListItem';
 
 const mockNavigate = jest.fn();
 
+jest.mock('@suite-native/earn', () => ({ AssetYieldRateBadge: () => null }));
+
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({ navigate: mockNavigate }),

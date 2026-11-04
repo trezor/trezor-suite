@@ -1,3 +1,4 @@
+export { AssetYieldRateBadge } from './components/AssetYieldRateBadge';
 export { useAssetYieldRate } from './hooks/useAssetYieldRate';
 export type {
     AssetYieldRate,
@@ -7,7 +8,10 @@ export type {
 export { useMessageSystemStaking } from './hooks/useMessageSystemStaking';
 export { useMessageSystemYield } from './hooks/useMessageSystemYield';
 export { useStakingRate } from './hooks/useStakingRate';
-export { getStakingRateLabelType } from './utils/getYieldRateLabelType';
+export {
+    getStakingRateLabelType,
+    upToYieldRateTranslationIds,
+} from './utils/getYieldRateLabelType';
 export type { YieldRateLabelType } from './utils/getYieldRateLabelType';
 export {
     EARN_PROMO_SYMBOLS,

@@ -5,6 +5,7 @@ import {
     type TokenYieldRateToken,
     type TokenYieldRateVariant,
     type YieldRateLabelType,
+    upToYieldRateTranslationIds,
 } from '@suite-native/earn';
 import { Icon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
@@ -12,11 +13,7 @@ import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { useTokenYieldRate } from '../../hooks/yield/useTokenYieldRate';
 
 const translationIds: Record<TokenYieldRateVariant, Record<YieldRateLabelType, TxKeyPath>> = {
-    inactive: {
-        apy: 'earn.yieldRateBadge.upToApy',
-        apr: 'earn.yieldRateBadge.upToApr',
-        rate: 'earn.yieldRateBadge.upToRate',
-    },
+    inactive: upToYieldRateTranslationIds,
     active: {
         apy: 'earn.yieldRateBadge.apy',
         apr: 'earn.yieldRateBadge.apr',

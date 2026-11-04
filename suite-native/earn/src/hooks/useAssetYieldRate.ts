@@ -16,6 +16,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { isArrayMember } from '@trezor/utils';
 
+import { useMessageSystemStaking } from './useMessageSystemStaking';
 import { useMessageSystemYield } from './useMessageSystemYield';
 import { useStakingRate } from './useStakingRate';
 import {
@@ -94,9 +95,10 @@ export const useAssetYieldRate = ({
         selectBestEnabledYieldVault(state, matchedVaults),
     );
 
+    const { isStakingDisabled } = useMessageSystemStaking(networkSymbol);
     const { rate: stakingRate } = useStakingRate({ symbol: networkSymbol, accountKey });
     const promotedStakingRate =
-        token === undefined && isArrayMember(networkSymbol, stakingSymbols)
+        token === undefined && !isStakingDisabled && isArrayMember(networkSymbol, stakingSymbols)
             ? stakingRate
             : null;
 

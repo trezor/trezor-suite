@@ -16,6 +16,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
+import { AssetYieldRateBadge } from '@suite-native/earn';
 import {
     BaseCurrencyAmountFormatter,
     CompactCryptoAmountFormatter,
@@ -98,11 +99,19 @@ export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps
             />
             <VStack flex={1} spacing="sp4">
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
-                    <Box flex={1}>
-                        <Text variant="body-sm" numberOfLines={1}>
-                            {displaySymbol}
-                        </Text>
-                    </Box>
+                    <HStack flex={1} alignItems="center" spacing="sp8">
+                        <Box flexShrink={1}>
+                            <Text variant="body-sm" numberOfLines={1}>
+                                {displaySymbol}
+                            </Text>
+                        </Box>
+                        <AssetYieldRateBadge
+                            networkSymbol={symbol}
+                            contractAddress={contractAddress}
+                            tokenSymbol={tokenSymbol}
+                            tokenDecimals={tokenDecimals}
+                        />
+                    </HStack>
                     <BaseCurrencyAmountFormatter
                         value={fiatValue ?? null}
                         symbol={symbol}
