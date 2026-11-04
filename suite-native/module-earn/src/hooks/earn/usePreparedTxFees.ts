@@ -30,14 +30,14 @@ import { deepEqual } from '@trezor/utils';
 import { useComposeErrorHandler } from './useComposeErrorHandler';
 import { useEarnFeeEstimationError } from './useEarnFeeEstimationError';
 import {
-    type YieldDepositFeeToken,
-    buildYieldDepositFeeDraftState,
-    buildYieldDepositFeePreview,
-} from '../../utils/yield/yieldDepositFeeUtils';
+    type PreparedTxFeeToken,
+    buildPreparedTxFeeDraftState,
+    buildPreparedTxFeePreview,
+} from '../../utils/earn/preparedTxFeeUtils';
 
 export type ComposedTxBase = {
     symbol: NetworkSymbol;
-    token: YieldDepositFeeToken;
+    token: PreparedTxFeeToken;
     unsignedTransaction: string;
 };
 
@@ -63,8 +63,7 @@ type BaseActionContext<TComposed extends ComposedTxBase> = {
 type UsePreparedTxFeesParams<TComposed extends ComposedTxBase, TReason extends string> = {
     amount: string | undefined;
     /**
-     * Composes the base transaction for the debounced amount. Must not throw — map failures to
-     * the `error` result. Every error is surfaced as a retryable alert; a failure that only
+     * Composes the base transaction for the debounced amount. Thrown failures use fallbackReason. Every error is surfaced as a retryable alert; a failure that only
      * disables the submit button leaves the user with no way to proceed.
      */
     composeTransaction: (amount: string) => Promise<ComposeTxResult<TComposed, TReason>>;
@@ -197,7 +196,7 @@ export const usePreparedTxFees = <
                 return;
             }
 
-            const baseFeePreview = buildYieldDepositFeePreview(
+            const baseFeePreview = buildPreparedTxFeePreview(
                 result.transaction.unsignedTransaction,
             );
 
@@ -240,7 +239,7 @@ export const usePreparedTxFees = <
             return null;
         }
 
-        return buildYieldDepositFeeDraftState({
+        return buildPreparedTxFeeDraftState({
             currentFormDraft: formDraft,
             amount: baseActionContext.amount,
             feeInfo: currentFeeInfo,
@@ -266,7 +265,7 @@ export const usePreparedTxFees = <
         const feePreview =
             unsignedTransaction === baseActionContext.transaction.unsignedTransaction
                 ? baseActionContext.baseFeePreview
-                : buildYieldDepositFeePreview(unsignedTransaction);
+                : buildPreparedTxFeePreview(unsignedTransaction);
 
         if (!feePreview) {
             return null;

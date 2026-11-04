@@ -20,17 +20,17 @@ import { createDeferred } from '@trezor/utils';
 
 import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';
 import {
-    buildYieldDepositFeeDraftState,
-    buildYieldDepositFeePreview,
-} from '../../utils/yield/yieldDepositFeeUtils';
+    buildPreparedTxFeeDraftState,
+    buildPreparedTxFeePreview,
+} from '../../utils/earn/preparedTxFeeUtils';
 
-jest.mock('../../utils/yield/yieldDepositFeeUtils', () => ({
-    buildYieldDepositFeeDraftState: jest.fn(),
-    buildYieldDepositFeePreview: jest.fn(),
+jest.mock('../../utils/earn/preparedTxFeeUtils', () => ({
+    buildPreparedTxFeeDraftState: jest.fn(),
+    buildPreparedTxFeePreview: jest.fn(),
 }));
 
-const buildFeeDraftStateMock = jest.mocked(buildYieldDepositFeeDraftState);
-const buildFeePreviewMock = jest.mocked(buildYieldDepositFeePreview);
+const buildFeeDraftStateMock = jest.mocked(buildPreparedTxFeeDraftState);
+const buildFeePreviewMock = jest.mocked(buildPreparedTxFeePreview);
 
 const FORM_DRAFT_KEY = 'earn/test-flow/test-account';
 const BASE_UNSIGNED_TX = '0xbase';
@@ -47,7 +47,7 @@ const FEE_LEVELS = {
 
 const FORM_DRAFT = { selectedFee: 'normal', feePerUnit: '10' } as unknown as FormState;
 
-type FeeDraftState = NonNullable<ReturnType<typeof buildYieldDepositFeeDraftState>>;
+type FeeDraftState = NonNullable<ReturnType<typeof buildPreparedTxFeeDraftState>>;
 
 const FEE_DRAFT_STATE = {
     feeLevels: FEE_LEVELS,
