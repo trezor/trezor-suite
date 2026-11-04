@@ -1,4 +1,3 @@
-import type { Address, BundledParams, GetAddress, Params, Response } from '../../params';
+import type { Address, BundleableMethod, GetAddress } from '../../params';
 
-export declare function rippleGetAddress(params: Params<GetAddress>): Response<Address>;
-export declare function rippleGetAddress(params: BundledParams<GetAddress>): Response<Address[]>;
+export declare const rippleGetAddress: BundleableMethod<GetAddress, Address>;

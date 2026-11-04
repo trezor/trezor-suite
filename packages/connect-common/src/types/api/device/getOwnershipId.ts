@@ -3,7 +3,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { CoinSymbolParam } from '../../coinInfo';
-import type { BundledParams, Params, Response } from '../../params';
+import type { BundleableMethod } from '../../params';
 import { DerivationPath } from '../../params';
 
 export type GetOwnershipId = Static<typeof GetOwnershipId>;
@@ -19,7 +19,4 @@ export interface OwnershipId extends PROTO.OwnershipId {
     serializedPath: string;
 }
 
-export declare function getOwnershipId(params: Params<GetOwnershipId>): Response<OwnershipId>;
-export declare function getOwnershipId(
-    params: BundledParams<GetOwnershipId>,
-): Response<OwnershipId[]>;
+export declare const getOwnershipId: BundleableMethod<GetOwnershipId, OwnershipId>;

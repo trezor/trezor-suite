@@ -1,7 +1,4 @@
 import type { SolanaPublicKey } from './common';
-import type { BundledParams, GetPublicKey, Params, Response } from '../../params';
+import type { BundleableMethod, GetPublicKey } from '../../params';
 
-export declare function solanaGetPublicKey(params: Params<GetPublicKey>): Response<SolanaPublicKey>;
-export declare function solanaGetPublicKey(
-    params: BundledParams<GetPublicKey>,
-): Response<SolanaPublicKey[]>;
+export declare const solanaGetPublicKey: BundleableMethod<GetPublicKey, SolanaPublicKey>;

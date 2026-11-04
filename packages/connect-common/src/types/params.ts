@@ -50,6 +50,14 @@ export interface OkWithDevice<T> extends Ok<T> {
 
 export type Response<T> = Promise<OkWithDevice<T> | Err<SerializedError>>;
 
+/**
+ * Method accepting a single request, or a `bundle` of requests answered with an array of results.
+ */
+export type BundleableMethod<T, R> = {
+    (params: Params<T>): Response<R>;
+    (params: BundledParams<T>): Response<R[]>;
+};
+
 export type DerivationPath = string | number[];
 export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())], {
     description: 'Derivation Path (BIP32).',

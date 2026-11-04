@@ -1,4 +1,3 @@
-import type { Address, BundledParams, GetAddress, Params, Response } from '../../params';
+import type { Address, BundleableMethod, GetAddress } from '../../params';
 
-export declare function ethereumGetAddress(params: Params<GetAddress>): Response<Address>;
-export declare function ethereumGetAddress(params: BundledParams<GetAddress>): Response<Address[]>;
+export declare const ethereumGetAddress: BundleableMethod<GetAddress, Address>;

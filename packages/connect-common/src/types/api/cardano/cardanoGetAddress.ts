@@ -1,9 +1,4 @@
 import type { CardanoAddress, CardanoGetAddress } from './common';
-import type { BundledParams, Params, Response } from '../../params';
+import type { BundleableMethod } from '../../params';
 
-export declare function cardanoGetAddress(
-    params: Params<CardanoGetAddress>,
-): Response<CardanoAddress>;
-export declare function cardanoGetAddress(
-    params: BundledParams<CardanoGetAddress>,
-): Response<CardanoAddress[]>;
+export declare const cardanoGetAddress: BundleableMethod<CardanoGetAddress, CardanoAddress>;
