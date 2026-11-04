@@ -20,6 +20,11 @@ on:
         required: false
         default: "false"
         type: string
+    secrets:
+      TREZOR_BOT_APP_ID:
+        required: true
+      TREZOR_BOT_PRIVATE_KEY:
+        required: true
 
 concurrency:
   group: native-manual-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
