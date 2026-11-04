@@ -8,9 +8,11 @@ import type { StakingSessionKey } from './stakingSessionKey';
 import {
     STAKING_ACTIVE_STEP_STATUSES,
     STAKING_IN_FLIGHT_STEP_STATUSES,
-    STAKING_SESSIONS_ACTION_PREFIX,
     type StakingSessionStep,
     type StakingSessionStepStatus,
+} from './stakingSessionStep';
+import {
+    STAKING_SESSIONS_ACTION_PREFIX,
     isStakingSessionStepAction,
     stakingSessionStepsActions,
     stakingSessionStepsReducer,

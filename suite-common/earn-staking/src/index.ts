@@ -116,13 +116,18 @@ export {
     STAKING_IN_FLIGHT_STEP_STATUSES,
     STAKING_STEP_ERROR_KINDS,
     isStakingReviewStep,
-    stakingSessionStepsReducer,
     type StakingReviewStep,
     type StakingSessionStep,
     type StakingSessionStepStatus,
     type StakingStepError,
     type StakingStepErrorKind,
-} from './state/stakingSessionStepsReducer';
+} from './state/stakingSessionStep';
+export { stakingSessionStepsReducer } from './state/stakingSessionStepsReducer';
+export {
+    transitionStakingStep,
+    type StakingStepEvent,
+    type StakingStepEventType,
+} from './state/stakingStepTransition';
 export {
     hasStakingStepWithStatus,
     type StakingSession,

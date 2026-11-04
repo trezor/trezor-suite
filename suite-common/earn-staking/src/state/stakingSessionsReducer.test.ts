@@ -10,7 +10,7 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import type { StakingStepError } from './stakingSessionStepsReducer';
+import type { StakingStepError } from './stakingSessionStep';
 import {
     type StakingSessionsState,
     stakingSessionsActions as actions,

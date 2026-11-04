@@ -61,6 +61,7 @@ const signed = mockSignedStakingStep();
 type InitStoreParams = {
     broadcastStep?: StakingProductAdapter['broadcastStep'];
     staking?: StakingState;
+    middleware?: Middleware[];
 };
 
 const signedState = (
@@ -77,6 +78,7 @@ const signedState = (
 const initStore = ({
     broadcastStep = mock(() => Promise.resolve({ txid: 'tx1' })),
     staking = signedState(),
+    middleware = [],
 }: InitStoreParams = {}) => {
     const adapter = mockStakingProductAdapter({ descriptor: eth, broadcastStep });
     const actions: UnknownAction[] = [];
@@ -98,7 +100,7 @@ const initStore = ({
             analytics: mockAnalytics<AnalyticsSharedEvents>(),
             getTradedAccountKeys: mockGetTradedAccountKeys(),
         }),
-        middleware: [recorder],
+        middleware: [recorder, ...middleware],
         reducer: {
             earn: combineReducers({ staking: stakingReducer }),
             wallet: combineReducers({
@@ -197,6 +199,18 @@ describe('broadcastStakingStepThunk', () => {
         });
         expect(broadcastStatuses(actions)).toEqual([]);
         expect(fetchAndUpdateAccountThunk).not.toHaveBeenCalled();
+    });
+
+    it('rejects when the broadcasting dispatch was refused, without a push', async () => {
+        const dropBroadcasting: Middleware = () => next => action =>
+            stakingActions.stepBroadcasting.match(action) ? action : next(action);
+        const { store, adapter } = initStore({ middleware: [dropBroadcasting] });
+
+        const result = await broadcast(store);
+
+        expect(result.payload).toBe('step-not-ready');
+        expect(adapter.broadcastStep).not.toHaveBeenCalled();
+        expect(getStep(store)?.status).toBe('signed');
     });
 
     it('rejects a step that is not signed', async () => {

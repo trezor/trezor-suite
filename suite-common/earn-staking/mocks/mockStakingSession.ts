@@ -3,7 +3,7 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { getStakingSessionKey } from '../src/state/stakingSessionKey';
-import type { StakingSessionStep, StakingStepError } from '../src/state/stakingSessionStepsReducer';
+import type { StakingSessionStep, StakingStepError } from '../src/state/stakingSessionStep';
 import type { StakingSession } from '../src/state/stakingSessionsReducer';
 
 type MockStakingSessionStepParams = {

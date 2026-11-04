@@ -19,6 +19,7 @@ import {
     selectStakingStepContext,
     selectStakingStepStatus,
 } from '../state/stakingSessionSelectors';
+import { type StakingStepEvent, transitionStakingStep } from '../state/stakingStepTransition';
 
 type SignStakingStepParams = {
     sessionKey: StakingSessionKey;
@@ -49,13 +50,15 @@ export const signStakingStepThunk = createThunk<
         const { session, step, planStep, account } = stepContext.context;
         const adapter = extra.services.staking.stakingProductRepository.get(session.plan.productId);
 
-        if (step.status !== 'composed') {
-            return rejectWithValue('step-not-ready');
-        }
+        const signingEvent: StakingStepEvent = {
+            type: 'signing',
+            feeLevel,
+            signingStartedAt: Date.now(),
+        };
 
-        const level = step.composed.feeLevels[feeLevel];
+        const signingStep = transitionStakingStep(step, signingEvent);
 
-        if (level?.type !== 'final') {
+        if (signingStep?.status !== 'signing') {
             return rejectWithValue('step-not-ready');
         }
 
@@ -69,10 +72,14 @@ export const signStakingStepThunk = createThunk<
             stakingActions.stepSigning({
                 sessionKey,
                 stepId: step.id,
-                feeLevel,
-                signingStartedAt: Date.now(),
+                feeLevel: signingEvent.feeLevel,
+                signingStartedAt: signingEvent.signingStartedAt,
             }),
         );
+
+        if (selectStakingStepStatus(getState(), session, step.id) !== 'signing') {
+            return rejectWithValue('step-not-ready');
+        }
 
         const signed = await callStakingAdapter(() =>
             extra.services.staking.deviceAccess.run(() => {
@@ -84,7 +91,7 @@ export const signStakingStepThunk = createThunk<
                     account,
                     plan: session.plan,
                     step: planStep,
-                    composedStep: step.composed,
+                    composedStep: signingStep.composed,
                     feeLevel,
                 });
             }),

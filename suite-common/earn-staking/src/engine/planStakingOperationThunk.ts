@@ -19,7 +19,7 @@ import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import { selectStakingPosition, selectStakingProductDescriptor } from '../state/stakingSelectors';
 import { type StakingSessionKey, getStakingSessionKey } from '../state/stakingSessionKey';
 import { selectIsStakingSessionActive } from '../state/stakingSessionSelectors';
-import type { StakingSessionStep } from '../state/stakingSessionStepsReducer';
+import type { StakingSessionStep } from '../state/stakingSessionStep';
 import type { StakingSession } from '../state/stakingSessionsReducer';
 
 const STAKING_SESSION_ID_LENGTH = 10;

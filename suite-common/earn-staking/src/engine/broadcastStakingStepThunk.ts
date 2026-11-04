@@ -18,7 +18,11 @@ import {
 } from './trackStakingStepConfirmationThunk';
 import { stakingActions } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
-import { selectStakingStepContext } from '../state/stakingSessionSelectors';
+import {
+    selectStakingStepContext,
+    selectStakingStepStatus,
+} from '../state/stakingSessionSelectors';
+import { transitionStakingStep } from '../state/stakingStepTransition';
 
 type BroadcastStakingStepParams = {
     sessionKey: StakingSessionKey;
@@ -49,11 +53,13 @@ export const broadcastStakingStepThunk = createThunk<
         const { session, step, planStep, account } = stepContext.context;
         const adapter = extra.services.staking.stakingProductRepository.get(session.plan.productId);
 
-        if (step.status !== 'signed') {
+        const broadcastingStep = transitionStakingStep(step, { type: 'broadcasting' });
+
+        if (broadcastingStep?.status !== 'broadcasting') {
             return rejectWithValue('step-not-ready');
         }
 
-        if (step.expiresAt !== null && step.expiresAt < Date.now()) {
+        if (broadcastingStep.expiresAt !== null && broadcastingStep.expiresAt < Date.now()) {
             dispatch(
                 stakingActions.stepReset({
                     sessionKey,
@@ -67,6 +73,10 @@ export const broadcastStakingStepThunk = createThunk<
 
         dispatch(stakingActions.stepBroadcasting({ sessionKey, stepId: step.id }));
 
+        if (selectStakingStepStatus(getState(), session, step.id) !== 'broadcasting') {
+            return rejectWithValue('step-not-ready');
+        }
+
         const flow = getEarnTransactionFlow(session.plan.operation);
 
         const broadcast = await callStakingAdapter(() =>
@@ -74,7 +84,7 @@ export const broadcastStakingStepThunk = createThunk<
                 account,
                 plan: session.plan,
                 step: planStep,
-                signedStep: step.signed,
+                signedStep: broadcastingStep.signed,
             }),
         );
 
