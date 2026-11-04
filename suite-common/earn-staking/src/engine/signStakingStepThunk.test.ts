@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type Middleware, combineReducers } from '@reduxjs/toolkit';
 
 import { type AnalyticsSharedEvents, events } from '@suite-common/analytics';
 import {
@@ -55,12 +55,14 @@ type InitStoreParams = {
     signStep?: StakingProductAdapter['signStep'];
     deviceAccess?: StakingDeviceAccess;
     composedStep?: ComposedStakingStep | null;
+    middleware?: Middleware[];
 };
 
 const initStore = ({
     signStep = mock(() => Promise.resolve(signed)),
     deviceAccess = mockStakingDeviceAccess(),
     composedStep = composed,
+    middleware = [],
 }: InitStoreParams = {}) => {
     const adapter = mockStakingProductAdapter({ descriptor: eth, signStep });
     const analytics = mockAnalytics<AnalyticsSharedEvents>();
@@ -75,6 +77,7 @@ const initStore = ({
             }),
             analytics,
         }),
+        middleware,
         reducer: {
             earn: combineReducers({ staking: stakingReducer }),
             wallet: combineReducers({ accounts: (state = [account]) => state }),
@@ -157,6 +160,18 @@ describe('signStakingStepThunk', () => {
         if (step?.status !== 'signed') throw new Error('Expected a signed step');
 
         expect(step.expiresAt).toBe(step.signingStartedAt + 24_000);
+    });
+
+    it('rejects when the signing dispatch was refused, without a device call', async () => {
+        const dropSigning: Middleware = () => next => action =>
+            stakingActions.stepSigning.match(action) ? action : next(action);
+        const started = initStore({ middleware: [dropSigning] });
+
+        const result = await sign(started.store);
+
+        expect(result.payload).toBe('step-not-ready');
+        expect(started.adapter.signStep).not.toHaveBeenCalled();
+        expect(getStep(started.store)?.status).toBe('composed');
     });
 
     it('rejects a step that is not composed', async () => {

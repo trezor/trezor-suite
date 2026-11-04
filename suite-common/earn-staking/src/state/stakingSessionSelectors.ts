@@ -12,7 +12,7 @@ import {
     type StakingSessionStep,
     type StakingSessionStepStatus,
     isStakingReviewStep,
-} from './stakingSessionStepsReducer';
+} from './stakingSessionStep';
 import { type StakingSession, hasStakingStepWithStatus } from './stakingSessionsReducer';
 
 export type StakingReview = {

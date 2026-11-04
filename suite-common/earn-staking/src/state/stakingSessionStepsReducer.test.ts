@@ -39,6 +39,16 @@ describe('stakingSessionStepsReducer', () => {
         ).toBe(steps);
     });
 
+    it('ignores an event for a step that is not the current one', () => {
+        const composeVote = actions.stepComposed({
+            sessionKey,
+            stepId: 'vote',
+            composed: mockComposedStakingStep(),
+        });
+
+        expect(stakingSessionStepsReducer(steps, composeVote)).toBe(steps);
+    });
+
     it('replaces only the step the action names', () => {
         const composed = mockComposedStakingStep();
         const next = stakingSessionStepsReducer(

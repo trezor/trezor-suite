@@ -1,103 +1,43 @@
 import { type PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 
-import type {
-    ComposedStakingStep,
-    SignedStakingStep,
-    StakingFeeLevelLabel,
-    StakingStepKind,
-    StakingStepReview,
-} from '@suite-common/earn-staking-common';
-
 import type { StakingSessionKey } from './stakingSessionKey';
+import type { StakingSessionStep } from './stakingSessionStep';
+import {
+    type StakingStepEvent,
+    type StakingStepEventPayload,
+    transitionStakingStep,
+} from './stakingStepTransition';
 
 export const STAKING_SESSIONS_ACTION_PREFIX = '@suite-common/earn-staking/staking/sessions';
-
-export const STAKING_STEP_ERROR_KINDS = [
-    'compose-failed',
-    'sign-failed',
-    'broadcast-failed',
-    'expired',
-    'confirmation-failed',
-    'replaced',
-] as const;
-
-export type StakingStepErrorKind = (typeof STAKING_STEP_ERROR_KINDS)[number];
-
-export type StakingStepError = {
-    kind: StakingStepErrorKind;
-    code: string | null;
-};
-
-type StakingSessionStepBase = {
-    id: string;
-    kind: StakingStepKind;
-    awaitConfirmation: boolean;
-    review: StakingStepReview;
-    error: StakingStepError | null;
-};
-
-type StakingSignableStep = {
-    composed: ComposedStakingStep;
-    feeLevel: StakingFeeLevelLabel;
-    signingStartedAt: number;
-    expiresAt: number | null;
-};
-
-export type StakingSessionStep = StakingSessionStepBase &
-    (
-        | { status: 'pending' }
-        | { status: 'composed'; composed: ComposedStakingStep }
-        | ({ status: 'signing' } & StakingSignableStep)
-        | ({ status: 'signed'; signed: SignedStakingStep } & StakingSignableStep)
-        | ({ status: 'broadcasting'; signed: SignedStakingStep } & StakingSignableStep)
-        | { status: 'awaiting'; txid: string }
-        | { status: 'done'; txid: string | null }
-        | { status: 'failed'; txid: string }
-    );
-
-export type StakingSessionStepStatus = StakingSessionStep['status'];
-
-export type StakingReviewStep = Extract<
-    StakingSessionStep,
-    { status: 'signing' | 'signed' | 'broadcasting' }
->;
-
-export const STAKING_ACTIVE_STEP_STATUSES: readonly StakingSessionStepStatus[] = [
-    'signing',
-    'signed',
-    'broadcasting',
-    'awaiting',
-];
-
-export const STAKING_IN_FLIGHT_STEP_STATUSES: readonly StakingSessionStepStatus[] = [
-    'signing',
-    'broadcasting',
-];
-
-export const isStakingReviewStep = (step: StakingSessionStep): step is StakingReviewStep =>
-    step.status === 'signing' || step.status === 'signed' || step.status === 'broadcasting';
 
 export type StakingStepPayload = {
     sessionKey: StakingSessionKey;
     stepId: string;
 };
 
+type StakingStepActionPayload<TType extends StakingStepEvent['type']> = PayloadAction<
+    StakingStepPayload & StakingStepEventPayload<TType>
+>;
+
 export const stakingSessionStepsInitialState: readonly StakingSessionStep[] = [];
 
-const findStep = (steps: StakingSessionStep[], stepId: string) => {
-    const index = steps.findIndex(step => step.id === stepId);
+// Only the current step, the first one that is not done, takes events; the plan runs in order.
+const applyStakingStepEvent = (
+    steps: StakingSessionStep[],
+    stepId: string,
+    event: StakingStepEvent,
+) => {
+    const index = steps.findIndex(step => step.status !== 'done');
     const step = steps[index];
 
-    return step === undefined ? null : { index, step };
-};
+    if (step === undefined || step.id !== stepId) return;
 
-const getStepBase = (step: StakingSessionStep): StakingSessionStepBase => ({
-    id: step.id,
-    kind: step.kind,
-    awaitConfirmation: step.awaitConfirmation,
-    review: step.review,
-    error: step.error,
-});
+    const next = transitionStakingStep(step, event);
+
+    if (next !== null) {
+        steps[index] = next;
+    }
+};
 
 // Reduces the steps of one session; the sessions reducer calls it for the session an action names.
 const stakingSessionStepsSlice = createSlice({
@@ -106,198 +46,67 @@ const stakingSessionStepsSlice = createSlice({
     reducers: {
         stepComposed(
             state: StakingSessionStep[],
-            { payload }: PayloadAction<StakingStepPayload & { composed: ComposedStakingStep }>,
+            { payload }: StakingStepActionPayload<'composed'>,
         ) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (step.status !== 'pending' && step.status !== 'composed') return;
-
-            state[index] = {
-                ...getStepBase(step),
-                error: null,
-                status: 'composed',
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'composed',
                 composed: payload.composed,
-            };
+            });
         },
         stepComposeFailed(
             state: StakingSessionStep[],
-            { payload }: PayloadAction<StakingStepPayload & { error: StakingStepError }>,
+            { payload }: StakingStepActionPayload<'compose-failed'>,
         ) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (step.status !== 'pending' && step.status !== 'composed') return;
-
-            state[index] = {
-                ...getStepBase(step),
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'compose-failed',
                 error: payload.error,
-                status: 'pending',
-            };
+            });
         },
-        stepSigning(
-            state: StakingSessionStep[],
-            {
-                payload,
-            }: PayloadAction<
-                StakingStepPayload & { feeLevel: StakingFeeLevelLabel; signingStartedAt: number }
-            >,
-        ) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (step.status !== 'composed') return;
-
-            const { validityMs } = step.composed;
-
-            state[index] = {
-                ...getStepBase(step),
-                error: null,
-                status: 'signing',
-                composed: step.composed,
+        stepSigning(state: StakingSessionStep[], { payload }: StakingStepActionPayload<'signing'>) {
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'signing',
                 feeLevel: payload.feeLevel,
                 signingStartedAt: payload.signingStartedAt,
-                expiresAt: validityMs === null ? null : payload.signingStartedAt + validityMs,
-            };
+            });
         },
-        stepSigned(
-            state: StakingSessionStep[],
-            { payload }: PayloadAction<StakingStepPayload & { signed: SignedStakingStep }>,
-        ) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (step.status !== 'signing') return;
-
-            state[index] = {
-                ...getStepBase(step),
-                status: 'signed',
-                composed: step.composed,
-                feeLevel: step.feeLevel,
-                signingStartedAt: step.signingStartedAt,
-                expiresAt: step.expiresAt,
+        stepSigned(state: StakingSessionStep[], { payload }: StakingStepActionPayload<'signed'>) {
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'signed',
                 signed: payload.signed,
-            };
+            });
         },
-        stepReset(
-            state: StakingSessionStep[],
-            { payload }: PayloadAction<StakingStepPayload & { error: StakingStepError | null }>,
-        ) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (!isStakingReviewStep(step)) return;
-
-            state[index] = {
-                ...getStepBase(step),
-                error: payload.error,
-                status: 'composed',
-                composed: step.composed,
-            };
+        stepReset(state: StakingSessionStep[], { payload }: StakingStepActionPayload<'reset'>) {
+            applyStakingStepEvent(state, payload.stepId, { type: 'reset', error: payload.error });
         },
         stepBroadcasting(
             state: StakingSessionStep[],
-            { payload }: PayloadAction<StakingStepPayload>,
+            { payload }: StakingStepActionPayload<'broadcasting'>,
         ) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (step.status !== 'signed') return;
-
-            state[index] = {
-                ...getStepBase(step),
-                status: 'broadcasting',
-                composed: step.composed,
-                feeLevel: step.feeLevel,
-                signingStartedAt: step.signingStartedAt,
-                expiresAt: step.expiresAt,
-                signed: step.signed,
-            };
+            applyStakingStepEvent(state, payload.stepId, { type: 'broadcasting' });
         },
         stepBroadcast(
             state: StakingSessionStep[],
-            { payload }: PayloadAction<StakingStepPayload & { txid: string }>,
+            { payload }: StakingStepActionPayload<'broadcast'>,
         ) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (step.status !== 'broadcasting') return;
-
-            state[index] = {
-                ...getStepBase(step),
-                error: null,
-                status: step.awaitConfirmation ? 'awaiting' : 'done',
-                txid: payload.txid,
-            };
+            applyStakingStepEvent(state, payload.stepId, { type: 'broadcast', txid: payload.txid });
         },
         stepTxidReplaced(
             state: StakingSessionStep[],
-            { payload }: PayloadAction<StakingStepPayload & { txid: string }>,
+            { payload }: StakingStepActionPayload<'txid-replaced'>,
         ) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (step.status !== 'awaiting') return;
-
-            state[index] = {
-                ...getStepBase(step),
-                status: 'awaiting',
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'txid-replaced',
                 txid: payload.txid,
-            };
+            });
         },
-        stepConfirmed(state: StakingSessionStep[], { payload }: PayloadAction<StakingStepPayload>) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (step.status !== 'awaiting') return;
-
-            state[index] = { ...getStepBase(step), status: 'done', txid: step.txid };
-        },
-        stepFailed(
+        stepConfirmed(
             state: StakingSessionStep[],
-            { payload }: PayloadAction<StakingStepPayload & { error: StakingStepError }>,
+            { payload }: StakingStepActionPayload<'confirmed'>,
         ) {
-            const found = findStep(state, payload.stepId);
-
-            if (found === null) return;
-
-            const { index, step } = found;
-
-            if (step.status !== 'awaiting') return;
-
-            state[index] = {
-                ...getStepBase(step),
-                error: payload.error,
-                status: 'failed',
-                txid: step.txid,
-            };
+            applyStakingStepEvent(state, payload.stepId, { type: 'confirmed' });
+        },
+        stepFailed(state: StakingSessionStep[], { payload }: StakingStepActionPayload<'failed'>) {
+            applyStakingStepEvent(state, payload.stepId, { type: 'failed', error: payload.error });
         },
     },
 });
