@@ -203,7 +203,6 @@ export const usePreparedTxFees = <
                 return;
             }
 
-            resetComposeError();
             setBaseActionContext({
                 composeTransaction,
                 formDraftKey,
@@ -219,7 +218,6 @@ export const usePreparedTxFees = <
             fallbackReason,
             formDraftKey,
             reportComposeError,
-            resetComposeError,
             setHasFeeEstimationError,
         ],
     );
@@ -404,11 +402,27 @@ export const usePreparedTxFees = <
         [availableBalance, canCompose, currentBaseActionContext, feeInfo, isCurrentFeePreparing],
     );
 
+    const hasFeeDraftEstimationError = canCompose && !!feeInfo && hasMissingFeeDraft;
+
+    useEffect(() => {
+        if (hasFeeDraftEstimationError) {
+            reportComposeError(fallbackReason);
+        } else if (feeDraftState) {
+            resetComposeError();
+        }
+    }, [
+        fallbackReason,
+        feeDraftState,
+        hasFeeDraftEstimationError,
+        reportComposeError,
+        resetComposeError,
+    ]);
+
     return {
         getCustomFeeLevel,
         formDraft,
         formDraftKey,
-        hasFeeEstimationError,
+        hasFeeEstimationError: hasFeeEstimationError || hasFeeDraftEstimationError,
         isFeePreparing: isCurrentFeePreparing,
         isFeeReady,
         isFeeUnavailable,

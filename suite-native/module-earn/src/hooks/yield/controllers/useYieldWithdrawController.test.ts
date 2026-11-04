@@ -187,6 +187,33 @@ describe('useYieldWithdrawController', () => {
         );
     });
 
+    it('shows only retry while the retained fee draft cannot be prepared', async () => {
+        useYieldWithdrawFeesMock.mockReturnValue({
+            ...withdrawFees,
+            formDraft: { selectedFee: 'custom' } as NonNullable<typeof withdrawFees.formDraft>,
+            selectedFee: 'custom',
+            hasFeeEstimationError: true,
+        });
+        const { result, rerender } = await renderWithdrawController();
+        if (result.current.status !== 'ready') throw new Error('not ready');
+
+        expect(result.current.feeEstimationError?.onRetry).toBe(withdrawFees.retryFeeEstimation);
+        expect(result.current.feeSelector).toBeNull();
+        expect(result.current.footer.isDisabled).toBe(true);
+
+        useYieldWithdrawFeesMock.mockReturnValue({
+            ...withdrawFees,
+            formDraft: { selectedFee: 'custom' } as NonNullable<typeof withdrawFees.formDraft>,
+            selectedFee: 'custom',
+        });
+        await rerender({});
+        if (result.current.status !== 'ready') throw new Error('not ready');
+
+        expect(result.current.feeEstimationError).toBeNull();
+        expect(result.current.feeSelector?.selectedFee).toBe('custom');
+        expect(result.current.feeSelector?.formDraft.selectedFee).toBe('custom');
+    });
+
     it('forwards the withdrawal Custom builder to the fee picker', async () => {
         const getCustomFeeLevel = jest.fn();
         useYieldWithdrawFeesMock.mockReturnValue({

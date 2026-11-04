@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers, createAction } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { formDraftReducer } from '@suite-common/wallet-core';
@@ -88,7 +88,9 @@ type HookProps = {
     onComposeError?: (reason: string | undefined) => void;
 };
 
-const createTestStore = () =>
+const setFeeInfo = createAction<FeesState>('test/setFeeInfo');
+
+const createTestStore = (initialFees = FEES_STATE) =>
     createLightStore({
         reducer: {
             // Static slices required by the test store provider (formatters config).
@@ -100,7 +102,8 @@ const createTestStore = () =>
                     bitcoinAmountUnit: 0,
                     addressDisplayType: 'chunked',
                 }),
-                fees: createStaticReducer(FEES_STATE),
+                fees: (state = initialFees, action: UnknownAction) =>
+                    setFeeInfo.match(action) ? action.payload : state,
                 formDrafts: formDraftReducer,
                 send: prepareSendFormReducer({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -121,8 +124,8 @@ const createProps = (overrides: Partial<HookProps> = {}): HookProps => ({
     ...overrides,
 });
 
-const renderPreparedTxFees = async (initialProps: HookProps) => {
-    const store = createTestStore();
+const renderPreparedTxFees = async (initialProps: HookProps, initialFees = FEES_STATE) => {
+    const store = createTestStore(initialFees);
 
     return {
         store,
@@ -337,6 +340,114 @@ describe('usePreparedTxFees', () => {
         expect(result.current.hasFeeEstimationError).toBe(true);
         expect(result.current.preparedTx).toBeNull();
         expect(result.current.isFeePreparing).toBe(false);
+    });
+
+    it('offers retry when a prepared action has no usable fee draft', async () => {
+        buildFeeDraftStateMock.mockReturnValue(null);
+        const composeTransaction = jest.fn().mockResolvedValue(composeReady());
+        const onComposeError = jest.fn();
+        const { result } = await renderPreparedTxFees(
+            createProps({ composeTransaction, onComposeError }),
+        );
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(result.current.isFeeReady).toBe(false);
+        expect(onComposeError).toHaveBeenCalledTimes(1);
+        expect(onComposeError).toHaveBeenCalledWith('fee-estimation-failed');
+        buildFeeDraftStateMock.mockReturnValue(FEE_DRAFT_STATE);
+        await act(() => result.current.retryFeeEstimation());
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(result.current.isFeeReady).toBe(true);
+    });
+
+    it('reports a missing draft once across amount edits until recovery or retry', async () => {
+        buildFeeDraftStateMock.mockReturnValue(null);
+        const composeTransaction = jest.fn().mockResolvedValue(composeReady());
+        const onComposeError = jest.fn();
+        const props = createProps({ composeTransaction, onComposeError });
+        const { result, rerender } = await renderPreparedTxFees(props);
+
+        await settleDebounce();
+        await rerender({ ...props, amount: '2' });
+        await settleDebounce();
+
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(result.current.isFeeReady).toBe(false);
+        expect(onComposeError).toHaveBeenCalledTimes(1);
+
+        await act(() => result.current.retryFeeEstimation());
+        await settleDebounce();
+        expect(onComposeError).toHaveBeenCalledTimes(2);
+
+        buildFeeDraftStateMock.mockReturnValue(FEE_DRAFT_STATE);
+        await rerender({ ...props, amount: '3' });
+        await settleDebounce();
+        expect(result.current.isFeeReady).toBe(true);
+
+        buildFeeDraftStateMock.mockReturnValue(null);
+        await rerender({ ...props, amount: '4' });
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(result.current.isFeeReady).toBe(false);
+        expect(onComposeError).toHaveBeenCalledTimes(3);
+    });
+
+    it('waits for fee information without reporting a missing draft', async () => {
+        const onComposeError = jest.fn();
+        const composeTransaction = jest.fn().mockResolvedValue(composeReady());
+        const { result, store } = await renderPreparedTxFees(
+            createProps({ composeTransaction, onComposeError }),
+            {},
+        );
+
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(result.current.isFeeReady).toBe(false);
+        expect(onComposeError).not.toHaveBeenCalled();
+
+        await act(() => store.dispatch(setFeeInfo(FEES_STATE)));
+
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(result.current.isFeeReady).toBe(true);
+        expect(onComposeError).not.toHaveBeenCalled();
+        expect(composeTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('starts a new missing-draft failure episode after the draft recovers', async () => {
+        buildFeeDraftStateMock.mockReturnValue(null);
+        const onComposeError = jest.fn();
+        const composeTransaction = jest.fn().mockResolvedValue(composeReady());
+        const { result, store } = await renderPreparedTxFees(
+            createProps({ composeTransaction, onComposeError }),
+        );
+        await settleDebounce();
+        expect(onComposeError).toHaveBeenCalledTimes(1);
+
+        const updateFees = (feePerUnit: string) =>
+            store.dispatch(
+                setFeeInfo({
+                    ...FEES_STATE,
+                    eth: {
+                        ...FEES_STATE.eth!,
+                        data: {
+                            ...FEES_STATE.eth!.data!,
+                            levels: [{ label: 'normal', feePerUnit, blocks: 1 }],
+                        },
+                    },
+                }),
+            );
+        buildFeeDraftStateMock.mockReturnValue(FEE_DRAFT_STATE);
+        await act(() => updateFees('11'));
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(result.current.isFeeReady).toBe(true);
+
+        buildFeeDraftStateMock.mockReturnValue(null);
+        await act(() => updateFees('12'));
+
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(onComposeError).toHaveBeenCalledTimes(2);
+        expect(composeTransaction).toHaveBeenCalledTimes(1);
     });
 
     it('surfaces an error when the compose function throws', async () => {
