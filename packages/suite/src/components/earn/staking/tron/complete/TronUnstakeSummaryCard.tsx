@@ -18,16 +18,15 @@ const REDUCTION_LABEL: Record<TronResourceType, TranslationKey> = {
 };
 
 export const TronUnstakeSummaryCard = () => {
-    const { account, form } = useTronStakeContext();
+    const { account, actions } = useTronStakeContext();
+    const { submitted } = actions;
 
-    if (account.networkType !== 'tron') {
+    if (account.networkType !== 'tron' || !submitted?.resourceType) {
         return null;
     }
 
-    const { amount, resourceType } = form.methods.getValues();
-
-    const { tronResources } = account.misc;
-    const gain = getResourceGain(amount, resourceType, tronResources);
+    const { amount, resourceType } = submitted;
+    const gain = getResourceGain(amount, resourceType, account.misc.tronResources);
     const reduction = Math.min(
         gain !== null ? Math.round(gain) : 0,
         getCurrentResource(account, resourceType),
