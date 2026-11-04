@@ -7,7 +7,6 @@
         "autolinking": {
             "android": {
                 "exclude": [
-                    "@expo/ui",
                     "expo-media-library",
                     "react-native-view-shot"
                 ]
@@ -210,6 +209,7 @@
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/connect-core": "workspace:*",
         "@trezor/connect-mobile": "workspace:^",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/perf-e2e": "workspace:*",
         "@types/lodash": "^4.17.16",
@@ -221,7 +221,7 @@
         "babel-plugin-transform-remove-console": "^6.9.4",
         "babel-preset-expo": "~58.0.22",
         "cross-fetch": "^4.1.0",
-        "detox": "20.45.1",
+        "detox": "20.50.1",
         "dotenv": "18.0.6",
         "expo-atlas": "0.5.0",
         "expo-mcp": "^0.2.4",

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -9,18 +9,30 @@ import { EarnStackNavigator } from '@suite-native/module-earn';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
-import { type AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
+import {
+    type AppTabsParamList,
+    AppTabsRoutes,
+    TabBar,
+    createAdaptiveBottomTabNavigator,
+} from '@suite-native/navigation';
+import {
+    type SettingsSliceRootState,
+    selectIsExperimentalFeatureEnabled,
+} from '@suite-native/settings';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
 
 import { rootTabsOptions, rootTabsOptionsWithoutEarn } from './routes';
 
-const Tab = createBottomTabNavigator<AppTabsParamList>();
+const Tab = createAdaptiveBottomTabNavigator<AppTabsParamList>();
 
 export const AppTabNavigator = () => {
     const { analytics } = useServices(injectNativeAnalytics);
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
+    const isNativeNavigationEnabled = useSelector((state: SettingsSliceRootState) =>
+        selectIsExperimentalFeatureEnabled(state, 'native-navigation'),
+    );
 
     const tabItemOptions = isBitcoinOnlyFirmware ? rootTabsOptionsWithoutEarn : rootTabsOptions;
 
@@ -38,6 +50,8 @@ export const AppTabNavigator = () => {
 
     return (
         <Tab.Navigator
+            isNativeNavigationEnabled={isNativeNavigationEnabled}
+            tabItemOptions={tabItemOptions}
             initialRouteName={AppTabsRoutes.HomeStack}
             screenOptions={{
                 headerShown: false,
@@ -58,7 +72,9 @@ export const AppTabNavigator = () => {
                     }}
                 />
             )}
-            <Tab.Screen name={AppTabsRoutes.EarnStack} component={EarnStackNavigator} />
+            {(!isNativeNavigationEnabled || !isBitcoinOnlyFirmware) && (
+                <Tab.Screen name={AppTabsRoutes.EarnStack} component={EarnStackNavigator} />
+            )}
             <Tab.Screen name={AppTabsRoutes.Settings} component={SettingsScreen} />
         </Tab.Navigator>
     );

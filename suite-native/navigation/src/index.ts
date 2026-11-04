@@ -2,6 +2,7 @@ export type * from './navigators';
 export * from './routes';
 export type * from './types';
 export * from './config';
+export { createAdaptiveBottomTabNavigator } from './createAdaptiveBottomTabNavigator';
 export * from './hooks/useInterceptNativeNavigation';
 export * from './hooks/useIsBottomInsetApplicable';
 export * from './hooks/useNavigateToInitialScreen';

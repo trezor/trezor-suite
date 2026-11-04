@@ -8074,7 +8074,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/elements@npm:^2.9.5":
+"@react-navigation/elements@npm:2.9.8, @react-navigation/elements@npm:^2.9.5":
   version: 2.9.8
   resolution: "@react-navigation/elements@npm:2.9.8"
   dependencies:
@@ -12907,6 +12907,7 @@ __metadata:
     "@trezor/connect-core": "workspace:*"
     "@trezor/connect-mobile": "workspace:^"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/perf-e2e": "workspace:*"
@@ -12928,7 +12929,7 @@ __metadata:
     browserify-zlib: "npm:^0.2.0"
     cross-fetch: "npm:^4.1.0"
     crypto-browserify: "npm:3.12.1"
-    detox: "npm:20.45.1"
+    detox: "npm:20.50.1"
     dotenv: "npm:18.0.6"
     expo: "npm:~58.0.21"
     expo-atlas: "npm:0.5.0"
@@ -15127,12 +15128,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/navigation@workspace:suite-native/navigation"
   dependencies:
+    "@expo/ui": "npm:58.0.25"
     "@react-navigation/bottom-tabs": "npm:7.13.0"
+    "@react-navigation/elements": "npm:2.9.8"
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@react-navigation/routers": "npm:^7.5.3"
     "@rozenite/react-navigation-plugin": "npm:^2.1.0"
     "@storybook/react-native": "npm:^10.6.2"
+    "@suite-common/icons": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
@@ -27361,9 +27365,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detox@npm:20.45.1":
-  version: 20.45.1
-  resolution: "detox@npm:20.45.1"
+"detox@npm:20.50.1":
+  version: 20.50.1
+  resolution: "detox@npm:20.50.1"
   dependencies:
     "@wix-pilot/core": "npm:^3.4.2"
     "@wix-pilot/detox": "npm:^1.0.13"
@@ -27409,7 +27413,7 @@ __metadata:
       optional: true
   bin:
     detox: local-cli/cli.js
-  checksum: 10/27e55c553541579d5d45c4880f7c353005f929c93972fdb221c6d9514b57518c60e1acb8a6663611c49e426bdac57eea12dc4b1813524fb39df9e13c68f232af
+  checksum: 10/4d8ec246e5314d6998d3f90273ce7943ba70829311d4c3d1736eed9e12be87f034c940fa0f0cf745b4e3fc395f3c505e543d8c7fa6e44347fc41e9a5883bf3f5
   languageName: node
   linkType: hard
 

@@ -12,12 +12,15 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@expo/ui": "58.0.25",
         "@react-navigation/bottom-tabs": "7.13.0",
+        "@react-navigation/elements": "2.9.8",
         "@react-navigation/native": "7.1.31",
         "@react-navigation/native-stack": "7.12.0",
         "@react-navigation/routers": "^7.5.3",
         "@rozenite/react-navigation-plugin": "^2.1.0",
         "@storybook/react-native": "^10.6.2",
+        "@suite-common/icons": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",

@@ -1,5 +1,6 @@
 import {
     type AppSettingsState,
+    type ExperimentalFeature,
     appSettingsPersistWhitelist,
     appSettingsReducer,
     selectEarnStakingWorkerBaseUrl,
@@ -18,31 +19,40 @@ describe('appSettingsSlice experimental features', () => {
 
         expect(state.experimentalFeatures).toEqual([]);
         expect(selectIsExperimentalFeatureEnabled(asRootState(state), 'slip24')).toBe(false);
-    });
-
-    it('should enable and disable an experimental feature', () => {
-        const enabledState = appSettingsReducer(
-            getInitialState(),
-            toggleExperimentalFeature('slip24'),
-        );
-
-        expect(selectIsExperimentalFeatureEnabled(asRootState(enabledState), 'slip24')).toBe(true);
-
-        const disabledState = appSettingsReducer(enabledState, toggleExperimentalFeature('slip24'));
-
-        expect(selectIsExperimentalFeatureEnabled(asRootState(disabledState), 'slip24')).toBe(
+        expect(selectIsExperimentalFeatureEnabled(asRootState(state), 'native-navigation')).toBe(
             false,
         );
     });
 
-    it('should not affect other experimental features', () => {
-        const state = appSettingsReducer(
-            { ...getInitialState(), experimentalFeatures: ['suite-sync'] },
-            toggleExperimentalFeature('slip24'),
-        );
+    it.each(['slip24', 'native-navigation'] satisfies ExperimentalFeature[])(
+        'should enable and disable %s without affecting other experimental features',
+        feature => {
+            const initialState: AppSettingsState = {
+                ...getInitialState(),
+                experimentalFeatures: ['suite-sync'],
+            };
+            const enabledState = appSettingsReducer(
+                initialState,
+                toggleExperimentalFeature(feature),
+            );
 
-        expect(state.experimentalFeatures).toEqual(['suite-sync', 'slip24']);
-    });
+            expect(selectIsExperimentalFeatureEnabled(asRootState(enabledState), feature)).toBe(
+                true,
+            );
+            expect(enabledState.experimentalFeatures).toEqual(['suite-sync', feature]);
+
+            const disabledState = appSettingsReducer(
+                enabledState,
+                toggleExperimentalFeature(feature),
+            );
+
+            expect(selectIsExperimentalFeatureEnabled(asRootState(disabledState), feature)).toBe(
+                false,
+            );
+            expect(disabledState.experimentalFeatures).toEqual(['suite-sync']);
+            expect(initialState.experimentalFeatures).toEqual(['suite-sync']);
+        },
+    );
 });
 
 describe('appSettingsSlice earn staking worker base URL', () => {

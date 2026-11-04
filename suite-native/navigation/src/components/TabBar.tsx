@@ -3,10 +3,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { Box } from '@suite-native/atoms';
-import { type TxKeyPath, useTranslate } from '@suite-native/intl';
+import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AppTabsRoutes } from '../routes';
+import { tabBarLabelTxKeys } from '../tabBarConfig';
 import { type TabsOptions } from '../types';
 import { TabBarItem } from './TabBarItem';
 
@@ -31,14 +31,6 @@ const tabBarStyle = prepareNativeStyle<{
     paddingBottom: insetsBottom,
 }));
 
-const TabBarLabelTxKeys = {
-    [AppTabsRoutes.HomeStack]: 'navigation.tabs.home',
-    [AppTabsRoutes.AccountsStack]: 'navigation.tabs.accountsList',
-    [AppTabsRoutes.TradeStack]: 'navigation.tabs.trade',
-    [AppTabsRoutes.EarnStack]: 'navigation.tabs.earn',
-    [AppTabsRoutes.Settings]: 'navigation.tabs.settings',
-} as const satisfies Record<AppTabsRoutes, TxKeyPath>;
-
 export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -57,7 +49,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                 const tabOption = tabItemOptions[route.name];
                 if (!tabOption) return null;
                 const { routeName, iconName, focusedIconName, params } = tabOption;
-                const tabBarLabelTxKey = TabBarLabelTxKeys[routeName];
+                const tabBarLabelTxKey = tabBarLabelTxKeys[routeName];
 
                 const handleTabBarItemPress = () => {
                     const event = navigation.emit({

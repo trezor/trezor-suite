@@ -77,11 +77,17 @@ jobs:
         working-directory: ./suite-common/message-system
         run: yarn sign-config
 
-      - name: get Expo app fingerprint
+      - name: Get Android test app cache key
         id: expo-fingerprint
         working-directory: ./suite-native/app
-        # `fingerprint` is the binary for @expo/fingerprint
-        run: yarn exec fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
+        # Detox is compiled into the test APKs and must also invalidate their cache.
+        run: |
+          yarn exec fingerprint ./ > expo-fingerprint.json
+          node <<'NODE' >> "$GITHUB_OUTPUT"
+          const { hash } = require('./expo-fingerprint.json');
+          const { version } = require('detox/package.json');
+          console.log(`CACHE_KEY=${hash}-detox-${version}`);
+          NODE
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
@@ -92,7 +98,7 @@ jobs:
       - name: Check if native build exists in AWS bucket
         id: s3_build_cache
         run: |
-          if aws s3 ls s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }} --summarize;
+          if aws s3 ls s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.CACHE_KEY }} --summarize;
            then
              echo "hit=true"  >> $GITHUB_OUTPUT;
            else
@@ -119,7 +125,7 @@ jobs:
       - name: Download build from aws bucket
         if: steps.s3_build_cache.outputs.hit == 'true'
         working-directory: ./suite-native/app
-        run: aws s3 cp s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ ./android/app/build/outputs --recursive
+        run: aws s3 cp s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.CACHE_KEY }}/ ./android/app/build/outputs --recursive
 
       - name: decompile .apk build
         if: steps.s3_build_cache.outputs.hit == 'true'
@@ -177,7 +183,7 @@ jobs:
       - name: save .apk to the aws s3 bucket
         if: steps.s3_build_cache.outputs.hit == 'false'
         working-directory: ./suite-native/app/android/app/build/outputs
-        run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ --recursive
+        run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.CACHE_KEY }}/ --recursive
 
       - name: Upload Android build artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
