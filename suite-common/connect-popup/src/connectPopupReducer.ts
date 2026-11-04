@@ -98,7 +98,8 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(connectPopupActions.approvePermissions, state => {
                 if (
                     state.activeCall?.state === 'permission-request' ||
-                    state.activeCall?.state === 'tx-simulation'
+                    state.activeCall?.state === 'tx-simulation' ||
+                    state.activeCall?.state === 'select-account'
                 ) {
                     getPermissionDeferred()?.resolve();
                     state.activeCall = {

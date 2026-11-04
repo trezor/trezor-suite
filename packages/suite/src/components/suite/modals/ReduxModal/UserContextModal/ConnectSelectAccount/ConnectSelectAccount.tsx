@@ -93,6 +93,9 @@ export const ConnectSelectAccount = () => {
     // device and get cancelled — so those actions are blocked until the visible page has settled.
     // Selection stays live: it's pure Redux state and touches no device.
     const isDiscovering = pageCandidates.some(c => c.loading);
+    // An account-only pick leaves the picker, which stops loading the rest of the page, so its rows
+    // wait until the page has loaded.
+    const isRowDisabled = isVerifying || (!!options.isAccountOnly && isDiscovering);
 
     // Verification is always available but optional (mirrors ConnectAddressConfirmation) — connecting
     // only requires a valid selection.
@@ -263,9 +266,11 @@ export const ConnectSelectAccount = () => {
                             </H3>
                         )}
                         <ConnectCallSource />
-                        <Paragraph>
-                            <Translation id={descriptionKey} />
-                        </Paragraph>
+                        {!options.isAccountOnly && (
+                            <Paragraph>
+                                <Translation id={descriptionKey} />
+                            </Paragraph>
+                        )}
                         {isManualAddressPhase && (
                             <Text typographyStyle="body-xs" color="contentSecondary">
                                 <Translation
@@ -318,7 +323,7 @@ export const ConnectSelectAccount = () => {
                                     candidate={candidate}
                                     label={getLabel(candidate)}
                                     interactionMode={rowInteractionMode}
-                                    disabled={isVerifying}
+                                    disabled={isRowDisabled}
                                     discovering={isDiscovering}
                                     deviceModelInternal={device?.features?.internal_model}
                                     onToggle={() =>

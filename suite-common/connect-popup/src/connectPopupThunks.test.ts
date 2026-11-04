@@ -14,7 +14,7 @@ import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { connectPopupActions } from './connectPopupActions';
-import { getPopupCallDeferred } from './connectPopupPromiseManager';
+import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
 import {
     prepareConnectPopupReducer,
     selectConnectPopupCall,
@@ -26,6 +26,7 @@ import {
     connectPopupCallInnerThunk,
     connectPopupFinishCallThunk,
     connectPopupLoadSelectAccountPageThunk,
+    connectPopupSelectManualAccountThunk,
 } from './connectPopupThunks';
 import {
     CommonPopupFlow,
@@ -90,7 +91,7 @@ const connectPopupReducer = prepareConnectPopupReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const initStore = () =>
+const initStore = (activeCall: object = selectAccountState) =>
     createTestCompositionRoot<
         WithServices<LockDeviceDep>,
         ConnectPopupLoadSelectAccountPageThunkState
@@ -102,7 +103,7 @@ const initStore = () =>
             wallet: (state = { accounts: accountsInitialState }) => state,
         }),
         preloadedState: {
-            connectPopup: { activeCall: selectAccountState, permissions: [] },
+            connectPopup: { activeCall, permissions: [] },
             device: fakeDeviceState,
             wallet: { accounts: accountsInitialState },
         },
@@ -254,6 +255,43 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
         const candidates =
             selectConnectPopupCallWithState(store.getState(), 'select-account')?.candidates ?? [];
         expect(candidates.map(c => c.address)).toEqual(['ADDR_ONLY']);
+    });
+});
+
+describe('connectPopupSelectManualAccountThunk — account-only picker', () => {
+    beforeEach(() => {
+        mockedPrepare.mockReset();
+    });
+
+    const initAccountOnlyStore = () =>
+        initStore({
+            ...selectAccountState,
+            options: { ...selectAccountState.options, isAccountOnly: true },
+            manualPhase: 'account',
+            manualAccountIndex: undefined,
+        });
+
+    it('ends the selection with the picked account instead of listing its addresses', async () => {
+        const store = initAccountOnlyStore();
+        const pickerDeferred = getPermissionDeferred(true);
+
+        store.dispatch(connectPopupSelectManualAccountThunk({ accountIndex: 2 }));
+
+        await expect(pickerDeferred.promise).resolves.toBeUndefined();
+        expect(selectConnectPopupCall(store.getState())).toMatchObject({
+            state: 'select-account',
+            manualPhase: 'account',
+            manualAccountIndex: 2,
+        });
+        expect(mockedPrepare).not.toHaveBeenCalled();
+    });
+
+    it('leaves the picker for the ongoing call once the flow approves it', () => {
+        const store = initAccountOnlyStore();
+
+        store.dispatch(connectPopupActions.approvePermissions());
+
+        expect(selectConnectPopupCall(store.getState())?.state).toBe('ongoing');
     });
 });
 
