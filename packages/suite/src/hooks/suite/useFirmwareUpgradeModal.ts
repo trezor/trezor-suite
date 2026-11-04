@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { selectIsConnectionModalOpen, setConnectionModal, setConnectionMode } from '@suite/device';
 import { gotoThunk } from '@suite/router';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectIsDeviceApiTypeBluetooth, selectIsDeviceConnected } from '@suite-common/device';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -10,7 +10,8 @@ import { useSelector } from 'src/hooks/suite';
 
 export const useFirmwareUpgradeModal = () => {
     const { dispatch } = useServices(injectDispatch);
-    const device = useSelector(selectSelectedDevice);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const isDeviceApiTypeBluetooth = useSelector(selectIsDeviceApiTypeBluetooth);
     const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
     const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);
     const [isAwaitingConnectionForFwUpdate, setIsAwaitingConnectionForFwUpdate] = useState(false);
@@ -18,12 +19,12 @@ export const useFirmwareUpgradeModal = () => {
     useEffect(() => {
         if (isAwaitingConnectionForFwUpdate && !isConnectionModalOpen) {
             setIsAwaitingConnectionForFwUpdate(false);
-            if (device?.connected) {
+            if (isDeviceConnected) {
                 setIsFirmwareModalOpen(false);
                 dispatch(gotoThunk({ routeName: 'firmware-index', params: { cancelable: true } }));
             }
         }
-    }, [isAwaitingConnectionForFwUpdate, isConnectionModalOpen, device?.connected, dispatch]);
+    }, [isAwaitingConnectionForFwUpdate, isConnectionModalOpen, isDeviceConnected, dispatch]);
 
     const openFirmwareModal = () => setIsFirmwareModalOpen(true);
 
@@ -33,8 +34,8 @@ export const useFirmwareUpgradeModal = () => {
     };
 
     const updateFirmware = () => {
-        if (!device?.connected) {
-            if (device?.descriptor?.apiType === 'bluetooth') {
+        if (!isDeviceConnected) {
+            if (isDeviceApiTypeBluetooth) {
                 dispatch(setConnectionMode('bluetooth'));
             }
             setIsAwaitingConnectionForFwUpdate(true);
