@@ -1,5 +1,7 @@
 export * from './Accordion/AccordionContent';
 export * from './Accordion/AccordionList';
+export * from './Accordion/AccordionItemList';
+export * from './Accordion/AccordionItemText';
 export * from './Animated/AnimatedBox';
 export * from './Animated/AnimatedChevron';
 export * from './Animated/AnimatedPressable';
@@ -55,6 +57,7 @@ export * from './Card/CardWithIconLayout';
 export * from './Card/CompactCardWithIconLayout';
 export * from './Card/PressableCardWithIconLayout';
 export * from './Card/TimelineDetailsCard';
+export * from './CollapsibleCard/CollapsibleCard';
 export * from './ScreenFooterGradient';
 export * from './ScreenHeaderWrapper';
 export * from './ErrorMessage';

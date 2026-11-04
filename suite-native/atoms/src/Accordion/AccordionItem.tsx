@@ -8,7 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AnimatedChevron } from '../Animated/AnimatedChevron';
 import { Box } from '../Box';
 import { Divider } from '../Divider';
-import { HStack, VStack } from '../Stack';
+import { HStack } from '../Stack';
 import { Text } from '../Text';
 import { AccordionContent } from './AccordionContent';
 
@@ -21,17 +21,18 @@ export type AccordionItemProps = {
     isDividerDisplayed?: boolean;
 };
 
-const contentStyle = prepareNativeStyle(utils => ({
-    paddingBottom: utils.spacings.sp8,
-}));
-
 const accordionWrapperStyle = prepareNativeStyle(() => ({
     overflow: 'hidden',
 }));
 
+const titleStyle = prepareNativeStyle(() => ({
+    flexGrow: 1,
+    flexShrink: 1,
+}));
+
 const dividerStyle = prepareNativeStyle(utils => ({
     marginHorizontal: -utils.spacings.sp16,
-    paddingTop: utils.spacings.sp8,
+    paddingTop: utils.spacings.sp16,
 }));
 
 export const AccordionItem = ({
@@ -57,20 +58,16 @@ export const AccordionItem = ({
 
     return (
         <Pressable onPress={handlePress}>
-            <VStack style={applyStyle(accordionWrapperStyle)}>
-                <HStack justifyContent="space-between" alignItems="center">
-                    <HStack spacing="sp24" flex={1} alignItems="center">
-                        {iconName && <Icon name={iconName} size="mediumLarge" />}
-                        <Text variant="body-sm-strong">{title}</Text>
-                    </HStack>
+            <Box style={applyStyle(accordionWrapperStyle)}>
+                <HStack spacing="sp16" alignItems="center">
+                    {iconName && <Icon name={iconName} size="mediumLarge" />}
+                    <Text variant="body-sm" style={applyStyle(titleStyle)}>
+                        {title}
+                    </Text>
                     <AnimatedChevron isExpanded={isOpened} />
                 </HStack>
-                <Box>
-                    <AccordionContent isOpened={isOpened} style={applyStyle(contentStyle)}>
-                        {content}
-                    </AccordionContent>
-                </Box>
-            </VStack>
+                <AccordionContent isOpened={isOpened}>{content}</AccordionContent>
+            </Box>
             {isDividerDisplayed && <Divider style={applyStyle(dividerStyle)} />}
         </Pressable>
     );
