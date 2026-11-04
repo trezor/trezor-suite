@@ -11,6 +11,7 @@ import { waitForVisible } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(onboardingCompletedState, {
     appSettings: { experimentalFeatures: ['native-navigation'] },
+    locale: { appLocaleCode: 'en-US' },
 });
 
 // SwiftUI exposes its system tab labels, rather than custom tab button identifiers.
