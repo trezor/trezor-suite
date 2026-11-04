@@ -123,3 +123,11 @@
 /suite-common/graph @trezor/suite-mobile
 /suite-common/message-system @tomasklim @matejkriz @MiroslavProchazka @pavelmario
 /suite-common/token-definitions @tomasklim
+
+# Wallet
+/suite-common/assets @trezor/suite-wallet
+/suite-common/price-chart @trezor/suite-wallet
+/suite/price-chart @trezor/suite-wallet
+/suite-native/module-assets @trezor/suite-wallet
+/suite-native/module-send @trezor/suite-wallet
+/suite-native/price-chart @trezor/suite-wallet
