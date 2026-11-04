@@ -1,7 +1,11 @@
 import '@suite-common/test-utils/globalOverrides';
 
+import { type PropsWithChildren } from 'react';
+
 import { act, renderHook, waitFor } from '@testing-library/react';
 
+import { type DesktopApi, type DesktopApiDep } from '@suite/desktop-app-api';
+import { ServicesProvider } from '@trezor/dependency-injection';
 import { isWeb } from '@trezor/env-utils';
 
 jest.mock('@suite/intl', () => ({
@@ -26,12 +30,27 @@ const mockUseLna = useLocalNetworkAccessPermission as jest.MockedFunction<
     typeof useLocalNetworkAccessPermission
 >;
 
+type IsLegacyBridgeRunning = DesktopApi['isLegacyBridgeRunning'];
+
+const renderUseLegacyBridgeDetection = (
+    isLegacyBridgeRunning: IsLegacyBridgeRunning = () => new Promise(() => {}),
+) => {
+    const services: DesktopApiDep<'isLegacyBridgeRunning'> = {
+        desktopApi: { isLegacyBridgeRunning },
+    };
+    const wrapper = ({ children }: PropsWithChildren) => (
+        <ServicesProvider services={services}>{children}</ServicesProvider>
+    );
+
+    return renderHook(() => useLegacyBridgeDetection(), { wrapper });
+};
+
 describe('useLegacyBridgeDetection', () => {
     const originalFetch = global.fetch;
 
     beforeEach(() => {
-        mockIsWeb.mockReset().mockReturnValue(false);
-        mockUseLna.mockReset().mockReturnValue({ localNetworkAccessPermission: 'unknown' });
+        mockIsWeb.mockReset().mockReturnValue(true);
+        mockUseLna.mockReset().mockReturnValue({ localNetworkAccessPermission: 'granted' });
     });
 
     afterEach(() => {
@@ -42,7 +61,7 @@ describe('useLegacyBridgeDetection', () => {
     it('returns false initially', () => {
         global.fetch = jest.fn(() => new Promise(() => {})) as jest.Mock;
 
-        const { result } = renderHook(() => useLegacyBridgeDetection());
+        const { result } = renderUseLegacyBridgeDetection();
 
         expect(result.current).toBe(false);
     });
@@ -55,7 +74,7 @@ describe('useLegacyBridgeDetection', () => {
             }),
         ) as jest.Mock;
 
-        const { result } = renderHook(() => useLegacyBridgeDetection());
+        const { result } = renderUseLegacyBridgeDetection();
 
         await waitFor(() => expect(result.current).toBe(true));
     });
@@ -68,7 +87,7 @@ describe('useLegacyBridgeDetection', () => {
             }),
         ) as jest.Mock;
 
-        const { result } = renderHook(() => useLegacyBridgeDetection());
+        const { result } = renderUseLegacyBridgeDetection();
 
         await act(async () => {
             await Promise.resolve();
@@ -85,7 +104,7 @@ describe('useLegacyBridgeDetection', () => {
             }),
         ) as jest.Mock;
 
-        const { result } = renderHook(() => useLegacyBridgeDetection());
+        const { result } = renderUseLegacyBridgeDetection();
 
         await act(async () => {
             await Promise.resolve();
@@ -102,7 +121,7 @@ describe('useLegacyBridgeDetection', () => {
             }),
         ) as jest.Mock;
 
-        const { result } = renderHook(() => useLegacyBridgeDetection());
+        const { result } = renderUseLegacyBridgeDetection();
 
         await act(async () => {
             await Promise.resolve();
@@ -119,7 +138,7 @@ describe('useLegacyBridgeDetection', () => {
             }),
         ) as jest.Mock;
 
-        const { result } = renderHook(() => useLegacyBridgeDetection());
+        const { result } = renderUseLegacyBridgeDetection();
 
         await act(async () => {
             await Promise.resolve();
@@ -136,7 +155,7 @@ describe('useLegacyBridgeDetection', () => {
             }),
         ) as jest.Mock;
 
-        const { result } = renderHook(() => useLegacyBridgeDetection());
+        const { result } = renderUseLegacyBridgeDetection();
 
         await act(async () => {
             await Promise.resolve();
@@ -148,7 +167,7 @@ describe('useLegacyBridgeDetection', () => {
     it('stays false on network error', async () => {
         global.fetch = jest.fn(() => Promise.reject(new Error('network error'))) as jest.Mock;
 
-        const { result } = renderHook(() => useLegacyBridgeDetection());
+        const { result } = renderUseLegacyBridgeDetection();
 
         await act(async () => {
             await Promise.resolve();
@@ -161,23 +180,19 @@ describe('useLegacyBridgeDetection', () => {
         const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
         global.fetch = jest.fn(() => new Promise(() => {})) as jest.Mock;
 
-        const { unmount } = renderHook(() => useLegacyBridgeDetection());
+        const { unmount } = renderUseLegacyBridgeDetection();
 
         unmount();
         expect(abortSpy).toHaveBeenCalled();
     });
 
     describe('on web', () => {
-        beforeEach(() => {
-            mockIsWeb.mockReturnValue(true);
-        });
-
         it('does not probe when LNA permission is unknown', () => {
             const fetchMock = jest.fn(() => new Promise(() => {})) as jest.Mock;
             global.fetch = fetchMock;
             mockUseLna.mockReturnValue({ localNetworkAccessPermission: 'unknown' });
 
-            const { result } = renderHook(() => useLegacyBridgeDetection());
+            const { result } = renderUseLegacyBridgeDetection();
 
             expect(fetchMock).not.toHaveBeenCalled();
             expect(result.current).toBe(false);
@@ -188,7 +203,7 @@ describe('useLegacyBridgeDetection', () => {
             global.fetch = fetchMock;
             mockUseLna.mockReturnValue({ localNetworkAccessPermission: 'denied' });
 
-            const { result } = renderHook(() => useLegacyBridgeDetection());
+            const { result } = renderUseLegacyBridgeDetection();
 
             expect(fetchMock).not.toHaveBeenCalled();
             expect(result.current).toBe(false);
@@ -199,7 +214,7 @@ describe('useLegacyBridgeDetection', () => {
             global.fetch = fetchMock;
             mockUseLna.mockReturnValue({ localNetworkAccessPermission: 'prompt' });
 
-            const { result } = renderHook(() => useLegacyBridgeDetection());
+            const { result } = renderUseLegacyBridgeDetection();
 
             expect(fetchMock).not.toHaveBeenCalled();
             expect(result.current).toBe(false);
@@ -215,7 +230,7 @@ describe('useLegacyBridgeDetection', () => {
             global.fetch = fetchMock;
             mockUseLna.mockReturnValue({ localNetworkAccessPermission: 'granted' });
 
-            const { result } = renderHook(() => useLegacyBridgeDetection());
+            const { result } = renderUseLegacyBridgeDetection();
 
             await waitFor(() => expect(result.current).toBe(true));
             expect(fetchMock).toHaveBeenCalledWith(
@@ -234,7 +249,7 @@ describe('useLegacyBridgeDetection', () => {
             global.fetch = fetchMock;
             mockUseLna.mockReturnValue({ localNetworkAccessPermission: 'denied' });
 
-            const { result, rerender } = renderHook(() => useLegacyBridgeDetection());
+            const { result, rerender } = renderUseLegacyBridgeDetection();
 
             expect(fetchMock).not.toHaveBeenCalled();
 
@@ -243,6 +258,69 @@ describe('useLegacyBridgeDetection', () => {
 
             await waitFor(() => expect(result.current).toBe(true));
             expect(fetchMock).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('on desktop', () => {
+        beforeEach(() => {
+            mockIsWeb.mockReturnValue(false);
+            mockUseLna.mockReturnValue({ localNetworkAccessPermission: 'unknown' });
+        });
+
+        it('returns true when main process detects legacy bridge', async () => {
+            const fetchMock = jest.fn() as jest.Mock;
+            global.fetch = fetchMock;
+            const isLegacyBridgeRunning = jest.fn<ReturnType<IsLegacyBridgeRunning>, []>(() =>
+                Promise.resolve({ success: true, payload: true }),
+            );
+
+            const { result } = renderUseLegacyBridgeDetection(isLegacyBridgeRunning);
+
+            await waitFor(() => expect(result.current).toBe(true));
+            expect(isLegacyBridgeRunning).toHaveBeenCalledTimes(1);
+            // The renderer runs from `file://`, which trezord-go rejects.
+            expect(fetchMock).not.toHaveBeenCalled();
+        });
+
+        it('stays false when main process does not detect legacy bridge', async () => {
+            const { result } = renderUseLegacyBridgeDetection(() =>
+                Promise.resolve({ success: true, payload: false }),
+            );
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+            expect(result.current).toBe(false);
+        });
+
+        it('stays false when IPC call fails', async () => {
+            const { result } = renderUseLegacyBridgeDetection(() =>
+                Promise.resolve({ success: false, error: 'error' }),
+            );
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+            expect(result.current).toBe(false);
+        });
+
+        it('ignores result after unmount', async () => {
+            let resolveProbe: (
+                value: Awaited<ReturnType<IsLegacyBridgeRunning>>,
+            ) => void = () => {};
+            const { result, unmount } = renderUseLegacyBridgeDetection(
+                () =>
+                    new Promise(resolve => {
+                        resolveProbe = resolve;
+                    }),
+            );
+
+            unmount();
+            await act(async () => {
+                resolveProbe({ success: true, payload: true });
+                await Promise.resolve();
+            });
+            expect(result.current).toBe(false);
         });
     });
 });

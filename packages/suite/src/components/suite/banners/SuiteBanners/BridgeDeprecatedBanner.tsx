@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { Banner } from '@trezor/components';
@@ -15,7 +16,8 @@ const LEGACY_BRIDGE_PROBE_TIMEOUT_MS = 5_000;
 /**
  * Detects whether legacy standalone trezord-go (port 21325) is running on the system.
  *
- * On Suite Desktop the probe always runs. On Suite Web the probe only runs when the
+ * On Suite Desktop the main process probes the port: trezord-go rejects requests from the
+ * renderer's `file://` origin with 403. On Suite Web the probe only runs when the
  * Local Network Access permission is already `granted` — issuing a `fetch` against
  * `127.0.0.1` under Chrome's Private Network Access rules would otherwise trigger a
  * permission prompt, and prompting the user just to surface a deprecation banner is
@@ -33,13 +35,31 @@ const LEGACY_BRIDGE_PROBE_TIMEOUT_MS = 5_000;
  */
 export const useLegacyBridgeDetection = () => {
     const [detected, setDetected] = useState(false);
+    const { desktopApi } = useServices(injectDesktopApi);
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
-    const shouldProbe = !isWeb() || localNetworkAccessPermission === 'granted';
+    const isDesktopProbe = !isWeb();
+    const shouldProbe = isDesktopProbe || localNetworkAccessPermission === 'granted';
 
     useEffect(() => {
         if (!shouldProbe) return;
 
         let isMounted = true;
+
+        if (isDesktopProbe) {
+            desktopApi
+                .isLegacyBridgeRunning()
+                .then(result => {
+                    if (isMounted && result.success && result.payload) {
+                        setDetected(true);
+                    }
+                })
+                .catch(() => {});
+
+            return () => {
+                isMounted = false;
+            };
+        }
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), LEGACY_BRIDGE_PROBE_TIMEOUT_MS);
 
@@ -59,7 +79,7 @@ export const useLegacyBridgeDetection = () => {
             clearTimeout(timeoutId);
             controller.abort();
         };
-    }, [shouldProbe]);
+    }, [desktopApi, isDesktopProbe, shouldProbe]);
 
     return detected;
 };

@@ -141,7 +141,13 @@ const getInitialState = ({
 });
 
 type PreloaderTestServices = DesktopAnalyticsDep &
-    DesktopApiDep<'getBridgeStatus' | 'getBridgeSettings' | 'on' | 'removeAllListeners'> &
+    DesktopApiDep<
+        | 'getBridgeStatus'
+        | 'getBridgeSettings'
+        | 'isLegacyBridgeRunning'
+        | 'on'
+        | 'removeAllListeners'
+    > &
     GetAllowPrereleaseDep &
     ReportSecurityCheckDep &
     RerunFwAuthenticityChecksCallDep &
@@ -156,6 +162,7 @@ const createServices = (): PreloaderTestServices => ({
             Promise.resolve({ success: true, payload: { service: true, process: true } }),
         getBridgeSettings: () =>
             Promise.resolve({ success: true, payload: { doNotStartOnStartup: false } }),
+        isLegacyBridgeRunning: () => Promise.resolve({ success: true, payload: false }),
         on: () => {},
         removeAllListeners: () => {},
     },
