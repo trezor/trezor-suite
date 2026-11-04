@@ -8,6 +8,7 @@ import { scheduleAction } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
 import type { Dependencies } from './module';
+import { electronOrigin } from '../config';
 import { isMainWindowUsable } from '../libs/isMainWindowUsable';
 import { hasSwitch } from '../libs/process-switches';
 import { ThreadProxy } from '../libs/thread-proxy';
@@ -66,7 +67,7 @@ class TrezordNodeProcess {
             const resp = await fetch(`http://127.0.0.1:21328/`, {
                 method: 'POST',
                 headers: {
-                    Origin: 'https://electron.trezor.io',
+                    Origin: electronOrigin,
                 },
             });
             if (resp.status === 200) {
