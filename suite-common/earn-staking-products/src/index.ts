@@ -1,4 +1,9 @@
 export { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
+export {
+    createEverstakePooledProduct,
+    type CreateEverstakePooledProductParams,
+    type EverstakePooledProductDeps,
+} from './ethereum/createEverstakePooledProduct';
 export { curatedProvider } from './providers/curated';
 export { everstakeProvider } from './providers/everstake';
 export { externalProvider } from './providers/external';

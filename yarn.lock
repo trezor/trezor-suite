@@ -11569,9 +11569,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-staking-products@workspace:suite-common/earn-staking-products"
   dependencies:
+    "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/earn-staking-common": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/requirements": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
