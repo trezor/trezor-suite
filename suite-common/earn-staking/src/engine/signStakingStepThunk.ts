@@ -16,8 +16,8 @@ import type { StakingEngineRejection } from './stakingEngineRejection';
 import { type StakingRootState, stakingActions } from '../state/stakingReducer';
 import type { StakingSessionKey } from '../state/stakingSessionKey';
 import {
+    selectStakingSessionStep,
     selectStakingStepContext,
-    selectStakingStepStatus,
 } from '../state/stakingSessionSelectors';
 import { type StakingStepEvent, transitionStakingStep } from '../state/stakingStepTransition';
 
@@ -40,7 +40,10 @@ export const signStakingStepThunk = createThunk<
     }
 >(
     `${STAKING_ENGINE_ACTION_PREFIX}/signStakingStep`,
-    async ({ sessionKey, feeLevel }, { dispatch, getState, extra, rejectWithValue }) => {
+    async (
+        { sessionKey, feeLevel },
+        { dispatch, getState, extra, rejectWithValue, requestId: attemptId },
+    ) => {
         const stepContext = selectStakingStepContext(getState(), sessionKey);
 
         if (!stepContext.success) {
@@ -52,6 +55,7 @@ export const signStakingStepThunk = createThunk<
 
         const signingEvent: StakingStepEvent = {
             type: 'signing',
+            attemptId,
             feeLevel,
             signingStartedAt: Date.now(),
         };
@@ -62,6 +66,14 @@ export const signStakingStepThunk = createThunk<
             return rejectWithValue('step-not-ready');
         }
 
+        const attempt = { sessionKey, stepId: step.id, attemptId };
+
+        const isAttemptSigning = () => {
+            const current = selectStakingSessionStep(getState(), session, step.id);
+
+            return current?.status === 'signing' && current.attemptId === attemptId;
+        };
+
         const reportSigningCancelled = () =>
             extra.services.analytics.report({
                 type: events.transactionCancelEvent.name,
@@ -70,20 +82,19 @@ export const signStakingStepThunk = createThunk<
 
         dispatch(
             stakingActions.stepSigning({
-                sessionKey,
-                stepId: step.id,
+                ...attempt,
                 feeLevel: signingEvent.feeLevel,
                 signingStartedAt: signingEvent.signingStartedAt,
             }),
         );
 
-        if (selectStakingStepStatus(getState(), session, step.id) !== 'signing') {
+        if (!isAttemptSigning()) {
             return rejectWithValue('step-not-ready');
         }
 
         const signed = await callStakingAdapter(() =>
             extra.services.staking.deviceAccess.run(() => {
-                if (selectStakingStepStatus(getState(), session, step.id) !== 'signing') {
+                if (!isAttemptSigning()) {
                     throw new StakingAdapterError(STAKING_SIGNING_ERROR_CODES.cancelled);
                 }
 
@@ -99,7 +110,7 @@ export const signStakingStepThunk = createThunk<
 
         if (!signed.success) {
             if (signed.code === STAKING_SIGNING_ERROR_CODES.cancelled) {
-                dispatch(stakingActions.stepReset({ sessionKey, stepId: step.id, error: null }));
+                dispatch(stakingActions.stepCancelled(attempt));
 
                 reportSigningCancelled();
 
@@ -107,31 +118,19 @@ export const signStakingStepThunk = createThunk<
             }
 
             if (signed.code === STAKING_SIGNING_ERROR_CODES.expired) {
-                dispatch(
-                    stakingActions.stepReset({
-                        sessionKey,
-                        stepId: step.id,
-                        error: { kind: 'expired', code: null },
-                    }),
-                );
+                dispatch(stakingActions.stepExpired(attempt));
 
                 return rejectWithValue('step-expired');
             }
 
             warnStakingAdapterFailure(`step ${step.id} sign`, signed);
 
-            dispatch(
-                stakingActions.stepReset({
-                    sessionKey,
-                    stepId: step.id,
-                    error: { kind: 'sign-failed', code: signed.code },
-                }),
-            );
+            dispatch(stakingActions.stepSignFailed({ ...attempt, code: signed.code }));
 
             return rejectWithValue('adapter-failed');
         }
 
-        if (selectStakingStepStatus(getState(), session, step.id) !== 'signing') {
+        if (!isAttemptSigning()) {
             reportSigningCancelled();
 
             return rejectWithValue('cancelled');
@@ -139,9 +138,7 @@ export const signStakingStepThunk = createThunk<
 
         assertSignedStakingStep(signed.payload);
 
-        dispatch(
-            stakingActions.stepSigned({ sessionKey, stepId: step.id, signed: signed.payload }),
-        );
+        dispatch(stakingActions.stepSigned({ ...attempt, signed: signed.payload }));
 
         return signed.payload;
     },

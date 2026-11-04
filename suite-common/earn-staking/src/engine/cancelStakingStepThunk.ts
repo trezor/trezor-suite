@@ -39,13 +39,25 @@ export const cancelStakingStepThunk = createThunk<
         if (step.status === 'signing') {
             extra.services.staking.deviceAccess.cancel('tx-cancelled');
 
-            dispatch(stakingActions.stepReset({ sessionKey, stepId: step.id, error: null }));
+            dispatch(
+                stakingActions.stepCancelled({
+                    sessionKey,
+                    stepId: step.id,
+                    attemptId: step.attemptId,
+                }),
+            );
 
             return;
         }
 
         if (step.status === 'signed') {
-            dispatch(stakingActions.stepReset({ sessionKey, stepId: step.id, error: null }));
+            dispatch(
+                stakingActions.stepCancelled({
+                    sessionKey,
+                    stepId: step.id,
+                    attemptId: step.attemptId,
+                }),
+            );
 
             extra.services.analytics.report({
                 type: events.transactionCancelEvent.name,

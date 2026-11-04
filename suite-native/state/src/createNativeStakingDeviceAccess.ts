@@ -4,21 +4,37 @@ import type { GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 
 export type NativeStakingDeviceAccessDeps = GetTrezorConnectPrivilegedDep;
 
+// A queued callback has not reached the device yet, so a cancel while it waits would abort
+// whatever operation holds the device; the callback ends itself once it runs.
 export const createNativeStakingDeviceAccess = (
     deps: NativeStakingDeviceAccessDeps,
-): StakingDeviceAccess => ({
-    run: async callback => {
-        const result = await requestPrioritizedDeviceAccess(callback);
+): StakingDeviceAccess => {
+    let isDeviceCallRunning = false;
 
-        if (!result.success) {
-            const failure: unknown = result.error;
+    return {
+        run: async callback => {
+            const result = await requestPrioritizedDeviceAccess(async () => {
+                isDeviceCallRunning = true;
 
-            throw failure instanceof Error ? failure : new Error(result.error);
-        }
+                try {
+                    return await callback();
+                } finally {
+                    isDeviceCallRunning = false;
+                }
+            });
 
-        return result.payload;
-    },
-    cancel: reason => {
-        deps.getTrezorConnect().cancel({ reason });
-    },
-});
+            if (!result.success) {
+                const failure: unknown = result.error;
+
+                throw failure instanceof Error ? failure : new Error(result.error);
+            }
+
+            return result.payload;
+        },
+        cancel: reason => {
+            if (!isDeviceCallRunning) return;
+
+            deps.getTrezorConnect().cancel({ reason });
+        },
+    };
+};

@@ -31,6 +31,7 @@ export type StakingSessionStepBase = {
 };
 
 type StakingSignableStep = {
+    attemptId: string;
     composed: ComposedStakingStep;
     feeLevel: StakingFeeLevelLabel;
     signingStartedAt: number;

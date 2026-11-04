@@ -34,7 +34,11 @@ describe('stakingSessionStepsReducer', () => {
         expect(
             stakingSessionStepsReducer(
                 steps,
-                actions.stepSigned({ ...stake, signed: mockSignedStakingStep() }),
+                actions.stepSigned({
+                    ...stake,
+                    attemptId: 'attempt-1',
+                    signed: mockSignedStakingStep(),
+                }),
             ),
         ).toBe(steps);
     });

@@ -218,6 +218,7 @@ describe('planStakingOperationThunk', () => {
             stakingActions.stepSigning({
                 sessionKey,
                 stepId: 'freeze',
+                attemptId: 'attempt-1',
                 feeLevel: 'normal',
                 signingStartedAt: 1,
             }),

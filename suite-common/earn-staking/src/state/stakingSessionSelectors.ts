@@ -108,17 +108,24 @@ export const selectAwaitingStakingStep = (
     return session !== null && step?.status === 'awaiting' ? { session, step } : null;
 };
 
-export const selectStakingStepStatus = (
+export const selectStakingSessionStep = (
     state: StakingRootState,
     session: StakingSession,
     stepId: string,
-): StakingSessionStepStatus | null => {
+): StakingSessionStep | null => {
     const current = selectStakingSession(state, session.key);
 
     if (current?.id !== session.id) return null;
 
-    return current.steps.find(step => step.id === stepId)?.status ?? null;
+    return current.steps.find(step => step.id === stepId) ?? null;
 };
+
+export const selectStakingStepStatus = (
+    state: StakingRootState,
+    session: StakingSession,
+    stepId: string,
+): StakingSessionStepStatus | null =>
+    selectStakingSessionStep(state, session, stepId)?.status ?? null;
 
 export type StakingStepContext = {
     session: StakingSession;

@@ -11,6 +11,8 @@ import { mock } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
+const attemptId = 'attempt-1';
+
 import {
     type CancelStakingStepThunkDeps,
     type CancelStakingStepThunkState,
@@ -37,11 +39,11 @@ const composedState = stakingReducer(
 );
 const signingState = stakingReducer(
     composedState,
-    stakingActions.stepSigning({ ...stake, feeLevel: 'normal', signingStartedAt: 1 }),
+    stakingActions.stepSigning({ ...stake, attemptId, feeLevel: 'normal', signingStartedAt: 1 }),
 );
 const signedState = stakingReducer(
     signingState,
-    stakingActions.stepSigned({ ...stake, signed: mockSignedStakingStep() }),
+    stakingActions.stepSigned({ ...stake, attemptId, signed: mockSignedStakingStep() }),
 );
 
 const isStakingAction = (action: unknown) =>
@@ -78,7 +80,7 @@ describe('cancelStakingStepThunk', () => {
 
         expect(cancelStakingStepThunk.fulfilled.match(result)).toBe(true);
         expect(deviceAccess.cancel).toHaveBeenCalledWith('tx-cancelled');
-        expect(actions).toEqual([stakingActions.stepReset({ ...stake, error: null })]);
+        expect(actions).toEqual([stakingActions.stepCancelled({ ...stake, attemptId })]);
         expect(analytics.report).not.toHaveBeenCalled();
     });
 
@@ -87,7 +89,7 @@ describe('cancelStakingStepThunk', () => {
 
         expect(cancelStakingStepThunk.fulfilled.match(result)).toBe(true);
         expect(deviceAccess.cancel).not.toHaveBeenCalled();
-        expect(actions).toEqual([stakingActions.stepReset({ ...stake, error: null })]);
+        expect(actions).toEqual([stakingActions.stepCancelled({ ...stake, attemptId })]);
         expect(analytics.report).toHaveBeenCalledWith({
             type: events.transactionCancelEvent.name,
             payload: { txType: 'stake', networkSymbol: 'eth', stage: 'review' },

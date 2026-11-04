@@ -1,5 +1,7 @@
 import { type Middleware, type UnknownAction, combineReducers, isAction } from '@reduxjs/toolkit';
 
+const attemptId = 'attempt-1';
+
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { deviceInitialState } from '@suite-common/device';
 import { StakingAdapterError, type StakingProductAdapter } from '@suite-common/earn-staking-common';
@@ -71,8 +73,8 @@ const signedState = (
 ): StakingState =>
     [
         stakingActions.stepComposed({ ...stake, composed: composedStep }),
-        stakingActions.stepSigning({ ...stake, feeLevel: 'normal', signingStartedAt }),
-        stakingActions.stepSigned({ ...stake, signed }),
+        stakingActions.stepSigning({ ...stake, attemptId, feeLevel: 'normal', signingStartedAt }),
+        stakingActions.stepSigned({ ...stake, attemptId, signed }),
     ].reduce(stakingReducer, mockStakingState({ descriptors: [eth], sessions: [sessionToSign] }));
 
 const initStore = ({

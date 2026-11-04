@@ -48,6 +48,7 @@ import { planStakingOperationThunk } from './planStakingOperationThunk';
 import { signStakingStepThunk } from './signStakingStepThunk';
 import {
     mockStakingDeviceAccess,
+    mockStakingDeviceAccessRun,
     mockStakingProductRepository,
     mockStakingQueryClient,
     mockStakingServices,
@@ -266,6 +267,23 @@ const replace = (
     );
 
 const settleTracking = () => jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
+
+// The first device call waits in the queue, as a mobile signing does behind another device
+// operation, until the test releases it; later calls run at once.
+const createQueuedDeviceAccess = () => {
+    let releaseQueued: (() => void) | null = null;
+    const deviceAccess = mockStakingDeviceAccess({
+        run: mockStakingDeviceAccessRun(callback => {
+            if (releaseQueued !== null) return callback();
+
+            return new Promise((resolve, reject) => {
+                releaseQueued = () => Promise.resolve().then(callback).then(resolve, reject);
+            });
+        }),
+    });
+
+    return { deviceAccess, release: () => releaseQueued?.() };
+};
 
 const broadcastStatuses = (actions: UnknownAction[]) =>
     actions
@@ -537,6 +555,80 @@ describe('staking engine', () => {
         await signing;
 
         expect(getStep(store, 'freeze')?.status).toBe('signed');
+    });
+
+    it('lets a cancelled attempt that was still queued do nothing to the next one', async () => {
+        const queue = createQueuedDeviceAccess();
+        const { store, adapter, analytics } = initStore({ deviceAccess: queue.deviceAccess });
+
+        await planStake(store);
+        await compose(store);
+
+        const queued = store.dispatch(signStakingStepThunk({ sessionKey, feeLevel: 'normal' }));
+
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(getStep(store, 'freeze')?.status).toBe('signing');
+
+        await store.dispatch(cancelStakingStepThunk({ sessionKey })).unwrap();
+
+        expect(getStep(store, 'freeze')).toMatchObject({ status: 'composed', error: null });
+
+        await store.dispatch(signStakingStepThunk({ sessionKey, feeLevel: 'high' })).unwrap();
+
+        expect(getStep(store, 'freeze')).toMatchObject({ status: 'signed', feeLevel: 'high' });
+
+        queue.release();
+
+        expect((await queued).payload).toBe('cancelled');
+        expect(getStep(store, 'freeze')).toMatchObject({ status: 'signed', feeLevel: 'high' });
+        expect(adapter.signStep).toHaveBeenCalledTimes(1);
+        expect(adapter.signStep).toHaveBeenCalledWith(
+            expect.objectContaining({ feeLevel: 'high' }),
+        );
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+    });
+
+    it('leaves a broadcasting step alone when a cancelled attempt wakes up late', async () => {
+        const queue = createQueuedDeviceAccess();
+        let finishBroadcast = () => {};
+        const { store, adapter } = initStore({
+            deviceAccess: queue.deviceAccess,
+            adapter: {
+                broadcastStep: mock<StakingProductAdapter['broadcastStep']>(
+                    () =>
+                        new Promise(resolve => {
+                            finishBroadcast = () => resolve({ txid: 'tx-freeze' });
+                        }),
+                ),
+            },
+        });
+
+        await planStake(store);
+        await compose(store);
+
+        const queued = store.dispatch(signStakingStepThunk({ sessionKey, feeLevel: 'normal' }));
+
+        await jest.advanceTimersByTimeAsync(0);
+        await store.dispatch(cancelStakingStepThunk({ sessionKey })).unwrap();
+        await sign(store);
+
+        const broadcasting = store.dispatch(broadcastStakingStepThunk({ sessionKey }));
+
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(getStep(store, 'freeze')?.status).toBe('broadcasting');
+
+        queue.release();
+
+        expect((await queued).payload).toBe('cancelled');
+        expect(getStep(store, 'freeze')?.status).toBe('broadcasting');
+
+        finishBroadcast();
+
+        expect((await broadcasting).payload).toEqual({ txid: 'tx-freeze' });
+        expect(getStep(store, 'freeze')).toMatchObject({ status: 'awaiting', txid: 'tx-freeze' });
+        expect(adapter.broadcastStep).toHaveBeenCalledTimes(1);
     });
 
     it('signs every step through the injected device access', async () => {

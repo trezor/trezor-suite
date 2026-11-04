@@ -1,5 +1,7 @@
 import { isAction } from '@reduxjs/toolkit';
 
+const attemptId = 'attempt-1';
+
 import {
     type ComposedStakingStep,
     StakingAdapterError,
@@ -164,7 +166,12 @@ describe('composeStakingStepThunk', () => {
         const state = createState(
             [
                 stakingActions.stepComposed({ ...freeze, composed }),
-                stakingActions.stepSigning({ ...freeze, feeLevel: 'normal', signingStartedAt: 1 }),
+                stakingActions.stepSigning({
+                    ...freeze,
+                    attemptId,
+                    feeLevel: 'normal',
+                    signingStartedAt: 1,
+                }),
             ].reduce(stakingReducer, createState().earn.staking),
         );
         const { result } = await run(() => state, createExtra(adapter));
@@ -182,10 +189,15 @@ describe('composeStakingStepThunk', () => {
         const state = createState(
             [
                 stakingActions.stepComposed({ ...stake, composed }),
-                stakingActions.stepSigning({ ...stake, feeLevel: 'normal', signingStartedAt: 1 }),
-                stakingActions.stepSigned({ ...stake, signed: mockSignedStakingStep() }),
-                stakingActions.stepBroadcasting(stake),
-                stakingActions.stepBroadcast({ ...stake, txid: 'tx1' }),
+                stakingActions.stepSigning({
+                    ...stake,
+                    attemptId,
+                    feeLevel: 'normal',
+                    signingStartedAt: 1,
+                }),
+                stakingActions.stepSigned({ ...stake, attemptId, signed: mockSignedStakingStep() }),
+                stakingActions.stepBroadcasting({ ...stake, attemptId }),
+                stakingActions.stepBroadcast({ ...stake, attemptId, txid: 'tx1' }),
             ].reduce(
                 stakingReducer,
                 mockStakingState({

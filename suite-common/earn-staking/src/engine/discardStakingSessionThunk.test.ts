@@ -7,6 +7,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
+const attemptId = 'attempt-1';
+
 import {
     type DiscardStakingSessionThunkState,
     discardStakingSessionThunk,
@@ -24,15 +26,15 @@ const stake = { sessionKey, stepId: 'stake' };
 const idle = mockStakingState({ descriptors: [eth], sessions: [session] });
 const signing = [
     stakingActions.stepComposed({ ...stake, composed: mockComposedStakingStep() }),
-    stakingActions.stepSigning({ ...stake, feeLevel: 'normal', signingStartedAt: 1 }),
+    stakingActions.stepSigning({ ...stake, attemptId, feeLevel: 'normal', signingStartedAt: 1 }),
 ].reduce(stakingReducer, idle);
 const broadcasting = [
-    stakingActions.stepSigned({ ...stake, signed: mockSignedStakingStep() }),
-    stakingActions.stepBroadcasting(stake),
+    stakingActions.stepSigned({ ...stake, attemptId, signed: mockSignedStakingStep() }),
+    stakingActions.stepBroadcasting({ ...stake, attemptId }),
 ].reduce(stakingReducer, signing);
 const awaiting = stakingReducer(
     broadcasting,
-    stakingActions.stepBroadcast({ ...stake, txid: 'tx1' }),
+    stakingActions.stepBroadcast({ ...stake, attemptId, txid: 'tx1' }),
 );
 
 const isStakingAction = (action: unknown) =>

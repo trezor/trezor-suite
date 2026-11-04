@@ -14,6 +14,7 @@ import {
 import { type StakingStepEvent, transitionStakingStep } from './stakingStepTransition';
 import { mockStakingSessionStep } from '../../mocks';
 
+const attemptId = 'attempt-1';
 const composed = mockComposedStakingStep({ validityMs: 24_000 });
 const signed = mockSignedStakingStep();
 const signFailed: StakingStepError = { kind: 'sign-failed', code: 'Failure_DataError' };
@@ -21,6 +22,7 @@ const confirmationFailed: StakingStepError = { kind: 'confirmation-failed', code
 
 const base = mockStakingSessionStep({ id: 'stake', awaitConfirmation: true });
 const signable = {
+    attemptId,
     composed,
     feeLevel: 'normal' as const,
     signingStartedAt: 1_000,
@@ -41,11 +43,14 @@ const stepsByStatus: Record<StakingSessionStepStatus, StakingSessionStep> = {
 const events: Record<StakingStepEvent['type'], StakingStepEvent> = {
     composed: { type: 'composed', composed },
     'compose-failed': { type: 'compose-failed', error: { kind: 'compose-failed', code: null } },
-    signing: { type: 'signing', feeLevel: 'normal', signingStartedAt: 1_000 },
-    signed: { type: 'signed', signed },
-    reset: { type: 'reset', error: null },
-    broadcasting: { type: 'broadcasting' },
-    broadcast: { type: 'broadcast', txid: 'tx1' },
+    signing: { type: 'signing', attemptId, feeLevel: 'normal', signingStartedAt: 1_000 },
+    signed: { type: 'signed', attemptId, signed },
+    cancelled: { type: 'cancelled', attemptId },
+    'sign-failed': { type: 'sign-failed', attemptId, code: 'Failure_DataError' },
+    expired: { type: 'expired', attemptId },
+    broadcasting: { type: 'broadcasting', attemptId },
+    broadcast: { type: 'broadcast', attemptId, txid: 'tx1' },
+    'broadcast-failed': { type: 'broadcast-failed', attemptId, code: null },
     'txid-replaced': { type: 'txid-replaced', txid: 'tx2' },
     confirmed: { type: 'confirmed' },
     failed: { type: 'failed', error: confirmationFailed },
@@ -56,25 +61,48 @@ const acceptedFrom: Record<StakingStepEvent['type'], readonly StakingSessionStep
     'compose-failed': ['pending', 'composed'],
     signing: ['composed'],
     signed: ['signing'],
-    reset: ['signing', 'signed', 'broadcasting'],
+    cancelled: ['signing', 'signed'],
+    'sign-failed': ['signing'],
+    expired: ['signing', 'signed'],
     broadcasting: ['signed'],
     broadcast: ['broadcasting'],
+    'broadcast-failed': ['broadcasting'],
     'txid-replaced': ['awaiting'],
     confirmed: ['awaiting'],
     failed: ['awaiting'],
 };
 
+const accepting = (event: StakingStepEvent) =>
+    Object.entries(stepsByStatus)
+        .filter(([, step]) => transitionStakingStep(step, event) !== null)
+        .map(([status]) => status);
+
 describe('transitionStakingStep', () => {
     it.each(typedObjectKeys(events) as StakingStepEvent['type'][])(
         'accepts %s only from the statuses of the lifecycle table',
         type => {
-            const accepting = Object.entries(stepsByStatus)
-                .filter(([, step]) => transitionStakingStep(step, events[type]) !== null)
-                .map(([status]) => status);
-
-            expect(accepting).toEqual(acceptedFrom[type]);
+            expect(accepting(events[type])).toEqual(acceptedFrom[type]);
         },
     );
+
+    it("refuses every outcome of a signing attempt that is not the step's own", () => {
+        const otherAttempt = (event: StakingStepEvent) =>
+            'attemptId' in event ? { ...event, attemptId: 'attempt-2' } : event;
+
+        (
+            [
+                'signed',
+                'cancelled',
+                'sign-failed',
+                'expired',
+                'broadcasting',
+                'broadcast',
+                'broadcast-failed',
+            ] as const
+        ).forEach(type => {
+            expect(accepting(otherAttempt(events[type]))).toEqual([]);
+        });
+    });
 
     it('composes with a clean error and recomposes in place', () => {
         const failed = { ...stepsByStatus.pending, error: signFailed };
@@ -92,7 +120,7 @@ describe('transitionStakingStep', () => {
         });
     });
 
-    it('starts signing only at a final level and stamps the deadline', () => {
+    it('starts signing only at a final level, with the attempt and the deadline', () => {
         const noDeadline = {
             ...stepsByStatus.composed,
             composed: mockComposedStakingStep({ validityMs: null }),
@@ -104,12 +132,9 @@ describe('transitionStakingStep', () => {
             }),
         };
 
-        expect(transitionStakingStep(stepsByStatus.composed, events.signing)).toMatchObject({
-            status: 'signing',
-            feeLevel: 'normal',
-            signingStartedAt: 1_000,
-            expiresAt: 25_000,
-        });
+        expect(transitionStakingStep(stepsByStatus.composed, events.signing)).toEqual(
+            stepsByStatus.signing,
+        );
         expect(transitionStakingStep(noDeadline, events.signing)).toMatchObject({
             expiresAt: null,
         });
@@ -121,7 +146,7 @@ describe('transitionStakingStep', () => {
         ).toBeNull();
     });
 
-    it('carries the composed data and the signature forward', () => {
+    it('carries the attempt, the composed data and the signature forward', () => {
         expect(transitionStakingStep(stepsByStatus.signing, events.signed)).toEqual(
             stepsByStatus.signed,
         );
@@ -130,10 +155,24 @@ describe('transitionStakingStep', () => {
         );
     });
 
-    it('returns a reset step to composed with the given error', () => {
+    it('returns an attempt to composed with the error of its outcome', () => {
+        const composedAgain = (error: StakingStepError | null) => ({
+            ...stepsByStatus.composed,
+            error,
+        });
+
+        expect(transitionStakingStep(stepsByStatus.signing, events.cancelled)).toEqual(
+            composedAgain(null),
+        );
+        expect(transitionStakingStep(stepsByStatus.signing, events['sign-failed'])).toEqual(
+            composedAgain(signFailed),
+        );
+        expect(transitionStakingStep(stepsByStatus.signed, events.expired)).toEqual(
+            composedAgain({ kind: 'expired', code: null }),
+        );
         expect(
-            transitionStakingStep(stepsByStatus.broadcasting, { type: 'reset', error: signFailed }),
-        ).toEqual({ ...stepsByStatus.composed, error: signFailed });
+            transitionStakingStep(stepsByStatus.broadcasting, events['broadcast-failed']),
+        ).toEqual(composedAgain({ kind: 'broadcast-failed', code: null }));
     });
 
     it('awaits confirmation only when the step asks for it', () => {
