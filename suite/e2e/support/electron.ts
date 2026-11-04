@@ -113,9 +113,29 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     return electronApp;
 };
 
+// --width/--height size the outer window, so on Windows the frame would eat part of the viewport.
+const setContentSize = async ({
+    electronApp,
+    window,
+    viewport,
+}: Suite & Pick<LaunchSuiteParams, 'viewport'>) => {
+    const browserWindow = await electronApp.browserWindow(window);
+    const [width, height] = await browserWindow.evaluate((win, size) => {
+        win.setContentSize(size.width, size.height);
+
+        return win.getContentSize();
+    }, viewport);
+    if (width !== viewport.width || height !== viewport.height) {
+        console.warn(
+            `Content size ${width}x${height} differs from the requested ${viewport.width}x${viewport.height}`,
+        );
+    }
+};
+
 export const launchSuite = async (params: LaunchSuiteParams): Promise<Suite> => {
     const electronApp = await launchSuiteElectronApp(params);
     const window = await electronApp.firstWindow();
+    await setContentSize({ electronApp, window, viewport: params.viewport });
 
     return { electronApp, window };
 };
