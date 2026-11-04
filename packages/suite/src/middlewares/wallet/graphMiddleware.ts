@@ -1,7 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { accountsActions, updateDiscoveryMatcher } from '@suite-common/wallet-core';
+import { accountsActions, selectAccounts, updateDiscoveryMatcher } from '@suite-common/wallet-core';
 import { type Dispatch } from '@trezor/redux-utils';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
@@ -12,7 +12,7 @@ const graphMiddleware =
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         next(action);
-        const currentAccounts = api.getState().wallet.accounts;
+        const currentAccounts = selectAccounts(api.getState());
 
         if (accountsActions.updateSelectedAccount.match(action)) {
             // fetch graph data for selected account and range if needed

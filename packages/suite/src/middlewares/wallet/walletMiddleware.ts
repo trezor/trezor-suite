@@ -24,6 +24,7 @@ import { type Dispatch } from '@trezor/redux-utils';
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
+import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import type { AppState } from 'src/types/suite';
 
 const walletMiddleware =
@@ -69,7 +70,7 @@ const walletMiddleware =
         if (
             updateWindowVisibility.match(action) &&
             action.payload.isVisible &&
-            !prevState.window.isVisible
+            !selectIsWindowVisible(prevState)
         ) {
             const state = api.getState();
             const visibleNetworks = new Set(selectAllNetworkSymbolsOfVisibleAccounts(state));
