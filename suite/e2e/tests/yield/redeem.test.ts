@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
@@ -36,6 +37,13 @@ const buildEthAccountTokens = ({ usdcBalance, shareBalance }: BuildEthAccountTok
     { ...YIELD_USDC_VAULT_SHARE_TOKEN, balance: shareBalance },
 ];
 
+const REDEEM_CONTEXT = {
+    action: 'continue',
+    operation: 'redeem',
+    networkSymbol: 'eth',
+    vaultId: usdcPrime.id,
+};
+
 const REDEEM_TXID = '0x4444444444444444444444444444444444444444444444444444444444444444';
 
 test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
@@ -45,34 +53,38 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
-        await onboardingPage.completeOnboarding();
-        await blockbookMock.start('eth');
-        blockbookMock.setBroadcastTxid(REDEEM_TXID);
-        blockbookMock.updateAccountState({
-            txs: 3,
-            nonce: '2',
-            transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
-            tokens: buildEthAccountTokens({
-                usdcBalance: '990000000',
-                shareBalance: YIELD_USDC_VAULT_SHARE_TOKEN.balance,
-            }),
-        });
-        await yieldMock.start();
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('eth'),
-                    backend: { type: 'blockbook', url: blockbookMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
+            await analytics.interceptAnalytics();
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            blockbookMock.setBroadcastTxid(REDEEM_TXID);
+            blockbookMock.updateAccountState({
+                txs: 3,
+                nonce: '2',
+                transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
+                tokens: buildEthAccountTokens({
+                    usdcBalance: '990000000',
+                    shareBalance: YIELD_USDC_VAULT_SHARE_TOKEN.balance,
+                }),
+            });
+            await yieldMock.start();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('eth'),
+                        backend: { type: 'blockbook', url: blockbookMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'User can redeem yield vault shares using the max button',
         { annotation: createTestAnnotation({ stream: TestStream.Earn }) },
         async ({
+            analytics,
             yieldSection,
             yieldFlowSection,
             txSimulationModal,
@@ -81,14 +93,26 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
             blockbookMock,
             yieldMock,
         }) => {
+            const earnEntryEvents = analytics.trackEvents(events.yieldEarnEntryEvent.name);
+            const navigateEvents = analytics.trackEvents(events.yieldNavigateEvent.name);
+            const interactionEvents = analytics.trackEvents(events.yieldInteractionEvent.name);
+            const withdrawEvents = analytics.trackEvents(events.yieldWithdrawEvent.name);
+
             await test.step('Open the withdraw form', async () => {
                 await yieldSection.earnMenuButton.click();
+                await earnEntryEvents.expectNext({ from: 'settings-coins' });
                 await yieldSection.withdrawButton(usdcPrime.id).click();
+                await navigateEvents.expectNext({
+                    action: 'continue',
+                    from: 'earn-dashboard',
+                    to: 'withdraw-form',
+                });
             });
 
             await test.step('Max switches the amount input into trSHUSDCp shares', async () => {
                 await expect(yieldFlowSection.amountUnit).toHaveText('USDC');
                 await yieldFlowSection.maxButton.click();
+                await interactionEvents.expectNext({ element: 'withdraw-max' });
 
                 await expect(yieldFlowSection.amountUnit).toHaveText('trSHUSDCp');
                 await expect(yieldFlowSection.amountInput).toHaveValue(REDEEM_MAX_SHARES_AMOUNT);
@@ -104,6 +128,12 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await yieldMock.mockUsdcRedeem();
                 await yieldFlowSection.amountInput.fill(REDEEM_SHARES_AMOUNT);
                 await yieldFlowSection.redeemButton.click();
+                await withdrawEvents.expectNext({
+                    ...REDEEM_CONTEXT,
+                    type: 'withdraw',
+                    deviceStatus: 'connected',
+                    wrappedNative: 'false',
+                });
 
                 await expect(txSimulationModal.sentAsset(0)).toHaveText(
                     `Sending ${REDEEM_SHARES_AMOUNT} trSHUSDCp`,
@@ -112,6 +142,10 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                     `Receiving ${REDEEM_PAYOUT_AMOUNT} USDC`,
                 );
                 await txSimulationModal.confirmButton.click();
+                await withdrawEvents.expectNext({
+                    ...REDEEM_CONTEXT,
+                    type: 'tx-simulation-modal',
+                });
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowOnDisplay({
@@ -159,6 +193,8 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await devicePrompt.sendButton.click();
 
                 await expect(yieldFlowSection.withdrawnToast).toBeVisible();
+                // Broadcasting alone reports nothing; success waits for the on-chain resolution.
+                withdrawEvents.expectNone();
                 blockbookMock.updateAccountState({
                     transactions: [
                         { ...ETH_STAKE_CONFIRMED_TX, txid: REDEEM_TXID },
@@ -177,10 +213,23 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
                     `${REDEEM_PAYOUT_AMOUNT} USDC`,
                 );
+                await withdrawEvents.expectNext({
+                    ...REDEEM_CONTEXT,
+                    type: 'success',
+                    wrappedNative: 'false',
+                    durationMs: expect.stringMatching(/^\d+$/),
+                });
             });
 
             await test.step('Dashboard shows the reduced position', async () => {
                 await yieldFlowSection.backToOverviewButton.click();
+                // Redeem runs inside the withdraw flow, so it exits as the withdraw form.
+                await navigateEvents.expectNext({
+                    action: 'continue',
+                    from: 'withdraw-form',
+                    to: 'earn-dashboard',
+                });
+                await earnEntryEvents.expectNext({ from: 'earn-yield-withdraw' });
 
                 await expect(yieldSection.depositedAmount(usdcPrime.id)).toHaveTranslation(
                     'TR_EARN_YIELD_DASHBOARD_DEPOSITED',

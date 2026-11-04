@@ -11,6 +11,8 @@ export const YIELD_VAULTS = {
         potentialReward: '42.60 USDC',
         apyBreakdown: {
             apyPercent: '4.26',
+            // `apyBreakdown` analytics attribute: symbol,rate pairs sorted by symbol.
+            analyticsAttribute: 'MORPHO,0.5,USDC,3.76',
             symbols: ['USDC', 'MORPHO'],
             rates: ['+3.76% APY', '+0.5% APR'],
         },
@@ -28,6 +30,7 @@ export const YIELD_VAULTS = {
         apy: '~3.1%',
         apyBreakdown: {
             apyPercent: '3.1',
+            analyticsAttribute: 'MORPHO,0.5,WETH,2.6',
             symbols: ['WETH', 'MORPHO'],
             rates: ['+2.6% APY', '+0.5% APR'],
         },

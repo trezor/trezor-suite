@@ -12,6 +12,7 @@ export class YieldFlowSection {
     readonly approveSkipButton: Locator;
     // Continue button of the shared allowance approve modal opened by the approve step
     readonly approveModalContinueButton: Locator;
+    readonly approveModalCloseButton: Locator;
     readonly pendingTransactionLabel: Locator;
     readonly pendingTransactionId: Locator;
     // Wrap step (wrapped-native vaults only)
@@ -62,6 +63,8 @@ export class YieldFlowSection {
         this.approveButton = this.page.getByTestId('@yield/form/approve-button');
         this.approveSkipButton = this.page.getByTestId('@yield/form/approve-skip-button');
         this.approveModalContinueButton = this.page.getByTestId('@modal/approve/continue-button');
+        // The approve modal has no container test ID; it is the only modal open at that point.
+        this.approveModalCloseButton = this.page.getByTestId('@modal/close-button');
         this.pendingTransactionLabel = this.page.getByTestId('@pending-transaction/title');
         this.pendingTransactionId = this.page.getByTestId('@pending-transaction/txid/value');
         this.wrapButton = this.page.getByTestId('@yield/form/wrap-button');

@@ -5,6 +5,7 @@ export class YieldConsentModal {
     readonly heading: Locator;
     readonly acknowledgeCheckbox: Locator;
     readonly confirmButton: Locator;
+    readonly closeButton: Locator;
 
     constructor(private readonly page: Page) {
         this.modalContainer = this.page.getByTestId('@modal/earn-provider-consent');
@@ -13,5 +14,6 @@ export class YieldConsentModal {
             '@staking/provider-acknowledge-checkbox',
         );
         this.confirmButton = this.modalContainer.getByTestId('@modal/staking/confirm-button');
+        this.closeButton = this.modalContainer.getByTestId('@modal/close-button');
     }
 }

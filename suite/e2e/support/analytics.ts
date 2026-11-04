@@ -156,6 +156,35 @@ export class AnalyticsFixture {
         return [...this.requests].reverse().find(req => req.c_type === eventType);
     }
 
+    /**
+     * Returns every intercepted request of the given event type in the order the app sent them.
+     * Pair it with `expect.poll` when the last event is reported asynchronously.
+     */
+    findAnalyticsEventsByType(eventType: string) {
+        return this.requests.filter(req => req.c_type === eventType);
+    }
+
+    /**
+     * Tracks how many events of the given type were already checked, so each check only
+     * waits for the next one. Analytics requests are sent asynchronously after the UI action,
+     * so the count is polled.
+     */
+    trackEvents(eventType: string) {
+        let checkedCount = 0;
+        const findEvents = () => this.findAnalyticsEventsByType(eventType);
+
+        return {
+            expectNext: async (expected: Record<string, unknown>) => {
+                await expect
+                    .poll(() => findEvents().length, `expected a new ${eventType} event`)
+                    .toBe(checkedCount + 1);
+                expect(findEvents()[checkedCount]).toMatchObject(expected);
+                checkedCount += 1;
+            },
+            expectNone: () => expect(findEvents()).toHaveLength(checkedCount),
+        };
+    }
+
     @step()
     async interceptAnalytics() {
         await this.page.route('**://data.trezor.io/suite/log/**', route => {

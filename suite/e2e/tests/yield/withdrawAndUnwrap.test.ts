@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { AddressFormatter } from '@suite-common/formatters';
 import { asNetworkSymbol } from '@suite-common/networks';
 import { TestStream } from '@trezor/e2e-utils';
@@ -27,6 +28,14 @@ const UNWRAP_MAX_FEE = '0.00010840280031 ETH';
 const BALANCE_AFTER_WITHDRAW = '1233999891597199690000';
 const BALANCE_AFTER_UNWRAP = '1238999783194399380000';
 
+const WITHDRAW_CONTEXT = {
+    action: 'continue',
+    operation: 'withdraw',
+    networkSymbol: 'eth',
+    vaultId: wethPrime.id,
+};
+const APY_BREAKDOWN = wethPrime.apyBreakdown.analyticsAttribute;
+
 const WITHDRAW_TXID = '0x5b8e3d2a70c1f6b49e27d05a8c31f7e604b92d5c1a8f4e7b3062c9d1e5a48f07';
 const UNWRAP_TXID = '0x7d2f9b4c1a6e8305f4d2c7b9e1a35608bf6d2c40a9e8b7f5013c4e6d2a5b7f93';
 
@@ -53,32 +62,36 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
-        await onboardingPage.completeOnboarding();
-        await blockbookMock.start('eth');
-        blockbookMock.updateAccountState({
-            txs: 3,
-            nonce: '2',
-            transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
-            tokens: buildEthAccountTokens({
-                shareBalance: YIELD_WETH_VAULT_SHARE_TOKEN.balance,
-            }),
-        });
-        await yieldMock.start();
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('eth'),
-                    backend: { type: 'blockbook', url: blockbookMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
+            await analytics.interceptAnalytics();
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            blockbookMock.updateAccountState({
+                txs: 3,
+                nonce: '2',
+                transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
+                tokens: buildEthAccountTokens({
+                    shareBalance: YIELD_WETH_VAULT_SHARE_TOKEN.balance,
+                }),
+            });
+            await yieldMock.start();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('eth'),
+                        backend: { type: 'blockbook', url: blockbookMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'User can withdraw WETH from a yield vault and unwrap it to ETH',
         { annotation: createTestAnnotation({ stream: TestStream.Earn }) },
         async ({
+            analytics,
             page,
             yieldSection,
             yieldFlowSection,
@@ -89,8 +102,14 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
             yieldMock,
             toastSection,
         }) => {
+            const earnEntryEvents = analytics.trackEvents(events.yieldEarnEntryEvent.name);
+            const navigateEvents = analytics.trackEvents(events.yieldNavigateEvent.name);
+            const interactionEvents = analytics.trackEvents(events.yieldInteractionEvent.name);
+            const withdrawEvents = analytics.trackEvents(events.yieldWithdrawEvent.name);
+
             await test.step('Deposited position is shown on the dashboard', async () => {
                 await yieldSection.earnMenuButton.click();
+                await earnEntryEvents.expectNext({ from: 'settings-coins' });
 
                 await expect(yieldSection.depositedAmount(wethPrime.id)).toHaveTranslation(
                     'TR_EARN_YIELD_DASHBOARD_DEPOSITED',
@@ -106,6 +125,11 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 await expect(yieldSection.depositNowButton(wethPrime.id)).toBeHidden();
 
                 await yieldSection.withdrawButton(wethPrime.id).click();
+                await navigateEvents.expectNext({
+                    action: 'continue',
+                    from: 'earn-dashboard',
+                    to: 'withdraw-form',
+                });
             });
 
             await test.step('Withdraw amount is validated', async () => {
@@ -124,6 +148,12 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                     'AMOUNT_IS_NOT_ENOUGH',
                 );
                 await expect(yieldFlowSection.withdrawButton).toBeDisabled();
+                // The banner has no action, so its first impression per form mount is reported.
+                await interactionEvents.expectNext({
+                    element: 'insufficient-funds-banner',
+                    networkSymbol: 'eth',
+                    vaultId: wethPrime.id,
+                });
             });
 
             await test.step(`Withdraw ${WITHDRAW_AMOUNT} WETH from the vault`, async () => {
@@ -134,6 +164,13 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 await yieldFlowSection.amountInput.fill(WITHDRAW_AMOUNT);
                 await expect(yieldFlowSection.insufficientFundsWarning).toBeHidden();
                 await yieldFlowSection.withdrawButton.click();
+                await withdrawEvents.expectNext({
+                    ...WITHDRAW_CONTEXT,
+                    type: 'withdraw',
+                    deviceStatus: 'connected',
+                    wrappedNative: 'true',
+                    apyBreakdown: APY_BREAKDOWN,
+                });
 
                 await expect(txSimulationModal.sentAsset(0)).toHaveText('Sending 4 trSHWETHp');
                 await expect(txSimulationModal.sentAssetFiat(0)).toHaveText('-$12,500.00');
@@ -142,6 +179,10 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 await expect(txSimulationModal.maxFeeAmount).toHaveText('0.000108403 ETH');
                 await expect(txSimulationModal.maxFeeFiat).toHaveText('≈ $0.00');
                 await txSimulationModal.confirmButton.click();
+                await withdrawEvents.expectNext({
+                    ...WITHDRAW_CONTEXT,
+                    type: 'tx-simulation-modal',
+                });
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowOnDisplay({
@@ -198,6 +239,8 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 await expect(toastSection.yieldWithdrawMessage).toHaveTranslation(
                     'TOAST_TX_WITHDRAW_PENDING',
                 );
+                // Broadcasting alone reports nothing; success waits for the on-chain resolution.
+                withdrawEvents.expectNone();
                 await expect(yieldFlowSection.pendingTransactionLabel).toHaveTranslation(
                     'TR_EARN_YIELD_PENDING_WITHDRAW',
                 );
@@ -221,6 +264,13 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                     }),
                 });
                 await page.clock.fastForward('01:00');
+                await withdrawEvents.expectNext({
+                    ...WITHDRAW_CONTEXT,
+                    type: 'success',
+                    wrappedNative: 'true',
+                    apyBreakdown: APY_BREAKDOWN,
+                    durationMs: expect.stringMatching(/^\d+$/),
+                });
             });
 
             await test.step('Unwrap the withdrawn WETH to ETH', async () => {
@@ -244,6 +294,11 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 blockbookMock.setBroadcastTxid(UNWRAP_TXID);
 
                 await yieldFlowSection.unwrapButton.click();
+                await withdrawEvents.expectNext({
+                    ...WITHDRAW_CONTEXT,
+                    type: 'unwrap',
+                    deviceStatus: 'connected',
+                });
                 await expect(txSimulationModal.sentAsset(0)).toHaveText('Sending 5 WETH');
                 await expect(txSimulationModal.sentAssetFiat(0)).toHaveText('-$12,500.00');
                 await expect(txSimulationModal.receivedAsset(0)).toHaveText('Receiving 5 ETH');
@@ -251,6 +306,8 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 await expect(txSimulationModal.maxFeeAmount).toHaveText('0.000108403 ETH');
                 await expect(txSimulationModal.maxFeeFiat).toHaveText('≈ $0.00');
                 await txSimulationModal.confirmButton.click();
+                // Inside the withdraw flow the unwrap simulation modal is not reported separately.
+                withdrawEvents.expectNone();
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowOnDisplay({
@@ -343,12 +400,24 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
                     `${WITHDRAW_AMOUNT} ETH`,
                 );
+                await withdrawEvents.expectNext({
+                    ...WITHDRAW_CONTEXT,
+                    type: 'unwrap-success',
+                    durationMs: expect.stringMatching(/^\d+$/),
+                });
 
                 await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
             });
 
             await test.step('Dashboard shows the reduced position', async () => {
                 await yieldFlowSection.backToOverviewButton.click();
+                await navigateEvents.expectNext({
+                    action: 'continue',
+                    from: 'withdraw-form',
+                    to: 'earn-dashboard',
+                });
+                // Returning from the flow route counts as a new Earn dashboard visit.
+                await earnEntryEvents.expectNext({ from: 'earn-yield-withdraw' });
 
                 // 4 shares at pricePerShare 1.25 = 5, yearly reward = 5 × 3.1% APY.
                 await expect(yieldSection.depositedAmount(wethPrime.id)).toHaveTranslation(
