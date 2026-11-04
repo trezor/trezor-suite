@@ -40,6 +40,7 @@ const EARN_ROUTES: Route['name'][] = [
 const SWAP_ROUTES: Route['name'][] = [
     'wallet-trading-exchange',
     'wallet-trading-exchange-confirm',
+    'wallet-trading-exchange-approval',
     'wallet-trading-exchange-detail',
 ];
 

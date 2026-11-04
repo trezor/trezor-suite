@@ -131,6 +131,7 @@ describe('tradingPageHeaderUtils', () => {
             ['wallet-trading-buy-confirm', 'wallet-trading-transactions', 'wallet-trading-buy'],
             ['wallet-trading-sell-confirm', undefined, 'wallet-trading-sell'],
             ['wallet-trading-exchange-confirm', undefined, 'wallet-trading-exchange'],
+            ['wallet-trading-exchange-approval', undefined, 'wallet-trading-exchange'],
         ] as const)(
             'returns the section form for %s regardless of the previous route',
             (route, prevRoute, expected) => {

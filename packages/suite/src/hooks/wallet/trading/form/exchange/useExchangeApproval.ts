@@ -78,6 +78,33 @@ export const useExchangeApproval = ({ account }: UseExchangeApprovalProps) => {
         ).unwrap();
     };
 
+    type ConfirmPendingApprovalParams = {
+        trade: ExchangeTrade;
+        txid: string;
+        approvalType: DexApprovalType | undefined;
+    };
+
+    const confirmPendingApproval = async ({
+        trade,
+        txid,
+        approvalType,
+    }: ConfirmPendingApprovalParams) => {
+        const pendingTrade: ExchangeTrade = {
+            ...trade,
+            status: 'APPROVAL_PENDING',
+            approvalSendTxHash: txid,
+            approvalType,
+        };
+
+        dispatch(tradingExchangeActions.saveSelectedQuote(pendingTrade));
+
+        if (!trade.receiveAddress) {
+            return;
+        }
+
+        await confirmApproval({ trade: pendingTrade, receiveAddress: trade.receiveAddress });
+    };
+
     const approveTransaction = async (exchangeTrade: ExchangeTrade) => {
         const { receiveAddress } = exchangeTrade;
         if (!receiveAddress) {
@@ -122,6 +149,7 @@ export const useExchangeApproval = ({ account }: UseExchangeApprovalProps) => {
     return {
         verifyAddress,
         confirmApproval,
+        confirmPendingApproval,
         approveTransaction,
         revokeApproval,
     };

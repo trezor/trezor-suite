@@ -13,6 +13,7 @@ const SIGN_TX_ROUTES = [
     'wallet-staking',
     'wallet-index',
     'wallet-trading-exchange-confirm',
+    'wallet-trading-exchange-approval',
     'wallet-trading-sell-confirm',
     'earn-yield-deposit',
     'earn-yield-withdraw',

@@ -110,6 +110,29 @@ describe('useExchangeApproval', () => {
         );
     });
 
+    it('confirmPendingApproval saves the pending quote and reports the tx hash to the provider', async () => {
+        const { result, getActions } = renderExchangeApproval();
+        const pendingTrade: ExchangeTrade = {
+            ...TRADE,
+            status: 'APPROVAL_PENDING',
+            approvalSendTxHash: '0xtxid',
+            approvalType: 'ZERO',
+        };
+
+        await act(async () => {
+            await result.current.confirmPendingApproval({
+                trade: TRADE,
+                txid: '0xtxid',
+                approvalType: 'ZERO',
+            });
+        });
+
+        expect(getActions()).toContainEqual(tradingExchangeActions.saveSelectedQuote(pendingTrade));
+        expect(mockConfirmApproval).toHaveBeenCalledWith(
+            expect.objectContaining({ trade: pendingTrade, receiveAddress: '0xreceive' }),
+        );
+    });
+
     it('confirmApproval early-returns when the trade request params are unavailable', async () => {
         mockGetTradeRequestParams.mockResolvedValueOnce(
             undefined as unknown as { processResponseData: jest.Mock },

@@ -60,9 +60,11 @@ export const tradingMiddleware =
             const isBuy = !!routeName?.startsWith('wallet-trading-buy');
             const isSellForm = routeName === 'wallet-trading-sell';
             const isSell = !!routeName?.startsWith('wallet-trading-sell');
+            const isExchangeForm = routeName === 'wallet-trading-exchange';
             const isExchangeCreationFlow = [
                 'wallet-trading-exchange',
                 'wallet-trading-exchange-confirm',
+                'wallet-trading-exchange-approval',
             ].some(name => name === routeName);
             const nextModalAccountKey = selectTradingModalAccountKey(nextState);
             const prefilledFromAccount = selectTradingPrefilledFromAccount(nextState);
@@ -132,6 +134,10 @@ export const tradingMiddleware =
                 activeSection = 'exchange';
                 api.dispatch(tradingActions.setTradingActiveSection(activeSection));
                 api.dispatch(tradingExchangeActions.saveTransactionId(undefined));
+            }
+
+            if (isExchangeForm) {
+                api.dispatch(tradingExchangeActions.clearApprovalFlow());
             }
 
             const hasLeftTradingSection =
