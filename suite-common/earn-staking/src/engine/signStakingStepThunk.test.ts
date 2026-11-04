@@ -102,6 +102,14 @@ type Store = ReturnType<typeof initStore>['store'];
 
 const getStep = (store: Store) => selectStakingSession(store.getState(), sessionKey)?.steps[0];
 
+const cancelCurrentAttempt = (store: Store | null) => {
+    const step = store === null ? undefined : getStep(store);
+
+    if (store !== null && step?.status === 'signing') {
+        store.dispatch(stakingActions.stepCancelled({ ...stake, attemptId: step.attemptId }));
+    }
+};
+
 const sign = (store: Store, feeLevel: StakingFeeLevelLabel = 'normal') =>
     store.dispatch(signStakingStepThunk({ sessionKey, feeLevel }));
 
@@ -246,7 +254,7 @@ describe('signStakingStepThunk', () => {
         let store: Store | null = null;
         const deviceAccess = mockStakingDeviceAccess({
             run: mockStakingDeviceAccessRun(callback => {
-                store?.dispatch(stakingActions.stepReset({ ...stake, error: null }));
+                cancelCurrentAttempt(store);
 
                 return callback();
             }),
@@ -267,7 +275,7 @@ describe('signStakingStepThunk', () => {
         let store: Store | null = null;
         const started = initStore({
             signStep: mock(() => {
-                store?.dispatch(stakingActions.stepReset({ ...stake, error: null }));
+                cancelCurrentAttempt(store);
 
                 return Promise.resolve(signed);
             }),

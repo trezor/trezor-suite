@@ -65,6 +65,7 @@ const stakingSessionStepsSlice = createSlice({
         stepSigning(state: StakingSessionStep[], { payload }: StakingStepActionPayload<'signing'>) {
             applyStakingStepEvent(state, payload.stepId, {
                 type: 'signing',
+                attemptId: payload.attemptId,
                 feeLevel: payload.feeLevel,
                 signingStartedAt: payload.signingStartedAt,
             });
@@ -72,23 +73,63 @@ const stakingSessionStepsSlice = createSlice({
         stepSigned(state: StakingSessionStep[], { payload }: StakingStepActionPayload<'signed'>) {
             applyStakingStepEvent(state, payload.stepId, {
                 type: 'signed',
+                attemptId: payload.attemptId,
                 signed: payload.signed,
             });
         },
-        stepReset(state: StakingSessionStep[], { payload }: StakingStepActionPayload<'reset'>) {
-            applyStakingStepEvent(state, payload.stepId, { type: 'reset', error: payload.error });
+        stepCancelled(
+            state: StakingSessionStep[],
+            { payload }: StakingStepActionPayload<'cancelled'>,
+        ) {
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'cancelled',
+                attemptId: payload.attemptId,
+            });
+        },
+        stepSignFailed(
+            state: StakingSessionStep[],
+            { payload }: StakingStepActionPayload<'sign-failed'>,
+        ) {
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'sign-failed',
+                attemptId: payload.attemptId,
+                code: payload.code,
+            });
+        },
+        stepExpired(state: StakingSessionStep[], { payload }: StakingStepActionPayload<'expired'>) {
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'expired',
+                attemptId: payload.attemptId,
+            });
         },
         stepBroadcasting(
             state: StakingSessionStep[],
             { payload }: StakingStepActionPayload<'broadcasting'>,
         ) {
-            applyStakingStepEvent(state, payload.stepId, { type: 'broadcasting' });
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'broadcasting',
+                attemptId: payload.attemptId,
+            });
         },
         stepBroadcast(
             state: StakingSessionStep[],
             { payload }: StakingStepActionPayload<'broadcast'>,
         ) {
-            applyStakingStepEvent(state, payload.stepId, { type: 'broadcast', txid: payload.txid });
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'broadcast',
+                attemptId: payload.attemptId,
+                txid: payload.txid,
+            });
+        },
+        stepBroadcastFailed(
+            state: StakingSessionStep[],
+            { payload }: StakingStepActionPayload<'broadcast-failed'>,
+        ) {
+            applyStakingStepEvent(state, payload.stepId, {
+                type: 'broadcast-failed',
+                attemptId: payload.attemptId,
+                code: payload.code,
+            });
         },
         stepTxidReplaced(
             state: StakingSessionStep[],
@@ -120,9 +161,12 @@ export const isStakingSessionStepAction = isAnyOf(
     stakingSessionStepsActions.stepComposeFailed,
     stakingSessionStepsActions.stepSigning,
     stakingSessionStepsActions.stepSigned,
-    stakingSessionStepsActions.stepReset,
+    stakingSessionStepsActions.stepCancelled,
+    stakingSessionStepsActions.stepSignFailed,
+    stakingSessionStepsActions.stepExpired,
     stakingSessionStepsActions.stepBroadcasting,
     stakingSessionStepsActions.stepBroadcast,
+    stakingSessionStepsActions.stepBroadcastFailed,
     stakingSessionStepsActions.stepTxidReplaced,
     stakingSessionStepsActions.stepConfirmed,
     stakingSessionStepsActions.stepFailed,

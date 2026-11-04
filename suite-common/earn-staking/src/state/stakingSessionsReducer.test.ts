@@ -1,5 +1,7 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
+const attemptId = 'attempt-1';
+
 import {
     mockComposedStakingStep,
     mockSignedStakingStep,
@@ -34,6 +36,8 @@ const composed = mockComposedStakingStep();
 const signed = mockSignedStakingStep();
 const signingStartedAt = 1_777_000_000_000;
 const signFailed: StakingStepError = { kind: 'sign-failed', code: 'Failure_DataError' };
+const expired: StakingStepError = { kind: 'expired', code: null };
+const broadcastFailed: StakingStepError = { kind: 'broadcast-failed', code: null };
 
 const reduce = (state: StakingSessionsState, ...actionList: UnknownAction[]) =>
     actionList.reduce(stakingSessionsReducer, state);
@@ -42,21 +46,21 @@ const started = reduce(stakingSessionsInitialState, actions.sessionStarted({ ses
 const composedFreeze = reduce(started, actions.stepComposed({ ...freeze, composed }));
 const signingFreeze = reduce(
     composedFreeze,
-    actions.stepSigning({ ...freeze, feeLevel: 'normal', signingStartedAt }),
+    actions.stepSigning({ ...freeze, attemptId, feeLevel: 'normal', signingStartedAt }),
 );
-const signedFreeze = reduce(signingFreeze, actions.stepSigned({ ...freeze, signed }));
-const broadcastingFreeze = reduce(signedFreeze, actions.stepBroadcasting(freeze));
+const signedFreeze = reduce(signingFreeze, actions.stepSigned({ ...freeze, attemptId, signed }));
+const broadcastingFreeze = reduce(signedFreeze, actions.stepBroadcasting({ ...freeze, attemptId }));
 const awaitingFreeze = reduce(
     broadcastingFreeze,
-    actions.stepBroadcast({ ...freeze, txid: 'tx1' }),
+    actions.stepBroadcast({ ...freeze, attemptId, txid: 'tx1' }),
 );
 const doneFreeze = reduce(awaitingFreeze, actions.stepConfirmed(freeze));
 const broadcastingVote = reduce(
     doneFreeze,
     actions.stepComposed({ ...vote, composed }),
-    actions.stepSigning({ ...vote, feeLevel: 'normal', signingStartedAt }),
-    actions.stepSigned({ ...vote, signed }),
-    actions.stepBroadcasting(vote),
+    actions.stepSigning({ ...vote, attemptId, feeLevel: 'normal', signingStartedAt }),
+    actions.stepSigned({ ...vote, attemptId, signed }),
+    actions.stepBroadcasting({ ...vote, attemptId }),
 );
 
 const getStep = (state: StakingSessionsState, stepId: string) =>
@@ -86,7 +90,7 @@ describe('stakingSessionsReducer', () => {
         it('replaces a complete session', () => {
             const complete = reduce(
                 broadcastingVote,
-                actions.stepBroadcast({ ...vote, txid: 'tx2' }),
+                actions.stepBroadcast({ ...vote, attemptId, txid: 'tx2' }),
             );
             const replacement = mockStakingSession({ plan, id: 'session-2' });
 
@@ -119,8 +123,8 @@ describe('stakingSessionsReducer', () => {
 
         it('recomposes a composed step and clears its error', () => {
             const failed = reduce(
-                composedFreeze,
-                actions.stepReset({ ...freeze, error: signFailed }),
+                signingFreeze,
+                actions.stepSignFailed({ ...freeze, attemptId, code: 'Failure_DataError' }),
             );
             const recomposed = mockComposedStakingStep({ validityMs: 24_000 });
             const state = reduce(failed, actions.stepComposed({ ...freeze, composed: recomposed }));
@@ -186,6 +190,7 @@ describe('stakingSessionsReducer', () => {
             expect(getStep(signingFreeze, 'freeze')).toEqual({
                 ...session.steps[0],
                 status: 'signing',
+                attemptId,
                 composed,
                 feeLevel: 'normal',
                 signingStartedAt,
@@ -198,7 +203,7 @@ describe('stakingSessionsReducer', () => {
             const state = reduce(
                 started,
                 actions.stepComposed({ ...freeze, composed: solanaComposed }),
-                actions.stepSigning({ ...freeze, feeLevel: 'high', signingStartedAt }),
+                actions.stepSigning({ ...freeze, attemptId, feeLevel: 'high', signingStartedAt }),
             );
 
             expect(getStep(state, 'freeze')).toMatchObject({
@@ -212,7 +217,12 @@ describe('stakingSessionsReducer', () => {
             expect(
                 reduce(
                     started,
-                    actions.stepSigning({ ...freeze, feeLevel: 'normal', signingStartedAt }),
+                    actions.stepSigning({
+                        ...freeze,
+                        attemptId,
+                        feeLevel: 'normal',
+                        signingStartedAt,
+                    }),
                 ),
             ).toBe(started);
         });
@@ -223,6 +233,7 @@ describe('stakingSessionsReducer', () => {
             expect(getStep(signedFreeze, 'freeze')).toEqual({
                 ...session.steps[0],
                 status: 'signed',
+                attemptId,
                 composed,
                 feeLevel: 'normal',
                 signingStartedAt,
@@ -232,40 +243,82 @@ describe('stakingSessionsReducer', () => {
         });
 
         it('ignores a step that is not signing', () => {
-            expect(reduce(composedFreeze, actions.stepSigned({ ...freeze, signed }))).toBe(
-                composedFreeze,
-            );
+            expect(
+                reduce(composedFreeze, actions.stepSigned({ ...freeze, attemptId, signed })),
+            ).toBe(composedFreeze);
         });
     });
 
-    describe('stepReset', () => {
+    describe('signing outcomes', () => {
         it.each([
-            ['signing', signingFreeze],
-            ['signed', signedFreeze],
-            ['broadcasting', broadcastingFreeze],
-        ])('returns a %s step to composed', (_status, state) => {
-            expect(
-                getStep(reduce(state, actions.stepReset({ ...freeze, error: null })), 'freeze'),
-            ).toEqual({
+            [
+                'cancelled',
+                'signing',
+                signingFreeze,
+                actions.stepCancelled({ ...freeze, attemptId }),
+                null,
+            ],
+            [
+                'cancelled',
+                'signed',
+                signedFreeze,
+                actions.stepCancelled({ ...freeze, attemptId }),
+                null,
+            ],
+            [
+                'sign-failed',
+                'signing',
+                signingFreeze,
+                actions.stepSignFailed({ ...freeze, attemptId, code: 'Failure_DataError' }),
+                signFailed,
+            ],
+            [
+                'expired',
+                'signing',
+                signingFreeze,
+                actions.stepExpired({ ...freeze, attemptId }),
+                expired,
+            ],
+            [
+                'expired',
+                'signed',
+                signedFreeze,
+                actions.stepExpired({ ...freeze, attemptId }),
+                expired,
+            ],
+            [
+                'broadcast-failed',
+                'broadcasting',
+                broadcastingFreeze,
+                actions.stepBroadcastFailed({ ...freeze, attemptId, code: null }),
+                broadcastFailed,
+            ],
+        ])('%s returns a %s step to composed', (_event, _status, state, action, error) => {
+            expect(getStep(reduce(state, action), 'freeze')).toEqual({
                 ...session.steps[0],
                 status: 'composed',
                 composed,
+                error,
             });
         });
 
-        it('keeps the error on the composed step', () => {
-            const expired: StakingStepError = { kind: 'expired', code: null };
+        it('refuses an outcome of another attempt or from the wrong status', () => {
+            const otherAttempt = { ...freeze, attemptId: 'attempt-2' };
 
+            expect(reduce(signingFreeze, actions.stepCancelled(otherAttempt))).toBe(signingFreeze);
             expect(
-                getStep(
-                    reduce(signedFreeze, actions.stepReset({ ...freeze, error: expired })),
-                    'freeze',
+                reduce(broadcastingFreeze, actions.stepCancelled({ ...freeze, attemptId })),
+            ).toBe(broadcastingFreeze);
+            expect(
+                reduce(signedFreeze, actions.stepSignFailed({ ...freeze, attemptId, code: null })),
+            ).toBe(signedFreeze);
+            expect(
+                reduce(
+                    signingFreeze,
+                    actions.stepBroadcastFailed({ ...freeze, attemptId, code: null }),
                 ),
-            ).toMatchObject({ status: 'composed', error: expired });
-        });
-
-        it('ignores a step that is awaiting', () => {
-            expect(reduce(awaitingFreeze, actions.stepReset({ ...freeze, error: null }))).toBe(
+            ).toBe(signingFreeze);
+            expect(reduce(awaitingFreeze, actions.stepExpired({ ...freeze, attemptId }))).toBe(
                 awaitingFreeze,
             );
         });
@@ -280,7 +333,9 @@ describe('stakingSessionsReducer', () => {
         });
 
         it('ignores a step that is still signing', () => {
-            expect(reduce(signingFreeze, actions.stepBroadcasting(freeze))).toBe(signingFreeze);
+            expect(reduce(signingFreeze, actions.stepBroadcasting({ ...freeze, attemptId }))).toBe(
+                signingFreeze,
+            );
         });
     });
 
@@ -294,7 +349,10 @@ describe('stakingSessionsReducer', () => {
         });
 
         it('completes a step that does not await confirmation', () => {
-            const state = reduce(broadcastingVote, actions.stepBroadcast({ ...vote, txid: 'tx2' }));
+            const state = reduce(
+                broadcastingVote,
+                actions.stepBroadcast({ ...vote, attemptId, txid: 'tx2' }),
+            );
 
             expect(getStep(state, 'vote')).toEqual({
                 ...session.steps[1],
@@ -304,9 +362,9 @@ describe('stakingSessionsReducer', () => {
         });
 
         it('ignores a step that is not broadcasting', () => {
-            expect(reduce(signedFreeze, actions.stepBroadcast({ ...freeze, txid: 'tx1' }))).toBe(
-                signedFreeze,
-            );
+            expect(
+                reduce(signedFreeze, actions.stepBroadcast({ ...freeze, attemptId, txid: 'tx1' })),
+            ).toBe(signedFreeze);
         });
     });
 

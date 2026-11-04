@@ -31,11 +31,30 @@ describe('createStakingDeviceAccess', () => {
         );
     });
 
-    it('cancels the connect call in flight with the reason', () => {
+    it('cancels the connect call only while a callback is on the device', async () => {
         const { cancel, deps } = createDeps();
+        const access = createStakingDeviceAccess(deps);
+        let finishSigning = () => {};
 
-        createStakingDeviceAccess(deps).cancel('tx-timeout');
+        access.cancel('tx-cancelled');
+
+        expect(cancel).not.toHaveBeenCalled();
+
+        const signing = access.run(
+            () =>
+                new Promise<string>(resolve => {
+                    finishSigning = () => resolve('signed');
+                }),
+        );
+
+        access.cancel('tx-timeout');
 
         expect(cancel).toHaveBeenCalledWith({ reason: 'tx-timeout' });
+
+        finishSigning();
+        await signing;
+        access.cancel('tx-cancelled');
+
+        expect(cancel).toHaveBeenCalledTimes(1);
     });
 });

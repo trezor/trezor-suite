@@ -22,6 +22,7 @@ import {
     selectStakingStepContext,
     selectStakingStepStatus,
 } from '../state/stakingSessionSelectors';
+import { isStakingReviewStep } from '../state/stakingSessionStep';
 import { transitionStakingStep } from '../state/stakingStepTransition';
 
 type BroadcastStakingStepParams = {
@@ -53,25 +54,23 @@ export const broadcastStakingStepThunk = createThunk<
         const { session, step, planStep, account } = stepContext.context;
         const adapter = extra.services.staking.stakingProductRepository.get(session.plan.productId);
 
-        const broadcastingStep = transitionStakingStep(step, { type: 'broadcasting' });
+        const broadcastingStep = isStakingReviewStep(step)
+            ? transitionStakingStep(step, { type: 'broadcasting', attemptId: step.attemptId })
+            : null;
 
         if (broadcastingStep?.status !== 'broadcasting') {
             return rejectWithValue('step-not-ready');
         }
 
+        const attempt = { sessionKey, stepId: step.id, attemptId: broadcastingStep.attemptId };
+
         if (broadcastingStep.expiresAt !== null && broadcastingStep.expiresAt < Date.now()) {
-            dispatch(
-                stakingActions.stepReset({
-                    sessionKey,
-                    stepId: step.id,
-                    error: { kind: 'expired', code: null },
-                }),
-            );
+            dispatch(stakingActions.stepExpired(attempt));
 
             return rejectWithValue('step-expired');
         }
 
-        dispatch(stakingActions.stepBroadcasting({ sessionKey, stepId: step.id }));
+        dispatch(stakingActions.stepBroadcasting(attempt));
 
         if (selectStakingStepStatus(getState(), session, step.id) !== 'broadcasting') {
             return rejectWithValue('step-not-ready');
@@ -91,13 +90,7 @@ export const broadcastStakingStepThunk = createThunk<
         if (!broadcast.success) {
             warnStakingAdapterFailure(`step ${step.id} broadcast`, broadcast);
 
-            dispatch(
-                stakingActions.stepReset({
-                    sessionKey,
-                    stepId: step.id,
-                    error: { kind: 'broadcast-failed', code: broadcast.code },
-                }),
-            );
+            dispatch(stakingActions.stepBroadcastFailed({ ...attempt, code: broadcast.code }));
 
             dispatch(
                 transactionsActions.transactionBroadcastStatus({ account, flow, status: 'error' }),
@@ -108,7 +101,7 @@ export const broadcastStakingStepThunk = createThunk<
 
         const { txid } = broadcast.payload;
 
-        dispatch(stakingActions.stepBroadcast({ sessionKey, stepId: step.id, txid }));
+        dispatch(stakingActions.stepBroadcast({ ...attempt, txid }));
 
         await dispatch(
             notifyEarnTransactionBroadcastThunk({

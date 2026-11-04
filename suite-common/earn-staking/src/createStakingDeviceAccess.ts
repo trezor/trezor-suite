@@ -12,9 +12,23 @@ export type StakingDeviceAccess = {
     cancel: (reason: StakingDeviceAccessCancelReason) => void;
 };
 
-export const createStakingDeviceAccess = (deps: StakingDeviceAccessDeps): StakingDeviceAccess => ({
-    run: callback => callback(),
-    cancel: reason => {
-        deps.getTrezorConnect().cancel({ reason });
-    },
-});
+export const createStakingDeviceAccess = (deps: StakingDeviceAccessDeps): StakingDeviceAccess => {
+    let isDeviceCallRunning = false;
+
+    return {
+        run: async callback => {
+            isDeviceCallRunning = true;
+
+            try {
+                return await callback();
+            } finally {
+                isDeviceCallRunning = false;
+            }
+        },
+        cancel: reason => {
+            if (!isDeviceCallRunning) return;
+
+            deps.getTrezorConnect().cancel({ reason });
+        },
+    };
+};

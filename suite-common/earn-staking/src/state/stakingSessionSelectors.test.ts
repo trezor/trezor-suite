@@ -8,6 +8,8 @@ import type { AccountsRootState } from '@suite-common/wallet-core';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
+const attemptId = 'attempt-1';
+
 import {
     type StakingRootState,
     type StakingState,
@@ -63,21 +65,31 @@ const idle = toRootState(
 const signingFreeze = toRootState(
     [
         stakingActions.stepComposed({ ...freeze, composed: mockComposedStakingStep() }),
-        stakingActions.stepSigning({ ...freeze, feeLevel: 'normal', signingStartedAt: 1_000 }),
+        stakingActions.stepSigning({
+            ...freeze,
+            attemptId,
+            feeLevel: 'normal',
+            signingStartedAt: 1_000,
+        }),
     ].reduce(stakingReducer, idle.earn.staking),
 );
 const signedClaimLater = toRootState(
     [
         stakingActions.stepComposed({ ...claim, composed: mockComposedStakingStep() }),
-        stakingActions.stepSigning({ ...claim, feeLevel: 'normal', signingStartedAt: 2_000 }),
-        stakingActions.stepSigned({ ...claim, signed: mockSignedStakingStep() }),
+        stakingActions.stepSigning({
+            ...claim,
+            attemptId,
+            feeLevel: 'normal',
+            signingStartedAt: 2_000,
+        }),
+        stakingActions.stepSigned({ ...claim, attemptId, signed: mockSignedStakingStep() }),
     ].reduce(stakingReducer, signingFreeze.earn.staking),
 );
 const awaitingFreeze = toRootState(
     [
-        stakingActions.stepSigned({ ...freeze, signed: mockSignedStakingStep() }),
-        stakingActions.stepBroadcasting(freeze),
-        stakingActions.stepBroadcast({ ...freeze, txid: 'tx1' }),
+        stakingActions.stepSigned({ ...freeze, attemptId, signed: mockSignedStakingStep() }),
+        stakingActions.stepBroadcasting({ ...freeze, attemptId }),
+        stakingActions.stepBroadcast({ ...freeze, attemptId, txid: 'tx1' }),
     ].reduce(stakingReducer, signingFreeze.earn.staking),
 );
 
@@ -126,17 +138,19 @@ describe('staking session selectors', () => {
                 }),
                 stakingActions.stepSigning({
                     ...freeze,
+                    attemptId,
                     stepId: 'vote',
                     feeLevel: 'normal',
                     signingStartedAt: 3_000,
                 }),
                 stakingActions.stepSigned({
                     ...freeze,
+                    attemptId,
                     stepId: 'vote',
                     signed: mockSignedStakingStep(),
                 }),
-                stakingActions.stepBroadcasting({ ...freeze, stepId: 'vote' }),
-                stakingActions.stepBroadcast({ ...freeze, stepId: 'vote', txid: 'tx2' }),
+                stakingActions.stepBroadcasting({ ...freeze, stepId: 'vote', attemptId }),
+                stakingActions.stepBroadcast({ ...freeze, stepId: 'vote', attemptId, txid: 'tx2' }),
             ].reduce(stakingReducer, doneFreeze.earn.staking),
         );
 
@@ -265,10 +279,15 @@ describe('selectStakingStepContext', () => {
         const state = createState();
         const complete = [
             stakingActions.stepComposed({ ...stake, composed: mockComposedStakingStep() }),
-            stakingActions.stepSigning({ ...stake, feeLevel: 'normal', signingStartedAt: 1 }),
-            stakingActions.stepSigned({ ...stake, signed: mockSignedStakingStep() }),
-            stakingActions.stepBroadcasting(stake),
-            stakingActions.stepBroadcast({ ...stake, txid: 'tx1' }),
+            stakingActions.stepSigning({
+                ...stake,
+                attemptId,
+                feeLevel: 'normal',
+                signingStartedAt: 1,
+            }),
+            stakingActions.stepSigned({ ...stake, attemptId, signed: mockSignedStakingStep() }),
+            stakingActions.stepBroadcasting({ ...stake, attemptId }),
+            stakingActions.stepBroadcast({ ...stake, attemptId, txid: 'tx1' }),
         ].reduce(stakingReducer, state.earn.staking);
 
         expect(
