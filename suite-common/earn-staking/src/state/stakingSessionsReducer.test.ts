@@ -12,7 +12,7 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import type { StakingStepError } from './stakingSessionStep';
+import { type StakingStepError, getStakingStepBase } from './stakingSessionStep';
 import {
     type StakingSessionsState,
     stakingSessionsActions as actions,
@@ -30,6 +30,7 @@ const plan = mockStakingPlan({
 });
 const session = mockStakingSession({ plan });
 const { key: sessionKey } = session;
+const stepBase = getStakingStepBase(session.steps[0]);
 const freeze = { sessionKey, stepId: 'freeze' };
 const vote = { sessionKey, stepId: 'vote' };
 const composed = mockComposedStakingStep();
@@ -43,7 +44,7 @@ const reduce = (state: StakingSessionsState, ...actionList: UnknownAction[]) =>
     actionList.reduce(stakingSessionsReducer, state);
 
 const started = reduce(stakingSessionsInitialState, actions.sessionStarted({ session }));
-const composedFreeze = reduce(started, actions.stepComposed({ ...freeze, composed }));
+const composedFreeze = reduce(started, actions.stepComposed({ ...freeze, attemptId, composed }));
 const signingFreeze = reduce(
     composedFreeze,
     actions.stepSigning({ ...freeze, attemptId, feeLevel: 'normal', signingStartedAt }),
@@ -57,7 +58,7 @@ const awaitingFreeze = reduce(
 const doneFreeze = reduce(awaitingFreeze, actions.stepConfirmed(freeze));
 const broadcastingVote = reduce(
     doneFreeze,
-    actions.stepComposed({ ...vote, composed }),
+    actions.stepComposed({ ...vote, attemptId, composed }),
     actions.stepSigning({ ...vote, attemptId, feeLevel: 'normal', signingStartedAt }),
     actions.stepSigned({ ...vote, attemptId, signed }),
     actions.stepBroadcasting({ ...vote, attemptId }),
@@ -114,8 +115,9 @@ describe('stakingSessionsReducer', () => {
     describe('stepComposed', () => {
         it('composes a pending step', () => {
             expect(getStep(composedFreeze, 'freeze')).toEqual({
-                ...session.steps[0],
+                ...stepBase,
                 status: 'composed',
+                composeAttemptId: attemptId,
                 composed,
             });
             expect(getStep(composedFreeze, 'vote')).toBe(session.steps[1]);
@@ -127,7 +129,10 @@ describe('stakingSessionsReducer', () => {
                 actions.stepSignFailed({ ...freeze, attemptId, code: 'Failure_DataError' }),
             );
             const recomposed = mockComposedStakingStep({ validityMs: 24_000 });
-            const state = reduce(failed, actions.stepComposed({ ...freeze, composed: recomposed }));
+            const state = reduce(
+                failed,
+                actions.stepComposed({ ...freeze, attemptId, composed: recomposed }),
+            );
 
             expect(getStep(state, 'freeze')).toMatchObject({
                 status: 'composed',
@@ -137,19 +142,27 @@ describe('stakingSessionsReducer', () => {
         });
 
         it('ignores a step that is past composing', () => {
-            expect(reduce(signingFreeze, actions.stepComposed({ ...freeze, composed }))).toBe(
-                signingFreeze,
-            );
+            expect(
+                reduce(signingFreeze, actions.stepComposed({ ...freeze, attemptId, composed })),
+            ).toBe(signingFreeze);
         });
 
         it('ignores an unknown step or session', () => {
             expect(
-                reduce(started, actions.stepComposed({ sessionKey, stepId: 'claim', composed })),
+                reduce(
+                    started,
+                    actions.stepComposed({ sessionKey, stepId: 'claim', attemptId, composed }),
+                ),
             ).toBe(started);
             expect(
                 reduce(
                     started,
-                    actions.stepComposed({ ...freeze, sessionKey: 'other' as never, composed }),
+                    actions.stepComposed({
+                        ...freeze,
+                        attemptId,
+                        sessionKey: 'other' as never,
+                        composed,
+                    }),
                 ),
             ).toBe(started);
         });
@@ -161,12 +174,13 @@ describe('stakingSessionsReducer', () => {
         it('keeps a pending step pending with the error', () => {
             const state = reduce(
                 started,
-                actions.stepComposeFailed({ ...freeze, error: composeFailed }),
+                actions.stepComposeFailed({ ...freeze, attemptId, error: composeFailed }),
             );
 
             expect(getStep(state, 'freeze')).toEqual({
-                ...session.steps[0],
+                ...stepBase,
                 status: 'pending',
+                composeAttemptId: attemptId,
                 error: composeFailed,
             });
         });
@@ -174,12 +188,13 @@ describe('stakingSessionsReducer', () => {
         it('drops the previous fee levels of a composed step', () => {
             const state = reduce(
                 composedFreeze,
-                actions.stepComposeFailed({ ...freeze, error: composeFailed }),
+                actions.stepComposeFailed({ ...freeze, attemptId, error: composeFailed }),
             );
 
             expect(getStep(state, 'freeze')).toEqual({
-                ...session.steps[0],
+                ...stepBase,
                 status: 'pending',
+                composeAttemptId: attemptId,
                 error: composeFailed,
             });
         });
@@ -188,7 +203,7 @@ describe('stakingSessionsReducer', () => {
     describe('stepSigning', () => {
         it('starts signing without a deadline when the step does not expire', () => {
             expect(getStep(signingFreeze, 'freeze')).toEqual({
-                ...session.steps[0],
+                ...stepBase,
                 status: 'signing',
                 attemptId,
                 composed,
@@ -202,7 +217,7 @@ describe('stakingSessionsReducer', () => {
             const solanaComposed = mockComposedStakingStep({ validityMs: 24_000 });
             const state = reduce(
                 started,
-                actions.stepComposed({ ...freeze, composed: solanaComposed }),
+                actions.stepComposed({ ...freeze, attemptId, composed: solanaComposed }),
                 actions.stepSigning({ ...freeze, attemptId, feeLevel: 'high', signingStartedAt }),
             );
 
@@ -231,7 +246,7 @@ describe('stakingSessionsReducer', () => {
     describe('stepSigned', () => {
         it('keeps the composed data next to the signature', () => {
             expect(getStep(signedFreeze, 'freeze')).toEqual({
-                ...session.steps[0],
+                ...stepBase,
                 status: 'signed',
                 attemptId,
                 composed,
@@ -295,8 +310,9 @@ describe('stakingSessionsReducer', () => {
             ],
         ])('%s returns a %s step to composed', (_event, _status, state, action, error) => {
             expect(getStep(reduce(state, action), 'freeze')).toEqual({
-                ...session.steps[0],
+                ...stepBase,
                 status: 'composed',
+                composeAttemptId: null,
                 composed,
                 error,
             });
@@ -342,7 +358,7 @@ describe('stakingSessionsReducer', () => {
     describe('stepBroadcast', () => {
         it('awaits confirmation when the step asks for it', () => {
             expect(getStep(awaitingFreeze, 'freeze')).toEqual({
-                ...session.steps[0],
+                ...stepBase,
                 status: 'awaiting',
                 txid: 'tx1',
             });
@@ -355,7 +371,7 @@ describe('stakingSessionsReducer', () => {
             );
 
             expect(getStep(state, 'vote')).toEqual({
-                ...session.steps[1],
+                ...getStakingStepBase(session.steps[1]),
                 status: 'done',
                 txid: 'tx2',
             });
@@ -388,7 +404,7 @@ describe('stakingSessionsReducer', () => {
     describe('stepConfirmed', () => {
         it('completes an awaiting step and keeps its txid', () => {
             expect(getStep(doneFreeze, 'freeze')).toEqual({
-                ...session.steps[0],
+                ...stepBase,
                 status: 'done',
                 txid: 'tx1',
             });
@@ -410,7 +426,7 @@ describe('stakingSessionsReducer', () => {
             );
 
             expect(getStep(state, 'freeze')).toEqual({
-                ...session.steps[0],
+                ...stepBase,
                 status: 'failed',
                 txid: 'tx1',
                 error: confirmationFailed,

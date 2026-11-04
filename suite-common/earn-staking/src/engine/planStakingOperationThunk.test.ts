@@ -1,4 +1,4 @@
-import { isAction } from '@reduxjs/toolkit';
+import { type Middleware, type UnknownAction, combineReducers, isAction } from '@reduxjs/toolkit';
 
 import {
     StakingAdapterError,
@@ -13,10 +13,10 @@ import {
     mockStakingProductDescriptor,
     mockStakingStep,
 } from '@suite-common/earn-staking-common/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
-import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import { STAKING_ENGINE_ACTION_PREFIX } from './constants';
 import {
@@ -30,10 +30,11 @@ import {
     mockStakingSession,
     mockStakingState,
 } from '../../mocks';
-import { stakingActions, stakingReducer } from '../state/stakingReducer';
+import { type StakingState, stakingActions, stakingReducer } from '../state/stakingReducer';
 import { getStakingSessionKey } from '../state/stakingSessionKey';
-import type { StakingSession } from '../state/stakingSessionsReducer';
+import { selectStakingSession } from '../state/stakingSessionSelectors';
 
+const attemptId = 'attempt-1';
 const eth = mockStakingProductDescriptor();
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const plan = mockStakingPlan({
@@ -55,56 +56,60 @@ const params = {
     options: { instant: true },
 };
 
-const createAdapter = (planOperation: StakingProductAdapter['planOperation']) =>
-    mockStakingProductAdapter({ descriptor: eth, planOperation });
-
-const createExtra = (adapter: StakingProductAdapter): PlanStakingOperationThunkDeps => ({
-    services: {
-        staking: mockStakingServices({
-            stakingProductRepository: mockStakingProductRepository({ get: mock(() => adapter) }),
-        }),
-    },
-});
-
-type CreateStateParams = {
-    sessions?: readonly StakingSession[];
-    hasPosition?: boolean;
+type InitStoreParams = {
+    planOperation?: StakingProductAdapter['planOperation'];
+    staking?: StakingState;
 };
 
-const createState = ({
-    sessions = [],
-    hasPosition = false,
-}: CreateStateParams = {}): PlanStakingOperationThunkState => ({
-    earn: {
-        staking: mockStakingState({
-            descriptors: [eth],
-            sessions,
-            positions: hasPosition ? { [account.key]: [mockStakingPosition()] } : {},
+const initStore = ({
+    planOperation = mock(() => Promise.resolve(plan)),
+    staking = mockStakingState({ descriptors: [eth] }),
+}: InitStoreParams = {}) => {
+    const adapter = mockStakingProductAdapter({ descriptor: eth, planOperation });
+    const actions: UnknownAction[] = [];
+    const recorder: Middleware = () => next => action => {
+        if (isAction(action) && !action.type.startsWith(STAKING_ENGINE_ACTION_PREFIX)) {
+            actions.push(action);
+        }
+
+        return next(action);
+    };
+    const root = createTestCompositionRoot<
+        PlanStakingOperationThunkDeps,
+        PlanStakingOperationThunkState
+    >({
+        services: () => ({
+            staking: mockStakingServices({
+                stakingProductRepository: mockStakingProductRepository({
+                    get: mock(() => adapter),
+                }),
+            }),
         }),
-    },
-    wallet: { accounts: [account] },
-});
+        middleware: [recorder],
+        reducer: {
+            earn: combineReducers({ staking: stakingReducer }),
+            wallet: combineReducers({ accounts: (state = [account]) => state }),
+        },
+        preloadedState: { earn: { staking } },
+    });
 
-const sliceActions = (actions: unknown[]) =>
-    actions.filter(
-        action => isAction(action) && !action.type.startsWith(STAKING_ENGINE_ACTION_PREFIX),
-    );
-
-const run = async (
-    state: PlanStakingOperationThunkState,
-    extra: PlanStakingOperationThunkDeps,
-    overrides: Partial<typeof params> = {},
-) => {
-    const getState = () => state;
-    const { actions, dispatch } = createMockDispatch({ getState, extra });
-    const result = await planStakingOperationThunk({ ...params, ...overrides })(
-        dispatch,
-        getState,
-        extra,
-    );
-
-    return { actions: sliceActions(actions), result };
+    return { store: root.services.store, adapter, actions };
 };
+
+type Store = ReturnType<typeof initStore>['store'];
+
+const planStake = (store: Store, overrides: Partial<typeof params> = {}) =>
+    store.dispatch(planStakingOperationThunk({ ...params, ...overrides }));
+
+const pendingStep = (step: (typeof plan.steps)[number]) => ({
+    id: step.id,
+    kind: step.kind,
+    awaitConfirmation: step.awaitConfirmation,
+    review: step.review,
+    error: null,
+    status: 'pending',
+    composeAttemptId: null,
+});
 
 describe('planStakingOperationThunk', () => {
     beforeEach(() => {
@@ -113,11 +118,12 @@ describe('planStakingOperationThunk', () => {
 
     afterEach(() => {
         jest.restoreAllMocks();
+        jest.useRealTimers();
     });
 
     it('plans the operation and starts a session with every step pending', async () => {
-        const adapter = createAdapter(mock(() => Promise.resolve(plan)));
-        const { actions, result } = await run(createState(), createExtra(adapter));
+        const { store, adapter, actions } = initStore();
+        const result = await planStake(store);
 
         expect(planStakingOperationThunk.fulfilled.match(result)).toBe(true);
         expect(result.payload).toBe(sessionKey);
@@ -135,34 +141,23 @@ describe('planStakingOperationThunk', () => {
                     key: sessionKey,
                     accountKey: account.key,
                     plan,
-                    steps: [
-                        {
-                            id: 'freeze',
-                            kind: 'freeze',
-                            awaitConfirmation: true,
-                            review: 'app-and-device',
-                            error: null,
-                            status: 'pending',
-                        },
-                        {
-                            id: 'vote',
-                            kind: 'vote',
-                            awaitConfirmation: false,
-                            review: 'app-and-device',
-                            error: null,
-                            status: 'pending',
-                        },
-                    ],
+                    steps: plan.steps.map(pendingStep),
                     createdAt: expect.any(Number),
                 },
             }),
         ]);
+        expect(selectStakingSession(store.getState(), sessionKey)?.plan).toEqual(plan);
     });
 
     it('hands the stored position to the adapter', async () => {
-        const adapter = createAdapter(mock(() => Promise.resolve(plan)));
+        const { store, adapter } = initStore({
+            staking: mockStakingState({
+                descriptors: [eth],
+                positions: { [account.key]: [mockStakingPosition()] },
+            }),
+        });
 
-        await run(createState({ hasPosition: true }), createExtra(adapter));
+        await planStake(store);
 
         expect(adapter.planOperation).toHaveBeenCalledWith(
             expect.objectContaining({ position: mockStakingPosition() }),
@@ -170,19 +165,20 @@ describe('planStakingOperationThunk', () => {
     });
 
     it('replaces an idle session with the same key', async () => {
-        const idle = mockStakingSession({ plan, accountKey: account.key });
-        const { actions, result } = await run(
-            createState({ sessions: [idle] }),
-            createExtra(createAdapter(mock(() => Promise.resolve(plan)))),
-        );
+        const idle = mockStakingSession({ plan, accountKey: account.key, createdAt: 1 });
+        const { store, actions } = initStore({
+            staking: mockStakingState({ descriptors: [eth], sessions: [idle] }),
+        });
+        const result = await planStake(store);
 
         expect(result.payload).toBe(sessionKey);
         expect(actions).toHaveLength(1);
+        expect(selectStakingSession(store.getState(), sessionKey)?.id).not.toBe(idle.id);
     });
 
     it('rejects an unknown account', async () => {
-        const adapter = createAdapter(mock(() => Promise.resolve(plan)));
-        const { actions, result } = await run(createState(), createExtra(adapter), {
+        const { store, adapter, actions } = initStore();
+        const result = await planStake(store, {
             accountKey: mockWalletAccount({ symbol: asNetworkSymbol('sol') }).key,
         });
 
@@ -196,49 +192,68 @@ describe('planStakingOperationThunk', () => {
             networkSymbol: asNetworkSymbol('sol'),
             type: 'native',
         });
-        const { result } = await run(
-            createState(),
-            createExtra(createAdapter(mock(() => Promise.resolve(plan)))),
-            { productId: sol.id },
-        );
+        const { store } = initStore();
+        const result = await planStake(store, { productId: sol.id });
 
         expect(result.payload).toBe('product-not-found');
     });
 
     it('rejects while a session with the same key has an active step', async () => {
-        const state = createState({
-            sessions: [mockStakingSession({ plan, accountKey: account.key })],
+        const freeze = { sessionKey, stepId: 'freeze', attemptId };
+        const { store, adapter, actions } = initStore({
+            staking: [
+                stakingActions.stepComposed({ ...freeze, composed: mockComposedStakingStep() }),
+                stakingActions.stepSigning({ ...freeze, feeLevel: 'normal', signingStartedAt: 1 }),
+            ].reduce(
+                stakingReducer,
+                mockStakingState({
+                    descriptors: [eth],
+                    sessions: [mockStakingSession({ plan, accountKey: account.key })],
+                }),
+            ),
         });
-        const signing = [
-            stakingActions.stepComposed({
-                sessionKey,
-                stepId: 'freeze',
-                composed: mockComposedStakingStep(),
-            }),
-            stakingActions.stepSigning({
-                sessionKey,
-                stepId: 'freeze',
-                attemptId: 'attempt-1',
-                feeLevel: 'normal',
-                signingStartedAt: 1,
-            }),
-        ].reduce(stakingReducer, state.earn.staking);
-        const adapter = createAdapter(mock(() => Promise.resolve(plan)));
-        const { actions, result } = await run(
-            { ...state, earn: { staking: signing } },
-            createExtra(adapter),
-        );
+        const result = await planStake(store);
 
         expect(result.payload).toBe('session-active');
         expect(adapter.planOperation).not.toHaveBeenCalled();
         expect(actions).toEqual([]);
     });
 
+    it('drops a plan result when a newer plan started meanwhile', async () => {
+        jest.useFakeTimers();
+
+        let store: Store | null = null;
+        const newerPlan = mockStakingPlan({ amount: '2000000000000000000' as never });
+        let calls = 0;
+        const started = initStore({
+            planOperation: mock(async () => {
+                calls += 1;
+
+                if (calls > 1) return newerPlan;
+
+                jest.setSystemTime(Date.now() + 1);
+                await store?.dispatch(planStakingOperationThunk(params)).unwrap();
+
+                return plan;
+            }),
+        });
+
+        store = started.store;
+
+        const result = await planStake(store);
+
+        expect(result.payload).toBe('attempt-superseded');
+        expect(selectStakingSession(store.getState(), sessionKey)?.plan).toEqual(newerPlan);
+        expect(started.actions).toHaveLength(2);
+    });
+
     it('rejects when the adapter cannot plan and starts no session', async () => {
-        const adapter = createAdapter(
-            mock(() => Promise.reject(new StakingAdapterError('amount-below-minimum'))),
-        );
-        const { actions, result } = await run(createState(), createExtra(adapter));
+        const { store, actions } = initStore({
+            planOperation: mock(() =>
+                Promise.reject(new StakingAdapterError('amount-below-minimum')),
+            ),
+        });
+        const result = await planStake(store);
 
         expect(result.payload).toBe('adapter-failed');
         expect(actions).toEqual([]);
@@ -249,10 +264,10 @@ describe('planStakingOperationThunk', () => {
 
     it('throws on an invalid plan outside production', async () => {
         const invalidPlan = { ...plan, steps: [] } as StakingPlan;
-        const { actions, result } = await run(
-            createState(),
-            createExtra(createAdapter(mock(() => Promise.resolve(invalidPlan)))),
-        );
+        const { store, actions } = initStore({
+            planOperation: mock(() => Promise.resolve(invalidPlan)),
+        });
+        const result = await planStake(store);
 
         expect(planStakingOperationThunk.rejected.match(result)).toBe(true);
         expect(result.payload).toBeUndefined();

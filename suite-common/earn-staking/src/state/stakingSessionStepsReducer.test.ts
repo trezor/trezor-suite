@@ -9,6 +9,7 @@ import {
 } from './stakingSessionStepsReducer';
 import { mockStakingSession, mockStakingSessionStep } from '../../mocks';
 
+const attemptId = 'attempt-1';
 const { key: sessionKey } = mockStakingSession();
 const stake = { sessionKey, stepId: 'stake' };
 const pendingStake = mockStakingSessionStep({ id: 'stake' });
@@ -26,6 +27,7 @@ describe('stakingSessionStepsReducer', () => {
                 steps,
                 actions.stepComposed({
                     sessionKey,
+                    attemptId,
                     stepId: 'missing',
                     composed: mockComposedStakingStep(),
                 }),
@@ -36,7 +38,7 @@ describe('stakingSessionStepsReducer', () => {
                 steps,
                 actions.stepSigned({
                     ...stake,
-                    attemptId: 'attempt-1',
+                    attemptId,
                     signed: mockSignedStakingStep(),
                 }),
             ),
@@ -46,6 +48,7 @@ describe('stakingSessionStepsReducer', () => {
     it('ignores an event for a step that is not the current one', () => {
         const composeVote = actions.stepComposed({
             sessionKey,
+            attemptId,
             stepId: 'vote',
             composed: mockComposedStakingStep(),
         });
@@ -57,11 +60,16 @@ describe('stakingSessionStepsReducer', () => {
         const composed = mockComposedStakingStep();
         const next = stakingSessionStepsReducer(
             steps,
-            actions.stepComposed({ ...stake, composed }),
+            actions.stepComposed({ ...stake, attemptId, composed }),
         );
 
         expect(next).not.toBe(steps);
-        expect(next[0]).toEqual({ ...pendingStake, status: 'composed', composed });
+        expect(next[0]).toEqual({
+            ...pendingStake,
+            status: 'composed',
+            composeAttemptId: attemptId,
+            composed,
+        });
         expect(next[1]).toBe(pendingVote);
     });
 });

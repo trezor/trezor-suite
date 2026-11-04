@@ -40,8 +40,8 @@ type StakingSignableStep = {
 
 export type StakingSessionStep = StakingSessionStepBase &
     (
-        | { status: 'pending' }
-        | { status: 'composed'; composed: ComposedStakingStep }
+        | { status: 'pending'; composeAttemptId: string | null }
+        | { status: 'composed'; composeAttemptId: string | null; composed: ComposedStakingStep }
         | ({ status: 'signing' } & StakingSignableStep)
         | ({ status: 'signed'; signed: SignedStakingStep } & StakingSignableStep)
         | ({ status: 'broadcasting'; signed: SignedStakingStep } & StakingSignableStep)

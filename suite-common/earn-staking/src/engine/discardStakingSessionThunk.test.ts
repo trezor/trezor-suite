@@ -25,7 +25,7 @@ const stake = { sessionKey, stepId: 'stake' };
 
 const idle = mockStakingState({ descriptors: [eth], sessions: [session] });
 const signing = [
-    stakingActions.stepComposed({ ...stake, composed: mockComposedStakingStep() }),
+    stakingActions.stepComposed({ ...stake, attemptId, composed: mockComposedStakingStep() }),
     stakingActions.stepSigning({ ...stake, attemptId, feeLevel: 'normal', signingStartedAt: 1 }),
 ].reduce(stakingReducer, idle);
 const broadcasting = [

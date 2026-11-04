@@ -10,6 +10,7 @@ import {
     type StakingSessionStep,
     type StakingSessionStepStatus,
     type StakingStepError,
+    getStakingStepBase,
 } from './stakingSessionStep';
 import { type StakingStepEvent, transitionStakingStep } from './stakingStepTransition';
 import { mockStakingSessionStep } from '../../mocks';
@@ -20,7 +21,7 @@ const signed = mockSignedStakingStep();
 const signFailed: StakingStepError = { kind: 'sign-failed', code: 'Failure_DataError' };
 const confirmationFailed: StakingStepError = { kind: 'confirmation-failed', code: null };
 
-const base = mockStakingSessionStep({ id: 'stake', awaitConfirmation: true });
+const base = getStakingStepBase(mockStakingSessionStep({ id: 'stake', awaitConfirmation: true }));
 const signable = {
     attemptId,
     composed,
@@ -30,8 +31,8 @@ const signable = {
 };
 
 const stepsByStatus: Record<StakingSessionStepStatus, StakingSessionStep> = {
-    pending: { ...base, status: 'pending' },
-    composed: { ...base, status: 'composed', composed },
+    pending: { ...base, status: 'pending', composeAttemptId: attemptId },
+    composed: { ...base, status: 'composed', composeAttemptId: attemptId, composed },
     signing: { ...base, status: 'signing', ...signable },
     signed: { ...base, status: 'signed', ...signable, signed },
     broadcasting: { ...base, status: 'broadcasting', ...signable, signed },
@@ -41,8 +42,13 @@ const stepsByStatus: Record<StakingSessionStepStatus, StakingSessionStep> = {
 };
 
 const events: Record<StakingStepEvent['type'], StakingStepEvent> = {
-    composed: { type: 'composed', composed },
-    'compose-failed': { type: 'compose-failed', error: { kind: 'compose-failed', code: null } },
+    composing: { type: 'composing', attemptId },
+    composed: { type: 'composed', attemptId, composed },
+    'compose-failed': {
+        type: 'compose-failed',
+        attemptId,
+        error: { kind: 'compose-failed', code: null },
+    },
     signing: { type: 'signing', attemptId, feeLevel: 'normal', signingStartedAt: 1_000 },
     signed: { type: 'signed', attemptId, signed },
     cancelled: { type: 'cancelled', attemptId },
@@ -57,6 +63,7 @@ const events: Record<StakingStepEvent['type'], StakingStepEvent> = {
 };
 
 const acceptedFrom: Record<StakingStepEvent['type'], readonly StakingSessionStepStatus[]> = {
+    composing: ['pending', 'composed'],
     composed: ['pending', 'composed'],
     'compose-failed': ['pending', 'composed'],
     signing: ['composed'],
@@ -91,6 +98,8 @@ describe('transitionStakingStep', () => {
 
         (
             [
+                'composed',
+                'compose-failed',
                 'signed',
                 'cancelled',
                 'sign-failed',
@@ -102,6 +111,19 @@ describe('transitionStakingStep', () => {
         ).forEach(type => {
             expect(accepting(otherAttempt(events[type]))).toEqual([]);
         });
+    });
+
+    it('records a compose attempt and takes a result only before any attempt or from that one', () => {
+        const unrecorded = { ...stepsByStatus.pending, composeAttemptId: null };
+
+        expect(transitionStakingStep(unrecorded, events.composing)).toEqual(stepsByStatus.pending);
+        expect(transitionStakingStep(unrecorded, events.composed)).toEqual(stepsByStatus.composed);
+        expect(
+            transitionStakingStep(stepsByStatus.composed, {
+                type: 'composing',
+                attemptId: 'attempt-2',
+            }),
+        ).toEqual({ ...stepsByStatus.composed, composeAttemptId: 'attempt-2' });
     });
 
     it('composes with a clean error and recomposes in place', () => {
@@ -158,6 +180,7 @@ describe('transitionStakingStep', () => {
     it('returns an attempt to composed with the error of its outcome', () => {
         const composedAgain = (error: StakingStepError | null) => ({
             ...stepsByStatus.composed,
+            composeAttemptId: null,
             error,
         });
 

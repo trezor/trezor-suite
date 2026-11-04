@@ -631,6 +631,50 @@ describe('staking engine', () => {
         expect(adapter.broadcastStep).toHaveBeenCalledTimes(1);
     });
 
+    it('keeps the newer custom fee when an older compose lands last', async () => {
+        let isSlowQueued = false;
+        let releaseSlow = () => {};
+
+        const { store } = initStore({
+            adapter: {
+                composeStep: mock<StakingProductAdapter['composeStep']>(({ customFee }) => {
+                    const result = mockComposedStakingStep({
+                        unsignedTx: { fee: customFee?.feePerUnit },
+                    });
+
+                    if (isSlowQueued) return Promise.resolve(result);
+
+                    isSlowQueued = true;
+
+                    return new Promise(resolve => {
+                        releaseSlow = () => resolve(result);
+                    });
+                }),
+            },
+        });
+
+        await planStake(store);
+
+        const slow = store.dispatch(
+            composeStakingStepThunk({ sessionKey, customFee: { feePerUnit: '10' } }),
+        );
+
+        await jest.advanceTimersByTimeAsync(0);
+        await store
+            .dispatch(composeStakingStepThunk({ sessionKey, customFee: { feePerUnit: '20' } }))
+            .unwrap();
+
+        expect(getStep(store, 'freeze')).toMatchObject({
+            status: 'composed',
+            composed: { unsignedTx: { fee: '20' } },
+        });
+
+        releaseSlow();
+
+        expect((await slow).payload).toBe('attempt-superseded');
+        expect(getStep(store, 'freeze')).toMatchObject({ composed: { unsignedTx: { fee: '20' } } });
+    });
+
     it('signs every step through the injected device access', async () => {
         const deviceAccess = mockStakingDeviceAccess();
         const { store } = initStore({ deviceAccess });

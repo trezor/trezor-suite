@@ -48,7 +48,8 @@ const stakingSessionsSlice = createSlice({
 
             if (
                 current !== undefined &&
-                hasStakingStepWithStatus(current, STAKING_ACTIVE_STEP_STATUSES)
+                (hasStakingStepWithStatus(current, STAKING_ACTIVE_STEP_STATUSES) ||
+                    current.createdAt > payload.session.createdAt)
             ) {
                 return;
             }

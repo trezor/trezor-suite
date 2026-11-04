@@ -72,7 +72,7 @@ const signedState = (
     signingStartedAt = Date.now(),
 ): StakingState =>
     [
-        stakingActions.stepComposed({ ...stake, composed: composedStep }),
+        stakingActions.stepComposed({ ...stake, attemptId, composed: composedStep }),
         stakingActions.stepSigning({ ...stake, attemptId, feeLevel: 'normal', signingStartedAt }),
         stakingActions.stepSigned({ ...stake, attemptId, signed }),
     ].reduce(stakingReducer, mockStakingState({ descriptors: [eth], sessions: [sessionToSign] }));

@@ -35,7 +35,7 @@ const stake = { sessionKey, stepId: 'stake' };
 
 const composedState = stakingReducer(
     mockStakingState({ descriptors: [eth], sessions: [session] }),
-    stakingActions.stepComposed({ ...stake, composed: mockComposedStakingStep() }),
+    stakingActions.stepComposed({ ...stake, attemptId, composed: mockComposedStakingStep() }),
 );
 const signingState = stakingReducer(
     composedState,

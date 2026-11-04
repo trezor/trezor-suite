@@ -12,8 +12,9 @@ import {
 } from './stakingSessionStep';
 
 export type StakingStepEvent =
-    | { type: 'composed'; composed: ComposedStakingStep }
-    | { type: 'compose-failed'; error: StakingStepError }
+    | { type: 'composing'; attemptId: string }
+    | { type: 'composed'; attemptId: string; composed: ComposedStakingStep }
+    | { type: 'compose-failed'; attemptId: string; error: StakingStepError }
     | {
           type: 'signing';
           attemptId: string;
@@ -45,8 +46,16 @@ const toComposed = (
     ...getStakingStepBase(step),
     error,
     status: 'composed',
+    composeAttemptId: null,
     composed: step.composed,
 });
+
+// A compose result is taken from the attempt the step recorded; before any attempt was recorded
+// there is nothing it could be stale against.
+const isComposeAttempt = (
+    step: Extract<StakingSessionStep, { status: 'pending' | 'composed' }>,
+    attemptId: string,
+) => step.composeAttemptId === null || step.composeAttemptId === attemptId;
 
 // The one place that says which event a step accepts in which status, and what it becomes.
 // Returns null when the step refuses the event, including an event of a signing attempt that
@@ -56,23 +65,37 @@ export const transitionStakingStep = (
     event: StakingStepEvent,
 ): StakingSessionStep | null => {
     switch (event.type) {
+        case 'composing': {
+            if (step.status !== 'pending' && step.status !== 'composed') return null;
+
+            return {
+                ...step,
+                composeAttemptId: event.attemptId,
+            };
+        }
         case 'composed': {
             if (step.status !== 'pending' && step.status !== 'composed') return null;
+
+            if (!isComposeAttempt(step, event.attemptId)) return null;
 
             return {
                 ...getStakingStepBase(step),
                 error: null,
                 status: 'composed',
+                composeAttemptId: event.attemptId,
                 composed: event.composed,
             };
         }
         case 'compose-failed': {
             if (step.status !== 'pending' && step.status !== 'composed') return null;
 
+            if (!isComposeAttempt(step, event.attemptId)) return null;
+
             return {
                 ...getStakingStepBase(step),
                 error: event.error,
                 status: 'pending',
+                composeAttemptId: event.attemptId,
             };
         }
         case 'signing': {
