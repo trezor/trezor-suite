@@ -79,6 +79,19 @@ describe('stake account layout', () => {
         expect(getSerializedMessage(response)).toBe(message);
     });
 
+    it('unstakes only from Everstake stake accounts', async () => {
+        const { rpcResults } = stakeTransactionFixtures.unstakeIgnoringOtherValidators;
+
+        const response = await prepareUnstakeSolTx({
+            from: mockSender,
+            amount: '7',
+            connection: mockConnection(rpcResults),
+            validator,
+        });
+
+        expect(getSerializedMessage(response)).toBe(stakeTransactionFixtures.unstake.message);
+    });
+
     it('builds split unstake transaction with clock sysvar account', async () => {
         const { rpcResults, message } = stakeTransactionFixtures.unstakeWithSplit;
 

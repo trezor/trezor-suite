@@ -195,10 +195,15 @@ export const unstake = async ({
                 return false;
             }
 
-            const isActive = !(
-                isLockupInForce(acc.data, epoch, BigInt(tm)) ||
-                stakeAccountState(acc.data, epoch) !== StakeState.Active
+            const isEverstake = EVERSTAKE_VOTER_PUBKEYS.includes(
+                acc.data.state.fields[1].delegation.voterPubkey,
             );
+            const isActive =
+                isEverstake &&
+                !(
+                    isLockupInForce(acc.data, epoch, BigInt(tm)) ||
+                    stakeAccountState(acc.data, epoch) !== StakeState.Active
+                );
 
             if (isActive) {
                 totalActiveStake = totalActiveStake + acc.data.state.fields[1].delegation.stake;
