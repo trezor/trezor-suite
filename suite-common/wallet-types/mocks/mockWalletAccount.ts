@@ -7,6 +7,7 @@ import {
     Account,
     AccountBase,
     AccountFailureSpecific,
+    AccountWithNetworkType,
     asAccountDescriptor,
     createAccountKey,
 } from '../src/account';
@@ -50,6 +51,8 @@ export const networkSpecificDefaultRipple = {
     page: undefined,
 };
 
+type CardanoStaking = AccountWithNetworkType<'cardano'>['misc']['staking'];
+
 export const networkSpecificDefaultCardano = {
     networkType: 'cardano' as const,
     marker: undefined,
@@ -59,8 +62,8 @@ export const networkSpecificDefaultCardano = {
             address: '',
             isActive: true,
             rewards: '',
-            poolId: null,
-            drep: null,
+            poolId: null as CardanoStaking['poolId'],
+            drep: null as CardanoStaking['drep'],
         },
     },
     page: undefined,
