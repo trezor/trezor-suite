@@ -5,6 +5,7 @@ export type StakingNavigateFrom =
     | 'sidebar'
     | 'account/navigation'
     | 'account/banner'
+    | 'asset-detail/banner'
     | 'account/tradebox'
     | 'dashboard/assets'
     | 'dashboard/staking-dashboard/staking-outdated-provider'
@@ -48,6 +49,10 @@ export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigat
             version: '26.11.0',
             notes: 'Shared by desktop and mobile with the same dashboard state origins; mobile sheet cancellations identify their origin.',
         },
+        {
+            version: '26.11.0',
+            notes: 'added asset-detail/banner value (desktop)',
+        },
     ],
 
     attributes: {
@@ -68,9 +73,13 @@ export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigat
                     version: '26.11.0',
                     notes: 'Aligned mobile dashboard origins; added choose-account-sheet, enable-network-sheet and unknown.',
                 },
+                {
+                    version: '26.11.0',
+                    notes: 'added asset-detail/banner value (desktop)',
+                },
             ],
             description:
-                'Navigation origin. Shared dashboard states use dashboard/staking-dashboard/* on both platforms. Native account selection and network enabling cancellations use choose-account-sheet and enable-network-sheet; unknown means the state could not be classified. Desktop also has sidebar and account origins.',
+                'Navigation origin. Shared dashboard states use dashboard/staking-dashboard/* on both platforms. Native account selection and network enabling cancellations use choose-account-sheet and enable-network-sheet; unknown means the state could not be classified. Desktop also has sidebar, account and asset-detail/banner (staking banner on the Home asset detail) origins.',
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],

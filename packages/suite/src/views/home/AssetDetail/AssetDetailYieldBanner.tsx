@@ -1,6 +1,8 @@
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { closeTokenYieldBanner, selectIsTokenYieldBannerClosed } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { events as sharedEvents } from '@suite-common/analytics';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
@@ -24,7 +26,7 @@ type AssetDetailYieldBannerProps = {
 };
 
 export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const formatApy = useFormatApy();
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
@@ -45,8 +47,25 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
         return null;
     }
 
-    const goToEarn = () => dispatch(gotoThunk({ routeName: 'suite-earn' }));
-    const close = () => dispatch(closeTokenYieldBanner(bannerKey));
+    const reportYieldNavigate = (action: 'continue' | 'cancel') =>
+        analytics.report({
+            type: sharedEvents.yieldNavigateEvent.name,
+            payload: {
+                action,
+                from: 'asset-detail-banner',
+                to: 'earn-dashboard',
+                networkSymbol: symbol,
+            },
+        });
+
+    const goToEarn = () => {
+        dispatch(gotoThunk({ routeName: 'suite-earn' }));
+        reportYieldNavigate('continue');
+    };
+    const close = () => {
+        dispatch(closeTokenYieldBanner(bannerKey));
+        reportYieldNavigate('cancel');
+    };
 
     return (
         <Banner
