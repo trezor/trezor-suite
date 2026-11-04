@@ -290,7 +290,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             await act(() => {
                 onError({
                     type: 'sign-transaction-timeout',
-                    error: { id: 'moduleTrading.tradingReviewOutputs.expiredAlert.title' },
+                    code: 'cannot-send-transaction',
                 });
             });
 
@@ -315,9 +315,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 )[0];
                 onError({
                     type: 'sign-tx-error',
-                    error: {
-                        id: 'TR_ERROR',
-                    },
+                    code: 'cannot-send-transaction',
                 });
             });
             expect(mockShowAlert).toHaveBeenCalledTimes(1);
@@ -344,9 +342,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 )[0];
                 onError({
                     type: 'sign-tx-error',
-                    error: {
-                        id: 'TR_ERROR',
-                    },
+                    code: 'cannot-send-transaction',
                 });
             });
 
@@ -369,9 +365,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 )[0];
                 onError({
                     type: 'sign-tx-error',
-                    error: {
-                        id: 'TR_ERROR',
-                    },
+                    code: 'cannot-send-transaction',
                 });
             });
 

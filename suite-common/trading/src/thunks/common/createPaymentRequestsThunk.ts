@@ -32,7 +32,7 @@ import {
     selectTradingTradeApiKey,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
-import { type TradingSendRejectedProps, type TradingTradeSellExchangeType } from '../../types';
+import { type TradingError, type TradingTradeSellExchangeType } from '../../types';
 import { cryptoIdToNetwork } from '../../utils';
 import {
     tradingExchangeCreatePaymentRequest,
@@ -59,7 +59,7 @@ export const createPaymentRequestsThunk = createThunk<
     PROTO.PaymentRequest[],
     CreateSignatureThunkProps,
     {
-        rejectValue: TradingSendRejectedProps;
+        rejectValue: TradingError;
         state: CreatePaymentRequestsThunkState;
     }
 >(
@@ -76,9 +76,7 @@ export const createPaymentRequestsThunk = createThunk<
         if (!('outputs' in composedLevels)) {
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_PAYMENT_REQUESTS_ERROR',
-                },
+                code: 'payment-requests-failed',
             });
         }
 
@@ -105,9 +103,7 @@ export const createPaymentRequestsThunk = createThunk<
                 ) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_PAYMENT_REQUESTS_ERROR',
-                        },
+                        code: 'payment-requests-failed',
                     });
                 }
 
@@ -149,9 +145,7 @@ export const createPaymentRequestsThunk = createThunk<
                 if (!provider || !trade || !sendStringAmount) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_PAYMENT_REQUESTS_ERROR',
-                        },
+                        code: 'payment-requests-failed',
                     });
                 }
 
@@ -172,9 +166,7 @@ export const createPaymentRequestsThunk = createThunk<
                 if (!paymentRequest) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_PAYMENT_REQUESTS_ERROR',
-                        },
+                        code: 'payment-requests-failed',
                     });
                 }
 
@@ -197,9 +189,7 @@ export const createPaymentRequestsThunk = createThunk<
                 if (!quote?.paymentId || !quote.cryptoCurrency) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_PAYMENT_REQUESTS_ERROR',
-                        },
+                        code: 'payment-requests-failed',
                     });
                 }
 
@@ -207,9 +197,7 @@ export const createPaymentRequestsThunk = createThunk<
                 if (!sendNetwork) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_PAYMENT_REQUESTS_ERROR',
-                        },
+                        code: 'payment-requests-failed',
                     });
                 }
 
@@ -221,9 +209,7 @@ export const createPaymentRequestsThunk = createThunk<
                 if (!sendDisplaySymbol) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_PAYMENT_REQUESTS_ERROR',
-                        },
+                        code: 'payment-requests-failed',
                     });
                 }
 
@@ -263,9 +249,7 @@ export const createPaymentRequestsThunk = createThunk<
                 if (!provider || !trade || !sendStringAmount) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_PAYMENT_REQUESTS_ERROR',
-                        },
+                        code: 'payment-requests-failed',
                     });
                 }
 
@@ -283,9 +267,7 @@ export const createPaymentRequestsThunk = createThunk<
                 if (!paymentRequest) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_PAYMENT_REQUESTS_ERROR',
-                        },
+                        code: 'payment-requests-failed',
                     });
                 }
 

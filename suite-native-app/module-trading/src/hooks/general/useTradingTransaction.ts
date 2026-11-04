@@ -7,9 +7,9 @@ import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
+    type TradingError,
     type TradingFulfillValue,
     type TradingRootStateWithDeviceAndAccounts,
-    type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     cryptoIdToNetworkAndContractAddress,
     exchangeThunks,
@@ -18,6 +18,7 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingSellSelectedQuote,
     sellThunks,
+    toSendTransactionTradingError,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -31,7 +32,6 @@ import {
     selectSendSerializedTx,
 } from '@suite-common/wallet-core';
 import { type FeeLevelLabel } from '@suite-common/wallet-types';
-import { type TxKeyPath } from '@suite-native/intl';
 import { type SettingsSliceRootState } from '@suite-native/settings';
 import { type TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
 import {
@@ -54,7 +54,7 @@ import { signAndPushSendFormTransactionThunk } from '../../thunks';
 
 export type TradingTransactionSignAndSendProps = {
     nextStep: () => void;
-    onError: (error: TradingSendRejectedProps<TxKeyPath>) => void;
+    onError: (error: TradingError) => void;
 };
 
 export type UseTradingTransactionProps = {
@@ -234,7 +234,7 @@ export const useTradingTransaction = ({
 
                 return true;
             } catch (e) {
-                onError(e as TradingSendRejectedProps<TxKeyPath>);
+                onError(toSendTransactionTradingError(e));
 
                 return false;
             }

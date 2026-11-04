@@ -8,7 +8,8 @@ import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types'
 import { createThunk } from '@trezor/redux-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { type TradingSendRejectedProps } from '../../types';
+import { type TradingError } from '../../types';
+import { getConnectErrorCause } from '../../utils/tradingErrorUtils';
 
 type GetPurchaseAddressProps = {
     account: Account;
@@ -28,7 +29,7 @@ export const getPurchaseAddressThunk = createThunk<
     GetPurchaseAddressFulfillValue,
     GetPurchaseAddressProps,
     {
-        rejectValue: TradingSendRejectedProps;
+        rejectValue: TradingError;
         state: GetPurchaseAddressThunkState;
     }
 >(
@@ -50,9 +51,7 @@ export const getPurchaseAddressThunk = createThunk<
         if (!path) {
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
             });
         }
 
@@ -70,18 +69,15 @@ export const getPurchaseAddressThunk = createThunk<
         if (!purchase.success) {
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
+                cause: getConnectErrorCause(purchase.error),
             });
         }
 
         if (!('mac' in purchase.payload) || !purchase.payload.mac) {
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
             });
         }
 

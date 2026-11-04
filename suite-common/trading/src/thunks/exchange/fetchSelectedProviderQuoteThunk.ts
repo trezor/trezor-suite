@@ -10,13 +10,13 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
-import { type TradingExchangeType, type TradingSendRejectedProps } from '../../types';
+import { type TradingError, type TradingExchangeType } from '../../types';
 import { addIdsToQuotes } from '../../utils';
 import { exchangeUtils } from '../../utils/exchange/exchangeUtils';
 
-const fetchRejectedValue: TradingSendRejectedProps = {
+const fetchRejectedValue: TradingError = {
     type: 'error',
-    error: { id: 'TR_TRADING_REFRESH_TRANSACTION_FAILED' },
+    code: 'refresh-transaction-failed',
 };
 
 export type FetchSelectedProviderQuoteThunkState = TradingRootState;
@@ -24,7 +24,7 @@ export type FetchSelectedProviderQuoteThunkState = TradingRootState;
 export const fetchSelectedProviderQuoteThunk = createThunk<
     ExchangeTrade,
     void,
-    { rejectValue: TradingSendRejectedProps; state: FetchSelectedProviderQuoteThunkState }
+    { rejectValue: TradingError; state: FetchSelectedProviderQuoteThunkState }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/fetchSelectedProviderQuote`,
     async (_, { dispatch, getState, rejectWithValue, signal }) => {

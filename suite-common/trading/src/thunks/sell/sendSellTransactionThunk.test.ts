@@ -13,10 +13,10 @@ import { type TradingSellState, sellInitialState } from '../../reducers/sellRedu
 import { initialState, tradingActions } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
-import { type TradingTransactionSell } from '../../types';
 import { sellUtilsFixtures } from '../../utils/sell/__fixtures__/sellUtils';
 import { tradingThunks } from '../common';
 import { type SendSellTransactionThunkState } from './sendSellTransactionThunk';
+import { type TradingError, type TradingTransactionSell } from '../../types';
 
 import { sellThunks } from './index';
 
@@ -131,19 +131,37 @@ describe('sendSellTransactionThunk', () => {
             expect(result.meta.requestStatus).toEqual('rejected');
             expect(result.payload).toEqual({
                 type: 'error',
-                error: {
-                    id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
-                },
+                code: 'cannot-send-transaction',
             });
         });
     });
 
     describe('should return error after recompose and sign transaction', () => {
-        it.each([
-            ['when payload is undefined', undefined],
-            ['when payload contains error', { type: 'error', error: { id: 'TR_ERROR' } }],
-            ['when payload is not successful', { success: false }],
-        ])('%s', async (_, recomposeAndSignPayload) => {
+        it.each<[string, unknown, TradingError]>([
+            [
+                'when payload is undefined',
+                undefined,
+                {
+                    type: 'sign-tx-error',
+                    code: 'cannot-send-transaction',
+                    cause: { source: 'unexpected', message: 'Rejected' },
+                },
+            ],
+            [
+                'when payload is a trading error',
+                { type: 'error', code: 'payment-requests-failed' },
+                { type: 'error', code: 'payment-requests-failed' },
+            ],
+            [
+                'when payload is not a trading error',
+                { success: false },
+                {
+                    type: 'sign-tx-error',
+                    code: 'cannot-send-transaction',
+                    cause: { source: 'unexpected', message: undefined },
+                },
+            ],
+        ])('%s', async (_, recomposeAndSignPayload, expectedPayload) => {
             const { store, account, trade, mockNextStep } = getMocks();
 
             jest.spyOn(tradingThunks, 'recomposeAndSignTxThunk').mockImplementation(
@@ -175,38 +193,33 @@ describe('sendSellTransactionThunk', () => {
             expect(tradingState.trades).toEqual([]);
             expect(tradingState.sell.transactionId).toBeUndefined();
             expect(result.meta.requestStatus).toEqual('rejected');
-            expect(result.payload).toEqual(
-                recomposeAndSignPayload && 'error' in recomposeAndSignPayload
-                    ? recomposeAndSignPayload
-                    : {
-                          type: 'sign-tx-error',
-                          error: {
-                              id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
-                          },
-                      },
-            );
+            expect(result.payload).toEqual(expectedPayload);
         });
     });
 
     describe('should return error after request API', () => {
-        it.each([
-            ['when response is undefined', undefined, { id: 'TR_TRADING_NO_RESPONSE' }],
+        it.each<[string, unknown, TradingError]>([
+            ['when response is undefined', undefined, { type: 'error', code: 'no-response' }],
             [
                 'when response error is present',
                 { error: 'Error message' },
-                { id: 'TR_TRADING_INVALID_RESPONSE', values: { error: '(Error message)' } },
+                {
+                    type: 'error',
+                    code: 'invalid-response',
+                    cause: { source: 'invity', message: 'Error message' },
+                },
             ],
             [
                 'when response status is not filled',
                 { status: undefined, orderId: 'orderId' },
-                { id: 'TR_TRADING_INVALID_RESPONSE' },
+                { type: 'error', code: 'invalid-response' },
             ],
             [
                 'when response orderId is not filled',
                 { status: 'SUBMITTED', orderId: undefined },
-                { id: 'TR_TRADING_INVALID_RESPONSE' },
+                { type: 'error', code: 'invalid-response' },
             ],
-        ])('%s', async (_, response, error) => {
+        ])('%s', async (_, response, expectedPayload) => {
             const { store, account, trade, mockNextStep } = getMocks();
 
             tradeApi.doSellConfirm = () => Promise.resolve(response as unknown as SellFiatTrade);
@@ -229,12 +242,7 @@ describe('sendSellTransactionThunk', () => {
             expect(tradingState.trades).toEqual([]);
             expect(tradingState.sell.transactionId).toBeUndefined();
             expect(result.meta.requestStatus).toEqual('rejected');
-            expect(result.payload).toEqual({
-                type: 'error',
-                error: {
-                    ...error,
-                },
-            });
+            expect(result.payload).toEqual(expectedPayload);
         });
     });
 

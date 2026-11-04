@@ -19,7 +19,7 @@ import { type RecomposeAndSignTxThunkState } from './recomposeAndSignTxThunk';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
-import { type TradingFulfillValue } from '../../types';
+import { type TradingError, type TradingFulfillValue } from '../../types';
 
 import { tradingThunks } from './index';
 
@@ -222,9 +222,7 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.meta.requestStatus).toBe('rejected');
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
-            error: {
-                id: 'TR_TRADING_MISSING_COMPOSED_DATA',
-            },
+            code: 'missing-composed-data',
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
     });
@@ -249,32 +247,35 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.meta.requestStatus).toBe('rejected');
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
-            error: {
-                id: 'TR_TRADING_MISSING_COMPOSED_DATA',
-            },
+            code: 'missing-composed-data',
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
     });
 
-    it.each([
-        ['when levels were not found', undefined, 'TR_TRADING_MISSING_FEE_LEVEL'],
-        ['when levels do not contain a normal object', {}, 'TR_TRADING_MISSING_FEE_LEVEL'],
+    const missingFeeLevel: TradingError = { type: 'sign-tx-error', code: 'missing-fee-level' };
+
+    it.each<[string, unknown, TradingError]>([
+        ['when levels were not found', undefined, missingFeeLevel],
+        ['when levels do not contain a normal object', {}, missingFeeLevel],
         [
             'when levels contain normal object with type not final',
             { normal: { type: 'nonfinal', feeLimit: '10' } },
-            'TR_TRADING_MISSING_FEE_LEVEL',
+            missingFeeLevel,
         ],
         [
             'when levels contain normal object without feeLimit',
             { normal: { type: 'final' } },
-            'TR_TRADING_MISSING_FEE_LEVEL',
+            missingFeeLevel,
         ],
         [
             'when levels contain normal object with error message',
-            { normal: { type: 'error', errorMessage: { id: 'TR_ERROR' } } },
-            'TR_ERROR',
+            { normal: { type: 'error', errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' } } },
+            {
+                ...missingFeeLevel,
+                cause: { source: 'precompose', errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' } },
+            },
         ],
-    ])('should return error for custom fees %s', async (_, levels, errorId) => {
+    ])('should return error for custom fees %s', async (_, levels, expectedPayload) => {
         const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } = getMocks({
             composedTransactionInfo: {
                 ...mockComposedTransactionInfo,
@@ -301,12 +302,7 @@ describe('recomposeAndSignTxThunk', () => {
         );
 
         expect(response.meta.requestStatus).toBe('rejected');
-        expect(response.payload).toEqual({
-            type: 'sign-tx-error',
-            error: {
-                id: errorId,
-            },
-        });
+        expect(response.payload).toEqual(expectedPayload);
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
     });
 
@@ -341,9 +337,7 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.meta.requestStatus).toBe('rejected');
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
-            error: {
-                id: 'TR_TRADING_MISSING_FEE_LEVEL',
-            },
+            code: 'missing-fee-level',
         });
 
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
@@ -372,9 +366,8 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.meta.requestStatus).toBe('rejected');
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
-            error: {
-                id: 'TR_TRADING_MISSING_FEE_LEVEL',
-            },
+            code: 'missing-fee-level',
+            cause: { source: 'send-form', error: { error: 'fee-levels-compose-failed' } },
         });
 
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
@@ -407,9 +400,10 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.meta.requestStatus).toBe('rejected');
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
-            error: {
-                id: 'TR_TRADING_COMPOSE_FAILED',
-                values: { error: 'Method_InvalidParameter' },
+            code: 'compose-failed',
+            cause: {
+                source: 'send-form',
+                error: { error: 'fee-levels-compose-failed', message: 'Method_InvalidParameter' },
             },
         });
 
@@ -449,9 +443,10 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.meta.requestStatus).toBe('rejected');
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
-            error: {
-                id: 'TR_TRADING_COMPOSE_FAILED',
-                values: { error: 'Method_InvalidParameter' },
+            code: 'compose-failed',
+            cause: {
+                source: 'send-form',
+                error: { error: 'fee-levels-compose-failed', message: 'Method_InvalidParameter' },
             },
         });
 
@@ -489,9 +484,7 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.meta.requestStatus).toBe('rejected');
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
-            error: {
-                id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
-            },
+            code: 'cannot-create-transaction',
         });
 
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
@@ -523,9 +516,7 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.meta.requestStatus).toBe('rejected');
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
-            error: {
-                id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
-            },
+            code: 'cannot-create-transaction',
         });
 
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(0);
@@ -542,7 +533,7 @@ describe('recomposeAndSignTxThunk', () => {
                         normal: {
                             type: 'error',
                             errorMessage: {
-                                id: 'TR_ERROR',
+                                id: 'AMOUNT_IS_NOT_ENOUGH',
                                 values: {
                                     error: 'error',
                                 },
@@ -565,11 +556,10 @@ describe('recomposeAndSignTxThunk', () => {
         expect(response.meta.requestStatus).toBe('rejected');
         expect(response.payload).toEqual({
             type: 'sign-tx-error',
-            error: {
-                id: 'TR_ERROR',
-                values: {
-                    error: 'error',
-                },
+            code: 'cannot-create-transaction',
+            cause: {
+                source: 'precompose',
+                errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH', values: { error: 'error' } },
             },
         });
 
@@ -777,9 +767,11 @@ describe('recomposeAndSignTxThunk', () => {
             expect(response.meta.requestStatus).toBe('rejected');
             expect(response.payload).toEqual({
                 type: expectedType,
-                error: {
-                    id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
-                },
+                code: 'cannot-send-transaction',
+                cause:
+                    signingResult?.success === false
+                        ? { source: 'send-form', error: signingResult.error }
+                        : undefined,
             });
             expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
         },
