@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceId, selectIsDeviceConnected } from '@suite-common/device';
 import {
     AppTabsRoutes,
     type DeviceSettingsStackParamList,
@@ -24,7 +24,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 // When user accesses device settings in remember mode and tries to modify the device,
 // he will be prompted to connect Trezor. This hook prevents usage of incorrect device.
 export const useDeviceChangedCheck = () => {
-    const device = useSelector(selectSelectedDevice);
+    const deviceId = useSelector(selectDeviceId);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const navigation = useNavigation<NavigationProps>();
     const initialDeviceIdRef = useRef<string | null>(null);
     // Important for device wipe. Device ID changes for wiped device, but if it was connected,
@@ -33,19 +34,19 @@ export const useDeviceChangedCheck = () => {
 
     useEffect(() => {
         // Store the initial device ID when the component mounts
-        if (initialDeviceIdRef.current === null && device?.id) {
-            initialDeviceIdRef.current = device.id;
-            hasDeviceBeenConnected.current = device.connected;
+        if (initialDeviceIdRef.current === null && deviceId) {
+            initialDeviceIdRef.current = deviceId;
+            hasDeviceBeenConnected.current = isDeviceConnected;
 
             return;
         }
 
         if (
             initialDeviceIdRef.current &&
-            device?.id &&
-            initialDeviceIdRef.current !== device.id &&
+            deviceId &&
+            initialDeviceIdRef.current !== deviceId &&
             !hasDeviceBeenConnected.current &&
-            device.connected
+            isDeviceConnected
         ) {
             TrezorConnect.cancel();
             navigation.popTo(RootStackRoutes.AppTabs, {
@@ -55,5 +56,5 @@ export const useDeviceChangedCheck = () => {
                 },
             });
         }
-    }, [device?.id, navigation, device?.connected]);
+    }, [deviceId, navigation, isDeviceConnected]);
 };
