@@ -1,12 +1,15 @@
 import { createContext, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useTranslation } from '@suite/intl';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
     selectBaseCurrency,
     selectRawNetworkFeeInfo,
     selectVotingDelegationOption,
+    stakeActions,
 } from '@suite-common/wallet-core';
 import {
     type ChangeDelegateFormState,
@@ -36,6 +39,7 @@ export const useChangeDelegateForm = ({
     selectedAccount,
 }: UseChangeDelegateFormsProps): ChangeDelegateContextValues => {
     const { dispatch } = useServices(injectDispatch);
+    const { translationString } = useTranslation();
 
     const { account, network } = selectedAccount;
 
@@ -87,6 +91,7 @@ export const useChangeDelegateForm = ({
 
     const {
         isLoading: isComposing,
+        hasComposeError,
         composeRequest,
         composedLevels,
         onFeeLevelChange,
@@ -123,19 +128,41 @@ export const useChangeDelegateForm = ({
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
 
         if (composedTx?.type === 'final') {
-            const result = await dispatch(
-                signTransactionThunk({
-                    accountKey: account.key,
-                    formValues: values,
-                    transactionInfo: composedTx,
-                }),
-            );
+            try {
+                const result = await dispatch(
+                    signTransactionThunk({
+                        accountKey: account.key,
+                        formValues: values,
+                        transactionInfo: composedTx,
+                    }),
+                );
 
-            if (result?.success) {
-                clearForm();
+                if (result?.success) {
+                    clearForm();
+                }
+            } catch (error) {
+                dispatch(stakeActions.requestSignTransaction());
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'sign-tx-error',
+                        error: translationString('TR_STAKING_ERROR_GENERIC'),
+                    }),
+                );
+                console.warn(
+                    'Change delegate signing failed',
+                    error instanceof Error ? error.name : 'UnknownError',
+                );
             }
         }
-    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
+    }, [
+        getValues,
+        composedLevels,
+        dispatch,
+        account.key,
+        clearForm,
+        selectedFee,
+        translationString,
+    ]);
 
     return {
         ...methods,
@@ -146,6 +173,8 @@ export const useChangeDelegateForm = ({
         register,
         baseCurrencyCode,
         composedLevels,
+        hasComposeError,
+        retryCompose: composeRequest,
         isComposing,
         selectedFee,
         clearForm,
