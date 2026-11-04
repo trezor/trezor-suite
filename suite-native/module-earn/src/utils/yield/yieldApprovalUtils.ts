@@ -15,7 +15,7 @@ import { getAllowanceAmountForLimit, isAllowanceUnlimited } from '@suite-common/
 type BuildYieldAllowanceFormStateParams = {
     approvalModalState: YieldApproveModalState;
     data: string;
-    precomposedTransaction: PrecomposedTransactionFinal;
+    precomposedTransaction?: PrecomposedTransactionFinal;
     selectedFee: FeeLevelLabel;
 };
 
@@ -61,10 +61,10 @@ export const buildYieldAllowanceFormState = ({
         },
     ],
     selectedFee,
-    feePerUnit: precomposedTransaction.feePerByte,
-    feeLimit: precomposedTransaction.feeLimit ?? '',
-    maxFeePerGas: precomposedTransaction.maxFeePerGas,
-    maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
+    feePerUnit: precomposedTransaction?.feePerByte ?? '',
+    feeLimit: precomposedTransaction?.feeLimit ?? '',
+    maxFeePerGas: precomposedTransaction?.maxFeePerGas,
+    maxPriorityFeePerGas: precomposedTransaction?.maxPriorityFeePerGas,
     options: ['broadcast', 'transactionData'],
     transactionData: data,
     isCoinControlEnabled: false,

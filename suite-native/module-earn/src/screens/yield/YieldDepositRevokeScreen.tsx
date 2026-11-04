@@ -1,8 +1,8 @@
 import { BannerInline, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldDepositRevokeDetailsCard } from '../../components/yield/YieldDepositRevokeDetailsCard';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { useYieldDepositRevokeScreen } from '../../hooks/yield/useYieldDepositRevokeScreen';
@@ -18,7 +18,7 @@ export const YieldDepositRevokeScreen = () => {
         account,
         accountLabel,
         approvedAmount,
-        feeSelectorProps,
+        feeSection,
         handleReviewAndSign,
         isApprovedAmountUnlimited,
         isSubmitDisabled,
@@ -98,7 +98,13 @@ export const YieldDepositRevokeScreen = () => {
                         tokenSymbol={tokenSymbol}
                     />
 
-                    {feeSelectorProps && <FeeSelector {...feeSelectorProps} />}
+                    {feeSection && (
+                        <EarnFeeSection
+                            accountKey={account.key}
+                            tokenContract={tokenContract}
+                            fees={feeSection}
+                        />
+                    )}
                 </VStack>
             </Box>
 
