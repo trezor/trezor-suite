@@ -21,7 +21,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
+import { selectSuiteLifecycleStatus } from 'src/selectors/suite/suiteSelectors';
 
 /**
  * Normalized incoming message from either the web or webextension popup link.
@@ -75,7 +75,7 @@ export const useConnectPopup = (
     onMessagesConsumed: () => void,
 ) => {
     const { dispatch } = useServices(injectDispatch);
-    const lifecycle = useSelector(selectSuiteLifecycle);
+    const lifecycleStatus = useSelector(selectSuiteLifecycleStatus);
     const popupCall = useSelector(selectConnectPopupCall);
     const manifest = useRef<ManifestPartial | undefined>(undefined);
     const requestedPermissions = useRef<PermissionRequest[] | undefined>(undefined);
@@ -156,9 +156,9 @@ export const useConnectPopup = (
 
     // Send POPUP.CORE_LOADED when suite lifecycle becomes ready.
     useEffect(() => {
-        if (lifecycle.status !== 'ready' || !popupLink) return;
+        if (lifecycleStatus !== 'ready' || !popupLink) return;
         popupLink.sendMessage({ type: POPUP.CORE_LOADED });
-    }, [lifecycle.status, popupLink]);
+    }, [lifecycleStatus, popupLink]);
 
     // Signal to the caller that the popup is done once the call has finished
     // and we have confirmed the response was sent. The caller's Popup class
@@ -171,14 +171,14 @@ export const useConnectPopup = (
 
     // Reply to POPUP.HANDSHAKE once suite is ready and we have a pending handshake.
     useEffect(() => {
-        if (lifecycle.status !== 'ready' || !pendingHandshake || !popupLink) return;
+        if (lifecycleStatus !== 'ready' || !pendingHandshake || !popupLink) return;
 
         popupLink.sendMessage({
             id: pendingHandshake,
             type: POPUP.HANDSHAKE,
         });
         setPendingHandshake(undefined);
-    }, [lifecycle.status, pendingHandshake, popupLink]);
+    }, [lifecycleStatus, pendingHandshake, popupLink]);
 
     // Fallback: if the caller's Popup class didn't close us after receiving
     // POPUP.CLOSED, close the window ourselves.
