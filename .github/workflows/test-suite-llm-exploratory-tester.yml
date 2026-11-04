@@ -40,7 +40,6 @@ on:
 permissions:
   contents: read
   issues: read
-  pull-requests: write
 
 concurrency:
   group: ${{ inputs.target || github.event.pull_request.html_url }}
@@ -113,6 +112,10 @@ jobs:
           [ "$conclusion" = success ]
 
   llm-exploratory-tester:
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: write
     needs: gate
     runs-on: ubuntu-latest
     timeout-minutes: 240

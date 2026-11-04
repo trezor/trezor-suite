@@ -14,8 +14,7 @@ on:
         required: true
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -106,6 +105,9 @@ jobs:
           --message ${{ github.sha }}
         working-directory: suite-native-app/app
   androidAPK:
+    permissions:
+      id-token: write
+      contents: read
     if: ${{ github.event.inputs.PLATFORM == 'Android APK' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
     name: Build standalone Android APK and release to S3
     environment: production-suite-native

@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
 
 jobs:
@@ -118,6 +117,9 @@ jobs:
         run: node ./scripts/ci/check-npm-packages-reserved.js "$PACKAGES"
 
   deploy-npm-connect-dependencies:
+    permissions:
+      id-token: write
+      contents: read
     name: Deploy NPM ${{ needs.identify-release-packages.outputs.deploymentType }} ${{ matrix.package }}
     needs:
       [
@@ -159,6 +161,9 @@ jobs:
           packageName: ${{ matrix.package }}
 
   deploy-npm-connect:
+    permissions:
+      id-token: write
+      contents: read
     name: Deploy NPM ${{ needs.identify-release-packages.outputs.deploymentType }} ${{ matrix.package }}
     # We only deploy connect NPM once dependencies have been deployed successfully.
     needs: [identify-release-packages, deploy-npm-connect-dependencies]

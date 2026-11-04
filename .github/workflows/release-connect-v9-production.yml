@@ -1,8 +1,7 @@
 name: "[Release] connect v9 production"
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 on:
   workflow_dispatch:
@@ -56,6 +55,9 @@ jobs:
 
   # set the rollback
   sync-rollback-connect-v9:
+    permissions:
+      id-token: write
+      contents: read
     needs: [extract-version, check-version-match]
     # Only stable deploys move the /9 alias, so only they should refresh the /9 rollback snapshot.
     if: startsWith(github.ref, 'refs/heads/release/connect/') && github.event.inputs.deploymentType == 'stable'
@@ -76,6 +78,9 @@ jobs:
           aws s3 sync --delete "s3://connect.trezor.io/${{ env.LATEST_VERSION }}/" "s3://rollback-connect.trezor.io/${{ env.LATEST_VERSION }}/"
 
   deploy-production-semantic-version:
+    permissions:
+      id-token: write
+      contents: read
     needs: [extract-version, check-version-match]
     if: startsWith(github.ref, 'refs/heads/release/connect/')
     environment: production-connect
@@ -97,6 +102,9 @@ jobs:
 
   # From staging move it to production
   deploy-production-v9:
+    permissions:
+      id-token: write
+      contents: read
     # We deploy to production only if rollback sync was successful.
     needs: [extract-version, check-version-match, sync-rollback-connect-v9]
     if: startsWith(github.ref, 'refs/heads/release/connect/') && github.event.inputs.deploymentType == 'stable'

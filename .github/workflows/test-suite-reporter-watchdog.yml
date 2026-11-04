@@ -7,7 +7,6 @@ name: "[Test] Reporter watchdog"
 # See packages/e2e-utils/src/githubReporter/watchdog/README.md for the full design.
 
 permissions:
-  id-token: write
   contents: read
 
 on:
@@ -75,6 +74,8 @@ jobs:
         run: yarn workspace @trezor/e2e-utils reporter-watchdog:wipe
 
   call-test-suite-manual-release:
+    permissions:
+      contents: read
     needs: wipe-sandbox
     uses: ./.github/workflows/test-suite-manual-release.yml
     secrets:
@@ -85,6 +86,9 @@ jobs:
       testFilter: "reporter-watchdog.manual.spec.ts"
 
   call-test-suite-web-desktop-e2e-release:
+    permissions:
+      id-token: write
+      contents: read
     needs: wipe-sandbox
     # Skipped on PR to not clash with web deploy of PR test workflow
     if: github.event_name != 'pull_request'
@@ -100,6 +104,8 @@ jobs:
       reporterWatchdog: "true"
 
   call-test-suite-native-manual-release:
+    permissions:
+      contents: read
     needs: wipe-sandbox
     uses: ./.github/workflows/test-suite-native-e2e-manual-reporter.yml
     secrets:

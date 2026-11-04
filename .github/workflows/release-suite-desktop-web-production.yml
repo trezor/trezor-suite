@@ -1,8 +1,7 @@
 name: "[Release] publish suite-desktop and suite-web production"
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 on:
   workflow_dispatch:
@@ -36,6 +35,9 @@ on:
 
 jobs:
   sync-canary-suite-desktop:
+    permissions:
+      id-token: write
+      contents: read
     if: ${{ github.event.inputs.publishDesktopProduction == 'true' && github.event.inputs.desktopReleaseChannel == 'canary' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Syncing suite-desktop canary"
     environment: suite-production
@@ -53,6 +55,9 @@ jobs:
           aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/canary/*"
 
   sync-latest-suite-desktop:
+    permissions:
+      id-token: write
+      contents: read
     if: ${{ github.event.inputs.publishDesktopProduction == 'true' && github.event.inputs.desktopReleaseChannel == 'latest' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Syncing suite-desktop latest"
     environment: suite-production
@@ -88,6 +93,9 @@ jobs:
           aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/*"
 
   sync-staging-website:
+    permissions:
+      id-token: write
+      contents: read
     if: ${{ github.event.inputs.publishWebProduction == 'true' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Syncing suite-web staging to production"
     environment: suite-production
@@ -105,6 +113,9 @@ jobs:
           aws cloudfront create-invalidation --distribution-id E4TDVEWU4P4CY --paths "/*"
 
   update-prod-staging-percentage:
+    permissions:
+      id-token: write
+      contents: read
     if: ${{ github.event.inputs.updateStagingPercentage == 'true' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Update staging percentage"
     environment: suite-production
