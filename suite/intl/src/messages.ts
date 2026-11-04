@@ -11618,6 +11618,15 @@ export const messages = defineMessages({
         id: 'TR_STAKING_CARD_TITLE_TRON',
         defaultMessage: 'Earn ~{apr}% APR by staking your {displaySymbol}',
     },
+    TR_STAKING_NO_POOL_TITLE: {
+        id: 'TR_STAKING_NO_POOL_TITLE',
+        defaultMessage: 'Your Cardano is not earning rewards',
+    },
+    TR_STAKING_NO_POOL_TEXT: {
+        id: 'TR_STAKING_NO_POOL_TEXT',
+        defaultMessage:
+            'Your ADA is not delegated to an active staking pool. Update your provider to earn rewards. Your ADA and past rewards remain safe.',
+    },
     TR_STAKING_NEW_PROVIDER_TITLE: {
         id: 'TR_STAKING_NEW_PROVIDER_TITLE',
         defaultMessage: 'Earn ~{apy}% APY with our new provider',

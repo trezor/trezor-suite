@@ -45,6 +45,9 @@ export const getCardanoAccountPoolId = (account?: Account) => {
     return poolId || null;
 };
 
+export const isCardanoRegisteredWithoutPool = (account: Account) =>
+    !!isCardanoStakingActive(account) && !getCardanoAccountPoolId(account);
+
 const DREP_HASH_LENGTH = 28;
 const DREP_CIP129_PAYLOAD_LENGTH = DREP_HASH_LENGTH + 1;
 // https://cips.cardano.org/cip/CIP-0129: DRep key type 0010 joined with credential type 0010 / 0011
@@ -151,7 +154,9 @@ export const getCardanoAccountDrepId = (account?: Account) => {
 };
 
 export const hasCardanoLiveVoteDelegation = (account?: Account) =>
-    !!isCardanoStakingActive(account ?? null) && !!getCardanoAccountDrepId(account);
+    account?.networkType === 'cardano' &&
+    !!account.misc?.staking?.isActive &&
+    !!getCardanoAccountDrepId(account);
 
 export const isCardanoWithdrawalBlockedByMissingDrep = (account?: Account) => {
     if (account?.networkType !== 'cardano') return false;
@@ -196,7 +201,7 @@ export const isCardanoStakedOutsideEverstake = (
     account: Account,
     cardanoStakingPools: AdaPools['pools'],
 ) => {
-    if (!getCardanoAccountPoolId(account)) return false;
+    if (!getCardanoAccountPoolId(account)) return isCardanoRegisteredWithoutPool(account);
 
     return !isCardanoStakedWithEverstake(account, cardanoStakingPools);
 };

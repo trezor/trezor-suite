@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
+import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Text, Tooltip } from '@trezor/components';
 
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
@@ -19,7 +20,7 @@ interface EarnStakingRateTooltipProps {
 }
 
 export const EarnStakingRateTooltip = ({ networkType, rate }: EarnStakingRateTooltipProps) => {
-    if (!rate) {
+    if (rate !== 0 && !isApyAvailable(rate)) {
         return (
             <Text typographyStyle="body-sm">
                 <Translation id="TR_EARN_NOT_AVAILABLE" />
