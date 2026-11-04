@@ -20,7 +20,6 @@ import { Icon, TokenIcon } from '@suite-native/icons';
 import { type NativeAccountsRootState, selectAccountHasAnyKnownTokens } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 import { AccountLabel } from '../AccountLabel';
-import { AccountListTokenBadge } from './AccountListTokenBadge';
 import { AccountsListItemBase } from './AccountsListItemBase';
 
 type AccountAssetListItemProps = {
@@ -88,7 +87,6 @@ export const AccountAssetListItem = ({
                     <Badge label={formattedAccountType} size="small" />
                 ) : undefined
             }
-            badges={hasAnyKnownTokens && <AccountListTokenBadge accountKey={account.key} />}
             mainValue={
                 isFailed ? <Icon name="warning" color="contentWarning" size="medium" /> : fiatValue
             }
