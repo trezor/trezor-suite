@@ -7,8 +7,8 @@ import { type CustomFeeLevelBuilder } from '../../hooks/fees/useCustomFee';
 import { type UseFeeSelectorParams, useFeeSelector } from '../../hooks/fees/useFeeSelector';
 
 export type FeeSelectorProps = UseFeeSelectorParams & {
-    isLoading?: boolean;
     getCustomFeeLevel?: CustomFeeLevelBuilder;
+    isLoading?: boolean;
 };
 
 export const FeeSelector = (props: FeeSelectorProps) => {
@@ -72,7 +72,7 @@ export const FeeSelector = (props: FeeSelectorProps) => {
                 networkType={networkType}
                 tokenContract={tokenContract}
                 areFeesLoading={areFeesLoading}
-                isSubmittable={isSubmittable}
+                isSubmittable={isSubmittable && !areFeesLoading}
                 formDraft={formDraft}
                 getCustomFeeLevel={props.getCustomFeeLevel}
                 snapshotRef={snapshotRef}
