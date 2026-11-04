@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -36,7 +37,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const [customHomescreen, setCustomHomescreen] = useState('');
     const [validationError, setValidationError] = useState<ImageValidationError | undefined>();
 
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const fileInputElement = useRef<HTMLInputElement>(null);
 
@@ -79,7 +80,13 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const onChangeHomescreen = async () => {
         const hex = await imagePathToHex(customHomescreen, deviceModelInternal);
 
-        await dispatch(applySettingsThunk({ homescreen: hex }));
+        const result = await dispatch(applySettingsThunk({ homescreen: hex }));
+        if (result?.success) {
+            analytics.report({
+                type: events.deviceChangeHomescreenEvent.name,
+                payload: { source: 'custom' },
+            });
+        }
         resetUpload();
     };
 

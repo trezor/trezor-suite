@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Grid } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -49,7 +50,7 @@ type HomescreenGalleryProps = {
 };
 
 export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device, isLocked } = useDevice();
 
     const deviceModelInternal = device?.features?.internal_model;
@@ -63,6 +64,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
         const isOriginalImage =
             getDefaultHomeScreenImage({ deviceModelInternal, isBitcoinOnlyFirmware }) === image;
 
+        let homescreenSettings: Parameters<typeof applySettingsThunk>[0];
         if (isOriginalImage) {
             // Reset homescreen to factory default. Firmware >= 2.9.0 expects
             // homescreen_length: 0; older firmware (e.g. Trezor One 1.x) does
@@ -72,17 +74,24 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
             const supportsHomescreenLength =
                 fwVersion !== null && versionUtils.isNewerOrEqual(fwVersion, '2.9.0');
 
-            dispatch(
-                applySettingsThunk(
-                    supportsHomescreenLength ? { homescreen_length: 0 } : { homescreen: '' },
-                ),
-            );
+            homescreenSettings = supportsHomescreenLength
+                ? { homescreen_length: 0 }
+                : { homescreen: '' };
         } else {
             const hex = await imagePathToHex(imagePath, deviceModelInternal);
-            dispatch(applySettingsThunk({ homescreen: hex }));
+            homescreenSettings = { homescreen: hex };
         }
 
+        const applySettingsPromise = dispatch(applySettingsThunk(homescreenSettings));
         onConfirm?.();
+
+        const result = await applySettingsPromise;
+        if (result?.success) {
+            analytics.report({
+                type: events.deviceChangeHomescreenEvent.name,
+                payload: { source: 'gallery', image },
+            });
+        }
     };
 
     const homescreens = getHomescreens(isBitcoinOnlyFirmware); // Get the homescreens based on the firmware type
