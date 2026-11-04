@@ -41,7 +41,7 @@ export type FlagsState = {
     addAccountNetworksBannerClosed: boolean;
     stakeEthBannerClosed: boolean;
     earnEthBannerClosed: boolean;
-    earnTokenYieldBannerClosed: boolean;
+    closedTokenYieldBanners: Partial<Record<string, true>>;
     stakeSolBannerClosed: boolean;
     stakeCardanoBannerClosed: boolean;
     stakeTronBannerClosed: boolean;
@@ -94,7 +94,7 @@ export const flagsInitialState: FlagsState = {
     addAccountNetworksBannerClosed: false,
     stakeEthBannerClosed: false,
     earnEthBannerClosed: false,
-    earnTokenYieldBannerClosed: false,
+    closedTokenYieldBanners: {},
     stakeSolBannerClosed: false,
     stakeCardanoBannerClosed: false,
     stakeTronBannerClosed: false,
@@ -125,6 +125,9 @@ const flagsSlice = createSliceWithExtraDeps({
             { payload }: PayloadAction<{ key: BooleanFlagKey; value: boolean }>,
         ) => {
             state[payload.key] = payload.value;
+        },
+        closeTokenYieldBanner: (state: FlagsState, { payload }: PayloadAction<string>) => {
+            state.closedTokenYieldBanners[payload] = true;
         },
         setAssetPriceChartRange: (
             state: FlagsState,
@@ -162,6 +165,7 @@ const flagsSlice = createSliceWithExtraDeps({
 });
 
 export const {
+    closeTokenYieldBanner,
     markNewContentIndicatorAsSeen,
     setAssetPriceChartRange,
     setFlag,
@@ -171,6 +175,8 @@ export const flagsActions = flagsSlice.actions;
 export const prepareFlagsReducer = flagsSlice.prepareReducer;
 
 export const selectFlags = (state: FlagsRootState) => state.flags;
+export const selectIsTokenYieldBannerClosed = (state: FlagsRootState, bannerKey: string) =>
+    state.flags.closedTokenYieldBanners[bannerKey] === true;
 export const selectAssetPriceChartRange = (state: FlagsRootState) =>
     state.flags.assetPriceChartRange;
 export const selectIsTEXDashboardPromoBannerShown = (state: FlagsRootState) =>

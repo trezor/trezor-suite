@@ -1,4 +1,4 @@
-import { selectFlags, setFlag } from '@suite/flags';
+import { closeTokenYieldBanner, selectIsTokenYieldBannerClosed } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
@@ -31,13 +31,14 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
     const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
     const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
-    const { earnTokenYieldBannerClosed } = useSelector(selectFlags);
+    const bannerKey = `${symbol}-${contractAddress?.toLowerCase()}`;
+    const isBannerClosed = useSelector(state => selectIsTokenYieldBannerClosed(state, bannerKey));
     const apy = useYieldVaultApy({ symbol, contractAddress, tokenSymbol, tokenDecimals });
 
     if (
         contractAddress === undefined ||
         displaySymbol === undefined ||
-        earnTokenYieldBannerClosed ||
+        isBannerClosed ||
         apy === null ||
         !isApyAvailable(apy)
     ) {
@@ -45,7 +46,7 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
     }
 
     const goToEarn = () => dispatch(gotoThunk({ routeName: 'suite-earn' }));
-    const close = () => dispatch(setFlag({ key: 'earnTokenYieldBannerClosed', value: true }));
+    const close = () => dispatch(closeTokenYieldBanner(bannerKey));
 
     return (
         <Banner

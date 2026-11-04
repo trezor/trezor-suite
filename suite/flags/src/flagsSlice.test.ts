@@ -6,12 +6,14 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { NewContentIndicatorId } from './flagsConstants';
 import {
+    closeTokenYieldBanner,
     flagsInitialState,
     markNewContentIndicatorAsSeen,
     prepareFlagsReducer,
     selectAssetPriceChartRange,
     selectFlags,
     selectIsNewContentIndicatorVisible,
+    selectIsTokenYieldBannerClosed,
     setAssetPriceChartRange,
     setFlag,
     setNewContentIndicatorSeen,
@@ -56,6 +58,15 @@ describe('flagsSlice', () => {
         expect(state.taprootBannerClosed).toBe(true);
         expect(state.initialRun).toBe(flagsInitialState.initialRun);
         expect(state.dashboardAssetsGridMode).toBe(flagsInitialState.dashboardAssetsGridMode);
+    });
+
+    it('remembers a closed token yield banner for that token only', () => {
+        const store = initStore();
+
+        store.dispatch(closeTokenYieldBanner('eth-0xusdc'));
+
+        expect(selectIsTokenYieldBannerClosed(store.getState(), 'eth-0xusdc')).toBe(true);
+        expect(selectIsTokenYieldBannerClosed(store.getState(), 'eth-0xusdt')).toBe(false);
     });
 
     it('remembers the range picked for the asset price chart', () => {
