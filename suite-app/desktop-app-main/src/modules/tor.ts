@@ -265,7 +265,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter, logger }: Depen
             // correctly set in module trezor-connect-ipc.
             const proxySettings = getProxySettings(shouldEnableTor);
 
-            // Proxy is also set in suite/desktop-app-main/src/modules/trezor-connect.ts
+            // Proxy is also set in suite-app/desktop-app-main/src/modules/trezor-connect.ts
             await TrezorConnect.updateConnectSettings({ proxy: proxySettings });
 
             logger.info(

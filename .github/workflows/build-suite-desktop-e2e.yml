@@ -36,7 +36,7 @@ jobs:
           config-file: .github/pmg-config.yml
       - name: Install dependencies
         shell: bash
-        run: yarn workspaces focus @suite/desktop-app @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system @suite/desktop-app-renderer
+        run: yarn workspaces focus @suite-app/desktop-app @suite-app/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system @suite-app/desktop-app-renderer
 
       - name: Build libs
         shell: bash
@@ -50,12 +50,12 @@ jobs:
         env:
           TEST_BUILD: "true"
         run: |
-          yarn workspace @suite/desktop-app build:app
-          yarn workspace @suite/desktop-app build:ui
+          yarn workspace @suite-app/desktop-app build:app
+          yarn workspace @suite-app/desktop-app build:ui
 
       - name: Compress build artifacts
         shell: bash
-        run: tar -czf app-build.tar.gz -C ${{ github.workspace }}/suite/desktop-app build dist
+        run: tar -czf app-build.tar.gz -C ${{ github.workspace }}/suite-app/desktop-app build dist
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

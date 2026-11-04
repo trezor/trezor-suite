@@ -201,7 +201,7 @@ jobs:
 
       - name: Install dependencies
         # Union of test deps and web and desktop build toolchains
-        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @suite-app/web-app @suite/desktop-app @suite/desktop-app-main @suite/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @suite-app/web-app @suite-app/desktop-app @suite-app/desktop-app-main @suite-app/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
@@ -231,7 +231,7 @@ jobs:
           path: artifact-download
 
       - name: Extract desktop artifact
-        run: tar -xzf artifact-download/app-build.tar.gz -C suite/desktop-app
+        run: tar -xzf artifact-download/app-build.tar.gz -C suite-app/desktop-app
 
       - name: Download web artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8

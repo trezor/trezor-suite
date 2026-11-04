@@ -41,19 +41,19 @@
             "path": "../../suite-common/wallet-utils"
         },
         {
-            "path": "../desktop-app-api"
+            "path": "../../suite/desktop-app-api"
         },
         {
-            "path": "../desktop-app-api-electron"
+            "path": "../../suite/desktop-app-api-electron"
         },
         {
-            "path": "../desktop-app-native-bindings"
+            "path": "../../suite/desktop-app-native-bindings"
         },
         {
-            "path": "../sentry"
+            "path": "../../suite/sentry"
         },
         {
-            "path": "../tor-types"
+            "path": "../../suite/tor-types"
         },
         {
             "path": "../../packages/coinjoin"

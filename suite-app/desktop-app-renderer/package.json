@@ -1,5 +1,5 @@
 {
-    "name": "@suite/desktop-app-renderer",
+    "name": "@suite-app/desktop-app-renderer",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

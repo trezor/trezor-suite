@@ -7,7 +7,7 @@ and four separate runtimes (each has its own SDK initialization):
 
 - project `trezor-suite`, with common config in `@suite/sentry`
     - browser runtime (Suite Web, in `@suite-app/web-app`)
-    - electron-renderer runtime (Suite Desktop, in `@suite/desktop-app-renderer`)
-    - electron-main runtime (Suite Desktop, in `@suite/desktop-app-main`)
+    - electron-renderer runtime (Suite Desktop, in `@suite-app/desktop-app-renderer`)
+    - electron-main runtime (Suite Desktop, in `@suite-app/desktop-app-main`)
 - project `suite-native`
     - react-native runtime (Suite Mobile, in `@suite-native/sentry`)

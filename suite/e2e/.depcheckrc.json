@@ -5,7 +5,6 @@
         "@playwright/browser-chromium",
         "@playwright/browser-firefox",
         "@playwright/browser-webkit",
-        "@suite/desktop-app",
         "@currents/cmd"
     ]
 }

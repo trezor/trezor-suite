@@ -69,7 +69,7 @@ const stakingProductsPattern = {
 };
 
 /*
- Currently only relevant in @suite/desktop-app-main, but if the ipcMain import is to be used elsewhere,
+ Currently only relevant in @suite-app/desktop-app-main, but if the ipcMain import is to be used elsewhere,
  the wrapper shall be extracted and this should still be a global rule.
 */
 const electronIpcMainRestrictedImport = {

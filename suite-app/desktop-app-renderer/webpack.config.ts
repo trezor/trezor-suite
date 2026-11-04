@@ -21,7 +21,7 @@ const repoRoot = path.join(rendererDir, '..', '..');
 /** The renderer bundle is emitted into the desktop application, which packages it. */
 const baseDir = path.join(rendererDir, '..', 'desktop-app');
 const buildDir = path.join(baseDir, 'build');
-const appAssets = path.join(rendererDir, '..', 'app-assets', 'files');
+const appAssets = path.join(repoRoot, 'suite', 'app-assets', 'files');
 
 const DEV_PORT = 8000;
 

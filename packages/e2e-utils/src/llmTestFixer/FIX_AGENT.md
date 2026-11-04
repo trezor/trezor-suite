@@ -59,13 +59,13 @@ nohup yarn workspace @suite-app/web-app preview > /tmp/web-preview.log 2>&1 &
 curl -sf --retry 30 --retry-delay 2 --retry-connrefused --max-time 5 http://localhost:8000 -o /dev/null
 ```
 
-**Desktop build:** `suite/desktop-app/dist` and `suite/desktop-app/build` are present.
+**Desktop build:** `suite-app/desktop-app/dist` and `suite-app/desktop-app/build` are present.
 If an iteration changed a product source file (e.g. you added a `data-testid`), remove them and
 rebuild before running desktop tests. A test-only change needs no rebuild.
 
 ```bash
-TEST_BUILD=true yarn workspace @suite/desktop-app build:ui
-yarn workspace @suite/desktop-app build:app
+TEST_BUILD=true yarn workspace @suite-app/desktop-app build:ui
+yarn workspace @suite-app/desktop-app build:app
 ```
 
 ---

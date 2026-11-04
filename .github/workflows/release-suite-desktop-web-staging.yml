@@ -70,7 +70,7 @@ jobs:
       - name: Install deps and build libs
         run: |
           # Must be the same list of workspaces as in .github/workflows/build-desktop-apps.yml
-          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite-app/desktop-app @suite-app/desktop-app-renderer @suite-app/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -78,9 +78,9 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          yarn workspace @suite/desktop-app build:${{ matrix.platform }}
-          bash suite/desktop-app-main/scripts/gnupg-sign.sh
-          mv suite/desktop-app/build-electron/* .
+          yarn workspace @suite-app/desktop-app build:${{ matrix.platform }}
+          bash suite-app/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite-app/desktop-app/build-electron/* .
       - name: Upload suite-desktop production artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
@@ -253,7 +253,7 @@ jobs:
       - name: Install deps and build libs
         run: |
           # Must be the same list of workspaces as in .github/workflows/build-desktop-apps.yml
-          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite-app/desktop-app @suite-app/desktop-app-renderer @suite-app/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -271,10 +271,10 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           mv version0.json packages/suite/package.json
-          yarn workspace @suite/desktop-app build:${{ matrix.platform }}
-          bash suite/desktop-app-main/scripts/gnupg-sign.sh
-          mv suite/desktop-app/build-electron/Trezor-Suite* .
-          mv suite/desktop-app/build-electron/latest*.yml .
+          yarn workspace @suite-app/desktop-app build:${{ matrix.platform }}
+          bash suite-app/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite-app/desktop-app/build-electron/Trezor-Suite* .
+          mv suite-app/desktop-app/build-electron/latest*.yml .
 
       - name: Upload suite-desktop autoupdate version 0.xx.x artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -295,10 +295,10 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           mv version3.json packages/suite/package.json
-          yarn workspace @suite/desktop-app build:${{ matrix.platform }}
-          bash suite/desktop-app-main/scripts/gnupg-sign.sh
-          mv suite/desktop-app/build-electron/Trezor-Suite* .
-          mv suite/desktop-app/build-electron/latest*.yml .
+          yarn workspace @suite-app/desktop-app build:${{ matrix.platform }}
+          bash suite-app/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite-app/desktop-app/build-electron/Trezor-Suite* .
+          mv suite-app/desktop-app/build-electron/latest*.yml .
 
       - name: Upload suite-desktop autoupdate version 3x.x.x artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

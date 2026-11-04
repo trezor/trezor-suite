@@ -72,7 +72,7 @@ jobs:
             jq '{
               model: "typesafe/jev-1.13",
               state: {
-                tester: "The LLM exploratory tester black-box tests the PR on the Suite web preview. It cannot open the desktop or mobile app. suite-native/ is mobile. suite/desktop-app, desktop-app-main, desktop-app-renderer, and desktop-app-native-bindings are the desktop shell. packages/suite and suite-app/web-app are the web UI. A run takes hours.",
+                tester: "The LLM exploratory tester black-box tests the PR on the Suite web preview. It cannot open the desktop or mobile app. suite-native/ is mobile. suite-app/desktop-app, suite-app/desktop-app-main, suite-app/desktop-app-renderer, and suite/desktop-app-native-bindings are the desktop shell. packages/suite and suite-app/web-app are the web UI. A run takes hours.",
                 pr: .
               },
               questions: { pick: {
@@ -141,7 +141,7 @@ jobs:
         uses: ./.github/actions/restore-yarn-cache
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils @trezor/suite-e2e
+        run: yarn workspaces focus @trezor/e2e-utils @trezor/suite-e2e @suite-app/desktop-app
 
       - name: Build Message System Config
         run: yarn message-system-sign-config

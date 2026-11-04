@@ -59,7 +59,7 @@ export const createDesktopMainApp =
 
         initSentry({ store, mainThreadEmitter });
 
-        app.name = APP_NAME; // overrides @suite/desktop-app app name in menu
+        app.name = APP_NAME; // overrides @suite-app/desktop-app app name in menu
 
         // App is launched via custom protocol (macOS)
         // It is called always when custom protocol is invoked but it only works when app is launching
