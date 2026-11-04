@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import {
     type TradingRootState,
     selectTradingBuyExtraField,
-    selectTradingBuyInfo,
+    selectTradingBuyProviders,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
     selectTradingProviderCompanyName,
@@ -27,7 +27,7 @@ export const TradingOfferBuy = ({
 }: TradingOfferBuyProps) => {
     const { handleClick, disabled } = useAsyncClickHandler();
 
-    const buyInfo = useSelector(selectTradingBuyInfo);
+    const providers = useSelector(selectTradingBuyProviders);
     const receiveAddress = useSelector(selectTradingBuyReceiveAddress);
     const receiveExtraField = useSelector(selectTradingBuyExtraField);
     const receiveAccountKey = useSelector(selectTradingBuyReceiveAccountKey);
@@ -65,7 +65,7 @@ export const TradingOfferBuy = ({
                     <TradingSelectedOfferInfo
                         type="buy"
                         selectedQuote={selectedQuote}
-                        providers={buyInfo?.providerInfos}
+                        providers={providers}
                         quoteAmounts={quoteAmounts}
                         paymentMethod={selectedQuote.paymentMethod}
                         paymentMethodName={selectedQuote.paymentMethodName}

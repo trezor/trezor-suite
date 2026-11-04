@@ -9,8 +9,8 @@ import {
     selectTradingProviderCompanyName,
     selectTradingSellActiveTrade,
     selectTradingSellFormStep,
-    selectTradingSellInfo,
     selectTradingSellIsLoading,
+    selectTradingSellProviders,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
     sellUtils,
@@ -51,7 +51,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const formStep = useSelector(selectTradingSellFormStep);
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const trade = useSelector(selectTradingSellActiveTrade);
-    const sellInfo = useSelector(selectTradingSellInfo);
+    const providers = useSelector(selectTradingSellProviders);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
     const isLoading = useSelector(selectTradingSellIsLoading);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -163,7 +163,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                     <TradingSelectedOfferInfo
                         type="sell"
                         selectedQuote={selectedTrade}
-                        providers={sellInfo?.providerInfos}
+                        providers={providers}
                         quoteAmounts={quoteAmounts}
                         paymentMethod={selectedTrade.paymentMethod}
                         paymentMethodName={selectedTrade.paymentMethodName}

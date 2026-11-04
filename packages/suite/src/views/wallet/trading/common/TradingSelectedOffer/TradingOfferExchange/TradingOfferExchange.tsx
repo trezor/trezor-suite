@@ -16,8 +16,8 @@ import {
     selectTradingComposedTransactionInfo,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeFormStep,
-    selectTradingExchangeInfo,
     selectTradingExchangeIsLoading,
+    selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeSelectedQuoteTimestamp,
@@ -50,7 +50,7 @@ export const TradingOfferExchange = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const formStep = useSelector(selectTradingExchangeFormStep);
-    const exchangeInfo = useSelector(selectTradingExchangeInfo);
+    const providers = useSelector(selectTradingExchangeProviders);
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const receiveAccount = useSelector(
         (state: AccountsRootState) => selectAccountByKey(state, receiveAccountKey) ?? undefined,
@@ -111,7 +111,6 @@ export const TradingOfferExchange = () => {
         return null;
     }
 
-    const providers = exchangeInfo?.providerInfos;
     const amountLabels = tradingGetAmountLabels({ type: 'exchange', amountInCrypto: false });
     const { exchange, signData } = selectedTrade;
     const isSignData = formStep === 'SIGN_DATA' && !!signData;
