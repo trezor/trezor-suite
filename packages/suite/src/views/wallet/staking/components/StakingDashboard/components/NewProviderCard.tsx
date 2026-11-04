@@ -2,7 +2,11 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { isCardanoStakedWithFiveBinaries, selectPoolStatsApy } from '@suite-common/wallet-core';
+import {
+    isCardanoRegisteredWithoutPool,
+    isCardanoStakedWithFiveBinaries,
+    selectPoolStatsApy,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Link, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -27,6 +31,16 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 
     const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
+    const hasNoPool = isCardanoRegisteredWithoutPool(account);
+
+    const providerTitleId = isStakedWithFiveBinaries
+        ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE'
+        : 'TR_STAKING_NEW_PROVIDER_TITLE';
+    const providerDescriptionId = isStakedWithFiveBinaries
+        ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
+        : 'TR_STAKING_NEW_PROVIDER_TEXT';
+    const titleId = hasNoPool ? 'TR_STAKING_NO_POOL_TITLE' : providerTitleId;
+    const descriptionId = hasNoPool ? 'TR_STAKING_NO_POOL_TEXT' : providerDescriptionId;
 
     const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
 
@@ -50,25 +64,14 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
             intent={isStakedWithFiveBinaries ? 'warning' : 'info'}
             title={
                 <span data-testid="@staking/new-provider-card/header">
-                    <Translation
-                        id={
-                            isStakedWithFiveBinaries
-                                ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE'
-                                : 'TR_STAKING_NEW_PROVIDER_TITLE'
-                        }
-                        values={{ apy: formatApyValue(apy) }}
-                    />
+                    <Translation id={titleId} values={{ apy: formatApyValue(apy) }} />
                 </span>
             }
             description={
                 <span>
                     <span data-testid="@staking/new-provider-card/paragraph">
                         <Translation
-                            id={
-                                isStakedWithFiveBinaries
-                                    ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
-                                    : 'TR_STAKING_NEW_PROVIDER_TEXT'
-                            }
+                            id={descriptionId}
                             values={{ apy: formatApyValue(apy), displaySymbol }}
                         />
                     </span>

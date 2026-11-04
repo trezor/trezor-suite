@@ -2,6 +2,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
+import { selectHasStakingAccountWarning } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -57,6 +58,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
+    const hasNoPool = useSelector(state =>
+        selectHasStakingAccountWarning(state, account.key, 'no-stake-pool'),
+    );
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const isClaimPending = useSelector(state =>
         selectAccountClaimTransactions(state, account.key).some(tx => isPending(tx)),
@@ -282,8 +286,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     };
 
     const apyAvailable =
-        stakingStatus !== 'staking-outdated-provider' &&
-        stakingStatus !== 'staking-remaining-votes';
+        hasNoPool ||
+        (stakingStatus !== 'staking-outdated-provider' &&
+            stakingStatus !== 'staking-remaining-votes');
 
     const actionButtonsProps = {
         stakingStatus,
@@ -322,7 +327,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     {stakingStatus === 'insufficient-funds' && minStakeParagraph}
 
                     {stakingStatus === 'staking-outdated-provider' && (
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        <EarnStakingOutdatedProvider apy={newProviderApy} account={account} />
                     )}
 
                     {stakingStatus === 'staking-remaining-votes' && (
@@ -482,7 +487,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             {stakingStatus === 'staking-outdated-provider' && (
                 <>
                     <Table.Cell colSpan={2}>
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        <EarnStakingOutdatedProvider apy={newProviderApy} account={account} />
                     </Table.Cell>
                     <Table.Cell align="end">
                         <EarnStakingActionButtons {...actionButtonsProps} />

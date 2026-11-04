@@ -12,6 +12,7 @@ import {
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
+    isCardanoStakingActive,
     isCardanoWithdrawalBlockedByMissingDrep,
     normalizeCardanoDrepId,
     poolBech32ToHex,
@@ -58,6 +59,12 @@ describe('cardano staking utils', () => {
     fixtures.isCardanoStakedWithFiveBinaries.forEach(f => {
         it(`isCardanoStakedWithFiveBinaries: ${f.description}`, () => {
             expect(isCardanoStakedWithFiveBinaries(f.account as Account)).toBe(f.result);
+        });
+    });
+
+    fixtures.isCardanoStakingActive.forEach(f => {
+        it(`isCardanoStakingActive: ${f.description}`, () => {
+            expect(isCardanoStakingActive(f.account as Account)).toBe(f.result);
         });
     });
 

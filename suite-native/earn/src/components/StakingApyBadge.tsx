@@ -1,4 +1,10 @@
-import { useNetworkStakingRate } from '@suite-common/earn-staking';
+import { useSelector } from 'react-redux';
+
+import {
+    type StakingRootState,
+    selectIsStakingAccountWithoutPool,
+    useNetworkStakingRate,
+} from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -18,6 +24,21 @@ export const StakingApyBadge = ({ account }: StakingApyBadgeProps) => {
         accountKey: account.key,
     });
     const formattedRate = useFormattedEarnRate(rate);
+    const hasNoPool = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountWithoutPool(state, account.key),
+    );
+
+    if (hasNoPool) {
+        return (
+            <Text
+                variant="body-sm"
+                color="contentSecondary"
+                testID="@accountList/item/yieldRateBadge"
+            >
+                <Translation id="earn.yieldRateBadge.apy" values={{ value: 0 }} />
+            </Text>
+        );
+    }
 
     // A product without a rate, a testnet, says so once its info is cached.
     if (isPending || rateKind === null) return null;

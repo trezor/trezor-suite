@@ -24,6 +24,7 @@ export const STAKING_POSITION_LOCKUPS = ['locked', 'liquid'] as const;
 export const stakingPositionWarningSchema = z.discriminatedUnion('code', [
     z.strictObject({ code: z.literal('outdated-provider'), providerId: stakingProviderIdSchema }),
     z.strictObject({ code: z.literal('missing-drep') }),
+    z.strictObject({ code: z.literal('no-stake-pool') }),
 ]);
 
 export type StakingPositionWarning = z.infer<typeof stakingPositionWarningSchema>;

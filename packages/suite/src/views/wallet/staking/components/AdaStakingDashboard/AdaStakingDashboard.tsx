@@ -4,13 +4,16 @@ import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     fetchAllTransactionsForAccountThunk,
     hasPendingStakeTypeTransaction,
+    isCardanoRegisteredWithoutPool,
     isCardanoStakedWithEverstake,
     selectAccountIsStakingActive,
+    selectAccountStakeTransactions,
     selectCardanoPoolsInfo,
     selectHasRunningDiscovery,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { isPending } from '@suite-common/wallet-utils';
 import { Column, Flex } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -51,13 +54,25 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
         }
     }, [accountKey, dispatch]);
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
+    const hasPendingDelegation = useSelector(state =>
+        selectAccountStakeTransactions(state, account.key).some(isPending),
+    );
+    const apy = useSelector(state =>
+        selectPoolStatsApy(
+            state,
+            hasPendingDelegation ? { networkSymbol: account.symbol } : { account },
+        ),
+    );
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-    const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const isStakedWithEverstake =
-        isCardanoStakedWithEverstake(account, cardanoStakingPools) || hasPendingTx;
+        isCardanoStakedWithEverstake(account, cardanoStakingPools) || hasPendingDelegation;
+
+    const accountApy = isStakedWithEverstake ? apy : undefined;
+    const displayedApy =
+        isCardanoRegisteredWithoutPool(account) && !hasPendingDelegation ? 0 : accountApy;
 
     const shouldShowStakingDashboard = isStakingActive || hasPendingTx;
 
@@ -74,7 +89,7 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                                 <CardanoNewProviderCard account={account} />
 
                                 <Flex gap={12}>
-                                    <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
+                                    <ApyCard apy={displayedApy} showZero />
                                     <PayoutCardFrequencyRewards
                                         rewardFrequency={CARDANO_EPOCH_DAYS}
                                     />
