@@ -6,7 +6,7 @@ const originalReducedMotion = new Map<string, boolean | undefined>();
 
 const runSimulatorDefaults = (simulatorId: string, args: string[]) =>
     execFileSync('xcrun', ['simctl', 'spawn', simulatorId, 'defaults', ...args], {
-        timeout: 10_000,
+        timeout: 15_000,
         stdio: ['ignore', 'pipe', 'pipe'],
     });
 
