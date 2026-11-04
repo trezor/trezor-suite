@@ -13331,6 +13331,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/earn": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -13747,6 +13748,26 @@ __metadata:
     "@trezor/redux-utils": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.3.0"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/earn@workspace:*, @suite-native/earn@workspace:suite-native/earn":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/earn@workspace:suite-native/earn"
+  dependencies:
+    "@suite-common/earn-stablecoin": "workspace:*"
+    "@suite-common/earn-stablecoin-api": "workspace:*"
+    "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/intl": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
@@ -14173,6 +14194,7 @@ __metadata:
     "@suite-native/banners": "workspace:*"
     "@suite-native/bip329": "workspace:*"
     "@suite-native/device": "workspace:*"
+    "@suite-native/earn": "workspace:*"
     "@suite-native/feature-feedback": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
@@ -14748,6 +14770,7 @@ __metadata:
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
+    "@suite-native/earn": "workspace:*"
     "@suite-native/feedback-form": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"

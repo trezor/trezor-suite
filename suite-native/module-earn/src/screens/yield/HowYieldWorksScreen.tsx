@@ -9,12 +9,12 @@ import {
     getYieldVaultContractAddress,
     selectIsEarnOnboardingConfirmed,
 } from '@suite-common/wallet-core';
+import { useMessageSystemYield } from '@suite-native/earn';
 import { type YieldStackParamList, type YieldStackRoutes } from '@suite-native/navigation';
 
 import { HowYieldWorksScreenContent } from './HowYieldWorksScreenContent';
 import { StartYieldDepositScreen } from './StartYieldDepositScreen';
 import { EarnLoadingScreen } from '../../components/earn/EarnLoadingScreen';
-import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
 export const HowYieldWorksScreen = () => {

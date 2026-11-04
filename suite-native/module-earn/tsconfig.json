@@ -63,6 +63,7 @@
         { "path": "../device-authorization" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
+        { "path": "../earn" },
         { "path": "../feedback-form" },
         { "path": "../formatters" },
         { "path": "../forms" },

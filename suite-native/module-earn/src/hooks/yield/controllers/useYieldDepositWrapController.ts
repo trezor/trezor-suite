@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { useMessageSystemYield } from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -19,7 +20,6 @@ import {
 } from '@suite-native/navigation';
 
 import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappedNative';
-import { useMessageSystemYield } from '../useMessageSystemYield';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';

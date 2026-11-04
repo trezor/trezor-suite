@@ -188,6 +188,7 @@
 !/suite-native/device-mutex
 !/suite-native/device-onboarding
 !/suite-native/discovery
+!/suite-native/earn
 !/suite-native/experimental-features
 !/suite-native/feature-feedback
 !/suite-native/feature-flags

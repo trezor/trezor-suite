@@ -3,12 +3,8 @@ import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
-import {
-    getBestPromotedRate,
-    isEarnPromoSymbol,
-    useStakingRate,
-    useYieldBadge,
-} from '@suite-native/module-earn';
+import { getBestPromotedRate, isEarnPromoSymbol, useStakingRate } from '@suite-native/earn';
+import { useYieldBadge } from '@suite-native/module-earn';
 
 interface UseYourPositionCardYieldBadgeProps {
     account?: Account | null;

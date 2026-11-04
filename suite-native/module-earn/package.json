@@ -47,6 +47,7 @@
         "@suite-native/device-authorization": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/device-mutex": "workspace:*",
+        "@suite-native/earn": "workspace:*",
         "@suite-native/feedback-form": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/forms": "workspace:*",

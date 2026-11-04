@@ -13,6 +13,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Box, Button, Discreet, HStack, Text, VStack } from '@suite-native/atoms';
+import { useMessageSystemStaking } from '@suite-native/earn';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -23,7 +24,6 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 import { useEarnPortfolioTrackerGuard } from '../earn/EarnPortfolioTrackerGuard';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;

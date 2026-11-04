@@ -18,6 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
+import { useMessageSystemStaking } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -34,7 +35,6 @@ import { HowEarnWorksHeaderSection } from '../../components/earn/HowEarnWorks/Ho
 import { HowEarnWorksTimelineCard } from '../../components/earn/HowEarnWorks/HowEarnWorksTimelineCard';
 import { useHowStakeWorksPreset } from '../../components/earn/HowEarnWorks/stakePresets';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
-import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 
 export const HowStakeWorksScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.HowStakeWorksScreen>>();

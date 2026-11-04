@@ -37,6 +37,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { useMessageSystemStaking } from '@suite-native/earn';
 import {
     CompactCryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -53,7 +54,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { CardanoAutoStakedModal } from './CardanoAutoStakedModal';
-import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 import { useStakingTotalRewards } from '../../hooks/staking/useStakingTotalRewards';
 import { getMobileStakingSupport } from '../../utils/staking/mobileStakingSupport';
 import { ApyValue } from '../earn/ApyValue';
