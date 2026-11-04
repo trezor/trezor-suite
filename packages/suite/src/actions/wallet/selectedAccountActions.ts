@@ -16,11 +16,11 @@ import {
     type WalletSettingsRootState,
     accountsActions,
     blockchainActions,
-    discoveryActions,
     feesActions,
     selectDeviceAccounts,
     selectDiscoveryForSelectedDevice,
     selectEnabledNetworks,
+    updateDiscoveryMatcher,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
@@ -191,7 +191,7 @@ const actions = new Set<UnknownAction['type']>([
     blockchainActions.setBackend.type,
     blockchainActions.synced.type,
     blockchainActions.connected.type,
-    discoveryActions.updateDiscovery.type,
+    updateDiscoveryMatcher.type,
     feesActions.updateMultipleFees.type,
 ]);
 

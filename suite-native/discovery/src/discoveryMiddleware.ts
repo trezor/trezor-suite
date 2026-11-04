@@ -9,12 +9,12 @@ import {
     changeCoinVisibilityThunk,
     changeNetworks,
     deleteDiscoveryThunk,
-    discoveryActions,
     selectDiscoveryForSelectedDevice,
     selectIsAnyNetworkEnabled,
     selectIsBitcoinEnabled,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
+    updateDiscoveryMatcher,
 } from '@suite-common/wallet-core';
 import {
     type NativeDeviceRootState,
@@ -62,7 +62,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     if (failedCheck !== null) return action;
 
     // Clear pending coins on discovery success, revert on passphrase failure
-    if (discoveryActions.updateDiscovery.match(action)) {
+    if (updateDiscoveryMatcher.match(action)) {
         const discoveryStatus = action.payload?.status;
 
         if (discoveryStatus?.status === 'complete') {

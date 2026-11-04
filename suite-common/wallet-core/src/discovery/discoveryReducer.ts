@@ -3,12 +3,7 @@ import { type DeviceUniquePath } from '@trezor/connect';
 import { createReducerWithExtraDeps } from '@trezor/redux-utils';
 
 import { discoveryActions } from './discoveryActions';
-
-export type DiscoveryRootState = {
-    wallet: {
-        discovery: Discovery;
-    };
-};
+import { deleteDiscoveryMatcher, updateDiscoveryMatcher } from './discoveryStateThunks';
 
 export const discoveryInitialState: Discovery = {};
 
@@ -51,11 +46,11 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
                 startTimestamp: Date.now(),
             };
         });
-        builder.addCase(discoveryActions.updateDiscovery, (state, { payload }) => {
+        builder.addMatcher(updateDiscoveryMatcher.match, (state, { payload }) => {
             update(state, payload);
         });
 
-        builder.addCase(discoveryActions.deleteDiscovery, (state, { payload }) => {
+        builder.addMatcher(deleteDiscoveryMatcher.match, (state, { payload }) => {
             delete state[payload.path];
         });
     },

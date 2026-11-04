@@ -1,7 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { accountsActions, discoveryActions } from '@suite-common/wallet-core';
+import { accountsActions, updateDiscoveryMatcher } from '@suite-common/wallet-core';
 import { type Dispatch } from '@trezor/redux-utils';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
@@ -25,10 +25,7 @@ const graphMiddleware =
             }
         }
 
-        if (
-            discoveryActions.updateDiscovery.match(action) &&
-            action.payload.status.status === 'complete'
-        ) {
+        if (updateDiscoveryMatcher.match(action) && action.payload.status.status === 'complete') {
             api.dispatch(
                 graphActions.updateGraphDataThunk({
                     accounts: currentAccounts,

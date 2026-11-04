@@ -36,8 +36,8 @@ import {
 } from './accounts/accountsSelectors';
 import { type BlockchainRootState, selectGapLimit } from './blockchain/blockchainReducer';
 import { selectEnabledSupportedNetworks } from './device/deviceSelectors';
-import { type DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
+import { type DiscoveryRootState } from './discovery/discoveryTypes';
 import {
     type WalletSettingsRootState,
     selectEnabledNetworks,

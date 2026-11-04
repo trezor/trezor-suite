@@ -19,7 +19,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { createMockDispatch, mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { discoveryActions } from './discoveryActions';
+import { updateDiscoveryMatcher } from './discoveryStateThunks';
 import {
     type EndUnfinishedDiscoveryThunkDeps,
     type EndUnfinishedDiscoveryThunkState,
@@ -216,9 +216,10 @@ describe('runDiscoveryThunk duplicates', () => {
     it('selects the existing wallet when a standard wallet is added twice', async () => {
         const actions = await runDiscovery({ status: 'starting', isAddingHiddenWallet: false });
 
-        expect(actions).toContainEqual(
-            discoveryActions.updateDiscovery({ status: 'complete' }, devicePath),
-        );
+        expect(actions).toContainEqual({
+            type: updateDiscoveryMatcher.type,
+            payload: { status: { status: 'complete' }, path: devicePath },
+        });
         expect(actions).toContainEqual(deviceActions.selectDevice(existingWallet));
         expect(actions).not.toContainEqual(
             expect.objectContaining({ type: deviceActions.addAuthorizedDevice.type }),
@@ -231,15 +232,16 @@ describe('runDiscoveryThunk duplicates', () => {
     it('asks the user what to do when a passphrase wallet is a duplicate', async () => {
         const actions = await runDiscovery({ status: 'starting', isAddingHiddenWallet: true });
 
-        expect(actions).toContainEqual(
-            discoveryActions.updateDiscovery(
-                {
+        expect(actions).toContainEqual({
+            type: updateDiscoveryMatcher.type,
+            payload: {
+                status: {
                     status: 'passphrase-duplicate',
                     duplicateDeviceStaticSessionId: existingWalletState,
                 },
-                devicePath,
-            ),
-        );
+                path: devicePath,
+            },
+        });
         expect(actions).not.toContainEqual(deviceActions.selectDevice(existingWallet));
     });
 });
@@ -305,7 +307,7 @@ describe('runAdditionalDiscoveryThunk', () => {
         );
         expect(actions).not.toContainEqual(
             expect.objectContaining({
-                type: discoveryActions.updateDiscovery.type,
+                type: updateDiscoveryMatcher.type,
                 payload: expect.objectContaining({
                     status: expect.objectContaining({ status: 'progress' }),
                 }),
@@ -343,7 +345,10 @@ describe('endUnfinishedDiscoveryThunk', () => {
             trigger: 'device-connect',
         });
 
-        expect(actions).toContainEqual(discoveryActions.updateDiscovery(disconnected, devicePath));
+        expect(actions).toContainEqual({
+            type: updateDiscoveryMatcher.type,
+            payload: { status: disconnected, path: devicePath },
+        });
     });
 
     it('leaves a passphrase outcome alone', async () => {
@@ -353,7 +358,7 @@ describe('endUnfinishedDiscoveryThunk', () => {
         });
 
         expect(actions).not.toContainEqual(
-            expect.objectContaining({ type: discoveryActions.updateDiscovery.type }),
+            expect.objectContaining({ type: updateDiscoveryMatcher.type }),
         );
     });
 
@@ -364,7 +369,7 @@ describe('endUnfinishedDiscoveryThunk', () => {
         });
 
         expect(actions).not.toContainEqual(
-            expect.objectContaining({ type: discoveryActions.updateDiscovery.type }),
+            expect.objectContaining({ type: updateDiscoveryMatcher.type }),
         );
     });
 });

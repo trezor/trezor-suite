@@ -30,6 +30,7 @@ export * from './discovery/discoveryReducer';
 export * from './discovery/discoverySelectors';
 export * from './discovery/discoveryStateThunks';
 export * from './discovery/discoveryThunks';
+export type * from './discovery/discoveryTypes';
 export * from './discovery/ejectAllWalletsThunk';
 export * from './discovery/passphraseWalletThunks';
 export * from './earn/contractTokenBalanceUtils';
