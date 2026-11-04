@@ -1,5 +1,6 @@
 import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
 import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
+import { Feature } from '@suite-common/message-system';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -14,6 +15,7 @@ import {
     amount,
     createEarnStakingTableState,
     ethProduct,
+    messageSystemWithStakeOff,
     mockAccount,
     mockStakedPosition,
     products,
@@ -143,6 +145,26 @@ describe('useStakingAccountStatus', () => {
                 },
             }),
         ).toBe('staking-max');
+    });
+
+    it('offers a pool to a registered Cardano account with provider promotion disabled', () => {
+        const account = mockAccount({ symbol: ADA, descriptor: 'adaa', availableBalance: TEN_ADA });
+
+        expect(
+            renderStatus({
+                account,
+                positions: {
+                    [account.key]: [
+                        mockStakedPosition(adaProduct.id, TEN_ADA, {
+                            lockup: 'liquid',
+                            operations: ['unstake', 'vote'],
+                            warnings: [{ code: 'no-stake-pool' }],
+                        }),
+                    ],
+                },
+                messageSystem: messageSystemWithStakeOff(Feature.banners.staking.ada.newProvider),
+            }),
+        ).toBe('staking-outdated-provider');
     });
 
     it('wants a new provider on an outdated one', () => {

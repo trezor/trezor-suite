@@ -3,6 +3,7 @@ import {
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
     selectIsStakingAccountDelegatedOutside,
+    selectIsStakingAccountWithoutPool,
     selectIsStakingOperationPending,
 } from '@suite-common/earn-staking';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
@@ -25,6 +26,7 @@ export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps)
         selectIsStakingOperationPending(state, account.key),
     );
 
+    const hasNoPool = useSelector(state => selectIsStakingAccountWithoutPool(state, account.key));
     const isDelegatedOutside = useSelector(state =>
         selectIsStakingAccountDelegatedOutside(state, account.key),
     );
@@ -32,20 +34,21 @@ export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps)
         selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
     );
 
-    const isNewProviderBannerEnabled = useSelector(state =>
+    const isProviderPromotionEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );
 
     const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, account.key));
     const isCardanoNetworkType = account?.networkType === 'cardano';
 
+    const canPromoteProvider =
+        isProviderPromotionEnabled && isDelegatedOutside && (hasOutdatedProvider || isStakingRoute);
+
     if (
-        !isDelegatedOutside ||
+        (!hasNoPool && !canPromoteProvider) ||
         hasPendingOperation ||
-        !isNewProviderBannerEnabled ||
         !isCardanoNetworkType ||
-        !isStakingActive ||
-        (!hasOutdatedProvider && !isStakingRoute)
+        !isStakingActive
     ) {
         return null;
     }

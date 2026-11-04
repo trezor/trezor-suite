@@ -2,6 +2,7 @@ import {
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
     selectIsStakingAccountDelegatedOutside,
+    selectIsStakingAccountWithoutPool,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakingAccountLockup,
     selectStakingAccountPositionDetails,
@@ -31,6 +32,7 @@ export const useStakingAccountStatus = (account: Account): StakingAccountStatus 
     const isDelegatedOutside = useSelector(state =>
         selectIsStakingAccountDelegatedOutside(state, account.key),
     );
+    const hasNoPool = useSelector(state => selectIsStakingAccountWithoutPool(state, account.key));
     // A liquid position stakes the whole balance, so there is nothing more to stake.
     const isLiquidPosition = useSelector(
         state => selectStakingAccountLockup(state, account.key) === 'liquid',
@@ -48,11 +50,11 @@ export const useStakingAccountStatus = (account: Account): StakingAccountStatus 
                 .minStakeAmountForDashboard ?? null,
     );
 
-    const isNewProviderBannerEnabled = useSelector(state =>
+    const isProviderPromotionEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );
 
-    if ((hasOutdatedProvider || isDelegatedOutside) && isNewProviderBannerEnabled) {
+    if (hasNoPool || ((hasOutdatedProvider || isDelegatedOutside) && isProviderPromotionEnabled)) {
         return 'staking-outdated-provider';
     }
 

@@ -4,6 +4,7 @@ import {
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
     selectIsStakingAccountStakedWithOfferedProvider,
+    selectIsStakingAccountWithoutPool,
     selectIsStakingOperationPending,
     useNetworkStakingRate,
     useStakingAccountPosition,
@@ -61,7 +62,7 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
     const isStakedWithProvider = useSelector(state =>
         selectIsStakingAccountStakedWithOfferedProvider(state, accountKey),
     );
-    // A retired provider pays nothing, which reads as a zero rate, as on mobile.
+    const hasNoPool = useSelector(state => selectIsStakingAccountWithoutPool(state, accountKey));
     const hasOutdatedProvider = useSelector(state =>
         selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
     );
@@ -88,7 +89,10 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                                 <CardanoNewProviderCard account={account} />
 
                                 <Flex gap={12}>
-                                    <ApyCard apy={shownRate} isNotEarning={hasOutdatedProvider} />
+                                    <ApyCard
+                                        apy={shownRate}
+                                        isNotEarning={hasOutdatedProvider || hasNoPool}
+                                    />
 
                                     <PayoutCardFrequencyRewards productId={productId} />
                                 </Flex>

@@ -7,6 +7,7 @@ import {
     selectAccountCryptoBalanceWithStaking,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
+    selectIsStakingAccountWithoutPool,
 } from '@suite-common/earn-staking';
 import { isNetworkWithTokens } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
@@ -70,6 +71,9 @@ const AccountsListItemComponent = ({
         selectIsStakingAccountActive(state, account.key),
     );
 
+    const hasNoPool = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountWithoutPool(state, account.key),
+    );
     const hasOutdatedProvider = useSelector((state: StakingRootState) =>
         selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
     );
@@ -88,7 +92,7 @@ const AccountsListItemComponent = ({
     const shouldShowAccountLabel = !isNetworkWithTokens(account.symbol) || !isNativeCoinOnly;
     const shouldShowTokenBadge = hasAnyKnownTokens && !isNativeCoinOnly;
     const shouldShowStakingBadge = isStakingActive && !isNativeCoinOnly;
-    const shouldShowZeroApyBadge = hasOutdatedProvider && !isNativeCoinOnly;
+    const shouldShowNoRewardsBadge = (hasOutdatedProvider || hasNoPool) && !isNativeCoinOnly;
     const shouldShowTotalFiat = shouldShowTokenBadge && !shouldLimitFiatToNativeBalance;
     const shouldIncludeStakingInFiat = shouldShowStakingBadge && !shouldLimitFiatToNativeBalance;
     const fiatBalanceValue = shouldShowTotalFiat ? (
@@ -139,8 +143,8 @@ const AccountsListItemComponent = ({
                     {!isNativeCoinOnly && !!formattedAccountType && (
                         <Badge label={formattedAccountType} size="small" />
                     )}
-                    {shouldShowZeroApyBadge ? (
-                        <ZeroApyBadge />
+                    {shouldShowNoRewardsBadge ? (
+                        <ZeroApyBadge isInformational={hasNoPool} />
                     ) : (
                         shouldShowStakingBadge && (
                             <StakingBadge networkSymbol={account.symbol} accountKey={account.key} />

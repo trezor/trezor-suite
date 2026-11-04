@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
     selectHasStakingAccountWarning,
+    selectIsStakingAccountWithoutPool,
     selectStakeableStakingProductDescriptorBySymbol,
     useNetworkStakingRate,
 } from '@suite-common/earn-staking';
@@ -36,9 +37,17 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
 
     const { rate } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
+    const hasNoPool = useSelector(state => selectIsStakingAccountWithoutPool(state, account.key));
     const hasOutdatedProvider = useSelector(state =>
         selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
     );
+
+    const title = hasOutdatedProvider
+        ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE'
+        : 'TR_STAKING_NEW_PROVIDER_TITLE';
+    const description = hasOutdatedProvider
+        ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
+        : 'TR_STAKING_NEW_PROVIDER_TEXT';
 
     const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
 
@@ -63,11 +72,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
             title={
                 <span data-testid="@staking/new-provider-card/header">
                     <Translation
-                        id={
-                            hasOutdatedProvider
-                                ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE'
-                                : 'TR_STAKING_NEW_PROVIDER_TITLE'
-                        }
+                        id={hasNoPool ? 'TR_STAKING_NO_POOL_TITLE' : title}
                         values={{ apy: formatApyValue(rate) }}
                     />
                 </span>
@@ -76,11 +81,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                 <span>
                     <span data-testid="@staking/new-provider-card/paragraph">
                         <Translation
-                            id={
-                                hasOutdatedProvider
-                                    ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
-                                    : 'TR_STAKING_NEW_PROVIDER_TEXT'
-                            }
+                            id={hasNoPool ? 'TR_STAKING_NO_POOL_TEXT' : description}
                             values={{ apy: formatApyValue(rate), displaySymbol }}
                         />
                     </span>

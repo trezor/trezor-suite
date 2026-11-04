@@ -35,6 +35,7 @@ import {
     getCardanoAccountPoolId,
     hasCardanoLiveVoteDelegation,
     isCardanoStakedWithEverstake,
+    isCardanoStakingActive,
     isCardanoWithdrawalBlockedByMissingDrep,
     isEarnSigningCancelled,
     selectBestCardanoPool,
@@ -196,11 +197,7 @@ export const prepareTxPlan = async ({
     const changeAddress = getUnusedChangeAddress(account.addresses?.change);
     const stakingPath = getStakingPath(account);
 
-    const {
-        rewards: rewardsAmount,
-        address: stakeAddress,
-        isActive: isStakingActive,
-    } = account?.misc?.staking ?? {};
+    const { rewards: rewardsAmount, address: stakeAddress } = account.misc?.staking ?? {};
 
     if (!changeAddress || !account.utxo || !account.addresses) {
         return null;
@@ -229,7 +226,11 @@ export const prepareTxPlan = async ({
         }
 
         certificates.push(
-            ...getDelegationCertificates(stakingPath, selectedPool?.hex, !isStakingActive),
+            ...getDelegationCertificates(
+                stakingPath,
+                selectedPool.hex,
+                !isCardanoStakingActive(account),
+            ),
         );
     }
 

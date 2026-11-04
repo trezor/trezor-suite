@@ -5,6 +5,7 @@ import {
     type StakingRootState,
     selectHasStakingAccountWarning,
     selectIsStakingAccountDelegatedOutside,
+    selectIsStakingAccountWithoutPool,
 } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import { IconCircle } from '@suite-native/atoms';
@@ -33,6 +34,9 @@ export const AdaAccountsListStakingItem = ({
     badges,
     ...props
 }: AdaAccountsListStakingItemProps) => {
+    const hasNoPool = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountWithoutPool(state, account.key),
+    );
     const isDelegatedOutside = useSelector((state: StakingRootState) =>
         selectIsStakingAccountDelegatedOutside(state, account.key),
     );
@@ -48,8 +52,12 @@ export const AdaAccountsListStakingItem = ({
             return <ExternalPoolBadge />;
         }
 
-        return <Icon name="check" color="contentBrand" />;
-    }, [isDelegatedOutside, hasOutdatedProvider]);
+        return hasNoPool ? (
+            <Icon name="info" color="contentInfo" testID="@accountList/item/stakingNoPool" />
+        ) : (
+            <Icon name="check" color="contentBrand" />
+        );
+    }, [isDelegatedOutside, hasOutdatedProvider, hasNoPool]);
 
     return (
         <AccountsListItemBase

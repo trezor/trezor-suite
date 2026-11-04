@@ -6,6 +6,7 @@ import {
     type StakingRootState,
     formatStakingAmount,
     selectIsStakingAccountDelegatedOutside,
+    selectIsStakingAccountWithoutPool,
     useNetworkStakingRate,
 } from '@suite-common/earn-staking';
 import {
@@ -59,6 +60,9 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
     );
 
     const hasOutdatedProvider = hasStakingPositionWarning(position, 'outdated-provider');
+    const hasNoPool = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountWithoutPool(state, accountKey),
+    );
 
     const amount = formatStakingAmount({
         amount: getStakingPositionAmount(position),
@@ -73,8 +77,18 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
             ? formatStakingAmount({ amount: unallocatedVotingPower, networkSymbol: symbol })
             : null;
 
-    const isRateShown = isDelegatedOutside || !isPending;
+    const isRateShown = hasNoPool || isDelegatedOutside || !isPending;
     const isRateAvailable = !isDelegatedOutside && isApyAvailable(rate);
+
+    const rateLabel =
+        isRateAvailable && rate !== null ? (
+            <Translation
+                id={rateKind === 'apr' ? 'earn.aprPercentage' : 'earn.apyPercentage'}
+                values={{ apy: PercentageFormatter.format(rate) }}
+            />
+        ) : (
+            <ApyValue apy={null} withLabel rateType={rateKind ?? 'apy'} />
+        );
 
     const onPress = useCallback(() => {
         if (!account) return;
@@ -122,16 +136,7 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
                     <ZeroApyBadge />
                 ) : (
                     <Text variant="body-sm" color="contentSecondary">
-                        {isRateAvailable && rate !== null ? (
-                            <Translation
-                                id={
-                                    rateKind === 'apr' ? 'earn.aprPercentage' : 'earn.apyPercentage'
-                                }
-                                values={{ apy: PercentageFormatter.format(rate) }}
-                            />
-                        ) : (
-                            <ApyValue apy={null} withLabel rateType={rateKind ?? 'apy'} />
-                        )}
+                        {hasNoPool ? <Translation id="earn.zeroApyBadge" /> : rateLabel}
                     </Text>
                 ))
             }

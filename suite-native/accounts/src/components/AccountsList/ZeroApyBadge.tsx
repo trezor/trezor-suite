@@ -1,10 +1,10 @@
 import { Badge } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-export const ZeroApyBadge = () => (
+export const ZeroApyBadge = ({ isInformational = false }: { isInformational?: boolean }) => (
     <Badge
-        intent="warning"
-        icon="warning"
+        intent={isInformational ? 'info' : 'warning'}
+        icon={isInformational ? 'info' : 'warning'}
         size="small"
         label={<Translation id="earn.zeroApyBadge" />}
     />

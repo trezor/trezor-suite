@@ -6,6 +6,7 @@ import {
     type StakingRootState,
     formatStakingAmount,
     selectHasStakingAccountWarning,
+    selectIsStakingAccountWithoutPool,
     useNetworkStakingRate,
     useStakingAccountPosition,
     useStakingDaysUntil,
@@ -104,6 +105,9 @@ export const StakingManagementStakedCard = ({
 
     const hasOutdatedProvider = useSelector((state: StakingRootState) =>
         selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
+    );
+    const hasNoPool = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountWithoutPool(state, accountKey),
     );
     const stakeMessage = useStakingOperationMessage(productId, 'stake');
     const unstakeMessage = useStakingOperationMessage(productId, 'unstake');
@@ -270,7 +274,7 @@ export const StakingManagementStakedCard = ({
                     <Text variant="body-sm">
                         <ApyValue
                             apy={rate}
-                            isNotEarning={hasOutdatedProvider}
+                            isNotEarning={hasOutdatedProvider || hasNoPool}
                             withLabel
                             rateType={rateKind ?? 'apy'}
                         />

@@ -145,10 +145,12 @@ const mockCardanoDelegation = ({
                           amount: amount('1000000000'),
                       },
                   ],
-        warnings:
-            product === adaFiveBinariesProduct
-                ? [{ code: 'outdated-provider', providerId: product.providerId }]
-                : [],
+        warnings: [
+            ...(poolId === null ? [{ code: 'no-stake-pool' as const }] : []),
+            ...(product === adaFiveBinariesProduct
+                ? [{ code: 'outdated-provider' as const, providerId: product.providerId }]
+                : []),
+        ],
         details: {
             kind: 'cardano-delegation',
             poolId,
@@ -363,7 +365,7 @@ describe('compact account sidebar', () => {
     });
 
     it.each([false, true])(
-        'keeps a neutral staking indicator for a registered Cardano key without a pool (DRep: %s)',
+        'shows no rewards for a registered Cardano key without a pool (DRep: %s)',
         hasDrep => {
             const account = mockCardanoStakingAccount('everstake');
 
@@ -375,13 +377,10 @@ describe('compact account sidebar', () => {
             });
 
             expect(
-                screen.getByRole('img', { name: messages.TR_EARN_STAKING.defaultMessage }),
-            ).toBeInTheDocument();
-            expect(
-                screen.queryByRole('img', {
-                    name: messages.TR_STAKING_DIFFERENT_PROVIDER.defaultMessage,
+                screen.getByRole('img', {
+                    name: messages.TR_STAKING_REWARDS_REDUCED.defaultMessage,
                 }),
-            ).not.toBeInTheDocument();
+            ).toBeInTheDocument();
         },
     );
 

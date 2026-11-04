@@ -73,6 +73,7 @@ const stakedPositionWithRewards = mockPosition(adaEverstakeProduct.id, {
         rewards: amount('56398'),
     },
     operations: ['unstake', 'claim', 'vote'],
+    warnings: [{ code: 'no-stake-pool' }],
     details: { kind: 'cardano-delegation', poolId: null, drep: null },
 });
 
@@ -90,6 +91,7 @@ const delegatedTo = (poolId: string, product = adaEverstakeProduct): StakingPosi
         ...stakedPositionWithRewards,
         productId: product.id,
         targets: [{ address: poolId, providerId: product.providerId, amount: amount('100056398') }],
+        warnings: [],
         details: { kind: 'cardano-delegation', poolId, drep: null },
     });
 
@@ -168,10 +170,10 @@ describe('AdaStakingDashboard', () => {
             );
         });
 
-        it('shows no rate for a registered key without a pool', () => {
+        it('shows a zero rate for a registered key without a pool', () => {
             renderAdaStakingDashboard();
 
-            expect(screen.getByTestId('@staking/apy-card')).toHaveTextContent('none');
+            expect(screen.getByTestId('@staking/apy-card')).toHaveTextContent('not earning');
         });
 
         it('shows the offered rate while a transaction of a key without a pool is pending', () => {

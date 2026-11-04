@@ -7,6 +7,7 @@ import {
     CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
     CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
 } from '@suite-common/wallet-constants';
+import { getCardanoAccountPoolId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { StepList } from '@trezor/components';
 
@@ -112,14 +113,19 @@ const SolanaStakingRows = ({
     </>
 );
 
-const CardanoStakingRows = ({ flow, apy, rewardPeriodDays }: EarnStakingRowsProps) => (
+const CardanoStakingRows = ({
+    flow,
+    apy,
+    rewardPeriodDays,
+    hasCurrentProvider,
+}: EarnStakingRowsProps & { hasCurrentProvider: boolean }) => (
     <>
         <StakingSignRow flow={flow} />
         <EarnInfoRow
             heading={
                 <Translation
                     id={
-                        flow === EarnFlow.UpdateProvider
+                        flow === EarnFlow.UpdateProvider && hasCurrentProvider
                             ? 'TR_EARN_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER'
                             : 'TR_EARN_ENTER_ACTIVATION_PERIOD'
                     }
@@ -170,7 +176,12 @@ export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
             case 'solana':
                 return <SolanaStakingRows {...rowsProps} />;
             case 'cardano':
-                return <CardanoStakingRows {...rowsProps} />;
+                return (
+                    <CardanoStakingRows
+                        {...rowsProps}
+                        hasCurrentProvider={getCardanoAccountPoolId(account) !== null}
+                    />
+                );
             default:
                 return null;
         }

@@ -8,6 +8,7 @@ import {
     formatStakingAmount,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
+    selectIsStakingAccountWithoutPool,
     selectIsStakingOperationPending,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakingAccountAmount,
@@ -397,9 +398,18 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         openTronFlow(event, 'withdraw');
     };
 
+    const hasNoPool = useSelector(state => selectIsStakingAccountWithoutPool(state, account.key));
     const apyAvailable =
         stakingStatus !== 'staking-outdated-provider' &&
         stakingStatus !== 'staking-remaining-votes';
+
+    const rateLabel = hasNoPool ? (
+        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+            <Translation id="TR_STAKING_REWARDS_REDUCED" />
+        </Text>
+    ) : (
+        <EarnStakingRateTooltip rateKind={rateKind} rate={apyAvailable ? rate : null} />
+    );
 
     const actionButtonsProps = {
         stakingStatus,
@@ -430,13 +440,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         <Row justifyContent="space-between" alignItems="flex-start">
                             <EarnAccountCell account={account} />
 
-                            {apyAvailable ? (
-                                <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
-                            ) : (
-                                <Text typographyStyle="body-sm">
-                                    <Translation id="TR_EARN_NOT_AVAILABLE" />
-                                </Text>
-                            )}
+                            {rateLabel}
                         </Row>
 
                         {stakingStatus === 'insufficient-funds' && minStakeParagraph}
@@ -533,15 +537,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     <EarnAccountCell account={account} />
                 </Table.Cell>
 
-                <Table.Cell>
-                    {apyAvailable ? (
-                        <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
-                    ) : (
-                        <Text typographyStyle="body-sm">
-                            <Translation id="TR_EARN_NOT_AVAILABLE" />
-                        </Text>
-                    )}
-                </Table.Cell>
+                <Table.Cell>{rateLabel}</Table.Cell>
 
                 {stakingStatus === 'insufficient-funds' && (
                     <>

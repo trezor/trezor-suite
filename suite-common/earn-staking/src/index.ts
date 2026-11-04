@@ -116,6 +116,7 @@ export {
     selectCountedStakingPositionEntriesByAccount,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
+    selectIsStakingAccountWithoutPool,
     selectIsStakingOperationPending,
     selectStakingAccountAmount,
     selectStakingAccountFiatAmount,

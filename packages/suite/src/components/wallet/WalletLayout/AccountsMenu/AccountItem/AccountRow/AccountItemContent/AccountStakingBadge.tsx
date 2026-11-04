@@ -6,6 +6,7 @@ import {
     formatStakingAmount,
     selectHasStakingAccountWarning,
     selectIsStakingAccountDelegatedOutside,
+    selectIsStakingAccountWithoutPool,
     selectStakingAccountPositionDetails,
 } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
@@ -22,6 +23,7 @@ type AccountStakingBadgeProps = {
 
 type StakingBadgeContent = {
     tooltipId: TranslationKey;
+    icon?: IconComponent;
     labelId?: TranslationKey;
     additionalIcon?: IconComponent;
     intent: 'neutral' | 'info' | 'warning';
@@ -38,6 +40,15 @@ const selectStakingBadgeContent = (
             labelId: 'TR_STAKING_REWARDS_REDUCED',
             additionalIcon: WarningIcon,
             intent: 'warning',
+        };
+    }
+
+    if (selectIsStakingAccountWithoutPool(state, key)) {
+        return {
+            tooltipId: 'TR_STAKING_REWARDS_REDUCED',
+            labelId: 'TR_STAKING_REWARDS_REDUCED',
+            icon: InfoIcon,
+            intent: 'neutral',
         };
     }
 
@@ -76,7 +87,7 @@ const selectStakingBadgeContent = (
 
 export const AccountStakingBadge = ({ account, isFocused }: AccountStakingBadgeProps) => {
     const { translationString } = useTranslation();
-    const { tooltipId, labelId, additionalIcon, intent, voteCount } = useSelector(
+    const { tooltipId, labelId, icon, additionalIcon, intent, voteCount } = useSelector(
         (state: StakingRootState) => selectStakingBadgeContent(state, account),
         shallowEqual,
     );
@@ -95,7 +106,7 @@ export const AccountStakingBadge = ({ account, isFocused }: AccountStakingBadgeP
                 style={{ minWidth: 0, maxWidth: '100%' }}
             >
                 <AccountItemBadge
-                    icon={PiggyBankIcon}
+                    icon={icon ?? PiggyBankIcon}
                     additionalIcon={additionalIcon}
                     intent={intent}
                 >

@@ -111,6 +111,10 @@ export const StakingCard = ({
     const isDrepDelegationRequired = useSelector(state =>
         selectHasStakingAccountWarning(state, account.key, 'missing-drep'),
     );
+    // A pending delegation has yet to stake the balance.
+    const hasNoPool = useSelector(state =>
+        selectHasStakingAccountWarning(state, account.key, 'no-stake-pool'),
+    );
     const isStakedWithProvider = useSelector(state =>
         selectIsStakingAccountStakedWithOfferedProvider(state, account.key),
     );
@@ -278,7 +282,7 @@ export const StakingCard = ({
                         />
                     )}
 
-                    {isCardanoNetworkType ? (
+                    {isCardanoNetworkType && !hasNoPool && (
                         <Item
                             label={<Translation id="TR_STAKE_STAKED_AUTOMATICALLY" />}
                             icon={CheckIcon}
@@ -295,7 +299,9 @@ export const StakingCard = ({
                             }
                             data-testid="@account/staking/full-balance"
                         />
-                    ) : (
+                    )}
+
+                    {!isCardanoNetworkType && (
                         <Item
                             label={<Translation id="TR_STAKE_STAKED" />}
                             icon={LockIcon}
@@ -326,23 +332,27 @@ export const StakingCard = ({
                                             : 'TR_STAKE_REWARDS'
                                     }
                                 />
-                                <Tooltip
-                                    maxWidth={250}
-                                    content={
-                                        <Translation
-                                            id="TR_STAKE_ETH_REWARDS_EARN_APY"
-                                            values={{
-                                                networkDisplaySymbol: (
-                                                    <AssetSymbol networkSymbol={account.symbol} />
-                                                ),
-                                            }}
-                                        />
-                                    }
-                                >
-                                    <Badge intent="brand" iconRight={InfoIcon} size="small">
-                                        <Translation id="TR_STAKE_RESTAKED_BADGE" />
-                                    </Badge>
-                                </Tooltip>
+                                {!hasNoPool && (
+                                    <Tooltip
+                                        maxWidth={250}
+                                        content={
+                                            <Translation
+                                                id="TR_STAKE_ETH_REWARDS_EARN_APY"
+                                                values={{
+                                                    networkDisplaySymbol: (
+                                                        <AssetSymbol
+                                                            networkSymbol={account.symbol}
+                                                        />
+                                                    ),
+                                                }}
+                                            />
+                                        }
+                                    >
+                                        <Badge intent="brand" iconRight={InfoIcon} size="small">
+                                            <Translation id="TR_STAKE_RESTAKED_BADGE" />
+                                        </Badge>
+                                    </Tooltip>
+                                )}
                             </Row>
                         }
                         icon={PlusCircleIcon}
