@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     type AccountsRootState,
     type SendRootState,
-    selectAccountByKey,
+    selectAccountNetworkType,
     selectSendPrecomposedTx,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -34,8 +34,8 @@ export const useTradingTxValidityTimer = ({
     const { translate } = useTranslate();
     const [reviewOpenedAt] = useState(() => Date.now());
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const networkType = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkType(state, accountKey),
     );
     const precomposedTx = useSelector((state: SendRootState) => selectSendPrecomposedTx(state));
 
@@ -55,7 +55,7 @@ export const useTradingTxValidityTimer = ({
         : undefined;
 
     return useTxValidityTimer({
-        networkType: account?.networkType,
+        networkType: networkType ?? undefined,
         createdTimestamp,
         isBroadcasting,
         isTransactionAlreadySigned,
