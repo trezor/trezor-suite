@@ -1,4 +1,11 @@
-import { type ChangeEvent, type ClipboardEvent, useEffect, useRef, useState } from 'react';
+import {
+    type ChangeEvent,
+    type ClipboardEvent,
+    type FocusEvent,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import styled from 'styled-components';
 
@@ -61,6 +68,7 @@ type SymbolInputProps = {
     onChange: (value: Symbol) => void;
     onClick: () => void;
     onPaste: (e: ClipboardEvent<HTMLInputElement>) => void;
+    onBlur: (e: FocusEvent<HTMLInputElement>) => void;
     isDisabled?: boolean;
     autoFocus?: boolean;
     inputRef?: (instance: HTMLInputElement | null) => void;
@@ -72,6 +80,7 @@ const SymbolInput = ({
     onChange,
     onClick,
     onPaste,
+    onBlur,
     isDisabled,
     autoFocus,
     inputRef,
@@ -106,6 +115,7 @@ const SymbolInput = ({
             onChange={handleChange}
             onClick={onClick}
             onPaste={onPaste}
+            onBlur={onBlur}
             disabled={false} // intentionally `false` always use `$fakeDisabled` instead
             $fakeDisabled={isDisabled}
             // eslint-disable-next-line jsx-a11y/no-autofocus
@@ -129,6 +139,7 @@ export type PinInputProps = {
     isDisabled?: boolean;
     autoFocus?: boolean;
     defaultCode?: string;
+    shouldKeepFocus?: boolean;
 };
 
 export const PinInput = ({
@@ -138,6 +149,7 @@ export const PinInput = ({
     isDisabled,
     autoFocus,
     defaultCode = '',
+    shouldKeepFocus,
 }: PinInputProps) => {
     const [symbols, setSymbols] = useState<Symbol[]>(parseDefaultCode(defaultCode, length));
     const refs = useRef<HTMLInputElement[]>([]);
@@ -230,6 +242,31 @@ export const PinInput = ({
         }
     };
 
+    const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
+        if (!shouldKeepFocus || e.relatedTarget instanceof HTMLElement) {
+            return;
+        }
+
+        requestAnimationFrame(() => {
+            const inputs = refs.current.filter(input => input.isConnected);
+            const hasFocusMovedElsewhere =
+                document.activeElement !== null && document.activeElement !== document.body;
+
+            if (inputs.length === 0 || hasFocusMovedElsewhere) {
+                return;
+            }
+
+            const inputToFocus =
+                inputs.find(input => input.value === EMPTY_SYMBOL) ?? inputs.at(-1);
+
+            if (inputToFocus === undefined) {
+                return;
+            }
+
+            inputToFocus.focus();
+        });
+    };
+
     const handleOnPaste = (e: React.ClipboardEvent<HTMLInputElement>, index: number) => {
         e.preventDefault();
         const symbolsToPaste = Array.from(e.clipboardData.getData('text')).filter(isSymbolValid);
@@ -262,6 +299,7 @@ export const PinInput = ({
                     onChange={value => handleCodeChange(value, index)}
                     onClick={() => focusAt(index)}
                     onPaste={e => handleOnPaste(e, index)}
+                    onBlur={handleBlur}
                     isDisabled={isDisabled}
                 />
             ))}
