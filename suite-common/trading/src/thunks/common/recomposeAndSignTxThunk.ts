@@ -7,7 +7,7 @@ import {
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { createThunk } from '@trezor/redux-utils';
-import { type Ok } from '@trezor/type-utils';
+import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -28,6 +28,7 @@ import {
 import type {
     TradingFulfillValue,
     TradingSendRejectedProps,
+    TradingSignAndPushError,
     TradingSignAndPushSendFormTransactionProps,
 } from '../../types';
 
@@ -44,6 +45,25 @@ export type RecomposeAndSignTxThunkProps = ComposeTradingTransactionThunkProps &
         selectedAccount,
         paymentRequests,
     }: TradingSignAndPushSendFormTransactionProps) => Promise<TradingFulfillValue>;
+};
+
+const getSignAndPushRejectionType = (
+    signAndPushError: TradingSignAndPushError,
+): TradingSendRejectedProps['type'] => {
+    switch (signAndPushError.error) {
+        case 'push-approval-rejected':
+            return 'sign-cancelled';
+        case 'sign-transaction-timeout':
+            return 'sign-transaction-timeout';
+        case 'fee-levels-compose-failed':
+        case 'enhance-transaction-failed':
+        case 'sign-transaction-failed':
+        case 'push-transaction-failed':
+        case 'push-transaction-pending-conflict':
+            return 'sign-tx-error';
+        default:
+            return exhaustive(signAndPushError);
+    }
 };
 
 /**
@@ -188,10 +208,7 @@ export const recomposeAndSignTxThunk = createThunk<
 
         if (!resultOfSignedTransaction.success) {
             return rejectWithValue({
-                type:
-                    resultOfSignedTransaction.error.code === 'sign-transaction-timeout'
-                        ? 'sign-transaction-timeout'
-                        : 'sign-tx-error',
+                type: getSignAndPushRejectionType(resultOfSignedTransaction.error),
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });
         }
