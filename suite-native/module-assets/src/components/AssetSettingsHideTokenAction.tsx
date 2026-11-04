@@ -13,6 +13,7 @@ import {
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
+import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -34,6 +35,7 @@ export const AssetSettingsHideTokenAction = ({
         selectWalletAssetHiddenReason(state, assetKey),
     );
     const { dispatch } = useServices(injectDispatch);
+    const { showToast } = useToast();
 
     if (tokenContract === undefined || hiddenReason === 'unrecognized') return null;
 
@@ -48,6 +50,19 @@ export const AssetSettingsHideTokenAction = ({
                 contractAddress: tokenContract,
             }),
         );
+        showToast({
+            intent: 'neutral',
+            icon: isHiddenByUser ? 'eye' : 'eyeSlash',
+            message: (
+                <Translation
+                    id={
+                        isHiddenByUser
+                            ? 'moduleAssets.assetDetailScreen.settings.tokenShown'
+                            : 'moduleAssets.assetDetailScreen.settings.tokenHidden'
+                    }
+                />
+            ),
+        });
     };
 
     return (

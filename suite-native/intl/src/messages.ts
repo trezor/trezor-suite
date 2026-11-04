@@ -2434,6 +2434,8 @@ export const messages = {
                 accounts: 'Accounts',
                 policyId: 'Policy ID',
                 viewInExplorer: 'View in explorer',
+                tokenHidden: 'Token hidden',
+                tokenShown: 'Token shown',
             },
             balanceSection: {
                 balanceTitle: 'Balance',
