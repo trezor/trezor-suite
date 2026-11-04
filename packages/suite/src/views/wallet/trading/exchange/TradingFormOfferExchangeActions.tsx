@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { gotoThunk } from '@suite/router';
 import {
     type TradingFormAccountRootState,
     type TradingRootState,
+    getApprovalFlowSteps,
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
     selectTradingExchangeQuoteToEstimate,
@@ -23,11 +25,9 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { useTradingStellarActivation } from 'src/hooks/wallet/trading/useTradingStellarActivation';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingApproveModal } from 'src/views/wallet/trading/common/TradingForm/TradingApproveModal';
 import { TradingFormApproval } from 'src/views/wallet/trading/common/TradingForm/TradingFormApproval';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
 import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
-import { TradingRevokeModal } from 'src/views/wallet/trading/common/TradingForm/TradingRevokeModal';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingFormOfferExchangeActions = () => {
@@ -143,6 +143,12 @@ export const TradingFormOfferExchangeActions = () => {
         );
     };
 
+    const startApprovalFlow = (trade: ExchangeTrade) => {
+        dispatch(tradingExchangeActions.saveFormValues(getValues()));
+        dispatch(tradingExchangeActions.startApprovalFlow(getApprovalFlowSteps(trade)));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-exchange-approval' }));
+    };
+
     const onSelectQuote = async () => {
         if (!quote || !tradingReceiveAddress.receiveAddress) return;
 
@@ -183,6 +189,7 @@ export const TradingFormOfferExchangeActions = () => {
                     isComposing={isComposing}
                     isFormInvalid={state.isFormInvalid}
                     refreshQuotes={refreshQuotes}
+                    onStartApprovalFlow={startApprovalFlow}
                     onSwap={selectQuote}
                     getCryptoInfo={getCryptoInfo}
                 />
@@ -209,9 +216,6 @@ export const TradingFormOfferExchangeActions = () => {
     return (
         <>
             {renderActionButton()}
-
-            <TradingApproveModal amount={amount} getCryptoInfo={getCryptoInfo} />
-            <TradingRevokeModal getCryptoInfo={getCryptoInfo} />
 
             {stellarActivateModal}
         </>
