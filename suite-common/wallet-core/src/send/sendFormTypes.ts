@@ -63,3 +63,11 @@ export type SendFormError =
     | SignTransactionError
     | SignTransactionTimeoutError
     | PushTransactionError;
+
+/**
+ * The original Connect or blockchain failure behind a send form error.
+ */
+export type SendFormErrorCause = {
+    code?: CONNECT_ERRORS.ErrorCode;
+    message?: string;
+};
