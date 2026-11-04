@@ -221,7 +221,7 @@
         "babel-plugin-transform-remove-console": "^6.9.4",
         "babel-preset-expo": "~58.0.22",
         "cross-fetch": "^4.1.0",
-        "detox": "20.45.1",
+        "detox": "20.50.1",
         "dotenv": "18.0.6",
         "expo-atlas": "0.5.0",
         "expo-mcp": "^0.2.4",

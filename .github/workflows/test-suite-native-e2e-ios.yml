@@ -212,6 +212,7 @@ jobs:
           path: |
             suite-native/app/artifacts/**/native-navigation-ios*.png
             suite-native/app/artifacts/native-navigation-ios*.xml
+            suite-native/app/artifacts/native-navigation-ios*.json
           if-no-files-found: ignore
           retention-days: 7
 

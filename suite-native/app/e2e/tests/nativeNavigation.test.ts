@@ -15,7 +15,13 @@ const preloadedState = preparePreloadedReduxState(onboardingCompletedState, {
 });
 
 // SwiftUI exposes its system tab labels, rather than custom tab button identifiers.
-const getSystemTab = (label: string) => element(by.label(label).withAncestor(by.type('UITabBar')));
+const getSystemTab = (label: string) =>
+    element(
+        by
+            .label(label)
+            .and(by.traits(['button']))
+            .withAncestor(by.type('UITabBar')),
+    );
 
 describe('Native navigation smoke [@noDevice @iosOnly]', () => {
     it('uses system tabs and returns to the existing bar when disabled', async () => {
@@ -27,6 +33,10 @@ describe('Native navigation smoke [@noDevice @iosOnly]', () => {
         );
 
         const accountsTab = getSystemTab(EN_TRANSLATIONS['navigation.tabs.accountsList']);
+        await writeFile(
+            'artifacts/native-navigation-ios-accounts.json',
+            JSON.stringify(await accountsTab.getAttributes(), null, 2),
+        );
         await waitForVisible(accountsTab);
         await accountsTab.tap();
         await detoxExpect(element(by.id('@screen/Accounts'))).toBeVisible();
