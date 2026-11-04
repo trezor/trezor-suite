@@ -1,6 +1,6 @@
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
-import { Box, Card, HStack } from '@suite-native/atoms';
+import { Box, Card, HStack, Text } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     ExactCryptoAmountFormatter,
@@ -85,13 +85,19 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                             )}
                         </HStack>
 
-                        <TokenName
-                            networkSymbol={symbol}
-                            tokenContract={token?.contract}
-                            variant="body-sm"
-                            color="contentSecondary"
-                            numberOfLines={1}
-                        />
+                        {token ? (
+                            <TokenName
+                                networkSymbol={symbol}
+                                tokenContract={token.contract}
+                                variant="body-sm"
+                                color="contentSecondary"
+                                numberOfLines={1}
+                            />
+                        ) : (
+                            <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
+                                {getNetworkDisplaySymbolName(symbol)}
+                            </Text>
+                        )}
                     </Box>
 
                     <Box alignItems="flex-end" flexShrink={1}>

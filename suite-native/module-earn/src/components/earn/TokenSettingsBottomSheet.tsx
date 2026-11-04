@@ -15,7 +15,11 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { type TokenAddress, toTokenSymbol } from '@suite-common/tokens';
-import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    getDisplaySymbol,
+    getNetwork,
+    getNetworkDisplaySymbolName,
+} from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -232,12 +236,16 @@ export const TokenSettingsBottomSheet = forwardRef(
             <BottomSheetModal
                 ref={ref}
                 title={
-                    <TokenName
-                        isInline
-                        networkSymbol={symbol}
-                        tokenContract={tokenContract}
-                        variant="headline-sm"
-                    />
+                    tokenContract ? (
+                        <TokenName
+                            isInline
+                            networkSymbol={symbol}
+                            tokenContract={tokenContract}
+                            variant="headline-sm"
+                        />
+                    ) : (
+                        <Text variant="headline-sm">{getNetworkDisplaySymbolName(symbol)}</Text>
+                    )
                 }
                 isCloseDisplayed
             >
