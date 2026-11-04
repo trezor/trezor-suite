@@ -72,6 +72,7 @@ export * from './send/composeCancelTransaction/composeCancelTransactionThunk';
 export * from './send/composeCancelTransaction/composeEthereumCancelTransactionThunk';
 export * from './send/sendFormActions';
 export * from './send/sendFormConstants';
+export * from './send/sendFormErrorUtils';
 export * from './send/sendFormEthereumThunks';
 export * from './send/sendFormReducer';
 export * from './send/sendFormSelectors';
