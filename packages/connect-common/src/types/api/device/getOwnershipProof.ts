@@ -3,7 +3,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { CoinSymbolParam } from '../../coinInfo';
-import type { BundledParams, Params, Response } from '../../params';
+import type { BundleableMethod } from '../../params';
 import { DerivationPath } from '../../params';
 
 export type GetOwnershipProof = Static<typeof GetOwnershipProof>;
@@ -23,9 +23,4 @@ export interface OwnershipProof extends PROTO.OwnershipProof {
     serializedPath: string;
 }
 
-export declare function getOwnershipProof(
-    params: Params<GetOwnershipProof>,
-): Response<OwnershipProof>;
-export declare function getOwnershipProof(
-    params: BundledParams<GetOwnershipProof>,
-): Response<OwnershipProof[]>;
+export declare const getOwnershipProof: BundleableMethod<GetOwnershipProof, OwnershipProof>;
