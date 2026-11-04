@@ -16,8 +16,8 @@ import {
     selectTradingComposedTransactionInfo,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeFormValues,
-    selectTradingExchangeInfo,
     selectTradingExchangeIsLoading,
+    selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     selectTradingVerifiedAddress,
@@ -64,7 +64,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const amountLimits = useSelector(selectTradingExchangeAmountLimits);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
-    const exchangeInfo = useSelector(selectTradingExchangeInfo);
+    const exchangeProviders = useSelector(selectTradingExchangeProviders);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
@@ -123,8 +123,8 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = !!outputAmount && !!receiveCryptoSelect && !!sendCryptoSelect;
     const isAmountEmpty = outputAmount === '';
-    const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
-    const isInitialDataLoading = !exchangeInfo?.providerInfos;
+    const noProviders = Object.keys(exchangeProviders ?? {}).length === 0;
+    const isInitialDataLoading = !exchangeProviders;
 
     const setAmountLimits = useCallback(
         (limits: TradingExchangeAmountLimitProps | undefined) => {
@@ -210,7 +210,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
-        isInfoReady: !!exchangeInfo?.providerInfos,
+        isInfoReady: !!exchangeProviders,
         reset,
         defaultValues: initialValues,
     });
