@@ -2,7 +2,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { selectAutodetectTheme, selectThemeSettings, suiteSettingsActions } from '@suite/settings';
+import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -51,11 +51,11 @@ export const Theme = () => {
         injectDispatch,
         injectDesktopApi,
     );
-    const theme = useSelector(selectThemeSettings);
+    const theme = useSelector(selectTheme);
     const autodetectTheme = useSelector(selectAutodetectTheme);
     const { optionGroups, getOption } = useThemeOptions();
 
-    const themeVariant = autodetectTheme ? 'system' : theme.variant;
+    const themeVariant = autodetectTheme ? 'system' : theme;
     const selectedValue = getOption(themeVariant === 'light' ? 'standard' : themeVariant);
 
     type OnChangeParams = { value: ThemeColorVariantWithSystem };
@@ -69,7 +69,7 @@ export const Theme = () => {
             type: events.settingsGeneralChangeThemeEvent.name,
             payload: {
                 platformTheme,
-                previousTheme: theme.variant,
+                previousTheme: theme,
                 previousAutodetectTheme: autodetectTheme,
                 theme: themeValue === 'system' ? platformTheme : themeValue,
                 autodetectTheme: themeValue === 'system',
