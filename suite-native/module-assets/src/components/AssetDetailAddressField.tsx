@@ -25,7 +25,7 @@ export const AssetDetailAddressField = ({ label, value, testID }: AssetDetailAdd
 
     return (
         <VStack spacing="sp8" paddingVertical="sp8">
-            <Text variant="body-sm" color="contentSecondary">
+            <Text variant="body-xs" color="contentSecondary">
                 {label}
             </Text>
             <HStack

@@ -7,9 +7,11 @@ import {
 } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+
+import { AssetSettingsAction } from './AssetSettingsAction';
 
 type AssetSettingsAccountsActionProps = {
     networkSymbol: NetworkSymbol;
@@ -30,23 +32,17 @@ export const AssetSettingsAccountsAction = ({
     );
 
     return (
-        <PressableOpacity
-            accessibilityRole="button"
+        <AssetSettingsAction
+            iconName="wallet"
+            label={<Translation id="moduleAssets.assetDetailScreen.settings.accounts" />}
             onPress={onOpenAccounts}
             testID="@asset-detail/settings/accounts-button"
-        >
-            <HStack alignItems="center" justifyContent="space-between" paddingVertical="sp12">
+            rightContent={
                 <HStack alignItems="center" spacing="sp16">
-                    <Icon name="wallet" size="medium" />
-                    <Text variant="body-md">
-                        <Translation id="moduleAssets.assetDetailScreen.settings.accounts" />
-                    </Text>
-                </HStack>
-                <HStack alignItems="center" spacing="sp16">
-                    <Text variant="body-md">{accountsCount}</Text>
+                    <Text variant="body-sm">{accountsCount}</Text>
                     <Icon name="caretRight" color="contentSecondary" size="mediumLarge" />
                 </HStack>
-            </HStack>
-        </PressableOpacity>
+            }
+        />
     );
 };
