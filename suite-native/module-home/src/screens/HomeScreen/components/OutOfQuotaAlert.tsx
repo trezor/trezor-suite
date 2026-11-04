@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceId } from '@suite-common/device';
 import { noQuotaLeftWarningDismissed } from '@suite-common/suite-sync-quota-manager';
 import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -14,10 +14,9 @@ export const OutOfQuotaAlert = () => {
     const openLink = useOpenLink();
     const { translate } = useTranslate();
 
-    const device = useSelector(selectSelectedDevice);
+    const deviceId = useSelector(selectDeviceId);
 
-    if (!device?.id) return null;
-    const deviceId = device.id;
+    if (!deviceId) return null;
 
     const handleDismiss = () => {
         dispatch(noQuotaLeftWarningDismissed({ deviceId }));

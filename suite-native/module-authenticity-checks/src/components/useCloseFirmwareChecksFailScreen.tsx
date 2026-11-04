@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { deviceActions, selectDeviceId } from '@suite-common/device';
 import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -13,11 +13,10 @@ import { useCloseDeviceCompromisedScreen } from './useCloseDeviceCompromisedScre
  */
 export const useCloseFirmwareChecksFailScreen = () => {
     const { dispatch } = useServices(injectDispatch);
-    const device = useSelector(selectSelectedDevice);
+    const deviceId = useSelector(selectDeviceId);
     const { handleClose: closeScreen } = useCloseDeviceCompromisedScreen();
 
     // Should always be true, but if not, fail-closed by not allowing to dismiss the failed check.
-    const deviceId = device?.id;
     const canClose = typeof deviceId === 'string' && deviceId.length > 0; // matches `getIsDeviceIdValid`
 
     // Always blocked – even when `canClose`, it can be done only by explicit CTAs, not by native navigation or automatic triggers.
