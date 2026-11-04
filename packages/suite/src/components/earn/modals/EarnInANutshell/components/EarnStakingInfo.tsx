@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-constants';
 import {
     getDaysToAddToPoolInitial,
+    isCardanoRegisteredWithoutPool,
     selectEthereumValidatorsQueue,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
@@ -116,14 +117,18 @@ const SolanaStakingRows = ({ flow, networkSymbol, apy }: EarnStakingRowsProps) =
     </>
 );
 
-const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
+const CardanoStakingRows = ({
+    flow,
+    apy,
+    hasCurrentProvider,
+}: EarnStakingRowsProps & { hasCurrentProvider: boolean }) => (
     <>
         <StakingSignRow flow={flow} />
         <EarnInfoRow
             heading={
                 <Translation
                     id={
-                        flow === EarnFlow.UpdateProvider
+                        flow === EarnFlow.UpdateProvider && hasCurrentProvider
                             ? 'TR_EARN_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER'
                             : 'TR_EARN_ENTER_ACTIVATION_PERIOD'
                     }
@@ -180,7 +185,14 @@ export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
             case 'solana':
                 return <SolanaStakingRows flow={flow} networkSymbol={account.symbol} apy={apy} />;
             case 'cardano':
-                return <CardanoStakingRows flow={flow} networkSymbol={account.symbol} apy={apy} />;
+                return (
+                    <CardanoStakingRows
+                        flow={flow}
+                        networkSymbol={account.symbol}
+                        apy={apy}
+                        hasCurrentProvider={!isCardanoRegisteredWithoutPool(account)}
+                    />
+                );
             default:
                 return null;
         }

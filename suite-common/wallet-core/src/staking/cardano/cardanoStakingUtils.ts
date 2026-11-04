@@ -32,9 +32,10 @@ export function isSupportedAdaStakingNetworkSymbol(
 export const isCardanoStakingActive = (account: Account | null) => {
     if (!account?.misc || account.networkType !== 'cardano') return false;
 
-    const { isActive } = account.misc.staking;
+    const { isActive, poolId, drep } = account.misc.staking;
 
-    return isActive;
+    // Governance delegation requires a registered stake key even without a pool.
+    return isActive || (!poolId && !!drep?.drep_id);
 };
 
 export const getCardanoAccountPoolId = (account?: Account) => {
@@ -44,6 +45,9 @@ export const getCardanoAccountPoolId = (account?: Account) => {
 
     return poolId || null;
 };
+
+export const isCardanoRegisteredWithoutPool = (account: Account) =>
+    !!isCardanoStakingActive(account) && !getCardanoAccountPoolId(account);
 
 const DREP_HASH_LENGTH = 28;
 const DREP_CIP129_PAYLOAD_LENGTH = DREP_HASH_LENGTH + 1;
@@ -151,7 +155,7 @@ export const getCardanoAccountDrepId = (account?: Account) => {
 };
 
 export const hasCardanoLiveVoteDelegation = (account?: Account) =>
-    !!isCardanoStakingActive(account ?? null) && !!getCardanoAccountDrepId(account);
+    isCardanoStakingActive(account ?? null) && !!getCardanoAccountDrepId(account);
 
 export const isCardanoWithdrawalBlockedByMissingDrep = (account?: Account) => {
     if (account?.networkType !== 'cardano') return false;

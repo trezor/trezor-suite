@@ -289,8 +289,8 @@ describe('compact account sidebar', () => {
     });
 
     it.each([false, true])(
-        'keeps a neutral staking indicator for a registered Cardano key without a pool (DRep: %s)',
-        hasDrep => {
+        'shows No rewards for a registered Cardano key without a pool (DRep: %s)',
+        async hasDrep => {
             const account = mockCardanoStakingAccount('everstake');
             account.misc.staking = {
                 ...account.misc.staking,
@@ -298,11 +298,20 @@ describe('compact account sidebar', () => {
                 drep: hasDrep ? account.misc.staking.drep : null,
             };
 
-            renderAccount({ account });
+            renderAccount({
+                account,
+                stakingPositions: {
+                    [account.key]: [
+                        { ...mockCardanoDelegation(), warnings: [{ code: 'no-stake-pool' }] },
+                    ],
+                },
+            });
+            const label = messages.TR_STAKING_REWARDS_REDUCED.defaultMessage;
+            const badge = screen.getByRole('img', { name: label });
 
-            expect(
-                screen.getByRole('img', { name: messages.TR_EARN_STAKING.defaultMessage }),
-            ).toBeInTheDocument();
+            expect(screen.getByText(label)).toBeInTheDocument();
+            await userEvent.hover(badge);
+            expect(await screen.findByRole('tooltip')).toHaveTextContent(label);
             expect(
                 screen.queryByRole('img', {
                     name: messages.TR_STAKING_EXTERNAL_POOL.defaultMessage,

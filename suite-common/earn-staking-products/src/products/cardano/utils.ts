@@ -17,8 +17,12 @@ import { exhaustive } from '@trezor/type-utils';
 import { CARDANO_STAKING_OPERATIONS_BY_SUBTYPE } from './constants';
 import { ZERO_STAKING_AMOUNT, isPositiveStakingAmount } from '../../utils/stakingAmounts';
 
-export const isCardanoStakeKeyRegistered = ({ misc }: StakingAccount) =>
-    misc?.staking?.isActive === true;
+export const isCardanoStakeKeyRegistered = ({ misc }: StakingAccount) => {
+    const staking = misc?.staking;
+
+    // A vote delegation proves registration even when the key has no active stake pool.
+    return staking?.isActive === true || (!staking?.poolId && !!staking?.drep?.drep_id);
+};
 
 export const getParsedCardanoAvailableBalance = ({
     availableBalance,
@@ -44,7 +48,7 @@ export const getParsedCardanoStakingInfo = ({
 }: GetParsedCardanoStakingInfoParams): ParsedCardanoStakingInfo | null => {
     const staking = account.misc?.staking;
 
-    if (!staking?.isActive) {
+    if (!staking || !isCardanoStakeKeyRegistered(account)) {
         return null;
     }
 

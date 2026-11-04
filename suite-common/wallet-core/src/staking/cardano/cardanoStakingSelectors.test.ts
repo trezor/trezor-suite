@@ -1,3 +1,7 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { MOCK_CARDANO_EVERSTAKE_POOL, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+
+import { selectPoolStatsApy } from '../shared/stakingSelectors';
 import { type StakeDataState, stakeDataInitialState } from '../stakingDataSlice';
 import { stakeInitialState } from '../stakingReducer';
 import { type StakeRootState } from '../stakingReducerTypes';
@@ -52,5 +56,29 @@ describe('selectCardanoPoolsInfo', () => {
         const state = createState(pools);
 
         expect(selectCardanoPoolsInfo(state)).toBe(pools);
+    });
+});
+
+describe('Cardano pool APY', () => {
+    it('shows zero for a registered key with no pool while retaining the offered network APY', () => {
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('ada') });
+        const state = buildStakeState({
+            ada: { pools: [{ id: MOCK_CARDANO_EVERSTAKE_POOL, apy: 2.5, saturation: 40 }] },
+        });
+
+        expect(selectPoolStatsApy(state, { account })).toBe(0);
+        expect(selectPoolStatsApy(state, { networkSymbol: account.symbol })).toBe(2.5);
+    });
+
+    it('keeps the offered APY for an account that has never registered its stake key', () => {
+        const account = mockWalletAccount(
+            { symbol: asNetworkSymbol('ada') },
+            { misc: { staking: { isActive: false } } },
+        );
+        const state = buildStakeState({
+            ada: { pools: [{ id: MOCK_CARDANO_EVERSTAKE_POOL, apy: 2.5, saturation: 40 }] },
+        });
+
+        expect(selectPoolStatsApy(state, { account })).toBe(2.5);
     });
 });

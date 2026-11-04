@@ -304,7 +304,41 @@ describe('getCardanoProductPosition', () => {
             balances: balances({ staked: `40${ADA}` }),
             targets: [],
             operations: ['unstake', 'vote'],
+            warnings: [{ code: 'no-stake-pool' }],
             details: { kind: 'cardano-delegation', poolId: null, drep: null },
+        });
+    });
+
+    it('shows a position without rewards for a governance-only delegation marked inactive', () => {
+        const account = mockStakingAccount({
+            symbol: networkSymbol,
+            availableBalance: `40${ADA}`,
+            misc: {
+                staking: {
+                    address: 'stake1u9ylzsgxaa6xctf4juup682ar3juj85n8tx3hthnljg47zctvm3rc',
+                    isActive: false,
+                    rewards: '0',
+                    poolId: null,
+                    drep: {
+                        drep_id: MOCK_CARDANO_EVERSTAKE_DREP_ID,
+                        hex: '',
+                        amount: '0',
+                        active: true,
+                        active_epoch: null,
+                        has_script: false,
+                    },
+                },
+            },
+        });
+
+        expect(getExternalPosition({ account })).toMatchObject({
+            targets: [],
+            warnings: [{ code: 'no-stake-pool' }],
+            details: {
+                kind: 'cardano-delegation',
+                poolId: null,
+                drep: { id: MOCK_CARDANO_EVERSTAKE_DREP_ID, hasScript: false },
+            },
         });
     });
 

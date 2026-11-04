@@ -5,6 +5,7 @@ import {
     type StakingRootState,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
+    selectIsStakingAccountWithoutPool,
 } from '@suite-common/earn-staking';
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -18,6 +19,7 @@ import {
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 import {
@@ -73,6 +75,9 @@ const AccountsListItemComponent = ({
         selectIsStakingAccountActive(state, account.key),
     );
 
+    const hasNoPool = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountWithoutPool(state, account.key),
+    );
     const hasOutdatedProvider = useSelector((state: StakingRootState) =>
         selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
     );
@@ -91,7 +96,8 @@ const AccountsListItemComponent = ({
     const shouldShowAccountLabel = !isNetworkWithTokens(account.symbol) || !isNativeCoinOnly;
     const shouldShowTokenBadge = hasAnyKnownTokens && !isNativeCoinOnly;
     const shouldShowStakingBadge = isStakingActive && !isNativeCoinOnly;
-    const shouldShowZeroApyBadge = hasOutdatedProvider && !isNativeCoinOnly;
+    const shouldShowZeroApyBadge = !hasNoPool && hasOutdatedProvider && !isNativeCoinOnly;
+    const shouldShowNoPoolBadge = hasNoPool && !isNativeCoinOnly;
     const shouldShowTotalFiat = shouldShowTokenBadge && !shouldLimitFiatToNativeBalance;
     const shouldIncludeStakingInFiat = shouldShowStakingBadge && !shouldLimitFiatToNativeBalance;
     const fiatBalanceValue = shouldShowTotalFiat ? (
@@ -142,13 +148,20 @@ const AccountsListItemComponent = ({
                     {!isNativeCoinOnly && !!formattedAccountType && (
                         <Badge label={formattedAccountType} size="small" />
                     )}
-                    {shouldShowZeroApyBadge ? (
-                        <ZeroApyBadge />
-                    ) : (
-                        shouldShowStakingBadge && (
-                            <StakingBadge networkSymbol={account.symbol} accountKey={account.key} />
-                        )
+                    {shouldShowNoPoolBadge && (
+                        <Badge
+                            intent="info"
+                            icon="info"
+                            size="small"
+                            label={<Translation id="earn.zeroApyBadge" />}
+                        />
                     )}
+                    {shouldShowZeroApyBadge && <ZeroApyBadge />}
+                    {shouldShowStakingBadge &&
+                        !shouldShowZeroApyBadge &&
+                        !shouldShowNoPoolBadge && (
+                            <StakingBadge networkSymbol={account.symbol} accountKey={account.key} />
+                        )}
                     {shouldShowTokenBadge && <AccountListTokenBadge accountKey={account.key} />}
                     {badges}
                 </>

@@ -124,6 +124,7 @@ export const getCardanoProductPosition = ({
             ? [{ code: 'outdated-provider' as const, providerId: provider.id }]
             : []),
         ...(isWithdrawalBlocked ? [{ code: 'missing-drep' as const }] : []),
+        ...(poolId === null ? [{ code: 'no-stake-pool' as const }] : []),
     ];
 
     const details: StakingPositionDetails = { kind: 'cardano-delegation', poolId, drep };

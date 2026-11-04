@@ -101,6 +101,19 @@ export const selectStakingAccountPositionEntry = (
 ): StakingPositionEntry | null =>
     selectCountedStakingPositionEntriesByAccount(state, accountKey)[0] ?? null;
 
+export const selectIsStakingAccountWithoutPool = (
+    state: StakingRootState,
+    accountKey: AccountKey,
+): boolean => {
+    const position = selectStakingAccountPositionEntry(state, accountKey)?.position;
+
+    return (
+        position !== undefined &&
+        hasStakingPositionWarning(position, 'no-stake-pool') &&
+        !hasPendingStakingOperation(position, 'stake')
+    );
+};
+
 export type StakingPositionDetailsOfKind<TKind extends StakingPositionDetails['kind']> = Extract<
     StakingPositionDetails,
     { kind: TKind }

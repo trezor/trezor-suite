@@ -1,7 +1,11 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { getCardanoAccountPoolId, selectBestCardanoPool } from '../cardano/cardanoStakingUtils';
+import {
+    getCardanoAccountPoolId,
+    isCardanoRegisteredWithoutPool,
+    selectBestCardanoPool,
+} from '../cardano/cardanoStakingUtils';
 import { type StakeSliceRootState } from '../stakingReducerTypes';
 
 export const selectStake = (state: StakeSliceRootState) => state.wallet.stake;
@@ -21,6 +25,8 @@ export const selectPoolStatsApy = (
 ) => {
     const data = selectStakeData(state);
     const symbol = account?.symbol ?? networkSymbol;
+
+    if (symbol === 'ada' && account && isCardanoRegisteredWithoutPool(account)) return 0;
 
     if (!symbol || !data) {
         return null;

@@ -3,6 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
+import { selectIsStakingAccountWithoutPool } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -57,6 +58,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     );
 
     const isCardanoNetworkType = account.networkType === 'cardano';
+    const hasNoPool = useSelector(state => selectIsStakingAccountWithoutPool(state, account.key));
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const isClaimPending = useSelector(state =>
         selectAccountClaimTransactions(state, account.key).some(tx => isPending(tx)),
@@ -280,8 +282,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     };
 
     const apyAvailable =
-        stakingStatus !== 'staking-outdated-provider' &&
-        stakingStatus !== 'staking-remaining-votes';
+        hasNoPool ||
+        (stakingStatus !== 'staking-outdated-provider' &&
+            stakingStatus !== 'staking-remaining-votes');
 
     const actionButtonsProps = {
         stakingStatus,
@@ -309,7 +312,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         <EarnAccountCell account={account} />
 
                         {apyAvailable ? (
-                            <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
+                            <EarnStakingRateTooltip
+                                networkType={account.networkType}
+                                rate={rate}
+                                hasNoPool={hasNoPool}
+                            />
                         ) : (
                             <Text typographyStyle="body-sm">
                                 <Translation id="TR_EARN_NOT_AVAILABLE" />
@@ -411,7 +418,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
             <Table.Cell>
                 {apyAvailable ? (
-                    <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
+                    <EarnStakingRateTooltip
+                        networkType={account.networkType}
+                        rate={rate}
+                        hasNoPool={hasNoPool}
+                    />
                 ) : (
                     <Text typographyStyle="body-sm">
                         <Translation id="TR_EARN_NOT_AVAILABLE" />

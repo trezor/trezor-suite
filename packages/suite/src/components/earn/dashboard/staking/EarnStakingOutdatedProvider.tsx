@@ -20,6 +20,21 @@ export const EarnStakingOutdatedProvider = ({ apy, account }: EarnStakingOutdate
     );
     const intent = hasOutdatedProvider ? 'warning' : 'info';
 
+    const hasNoPool = useSelector(state =>
+        selectHasStakingAccountWarning(state, account.key, 'no-stake-pool'),
+    );
+
+    if (hasNoPool) {
+        return (
+            <Row gap={4}>
+                <Icon as={InfoIcon} size={20} intent="info" />
+                <Paragraph typographyStyle="body-sm" intent="info">
+                    <Translation id="TR_STAKING_NO_POOL_TITLE" />
+                </Paragraph>
+            </Row>
+        );
+    }
+
     return (
         <Row gap={4}>
             <Icon as={hasOutdatedProvider ? WarningIcon : InfoIcon} size={20} intent={intent} />
