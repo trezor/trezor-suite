@@ -38,6 +38,17 @@ on:
         required: false
         default: "false"
         type: string
+    secrets:
+      CURRENTS_RECORD_KEY:
+        required: true
+      E2E_TEST_PASSPHRASE:
+        required: true
+      E2E_TEST_PASSPHRASE_LIVE:
+        required: true
+      TREZOR_BOT_APP_ID:
+        required: true
+      TREZOR_BOT_PRIVATE_KEY:
+        required: true
 
 concurrency:
   group: suite-web-deploy-${{ github.head_ref || github.ref_name }}

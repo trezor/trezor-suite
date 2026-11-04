@@ -12,10 +12,17 @@ concurrency:
 jobs:
   call-test-suite-manual-release:
     uses: ./.github/workflows/test-suite-manual-release.yml
-    secrets: inherit
+    secrets:
+      TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
+      TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
   call-test-suite-web-desktop-e2e-release:
     uses: ./.github/workflows/test-suite-web-desktop-e2e-release.yml
-    secrets: inherit
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+      E2E_TEST_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+      E2E_TEST_PASSPHRASE_LIVE: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
+      TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
+      TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
     with:
       publish_results_to_github: true
