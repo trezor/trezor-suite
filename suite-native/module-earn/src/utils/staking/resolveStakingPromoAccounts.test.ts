@@ -1,6 +1,10 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
-import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import {
+    MOCK_CARDANO_EVERSTAKE_POOL,
+    mockWalletAccount,
+    networkSpecificDefaultCardano,
+} from '@suite-common/wallet-types/mocks';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 
 import { resolveStakingPromoAccounts } from './resolveStakingPromoAccounts';
@@ -11,6 +15,16 @@ jest.mock('@suite-common/wallet-utils', () => ({
 }));
 
 const mockGetAccountTotalStakingBalance = jest.mocked(getAccountTotalStakingBalance);
+
+const networkSpecificDelegatedCardano = {
+    ...networkSpecificDefaultCardano,
+    misc: {
+        staking: {
+            ...networkSpecificDefaultCardano.misc.staking,
+            poolId: MOCK_CARDANO_EVERSTAKE_POOL,
+        },
+    },
+};
 
 const networkSpecificUndelegatedCardano = {
     ...networkSpecificDefaultCardano,
@@ -28,7 +42,7 @@ const createTronAccount = (): Account => mockWalletAccount({ symbol: asNetworkSy
 const createDelegatedCardanoAccount = (descriptor: string, balance = '0'): Account =>
     mockWalletAccount(
         { symbol: asNetworkSymbol('ada'), descriptor: asAccountDescriptor(descriptor), balance },
-        networkSpecificDefaultCardano,
+        networkSpecificDelegatedCardano,
     );
 
 const createUndelegatedCardanoAccount = (descriptor: string): Account =>
