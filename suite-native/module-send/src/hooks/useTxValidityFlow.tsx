@@ -7,7 +7,7 @@ import { isRejected } from '@reduxjs/toolkit';
 import {
     type AccountsRootState,
     type SendRootState,
-    selectAccountByKey,
+    selectAccountNetworkType,
     selectSendPrecomposedTx,
     sendFormActions,
 } from '@suite-common/wallet-core';
@@ -52,8 +52,8 @@ export const useTxValidityFlow = ({
     const navigation = useNavigation<NavigationProps>();
     const handleCommonSignRejection = useHandleCommonSignRejection({ accountKey, tokenContract });
 
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const networkType = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkType(state, accountKey),
     );
     const precomposedTx = useSelector((state: SendRootState) => selectSendPrecomposedTx(state));
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
@@ -110,7 +110,7 @@ export const useTxValidityFlow = ({
     }, [accountKey, tokenContract, navigation, dispatch]);
 
     return useTxValidityTimer({
-        networkType: account?.networkType,
+        networkType: networkType ?? undefined,
         createdTimestamp: precomposedTx?.createdTimestamp ?? 0,
         isBroadcasting: isSendInProgress,
         isTransactionAlreadySigned,
