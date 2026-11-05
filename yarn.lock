@@ -11916,6 +11916,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
+    "@trezor/network-tron": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
