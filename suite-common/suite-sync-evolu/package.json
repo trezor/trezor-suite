@@ -19,7 +19,8 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "@trezor/ward": "workspace:*"
     },
     "devDependencies": {
         "@evolu/nodejs": "4.0.0",
