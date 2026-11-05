@@ -13,6 +13,7 @@ import {
     UI_REQUEST,
     UI_REQUESTS,
     UI_RESPONSE,
+    WARD_LABEL,
     createDeviceMessage,
     createResponseMessage,
     createTransportMessage,
@@ -795,6 +796,14 @@ export class Core extends EventEmitter {
             case SET_ENABLED_NETWORKS:
                 enabledNetworksStore.add(message.payload);
                 break;
+            case WARD_LABEL.SET_PROVIDER: {
+                // Dispose the outgoing wardd before swapping it in, so a resource it holds
+                // (e.g. an open database handle) isn't leaked across re-init.
+                const outgoing = settingsStore.isLoaded() ? settingsStore.get('wardd') : undefined;
+                void outgoing?.dispose?.();
+                settingsStore.update({ wardd: message.payload.wardd });
+                break;
+            }
 
             case TRANSPORT.REQUEST_DEVICE:
                 /**

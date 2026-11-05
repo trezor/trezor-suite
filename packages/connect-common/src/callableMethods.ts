@@ -25,6 +25,14 @@ export const connectManagementMethods = [
     'evoluGetNode',
     'evoluSignRegistrationRequest',
     'evoluGetDelegatedIdentityKey',
+    // WARD writes device-held state (the `management` permission), so it is privileged as well.
+    'wardInit',
+    'wardListPending',
+    'wardSetRoot',
+    'wardLookup',
+    'wardUpdate',
+    'wardVerify',
+    'wardDisplayAddress',
 ] as const;
 
 const connectPublicCallableMethodGroups = {

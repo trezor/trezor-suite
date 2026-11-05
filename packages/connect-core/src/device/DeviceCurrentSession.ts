@@ -15,7 +15,7 @@ import {
 import { scheduleAction } from '@trezor/utils';
 
 import type { IDevice } from '../types/idevice';
-import type { TypedCallProvider } from '../types/typed-call-provider';
+import type { TypedCallProvider, WardProofCallback } from '../types/typed-call-provider';
 
 const blacklist: Record<string, string[] | true> = {
     PassphraseAck: ['passphrase'],
@@ -82,6 +82,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     private disposed?: Error;
     private callPromise?: Promise<unknown>;
     private abortController?: AbortController;
+    private wardProofCallback?: WardProofCallback;
 
     constructor(device: IDevice, transport: Transport, session: Session, logger: Logger) {
         this.device = device;
@@ -105,6 +106,18 @@ export class DeviceCurrentSession implements TypedCallProvider {
         return !!this.disposed;
     }
 
+    // Register (or clear with `undefined`) the answer to a device-initiated
+    // WARDProofRequest. The WARD pull model has the device request a proof mid-call
+    // instead of the host pushing it up-front; callLoop invokes this to reply with a
+    // WARDProofAck. Set it before the driving typedCall and clear it afterwards.
+    setWardProofCallback(callback: WardProofCallback | undefined) {
+        this.logger.debug(
+            'WARD proof callback',
+            callback ? 'registered for current call' : 'cleared for current call',
+        );
+        this.wardProofCallback = callback;
+    }
+
     async typedCall(
         type: Messages.WireInMessage,
         expectedType: Messages.WireOutMessage | Messages.WireOutMessage[],
@@ -122,20 +135,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
         Assert(Messages.MessageType.properties[type], msg);
 
-        this.abortController = new AbortController();
-        const { signal } = this.abortController;
-        const abortPromise = new Promise<Error>(resolve =>
-            signal.addEventListener('abort', () => resolve(signal.reason)),
-        );
-        const callPromise = this.callLoop(type, msg, abortPromise);
-        this.callPromise = callPromise;
-        const response = await callPromise;
-        this.callPromise = undefined;
-        this.abortController = undefined;
-
-        if (!response.success) throw response.error;
-
-        const { payload } = response;
+        const payload = await this.runCallLoop(type, msg);
         const receivedType = payload.type;
 
         if (isExpectedResponse(payload, expectedType)) {
@@ -159,6 +159,41 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 `assertType: Response of unexpected type: ${receivedType}. Should be ${expectedType}`,
             );
         }
+    }
+
+    /**
+     * Send one message and return the device's final answer WHATEVER its type: for the WARD
+     * relay, which forwards wardd's messages without knowing them. A WARDProofRequest raised
+     * meanwhile is answered through the registered callback, as for any other call; a `Failure`
+     * throws, as from `typedCall`.
+     */
+    relayCall(type: string, msg: Record<string, unknown> = {}) {
+        const schema = Messages.MessageType.properties[type as Messages.MessageKey];
+        if (!schema) {
+            return Promise.reject(
+                ERRORS.TypedError('Method_InvalidParameter', `unknown message ${type}`),
+            );
+        }
+        Assert(schema, msg);
+
+        return this.runCallLoop(type as Messages.MessageKey, msg);
+    }
+
+    private async runCallLoop(type: Messages.MessageKey, msg: Messages.MessagePayload) {
+        this.abortController = new AbortController();
+        const { signal } = this.abortController;
+        const abortPromise = new Promise<Error>(resolve =>
+            signal.addEventListener('abort', () => resolve(signal.reason)),
+        );
+        const callPromise = this.callLoop(type, msg, abortPromise);
+        this.callPromise = callPromise;
+        const response = await callPromise;
+        this.callPromise = undefined;
+        this.abortController = undefined;
+
+        if (!response.success) throw response.error;
+
+        return response.payload;
     }
 
     private async callLoop<T extends Messages.MessageKey>(
@@ -285,6 +320,28 @@ export class DeviceCurrentSession implements TypedCallProvider {
                     }
 
                     [name, data] = ['WordAck', { word: promptRes.payload }];
+                    break;
+                }
+                case 'WARDProofRequest': {
+                    // WARD pull model: the device asks the host for a proof mid-call.
+                    // The driving method registers the answer via setWardProofCallback.
+                    if (!this.wardProofCallback) {
+                        return fail(
+                            'WARDProofRequest received but no WARD proof callback is registered',
+                        );
+                    }
+                    let ack;
+                    try {
+                        this.logger.debug(
+                            'Handling WARDProofRequest',
+                            filterForLog(res.type, res.message),
+                        );
+                        ack = await this.wardProofCallback(res.message);
+                        this.logger.debug('Prepared WARDProofAck', filterForLog('WARDProofAck', ack));
+                    } catch (err) {
+                        return error(err instanceof Error ? err : new Error(String(err)));
+                    }
+                    [name, data] = ['WARDProofAck', ack];
                     break;
                 }
                 default: {

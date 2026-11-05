@@ -20,6 +20,7 @@ import type { thpGetCredentials } from './thpGetCredentials';
 import type { thpRemoveCredentials } from './thpRemoveCredentials';
 import type { wipeDevice } from './wipeDevice';
 import type { TrezorConnectEvolu } from '../evolu';
+import type { TrezorConnectWard } from '../ward';
 
 // Device configuration, firmware, security, and hardware control
 type TrezorConnectManagementBase = {
@@ -48,4 +49,7 @@ type TrezorConnectManagementBase = {
 
 // Evolu identity operations export secret key material, so they belong to the privileged tier and
 // are folded in here to keep them out of the public API (`Omit<Callable, keyof Management>`).
-export type TrezorConnectManagement = TrezorConnectManagementBase & TrezorConnectEvolu;
+// WARD writes device-held state and belongs to the same privileged tier.
+export type TrezorConnectManagement = TrezorConnectManagementBase &
+    TrezorConnectEvolu &
+    TrezorConnectWard;

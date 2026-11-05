@@ -7,6 +7,7 @@ import {
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_REQUEST,
+    WARD_LABEL,
     createErrorMessage,
 } from '@trezor/connect-common';
 import type {
@@ -160,7 +161,7 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
     }
 
     public async updateConnectSettings(params: UpdateConnectSettings) {
-        const { proxy, transports: newTransports, enabledNetworks } = params;
+        const { proxy, transports: newTransports, enabledNetworks, wardd } = params;
 
         try {
             await this.updateProxy(proxy);
@@ -194,6 +195,14 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
             }
         } catch (err) {
             return Promise.resolve(createErrorMessage(err));
+        }
+
+        if (wardd !== undefined) {
+            this.settings = parseConnectSettings({ ...this.settings, wardd });
+            this.handleCoreMessage({
+                type: WARD_LABEL.SET_PROVIDER,
+                payload: { wardd },
+            });
         }
 
         return { success: true as const, payload: { message: 'success' } } as const;
@@ -236,6 +245,7 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
 
     public dispose() {
         this.eventEmitter.removeAllListeners();
+        void this.settings.wardd?.dispose?.();
         this.settings = parseConnectSettings();
 
         // Only dispose coreManager if initialization has completed.

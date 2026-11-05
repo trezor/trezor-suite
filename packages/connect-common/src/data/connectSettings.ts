@@ -121,6 +121,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.enabledNetworks = input.enabledNetworks;
     }
 
+    if (typeof input.wardd === 'object' && input.wardd !== null) {
+        settings.wardd = input.wardd;
+    }
+
     settings.thp = parseThpSettings(input);
 
     return settings;
