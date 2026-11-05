@@ -17,6 +17,7 @@ export const ConnectCallSource = ({ 'data-testid': dataTestId }: ConnectCallSour
         connectPopupCall?.state !== 'ongoing' &&
         connectPopupCall?.state !== 'call-error' &&
         connectPopupCall?.state !== 'address-confirmation' &&
+        connectPopupCall?.state !== 'select-account' &&
         connectPopupCall?.state !== 'tx-simulation'
     )
         return null;

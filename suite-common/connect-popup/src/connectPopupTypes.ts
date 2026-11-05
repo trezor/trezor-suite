@@ -3,6 +3,7 @@ import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-t
 import {
     type CallMethodKeys,
     type DeviceUniquePath,
+    type FeeLevel,
     type PermissionRequest,
 } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
@@ -141,6 +142,12 @@ export type SelectAccountCandidate = {
 };
 
 export const SELECT_ACCOUNT_PAGE_SIZE = 5;
+
+// What the user chose in the fee selection of `sendTransaction`.
+export type SelectFeeChoice =
+    | { type: 'change-account' }
+    | { type: 'select-fee'; value: Exclude<FeeLevel['label'], 'custom'> }
+    | { type: 'select-fee-custom'; value: string };
 
 // Picker options derived from the `selectAccount` method params (by its popup flow).
 export type SelectAccountOptions = {
