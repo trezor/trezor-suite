@@ -93,7 +93,7 @@ export const signStakingStepThunk = createThunk<
         }
 
         const signed = await callStakingAdapter(() =>
-            extra.services.staking.deviceAccess.run(() => {
+            extra.services.staking.deviceAccess.run(attemptId, () => {
                 if (!isAttemptSigning()) {
                     throw new StakingAdapterError(STAKING_SIGNING_ERROR_CODES.cancelled);
                 }

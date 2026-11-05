@@ -156,9 +156,10 @@ describe('signStakingStepThunk', () => {
         const deviceAccess = mockStakingDeviceAccess();
         const { store } = initStore({ deviceAccess });
 
-        await sign(store);
+        const result = await sign(store);
 
         expect(deviceAccess.run).toHaveBeenCalledTimes(1);
+        expect(deviceAccess.run).toHaveBeenCalledWith(result.meta.requestId, expect.any(Function));
     });
 
     it('stamps the deadline from the validity window', async () => {
@@ -258,7 +259,7 @@ describe('signStakingStepThunk', () => {
     it('treats a step reset before the device slot opens as cancelled', async () => {
         let store: Store | null = null;
         const deviceAccess = mockStakingDeviceAccess({
-            run: mockStakingDeviceAccessRun(callback => {
+            run: mockStakingDeviceAccessRun((_attemptId, callback) => {
                 cancelCurrentAttempt(store);
 
                 return callback();

@@ -54,7 +54,11 @@ import {
     mockStakingServices,
     mockStakingState,
 } from '../../mocks';
-import type { StakingDeviceAccess } from '../createStakingDeviceAccess';
+import {
+    type StakingDeviceAccess,
+    type StakingDeviceAccessDeps,
+    createStakingDeviceAccess,
+} from '../createStakingDeviceAccess';
 import { type StakingMiddlewareDeps, prepareStakingMiddleware } from '../state/stakingMiddleware';
 import { stakingReducer } from '../state/stakingReducer';
 import { selectStakingPositionsByAccount } from '../state/stakingSelectors';
@@ -97,6 +101,7 @@ const POLL_INTERVAL_MS = 3_000;
 
 type State = BroadcastStakingStepThunkState;
 type Extra = BroadcastStakingStepThunkDeps & StakingMiddlewareDeps;
+type PrivilegedConnect = ReturnType<StakingDeviceAccessDeps['getTrezorConnect']>;
 
 const createTransaction = (
     overrides: Partial<WalletAccountTransaction> = {},
@@ -273,7 +278,7 @@ const settleTracking = () => jest.advanceTimersByTimeAsync(POLL_INTERVAL_MS);
 const createQueuedDeviceAccess = () => {
     let releaseQueued: (() => void) | null = null;
     const deviceAccess = mockStakingDeviceAccess({
-        run: mockStakingDeviceAccessRun(callback => {
+        run: mockStakingDeviceAccessRun((_attemptId, callback) => {
             if (releaseQueued !== null) return callback();
 
             return new Promise((resolve, reject) => {
@@ -707,6 +712,53 @@ describe('staking engine', () => {
 
         expect((await slow).payload).toBe('attempt-superseded');
         expect(getStep(store, 'freeze')).toMatchObject({ composed: { unsignedTx: { fee: '20' } } });
+    });
+
+    it('cancels the newer attempt on the device after an older one finishes late', async () => {
+        const connectCancel = mock<PrivilegedConnect['cancel']>(() => {});
+        const rejectSigning: (() => void)[] = [];
+        const { store, adapter } = initStore({
+            deviceAccess: createStakingDeviceAccess({
+                getTrezorConnect: () => ({ cancel: connectCancel }) as unknown as PrivilegedConnect,
+                runStakingDeviceCall: callback => callback(),
+            }),
+            adapter: {
+                signStep: mock<StakingProductAdapter['signStep']>(
+                    () =>
+                        new Promise((_resolve, reject) => {
+                            rejectSigning.push(() =>
+                                reject(
+                                    new StakingAdapterError(STAKING_SIGNING_ERROR_CODES.cancelled),
+                                ),
+                            );
+                        }),
+                ),
+            },
+        });
+
+        await planStake(store);
+        await compose(store);
+
+        const older = store.dispatch(signStakingStepThunk({ sessionKey, feeLevel: 'normal' }));
+
+        await jest.advanceTimersByTimeAsync(0);
+        await store.dispatch(cancelStakingStepThunk({ sessionKey })).unwrap();
+
+        const newer = store.dispatch(signStakingStepThunk({ sessionKey, feeLevel: 'normal' }));
+
+        await jest.advanceTimersByTimeAsync(0);
+        rejectSigning[0]?.();
+
+        expect((await older).payload).toBe('cancelled');
+        expect(getStep(store, 'freeze')?.status).toBe('signing');
+
+        await store.dispatch(cancelStakingStepThunk({ sessionKey })).unwrap();
+        rejectSigning[1]?.();
+
+        expect((await newer).payload).toBe('cancelled');
+        expect(connectCancel).toHaveBeenCalledTimes(2);
+        expect(adapter.signStep).toHaveBeenCalledTimes(2);
+        expect(getStep(store, 'freeze')).toMatchObject({ status: 'composed', error: null });
     });
 
     it('signs every step through the injected device access', async () => {

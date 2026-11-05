@@ -5,6 +5,7 @@ export {
 export {
     STAKING_DEVICE_ACCESS_CANCEL_REASONS,
     createStakingDeviceAccess,
+    type RunStakingDeviceCall,
     type StakingDeviceAccess,
     type StakingDeviceAccessCancelReason,
     type StakingDeviceAccessDeps,
