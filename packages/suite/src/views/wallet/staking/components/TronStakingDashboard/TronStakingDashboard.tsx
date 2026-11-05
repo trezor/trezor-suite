@@ -1,12 +1,15 @@
-import { Translation } from '@suite/intl';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
-import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Column, Row, TextButton } from '@trezor/components';
-import { QuestionIcon } from '@trezor/icons';
-import { useNow } from '@trezor/react-utils';
+import { useEffect } from 'react';
 
-import { WalletLayout } from 'src/components/wallet';
-import { useGuideOpenNode } from 'src/hooks/guide';
+import {
+    fetchAllTransactionsForAccountThunk,
+    selectAccountIsStakingActive,
+} from '@suite-common/wallet-core';
+import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { useNow } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
+
 import { useSelector } from 'src/hooks/suite';
 
 import { TronResourcesCard } from './TronResourcesCard/TronResourcesCard';
@@ -14,9 +17,10 @@ import { TronStakedCard } from './TronStakedCard';
 import { TronUnstakingCard } from './TronUnstakingCard/TronUnstakingCard';
 import { TronVotingRewardsCard } from './TronVotingRewardsCard';
 import { TronWithdrawReadyBanner } from './TronWithdrawReadyBanner';
+import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
+import { Transactions } from '../StakingDashboard/components/Transactions';
 
-const TRON_STAKING_GUIDE_PATH = '/earn/staking/tron-trx-staking.md';
 const UNSTAKING_REFRESH_INTERVAL_MS = 60 * 1000;
 
 interface TronStakingDashboardProps {
@@ -25,41 +29,42 @@ interface TronStakingDashboardProps {
 
 export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardProps) => {
     const { account } = selectedAccount;
-    const { openNodeById } = useGuideOpenNode();
+    const { dispatch } = useServices(injectDispatch);
+    const accountKey = account.key;
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, accountKey));
 
     const nowSeconds = useNow(UNSTAKING_REFRESH_INTERVAL_MS) / 1000;
 
+    useEffect(() => {
+        dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
+    }, [accountKey, dispatch]);
+
     return (
-        <WalletLayout title="TR_EARN_STAKING" account={selectedAccount}>
-            {isStakingActive ? (
-                <Column
-                    gap={12}
-                    alignItems="stretch"
-                    width="100%"
-                    maxWidth={560}
-                    margin={{ horizontal: 'auto' }}
-                >
-                    <TronWithdrawReadyBanner account={account} nowSeconds={nowSeconds} />
-                    <TronVotingRewardsCard account={account} />
-                    <TronUnstakingCard account={account} nowSeconds={nowSeconds} />
-                    <TronStakedCard account={account} />
-                    <TronResourcesCard account={account} />
-                    <Row justifyContent="center" padding={{ vertical: 20 }}>
-                        <TextButton
-                            size="small"
-                            iconLeft={QuestionIcon}
-                            isUnderlined
-                            onClick={() => openNodeById(TRON_STAKING_GUIDE_PATH)}
+        <StakingDashboard
+            selectedAccount={selectedAccount}
+            dashboard={
+                <Column gap={48} alignItems="stretch">
+                    {isStakingActive ? (
+                        <Column
+                            gap={12}
+                            alignItems="stretch"
+                            width="100%"
+                            maxWidth={560}
+                            margin={{ horizontal: 'auto' }}
                         >
-                            <Translation id="TR_EARN_TRON_HOW_IT_WORKS" />
-                        </TextButton>
-                    </Row>
+                            <TronWithdrawReadyBanner account={account} nowSeconds={nowSeconds} />
+                            <TronVotingRewardsCard account={account} />
+                            <TronUnstakingCard account={account} nowSeconds={nowSeconds} />
+                            <TronStakedCard account={account} />
+                            <TronResourcesCard account={account} />
+                        </Column>
+                    ) : (
+                        <EmptyStakingCard account={account} />
+                    )}
+                    <Transactions account={account} />
                 </Column>
-            ) : (
-                <EmptyStakingCard account={account} />
-            )}
-        </WalletLayout>
+            }
+        />
     );
 };
