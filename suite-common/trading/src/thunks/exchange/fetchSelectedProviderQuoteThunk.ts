@@ -13,6 +13,7 @@ import { tradeApi } from '../../tradeApi';
 import { type TradingError, type TradingExchangeType } from '../../types';
 import { addIdsToQuotes } from '../../utils';
 import { exchangeUtils } from '../../utils/exchange/exchangeUtils';
+import { getInvityErrorCause } from '../../utils/tradingErrorUtils';
 
 const fetchRejectedValue: TradingError = {
     type: 'error',
@@ -38,8 +39,8 @@ export const fetchSelectedProviderQuoteThunk = createThunk<
         let quotes: ExchangeTrade[] | undefined;
         try {
             quotes = await tradeApi.getExchangeQuotes(quotesRequest, signal);
-        } catch {
-            return rejectWithValue(fetchRejectedValue);
+        } catch (error) {
+            return rejectWithValue({ ...fetchRejectedValue, cause: getInvityErrorCause(error) });
         }
 
         const successQuotes = addIdsToQuotes<TradingExchangeType>(

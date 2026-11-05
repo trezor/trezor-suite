@@ -11,7 +11,7 @@ import {
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 import { type Account, type FeesState } from '@suite-common/wallet-types';
-import { type TokenInfo } from '@trezor/connect';
+import { type PROTO, type TokenInfo } from '@trezor/connect';
 import { createThunk } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
@@ -1200,6 +1200,82 @@ describe('recomposeAndSignTxThunk', () => {
             paymentRequests: mockPaymentRequests,
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when signing with payment requests fails', () => {
+        const dispatchWithPaymentRequests = (
+            signAndPushSendFormTransaction: jest.Mock<Promise<TradingFulfillValue>>,
+        ) => {
+            const { store, account, tradingFormState } = getMocks(
+                { composedTransactionInfo: { ...mockComposedTransactionInfo } },
+                { minor_version: 12, patch_version: 5 },
+            );
+
+            (
+                composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock
+            ).mockImplementationOnce(
+                createThunk(
+                    composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                    (_, { fulfillWithValue }) =>
+                        fulfillWithValue({
+                            normal: {
+                                type: 'final',
+                                outputs: [{ address: 'address', amount: '10000000' }],
+                            },
+                        }),
+                ),
+            );
+
+            return store.dispatch(
+                tradingThunks.recomposeAndSignTxThunk({
+                    account,
+                    address: 'address',
+                    amount: '0.1',
+                    isSlip24Active: true,
+                    tradingFormState,
+                    signAndPushSendFormTransaction,
+                }),
+            );
+        };
+
+        it('keeps the trading error of rejected payment requests', async () => {
+            const paymentRequestsError: TradingError = {
+                type: 'sign-tx-error',
+                code: 'nonce-failed',
+                cause: { source: 'connect', code: 'Device_Disconnected', message: 'Disconnected' },
+            };
+            jest.mocked(tradingThunks.createPaymentRequestsThunk).mockImplementationOnce(
+                createThunk<
+                    PROTO.PaymentRequest[],
+                    Parameters<typeof tradingThunks.createPaymentRequestsThunk>[0],
+                    { rejectValue: TradingError }
+                >(tradingThunks.createPaymentRequestsThunk.typePrefix, (_, { rejectWithValue }) =>
+                    rejectWithValue(paymentRequestsError),
+                ),
+            );
+            const signAndPushSendFormTransaction = jest.fn<Promise<TradingFulfillValue>, []>();
+
+            const response = await dispatchWithPaymentRequests(signAndPushSendFormTransaction);
+
+            expect(response.meta.requestStatus).toBe('rejected');
+            expect(response.payload).toEqual(paymentRequestsError);
+            expect(signAndPushSendFormTransaction).not.toHaveBeenCalled();
+        });
+
+        it('keeps the message of a throwing sign and push as an unexpected cause', async () => {
+            const signAndPushSendFormTransaction = jest
+                .fn<Promise<TradingFulfillValue>, []>()
+                .mockRejectedValueOnce(new Error('Sign and push crashed'));
+
+            const response = await dispatchWithPaymentRequests(signAndPushSendFormTransaction);
+
+            expect(response.meta.requestStatus).toBe('rejected');
+            expect(response.payload).toEqual({
+                type: 'sign-tx-error',
+                code: 'cannot-send-transaction',
+                cause: { source: 'unexpected', message: 'Sign and push crashed' },
+            });
+        });
     });
 
     it('should use the payment output amount as formattedMaxAmount when send-max has extra outputs', async () => {

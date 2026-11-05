@@ -86,12 +86,19 @@ describe('fetchSelectedProviderQuoteThunk', () => {
         });
     });
 
-    it('rejects when the quotes request fails', async () => {
+    it('rejects with the trade API message when the quotes request fails', async () => {
         jest.mocked(tradeApi.getExchangeQuotes).mockRejectedValue(new Error('offline'));
 
         const { result } = await runThunk(buildState({}));
 
-        expect(result.type).toBe(fetchSelectedProviderQuoteThunk.rejected.type);
+        expect(result).toMatchObject({
+            type: fetchSelectedProviderQuoteThunk.rejected.type,
+            payload: {
+                type: 'error',
+                code: 'refresh-transaction-failed',
+                cause: { source: 'invity', message: 'offline' },
+            },
+        });
     });
 
     it('rejects without a saved quotes request', async () => {
