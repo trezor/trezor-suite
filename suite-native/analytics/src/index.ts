@@ -32,6 +32,8 @@ export type { AnalyticsNativeEvents } from './analyticsEvents';
 export * as events from './events';
 
 export type {
+    NavigateFlowFrom,
+    NavigateFlowType,
     StakingNavigateFrom,
     StakingStakeStep,
     StakingUnstakeStep,

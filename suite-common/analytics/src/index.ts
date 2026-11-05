@@ -37,9 +37,27 @@ export { getTransactionCreatedEventPayload } from './utils/getTransactionCreated
 
 export { yieldEarnEntryEvent } from './events/yieldEarnEntryEvent';
 export { earnTilePressedEvent } from './events/earnTilePressedEvent';
+export {
+    NAVIGATE_FLOW_FROM,
+    navigateFlowEvent,
+    type NavigateFlowFrom,
+    type NavigateFlowType,
+} from './events/navigateFlowEvent';
 export { stakingNavigateEvent, type StakingNavigateFrom } from './events/stakingNavigateEvent';
 export { stakingStakeEvent, type StakingStakeStep } from './events/stakingStakeEvent';
 export { stakingUnstakeEvent, type StakingUnstakeStep } from './events/stakingUnstakeEvent';
 export { stakingClaimEvent, type StakingClaimStep } from './events/stakingClaimEvent';
 
 export { appFormPercentButtonsEvent } from './events/appFormPercentButtonsEvent';
+export { assetsTimeframeChangeEvent } from './events/assetsTimeframeChangeEvent';
+export { assetsTransactionDetailEvent } from './events/assetsTransactionDetailEvent';
+export { assetsActionsEvent } from './events/assetsActionsEvent';
+export {
+    COPY_TO_CLIPBOARD_TYPE_BY_ADDRESS_TYPE,
+    appCopyToClipboardEvent,
+    type AppCopyToClipboardFrom,
+} from './events/appCopyToClipboardEvent';
+export { appExternalLinkEvent } from './events/appExternalLinkEvent';
+export { dashboardAssetListMenuEvent } from './events/dashboardAssetListMenuEvent';
+export { dashboardNftsEvent } from './events/dashboardNftsEvent';
+export { dashboardAssetTableEvent } from './events/dashboardAssetTableEvent';

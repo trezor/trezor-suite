@@ -1,11 +1,13 @@
 import { memo } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Nfts } from '@suite/nfts';
 import {
     selectAllAccountsToList,
     selectDiscoveryForSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
@@ -18,6 +20,7 @@ import { getHomeAssetEmptyStateKind } from './homeAssetEmptyStateKind';
 import { DashboardPromoBanner } from '../dashboard/DashboardPromoBanner/DashboardPromoBanner';
 
 export const HomeAssetDashboard = memo(() => {
+    const { analytics } = useServices(injectDesktopAnalytics);
     const emptyStateKind = useSelector(state =>
         getHomeAssetEmptyStateKind({
             accounts: selectAllAccountsToList(state),
@@ -36,7 +39,16 @@ export const HomeAssetDashboard = memo(() => {
             <DashboardPromoBanner />
             <HomeAssetTable />
             <HomeAssetFeedback />
-            <Nfts />
+            <Nfts
+                onToggle={({ isOpen, collectionCount, hiddenCount }) =>
+                    analytics.report({
+                        type: events.dashboardNftsEvent.name,
+                        payload: isOpen
+                            ? { action: 'expand', collectionCount, hiddenCount }
+                            : { action: 'collapse' },
+                    })
+                }
+            />
         </Column>
     );
 });

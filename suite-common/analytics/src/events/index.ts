@@ -1,15 +1,24 @@
 export { accountsInfoEvent } from './accountsInfoEvent';
+export { appCopyToClipboardEvent } from './appCopyToClipboardEvent';
+export { appExternalLinkEvent } from './appExternalLinkEvent';
 export { appFormPercentButtonsEvent } from './appFormPercentButtonsEvent';
+export { assetsActionsEvent } from './assetsActionsEvent';
+export { assetsTimeframeChangeEvent } from './assetsTimeframeChangeEvent';
+export { assetsTransactionDetailEvent } from './assetsTransactionDetailEvent';
 export { coinSignMessageEvent } from './coinSignMessageEvent';
 export { coinVerifyMessageEvent } from './coinVerifyMessageEvent';
 export { connectPopupCallEvent } from './connectPopupCallEvent';
 export { connectPopupErrorEvent } from './connectPopupErrorEvent';
 export { connectPopupInitEvent } from './connectPopupInitEvent';
 export { connectPopupPermissionsEvent } from './connectPopupPermissionsEvent';
+export { dashboardAssetListMenuEvent } from './dashboardAssetListMenuEvent';
+export { dashboardAssetTableEvent } from './dashboardAssetTableEvent';
+export { dashboardNftsEvent } from './dashboardNftsEvent';
 export { deviceConnectionDeviceConfirmationEvent } from './deviceConnectionDeviceConfirmationEvent';
 export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundEvent';
 export { deviceConnectionDevicePairedEvent } from './deviceConnectionDevicePairedEvent';
 export { guideSupportChatOpenedEvent } from './guideSupportChatOpenedEvent';
+export { navigateFlowEvent } from './navigateFlowEvent';
 export {
     onboardingFeedbackBannerClickedEvent,
     type OnboardingFeedbackBannerOrigin,

@@ -17,9 +17,14 @@ import { TransactionTargetLayout } from './TransactionTargetLayout';
 type CoinjoinBatchItemProps = {
     transactions: WalletAccountTransaction[];
     isPending: boolean;
+    onTransactionDetailOpen?: (transaction: WalletAccountTransaction) => void;
 };
 
-export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItemProps) => {
+export const CoinjoinBatchItem = ({
+    transactions,
+    isPending,
+    onTransactionDetailOpen,
+}: CoinjoinBatchItemProps) => {
     const { dispatch } = useServices(injectDispatch);
 
     return (
@@ -39,7 +44,8 @@ export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItem
             {transactions.map(transaction => {
                 const transactionAmount = new BigNumber(transaction.amount);
 
-                const openTransactionDetail = () =>
+                const openTransactionDetail = () => {
+                    onTransactionDetailOpen?.(transaction);
                     dispatch(
                         openModal({
                             type: 'transaction-detail',
@@ -50,6 +56,7 @@ export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItem
                             flow: 'detail',
                         }),
                     );
+                };
 
                 return (
                     <TransactionTargetLayout

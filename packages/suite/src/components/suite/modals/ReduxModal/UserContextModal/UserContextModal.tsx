@@ -194,6 +194,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
                     onCancel={onCancel}
                     address={payload.address}
                     addressType={payload.addressType}
+                    copyAnalyticsFrom={payload.copyAnalyticsFrom}
                 />
             );
         case 'unhide-token':

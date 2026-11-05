@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectAssetPriceChartRange, setAssetPriceChartRange } from '@suite/flags';
-import { assetPriceChartRangeOptions } from '@suite-common/price-chart';
+import { type AssetPriceChartRange, assetPriceChartRangeOptions } from '@suite-common/price-chart';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
@@ -15,11 +15,13 @@ const options = assetPriceChartRangeOptions.map(({ label, range }) => ({ label, 
 type AssetPriceChartRangeSelectorProps = {
     networkSymbol: NetworkSymbol;
     tokenContract?: TokenAddress;
+    onRangeChange?: (range: AssetPriceChartRange) => void;
 };
 
 export const AssetPriceChartRangeSelector = ({
     networkSymbol,
     tokenContract,
+    onRangeChange,
 }: AssetPriceChartRangeSelectorProps) => {
     const { dispatch } = useServices(injectDispatch);
     const range = useSelector(selectAssetPriceChartRange);
@@ -34,7 +36,10 @@ export const AssetPriceChartRangeSelector = ({
             size="small"
             options={options}
             selectedOption={range}
-            onChange={pickedRange => dispatch(setAssetPriceChartRange(pickedRange))}
+            onChange={pickedRange => {
+                dispatch(setAssetPriceChartRange(pickedRange));
+                onRangeChange?.(pickedRange);
+            }}
             data-testid="@price-chart/range"
         />
     );

@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
@@ -38,12 +39,37 @@ const HomeAssetTableFilter = ({
     onSmallBalancesChange,
 }: HomeAssetTableFilterProps) => {
     const popoverRef = useRef<PopoverRef>(null);
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const smallBalances = useSelector(selectSmallBalanceSummary);
 
     const choose = (chosen: HomeAssetGrouping) => {
+        if (chosen !== grouping) {
+            analytics.report({
+                type: events.dashboardAssetListMenuEvent.name,
+                payload: {
+                    type: 'grouping',
+                    value: chosen === 'networks' ? 'by-networks' : 'default',
+                },
+            });
+        }
         onGroupingChange(chosen);
         popoverRef.current?.close();
+    };
+
+    const toggleSmallBalances = () => {
+        analytics.report({
+            type: events.dashboardAssetListMenuEvent.name,
+            payload: { type: 'show-small-balances', value: !areSmallBalancesShown },
+        });
+        onSmallBalancesChange(!areSmallBalancesShown);
+    };
+
+    const openHiddenTokens = () => {
+        analytics.report({
+            type: events.navigateFlowEvent.name,
+            payload: { action: 'navigate', type: 'hidden-tokens', from: 'dashboard' },
+        });
+        dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' }));
     };
 
     return (
@@ -80,15 +106,14 @@ const HomeAssetTableFilter = ({
                             isHidden: smallBalances === undefined,
                             hasSeparatorBefore: true,
                             closeOnClick: false,
-                            onClick: () => onSmallBalancesChange(!areSmallBalancesShown),
+                            onClick: toggleSmallBalances,
                             'data-testid': '@dashboard/home-asset/small-balances-toggle',
                         },
                         {
                             label: <Translation id="TR_HIDDEN_TOKENS" />,
                             iconRight: CaretRightIcon,
                             hasSeparatorBefore: true,
-                            onClick: () =>
-                                dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' })),
+                            onClick: openHiddenTokens,
                             'data-testid': '@dashboard/home-asset/hidden-tokens',
                         },
                     ]}

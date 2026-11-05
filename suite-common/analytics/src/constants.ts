@@ -59,4 +59,13 @@ export enum EventType {
     YieldClaim = 'yield/claim',
     YieldWrap = 'yield/wrap',
     YieldUnwrap = 'yield/unwrap',
+    NavigateFlow = 'navigate/flow',
+    AssetsTimeframeChange = 'assets/timeframe-change',
+    AssetsTransactionDetail = 'assets/transaction-detail',
+    AssetsActions = 'assets/actions',
+    AppCopyToClipboard = 'app/copy-to-clipboard',
+    AppExternalLink = 'app/external-link',
+    DashboardAssetListMenu = 'dashboard/asset-list-menu',
+    DashboardNfts = 'dashboard/nfts',
+    DashboardAssetTable = 'dashboard/asset-table',
 }
