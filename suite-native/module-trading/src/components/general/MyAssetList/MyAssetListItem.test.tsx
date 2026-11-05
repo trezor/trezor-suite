@@ -3,7 +3,7 @@ import type { CryptoId } from 'invity-api';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type TokenSymbol, asBaseCurrencyAmount, toTokenAddress } from '@suite-common/wallet-types';
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -58,6 +58,7 @@ describe('MyAssetListItem', () => {
                     balance: '1.5',
                     fiatBalance: null,
                     tokenSymbol: 'USDC' as TokenSymbol,
+                    contract: toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
                     decimals: 6,
                 })}
                 onPress={jest.fn()}
@@ -76,6 +77,7 @@ describe('MyAssetListItem', () => {
                     balance: '23.910287',
                     fiatBalance: asBaseCurrencyAmount(new BigNumber('23.91')),
                     tokenSymbol: 'USDC' as TokenSymbol,
+                    contract: toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
                     decimals: 6,
                 })}
                 onPress={jest.fn()}

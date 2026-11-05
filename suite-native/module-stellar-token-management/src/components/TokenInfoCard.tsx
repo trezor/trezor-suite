@@ -5,7 +5,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenUrlBlur } from '@suite-native/tokens';
+import { TokenMetadataProvider, TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TokenInfoCardProps = {
@@ -32,38 +32,42 @@ export const TokenInfoCard = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Pressable onPress={onPress}>
-            <Card noPadding style={applyStyle(tokenCardStyle)}>
-                <HStack justifyContent="space-between" alignItems="center" padding="sp16">
-                    <VStack spacing="sp8">
-                        <Text variant="body-md-strong">
-                            <Translation id="moduleStellarToken.networkFee.token" />
-                        </Text>
-                        <Text variant="body-md-strong">
-                            <Translation id="moduleStellarToken.tokenDetail.issuer" />
-                        </Text>
-                    </VStack>
-                    <HStack alignItems="center" spacing="sp12">
-                        <VStack spacing="sp8" alignItems="flex-end">
-                            <HStack alignItems="center" spacing="sp8">
-                                <TokenIcon
-                                    networkSymbol={asNetworkSymbol('xlm')}
-                                    contractAddress={iconContractAddress}
-                                    tokenSymbol={tokenName}
-                                    size="extraSmall"
-                                />
-                                <TokenUrlBlur
-                                    text={tokenName}
-                                    networkSymbol={asNetworkSymbol('xlm')}
-                                    tokenContract={tokenContract}
-                                />
-                            </HStack>
-                            <Text variant="body-md">{issuerDomain}</Text>
+        <TokenMetadataProvider
+            networkSymbol={asNetworkSymbol('xlm')}
+            tokens={[{ contract: tokenContract, name: tokenName }]}
+        >
+            <Pressable onPress={onPress}>
+                <Card noPadding style={applyStyle(tokenCardStyle)}>
+                    <HStack justifyContent="space-between" alignItems="center" padding="sp16">
+                        <VStack spacing="sp8">
+                            <Text variant="body-md-strong">
+                                <Translation id="moduleStellarToken.networkFee.token" />
+                            </Text>
+                            <Text variant="body-md-strong">
+                                <Translation id="moduleStellarToken.tokenDetail.issuer" />
+                            </Text>
                         </VStack>
-                        <Icon name="caretDown" color="contentSecondary" />
+                        <HStack alignItems="center" spacing="sp12">
+                            <VStack spacing="sp8" alignItems="flex-end">
+                                <HStack alignItems="center" spacing="sp8">
+                                    <TokenIcon
+                                        networkSymbol={asNetworkSymbol('xlm')}
+                                        contractAddress={iconContractAddress}
+                                        tokenSymbol={tokenName}
+                                        size="extraSmall"
+                                    />
+                                    <TokenName
+                                        networkSymbol={asNetworkSymbol('xlm')}
+                                        contractAddress={tokenContract}
+                                    />
+                                </HStack>
+                                <Text variant="body-md">{issuerDomain}</Text>
+                            </VStack>
+                            <Icon name="caretDown" color="contentSecondary" />
+                        </HStack>
                     </HStack>
-                </HStack>
-            </Card>
-        </Pressable>
+                </Card>
+            </Pressable>
+        </TokenMetadataProvider>
     );
 };

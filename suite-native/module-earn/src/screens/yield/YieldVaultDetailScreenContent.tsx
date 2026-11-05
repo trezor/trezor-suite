@@ -24,6 +24,7 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import {
+    CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
@@ -35,6 +36,7 @@ import {
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
@@ -248,185 +250,215 @@ export const YieldVaultDetailScreenContent = ({
     ]);
 
     return (
-        <>
-            <VStack spacing="sp16" marginTop="sp16" paddingHorizontal="sp16">
-                <Box>
-                    <Text variant="headline-sm">{vault?.outputToken?.name ?? ''}</Text>
-                </Box>
+        <TokenMetadataProvider
+            networkSymbol={account.symbol}
+            tokens={[
+                yieldToken,
+                ...(vault?.token.address
+                    ? [
+                          {
+                              contract: vault.token.address,
+                              symbol: vault.token.symbol,
+                              decimals: vault.token.decimals,
+                          },
+                      ]
+                    : []),
+            ]}
+        >
+            <>
+                <VStack spacing="sp16" marginTop="sp16" paddingHorizontal="sp16">
+                    <Box>
+                        <Text variant="headline-sm">{vault?.outputToken?.name ?? ''}</Text>
+                    </Box>
 
-                <Card noPadding>
-                    {account && yieldToken && (
-                        <VStack spacing="sp4" style={applyStyle(stakedSectionStyleWithBorder)}>
-                            <Text variant="body-md" color="contentSecondary">
-                                <Translation id="earn.tokenBalance" />
-                            </Text>
+                    <Card noPadding>
+                        {account && yieldToken && (
+                            <VStack spacing="sp4" style={applyStyle(stakedSectionStyleWithBorder)}>
+                                <Text variant="body-md" color="contentSecondary">
+                                    <Translation id="earn.tokenBalance" />
+                                </Text>
 
-                            <DiscreetTextTrigger>
-                                <CompactTokenAmountFormatter
-                                    value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
-                                    networkSymbol={account.symbol}
-                                    tokenContract={yieldToken.contract}
-                                    tokenSymbol={yieldToken.symbol}
-                                    tokenDecimals={yieldToken.decimals}
-                                    color="contentPrimary"
-                                    variant="headline-sm"
+                                <DiscreetTextTrigger>
+                                    <CompactTokenAmountFormatter
+                                        value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
+                                        networkSymbol={account.symbol}
+                                        contractAddress={yieldToken.contract}
+                                        color="contentPrimary"
+                                        variant="headline-sm"
+                                    />
+                                </DiscreetTextTrigger>
+
+                                <TokenToFiatAmountFormatter
+                                    value={yieldToken.balance ?? '0'}
+                                    symbol={account?.symbol}
+                                    contract={yieldToken.contract}
+                                    variant="body-md"
+                                    color="contentSecondary"
                                 />
-                            </DiscreetTextTrigger>
-
-                            <TokenToFiatAmountFormatter
-                                value={yieldToken.balance ?? '0'}
-                                symbol={account?.symbol}
-                                contract={yieldToken.contract}
-                                variant="body-md"
-                                color="contentSecondary"
-                            />
-                        </VStack>
-                    )}
-
-                    {yearlyRewards !== null && depositedPosition !== null && (
-                        <VStack spacing="sp4" style={applyStyle(stakedSectionStyleWithBorder)}>
-                            <Text variant="body-md" color="contentSecondary">
-                                <Translation id="earn.yearlyRewards" />
-                            </Text>
-
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(yearlyRewards)}
-                                tokenSymbol={
-                                    wrappedNativeSymbol
-                                        ? toTokenSymbol(wrappedNativeSymbol)
-                                        : depositedPosition.tokenSymbol
-                                }
-                                networkSymbol={account.symbol}
-                                tokenContract={depositedPosition.contractAddress}
-                                tokenDecimals={depositedPosition.decimals}
-                                color="contentPrimary"
-                                variant="headline-sm"
-                            />
-
-                            <Discreet>
-                                <Text variant="body-md" color="contentSecondary">
-                                    <Translation
-                                        id="earn.yearlyRewardsDeposited"
-                                        values={{
-                                            amountWithSymbol: (
-                                                <CryptoAmountFormatter
-                                                    value={depositedPosition.balance}
-                                                    symbol={
-                                                        wrappedNativeSymbol
-                                                            ? toTokenSymbol(wrappedNativeSymbol)
-                                                            : depositedPosition.tokenSymbol
-                                                    }
-                                                    withSymbol
-                                                    isBalance
-                                                    formatStyle="compact-balance"
-                                                    tokenDecimals={depositedPosition.decimals}
-                                                />
-                                            ),
-                                        }}
-                                    />
-                                </Text>
-                            </Discreet>
-                        </VStack>
-                    )}
-
-                    {potentialRewards && depositedPosition && (
-                        <VStack spacing="sp4" style={applyStyle(stakedSectionStyleWithBorder)}>
-                            <Text variant="body-md" color="contentSecondary">
-                                <Translation id="earn.potentialRewards" />
-                            </Text>
-
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(potentialRewards.potentialRewards)}
-                                tokenSymbol={
-                                    wrappedNativeSymbol
-                                        ? toTokenSymbol(wrappedNativeSymbol)
-                                        : depositedPosition.tokenSymbol
-                                }
-                                networkSymbol={account.symbol}
-                                tokenContract={depositedPosition.contractAddress}
-                                tokenDecimals={depositedPosition.decimals}
-                                color="contentBrand"
-                                variant="headline-sm"
-                            />
-
-                            <Discreet>
-                                <Text variant="body-md" color="contentSecondary">
-                                    <Translation
-                                        id="earn.potentialRewardsIfYouAdd"
-                                        values={{
-                                            amountWithSymbol: (
-                                                <CryptoAmountFormatter
-                                                    value={potentialRewards.additionalDepositAmount}
-                                                    symbol={
-                                                        wrappedNativeSymbol
-                                                            ? toTokenSymbol(wrappedNativeSymbol)
-                                                            : depositedPosition.tokenSymbol
-                                                    }
-                                                    withSymbol
-                                                    isBalance
-                                                    formatStyle="compact-balance"
-                                                    tokenDecimals={depositedPosition.decimals}
-                                                />
-                                            ),
-                                        }}
-                                    />
-                                </Text>
-                            </Discreet>
-                        </VStack>
-                    )}
-
-                    <HStack
-                        justifyContent="space-between"
-                        style={applyStyle(stakedSectionStyleWithBorder)}
-                    >
-                        {apyValue ? (
-                            <ApyDottedUnderline onPress={openApyBreakdownBottomSheet}>
-                                <Text variant="body-sm">
-                                    <Translation
-                                        id="earn.apyPercentage"
-                                        values={{ apy: apyValue }}
-                                    />
-                                </Text>
-                            </ApyDottedUnderline>
-                        ) : (
-                            <Text variant="body-sm">
-                                <Translation id="earn.apyNotAvailable" />
-                            </Text>
+                            </VStack>
                         )}
 
-                        <Text variant="body-sm">
-                            <Translation id="earn.rewardsEveryBlock" />
-                        </Text>
-                    </HStack>
+                        {yearlyRewards !== null && depositedPosition !== null && (
+                            <VStack spacing="sp4" style={applyStyle(stakedSectionStyleWithBorder)}>
+                                <Text variant="body-md" color="contentSecondary">
+                                    <Translation id="earn.yearlyRewards" />
+                                </Text>
 
-                    <HStack spacing="sp12" style={applyStyle(stakedSectionStyle)}>
-                        <Box flex={1}>
-                            <Button iconRight="arrowUp" size="medium" onPress={onDepositPress}>
-                                <Translation id="moduleAccounts.accountDetail.stablecoinYield.deposit" />
-                            </Button>
-                        </Box>
+                                {wrappedNativeSymbol ? (
+                                    <CompactCryptoAmountFormatter
+                                        value={asDecimalTokenAmount(yearlyRewards)}
+                                        symbol={account.symbol}
+                                        color="contentPrimary"
+                                        variant="headline-sm"
+                                    />
+                                ) : (
+                                    <CompactTokenAmountFormatter
+                                        value={asDecimalTokenAmount(yearlyRewards)}
+                                        networkSymbol={account.symbol}
+                                        contractAddress={depositedPosition.contractAddress}
+                                        color="contentPrimary"
+                                        variant="headline-sm"
+                                    />
+                                )}
 
-                        <Box flex={1}>
-                            <Button iconRight="arrowDown" size="medium" onPress={onWithdrawPress}>
-                                <Translation id="moduleAccounts.accountDetail.stablecoinYield.withdraw" />
-                            </Button>
-                        </Box>
-                    </HStack>
-                </Card>
-            </VStack>
+                                <Discreet>
+                                    <Text variant="body-md" color="contentSecondary">
+                                        <Translation
+                                            id="earn.yearlyRewardsDeposited"
+                                            values={{
+                                                amountWithSymbol: (
+                                                    <CryptoAmountFormatter
+                                                        value={depositedPosition.balance}
+                                                        symbol={
+                                                            wrappedNativeSymbol
+                                                                ? toTokenSymbol(wrappedNativeSymbol)
+                                                                : depositedPosition.tokenSymbol
+                                                        }
+                                                        withSymbol
+                                                        isBalance
+                                                        formatStyle="compact-balance"
+                                                        tokenDecimals={depositedPosition.decimals}
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </Text>
+                                </Discreet>
+                            </VStack>
+                        )}
 
-            <Box marginTop="sp52" marginHorizontal="sp16">
-                <Text variant="headline-sm">
-                    <Translation id="transactions.title" />
-                </Text>
-            </Box>
+                        {potentialRewards && depositedPosition && (
+                            <VStack spacing="sp4" style={applyStyle(stakedSectionStyleWithBorder)}>
+                                <Text variant="body-md" color="contentSecondary">
+                                    <Translation id="earn.potentialRewards" />
+                                </Text>
 
-            <YieldApyBreakdownBottomSheet
-                ref={apyBreakdownBottomSheetRef}
-                onClose={closeApyBreakdownBottomSheet}
-                account={account}
-                vault={vault}
-            />
-        </>
+                                {wrappedNativeSymbol ? (
+                                    <CompactCryptoAmountFormatter
+                                        value={asDecimalTokenAmount(
+                                            potentialRewards.potentialRewards,
+                                        )}
+                                        symbol={account.symbol}
+                                        color="contentBrand"
+                                        variant="headline-sm"
+                                    />
+                                ) : (
+                                    <CompactTokenAmountFormatter
+                                        value={asDecimalTokenAmount(
+                                            potentialRewards.potentialRewards,
+                                        )}
+                                        networkSymbol={account.symbol}
+                                        contractAddress={depositedPosition.contractAddress}
+                                        color="contentBrand"
+                                        variant="headline-sm"
+                                    />
+                                )}
+
+                                <Discreet>
+                                    <Text variant="body-md" color="contentSecondary">
+                                        <Translation
+                                            id="earn.potentialRewardsIfYouAdd"
+                                            values={{
+                                                amountWithSymbol: (
+                                                    <CryptoAmountFormatter
+                                                        value={
+                                                            potentialRewards.additionalDepositAmount
+                                                        }
+                                                        symbol={
+                                                            wrappedNativeSymbol
+                                                                ? toTokenSymbol(wrappedNativeSymbol)
+                                                                : depositedPosition.tokenSymbol
+                                                        }
+                                                        withSymbol
+                                                        isBalance
+                                                        formatStyle="compact-balance"
+                                                        tokenDecimals={depositedPosition.decimals}
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </Text>
+                                </Discreet>
+                            </VStack>
+                        )}
+
+                        <HStack
+                            justifyContent="space-between"
+                            style={applyStyle(stakedSectionStyleWithBorder)}
+                        >
+                            {apyValue ? (
+                                <ApyDottedUnderline onPress={openApyBreakdownBottomSheet}>
+                                    <Text variant="body-sm">
+                                        <Translation
+                                            id="earn.apyPercentage"
+                                            values={{ apy: apyValue }}
+                                        />
+                                    </Text>
+                                </ApyDottedUnderline>
+                            ) : (
+                                <Text variant="body-sm">
+                                    <Translation id="earn.apyNotAvailable" />
+                                </Text>
+                            )}
+
+                            <Text variant="body-sm">
+                                <Translation id="earn.rewardsEveryBlock" />
+                            </Text>
+                        </HStack>
+
+                        <HStack spacing="sp12" style={applyStyle(stakedSectionStyle)}>
+                            <Box flex={1}>
+                                <Button iconRight="arrowUp" size="medium" onPress={onDepositPress}>
+                                    <Translation id="moduleAccounts.accountDetail.stablecoinYield.deposit" />
+                                </Button>
+                            </Box>
+
+                            <Box flex={1}>
+                                <Button
+                                    iconRight="arrowDown"
+                                    size="medium"
+                                    onPress={onWithdrawPress}
+                                >
+                                    <Translation id="moduleAccounts.accountDetail.stablecoinYield.withdraw" />
+                                </Button>
+                            </Box>
+                        </HStack>
+                    </Card>
+                </VStack>
+
+                <Box marginTop="sp52" marginHorizontal="sp16">
+                    <Text variant="headline-sm">
+                        <Translation id="transactions.title" />
+                    </Text>
+                </Box>
+
+                <YieldApyBreakdownBottomSheet
+                    ref={apyBreakdownBottomSheetRef}
+                    onClose={closeApyBreakdownBottomSheet}
+                    account={account}
+                    vault={vault}
+                />
+            </>
+        </TokenMetadataProvider>
     );
 };

@@ -14,12 +14,7 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, toTokenSymbol } from '@suite-common/tokens';
-import {
-    getDisplaySymbol,
-    getNetwork,
-    getNetworkDisplaySymbolName,
-} from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -27,7 +22,7 @@ import {
     selectAccountHiddenTokens,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,
@@ -152,7 +147,6 @@ export const TokenSettingsBottomSheet = forwardRef(
         if (!account || !symbol) return null;
 
         const tokenBalance = token?.balance ?? '0';
-        const tokenSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
         const networkName = getNetwork(symbol).name;
 
         const isHidden = hiddenTokens.some(
@@ -240,7 +234,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                         <TokenName
                             isInline
                             networkSymbol={symbol}
-                            tokenContract={tokenContract}
+                            contractAddress={tokenContract}
                             variant="headline-sm"
                         />
                     ) : (
@@ -297,9 +291,8 @@ export const TokenSettingsBottomSheet = forwardRef(
                                         {tokenContract ? (
                                             <ExactTokenAmountFormatter
                                                 networkSymbol={symbol}
-                                                tokenContract={tokenContract}
+                                                contractAddress={tokenContract}
                                                 value={asDecimalTokenAmount(tokenBalance)}
-                                                tokenSymbol={tokenSymbol}
                                                 variant="body-sm"
                                                 color="contentPrimary"
                                                 numberOfLines={1}

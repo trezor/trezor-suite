@@ -75,10 +75,8 @@ export const AssetAccountListItem = ({
     const cryptoValue = contractAddress ? (
         <CompactTokenAmountFormatter
             value={asDecimalTokenAmount(cryptoBalance)}
-            tokenSymbol={tokenSymbol ?? (token?.symbol ? toTokenSymbol(token.symbol) : null)}
-            tokenDecimals={token?.decimals}
             networkSymbol={symbol}
-            tokenContract={contractAddress}
+            contractAddress={contractAddress}
             numberOfLines={1}
             adjustsFontSizeToFit
         />

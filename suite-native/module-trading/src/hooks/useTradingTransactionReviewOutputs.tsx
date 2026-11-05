@@ -5,7 +5,6 @@ import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-commo
 import {
     type AccountKey,
     type TokenAddress,
-    type TokenSymbol,
     type TransactionReviewStatefulOutput,
     toTokenAddress,
 } from '@suite-common/wallet-types';
@@ -18,6 +17,7 @@ import {
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type ContentBuilderFunction } from './reviewOutputs/useTradingContentBuilder';
@@ -226,26 +226,29 @@ export const useTradingTransactionReviewOutputs = ({
                             );
                         }
 
-                        if (!output.token) {
+                        if (!output.token || !networkSymbol) {
                             return <Text variant="body-sm">{output.value}</Text>;
                         }
 
                         return (
-                            <ExactTokenAmountFormatter
-                                networkSymbol={networkSymbol ?? undefined}
-                                tokenContract={toTokenAddress(output.token.contract)}
-                                variant="body-sm"
-                                color="contentPrimary"
-                                textAlign="right"
-                                value={convertTokenValueToDecimal(
-                                    output.value,
-                                    output.token.decimals,
-                                )}
-                                tokenSymbol={output.token.symbol as TokenSymbol}
-                                maxDisplayedDecimals={output.token.decimals}
-                                // The user must be able to verify token amounts before signing the trade.
-                                discreetMode="disabled"
-                            />
+                            <TokenMetadataProvider
+                                networkSymbol={networkSymbol}
+                                tokens={[output.token]}
+                            >
+                                <ExactTokenAmountFormatter
+                                    networkSymbol={networkSymbol}
+                                    contractAddress={toTokenAddress(output.token.contract)}
+                                    variant="body-sm"
+                                    color="contentPrimary"
+                                    textAlign="right"
+                                    value={convertTokenValueToDecimal(
+                                        output.value,
+                                        output.token.decimals,
+                                    )}
+                                    // The user must be able to verify token amounts before signing the trade.
+                                    discreetMode="disabled"
+                                />
+                            </TokenMetadataProvider>
                         );
                     };
 

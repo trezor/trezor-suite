@@ -31,7 +31,7 @@ export const AssetDetailScreenHeaderContent = ({
                     <TokenSymbol
                         isTruncated
                         networkSymbol={networkSymbol}
-                        tokenContract={tokenContract}
+                        contractAddress={tokenContract}
                         variant="body-md-strong"
                         numberOfLines={1}
                         ellipsizeMode="tail"

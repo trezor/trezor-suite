@@ -58,7 +58,7 @@ export const ReceiveDestinationTagInfo = ({
                             <TokenSymbol
                                 isInline
                                 networkSymbol={accountSymbol}
-                                tokenContract={tokenContract}
+                                contractAddress={tokenContract}
                                 variant="body-xs"
                             />
                         ) : (

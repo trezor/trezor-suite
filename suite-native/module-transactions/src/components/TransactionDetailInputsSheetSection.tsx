@@ -14,6 +14,7 @@ import {
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { type TransactionTranfer } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -37,39 +38,51 @@ const TransactionAddressAmount = ({
     decimals,
     networkSymbol,
     tokenContract,
-}: TransactionAddressAmountProps) => (
-    <Box>
-        {address ? (
-            <ClipboardCopyMenu value={address}>
-                <AddressFormatter value={address} variant="body-sm" format="short" />
-            </ClipboardCopyMenu>
-        ) : (
-            <AddressFormatter value={address} variant="body-sm" format="short" />
-        )}
-        {amount &&
-            (isNetworkSymbol(symbol) ? (
-                <ExactCryptoAmountFormatter
-                    value={amount}
-                    symbol={symbol}
-                    isBalance={false}
-                    variant="body-xs"
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                />
-            ) : (
+}: TransactionAddressAmountProps) => {
+    let amountContent: ReactNode = null;
+
+    if (amount && tokenContract && networkSymbol) {
+        amountContent = (
+            <TokenMetadataProvider
+                networkSymbol={networkSymbol}
+                tokens={[{ contract: tokenContract, symbol, decimals }]}
+            >
                 <ExactTokenAmountFormatter
                     networkSymbol={networkSymbol}
-                    tokenContract={tokenContract}
+                    contractAddress={tokenContract}
                     value={convertTokenValueToDecimal(amount, decimals ?? 0)}
-                    tokenSymbol={symbol}
-                    maxDisplayedDecimals={decimals}
                     variant="body-xs"
                     numberOfLines={1}
                     adjustsFontSizeToFit
                 />
-            ))}
-    </Box>
-);
+            </TokenMetadataProvider>
+        );
+    } else if (amount && !tokenContract && isNetworkSymbol(symbol)) {
+        amountContent = (
+            <ExactCryptoAmountFormatter
+                value={amount}
+                symbol={symbol}
+                isBalance={false}
+                variant="body-xs"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+            />
+        );
+    }
+
+    return (
+        <Box>
+            {address ? (
+                <ClipboardCopyMenu value={address}>
+                    <AddressFormatter value={address} variant="body-sm" format="short" />
+                </ClipboardCopyMenu>
+            ) : (
+                <AddressFormatter value={address} variant="body-sm" format="short" />
+            )}
+            {amountContent}
+        </Box>
+    );
+};
 
 type TransactionTransferSectionProps = {
     transfers: TransactionTranfer[];

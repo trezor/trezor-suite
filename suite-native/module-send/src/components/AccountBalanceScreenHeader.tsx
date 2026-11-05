@@ -37,7 +37,7 @@ export const AccountBalanceScreenHeader = ({
                                 <TokenSymbol
                                     isInline
                                     networkSymbol={account.symbol}
-                                    tokenContract={tokenContract}
+                                    contractAddress={tokenContract}
                                     variant="body-md-strong"
                                 />
                             ) : (

@@ -2,7 +2,11 @@ import { useCallback } from 'react';
 
 import { type TokenSymbol, toTokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account, type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type TransactionReviewStatefulOutput,
+    toTokenAddress,
+} from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {
@@ -11,6 +15,7 @@ import {
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import {
     TransactionReviewOutputHexData,
     TransactionReviewOutputItemValues,
@@ -314,25 +319,24 @@ export const useYieldTransactionReviewOutputs = ({
                         }
 
                         return (
-                            <ExactTokenAmountFormatter
+                            <TokenMetadataProvider
                                 networkSymbol={account.symbol}
-                                tokenContract={
-                                    output.token?.contract
-                                        ? toTokenAddress(output.token.contract)
-                                        : undefined
-                                }
-                                variant="body-sm"
-                                color="contentPrimary"
-                                textAlign="right"
-                                value={convertTokenValueToDecimal(
-                                    output.value,
-                                    output.token?.decimals,
-                                )}
-                                tokenSymbol={output.token?.symbol as TokenSymbol}
-                                maxDisplayedDecimals={output.token?.decimals}
-                                // The user must be able to verify token amounts before signing the yield transaction.
-                                discreetMode="disabled"
-                            />
+                                tokens={[output.token]}
+                            >
+                                <ExactTokenAmountFormatter
+                                    networkSymbol={account.symbol}
+                                    contractAddress={toTokenAddress(output.token.contract)}
+                                    variant="body-sm"
+                                    color="contentPrimary"
+                                    textAlign="right"
+                                    value={convertTokenValueToDecimal(
+                                        output.value,
+                                        output.token?.decimals,
+                                    )}
+                                    // The user must be able to verify token amounts before signing the yield transaction.
+                                    discreetMode="disabled"
+                                />
+                            </TokenMetadataProvider>
                         );
                     };
 

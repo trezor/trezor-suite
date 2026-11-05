@@ -12,10 +12,15 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { CompactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CompactTokenAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { AMOUNT_INPUT_UNFOCUSED_OFFSET, AMOUNT_INPUT_WRAPPER_HEIGHT } from '../../constants';
 import { type YieldDepositFormValues } from '../../utils/yield/yieldDepositFormSchema';
@@ -90,79 +95,95 @@ export const YieldAmountInputCard = ({
     );
 
     return (
-        <Card noPadding>
-            <VStack spacing="sp12" padding="sp16">
-                <BaseAmountInputs
-                    symbol={symbol}
-                    onInputSwitch={onCurrencyChange}
-                    unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
-                    wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
-                    renderTopRow={() => (
-                        <>
-                            <Text variant="body-sm">{amountLabel}</Text>
-                            <EarnMaxSwitch
-                                isChecked={isMaxSelected}
-                                onChange={handleMaxChange}
-                                testID="@yield-deposit/max-switch"
+        <TokenMetadataProvider
+            networkSymbol={symbol}
+            tokens={
+                tokenContract
+                    ? [{ contract: tokenContract, symbol: tokenSymbol, decimals: tokenDecimals }]
+                    : []
+            }
+        >
+            <Card noPadding>
+                <VStack spacing="sp12" padding="sp16">
+                    <BaseAmountInputs
+                        symbol={symbol}
+                        onInputSwitch={onCurrencyChange}
+                        unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
+                        wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
+                        renderTopRow={() => (
+                            <>
+                                <Text variant="body-sm">{amountLabel}</Text>
+                                <EarnMaxSwitch
+                                    isChecked={isMaxSelected}
+                                    onChange={handleMaxChange}
+                                    testID="@yield-deposit/max-switch"
+                                />
+                            </>
+                        )}
+                        renderCryptoInput={({ onPress, isDisabled, inputRef }) => (
+                            <EarnCryptoAmountInput
+                                symbol={symbol}
+                                tokenContract={tokenContract}
+                                tokenDecimals={tokenDecimals}
+                                displaySymbol={tokenSymbol}
+                                accessibilityLabel="amount to deposit input"
+                                inputRef={inputRef}
+                                isDisabled={isMaxSelected || isDisabled}
+                                onPress={onPress}
                             />
-                        </>
+                        )}
+                        renderFiatInput={({ onPress, isDisabled, inputRef }) => (
+                            <EarnFiatAmountInput
+                                symbol={symbol}
+                                tokenContract={tokenContract}
+                                tokenDecimals={tokenDecimals}
+                                accessibilityLabel="fiat amount to deposit input"
+                                inputRef={inputRef}
+                                isDisabled={isMaxSelected || isDisabled}
+                                onPress={onPress}
+                            />
+                        )}
+                        renderErrorMessage={isFiatDisplayed => (
+                            <EarnAmountErrorMessage isFiatDisplayed={isFiatDisplayed} />
+                        )}
+                    />
+                    {hasBalance && (
+                        <HStack spacing="sp4" alignItems="center">
+                            <Text variant="body-sm" color="contentSecondary">
+                                <Translation id="earn.yieldDepositFlowScreen.balance" />
+                            </Text>
+                            {tokenContract ? (
+                                <CompactTokenAmountFormatter
+                                    networkSymbol={symbol}
+                                    contractAddress={tokenContract}
+                                    value={asDecimalTokenAmount(balance)}
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                />
+                            ) : (
+                                <CompactCryptoAmountFormatter
+                                    symbol={symbol}
+                                    value={asDecimalTokenAmount(balance)}
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                />
+                            )}
+                        </HStack>
                     )}
-                    renderCryptoInput={({ onPress, isDisabled, inputRef }) => (
-                        <EarnCryptoAmountInput
-                            symbol={symbol}
-                            tokenContract={tokenContract}
-                            tokenDecimals={tokenDecimals}
-                            displaySymbol={tokenSymbol}
-                            accessibilityLabel="amount to deposit input"
-                            inputRef={inputRef}
-                            isDisabled={isMaxSelected || isDisabled}
-                            onPress={onPress}
-                        />
-                    )}
-                    renderFiatInput={({ onPress, isDisabled, inputRef }) => (
-                        <EarnFiatAmountInput
-                            symbol={symbol}
-                            tokenContract={tokenContract}
-                            tokenDecimals={tokenDecimals}
-                            accessibilityLabel="fiat amount to deposit input"
-                            inputRef={inputRef}
-                            isDisabled={isMaxSelected || isDisabled}
-                            onPress={onPress}
-                        />
-                    )}
-                    renderErrorMessage={isFiatDisplayed => (
-                        <EarnAmountErrorMessage isFiatDisplayed={isFiatDisplayed} />
-                    )}
-                />
-                {hasBalance && (
-                    <HStack spacing="sp4" alignItems="center">
-                        <Text variant="body-sm" color="contentSecondary">
-                            <Translation id="earn.yieldDepositFlowScreen.balance" />
-                        </Text>
-                        <CompactTokenAmountFormatter
-                            networkSymbol={symbol}
-                            tokenContract={tokenContract}
-                            value={asDecimalTokenAmount(balance)}
-                            tokenSymbol={tokenSymbol}
-                            tokenDecimals={tokenDecimals}
-                            variant="body-sm"
-                            color="contentSecondary"
-                        />
-                    </HStack>
+                </VStack>
+                {shouldShowApprovalLimit && (
+                    <>
+                        <Divider paddingHorizontal="sp16" />
+                        {isApprovalLimitDisabled ? (
+                            approvalLimitRow
+                        ) : (
+                            <PressableOpacity onPress={onApprovalLimitPress}>
+                                {approvalLimitRow}
+                            </PressableOpacity>
+                        )}
+                    </>
                 )}
-            </VStack>
-            {shouldShowApprovalLimit && (
-                <>
-                    <Divider paddingHorizontal="sp16" />
-                    {isApprovalLimitDisabled ? (
-                        approvalLimitRow
-                    ) : (
-                        <PressableOpacity onPress={onApprovalLimitPress}>
-                            {approvalLimitRow}
-                        </PressableOpacity>
-                    )}
-                </>
-            )}
-        </Card>
+            </Card>
+        </TokenMetadataProvider>
     );
 };

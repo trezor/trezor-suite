@@ -7,13 +7,13 @@ import {
     cryptoIdToNetworkAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
 } from '@suite-common/trading';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
 import type { TextProps } from '@suite-native/atoms';
 import {
     ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 export type TradingCoinAmountFormatterProps = TextProps & {
     cryptoId?: CryptoId;
@@ -31,16 +31,15 @@ export const TradingCoinAmountFormatter = ({
 
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
 
-    if (!coinSymbol) {
+    if (!coinSymbol || !network) {
         return null;
     }
 
-    if (isNetworkSymbol(coinSymbol)) {
+    if (!contractAddress) {
         return (
             <ExactCryptoAmountFormatter
                 value={amount ?? '0'}
-                symbol={coinSymbol}
-                isBalance={false}
+                symbol={network.symbol}
                 // Trading amounts must remain readable so the user can evaluate the trade.
                 discreetMode="disabled"
                 {...textProps}
@@ -49,14 +48,18 @@ export const TradingCoinAmountFormatter = ({
     }
 
     return (
-        <ExactTokenAmountFormatter
-            networkSymbol={network?.symbol}
-            tokenContract={contractAddress}
-            value={asDecimalTokenAmount(amount ?? '0')}
-            tokenSymbol={coinSymbol as TokenSymbol}
-            // Trading amounts must remain readable so the user can evaluate the trade.
-            discreetMode="disabled"
-            {...textProps}
-        />
+        <TokenMetadataProvider
+            networkSymbol={network.symbol}
+            tokens={[{ contract: contractAddress, symbol: coinSymbol }]}
+        >
+            <ExactTokenAmountFormatter
+                networkSymbol={network.symbol}
+                contractAddress={contractAddress}
+                value={asDecimalTokenAmount(amount ?? '0')}
+                // Trading amounts must remain readable so the user can evaluate the trade.
+                discreetMode="disabled"
+                {...textProps}
+            />
+        </TokenMetadataProvider>
     );
 };

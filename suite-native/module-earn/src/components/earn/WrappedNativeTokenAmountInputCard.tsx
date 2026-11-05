@@ -7,12 +7,14 @@ import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wa
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { type ActiveView, BaseAmountInputs, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
+    CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
     useCryptoFiatConverters,
 } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import { EarnAmountErrorMessage } from './EarnAmountErrorMessage';
@@ -104,66 +106,82 @@ export const WrappedNativeTokenAmountInputCard = ({
     };
 
     return (
-        <Card>
-            <VStack spacing="sp12">
-                <BaseAmountInputs
-                    symbol={symbol}
-                    onInputSwitch={onCurrencyChange}
-                    unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
-                    wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
-                    renderTopRow={() => (
-                        <>
-                            <Text variant="body-sm">{amountLabel}</Text>
-                            <EarnMaxSwitch
-                                isChecked={isMaxSelected}
-                                isDisabled={isDisabled}
-                                onChange={handleMaxChange}
-                                testID="@wrapped-native-token/max-switch"
+        <TokenMetadataProvider
+            networkSymbol={symbol}
+            tokens={
+                tokenContract
+                    ? [{ contract: tokenContract, symbol: tokenSymbol, decimals: tokenDecimals }]
+                    : []
+            }
+        >
+            <Card>
+                <VStack spacing="sp12">
+                    <BaseAmountInputs
+                        symbol={symbol}
+                        onInputSwitch={onCurrencyChange}
+                        unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
+                        wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
+                        renderTopRow={() => (
+                            <>
+                                <Text variant="body-sm">{amountLabel}</Text>
+                                <EarnMaxSwitch
+                                    isChecked={isMaxSelected}
+                                    isDisabled={isDisabled}
+                                    onChange={handleMaxChange}
+                                    testID="@wrapped-native-token/max-switch"
+                                />
+                            </>
+                        )}
+                        renderCryptoInput={({ onPress, isDisabled: isInputInactive, inputRef }) => (
+                            <EarnCryptoAmountInput
+                                symbol={symbol}
+                                tokenContract={tokenContract}
+                                tokenDecimals={tokenDecimals}
+                                displaySymbol={tokenSymbol}
+                                accessibilityLabel="amount input"
+                                inputRef={inputRef}
+                                isDisabled={isDisabled || isMaxSelected || isInputInactive}
+                                onPress={onPress}
                             />
-                        </>
-                    )}
-                    renderCryptoInput={({ onPress, isDisabled: isInputInactive, inputRef }) => (
-                        <EarnCryptoAmountInput
-                            symbol={symbol}
-                            tokenContract={tokenContract}
-                            tokenDecimals={tokenDecimals}
-                            displaySymbol={tokenSymbol}
-                            accessibilityLabel="amount input"
-                            inputRef={inputRef}
-                            isDisabled={isDisabled || isMaxSelected || isInputInactive}
-                            onPress={onPress}
-                        />
-                    )}
-                    renderFiatInput={({ onPress, isDisabled: isInputInactive, inputRef }) => (
-                        <EarnFiatAmountInput
-                            symbol={symbol}
-                            tokenContract={tokenContract}
-                            tokenDecimals={tokenDecimals}
-                            accessibilityLabel="fiat amount input"
-                            inputRef={inputRef}
-                            isDisabled={isDisabled || isMaxSelected || isInputInactive}
-                            onPress={onPress}
-                        />
-                    )}
-                    renderErrorMessage={isFiatDisplayed => (
-                        <EarnAmountErrorMessage isFiatDisplayed={isFiatDisplayed} />
-                    )}
-                />
-                <HStack spacing="sp4" alignItems="center">
-                    <Text variant="body-sm" color="contentSecondary">
-                        <Translation id="earn.yieldDepositFlowScreen.balance" />
-                    </Text>
-                    <CompactTokenAmountFormatter
-                        networkSymbol={symbol}
-                        tokenContract={tokenContract}
-                        value={asDecimalTokenAmount(balance)}
-                        tokenSymbol={tokenSymbol}
-                        tokenDecimals={tokenDecimals}
-                        variant="body-sm"
-                        color="contentSecondary"
+                        )}
+                        renderFiatInput={({ onPress, isDisabled: isInputInactive, inputRef }) => (
+                            <EarnFiatAmountInput
+                                symbol={symbol}
+                                tokenContract={tokenContract}
+                                tokenDecimals={tokenDecimals}
+                                accessibilityLabel="fiat amount input"
+                                inputRef={inputRef}
+                                isDisabled={isDisabled || isMaxSelected || isInputInactive}
+                                onPress={onPress}
+                            />
+                        )}
+                        renderErrorMessage={isFiatDisplayed => (
+                            <EarnAmountErrorMessage isFiatDisplayed={isFiatDisplayed} />
+                        )}
                     />
-                </HStack>
-            </VStack>
-        </Card>
+                    <HStack spacing="sp4" alignItems="center">
+                        <Text variant="body-sm" color="contentSecondary">
+                            <Translation id="earn.yieldDepositFlowScreen.balance" />
+                        </Text>
+                        {tokenContract ? (
+                            <CompactTokenAmountFormatter
+                                networkSymbol={symbol}
+                                contractAddress={tokenContract}
+                                value={asDecimalTokenAmount(balance)}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
+                        ) : (
+                            <CompactCryptoAmountFormatter
+                                symbol={symbol}
+                                value={asDecimalTokenAmount(balance)}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
+                        )}
+                    </HStack>
+                </VStack>
+            </Card>
+        </TokenMetadataProvider>
     );
 };

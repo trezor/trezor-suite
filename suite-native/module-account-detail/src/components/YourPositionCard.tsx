@@ -1,9 +1,5 @@
-import {
-    getDisplaySymbol,
-    getNetworkDisplaySymbol,
-    getNetworkDisplaySymbolName,
-} from '@suite-common/wallet-config';
-import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
+import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { Box, Card, HStack, Text } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
@@ -54,7 +50,6 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
     if (!symbol) return null;
 
     const balance = token?.balance ?? account?.formattedBalance ?? '0';
-    const tokenAmountSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
 
     return (
         <Card style={applyStyle(cardStyle)} noShadow>
@@ -75,7 +70,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                             {token ? (
                                 <TokenSymbol
                                     networkSymbol={symbol}
-                                    tokenContract={token.contract}
+                                    contractAddress={token.contract}
                                     variant="body-sm-strong"
                                     color="contentPrimary"
                                 />
@@ -98,7 +93,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                         {token ? (
                             <TokenName
                                 networkSymbol={symbol}
-                                tokenContract={token.contract}
+                                contractAddress={token.contract}
                                 variant="body-sm"
                                 color="contentSecondary"
                                 numberOfLines={1}
@@ -134,11 +129,10 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
 
                         {token ? (
                             <ExactTokenAmountFormatter
+                                isSymbolTruncated
                                 value={asDecimalTokenAmount(token.balance ?? '0')}
-                                tokenSymbol={tokenAmountSymbol}
                                 networkSymbol={symbol}
-                                tokenContract={token.contract}
-                                maxDisplayedDecimals={token.decimals}
+                                contractAddress={token.contract}
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
                                 variant="body-sm"

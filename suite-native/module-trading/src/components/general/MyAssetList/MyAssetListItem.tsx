@@ -6,6 +6,7 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { TradingAsset } from '@suite-native/trading-atoms';
 import { type MyAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -32,63 +33,65 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
 
     const hasFiatBalance = fiatBalance !== null;
 
-    const cryptoBalanceValue =
-        tokenSymbol != null ? (
-            <CompactTokenAmountFormatter
-                networkSymbol={symbol}
-                tokenContract={contract}
-                value={asDecimalTokenAmount(balance)}
-                tokenSymbol={tokenSymbol}
-                tokenDecimals={decimals}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                color="contentSecondary"
-                variant="body-sm"
-            />
-        ) : (
-            <CompactCryptoAmountFormatter
-                value={balance}
-                symbol={symbol}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                color="contentSecondary"
-                variant="body-sm"
-            />
-        );
+    const cryptoBalanceValue = contract ? (
+        <CompactTokenAmountFormatter
+            networkSymbol={symbol}
+            contractAddress={contract}
+            value={asDecimalTokenAmount(balance)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            color="contentSecondary"
+            variant="body-sm"
+        />
+    ) : (
+        <CompactCryptoAmountFormatter
+            value={balance}
+            symbol={symbol}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            color="contentSecondary"
+            variant="body-sm"
+        />
+    );
 
     return (
-        <AnimatedPressable
-            onPress={isEnabled ? onPress : undefined}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            disabled={!isEnabled}
-            accessible
-            accessibilityRole="button"
-            accessibilityState={{ disabled: !isEnabled }}
-            accessibilityLabel={name}
-            style={[animatedStyle, applyStyle(containerStyle, { isDisabled: !isEnabled })]}
+        <TokenMetadataProvider
+            networkSymbol={symbol}
+            tokens={contract ? [{ contract, symbol: tokenSymbol ?? undefined, decimals }] : []}
         >
-            <Box paddingHorizontal="sp8" paddingVertical="sp12">
-                <TradingAsset
-                    assetType="crypto"
-                    name={name}
-                    symbol={tokenSymbol ?? getNetworkDisplaySymbol(symbol)}
-                    contractAddress={contract}
-                    networkSymbol={symbol}
-                    rightContent={
-                        <VStack alignItems="flex-end" spacing={0}>
-                            {hasFiatBalance && (
-                                <BaseCurrencyAmountFormatter
-                                    value={fiatBalance}
-                                    variant="body-md"
-                                    numberOfLines={1}
-                                />
-                            )}
-                            {cryptoBalanceValue}
-                        </VStack>
-                    }
-                />
-            </Box>
-        </AnimatedPressable>
+            <AnimatedPressable
+                onPress={isEnabled ? onPress : undefined}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                disabled={!isEnabled}
+                accessible
+                accessibilityRole="button"
+                accessibilityState={{ disabled: !isEnabled }}
+                accessibilityLabel={name}
+                style={[animatedStyle, applyStyle(containerStyle, { isDisabled: !isEnabled })]}
+            >
+                <Box paddingHorizontal="sp8" paddingVertical="sp12">
+                    <TradingAsset
+                        assetType="crypto"
+                        name={name}
+                        symbol={tokenSymbol ?? getNetworkDisplaySymbol(symbol)}
+                        contractAddress={contract}
+                        networkSymbol={symbol}
+                        rightContent={
+                            <VStack alignItems="flex-end" spacing={0}>
+                                {hasFiatBalance && (
+                                    <BaseCurrencyAmountFormatter
+                                        value={fiatBalance}
+                                        variant="body-md"
+                                        numberOfLines={1}
+                                    />
+                                )}
+                                {cryptoBalanceValue}
+                            </VStack>
+                        }
+                    />
+                </Box>
+            </AnimatedPressable>
+        </TokenMetadataProvider>
     );
 };

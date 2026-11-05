@@ -1,10 +1,11 @@
 import { type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenSymbol, toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import { type TokenSymbol, toTokenAddress } from '@suite-common/wallet-types';
 import { Card, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { ExactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 type YieldDepositApprovedAmountCardProps = {
     actionType?: 'edit' | 'revoke';
@@ -27,53 +28,56 @@ export const YieldDepositApprovedAmountCard = ({
     tokenContract,
     tokenSymbol,
 }: YieldDepositApprovedAmountCardProps) => (
-    <Card>
-        <HStack alignItems="center" justifyContent="space-between">
-            <Text variant="body-sm">
-                <Translation id="earn.yieldDepositFlowScreen.approvedAmount" />
-            </Text>
-            <HStack alignItems="center" spacing="sp8">
-                <TokenIcon
-                    networkSymbol={networkSymbol}
-                    contractAddress={tokenContract}
-                    tokenSymbol={tokenSymbol}
-                    size={20}
-                />
-                {isApprovedAmountUnlimited ? (
-                    <Text variant="body-sm-strong" numberOfLines={1}>
-                        <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
-                    </Text>
-                ) : null}
-                {!isApprovedAmountUnlimited && approvedAmount ? (
-                    <ExactTokenAmountFormatter
+    <TokenMetadataProvider
+        networkSymbol={networkSymbol}
+        tokens={[{ contract: tokenContract, symbol: tokenSymbol, decimals: tokenDecimals }]}
+    >
+        <Card>
+            <HStack alignItems="center" justifyContent="space-between">
+                <Text variant="body-sm">
+                    <Translation id="earn.yieldDepositFlowScreen.approvedAmount" />
+                </Text>
+                <HStack alignItems="center" spacing="sp8">
+                    <TokenIcon
                         networkSymbol={networkSymbol}
-                        tokenContract={toTokenAddress(tokenContract)}
-                        value={asDecimalTokenAmount(approvedAmount)}
-                        tokenSymbol={toTokenSymbol(tokenSymbol)}
-                        maxDisplayedDecimals={tokenDecimals}
-                        variant="body-sm-strong"
-                        color="contentPrimary"
-                        numberOfLines={1}
+                        contractAddress={tokenContract}
+                        tokenSymbol={tokenSymbol}
+                        size={20}
                     />
-                ) : null}
-                {actionType !== undefined && onActionPress !== undefined && (
-                    <PressableOpacity
-                        accessibilityRole="button"
-                        accessibilityLabel={
-                            actionType === 'edit'
-                                ? 'Edit approval amount'
-                                : 'Revoke approval amount'
-                        }
-                        onPress={onActionPress}
-                    >
-                        <Icon
-                            name={actionType === 'edit' ? 'pencilSimple' : 'x'}
-                            size="mediumLarge"
+                    {isApprovedAmountUnlimited ? (
+                        <Text variant="body-sm-strong" numberOfLines={1}>
+                            <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
+                        </Text>
+                    ) : null}
+                    {!isApprovedAmountUnlimited && approvedAmount ? (
+                        <ExactTokenAmountFormatter
+                            networkSymbol={networkSymbol}
+                            contractAddress={toTokenAddress(tokenContract)}
+                            value={asDecimalTokenAmount(approvedAmount)}
+                            variant="body-sm-strong"
                             color="contentPrimary"
+                            numberOfLines={1}
                         />
-                    </PressableOpacity>
-                )}
+                    ) : null}
+                    {actionType !== undefined && onActionPress !== undefined && (
+                        <PressableOpacity
+                            accessibilityRole="button"
+                            accessibilityLabel={
+                                actionType === 'edit'
+                                    ? 'Edit approval amount'
+                                    : 'Revoke approval amount'
+                            }
+                            onPress={onActionPress}
+                        >
+                            <Icon
+                                name={actionType === 'edit' ? 'pencilSimple' : 'x'}
+                                size="mediumLarge"
+                                color="contentPrimary"
+                            />
+                        </PressableOpacity>
+                    )}
+                </HStack>
             </HStack>
-        </HStack>
-    </Card>
+        </Card>
+    </TokenMetadataProvider>
 );

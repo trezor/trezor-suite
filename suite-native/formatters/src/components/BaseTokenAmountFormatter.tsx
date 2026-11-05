@@ -1,48 +1,41 @@
-import {
-    type CryptoAmountFormatterFormatStyle,
-    joinAmountWithSymbol,
-    useFormatters,
-} from '@suite-common/formatters';
+import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
-import { BlurUrls, type TextProps } from '@suite-native/atoms';
-import { TokenUrlBlur } from '@suite-native/tokens';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { type TextProps } from '@suite-native/atoms';
+import { TokenSymbol, useTokenMetadata } from '@suite-native/tokens';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { type DiscreetMode, type FormatterProps } from '../types';
 import { type DecimalTokenAmount } from '../utils';
 import { FormattedCryptoAmountText } from './FormattedCryptoAmountText';
 
 export type TokenAmountFormatterCommonProps = {
-    tokenSymbol: TokenSymbol | null;
-    networkSymbol?: NetworkSymbol;
-    tokenContract?: TokenAddress;
+    networkSymbol: NetworkSymbol;
+    contractAddress: TokenAddress;
+    isSymbolTruncated?: boolean;
     discreetMode?: DiscreetMode;
     signValue?: SignValue;
 } & FormatterProps<DecimalTokenAmount> &
     TextProps;
 
 export type BaseTokenAmountFormatterProps = TokenAmountFormatterCommonProps & {
-    // The token's decimal precision. Used only to decide the display style (e.g. money-like
-    // formatting for stablecoins). The `value` is always expected in human-readable units.
-    tokenDecimals?: number;
     maxDisplayedDecimals?: number;
     formatStyle?: CryptoAmountFormatterFormatStyle;
 };
 
 export const BaseTokenAmountFormatter = ({
     value,
-    tokenSymbol,
     networkSymbol,
-    tokenContract,
+    contractAddress,
     variant = 'body-sm',
     color = 'contentSecondary',
     discreetMode = 'auto',
-    tokenDecimals,
+    isSymbolTruncated = false,
     maxDisplayedDecimals,
     formatStyle,
     ...rest
 }: BaseTokenAmountFormatterProps) => {
+    const token = useTokenMetadata(networkSymbol, contractAddress);
     const decimalValue = value ? value.toString() : '0';
 
     const { CryptoAmountFormatter } = useFormatters();
@@ -53,28 +46,23 @@ export const BaseTokenAmountFormatter = ({
                 // Token values are already decimal; a ticker matching a network must not change units.
                 smallestUnitsOverride={false}
                 withSymbol={false}
-                maxDisplayedDecimals={maxDisplayedDecimals}
+                maxDisplayedDecimals={maxDisplayedDecimals ?? token?.decimals}
                 formatStyle={formatStyle}
-                tokenDecimals={tokenDecimals}
+                tokenDecimals={token?.decimals}
             />
-            {tokenSymbol &&
-                (networkSymbol && tokenContract ? (
-                    <TokenUrlBlur
+            {token?.symbol && (
+                <>
+                    {'\u00A0'}
+                    <TokenSymbol
                         isInline
-                        text={joinAmountWithSymbol('', tokenSymbol)}
+                        isTruncated={isSymbolTruncated}
                         networkSymbol={networkSymbol}
-                        tokenContract={tokenContract}
+                        contractAddress={contractAddress}
                         variant={variant}
                         color={color}
                     />
-                ) : (
-                    <BlurUrls
-                        isInline
-                        text={joinAmountWithSymbol('', tokenSymbol)}
-                        variant={variant}
-                        color={color}
-                    />
-                ))}
+                </>
+            )}
         </>
     );
 

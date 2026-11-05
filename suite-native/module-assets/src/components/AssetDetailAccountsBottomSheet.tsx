@@ -64,7 +64,7 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                                 isTruncated
                                 isInline
                                 networkSymbol={networkSymbol}
-                                tokenContract={tokenContract}
+                                contractAddress={tokenContract}
                                 variant="body-sm"
                                 color="contentSecondary"
                             />

@@ -8,6 +8,7 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { TradingAsset } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -46,10 +47,8 @@ export const TradeableAssetListItem = ({
             {contractAddress ? (
                 <CompactTokenAmountFormatter
                     networkSymbol={networkSymbol}
-                    tokenContract={contractAddress}
+                    contractAddress={contractAddress}
                     value={asDecimalTokenAmount(balance.cryptoAmount)}
-                    tokenSymbol={symbol as TokenSymbol}
-                    tokenDecimals={decimals}
                     variant="body-sm"
                     color="contentSecondary"
                     numberOfLines={1}
@@ -69,25 +68,30 @@ export const TradeableAssetListItem = ({
     ) : undefined;
 
     return (
-        <AnimatedPressable
-            onPress={onPress}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            accessible
-            accessibilityRole="button"
-            accessibilityLabel={name}
-            style={[animatedStyle, applyStyle(containerStyle)]}
+        <TokenMetadataProvider
+            networkSymbol={networkSymbol}
+            tokens={contractAddress ? [{ contract: contractAddress, symbol, name, decimals }] : []}
         >
-            <Box paddingHorizontal="sp8" paddingVertical="sp12">
-                <TradingAsset
-                    assetType="crypto"
-                    name={name}
-                    symbol={symbol}
-                    contractAddress={contractAddress}
-                    networkSymbol={networkSymbol}
-                    rightContent={balanceContent}
-                />
-            </Box>
-        </AnimatedPressable>
+            <AnimatedPressable
+                onPress={onPress}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                accessible
+                accessibilityRole="button"
+                accessibilityLabel={name}
+                style={[animatedStyle, applyStyle(containerStyle)]}
+            >
+                <Box paddingHorizontal="sp8" paddingVertical="sp12">
+                    <TradingAsset
+                        assetType="crypto"
+                        name={name}
+                        symbol={symbol}
+                        contractAddress={contractAddress}
+                        networkSymbol={networkSymbol}
+                        rightContent={balanceContent}
+                    />
+                </Box>
+            </AnimatedPressable>
+        </TokenMetadataProvider>
     );
 };

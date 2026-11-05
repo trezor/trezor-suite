@@ -3,7 +3,8 @@ import { Blur, Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import {
-    TokenUrlBlur,
+    TokenMetadataProvider,
+    TokenName,
     type TypedTokenTransfer,
     type WalletAccountTransaction,
 } from '@suite-native/tokens';
@@ -51,47 +52,51 @@ export const TransactionDetailListItem = ({
     };
 
     return (
-        <PressableOpacity
-            onPress={handleNavigation}
-            style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
+        <TokenMetadataProvider
+            networkSymbol={transaction.symbol}
+            tokens={tokenTransfer ? [tokenTransfer] : []}
         >
-            <Blur isBlurred={isPhishingTransaction}>
-                <Box flexDirection="row" alignItems="center" flex={1}>
-                    <Box marginRight="sp16">
-                        <TokenIcon
-                            networkSymbol={transaction.symbol}
-                            contractAddress={tokenTransfer?.contract}
-                            tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
-                        />
-                    </Box>
-                    <Box style={applyStyle(CoinNameContainerStyle)}>
-                        {tokenTransfer ? (
-                            <TokenUrlBlur
-                                text={tokenTransfer.name ?? 'Ethereum'}
+            <PressableOpacity
+                onPress={handleNavigation}
+                style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
+            >
+                <Blur isBlurred={isPhishingTransaction}>
+                    <Box flexDirection="row" alignItems="center" flex={1}>
+                        <Box marginRight="sp16">
+                            <TokenIcon
                                 networkSymbol={transaction.symbol}
-                                tokenContract={tokenTransfer.contract}
+                                contractAddress={tokenTransfer?.contract}
+                                tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
+                            />
+                        </Box>
+                        <Box style={applyStyle(CoinNameContainerStyle)}>
+                            {tokenTransfer ? (
+                                <TokenName
+                                    networkSymbol={transaction.symbol}
+                                    contractAddress={tokenTransfer.contract}
+                                />
+                            ) : (
+                                <Text>Ethereum</Text>
+                            )}
+                        </Box>
+                    </Box>
+                    <Box style={applyStyle(valuesContainerStyle)}>
+                        {tokenTransfer ? (
+                            <TokenTransferListItemValues
+                                accountKey={accountKey}
+                                tokenTransfer={tokenTransfer}
+                                transaction={transaction}
                             />
                         ) : (
-                            <Text>Ethereum</Text>
+                            <TransactionListItemValues
+                                accountKey={accountKey}
+                                transaction={transaction}
+                                amount={transaction.amount}
+                            />
                         )}
                     </Box>
-                </Box>
-                <Box style={applyStyle(valuesContainerStyle)}>
-                    {tokenTransfer ? (
-                        <TokenTransferListItemValues
-                            accountKey={accountKey}
-                            tokenTransfer={tokenTransfer}
-                            transaction={transaction}
-                        />
-                    ) : (
-                        <TransactionListItemValues
-                            accountKey={accountKey}
-                            transaction={transaction}
-                            amount={transaction.amount}
-                        />
-                    )}
-                </Box>
-            </Blur>
-        </PressableOpacity>
+                </Blur>
+            </PressableOpacity>
+        </TokenMetadataProvider>
     );
 };

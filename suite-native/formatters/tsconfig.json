@@ -27,6 +27,9 @@
         { "path": "../atoms" },
         { "path": "../intl" },
         { "path": "../tokens" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         { "path": "../../packages/protobuf" },
         {
             "path": "../../packages/styles-native"

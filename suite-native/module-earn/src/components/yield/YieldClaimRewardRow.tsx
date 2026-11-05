@@ -4,15 +4,16 @@ import {
     type BaseCurrencyAmount,
     asBaseCurrencyAmount,
     toTokenAddress,
-    toTokenSymbol,
 } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
+    ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
@@ -51,51 +52,72 @@ export const YieldClaimRewardRow = ({
     const isFiatAmountVisible = fiatAmount !== null || isFiatLoading;
 
     return (
-        <HStack spacing="sp16" justifyContent="space-between" alignItems="center">
-            <HStack spacing="sp4" alignItems="center" flex={1}>
-                <TokenIcon
-                    networkSymbol={networkSymbol}
-                    contractAddress={tokenContractAddress}
-                    tokenSymbol={tokenSymbol}
-                    size={20}
-                />
-                <Box flexShrink={1}>
-                    <ExactTokenAmountFormatter
+        <TokenMetadataProvider
+            networkSymbol={networkSymbol}
+            tokens={
+                tokenContractAddress
+                    ? [
+                          {
+                              contract: tokenContractAddress,
+                              symbol: tokenSymbol,
+                              decimals: tokenDecimals,
+                          },
+                      ]
+                    : []
+            }
+        >
+            <HStack spacing="sp16" justifyContent="space-between" alignItems="center">
+                <HStack spacing="sp4" alignItems="center" flex={1}>
+                    <TokenIcon
                         networkSymbol={networkSymbol}
-                        tokenContract={
-                            tokenContractAddress ? toTokenAddress(tokenContractAddress) : undefined
-                        }
-                        value={asDecimalTokenAmount(amount)}
-                        tokenSymbol={toTokenSymbol(tokenSymbol)}
-                        maxDisplayedDecimals={tokenDecimals}
-                        variant="body-sm-strong"
-                        color="contentPrimary"
-                        numberOfLines={2}
+                        contractAddress={tokenContractAddress}
+                        tokenSymbol={tokenSymbol}
+                        size={20}
                     />
-                </Box>
-            </HStack>
-            {isFiatAmountVisible && (
-                <HStack
-                    spacing="sp2"
-                    alignItems="center"
-                    justifyContent="flex-end"
-                    flexShrink={1}
-                    style={applyStyle(fiatAmountStyle)}
-                >
-                    {!isFiatLoading && (
-                        <Text variant="body-sm" color="contentSecondary">
-                            ≈
-                        </Text>
-                    )}
-                    <BaseCurrencyAmountFormatter
-                        value={fiatAmount}
-                        variant="body-sm"
-                        color="contentSecondary"
-                        isLoading={isFiatLoading}
-                        numberOfLines={1}
-                    />
+                    <Box flexShrink={1}>
+                        {tokenContractAddress ? (
+                            <ExactTokenAmountFormatter
+                                networkSymbol={networkSymbol}
+                                contractAddress={toTokenAddress(tokenContractAddress)}
+                                value={asDecimalTokenAmount(amount)}
+                                variant="body-sm-strong"
+                                color="contentPrimary"
+                                numberOfLines={2}
+                            />
+                        ) : (
+                            <ExactCryptoAmountFormatter
+                                symbol={networkSymbol}
+                                value={asDecimalTokenAmount(amount)}
+                                variant="body-sm-strong"
+                                color="contentPrimary"
+                                numberOfLines={2}
+                            />
+                        )}
+                    </Box>
                 </HStack>
-            )}
-        </HStack>
+                {isFiatAmountVisible && (
+                    <HStack
+                        spacing="sp2"
+                        alignItems="center"
+                        justifyContent="flex-end"
+                        flexShrink={1}
+                        style={applyStyle(fiatAmountStyle)}
+                    >
+                        {!isFiatLoading && (
+                            <Text variant="body-sm" color="contentSecondary">
+                                ≈
+                            </Text>
+                        )}
+                        <BaseCurrencyAmountFormatter
+                            value={fiatAmount}
+                            variant="body-sm"
+                            color="contentSecondary"
+                            isLoading={isFiatLoading}
+                            numberOfLines={1}
+                        />
+                    </HStack>
+                )}
+            </HStack>
+        </TokenMetadataProvider>
     );
 };

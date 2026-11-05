@@ -7,7 +7,11 @@ import {
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
-import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import {
+    TokenMetadataProvider,
+    type TypedTokenTransfer,
+    type WalletAccountTransaction,
+} from '@suite-native/tokens';
 import { getTransactionValueSign, selectTransactionFiatRate } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -34,28 +38,28 @@ export const TransactionDetailTokenAmount = ({
     const signValue = getTransactionValueSign(tokenTransfer.type);
 
     return (
-        <>
-            {!isFailedTx && (
-                <SignValueFormatter
-                    color="contentPrimary"
-                    value={signValue}
-                    variant="headline-md"
-                />
-            )}
+        <TokenMetadataProvider networkSymbol={transaction.symbol} tokens={[tokenTransfer]}>
+            <>
+                {!isFailedTx && (
+                    <SignValueFormatter
+                        color="contentPrimary"
+                        value={signValue}
+                        variant="headline-md"
+                    />
+                )}
 
-            <ExactTokenAmountFormatter
-                value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                tokenSymbol={tokenTransfer.symbol ?? null}
-                networkSymbol={transaction.symbol}
-                tokenContract={tokenTransfer.contract}
-                maxDisplayedDecimals={tokenTransfer.decimals}
-                variant="headline-md"
-                color="contentPrimary"
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                style={applyStyle(failedTxStyle, { isFailedTx })}
-            />
-        </>
+                <ExactTokenAmountFormatter
+                    value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
+                    networkSymbol={transaction.symbol}
+                    contractAddress={tokenTransfer.contract}
+                    variant="headline-md"
+                    color="contentPrimary"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    style={applyStyle(failedTxStyle, { isFailedTx })}
+                />
+            </>
+        </TokenMetadataProvider>
     );
 };
 

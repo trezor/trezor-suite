@@ -8,8 +8,6 @@ import {
     selectWalletAssetAmount,
     selectWalletAssetFiatValue,
     selectWalletAssetKey,
-    selectWalletAssetTokenDecimals,
-    selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
@@ -39,12 +37,6 @@ export const AssetDetailBalanceSection = () => {
     const fiatValue = useSelector(
         (state: HomeAssetTableState) => selectWalletAssetFiatValue(state, assetKey),
         areBaseCurrencyAmountsEqual,
-    );
-    const tokenSymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetTokenSymbol(state, assetKey),
-    );
-    const tokenDecimals = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetTokenDecimals(state, assetKey),
     );
     const accountCount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetAccountCount(state, assetKey),
@@ -94,10 +86,8 @@ export const AssetDetailBalanceSection = () => {
                 ) : (
                     <CompactTokenAmountFormatter
                         value={asDecimalTokenAmount(amount)}
-                        tokenSymbol={tokenSymbol}
                         networkSymbol={networkSymbol}
-                        tokenContract={tokenContract}
-                        tokenDecimals={tokenDecimals}
+                        contractAddress={tokenContract}
                         color="contentPrimary"
                         numberOfLines={1}
                         adjustsFontSizeToFit

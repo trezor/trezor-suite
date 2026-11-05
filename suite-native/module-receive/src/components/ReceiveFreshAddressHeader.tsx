@@ -70,7 +70,7 @@ export const ReceiveFreshAddressHeader = ({
                                 <Text variant="body-md-strong">{' - '}</Text>
                                 <TokenSymbol
                                     networkSymbol={networkSymbol}
-                                    tokenContract={tokenContract}
+                                    contractAddress={tokenContract}
                                     variant="body-md-strong"
                                 />
                             </HStack>

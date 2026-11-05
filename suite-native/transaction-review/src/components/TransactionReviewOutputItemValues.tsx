@@ -25,16 +25,14 @@ const TransactionReviewOutputItemCryptoAmount = ({
     tokenInfo,
     value,
 }: TransactionReviewOutputItemCryptoAmountProps) => {
-    if (tokenInfo !== null && value !== '') {
+    if (symbol !== null && tokenInfo !== null && value !== '') {
         return (
             <ExactTokenAmountFormatter
-                networkSymbol={symbol ?? undefined}
-                tokenContract={tokenInfo.contract}
+                networkSymbol={symbol}
+                contractAddress={tokenInfo.contract}
                 variant="body-sm"
                 color="contentSecondary"
                 value={convertTokenValueToDecimal(value, tokenInfo.decimals)}
-                tokenSymbol={tokenInfo.symbol}
-                maxDisplayedDecimals={tokenInfo.decimals}
                 adjustsFontSizeToFit
                 numberOfLines={1}
                 // The user must be able to verify the token amount before signing.

@@ -100,7 +100,7 @@ export const CryptoAmountInput = ({
                     <TokenSymbol
                         isTruncated
                         networkSymbol={symbol}
-                        tokenContract={tokenContract}
+                        contractAddress={tokenContract}
                         color={isDisabled ? 'contentSecondary' : 'contentPrimary'}
                     />
                 ) : (

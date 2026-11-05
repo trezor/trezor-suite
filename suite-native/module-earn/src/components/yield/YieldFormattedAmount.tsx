@@ -1,12 +1,13 @@
 import { toTokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import { toTokenAddress } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 export type YieldFormattedAmountValue = {
     value: string;
@@ -38,16 +39,25 @@ export const YieldFormattedAmount = ({
 }: YieldFormattedAmountProps) => {
     if (tokenContract) {
         return (
-            <CompactTokenAmountFormatter
+            <TokenMetadataProvider
                 networkSymbol={networkSymbol}
-                tokenContract={toTokenAddress(tokenContract)}
-                value={asDecimalTokenAmount(value)}
-                tokenDecimals={tokenDecimals}
-                tokenSymbol={tokenSymbol ? toTokenSymbol(tokenSymbol) : null}
-                // Keep transaction amounts and allowance limits readable during yield actions.
-                discreetMode="disabled"
-                {...textProps}
-            />
+                tokens={[
+                    {
+                        contract: tokenContract,
+                        symbol: tokenSymbol ?? undefined,
+                        decimals: tokenDecimals,
+                    },
+                ]}
+            >
+                <CompactTokenAmountFormatter
+                    networkSymbol={networkSymbol}
+                    contractAddress={toTokenAddress(tokenContract)}
+                    value={asDecimalTokenAmount(value)}
+                    // Keep transaction amounts and allowance limits readable during yield actions.
+                    discreetMode="disabled"
+                    {...textProps}
+                />
+            </TokenMetadataProvider>
         );
     }
 

@@ -54,11 +54,10 @@ const TokenAmountTooltipFormatter = ({
         return (
             <ExactTokenAmountFormatter
                 networkSymbol={symbol}
-                tokenContract={tokenAddress}
+                contractAddress={tokenAddress}
                 color="contentPrimary"
                 variant="body-xs"
                 value={asDecimalTokenAmount(value)}
-                tokenSymbol={token.symbol}
             />
         );
     }

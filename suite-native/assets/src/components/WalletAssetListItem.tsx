@@ -8,7 +8,6 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,
     selectWalletAssetSymbol,
-    selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
@@ -55,9 +54,6 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
     );
     const tokenSymbol = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetTokenSymbol(state, assetKey),
-    );
-    const tokenDecimals = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetTokenDecimals(state, assetKey),
     );
     const amount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetAmount(state, assetKey),
@@ -131,10 +127,8 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                     {contractAddress ? (
                         <CompactTokenAmountFormatter
                             value={asDecimalTokenAmount(amount)}
-                            tokenSymbol={tokenSymbol}
                             networkSymbol={symbol}
-                            tokenContract={contractAddress}
-                            tokenDecimals={tokenDecimals}
+                            contractAddress={contractAddress}
                             variant="body-xs"
                             color="contentTertiary"
                         />

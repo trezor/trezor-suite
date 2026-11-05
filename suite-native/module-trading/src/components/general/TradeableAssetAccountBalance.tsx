@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { isSendingEvmNativeToken } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
@@ -11,7 +11,11 @@ import {
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
+import {
+    TokenMetadataProvider,
+    type TokensRootState,
+    selectAccountTokenBalance,
+} from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 export type TradeableAssetAccountBalanceProps = {
@@ -49,14 +53,17 @@ const TokenBalance = ({
     );
 
     return (
-        <CompactTokenAmountFormatter
+        <TokenMetadataProvider
             networkSymbol={networkSymbol}
-            tokenContract={tokenAddress}
-            value={asDecimalTokenAmount(balance)}
-            tokenSymbol={symbol as TokenSymbol}
-            tokenDecimals={tokenDecimals}
-            testID={testID}
-        />
+            tokens={[{ contract: tokenAddress, symbol, decimals: tokenDecimals }]}
+        >
+            <CompactTokenAmountFormatter
+                networkSymbol={networkSymbol}
+                contractAddress={tokenAddress}
+                value={asDecimalTokenAmount(balance)}
+                testID={testID}
+            />
+        </TokenMetadataProvider>
     );
 };
 

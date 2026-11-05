@@ -10,7 +10,7 @@ import {
     type YieldClaimAccountItem,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import { toTokenAddress } from '@suite-common/wallet-types';
 import { AccountLabel } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
@@ -26,6 +26,7 @@ import {
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -94,55 +95,63 @@ export const YieldClaimRewardsAccountCard = ({
     };
 
     return (
-        <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
-            <Box marginRight="sp12">
-                <TokenIcon
-                    tokenSymbol={item.summary.networkSymbol}
-                    networkSymbol={item.summary.networkSymbol}
-                    size="small"
-                />
-            </Box>
+        <TokenMetadataProvider
+            networkSymbol={item.summary.networkSymbol}
+            tokens={item.summary.tokens.map(token => ({
+                contract: token.contractAddress,
+                symbol: token.symbol,
+                decimals: token.decimals,
+            }))}
+        >
+            <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
+                <Box marginRight="sp12">
+                    <TokenIcon
+                        tokenSymbol={item.summary.networkSymbol}
+                        networkSymbol={item.summary.networkSymbol}
+                        size="small"
+                    />
+                </Box>
 
-            <VStack spacing="sp4" style={applyStyle(contentStyle)}>
-                {account ? (
-                    <AccountLabel
-                        account={account}
-                        showAccountTypeBadge
+                <VStack spacing="sp4" style={applyStyle(contentStyle)}>
+                    {account ? (
+                        <AccountLabel
+                            account={account}
+                            showAccountTypeBadge
+                            variant="body-md-strong"
+                            numberOfLines={1}
+                        />
+                    ) : (
+                        <Text variant="body-md-strong" numberOfLines={1}>
+                            {getNetworkDisplaySymbolName(item.summary.networkSymbol)}
+                        </Text>
+                    )}
+
+                    <VStack spacing="sp1">
+                        {item.summary.tokens.map(token => (
+                            <CompactTokenAmountFormatter
+                                networkSymbol={item.summary.networkSymbol}
+                                contractAddress={toTokenAddress(token.contractAddress)}
+                                key={`${token.symbol}:${token.contractAddress}`}
+                                value={asDecimalTokenAmount(token.claimableAmount)}
+                                numberOfLines={2}
+                                variant="body-xs"
+                                color="contentSecondary"
+                                style={applyStyle(tokenAmountsStyle)}
+                            />
+                        ))}
+                    </VStack>
+                </VStack>
+
+                <HStack spacing="sp8" alignItems="center" marginLeft="sp8">
+                    <BaseCurrencyAmountFormatter
+                        value={item.summary.fiatClaimableAmount}
                         variant="body-md-strong"
                         numberOfLines={1}
+                        style={applyStyle(tabularNumbersStyle)}
                     />
-                ) : (
-                    <Text variant="body-md-strong" numberOfLines={1}>
-                        {getNetworkDisplaySymbolName(item.summary.networkSymbol)}
-                    </Text>
-                )}
-
-                <VStack spacing="sp1">
-                    {item.summary.tokens.map(token => (
-                        <CompactTokenAmountFormatter
-                            networkSymbol={item.summary.networkSymbol}
-                            tokenContract={toTokenAddress(token.contractAddress)}
-                            key={`${token.symbol}:${token.contractAddress}`}
-                            value={asDecimalTokenAmount(token.claimableAmount)}
-                            tokenSymbol={toTokenSymbol(token.symbol)}
-                            numberOfLines={2}
-                            variant="body-xs"
-                            color="contentSecondary"
-                            style={applyStyle(tokenAmountsStyle)}
-                        />
-                    ))}
-                </VStack>
-            </VStack>
-
-            <HStack spacing="sp8" alignItems="center" marginLeft="sp8">
-                <BaseCurrencyAmountFormatter
-                    value={item.summary.fiatClaimableAmount}
-                    variant="body-md-strong"
-                    numberOfLines={1}
-                    style={applyStyle(tabularNumbersStyle)}
-                />
-                <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
-            </HStack>
-        </PressableOpacity>
+                    <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
+                </HStack>
+            </PressableOpacity>
+        </TokenMetadataProvider>
     );
 };
