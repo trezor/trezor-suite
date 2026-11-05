@@ -1,6 +1,7 @@
-import { type ReactNode, createContext, useContext } from 'react';
+import { type ReactNode, useContext } from 'react';
 
 import { Box, type BoxProps } from '../Box';
+import { BlurContext } from './BlurContext';
 import { NativeBlurView } from './NativeBlurView';
 
 export type BlurProps = BoxProps & {
@@ -9,9 +10,10 @@ export type BlurProps = BoxProps & {
     blurIntensity?: number;
 };
 
-const BlurContext = createContext(false);
-
-/** Blurs descendants without replacing their values or enabling redaction. */
+/**
+ * Blurs box content without replacing its values or enabling redaction.
+ * Use [BlurText](../BlurText/BlurText.tsx) for inline text to preserve its baseline and wrapping.
+ */
 export const Blur = ({ children, isBlurred = true, blurIntensity = 4, ...boxProps }: BlurProps) => {
     const isBlurredByParent = useContext(BlurContext);
 
