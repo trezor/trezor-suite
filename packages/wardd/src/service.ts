@@ -1,0 +1,93 @@
+/**
+ * wardd as a service: what a host library calls, in-process (Connect) or through the WebSocket
+ * server (HWI). Both reach the same `WardRelay` -- `connect()` hands out an endpoint, and an
+ * endpoint's `call` runs one relay method.
+ *
+ * ONE CONVERSATION AT A TIME, across all endpoints: a conversation reads the stored head, the
+ * device answers against it, and a write lands on top of it -- two interleaved would serve one a
+ * tree the other just moved. `answerProofRequest` is not locked: it is how a running conversation's own
+ * pulls are answered.
+ */
+import {
+    RELAY_CONVERSATIONS,
+    type RelayDevice,
+    RelayFailure,
+    type RelayMethod,
+    type WardProvider,
+    type WardRelay,
+    type WardRelayEndpoint,
+} from '@trezor/ward';
+
+import { type Log, WardHost } from './host';
+import { type WmClient } from './wm';
+
+export type WarddOptions = {
+    storage: WardProvider;
+    wm: WmClient;
+    log?: Log;
+};
+
+export class Wardd implements WardRelay {
+    private queue: Promise<unknown> = Promise.resolve();
+    private readonly storage: WardProvider;
+    private readonly wm: WmClient;
+    private readonly log: Log;
+
+    constructor(options: WarddOptions) {
+        this.storage = options.storage;
+        this.wm = options.wm;
+        this.log = options.log ?? (() => {});
+    }
+
+    /** Run `fn` after every conversation queued before it; a failed one does not block the next. */
+    private exclusive<T>(fn: () => Promise<T>): Promise<T> {
+        const run = this.queue.then(fn, fn);
+        this.queue = run.catch(() => {});
+
+        return run;
+    }
+
+    connect(): Promise<WardRelayEndpoint> {
+        const host = new WardHost({ storage: this.storage, wm: this.wm, log: this.log });
+        let closed = false;
+
+        const dispatch = (
+            method: RelayMethod,
+            params: Record<string, unknown>,
+            device?: RelayDevice,
+        ): Promise<unknown> => {
+            if (RELAY_CONVERSATIONS.includes(method) && !device) {
+                throw new RelayFailure('bad_request', `${method} needs the device`);
+            }
+            switch (method) {
+                case 'sync':
+                    return this.exclusive(() => host.sync(device!, params));
+                case 'lookup':
+                    return this.exclusive(() => host.lookup(device!, params));
+                case 'update':
+                    return this.exclusive(() => host.update(device!, params));
+                case 'answerProofRequest':
+                    return host.answerProofRequest(params);
+                case 'status':
+                    return host.status();
+                default:
+                    throw new RelayFailure('bad_request', `unknown method ${String(method)}`);
+            }
+        };
+
+        return Promise.resolve({
+            call: async (method, params = {}, device) => {
+                if (closed) throw new RelayFailure('bad_request', 'the endpoint is closed');
+
+                return (await dispatch(method, params, device)) as Record<string, unknown>;
+            },
+            close: () => {
+                closed = true;
+            },
+        });
+    }
+
+    async dispose() {
+        await this.storage.dispose?.();
+    }
+}
