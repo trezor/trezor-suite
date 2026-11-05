@@ -1,6 +1,7 @@
 import {
     composedStakingStepSchema,
     signedStakingStepSchema,
+    stakingBroadcastResultSchema,
     stakingPlanSchema,
 } from './stakingPlan';
 import {
@@ -127,5 +128,17 @@ describe('signedStakingStepSchema', () => {
 
     it('rejects an empty serialized transaction', () => {
         expect(signedStakingStepSchema.safeParse({ serializedTx: '' }).success).toBe(false);
+    });
+});
+
+describe('stakingBroadcastResultSchema', () => {
+    it('takes the txid and strips any other key', () => {
+        expect(stakingBroadcastResultSchema.parse({ txid: 'tx1', nonce: 5 })).toEqual({
+            txid: 'tx1',
+        });
+    });
+
+    it.each([undefined, null, {}, { txid: '' }, { txid: 5 }])('rejects %p', result => {
+        expect(stakingBroadcastResultSchema.safeParse(result).success).toBe(false);
     });
 });

@@ -1,4 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
+import { stakingBroadcastResultSchema } from '@suite-common/earn-staking-common';
 import {
     fetchAndUpdateAccountThunk,
     notifyEarnTransactionBroadcastThunk,
@@ -78,13 +79,16 @@ export const broadcastStakingStepThunk = createThunk<
 
         const flow = getEarnTransactionFlow(session.plan.operation);
 
-        const broadcast = await callStakingAdapter(() =>
-            adapter.broadcastStep({
-                account,
-                plan: session.plan,
-                step: planStep,
-                signedStep: broadcastingStep.signed,
-            }),
+        // Parsed in production too: a malformed result would otherwise leave the step broadcasting.
+        const broadcast = await callStakingAdapter(async () =>
+            stakingBroadcastResultSchema.parse(
+                await adapter.broadcastStep({
+                    account,
+                    plan: session.plan,
+                    step: planStep,
+                    signedStep: broadcastingStep.signed,
+                }),
+            ),
         );
 
         if (!broadcast.success) {

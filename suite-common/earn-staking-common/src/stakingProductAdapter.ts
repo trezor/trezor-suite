@@ -5,6 +5,7 @@ import type { StakingOperation, StakingOperationOptions } from './stakingOperati
 import type {
     ComposedStakingStep,
     SignedStakingStep,
+    StakingBroadcastResult,
     StakingPlan,
     StakingStep,
 } from './stakingPlan';
@@ -65,5 +66,5 @@ export type StakingProductAdapter = {
     planOperation: (params: PlanOperationParams) => Promise<StakingPlan>;
     composeStep: (params: ComposeStepParams) => Promise<ComposedStakingStep>;
     signStep: (params: SignStepParams) => Promise<SignedStakingStep>;
-    broadcastStep: (params: BroadcastStepParams) => Promise<{ txid: string }>;
+    broadcastStep: (params: BroadcastStepParams) => Promise<StakingBroadcastResult>;
 };
