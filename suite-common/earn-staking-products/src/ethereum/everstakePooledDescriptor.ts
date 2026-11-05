@@ -56,5 +56,6 @@ export const createEverstakePooledDescriptor = (
             mobile: { access: 'manage' },
         },
         messageSystemFeatures: MESSAGE_SYSTEM_FEATURES_BY_SYMBOL[networkSymbol] ?? {},
+        isCountedInAccountTotals: true,
     });
 };

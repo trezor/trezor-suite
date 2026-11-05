@@ -3,6 +3,7 @@ import {
     stakingProductDescriptorObjectSchema,
     stakingProductDescriptorSchema,
 } from './stakingProductDescriptor';
+import { stakingProviderIdSchema } from './stakingProvider';
 import { mockStakingProductDescriptor } from '../mocks';
 
 const polygonToken = {
@@ -64,6 +65,41 @@ describe('stakingProductDescriptorSchema', () => {
         });
 
         expect(result.success).toBe(false);
+    });
+
+    it('parses a product without operations and without a consent key', () => {
+        const descriptor = mockStakingProductDescriptor({
+            providerId: stakingProviderIdSchema.parse('external'),
+            type: 'native',
+            operations: [],
+            consentKey: null,
+        });
+
+        expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
+    });
+
+    it('rejects a product with operations but without a consent key', () => {
+        const result = stakingProductDescriptorSchema.safeParse(
+            mockStakingProductDescriptor({ consentKey: null }),
+        );
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['consentKey']);
+    });
+
+    it('requires every product to say whether it counts in account totals', () => {
+        const { isCountedInAccountTotals: _isCounted, ...descriptor } =
+            mockStakingProductDescriptor();
+        const result = stakingProductDescriptorSchema.safeParse(descriptor);
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['isCountedInAccountTotals']);
+    });
+
+    it('parses a product left out of account totals', () => {
+        const descriptor = mockStakingProductDescriptor({ isCountedInAccountTotals: false });
+
+        expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
     });
 
     it('rejects an unknown operation', () => {

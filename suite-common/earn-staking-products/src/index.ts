@@ -15,3 +15,17 @@ export {
     getStakingProvider,
     stakingProviders,
 } from './providers/stakingProviders';
+export {
+    createSolanaExternalDelegationProduct,
+    type CreateSolanaExternalDelegationProductParams,
+} from './solana/createSolanaExternalDelegationProduct';
+export {
+    createSolanaNativeDelegationProduct,
+    type CreateSolanaNativeDelegationProductParams,
+    type SolanaNativeDelegationProductDeps,
+} from './solana/createSolanaNativeDelegationProduct';
+export {
+    createSolanaProducts,
+    type CreateSolanaProductsDeps,
+    type CreateSolanaProductsParams,
+} from './solana/createSolanaProducts';

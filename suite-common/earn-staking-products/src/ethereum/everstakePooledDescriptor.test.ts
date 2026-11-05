@@ -30,6 +30,7 @@ describe('createEverstakePooledDescriptor', () => {
                 desktop: { access: 'manage' },
                 mobile: { access: 'manage' },
             },
+            isCountedInAccountTotals: true,
         });
     });
 
