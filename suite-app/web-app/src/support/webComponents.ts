@@ -132,9 +132,9 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
 
     // wallet
     'wallet-index': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/transactions/Transactions').then(
-            ({ Transactions }) => ({ default: Transactions }),
-        ),
+        import(
+            /* webpackChunkName: "wallet" */ 'src/views/wallet/transactions/AccountOverview'
+        ).then(({ AccountOverview }) => ({ default: AccountOverview })),
     ),
     'wallet-receive': lazy(() =>
         import(/* webpackChunkName: "wallet" */ 'src/views/wallet/receive/Receive').then(
