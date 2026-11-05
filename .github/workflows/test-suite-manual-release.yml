@@ -30,8 +30,8 @@ on:
         required: true
 
 concurrency:
-  group: manual-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  group: manual-release${{ inputs.reporterWatchdog == 'true' && '-watchdog' || '' }}
+  cancel-in-progress: false
 
 jobs:
   run-e2e-suite-manual-tests:
