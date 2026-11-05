@@ -2,7 +2,7 @@ import { DEVICE_MODULE_PREFIX, getIsIgnoredEntropyCheckError } from '@suite-comm
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { type AcquiredDevice, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import type TrezorConnect from '@trezor/connect';
+import TrezorConnect, { UI_EVENTS, type UiEventWalletCreationEntropyCheck } from '@trezor/connect';
 import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
@@ -42,12 +42,57 @@ const failEntropyCheckThunk = createThunk<
     }
 });
 
-type ProcessEntropyCheckResultThunkParams = {
+type ResetDeviceResult = Awaited<ReturnType<typeof TrezorConnect.resetDevice>>;
+
+type ResetDeviceWithEntropyCheckThunkParams = {
     device: AcquiredDevice;
-    result: Awaited<ReturnType<typeof TrezorConnect.resetDevice>>;
+    params: Parameters<typeof TrezorConnect.resetDevice>[0];
 };
 
-type ProcessEntropyCheckResultThunkDeps = FailEntropyCheckThunkDeps;
+/**
+ * Calls resetDevice and persists the xpub hashes of a passed wallet creation entropy check as soon as Connect
+ * reports them, so that they are known for the discovery entropy check even if the call fails afterwards.
+ */
+export const resetDeviceWithEntropyCheckThunk = createThunk<
+    ResetDeviceResult,
+    ResetDeviceWithEntropyCheckThunkParams,
+    void
+>(
+    `${DEVICE_MODULE_PREFIX}/resetDeviceWithEntropyCheckThunk`,
+    async ({ device, params }, { dispatch }) => {
+        const onWalletCreationEntropyCheck = ({
+            device: checkedDevice,
+            xpubHashes,
+        }: UiEventWalletCreationEntropyCheck['payload']) => {
+            // Ignore events from other devices being reset concurrently. Should not happen – just in case.
+            if (checkedDevice.id !== device.id) return;
+            dispatch(
+                persistentDeviceDataActions.setEntropyCheckResult({
+                    deviceId: device.id,
+                    success: true,
+                    xpubHashes,
+                }),
+            );
+        };
+
+        TrezorConnect.on(UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK, onWalletCreationEntropyCheck);
+        try {
+            return await TrezorConnect.resetDevice(params);
+        } finally {
+            TrezorConnect.off(
+                UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK,
+                onWalletCreationEntropyCheck,
+            );
+        }
+    },
+);
+
+type ProcessEntropyCheckResultThunkParams = {
+    device: AcquiredDevice;
+    result: ResetDeviceResult;
+};
+
+export type ProcessEntropyCheckResultThunkDeps = FailEntropyCheckThunkDeps;
 
 export const processEntropyCheckResultThunk = createThunk<
     void,
@@ -56,19 +101,16 @@ export const processEntropyCheckResultThunk = createThunk<
 >(
     `${DEVICE_MODULE_PREFIX}/processEntropyCheckResultThunk`,
     ({ device, result }: ProcessEntropyCheckResultThunkParams, { dispatch }) => {
-        if (result.success) {
-            dispatch(
-                persistentDeviceDataActions.setEntropyCheckResult({
-                    deviceId: device.id,
-                    success: true,
-                    xpubHashes: result.payload.xpubHashes,
-                }),
-            );
-        } else {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
-            if (result.error.code === 'Failure_EntropyCheck') {
-                dispatch(failEntropyCheckThunk({ device, error: result.error }));
-            }
+        // A passed check is already persisted by resetDeviceWithEntropyCheckThunk.
+        if (result.success) return;
+
+        // But failure is persisted only after resetDevice finishes, because only at that point we have all runtime
+        // errors collected by Connect (e.g. transport errors).
+        // It can very well happen that a success is persisted, but the subsequent steps fail.
+        // That failure is handled here, but the important thing is, that xpubHashes were persisted.
+        dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
+        if (result.error.code === 'Failure_EntropyCheck') {
+            dispatch(failEntropyCheckThunk({ device, error: result.error }));
         }
     },
 );
