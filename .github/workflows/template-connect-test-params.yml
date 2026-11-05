@@ -15,6 +15,11 @@ on:
         type: "string"
         required: false
         default: "2-latest"
+      testsFirmwareBranch:
+        description: "Build the emulator firmware from this trezor-firmware branch instead of a released version (used by WARD, which ships only in a branch, e.g. petrsusil/ward-draft). Overrides `testsFirmware`."
+        type: "string"
+        required: false
+        default: ""
       testFirmwareModel:
         description: "Firmware model for the tests (example: T3T1)"
         type: "string"
@@ -90,6 +95,10 @@ jobs:
         env:
           TEST_FIRMWARE_MODEL: ${{ inputs.testFirmwareModel }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m $TEST_FIRMWARE_MODEL" >> "$GITHUB_ENV"
+      - if: ${{ inputs.testsFirmwareBranch }}
+        env:
+          TESTS_FIRMWARE_BRANCH: ${{ inputs.testsFirmwareBranch }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -b $TESTS_FIRMWARE_BRANCH" >> "$GITHUB_ENV"
       - if: ${{ inputs.includeFilter }}
         env:
           INCLUDE_FILTER: ${{ inputs.includeFilter }}

@@ -96,6 +96,7 @@ import {
     DebugLinkSetBatteryState,
     DebugLinkSetLogFilter,
 } from './messages-debug';
+import { DisplayAddress, DisplayAddressWithProof } from './messages-display_address';
 import {
     EosGetPublicKey,
     EosPublicKey,
@@ -138,6 +139,18 @@ import {
     EvoluRegistrationRequest,
     EvoluSignRegistrationRequest,
 } from './messages-evolu';
+import {
+    ExtAppDataChunkAck,
+    ExtAppDataChunkRequest,
+    ExtAppHeaderAck,
+    ExtAppHeaderRequest,
+    ExtAppLoad,
+    ExtAppLoaded,
+    ExtAppMessage,
+    ExtAppResponse,
+    ExtAppRootPacketAck,
+    ExtAppRootPacketRequest,
+} from './messages-extapp';
 import {
     ApplyFlags,
     ApplySettings,
@@ -314,6 +327,42 @@ import {
     TronWithdrawBalance,
     TronWithdrawUnfreeze,
 } from './messages-tron';
+import {
+    WARDConfirmBatchByWM,
+    WARDConfirmBatchByWMAck,
+    WARDConfirmRevertByWM,
+    WARDConfirmRevertByWMAck,
+    WARDConfirmedByWM,
+    WARDConfirmedByWMAck,
+    WARDDebugSetRoot,
+    WARDDebugSetRootAck,
+    WARDDiscardPending,
+    WARDDiscardPendingAck,
+    WARDExportKeys,
+    WARDExportKeysAck,
+    WARDIngestAttestation,
+    WARDIngestAttestationAck,
+    WARDListPendingEdits,
+    WARDListPendingEditsAck,
+    WARDLookup,
+    WARDLookupAck,
+    WARDPerformBatch,
+    WARDPerformBatchAck,
+    WARDPerformRevert,
+    WARDPerformRevertAck,
+    WARDPerformUpdate,
+    WARDPerformUpdateAck,
+    WARDProofAck,
+    WARDProofRequest,
+    WARDQueueUpdate,
+    WARDQueueUpdateAck,
+    WARDReconcile,
+    WARDReconcileAck,
+    WARDSync,
+    WARDSyncAck,
+    WARDVerifyChain,
+    WARDVerifyChainAck,
+} from './messages-ward';
 
 export type * from './options';
 export * from './messages-common';
@@ -325,10 +374,13 @@ export * from './messages-crypto';
 export * from './messages-management';
 export * from './messages-debug';
 export * from './messages-definitions';
+export * from './messages-ward';
+export * from './messages-display_address';
 export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
 export * from './messages-evolu';
+export * from './messages-extapp';
 export * from './messages-monero';
 export * from './messages-nostr';
 export * from './messages-ripple';
@@ -482,6 +534,42 @@ export const MessageType = Type.Object(
         DebugLinkN1W1Write,
         DebugLinkN1W1Read,
         DebugLinkN1W1Response,
+        WARDQueueUpdate,
+        WARDQueueUpdateAck,
+        WARDPerformUpdate,
+        WARDPerformUpdateAck,
+        WARDConfirmedByWM,
+        WARDConfirmedByWMAck,
+        WARDSync,
+        WARDSyncAck,
+        WARDIngestAttestation,
+        WARDIngestAttestationAck,
+        WARDListPendingEdits,
+        WARDListPendingEditsAck,
+        WARDReconcile,
+        WARDReconcileAck,
+        WARDLookup,
+        WARDLookupAck,
+        WARDDebugSetRoot,
+        WARDDebugSetRootAck,
+        WARDProofRequest,
+        WARDProofAck,
+        WARDExportKeys,
+        WARDExportKeysAck,
+        WARDDiscardPending,
+        WARDDiscardPendingAck,
+        WARDPerformBatch,
+        WARDPerformBatchAck,
+        WARDConfirmBatchByWM,
+        WARDConfirmBatchByWMAck,
+        WARDPerformRevert,
+        WARDPerformRevertAck,
+        WARDConfirmRevertByWM,
+        WARDConfirmRevertByWMAck,
+        WARDVerifyChain,
+        WARDVerifyChainAck,
+        DisplayAddress,
+        DisplayAddressWithProof,
         EosGetPublicKey,
         EosPublicKey,
         EosSignTx,
@@ -516,6 +604,16 @@ export const MessageType = Type.Object(
         EvoluDelegatedIdentityKey,
         EvoluIndexManagement,
         EvoluIndexManagementResponse,
+        ExtAppLoad,
+        ExtAppLoaded,
+        ExtAppHeaderRequest,
+        ExtAppHeaderAck,
+        ExtAppRootPacketRequest,
+        ExtAppRootPacketAck,
+        ExtAppDataChunkRequest,
+        ExtAppDataChunkAck,
+        ExtAppMessage,
+        ExtAppResponse,
         MoneroGetAddress,
         MoneroAddress,
         MoneroGetWatchKey,
@@ -725,6 +823,25 @@ export type WireInMessage =
     | 'UnlockBootloader'
     | 'SetBrightness'
     | 'GetSerialNumber'
+    | 'WARDQueueUpdate'
+    | 'WARDPerformUpdate'
+    | 'WARDConfirmedByWM'
+    | 'WARDSync'
+    | 'WARDIngestAttestation'
+    | 'WARDListPendingEdits'
+    | 'WARDReconcile'
+    | 'WARDLookup'
+    | 'WARDDebugSetRoot'
+    | 'WARDProofAck'
+    | 'WARDExportKeys'
+    | 'WARDDiscardPending'
+    | 'WARDPerformBatch'
+    | 'WARDConfirmBatchByWM'
+    | 'WARDPerformRevert'
+    | 'WARDConfirmRevertByWM'
+    | 'WARDVerifyChain'
+    | 'DisplayAddress'
+    | 'DisplayAddressWithProof'
     | 'EosGetPublicKey'
     | 'EosSignTx'
     | 'EosTxActionAck'
@@ -744,6 +861,11 @@ export type WireInMessage =
     | 'EvoluSignRegistrationRequest'
     | 'EvoluGetDelegatedIdentityKey'
     | 'EvoluIndexManagement'
+    | 'ExtAppLoad'
+    | 'ExtAppHeaderAck'
+    | 'ExtAppRootPacketAck'
+    | 'ExtAppDataChunkAck'
+    | 'ExtAppMessage'
     | 'MoneroGetAddress'
     | 'MoneroGetWatchKey'
     | 'MoneroTransactionInitRequest'
@@ -856,6 +978,23 @@ export type WireOutMessage =
     | 'Nonce'
     | 'UnlockedPathRequest'
     | 'SerialNumber'
+    | 'WARDQueueUpdateAck'
+    | 'WARDPerformUpdateAck'
+    | 'WARDConfirmedByWMAck'
+    | 'WARDSyncAck'
+    | 'WARDIngestAttestationAck'
+    | 'WARDListPendingEditsAck'
+    | 'WARDReconcileAck'
+    | 'WARDLookupAck'
+    | 'WARDDebugSetRootAck'
+    | 'WARDProofRequest'
+    | 'WARDExportKeysAck'
+    | 'WARDDiscardPendingAck'
+    | 'WARDPerformBatchAck'
+    | 'WARDConfirmBatchByWMAck'
+    | 'WARDPerformRevertAck'
+    | 'WARDConfirmRevertByWMAck'
+    | 'WARDVerifyChainAck'
     | 'EosPublicKey'
     | 'EosTxActionRequest'
     | 'EosSignedTx'
@@ -871,6 +1010,11 @@ export type WireOutMessage =
     | 'EvoluRegistrationRequest'
     | 'EvoluDelegatedIdentityKey'
     | 'EvoluIndexManagementResponse'
+    | 'ExtAppLoaded'
+    | 'ExtAppHeaderRequest'
+    | 'ExtAppRootPacketRequest'
+    | 'ExtAppDataChunkRequest'
+    | 'ExtAppResponse'
     | 'MoneroAddress'
     | 'MoneroWatchKey'
     | 'MoneroTransactionInitAck'

@@ -159,6 +159,12 @@ export const ProtobufManager = () => {
     const messages: Record<string, DescMessage | undefined> = {};
     const extensions: Record<string, DescExtension | undefined> = {};
     const enums: Record<string, DescEnum | undefined> = {};
+    const messageNameAliases: Record<string, string> = {
+        WARDInitSyncRound: 'WARDSync',
+        WARDInitSyncRoundAck: 'WARDSyncAck',
+        WARDMergeState: 'WARDReconcile',
+        WARDMergeStateAck: 'WARDReconcileAck',
+    };
 
     const load = (modules: Record<string, AnyDesc> | Record<string, AnyDesc>[]) => {
         if (Array.isArray(modules)) {
@@ -191,7 +197,18 @@ export const ProtobufManager = () => {
         const wireTypeExtension = extensions['wire_type'];
         const wireTypeOption = unknownOptions.find(o => o.no === wireTypeExtension?.number);
 
-        return wireTypeOption ? wireTypeOption.data[0] : undefined;
+        if (!wireTypeOption) return undefined;
+        // data holds the raw varint bytes; decode all bytes instead of reading only data[0],
+        // which would be wrong for values >= 128 encoded as multi-byte varints (e.g. 2302 → FE 11).
+        let result = 0;
+        let shift = 0;
+        for (const byte of wireTypeOption.data) {
+            result |= (byte & 0x7f) << shift;
+            if (!(byte & 0x80)) break;
+            shift += 7;
+        }
+
+        return result;
     };
 
     const findEnum = (enumName: string) => enums[enumName];
@@ -248,15 +265,16 @@ export const ProtobufManager = () => {
             );
         }
 
-        const messageName = matchedMessageType.name
+        const rawMessageName = matchedMessageType.name
             .replace('ThpMessageType_', '')
             .replace('MessageType_', '');
+        const messageName = messageNameAliases[rawMessageName] ?? rawMessageName;
         const schemaKey = messageName + 'Schema';
         const schema = messages[schemaKey];
 
         if (!schema) {
             throw new Error(
-                `Schema "${messageName}" (from ID ${nameOrId}) not found. Available: ${Object.keys(messages).length}`,
+                `Schema "${messageName}" (from ID ${nameOrId}, enum ${rawMessageName}) not found. Available: ${Object.keys(messages).length}`,
             );
         }
 
