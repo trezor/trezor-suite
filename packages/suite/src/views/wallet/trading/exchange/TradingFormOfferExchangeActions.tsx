@@ -14,6 +14,7 @@ import {
     selectTradingExchangeQuoteToEstimate,
     selectTradingSendAccount,
     tradingExchangeActions,
+    useTradingExchangeAllowance,
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
@@ -50,6 +51,7 @@ export const TradingFormOfferExchangeActions = () => {
     );
 
     const modalControls = useReceiveAddressModalControls();
+    const { chainAllowance } = useTradingExchangeAllowance({ account });
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const { outputs, sendCryptoSelect, receiveCryptoSelect, exchangeType, rateType, provider } =
@@ -145,8 +147,17 @@ export const TradingFormOfferExchangeActions = () => {
 
     const startApprovalFlow = (trade: ExchangeTrade) => {
         dispatch(tradingExchangeActions.saveFormValues(getValues()));
-        dispatch(tradingExchangeActions.startApprovalFlow(getApprovalFlowSteps(trade)));
+        dispatch(
+            tradingExchangeActions.startApprovalFlow(getApprovalFlowSteps(trade, chainAllowance)),
+        );
         dispatch(gotoThunk({ routeName: 'wallet-trading-exchange-approval' }));
+    };
+
+    const onManageApproval = () => {
+        dispatch(tradingExchangeActions.saveFormValues(getValues()));
+        dispatch(
+            gotoThunk({ routeName: 'wallet-trading-exchange-allowance', preserveParams: true }),
+        );
     };
 
     const onSelectQuote = async () => {
@@ -190,6 +201,7 @@ export const TradingFormOfferExchangeActions = () => {
                     isFormInvalid={state.isFormInvalid}
                     refreshQuotes={refreshQuotes}
                     onStartApprovalFlow={startApprovalFlow}
+                    onManageApproval={onManageApproval}
                     onSwap={selectQuote}
                     getCryptoInfo={getCryptoInfo}
                 />

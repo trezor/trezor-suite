@@ -12,6 +12,7 @@ type AllowanceAmountProps = {
     amount: string;
     networkSymbol: NetworkSymbol;
     contractAddress: TokenAddress;
+    isCompact?: boolean;
     typographyStyle?: TypographyStyle;
     isLoading?: boolean;
     hasError?: boolean;
@@ -22,6 +23,7 @@ export const AllowanceAmount = ({
     amount,
     networkSymbol,
     contractAddress,
+    isCompact = false,
     typographyStyle = 'body-md',
     isLoading = false,
     hasError = false,
@@ -52,6 +54,7 @@ export const AllowanceAmount = ({
                 value={amount}
                 networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
+                isCompact={isCompact}
                 data-testid={dataTest}
             />
         </Text>

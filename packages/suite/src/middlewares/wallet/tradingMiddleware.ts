@@ -75,6 +75,7 @@ export const tradingMiddleware =
                 'wallet-trading-exchange',
                 'wallet-trading-exchange-confirm',
                 'wallet-trading-exchange-approval',
+                'wallet-trading-exchange-allowance',
             ].some(name => name === routeName);
             const nextModalAccountKey = selectTradingModalAccountKey(nextState);
             const prefilledFromAccount = selectTradingPrefilledFromAccount(nextState);
