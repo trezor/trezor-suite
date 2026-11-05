@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
 import {
@@ -10,14 +10,17 @@ import {
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type AccountsRootState,
+    type TransactionsRootState,
     type WalletSettingsRootState,
     accountsActions,
     changeNetworks,
     handleEarnTransactionReplacementThunk,
     initialWalletSettingsState,
     transactionsActions,
+    transactionsInitialState,
 } from '@suite-common/wallet-core';
 import type {
+    AccountKey,
     PrecomposedTransactionFinalBumpFeeRbf,
     PrecomposedTransactionFinalCancelRbf,
     WalletAccountTransaction,
@@ -26,9 +29,6 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { type StakingMiddlewareDeps, prepareStakingMiddleware } from './stakingMiddleware';
-import { getCachedStakingProductInfo } from './stakingProductInfoQuery';
-import { type StakingRootState, type StakingState, stakingReducer } from './stakingReducer';
 import {
     mockStakingDeviceAccess,
     mockStakingQueryClient,
@@ -37,10 +37,16 @@ import {
     mockStakingState,
 } from '../../mocks';
 import { createStakingCompositionRoot } from '../createStakingCompositionRoot';
+import { type StakingMiddlewareDeps, prepareStakingMiddleware } from './stakingMiddleware';
+import { getCachedStakingProductInfo } from './stakingProductInfoQuery';
+import { type StakingRootState, type StakingState, stakingReducer } from './stakingReducer';
 import { selectStakingPositionsByAccount } from './stakingSelectors';
 import { selectStakingSession } from './stakingSessionSelectors';
 
-type StakingMiddlewareTestState = StakingRootState & AccountsRootState & WalletSettingsRootState;
+type StakingMiddlewareTestState = StakingRootState &
+    AccountsRootState &
+    TransactionsRootState &
+    WalletSettingsRootState;
 
 const eth = mockStakingProductDescriptor();
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
@@ -48,6 +54,70 @@ const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const position = mockStakingPosition();
 
 const flushThunks = () => new Promise(resolve => setTimeout(resolve, 0));
+
+const createTransaction = (
+    overrides: Partial<WalletAccountTransaction> = {},
+): WalletAccountTransaction => ({
+    type: 'sent',
+    txid: 'tx1',
+    amount: '1000000000000000000',
+    fee: '462000000000000',
+    blockHeight: 100,
+    targets: [],
+    tokens: [],
+    internalTransfers: [],
+    details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
+    descriptor: ethAccount.descriptor,
+    deviceState: ethAccount.deviceState,
+    symbol: ethAccount.symbol,
+    ...overrides,
+});
+
+type TransactionsTestState = StakingMiddlewareTestState['wallet']['transactions'];
+
+const transactionsReducer = (
+    state: TransactionsTestState = transactionsInitialState,
+    action: UnknownAction,
+): TransactionsTestState => {
+    const withAccountTransactions = (
+        accountKey: AccountKey,
+        transactions: TransactionsTestState['transactions'][AccountKey],
+    ) => ({ ...state, transactions: { ...state.transactions, [accountKey]: transactions } });
+    const getAccountTransactions = (accountKey: AccountKey) => state.transactions[accountKey] ?? [];
+
+    if (transactionsActions.addTransaction.match(action)) {
+        return withAccountTransactions(action.payload.account.key, action.payload.transactions);
+    }
+
+    if (transactionsActions.replaceTransaction.match(action)) {
+        const { key, txid, tx } = action.payload;
+
+        return withAccountTransactions(
+            key,
+            getAccountTransactions(key).map(transaction =>
+                transaction?.txid === txid ? tx : transaction,
+            ),
+        );
+    }
+
+    if (transactionsActions.removeTransaction.match(action)) {
+        const { account, txs } = action.payload;
+        const removedTxids = txs.map(({ txid }) => txid);
+
+        return withAccountTransactions(
+            account.key,
+            getAccountTransactions(account.key).filter(
+                transaction => !removedTxids.includes(transaction?.txid ?? ''),
+            ),
+        );
+    }
+
+    if (transactionsActions.resetTransaction.match(action)) {
+        return withAccountTransactions(action.payload.account.key, []);
+    }
+
+    return state;
+};
 
 const initStore = (
     adapterOverrides: Partial<StakingProductAdapter> = {},
@@ -82,6 +152,7 @@ const initStore = (
             earn: combineReducers({ staking: stakingReducer }),
             wallet: combineReducers({
                 accounts: (state = [ethAccount, btcAccount]) => state,
+                transactions: transactionsReducer,
                 settings: (state = initialWalletSettingsState) => state,
             }),
         },
@@ -110,6 +181,7 @@ describe('prepareStakingMiddleware', () => {
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
             productInfo: null,
+            transactions: [],
         });
         expect(selectStakingPositionsByAccount(store.getState(), ethAccount.key)).toEqual([
             position,
@@ -149,6 +221,7 @@ describe('prepareStakingMiddleware', () => {
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
             productInfo: mockStakingProductInfo(),
+            transactions: [],
         });
     });
 
@@ -161,23 +234,6 @@ describe('prepareStakingMiddleware', () => {
         });
         const { key: sessionKey } = session;
         const awaiting = () => mockStakingState({ descriptors: [eth], sessions: [session] });
-        const createTransaction = (
-            overrides: Partial<WalletAccountTransaction> = {},
-        ): WalletAccountTransaction => ({
-            type: 'sent',
-            txid: 'tx1',
-            amount: '1000000000000000000',
-            fee: '462000000000000',
-            blockHeight: 100,
-            targets: [],
-            tokens: [],
-            internalTransfers: [],
-            details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
-            descriptor: ethAccount.descriptor,
-            deviceState: ethAccount.deviceState,
-            symbol: ethAccount.symbol,
-            ...overrides,
-        });
         const bumpFee: PrecomposedTransactionFinalBumpFeeRbf = {
             type: 'final',
             totalSpent: '1000500000000000000',
@@ -232,6 +288,43 @@ describe('prepareStakingMiddleware', () => {
             expect(adapter.getPosition).toHaveBeenCalledWith({
                 account: ethAccount,
                 productInfo: null,
+                transactions: [createTransaction()],
+            });
+        });
+
+        it('passes the pending transaction, then the mined one, with the account updates', async () => {
+            const { store, staking, adapter } = initStore();
+            const pending = createTransaction({ blockHeight: undefined });
+            const mined = createTransaction();
+
+            staking.loadStakingProducts();
+            await flushThunks();
+
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    account: ethAccount,
+                    transactions: [pending],
+                }),
+            );
+            store.dispatch(accountsActions.updateAccount(ethAccount));
+            await flushThunks();
+
+            expect(adapter.getPosition).toHaveBeenLastCalledWith({
+                account: ethAccount,
+                productInfo: null,
+                transactions: [pending],
+            });
+
+            store.dispatch(
+                transactionsActions.addTransaction({ account: ethAccount, transactions: [mined] }),
+            );
+            store.dispatch(accountsActions.updateAccount(ethAccount));
+            await flushThunks();
+
+            expect(adapter.getPosition).toHaveBeenLastCalledWith({
+                account: ethAccount,
+                productInfo: null,
+                transactions: [mined],
             });
         });
 
@@ -274,7 +367,12 @@ describe('prepareStakingMiddleware', () => {
                 txid: 'tx1',
                 replacements: [],
             });
-            expect(adapter.getPosition).not.toHaveBeenCalled();
+            expect(adapter.getPosition).toHaveBeenCalledTimes(1);
+            expect(adapter.getPosition).toHaveBeenCalledWith({
+                account: ethAccount,
+                productInfo: null,
+                transactions: [createTransaction({ blockHeight: undefined })],
+            });
         });
 
         it('keeps a bumped transaction next to the original and confirms on either', async () => {
@@ -368,6 +466,92 @@ describe('prepareStakingMiddleware', () => {
                 txid: 'tx1',
                 replacements: [{ txid: 'tx1b', isCancellation: false }],
             });
+        });
+    });
+
+    describe('transaction changes', () => {
+        const pending = createTransaction({ txid: 'tx2', blockHeight: undefined });
+
+        const initStoreWithPendingTransaction = async () => {
+            const result = initStore();
+
+            result.store.dispatch(
+                transactionsActions.addTransaction({
+                    account: ethAccount,
+                    transactions: [pending],
+                }),
+            );
+            await flushThunks();
+
+            return result;
+        };
+
+        const expectLastSyncedTransactions = (
+            adapter: StakingProductAdapter,
+            transactions: readonly WalletAccountTransaction[],
+        ) =>
+            expect(adapter.getPosition).toHaveBeenLastCalledWith({
+                account: ethAccount,
+                productInfo: null,
+                transactions,
+            });
+
+        it('re-syncs when the transactions arrive after the account, as on discovery', async () => {
+            const { store, adapter } = initStore();
+
+            store.dispatch(accountsActions.updateAccount(ethAccount));
+            await flushThunks();
+
+            expectLastSyncedTransactions(adapter, []);
+
+            store.dispatch(
+                transactionsActions.addTransaction({
+                    account: ethAccount,
+                    transactions: [pending],
+                }),
+            );
+            await flushThunks();
+
+            expectLastSyncedTransactions(adapter, [pending]);
+        });
+
+        it('re-syncs when a transaction is replaced', async () => {
+            const { store, adapter } = await initStoreWithPendingTransaction();
+            const bumped = createTransaction({ txid: 'tx2b', blockHeight: undefined });
+
+            store.dispatch(
+                transactionsActions.replaceTransaction({
+                    key: ethAccount.key,
+                    txid: pending.txid,
+                    tx: bumped,
+                }),
+            );
+            await flushThunks();
+
+            expectLastSyncedTransactions(adapter, [bumped]);
+        });
+
+        it('re-syncs when a transaction is removed', async () => {
+            const { store, adapter } = await initStoreWithPendingTransaction();
+
+            store.dispatch(
+                transactionsActions.removeTransaction({
+                    account: ethAccount,
+                    txs: [{ txid: pending.txid }],
+                }),
+            );
+            await flushThunks();
+
+            expectLastSyncedTransactions(adapter, []);
+        });
+
+        it('re-syncs when the transactions of the account are reset', async () => {
+            const { store, adapter } = await initStoreWithPendingTransaction();
+
+            store.dispatch(transactionsActions.resetTransaction({ account: ethAccount }));
+            await flushThunks();
+
+            expectLastSyncedTransactions(adapter, []);
         });
     });
 });

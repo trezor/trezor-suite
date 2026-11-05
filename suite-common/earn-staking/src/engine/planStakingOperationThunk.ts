@@ -69,8 +69,20 @@ export const planStakingOperationThunk = createThunk<
             return rejectWithValue('account-not-found');
         }
 
-        if (selectStakingProductDescriptor(getState(), productId) === null) {
+        const descriptor = selectStakingProductDescriptor(getState(), productId);
+
+        if (descriptor === null) {
             return rejectWithValue('product-not-found');
+        }
+
+        const position = selectStakingPosition(getState(), accountKey, productId);
+        const availableOperations: readonly StakingOperation[] = position?.operations ?? ['stake'];
+
+        if (
+            !descriptor.operations.includes(operation) ||
+            !availableOperations.includes(operation)
+        ) {
+            return rejectWithValue('operation-not-available');
         }
 
         const sessionKey = getStakingSessionKey({ accountKey, productId, operation });
@@ -86,7 +98,7 @@ export const planStakingOperationThunk = createThunk<
         const planned = await callStakingAdapter(() =>
             adapter.planOperation({
                 account,
-                position: selectStakingPosition(getState(), accountKey, productId),
+                position,
                 operation,
                 options,
                 amount,
