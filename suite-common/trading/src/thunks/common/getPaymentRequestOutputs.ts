@@ -14,7 +14,7 @@ import {
     formatSlip24AddressByNetwork,
     formatSlip24SendAmountByNetwork,
 } from '../../utils/signature/signatureUtils';
-import { getConnectErrorCause } from '../../utils/tradingErrorUtils';
+import { getConnectErrorCause, toTradingError } from '../../utils/tradingErrorUtils';
 
 export type GetPaymentRequestOutputsThunkState = DeviceRootState;
 
@@ -53,11 +53,13 @@ export const getPaymentRequestOutputsThunk = createThunk<
                             );
 
                         sendAddress = associatedTokenAccountAddress.toString();
-                    } catch {
-                        return rejectWithValue({
-                            type: 'sign-tx-error',
-                            code: 'payment-requests-failed',
-                        });
+                    } catch (error) {
+                        return rejectWithValue(
+                            toTradingError(error, {
+                                type: 'sign-tx-error',
+                                code: 'payment-requests-failed',
+                            }),
+                        );
                     }
                 }
 

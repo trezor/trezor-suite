@@ -105,116 +105,124 @@ export const recomposeAndSignTxThunk = createThunk<
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
-        const { composed } = selectTradingComposedTransactionInfo(getState());
+        try {
+            const { composed } = selectTradingComposedTransactionInfo(getState());
 
-        const isPaymentRequestsAllowed =
-            tradingFormState.activeSection === 'sell'
-                ? selectTradingIsSlip24SellAllowed(getState(), account, isSlip24Active)
-                : selectTradingIsSlip24Allowed(getState(), account, isSlip24Active);
+            const isPaymentRequestsAllowed =
+                tradingFormState.activeSection === 'sell'
+                    ? selectTradingIsSlip24SellAllowed(getState(), account, isSlip24Active)
+                    : selectTradingIsSlip24Allowed(getState(), account, isSlip24Active);
 
-        const composeResult = await dispatch(
-            composeTradingTransactionThunk({
-                account,
-                address,
-                amount,
-                destinationTag,
-                transactionData,
-                recalculateCustomLimit,
-                ethereumAdjustGasLimit,
-                setMaxOutputId,
-                tradingFormState,
-            }),
-        );
-
-        if (isRejected(composeTradingTransactionThunk)(composeResult)) {
-            return rejectWithValue(
-                toTradingError(composeResult.payload ?? composeResult.error, {
-                    type: 'sign-tx-error',
-                    code: 'cannot-create-transaction',
+            const composeResult = await dispatch(
+                composeTradingTransactionThunk({
+                    account,
+                    address,
+                    amount,
+                    destinationTag,
+                    transactionData,
+                    recalculateCustomLimit,
+                    ethereumAdjustGasLimit,
+                    setMaxOutputId,
+                    tradingFormState,
                 }),
             );
-        }
 
-        const { formState, precomposedTransaction: precomposedToSign } = composeResult.payload;
+            if (isRejected(composeTradingTransactionThunk)(composeResult)) {
+                return rejectWithValue(
+                    toTradingError(composeResult.payload ?? composeResult.error, {
+                        type: 'sign-tx-error',
+                        code: 'cannot-create-transaction',
+                    }),
+                );
+            }
 
-        /*
-            SLIP-24 to achieve the consistent trade data
-            ---
-            If the transaction is a trade of whole balance, we need to set the amount to
-            the formState (displayed in the UI) and for the payment requests to
-            ensure that the payment requests are created with the correct amount.
-        */
-        const { outputs: precomposedOutputs } = precomposedToSign;
-        const paymentOutput =
-            precomposedOutputs.find(output => 'address' in output && output.address === address) ??
-            precomposedOutputs.find(output => 'address' in output);
-        // Send-max is `setMaxOutputId`; `length === 1` still covers SLIP-24 CEX with no change.
-        // Amount must come from the trade payment output, not OP_RETURN or change.
-        const isTradedWholeBalance =
-            typeof setMaxOutputId === 'number' || precomposedOutputs.length === 1;
-        const sendAmount =
-            isTradedWholeBalance && paymentOutput?.amount !== undefined
-                ? paymentOutput.amount.toString()
+            const { formState, precomposedTransaction: precomposedToSign } = composeResult.payload;
+
+            /*
+                SLIP-24 to achieve the consistent trade data
+                ---
+                If the transaction is a trade of whole balance, we need to set the amount to
+                the formState (displayed in the UI) and for the payment requests to
+                ensure that the payment requests are created with the correct amount.
+            */
+            const { outputs: precomposedOutputs } = precomposedToSign;
+            const paymentOutput =
+                precomposedOutputs.find(
+                    output => 'address' in output && output.address === address,
+                ) ?? precomposedOutputs.find(output => 'address' in output);
+            // Send-max is `setMaxOutputId`; `length === 1` still covers SLIP-24 CEX with no change.
+            // Amount must come from the trade payment output, not OP_RETURN or change.
+            const isTradedWholeBalance =
+                typeof setMaxOutputId === 'number' || precomposedOutputs.length === 1;
+            const sendAmount =
+                isTradedWholeBalance && paymentOutput?.amount !== undefined
+                    ? paymentOutput.amount.toString()
+                    : undefined;
+            const formattedMaxAmount = sendAmount
+                ? subunitsToUnits({
+                      value: asAmountSubunit(new BigNumber(sendAmount)),
+                      symbol: account.symbol,
+                      ...(composed?.token?.decimals
+                          ? { decimals: composed.token?.decimals }
+                          : undefined),
+                  }).toString()
                 : undefined;
-        const formattedMaxAmount = sendAmount
-            ? subunitsToUnits({
-                  value: asAmountSubunit(new BigNumber(sendAmount)),
-                  symbol: account.symbol,
-                  ...(composed?.token?.decimals
-                      ? { decimals: composed.token?.decimals }
-                      : undefined),
-              }).toString()
-            : undefined;
 
-        const formStateUpdated: FormState = {
-            ...formState,
-            trading: {
-                ...tradingFormState,
-                ...(isPaymentRequestsAllowed && isCompleteTradingForm(tradingFormState)
-                    ? {
-                          send: {
-                              ...tradingFormState.send,
-                              amount: formattedMaxAmount ?? tradingFormState.send.amount,
-                          },
-                      }
-                    : {}),
-            },
-        };
+            const formStateUpdated: FormState = {
+                ...formState,
+                trading: {
+                    ...tradingFormState,
+                    ...(isPaymentRequestsAllowed && isCompleteTradingForm(tradingFormState)
+                        ? {
+                              send: {
+                                  ...tradingFormState.send,
+                                  amount: formattedMaxAmount ?? tradingFormState.send.amount,
+                              },
+                          }
+                        : {}),
+                },
+            };
 
-        const paymentRequests = isPaymentRequestsAllowed
-            ? await dispatch(
-                  createPaymentRequestsThunk({
-                      type: tradingFormState.activeSection,
-                      account,
-                      composedLevels: precomposedToSign,
-                      formattedMaxAmount,
-                      destinationTag,
-                  }),
-              ).unwrap()
-            : [];
+            const paymentRequests = isPaymentRequestsAllowed
+                ? await dispatch(
+                      createPaymentRequestsThunk({
+                          type: tradingFormState.activeSection,
+                          account,
+                          composedLevels: precomposedToSign,
+                          formattedMaxAmount,
+                          destinationTag,
+                      }),
+                  ).unwrap()
+                : [];
 
-        const resultOfSignedTransaction = await signAndPushSendFormTransaction({
-            formState: formStateUpdated,
-            precomposedTransaction: precomposedToSign,
-            selectedAccount: account,
-            paymentRequests,
-        });
-
-        if (!resultOfSignedTransaction) {
-            return rejectWithValue({
-                type: 'sign-cancelled',
-                code: 'cannot-send-transaction',
+            const resultOfSignedTransaction = await signAndPushSendFormTransaction({
+                formState: formStateUpdated,
+                precomposedTransaction: precomposedToSign,
+                selectedAccount: account,
+                paymentRequests,
             });
-        }
 
-        if (!resultOfSignedTransaction.success) {
-            return rejectWithValue({
-                type: getSignAndPushRejectionType(resultOfSignedTransaction.error),
-                code: 'cannot-send-transaction',
-                cause: { source: 'send-form', error: resultOfSignedTransaction.error },
-            });
-        }
+            if (!resultOfSignedTransaction) {
+                return rejectWithValue({
+                    type: 'sign-cancelled',
+                    code: 'cannot-send-transaction',
+                });
+            }
 
-        return fulfillWithValue(resultOfSignedTransaction);
+            if (!resultOfSignedTransaction.success) {
+                return rejectWithValue({
+                    type: getSignAndPushRejectionType(resultOfSignedTransaction.error),
+                    code: 'cannot-send-transaction',
+                    cause: { source: 'send-form', error: resultOfSignedTransaction.error },
+                });
+            }
+
+            return fulfillWithValue(resultOfSignedTransaction);
+        } catch (error) {
+            // `unwrap` rethrows the payment requests' trading error, which is kept over the fallback.
+            return rejectWithValue(
+                toTradingError(error, { type: 'sign-tx-error', code: 'cannot-send-transaction' }),
+            );
+        }
     },
 );
