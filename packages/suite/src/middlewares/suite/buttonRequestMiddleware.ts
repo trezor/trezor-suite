@@ -1,7 +1,14 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
-import { PAYMENT_REQUEST_BUTTON_NAMES, selectAccountByKey } from '@suite-common/wallet-core';
+import { selectSelectedAccount } from '@suite/account';
+import { selectRouteName } from '@suite/router';
+import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import {
+    PAYMENT_REQUEST_BUTTON_NAMES,
+    selectAccountByKey,
+    selectSendFormAccountKey,
+} from '@suite-common/wallet-core';
 import { type DeviceButtonRequestCode, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
 import { type AppState } from 'src/types/suite';
@@ -36,7 +43,7 @@ const SIGN_TX_CONNECT_METHODS = [
 ] as const;
 
 const getAccountForButtonRequest = (state: AppState) => {
-    const { account } = state.wallet.selectedAccount;
+    const account = selectSelectedAccount(state);
     if (account) return account;
 
     const yieldAccountKey = state.wallet.stablecoinYield.txReview.accountKey;
@@ -45,7 +52,7 @@ const getAccountForButtonRequest = (state: AppState) => {
     const tronStakeAccountKey = state.wallet.tronStake.txReview.accountKey;
     if (tronStakeAccountKey) return selectAccountByKey(state, tronStakeAccountKey);
 
-    const sendAccountKey = state.wallet.send.accountKey;
+    const sendAccountKey = selectSendFormAccountKey(state);
     if (sendAccountKey) return selectAccountByKey(state, sendAccountKey);
 
     return undefined;
@@ -73,11 +80,11 @@ const shouldRemapToSignTx = (
     }
 
     const account = getAccountForButtonRequest(state);
-    const { activeCall } = state.connectPopup;
+    const activeCall = selectConnectPopupCall(state);
 
     const isInSuite =
         SIGN_TX_NETWORK_TYPES.some(type => type === account?.networkType) &&
-        SIGN_TX_ROUTES.some(route => route === state.router.route?.name);
+        SIGN_TX_ROUTES.some(route => route === selectRouteName(state));
 
     const isInConnectCall =
         activeCall?.state === 'ongoing' &&
@@ -105,7 +112,7 @@ const buttonRequest =
             }
 
             if (action.payload.code === 'ButtonRequest_Address') {
-                const { activeCall } = api.getState().connectPopup;
+                const activeCall = selectConnectPopupCall(api.getState());
                 // Skip if address confirmation modal open
                 if (activeCall?.state === 'address-confirmation') {
                     return action;
