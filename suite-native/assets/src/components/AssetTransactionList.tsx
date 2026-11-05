@@ -6,6 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, useScrollDivider } from '@suite-native/atoms';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import {
     OlderHistoryStatus,
     TokenTransferListItem,
@@ -95,7 +96,7 @@ export const AssetTransactionList = ({
         refresh,
     } = useAssetTransactions({ networkSymbol, tokenContract });
 
-    return (
+    const content = (
         <Box flex={1}>
             {scrollDivider}
             <FlashList<AssetTransactionListItem>
@@ -140,5 +141,20 @@ export const AssetTransactionList = ({
                 onScroll={handleScroll}
             />
         </Box>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol,
+                    tokens: items.flatMap(item =>
+                        typeof item === 'string' ? [] : (item.transaction.tokens ?? []),
+                    ),
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

@@ -15,6 +15,7 @@ import {
 import { TransactionIdFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-native/tokens';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -65,6 +66,7 @@ export const TransactionDetailIncludedCoins = ({
     tokenTransfer,
     isPhishingTransaction,
 }: TransactionDetailIncludedCoinsProps) => {
+    const metadataSources = useTokenMetadataSources();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
@@ -114,28 +116,30 @@ export const TransactionDetailIncludedCoins = ({
                 }
                 isCloseDisplayed
             >
-                {isEthereumCoinDisplayed && (
-                    <TransactionDetailListItem
-                        onPress={closeModal}
-                        accountKey={accountKey}
-                        transaction={transaction}
-                        isPhishingTransaction={isPhishingTransaction}
-                        isFirst
-                    />
-                )}
+                <TokenMetadataProvider sources={metadataSources}>
+                    {isEthereumCoinDisplayed && (
+                        <TransactionDetailListItem
+                            onPress={closeModal}
+                            accountKey={accountKey}
+                            transaction={transaction}
+                            isPhishingTransaction={isPhishingTransaction}
+                            isFirst
+                        />
+                    )}
 
-                {includedTokens.map((token, index) => (
-                    <TransactionDetailListItem
-                        onPress={closeModal}
-                        key={token.contract}
-                        accountKey={accountKey}
-                        transaction={transaction}
-                        tokenTransfer={token}
-                        isPhishingTransaction={isPhishingTransaction}
-                        isFirst={!isEthereumCoinDisplayed && index === 0}
-                        isLast={index === includedTokens.length - 1}
-                    />
-                ))}
+                    {includedTokens.map((token, index) => (
+                        <TransactionDetailListItem
+                            onPress={closeModal}
+                            key={token.contract}
+                            accountKey={accountKey}
+                            transaction={transaction}
+                            tokenTransfer={token}
+                            isPhishingTransaction={isPhishingTransaction}
+                            isFirst={!isEthereumCoinDisplayed && index === 0}
+                            isLast={index === includedTokens.length - 1}
+                        />
+                    ))}
+                </TokenMetadataProvider>
             </BottomSheetModal>
         </>
     );

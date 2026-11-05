@@ -43,7 +43,6 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -52,6 +51,7 @@ import {
     WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 import { isDevUtilsEnabledAtom } from '@suite-native/storage';
+import { TokenIcon } from '@suite-native/tokens';
 import {
     type TokensRootState as NativeTokensRootState,
     TokenName,
@@ -272,11 +272,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                                 }
                             >
                                 <HStack alignItems="center" spacing="sp8">
-                                    <TokenIcon
-                                        tokenSymbol={symbol}
-                                        networkSymbol={symbol}
-                                        size="tiny"
-                                    />
+                                    <TokenIcon networkSymbol={symbol} size="tiny" />
                                     <Text variant="body-sm">{networkName}</Text>
                                 </HStack>
                             </DetailRow>

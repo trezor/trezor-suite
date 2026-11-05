@@ -5,6 +5,7 @@ import { FlashList } from '@shopify/flash-list';
 import { type YieldListItem } from '@suite-common/wallet-core';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-native/tokens';
 
 import { YieldPositionCard } from './YieldPositionCard';
 
@@ -19,6 +20,8 @@ export const YieldPositionsBottomSheet = ({
     positions,
     onClose,
 }: YieldPositionsBottomSheetProps) => {
+    const sources = useTokenMetadataSources();
+
     const renderItem = useCallback(
         ({ item }: { item: YieldListItem }) => <YieldPositionCard item={item} onClose={onClose} />,
         [onClose],
@@ -31,13 +34,15 @@ export const YieldPositionsBottomSheet = ({
             isCloseDisplayed
             onClose={onClose}
         >
-            <Box paddingTop="sp16">
-                <FlashList
-                    data={positions}
-                    keyExtractor={item => item.id}
-                    renderItem={renderItem}
-                />
-            </Box>
+            <TokenMetadataProvider sources={sources}>
+                <Box paddingTop="sp16">
+                    <FlashList
+                        data={positions}
+                        keyExtractor={item => item.id}
+                        renderItem={renderItem}
+                    />
+                </Box>
+            </TokenMetadataProvider>
         </BottomSheetModal>
     );
 };

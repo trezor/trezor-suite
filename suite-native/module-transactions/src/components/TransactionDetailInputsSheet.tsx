@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type TransactionsRootState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type TransactionsRootState,
+    selectAccountNetworkSymbol,
+} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -72,12 +76,15 @@ export const TransactionDetailInputsSheet = ({
     sheetControls,
 }: TransactionDetailInputsSheetProps) => {
     const { translate } = useTranslate();
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
     const transactionTransfers = useSelector(
         (state: TransactionsRootState & TokenDefinitionsRootState) =>
             selectTransactionInputAndOutputTransfers(state, accountKey, txid),
     );
 
-    if (G.isNull(transactionTransfers)) return null;
+    if (G.isNull(transactionTransfers) || !networkSymbol) return null;
     const { externalTransfers, internalTransfers, tokenTransfers } = transactionTransfers;
     const { inputsCount, outputsCount } = getTransactionInputsAndOutputsCount(externalTransfers);
 
@@ -91,6 +98,7 @@ export const TransactionDetailInputsSheet = ({
         >
             <VStack>
                 <TransactionDetailInputsSheetSection
+                    networkSymbol={networkSymbol}
                     header={
                         <InputsOutputsHeader
                             inputsCount={inputsCount}
@@ -101,6 +109,7 @@ export const TransactionDetailInputsSheet = ({
                 />
 
                 <TransactionDetailInputsSheetSection
+                    networkSymbol={networkSymbol}
                     header={
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation id="transactions.TransactionDetailScreen.inputsSheet.internalTransfers" />
@@ -110,6 +119,7 @@ export const TransactionDetailInputsSheet = ({
                 />
 
                 <TransactionDetailInputsSheetSection
+                    networkSymbol={networkSymbol}
                     header={
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation id="transactions.TransactionDetailScreen.inputsSheet.tokenTransfers" />

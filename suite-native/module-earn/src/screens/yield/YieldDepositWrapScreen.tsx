@@ -10,6 +10,7 @@ import { WrappedNativeFeeReserveBanner } from '../../components/earn/WrappedNati
 import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
+import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessionTxSimulationSheet';
@@ -36,17 +37,15 @@ export const YieldDepositWrapScreen = () => {
         isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible,
         isInteractionBlocked,
-        nativeSymbol,
         pendingModal,
         receivingCard,
         simulationSheet,
         tokenContract,
-        wrappedTokenSymbol,
         yieldFlowData,
     } = controller;
     const { account } = yieldFlowData;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -64,7 +63,7 @@ export const YieldDepositWrapScreen = () => {
                     isSubmitLoading={footer.isSubmitLoading}
                     onSkip={footer.onSkip}
                     onSubmit={footer.onSubmit}
-                    spentSymbol={nativeSymbol}
+                    networkSymbol={account.symbol}
                 />
             }
         >
@@ -109,8 +108,6 @@ export const YieldDepositWrapScreen = () => {
                                     amount={receivingCard.amount}
                                     networkSymbol={account.symbol}
                                     tokenContract={receivingCard.tokenContract}
-                                    tokenDecimals={receivingCard.tokenDecimals}
-                                    tokenSymbol={wrappedTokenSymbol}
                                 />
                             </Box>
                         )}
@@ -156,7 +153,6 @@ export const YieldDepositWrapScreen = () => {
                 accountLabel={accountLabel}
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
-                amountTokenSymbol={nativeSymbol}
                 title={<Translation id="earn.wrapNativeToken.pendingTransactionTitle" />}
                 vaultName={yieldFlowData.vaultTokenName}
                 vaultTokenContract={tokenContract}
@@ -164,4 +160,6 @@ export const YieldDepositWrapScreen = () => {
             <YieldSessionTxSimulationSheet account={account} flow="wrap" sheet={simulationSheet} />
         </Screen>
     );
+
+    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
 };

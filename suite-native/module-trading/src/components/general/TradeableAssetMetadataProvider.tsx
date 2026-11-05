@@ -22,13 +22,17 @@ export const TradeableAssetMetadataProvider = ({
 
     return (
         <TokenMetadataProvider
-            networkSymbol={networkSymbol}
-            tokens={[
+            sources={[
                 {
-                    contract: asset.contractAddress,
-                    name: asset.name,
-                    symbol: asset.symbol,
-                    decimals: asset.decimals,
+                    networkSymbol,
+                    tokens: [
+                        {
+                            contract: asset.contractAddress,
+                            name: asset.name,
+                            symbol: asset.symbol,
+                            decimals: asset.decimals,
+                        },
+                    ],
                 },
             ]}
         >

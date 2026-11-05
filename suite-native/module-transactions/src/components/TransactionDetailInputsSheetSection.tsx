@@ -2,9 +2,8 @@ import { Fragment, type ReactNode } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
 
-import { type TokenSymbol } from '@suite-common/tokens';
-import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import { ClipboardCopyMenu } from '@suite-native/clipboard';
 import {
@@ -14,17 +13,15 @@ import {
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
-import { TokenMetadataProvider } from '@suite-native/tokens';
+import { useTokenMetadata } from '@suite-native/tokens';
 import { type TransactionTranfer } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionAddressAmountProps = {
     address: string;
     amount?: string;
-    symbol: NetworkSymbol | TokenSymbol;
-    networkSymbol?: NetworkSymbol;
+    networkSymbol: NetworkSymbol;
     tokenContract?: TokenAddress;
-    decimals?: number;
 };
 
 const addressAmountColumnStyle = prepareNativeStyle(_ => ({
@@ -34,34 +31,28 @@ const addressAmountColumnStyle = prepareNativeStyle(_ => ({
 const TransactionAddressAmount = ({
     address,
     amount,
-    symbol,
-    decimals,
     networkSymbol,
     tokenContract,
 }: TransactionAddressAmountProps) => {
+    const token = useTokenMetadata(networkSymbol, tokenContract);
     let amountContent: ReactNode = null;
 
     if (amount && tokenContract && networkSymbol) {
         amountContent = (
-            <TokenMetadataProvider
+            <ExactTokenAmountFormatter
                 networkSymbol={networkSymbol}
-                tokens={[{ contract: tokenContract, symbol, decimals }]}
-            >
-                <ExactTokenAmountFormatter
-                    networkSymbol={networkSymbol}
-                    contractAddress={tokenContract}
-                    value={convertTokenValueToDecimal(amount, decimals ?? 0)}
-                    variant="body-xs"
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                />
-            </TokenMetadataProvider>
+                contractAddress={tokenContract}
+                value={convertTokenValueToDecimal(amount, token?.decimals ?? 0)}
+                variant="body-xs"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+            />
         );
-    } else if (amount && !tokenContract && isNetworkSymbol(symbol)) {
+    } else if (amount && !tokenContract) {
         amountContent = (
             <ExactCryptoAmountFormatter
                 value={amount}
-                symbol={symbol}
+                symbol={networkSymbol}
                 isBalance={false}
                 variant="body-xs"
                 numberOfLines={1}
@@ -85,11 +76,13 @@ const TransactionAddressAmount = ({
 };
 
 type TransactionTransferSectionProps = {
+    networkSymbol: NetworkSymbol;
     transfers: TransactionTranfer[];
     header: ReactNode;
 };
 
 export const TransactionDetailInputsSheetSection = ({
+    networkSymbol,
     transfers,
     header,
 }: TransactionTransferSectionProps) => {
@@ -110,43 +103,33 @@ export const TransactionDetailInputsSheetSection = ({
             )}
             <Card>
                 <Box flexDirection="row" justifyContent="space-between">
-                    {transfers.map(
-                        ({ inputs, outputs, symbol, decimals, networkSymbol, tokenContract }) => (
-                            <Fragment key={symbol}>
-                                <Box style={applyStyle(addressAmountColumnStyle)}>
-                                    {inputs.map(({ address, amount }, index) => (
-                                        <TransactionAddressAmount
-                                            key={`${address}:${index}`}
-                                            address={address}
-                                            amount={amount}
-                                            symbol={symbol}
-                                            networkSymbol={networkSymbol}
-                                            tokenContract={tokenContract}
-                                            decimals={decimals}
-                                        />
-                                    ))}
-                                </Box>
-                                <Icon
-                                    name="caretCircleRight"
-                                    color="contentDisabled"
-                                    size="medium"
-                                />
-                                <Box style={applyStyle(addressAmountColumnStyle)}>
-                                    {outputs.map(({ address, amount }, index) => (
-                                        <TransactionAddressAmount
-                                            key={`${address}:${index}`}
-                                            address={address}
-                                            amount={amount}
-                                            symbol={symbol}
-                                            networkSymbol={networkSymbol}
-                                            tokenContract={tokenContract}
-                                            decimals={decimals}
-                                        />
-                                    ))}
-                                </Box>
-                            </Fragment>
-                        ),
-                    )}
+                    {transfers.map(({ inputs, outputs, tokenContract }) => (
+                        <Fragment key={tokenContract ?? networkSymbol}>
+                            <Box style={applyStyle(addressAmountColumnStyle)}>
+                                {inputs.map(({ address, amount }, index) => (
+                                    <TransactionAddressAmount
+                                        key={`${address}:${index}`}
+                                        address={address}
+                                        amount={amount}
+                                        networkSymbol={networkSymbol}
+                                        tokenContract={tokenContract}
+                                    />
+                                ))}
+                            </Box>
+                            <Icon name="caretCircleRight" color="contentDisabled" size="medium" />
+                            <Box style={applyStyle(addressAmountColumnStyle)}>
+                                {outputs.map(({ address, amount }, index) => (
+                                    <TransactionAddressAmount
+                                        key={`${address}:${index}`}
+                                        address={address}
+                                        amount={amount}
+                                        networkSymbol={networkSymbol}
+                                        tokenContract={tokenContract}
+                                    />
+                                ))}
+                            </Box>
+                        </Fragment>
+                    ))}
                 </Box>
             </Card>
         </Box>

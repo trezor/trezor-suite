@@ -25,6 +25,7 @@ import { useMessageSystemYield } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
@@ -93,7 +94,7 @@ export const YieldClaimRewardsSummaryCard = () => {
         openYieldClaimRewardsSheet();
     };
 
-    return (
+    const content = (
         <>
             {positions.length > 0 && <CardDivider horizontalPadding={0} />}
 
@@ -178,5 +179,19 @@ export const YieldClaimRewardsSummaryCard = () => {
                 onClose={closeYieldClaimRewardsSheet}
             />
         </>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={claimAccountItems.map(item => ({
+                networkSymbol: item.summary.networkSymbol,
+                tokens: item.summary.tokens.map(token => ({
+                    ...token,
+                    contract: token.contractAddress,
+                })),
+            }))}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

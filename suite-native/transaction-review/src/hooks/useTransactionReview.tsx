@@ -17,6 +17,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type TxKeyPath } from '@suite-native/intl';
+import { type TokenMetadata, TokenMetadataProvider } from '@suite-native/tokens';
 
 interface TransactionReviewRenderSummaryItemProps {
     onLayout: (event: LayoutChangeEvent) => void;
@@ -188,7 +189,30 @@ export const TransactionReviewProvider = ({
 
     return (
         <TransactionReviewContext.Provider value={context}>
-            {children}
+            <TokenMetadataProvider
+                sources={
+                    account
+                        ? [
+                              {
+                                  networkSymbol: account.symbol,
+                                  tokens:
+                                      reviewOutputs?.flatMap<TokenMetadata>(output => {
+                                          if (output.type === 'rewards') {
+                                              return output.rewards.map(reward => ({
+                                                  contract: reward.tokenAddress,
+                                                  symbol: reward.tokenSymbol,
+                                              }));
+                                          }
+
+                                          return output.token ? [output.token] : [];
+                                      }) ?? [],
+                              },
+                          ]
+                        : []
+                }
+            >
+                {children}
+            </TokenMetadataProvider>
         </TransactionReviewContext.Provider>
     );
 };

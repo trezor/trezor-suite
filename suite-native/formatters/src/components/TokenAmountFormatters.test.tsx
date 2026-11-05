@@ -25,7 +25,7 @@ describe('ExactTokenAmountFormatter', () => {
         metadata: TokenMetadata = token,
     ) =>
         renderWithStoreProvider(
-            <TokenMetadataProvider networkSymbol={networkSymbol} tokens={[metadata]}>
+            <TokenMetadataProvider sources={[{ networkSymbol, tokens: [metadata] }]}>
                 <ExactTokenAmountFormatter
                     networkSymbol={networkSymbol}
                     contractAddress={contractAddress}
@@ -65,7 +65,7 @@ describe('CompactTokenAmountFormatter', () => {
         metadata: TokenMetadata = token,
     ) =>
         renderWithStoreProvider(
-            <TokenMetadataProvider networkSymbol={networkSymbol} tokens={[metadata]}>
+            <TokenMetadataProvider sources={[{ networkSymbol, tokens: [metadata] }]}>
                 <CompactTokenAmountFormatter
                     networkSymbol={networkSymbol}
                     contractAddress={contractAddress}

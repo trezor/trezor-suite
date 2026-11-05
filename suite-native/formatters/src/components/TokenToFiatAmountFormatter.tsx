@@ -7,6 +7,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
 import { type TextProps } from '@suite-native/atoms';
 import { type TokensRootState } from '@suite-native/tokens';
+import { useTokenMetadata } from '@suite-native/tokens';
 
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 import { type DiscreetMode, type FormatterProps } from '../types';
@@ -18,7 +19,6 @@ type TokenToFiatAmountFormatterProps = {
     symbol: NetworkSymbol;
     contract: TokenAddress;
     discreetMode?: DiscreetMode;
-    decimals?: number;
     signValue?: SignValue;
     historicRate?: number;
     useHistoricRate?: boolean;
@@ -30,7 +30,6 @@ export const TokenToFiatAmountFormatter = ({
     value,
     contract,
     discreetMode = 'auto',
-    decimals = 0,
     signValue,
     ellipsizeMode,
     numberOfLines,
@@ -39,11 +38,12 @@ export const TokenToFiatAmountFormatter = ({
     ...rest
 }: TokenToFiatAmountFormatterProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
+    const token = useTokenMetadata(symbol, contract);
     const fiatValue = useFiatFromCryptoValue({
         cryptoValue: String(value),
         symbol,
         tokenAddress: contract,
-        tokenDecimals: decimals,
+        tokenDecimals: token?.decimals ?? 0,
         historicRate,
         useHistoricRate,
     });

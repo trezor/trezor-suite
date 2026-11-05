@@ -12,6 +12,7 @@ import {
 import { ClipboardCopyMenu } from '@suite-native/clipboard';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -72,6 +73,7 @@ export const TransactionDetailSheet = ({
     sheetName,
     sheetControls,
 }: TransactionDetailSheetProps) => {
+    const metadataSources = useTokenMetadataSources();
     const { analytics } = useServices(injectNativeAnalytics);
     const internal = useBottomSheetModal();
     const { bottomSheetRef, openModal, closeModal } = sheetControls ?? internal;
@@ -99,14 +101,16 @@ export const TransactionDetailSheet = ({
                 }
                 isCloseDisplayed
             >
-                <Box paddingTop="sp24">
-                    {children}
-                    <Box paddingHorizontal="sp8" marginTop="sp24">
-                        <Button onPress={closeModal}>
-                            <Translation id="generic.buttons.close" />
-                        </Button>
+                <TokenMetadataProvider sources={metadataSources}>
+                    <Box paddingTop="sp24">
+                        {children}
+                        <Box paddingHorizontal="sp8" marginTop="sp24">
+                            <Button onPress={closeModal}>
+                                <Translation id="generic.buttons.close" />
+                            </Button>
+                        </Box>
                     </Box>
-                </Box>
+                </TokenMetadataProvider>
             </BottomSheetModal>
         </Box>
     );

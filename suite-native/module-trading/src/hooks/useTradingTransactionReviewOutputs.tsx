@@ -17,7 +17,6 @@ import {
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type ContentBuilderFunction } from './reviewOutputs/useTradingContentBuilder';
@@ -231,24 +230,19 @@ export const useTradingTransactionReviewOutputs = ({
                         }
 
                         return (
-                            <TokenMetadataProvider
+                            <ExactTokenAmountFormatter
                                 networkSymbol={networkSymbol}
-                                tokens={[output.token]}
-                            >
-                                <ExactTokenAmountFormatter
-                                    networkSymbol={networkSymbol}
-                                    contractAddress={toTokenAddress(output.token.contract)}
-                                    variant="body-sm"
-                                    color="contentPrimary"
-                                    textAlign="right"
-                                    value={convertTokenValueToDecimal(
-                                        output.value,
-                                        output.token.decimals,
-                                    )}
-                                    // The user must be able to verify token amounts before signing the trade.
-                                    discreetMode="disabled"
-                                />
-                            </TokenMetadataProvider>
+                                contractAddress={toTokenAddress(output.token.contract)}
+                                variant="body-sm"
+                                color="contentPrimary"
+                                textAlign="right"
+                                value={convertTokenValueToDecimal(
+                                    output.value,
+                                    output.token.decimals,
+                                )}
+                                // The user must be able to verify token amounts before signing the trade.
+                                discreetMode="disabled"
+                            />
                         );
                     };
 

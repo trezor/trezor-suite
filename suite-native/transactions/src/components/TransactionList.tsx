@@ -27,6 +27,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import {
     type TokensRootState,
     type TypedTokenTransfer,
@@ -413,7 +414,7 @@ export const TransactionList = ({
         [data, accountKey],
     );
 
-    return (
+    const content = (
         <Box flex={1}>
             {scrollDivider}
             <FlashList<TransactionListItem>
@@ -468,5 +469,18 @@ export const TransactionList = ({
                 onScroll={handleScroll}
             />
         </Box>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens: transactions.flatMap(transaction => transaction.tokens ?? []),
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

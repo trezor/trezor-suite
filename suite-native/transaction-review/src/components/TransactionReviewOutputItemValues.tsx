@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     CoinToFiatAmountFormatter,
@@ -12,37 +12,34 @@ import {
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { useTokenMetadata } from '@suite-native/tokens';
 
 interface TransactionReviewOutputItemCryptoAmountProps {
-    symbol: NetworkSymbol | null;
-    tokenInfo: TokenInfoBranded | null;
+    symbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
     value: string;
 }
 
 const TransactionReviewOutputItemCryptoAmount = ({
     symbol,
-    tokenInfo,
+    tokenContract,
     value,
 }: TransactionReviewOutputItemCryptoAmountProps) => {
-    if (symbol !== null && tokenInfo !== null && value !== '') {
+    const token = useTokenMetadata(symbol, tokenContract);
+    if (tokenContract) {
         return (
             <ExactTokenAmountFormatter
                 networkSymbol={symbol}
-                contractAddress={tokenInfo.contract}
+                contractAddress={tokenContract}
                 variant="body-sm"
                 color="contentSecondary"
-                value={convertTokenValueToDecimal(value, tokenInfo.decimals)}
+                value={convertTokenValueToDecimal(value, token?.decimals ?? 0)}
                 adjustsFontSizeToFit
                 numberOfLines={1}
                 // The user must be able to verify the token amount before signing.
                 discreetMode="disabled"
             />
         );
-    }
-
-    if (symbol === null) {
-        return null;
     }
 
     return (
@@ -76,9 +73,6 @@ export const TransactionReviewOutputItemValues = ({
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const tokenInfo = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
 
     return (
         <HStack>
@@ -101,11 +95,13 @@ export const TransactionReviewOutputItemValues = ({
                     discreetMode="disabled"
                 />
 
-                <TransactionReviewOutputItemCryptoAmount
-                    symbol={symbol}
-                    tokenInfo={tokenInfo}
-                    value={value}
-                />
+                {symbol && (
+                    <TransactionReviewOutputItemCryptoAmount
+                        symbol={symbol}
+                        tokenContract={tokenContract}
+                        value={value}
+                    />
+                )}
             </VStack>
         </HStack>
     );

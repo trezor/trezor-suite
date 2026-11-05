@@ -8,7 +8,6 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,
     selectWalletAssetSymbol,
-    selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -23,14 +22,13 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import {
     AssetsStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const rowStyle = prepareNativeStyle(utils => ({
@@ -52,9 +50,7 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
     const contractAddress = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetContractAddress(state, assetKey),
     );
-    const tokenSymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetTokenSymbol(state, assetKey),
-    );
+
     const amount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetAmount(state, assetKey),
     );
@@ -93,7 +89,6 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
             <TokenIcon
                 networkSymbol={symbol}
                 contractAddress={contractAddress}
-                tokenSymbol={tokenSymbol ?? symbol}
                 size="medium"
                 showNetworkIcon
             />

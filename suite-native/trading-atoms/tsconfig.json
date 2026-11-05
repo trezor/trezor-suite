@@ -24,6 +24,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../tokens" },
         { "path": "../trading-types" },
         {
             "path": "../../packages/styles-native"

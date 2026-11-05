@@ -4,20 +4,35 @@ import { mockNetworkMetadata, mockNetworksServices } from '@suite-common/network
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { TradingAsset } from './TradingAsset';
 
 describe('TradingAsset', () => {
     it('renders a crypto name with its symbol and network badge by default', async () => {
         const { getByTestId, getByText } = await renderWithStoreProvider(
-            <TradingAsset
-                assetType="crypto"
-                contractAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                name="USD Coin"
-                networkSymbol={asNetworkSymbol('eth')}
-                symbol="USDC"
-                testID="@test/trading-asset"
-            />,
+            <TokenMetadataProvider
+                sources={[
+                    {
+                        networkSymbol: asNetworkSymbol('eth'),
+                        tokens: [
+                            {
+                                contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                                name: 'USD Coin',
+                                symbol: 'USDC',
+                                decimals: 6,
+                            },
+                        ],
+                    },
+                ]}
+            >
+                <TradingAsset
+                    assetType="crypto"
+                    contractAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                    networkSymbol={asNetworkSymbol('eth')}
+                    testID="@test/trading-asset"
+                />
+            </TokenMetadataProvider>,
             {
                 preloadedState: { networks: mockNetworkMetadata },
                 services: { networks: mockNetworksServices() },
@@ -31,15 +46,30 @@ describe('TradingAsset', () => {
 
     it('renders a crypto symbol with network text without repeating the symbol', async () => {
         const { getByTestId, queryByTestId } = await renderWithStoreProvider(
-            <TradingAsset
-                assetType="crypto"
-                name="USD Coin"
-                networkDisplay="text"
-                networkSymbol={asNetworkSymbol('eth')}
-                primaryLabel="symbol"
-                symbol="USDC"
-                testID="@test/trading-asset"
-            />,
+            <TokenMetadataProvider
+                sources={[
+                    {
+                        networkSymbol: asNetworkSymbol('eth'),
+                        tokens: [
+                            {
+                                contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                                name: 'USD Coin',
+                                symbol: 'USDC',
+                                decimals: 6,
+                            },
+                        ],
+                    },
+                ]}
+            >
+                <TradingAsset
+                    contractAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                    assetType="crypto"
+                    networkDisplay="text"
+                    networkSymbol={asNetworkSymbol('eth')}
+                    primaryLabel="symbol"
+                    testID="@test/trading-asset"
+                />
+            </TokenMetadataProvider>,
             {
                 preloadedState: { networks: mockNetworkMetadata },
                 services: { networks: mockNetworksServices() },

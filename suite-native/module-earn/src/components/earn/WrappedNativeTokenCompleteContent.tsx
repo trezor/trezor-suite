@@ -12,6 +12,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
@@ -67,14 +68,10 @@ export const WrappedNativeTokenCompleteContent = ({
             receivedAmount: {
                 value: amount,
                 tokenContract: flowType === 'wrap' ? wrappedNative.address : undefined,
-                tokenDecimals: flowType === 'wrap' ? wrappedNative.decimals : undefined,
-                tokenSymbol: flowType === 'wrap' ? wrappedNative.symbol : undefined,
             },
             sentAmount: {
                 value: amount,
                 tokenContract: flowType === 'wrap' ? undefined : wrappedNative.address,
-                tokenDecimals: flowType === 'wrap' ? undefined : wrappedNative.decimals,
-                tokenSymbol: flowType === 'wrap' ? undefined : wrappedNative.symbol,
             },
         });
     }, [account, amount, flowType, wrappedNative]);
@@ -85,7 +82,7 @@ export const WrappedNativeTokenCompleteContent = ({
 
     const messages = wrappedNativeFlowMessages[flowType].complete;
 
-    return (
+    const content = (
         <EarnCompleteScreenContent
             type={flowType}
             buttonTranslationId={messages.closeButton}
@@ -99,5 +96,24 @@ export const WrappedNativeTokenCompleteContent = ({
                 />
             }
         />
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens: [
+                        {
+                            contract: wrappedNative.address,
+                            symbol: wrappedNative.symbol,
+                            decimals: wrappedNative.decimals,
+                        },
+                    ],
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

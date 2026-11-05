@@ -13,6 +13,7 @@ import { YieldDepositFlowFooter } from '../../components/yield/YieldDepositFlowF
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFeeReserveBanner } from '../../components/yield/YieldFeeReserveBanner';
+import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { useYieldDepositApprovalController } from '../../hooks/yield/controllers/useYieldDepositApprovalController';
@@ -42,18 +43,15 @@ export const YieldDepositApprovalScreen = () => {
         tokenContract,
         yieldFlowData,
     } = controller;
-    const { account, apy, token, tokenSymbol } = yieldFlowData;
+    const { account, apy, token } = yieldFlowData;
 
     const pendingModalAmount = pendingModal?.pendingTransaction.isAmountUnlimited ? (
         <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
     ) : (
         pendingModal?.pendingTransaction.amount
     );
-    const pendingModalAmountTokenSymbol = pendingModal?.pendingTransaction.isAmountUnlimited
-        ? undefined
-        : tokenSymbol;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -112,9 +110,7 @@ export const YieldDepositApprovalScreen = () => {
                                     isApprovedAmountUnlimited={approvedAmountCard.isUnlimited}
                                     networkSymbol={account.symbol}
                                     onActionPress={approvedAmountCard.onRevoke}
-                                    tokenDecimals={token.decimals}
                                     tokenContract={tokenContract}
-                                    tokenSymbol={tokenSymbol}
                                 />
                             </Box>
                         )}
@@ -132,8 +128,6 @@ export const YieldDepositApprovalScreen = () => {
                                 onMaxPress={amountInput.onMaxPress}
                                 symbol={account.symbol}
                                 tokenContract={getYieldTokenContract(token)}
-                                tokenDecimals={token.decimals}
-                                tokenSymbol={tokenSymbol}
                             />
                         </Box>
 
@@ -173,7 +167,7 @@ export const YieldDepositApprovalScreen = () => {
                 amount={pendingModalAmount}
                 amountLabel={<Translation id="earn.yieldDepositFlowScreen.approvalLimit" />}
                 amountTokenContract={tokenContract}
-                amountTokenSymbol={pendingModalAmountTokenSymbol}
+                withAmountSymbol={!pendingModal?.pendingTransaction.isAmountUnlimited}
                 title={<Translation id="moduleTrading.tradingConfirmationScreen.approveTitle" />}
                 vaultName={yieldFlowData.vaultTokenName}
                 vaultTokenContract={tokenContract}
@@ -185,8 +179,9 @@ export const YieldDepositApprovalScreen = () => {
                 onClose={approvalLimitSheet.onClose}
                 selectedApprovalLimitType={approvalLimitSheet.selectedType}
                 tokenContract={tokenContract}
-                tokenSymbol={tokenSymbol}
             />
         </Screen>
     );
+
+    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
 };

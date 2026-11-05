@@ -1,19 +1,26 @@
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useTokenMetadata } from '@suite-native/tokens';
 
 type YieldWithdrawWarningProps = {
     isAmountTooHigh: boolean;
     isMaxWithdrawInfoVisible: boolean;
     shouldShowNetworkFeeWarning: boolean;
-    vaultTokenSymbol: string;
+    networkSymbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
 };
 
 export const YieldWithdrawWarning = ({
     isAmountTooHigh,
     isMaxWithdrawInfoVisible,
     shouldShowNetworkFeeWarning,
-    vaultTokenSymbol,
+    networkSymbol,
+    tokenContract,
 }: YieldWithdrawWarningProps) => {
+    const token = useTokenMetadata(networkSymbol, tokenContract);
+    const vaultTokenSymbol = tokenContract ? token?.symbol : getNetworkDisplaySymbol(networkSymbol);
     if (isAmountTooHigh) {
         return (
             <BannerInline

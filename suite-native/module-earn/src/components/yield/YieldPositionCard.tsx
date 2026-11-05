@@ -17,9 +17,8 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenMetadataProvider } from '@suite-native/tokens';
+import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
@@ -70,73 +69,61 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
     ]);
 
     return (
-        <TokenMetadataProvider
-            networkSymbol={item.networkSymbol}
-            tokens={[
-                {
-                    contract: item.tokenContractAddress,
-                    symbol: item.tokenSymbol,
-                    decimals: item.token?.decimals,
-                },
-            ]}
-        >
-            <EarnAccountCardLayout
-                accountKey={item.accountKey}
-                icon={
-                    <TokenIcon
+        <EarnAccountCardLayout
+            accountKey={item.accountKey}
+            icon={
+                <TokenIcon
+                    networkSymbol={item.networkSymbol}
+                    contractAddress={item.tokenContractAddress}
+                    size="extraSmall"
+                    showNetworkIcon
+                    wrappedTokenIcon="network"
+                />
+            }
+            title={item.vaultName}
+            description={
+                <Text variant="body-sm" color="contentSecondary">
+                    {account?.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)}
+                </Text>
+            }
+            value={
+                isWrappedNativeToken(item.networkSymbol, item.tokenContractAddress) ? (
+                    <CompactCryptoAmountFormatter
+                        value={item.tokenBalance}
+                        symbol={item.networkSymbol}
+                        isBalance={true}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        variant="body-md"
+                        color="contentPrimary"
+                    />
+                ) : (
+                    <CompactTokenAmountFormatter
                         networkSymbol={item.networkSymbol}
                         contractAddress={item.tokenContractAddress}
-                        tokenSymbol={item.tokenSymbol}
-                        size="extraSmall"
-                        showNetworkIcon
-                        wrappedTokenIcon="network"
+                        value={asDecimalTokenAmount(item.tokenBalance)}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        variant="body-md"
+                        color="contentPrimary"
                     />
-                }
-                title={item.vaultName}
-                description={
+                )
+            }
+            valueDescription={
+                item.apy != null && (
                     <Text variant="body-sm" color="contentSecondary">
-                        {account?.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)}
+                        {!isApyAvailable(item.apy) ? (
+                            <ApyValue apy={null} withLabel />
+                        ) : (
+                            <Translation
+                                id="earn.apyPercentage"
+                                values={{ apy: PercentageFormatter.format(item.apy) }}
+                            />
+                        )}
                     </Text>
-                }
-                value={
-                    isWrappedNativeToken(item.networkSymbol, item.tokenContractAddress) ? (
-                        <CompactCryptoAmountFormatter
-                            value={item.tokenBalance}
-                            symbol={item.networkSymbol}
-                            isBalance={true}
-                            numberOfLines={1}
-                            adjustsFontSizeToFit
-                            variant="body-md"
-                            color="contentPrimary"
-                        />
-                    ) : (
-                        <CompactTokenAmountFormatter
-                            networkSymbol={item.networkSymbol}
-                            contractAddress={item.tokenContractAddress}
-                            value={asDecimalTokenAmount(item.tokenBalance)}
-                            numberOfLines={1}
-                            adjustsFontSizeToFit
-                            variant="body-md"
-                            color="contentPrimary"
-                        />
-                    )
-                }
-                valueDescription={
-                    item.apy != null && (
-                        <Text variant="body-sm" color="contentSecondary">
-                            {!isApyAvailable(item.apy) ? (
-                                <ApyValue apy={null} withLabel />
-                            ) : (
-                                <Translation
-                                    id="earn.apyPercentage"
-                                    values={{ apy: PercentageFormatter.format(item.apy) }}
-                                />
-                            )}
-                        </Text>
-                    )
-                }
-                onPress={onPress}
-            />
-        </TokenMetadataProvider>
+                )
+            }
+            onPress={onPress}
+        />
     );
 };

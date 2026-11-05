@@ -13,6 +13,7 @@ import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -30,8 +31,14 @@ import {
     ExactCryptoAmountFormatter,
     TransactionIdFormatter,
 } from '@suite-native/formatters';
-import { Icon, NetworkIcon, TokenIcon } from '@suite-native/icons';
+import { Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import {
+    TokenIcon,
+    TokenMetadataProvider,
+    TokenSymbol,
+    useTokenMetadataSources,
+} from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldPendingTransactionModalBackdrop } from './YieldPendingTransactionModalBackdrop';
@@ -45,7 +52,7 @@ type YieldPendingTransactionModalProps = {
     amount?: ReactNode;
     amountLabel?: ReactNode;
     amountTokenContract?: TokenAddress;
-    amountTokenSymbol?: TokenSymbol;
+    withAmountSymbol?: boolean;
     fee?: string;
     isExploreDisabled?: boolean;
     onDismiss?: () => void;
@@ -98,7 +105,7 @@ export const YieldPendingTransactionModal = ({
     amount,
     amountLabel,
     amountTokenContract,
-    amountTokenSymbol,
+    withAmountSymbol = true,
     fee,
     isExploreDisabled,
     onDismiss,
@@ -110,8 +117,10 @@ export const YieldPendingTransactionModal = ({
     vaultName,
     vaultTokenContract,
 }: YieldPendingTransactionModalProps) => {
+    const metadataSources = useTokenMetadataSources();
+
     const { applyStyle } = useNativeStyles();
-    const { DateFormatter, TimeFormatter } = useFormatters();
+    const { DateFormatter, TimeFormatter, DisplaySymbolFormatter } = useFormatters();
     const { translate } = useTranslate();
     const copyToClipboard = useCopyToClipboard();
     const animatedIndex = useSharedValue<number>(modalSnap.expandedIndex);
@@ -177,77 +186,54 @@ export const YieldPendingTransactionModal = ({
                 snapPoints,
             }}
         >
-            <VStack spacing="sp16" paddingBottom="sp16">
-                <Box alignItems="center">
-                    <Box style={applyStyle(pendingIconStyle)}>
-                        <CircularSpinner size={56} color="elementFillWarningBold" width={2} />
-                        <Icon name="arrowUp" color="contentPrimary" size="large" />
+            <TokenMetadataProvider sources={metadataSources}>
+                <VStack spacing="sp16" paddingBottom="sp16">
+                    <Box alignItems="center">
+                        <Box style={applyStyle(pendingIconStyle)}>
+                            <CircularSpinner size={56} color="elementFillWarningBold" width={2} />
+                            <Icon name="arrowUp" color="contentPrimary" size="large" />
+                        </Box>
                     </Box>
-                </Box>
 
-                <Card noPadding>
-                    <YieldPendingTransactionModalRow
-                        noBorder
-                        label={<Translation id="moduleTrading.tradingConfirmationScreen.date" />}
-                    >
-                        <HStack spacing="sp2" alignItems="center">
-                            <Text variant="body-sm" color="contentPrimary">
-                                <DateFormatter value={submittedAt} />
-                            </Text>
-                            <Text variant="body-sm" color="contentPrimary">
-                                ,
-                            </Text>
-                            <Text variant="body-sm" color="contentPrimary">
-                                <TimeFormatter value={submittedAt} />
-                            </Text>
-                        </HStack>
-                    </YieldPendingTransactionModalRow>
-
-                    <YieldPendingTransactionModalRow
-                        label={<Translation id="moduleTrading.exchangeTradePreviewCard.account" />}
-                    >
-                        <HStack spacing="sp8" alignItems="center">
-                            <NetworkIcon symbol={accountSymbol} size={20} />
-                            <Text variant="body-sm" color="contentPrimary">
-                                {accountLabel}
-                            </Text>
-                        </HStack>
-                    </YieldPendingTransactionModalRow>
-
-                    {vaultName && (
+                    <Card noPadding>
                         <YieldPendingTransactionModalRow
+                            noBorder
                             label={
-                                <Translation id="moduleAccounts.accountDetail.stablecoinYield.vault" />
+                                <Translation id="moduleTrading.tradingConfirmationScreen.date" />
                             }
                         >
-                            <HStack
-                                spacing="sp4"
-                                alignItems="center"
-                                style={applyStyle(valueStyle)}
-                            >
-                                <TokenIcon
-                                    networkSymbol={accountSymbol}
-                                    contractAddress={vaultTokenContract}
-                                    tokenSymbol={vaultName}
-                                    size="extraSmall"
-                                    wrappedTokenIcon="network"
-                                />
-                                <Text
-                                    variant="body-sm"
-                                    color="contentPrimary"
-                                    numberOfLines={1}
-                                    ellipsizeMode="tail"
-                                    style={applyStyle(valueStyle)}
-                                >
-                                    {vaultName}
+                            <HStack spacing="sp2" alignItems="center">
+                                <Text variant="body-sm" color="contentPrimary">
+                                    <DateFormatter value={submittedAt} />
+                                </Text>
+                                <Text variant="body-sm" color="contentPrimary">
+                                    ,
+                                </Text>
+                                <Text variant="body-sm" color="contentPrimary">
+                                    <TimeFormatter value={submittedAt} />
                                 </Text>
                             </HStack>
                         </YieldPendingTransactionModalRow>
-                    )}
 
-                    {amount && amountLabel && (
-                        <YieldPendingTransactionModalRow label={amountLabel}>
-                            {amountTokenSymbol ? (
+                        <YieldPendingTransactionModalRow
+                            label={
+                                <Translation id="moduleTrading.exchangeTradePreviewCard.account" />
+                            }
+                        >
+                            <HStack spacing="sp8" alignItems="center">
+                                <NetworkIcon symbol={accountSymbol} size={20} />
+                                <Text variant="body-sm" color="contentPrimary">
+                                    {accountLabel}
+                                </Text>
+                            </HStack>
+                        </YieldPendingTransactionModalRow>
+
+                        {vaultName && (
+                            <YieldPendingTransactionModalRow
+                                label={
+                                    <Translation id="moduleAccounts.accountDetail.stablecoinYield.vault" />
+                                }
+                            >
                                 <HStack
                                     spacing="sp4"
                                     alignItems="center"
@@ -255,9 +241,9 @@ export const YieldPendingTransactionModal = ({
                                 >
                                     <TokenIcon
                                         networkSymbol={accountSymbol}
-                                        contractAddress={amountTokenContract}
-                                        tokenSymbol={amountTokenSymbol}
+                                        contractAddress={vaultTokenContract}
                                         size="extraSmall"
+                                        wrappedTokenIcon="network"
                                     />
                                     <Text
                                         variant="body-sm"
@@ -266,93 +252,135 @@ export const YieldPendingTransactionModal = ({
                                         ellipsizeMode="tail"
                                         style={applyStyle(valueStyle)}
                                     >
-                                        {amount} {amountTokenSymbol}
+                                        {vaultName}
                                     </Text>
                                 </HStack>
+                            </YieldPendingTransactionModalRow>
+                        )}
+
+                        {amount && amountLabel && (
+                            <YieldPendingTransactionModalRow label={amountLabel}>
+                                {withAmountSymbol ? (
+                                    <HStack
+                                        spacing="sp4"
+                                        alignItems="center"
+                                        style={applyStyle(valueStyle)}
+                                    >
+                                        <TokenIcon
+                                            networkSymbol={accountSymbol}
+                                            contractAddress={amountTokenContract}
+                                            size="extraSmall"
+                                        />
+                                        <Text
+                                            variant="body-sm"
+                                            color="contentPrimary"
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                            style={applyStyle(valueStyle)}
+                                        >
+                                            {amount}{' '}
+                                            {amountTokenContract ? (
+                                                <TokenSymbol
+                                                    isInline
+                                                    networkSymbol={accountSymbol}
+                                                    contractAddress={amountTokenContract}
+                                                    variant="body-sm"
+                                                    color="contentPrimary"
+                                                />
+                                            ) : (
+                                                DisplaySymbolFormatter.format(accountSymbol)
+                                            )}
+                                        </Text>
+                                    </HStack>
+                                ) : (
+                                    <HStack
+                                        spacing="sp4"
+                                        alignItems="center"
+                                        style={applyStyle(valueStyle)}
+                                    >
+                                        <Box style={applyStyle(roundNetworkIconStyle)}>
+                                            <NetworkIcon symbol={accountSymbol} size={20} />
+                                        </Box>
+                                        <Text variant="body-sm" color="contentPrimary">
+                                            {amount}
+                                        </Text>
+                                    </HStack>
+                                )}
+                            </YieldPendingTransactionModalRow>
+                        )}
+
+                        <YieldPendingTransactionModalRow
+                            label={
+                                <Translation id="transactionManagement.fees.description.title.ethereum" />
+                            }
+                        >
+                            {fee ? (
+                                <VStack alignItems="flex-end" spacing="sp2">
+                                    <ExactCryptoAmountFormatter
+                                        value={fee}
+                                        symbol={accountSymbol}
+                                        color="contentPrimary"
+                                        isBalance={false}
+                                        // The user must be able to review the transaction fee in crypto.
+                                        discreetMode="disabled"
+                                    />
+                                    <CryptoToFiatAmountFormatter
+                                        value={fee}
+                                        symbol={accountSymbol}
+                                        color="contentSecondary"
+                                        // Show the fiat equivalent so the user can assess the transaction fee.
+                                        discreetMode="disabled"
+                                        textAlign="right"
+                                    />
+                                </VStack>
                             ) : (
-                                <HStack
-                                    spacing="sp4"
-                                    alignItems="center"
-                                    style={applyStyle(valueStyle)}
-                                >
-                                    <Box style={applyStyle(roundNetworkIconStyle)}>
-                                        <NetworkIcon symbol={accountSymbol} size={20} />
-                                    </Box>
-                                    <Text variant="body-sm" color="contentPrimary">
-                                        {amount}
-                                    </Text>
-                                </HStack>
+                                <Text variant="body-sm" color="contentPrimary">
+                                    <Translation id="earn.notAvailableShort" />
+                                </Text>
                             )}
                         </YieldPendingTransactionModalRow>
-                    )}
 
-                    <YieldPendingTransactionModalRow
-                        label={
-                            <Translation id="transactionManagement.fees.description.title.ethereum" />
-                        }
-                    >
-                        {fee ? (
-                            <VStack alignItems="flex-end" spacing="sp2">
-                                <ExactCryptoAmountFormatter
-                                    value={fee}
-                                    symbol={accountSymbol}
-                                    color="contentPrimary"
-                                    isBalance={false}
-                                    // The user must be able to review the transaction fee in crypto.
-                                    discreetMode="disabled"
-                                />
-                                <CryptoToFiatAmountFormatter
-                                    value={fee}
-                                    symbol={accountSymbol}
-                                    color="contentSecondary"
-                                    // Show the fiat equivalent so the user can assess the transaction fee.
-                                    discreetMode="disabled"
-                                    textAlign="right"
-                                />
-                            </VStack>
-                        ) : (
-                            <Text variant="body-sm" color="contentPrimary">
-                                <Translation id="earn.notAvailableShort" />
-                            </Text>
-                        )}
-                    </YieldPendingTransactionModalRow>
-
-                    <YieldPendingTransactionModalRow
-                        label={
-                            <Translation id="moduleTrading.tradingConfirmationScreen.transactionId" />
-                        }
-                    >
-                        <HStack spacing="sp4" alignItems="center" style={applyStyle(valueStyle)}>
-                            <TransactionIdFormatter
-                                value={txid}
-                                color="contentPrimary"
+                        <YieldPendingTransactionModalRow
+                            label={
+                                <Translation id="moduleTrading.tradingConfirmationScreen.transactionId" />
+                            }
+                        >
+                            <HStack
+                                spacing="sp4"
+                                alignItems="center"
                                 style={applyStyle(valueStyle)}
-                            />
-                            <IconButton
-                                iconName="copy"
-                                onPress={handleCopyTxid}
-                                intent="neutral"
-                                priority="secondary"
-                                size="small"
-                                accessibilityLabel={translate(
-                                    'transactions.TransactionDetailScreen.parametersSheet.transactionId',
-                                )}
-                            />
-                            <IconButton
-                                iconName="arrowUpRight"
-                                onPress={onExplorePress}
-                                isDisabled={isExploreDisabled}
-                                intent="neutral"
-                                priority="secondary"
-                                size="small"
-                                accessibilityLabel={translate(
-                                    'moduleTrading.tradingConfirmationScreen.exploreInBlockchain',
-                                )}
-                            />
-                        </HStack>
-                    </YieldPendingTransactionModalRow>
-                </Card>
-            </VStack>
+                            >
+                                <TransactionIdFormatter
+                                    value={txid}
+                                    color="contentPrimary"
+                                    style={applyStyle(valueStyle)}
+                                />
+                                <IconButton
+                                    iconName="copy"
+                                    onPress={handleCopyTxid}
+                                    intent="neutral"
+                                    priority="secondary"
+                                    size="small"
+                                    accessibilityLabel={translate(
+                                        'transactions.TransactionDetailScreen.parametersSheet.transactionId',
+                                    )}
+                                />
+                                <IconButton
+                                    iconName="arrowUpRight"
+                                    onPress={onExplorePress}
+                                    isDisabled={isExploreDisabled}
+                                    intent="neutral"
+                                    priority="secondary"
+                                    size="small"
+                                    accessibilityLabel={translate(
+                                        'moduleTrading.tradingConfirmationScreen.exploreInBlockchain',
+                                    )}
+                                />
+                            </HStack>
+                        </YieldPendingTransactionModalRow>
+                    </Card>
+                </VStack>
+            </TokenMetadataProvider>
         </BottomSheetModal>
     );
 };

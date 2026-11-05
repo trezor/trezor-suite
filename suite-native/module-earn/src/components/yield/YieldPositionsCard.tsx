@@ -19,6 +19,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { YieldClaimRewardsSummaryCard } from './YieldClaimRewardsSummaryCard';
 import { YieldPositionsBottomSheet } from './YieldPositionsBottomSheet';
@@ -50,7 +51,7 @@ export const YieldPositionsCard = () => {
 
     if (!isPositionsVisible && !isClaimRewardsVisible) return null;
 
-    return (
+    const content = (
         <>
             <Card noPadding borderColor="borderNeutral">
                 <VStack spacing={0}>
@@ -86,5 +87,22 @@ export const YieldPositionsCard = () => {
                 onClose={closeYieldPositionsSheet}
             />
         </>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={positions.map(item => ({
+                networkSymbol: item.networkSymbol,
+                tokens: [
+                    {
+                        contract: item.tokenContractAddress,
+                        symbol: item.tokenSymbol,
+                        decimals: item.token?.decimals,
+                    },
+                ],
+            }))}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

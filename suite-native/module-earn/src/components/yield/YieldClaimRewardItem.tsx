@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
-
+import { getNetwork } from '@suite-common/wallet-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type StablecoinYieldAccountRewards } from '@suite-common/wallet-core';
+import { toTokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { useTokenMetadata } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import { YieldClaimRewardRow } from './YieldClaimRewardRow';
@@ -20,14 +21,14 @@ export const YieldClaimRewardItem = ({
     networkSymbol,
     reward,
 }: YieldClaimRewardItemProps) => {
-    const claimableAmount = useMemo(
-        () =>
-            subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(reward.claimable)),
-                decimals: reward.token.decimals,
-            }).toString(),
-        [reward.claimable, reward.token.decimals],
-    );
+    const contract = reward.token.address ? toTokenAddress(reward.token.address) : undefined;
+    const token = useTokenMetadata(networkSymbol, contract);
+    const decimals = contract ? token?.decimals : getNetwork(networkSymbol).decimals;
+    if (decimals === undefined) return null;
+    const claimableAmount = subunitsToUnits({
+        value: asAmountSubunit(new BigNumber(reward.claimable)),
+        decimals,
+    }).toString();
 
     return (
         <YieldClaimRewardRow
@@ -36,8 +37,6 @@ export const YieldClaimRewardItem = ({
             isFiatLoading={isFiatLoading}
             networkSymbol={networkSymbol}
             tokenContractAddress={reward.token.address}
-            tokenDecimals={reward.token.decimals}
-            tokenSymbol={reward.token.symbol}
         />
     );
 };

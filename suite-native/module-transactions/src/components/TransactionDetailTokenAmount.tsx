@@ -7,11 +7,7 @@ import {
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
-import {
-    TokenMetadataProvider,
-    type TypedTokenTransfer,
-    type WalletAccountTransaction,
-} from '@suite-native/tokens';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { getTransactionValueSign, selectTransactionFiatRate } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -38,28 +34,26 @@ export const TransactionDetailTokenAmount = ({
     const signValue = getTransactionValueSign(tokenTransfer.type);
 
     return (
-        <TokenMetadataProvider networkSymbol={transaction.symbol} tokens={[tokenTransfer]}>
-            <>
-                {!isFailedTx && (
-                    <SignValueFormatter
-                        color="contentPrimary"
-                        value={signValue}
-                        variant="headline-md"
-                    />
-                )}
-
-                <ExactTokenAmountFormatter
-                    value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                    networkSymbol={transaction.symbol}
-                    contractAddress={tokenTransfer.contract}
-                    variant="headline-md"
+        <>
+            {!isFailedTx && (
+                <SignValueFormatter
                     color="contentPrimary"
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                    style={applyStyle(failedTxStyle, { isFailedTx })}
+                    value={signValue}
+                    variant="headline-md"
                 />
-            </>
-        </TokenMetadataProvider>
+            )}
+
+            <ExactTokenAmountFormatter
+                value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
+                networkSymbol={transaction.symbol}
+                contractAddress={tokenTransfer.contract}
+                variant="headline-md"
+                color="contentPrimary"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={applyStyle(failedTxStyle, { isFailedTx })}
+            />
+        </>
     );
 };
 
@@ -82,7 +76,6 @@ export const TransactionDetailTokenFiatAmount = ({
             symbol={transaction.symbol}
             contract={tokenTransfer.contract}
             value={tokenTransfer.amount}
-            decimals={tokenTransfer.decimals}
             historicRate={historicRate}
             color="contentSecondary"
             useHistoricRate

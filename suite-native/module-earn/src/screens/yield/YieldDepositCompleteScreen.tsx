@@ -27,6 +27,7 @@ import { ApyValue } from '../../components/earn/ApyValue';
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
 import { getYieldDepositCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
+import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
@@ -111,14 +112,10 @@ export const YieldDepositCompleteScreen = () => {
             receivedAmount: {
                 value: session.result.completedReceiptAmount,
                 tokenContract: flowData.receiptToken.contractAddress,
-                tokenDecimals: flowData.receiptToken.decimals,
-                tokenSymbol: flowData.receiptToken.symbol,
             },
             sentAmount: {
                 value: session.result.completedAmount,
                 tokenContract: hasWrappedInput ? undefined : flowData.token.contractAddress,
-                tokenDecimals: hasWrappedInput ? undefined : flowData.token.decimals,
-                tokenSymbol: hasWrappedInput ? undefined : flowData.token.symbol,
             },
         });
     }, [openApyBreakdownBottomSheet, account, apy, flowData, resolutionStatus, session]);
@@ -127,7 +124,7 @@ export const YieldDepositCompleteScreen = () => {
         return null;
     }
 
-    return (
+    const content = (
         <>
             <EarnCompleteScreenContent
                 type="deposit"
@@ -147,4 +144,6 @@ export const YieldDepositCompleteScreen = () => {
             />
         </>
     );
+
+    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
 };

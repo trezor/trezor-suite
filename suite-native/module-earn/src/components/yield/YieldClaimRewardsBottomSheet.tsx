@@ -9,6 +9,7 @@ import {
     Divider,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-native/tokens';
 
 import { YieldClaimRewardsAccountCard } from './YieldClaimRewardsAccountCard';
 
@@ -22,22 +23,28 @@ export const YieldClaimRewardsBottomSheet = ({
     ref,
     items,
     onClose,
-}: YieldClaimRewardsBottomSheetProps) => (
-    <BottomSheetModal
-        ref={ref}
-        title={<Translation id="earn.earnScreen.claimRewards.title" />}
-        isCloseDisplayed
-        onClose={onClose}
-    >
-        <Box paddingTop="sp16">
-            <Card borderColor="borderNeutral" noPadding>
-                {items.map((claimItem, index) => (
-                    <Fragment key={claimItem.summary.accountKey}>
-                        {index > 0 && <Divider />}
-                        <YieldClaimRewardsAccountCard item={claimItem} onClose={onClose} />
-                    </Fragment>
-                ))}
-            </Card>
-        </Box>
-    </BottomSheetModal>
-);
+}: YieldClaimRewardsBottomSheetProps) => {
+    const sources = useTokenMetadataSources();
+
+    return (
+        <BottomSheetModal
+            ref={ref}
+            title={<Translation id="earn.earnScreen.claimRewards.title" />}
+            isCloseDisplayed
+            onClose={onClose}
+        >
+            <TokenMetadataProvider sources={sources}>
+                <Box paddingTop="sp16">
+                    <Card borderColor="borderNeutral" noPadding>
+                        {items.map((claimItem, index) => (
+                            <Fragment key={claimItem.summary.accountKey}>
+                                {index > 0 && <Divider />}
+                                <YieldClaimRewardsAccountCard item={claimItem} onClose={onClose} />
+                            </Fragment>
+                        ))}
+                    </Card>
+                </Box>
+            </TokenMetadataProvider>
+        </BottomSheetModal>
+    );
+};

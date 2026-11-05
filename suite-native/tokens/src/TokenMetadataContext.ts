@@ -11,9 +11,17 @@ export type TokenMetadata = {
     standard?: TokenInfoBranded['standard'];
 };
 
-type ResolveTokenMetadata = (
-    networkSymbol: NetworkSymbol,
-    contractAddress: string,
-) => TokenMetadata | null;
+export type TokenMetadataSource = {
+    networkSymbol: NetworkSymbol;
+    tokens: readonly TokenMetadata[];
+};
 
-export const TokenMetadataContext = createContext<ResolveTokenMetadata>(() => null);
+type TokenMetadataContextValue = {
+    sources: readonly TokenMetadataSource[];
+    tokensByNetwork: ReadonlyMap<NetworkSymbol, ReadonlyMap<string, TokenMetadata>>;
+};
+
+export const TokenMetadataContext = createContext<TokenMetadataContextValue>({
+    sources: [],
+    tokensByNetwork: new Map(),
+});

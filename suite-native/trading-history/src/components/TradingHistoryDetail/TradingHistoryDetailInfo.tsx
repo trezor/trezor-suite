@@ -1,4 +1,5 @@
 import { Card } from '@suite-native/atoms';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { TradingHistoryDetailAssetRow } from './TradingHistoryDetailAssetRow';
 import { TradingHistoryDetailMevProtectionRow } from './TradingHistoryDetailMevProtectionRow';
@@ -36,7 +37,7 @@ export const TradingHistoryDetailInfo = ({ orderId }: TradingHistoryDetailInfoPr
         swapSlippage,
     } = info;
 
-    return (
+    const content = (
         <Card noPadding testID={TEST_ID}>
             {!!payAsset && <TradingHistoryDetailAssetRow asset={payAsset} isFirst side="pay" />}
             {!!getAsset && <TradingHistoryDetailAssetRow asset={getAsset} side="get" />}
@@ -61,5 +62,28 @@ export const TradingHistoryDetailInfo = ({ orderId }: TradingHistoryDetailInfoPr
             )}
             <TradingHistoryDetailPlacedAtRow placedAt={placedAt} />
         </Card>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[payAsset, getAsset].flatMap(asset =>
+                asset?.type === 'crypto' && asset.contractAddress
+                    ? [
+                          {
+                              networkSymbol: asset.networkSymbol,
+                              tokens: [
+                                  {
+                                      contract: asset.contractAddress,
+                                      name: asset.name,
+                                      symbol: asset.displaySymbol,
+                                  },
+                              ],
+                          },
+                      ]
+                    : [],
+            )}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

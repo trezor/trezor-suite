@@ -43,7 +43,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         nativeSymbol,
         pendingModal,
         simulationSheet,
-        spentSymbol,
         spentTokenContract,
         submit,
         wrappedTokenContract,
@@ -151,14 +150,15 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id={messages.amountLabel} />}
                 amountTokenContract={spentTokenContract}
-                amountTokenSymbol={spentSymbol}
                 title={<Translation id={messages.pendingTransactionTitle} />}
             />
         </Screen>
     );
 
     return (
-        <TokenMetadataProvider networkSymbol={account.symbol} tokens={[wrappedTokenMetadata]}>
+        <TokenMetadataProvider
+            sources={[{ networkSymbol: account.symbol, tokens: [wrappedTokenMetadata] }]}
+        >
             {content}
         </TokenMetadataProvider>
     );

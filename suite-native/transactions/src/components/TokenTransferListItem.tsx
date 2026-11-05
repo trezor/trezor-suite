@@ -10,7 +10,6 @@ import {
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import {
-    TokenMetadataProvider,
     type TokensRootState,
     type TypedTokenTransfer,
     type WalletAccountTransaction,
@@ -61,37 +60,32 @@ export const TokenTransferListItemValues = ({
     const showFiatAmount = !isErc4626(token) && historicRate !== undefined;
 
     return (
-        <TokenMetadataProvider networkSymbol={transaction.symbol} tokens={[tokenTransfer]}>
-            <>
-                {showFiatAmount && (
-                    <TokenToFiatAmountFormatter
-                        symbol={transaction.symbol}
-                        value={tokenTransfer.amount}
-                        contract={tokenTransfer.contract}
-                        decimals={tokenTransfer.decimals}
-                        signValue={
-                            isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)
-                        }
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                        historicRate={historicRate}
-                        useHistoricRate
-                        style={applyStyle(failedTxStyle, { isFailedTx })}
-                    />
-                )}
-                <CompactTokenAmountFormatter
-                    isSymbolTruncated
-                    value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                    networkSymbol={transaction.symbol}
-                    contractAddress={tokenTransfer.contract}
+        <>
+            {showFiatAmount && (
+                <TokenToFiatAmountFormatter
+                    symbol={transaction.symbol}
+                    value={tokenTransfer.amount}
+                    contract={tokenTransfer.contract}
                     signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                     numberOfLines={1}
                     ellipsizeMode="tail"
-                    variant="body-sm"
-                    color="contentSecondary"
+                    historicRate={historicRate}
+                    useHistoricRate
+                    style={applyStyle(failedTxStyle, { isFailedTx })}
                 />
-            </>
-        </TokenMetadataProvider>
+            )}
+            <CompactTokenAmountFormatter
+                isSymbolTruncated
+                value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
+                networkSymbol={transaction.symbol}
+                contractAddress={tokenTransfer.contract}
+                signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                variant="body-sm"
+                color="contentSecondary"
+            />
+        </>
     );
 };
 

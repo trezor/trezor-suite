@@ -66,8 +66,6 @@ export const DeactivationFeeScreen = () => {
         handleFeeLevelChange,
         handleCustomFeeSet,
         tokenInfo,
-        assetCode,
-        tokenName,
         issuerDomain,
         issuerAddress,
         iconContractAddress,
@@ -164,8 +162,6 @@ export const DeactivationFeeScreen = () => {
 
                 <TokenDetailBottomSheet
                     bottomSheetRef={tokenDetailRef}
-                    tokenName={tokenName}
-                    assetCode={assetCode}
                     issuerDomain={issuerDomain}
                     issuerAddress={issuerAddress}
                     iconContractAddress={iconContractAddress}
@@ -177,7 +173,9 @@ export const DeactivationFeeScreen = () => {
     );
 
     return (
-        <TokenMetadataProvider networkSymbol={account.symbol} tokens={tokenInfo ? [tokenInfo] : []}>
+        <TokenMetadataProvider
+            sources={[{ networkSymbol: account.symbol, tokens: tokenInfo ? [tokenInfo] : [] }]}
+        >
             {content}
         </TokenMetadataProvider>
     );

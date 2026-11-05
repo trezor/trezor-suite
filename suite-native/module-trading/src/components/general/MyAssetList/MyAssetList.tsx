@@ -5,6 +5,7 @@ import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
 import { Box, EdgeFades, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { type MyAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -66,7 +67,7 @@ export const MyAssetList = ({
         [onAssetSelect, testID],
     );
 
-    return (
+    const content = (
         <VStack flex={1} spacing="sp10" testID={testID}>
             <TradingAssetListHeader
                 networkFilterMode="discovered"
@@ -99,5 +100,31 @@ export const MyAssetList = ({
                 <EdgeFades direction="vertical" startSize={utils.spacings.sp16} endSize={bottom} />
             </Box>
         </VStack>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={assets.map(section => ({
+                networkSymbol: section.sectionData.symbol,
+                tokens: [
+                    ...section.assets,
+                    ...section.lowBalanceAssets,
+                    ...section.nonTradeableAssets,
+                ].flatMap(asset =>
+                    asset.contract
+                        ? [
+                              {
+                                  contract: asset.contract,
+                                  name: asset.name,
+                                  symbol: asset.tokenSymbol ?? undefined,
+                                  decimals: asset.decimals,
+                              },
+                          ]
+                        : [],
+                ),
+            }))}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

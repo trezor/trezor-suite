@@ -15,7 +15,7 @@ import {
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { TokenMetadataProvider } from '@suite-native/tokens';
+import { TokenSymbol } from '@suite-native/tokens';
 import {
     TransactionReviewOutputHexData,
     TransactionReviewOutputItemValues,
@@ -291,7 +291,13 @@ export const useYieldTransactionReviewOutputs = ({
 
                     const getPrimaryValue = () => {
                         if (!isApprovalTx && output.token?.symbol) {
-                            return <Text variant="body-sm">{output.token.symbol}</Text>;
+                            return (
+                                <TokenSymbol
+                                    networkSymbol={account.symbol}
+                                    contractAddress={toTokenAddress(output.token.contract)}
+                                    variant="body-sm"
+                                />
+                            );
                         }
 
                         if (!isApprovalTx) {
@@ -319,24 +325,19 @@ export const useYieldTransactionReviewOutputs = ({
                         }
 
                         return (
-                            <TokenMetadataProvider
+                            <ExactTokenAmountFormatter
                                 networkSymbol={account.symbol}
-                                tokens={[output.token]}
-                            >
-                                <ExactTokenAmountFormatter
-                                    networkSymbol={account.symbol}
-                                    contractAddress={toTokenAddress(output.token.contract)}
-                                    variant="body-sm"
-                                    color="contentPrimary"
-                                    textAlign="right"
-                                    value={convertTokenValueToDecimal(
-                                        output.value,
-                                        output.token?.decimals,
-                                    )}
-                                    // The user must be able to verify token amounts before signing the yield transaction.
-                                    discreetMode="disabled"
-                                />
-                            </TokenMetadataProvider>
+                                contractAddress={toTokenAddress(output.token.contract)}
+                                variant="body-sm"
+                                color="contentPrimary"
+                                textAlign="right"
+                                value={convertTokenValueToDecimal(
+                                    output.value,
+                                    output.token?.decimals,
+                                )}
+                                // The user must be able to verify token amounts before signing the yield transaction.
+                                discreetMode="disabled"
+                            />
                         );
                     };
 
@@ -372,7 +373,16 @@ export const useYieldTransactionReviewOutputs = ({
                         <VStack spacing="sp12">
                             {output.rewards.map((reward, index) => (
                                 <Text key={`${reward.tokenAddress}:${index}`} variant="body-sm">
-                                    {reward.tokenSymbol || reward.tokenAddress}
+                                    {reward.tokenSymbol ? (
+                                        <TokenSymbol
+                                            isInline
+                                            networkSymbol={account.symbol}
+                                            contractAddress={toTokenAddress(reward.tokenAddress)}
+                                            variant="body-sm"
+                                        />
+                                    ) : (
+                                        reward.tokenAddress
+                                    )}
                                 </Text>
                             ))}
                         </VStack>

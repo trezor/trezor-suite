@@ -1,4 +1,3 @@
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -6,7 +5,6 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { TradingAsset } from '@suite-native/trading-atoms';
 import { type MyAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -28,8 +26,7 @@ export type MyAssetListItemProps = {
 export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
-    const { symbol, name, balance, fiatBalance, tokenSymbol, contract, isEnabled, decimals } =
-        asset;
+    const { symbol, name, balance, fiatBalance, contract, isEnabled } = asset;
 
     const hasFiatBalance = fiatBalance !== null;
 
@@ -55,43 +52,36 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
     );
 
     return (
-        <TokenMetadataProvider
-            networkSymbol={symbol}
-            tokens={contract ? [{ contract, symbol: tokenSymbol ?? undefined, decimals }] : []}
+        <AnimatedPressable
+            onPress={isEnabled ? onPress : undefined}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            disabled={!isEnabled}
+            accessible
+            accessibilityRole="button"
+            accessibilityState={{ disabled: !isEnabled }}
+            accessibilityLabel={name}
+            style={[animatedStyle, applyStyle(containerStyle, { isDisabled: !isEnabled })]}
         >
-            <AnimatedPressable
-                onPress={isEnabled ? onPress : undefined}
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-                disabled={!isEnabled}
-                accessible
-                accessibilityRole="button"
-                accessibilityState={{ disabled: !isEnabled }}
-                accessibilityLabel={name}
-                style={[animatedStyle, applyStyle(containerStyle, { isDisabled: !isEnabled })]}
-            >
-                <Box paddingHorizontal="sp8" paddingVertical="sp12">
-                    <TradingAsset
-                        assetType="crypto"
-                        name={name}
-                        symbol={tokenSymbol ?? getNetworkDisplaySymbol(symbol)}
-                        contractAddress={contract}
-                        networkSymbol={symbol}
-                        rightContent={
-                            <VStack alignItems="flex-end" spacing={0}>
-                                {hasFiatBalance && (
-                                    <BaseCurrencyAmountFormatter
-                                        value={fiatBalance}
-                                        variant="body-md"
-                                        numberOfLines={1}
-                                    />
-                                )}
-                                {cryptoBalanceValue}
-                            </VStack>
-                        }
-                    />
-                </Box>
-            </AnimatedPressable>
-        </TokenMetadataProvider>
+            <Box paddingHorizontal="sp8" paddingVertical="sp12">
+                <TradingAsset
+                    assetType="crypto"
+                    contractAddress={contract}
+                    networkSymbol={symbol}
+                    rightContent={
+                        <VStack alignItems="flex-end" spacing={0}>
+                            {hasFiatBalance && (
+                                <BaseCurrencyAmountFormatter
+                                    value={fiatBalance}
+                                    variant="body-md"
+                                    numberOfLines={1}
+                                />
+                            )}
+                            {cryptoBalanceValue}
+                        </VStack>
+                    }
+                />
+            </Box>
+        </AnimatedPressable>
     );
 };

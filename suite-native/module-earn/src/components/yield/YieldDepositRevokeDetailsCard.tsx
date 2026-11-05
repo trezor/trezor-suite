@@ -1,5 +1,4 @@
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Card, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -24,9 +23,7 @@ type YieldDepositRevokeDetailsCardProps = {
     approvedAmount: string | null;
     isApprovedAmountUnlimited: boolean;
     providerName: string;
-    tokenDecimals?: number;
     tokenContract: TokenAddress;
-    tokenSymbol: TokenSymbol;
 };
 
 export const YieldDepositRevokeDetailsCard = ({
@@ -35,9 +32,7 @@ export const YieldDepositRevokeDetailsCard = ({
     approvedAmount,
     isApprovedAmountUnlimited,
     providerName,
-    tokenDecimals,
     tokenContract,
-    tokenSymbol,
 }: YieldDepositRevokeDetailsCardProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -87,9 +82,7 @@ export const YieldDepositRevokeDetailsCard = ({
                     approvedAmount={approvedAmount}
                     isApprovedAmountUnlimited={isApprovedAmountUnlimited}
                     networkSymbol={account.symbol}
-                    tokenDecimals={tokenDecimals}
                     tokenContract={tokenContract}
-                    tokenSymbol={tokenSymbol}
                 />
             </YieldDepositRevokeDetailsRow>
         </Card>

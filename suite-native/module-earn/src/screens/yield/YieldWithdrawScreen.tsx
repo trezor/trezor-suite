@@ -21,6 +21,7 @@ import { EarnApproximateFiatAmount } from '../../components/earn/EarnApproximate
 import { EarnFeeEstimationErrorAlert } from '../../components/earn/EarnFeeEstimationErrorAlert';
 import { EarnMaxSwitch } from '../../components/earn/EarnMaxSwitch';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
+import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldFormattedAmount } from '../../components/yield/YieldFormattedAmount';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
@@ -76,7 +77,7 @@ export const YieldWithdrawScreen = () => {
     } = controller;
     const { account } = yieldFlowData;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -218,8 +219,6 @@ export const YieldWithdrawScreen = () => {
                                                 value={depositedRow.amount}
                                                 networkSymbol={account.symbol}
                                                 tokenContract={depositedRow.tokenContract}
-                                                tokenDecimals={depositedRow.tokenDecimals}
-                                                tokenSymbol={depositedRow.tokenSymbol}
                                                 variant="body-sm"
                                                 color="contentSecondary"
                                                 numberOfLines={1}
@@ -261,7 +260,8 @@ export const YieldWithdrawScreen = () => {
                         isAmountTooHigh={warning.isAmountTooHigh}
                         isMaxWithdrawInfoVisible={warning.isMaxWithdrawInfoVisible}
                         shouldShowNetworkFeeWarning={warning.shouldShowNetworkFeeWarning}
-                        vaultTokenSymbol={amountForm.vaultTokenSymbol}
+                        networkSymbol={account.symbol}
+                        tokenContract={getYieldTokenContract(yieldFlowData.receiptToken)}
                     />
                 </VStack>
             </VStack>
@@ -273,7 +273,6 @@ export const YieldWithdrawScreen = () => {
                     amount={pendingModal.pendingTransaction.amount}
                     amountLabel={<Translation id="earn.yieldWithdrawFlowScreen.amountToWithdraw" />}
                     amountTokenContract={pendingModal.amountTokenContract}
-                    amountTokenSymbol={pendingModal.amountTokenSymbol}
                     fee={pendingModal.pendingTransaction.fee}
                     isExploreDisabled={pendingModal.isExploreDisabled}
                     onDismiss={pendingModal.onDismiss}
@@ -287,4 +286,6 @@ export const YieldWithdrawScreen = () => {
             )}
         </Screen>
     );
+
+    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
 };

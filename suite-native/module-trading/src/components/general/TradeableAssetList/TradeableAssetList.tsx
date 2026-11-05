@@ -3,10 +3,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
+import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type TradeableAssetBalances } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, EdgeFades, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -54,7 +56,7 @@ export const TradeableAssetList = ({
         flashListRef.current?.scrollToOffset({ offset: 0, animated: false });
     }, [scrollResetKey]);
 
-    return (
+    const content = (
         <VStack flex={1} spacing="sp10" testID={testID}>
             <TradingAssetListHeader
                 onFilterChange={onFilterChange}
@@ -98,5 +100,31 @@ export const TradeableAssetList = ({
                 <EdgeFades direction="vertical" startSize={utils.spacings.sp16} endSize={bottom} />
             </Box>
         </VStack>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={assets.flatMap(asset => {
+                const networkSymbol = cryptoIdToNetworkSymbol(asset.cryptoId);
+
+                return networkSymbol && asset.contractAddress
+                    ? [
+                          {
+                              networkSymbol,
+                              tokens: [
+                                  {
+                                      contract: asset.contractAddress,
+                                      name: asset.name,
+                                      symbol: asset.symbol,
+                                      decimals: asset.decimals,
+                                  },
+                              ],
+                          },
+                      ]
+                    : [];
+            })}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

@@ -71,7 +71,7 @@ export const YieldVaultDetailScreenContent = ({
     const navigation = useNavigation<NavigationProps>();
     const { analytics } = useServices(injectNativeAnalytics);
 
-    const { CryptoAmountFormatter, PercentageFormatter } = useFormatters();
+    const { PercentageFormatter } = useFormatters();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
 
@@ -251,18 +251,22 @@ export const YieldVaultDetailScreenContent = ({
 
     return (
         <TokenMetadataProvider
-            networkSymbol={account.symbol}
-            tokens={[
-                yieldToken,
-                ...(vault?.token.address
-                    ? [
-                          {
-                              contract: vault.token.address,
-                              symbol: vault.token.symbol,
-                              decimals: vault.token.decimals,
-                          },
-                      ]
-                    : []),
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens: [
+                        yieldToken,
+                        ...(vault?.token.address
+                            ? [
+                                  {
+                                      contract: vault.token.address,
+                                      symbol: vault.token.symbol,
+                                      decimals: vault.token.decimals,
+                                  },
+                              ]
+                            : []),
+                    ],
+                },
             ]}
         >
             <>
@@ -326,18 +330,26 @@ export const YieldVaultDetailScreenContent = ({
                                         <Translation
                                             id="earn.yearlyRewardsDeposited"
                                             values={{
-                                                amountWithSymbol: (
-                                                    <CryptoAmountFormatter
-                                                        value={depositedPosition.balance}
-                                                        symbol={
-                                                            wrappedNativeSymbol
-                                                                ? toTokenSymbol(wrappedNativeSymbol)
-                                                                : depositedPosition.tokenSymbol
+                                                amountWithSymbol: wrappedNativeSymbol ? (
+                                                    <CompactCryptoAmountFormatter
+                                                        value={asDecimalTokenAmount(
+                                                            depositedPosition.balance,
+                                                        )}
+                                                        symbol={account.symbol}
+                                                        variant="body-md"
+                                                        color="contentSecondary"
+                                                    />
+                                                ) : (
+                                                    <CompactTokenAmountFormatter
+                                                        value={asDecimalTokenAmount(
+                                                            depositedPosition.balance,
+                                                        )}
+                                                        networkSymbol={account.symbol}
+                                                        contractAddress={
+                                                            depositedPosition.contractAddress
                                                         }
-                                                        withSymbol
-                                                        isBalance
-                                                        formatStyle="compact-balance"
-                                                        tokenDecimals={depositedPosition.decimals}
+                                                        variant="body-md"
+                                                        color="contentSecondary"
                                                     />
                                                 ),
                                             }}
@@ -379,20 +391,26 @@ export const YieldVaultDetailScreenContent = ({
                                         <Translation
                                             id="earn.potentialRewardsIfYouAdd"
                                             values={{
-                                                amountWithSymbol: (
-                                                    <CryptoAmountFormatter
-                                                        value={
-                                                            potentialRewards.additionalDepositAmount
+                                                amountWithSymbol: wrappedNativeSymbol ? (
+                                                    <CompactCryptoAmountFormatter
+                                                        value={asDecimalTokenAmount(
+                                                            potentialRewards.additionalDepositAmount,
+                                                        )}
+                                                        symbol={account.symbol}
+                                                        variant="body-md"
+                                                        color="contentSecondary"
+                                                    />
+                                                ) : (
+                                                    <CompactTokenAmountFormatter
+                                                        value={asDecimalTokenAmount(
+                                                            potentialRewards.additionalDepositAmount,
+                                                        )}
+                                                        networkSymbol={account.symbol}
+                                                        contractAddress={
+                                                            depositedPosition.contractAddress
                                                         }
-                                                        symbol={
-                                                            wrappedNativeSymbol
-                                                                ? toTokenSymbol(wrappedNativeSymbol)
-                                                                : depositedPosition.tokenSymbol
-                                                        }
-                                                        withSymbol
-                                                        isBalance
-                                                        formatStyle="compact-balance"
-                                                        tokenDecimals={depositedPosition.decimals}
+                                                        variant="body-md"
+                                                        color="contentSecondary"
                                                     />
                                                 ),
                                             }}

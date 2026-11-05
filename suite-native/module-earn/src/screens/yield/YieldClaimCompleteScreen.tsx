@@ -20,6 +20,7 @@ import {
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -80,7 +81,7 @@ export const YieldClaimCompleteScreen = () => {
 
     const rows = getYieldClaimCompleteRows(session.result.completedRewards);
 
-    return (
+    const content = (
         <EarnCompleteScreenContent
             type="claim"
             buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
@@ -89,5 +90,18 @@ export const YieldClaimCompleteScreen = () => {
             title={<Translation id="earn.yieldClaimCompleteScreen.title" />}
             subtitle={<Translation id="earn.yieldClaimCompleteScreen.subtitle" />}
         />
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={session.result.completedRewards.map(reward => ({
+                networkSymbol: reward.token.networkSymbol,
+                tokens: reward.token.contractAddress
+                    ? [{ ...reward.token, contract: reward.token.contractAddress }]
+                    : [],
+            }))}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

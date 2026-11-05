@@ -1,12 +1,17 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { FlashList } from '@shopify/flash-list';
 
-import { type TokenAddress } from '@suite-common/tokens';
-import { type AccountKey, type StellarTokenInfo } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    type AccountKey,
+    type StellarTokenInfo,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Loader, SearchInput, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -21,6 +26,7 @@ import {
     type StackNavigationProps,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -90,6 +96,9 @@ export const InactiveTokensTab = ({
     const listContentStyle = useAccountOverviewListContentStyle();
     const { dispatch } = useServices(injectDispatch);
 
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
     const { inactiveTokens, isLoading } = useInactiveStellarTokens(accountKey);
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -153,16 +162,19 @@ export const InactiveTokensTab = ({
                     isLast: index === filteredTokens.length - 1,
                 })}
             >
-                <InactiveTokenListItem
-                    token={item}
-                    onPress={() => handleTokenPress(item.contract as TokenAddress)}
-                />
+                {networkSymbol && (
+                    <InactiveTokenListItem
+                        networkSymbol={networkSymbol}
+                        tokenContract={item.contract as TokenAddress}
+                        onPress={() => handleTokenPress(item.contract as TokenAddress)}
+                    />
+                )}
             </View>
         ),
-        [applyStyle, filteredTokens.length, handleTokenPress],
+        [applyStyle, filteredTokens.length, handleTokenPress, networkSymbol],
     );
 
-    return (
+    const content = (
         <FlashList
             style={applyStyle(listStyle)}
             contentContainerStyle={listContentStyle}
@@ -202,5 +214,13 @@ export const InactiveTokensTab = ({
             }
             onScroll={onScroll}
         />
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={networkSymbol ? [{ networkSymbol, tokens: inactiveTokens }] : []}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

@@ -19,6 +19,7 @@ import {
     type TransactionDetailStackParamList,
     type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
     InstantStakeBanner,
@@ -82,7 +83,7 @@ export const TransactionDetailScreen = ({
 
     const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
 
-    return (
+    const content = (
         <Screen
             header={
                 <ScreenHeader
@@ -126,5 +127,13 @@ export const TransactionDetailScreen = ({
                 </Button>
             </VStack>
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[{ networkSymbol: transaction.symbol, tokens: transaction.tokens ?? [] }]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

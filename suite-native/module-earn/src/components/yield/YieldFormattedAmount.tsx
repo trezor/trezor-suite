@@ -7,13 +7,10 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
 export type YieldFormattedAmountValue = {
     value: string;
     tokenContract?: string | null;
-    tokenDecimals?: number;
-    tokenSymbol?: string | null;
 };
 
 type YieldFormattedAmountProps = YieldFormattedAmountValue & {
@@ -32,32 +29,19 @@ type YieldFormattedAmountProps = YieldFormattedAmountValue & {
 export const YieldFormattedAmount = ({
     networkSymbol,
     tokenContract,
-    tokenDecimals,
-    tokenSymbol,
     value,
     ...textProps
 }: YieldFormattedAmountProps) => {
     if (tokenContract) {
         return (
-            <TokenMetadataProvider
+            <CompactTokenAmountFormatter
                 networkSymbol={networkSymbol}
-                tokens={[
-                    {
-                        contract: tokenContract,
-                        symbol: tokenSymbol ?? undefined,
-                        decimals: tokenDecimals,
-                    },
-                ]}
-            >
-                <CompactTokenAmountFormatter
-                    networkSymbol={networkSymbol}
-                    contractAddress={toTokenAddress(tokenContract)}
-                    value={asDecimalTokenAmount(value)}
-                    // Keep transaction amounts and allowance limits readable during yield actions.
-                    discreetMode="disabled"
-                    {...textProps}
-                />
-            </TokenMetadataProvider>
+                contractAddress={toTokenAddress(tokenContract)}
+                value={asDecimalTokenAmount(value)}
+                // Keep transaction amounts and allowance limits readable during yield actions.
+                discreetMode="disabled"
+                {...textProps}
+            />
         );
     }
 

@@ -18,10 +18,10 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Icon, type IconName, TokenIcon } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { getTxNotificationFields } from './utils';
@@ -101,64 +101,61 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
     };
 
     return (
-        <TokenMetadataProvider networkSymbol={symbol} tokens={token ? [token] : []}>
-            <VStack spacing="sp4">
-                {index > 0 && <Divider style={applyStyle(fullWidthDividerStyle)} />}
-                <HStack spacing="sp12" alignItems="center" paddingVertical="sp8">
-                    <Icon name={iconName} size="mediumLarge" color={contentColor} />
-                    <VStack flex={1} spacing="sp2">
-                        <Text
-                            variant={seen ? 'body-sm' : 'body-sm-strong'}
-                            color={contentColor}
-                            numberOfLines={1}
-                        >
-                            <Translation
-                                id={translationIdMap[type]}
-                                values={accountLabel ? { account: accountLabel } : undefined}
-                            />
-                        </Text>
-                        {amount !== undefined && (
-                            <HStack spacing="sp8" alignItems="center">
-                                <TokenIcon
-                                    networkSymbol={symbol}
-                                    contractAddress={token?.contract}
-                                    tokenSymbol={token?.symbol || token?.name}
-                                    size="tiny"
-                                />
-                                {token?.symbol === undefined ? (
-                                    <CompactCryptoAmountFormatter
-                                        value={amount}
-                                        symbol={symbol}
-                                        variant="body-xs"
-                                        color={contentColor}
-                                    />
-                                ) : (
-                                    <CompactTokenAmountFormatter
-                                        networkSymbol={symbol}
-                                        contractAddress={toTokenAddress(token.contract)}
-                                        value={asDecimalTokenAmount(amount)}
-                                        variant="body-xs"
-                                        color={contentColor}
-                                    />
-                                )}
-                            </HStack>
-                        )}
-                        <Text variant="body-xs" color={contentColor}>
-                            <DateFormatter value={notification.id} /> •{' '}
-                            <TimeFormatter value={notification.id} />
-                        </Text>
-                    </VStack>
-                    {canNavigate && (
-                        <IconButton
-                            iconName="arrowRight"
-                            intent="neutral"
-                            priority="secondary"
-                            size="medium"
-                            onPress={handleNavigate}
+        <VStack spacing="sp4">
+            {index > 0 && <Divider style={applyStyle(fullWidthDividerStyle)} />}
+            <HStack spacing="sp12" alignItems="center" paddingVertical="sp8">
+                <Icon name={iconName} size="mediumLarge" color={contentColor} />
+                <VStack flex={1} spacing="sp2">
+                    <Text
+                        variant={seen ? 'body-sm' : 'body-sm-strong'}
+                        color={contentColor}
+                        numberOfLines={1}
+                    >
+                        <Translation
+                            id={translationIdMap[type]}
+                            values={accountLabel ? { account: accountLabel } : undefined}
                         />
+                    </Text>
+                    {amount !== undefined && (
+                        <HStack spacing="sp8" alignItems="center">
+                            <TokenIcon
+                                networkSymbol={symbol}
+                                contractAddress={token?.contract}
+                                size="tiny"
+                            />
+                            {token?.symbol === undefined ? (
+                                <CompactCryptoAmountFormatter
+                                    value={amount}
+                                    symbol={symbol}
+                                    variant="body-xs"
+                                    color={contentColor}
+                                />
+                            ) : (
+                                <CompactTokenAmountFormatter
+                                    networkSymbol={symbol}
+                                    contractAddress={toTokenAddress(token.contract)}
+                                    value={asDecimalTokenAmount(amount)}
+                                    variant="body-xs"
+                                    color={contentColor}
+                                />
+                            )}
+                        </HStack>
                     )}
-                </HStack>
-            </VStack>
-        </TokenMetadataProvider>
+                    <Text variant="body-xs" color={contentColor}>
+                        <DateFormatter value={notification.id} /> •{' '}
+                        <TimeFormatter value={notification.id} />
+                    </Text>
+                </VStack>
+                {canNavigate && (
+                    <IconButton
+                        iconName="arrowRight"
+                        intent="neutral"
+                        priority="secondary"
+                        size="medium"
+                        onPress={handleNavigate}
+                    />
+                )}
+            </HStack>
+        </VStack>
     );
 };

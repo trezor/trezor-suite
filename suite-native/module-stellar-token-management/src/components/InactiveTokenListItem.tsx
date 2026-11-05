@@ -1,12 +1,12 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type StellarTokenInfo, toTokenAddress } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, PressableOpacity } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
-import { TokenMetadataProvider, TokenName, TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type InactiveTokenListItemProps = {
-    token: StellarTokenInfo;
+    networkSymbol: NetworkSymbol;
+    tokenContract: TokenAddress;
     onPress: () => void;
 };
 
@@ -27,35 +27,33 @@ const iconContainerStyle = prepareNativeStyle(utils => ({
     marginRight: utils.spacings.sp12,
 }));
 
-export const InactiveTokenListItem = ({ token, onPress }: InactiveTokenListItemProps) => {
+export const InactiveTokenListItem = ({
+    networkSymbol,
+    tokenContract,
+    onPress,
+}: InactiveTokenListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TokenMetadataProvider networkSymbol={asNetworkSymbol('xlm')} tokens={[token]}>
-            <PressableOpacity onPress={onPress}>
-                <Box style={applyStyle(containerStyle)}>
-                    <Box style={applyStyle(iconContainerStyle)}>
-                        <TokenIcon
-                            networkSymbol={asNetworkSymbol('xlm')}
-                            contractAddress={token.contract}
-                            tokenSymbol={token.symbol || token.name}
-                            size="small"
-                        />
-                    </Box>
-                    <Box flex={1}>
-                        <TokenName
-                            networkSymbol={asNetworkSymbol('xlm')}
-                            contractAddress={toTokenAddress(token.contract)}
-                        />
-                        <TokenSymbol
-                            networkSymbol={asNetworkSymbol('xlm')}
-                            contractAddress={toTokenAddress(token.contract)}
-                            variant="body-sm"
-                            color="contentSecondary"
-                        />
-                    </Box>
+        <PressableOpacity onPress={onPress}>
+            <Box style={applyStyle(containerStyle)}>
+                <Box style={applyStyle(iconContainerStyle)}>
+                    <TokenIcon
+                        networkSymbol={networkSymbol}
+                        contractAddress={tokenContract}
+                        size="small"
+                    />
                 </Box>
-            </PressableOpacity>
-        </TokenMetadataProvider>
+                <Box flex={1}>
+                    <TokenName networkSymbol={networkSymbol} contractAddress={tokenContract} />
+                    <TokenSymbol
+                        networkSymbol={networkSymbol}
+                        contractAddress={tokenContract}
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
+                </Box>
+            </Box>
+        </PressableOpacity>
     );
 };

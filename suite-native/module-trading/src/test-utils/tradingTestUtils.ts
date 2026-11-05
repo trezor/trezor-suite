@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react';
+import { type ReactElement, createElement } from 'react';
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
@@ -69,6 +69,8 @@ import {
 } from '@suite-native/transaction-management';
 import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
+
+import { TradingMetadataProvider } from '../components/general/TradingMetadataProvider';
 
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
 
@@ -204,7 +206,7 @@ export const renderWithTradingProvider = <TServices extends object>(
         ...options
     }: TradingProviderOptions & Omit<RenderOptionsExtended<TServices>, 'preloadedState'> = {},
 ) =>
-    renderWithStoreProvider(element, {
+    renderWithStoreProvider(createElement(TradingMetadataProvider, null, element), {
         ...options,
         services: {
             ...services,

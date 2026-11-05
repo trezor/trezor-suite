@@ -13,10 +13,10 @@ export const useTokenMetadata = (
     networkSymbol: NetworkSymbol,
     contractAddress: TokenAddress | undefined,
 ) => {
-    const resolveSourceMetadata = useContext(TokenMetadataContext);
+    const { tokensByNetwork } = useContext(TokenMetadataContext);
     const sourceMetadata = contractAddress
-        ? resolveSourceMetadata(networkSymbol, contractAddress)
-        : null;
+        ? tokensByNetwork.get(networkSymbol)?.get(contractAddress)
+        : undefined;
     const accountToken = useSelector((state: AccountsRootState) =>
         sourceMetadata || !contractAddress
             ? null

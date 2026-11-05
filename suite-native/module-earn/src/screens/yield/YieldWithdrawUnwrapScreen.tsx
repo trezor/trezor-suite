@@ -3,11 +3,11 @@ import { BannerFull, Box, Text, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
+import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessionTxSimulationSheet';
@@ -33,7 +33,6 @@ export const YieldWithdrawUnwrapScreen = () => {
         header,
         isDeviceNotConnectedVisible,
         isInteractionBlocked,
-        nativeSymbol,
         pendingModal,
         receivingCard,
         simulationSheet,
@@ -64,7 +63,8 @@ export const YieldWithdrawUnwrapScreen = () => {
                     isSubmitLoading={footer.isSubmitLoading}
                     onSkip={footer.onSkip}
                     onSubmit={footer.onSubmit}
-                    spentSymbol={wrappedTokenSymbol}
+                    networkSymbol={account.symbol}
+                    tokenContract={wrappedTokenContract}
                 />
             }
         >
@@ -118,8 +118,6 @@ export const YieldWithdrawUnwrapScreen = () => {
                                 <YieldWrappedNativeReceivingCard
                                     amount={receivingCard.amount}
                                     networkSymbol={account.symbol}
-                                    tokenDecimals={receivingCard.tokenDecimals}
-                                    tokenSymbol={nativeSymbol}
                                 />
                             </Box>
                         )}
@@ -154,7 +152,6 @@ export const YieldWithdrawUnwrapScreen = () => {
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id="earn.unwrapNativeToken.amountToUnwrap" />}
                 amountTokenContract={wrappedTokenContract}
-                amountTokenSymbol={wrappedTokenSymbol}
                 title={<Translation id="earn.yieldWithdrawFlowScreen.unwrapPendingTitle" />}
                 vaultName={yieldFlowData.vaultTokenName}
                 vaultTokenContract={tokenContract}
@@ -167,12 +164,5 @@ export const YieldWithdrawUnwrapScreen = () => {
         </Screen>
     );
 
-    return (
-        <TokenMetadataProvider
-            networkSymbol={account.symbol}
-            tokens={[{ ...yieldFlowData.token, contract: wrappedTokenContract }]}
-        >
-            {content}
-        </TokenMetadataProvider>
-    );
+    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
 };

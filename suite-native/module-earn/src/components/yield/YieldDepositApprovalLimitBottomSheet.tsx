@@ -9,6 +9,11 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import {
+    TokenMetadataProvider,
+    useTokenMetadata,
+    useTokenMetadataSources,
+} from '@suite-native/tokens';
 
 import { YieldDepositApprovalLimitCard } from './YieldDepositApprovalLimitCard';
 
@@ -19,7 +24,6 @@ type YieldDepositApprovalLimitBottomSheetProps = {
     ref: BottomSheetModalRef;
     selectedApprovalLimitType: AllowanceLimitType;
     tokenContract: TokenAddress;
-    tokenSymbol: string;
 };
 
 export const YieldDepositApprovalLimitBottomSheet = ({
@@ -29,8 +33,10 @@ export const YieldDepositApprovalLimitBottomSheet = ({
     ref,
     selectedApprovalLimitType,
     tokenContract,
-    tokenSymbol,
 }: YieldDepositApprovalLimitBottomSheetProps) => {
+    const metadataSources = useTokenMetadataSources();
+
+    const tokenSymbol = useTokenMetadata(accountSymbol, tokenContract)?.symbol;
     const handleSelect = (approvalLimitType: AllowanceLimitType) => {
         onApprovalLimitSelect(approvalLimitType);
         onClose();
@@ -43,48 +49,48 @@ export const YieldDepositApprovalLimitBottomSheet = ({
             isCloseDisplayed
             onClose={onClose}
         >
-            <VStack spacing="sp12" paddingBottom="sp12">
-                <YieldDepositApprovalLimitCard
-                    title={
-                        <Text variant="body-sm-strong" color="contentPrimary">
-                            <Translation id="earn.yieldDepositFlowScreen.perDeposit" />
-                        </Text>
-                    }
-                    description={
-                        <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.perDeposit.description" />
-                    }
-                    symbol={accountSymbol}
-                    contractAddress={tokenContract}
-                    tokenSymbol={tokenSymbol}
-                    isChecked={selectedApprovalLimitType === 'minimal'}
-                    onChange={() => handleSelect('minimal')}
-                />
-                <YieldDepositApprovalLimitCard
-                    title={
-                        <Text variant="body-sm-strong" color="contentPrimary">
-                            <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
-                        </Text>
-                    }
-                    description={
-                        <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.description" />
-                    }
-                    symbol={accountSymbol}
-                    contractAddress={tokenContract}
-                    tokenSymbol={tokenSymbol}
-                    isChecked={selectedApprovalLimitType === 'unlimited'}
-                    onChange={() => handleSelect('unlimited')}
-                >
-                    <BannerInline
+            <TokenMetadataProvider sources={metadataSources}>
+                <VStack spacing="sp12" paddingBottom="sp12">
+                    <YieldDepositApprovalLimitCard
                         title={
-                            <Translation
-                                id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.alert"
-                                values={{ tokenSymbol }}
-                            />
+                            <Text variant="body-sm-strong" color="contentPrimary">
+                                <Translation id="earn.yieldDepositFlowScreen.perDeposit" />
+                            </Text>
                         }
-                        intent="warning"
+                        description={
+                            <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.perDeposit.description" />
+                        }
+                        symbol={accountSymbol}
+                        contractAddress={tokenContract}
+                        isChecked={selectedApprovalLimitType === 'minimal'}
+                        onChange={() => handleSelect('minimal')}
                     />
-                </YieldDepositApprovalLimitCard>
-            </VStack>
+                    <YieldDepositApprovalLimitCard
+                        title={
+                            <Text variant="body-sm-strong" color="contentPrimary">
+                                <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />
+                            </Text>
+                        }
+                        description={
+                            <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.description" />
+                        }
+                        symbol={accountSymbol}
+                        contractAddress={tokenContract}
+                        isChecked={selectedApprovalLimitType === 'unlimited'}
+                        onChange={() => handleSelect('unlimited')}
+                    >
+                        <BannerInline
+                            title={
+                                <Translation
+                                    id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.alert"
+                                    values={{ tokenSymbol }}
+                                />
+                            }
+                            intent="warning"
+                        />
+                    </YieldDepositApprovalLimitCard>
+                </VStack>
+            </TokenMetadataProvider>
         </BottomSheetModal>
     );
 };

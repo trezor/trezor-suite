@@ -13,7 +13,6 @@ import {
     ExactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
 export type TradingCoinAmountFormatterProps = TextProps & {
     cryptoId?: CryptoId;
@@ -48,18 +47,13 @@ export const TradingCoinAmountFormatter = ({
     }
 
     return (
-        <TokenMetadataProvider
+        <ExactTokenAmountFormatter
             networkSymbol={network.symbol}
-            tokens={[{ contract: contractAddress, symbol: coinSymbol }]}
-        >
-            <ExactTokenAmountFormatter
-                networkSymbol={network.symbol}
-                contractAddress={contractAddress}
-                value={asDecimalTokenAmount(amount ?? '0')}
-                // Trading amounts must remain readable so the user can evaluate the trade.
-                discreetMode="disabled"
-                {...textProps}
-            />
-        </TokenMetadataProvider>
+            contractAddress={contractAddress}
+            value={asDecimalTokenAmount(amount ?? '0')}
+            // Trading amounts must remain readable so the user can evaluate the trade.
+            discreetMode="disabled"
+            {...textProps}
+        />
     );
 };

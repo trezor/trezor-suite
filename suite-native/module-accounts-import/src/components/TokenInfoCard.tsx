@@ -11,8 +11,7 @@ import {
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
-import { useTokenMetadata } from '@suite-native/tokens';
+import { TokenIcon, useTokenMetadata } from '@suite-native/tokens';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
@@ -30,7 +29,7 @@ export const TokenInfoCard = ({ symbol, balance, contract }: TokenInfoCardProps)
 
     if (!token?.symbol || !balance || !token.name || !isSpecificCoinDefinitionKnown) return null;
 
-    const { name, symbol: tokenSymbol, decimals } = token;
+    const { name, decimals } = token;
 
     return (
         <AccountImportOverviewCard
@@ -43,20 +42,9 @@ export const TokenInfoCard = ({ symbol, balance, contract }: TokenInfoCardProps)
                     variant="body-xs"
                 />
             }
-            icon={
-                <TokenIcon
-                    networkSymbol={symbol}
-                    contractAddress={contract}
-                    tokenSymbol={tokenSymbol || name}
-                />
-            }
+            icon={<TokenIcon networkSymbol={symbol} contractAddress={contract} />}
         >
-            <TokenToFiatAmountFormatter
-                symbol={symbol}
-                value={balance}
-                contract={contract}
-                decimals={decimals}
-            />
+            <TokenToFiatAmountFormatter symbol={symbol} value={balance} contract={contract} />
         </AccountImportOverviewCard>
     );
 };
