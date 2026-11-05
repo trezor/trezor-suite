@@ -37,6 +37,16 @@ export const getConnectErrorCause = ({
     message,
 }: Omit<ConnectErrorCause, 'source'>): ConnectErrorCause => ({ source: 'connect', code, message });
 
+type InvityErrorCause = Extract<TradingErrorCause, { source: 'invity' }>;
+
+/**
+ * Keeps the message of a failed trade API request as the cause of a trading error.
+ */
+export const getInvityErrorCause = (error: unknown): InvityErrorCause => ({
+    source: 'invity',
+    message: getUnexpectedErrorMessage(error) ?? String(error),
+});
+
 type RejectedSignAndPushStep<TError extends TradingSignAndPushError> = {
     payload?: TError;
     error: { message?: string };
