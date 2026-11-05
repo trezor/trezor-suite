@@ -36,6 +36,8 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-issues: write
+          permission-organization-projects: write
 
       - name: Create dependency maintenance issue for ${{ matrix.team }}
         env:

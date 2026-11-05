@@ -297,6 +297,9 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-organization-projects: write
 
       - name: Publish PR
         if: ${{ !cancelled() && steps.run-llm-test-fixer.outcome != 'skipped' }}

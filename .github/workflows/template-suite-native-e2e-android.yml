@@ -112,6 +112,8 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-organization-projects: write
+          permission-pull-requests: write
 
       - name: Extract Release Build
         id: extract_branch
