@@ -14,6 +14,7 @@ import {
     TradeableAssetAccountBalance,
     type TradeableAssetAccountBalanceProps,
 } from './TradeableAssetAccountBalance';
+import { TradeableAssetMetadataProvider } from './TradeableAssetMetadataProvider';
 
 describe('TradeableAssetAccountBalance', () => {
     const renderTradeableAssetAccountBalance = (
@@ -21,12 +22,14 @@ describe('TradeableAssetAccountBalance', () => {
         preloadedState = {},
     ) =>
         renderWithStoreProvider(
-            <TradeableAssetAccountBalance
-                asset={undefined}
-                account={undefined}
-                testID="TEST_ID"
-                {...props}
-            />,
+            <TradeableAssetMetadataProvider asset={props.asset}>
+                <TradeableAssetAccountBalance
+                    asset={undefined}
+                    account={undefined}
+                    testID="TEST_ID"
+                    {...props}
+                />
+            </TradeableAssetMetadataProvider>,
             { preloadedState },
         );
 

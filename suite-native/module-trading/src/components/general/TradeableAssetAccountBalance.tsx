@@ -11,11 +11,7 @@ import {
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import {
-    TokenMetadataProvider,
-    type TokensRootState,
-    selectAccountTokenBalance,
-} from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 export type TradeableAssetAccountBalanceProps = {
@@ -28,8 +24,6 @@ type TokenBalanceProps = {
     accountKey: Account['key'];
     networkSymbol: NetworkSymbol;
     tokenAddress: TokenAddress;
-    tokenDecimals?: number;
-    symbol: string;
     testID?: string;
 };
 
@@ -39,31 +33,19 @@ type AssetBalanceProps = {
     testID?: string;
 };
 
-const TokenBalance = ({
-    accountKey,
-    networkSymbol,
-    tokenAddress,
-    tokenDecimals,
-    symbol,
-    testID,
-}: TokenBalanceProps) => {
+const TokenBalance = ({ accountKey, networkSymbol, tokenAddress, testID }: TokenBalanceProps) => {
     const balance = useSelector(
         (state: TokensRootState) =>
             selectAccountTokenBalance(state, accountKey, tokenAddress) ?? '0',
     );
 
     return (
-        <TokenMetadataProvider
+        <CompactTokenAmountFormatter
             networkSymbol={networkSymbol}
-            tokens={[{ contract: tokenAddress, symbol, decimals: tokenDecimals }]}
-        >
-            <CompactTokenAmountFormatter
-                networkSymbol={networkSymbol}
-                contractAddress={tokenAddress}
-                value={asDecimalTokenAmount(balance)}
-                testID={testID}
-            />
-        </TokenMetadataProvider>
+            contractAddress={tokenAddress}
+            value={asDecimalTokenAmount(balance)}
+            testID={testID}
+        />
     );
 };
 
@@ -78,10 +60,8 @@ const AssetBalance = ({ account, asset, testID }: AssetBalanceProps) => {
             {tokenAddress ? (
                 <TokenBalance
                     networkSymbol={account.symbol}
-                    symbol={symbol}
                     accountKey={accountKey}
                     tokenAddress={tokenAddress}
-                    tokenDecimals={asset.decimals}
                     testID={testID}
                 />
             ) : (
