@@ -97,6 +97,18 @@ export const debugLinkState = async (uiEvent: UiRequestThpPairing['payload']) =>
 export const debugLinkDecision = async () => {
     if (!isDebugLinkInteraction('button')) return;
 
+    // A WARD write syncs the session before its confirmation comes up, so a press sent at once
+    // can land before the screen exists; the delay holds it back.
+    const delayArg = args['debuglink-delay'];
+    if (delayArg) {
+        const delayMs = parseInt(String(delayArg), 10);
+
+        if (!Number.isNaN(delayMs) && delayMs > 0) {
+            console.log(`DebugLink: confirming in ${delayMs} ms`);
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+    }
+
     const enumerate = await debugTransport.enumerate();
     if (!enumerate.success) {
         throw new Error(enumerate.error.code);
