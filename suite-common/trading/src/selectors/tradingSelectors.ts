@@ -75,6 +75,7 @@ import type { TradingRootState } from '../reducers/tradingCommonReducer';
 import {
     type SelectedTradingAsset,
     type TradingBuyPaymentMethodProps,
+    type TradingExchangeAllowance,
     type TradingExchangeFormType,
     type TradingFiatCurrenciesProps,
     type TradingPaymentMethodListProps,
@@ -102,6 +103,10 @@ import {
     findPendingApprovalTxid,
     getApprovalFlowStepStatuses,
 } from '../utils/exchange/approvalFlowUtils';
+import {
+    getExchangeAllowanceKey,
+    isSameExchangeAllowanceKey,
+} from '../utils/exchange/exchangeAllowanceUtils';
 import {
     getDisplayNetworkFee,
     hasEip712SignDataType,
@@ -467,6 +472,22 @@ export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
 
 export const selectTradingExchangeApprovalFlow = (state: TradingRootState) =>
     state.wallet.trading.exchange.approvalFlow;
+
+export const selectTradingExchangeAllowance = (state: TradingRootState) =>
+    state.wallet.trading.exchange.allowance;
+
+export const selectTradingExchangeSelectedQuoteAllowance = (
+    state: TradingRootState,
+    accountKey: AccountKey | undefined,
+): TradingExchangeAllowance | undefined => {
+    const allowance = selectTradingExchangeAllowance(state);
+    const key = getExchangeAllowanceKey({
+        accountKey,
+        quote: selectTradingExchangeSelectedQuote(state),
+    });
+
+    return allowance && key && isSameExchangeAllowanceKey(allowance, key) ? allowance : undefined;
+};
 
 export const selectTradingExchangeSelectedQuoteSwapSlippage = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote?.swapSlippage;
@@ -1248,14 +1269,20 @@ export const selectTradingExchangeApprovalFlowSteps = createMemoizedFormAccountT
         selectTradingExchangeSelectedQuote,
         selectTradingExchangeSendAccountTransactions,
         selectTradingExchangePendingApprovalTxid,
+        state =>
+            selectTradingExchangeSelectedQuoteAllowance(
+                state,
+                selectTradingSendAccount(state, 'exchange')?.key,
+            ),
     ],
-    (approvalFlow, selectedQuote, transactions, pendingApprovalTxid) =>
+    (approvalFlow, selectedQuote, transactions, pendingApprovalTxid, allowance) =>
         getApprovalFlowStepStatuses({
             steps: approvalFlow?.steps ?? [],
             quote: selectedQuote,
             sentTxids: approvalFlow?.sentTxids ?? {},
             transactions,
             hasPendingApprovalTx: !!pendingApprovalTxid,
+            currentAllowance: allowance?.amount,
         }),
 );
 
