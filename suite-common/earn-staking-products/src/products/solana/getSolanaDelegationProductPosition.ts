@@ -204,5 +204,6 @@ export const getSolanaDelegationProductPosition = ({
         pendingTransactions,
         warnings: [],
         details,
+        revalidateAt: null,
     };
 };

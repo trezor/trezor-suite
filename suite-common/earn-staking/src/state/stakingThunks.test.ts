@@ -76,6 +76,12 @@ const createDeps = (
     },
 });
 
+const waitFor = async (condition: () => boolean) => {
+    for (let attempt = 0; attempt < 50 && !condition(); attempt++) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+    }
+};
+
 const seedInfo = (queryClient: QueryClient, productId: string, updatedAt: number) =>
     queryClient.setQueryData(
         commonQueryKeys.stakingProductInfo(productId),
@@ -145,6 +151,35 @@ describe('refreshStakingProductInfoThunk', () => {
         );
 
         expect(syncedAccountKeys(actions)).toEqual([ethAccount.key, solAccount.key]);
+    });
+
+    it('re-syncs a network without waiting for the info of another', async () => {
+        const solAdapter = createAdapter(sol, {
+            fetchProductInfo: mock<StakingProductAdapter['fetchProductInfo']>(
+                () => new Promise(() => {}),
+            ),
+        });
+        const extra = createDeps([createAdapter(eth), solAdapter]);
+        const state = createState(undefined, [asNetworkSymbol('eth'), asNetworkSymbol('sol')]);
+        const getState = () => state;
+        const { actions, dispatch } = createMockDispatch({ getState, extra });
+
+        refreshStakingProductInfoThunk()(dispatch, getState, extra);
+
+        await waitFor(() => syncedAccountKeys(actions).length > 0);
+
+        expect(syncedAccountKeys(actions)).toEqual([ethAccount.key]);
+        expect(solAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
+    });
+
+    it('passes the query abort signal to the product', async () => {
+        const adapter = createAdapter(eth);
+
+        await run(createState(), createDeps([adapter]));
+
+        expect(adapter.fetchProductInfo).toHaveBeenCalledWith({
+            abortSignal: expect.any(AbortSignal),
+        });
     });
 
     it('skips info fetched less than five minutes ago unless forced', async () => {

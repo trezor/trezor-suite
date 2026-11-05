@@ -52,6 +52,7 @@ export const getStakingStats: (
 ) => Promise<EthOrSolStats> = earnHttpClient('/:networkSymbol/stats', {
     method: 'GET',
     schema: stakingStatsResponse,
+    timeout: 60_000,
 });
 
 export const getTronStakingStats: (options?: RequestOptions) => Promise<TrxStats> = earnHttpClient(
@@ -59,6 +60,7 @@ export const getTronStakingStats: (options?: RequestOptions) => Promise<TrxStats
     {
         method: 'GET',
         schema: stakingTrxStatsResponse,
+        timeout: 60_000,
     },
 );
 
@@ -67,6 +69,7 @@ export const getEthereumValidatorsQueue: (
 ) => Promise<EthValidatorsQueue> = earnHttpClient('/eth/validators-queue', {
     method: 'GET',
     schema: stakingEthereumValidatorsQueueResponse,
+    timeout: 60_000,
 });
 
 export const getCardanoPools: (
@@ -74,6 +77,7 @@ export const getCardanoPools: (
 ) => Promise<AdaPools> = earnHttpClient('/ada/pools', {
     method: 'GET',
     schema: stakingCardanoPoolsResponse,
+    timeout: 60_000,
 });
 
 export const getSolanaRewardsHistory: (
