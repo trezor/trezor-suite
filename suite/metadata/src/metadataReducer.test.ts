@@ -27,17 +27,16 @@ const provider: MetadataProvider = {
     clientId: 'clientId',
 };
 
-const mockWallet = (staticSessionId: StaticSessionId): TrezorDevice =>
-    mockSuiteDevice({
-        state: { staticSessionId },
-        metadata: {
-            [ENCRYPTION_VERSION]: {
-                fileName: `${staticSessionId}-file`,
-                aesKey: 'aesKey',
-                key: 'key',
-            },
+const mockWallet = (
+    staticSessionId: StaticSessionId,
+    metadata: TrezorDevice['metadata'] = {
+        [ENCRYPTION_VERSION]: {
+            fileName: `${staticSessionId}-file`,
+            aesKey: 'aesKey',
+            key: 'key',
         },
-    });
+    },
+): TrezorDevice => mockSuiteDevice({ state: { staticSessionId }, metadata });
 
 const mockLabelableAccount = (deviceState: StaticSessionId, fileName?: string): Account =>
     mockWalletAccount({
@@ -51,9 +50,11 @@ const mockLabelableAccount = (deviceState: StaticSessionId, fileName?: string): 
 
 const mockState = ({
     accounts,
+    devices,
     isEnabled = true,
 }: {
     accounts: Account[];
+    devices?: TrezorDevice[];
     isEnabled?: boolean;
 }): MetadataRootState => {
     const wallet = mockWallet(WALLET);
@@ -68,7 +69,7 @@ const mockState = ({
         wallet: { accounts },
         device: {
             ...deviceInitialState,
-            devices: [wallet, mockWallet(OTHER_WALLET)],
+            devices: devices ?? [wallet, mockWallet(OTHER_WALLET)],
             selectedDevice: wallet,
         },
         suiteSettings: suiteSettingsInitialState,
@@ -115,6 +116,12 @@ describe(selectIsLabelingAvailableForEntity.name, () => {
         const state = mockState({ accounts: [] });
 
         expect(selectIsLabelingAvailableForEntity(state, OTHER_WALLET, WALLET)).toBe(false);
+    });
+
+    it('reads the wallet keys from the device list, not the selected device copy', () => {
+        const state = mockState({ accounts: [], devices: [mockWallet(WALLET, {})] });
+
+        expect(selectIsLabelingAvailableForEntity(state, WALLET)).toBe(false);
     });
 
     it('is not available for an unknown entity', () => {
