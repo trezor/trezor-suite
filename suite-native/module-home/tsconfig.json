@@ -9,9 +9,6 @@
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/feedback" },
         {
-            "path": "../../suite-common/formatters"
-        },
-        {
             "path": "../../suite-common/message-system"
         },
         {

@@ -5,10 +5,9 @@ import {
     type HomeAssetTableState,
     selectIsHomeAssetTableFoldable,
 } from '@suite-common/assets';
-import { selectIsAssetListLoading } from '@suite-native/assets';
+import { WalletAssetCardSegment, selectIsAssetListLoading } from '@suite-native/assets';
 import { Divider } from '@suite-native/atoms';
 
-import { PortfolioAssetsCardSegment } from './PortfolioAssetsCardSegment';
 import { PortfolioAssetsShowMoreButton } from './PortfolioAssetsShowMoreButton';
 
 type PortfolioAssetsShowMoreProps = {
@@ -27,13 +26,13 @@ export const PortfolioAssetsShowMore = ({ isExpanded, onPress }: PortfolioAssets
     }
 
     return (
-        <PortfolioAssetsCardSegment isLast>
+        <WalletAssetCardSegment isLast>
             <Divider />
             <PortfolioAssetsShowMoreButton
                 isExpanded={isExpanded}
                 isLoading={isAssetListLoading}
                 onPress={onPress}
             />
-        </PortfolioAssetsCardSegment>
+        </WalletAssetCardSegment>
     );
 };

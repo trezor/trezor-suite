@@ -1,6 +1,6 @@
+import { WalletAssetCardSegment } from '@suite-native/assets';
 import { Divider } from '@suite-native/atoms';
 
-import { PortfolioAssetsCardSegment } from './PortfolioAssetsCardSegment';
 import { type PortfolioAssetListEntry } from './portfolioAssetListSelectors';
 
 type PortfolioAssetListSeparatorProps = {
@@ -9,7 +9,7 @@ type PortfolioAssetListSeparatorProps = {
 
 export const PortfolioAssetListSeparator = ({ trailingItem }: PortfolioAssetListSeparatorProps) =>
     trailingItem?.type === 'network' ? (
-        <PortfolioAssetsCardSegment>
+        <WalletAssetCardSegment>
             <Divider />
-        </PortfolioAssetsCardSegment>
+        </WalletAssetCardSegment>
     ) : null;

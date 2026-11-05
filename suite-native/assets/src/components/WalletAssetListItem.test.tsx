@@ -6,9 +6,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { AssetsStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
-import { type StaticSessionId } from '@trezor/device-utils';
 
-import { PortfolioAssetListItem } from './PortfolioAssetListItem';
+import { WalletAssetListItem } from './WalletAssetListItem';
 
 const mockNavigate = jest.fn();
 
@@ -19,7 +18,7 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: () => ({ navigate: mockNavigate }),
 }));
 
-const DEVICE_STATE = 'aliceWallet@device:0' as StaticSessionId;
+const DEVICE_STATE = 'aliceWallet@device:0';
 const BTC = asNetworkSymbol('btc');
 const POL = asNetworkSymbol('pol');
 const USDC_CONTRACT = '0x2791bca1f2de4661ed88a30c99a7a9449aa84174' as TokenAddress;
@@ -82,13 +81,13 @@ const createPreloadedState = (accounts: Account[]) => ({
 const preloadedState = createPreloadedState([bitcoinAccount, polygonAccount]);
 const services = { networks: mockNetworksServices() };
 
-describe('PortfolioAssetListItem', () => {
+describe('WalletAssetListItem', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     it('renders a token with its ticker, network, fiat value and balance', async () => {
-        await renderWithStoreProvider(<PortfolioAssetListItem assetKey={usdcOnPolygonKey} />, {
+        await renderWithStoreProvider(<WalletAssetListItem assetKey={usdcOnPolygonKey} />, {
             preloadedState,
             services,
         });
@@ -100,7 +99,7 @@ describe('PortfolioAssetListItem', () => {
     });
 
     it('does not label the balance of a token without a ticker as the network coin', async () => {
-        await renderWithStoreProvider(<PortfolioAssetListItem assetKey={namelessOnPolygonKey} />, {
+        await renderWithStoreProvider(<WalletAssetListItem assetKey={namelessOnPolygonKey} />, {
             preloadedState,
             services,
         });
@@ -110,7 +109,7 @@ describe('PortfolioAssetListItem', () => {
     });
 
     it('renders a network coin with its ticker, network, fiat value and balance', async () => {
-        await renderWithStoreProvider(<PortfolioAssetListItem assetKey={bitcoinKey} />, {
+        await renderWithStoreProvider(<WalletAssetListItem assetKey={bitcoinKey} />, {
             preloadedState,
             services,
         });
@@ -122,12 +121,12 @@ describe('PortfolioAssetListItem', () => {
     });
 
     it('opens the asset detail of the token when pressed', async () => {
-        await renderWithStoreProvider(<PortfolioAssetListItem assetKey={usdcOnPolygonKey} />, {
+        await renderWithStoreProvider(<WalletAssetListItem assetKey={usdcOnPolygonKey} />, {
             preloadedState,
             services,
         });
 
-        fireEvent.press(screen.getByTestId(`@home/portfolio-assets/asset/pol/${USDC_CONTRACT}`));
+        fireEvent.press(screen.getByTestId(`@assets/wallet-asset/pol/${USDC_CONTRACT}`));
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.AssetsStack, {
             screen: AssetsStackRoutes.AssetDetail,
@@ -136,12 +135,12 @@ describe('PortfolioAssetListItem', () => {
     });
 
     it('opens the asset detail of the network coin when pressed', async () => {
-        await renderWithStoreProvider(<PortfolioAssetListItem assetKey={bitcoinKey} />, {
+        await renderWithStoreProvider(<WalletAssetListItem assetKey={bitcoinKey} />, {
             preloadedState,
             services,
         });
 
-        fireEvent.press(screen.getByTestId('@home/portfolio-assets/asset/btc/coin'));
+        fireEvent.press(screen.getByTestId('@assets/wallet-asset/btc/coin'));
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.AssetsStack, {
             screen: AssetsStackRoutes.AssetDetail,

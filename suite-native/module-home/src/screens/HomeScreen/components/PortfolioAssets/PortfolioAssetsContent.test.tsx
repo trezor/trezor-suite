@@ -29,7 +29,7 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { PortfolioAssetsContent } from './PortfolioAssetsContent';
 
-type MockPortfolioAssetListItemProps = {
+type MockWalletAssetListItemProps = {
     assetKey: WalletAssetKey;
 };
 
@@ -37,10 +37,9 @@ jest.mock('./PortfolioAssetsHeader', () => ({
     PortfolioAssetsHeader: () => null,
 }));
 
-jest.mock('./PortfolioAssetListItem', () => ({
-    PortfolioAssetListItem: ({ assetKey }: MockPortfolioAssetListItemProps) => (
-        <Text>{assetKey}</Text>
-    ),
+jest.mock('@suite-native/assets', () => ({
+    ...jest.requireActual('@suite-native/assets'),
+    WalletAssetListItem: ({ assetKey }: MockWalletAssetListItemProps) => <Text>{assetKey}</Text>,
 }));
 
 const DEVICE_STATE = 'aliceWallet@device:0' as StaticSessionId;
