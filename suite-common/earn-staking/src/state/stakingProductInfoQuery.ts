@@ -18,8 +18,8 @@ export const getStakingProductInfoQueryOptions = ({
 }: StakingProductInfoQueryParams) =>
     queryOptions({
         queryKey: commonQueryKeys.stakingProductInfo(productId),
-        queryFn: (): Promise<StakingProductInfo> =>
-            stakingProductRepository.get(productId).fetchProductInfo({}),
+        queryFn: ({ signal }): Promise<StakingProductInfo> =>
+            stakingProductRepository.get(productId).fetchProductInfo({ abortSignal: signal }),
         gcTime: Infinity,
         networkMode: 'always',
         meta: SILENT_QUERY_META,

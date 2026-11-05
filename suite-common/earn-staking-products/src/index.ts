@@ -26,6 +26,11 @@ export {
     type CreateSolanaNativeDelegationProductParams,
     type SolanaNativeDelegationProductDeps,
 } from './products/solana/native/createSolanaNativeDelegationProduct';
+export {
+    createTronCuratedProduct,
+    type CreateTronCuratedProductParams,
+    type TronCuratedProductDeps,
+} from './products/tron/createTronCuratedProduct';
 export { curatedProvider } from './providers/curated';
 export { everstakeProvider } from './providers/everstake';
 export { externalProvider } from './providers/external';

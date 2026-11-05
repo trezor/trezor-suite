@@ -2,6 +2,7 @@ import {
     type GetPositionParams,
     type StakingPosition,
     type StakingProductAdapter,
+    type StakingProductId,
     assertStakingPosition,
 } from '@suite-common/earn-staking-common';
 import type { QueryClientDep } from '@suite-common/react-query';
@@ -142,36 +143,43 @@ export const refreshStakingProductInfoThunk = createThunk<
         const descriptors = selectStakingProductDescriptors(getState()).filter(descriptor =>
             enabledNetworks.includes(descriptor.networkSymbol),
         );
-        const changedSymbols = new Set<NetworkSymbol>();
+        const networkSymbols = [...new Set(descriptors.map(({ networkSymbol }) => networkSymbol))];
 
+        const refreshProductInfo = async (productId: StakingProductId): Promise<boolean> => {
+            const previousInfo = getCachedStakingProductInfo(queryClient, productId);
+
+            try {
+                await queryClient.query({
+                    ...getStakingProductInfoQueryOptions({
+                        stakingProductRepository: staking.stakingProductRepository,
+                        productId,
+                    }),
+                    staleTime: params?.force === true ? 0 : PRODUCT_INFO_MAX_AGE_MS,
+                });
+
+                return getCachedStakingProductInfo(queryClient, productId) !== previousInfo;
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'Unknown error';
+
+                console.warn(`Staking product info for ${productId} failed: ${message}`);
+
+                return false;
+            }
+        };
+
+        // Each network re-syncs once its own products are refreshed, never waiting for another.
         await Promise.all(
-            descriptors.map(async ({ id: productId, networkSymbol }) => {
-                const previousInfo = getCachedStakingProductInfo(queryClient, productId);
+            networkSymbols.map(async networkSymbol => {
+                const changes = await Promise.all(
+                    descriptors
+                        .filter(descriptor => descriptor.networkSymbol === networkSymbol)
+                        .map(({ id }) => refreshProductInfo(id)),
+                );
 
-                try {
-                    await queryClient.query({
-                        ...getStakingProductInfoQueryOptions({
-                            stakingProductRepository: staking.stakingProductRepository,
-                            productId,
-                        }),
-                        staleTime: params?.force === true ? 0 : PRODUCT_INFO_MAX_AGE_MS,
-                    });
-
-                    if (getCachedStakingProductInfo(queryClient, productId) !== previousInfo) {
-                        changedSymbols.add(networkSymbol);
-                    }
-                } catch (error) {
-                    const message = error instanceof Error ? error.message : 'Unknown error';
-
-                    console.warn(`Staking product info for ${productId} failed: ${message}`);
+                if (changes.some(Boolean)) {
+                    await dispatch(syncAllStakingPositionsThunk({ networkSymbol }));
                 }
             }),
-        );
-
-        await Promise.all(
-            [...changedSymbols].map(networkSymbol =>
-                dispatch(syncAllStakingPositionsThunk({ networkSymbol })),
-            ),
         );
     },
 );

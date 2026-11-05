@@ -25,6 +25,15 @@ const cardanoDetails = {
     drep: { id: 'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3', hasScript: false },
 };
 
+const tronDetails = {
+    kind: 'tron-staking',
+    frozen: { energy: '1000000000', bandwidth: '0' },
+    delegated: { energy: '0', bandwidth: '0' },
+    votingPower: '1000000000',
+    unallocatedVotingPower: '0',
+    rewardClaimAvailableAt: 1_800_082_800_000,
+};
+
 describe('stakingPositionDetailsSchema', () => {
     it('parses the Solana stake accounts unchanged', () => {
         expect(stakingPositionDetailsSchema.parse(solanaDetails)).toEqual(solanaDetails);
@@ -130,6 +139,36 @@ describe('stakingPositionDetailsSchema', () => {
         const result = stakingPositionDetailsSchema.safeParse({
             ...cardanoDetails,
             stakeAddress: 'stake1u9ylzsgxaa6xctf4juup682ar3juj85n8tx3hthnljg47zctvm3rc',
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.code).toBe('unrecognized_keys');
+    });
+
+    it('parses the Tron staking state unchanged', () => {
+        expect(stakingPositionDetailsSchema.parse(tronDetails)).toEqual(tronDetails);
+    });
+
+    it('parses Tron staking state without a claim cooldown', () => {
+        const details = { ...tronDetails, rewardClaimAvailableAt: null };
+
+        expect(stakingPositionDetailsSchema.parse(details)).toEqual(details);
+    });
+
+    it('rejects a Tron resource amount that is not a base-unit string', () => {
+        const result = stakingPositionDetailsSchema.safeParse({
+            ...tronDetails,
+            delegated: { energy: '1.5', bandwidth: '0' },
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['delegated', 'energy']);
+    });
+
+    it('rejects an unknown key on the Tron staking state', () => {
+        const result = stakingPositionDetailsSchema.safeParse({
+            ...tronDetails,
+            totalEnergy: 13000,
         });
 
         expect(result.success).toBe(false);

@@ -142,6 +142,7 @@ describe('getCardanoDelegationProductPosition', () => {
                 poolId: MOCK_CARDANO_EVERSTAKE_POOL,
                 drep: { id: MOCK_CARDANO_EVERSTAKE_DREP_ID, hasScript: false },
             },
+            revalidateAt: null,
         });
         expect(stakingPositionSchema.safeParse(position).success).toBe(true);
     });
@@ -257,6 +258,7 @@ describe('getCardanoDelegationProductPosition', () => {
                 poolId: MOCK_CARDANO_FIVE_BINARIES_POOL,
                 drep: { id: MOCK_CARDANO_EVERSTAKE_DREP_ID, hasScript: false },
             },
+            revalidateAt: null,
         });
         expect(stakingPositionSchema.safeParse(position).success).toBe(true);
     });
@@ -364,6 +366,7 @@ describe('getCardanoDelegationProductPosition', () => {
                 pendingTransactions: [{ txid: 'pending-registration', operation: 'stake' }],
                 warnings: [],
                 details: { kind: 'cardano-delegation', poolId: null, drep: null },
+                revalidateAt: null,
             });
             expect(stakingPositionSchema.safeParse(position).success).toBe(true);
         });

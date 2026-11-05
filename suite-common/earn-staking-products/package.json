@@ -16,6 +16,7 @@
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/earn-staking-common": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
+        "@trezor/network-tron": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "zod": "4.6.7"

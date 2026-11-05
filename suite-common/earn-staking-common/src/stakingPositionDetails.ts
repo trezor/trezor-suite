@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { timestampSchema } from './primitiveSchemas';
 import { stakingAmountSchema } from './stakingAmount';
 
 export const SOLANA_STAKE_ACCOUNT_STATUSES = [
@@ -39,6 +40,13 @@ export const cardanoDrepSchema = z.strictObject({
 
 export type CardanoDrep = z.infer<typeof cardanoDrepSchema>;
 
+export const tronResourceAmountsSchema = z.strictObject({
+    energy: stakingAmountSchema,
+    bandwidth: stakingAmountSchema,
+});
+
+export type TronResourceAmounts = z.infer<typeof tronResourceAmountsSchema>;
+
 export const stakingPositionDetailsSchema = z.discriminatedUnion('kind', [
     z.strictObject({
         kind: z.literal('solana-stake-accounts'),
@@ -49,6 +57,14 @@ export const stakingPositionDetailsSchema = z.discriminatedUnion('kind', [
         kind: z.literal('cardano-delegation'),
         poolId: cardanoPoolIdSchema.nullable(),
         drep: cardanoDrepSchema.nullable(),
+    }),
+    z.strictObject({
+        kind: z.literal('tron-staking'),
+        frozen: tronResourceAmountsSchema,
+        delegated: tronResourceAmountsSchema,
+        votingPower: stakingAmountSchema,
+        unallocatedVotingPower: stakingAmountSchema,
+        rewardClaimAvailableAt: timestampSchema.nullable(),
     }),
 ]);
 
