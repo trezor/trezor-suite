@@ -1,51 +1,13 @@
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type Account,
-    type FormState,
-    type TokenAddress,
-    asAccountDescriptor,
-} from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import type { FormState, TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 
 import { useMaxSpendableAmount } from './useMaxSpendableAmount';
-import {
-    BTC_ACCOUNT_KEY,
-    ETH_ACCOUNT_KEY,
-    getSolAccount,
-    getWalletState,
-} from '../__fixtures__/walletState';
+import { BTC_ACCOUNT_KEY, ETH_ACCOUNT_KEY, getWalletState } from '../__fixtures__/walletState';
 
 const mockCalculateFeeLevelsMaxAmountThunk = jest.fn();
 const btcSymbol = asNetworkSymbol('btc');
 const etcSymbol = asNetworkSymbol('etc');
-const solSymbol = asNetworkSymbol('sol');
-const xrpSymbol = asNetworkSymbol('xrp');
-const xlmSymbol = asNetworkSymbol('xlm');
-
-const createAccountFromSolAccount = ({
-    symbol,
-    networkType,
-    descriptor,
-}: Pick<Account, 'networkType' | 'descriptor'> & { symbol: NetworkSymbol }) =>
-    ({
-        ...getSolAccount(),
-        key: mockAccountKey({ symbol, descriptor }),
-        symbol,
-        networkType,
-        descriptor,
-    }) as unknown as Account;
-
-const xrpAccount = createAccountFromSolAccount({
-    symbol: xrpSymbol,
-    networkType: 'ripple',
-    descriptor: asAccountDescriptor('rN7n7otQDd6FczFgLdSqtcsAUxDkw6fzRH'),
-});
-const xlmAccount = createAccountFromSolAccount({
-    symbol: xlmSymbol,
-    networkType: 'stellar',
-    descriptor: asAccountDescriptor('GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN7'),
-});
 
 jest.mock('../thunks', () => ({
     ...jest.requireActual('../thunks'),
@@ -110,10 +72,7 @@ describe('useMaxSpendableAmount', () => {
                 }),
             {
                 preloadedState: {
-                    wallet: {
-                        ...getWalletState(),
-                        accounts: [...getWalletState().accounts, xrpAccount, xlmAccount],
-                    },
+                    wallet: getWalletState(),
                 },
             },
         );
