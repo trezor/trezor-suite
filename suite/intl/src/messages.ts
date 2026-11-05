@@ -899,12 +899,12 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_CENTRALIZED_EXCHANGE',
     },
     TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
-        defaultMessage: 'Fixed-rate CEX',
+        defaultMessage: 'Fixed-rate offers',
         id: 'TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING',
         dynamic: true,
     },
     TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING: {
-        defaultMessage: 'Floating-rate CEX',
+        defaultMessage: 'Floating-rate offers',
         id: 'TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING',
         dynamic: true,
     },
@@ -4606,7 +4606,7 @@ export const messages = defineMessages({
     },
     TR_ACCOUNT_TYPE_SLIP25_TECH: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_TECH',
-        defaultMessage: 'Coinjoin, SLIP25, P2TR, Bech32m',
+        defaultMessage: 'SLIP25, P2TR, Bech32m',
     },
     TR_ACCOUNT_TYPE_SLIP25_DESC: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
@@ -5256,7 +5256,7 @@ export const messages = defineMessages({
     TR_STELLAR_CONTRACT_TOKEN_DETECTED: {
         id: 'TR_STELLAR_CONTRACT_TOKEN_DETECTED',
         defaultMessage:
-            'Soroban contract token. It has no issuer and needs no trustline — its balance is read from the contract.',
+            'Soroban contract token. It has no issuer and needs no trustline. Its balance is read from the contract.',
     },
     TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE: {
         id: 'TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE',
@@ -5270,7 +5270,7 @@ export const messages = defineMessages({
     TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE: {
         id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
         defaultMessage:
-            'The recipient has not added {symbol}. The receiving account has to add this asset before it can receive it.',
+            'The recipient has not added {symbol}. The receiving account must add this asset before it can receive it.',
     },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
@@ -9401,7 +9401,7 @@ export const messages = defineMessages({
     },
     TR_EARN_ACTIVE_POSITIONS: {
         id: 'TR_EARN_ACTIVE_POSITIONS',
-        defaultMessage: `{count, plural, one {# active position} other {# active positions}}`,
+        defaultMessage: '{count, plural, one {# active position} other {# active positions}}',
     },
     TR_EARN_POSITIONS_BREAKDOWN: {
         id: 'TR_EARN_POSITIONS_BREAKDOWN',
@@ -10384,7 +10384,7 @@ export const messages = defineMessages({
     TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER: {
         id: 'TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER',
         defaultMessage:
-            'Proceed with caution. Someone offered this balance to your account without being asked. Nothing has been received unless you claim it, and claiming locks up a reserve. <a>Learn more</a>',
+            'Proceed with caution. Someone offered this balance to your account without being asked. Nothing is received unless you claim it, which locks up a reserve. <a>Learn more</a>',
     },
     TR_HIDE_TRANSACTION: {
         id: 'TR_HIDE_TRANSACTION',
@@ -10953,7 +10953,8 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE: {
         id: 'TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE',
-        defaultMessage: 'Bonus rewards, claimed separately in the Earn tab.',
+        defaultMessage:
+            'Bonus rewards are offered for a limited time and claimed separately in the Earn tab.',
     },
     TR_EARN_YIELD_APY_TOOLTIP_FOOTER: {
         id: 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER',
@@ -12893,7 +12894,7 @@ export const messages = defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION',
         defaultMessage:
-            'Write your passphrase on paper & keep it away from anything digital—no clouds, USB, internet, or phones.',
+            'Write your passphrase on paper & keep it away from anything digital—no cloud storage, USB, internet, or phones.',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION',
