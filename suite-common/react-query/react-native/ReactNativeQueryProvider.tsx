@@ -7,7 +7,7 @@ type ReactNativeQueryProviderProps = PropsWithChildren<{
 }>;
 
 /**
- * React Query provider for React Native (@suite-native/app)
+ * React Query provider for React Native (@suite-native-app/app)
  * @url https://tanstack.com/query/v5/docs/framework/react/react-native
  */
 export const ReactNativeQueryProvider = ({ client, children }: ReactNativeQueryProviderProps) => (

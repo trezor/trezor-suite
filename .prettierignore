@@ -97,10 +97,10 @@ buck-out/
 
 # scan temporary files
 
-!**/suite-native/app/.env.debug
-!**/suite-native/app/.env.develop
-!**/suite-native/app/.env.production
-!**/suite-native/app/.env.staging
+!**/suite-native-app/app/.env.debug
+!**/suite-native-app/app/.env.develop
+!**/suite-native-app/app/.env.production
+!**/suite-native-app/app/.env.staging
 
 suite-native/atoms/src/Spinner/refresh-spinner-*.json
 suite-native/confirm-on-trezor/src/assets/confirm-on-trezor-lottie.json

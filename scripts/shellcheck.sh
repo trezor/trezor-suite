@@ -11,7 +11,7 @@ find . -type f \
     -name '*.sh' \
     ! -path './node_modules/*' \
     ! -path './yarn/*' \
-    ! -path './suite-native/app/ios/*' \
+    ! -path './suite-native-app/app/ios/*' \
     ! -path './submodules/*' \
     ! -path './.husky/_/*' \
     -print0 |

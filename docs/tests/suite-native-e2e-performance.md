@@ -66,14 +66,14 @@ and the sample type are exported by the package, so neither side re-declares the
 
 ### 3. Extraction and aggregation
 
-Detox's `log` artifact plugin (`suite-native/app/.detoxrc.js`) writes the device log into the run's
-directory under `suite-native/app/artifacts/`. After the run, the code in
-`suite-native/app/e2e/support/performance/` reads those logs, picks out the prefixed lines, groups the
+Detox's `log` artifact plugin (`suite-native-app/app/.detoxrc.js`) writes the device log into the run's
+directory under `suite-native-app/app/artifacts/`. After the run, the code in
+`suite-native-app/app/e2e/support/performance/` reads those logs, picks out the prefixed lines, groups the
 samples by screen, reduces each screen's samples to a **median per metric**, compares the medians
 against that screen's budget, and writes the report to:
 
 ```text
-suite-native/app/artifacts/performance/perf-report.json
+suite-native-app/app/artifacts/performance/perf-report.json
 ```
 
 `artifacts/` is wiped at the start of every run (`scripts/cleanArtifacts.js`, plus Detox's
@@ -94,7 +94,7 @@ Each of the five shards produces its own report and its own artifact.
 
 ## Thresholds
 
-Budgets live in `suite-native/app/e2e/support/performance/budgets.ts`, keyed by screen, split the same way as
+Budgets live in `suite-native-app/app/e2e/support/performance/budgets.ts`, keyed by screen, split the same way as
 the desktop `suite/e2e/performance/budgets.ts`:
 
 - **`BASELINES`** — what a screen costs today. Reference only, never enforced.
@@ -152,7 +152,7 @@ differs only where the platform forces it.
 
 |                 | Desktop (`@trezor/perf-e2e`)                                                                                                     | Native (this feature)                                                                    | Why                                                                                                                                                                                                    |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Artifact        | one `perf-report-<scenario>.json` per measured scenario, attached to the Playwright result                                       | one `perf-report.json` per run, at `suite-native/app/artifacts/performance/`             | Detox has no attachment API; the run's artifacts directory is what CI already collects                                                                                                                 |
+| Artifact        | one `perf-report-<scenario>.json` per measured scenario, attached to the Playwright result                                       | one `perf-report.json` per run, at `suite-native-app/app/artifacts/performance/`         | Detox has no attachment API; the run's artifacts directory is what CI already collects                                                                                                                 |
 | Top level       | the scenario object itself (`PerfJsonReport`)                                                                                    | a `{ meta, screens, aggregate }` envelope around scenario objects                        | one file per run needs to say which run it is, and to carry more than one screen                                                                                                                       |
 | Scenario row    | `scenario`, `overLimit`, `unlimited`, `metrics[]`                                                                                | the same four fields, per entry of `screens[]`                                           | field-for-field on purpose                                                                                                                                                                             |
 | Metric row      | `key`, `label`, `unit`, `baseline`, `current`, `limit`, `ratioToLimit`, `exceededLimit`                                          | identical                                                                                | field-for-field on purpose                                                                                                                                                                             |
@@ -161,7 +161,7 @@ differs only where the platform forces it.
 | Aggregation     | the Playwright reporter medians the retries of one test × project in memory at end of run                                        | the e2e side medians all samples of a screen while writing the file                      | Detox has no reporter plugin to aggregate in, so the median is baked into the artifact                                                                                                                 |
 | Sample count    | implicit in the retries, printed to the log                                                                                      | explicit, `meta.sampleCount`                                                             | a consumer of the file cannot count runs it never saw                                                                                                                                                  |
 | Run identity    | measurement key `scenario [MODEL]`, plus a synthetic URL per measurement                                                         | `meta.platform`, `meta.device`, `meta.appVersion`, `meta.commitHash`, `meta.generatedAt` |                                                                                                                                                                                                        |
-| Budgets         | `suite/e2e/performance/budgets.ts`, keyed `scenario [MODEL]`                                                                     | `suite-native/app/e2e/support/performance/budgets.ts`, keyed by screen                   | same `BASELINES` / `LIMITS` split; the native keys carry no device-model dimension                                                                                                                     |
+| Budgets         | `suite/e2e/performance/budgets.ts`, keyed `scenario [MODEL]`                                                                     | `suite-native-app/app/e2e/support/performance/budgets.ts`, keyed by screen               | same `BASELINES` / `LIMITS` split; the native keys carry no device-model dimension                                                                                                                     |
 | Overall verdict | none in the JSON; the reporter computes it                                                                                       | `aggregate: { score, overLimit }`                                                        | the native metrics roll up into a single 0–100 score, the desktop ones have no such scalar                                                                                                             |
 | On a breach     | reported, never thrown                                                                                                           | reported, never thrown                                                                   |                                                                                                                                                                                                        |
 
@@ -177,18 +177,18 @@ the first thing to fix if that stops being true.
 Every run's report is also published to the shared store described in
 [Performance history](./perf-history.md); mobile is one adapter onto it. The
 `publish_performance_history` job downloads the shards' `android-perf-report-<shard>` artifacts and
-maps them with `yarn workspace @suite-native/app exec tsx e2e/support/performance/publish.ts`. Each screen
+maps them with `yarn workspace @suite-native-app/app exec tsx e2e/support/performance/publish.ts`. Each screen
 becomes one index row with `rn:` metrics (`rn:ttffMs`, `rn:ttiMs`, …) pointing at a `native-report`
 artifact that holds the whole report.
 
 ## Where things live
 
-| Path                                                             | What                                                                                       |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `suite-native/performance-metrics/`                              | the `@suite-native/performance-metrics` package: the hook, the log prefix, the sample type |
-| `suite-native/app/e2e/support/performance/`                      | log parsing, median, budget comparison, report writing                                     |
-| `suite-native/app/e2e/support/performance/budgets.ts`            | the checked-in thresholds                                                                  |
-| `suite-native/app/artifacts/performance/perf-report.json`        | the report a run produces                                                                  |
-| `.github/workflows/template-suite-native-e2e-android.yml`        | the job summary and the `android-perf-report-<shard>` upload                               |
-| `suite-native/app/e2e/support/performance/publishPerformance.ts` | the mobile adapter: shard reports in, upload bundle out                                    |
-| `.github/workflows/test-suite-native-e2e-android.yml`            | the `publish_performance_history` job                                                      |
+| Path                                                                 | What                                                                                       |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `suite-native/performance-metrics/`                                  | the `@suite-native/performance-metrics` package: the hook, the log prefix, the sample type |
+| `suite-native-app/app/e2e/support/performance/`                      | log parsing, median, budget comparison, report writing                                     |
+| `suite-native-app/app/e2e/support/performance/budgets.ts`            | the checked-in thresholds                                                                  |
+| `suite-native-app/app/artifacts/performance/perf-report.json`        | the report a run produces                                                                  |
+| `.github/workflows/template-suite-native-e2e-android.yml`            | the job summary and the `android-perf-report-<shard>` upload                               |
+| `suite-native-app/app/e2e/support/performance/publishPerformance.ts` | the mobile adapter: shard reports in, upload bundle out                                    |
+| `.github/workflows/test-suite-native-e2e-android.yml`                | the `publish_performance_history` job                                                      |

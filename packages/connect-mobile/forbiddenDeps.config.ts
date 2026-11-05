@@ -2,7 +2,7 @@ import type { ForbiddenDepsConfig } from '@trezor/requirements';
 
 export const forbiddenDepsConfig: ForbiddenDepsConfig = {
     'allowed-only-in': {
-        packages: ['@suite-native/app', '@trezor/connect-explorer', 'connect-mobile-example'],
+        packages: ['@suite-native-app/app', '@trezor/connect-explorer', 'connect-mobile-example'],
         reason: 'The mobile client is restricted to Explorer, the mobile example and Suite Native E2E tests.',
     },
 };

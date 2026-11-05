@@ -47,7 +47,7 @@ jobs:
           yarn install
 
       - name: Prebuild native expo project
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
         run: yarn prebuild:e2e --platform android
 
       - name: Sign message system config
@@ -56,7 +56,7 @@ jobs:
 
       - name: get Expo app fingerprint
         id: expo-fingerprint
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
         # `fingerprint` is the binary for @expo/fingerprint
         run: yarn exec fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
 

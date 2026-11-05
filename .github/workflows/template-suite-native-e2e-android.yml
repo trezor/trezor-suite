@@ -85,7 +85,7 @@ jobs:
         with:
           path: |
             node_modules
-            suite-native/app/node_modules
+            suite-native-app/app/node_modules
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install SafeDep PMG
@@ -121,7 +121,7 @@ jobs:
 
       - name: Get device name from detox config file
         id: device
-        run: node -e "console.log('AVD_NAME=' + require('./suite-native/app/.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
+        run: node -e "console.log('AVD_NAME=' + require('./suite-native-app/app/.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
 
       - name: Wait for trezor-user-env images
         wait: pull-tenv-images
@@ -135,7 +135,7 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: android-test-build-${{ github.run_id }}
-          path: suite-native/app/android/app/build/
+          path: suite-native-app/app/android/app/build/
 
       - name: Enable Android emulator KVM optimalization
         run: |
@@ -163,7 +163,7 @@ jobs:
           api-level: 34
           profile: pixel_6
           arch: x86_64
-          working-directory: suite-native/app
+          working-directory: suite-native-app/app
           ram-size: 4096M
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
@@ -194,14 +194,14 @@ jobs:
           TEST_ENV_LOG_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
         with:
           destination: currents
-          currents-workspace: "@suite-native/app"
+          currents-workspace: "@suite-native-app/app"
 
       - name: Extract emulator crash reports
         if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
-          LOG_DIR="suite-native/app/crash-reports"
+          LOG_DIR="suite-native-app/app/crash-reports"
           mkdir -p "$LOG_DIR/tombstones"
           # Emulator crash DB written by QEMU to the host filesystem on abnormal termination
           find /tmp "$HOME/.android/avd" -name "emu-crash*.db" -print0 2>/dev/null \
@@ -219,17 +219,17 @@ jobs:
         continue-on-error: true
         shell: bash
         env:
-          # Absolute: `yarn workspace … exec` runs inside suite-native/app.
-          PERF_REPORT: ${{ github.workspace }}/suite-native/app/artifacts/performance/perf-report.json
+          # Absolute: `yarn workspace … exec` runs inside suite-native-app/app.
+          PERF_REPORT: ${{ github.workspace }}/suite-native-app/app/artifacts/performance/perf-report.json
           SHARD: ${{ matrix.TEST_GROUP }}
-        run: yarn workspace @suite-native/app exec tsx e2e/support/performance/summarize.ts
+        run: yarn workspace @suite-native-app/app exec tsx e2e/support/performance/summarize.ts
 
       - name: "Store performance report"
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: android-perf-report-${{ matrix.TEST_GROUP }}
-          path: suite-native/app/artifacts/performance/perf-report.json
+          path: suite-native-app/app/artifacts/performance/perf-report.json
           if-no-files-found: ignore
           retention-days: 14
 
@@ -238,6 +238,6 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: android-emulator-crashes-${{ matrix.TEST_GROUP }}
-          path: suite-native/app/crash-reports
+          path: suite-native-app/app/crash-reports
           if-no-files-found: ignore
           retention-days: 14

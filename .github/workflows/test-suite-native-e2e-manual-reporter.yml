@@ -84,4 +84,4 @@ jobs:
           REPORTER_WATCHDOG: ${{ inputs.reporterWatchdog }}
         run: |
           echo "Starting Jest Reporter for manual regression suite"
-          yarn workspace @suite-native/app github:report:manual ${{ inputs.testFilter }}
+          yarn workspace @suite-native-app/app github:report:manual ${{ inputs.testFilter }}

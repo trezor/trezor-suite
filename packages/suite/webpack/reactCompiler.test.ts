@@ -35,7 +35,7 @@ describe('the substring landmine', () => {
     it('rejects the paths a substring filter would wrongly accept', () => {
         const outOfScope = [
             'packages/connect/src/index.ts',
-            'suite-native/app/App.tsx',
+            'suite-native-app/app/App.tsx',
             'suite-common/wallet-core/src/index.ts',
         ];
 
@@ -84,9 +84,9 @@ describe('matchReactCompilerPaths', () => {
         expect(
             matchReactCompilerPaths(repoFile('suite/router-config/src/index.ts'), ['suite']),
         ).toEqual(['suite']);
-        expect(matchReactCompilerPaths(repoFile('suite-native/app/App.tsx'), ['suite'])).toEqual(
-            [],
-        );
+        expect(
+            matchReactCompilerPaths(repoFile('suite-native-app/app/App.tsx'), ['suite']),
+        ).toEqual([]);
         expect(
             matchReactCompilerPaths(repoFile('suite-common/wallet-core/src/index.ts'), ['suite']),
         ).toEqual([]);
@@ -217,7 +217,9 @@ describe('shouldCompileWithReactCompiler', () => {
     it('compiles nothing outside the enabled waves', () => {
         // `suite-native` is the one tree this rollout excludes outright, and `packages/connect` is
         // the reusable-library side of the repo. Neither is ever a wave.
-        expect(shouldCompileWithReactCompiler(repoFile('suite-native/app/App.tsx'))).toBe(false);
+        expect(shouldCompileWithReactCompiler(repoFile('suite-native-app/app/App.tsx'))).toBe(
+            false,
+        );
         expect(shouldCompileWithReactCompiler(repoFile('packages/connect/src/index.ts'))).toBe(
             false,
         );
@@ -254,7 +256,7 @@ describe('getUnmatchedReactCompilerPaths', () => {
             const [firstWave] = REACT_COMPILER_PATHS;
 
             // A file outside every wave: asking about it must not mark anything as matched.
-            fresh.shouldCompileWithReactCompiler(repoFile('suite-native/app/App.tsx'));
+            fresh.shouldCompileWithReactCompiler(repoFile('suite-native-app/app/App.tsx'));
 
             expect(fresh.getUnmatchedReactCompilerPaths()).toContain(firstWave);
         });

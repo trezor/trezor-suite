@@ -22,7 +22,7 @@ uses a pure-JS (asm.js) build of the same CSL version, reduced to the parts coin
 | `jest.config.cjs`                           | Project `wasm`: all tests against the desktop (WASM) build. Includes `jest.config.asmjs.cjs`.       |
 | `jest.config.asmjs.cjs`                     | Project `asmjs`: parity and scenario tests against the generated (mobile) build.                    |
 
-`suite-native/app/metro.config.js` resolves `@emurgo/cardano-serialization-lib-{nodejs,browser}`
+`suite-native-app/app/metro.config.js` resolves `@emurgo/cardano-serialization-lib-{nodejs,browser}`
 to `generated/csl-asmjs/cardano_serialization_lib.js`.
 
 ### How the build is made

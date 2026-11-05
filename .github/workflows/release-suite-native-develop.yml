@@ -58,7 +58,7 @@ jobs:
           config-file: .github/pmg-config.yml
       - name: Install libs
         run: |
-          yarn workspaces focus @suite-native/app
+          yarn workspaces focus @suite-native-app/app
       - name: Check existing EAS builds for commit
         id: check-existing-builds
         env:
@@ -79,7 +79,7 @@ jobs:
               echo "$PLATFORM-build-exists=true" >> "$GITHUB_OUTPUT"
             fi
           done
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
       - name: Build on EAS Android
         if: steps.check-existing-builds.outputs.android-build-exists == 'false'
         run: eas build
@@ -88,7 +88,7 @@ jobs:
           --non-interactive
           --no-wait
           --message ${{ steps.selected-commit.outputs.sha }}
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
       - name: Build on EAS iOS
         if: steps.check-existing-builds.outputs.ios-build-exists == 'false'
         run: eas build
@@ -98,4 +98,4 @@ jobs:
           --auto-submit
           --no-wait
           --message ${{ steps.selected-commit.outputs.sha }}
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app

@@ -46,9 +46,9 @@ jobs:
       cancel-in-progress: false
     uses: ./.github/workflows/template-publish-performance-history.yml
     with:
-      workspace: "@suite-native/app"
+      workspace: "@suite-native-app/app"
       artifact-pattern: android-perf-report-*
-      publish-command: yarn workspace @suite-native/app exec tsx e2e/support/performance/publish.ts
+      publish-command: yarn workspace @suite-native-app/app exec tsx e2e/support/performance/publish.ts
 
   notify_scheduled_failure_to_slack:
     runs-on: ubuntu-latest

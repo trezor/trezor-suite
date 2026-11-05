@@ -10,7 +10,7 @@ All the relevant source code is located in the [.rnstorybook](.rnstorybook) dire
 
 ### How to run
 
-1. Run mobile app application. See [@suite-native/app README](../app/README.md) for more details.
+1. Run mobile app application. See [@suite-native-app/app README](../../suite-native-app/app/README.md) for more details.
 
 - make sure that you have debug or preview build of the app running. TODO
 

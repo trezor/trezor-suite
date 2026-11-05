@@ -8,4 +8,4 @@
 
 Will start the Expo app in Android emulator/device.
 
-You will also need to have the Trezor Suite app installed. Follow the instructions in [@suite-native/app](https://github.com/trezor/trezor-suite/blob/develop/suite-native/app/README.md) to run a dev version of the app.
+You will also need to have the Trezor Suite app installed. Follow the instructions in [@suite-native-app/app](https://github.com/trezor/trezor-suite/blob/develop/suite-native-app/app/README.md) to run a dev version of the app.

@@ -2,7 +2,7 @@
 #
 # EAS uploads the project directory as it is on disk and this file replaces every
 # .gitignore, so it alone decides what reaches Expo's servers. It is an allowlist:
-# everything is excluded, then the workspace closure of @suite-native/app is
+# everything is excluded, then the workspace closure of @suite-native-app/app is
 # re-included. A package the mobile app does not use therefore cannot be uploaded,
 # and one it does use cannot be dropped by an unrelated refactor elsewhere in the
 # monorepo - a missing entry fails the mobile build instead.
@@ -18,6 +18,7 @@
 !/packages
 !/suite-common
 !/suite-native
+!/suite-native-app
 !/tsconfig.base.json
 !/yarn.lock
 /.yarn/*
@@ -167,7 +168,6 @@
 !/suite-native/alerts
 !/suite-native/analytics
 !/suite-native/analytics-redux
-!/suite-native/app
 !/suite-native/app-init
 !/suite-native/apps-embedding
 !/suite-native/apps-embedding-demo
@@ -279,6 +279,8 @@
 !/suite-native/tx-simulation
 !/suite-native/video-assets
 !/suite-native/wallet
+/suite-native-app/*
+!/suite-native-app/app
 /networks/bitcoin/*
 !/networks/bitcoin/network-bitcoin-assets
 !/networks/bitcoin/network-bitcoin-suite-common
@@ -342,10 +344,10 @@
 .DS_Store
 
 # Written by `expo prebuild`, which EAS runs itself
-/suite-native/app/android/
-/suite-native/app/ios/
+/suite-native-app/app/android/
+/suite-native-app/app/ios/
 
 # Local secrets
 **/.env*
-!/suite-native/app/.env.development
-!/suite-native/app/.env.test
+!/suite-native-app/app/.env.development
+!/suite-native-app/app/.env.test

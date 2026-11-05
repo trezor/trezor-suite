@@ -58,9 +58,9 @@ jobs:
           config-file: .github/pmg-config.yml
       - name: Install libs
         run: |
-          yarn workspaces focus @suite-native/app
+          yarn workspaces focus @suite-native-app/app
       - name: Trigger adhoc build Android
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
         if: ${{ github.event.inputs.PLATFORM == 'android' || github.event.inputs.PLATFORM == 'all' }}
         run: |
           eas build --profile adhoc \
@@ -71,7 +71,7 @@ jobs:
             --message ${{ github.sha }} \
             2>&1 | sed -E 's/UDID: [A-Za-z0-9-]+/UDID: [REDACTED]/g' # remove UDIDs from output
       - name: Trigger adhoc build iOS
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
         if: ${{ (github.event.inputs.PLATFORM == 'ios' || github.event.inputs.PLATFORM == 'all') && github.event.inputs.IOS_TARGET != 'simulator' }}
         run: |
           eas build --profile adhoc \
@@ -83,7 +83,7 @@ jobs:
             --message ${{ github.sha }} \
             2>&1 | sed -E 's/UDID: [A-Za-z0-9-]+/UDID: [REDACTED]/g' # remove UDIDs from output
       - name: Trigger adhoc build iOS simulator
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
         if: ${{ (github.event.inputs.PLATFORM == 'ios' || github.event.inputs.PLATFORM == 'all') && github.event.inputs.IOS_TARGET == 'simulator' }}
         run: |
           eas build --profile adhoc-simulator \

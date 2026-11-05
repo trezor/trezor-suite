@@ -47,7 +47,7 @@ jobs:
         with:
           path: |
             node_modules
-            suite-native/app/node_modules
+            suite-native-app/app/node_modules
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install SafeDep PMG
@@ -70,7 +70,7 @@ jobs:
           java-version: 17
 
       - name: Prebuild native expo project
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
         run: yarn prebuild:e2e --platform android
 
       - name: Sign message system config
@@ -79,7 +79,7 @@ jobs:
 
       - name: get Expo app fingerprint
         id: expo-fingerprint
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
         # `fingerprint` is the binary for @expo/fingerprint
         run: yarn exec fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
 
@@ -118,17 +118,17 @@ jobs:
 
       - name: Download build from aws bucket
         if: steps.s3_build_cache.outputs.hit == 'true'
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
         run: aws s3 cp s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ ./android/app/build/outputs --recursive
 
       - name: decompile .apk build
         if: steps.s3_build_cache.outputs.hit == 'true'
-        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        working-directory: ./suite-native-app/app/android/app/build/outputs/apk/release
         run: apktool d app-release.apk -o unpacked
 
       - name: replace JS bundle
         if: steps.s3_build_cache.outputs.hit == 'true'
-        working-directory: "./suite-native/app"
+        working-directory: "./suite-native-app/app"
         env:
           JS_BUNDLE_PATH: ./android/app/build/outputs/apk/release/unpacked/assets/index.android.bundle
           ASSETS_DEST_PATH: ./android/app/build/outputs/apk/release/unpacked/res/
@@ -149,17 +149,17 @@ jobs:
 
       - name: fix native library bundling (extractNativeLibs=true)
         if: steps.s3_build_cache.outputs.hit == 'true'
-        working-directory: "./suite-native/app/android/app/build/outputs/apk/release/unpacked"
+        working-directory: "./suite-native-app/app/android/app/build/outputs/apk/release/unpacked"
         run: sed -i 's/android:extractNativeLibs=\"false\"/android:extractNativeLibs=\"true\"/g' AndroidManifest.xml
 
       - name: compile .apk back
         if: steps.s3_build_cache.outputs.hit == 'true'
-        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        working-directory: ./suite-native-app/app/android/app/build/outputs/apk/release
         run: apktool b unpacked -o app-release.apk
 
       - name: sign re-bundled .apk
         if: steps.s3_build_cache.outputs.hit == 'true'
-        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        working-directory: ./suite-native-app/app/android/app/build/outputs/apk/release
         env:
           KEYSTORE_PATH: ../../../../debug.keystore
           KEYSTORE_PASSWORD: pass:android
@@ -169,19 +169,19 @@ jobs:
 
       - name: Build a new Detox test .apk
         if: steps.s3_build_cache.outputs.hit == 'false'
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
         env:
           ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
         run: yarn exec detox build --configuration android.emu.release
 
       - name: save .apk to the aws s3 bucket
         if: steps.s3_build_cache.outputs.hit == 'false'
-        working-directory: ./suite-native/app/android/app/build/outputs
+        working-directory: ./suite-native-app/app/android/app/build/outputs
         run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ --recursive
 
       - name: Upload Android build artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: android-test-build-${{ github.run_id }}
-          path: suite-native/app/android/app/build/
+          path: suite-native-app/app/android/app/build/
           retention-days: 1

@@ -21,7 +21,7 @@ On web and desktop, auto-memoization is enabled directory by directory and the l
 when in doubt and treat the list below as a summary that can lag it by a commit.
 
 - **Mobile (`suite-native`) is compiled whole-app.** `experiments.reactCompiler: true` in
-  [`app.config.ts`](../../suite-native/app/app.config.ts) auto-memoizes every component and hook in its
+  [`app.config.ts`](../../suite-native-app/app/app.config.ts) auto-memoizes every component and hook in its
   bundle, including the `suite-common/*` and `packages/*` sources it pulls in — so those already have to
   satisfy the compiled rules whichever web wave they are in.
 - **Web and desktop are compiled tree by tree. Compiled today: `suite-common/` and

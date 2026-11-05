@@ -6,4 +6,5 @@ export const allRoots = {
     suiteCli: 'suite-cli',
     suiteCommon: 'suite-common',
     suiteNative: 'suite-native',
+    suiteNativeApp: 'suite-native-app',
 };

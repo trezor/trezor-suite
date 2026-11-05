@@ -79,7 +79,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
-        run: yarn test:unit:all --exclude='@suite-native/*' -- --silent
+        run: yarn test:unit:all --exclude='@suite-native/*,@suite-native-app/*' -- --silent
       - name: Unit Tests - Native
         run: yarn test:unit:all --exclude='@trezor/*,@suite/*,@suite-app/*,@suite-common/*' -- --silent
 

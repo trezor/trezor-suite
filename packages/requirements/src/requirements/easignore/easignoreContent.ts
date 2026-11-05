@@ -2,7 +2,7 @@ import type { WorkspacePackage } from '../connectClosure';
 
 export const EASIGNORE_FILE = '.easignore';
 
-const MOBILE_APP_PACKAGE = '@suite-native/app';
+const MOBILE_APP_PACKAGE = '@suite-native-app/app';
 
 /**
  * Paths an EAS build needs that no workspace manifest points at: Yarn cannot
@@ -54,13 +54,13 @@ const ALWAYS_EXCLUDED: ReadonlyArray<string> = [
  */
 const ENV_FILES: ReadonlyArray<string> = [
     '**/.env*',
-    '!/suite-native/app/.env.development',
-    '!/suite-native/app/.env.test',
+    '!/suite-native-app/app/.env.development',
+    '!/suite-native-app/app/.env.test',
 ];
 
 const PREBUILD_OUTPUT: ReadonlyArray<string> = [
-    '/suite-native/app/android/',
-    '/suite-native/app/ios/',
+    '/suite-native-app/app/android/',
+    '/suite-native-app/app/ios/',
 ];
 
 const collectWorkspaceDependencies = (packageJson: WorkspacePackage['packageJson']) =>

@@ -1,4 +1,4 @@
-# @suite-native/app
+# @suite-native-app/app
 
 Trezor Suite native application.
 
@@ -38,7 +38,7 @@ nix develop .#use_android
         - It's recommended to use [adb over wifi](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+) because you will have free up a USB port to connect Trezor device.
 2. Run packager - `yarn native:start` in separate terminal window and keep it running
 3. Run native build - `yarn native:android` this takes time (~10min) and it should install and start the app at the end
-    - If you need to debug a C++ issue, run `yarn workspace @suite-native/app android:debug` to use the regular `debug` variant.
+    - If you need to debug a C++ issue, run `yarn workspace @suite-native-app/app android:debug` to use the regular `debug` variant.
 4. With emulator running, reverse android emulator ports to enable communication between the app and localhost services - `yarn native:reverse-ports`
 
 ## Running app on iOS
@@ -52,7 +52,7 @@ Trezor can't be connected to iOS device via cable, but it's possible to use Port
 
 Or via Xcode (for native errors debug):
 
-1. Open `suite-native/app/ios/TrezorSuite.xcworkspace` in Xcode (from cli `xed suite-native/app/ios`)
+1. Open `suite-native-app/app/ios/TrezorSuite.xcworkspace` in Xcode (from cli `xed suite-native-app/app/ios`)
 2. Hit the ▶️ `Run` button
 
 It is also possible for development purposes to connect Trezor emulator to iOS Simulator if you turn on the feature flag `Connect device` in DEV utils.
@@ -70,7 +70,7 @@ Patience might be required but your Trezor should be connected eventually.
 
 ## Aliases
 
-You can use shorter versions of previous script commands OR navigate to suite-native/app folder and run scripts from there.
+You can use shorter versions of previous script commands OR navigate to suite-native-app/app folder and run scripts from there.
 
 Aliases available in root folder:
 
@@ -102,7 +102,7 @@ You can override ENV variables locally using `.env.development.local` (or `.env.
 - `EXPO_PUBLIC_IS_ROZENITE_REDUX_DEVTOOLS_ENABLED=true` to enable Rozenite Redux DevTools locally.
 - `EXPO_PUBLIC_IS_ROZENITE_MMKV_DEVTOOLS_ENABLED=true` to enable Rozenite MMKV DevTools locally.
 - Rozenite Network Activity DevTools are enabled by default in debug builds.
-- `EXPO_PUBLIC_FF_*` overrides initial state for Feature Flags. See [.env.development](./.env.development) for examples to copy to `.env.development.local` file and [featureFlagsSlice.ts](../feature-flags/src/featureFlagsSlice.ts) for all available values.
+- `EXPO_PUBLIC_FF_*` overrides initial state for Feature Flags. See [.env.development](./.env.development) for examples to copy to `.env.development.local` file and [featureFlagsSlice.ts](../../suite-native/feature-flags/src/featureFlagsSlice.ts) for all available values.
 
 ## Native changes - bumping runtimeVersion
 

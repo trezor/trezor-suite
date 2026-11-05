@@ -12,12 +12,12 @@ caught within ~24h and on PRs that touch the fragile surface.
 
 ## Modes
 
-|                | Real (monthly)                                                                                                           | Watchdog                                                                                                                                    |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Entry          | `workflow_dispatch` on `test-suite-release-e2e-report-orchestration.yml` and `test-suite-native-e2e-manual-reporter.yml` | `schedule` / `pull_request` (paths) / `workflow_dispatch` on `test-suite-reporter-watchdog.yml`                                             |
-| GitHub Project | Trezor Suite release testing                                                                                             | Trezor Suite reporter healthcheck                                                                                                           |
-| Test selection | full suites                                                                                                              | 2 automated + 3 manual synthetics (`suite/e2e/reporter-watchdog/`) + 2 native manual synthetics (`suite-native/app/e2e/reporter-watchdog/`) |
-| Verdict        | n/a                                                                                                                      | `verify` job reads the sandbox back                                                                                                         |
+|                | Real (monthly)                                                                                                           | Watchdog                                                                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Entry          | `workflow_dispatch` on `test-suite-release-e2e-report-orchestration.yml` and `test-suite-native-e2e-manual-reporter.yml` | `schedule` / `pull_request` (paths) / `workflow_dispatch` on `test-suite-reporter-watchdog.yml`                                                 |
+| GitHub Project | Trezor Suite release testing                                                                                             | Trezor Suite reporter healthcheck                                                                                                               |
+| Test selection | full suites                                                                                                              | 2 automated + 3 manual synthetics (`suite/e2e/reporter-watchdog/`) + 2 native manual synthetics (`suite-native-app/app/e2e/reporter-watchdog/`) |
+| Verdict        | n/a                                                                                                                      | `verify` job reads the sandbox back                                                                                                             |
 
 The real workflows contain no watchdog code — a monthly dispatch structurally cannot fall into sandbox mode.
 The only mode switch is the `reporterWatchdog` flag threaded through the callers into `REPORTER_WATCHDOG`,
@@ -60,7 +60,7 @@ test-suite-reporter-watchdog.yml
 - One-time (already done): create the sandbox project with
   `REPORTER_WATCHDOG=true yarn workspace @trezor/e2e-utils github:create:project`.
 - Local runs of `reporter-watchdog:wipe` / `reporter-watchdog:verify` need a project-scoped `GITHUB_TOKEN`
-  in `packages/e2e-utils/.env`; a local native reporter run reads it from `suite-native/app/e2e/.env`.
+  in `packages/e2e-utils/.env`; a local native reporter run reads it from `suite-native-app/app/e2e/.env`.
   On CI the trezor-bot app token is used.
 - The nightly cron (22:00 UTC Sun–Thu, offset from the 00:00 nightly whose instrumented web build shares the S3 path)
   and the Actions-UI dispatch button activate once the workflow lands on develop; the introducing PR

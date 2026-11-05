@@ -71,8 +71,10 @@ names from manifests, not paths.
   workspace (`@trezor/suite-e2e`). The applications use `app-assets` (static assets and generation),
   `desktop-app-api` (desktop API contract), `desktop-app-api-electron` (Electron implementation)
   and `desktop-app-native-bindings` (compiled OS bindings).
-- `suite-native/` (`@suite-native/*`): Mobile features and `app` (Expo/React Native); may use peers,
+- `suite-native/` (`@suite-native/*`): Mobile features and reusable building blocks; may use peers,
   shared logic and reusable libraries, never desktop/web app code.
+- `suite-native-app/` (`@suite-native-app/*`): Mobile application assembly, including the Expo/React
+  Native `app` entry point; may compose native features, shared logic and reusable libraries.
 - `packages/suite`: Remaining app-layer exception to the `packages/` convention. It contains the
   web/desktop React app shared by both application roots, and `packages/suite/webpack` holds the
   Webpack pieces they share; each application owns its own `webpack.config.ts`. Existing app
@@ -102,7 +104,7 @@ running the app, E2E or tests that load native modules requires a full install.
 - Web development: `yarn suite:dev` at `http://localhost:8000`; `yarn suite:dev:vite` is
   experimental and development-only.
 - Electron development: `yarn suite:dev:desktop`; requires a graphical environment.
-- Mobile development: Follow `suite-native/app/README.md` for Android SDK/emulator or macOS/Xcode
+- Mobile development: Follow `suite-native-app/app/README.md` for Android SDK/emulator or macOS/Xcode
   setup and `yarn native:prebuild`; run `yarn native:start` and `yarn native:android` or `yarn native:ios`. Android localhost services use `yarn native:reverse-ports`.
 - Focused unit test: `yarn workspace <package-name> test:unit --coverage=0 path/to/file.test.ts`
   (path relative to that workspace); also supports `.test.tsx`. Direct workspace scripts bypass Nx

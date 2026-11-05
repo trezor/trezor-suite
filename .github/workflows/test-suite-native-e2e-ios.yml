@@ -53,7 +53,7 @@ jobs:
         with:
           path: |
             node_modules
-            suite-native/app/node_modules
+            suite-native-app/app/node_modules
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
@@ -70,7 +70,7 @@ jobs:
           xcode-version: "26.5"
 
       - name: Prebuild native expo project
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
         run: yarn prebuild:e2e --platform ios
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
@@ -81,18 +81,18 @@ jobs:
       - name: Cache CocoaPods
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: suite-native/app/ios/Pods
-          key: pods-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}
+          path: suite-native-app/app/ios/Pods
+          key: pods-${{ hashFiles('suite-native-app/app/ios/Podfile.lock') }}
 
       - name: Cache Xcode DerivedData
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: suite-native/app/ios/build
-          key: xcode-derived-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}-${{ github.sha }}
-          restore-keys: xcode-derived-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}-
+          path: suite-native-app/app/ios/build
+          key: xcode-derived-${{ hashFiles('suite-native-app/app/ios/Podfile.lock') }}-${{ github.sha }}
+          restore-keys: xcode-derived-${{ hashFiles('suite-native-app/app/ios/Podfile.lock') }}-
 
       - name: Build a Detox test app
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
         # Composing the Hermes source map of the Cardano Serialization Lib asm.js file exceeds the
         # default Node heap of the macOS runner.
         env:
@@ -104,7 +104,7 @@ jobs:
         with:
           name: ios-test-build
           path: |
-            suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
+            suite-native-app/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
           retention-days: 7
 
   run_ios_e2e_tests:
@@ -132,7 +132,7 @@ jobs:
         with:
           path: |
             node_modules
-            suite-native/app/node_modules
+            suite-native-app/app/node_modules
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
@@ -178,20 +178,20 @@ jobs:
 
       - name: Build Detox framework cache
         run: yarn exec detox clean-framework-cache && yarn exec detox build-framework-cache
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
 
       - name: Download app build artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: ios-test-build
           path: |
-            suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
+            suite-native-app/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
 
       - name: Prepare iPhone 11 Simulator
         run: xcrun simctl create "iPhone 11"  com.apple.CoreSimulator.SimDeviceType.iPhone-11
 
       - name: Run Detox E2E iOS tests
-        working-directory: ./suite-native/app
+        working-directory: ./suite-native-app/app
         env:
           PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
