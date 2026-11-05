@@ -1,24 +1,16 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
-    type TokenInfoBranded,
     type TokenSymbol,
     toTokenAddress,
     toTokenSymbol,
 } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { AssetAccountListItem } from './AssetAccountListItem';
 
-const mockToken: TokenInfoBranded = {
-    name: 'USD Coin',
-    symbol: toTokenSymbol('USDC'),
-    contract: toTokenAddress('0x' + '1'.repeat(40)),
-    standard: 'ERC20',
-    decimals: 6,
-    balance: '23.910287',
-};
+const mockToken = mockAccountToken({ symbol: 'USDC', decimals: 6, balance: '23.910287' });
 
 jest.mock('@suite-native/icons', () => ({
     Icon: () => null,
@@ -38,7 +30,7 @@ const renderAssetAccountListItem = (account: Account, tokenSymbol?: TokenSymbol)
     renderWithStoreProvider(
         <AssetAccountListItem
             account={account}
-            contractAddress={mockToken.contract}
+            contractAddress={toTokenAddress(mockToken.contract)}
             tokenSymbol={tokenSymbol}
             onPress={jest.fn()}
         />,
