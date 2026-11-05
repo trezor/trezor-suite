@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
-import { sanitizeName } from './sanitizeName';
+import { MAX_NAME_LENGTH, sanitizeName } from './sanitizeName';
 import { parseThpSettings } from './thpSettings';
 import { VERSION } from './version';
 import { DEFINITIONS_CHANNELS } from '../types/definitions';
@@ -24,7 +24,13 @@ export const parseManifest = (manifest?: Manifest) => {
     if (typeof manifest.appName !== 'string') return;
     if (typeof manifest.appIcon !== 'undefined' && typeof manifest.appIcon !== 'string') return;
 
-    const appName = sanitizeName(manifest.appName);
+    // Truncate rather than reject: `connect-ws` destroys the websocket when `parseManifest`
+    // returns undefined, so a rejecting cap would drop the connection of a desktop-ws integrator
+    // whose `appName` is merely too long, instead of showing it a shortened name.
+    const appName = sanitizeName(manifest.appName, {
+        maxLength: MAX_NAME_LENGTH,
+        onTooLong: 'truncate',
+    });
     if (!appName) return;
 
     return {

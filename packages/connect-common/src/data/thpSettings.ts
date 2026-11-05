@@ -1,6 +1,12 @@
 import { MAX_NAME_LENGTH, sanitizeName } from './sanitizeName';
 import type { ConnectSettings, ThpSettings } from '../types/settings';
 
+// Names sent to the device are dropped rather than cut when they are too long.
+const THP_NAME_OPTIONS = {
+    maxLength: MAX_NAME_LENGTH,
+    onTooLong: 'reject',
+} as const;
+
 export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): ThpSettings => {
     const settings: ThpSettings = {
         pairingMethods: [],
@@ -13,13 +19,13 @@ export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): T
     }
 
     if (typeof thp?.hostName === 'string') {
-        settings.hostName = sanitizeName(thp.hostName, MAX_NAME_LENGTH);
+        settings.hostName = sanitizeName(thp.hostName, THP_NAME_OPTIONS);
     }
 
     if (typeof thp?.appName === 'string') {
-        settings.appName = sanitizeName(thp.appName, MAX_NAME_LENGTH);
+        settings.appName = sanitizeName(thp.appName, THP_NAME_OPTIONS);
     } else if (typeof manifest?.appName === 'string') {
-        settings.appName = sanitizeName(manifest.appName, MAX_NAME_LENGTH);
+        settings.appName = sanitizeName(manifest.appName, THP_NAME_OPTIONS);
     }
 
     if (Array.isArray(thp?.knownCredentials)) {

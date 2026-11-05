@@ -563,14 +563,15 @@ describe('MCP server', () => {
                 clientInfo: { name: '  Claude\n\tCo\u00ADde\u202E ' },
             });
 
-            // The name labels the caller in the consent prompt, so it may not break its layout
-            // or reorder the text around it, and an invisible character does not split a word.
+            // The name labels the caller in the consent prompt, so it may not break its layout or
+            // reorder the text around it, and dropping an invisible character may not splice the
+            // name into another app's name — it becomes a visible space instead.
             expect(popupCall.process).toEqual({
-                name: 'Claude Code',
+                name: 'Claude Co de',
                 fullPath: '',
                 warning: true,
             });
-            expect(popupCall.manifest.appName).toBe('Claude Code');
+            expect(popupCall.manifest.appName).toBe('Claude Co de');
         });
 
         it('does not end a capped declared name with the space the cut landed on', async () => {
