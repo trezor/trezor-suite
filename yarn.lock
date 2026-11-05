@@ -14464,6 +14464,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
+    "@shopify/flash-list": "npm:2.3.2"
     "@suite-common/assets": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -14492,6 +14493,7 @@ __metadata:
     "@trezor/redux-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
   languageName: unknown
@@ -14823,6 +14825,7 @@ __metadata:
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/feedback": "workspace:*"
+    "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/mev": "workspace:*"
     "@suite-common/networks": "workspace:*"
@@ -14907,7 +14910,6 @@ __metadata:
     "@suite-common/assets": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/feedback": "workspace:*"
-    "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"

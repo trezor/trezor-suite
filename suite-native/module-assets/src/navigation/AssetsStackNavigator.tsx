@@ -7,6 +7,7 @@ import {
 } from '@suite-native/navigation';
 
 import { AssetDetailScreen } from '../screens/AssetDetailScreen';
+import { HiddenTokensScreen } from '../screens/HiddenTokensScreen';
 
 const AssetsStack = createNativeStackNavigator<AssetsStackParamList>();
 
@@ -16,5 +17,6 @@ export const AssetsStackNavigator = () => (
         initialRouteName={AssetsStackRoutes.AssetDetail}
     >
         <AssetsStack.Screen name={AssetsStackRoutes.AssetDetail} component={AssetDetailScreen} />
+        <AssetsStack.Screen name={AssetsStackRoutes.HiddenTokens} component={HiddenTokensScreen} />
     </AssetsStack.Navigator>
 );

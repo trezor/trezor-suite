@@ -55,6 +55,7 @@ export enum AccountDetailStackRoutes {
 
 export enum AssetsStackRoutes {
     AssetDetail = 'AssetDetail',
+    HiddenTokens = 'HiddenTokens',
 }
 
 export enum ActivityCenterStackRoutes {
