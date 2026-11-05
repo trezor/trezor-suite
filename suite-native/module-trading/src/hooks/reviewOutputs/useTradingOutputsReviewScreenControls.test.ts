@@ -297,7 +297,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockShowAlert).not.toHaveBeenCalled();
         });
 
-        it('should display alert on thunk error', async () => {
+        it('should display alert describing the thunk error', async () => {
             await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
@@ -314,13 +314,18 @@ describe('useTradingOutputsReviewScreenControls', () => {
                     ]
                 )[0];
                 onError({
-                    type: 'sign-tx-error',
-                    code: 'cannot-send-transaction',
+                    type: 'error',
+                    code: 'nonce-failed',
                 });
             });
             expect(mockShowAlert).toHaveBeenCalledTimes(1);
             expect(mockShowAlert).toHaveBeenCalledWith(
-                expect.objectContaining({ title: 'Transaction failed' }),
+                expect.objectContaining({
+                    title: getTranslation('moduleTrading.tradingReviewOutputs.errorAlert.title'),
+                    description: getTranslation(
+                        'moduleTrading.tradingReviewOutputs.errorAlert.nonceDescription',
+                    ),
+                }),
             );
         });
 

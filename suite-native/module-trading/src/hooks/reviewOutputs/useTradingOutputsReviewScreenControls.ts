@@ -109,10 +109,14 @@ export const useTradingOutputsReviewScreenControls = ({
                     return;
                 }
 
-                showOutputsReviewErrorAlert(() => {
-                    reportToAnalytics('sign-and-send', 'retry');
-                    runSigningAttempt();
-                }, onReviewCanceled);
+                showOutputsReviewErrorAlert(
+                    error,
+                    () => {
+                        reportToAnalytics('sign-and-send', 'retry');
+                        runSigningAttempt();
+                    },
+                    onReviewCanceled,
+                );
             };
 
             return signAndSendTransaction({ nextStep, onError: handleSigningError });
