@@ -46,4 +46,31 @@ describe('AccountsListRow', () => {
 
         expect(getByText('23.91 USDC')).toBeOnTheScreen();
     });
+
+    it('shows zero with the given symbol for an account without the token', async () => {
+        const accountWithoutToken = mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            tokens: [],
+        });
+
+        const { getByText } = await renderWithStoreProvider(
+            <AccountsListRow
+                accountKey={accountWithoutToken.key}
+                isFirst
+                isLast
+                hasBottomSpacing={false}
+                tokenContract={mockToken.contract}
+                tokenSymbol={toTokenSymbol('USDC')}
+                onSelectAccount={jest.fn()}
+            />,
+            {
+                preloadedState: {
+                    wallet: { accounts: [accountWithoutToken] },
+                    tokenDefinitions: {},
+                },
+            },
+        );
+
+        expect(getByText('0 USDC')).toBeOnTheScreen();
+    });
 });

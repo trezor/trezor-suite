@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { toTokenAddress } from '@suite-common/wallet-types';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { AccountsList, type OnSelectAccount } from '@suite-native/accounts';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import {
@@ -29,10 +29,13 @@ export const ReceiveAccountsScreen = ({
         return <ReceiveBlockedDeviceCompromisedScreen />;
     }
 
+    const tokenContract = asset.isNativeToken ? undefined : toTokenAddress(asset.contractAddress);
+    const tokenSymbol = asset.isNativeToken ? undefined : toTokenSymbol(asset.symbol);
+
     const onSelectAccount: OnSelectAccount = args => {
         navigateToReceiveAddressScreen({
             ...args,
-            tokenAddress: asset.contractAddress ? toTokenAddress(asset.contractAddress) : undefined,
+            tokenAddress: tokenContract,
         });
     };
 
@@ -44,7 +47,12 @@ export const ReceiveAccountsScreen = ({
             noBottomPadding
             hasBottomInset={false}
         >
-            <AccountsList onSelectAccount={onSelectAccount} networkFilter={[asset.networkSymbol]} />
+            <AccountsList
+                onSelectAccount={onSelectAccount}
+                networkFilter={[asset.networkSymbol]}
+                tokenContract={tokenContract}
+                tokenSymbol={tokenSymbol}
+            />
         </Screen>
     );
 };
