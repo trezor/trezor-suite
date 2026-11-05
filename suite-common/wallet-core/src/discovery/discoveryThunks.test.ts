@@ -248,7 +248,7 @@ describe('runAdditionalDiscoveryThunk', () => {
         path: devicePath,
         instance: 1,
         connected: true,
-        state: { staticSessionId },
+        state: { staticSessionId, sessionId: 'session-id' },
         useEmptyPassphrase: true,
         discovered: true,
     });
@@ -311,7 +311,7 @@ describe('runAdditionalDiscoveryThunk', () => {
                 device: {
                     path: devicePath,
                     instance: 1,
-                    state: { staticSessionId },
+                    state: { staticSessionId, sessionId: 'session-id' },
                     useEmptyPassphrase: true,
                 },
             }),
