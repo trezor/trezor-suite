@@ -106,7 +106,7 @@ export const AssetAccountListItem = ({
                 isFailed ? <Icon name="warning" color="contentWarning" size="medium" /> : fiatValue
             }
             secondaryValue={isFailed ? undefined : cryptoValue}
-            onPress={() => onPress({ account, hasAnyKnownTokens })}
+            onPress={() => onPress({ account, tokenAddress: contractAddress, hasAnyKnownTokens })}
         />
     );
 };
