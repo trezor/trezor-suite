@@ -1,4 +1,4 @@
-import { isSilentSendRejection, isTradingError } from './typeGuards';
+import { isSilentTradingError, isTradingError } from './typeGuards';
 import { type TradingErrorCause } from '../types';
 
 describe('typeGuards', () => {
@@ -102,15 +102,19 @@ describe('typeGuards', () => {
         });
     });
 
-    describe('isSilentSendRejection', () => {
-        it('is silent for a cancelled signing and for a signing timeout', () => {
-            expect(isSilentSendRejection('sign-cancelled')).toBe(true);
-            expect(isSilentSendRejection('sign-transaction-timeout')).toBe(true);
-        });
+    describe('isSilentTradingError', () => {
+        it.each(['sign-cancelled', 'sign-transaction-timeout'] as const)(
+            'is silent for a %s error',
+            type => {
+                expect(isSilentTradingError({ type, code: 'cannot-send-transaction' })).toBe(true);
+            },
+        );
 
-        it('is not silent for errors that nothing else reports', () => {
-            expect(isSilentSendRejection('error')).toBe(false);
-            expect(isSilentSendRejection('sign-tx-error')).toBe(false);
-        });
+        it.each(['error', 'sign-tx-error'] as const)(
+            'is not silent for an %s error that nothing else reports',
+            type => {
+                expect(isSilentTradingError({ type, code: 'cannot-send-transaction' })).toBe(false);
+            },
+        );
     });
 });
