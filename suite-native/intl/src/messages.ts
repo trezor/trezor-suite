@@ -2456,6 +2456,14 @@ export const messages = {
                     description: 'Earn up to {apy}% on your {symbol}.',
                 },
             },
+            hiddenBanner: {
+                suspiciousTitle: 'Flagged as suspicious',
+                suspiciousDescription:
+                    'This token arrived unrequested and may be a phishing attempt. Do not interact with its website.',
+                hiddenTitle: 'Hidden by you',
+                hiddenDescription:
+                    '{asset} does not appear in your asset list. Everything about it still works here.',
+            },
         },
         hiddenTokensScreen: {
             title: 'Hidden tokens',
