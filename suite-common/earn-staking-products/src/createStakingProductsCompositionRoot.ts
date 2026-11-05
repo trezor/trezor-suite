@@ -2,6 +2,7 @@ import {
     getCardanoPools,
     getEthereumValidatorsQueue,
     getStakingStats,
+    getTronStakingStats,
 } from '@suite-common/earn-staking-api';
 import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
@@ -17,8 +18,12 @@ import { createEverstakePooledProduct } from './products/ethereum/createEverstak
 import { createSolanaExternalDelegationProduct } from './products/solana/external/createSolanaExternalDelegationProduct';
 import { createSolanaNativeDelegationProduct } from './products/solana/native/createSolanaNativeDelegationProduct';
 import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductDescriptor';
+import { createTronCuratedProduct } from './products/tron/createTronCuratedProduct';
+import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './products/tron/tronCuratedProductDescriptor';
 import { everstakeProvider } from './providers/everstake';
 import { fivebinariesProvider } from './providers/fivebinaries';
+import { luganodesProvider } from './providers/luganodes';
+import { p2pProvider } from './providers/p2p';
 
 const createEthereumStakingProducts = (): readonly StakingProductAdapter[] => {
     const ethereumStakingApi = { getStakingStats, getEthereumValidatorsQueue };
@@ -85,8 +90,22 @@ const createCardanoStakingProducts = (): readonly StakingProductAdapter[] => {
     ];
 };
 
+const createTronStakingProducts = (): readonly StakingProductAdapter[] => {
+    const tronStakingApi = { getTronStakingStats };
+
+    return [
+        createTronCuratedProduct({
+            networkSymbol: asNetworkSymbol('trx'),
+            providers: [luganodesProvider, p2pProvider],
+            messageSystemFeatures: TRON_CURATED_MESSAGE_SYSTEM_FEATURES,
+            ...tronStakingApi,
+        }),
+    ];
+};
+
 export const createStakingProductsCompositionRoot = (): readonly StakingProductAdapter[] => [
     ...createEthereumStakingProducts(),
     ...createSolanaStakingProducts(),
     ...createCardanoStakingProducts(),
+    ...createTronStakingProducts(),
 ];

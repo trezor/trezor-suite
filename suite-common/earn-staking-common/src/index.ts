@@ -94,10 +94,12 @@ export {
     solanaStakeAccountSchema,
     solanaStakeAccountStatusSchema,
     stakingPositionDetailsSchema,
+    tronResourceAmountsSchema,
     type CardanoDrep,
     type SolanaStakeAccount,
     type SolanaStakeAccountStatus,
     type StakingPositionDetails,
+    type TronResourceAmounts,
 } from './stakingPositionDetails';
 export type {
     BroadcastStepParams,

@@ -20,7 +20,7 @@ import { everstakeProvider } from './providers/everstake';
 describe('createStakingProductsCompositionRoot', () => {
     const adapters = createStakingProductsCompositionRoot();
 
-    it('registers the Ethereum, Solana and Cardano products for mainnet testnet networks', () => {
+    it('registers the Ethereum, Solana, Cardano and Tron products for mainnet testnet networks', () => {
         expect(adapters.map(adapter => adapter.descriptor.id)).toEqual([
             'eth:eth:everstake:pooled',
             'thod:thod:everstake:pooled',
@@ -31,6 +31,7 @@ describe('createStakingProductsCompositionRoot', () => {
             'ada:ada:everstake:native',
             'ada:ada:fivebinaries:native',
             'ada:ada:external:native',
+            'trx:trx:curated:native',
         ]);
     });
 
