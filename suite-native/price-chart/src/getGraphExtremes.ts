@@ -15,10 +15,7 @@ type ExtremePoints = {
     low: GraphPoint;
 };
 
-/**
- * Finds the highest and the lowest point of a graph, placed the way the line graph spreads its
- * x axis: by time, between the first and the last point.
- */
+// Places the high and the low by time, the way the line graph spreads its x axis.
 export const getGraphExtremes = (points: GraphPoint[]): GraphExtremes | undefined => {
     const firstPoint = points[0];
     const lastPoint = points.at(-1);

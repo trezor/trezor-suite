@@ -18,7 +18,6 @@ const labelPositionStyle = prepareNativeStyle<LabelPositionStyleParams>(
     (_, { left, isMeasured }) => ({
         position: 'absolute',
         left,
-        // Hidden until both widths are known, so the label never flashes at an unclamped position.
         opacity: isMeasured ? 1 : 0,
     }),
 );
@@ -27,7 +26,6 @@ type ChartAxisLabelProps = {
     extreme: GraphExtreme;
 };
 
-/** The fiat value of a graph's high or low, written where the line reaches it. */
 export const ChartAxisLabel = ({ extreme: { value, relativeX } }: ChartAxisLabelProps) => {
     const [rowWidth, setRowWidth] = useState(0);
     const [labelWidth, setLabelWidth] = useState(0);
@@ -35,7 +33,6 @@ export const ChartAxisLabel = ({ extreme: { value, relativeX } }: ChartAxisLabel
     const { applyStyle, utils } = useNativeStyles();
 
     const edgeGap = utils.spacings.sp8;
-    // The label starts where its point lies, but never runs past either edge of the graph.
     const left = clamp(rowWidth * relativeX, edgeGap, rowWidth - labelWidth - edgeGap);
     const isMeasured = rowWidth > 0 && labelWidth > 0;
 
