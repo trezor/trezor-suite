@@ -63,7 +63,14 @@ export const ConnectSelectAccount = () => {
         manualPhase,
         manualAccountIndex,
     } = popupCall;
-    const { selectionType, minCount, maxCount, accountTypeTabs, addressSelection } = options;
+    const {
+        selectionType,
+        minCount,
+        maxCount,
+        accountTypeTabs,
+        addressSelection,
+        requireOnDeviceVerification,
+    } = options;
     // 'manual' is a two-phase flow: pick an account (drill-in, no export), then pick one of its
     // used addresses (the actual export). Every other mode has a single, flat account-index list.
     const isManualAccountPickPhase = addressSelection === 'manual' && manualPhase !== 'address';
@@ -91,12 +98,15 @@ export const ConnectSelectAccount = () => {
     // Selection stays live: it's pure Redux state and touches no device.
     const isDiscovering = pageCandidates.some(c => c.loading);
 
-    // Verification is always available but optional (mirrors ConnectAddressConfirmation) — connecting
-    // only requires a valid selection.
+    // When requireOnDeviceVerification is set (the default for addresses, see buildOptions), every
+    // selected candidate must be confirmed on the device before it can be exported; otherwise
+    // verification stays optional (mirrors ConnectAddressConfirmation).
+    const allSelectedVerified = selectedCandidates.every(c => c.validated === 'valid');
     const canConfirm =
         selectedCount >= minCount &&
         (maxCount === undefined || selectedCount <= maxCount) &&
-        !isVerifying;
+        !isVerifying &&
+        (!requireOnDeviceVerification || allSelectedVerified);
 
     const toggle = (target: SelectAccountCandidate) => {
         const isTarget = (c: SelectAccountCandidate) =>
@@ -166,6 +176,10 @@ export const ConnectSelectAccount = () => {
         descriptionKey = 'TR_CONNECT_SELECT_ACCOUNT_EXPORTED_DESCRIPTION';
     } else if (isManualAccountPickPhase) {
         descriptionKey = 'TR_CONNECT_SELECT_ACCOUNT_PICK_ACCOUNT_DESCRIPTION';
+    } else if (requireOnDeviceVerification) {
+        // Verifying is a requirement here, not the optional extra step the default copy describes,
+        // and it applies to every selected row — otherwise confirm stays disabled with no hint why.
+        descriptionKey = 'TR_CONNECT_SELECT_ACCOUNT_VERIFY_REQUIRED_DESCRIPTION';
     }
 
     let rowInteractionMode: 'toggle' | 'drillIn' | 'readOnly' = 'toggle';

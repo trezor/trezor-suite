@@ -25,7 +25,7 @@ export const paramDescriptions = {
     addressSelection:
         'UTXO networks only — `fullAccount` (default) shares the whole account as an xpub; `firstFresh` or `manual` switch to exporting an individual address instead. Ignored for account-based networks',
     requireOnDeviceVerification:
-        'require the selected address(es) to be confirmed on the device. Default `true`',
+        'require every selected entry to be confirmed on the device before it is shared. Default `true` for addresses and `false` for the `fullAccount` xpub flow',
     minCount:
         'minimum number of accounts to select, when `selectionType` is an object. Default `1`',
     maxCount: 'maximum number of accounts to select, when `selectionType` is an object',
@@ -34,8 +34,13 @@ export const paramDescriptions = {
 ## Select account
 
 Opens Trezor Suite's account picker so the user chooses which account(s) to share with the
-connecting app. The picker is rendered by Suite — addresses can be verified on the Trezor before
-they are shared.
+connecting app. The picker is rendered by Suite — by default, selected addresses must be confirmed
+on the Trezor before they are shared (see `requireOnDeviceVerification`).
+
+Both the picker and the verification requirement are implemented by Suite, not by the SDK package
+your app installs: Suite 26.11 is the first release that enforces `requireOnDeviceVerification`
+(earlier releases accepted the option and ignored it), so what the user sees follows their Suite
+version rather than the `@trezor/connect` version you pin.
 
 ```javascript
 const result = await TrezorConnect.selectAccount(params);
@@ -92,7 +97,8 @@ holds many addresses, support two separate flows, chosen with `addressSelection`
 - **Whole-account flow (`addressSelection: 'fullAccount'`, the default when omitted)** — the
   account is shared as an extended public key (xpub), the same way a watch-only wallet import
   works. The integrator derives every address of the account on its own; no individual address is
-  picked or verified as part of this call. This requests the broader `read_xpub` permission.
+  picked or verified as part of this call. The xpub is confirmed on the device only if you pass
+  `requireOnDeviceVerification: true`. This requests the broader `read_xpub` permission.
 - **Address-selection flow (`addressSelection: 'firstFresh' | 'manual'`)** — only the individual
   address(es) the user picks are exported, exactly like the account-based flow above.
   `'firstFresh'` auto-selects the next unused receive address for each picked account. `'manual'`

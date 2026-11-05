@@ -16,6 +16,10 @@
 
 Use [connect.trezor.io/10.0.1](https://connect.trezor.io/10.0.1/) to access this release of Connect Explorer. The persistent link [connect.trezor.io/10](https://connect.trezor.io/10/) points to the latest stable version.
 
+# UNRELEASED
+
+- `selectAccount`: `requireOnDeviceVerification` is now enforced. Suite 26.7.1 through 26.10 accepted the option and ignored it; Suite 26.11 is the first release in which a selected entry cannot be shared until it has been confirmed on the device. Omitted, the option defaults to `true` for the address flows and `false` for the `fullAccount` xpub flow. The option is interpreted by Suite, not by the client package, so this follows the user's Suite version rather than the `@trezor/connect` version your app pins.
+
 # 10.0.1
 
 Fixes communication between `@trezor/connect-webextension` and Suite Web due to message channel ID mismatch in version 10.0.0
@@ -60,7 +64,7 @@ TrezorConnect.init({
 New method for asking the user to choose one or more accounts, replacing the old "call `getAccountInfo` with no path to trigger on-device discovery" pattern. The picker, derivation and on-device verification run entirely inside Suite.
 
 - **More private:** for UTXO coins you can request only what you need. `addressSelection: 'firstFresh' | 'manual'` exports a single **address** (with an optional SLIP-0019 `mac` to later re-prove device ownership) and never reveals the account xpub — requiring only the narrow `read_address` permission. The full-account/watch-only flow (`addressSelection: 'fullAccount'`, the default) shares the xpub and requires `read_xpub`. Account-based networks (EVM, Solana, …) always return an individual address.
-- **Better UX:** `selectionType` supports `'single'` (default), `'multi'`, or bounded multi-select (`{ minCount, maxCount }`); `accountType` filters/tabs the allowed derivation types (including custom `bip43Path` templates); `requireOnDeviceVerification` (default `true`) controls device confirmation.
+- **Better UX:** `selectionType` supports `'single'` (default), `'multi'`, or bounded multi-select (`{ minCount, maxCount }`); `accountType` filters/tabs the allowed derivation types (including custom `bip43Path` templates); `requireOnDeviceVerification` (default `true` for the address flows, `false` for the `fullAccount` xpub flow) controls device confirmation.
 - Always returns an array of `{ symbol, path, address? | xpub?, accountType?, mac? }`, even for a single selection.
 
 ### 3. Granular, per-coin permissions
