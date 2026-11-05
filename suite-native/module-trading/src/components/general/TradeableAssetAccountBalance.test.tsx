@@ -22,7 +22,7 @@ describe('TradeableAssetAccountBalance', () => {
         preloadedState = {},
     ) =>
         renderWithStoreProvider(
-            <TradeableAssetMetadataProvider asset={props.asset}>
+            <TradeableAssetMetadataProvider assets={[props.asset]}>
                 <TradeableAssetAccountBalance
                     asset={undefined}
                     account={undefined}

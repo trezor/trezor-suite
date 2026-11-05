@@ -3,16 +3,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
-import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type TradeableAssetBalances } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, EdgeFades, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeableAssetListItem } from './TradeableAssetListItem';
+import { TradeableAssetMetadataProvider } from '../TradeableAssetMetadataProvider';
 import { TradingAssetListEmptyComponent } from '../TradingAssetListEmptyComponent';
 import { TradingAssetListHeader } from '../TradingAssetListHeader';
 
@@ -103,28 +102,6 @@ export const TradeableAssetList = ({
     );
 
     return (
-        <TokenMetadataProvider
-            sources={assets.flatMap(asset => {
-                const networkSymbol = cryptoIdToNetworkSymbol(asset.cryptoId);
-
-                return networkSymbol && asset.contractAddress
-                    ? [
-                          {
-                              networkSymbol,
-                              tokens: [
-                                  {
-                                      contract: asset.contractAddress,
-                                      name: asset.name,
-                                      symbol: asset.symbol,
-                                      decimals: asset.decimals,
-                                  },
-                              ],
-                          },
-                      ]
-                    : [];
-            })}
-        >
-            {content}
-        </TokenMetadataProvider>
+        <TradeableAssetMetadataProvider assets={assets}>{content}</TradeableAssetMetadataProvider>
     );
 };

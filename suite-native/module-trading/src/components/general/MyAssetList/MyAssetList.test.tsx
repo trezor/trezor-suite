@@ -2,7 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount, toTokenAddress } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { eth1NormalAccount } from '@suite-native/trading-fixtures';
@@ -13,18 +13,23 @@ import { MyAssetList } from './MyAssetList';
 import { type MyAssetsSection } from '../../../hooks/general/useMyAssetsFilteredData';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
-const createAsset = (name: string, isEnabled = true): MyAsset => ({
+const createAsset = (name: string, contract: string, isEnabled = true): MyAsset => ({
     name,
     symbol: asNetworkSymbol('eth'),
-    cryptoId: `ethereum--${name.toLowerCase()}` as CryptoId,
+    cryptoId: `ethereum--${contract}` as CryptoId,
+    contract: toTokenAddress(contract),
     balance: '1',
     fiatBalance: asBaseCurrencyAmount(new BigNumber('0.01')),
     isEnabled,
 });
 
-const regularAsset = createAsset('Regular');
-const lowBalanceAsset = createAsset('Low');
-const nonTradeableAsset = createAsset('Disabled', false);
+const regularAsset = createAsset('Regular', '0x0000000000000000000000000000000000000001');
+const lowBalanceAsset = createAsset('Low', '0x0000000000000000000000000000000000000002');
+const nonTradeableAsset = createAsset(
+    'Disabled',
+    '0x0000000000000000000000000000000000000003',
+    false,
+);
 
 const section: MyAssetsSection = {
     key: eth1NormalAccount.key,

@@ -14,7 +14,7 @@ export const SellFormContextProvider = ({ children }: SellFormContextProviderPro
     useSellFormDefaultAssets(sellForm);
 
     return (
-        <TradeableAssetMetadataProvider asset={sendAsset}>
+        <TradeableAssetMetadataProvider assets={[sendAsset]}>
             <Form form={sellForm}>{children}</Form>
         </TradeableAssetMetadataProvider>
     );

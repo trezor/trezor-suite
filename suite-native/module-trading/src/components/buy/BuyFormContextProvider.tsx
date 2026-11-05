@@ -14,7 +14,7 @@ export const BuyFormContextProvider = ({ children }: BuyFormProviderProps) => {
     useBuyFormDefaultAssets(buyForm);
 
     return (
-        <TradeableAssetMetadataProvider asset={asset}>
+        <TradeableAssetMetadataProvider assets={[asset]}>
             <Form form={buyForm}>{children}</Form>
         </TradeableAssetMetadataProvider>
     );

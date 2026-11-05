@@ -5,38 +5,38 @@ import { TokenMetadataProvider } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 type TradeableAssetMetadataProviderProps = {
-    asset: TradeableAsset | undefined;
+    assets: readonly (TradeableAsset | undefined)[];
     children: ReactNode;
 };
 
-/** Supplies a selected trading asset's metadata to all consumers in its form. */
+/** Supplies a whole trading asset collection, including assets not held in an account. */
 export const TradeableAssetMetadataProvider = ({
-    asset,
+    assets,
     children,
-}: TradeableAssetMetadataProviderProps) => {
-    const networkSymbol = cryptoIdToNetworkSymbol(asset?.cryptoId);
+}: TradeableAssetMetadataProviderProps) => (
+    <TokenMetadataProvider
+        sources={assets.flatMap(asset => {
+            const networkSymbol = cryptoIdToNetworkSymbol(asset?.cryptoId);
 
-    if (!asset?.contractAddress || !networkSymbol || isSendingEvmNativeToken(asset.cryptoId)) {
-        return children;
-    }
-
-    return (
-        <TokenMetadataProvider
-            sources={[
-                {
-                    networkSymbol,
-                    tokens: [
-                        {
-                            contract: asset.contractAddress,
-                            name: asset.name,
-                            symbol: asset.symbol,
-                            decimals: asset.decimals,
-                        },
-                    ],
-                },
-            ]}
-        >
-            {children}
-        </TokenMetadataProvider>
-    );
-};
+            return asset?.contractAddress &&
+                networkSymbol &&
+                !isSendingEvmNativeToken(asset.cryptoId)
+                ? [
+                      {
+                          networkSymbol,
+                          tokens: [
+                              {
+                                  contract: asset.contractAddress,
+                                  name: asset.name,
+                                  symbol: asset.symbol,
+                                  decimals: asset.decimals,
+                              },
+                          ],
+                      },
+                  ]
+                : [];
+        })}
+    >
+        {children}
+    </TokenMetadataProvider>
+);

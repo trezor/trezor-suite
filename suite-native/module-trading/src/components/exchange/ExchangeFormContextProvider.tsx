@@ -19,10 +19,8 @@ export const ExchangeFormContextProvider = ({ children }: ExchangeFormProviderPr
     useExchangeFormDefaultAssets(exchangeForm);
 
     return (
-        <TradeableAssetMetadataProvider asset={sendAsset}>
-            <TradeableAssetMetadataProvider asset={receiveAsset}>
-                <Form form={exchangeForm}>{children}</Form>
-            </TradeableAssetMetadataProvider>
+        <TradeableAssetMetadataProvider assets={[receiveAsset, sendAsset]}>
+            <Form form={exchangeForm}>{children}</Form>
         </TradeableAssetMetadataProvider>
     );
 };
