@@ -26,6 +26,26 @@ const blacklist: Record<string, string[] | true> = {
     PublicKey: ['node', 'xpub'],
     DecryptedMessage: ['message', 'address'],
     Features: true,
+    // WARD entries are user secrets: the new value, the sealed leaf parts and the exported keys are
+    // as sensitive as a passphrase, the root MACs are restore-capable, and `app_id`/`address`/
+    // `entry_key` are the labels that key an entry -- keep all of it out of the device-call log, as
+    // PassphraseAck.passphrase and CipheredKeyValue.value above already are. Whole-message where the
+    // secret dominates (as `Features`); field-wise where non-secret fields (counter, valid, root) are
+    // worth keeping. Ported from mroz22's redaction for the ward-draft messages.
+    WARDQueueUpdate: true,
+    WARDPerformUpdateAck: true,
+    WARDPerformBatchAck: true,
+    WARDProofAck: true,
+    WARDLookup: true,
+    WARDExportKeysAck: true,
+    WARDProofRequest: ['entry_key'],
+    WARDIngestAttestation: ['mac'],
+    WARDConfirmedByWM: ['mac'],
+    WARDConfirmBatchByWM: ['mac'],
+    WARDReconcileAck: ['root_mac'],
+    WARDConfirmedByWMAck: ['root_mac'],
+    WARDConfirmBatchByWMAck: ['root_mac'],
+    WARDDebugSetRootAck: ['root_mac'],
 };
 
 type AbortableOptions = {
@@ -337,7 +357,10 @@ export class DeviceCurrentSession implements TypedCallProvider {
                             filterForLog(res.type, res.message),
                         );
                         ack = await this.wardProofCallback(res.message);
-                        this.logger.debug('Prepared WARDProofAck', filterForLog('WARDProofAck', ack));
+                        this.logger.debug(
+                            'Prepared WARDProofAck',
+                            filterForLog('WARDProofAck', ack),
+                        );
                     } catch (err) {
                         return error(err instanceof Error ? err : new Error(String(err)));
                     }
