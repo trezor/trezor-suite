@@ -7,8 +7,8 @@ import type { BlobRow } from '../proof';
 // trezorlib reference `authdb_tree.WARDTree` (which is byte-identical to the firmware) over the
 // same device-blob set — regenerate with tools alongside authdb_tree.py if the trie format changes.
 //
-//   internal   = SHA-256(0x01 || u16(split_bit) || u16(skiplen) || left || right)
-//   proof elem = u16(split_bit) || u16(skiplen) || 32-byte sibling  (36 bytes / 72 hex)
+//   internal   = SHA-256(0x01 || u16(split_bit) || left || right)   -- no skiplen, as the firmware
+//   proof elem = u16(split_bit) || 32-byte sibling  (34 bytes / 68 hex)
 
 const BLOBS: BlobRow[] = [
     [
@@ -55,14 +55,14 @@ const BLOBS: BlobRow[] = [
 }));
 
 // trezorlib.authdb_tree.WARDTree over BLOBS (== firmware), two-part commit:
-const REF_ROOT = 'acfe9d9b2c3069070aeb21d72dd53cd7dd3245016ba461c09451d715cb2a6a2d';
+const REF_ROOT = 'b92c797952b965f1f99e5c5ad09995674ad3ed7becf6cc581e6a7df634471f66';
 const MEMBER_KEY = '358b7591f24d313e523c7b34b8bd513e4310e08d058aee11d679ba41958853fe';
-const MEMBER_PROOF = ['00000000e96a5c3627be9ad15ae404da1ac72b42f1a602039dbc46fa22eb52e6071949d3'];
+const MEMBER_PROOF = ['0000cbc4346f11d2455b99102d0d886f3a3621b4d723db775ac17748667f56cca4cd'];
 const ABSENT_KEY = '5ad38304b535c2987dbd24657c1a11b884984ff600d9f389deb0d4e634fee792';
 const WITNESS_KEY = '358b7591f24d313e523c7b34b8bd513e4310e08d058aee11d679ba41958853fe';
 const WITNESS_COMMIT = '2a36629301c9f5965be929bdbb741bbf5980f3829349748045ce20130496bb54';
 const NONMEMBER_PROOF = [
-    '00000000e96a5c3627be9ad15ae404da1ac72b42f1a602039dbc46fa22eb52e6071949d3',
+    '0000cbc4346f11d2455b99102d0d886f3a3621b4d723db775ac17748667f56cca4cd',
 ];
 
 describe('path-compressed trie — cross-impl parity with trezorlib/firmware (keyed path)', () => {
@@ -70,10 +70,10 @@ describe('path-compressed trie — cross-impl parity with trezorlib/firmware (ke
         expect(computeRootFromBlobs(BLOBS)).toBe(REF_ROOT);
     });
 
-    it('proofByKey matches the reference membership proof (72-hex elements)', () => {
+    it('proofByKey matches the reference membership proof (68-hex elements)', () => {
         const proof = proofByKey(BLOBS, MEMBER_KEY);
         expect(proof).toEqual(MEMBER_PROOF);
-        proof.forEach(e => expect(e).toHaveLength(72));
+        proof.forEach(e => expect(e).toHaveLength(68));
     });
 
     it('nonMembershipByKey matches the reference witness + proof', () => {
