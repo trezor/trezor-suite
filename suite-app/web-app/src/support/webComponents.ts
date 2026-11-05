@@ -221,6 +221,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeApproval/TradingExchangeApproval'
         ).then(({ TradingExchangeApproval }) => ({ default: TradingExchangeApproval })),
     ),
+    'wallet-trading-exchange-allowance': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowance'
+        ).then(({ TradingExchangeAllowance }) => ({ default: TradingExchangeAllowance })),
+    ),
     'wallet-trading-concierge': lazy(() =>
         import(
             /* webpackChunkName: "trading" */ 'src/views/wallet/trading/concierge/TradingConciergeDetail'

@@ -677,10 +677,6 @@ export const messages = defineMessages({
         defaultMessage: 'Revoke {displaySymbol} spending',
         id: 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
     },
-    TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION: {
-        defaultMessage: 'Revoke provider to spend your {displaySymbol} to swap.',
-        id: 'TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION',
-    },
     TR_APPROVAL_LIMIT: {
         defaultMessage: 'Limit',
         id: 'TR_APPROVAL_LIMIT',
@@ -706,6 +702,141 @@ export const messages = defineMessages({
     TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON: {
         defaultMessage: 'Revoke approval',
         id: 'TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_MANAGE_BUTTON: {
+        defaultMessage: 'Manage approval',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_MANAGE_BUTTON',
+    },
+    TR_EXCHANGE_ALLOWANCE_KIND_UNLIMITED: {
+        defaultMessage: 'Unlimited approval',
+        id: 'TR_EXCHANGE_ALLOWANCE_KIND_UNLIMITED',
+    },
+    TR_EXCHANGE_ALLOWANCE_KIND_ENOUGH: {
+        defaultMessage: 'Enough for this swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_KIND_ENOUGH',
+    },
+    TR_EXCHANGE_ALLOWANCE_KIND_TOO_LOW: {
+        defaultMessage: 'Too low for this swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_KIND_TOO_LOW',
+    },
+    TR_EXCHANGE_ALLOWANCE_KIND_NONE: {
+        defaultMessage: 'Not approved',
+        id: 'TR_EXCHANGE_ALLOWANCE_KIND_NONE',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_UNLIMITED: {
+        defaultMessage: '{provider} can spend all your {displaySymbol}',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_UNLIMITED',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_ENOUGH: {
+        defaultMessage: 'Your approval covers this swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_ENOUGH',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_TOO_LOW_RESET: {
+        defaultMessage: 'Revoke approval to swap more',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_TOO_LOW_RESET',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_TOO_LOW_INCREASE: {
+        defaultMessage: 'Approve a higher limit to swap more',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_TOO_LOW_INCREASE',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_NONE: {
+        defaultMessage: 'Nothing to revoke',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_NONE',
+    },
+    TR_EXCHANGE_ALLOWANCE_DESCRIPTION_UNLIMITED: {
+        defaultMessage:
+            'This limit has no cap, so {provider} can move any amount of {displaySymbol} from this account without asking again.',
+        id: 'TR_EXCHANGE_ALLOWANCE_DESCRIPTION_UNLIMITED',
+    },
+    TR_EXCHANGE_ALLOWANCE_DESCRIPTION_ENOUGH: {
+        defaultMessage:
+            '{provider} can spend up to {amount} from this account. You can swap without approving again.',
+        id: 'TR_EXCHANGE_ALLOWANCE_DESCRIPTION_ENOUGH',
+    },
+    TR_EXCHANGE_ALLOWANCE_DESCRIPTION_TOO_LOW_RESET: {
+        defaultMessage:
+            '{provider} can spend {amount}, this swap needs {needed}. {displaySymbol} requires a reset to 0 before you approve a higher limit.',
+        id: 'TR_EXCHANGE_ALLOWANCE_DESCRIPTION_TOO_LOW_RESET',
+    },
+    TR_EXCHANGE_ALLOWANCE_DESCRIPTION_TOO_LOW_INCREASE: {
+        defaultMessage:
+            '{provider} can spend {amount}, this swap needs {needed}. You can raise the limit without revoking.',
+        id: 'TR_EXCHANGE_ALLOWANCE_DESCRIPTION_TOO_LOW_INCREASE',
+    },
+    TR_EXCHANGE_ALLOWANCE_DESCRIPTION_NONE: {
+        defaultMessage:
+            "{provider} can't spend any {displaySymbol} from this account. When you continue, you'll approve exactly {needed} on your Trezor.",
+        id: 'TR_EXCHANGE_ALLOWANCE_DESCRIPTION_NONE',
+    },
+    TR_EXCHANGE_ALLOWANCE_ALLOWED: {
+        defaultMessage: '{displaySymbol} allowed',
+        id: 'TR_EXCHANGE_ALLOWANCE_ALLOWED',
+    },
+    TR_EXCHANGE_ALLOWANCE_NEEDED: {
+        defaultMessage: 'Needed {amount}',
+        id: 'TR_EXCHANGE_ALLOWANCE_NEEDED',
+    },
+    TR_EXCHANGE_ALLOWANCE_MISSING: {
+        defaultMessage: 'Missing {amount}',
+        id: 'TR_EXCHANGE_ALLOWANCE_MISSING',
+    },
+    TR_EXCHANGE_ALLOWANCE_LEFT_AFTER_SWAP: {
+        defaultMessage: '{amount} left after swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_LEFT_AFTER_SWAP',
+    },
+    TR_EXCHANGE_ALLOWANCE_NEEDED_FOR_SWAP: {
+        defaultMessage: 'Needed for this swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_NEEDED_FOR_SWAP',
+    },
+    TR_EXCHANGE_ALLOWANCE_FEE_TO_REVOKE: {
+        defaultMessage: 'Fee to revoke',
+        id: 'TR_EXCHANGE_ALLOWANCE_FEE_TO_REVOKE',
+    },
+    TR_EXCHANGE_ALLOWANCE_HINT_AFTER_REVOKE: {
+        defaultMessage:
+            'After revoking, continue the swap and approve the exact {needed} on your Trezor.',
+        id: 'TR_EXCHANGE_ALLOWANCE_HINT_AFTER_REVOKE',
+    },
+    TR_EXCHANGE_ALLOWANCE_HINT_INCREASE: {
+        defaultMessage: "When you continue, you'll approve the higher limit on your Trezor.",
+        id: 'TR_EXCHANGE_ALLOWANCE_HINT_INCREASE',
+    },
+    TR_EXCHANGE_ALLOWANCE_HINT_UNLIMITED: {
+        defaultMessage: "We recommend revoking unlimited approvals when you're done swapping.",
+        id: 'TR_EXCHANGE_ALLOWANCE_HINT_UNLIMITED',
+    },
+    TR_EXCHANGE_ALLOWANCE_CONTINUE_SWAP: {
+        defaultMessage: 'Continue swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_CONTINUE_SWAP',
+    },
+    TR_EXCHANGE_ALLOWANCE_SPENDER: {
+        defaultMessage: 'Spender',
+        id: 'TR_EXCHANGE_ALLOWANCE_SPENDER',
+    },
+    TR_EXCHANGE_ALLOWANCE_APPROVED_AMOUNT: {
+        defaultMessage: 'Approved amount',
+        id: 'TR_EXCHANGE_ALLOWANCE_APPROVED_AMOUNT',
+    },
+    TR_EXCHANGE_ALLOWANCE_SOURCE: {
+        defaultMessage: 'Source: {source}',
+        id: 'TR_EXCHANGE_ALLOWANCE_SOURCE',
+    },
+    TR_EXCHANGE_ALLOWANCE_SOURCE_CHAIN: {
+        defaultMessage: 'Blockchain',
+        id: 'TR_EXCHANGE_ALLOWANCE_SOURCE_CHAIN',
+    },
+    TR_EXCHANGE_ALLOWANCE_SOURCE_PROVIDER: {
+        defaultMessage: 'Provider',
+        id: 'TR_EXCHANGE_ALLOWANCE_SOURCE_PROVIDER',
+    },
+    TR_EXCHANGE_ALLOWANCE_CHAIN_ERROR: {
+        defaultMessage: 'Chain error: {message}',
+        id: 'TR_EXCHANGE_ALLOWANCE_CHAIN_ERROR',
+    },
+    TR_EXCHANGE_ALLOWANCE_REVOKED: {
+        defaultMessage:
+            'The approval was revoked. The provider can no longer spend {displaySymbol} from this account.',
+        id: 'TR_EXCHANGE_ALLOWANCE_REVOKED',
     },
     TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON: {
         defaultMessage: 'Refresh',

@@ -9,6 +9,8 @@ type AllowanceAmountProps = {
     amount: string;
     symbol?: string;
     decimals: number;
+    /** Caps the displayed decimals; a value cut short ends with an ellipsis. */
+    maxDisplayedDecimals?: number;
     contractAddress?: string | null;
     typographyStyle?: TypographyStyle;
     isLoading?: boolean;
@@ -20,6 +22,7 @@ export const AllowanceAmount = ({
     amount,
     symbol,
     decimals,
+    maxDisplayedDecimals,
     contractAddress,
     typographyStyle = 'body-md',
     isLoading = false,
@@ -49,6 +52,7 @@ export const AllowanceAmount = ({
                 symbol={symbol}
                 contractAddress={contractAddress}
                 tokenDecimals={decimals}
+                maxDisplayedDecimals={maxDisplayedDecimals}
                 data-testid={dataTest}
             />
         </Text>

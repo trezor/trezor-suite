@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { CardList, Column, Image, Row, Text } from '@trezor/components';
-import { TokenIcon, type TokenIconProps } from '@trezor/product-components';
+import { CardList, Column, Text } from '@trezor/components';
+import { type TokenIconProps } from '@trezor/product-components';
+
+import { AllowanceProviderLogo } from './AllowanceProviderLogo';
 
 export type AllowanceProvider = {
     name?: string;
@@ -39,15 +41,7 @@ export const AllowanceProviderInfo = ({
             </Text>
             <Column alignItems="flex-end" gap={2}>
                 <Logo data-testid="@modal/approve/provider-value">
-                    {provider.logo && (
-                        <Row alignItems="center" justifyContent="center">
-                            {typeof provider.logo === 'string' ? (
-                                <Image imageSrc={provider.logo} maxHeight={20} borderRadius={4} />
-                            ) : (
-                                <TokenIcon {...provider.logo} />
-                            )}
-                        </Row>
-                    )}
+                    {provider.logo && <AllowanceProviderLogo logo={provider.logo} />}
                     <Text typographyStyle="body-sm">{providerName}</Text>
                 </Logo>
                 {showSpender && (

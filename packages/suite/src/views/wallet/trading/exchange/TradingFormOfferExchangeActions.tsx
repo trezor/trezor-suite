@@ -14,6 +14,7 @@ import {
     selectTradingExchangeQuoteToEstimate,
     selectTradingSendAccount,
     tradingExchangeActions,
+    useTradingExchangeAllowance,
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
@@ -50,6 +51,7 @@ export const TradingFormOfferExchangeActions = () => {
     );
 
     const modalControls = useReceiveAddressModalControls();
+    const { currentAllowance } = useTradingExchangeAllowance({ account });
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const { outputs, sendCryptoSelect, receiveCryptoSelect, exchangeType, rateType, provider } =
@@ -143,10 +145,25 @@ export const TradingFormOfferExchangeActions = () => {
         );
     };
 
+    // The chain decides which approval steps are needed; the provider amount only fills in
+    // before the first read.
+    const chainAllowance =
+        currentAllowance.source === 'chain' ? currentAllowance.amount : undefined;
+
     const startApprovalFlow = (trade: ExchangeTrade) => {
         dispatch(tradingExchangeActions.saveFormValues(getValues()));
-        dispatch(tradingExchangeActions.startApprovalFlow(getApprovalFlowSteps(trade)));
+        dispatch(
+            tradingExchangeActions.startApprovalFlow(getApprovalFlowSteps(trade, chainAllowance)),
+        );
         dispatch(gotoThunk({ routeName: 'wallet-trading-exchange-approval' }));
+    };
+
+    // The allowance page reads the form values from the store, so keep them current.
+    const onManageApproval = () => {
+        dispatch(tradingExchangeActions.saveFormValues(getValues()));
+        dispatch(
+            gotoThunk({ routeName: 'wallet-trading-exchange-allowance', preserveParams: true }),
+        );
     };
 
     const onSelectQuote = async () => {
@@ -190,6 +207,7 @@ export const TradingFormOfferExchangeActions = () => {
                     isFormInvalid={state.isFormInvalid}
                     refreshQuotes={refreshQuotes}
                     onStartApprovalFlow={startApprovalFlow}
+                    onManageApproval={onManageApproval}
                     onSwap={selectQuote}
                     getCryptoInfo={getCryptoInfo}
                 />

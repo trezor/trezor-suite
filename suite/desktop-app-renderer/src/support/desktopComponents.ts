@@ -43,6 +43,7 @@ import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfir
 import { TradingBuyDetail } from 'src/views/wallet/trading/buy/TradingBuyDetail/TradingBuyDetail';
 import { TradingBuyForm } from 'src/views/wallet/trading/buy/TradingBuyForm';
 import { TradingConciergeDetail } from 'src/views/wallet/trading/concierge/TradingConciergeDetail';
+import { TradingExchangeAllowance } from 'src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowance';
 import { TradingExchangeApproval } from 'src/views/wallet/trading/exchange/TradingExchangeApproval/TradingExchangeApproval';
 import { TradingExchangeConfirm } from 'src/views/wallet/trading/exchange/TradingExchangeConfirm';
 import { TradingExchangeDetail } from 'src/views/wallet/trading/exchange/TradingExchangeDetail/TradingExchangeDetail';
@@ -113,6 +114,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-trading-exchange-detail': TradingExchangeDetail,
     'wallet-trading-exchange-confirm': TradingExchangeConfirm,
     'wallet-trading-exchange-approval': TradingExchangeApproval,
+    'wallet-trading-exchange-allowance': TradingExchangeAllowance,
     'wallet-trading-concierge': TradingConciergeDetail,
     'wallet-trading-redirect': TradingRedirect,
     'wallet-trading-transactions': TradingTransactions,

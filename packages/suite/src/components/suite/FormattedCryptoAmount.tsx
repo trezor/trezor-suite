@@ -27,6 +27,8 @@ export interface FormattedCryptoAmountProps {
     /** Compact formatting, for a balance shown next to its fiat value. */
     isCompact?: boolean;
     tokenDecimals?: number;
+    /** Caps the decimals of the exact format; a value cut short ends with an ellipsis. */
+    maxDisplayedDecimals?: number;
     showApproximation?: boolean;
     signValue?: SignValue;
     signGrayscale?: boolean;
@@ -47,6 +49,7 @@ export const FormattedCryptoAmount = ({
     contractAddress, // include contractAddress whenever the symbol is an token
     isCompact = false,
     tokenDecimals,
+    maxDisplayedDecimals,
     showApproximation = false,
     signValue,
     signGrayscale,
@@ -101,7 +104,10 @@ export const FormattedCryptoAmount = ({
         // Stated token decimals win: the symbol may resolve to an unrelated network.
         maxDisplayedDecimals: isCompact
             ? undefined
-            : (tokenDecimals ?? networkDecimals ?? MAX_TOKEN_DISPLAYED_DECIMALS),
+            : (maxDisplayedDecimals ??
+              tokenDecimals ??
+              networkDecimals ??
+              MAX_TOKEN_DISPLAYED_DECIMALS),
         formatStyle: isCompact ? 'compact-balance' : 'exact',
         tokenDecimals,
     } as const;
