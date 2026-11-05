@@ -58,6 +58,7 @@ export const AssetSettingsBottomSheet = ({
                 <AssetSettingsHideTokenAction
                     networkSymbol={networkSymbol}
                     tokenContract={tokenContract}
+                    onClose={onClose}
                 />
                 <AssetSettingsExplorerAction
                     networkSymbol={networkSymbol}
