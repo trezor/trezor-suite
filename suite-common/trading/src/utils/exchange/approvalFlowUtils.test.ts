@@ -138,3 +138,52 @@ describe('getApprovalFlowStepStatuses', () => {
         );
     });
 });
+
+describe('getApprovalFlowSteps with the chain allowance', () => {
+    it('approves when the chain reports no allowance despite the provider', () => {
+        expect(getApprovalFlowSteps({ ...QUOTE, preapprovedStringAmount: '10' }, '0')).toEqual(
+            APPROVE_STEPS,
+        );
+    });
+
+    it('revokes first when the chain reports an allowance the provider does not know', () => {
+        expect(
+            getApprovalFlowSteps(
+                { ...QUOTE, send: USDT_CRYPTO_ID, preapprovedStringAmount: '0' },
+                '10',
+            ),
+        ).toEqual(USDT_STEPS);
+    });
+});
+
+describe('getApprovalFlowStepStatuses with the chain allowance', () => {
+    it('marks the revoke done once the chain reports no allowance', () => {
+        expect(
+            getApprovalFlowStepStatuses(
+                USDT_STEPS,
+                { ...QUOTE, preapprovedStringAmount: '10' },
+                [],
+                '0',
+            ),
+        ).toEqual([
+            { type: 'revoke', status: 'done' },
+            { type: 'approve', status: 'active' },
+            { type: 'swap', status: 'upcoming' },
+        ]);
+    });
+
+    it('keeps the revoke active while the chain still reports an allowance', () => {
+        expect(
+            getApprovalFlowStepStatuses(
+                USDT_STEPS,
+                { ...QUOTE, preapprovedStringAmount: '0' },
+                [],
+                '10',
+            ),
+        ).toEqual([
+            { type: 'revoke', status: 'active' },
+            { type: 'approve', status: 'upcoming' },
+            { type: 'swap', status: 'upcoming' },
+        ]);
+    });
+});

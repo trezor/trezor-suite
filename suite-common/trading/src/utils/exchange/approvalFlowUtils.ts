@@ -20,11 +20,16 @@ export type ApprovalFlowStep = {
     status: ApprovalFlowStepStatus;
 };
 
-const hasPreapprovedAmount = (quote: ExchangeTrade) =>
-    new BigNumber(quote.preapprovedStringAmount ?? 0).gt(0);
+// `currentAllowance` is the allowance in token units read from the chain. Without it the
+// provider-reported `preapprovedStringAmount` decides.
+const hasExistingAllowance = (quote: ExchangeTrade, currentAllowance: string | undefined) =>
+    new BigNumber(currentAllowance ?? quote.preapprovedStringAmount ?? 0).gt(0);
 
-export const getApprovalFlowSteps = (quote: ExchangeTrade): ApprovalFlowStepType[] => {
-    if (!hasPreapprovedAmount(quote)) {
+export const getApprovalFlowSteps = (
+    quote: ExchangeTrade,
+    currentAllowance?: string,
+): ApprovalFlowStepType[] => {
+    if (!hasExistingAllowance(quote, currentAllowance)) {
         return ['approve', 'swap'];
     }
 
@@ -38,11 +43,14 @@ export const getApprovalFlowSteps = (quote: ExchangeTrade): ApprovalFlowStepType
 const isApprovalConfirmed = (quote: ExchangeTrade) =>
     quote.status === 'CONFIRM' || quote.status === 'SIGN_DATA';
 
-const isStepDone = (
-    type: ApprovalFlowStepType,
-    quote: ExchangeTrade,
-    completedSteps: ApprovalFlowStepType[],
-) => {
+type IsStepDoneParams = {
+    type: ApprovalFlowStepType;
+    quote: ExchangeTrade;
+    completedSteps: ApprovalFlowStepType[];
+    currentAllowance: string | undefined;
+};
+
+const isStepDone = ({ type, quote, completedSteps, currentAllowance }: IsStepDoneParams) => {
     if (type === 'swap') {
         return false;
     }
@@ -61,7 +69,7 @@ const isStepDone = (
             quote.approvalType === 'ZERO' &&
             !!quote.approvalSendTxHash;
 
-        return !hasPreapprovedAmount(quote) || isSentRevokeConfirmed;
+        return !hasExistingAllowance(quote, currentAllowance) || isSentRevokeConfirmed;
     }
 
     return false;
@@ -74,12 +82,15 @@ export const getApprovalFlowStepStatuses = (
     steps: ApprovalFlowStepType[],
     quote: ExchangeTrade | undefined,
     completedSteps: ApprovalFlowStepType[] = [],
+    currentAllowance?: string,
 ): ApprovalFlowStep[] => {
     if (!quote) {
         return [];
     }
 
-    const currentIndex = steps.findIndex(type => !isStepDone(type, quote, completedSteps));
+    const currentIndex = steps.findIndex(
+        type => !isStepDone({ type, quote, completedSteps, currentAllowance }),
+    );
 
     return steps.map((type, index): ApprovalFlowStep => {
         if (currentIndex === -1 || index < currentIndex) {

@@ -195,7 +195,14 @@ const getInsufficientAllowanceStatus = (send: CryptoId): ApprovalStatus =>
         ? 'needs_increase'
         : 'needs_revoke';
 
-export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
+/**
+ * `currentAllowance` is the allowance in token units read from the chain. Without it the
+ * provider-reported `preapprovedStringAmount` decides.
+ */
+export const getApprovalStatus = (
+    candidateQuote?: ExchangeTrade,
+    currentAllowance?: string,
+): ApprovalStatus => {
     if (!candidateQuote) {
         return null;
     }
@@ -206,7 +213,9 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
         return 'not_needed';
     }
 
-    const hasPreapprovedAmount = new BigNumber(preapprovedStringAmount ?? 0).gt(0);
+    const hasPreapprovedAmount = new BigNumber(currentAllowance ?? preapprovedStringAmount ?? 0).gt(
+        0,
+    );
 
     if (status === 'APPROVAL_REQ') {
         return hasPreapprovedAmount ? getInsufficientAllowanceStatus(send) : 'needs_approval';
@@ -219,12 +228,15 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
     return status === 'CONFIRM' || status === 'SIGN_DATA' ? 'not_needed' : 'needs_approval';
 };
 
-export const getDexEstimationData = (quote: ExchangeTrade): string | undefined => {
+export const getDexEstimationData = (
+    quote: ExchangeTrade,
+    currentAllowance?: string,
+): string | undefined => {
     if (!quote.dexTx?.data) {
         return undefined;
     }
 
-    if (getApprovalStatus(quote) === 'needs_revoke') {
+    if (getApprovalStatus(quote, currentAllowance) === 'needs_revoke') {
         const spender = getErc20ApproveSpender(quote.dexTx.data);
         if (spender) {
             try {

@@ -11,6 +11,8 @@ import { cloneObject } from '@trezor/utils';
 
 import { TRADING_EXCHANGE_PREFIX } from '../constants';
 import {
+    type TradingExchangeAllowance,
+    type TradingExchangeAllowanceKey,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
     type TradingExchangeStepType,
@@ -19,6 +21,7 @@ import {
     type ApprovalFlowState,
     type ApprovalFlowStepType,
 } from '../utils/exchange/approvalFlowUtils';
+import { isSameExchangeAllowanceKey } from '../utils/exchange/exchangeAllowanceUtils';
 
 export interface ExchangeInfo {
     providerInfos: Record<string, ExchangeProviderInfo>;
@@ -45,6 +48,8 @@ export interface TradingExchangeState {
     formStep: TradingExchangeStepType;
     transactionId?: string;
     lastErrorMessage?: string;
+    /** Allowance of the selected DEX quote's spender read from the chain. */
+    allowance: TradingExchangeAllowance | undefined;
 }
 
 export const exchangeInitialState: TradingExchangeState = {
@@ -64,7 +69,13 @@ export const exchangeInitialState: TradingExchangeState = {
     dexQuoteApprovalPrefetchLoadingQuoteId: undefined,
     amountLimits: undefined,
     formStep: 'RECEIVING_ADDRESS',
+    allowance: undefined,
 };
+
+const isAllowanceBeingTracked = (
+    state: TradingExchangeState,
+    key: TradingExchangeAllowanceKey,
+): boolean => !!state.allowance && isSameExchangeAllowanceKey(state.allowance, key);
 
 const tradingExchangeSlice = createSlice({
     name: TRADING_EXCHANGE_PREFIX,
@@ -198,6 +209,39 @@ const tradingExchangeSlice = createSlice({
             action: PayloadAction<string | undefined>,
         ) {
             state.lastErrorMessage = action.payload;
+        },
+        startAllowanceRead(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAllowanceKey>,
+        ) {
+            const amount = isAllowanceBeingTracked(state, action.payload)
+                ? state.allowance?.amount
+                : undefined;
+
+            state.allowance = { ...action.payload, status: 'loading', amount };
+        },
+        setAllowance(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAllowanceKey & { amount: string }>,
+        ) {
+            if (!isAllowanceBeingTracked(state, action.payload)) {
+                return;
+            }
+
+            state.allowance = { ...action.payload, status: 'loaded' };
+        },
+        setAllowanceError(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAllowanceKey & { errorMessage: string }>,
+        ) {
+            if (!isAllowanceBeingTracked(state, action.payload)) {
+                return;
+            }
+
+            state.allowance = { ...action.payload, status: 'error', amount: undefined };
+        },
+        clearAllowance(state: TradingExchangeState) {
+            state.allowance = undefined;
         },
     },
 });

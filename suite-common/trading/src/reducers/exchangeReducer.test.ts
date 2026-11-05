@@ -376,3 +376,132 @@ describe('tradingExchangeReducer', () => {
         });
     });
 });
+
+describe('exchangeReducer allowance', () => {
+    const ACCOUNT_KEY = 'account-1' as AccountKey;
+    const KEY = {
+        accountKey: ACCOUNT_KEY,
+        tokenContractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        spender: '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae',
+    };
+    const OTHER_KEY = { ...KEY, spender: '0x1111111111111111111111111111111111111111' };
+
+    it('is not tracked initially', () => {
+        const state = tradingExchangeReducer(undefined, { type: 'init' });
+
+        expect(state.allowance).toBeUndefined();
+    });
+
+    it('starts a read without an amount', () => {
+        const state = [tradingExchangeActions.startAllowanceRead(KEY)].reduce(
+            tradingExchangeReducer,
+            undefined,
+        );
+
+        expect(state?.allowance).toEqual({
+            ...KEY,
+            status: 'loading',
+            amount: undefined,
+        });
+    });
+
+    it('keeps the last amount while the same key is re-read', () => {
+        const state = [
+            tradingExchangeActions.startAllowanceRead(KEY),
+            tradingExchangeActions.setAllowance({ ...KEY, amount: '50' }),
+            tradingExchangeActions.startAllowanceRead({
+                ...KEY,
+                spender: KEY.spender.toUpperCase(),
+            }),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance).toEqual({
+            ...KEY,
+            spender: KEY.spender.toUpperCase(),
+            status: 'loading',
+            amount: '50',
+        });
+    });
+
+    it('drops the amount when another key is read', () => {
+        const state = [
+            tradingExchangeActions.startAllowanceRead(KEY),
+            tradingExchangeActions.setAllowance({ ...KEY, amount: '50' }),
+            tradingExchangeActions.startAllowanceRead(OTHER_KEY),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance).toEqual({
+            ...OTHER_KEY,
+            status: 'loading',
+            amount: undefined,
+        });
+    });
+
+    it('stores the read amount', () => {
+        const state = [
+            tradingExchangeActions.startAllowanceRead(KEY),
+            tradingExchangeActions.setAllowance({ ...KEY, amount: '50' }),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance).toEqual({
+            ...KEY,
+            status: 'loaded',
+            amount: '50',
+        });
+    });
+
+    it.each<[string, UnknownAction]>([
+        ['an amount', tradingExchangeActions.setAllowance({ ...OTHER_KEY, amount: '50' })],
+        [
+            'an error',
+            tradingExchangeActions.setAllowanceError({ ...OTHER_KEY, errorMessage: 'timeout' }),
+        ],
+    ])('ignores %s for a key that is not being read', (_result, action) => {
+        const state = [tradingExchangeActions.startAllowanceRead(KEY), action].reduce(
+            tradingExchangeReducer,
+            undefined,
+        );
+
+        expect(state?.allowance).toEqual({
+            ...KEY,
+            status: 'loading',
+            amount: undefined,
+        });
+    });
+
+    it('drops the amount and keeps the reason when the read fails', () => {
+        const state = [
+            tradingExchangeActions.startAllowanceRead(KEY),
+            tradingExchangeActions.setAllowance({ ...KEY, amount: '50' }),
+            tradingExchangeActions.startAllowanceRead(KEY),
+            tradingExchangeActions.setAllowanceError({ ...KEY, errorMessage: 'timeout' }),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance).toEqual({
+            ...KEY,
+            status: 'error',
+            amount: undefined,
+            errorMessage: 'timeout',
+        });
+    });
+
+    it('forgets the failure reason when the key is read again', () => {
+        const state = [
+            tradingExchangeActions.startAllowanceRead(KEY),
+            tradingExchangeActions.setAllowanceError({ ...KEY, errorMessage: 'timeout' }),
+            tradingExchangeActions.startAllowanceRead(KEY),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance?.errorMessage).toBeUndefined();
+    });
+
+    it('is cleared', () => {
+        const state = [
+            tradingExchangeActions.startAllowanceRead(KEY),
+            tradingExchangeActions.setAllowance({ ...KEY, amount: '50' }),
+            tradingExchangeActions.clearAllowance(),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance).toBeUndefined();
+    });
+});

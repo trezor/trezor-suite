@@ -360,3 +360,19 @@ export type TradingVerifiedAddress =
     | undefined;
 
 export type TradingFulfillValue = Ok<{ txid: string }> | Err<SerializedError> | undefined;
+
+export type TradingExchangeAllowanceKey = {
+    accountKey: AccountKey;
+    tokenContractAddress: string;
+    spender: string;
+};
+
+export type TradingExchangeAllowanceStatus = 'loading' | 'loaded' | 'error';
+
+export type TradingExchangeAllowance = TradingExchangeAllowanceKey & {
+    status: TradingExchangeAllowanceStatus;
+    /** Allowance in token units read from the chain. Kept from the last read while re-reading. */
+    amount: string | undefined;
+    /** Why the last read failed. Stays on the device, it is shown only in debug mode. */
+    errorMessage?: string;
+};

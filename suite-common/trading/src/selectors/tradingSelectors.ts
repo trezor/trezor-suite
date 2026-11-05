@@ -71,6 +71,7 @@ import type { TradingRootState } from '../reducers/tradingCommonReducer';
 import {
     type SelectedTradingAsset,
     type TradingBuyPaymentMethodProps,
+    type TradingExchangeAllowance,
     type TradingExchangeFormType,
     type TradingFiatCurrenciesProps,
     type TradingPaymentMethodListProps,
@@ -93,6 +94,10 @@ import {
     testnetToProdCryptoId,
 } from '../utils';
 import { getApprovalFlowStepStatuses } from '../utils/exchange/approvalFlowUtils';
+import {
+    getExchangeAllowanceKey,
+    isSameExchangeAllowanceKey,
+} from '../utils/exchange/exchangeAllowanceUtils';
 import {
     getDisplayNetworkFee,
     hasEip712SignDataType,
@@ -428,13 +433,38 @@ export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
 export const selectTradingExchangeApprovalFlow = (state: TradingRootState) =>
     state.wallet.trading.exchange.approvalFlow;
 
+export const selectTradingExchangeAllowance = (state: TradingRootState) =>
+    state.wallet.trading.exchange.allowance;
+
+/**
+ * The tracked allowance only when it belongs to the selected quote's token and spender for the
+ * given account, so a stale read never leaks into another quote.
+ */
+export const selectTradingExchangeSelectedQuoteAllowance = (
+    state: TradingRootState,
+    accountKey: AccountKey | undefined,
+): TradingExchangeAllowance | undefined => {
+    const allowance = selectTradingExchangeAllowance(state);
+    const key = getExchangeAllowanceKey({
+        accountKey,
+        quote: selectTradingExchangeSelectedQuote(state),
+    });
+
+    return allowance && key && isSameExchangeAllowanceKey(allowance, key) ? allowance : undefined;
+};
+
 export const selectTradingExchangeApprovalFlowSteps = createMemoizedSelector(
-    [selectTradingExchangeApprovalFlow, selectTradingExchangeSelectedQuote],
-    (approvalFlow, selectedQuote) =>
+    [
+        selectTradingExchangeApprovalFlow,
+        selectTradingExchangeSelectedQuote,
+        selectTradingExchangeSelectedQuoteAllowance,
+    ],
+    (approvalFlow, selectedQuote, allowance) =>
         getApprovalFlowStepStatuses(
             approvalFlow?.steps ?? [],
             selectedQuote,
             approvalFlow?.completedSteps,
+            allowance?.amount,
         ),
 );
 
