@@ -745,3 +745,54 @@ describe('deriveBitcoinSwapFromAddresses', () => {
         expect(result).toBeUndefined();
     });
 });
+
+describe('getApprovalStatus with the chain allowance', () => {
+    const quote = {
+        orderId: 'test-order',
+        preapprovedStringAmount: '50',
+        isDex: true,
+        send: USDT_CRYPTO_ID,
+        status: 'APPROVAL_REQ' as const,
+    };
+
+    it('needs a plain approval when the chain reports no allowance despite the provider', () => {
+        expect(getApprovalStatus(quote, '0')).toBe('needs_approval');
+    });
+
+    it('needs a revoke when the chain reports an allowance the provider does not know', () => {
+        expect(getApprovalStatus({ ...quote, preapprovedStringAmount: '0' }, '50')).toBe(
+            'needs_revoke',
+        );
+    });
+
+    it('is approved when the chain reports an allowance for a confirmed quote', () => {
+        expect(
+            getApprovalStatus({ ...quote, preapprovedStringAmount: '0', status: 'CONFIRM' }, '50'),
+        ).toBe('approved');
+    });
+});
+
+describe('getDexEstimationData with the chain allowance', () => {
+    const spender = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
+    const approveData = buildApprovalTransactionData({ spender, amount: '1' });
+    const quote = {
+        orderId: 'test-order',
+        preapprovedStringAmount: '0',
+        isDex: true,
+        send: USDT_CRYPTO_ID,
+        status: 'APPROVAL_REQ' as const,
+        dexTx: { from: '0xowner', to: '0xtoken', value: '0', data: approveData },
+    };
+
+    it('estimates a revoke when the chain reports an allowance for a token that cannot increase it', () => {
+        expect(getDexEstimationData(quote, '50')).toBe(
+            buildApprovalTransactionData({ spender, amount: '0' }),
+        );
+    });
+
+    it('estimates the approval when the chain reports no allowance', () => {
+        expect(getDexEstimationData({ ...quote, preapprovedStringAmount: '50' }, '0')).toBe(
+            approveData,
+        );
+    });
+});

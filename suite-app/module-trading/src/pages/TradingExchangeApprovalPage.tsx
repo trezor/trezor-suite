@@ -19,7 +19,7 @@ import {
 
 export const TradingExchangeApprovalPage = () => {
     useTradingPageHeader();
-    const { account, quote, steps, spender, pendingApprovalTxid, isFlowMissing } =
+    const { account, quote, steps, spender, pendingApprovalTxid, currentAllowance, isFlowMissing } =
         useTradingExchangeApprovalFlow();
     const formValues = useSelector(selectTradingExchangeFormValues);
     const exchangeProviders = useSelector(selectTradingExchangeProviders);
@@ -88,6 +88,7 @@ export const TradingExchangeApprovalPage = () => {
                             pendingApprovalTxid={pendingApprovalTxid}
                             tokenContractAddress={tokenContractAddress}
                             spender={spender}
+                            currentAllowance={currentAllowance.amount}
                             getCryptoInfo={getCryptoInfo}
                         />
                     );

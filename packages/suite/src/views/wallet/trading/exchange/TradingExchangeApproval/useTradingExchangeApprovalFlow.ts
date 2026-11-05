@@ -10,6 +10,7 @@ import {
     selectTradingExchangePendingApprovalTxid,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
+    useTradingExchangeAllowance,
     useTradingExchangeWatchApproval,
 } from '@suite-common/trading';
 import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
@@ -33,6 +34,7 @@ export const useTradingExchangeApprovalFlow = () => {
     const pendingApprovalTxid = useSelector(selectTradingExchangePendingApprovalTxid);
     const { confirmApproval } = useExchangeApproval({ account });
     const resumedApproval = useResumedApproval({ quote, pendingApprovalTxid, confirmApproval });
+    const { currentAllowance } = useTradingExchangeAllowance({ account });
 
     const quoteSpender = getErc20ApproveSpender(quote?.dexTx?.data);
     const [spender, setSpender] = useState(quoteSpender);
@@ -106,6 +108,7 @@ export const useTradingExchangeApprovalFlow = () => {
         steps: displayedSteps,
         spender,
         pendingApprovalTxid: resumedApproval.txid,
+        currentAllowance,
         isFlowMissing,
     };
 };

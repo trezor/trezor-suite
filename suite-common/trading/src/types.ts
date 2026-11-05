@@ -404,3 +404,20 @@ export type TradingSignAndPushError = SendFormError | PushApprovalRejectedError;
  * `undefined` means the flow stopped and the user was already informed, so nothing is left to report.
  */
 export type TradingFulfillValue = Ok<{ txid: string }> | Err<TradingSignAndPushError> | undefined;
+
+export type TradingExchangeAllowanceKey = {
+    accountKey: AccountKey;
+    tokenContractAddress: string;
+    spender: string;
+};
+
+export type TradingExchangeAllowanceRead = TradingExchangeAllowanceKey & {
+    requestId: string;
+    confirmedTxCount: number;
+};
+
+export type TradingExchangeAllowance = TradingExchangeAllowanceRead & {
+    status: 'loading' | 'loaded' | 'error';
+    amount: string | undefined;
+    errorMessage?: string;
+};
