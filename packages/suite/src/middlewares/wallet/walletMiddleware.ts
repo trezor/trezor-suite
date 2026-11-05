@@ -2,7 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { selectSelectedAccountKey } from '@suite/account';
-import { routerLocationChange, selectRouteName } from '@suite/router';
+import { routerLocationChange, selectRouteName, selectRouter } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
@@ -11,6 +11,7 @@ import {
     accountsActions,
     blockchainActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
+    selectAccounts,
     selectAllNetworkSymbolsOfVisibleAccounts,
     selectNetworksWithPendingTxs,
     sendFormActions,
@@ -35,9 +36,9 @@ const walletMiddleware =
 
         if (deviceActions.forgetDevice.match(action)) {
             const deviceState = action.payload.device.state?.staticSessionId;
-            const accountsToRemove = api
-                .getState()
-                .wallet.accounts.filter(a => a.deviceState === deviceState);
+            const accountsToRemove = selectAccounts(api.getState()).filter(
+                a => a.deviceState === deviceState,
+            );
             api.dispatch(accountsActions.removeAccount(accountsToRemove));
         }
 
@@ -83,8 +84,8 @@ const walletMiddleware =
                 });
         }
 
-        const prevRouter = prevState.router;
-        const nextRouter = api.getState().router;
+        const prevRouter = selectRouter(prevState);
+        const nextRouter = selectRouter(api.getState());
         let resetReducers = action.type === deviceActions.selectDevice.type;
 
         if (
