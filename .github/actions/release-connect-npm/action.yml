@@ -37,11 +37,17 @@ runs:
 
     - name: Check version
       shell: bash
-      run: node ./scripts/ci/check-version.js ${{ inputs.packageName }} ${{ inputs.deploymentType }}
+      env:
+        PACKAGE_NAME: ${{ inputs.packageName }}
+        DEPLOYMENT_TYPE: ${{ inputs.deploymentType }}
+      run: node ./scripts/ci/check-version.js "$PACKAGE_NAME" "$DEPLOYMENT_TYPE"
 
     - name: Publish to NPM
       shell: bash
+      env:
+        PACKAGE_NAME: ${{ inputs.packageName }}
+        DEPLOYMENT_TYPE: ${{ inputs.deploymentType }}
       run: |
-        cd "$(node ./scripts/ci/trezor-package-path.ts "${{ inputs.packageName }}")"
+        cd "$(node ./scripts/ci/trezor-package-path.ts "$PACKAGE_NAME")"
         yarn build:lib
-        yarn npm publish --tag ${{ inputs.deploymentType }} --access public --provenance
+        yarn npm publish --tag "$DEPLOYMENT_TYPE" --access public --provenance

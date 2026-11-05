@@ -90,6 +90,7 @@ jobs:
           GITHUB_REPORTER_VERBOSE: true
           RELEASE_BUILD: ${{ env.release_build }}
           REPORTER_WATCHDOG: ${{ inputs.reporterWatchdog }}
+          TEST_FILTER: ${{ inputs.testFilter }}
         run: |
           echo "Starting Jest Reporter for manual regression suite"
-          yarn workspace @suite-native-app/app github:report:manual ${{ inputs.testFilter }}
+          yarn workspace @suite-native-app/app github:report:manual $TEST_FILTER

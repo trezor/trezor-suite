@@ -61,5 +61,6 @@ jobs:
       - name: Check dependencies to update
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          SEMVER: ${{ github.event.inputs.semver }}
         run: |
-          yarn tsx ./scripts/ci/connect-bump-versions.ts ${{ github.event.inputs.semver }}
+          yarn tsx ./scripts/ci/connect-bump-versions.ts "$SEMVER"

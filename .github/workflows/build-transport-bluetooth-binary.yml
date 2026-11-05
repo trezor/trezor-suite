@@ -26,7 +26,7 @@ jobs:
       - name: Build transport-bluetooth binary
         working-directory: packages/transport-bluetooth
         run: |
-          BUILD_VERSION_TAG="${{ github.ref_name }}:${{ github.sha }}"
+          BUILD_VERSION_TAG="${GITHUB_REF_NAME}:${GITHUB_SHA}"
           mkdir build
           touch build/index.html
           docker build . -f ./scripts/Dockerfile -t trezor-bluetooth-image --build-arg BUILD_VERSION_TAG=$BUILD_VERSION_TAG

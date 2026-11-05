@@ -31,19 +31,19 @@ runs:
       continue-on-error: true
       env:
         GH_TOKEN: ${{ inputs.github_token }}
+        EVENT_NAME: ${{ github.event_name }}
+        PR_BRANCH: ${{ inputs.pr_branch }}
+        PR_CREATED_TIMESTAMP: ${{ inputs.pr_created }}
+        REPO: ${{ inputs.repo }}
+        WORKFLOW_NAME: ${{ inputs.workflow_name }}
+        RUN_ATTEMPT: ${{ inputs.run_attempt }}
       shell: bash
       run: |
-        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+        if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
           echo "Manually triggered workflow. Running all tests."
           echo "skip_tests=false" >> $GITHUB_OUTPUT
           exit 0
         fi
-
-        PR_BRANCH="${{ inputs.pr_branch }}"
-        PR_CREATED_TIMESTAMP="${{ inputs.pr_created }}"
-        REPO="${{ inputs.repo }}"
-        WORKFLOW_NAME="${{ inputs.workflow_name }}"
-        RUN_ATTEMPT="${{ inputs.run_attempt }}"
 
         if [ "${RUN_ATTEMPT}" -gt 1 ]; then
           echo "Manually triggered re-run."

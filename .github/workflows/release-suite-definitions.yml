@@ -72,8 +72,10 @@ jobs:
 
       - name: Upload ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.ref == 'refs/heads/develop' }}
+        env:
+          RELEASE_ENVIRONMENT: ${{ github.event.inputs.environment }}
         run: |
-          if [ '${{ github.event.inputs.environment }}' == 'production-definitions' ]
+          if [ "$RELEASE_ENVIRONMENT" == 'production-definitions' ]
           then
             aws s3 sync --delete suite-common/token-definitions/files/ s3://data.trezor.io/suite/definitions/stable/ --cache-control no-cache
             aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/suite/definitions/stable/*'

@@ -24,16 +24,23 @@ jobs:
     steps:
       - name: Determine event context
         id: context
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+          ISSUE_HAS_LABEL: ${{ contains(github.event.issue.labels.*.name, env.NOQA_LABEL) }}
+          PR_NODE_ID: ${{ github.event.pull_request.node_id }}
+          PR_HAS_LABEL: ${{ contains(github.event.pull_request.labels.*.name, env.NOQA_LABEL) }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
         run: |
-          if [ "${{ github.event_name }}" == "issues" ]; then
-            echo "content_id=${{ github.event.issue.node_id }}" >> $GITHUB_OUTPUT
-            echo "has_noqa_label=${{ contains(github.event.issue.labels.*.name, env.NOQA_LABEL) }}" >> $GITHUB_OUTPUT
+          if [ "$EVENT_NAME" == "issues" ]; then
+            echo "content_id=$ISSUE_NODE_ID" >> $GITHUB_OUTPUT
+            echo "has_noqa_label=$ISSUE_HAS_LABEL" >> $GITHUB_OUTPUT
             echo "is_merged=false" >> $GITHUB_OUTPUT
             echo "event_type=issue" >> $GITHUB_OUTPUT
           else
-            echo "content_id=${{ github.event.pull_request.node_id }}" >> $GITHUB_OUTPUT
-            echo "has_noqa_label=${{ contains(github.event.pull_request.labels.*.name, env.NOQA_LABEL) }}" >> $GITHUB_OUTPUT
-            echo "is_merged=${{ github.event.pull_request.merged }}" >> $GITHUB_OUTPUT
+            echo "content_id=$PR_NODE_ID" >> $GITHUB_OUTPUT
+            echo "has_noqa_label=$PR_HAS_LABEL" >> $GITHUB_OUTPUT
+            echo "is_merged=$PR_MERGED" >> $GITHUB_OUTPUT
             echo "event_type=pull_request" >> $GITHUB_OUTPUT
           fi
 

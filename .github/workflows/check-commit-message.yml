@@ -16,10 +16,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
       - name: Fetch base and current branch
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url }}
         run: |
-          git fetch --no-tags origin ${{ github.base_ref }} --depth=150
-          git fetch --no-tags ${{github.event.pull_request.head.repo.clone_url}} ${{ github.head_ref }}:${{ github.head_ref }} --depth=150
-          git switch ${{ github.head_ref }}
+          git fetch --no-tags origin "$BASE_REF" --depth=150
+          git fetch --no-tags "$HEAD_REPO_URL" "$HEAD_REF:$HEAD_REF" --depth=150
+          git switch "$HEAD_REF"
 
       - name: Check commit messages
         run: ./scripts/check-commit-messages.sh
