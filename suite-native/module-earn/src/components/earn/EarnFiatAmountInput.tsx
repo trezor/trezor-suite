@@ -11,6 +11,7 @@ import { Input, type InputType, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
+import { useTokenMetadata } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import { FIAT_INPUT_MAX_LENGTH } from '../../constants';
@@ -20,7 +21,6 @@ import { isAmountInputValueValid } from '../../utils/yield/yieldFiatAmountUtils'
 type EarnFiatAmountInputProps = {
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
-    tokenDecimals?: number;
     accessibilityLabel?: string;
     inputRef?: RefObject<InputType | null>;
     isDisabled?: boolean;
@@ -30,15 +30,15 @@ type EarnFiatAmountInputProps = {
 export const EarnFiatAmountInput = ({
     symbol,
     tokenContract,
-    tokenDecimals,
     accessibilityLabel = 'fiat amount to stake input',
     inputRef,
     isDisabled = false,
     onPress,
 }: EarnFiatAmountInputProps) => {
     const { setValue } = useFormContext<EarnFormValues>();
+    const token = useTokenMetadata(symbol, tokenContract);
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
-    const decimals = tokenDecimals ?? getNetwork(symbol).decimals;
+    const decimals = token?.decimals ?? getNetwork(symbol).decimals;
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });

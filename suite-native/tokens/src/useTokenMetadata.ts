@@ -8,11 +8,17 @@ import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TokenMetadataContext } from './TokenMetadataContext';
 
-export const useTokenMetadata = (networkSymbol: NetworkSymbol, contractAddress: TokenAddress) => {
+/** Native-coin inputs have no contract and therefore no token metadata. */
+export const useTokenMetadata = (
+    networkSymbol: NetworkSymbol,
+    contractAddress: TokenAddress | undefined,
+) => {
     const resolveSourceMetadata = useContext(TokenMetadataContext);
-    const sourceMetadata = resolveSourceMetadata(networkSymbol, contractAddress);
+    const sourceMetadata = contractAddress
+        ? resolveSourceMetadata(networkSymbol, contractAddress)
+        : null;
     const accountToken = useSelector((state: AccountsRootState) =>
-        sourceMetadata
+        sourceMetadata || !contractAddress
             ? null
             : selectTokenByNetworkAndContract(state, networkSymbol, contractAddress),
     );

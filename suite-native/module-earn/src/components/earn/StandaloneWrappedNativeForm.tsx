@@ -5,6 +5,7 @@ import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { EarnFeeSection } from './EarnFeeSection';
 import { WrappedNativeFeeReserveBanner } from './WrappedNativeFeeReserveBanner';
@@ -47,11 +48,12 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         submit,
         wrappedTokenContract,
         wrappedTokenSymbol,
+        wrappedTokenMetadata,
     } = controller;
 
     const messages = wrappedNativeFlowMessages[flowType].form;
 
-    return (
+    const content = (
         <Screen
             header={
                 <YieldFlowScreenHeader
@@ -89,8 +91,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                             onMaxPress={amountInput.onMaxPress}
                             symbol={account.symbol}
                             tokenContract={spentTokenContract}
-                            tokenDecimals={amountInput.tokenDecimals}
-                            tokenSymbol={spentSymbol}
                         />
                     </Form>
 
@@ -155,5 +155,11 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                 title={<Translation id={messages.pendingTransactionTitle} />}
             />
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider networkSymbol={account.symbol} tokens={[wrappedTokenMetadata]}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

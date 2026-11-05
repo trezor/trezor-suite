@@ -124,8 +124,6 @@ export const YieldAmountInputCard = ({
                             <EarnCryptoAmountInput
                                 symbol={symbol}
                                 tokenContract={tokenContract}
-                                tokenDecimals={tokenDecimals}
-                                displaySymbol={tokenSymbol}
                                 accessibilityLabel="amount to deposit input"
                                 inputRef={inputRef}
                                 isDisabled={isMaxSelected || isDisabled}
@@ -136,7 +134,6 @@ export const YieldAmountInputCard = ({
                             <EarnFiatAmountInput
                                 symbol={symbol}
                                 tokenContract={tokenContract}
-                                tokenDecimals={tokenDecimals}
                                 accessibilityLabel="fiat amount to deposit input"
                                 inputRef={inputRef}
                                 isDisabled={isMaxSelected || isDisabled}

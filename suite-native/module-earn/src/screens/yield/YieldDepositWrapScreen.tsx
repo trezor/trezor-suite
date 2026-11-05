@@ -100,7 +100,6 @@ export const YieldDepositWrapScreen = () => {
                                 onCurrencyChange={amountInput.onCurrencyChange}
                                 onMaxPress={amountInput.onMaxPress}
                                 symbol={account.symbol}
-                                tokenSymbol={nativeSymbol}
                             />
                         </Box>
 

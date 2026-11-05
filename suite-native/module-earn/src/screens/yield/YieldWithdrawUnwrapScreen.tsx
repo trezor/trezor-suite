@@ -3,6 +3,7 @@ import { BannerFull, Box, Text, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
@@ -43,7 +44,7 @@ export const YieldWithdrawUnwrapScreen = () => {
     } = controller;
     const { account } = yieldFlowData;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -109,8 +110,6 @@ export const YieldWithdrawUnwrapScreen = () => {
                                 onMaxPress={amountInput.onMaxPress}
                                 symbol={account.symbol}
                                 tokenContract={wrappedTokenContract}
-                                tokenDecimals={amountInput.tokenDecimals}
-                                tokenSymbol={wrappedTokenSymbol}
                             />
                         </Box>
 
@@ -166,5 +165,14 @@ export const YieldWithdrawUnwrapScreen = () => {
                 sheet={simulationSheet}
             />
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            networkSymbol={account.symbol}
+            tokens={[{ ...yieldFlowData.token, contract: wrappedTokenContract }]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };
