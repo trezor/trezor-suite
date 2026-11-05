@@ -253,6 +253,13 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             default: TradingExchangeApprovalPage,
         })),
     ),
+    'wallet-trading-exchange-allowance': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingExchangeAllowancePage'
+        ).then(({ TradingExchangeAllowancePage }) => ({
+            default: TradingExchangeAllowancePage,
+        })),
+    ),
     'wallet-trading-concierge': lazy(() =>
         import(
             /* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingConciergeDetailPage'

@@ -9,6 +9,7 @@ type AllowanceAmountProps = {
     amount: string;
     symbol?: string;
     decimals: number;
+    isCompact?: boolean;
     contractAddress?: string | null;
     typographyStyle?: TypographyStyle;
     isLoading?: boolean;
@@ -20,6 +21,7 @@ export const AllowanceAmount = ({
     amount,
     symbol,
     decimals,
+    isCompact = false,
     contractAddress,
     typographyStyle = 'body-md',
     isLoading = false,
@@ -49,6 +51,7 @@ export const AllowanceAmount = ({
                 symbol={symbol}
                 contractAddress={contractAddress}
                 tokenDecimals={decimals}
+                isCompact={isCompact}
                 data-testid={dataTest}
             />
         </Text>

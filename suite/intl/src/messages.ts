@@ -677,10 +677,6 @@ export const messages = defineMessages({
         defaultMessage: 'Revoke {displaySymbol} spending',
         id: 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
     },
-    TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION: {
-        defaultMessage: 'Revoke provider to spend your {displaySymbol} to swap.',
-        id: 'TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION',
-    },
     TR_APPROVAL_LIMIT: {
         defaultMessage: 'Limit',
         id: 'TR_APPROVAL_LIMIT',
@@ -706,6 +702,72 @@ export const messages = defineMessages({
     TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON: {
         defaultMessage: 'Revoke approval',
         id: 'TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON',
+    },
+    TR_EXCHANGE_APPROVAL_FORM_MANAGE_BUTTON: {
+        defaultMessage: 'Manage approval',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_MANAGE_BUTTON',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_UNLIMITED: {
+        defaultMessage: '{provider} has unlimited access to your {displaySymbol}',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_UNLIMITED',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_ENOUGH: {
+        defaultMessage: 'Your approval covers this swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_ENOUGH',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_NONE: {
+        defaultMessage: 'No approval yet',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_NONE',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_TOO_LOW: {
+        defaultMessage: 'Your approval is too low for this swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_TOO_LOW',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_REVOKED: {
+        defaultMessage: 'Approval revoked',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_REVOKED',
+    },
+    TR_EXCHANGE_ALLOWANCE_NEXT_STEP_SWAP: {
+        defaultMessage: 'Continue to swap. No new approval is needed.',
+        id: 'TR_EXCHANGE_ALLOWANCE_NEXT_STEP_SWAP',
+    },
+    TR_EXCHANGE_ALLOWANCE_NEXT_STEP_APPROVE: {
+        defaultMessage: 'Let the provider access your {displaySymbol} to process your swap.',
+        id: 'TR_EXCHANGE_ALLOWANCE_NEXT_STEP_APPROVE',
+    },
+    TR_EXCHANGE_ALLOWANCE_NEXT_STEP_RESET: {
+        defaultMessage:
+            "{displaySymbol} can't raise an approval. Continue to revoke it first, then approve {needed}.",
+        id: 'TR_EXCHANGE_ALLOWANCE_NEXT_STEP_RESET',
+    },
+    TR_EXCHANGE_ALLOWANCE_UNLIMITED_WARNING: {
+        defaultMessage:
+            "If {provider} is compromised, all your {displaySymbol} may be taken. Revoke the approval when you're done swapping.",
+        id: 'TR_EXCHANGE_ALLOWANCE_UNLIMITED_WARNING',
+    },
+    TR_EXCHANGE_ALLOWANCE_CONTINUE_SWAP: {
+        defaultMessage: 'Continue swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_CONTINUE_SWAP',
+    },
+    TR_EXCHANGE_ALLOWANCE_APPROVED_AMOUNT: {
+        defaultMessage: 'Approved amount',
+        id: 'TR_EXCHANGE_ALLOWANCE_APPROVED_AMOUNT',
+    },
+    TR_EXCHANGE_ALLOWANCE_SOURCE: {
+        defaultMessage: 'Source: {source}',
+        id: 'TR_EXCHANGE_ALLOWANCE_SOURCE',
+    },
+    TR_EXCHANGE_ALLOWANCE_SOURCE_CHAIN: {
+        defaultMessage: 'Blockchain',
+        id: 'TR_EXCHANGE_ALLOWANCE_SOURCE_CHAIN',
+    },
+    TR_EXCHANGE_ALLOWANCE_SOURCE_PROVIDER: {
+        defaultMessage: 'Provider',
+        id: 'TR_EXCHANGE_ALLOWANCE_SOURCE_PROVIDER',
+    },
+    TR_EXCHANGE_ALLOWANCE_CHAIN_ERROR: {
+        defaultMessage: 'Chain error: {message}',
+        id: 'TR_EXCHANGE_ALLOWANCE_CHAIN_ERROR',
     },
     TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON: {
         defaultMessage: 'Refresh',

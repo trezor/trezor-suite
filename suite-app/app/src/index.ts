@@ -48,6 +48,7 @@ export { TradingBuyConfirmPage } from './pages/TradingBuyConfirmPage';
 export { TradingBuyDetailPage } from './pages/TradingBuyDetailPage';
 export { TradingBuyFormPage } from './pages/TradingBuyFormPage';
 export { TradingConciergeDetailPage } from './pages/TradingConciergeDetailPage';
+export { TradingExchangeAllowancePage } from './pages/TradingExchangeAllowancePage';
 export { TradingExchangeApprovalPage } from './pages/TradingExchangeApprovalPage';
 export { TradingExchangeConfirmPage } from './pages/TradingExchangeConfirmPage';
 export { TradingExchangeDetailPage } from './pages/TradingExchangeDetailPage';

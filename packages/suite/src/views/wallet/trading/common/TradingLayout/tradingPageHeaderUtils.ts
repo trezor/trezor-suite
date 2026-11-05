@@ -11,6 +11,7 @@ type TradingSection = {
     detail: TradingRoute;
     confirm: TradingRoute;
     approval?: TradingRoute;
+    allowance?: TradingRoute;
 };
 
 const tradingSections = {
@@ -29,6 +30,7 @@ const tradingSections = {
         detail: 'wallet-trading-exchange-detail',
         confirm: 'wallet-trading-exchange-confirm',
         approval: 'wallet-trading-exchange-approval',
+        allowance: 'wallet-trading-exchange-allowance',
     },
 } as const satisfies Record<TradingType, TradingSection>;
 
