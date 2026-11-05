@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import {
     act,
@@ -31,11 +31,29 @@ const createPreloadedState = (transactions: WalletAccountTransaction[] = []) => 
     },
 });
 
+const SET_TRANSACTIONS = 'test/setTransactions';
+
+const setTransactions = (transactions: WalletAccountTransaction[]) => ({
+    type: SET_TRANSACTIONS,
+    payload: transactions,
+});
+
+type SetTransactionsAction = ReturnType<typeof setTransactions>;
+
+const transactionsReducer = (
+    state: TransactionsState,
+    action: UnknownAction | SetTransactionsAction,
+): TransactionsState =>
+    action.type === SET_TRANSACTIONS
+        ? { ...state, transactions: { [ACCOUNT_KEY]: (action as SetTransactionsAction).payload } }
+        : state;
+
 const renderUseAllowanceTxTracking = (preloadedState = createPreloadedState()) => {
     const { services } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             wallet: combineReducers({
-                transactions: (state = preloadedState.wallet.transactions) => state,
+                transactions: (state = preloadedState.wallet.transactions, action: UnknownAction) =>
+                    transactionsReducer(state, action),
                 accounts: (state = []) => state,
             }),
         }),
@@ -70,6 +88,74 @@ describe('useAllowanceTxTracking', () => {
 
             act(() => {
                 result.current.setApprovalTxid(TXID);
+            });
+
+            expect(result.current.approvalTxid).toBe(TXID);
+            expect(result.current.status).toEqual({
+                isPending: false,
+                isConfirmed: false,
+                isFailed: false,
+            });
+        });
+    });
+
+    describe('replaced transaction', () => {
+        const NONCE = 7;
+        const REPLACEMENT_TXID = 'replacement-txid';
+        const getEvmTransaction = (tx: Partial<WalletAccountTransaction>) =>
+            testMocks.getWalletTransaction({
+                ethereumSpecific: { status: 1, nonce: NONCE, gasLimit: 21000 },
+                ...tx,
+            });
+
+        it('follows a pending replacement with the same nonce', () => {
+            const { result, services } = renderUseAllowanceTxTracking(
+                createPreloadedState([getEvmTransaction({ txid: TXID, blockHeight: 0 })]),
+            );
+
+            act(() => {
+                result.current.setApprovalTxid(TXID);
+            });
+            act(() => {
+                services.store.dispatch(
+                    setTransactions([
+                        getEvmTransaction({ txid: REPLACEMENT_TXID, blockHeight: 0 }),
+                    ]),
+                );
+            });
+
+            expect(result.current.approvalTxid).toBe(REPLACEMENT_TXID);
+            expect(result.current.status.isPending).toBe(true);
+
+            act(() => {
+                services.store.dispatch(
+                    setTransactions([
+                        getEvmTransaction({ txid: REPLACEMENT_TXID, blockHeight: 700000 }),
+                    ]),
+                );
+            });
+
+            expect(result.current.status.isConfirmed).toBe(true);
+        });
+
+        it('does not follow a transaction with another nonce', () => {
+            const { result, services } = renderUseAllowanceTxTracking(
+                createPreloadedState([getEvmTransaction({ txid: TXID, blockHeight: 0 })]),
+            );
+
+            act(() => {
+                result.current.setApprovalTxid(TXID);
+            });
+            act(() => {
+                services.store.dispatch(
+                    setTransactions([
+                        getEvmTransaction({
+                            txid: REPLACEMENT_TXID,
+                            blockHeight: 0,
+                            ethereumSpecific: { status: 1, nonce: NONCE + 1, gasLimit: 21000 },
+                        }),
+                    ]),
+                );
             });
 
             expect(result.current.approvalTxid).toBe(TXID);
