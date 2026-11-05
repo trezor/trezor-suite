@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import {
+    selectPrecomposedSendForm,
     selectResolvedEthereumNonce,
     selectStake,
     selectTronStakeTxReview,
@@ -32,7 +33,7 @@ const selectReviewEthereumNonce = (state: AppState) => {
     if (state.wallet.send?.precomposedTx) {
         // Send stores the resolved nonce; WalletConnect fills precomposedForm instead.
         return (
-            selectResolvedEthereumNonce(state) ?? state.wallet.send.precomposedForm?.ethereumNonce
+            selectResolvedEthereumNonce(state) ?? selectPrecomposedSendForm(state)?.ethereumNonce
         );
     }
 

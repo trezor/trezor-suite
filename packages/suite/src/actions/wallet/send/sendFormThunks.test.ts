@@ -34,7 +34,7 @@ const mockPushTransaction =
 
 jest.mock('@suite/metadata', () => ({
     ...jest.requireActual('@suite/metadata'),
-    selectMetadata: () => ({ enabled: false }),
+    selectMetadataEnabled: () => false,
 }));
 jest.mock('@suite-common/suite-sync', () => ({
     ...jest.requireActual('@suite-common/suite-sync'),

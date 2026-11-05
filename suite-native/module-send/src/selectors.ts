@@ -11,7 +11,6 @@ import {
 import {
     type AmountSubunit,
     getCardanoTokenSendMinAdaAmount,
-    getSendFormDraftKey,
     isCardanoTokenSendAdaInsufficient,
 } from '@suite-common/wallet-utils';
 import { type NativeSendRootState, selectFeeLevels } from '@suite-native/transaction-management';
@@ -22,11 +21,7 @@ export const selectDestinationTagFromDraft = (
     state: NativeSendRootState,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
-) => {
-    const draftKey = getSendFormDraftKey(accountKey, tokenContract);
-
-    return state.wallet.send.drafts[draftKey]?.destinationTag;
-};
+) => selectSendFormDraftByKey(state, accountKey, tokenContract)?.destinationTag;
 
 export type CardanoTokenSendRootState = NativeSendRootState & AccountsRootState;
 

@@ -8,6 +8,7 @@ import {
     deviceActions,
     selectDeviceByState,
     selectDeviceByStaticSessionId,
+    selectDevices,
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
@@ -293,9 +294,8 @@ export const selectLabelingDataForWallet = (
  * @deprecated Legacy Labeling
  */
 export const selectLabelableEntities = (state: MetadataRootState, deviceState: StaticSessionId) => {
-    const { wallet, device } = state;
-    const { devices } = device;
-    const { accounts } = wallet;
+    const devices = selectDevices(state);
+    const accounts = selectAccounts(state);
 
     return [
         ...accounts
