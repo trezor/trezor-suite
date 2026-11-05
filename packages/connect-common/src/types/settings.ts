@@ -6,6 +6,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 import type { Transport } from '@trezor/transport-common';
 import type { PartialRecord } from '@trezor/type-utils';
+import type { WardRelay } from '@trezor/ward';
 
 import type { CoinSymbol } from './coinInfo';
 import type { DefinitionsChannel } from './definitions';
@@ -66,6 +67,9 @@ export interface ConnectSettings {
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.
     enableFirmwareHashCheck?: boolean;
     firmwareHashCheckTimeouts?: FirmwareHashCheckTimeouts;
+    // wardd, the WARD host, injected by the host application: the WARD methods relay the
+    // device to it (it holds the flows, proofs, storage and WARD Manager), in-process.
+    wardd?: WardRelay;
     firmwareChannel?: FirmwareChannel;
     definitionsChannel?: DefinitionsChannel;
     localFirmwares?: LocalFirmwares;

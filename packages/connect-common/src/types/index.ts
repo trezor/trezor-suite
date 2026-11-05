@@ -76,6 +76,11 @@ export { GetOwnershipProof } from './api/device/getOwnershipProof';
 export { PushTransaction } from './api/blockchain/pushTransaction';
 export { RequestLoginSchema } from './api/device/requestLogin';
 export { UnlockPathParams } from './api/device/unlockPath';
+export { WardInitSchema, type WardInitResult } from './api/ward/wardInit';
+export { type WardLookupResult } from './api/ward/wardLookup';
+export { WardUpdateSchema, type WardUpdateResult } from './api/ward/wardUpdate';
+export { WardVerifySchema, type WardVerifyResult } from './api/ward/wardVerify';
+export { WardDisplayAddressSchema, type WardDisplayAddressResult } from './api/ward/wardDisplayAddress';
 export { FirmwareType } from '@trezor/device-utils';
 
 export type {

@@ -13,6 +13,7 @@ import type {
 import type { UiEventMessage } from './ui-event';
 import type { UiRequestMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
+import type { WardSetProvider } from './wardLabel';
 import type { ErrorCode, SerializedError, TrezorError } from '../constants/errors';
 
 export const CORE_EVENT = 'CORE_EVENT';
@@ -21,6 +22,7 @@ export type CoreRequestMessage =
     | CoreCallCancelMessage
     | TransportSetTransports
     | TransportRequestWebUSBDevice
+    | WardSetProvider
     | UiResponseEvent
     | CoreCallMessage
     | SetEnabledNetworksMessage;

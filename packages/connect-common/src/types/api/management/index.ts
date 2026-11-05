@@ -23,6 +23,7 @@ import type { thpGetCredentials } from './thpGetCredentials';
 import type { thpRemoveCredentials } from './thpRemoveCredentials';
 import type { wipeDevice } from './wipeDevice';
 import { TrezorConnectEvolu } from '../evolu';
+import { TrezorConnectWard } from '../ward';
 
 // Device configuration, firmware, security, and hardware control
 const TrezorConnectManagementBase = Type.Object({
@@ -51,8 +52,10 @@ const TrezorConnectManagementBase = Type.Object({
 
 // Evolu identity operations export secret key material, so they belong to the privileged tier and
 // are folded in here to keep them out of the public API (`Omit<Callable, keyof Management>`).
+// WARD writes device-held state and requires the `management` permission, so it is folded in too.
 export const TrezorConnectManagement = Type.Composite([
     TrezorConnectManagementBase,
     TrezorConnectEvolu,
+    TrezorConnectWard,
 ]);
 export type TrezorConnectManagement = Static<typeof TrezorConnectManagement>;

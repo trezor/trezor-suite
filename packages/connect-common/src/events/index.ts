@@ -1,3 +1,4 @@
+export * from './wardLabel';
 export * from './blockchain';
 export * from './call';
 export * from './core';
