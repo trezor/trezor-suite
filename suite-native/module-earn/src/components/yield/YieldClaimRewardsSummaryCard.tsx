@@ -30,6 +30,7 @@ import { useServices } from '@trezor/dependency-injection';
 
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../../hooks/yield/useStablecoinYieldFirmwareUpdateAlert';
+import { yieldClaimAccountItemsToTokenMetadataSources } from '../../utils/yield/yieldClaimAccountItemsToTokenMetadataSources';
 import { EarnClaimTokenIconSet } from '../earn/EarnClaimTokenIconSet';
 
 export const YieldClaimRewardsSummaryCard = () => {
@@ -183,13 +184,7 @@ export const YieldClaimRewardsSummaryCard = () => {
 
     return (
         <TokenMetadataProvider
-            sources={claimAccountItems.map(item => ({
-                networkSymbol: item.summary.networkSymbol,
-                tokens: item.summary.tokens.map(token => ({
-                    ...token,
-                    contract: token.contractAddress,
-                })),
-            }))}
+            sources={yieldClaimAccountItemsToTokenMetadataSources(claimAccountItems)}
         >
             {content}
         </TokenMetadataProvider>
