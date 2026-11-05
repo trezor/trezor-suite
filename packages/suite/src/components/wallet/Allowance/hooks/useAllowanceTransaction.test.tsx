@@ -156,6 +156,7 @@ describe('useAllowanceTransaction', () => {
                 contract: TOKEN_CONTRACT,
                 data: buildApprovalTransactionData({ amount: '1500000', spender: SPENDER }),
                 selectedFee: 'normal',
+                customFee: undefined,
             }),
         );
         expect(result.current.composedTransaction).toEqual(COMPOSED_LEVELS.normal);

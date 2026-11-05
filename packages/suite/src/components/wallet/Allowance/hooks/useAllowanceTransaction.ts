@@ -172,5 +172,6 @@ export const useAllowanceTransaction = ({
         confirmAndSend,
         handleCancel,
         handleFeeChange: changeFeeLevel,
+        composeRequest,
     };
 };

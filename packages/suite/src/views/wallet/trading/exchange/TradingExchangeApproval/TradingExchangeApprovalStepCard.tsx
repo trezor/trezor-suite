@@ -14,18 +14,24 @@ import {
     type AllowanceStepVariant,
 } from '@suite-common/wallet-types';
 import { formatNetworkAmount, subunitsToUnits } from '@suite-common/wallet-utils';
-import { Modal, Spinner } from '@trezor/components';
+import { Spinner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { BaseCurrencyValue } from 'src/components/suite';
-import { AllowanceFees } from 'src/components/wallet/Allowance/AllowanceFees';
 import { AllowanceLimitModal } from 'src/components/wallet/Allowance/AllowanceLimitModal';
 import { AllowanceStepCard } from 'src/components/wallet/Allowance/AllowanceStepCard';
 import { type AllowanceStepToken } from 'src/components/wallet/Allowance/AllowanceStepToken';
 import { useAllowanceTransaction } from 'src/components/wallet/Allowance/hooks/useAllowanceTransaction';
 import { useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
 import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
+
+import { TradingExchangeApprovalFeeModal } from './TradingExchangeApprovalFeeModal';
+import {
+    type AllowanceFeeValues,
+    getAllowanceFeeValues,
+    setAllowanceFeeValues,
+} from './allowanceFeeValues';
 
 const LIMIT_TYPE_ANALYTICS_ACTION = {
     minimal: 'limit-exact',
@@ -85,17 +91,15 @@ export const TradingExchangeApprovalStepCard = ({
         token,
         limitType,
         inputAmount,
+        allowanceAmount,
         isComposing,
         isSending,
-        feeInfo,
-        composedLevels,
         composedTransaction,
-        composedLevelsError,
         canSubmit,
         methods,
         selectLimitType,
         confirmAndSend,
-        handleFeeChange,
+        composeRequest,
     } = useAllowanceTransaction({
         type: transactionType,
         amount: quote.sendStringAmount ?? '0',
@@ -132,6 +136,11 @@ export const TradingExchangeApprovalStepCard = ({
     const onSelectLimitType = (nextLimitType: AllowanceLimitType) => {
         selectLimitType(nextLimitType);
         setIsLimitModalOpen(false);
+    };
+
+    const onConfirmFee = (feeValues: AllowanceFeeValues) => {
+        setAllowanceFeeValues(methods, feeValues);
+        composeRequest();
     };
 
     const onTxidClick = () => {
@@ -194,15 +203,16 @@ export const TradingExchangeApprovalStepCard = ({
                 />
             )}
             {isFeeModalOpen && (
-                <Modal onCancel={() => setIsFeeModalOpen(false)} isBackdropCancelable width={480}>
-                    <AllowanceFees
-                        account={account}
-                        feeInfo={feeInfo}
-                        composedLevels={composedLevels}
-                        onFeeLevelChange={handleFeeChange}
-                        error={composedLevelsError}
-                    />
-                </Modal>
+                <TradingExchangeApprovalFeeModal
+                    account={account}
+                    token={token}
+                    tokenContractAddress={tokenContractAddress}
+                    spender={spender}
+                    allowanceAmount={allowanceAmount}
+                    defaultFeeValues={getAllowanceFeeValues(methods)}
+                    onConfirm={onConfirmFee}
+                    onClose={() => setIsFeeModalOpen(false)}
+                />
             )}
         </Form>
     );
