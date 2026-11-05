@@ -42,6 +42,7 @@ export const GlobalReceiveAccountStep = ({
                     <GlobalReceiveAccountListItem
                         key={account.key}
                         account={account}
+                        asset={asset}
                         iconSize={24}
                         onClick={onAccountClick}
                         variant="card"
