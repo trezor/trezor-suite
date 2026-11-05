@@ -193,9 +193,21 @@ describe('transitionStakingStep', () => {
         expect(transitionStakingStep(stepsByStatus.signed, events.expired)).toEqual(
             composedAgain({ kind: 'expired', code: null }),
         );
-        expect(
-            transitionStakingStep(stepsByStatus.broadcasting, events['broadcast-failed']),
-        ).toEqual(composedAgain({ kind: 'broadcast-failed', code: null }));
+    });
+
+    it('keeps the signature after a failed broadcast and clears the error on the next one', () => {
+        const failedBroadcast = transitionStakingStep(
+            stepsByStatus.broadcasting,
+            events['broadcast-failed'],
+        );
+
+        expect(failedBroadcast).toEqual({
+            ...stepsByStatus.signed,
+            error: { kind: 'broadcast-failed', code: null },
+        });
+        expect(transitionStakingStep(failedBroadcast as never, events.broadcasting)).toEqual(
+            stepsByStatus.broadcasting,
+        );
     });
 
     it('awaits confirmation only when the step asks for it', () => {

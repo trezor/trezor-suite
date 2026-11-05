@@ -96,6 +96,8 @@ export const broadcastStakingStepThunk = createThunk<
                 transactionsActions.transactionBroadcastStatus({ account, flow, status: 'error' }),
             );
 
+            dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+
             return rejectWithValue('adapter-failed');
         }
 

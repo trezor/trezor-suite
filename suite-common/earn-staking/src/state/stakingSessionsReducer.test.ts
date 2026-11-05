@@ -304,13 +304,6 @@ describe('stakingSessionsReducer', () => {
                 actions.stepExpired({ ...freeze, attemptId }),
                 expired,
             ],
-            [
-                'broadcast-failed',
-                'broadcasting',
-                broadcastingFreeze,
-                actions.stepBroadcastFailed({ ...freeze, attemptId, code: null }),
-                broadcastFailed,
-            ],
         ])('%s returns a %s step to composed', (_event, _status, state, action, error) => {
             expect(getStep(reduce(state, action), 'freeze')).toEqual({
                 ...stepBase,
@@ -340,6 +333,18 @@ describe('stakingSessionsReducer', () => {
             expect(reduce(awaitingFreeze, actions.stepExpired({ ...freeze, attemptId }))).toBe(
                 awaitingFreeze,
             );
+        });
+
+        it('returns a failed broadcast to signed with the same attempt and signature', () => {
+            expect(
+                getStep(
+                    reduce(
+                        broadcastingFreeze,
+                        actions.stepBroadcastFailed({ ...freeze, attemptId, code: null }),
+                    ),
+                    'freeze',
+                ),
+            ).toEqual({ ...getStep(signedFreeze, 'freeze'), error: broadcastFailed });
         });
     });
 
