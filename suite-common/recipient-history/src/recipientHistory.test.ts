@@ -7,9 +7,11 @@ import {
     getRecipientHistory,
     getRecipientLastSentTime,
     isNewRecipient,
+    isPossiblePoisoning,
 } from './recipientHistory';
 
 const OWN = '0x1111111111111111111111111111111111111111';
+// POISON is a poisoner's vanity address sharing the first 3 and last 4 hex with LEGIT.
 const LEGIT = '0xAbC0000000000000000000000000000000001234';
 const POISON = '0xabc9999999999999999999999999999999991234';
 const STRANGER = '0x2222222222222222222222222222222222222222';
@@ -19,13 +21,14 @@ const getVinVout = (address: string) => ({ addresses: [address], isAddress: true
 type GetTransactionParams = {
     from: string;
     to: string;
+    isPhishing?: boolean;
     blockTime?: number;
 };
 
-const getTransaction = ({ from, to, blockTime }: GetTransactionParams) =>
+const getTransaction = ({ from, to, isPhishing = false, blockTime }: GetTransactionParams) =>
     testMocks.getWalletTransaction({
         symbol: asNetworkSymbol('eth'),
-        txid: `${from}-${to}-${blockTime}`,
+        txid: `${isPhishing ? 'phishing-' : ''}${from}-${to}-${blockTime}`,
         blockTime,
         targets: [],
         details: {
@@ -38,10 +41,18 @@ const getTransaction = ({ from, to, blockTime }: GetTransactionParams) =>
     });
 
 const getHistory = (transactions: WalletAccountTransaction[]) =>
-    getRecipientHistory({ transactions, descriptor: OWN, networkType: 'ethereum' });
+    getRecipientHistory({
+        transactions,
+        descriptor: OWN,
+        networkType: 'ethereum',
+        isPhishing: transaction => transaction.txid.startsWith('phishing-'),
+    });
 
 const getIsNew = (address: string, history: RecipientHistory) =>
     isNewRecipient({ address, history, networkType: 'ethereum' });
+
+const getIsPoisoning = (address: string, history: RecipientHistory) =>
+    isPossiblePoisoning({ address, history, networkType: 'ethereum' });
 
 describe(isNewRecipient.name, () => {
     it('does not flag an address the user has paid', () => {
@@ -129,6 +140,7 @@ describe(getRecipientHistory.name, () => {
             transactions: [getTransaction({ from: tronOwn, to: tronRecipient })],
             descriptor: tronOwn,
             networkType: 'tron',
+            isPhishing: () => false,
         });
 
         expect(isNewRecipient({ address: tronRecipient, history, networkType: 'tron' })).toBe(
@@ -191,5 +203,110 @@ describe(getRecipientLastSentTime.name, () => {
 
         expect(getLastSentTime(STRANGER, history)).toBeUndefined();
         expect(getLastSentTime(POISON, history)).toBeUndefined();
+    });
+});
+
+describe(isPossiblePoisoning.name, () => {
+    it('matches a different EVM address sharing the first 3 and last 4 hex, ignoring case', () => {
+        const history = getHistory([getTransaction({ from: LEGIT, to: OWN })]);
+
+        expect(getIsPoisoning(POISON, history)).toBe(true);
+    });
+
+    it('does not match the same address', () => {
+        const history = getHistory([getTransaction({ from: LEGIT, to: OWN })]);
+
+        expect(getIsPoisoning(LEGIT.toLowerCase(), history)).toBe(false);
+    });
+
+    it.each([
+        ['only the first 2 hex match', '0xab09999999999999999999999999999999991234'],
+        ['only the last 3 hex match', '0xabc9999999999999999999999999999999990234'],
+    ])('does not match when %s', (_description, address) => {
+        const history = getHistory([getTransaction({ from: LEGIT, to: OWN })]);
+
+        expect(getIsPoisoning(address, history)).toBe(false);
+    });
+
+    it('does not count the fixed leading T of Tron addresses', () => {
+        const tronOwn = 'TOwn000000000000000000000000000000';
+        const getIsTronPoisoning = (address: string, counterparty: string) =>
+            isPossiblePoisoning({
+                address,
+                history: getRecipientHistory({
+                    transactions: [getTransaction({ from: counterparty, to: tronOwn })],
+                    descriptor: tronOwn,
+                    networkType: 'tron',
+                    isPhishing: () => false,
+                }),
+                networkType: 'tron',
+            });
+
+        expect(
+            getIsTronPoisoning(
+                'TAb9999999999999999999999999991234',
+                'TAb0000000000000000000000000001234',
+            ),
+        ).toBe(false);
+        expect(
+            getIsTronPoisoning(
+                'TAbc999999999999999999999999991234',
+                'TAbc000000000000000000000000001234',
+            ),
+        ).toBe(true);
+    });
+
+    it('does not warn about an address the user has paid, even with a lookalike in the history', () => {
+        const history = getHistory([
+            getTransaction({ from: OWN, to: LEGIT }),
+            getTransaction({ from: POISON, to: OWN, isPhishing: true }),
+        ]);
+
+        expect(getIsPoisoning(LEGIT, history)).toBe(false);
+    });
+
+    it('warns when the address looks like one the user has paid', () => {
+        const history = getHistory([getTransaction({ from: OWN, to: LEGIT })]);
+
+        expect(getIsPoisoning(POISON, history)).toBe(true);
+    });
+
+    it('warns when a lookalike sent the user funds, so it is not trusted', () => {
+        const history = getHistory([
+            getTransaction({ from: LEGIT, to: OWN }),
+            getTransaction({ from: POISON, to: OWN }),
+        ]);
+
+        expect(getIsPoisoning(POISON, history)).toBe(true);
+    });
+
+    it('warns when the address only appears in phishing transactions', () => {
+        const history = getHistory([
+            getTransaction({ from: OWN, to: LEGIT }),
+            getTransaction({ from: STRANGER, to: OWN, isPhishing: true }),
+        ]);
+
+        expect(getIsPoisoning(STRANGER, history)).toBe(true);
+    });
+
+    it('warns about the recipient of a spoofed transfer out of the user account', () => {
+        const history = getHistory([
+            getTransaction({ from: STRANGER, to: POISON }),
+            getTransaction({ from: OWN, to: LEGIT }),
+        ]);
+
+        expect(getIsPoisoning(POISON, history)).toBe(true);
+    });
+
+    it('does not warn about an address that sent the user funds', () => {
+        const history = getHistory([getTransaction({ from: STRANGER, to: OWN })]);
+
+        expect(getIsPoisoning(STRANGER, history)).toBe(false);
+    });
+
+    it('does not warn about an address missing from the history', () => {
+        const history = getHistory([getTransaction({ from: OWN, to: LEGIT })]);
+
+        expect(getIsPoisoning(STRANGER, history)).toBe(false);
     });
 });

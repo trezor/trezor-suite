@@ -20,6 +20,7 @@
         { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
-        }
+        },
+        { "path": "../../packages/urls" }
     ]
 }

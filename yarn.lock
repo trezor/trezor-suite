@@ -12011,6 +12011,7 @@ __metadata:
   resolution: "@suite-common/recipient-history@workspace:suite-common/recipient-history"
   dependencies:
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -17222,6 +17223,7 @@ __metadata:
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/product-components": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@types/react": "npm:19.3.0"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
