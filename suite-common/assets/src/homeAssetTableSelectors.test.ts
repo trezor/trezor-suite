@@ -13,6 +13,7 @@ import {
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
     selectDisplayedWalletAssetKeysOfNetwork,
+    selectHiddenWalletAssetCount,
     selectHiddenWalletAssetKeys,
     selectHomeAssetGrouping,
     selectHomeAssetTotals,
@@ -880,6 +881,25 @@ describe('the tokens the table leaves out', () => {
         });
 
         expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([]);
+    });
+});
+
+describe('the hidden token count', () => {
+    it('counts hidden and unrecognized tokens together', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [
+                        { symbol: 'usdc', contract: USDC_ON_ETH, balance: '5' },
+                        { symbol: 'bad', contract: UNKNOWN_TOKEN, balance: '5' },
+                    ],
+                }),
+            ],
+            hiddenTokens: [USDC_ON_ETH],
+        });
+
+        expect(selectHiddenWalletAssetCount(state)).toBe(2);
     });
 });
 
