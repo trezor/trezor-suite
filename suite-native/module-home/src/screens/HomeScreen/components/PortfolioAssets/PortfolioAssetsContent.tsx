@@ -10,16 +10,18 @@ import {
     selectIsHomeAssetTableMenuAvailable,
 } from '@suite-common/assets';
 import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
-import { selectIsAssetListLoading } from '@suite-native/assets';
+import {
+    WalletAssetCardSegment,
+    WalletAssetListItem,
+    selectIsAssetListLoading,
+} from '@suite-native/assets';
 import { Box, useBottomSheetModal } from '@suite-native/atoms';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { PortfolioAssetListItem } from './PortfolioAssetListItem';
 import { PortfolioAssetListSeparator } from './PortfolioAssetListSeparator';
 import { PortfolioAssetNetworkHeader } from './PortfolioAssetNetworkHeader';
-import { PortfolioAssetsCardSegment } from './PortfolioAssetsCardSegment';
 import { PortfolioAssetsListFooter } from './PortfolioAssetsListFooter';
 import { PortfolioAssetsListHeader } from './PortfolioAssetsListHeader';
 import { PortfolioAssetsViewOptionsSheet } from './PortfolioAssetsViewOptionsSheet';
@@ -66,7 +68,7 @@ export const PortfolioAssetsContent = () => {
             case 'network':
                 return <PortfolioAssetNetworkHeader symbol={entry.symbol} />;
             case 'asset':
-                return <PortfolioAssetListItem assetKey={entry.assetKey} />;
+                return <WalletAssetListItem assetKey={entry.assetKey} />;
             default:
                 return exhaustive(entry);
         }
@@ -75,13 +77,13 @@ export const PortfolioAssetsContent = () => {
     const isLoadingSkeletonVisible = isAssetListLoading && (!isFoldable || isListExpanded);
 
     const renderEntry = ({ item, index }: RenderEntryParams) => (
-        <PortfolioAssetsCardSegment
+        <WalletAssetCardSegment
             isFirst={index === 0}
             // The skeleton or Show more closes the card when present.
             isLast={index === entries.length - 1 && !isFoldable && !isLoadingSkeletonVisible}
         >
             {renderEntryContent(item)}
-        </PortfolioAssetsCardSegment>
+        </WalletAssetCardSegment>
     );
 
     const toggleIsListExpanded = () => {

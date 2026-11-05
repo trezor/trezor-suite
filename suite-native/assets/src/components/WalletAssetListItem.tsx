@@ -40,11 +40,11 @@ const rowStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
 }));
 
-type PortfolioAssetListItemProps = {
+type WalletAssetListItemProps = {
     assetKey: WalletAssetKey;
 };
 
-export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps) => {
+export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
     const symbol = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetSymbol(state, assetKey),
     );
@@ -88,7 +88,7 @@ export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps
         <PressableOpacity
             onPress={handlePress}
             style={applyStyle(rowStyle)}
-            testID={`@home/portfolio-assets/asset/${symbol}/${contractAddress ?? 'coin'}`}
+            testID={`@assets/wallet-asset/${symbol}/${contractAddress ?? 'coin'}`}
         >
             <TokenIcon
                 networkSymbol={symbol}
