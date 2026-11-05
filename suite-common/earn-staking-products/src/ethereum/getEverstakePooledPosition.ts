@@ -1,6 +1,5 @@
 import {
     type GetPositionParams,
-    type StakingAmount,
     type StakingOperation,
     type StakingPosition,
     type StakingPositionTarget,
@@ -8,11 +7,12 @@ import {
     type StakingProductId,
     type StakingTransaction,
     isPendingStakingTransaction,
-    stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import { BigNumber } from '@trezor/utils';
 
 import { everstakeProvider } from '../providers/everstake';
+import { getStakingPositionStatus } from '../shared/getStakingPositionStatus';
+import { isPositiveStakingAmount, toStakingAmount } from '../shared/stakingAmounts';
 
 // The selectors of the pool contract's stake, unstake and claimWithdrawRequest
 // calls, as Blockbook parses them; the EVM kit owns the calldata itself.
@@ -20,23 +20,6 @@ const EVERSTAKE_METHOD_IDS = ['0x3a29dbae', '0x76ec871c', '0x33986ffa'];
 
 const isEverstakeStakingTransaction = ({ ethereumSpecific }: StakingTransaction) =>
     EVERSTAKE_METHOD_IDS.includes(ethereumSpecific?.parsedData?.methodId.toLowerCase() ?? '');
-
-const toStakingAmount = (value: string | BigNumber): StakingAmount =>
-    stakingAmountSchema.parse(new BigNumber(value).toFixed(0));
-
-const isPositive = (amount: StakingAmount) => new BigNumber(amount).gt(0);
-
-type GetPositionStatusParams = {
-    balances: StakingPosition['balances'];
-};
-
-const getPositionStatus = ({ balances }: GetPositionStatusParams): StakingPosition['status'] => {
-    if (isPositive(balances.staked)) return 'active';
-    if (isPositive(balances.pending)) return 'activating';
-    if (isPositive(balances.unstaking) || isPositive(balances.withdrawable)) return 'deactivating';
-
-    return 'inactive';
-};
 
 export type GetEverstakePooledPositionParams = GetPositionParams & {
     productId: StakingProductId;
@@ -65,25 +48,25 @@ export const getEverstakePooledPosition = ({
         rewards: toStakingAmount(pool.restakedReward),
     };
 
-    const status = getPositionStatus({ balances });
+    const status = getStakingPositionStatus({ balances });
 
     const operations: StakingOperation[] = ['stake'];
 
-    const canUnstake = isPositive(balances.staked);
+    const canUnstake = isPositiveStakingAmount(balances.staked);
 
     if (canUnstake) operations.push('unstake');
 
     const canWithdraw =
-        isPositive(balances.withdrawable) &&
+        isPositiveStakingAmount(balances.withdrawable) &&
         new BigNumber(pool.withdrawTotalAmount).eq(pool.claimableAmount);
 
     if (canWithdraw) operations.push('withdraw');
 
-    const unlocks: StakingPositionUnlock[] = isPositive(balances.unstaking)
+    const unlocks: StakingPositionUnlock[] = isPositiveStakingAmount(balances.unstaking)
         ? [{ amount: balances.unstaking, availableAt: null }]
         : [];
 
-    const targets: StakingPositionTarget[] = isPositive(balances.staked)
+    const targets: StakingPositionTarget[] = isPositiveStakingAmount(balances.staked)
         ? [
               {
                   address: pool.contract,

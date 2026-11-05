@@ -1,10 +1,8 @@
 import { StakingAdapterError, stakingAmountSchema } from '@suite-common/earn-staking-common';
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 
-import {
-    STAKING_OPERATION_NOT_SUPPORTED,
-    getEverstakePooledAmountBounds,
-} from './everstakePooledAmountBounds';
+import { getEverstakePooledAmountBounds } from './everstakePooledAmountBounds';
+import { STAKING_OPERATION_NOT_SUPPORTED } from '../shared/unimplementedStakingOperations';
 
 const ETHER = '000000000000000000';
 

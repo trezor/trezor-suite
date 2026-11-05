@@ -2,6 +2,8 @@ import { StakingAdapterError, type StakingProductAdapter } from '@suite-common/e
 
 export const STAKING_OPERATION_NOT_IMPLEMENTED = 'operation-not-implemented';
 
+export const STAKING_OPERATION_NOT_SUPPORTED = 'operation-not-supported';
+
 export type UnimplementedStakingOperations = Pick<
     StakingProductAdapter,
     'planOperation' | 'composeStep' | 'signStep' | 'broadcastStep'
