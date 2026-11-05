@@ -79,7 +79,7 @@ describe('cancelStakingStepThunk', () => {
         const { actions, result, deviceAccess, analytics } = await run(signingState);
 
         expect(cancelStakingStepThunk.fulfilled.match(result)).toBe(true);
-        expect(deviceAccess.cancel).toHaveBeenCalledWith('tx-cancelled');
+        expect(deviceAccess.cancel).toHaveBeenCalledWith(attemptId, 'tx-cancelled');
         expect(actions).toEqual([stakingActions.stepCancelled({ ...stake, attemptId })]);
         expect(analytics.report).not.toHaveBeenCalled();
     });

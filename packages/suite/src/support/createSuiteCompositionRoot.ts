@@ -168,7 +168,10 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const staking = createStakingCompositionRoot({
         platform: 'desktop',
         adapters: createStakingProductsCompositionRoot(),
-        deviceAccess: createStakingDeviceAccess({ getTrezorConnect: deps.getTrezorConnect }),
+        deviceAccess: createStakingDeviceAccess({
+            getTrezorConnect: deps.getTrezorConnect,
+            runStakingDeviceCall: callback => callback(),
+        }),
         dispatch: deps.dispatch,
     });
 

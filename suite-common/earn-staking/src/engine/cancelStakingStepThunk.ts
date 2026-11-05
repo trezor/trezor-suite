@@ -37,7 +37,7 @@ export const cancelStakingStepThunk = createThunk<
         const { step, account } = stepContext.context;
 
         if (step.status === 'signing') {
-            extra.services.staking.deviceAccess.cancel('tx-cancelled');
+            extra.services.staking.deviceAccess.cancel(step.attemptId, 'tx-cancelled');
 
             dispatch(
                 stakingActions.stepCancelled({
