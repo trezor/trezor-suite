@@ -6,7 +6,6 @@ type ExtremeLabelProps = {
     extremeName: keyof GraphExtremes;
 };
 
-/** The label of the high or the low of the points given to `GraphExtremesProvider`. */
 export const ExtremeLabel = ({ extremeName }: ExtremeLabelProps) => {
     const extreme = useGraphExtremes()?.[extremeName];
 
