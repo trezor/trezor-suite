@@ -1,12 +1,14 @@
 import type {
     FetchProductInfoParams,
     GetAmountBoundsParams,
+    GetPositionParams,
     StakingProductAdapter,
     StakingProductDescriptor,
     StakingProvider,
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
+import { getSolanaDelegationPosition } from './getSolanaDelegationPosition';
 import { getSolanaNativeDelegationAmountBounds } from './solanaDelegationAmountBounds';
 import { createSolanaNativeDelegationDescriptor } from './solanaDelegationDescriptors';
 import {
@@ -45,7 +47,14 @@ export const createSolanaNativeDelegationProduct = ({
     const fetchProductInfo = (params: FetchProductInfoParams) =>
         fetchSolanaDelegationProductInfo(deps, params);
 
-    const getPosition = () => null;
+    const getPosition = (params: GetPositionParams) =>
+        getSolanaDelegationPosition({
+            ...params,
+            descriptor,
+            provider,
+            ownsVoteAccount: voteAccount =>
+                voteAccount !== null && voteAccounts.includes(voteAccount),
+        });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
         getSolanaNativeDelegationAmountBounds(params);

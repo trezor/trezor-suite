@@ -5,12 +5,11 @@ import {
     stakingProductInfoSchema,
 } from '@suite-common/earn-staking-common';
 
+import { SOLANA_EPOCH_DAYS } from './solanaEpochReward';
+
 export type SolanaDelegationProductInfoDeps = {
     getStakingStats: typeof getStakingStats;
 };
-
-// The legacy SOLANA_EPOCH_DAYS: delegating and deactivating both take one epoch, counted as one day.
-const SOLANA_EPOCH_DAYS = 1;
 
 export const SOLANA_EXTERNAL_PRODUCT_INFO = stakingProductInfoSchema.parse({
     rate: null,

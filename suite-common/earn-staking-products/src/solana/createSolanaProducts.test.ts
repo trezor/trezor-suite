@@ -1,5 +1,6 @@
 import type { EthOrSolStats } from '@suite-common/earn-staking-api';
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
+import { mockSolanaStakingAccount } from '@suite-common/wallet-types/mocks';
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
@@ -36,6 +37,18 @@ describe('createSolanaProducts', () => {
             unstake: 'sol.staking.unstake',
             withdraw: 'sol.staking.claim',
         });
+    });
+
+    it('splits an account stake between the Everstake and the external product', () => {
+        const account = mockSolanaStakingAccount('everstakeAndExternal');
+
+        expect(
+            createProducts('sol').map(
+                product =>
+                    product.getPosition({ account, productInfo: null, transactions: [] })?.balances
+                        .staked,
+            ),
+        ).toEqual(['5000000000', '10000000000']);
     });
 
     it('gives devnet no message-system keys', () => {

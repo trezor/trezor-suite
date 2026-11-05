@@ -5,10 +5,14 @@ import { createStakingProductsCompositionRoot } from './createStakingProductsCom
 describe('createStakingProductsCompositionRoot', () => {
     const adapters = createStakingProductsCompositionRoot();
 
-    it('registers the Everstake pooled product for mainnet and Hoodi', () => {
+    it('registers the Ethereum and Solana products for mainnet and the test networks', () => {
         expect(adapters.map(adapter => adapter.descriptor.id)).toEqual([
             'eth:eth:everstake:pooled',
             'thod:thod:everstake:pooled',
+            'sol:sol:everstake:native',
+            'sol:sol:external:native',
+            'dsol:dsol:everstake:native',
+            'dsol:dsol:external:native',
         ]);
     });
 

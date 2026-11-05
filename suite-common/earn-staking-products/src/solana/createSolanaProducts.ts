@@ -26,7 +26,9 @@ type SolanaValidatorProduct = {
     >;
 };
 
-// The message system has no devnet keys, so only mainnet operations can be switched off remotely.
+// Every validator Suite offers on Solana. The external product owns the stake none of them owns, so
+// adding a validator here also takes its stake out of the external position. The message system has
+// no devnet keys, so only mainnet operations can be switched off remotely.
 const SOLANA_VALIDATOR_PRODUCTS: readonly SolanaValidatorProduct[] = [
     {
         provider: everstakeProvider,
@@ -48,5 +50,8 @@ export const createSolanaProducts = ({
             ...deps,
         }),
     ),
-    createSolanaExternalDelegationProduct({ networkSymbol }),
+    createSolanaExternalDelegationProduct({
+        networkSymbol,
+        managedProviders: SOLANA_VALIDATOR_PRODUCTS.map(({ provider }) => provider),
+    }),
 ];

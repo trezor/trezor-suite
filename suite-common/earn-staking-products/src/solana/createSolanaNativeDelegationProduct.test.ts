@@ -5,6 +5,10 @@ import {
     mockStakingPlan,
     mockStakingStep,
 } from '@suite-common/earn-staking-common/mocks';
+import {
+    MOCK_SOLANA_EVERSTAKE_VALIDATOR,
+    mockSolanaStakingAccount,
+} from '@suite-common/wallet-types/mocks';
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
@@ -60,6 +64,60 @@ describe('createSolanaNativeDelegationProduct', () => {
             createEverstakeProduct('sol', deps).fetchProductInfo({}),
         ).resolves.toMatchObject({ rate: 6.24, entryPeriodDays: 1, exitPeriodDays: 1 });
         expect(deps.getStakingStats).toHaveBeenCalledTimes(1);
+    });
+
+    it('derives the position of the stake delegated to the provider', () => {
+        const product = createEverstakeProduct();
+
+        expect(
+            product.getPosition({
+                account: mockSolanaStakingAccount('everstakeAndExternal'),
+                productInfo: null,
+                transactions: [],
+            }),
+        ).toMatchObject({
+            productId: 'sol:sol:everstake:native',
+            status: 'active',
+            balances: { staked: '5000000000' },
+        });
+        expect(
+            product.getPosition({
+                account: mockSolanaStakingAccount('externalOnly'),
+                productInfo: null,
+                transactions: [],
+            }),
+        ).toBeNull();
+    });
+
+    it('owns only the vote account of its own network', () => {
+        const devnetVoteAccount = everstakeProvider.identities[asNetworkSymbol('dsol')]?.[0];
+        const devnetAccount = mockStakingAccount({
+            symbol: asNetworkSymbol('dsol'),
+            misc: {
+                solStakingAccounts: [
+                    {
+                        status: 'active',
+                        stake: '2000000000',
+                        rentExemptReserve: '2282880',
+                        voterPubkey: devnetVoteAccount,
+                    },
+                    {
+                        status: 'active',
+                        stake: '3000000000',
+                        rentExemptReserve: '2282880',
+                        voterPubkey: MOCK_SOLANA_EVERSTAKE_VALIDATOR,
+                    },
+                ],
+            },
+        });
+
+        expect(
+            createEverstakeProduct('dsol').getPosition({
+                account: devnetAccount,
+                productInfo: null,
+                transactions: [],
+            })?.balances.staked,
+        ).toBe('2000000000');
     });
 
     it('bounds a stake by the product limits', () => {

@@ -29,5 +29,6 @@ export const mockStakingPosition = (overrides: Partial<StakingPosition> = {}): S
     operations: ['stake', 'unstake'],
     pendingTxids: [],
     warnings: [],
+    details: null,
     ...overrides,
 });
