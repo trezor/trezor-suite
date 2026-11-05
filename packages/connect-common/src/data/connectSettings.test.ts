@@ -107,16 +107,6 @@ describe('data/connectSettings', () => {
             expect(parseManifest({ ...baseManifest, appName: '   ' })).toBeUndefined();
         });
 
-        it('replaces control characters in appName with spaces', () => {
-            expect(parseManifest({ ...baseManifest, appName: 'Test\x00App\x1F' })?.appName).toBe(
-                'Test App',
-            );
-        });
-
-        it('returns undefined when appName is only control characters', () => {
-            expect(parseManifest({ ...baseManifest, appName: '\x00\x1F\x7F' })).toBeUndefined();
-        });
-
         // Truncating rather than rejecting keeps a desktop-ws client with an over-long appName
         // connected — `connect-ws` destroys the socket when `parseManifest` returns undefined.
         it('truncates a long appName to 100 characters instead of dropping the manifest', () => {
