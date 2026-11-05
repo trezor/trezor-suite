@@ -2,10 +2,11 @@ import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListItem } from './AccountsListItem';
+import { AssetAccountListItem } from './AssetAccountListItem';
 import { type NativeAccountsRootState } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 
@@ -44,6 +45,7 @@ type AccountsListRowProps = {
     isFirst: boolean;
     isLast: boolean;
     hasBottomSpacing: boolean;
+    tokenContract?: TokenAddress;
     onSelectAccount: OnSelectAccount;
 };
 
@@ -52,6 +54,7 @@ export const AccountsListRow = ({
     isFirst,
     isLast,
     hasBottomSpacing,
+    tokenContract,
     onSelectAccount,
 }: AccountsListRowProps) => {
     const account = useSelector((state: NativeAccountsRootState) =>
@@ -65,7 +68,15 @@ export const AccountsListRow = ({
 
     return (
         <View style={applyStyle(rowStyle, { isFirst, isLast, hasBottomSpacing })}>
-            <AccountsListItem account={account} onPress={onSelectAccount} />
+            {tokenContract ? (
+                <AssetAccountListItem
+                    account={account}
+                    contractAddress={tokenContract}
+                    onPress={onSelectAccount}
+                />
+            ) : (
+                <AccountsListItem account={account} onPress={onSelectAccount} />
+            )}
         </View>
     );
 };
