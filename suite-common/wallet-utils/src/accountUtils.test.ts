@@ -23,6 +23,7 @@ import {
     getAccountTypeTech,
     getBip43Type,
     getDirectRpcHistoryState,
+    getFirmwareDescriptor,
     getHistoryCoveredSince,
     getNetworkAccountFeatures,
     getOlderHistoryFrom,
@@ -730,5 +731,54 @@ describe(convertAmountUnitsToSubunits.name, () => {
 describe(convertAmountSubunitsToUnits.name, () => {
     it('converts Sats->BTC', () => {
         expect(convertAmountSubunitsToUnits('1', 8)).toEqual('0.00000001');
+    });
+});
+
+describe(getFirmwareDescriptor.name, () => {
+    const taprootApostrophe = asAccountDescriptor(
+        "[5c9e228d/86'/0'/0']tpubDCpt6oCoUgcQEPBUnZS4pijgjNySRDaJH8FyztXHnjxCH3z8jjHKGpX3zwtNs1U8ThRDb8ZbnAnZWc1KNLQx8fasQnk3f9Vaqu3JJXcYCF",
+    );
+    const taprootH =
+        '[5c9e228d/86h/0h/0h]tpubDCpt6oCoUgcQEPBUnZS4pijgjNySRDaJH8FyztXHnjxCH3z8jjHKGpX3zwtNs1U8ThRDb8ZbnAnZWc1KNLQx8fasQnk3f9Vaqu3JJXcYCF';
+
+    it('returns the taproot descriptor in firmware (`h`) form', () => {
+        expect(getFirmwareDescriptor({ descriptor: taprootApostrophe })).toEqual(taprootH);
+    });
+
+    it('appends the checksum only when withChecksum is set', () => {
+        const account = { descriptor: taprootApostrophe, descriptorChecksum: 'tt7fmemp' };
+        expect(getFirmwareDescriptor(account)).toEqual(taprootH);
+        expect(getFirmwareDescriptor(account, { withChecksum: true })).toEqual(
+            `${taprootH}#tt7fmemp`,
+        );
+        // Only taproot accounts carry a checksum, so the dominant case for the desktop modal's
+        // unconditional `withChecksum: true` is an absent one; the suffix must not become
+        // `#undefined`.
+        expect(
+            getFirmwareDescriptor({ descriptor: taprootApostrophe }, { withChecksum: true }),
+        ).toEqual(taprootH);
+    });
+
+    it('leaves non-taproot descriptors untouched', () => {
+        const descriptor = asAccountDescriptor('0x1234567890abcdef1234567890abcdef12345678');
+        expect(getFirmwareDescriptor({ descriptor })).toEqual(descriptor);
+    });
+
+    // The stored descriptor of a real taproot account is the full BIP-380 form, as produced by
+    // `resolveDescriptorForTaproot`. The expectation below is firmware's own string from that
+    // helper's test, so this pins parity with the device screen end to end.
+    it('converts the full BIP-380 taproot descriptor Suite actually stores', () => {
+        const descriptor = asAccountDescriptor(
+            "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p/<0;1>/*)",
+        );
+
+        expect(
+            getFirmwareDescriptor(
+                { descriptor, descriptorChecksum: 'gvfjd7ak' },
+                { withChecksum: true },
+            ),
+        ).toEqual(
+            'tr([71d98c03/86h/0h/0h]xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p/<0;1>/*)#gvfjd7ak',
+        );
     });
 });

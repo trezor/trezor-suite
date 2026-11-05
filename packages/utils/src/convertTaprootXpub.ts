@@ -49,3 +49,14 @@ export type CanonicalDescriptor = string & Branded<'CanonicalDescriptor'>;
 export const toCanonicalDescriptor = (descriptor: string): CanonicalDescriptor =>
     (convertTaprootXpub({ xpub: descriptor, direction: 'h-to-apostrophe' }) ??
         descriptor) as CanonicalDescriptor;
+
+/**
+ * Converts a descriptor to firmware's `h` form for display (on-device confirm, QR). Suite stores
+ * the canonical apostrophe form, but firmware shows `h`, so display surfaces convert just before
+ * rendering. Rewrites the hardened steps of the single bracketed key origin, whatever the script
+ * type. Values without one (plain addresses, plain xpubs) pass through unchanged, as do inputs
+ * {@link convertTaprootXpub} cannot parse — an unclosed bracket, or several key origins as in a
+ * multisig descriptor.
+ */
+export const toFirmwareDescriptor = (descriptor: string): string =>
+    convertTaprootXpub({ xpub: descriptor, direction: 'apostrophe-to-h' }) ?? descriptor;

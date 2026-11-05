@@ -45,7 +45,13 @@ import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
-import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
+import {
+    BigNumber,
+    arrayDistinct,
+    bufferUtils,
+    toFirmwareDescriptor,
+    typedObjectKeys,
+} from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isDirectRpcBackendType } from './backendUtils';
@@ -319,6 +325,29 @@ export const findAccountsByNetwork = <T extends Account>(symbol: NetworkSymbol, 
 
 export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
     accounts.filter(a => a.descriptor === descriptor);
+
+type GetFirmwareDescriptorOptions = {
+    withChecksum?: boolean;
+};
+
+/**
+ * The descriptor to show the user in firmware (`h`) form. Suite stores the canonical apostrophe
+ * form, but on-device confirmation and QR codes should match what firmware renders, so display
+ * surfaces read the firmware form from here instead of converting descriptors themselves.
+ *
+ * For a taproot account firmware also appends `#<checksum>`, so only `withChecksum` reproduces
+ * firmware's full string; callers that need a plain descriptor payload leave it off.
+ */
+export const getFirmwareDescriptor = (
+    account: Pick<Account, 'descriptor' | 'descriptorChecksum'>,
+    { withChecksum = false }: GetFirmwareDescriptorOptions = {},
+): string => {
+    const firmwareDescriptor = toFirmwareDescriptor(account.descriptor);
+
+    return withChecksum && account.descriptorChecksum !== undefined
+        ? `${firmwareDescriptor}#${account.descriptorChecksum}`
+        : firmwareDescriptor;
+};
 
 export const findAccountsByAddress = (
     symbol: NetworkSymbol,
