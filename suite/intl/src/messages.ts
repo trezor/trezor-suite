@@ -767,7 +767,7 @@ export const messages = defineMessages({
         id: 'TR_APPROVAL_STEP_APPROVE_TITLE',
     },
     TR_APPROVAL_STEP_APPROVE_DESCRIPTION: {
-        defaultMessage: 'Let the provider access your {symbol} to process your swap.',
+        defaultMessage: 'Let the provider use your {symbol} to process your swap.',
         id: 'TR_APPROVAL_STEP_APPROVE_DESCRIPTION',
     },
     TR_APPROVAL_STEP_INCREASE_TITLE: {
@@ -776,7 +776,7 @@ export const messages = defineMessages({
     },
     TR_APPROVAL_STEP_INCREASE_DESCRIPTION: {
         defaultMessage:
-            'Your current limit is too low. Let the provider access more {symbol} to process your swap.',
+            'Your current limit is too low. Increase it so the provider can process your swap.',
         id: 'TR_APPROVAL_STEP_INCREASE_DESCRIPTION',
     },
     TR_APPROVAL_STEP_REVOKE_TITLE: {
@@ -806,7 +806,7 @@ export const messages = defineMessages({
     },
     TR_APPROVAL_REQUIRED_TOOLTIP: {
         defaultMessage:
-            "Approval lets the provider use only the {symbol} amount you choose. It's needed because you picked a decentralized exchange, which never holds your funds. Your {symbol} stays in your wallet until the swap.",
+            "Approval gives the provider permission to use the {symbol} amount you choose. It's needed because you picked a decentralized exchange, which never holds your funds. Your {symbol} stays in your wallet until the swap.",
         id: 'TR_APPROVAL_REQUIRED_TOOLTIP',
     },
     TR_APPROVAL_LIMIT_MODAL_HEADING: {
@@ -1945,7 +1945,7 @@ export const messages = defineMessages({
     },
     TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_DESCRIPTION: {
         defaultMessage:
-            'This token arrived unrequested and may be a phishing attempt. Do not interact with its website.',
+            'You received this token without requesting it. It may be a phishing attempt. Do not interact with its website.',
         id: 'TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_DESCRIPTION',
     },
     TR_ASSET_DETAIL_HIDDEN_TOKEN_TITLE: {
@@ -1953,8 +1953,7 @@ export const messages = defineMessages({
         id: 'TR_ASSET_DETAIL_HIDDEN_TOKEN_TITLE',
     },
     TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION: {
-        defaultMessage:
-            '{asset} does not appear in your asset list. Everything about it still works here.',
+        defaultMessage: '{asset} does not appear in your asset list, but it still works normally.',
         id: 'TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION',
     },
     TR_ASSET_DETAIL_POLICY_ID: {
@@ -13063,12 +13062,12 @@ export const messages = defineMessages({
     TR_CUSTOM_FEE_TOO_LOW_WARNING: {
         id: 'TR_CUSTOM_FEE_TOO_LOW_WARNING',
         defaultMessage:
-            'A fee this low may leave your transaction pending for a long time, or it may never be confirmed.',
+            'A fee this low may leave your transaction pending for a long time or prevent it from being confirmed.',
     },
     TR_CUSTOM_FEE_BELOW_BASE_FEE_WARNING: {
         id: 'TR_CUSTOM_FEE_BELOW_BASE_FEE_WARNING',
         defaultMessage:
-            "This is below the current base fee of {baseFee}. Until the base fee drops, the network can't include your transaction at all.",
+            "This is below the current base fee of {baseFee}. Your transaction can't be included until the base fee drops.",
     },
     TR_BUMP_FEE_DISABLED_TOOLTIP: {
         id: 'TR_BUMP_FEE_DISABLED_TOOLTIP',
