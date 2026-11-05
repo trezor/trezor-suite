@@ -71,6 +71,7 @@ const selectAccountState = {
     manualPhase: 'address',
     manualAccountIndex: 0,
     exported: false,
+    callId: 'active-id',
 };
 
 const usedAddress = (address: string) => ({
@@ -130,6 +131,24 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
             selectConnectPopupCallWithState(store.getState(), 'select-account')?.candidates ?? [];
         expect(candidates.map(c => c.address)).toEqual(['ADDR_ONLY']);
         expect(candidates.every(c => !c.loading)).toBe(true);
+    });
+
+    it('derives a candidate under the callId of its call', async () => {
+        const derivation = createDeferred();
+        mockedPrepare.mockReturnValueOnce(derivation.promise);
+
+        const store = initStore();
+        const load = store.dispatch(connectPopupLoadSelectAccountPageThunk({ page: 0 }));
+
+        // The derivation is this call's own on-device work, so it must run under the call's token —
+        // otherwise a cancel scoped to the call matches no in-flight method and leaves the export
+        // running on the device.
+        expect(mockedPrepare).toHaveBeenCalledWith(
+            expect.objectContaining({ callId: 'active-id' }),
+        );
+
+        derivation.resolve(usedAddress('ADDR'));
+        await load;
     });
 
     it('does not dedup a load of a different view — a page change still issues its own round-trip', async () => {
