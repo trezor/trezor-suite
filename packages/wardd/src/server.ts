@@ -24,6 +24,9 @@ import {
     type WardRelay,
 } from '@trezor/ward';
 
+import { type Log, silentLog } from './logging';
+import { forwardingDelay } from './pacing';
+
 export const DEFAULT_PORT = 21329;
 
 export const DEFAULT_ORIGINS = [
@@ -38,6 +41,8 @@ export type ServerOptions = {
     token: string;
     port?: number;
     allowedOrigins?: readonly string[];
+    delays?: boolean;
+    log?: Log;
 };
 
 const digest = (s: string) => createHash('sha256').update(s).digest();
@@ -77,8 +82,9 @@ export const startServer = async (opts: ServerOptions) => {
         });
 
         const handle = async (call: RelayCallFrame): Promise<Record<string, unknown>> => {
-            const params = (call.params ?? {}) as Record<string, unknown>;
+            const params = (call.params ?? {});
             if (call.method === 'hello') {
+                await forwardingDelay(opts.log ?? silentLog, 'host -> wardd hello', opts.delays);
                 if (
                     typeof params.version !== 'string' ||
                     major(params.version) !== major(RELAY_PROTOCOL_VERSION)
@@ -92,6 +98,7 @@ export const startServer = async (opts: ServerOptions) => {
                     throw new RelayFailure('unauthorised', 'wrong pairing token');
                 }
                 authed = true;
+                await forwardingDelay(opts.log ?? silentLog, 'wardd hello -> host', opts.delays);
 
                 return { version: RELAY_PROTOCOL_VERSION, wardd: 'wardd/1.0.0' };
             }

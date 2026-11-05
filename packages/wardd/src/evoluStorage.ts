@@ -68,6 +68,8 @@ import { WebSocket } from 'ws';
 
 import type { TreeState, WardEntry, WardProvider, WardRow, WardTransition } from '@trezor/ward';
 
+import { type Log, silentLog, startActivity } from './logging';
+
 /**
  * The WARD owner secret: the SLIP-21 child `WARD` of the node the device returns for
  * `['TREZOR', 'Evolu']`. A child is HMAC-SHA512 keyed by the parent's first half; its key is the
@@ -228,6 +230,7 @@ export const settled = (
     });
 
 export type EvoluStorageOptions = {
+    log?: Log;
     /** where the SQLite file and the local owner secret live; null keeps both in memory (tests) */
     dataDir: string | null;
     /** the wallet's 64-byte SLIP-21 Evolu node (hex); without it a local owner secret is used */
@@ -264,6 +267,7 @@ export class EvoluWardStorage implements WardProvider {
         private readonly run: ReturnType<typeof createNodeRun>['run'],
         private readonly errors: ErrorStore,
         private readonly writeTimeoutMs: number,
+        private readonly log: Log,
     ) {}
 
     static async open(opts: EvoluStorageOptions): Promise<EvoluWardStorage> {
@@ -304,6 +308,7 @@ export class EvoluWardStorage implements WardProvider {
             run,
             evoluError,
             opts.writeTimeoutMs ?? DEFAULT_WRITE_TIMEOUT_MS,
+            opts.log ?? silentLog,
         );
     }
 
@@ -318,13 +323,45 @@ export class EvoluWardStorage implements WardProvider {
         return settled(start, { errors: this.errors, timeoutMs: this.writeTimeoutMs });
     }
 
+    private read<T>(
+        operation: string,
+        table: string,
+        read: () => T,
+        summarize: (value: T) => Record<string, unknown>,
+    ): T {
+        const activity = startActivity(this.log, `evolu.${operation}`, { table });
+        try {
+            const value = read();
+            activity.success(summarize(value));
+
+            return value;
+        } catch (error) {
+            activity.failure(error);
+            throw error;
+        }
+    }
+
+    private entries(wardId: string): WardRow[] {
+        return EvoluWardStorage.bodies(this.evolu.getQueryRows(this.queries.entries), wardId).map(
+            body => JSON.parse(body) as WardRow,
+        );
+    }
+
     lookup(wardId: string, appId: string, address: string, networkSymbol: string) {
         const key = entryKey(wardId, appId, address, networkSymbol);
-        const row = this.getAllEntries(wardId).find(
-            r => entryKey(wardId, r.appId, r.address, r.networkSymbol) === key,
-        );
 
-        return row?.entry ?? null;
+        return this.read(
+            'lookup',
+            'wardEntry',
+            () => {
+                const row = this.entries(wardId).find(
+                    r => entryKey(wardId, r.appId, r.address, r.networkSymbol) === key,
+                );
+
+                return row?.entry ?? null;
+            },
+            value => ({ found: value !== null }),
+        );
     }
 
     upsert(
@@ -369,19 +406,37 @@ export class EvoluWardStorage implements WardProvider {
     }
 
     getAllEntries(wardId: string): WardRow[] {
-        return EvoluWardStorage.bodies(this.evolu.getQueryRows(this.queries.entries), wardId).map(
-            body => JSON.parse(body) as WardRow,
+        return this.read(
+            'getAllEntries',
+            'wardEntry',
+            () => this.entries(wardId),
+            value => ({ rows: value.length }),
         );
     }
 
     getByEntryKey(wardId: string, key: string): WardRow | null {
-        return this.getAllEntries(wardId).find(r => r.entryKey === key) ?? null;
+        return this.read(
+            'getByEntryKey',
+            'wardEntry',
+            () => this.entries(wardId).find(r => r.entryKey === key) ?? null,
+            value => ({ found: value !== null }),
+        );
     }
 
     getTreeState(wardId: string): TreeState | null {
-        const [body] = EvoluWardStorage.bodies(this.evolu.getQueryRows(this.queries.trees), wardId);
+        return this.read(
+            'getTreeState',
+            'wardTree',
+            () => {
+                const [body] = EvoluWardStorage.bodies(
+                    this.evolu.getQueryRows(this.queries.trees),
+                    wardId,
+                );
 
-        return body === undefined ? null : (JSON.parse(body) as TreeState);
+                return body === undefined ? null : (JSON.parse(body) as TreeState);
+            },
+            value => ({ found: value !== null, counter: value?.counter }),
+        );
     }
 
     setTreeState(wardId: string, state: TreeState) {
@@ -412,9 +467,15 @@ export class EvoluWardStorage implements WardProvider {
     }
 
     getTransitions(wardId: string): WardTransition[] {
-        return EvoluWardStorage.bodies(this.evolu.getQueryRows(this.queries.transitions), wardId)
-            .map(body => JSON.parse(body) as WardTransition)
-            .sort((a, b) => a.counter - b.counter);
+        return this.read(
+            'getTransitions',
+            'wardTransition',
+            () =>
+                EvoluWardStorage.bodies(this.evolu.getQueryRows(this.queries.transitions), wardId)
+                    .map(body => JSON.parse(body) as WardTransition)
+                    .sort((a, b) => a.counter - b.counter),
+            value => ({ rows: value.length }),
+        );
     }
 
     async dispose() {

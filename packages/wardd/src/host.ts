@@ -19,18 +19,20 @@ import {
     type RelayMessage,
     type RelaySyncResult,
     type RelayUpdateResult,
+    type TreeState,
     type WardLabel,
     type WardProvider,
-    blobRows,
     commitLocal,
-    loadHead,
     prepareChange,
 } from '@trezor/ward';
 
+import type { Log } from './logging';
+import { forwardingDelay } from './pacing';
 import { buildProofAck, readLeafContent, readLeafIdentity } from './proofs';
+import { rebuildTrie } from './reconstruction';
 import { type WmClient, WmConflict } from './wm';
 
-export type Log = (...m: unknown[]) => void;
+export type { Log } from './logging';
 
 type Body = Record<string, any>;
 
@@ -49,18 +51,22 @@ export type WardHostDeps = {
     storage: WardProvider;
     wm: WmClient;
     log: Log;
+    delays?: boolean;
 };
 
 export class WardHost {
     private wardId?: string;
+    private syncedHead?: TreeState;
 
     constructor(private readonly deps: WardHostDeps) {}
 
     /** Send one message and require the answer `expect`; a device `Failure` ends the conversation. */
     private async ask(device: RelayDevice, request: RelayMessage, expect: string): Promise<Body> {
         this.deps.log('->', request.name);
+        await forwardingDelay(this.deps.log, `wardd -> HWI ${request.name}`, this.deps.delays);
         const reply = await device(request);
         this.deps.log('<-', reply.name);
+        await forwardingDelay(this.deps.log, `HWI ${reply.name} -> wardd`, this.deps.delays);
         if (reply.name === 'Failure') {
             throw new RelayFailure(
                 'device_failure',
@@ -113,6 +119,8 @@ export class WardHost {
             counter,
             mac: tree?.mac,
         });
+        await rebuildTrie(this.deps.storage, wardId, tree, this.deps.log);
+        this.syncedHead = tree ? { ...tree } : { counter: 0, root: '' };
         await this.ask(
             device,
             {
@@ -203,13 +211,7 @@ export class WardHost {
         const { storage, wm, log } = this.deps;
         const { wardId } = await this.sync(device, params);
 
-        const { rows, tree } = await loadHead(storage, wardId);
-        if (tree?.root && rows.length === 0) {
-            log(
-                `INCONSISTENT stored state for ${wardId}: a root at counter ${tree.counter} but no ` +
-                    'entries, so every proof will be empty and the device will reject it',
-            );
-        }
+        const tree = this.syncedHead;
         const oldEntry = await storage.lookup(wardId, appId, address, networkSymbol);
         // The device proves membership of the leaf it removes, so deleting an absent entry
         // cannot produce a valid round.
@@ -285,6 +287,11 @@ export class WardHost {
             },
             'WARDConfirmedByWMAck',
         );
+        this.syncedHead = {
+            counter: installed.counter,
+            root: installed.new_root ?? '',
+            mac: installed.root_mac,
+        };
 
         // The device is the encoder: store the leaf it returned, both parts.
         const identity = readLeafIdentity(candidate.identity);
@@ -349,9 +356,9 @@ export class WardHost {
             throw new RelayFailure('bad_request', 'request.entry_key is required');
         }
         const entryKey: string = request.entry_key;
-        const rows = blobRows(await this.deps.storage.getAllEntries(wardId));
+        const tree = this.syncedHead ?? (await this.deps.storage.getTreeState(wardId));
+        const rows = await rebuildTrie(this.deps.storage, wardId, tree, this.deps.log);
         const present = rows.some(r => r.entryKeyHex === entryKey);
-        const tree = await this.deps.storage.getTreeState(wardId);
         this.deps.log(
             `PROOF build entry_key=${entryKey} present=${present} entries=${rows.length}` +
                 ` counter=${tree?.counter ?? 0} root=${tree?.root || 'EMPTY'}`,
@@ -359,6 +366,14 @@ export class WardHost {
 
         const ack = buildProofAck(rows, entryKey);
         this.logProof(ack, entryKey, present);
+        this.deps.log(
+            'proof.outgoing',
+            JSON.stringify({
+                name: 'WARDProofAck',
+                request: { entry_key: entryKey },
+                message: ack,
+            }),
+        );
 
         return ack;
     }
