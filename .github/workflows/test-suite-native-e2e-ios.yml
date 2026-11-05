@@ -111,7 +111,9 @@ jobs:
 
   run_ios_e2e_tests:
     runs-on: macos-latest
-    timeout-minutes: 75
+    # The simulator boot and test step timeouts plus about 10 minutes for the other steps, so the
+    # step timeouts fail the job before the job timeout cancels it.
+    timeout-minutes: 85
     strategy:
       fail-fast: false
       matrix:
