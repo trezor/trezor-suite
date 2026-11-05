@@ -120,6 +120,15 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 2
 
+      - name: Pull Docker Images
+        id: pull-docker-images
+        shell: bash
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+        run: |
+          docker compose pull --quiet ${{ inputs.containers }}
+        background: true
+
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
@@ -201,12 +210,8 @@ jobs:
           # Playwright runtime may indirectly import the built config, and that would crash if message-system is not built
           yarn message-system-sign-config 1>/dev/null
 
-      - name: Pull Docker Images
-        shell: bash
-        env:
-          COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
-        run: |
-          docker compose pull --quiet ${{ inputs.containers }}
+      - name: Wait for Docker Images
+        wait: pull-docker-images
 
       - name: Run Playwright E2E Tests
         shell: bash

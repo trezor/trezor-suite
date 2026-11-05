@@ -64,6 +64,13 @@ jobs:
           swap-storage: false
           large-packages: false
 
+      - name: Pull trezor-user-env images
+        id: pull-tenv-images
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
+        run: docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
+        background: true
+
       - name: Install node and yarn
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
@@ -116,12 +123,13 @@ jobs:
         id: device
         run: node -e "console.log('AVD_NAME=' + require('./suite-native/app/.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
 
+      - name: Wait for trezor-user-env images
+        wait: pull-tenv-images
+
       - name: Run trezor-user-env
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
-        run: |
-          docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
-          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
+        run: docker compose up --detach trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
 
       - name: Download Android build artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
