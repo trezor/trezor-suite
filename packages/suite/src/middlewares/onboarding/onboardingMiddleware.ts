@@ -3,6 +3,7 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
+import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { firmwareActions, selectFirmware } from '@suite-common/firmware';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
@@ -76,7 +77,7 @@ const onboardingMiddleware =
                     seed: 'recovery-in-progress',
                 }),
             );
-            if (!api.getState().analytics.confirmed) {
+            if (!selectIsAnalyticsConfirmed(api.getState())) {
                 // If you connect T2T1 in recovery mode to fresh Suite, you should see analytics opt-out option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));
             } else {

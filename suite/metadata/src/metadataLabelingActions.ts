@@ -29,7 +29,6 @@ import * as metadataProviderActions from './metadataProviderThunks';
 import {
     type MetadataRootState,
     selectLabelableEntities,
-    selectMetadata,
     selectMetadataEnabled,
     selectMetadataError,
     selectMetadataInitiating,
@@ -288,8 +287,8 @@ type FetchAndSaveMetadataForAllDevicesThunkState = MetadataRootState;
 
 export const fetchAndSaveMetadataForAllDevicesThunk =
     () => (dispatch: Dispatch, getState: () => FetchAndSaveMetadataForAllDevicesThunkState) => {
-        const metadata = selectMetadata(getState());
-        if (!metadata.enabled) {
+        const isMetadataEnabled = selectMetadataEnabled(getState());
+        if (!isMetadataEnabled) {
             return;
         }
         const devices = selectDevices(getState());

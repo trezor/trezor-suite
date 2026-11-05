@@ -1,5 +1,6 @@
 import { saveAs } from 'file-saver';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
 import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
@@ -241,10 +242,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getDebugSettings: toGetter(deps.getState, selectDebugSettings),
         getBinFilesBaseUrl: deps.getBinFilesBaseUrl,
         getLanguage: toGetter(deps.getState, selectLanguage),
-        getSelectedAccount: toGetter(
-            deps.getState,
-            (state: AppState) => state.wallet.selectedAccount,
-        ),
+        getSelectedAccount: toGetter(deps.getState, selectFullSelectedAccount),
         getIsWindowVisible: toGetter(deps.getState, selectIsWindowVisible),
         getTradingEnvironment: toGetter(deps.getState, selectTradeServerEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),

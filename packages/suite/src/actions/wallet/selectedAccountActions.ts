@@ -1,6 +1,6 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type SelectedAccountRootState } from '@suite/account';
+import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { metadataActions } from '@suite/metadata';
 import {
     type RouterRootState,
@@ -229,7 +229,7 @@ export const syncSelectedAccountThunk =
         if (!newState) return;
 
         // find differences
-        const stateChanged = isChanged(state.wallet.selectedAccount, newState, {
+        const stateChanged = isChanged(selectFullSelectedAccount(state), newState, {
             account: [
                 'descriptor',
                 'availableBalance',

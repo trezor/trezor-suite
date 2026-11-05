@@ -1,10 +1,10 @@
-import { AccountLabel } from '@suite/account';
+import { AccountLabel, selectSelectedAccountKey } from '@suite/account';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
-import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import { selectRawNetworkFeeInfo, selectSendFormDrafts } from '@suite-common/wallet-core';
 import {
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
@@ -20,7 +20,6 @@ import { BigNumber } from '@trezor/utils';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
-import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 
 import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
@@ -41,9 +40,6 @@ const getEstimatedTime = (
     return matchedFeeLevel.blocks * feeInfo.blockTime * 60;
 };
 
-const selectSendFormDrafts = (state: AppState) => state.wallet.send.drafts;
-const selectCurrentAccountKey = (state: AppState) => state.wallet.selectedAccount.account?.key;
-
 type TransactionReviewSummaryProps = {
     tx: GeneralPrecomposedTransactionFinal;
     account: Account;
@@ -62,7 +58,7 @@ export const TransactionReviewSummary = ({
     timer,
 }: TransactionReviewSummaryProps) => {
     const drafts = useSelector(selectSendFormDrafts);
-    const currentAccountKey = useSelector(selectCurrentAccountKey) as string;
+    const currentAccountKey = useSelector(selectSelectedAccountKey) as string;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const locale = useConnectedDateFnsLocale();
     const { symbol, networkType } = account;
