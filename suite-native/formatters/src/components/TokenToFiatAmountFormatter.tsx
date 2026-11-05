@@ -1,8 +1,12 @@
+import { useSelector } from 'react-redux';
+
 import { useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
 import { type TextProps } from '@suite-native/atoms';
+import { type TokensRootState } from '@suite-native/tokens';
 
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 import { type DiscreetMode, type FormatterProps } from '../types';
@@ -43,9 +47,12 @@ export const TokenToFiatAmountFormatter = ({
         historicRate,
         useHistoricRate,
     });
+    const isFiatRateDisallowed = useSelector((state: TokensRootState) =>
+        selectIsTokenFiatRateDisallowed(state, symbol, contract),
+    );
 
     if (fiatValue === null) {
-        return <EmptyAmountSkeleton />;
+        return isFiatRateDisallowed ? null : <EmptyAmountSkeleton />;
     }
 
     const formattedFiatValue = (

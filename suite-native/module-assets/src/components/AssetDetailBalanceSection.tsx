@@ -11,6 +11,8 @@ import {
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { Discreet, VStack } from '@suite-native/atoms';
 import {
@@ -47,6 +49,9 @@ export const AssetDetailBalanceSection = () => {
     const accountCount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetAccountCount(state, assetKey),
     );
+    const isFiatRateDisallowed = useSelector((state: TokenDefinitionsRootState) =>
+        selectIsTokenFiatRateDisallowed(state, networkSymbol, tokenContract),
+    );
     const openAccountsModal = useOpenAssetDetailAccounts();
 
     if (amount === undefined) {
@@ -70,12 +75,14 @@ export const AssetDetailBalanceSection = () => {
             />
 
             <VStack spacing="sp4">
-                <Discreet textVariant="headline-sm">
-                    <BaseCurrencyAmountHeaderFormatter
-                        value={fiatValue ?? null}
-                        variant="headline-sm"
-                    />
-                </Discreet>
+                {!isFiatRateDisallowed && (
+                    <Discreet textVariant="headline-sm">
+                        <BaseCurrencyAmountHeaderFormatter
+                            value={fiatValue ?? null}
+                            variant="headline-sm"
+                        />
+                    </Discreet>
+                )}
                 {tokenContract === undefined ? (
                     <CompactCryptoAmountFormatter
                         value={amount}

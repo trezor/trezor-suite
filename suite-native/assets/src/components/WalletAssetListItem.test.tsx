@@ -108,6 +108,19 @@ describe('WalletAssetListItem', () => {
         expect(screen.queryByText(/POL$/)).toBeNull();
     });
 
+    it('shows only the balance of an unrecognized token', async () => {
+        await renderWithStoreProvider(<WalletAssetListItem assetKey={usdcOnPolygonKey} />, {
+            preloadedState: {
+                ...preloadedState,
+                tokenDefinitions: { [POL]: { coin: { data: [], hide: [], show: [] } } },
+            },
+            services,
+        });
+
+        expect(screen.getByText(/^720(\.00)? USDC$/)).toBeTruthy();
+        expect(screen.queryByText('$720.00')).toBeNull();
+    });
+
     it('renders a network coin with its ticker, network, fiat value and balance', async () => {
         await renderWithStoreProvider(<WalletAssetListItem assetKey={bitcoinKey} />, {
             preloadedState,

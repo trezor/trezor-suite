@@ -13,7 +13,8 @@ import {
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
-import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type WalletAssetKey, selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { AssetYieldRateBadge } from '@suite-native/earn';
@@ -69,6 +70,11 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
         areBaseCurrencyAmountsEqual,
     );
 
+    const isFiatRateDisallowed = useSelector(
+        (state: TokenDefinitionsRootState) =>
+            symbol !== undefined && selectIsTokenFiatRateDisallowed(state, symbol, contractAddress),
+    );
+
     const { applyStyle } = useNativeStyles();
     const { NetworkNameFormatter } = useFormatters();
     const navigation =
@@ -112,11 +118,13 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                             tokenDecimals={tokenDecimals}
                         />
                     </HStack>
-                    <BaseCurrencyAmountFormatter
-                        value={fiatValue ?? null}
-                        symbol={symbol}
-                        variant="body-sm"
-                    />
+                    {!isFiatRateDisallowed && (
+                        <BaseCurrencyAmountFormatter
+                            value={fiatValue ?? null}
+                            symbol={symbol}
+                            variant="body-sm"
+                        />
+                    )}
                 </HStack>
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
                     <Box flex={1}>

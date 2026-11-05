@@ -1,4 +1,4 @@
-import { Divider, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 
 import { AssetDetailBalanceSection } from './AssetDetailBalanceSection';
 import { AssetDetailEarnSection } from './AssetDetailEarnSection';
@@ -9,7 +9,6 @@ export const AssetDetailHeader = () => (
     <VStack spacing="sp20">
         <AssetDetailHiddenBanner />
         <AssetDetailPriceSection />
-        <Divider />
         <AssetDetailBalanceSection />
         <AssetDetailEarnSection />
     </VStack>
