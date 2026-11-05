@@ -13,6 +13,7 @@ export const mockStakingProductInfo = (
             providerId: stakingProviderIdSchema.parse('everstake'),
             name: 'EVE6',
             rate: 2.4,
+            saturation: 80.77,
         },
     ],
     ...overrides,
