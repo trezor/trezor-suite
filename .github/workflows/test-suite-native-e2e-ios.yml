@@ -154,6 +154,8 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-organization-projects: write
+          permission-pull-requests: write
 
       # Used by github reporter when publishing results of release run
       - name: Extract Release Build

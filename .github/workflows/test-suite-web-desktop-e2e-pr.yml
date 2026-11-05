@@ -91,6 +91,7 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-pull-requests: write
       - name: Post Currents link
         uses: ./.github/actions/post-currents-link
         with:
@@ -288,6 +289,7 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-pull-requests: write
       - name: Post Suite Web preview link
         uses: ./.github/actions/post-suite-web-preview-link
         with:
@@ -312,6 +314,7 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-pull-requests: write
       - name: Post Currents link
         uses: ./.github/actions/post-currents-link
         with:

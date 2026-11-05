@@ -62,6 +62,8 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-pull-requests: write
+          permission-issues: write
 
       - name: Checkout new branch
         env:

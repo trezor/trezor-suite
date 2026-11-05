@@ -46,6 +46,8 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-actions: read
+          permission-pull-requests: write
       - name: Check previous runs
         id: check-previous-runs
         uses: "./.github/actions/check-previous-test-runs"

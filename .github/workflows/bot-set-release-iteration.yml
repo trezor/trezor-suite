@@ -74,6 +74,9 @@ jobs:
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-organization-projects: write
+          permission-issues: read
+          permission-pull-requests: read
 
       - name: Resolve and set Release iteration
         if: steps.guard.outputs.proceed == 'true'

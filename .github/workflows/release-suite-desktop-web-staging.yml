@@ -115,6 +115,7 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: |
             trezor-suite
+          permission-contents: write
 
       - name: Create GitHub draft release
         env:
