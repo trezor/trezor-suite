@@ -60,7 +60,7 @@ export const PortfolioAssetsContent = () => {
     );
     const isAssetListLoading = useSelector(selectIsAssetListLoading);
     const isMenuAvailable = useSelector(selectIsHomeAssetTableMenuAvailable);
-    const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const { dispatch } = useServices(injectDispatch);
 
     const renderEntryContent = (entry: PortfolioAssetListEntry) => {
@@ -127,6 +127,7 @@ export const PortfolioAssetsContent = () => {
                 <PortfolioAssetsViewOptionsSheet
                     bottomSheetRef={bottomSheetRef}
                     onSmallBalancesChange={changeSmallBalances}
+                    onHiddenTokensPress={closeModal}
                 />
             )}
         </Box>

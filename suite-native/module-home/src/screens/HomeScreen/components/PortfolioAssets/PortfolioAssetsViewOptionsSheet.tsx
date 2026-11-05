@@ -3,7 +3,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { PortfolioAssetsGroupingOptions } from './PortfolioAssetsGroupingOptions';
-import { PortfolioAssetsSmallBalancesSwitch } from './PortfolioAssetsSmallBalancesSwitch';
+import { PortfolioAssetsTokensOptions } from './PortfolioAssetsTokensOptions';
 import { PortfolioAssetsViewOptionsSectionLabel } from './PortfolioAssetsViewOptionsSectionLabel';
 
 // The section divider spans the full sheet width, so the rows inset themselves instead.
@@ -14,11 +14,13 @@ const sheetContentStyle = prepareNativeStyle(() => ({
 type PortfolioAssetsViewOptionsSheetProps = {
     bottomSheetRef: BottomSheetModalRef;
     onSmallBalancesChange: (areShown: boolean) => void;
+    onHiddenTokensPress: () => void;
 };
 
 export const PortfolioAssetsViewOptionsSheet = ({
     bottomSheetRef,
     onSmallBalancesChange,
+    onHiddenTokensPress,
 }: PortfolioAssetsViewOptionsSheetProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -31,7 +33,10 @@ export const PortfolioAssetsViewOptionsSheet = ({
         >
             <PortfolioAssetsViewOptionsSectionLabel labelId="moduleHome.assets.viewOptionsSheet.groupBy" />
             <PortfolioAssetsGroupingOptions />
-            <PortfolioAssetsSmallBalancesSwitch onChange={onSmallBalancesChange} />
+            <PortfolioAssetsTokensOptions
+                onSmallBalancesChange={onSmallBalancesChange}
+                onHiddenTokensPress={onHiddenTokensPress}
+            />
         </BottomSheetModal>
     );
 };
