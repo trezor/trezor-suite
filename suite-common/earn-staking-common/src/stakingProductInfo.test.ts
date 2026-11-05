@@ -20,6 +20,29 @@ describe('stakingProductInfoSchema', () => {
         expect(stakingProductInfoSchema.parse(info)).toEqual(info);
     });
 
+    it('accepts a zero rate', () => {
+        const info = mockStakingProductInfo({ rate: 0 });
+
+        expect(stakingProductInfoSchema.parse(info)).toEqual(info);
+    });
+
+    it('rejects a negative rate', () => {
+        const result = stakingProductInfoSchema.safeParse(mockStakingProductInfo({ rate: -0.5 }));
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['rate']);
+    });
+
+    it('rejects a negative target rate', () => {
+        const [target] = mockStakingProductInfo().targets;
+        const result = stakingProductInfoSchema.safeParse(
+            mockStakingProductInfo({ targets: target ? [{ ...target, rate: -0.5 }] : [] }),
+        );
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['targets', 0, 'rate']);
+    });
+
     it('rejects an unknown key', () => {
         const result = stakingProductInfoSchema.safeParse({
             ...mockStakingProductInfo(),

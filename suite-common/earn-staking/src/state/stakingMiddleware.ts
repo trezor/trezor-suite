@@ -61,6 +61,7 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
 
     if (stakingActions.productsRegistered.match(action)) {
         dispatch(syncAllStakingPositionsThunk());
+        dispatch(refreshStakingProductInfoThunk());
     }
 
     if (transactionsActions.addTransaction.match(action)) {

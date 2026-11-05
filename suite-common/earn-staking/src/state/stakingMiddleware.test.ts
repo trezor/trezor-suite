@@ -171,16 +171,23 @@ const initStore = (
 };
 
 describe('prepareStakingMiddleware', () => {
-    it('syncs every account once the products are registered', async () => {
-        const { store, staking, adapter } = initStore();
+    it('syncs every account once the products are registered, then with their fetched info', async () => {
+        const { store, staking, adapter, queryClient } = initStore();
 
         staking.loadStakingProducts();
         await flushThunks();
 
-        expect(adapter.getPosition).toHaveBeenCalledTimes(1);
-        expect(adapter.getPosition).toHaveBeenCalledWith({
+        expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(1);
+        expect(getCachedStakingProductInfo(queryClient, eth.id)).toEqual(mockStakingProductInfo());
+        expect(adapter.getPosition).toHaveBeenCalledTimes(2);
+        expect(adapter.getPosition).toHaveBeenNthCalledWith(1, {
             account: ethAccount,
             productInfo: null,
+            transactions: [],
+        });
+        expect(adapter.getPosition).toHaveBeenLastCalledWith({
+            account: ethAccount,
+            productInfo: mockStakingProductInfo(),
             transactions: [],
         });
         expect(selectStakingPositionsByAccount(store.getState(), ethAccount.key)).toEqual([
@@ -211,7 +218,9 @@ describe('prepareStakingMiddleware', () => {
 
         staking.loadStakingProducts();
         await flushThunks();
+        queryClient.clear();
         jest.mocked(adapter.getPosition).mockClear();
+        jest.mocked(adapter.fetchProductInfo).mockClear();
 
         store.dispatch(changeNetworks([asNetworkSymbol('eth')], [asNetworkSymbol('eth')]));
         await flushThunks();
@@ -311,7 +320,7 @@ describe('prepareStakingMiddleware', () => {
 
             expect(adapter.getPosition).toHaveBeenLastCalledWith({
                 account: ethAccount,
-                productInfo: null,
+                productInfo: mockStakingProductInfo(),
                 transactions: [pending],
             });
 
@@ -323,7 +332,7 @@ describe('prepareStakingMiddleware', () => {
 
             expect(adapter.getPosition).toHaveBeenLastCalledWith({
                 account: ethAccount,
-                productInfo: null,
+                productInfo: mockStakingProductInfo(),
                 transactions: [mined],
             });
         });
