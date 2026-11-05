@@ -16,7 +16,7 @@ on:
         required: false
         default: "2-latest"
       testsFirmwareBranch:
-        description: "Build the emulator firmware from this trezor-firmware branch instead of a released version (used by WARD, which ships only in a branch, e.g. petrsusil/ward-draft). Overrides `testsFirmware`."
+        description: "Build the emulator firmware from this trezor-firmware branch instead of a released version (used by WARD, which ships only in a branch, e.g. petrsusil/ward-poc-encrypted). Overrides `testsFirmware`."
         type: "string"
         required: false
         default: ""

@@ -33,7 +33,7 @@ on:
         type: string
         default: "2-latest"
       deviceBranch:
-        description: "Build the emulator firmware from this trezor-firmware branch (overrides the version). Required to run the `ward` group, since WARD ships only in a branch (use petrsusil/ward-draft). Leave empty for released firmware."
+        description: "Build the emulator firmware from this trezor-firmware branch (overrides the version). Required to run the `ward` group, since WARD ships only in a branch (use petrsusil/ward-poc-encrypted). Leave empty for released firmware."
         type: string
         default: ""
       groups:
