@@ -75,10 +75,11 @@ export const AccountsList = ({
             <AccountsListRow
                 {...item}
                 hasBottomSpacing={item.isLast}
+                tokenContract={tokenContract}
                 onSelectAccount={onSelectAccount}
             />
         ),
-        [onSelectAccount],
+        [onSelectAccount, tokenContract],
     );
 
     return (
