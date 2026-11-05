@@ -17,15 +17,10 @@ import {
     type WalletLabels,
 } from '@suite-common/metadata-types';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import {
-    type AccountsRootState,
-    selectAccountByKey,
-    selectAccounts,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
-import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import {
     addMetadataProvider,
@@ -316,11 +311,6 @@ export const selectLabelableEntities = (state: MetadataRootState, deviceState: S
     ];
 };
 
-const selectLabelableAccountByKey = createWeakMapSelector.withTypes<AccountsRootState>()(
-    [selectAccounts, (_state: AccountsRootState, entityKey: string) => entityKey],
-    (accounts, entityKey) => accounts.find(account => account.key === entityKey),
-);
-
 /**
  * @deprecated Legacy Labeling
  * Is everything ready to add label?
@@ -368,19 +358,22 @@ export const selectIsLabelingAvailableForEntity = (
         return false;
     }
 
-    const device = deviceStaticSessionId
-        ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
-        : selectSelectedDevice(state);
-    if (!device?.state?.staticSessionId) {
+    const walletId = deviceStaticSessionId ?? selectSelectedDevice(state)?.state?.staticSessionId;
+    if (!walletId) {
         return false;
     }
 
-    const account = selectLabelableAccountByKey(state, entityKey);
-    if (account?.deviceState === device.state.staticSessionId) {
+    const device = selectDeviceByStaticSessionId(state, walletId);
+    if (!device) {
+        return false;
+    }
+
+    const account = selectAccountByKey(state, entityKey as AccountKey);
+    if (account?.deviceState === walletId) {
         return Boolean(account.metadata[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName);
     }
 
-    if (entityKey === device.state.staticSessionId) {
+    if (entityKey === walletId) {
         return Boolean(device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName);
     }
 
