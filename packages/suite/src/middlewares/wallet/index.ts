@@ -3,7 +3,6 @@ import type { MiddlewareAPI } from 'redux';
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { coinjoinMiddleware } from '@suite/coinjoin';
 import { prepareDiscoveryMiddleware } from '@suite/discovery';
-import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
 import { type StakingDep, prepareStakingMiddleware } from '@suite-common/earn-staking';
 import { type QueryClientDep } from '@suite-common/react-query';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
@@ -56,7 +55,6 @@ export const getWalletMiddlewares = (
     tradingMiddleware,
     coinjoinMiddleware,
     replaceByFeeErrorMiddleware,
-    prepareConnectPopupMiddleware(getExtra),
     prepareWalletConnectMiddleware(getExtra),
     prepareSuiteSyncMiddleware(getExtra),
 ];

@@ -18,6 +18,5 @@ describe('utils/accountUtils', () => {
     });
 
     // todo:
-    describe.skip('getAccountAddressN', () => {});
     describe.skip('getPublicKeyLabel', () => {});
 });

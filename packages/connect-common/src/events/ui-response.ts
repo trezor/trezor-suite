@@ -1,8 +1,6 @@
 import type { ThpPairingMethod } from '@trezor/protocol';
 
 import { type UI_REQUEST } from './ui-request';
-import type { DiscoveryAccount } from '../types/account';
-import type { FeeLevel } from '../types/fees';
 import type { LocalFirmwares } from '../types/settings';
 
 /*
@@ -15,10 +13,7 @@ export const UI_RESPONSE = {
     RECEIVE_PIN: 'ui-receive_pin',
     RECEIVE_PASSPHRASE: 'ui-receive_passphrase',
     RECEIVE_THP_PAIRING_TAG: 'ui-receive_thp_pairing_tag',
-    RECEIVE_ACCOUNT: 'ui-receive_account',
-    RECEIVE_FEE: 'ui-receive_fee',
     RECEIVE_WORD: 'ui-receive_word',
-    RECEIVE_DISCOVERY_ACCOUNTS: 'ui-receive_discovery_accounts',
 } as const;
 
 export interface UiResponseConfirmation {
@@ -66,34 +61,12 @@ export interface UiResponseThpPairingTag {
     requestId?: string;
 }
 
-export interface UiResponseAccount {
-    type: typeof UI_RESPONSE.RECEIVE_ACCOUNT;
-    payload: number;
-}
-
-export interface UiResponseFee {
-    type: typeof UI_RESPONSE.RECEIVE_FEE;
-    payload:
-        | { type: 'change-account' }
-        | { type: 'select-fee'; value: Exclude<FeeLevel['label'], 'custom'> }
-        | { type: 'select-fee-custom'; value: string };
-}
-
-export interface UiResponseDiscoveryAccounts {
-    type: typeof UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNTS;
-    payload: { accounts: DiscoveryAccount[] } | null;
-}
-
 export type UiResponseEvent =
     | UiResponseConfirmation
     | UiResponsePin
     | UiResponseWord
     | UiResponsePassphrase
     | UiResponseThpPairingTag
-    | UiResponseAccount
-    | UiResponseFee
-    | UiResponseFirmwares
-    | UiResponseDiscoveryAccounts
     | UiResponseFirmwares;
 
 export type UiResponseMessage = UiResponseEvent & { event: typeof UI_REQUEST; requestId?: string };

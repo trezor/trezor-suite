@@ -1,43 +1,20 @@
 import {
     type BitcoinNetworkInfo,
     type ComposeParams,
-    type ComposeResultFinal,
-    DEFAULT_SORTING_STRATEGY,
-    type DiscoveryAccount,
     ERRORS,
-    type FeeLevel,
     type PermissionRequest,
     type SignedTransaction,
-    UI_EVENTS,
-    UI_REQUESTS,
-    UI_RESPONSE,
-    createUiEventMessage,
-    createUiRequestMessage,
-    getPreviousTxids,
 } from '@trezor/connect-common';
-import { toCanonicalDescriptor } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
-import { resolveAfter } from '@trezor/utils/src/resolveAfter';
-import { unique } from '@trezor/utils/src/unique';
 import type { ComposeOutput } from '@trezor/utxo-lib';
 
-import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
+import { assertBackendSupported } from '../backend/BlockchainLink';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { requestExistingAccounts } from './common/requestExistingAccounts';
-import { fixCoinInfoNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
+import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { formatAmount } from '../utils/formatUtils';
-import { createComposer } from './bitcoin/TransactionComposer';
-import { enhanceSignTx } from './bitcoin/enhanceSignTx';
-import { inputToTrezor } from './bitcoin/inputs';
-import { outputToTrezor, validateHDOutput } from './bitcoin/outputs';
-import { parseTransactionHexes, transformReferencedTransactions } from './bitcoin/refTx';
-import { signTx } from './bitcoin/signtx';
-import { deriveOutputScript, verifyTx } from './bitcoin/signtxVerify';
-import { Discovery } from './common/Discovery';
+import { validateHDOutput } from './bitcoin/outputs';
 import { validateParams } from './common/paramsValidator';
-import { getOrInitFeeLevels } from '../backend/fees';
 
 type Params = Omit<ComposeParams, 'outputs'> & {
     outputs: ComposeOutput[];
@@ -93,9 +70,6 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         this.requiredFirmwareCoins = [coinInfo];
     }
 
-    discovery?: Discovery;
-    private disposed = false;
-
     get requiredPermissions(): PermissionRequest[] {
         const permissions: PermissionRequest[] = [this.coinPerm('sign', this.params.coinInfo)];
         if (this.params.push) {
@@ -115,330 +89,13 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         return `Send ${formatAmount(this.params.total.toString(), this.params.coinInfo)}`;
     }
 
-    private getBlockchain(sendCoreMessage: MethodContext['sendCoreMessage']) {
-        return initBlockchain(this.params.coinInfo, sendCoreMessage, this.params.identity);
-    }
-
-    run(context: MethodContext) {
-        return this.interactiveFlow(context);
-    }
-
-    private async interactiveFlow(context: MethodContext): Promise<SignedTransaction> {
-        // discover accounts and wait for user action
-        const { account, utxo: utxos } = await this.selectAccount(context);
-
-        const { coinInfo, outputs, sortingStrategy, push } = this.params;
-
-        // get backend instance (it should be initialized before)
-        const blockchain = await this.getBlockchain(context.sendCoreMessage);
-        const feeLevels = getOrInitFeeLevels(coinInfo);
-        await feeLevels.load(blockchain);
-
-        // find unused change address or fallback to the last in the list
-        const changeAddress =
-            account.addresses?.change.find(a => !a.transfers) ?? account.addresses?.change.at(-1);
-
-        const compose = createComposer({
-            txType: account.type,
-            changeAddress,
-            utxos,
-            coinInfo,
-            outputs,
-            sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
-        });
-
-        const levels: FeeLevel[] = [];
-        const transactions = new Map<FeeLevel['label'], ComposeResultFinal>();
-        const composed = { levels, transactions };
-
-        // try to compose multiple transactions with different fee levels
-        // check if any of composed transactions is valid
-        for (const level of feeLevels.levels) {
-            if (level.feePerUnit === '0') continue;
-            const tx = compose(level.feePerUnit);
-            if (tx.type !== 'final') continue;
-            composed.levels.push(level);
-            composed.transactions.set(level.label, tx);
-        }
-
-        let requestFeeLevels = composed.levels;
-        if (!composed.levels.length) {
-            const feePerUnit = String(coinInfo.minFee);
-            const minFeeTx = compose(feePerUnit);
-
-            if (minFeeTx.type !== 'final') {
-                // show error view
-                context.sendCoreMessage(createUiEventMessage(UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS));
-                // wait few seconds...
-                await resolveAfter(2000);
-
-                // and go back to discovery
-                return this.interactiveFlow(context);
-            }
-
-            requestFeeLevels = [{ label: 'custom', blocks: -1, feePerUnit }];
-        }
-
-        const uiPromise = context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice());
-        context.sendCoreMessage(
-            createUiRequestMessage(
-                UI_REQUESTS.REQUEST_FEE,
-                {
-                    feeLevels: requestFeeLevels,
-                    coinInfo: this.params.coinInfo,
-                },
-                { requestId: uiPromise.requestId },
+    // Composed, selected and signed by Trezor Suite instead, see its sendTransaction popup flow.
+    run(): Promise<SignedTransaction> {
+        return Promise.reject(
+            ERRORS.TypedError(
+                'Method_NotAllowed',
+                'sendTransaction is available only through Trezor Suite',
             ),
         );
-
-        // wait for fee selection
-        const resp = await uiPromise.promise;
-
-        if (resp.payload.type === 'change-account') {
-            // check for interruption
-            if (this.disposed) {
-                throw ERRORS.TypedError(
-                    'Runtime',
-                    'SendTransaction: selectFee response received after dispose',
-                );
-            }
-
-            // back to account selection
-            return this.interactiveFlow(context);
-        }
-
-        const tx =
-            resp.payload.type === 'select-fee-custom'
-                ? compose(resp.payload.value) // recompose custom fee level with requested value
-                : composed.transactions.get(resp.payload.value);
-
-        if (tx?.type !== 'final') {
-            throw ERRORS.TypedError('Runtime', 'SendTransaction: Trying to sign unfinished tx');
-        }
-
-        const response = await this._sign(tx, context.sendCoreMessage);
-
-        if (push) {
-            const blockchain2 = await this.getBlockchain(context.sendCoreMessage);
-            const txid = await blockchain2.pushTransaction(response.serializedTx);
-
-            return {
-                ...response,
-                txid,
-            };
-        }
-
-        return response;
-    }
-
-    private async selectAccount(context: MethodContext) {
-        const { coinInfo } = this.params;
-        const blockchain = await this.getBlockchain(context.sendCoreMessage);
-
-        // Try to get existing accounts from the host (e.g. Suite) to skip device discovery
-        if (!this.discovery) {
-            const existingAccounts = await requestExistingAccounts({
-                postMessage: context.sendCoreMessage,
-                createUiPromise: context.createUiPromise,
-                device: this.getDevice(),
-                coinInfo,
-            });
-
-            if (existingAccounts) {
-                return this.selectFromExistingAccounts(existingAccounts, blockchain, context);
-            }
-        }
-
-        return this.selectFromDiscovery(blockchain, context);
-    }
-
-    private async selectFromExistingAccounts(
-        accounts: DiscoveryAccount[],
-        blockchain: Awaited<ReturnType<typeof this.getBlockchain>>,
-        context: MethodContext,
-    ) {
-        const { coinInfo } = this.params;
-        const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
-
-        context.sendCoreMessage(
-            createUiRequestMessage(
-                UI_REQUESTS.REQUEST_ACCOUNT,
-                {
-                    type: 'complete',
-                    accountTypes: unique(accounts.map(a => a.type)),
-                    coinInfo,
-                    accounts,
-                },
-                { requestId: dfd.requestId },
-            ),
-        );
-
-        const uiResp = await dfd.promise;
-        const accountIndex = uiResp.payload;
-        // @ts-expect-error: noUncheckedIndexedAccess
-        const account: (typeof accounts)[number] = accounts[accountIndex];
-        this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
-        const utxo = await blockchain.getAccountUtxo(toCanonicalDescriptor(account.descriptor));
-
-        return { account, utxo };
-    }
-
-    private async selectFromDiscovery(
-        blockchain: Awaited<ReturnType<typeof this.getBlockchain>>,
-        context: MethodContext,
-    ) {
-        const { coinInfo } = this.params;
-        const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
-
-        if (this.discovery?.completed) {
-            const { discovery } = this;
-            context.sendCoreMessage(
-                createUiRequestMessage(
-                    UI_REQUESTS.REQUEST_ACCOUNT,
-                    {
-                        type: 'end',
-                        coinInfo,
-                        accountTypes: discovery.types.map(t => t.type),
-                        accounts: discovery.accounts,
-                    },
-                    { requestId: dfd.requestId },
-                ),
-            );
-            const uiResp = await dfd.promise;
-            const { accounts } = discovery;
-            const accountIndex = uiResp.payload;
-            // @ts-expect-error: noUncheckedIndexedAccess
-            const account: (typeof accounts)[number] = accounts[accountIndex];
-            const utxo = await blockchain.getAccountUtxo(toCanonicalDescriptor(account.descriptor));
-
-            return { account, utxo };
-        }
-
-        const discovery =
-            this.discovery ||
-            new Discovery({
-                blockchain,
-                getDescriptor: path =>
-                    this.getDevice().getCommands().getAccountDescriptor(this.params.coinInfo, path),
-            });
-        this.discovery = discovery;
-
-        discovery.on('progress', accounts => {
-            context.sendCoreMessage(
-                createUiRequestMessage(
-                    UI_REQUESTS.REQUEST_ACCOUNT,
-                    {
-                        type: 'progress',
-                        coinInfo,
-                        accounts,
-                    },
-                    { requestId: dfd.requestId },
-                ),
-            );
-        });
-        discovery.on('complete', () => {
-            context.sendCoreMessage(
-                createUiRequestMessage(
-                    UI_REQUESTS.REQUEST_ACCOUNT,
-                    {
-                        type: 'end',
-                        coinInfo,
-                    },
-                    { requestId: dfd.requestId },
-                ),
-            );
-        });
-
-        // get accounts with addresses (tokens)
-        discovery.start('tokens').catch(error => {
-            // catch error from discovery process
-            dfd.reject(error);
-        });
-
-        // set select account view
-        // this view will be updated from discovery events
-        context.sendCoreMessage(
-            createUiRequestMessage(
-                UI_REQUESTS.REQUEST_ACCOUNT,
-                {
-                    type: 'start',
-                    accountTypes: discovery.types.map(t => t.type),
-                    coinInfo,
-                },
-                { requestId: dfd.requestId },
-            ),
-        );
-
-        // wait for user action
-        const uiResp = await dfd.promise;
-        discovery.removeAllListeners();
-        discovery.stop();
-
-        if (!discovery.completed) {
-            await resolveAfter(501); // temporary solution, TODO: immediately resolve will cause "device call in progress"
-        }
-
-        const { accounts } = discovery;
-        const accountIndex = uiResp.payload;
-        // @ts-expect-error: noUncheckedIndexedAccess
-        const account: (typeof accounts)[number] = accounts[accountIndex];
-        this.params.coinInfo = fixCoinInfoNetwork(this.params.coinInfo, account.address_n);
-        const utxo = await blockchain.getAccountUtxo(toCanonicalDescriptor(account.descriptor));
-
-        return { account, utxo };
-    }
-
-    private async _sign(tx: ComposeResultFinal, sendCoreMessage: MethodContext['sendCoreMessage']) {
-        const device = this.getDevice();
-        const { params } = this;
-
-        const { coin, coinInfo } = params;
-
-        const inputs = tx.inputs.map(inp => inputToTrezor(inp, params.sequence));
-        const outputs = tx.outputs.map(outputToTrezor);
-
-        const prevTxids = getPreviousTxids(inputs, coin);
-        const refTxs = prevTxids.length
-            ? await this.getBlockchain(sendCoreMessage)
-                  .then(blockchain => blockchain.getTransactionHexes(prevTxids))
-                  .then(parseTransactionHexes(coinInfo.network))
-                  .then(transformReferencedTransactions)
-            : [];
-
-        const getHDNode = (address_n: number[]) =>
-            device.getCommands().getHDNode({ address_n }, { coinInfo: params.coinInfo });
-
-        const outputScripts = await promiseAllSequence(
-            outputs.map(output => () => deriveOutputScript(getHDNode, output, coinInfo.network)),
-        );
-
-        const cmd = device.getCommands();
-        const response = await signTx({
-            typedCall: cmd.typedCall,
-            inputs,
-            outputs,
-            refTxs,
-            options: enhanceSignTx({}, coinInfo),
-            coinInfo,
-        });
-
-        verifyTx(response.serializedTx, {
-            inputs,
-            outputs,
-            outputScripts,
-            network: coinInfo.network,
-        });
-
-        return response;
-    }
-
-    dispose() {
-        this.disposed = true;
-        const { discovery } = this;
-        if (discovery) {
-            discovery.stop();
-            discovery.removeAllListeners();
-            this.discovery = undefined;
-        }
     }
 }
