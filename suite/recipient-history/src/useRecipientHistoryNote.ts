@@ -5,6 +5,7 @@ import {
     type RecipientHistoryRootState,
     getRecipientLastSentTime,
     isNewRecipient,
+    isPossiblePoisoning,
     selectAccountRecipientHistory,
 } from '@suite-common/recipient-history';
 import { selectAccountByKey } from '@suite-common/wallet-core';
@@ -12,7 +13,9 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 
 export type RecipientHistoryNoteVariant =
-    { type: 'newRecipient' } | { type: 'lastSent'; lastSentTime: number };
+    | { type: 'possiblePoisoning' }
+    | { type: 'newRecipient' }
+    | { type: 'lastSent'; lastSentTime: number };
 
 type UseRecipientHistoryNoteParams = {
     accountKey: AccountKey;
@@ -46,6 +49,9 @@ export const useRecipientHistoryNote = ({
         history,
         networkType: account.networkType,
     };
+
+    // A lookalike is also a new recipient, so the stronger warning goes first.
+    if (isPossiblePoisoning(recipientParams)) return { type: 'possiblePoisoning' };
 
     if (isNewRecipient(recipientParams)) return { type: 'newRecipient' };
 

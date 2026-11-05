@@ -20,6 +20,7 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.0"
     },
