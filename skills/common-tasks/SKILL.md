@@ -28,7 +28,7 @@ If a blocked version is required to fix a bug, add a targeted exception to `npmP
 
 ```bash
 yarn generate-package      # Create new package
-yarn update-submodules     # Update trezor-common submodule
+yarn update-submodules     # Update trezor-common submodule (see git-and-commit-guidelines)
 ```
 
 ## Troubleshooting
