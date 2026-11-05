@@ -195,4 +195,34 @@ describe('backend/BackendManager', () => {
 
         expect(connects).toBeLessThanOrEqual(6);
     });
+
+    it('keeps the new backend when the one it replaced fails to connect later', async () => {
+        let failHangingConnect = (_error: Error) => {};
+        const realConnect = BlockchainLink.prototype.connect;
+        jest.spyOn(BlockchainLink.prototype, 'connect')
+            .mockImplementationOnce(
+                () =>
+                    new Promise((_, reject) => {
+                        failHangingConnect = reject;
+                    }),
+            )
+            .mockImplementation(function (this: BlockchainLink) {
+                return realConnect.call(this);
+            });
+
+        manager.setCustom('BTC', { type: 'blockbook', url: ['custom_url'] });
+        manager.getOrConnect({ coinInfo, postMessage }).catch(() => {});
+        await delay(100);
+
+        // the user switches back to the default backend while the custom one still hangs
+        manager.setCustom('BTC', coinInfo.blockchainLink);
+        const replacement = await manager.reconnectAll(coinInfo);
+        expectExactMessages('blockchain-error', 'blockchain-connect');
+
+        failHangingConnect(new Error('websocket_timeout'));
+        await delay(100);
+
+        expectNoMessage();
+        expect(manager.get('BTC')).toBe(replacement[0]);
+    });
 });

@@ -1,6 +1,10 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type BlockchainState, selectBlockchainState } from '@suite-common/wallet-core';
+import {
+    type BlockchainState,
+    selectBlockchainState,
+    selectEnabledNetworks,
+} from '@suite-common/wallet-core';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
@@ -51,6 +55,8 @@ type NavBackendsProps = {
 
 export const NavBackends = ({ customBackends }: NavBackendsProps) => {
     const blockchain = useSelector(selectBlockchainState);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
+    const hasNetworksOnDefaultBackend = enabledNetworks.length > customBackends.length;
 
     return (
         <Column gap={16} padding={4}>
@@ -59,9 +65,11 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
                     <BackendRow key={backend.symbol} backend={backend} blockchain={blockchain} />
                 ))}
             </Column>
-            <Note>
-                <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />
-            </Note>
+            {hasNetworksOnDefaultBackend && (
+                <Note>
+                    <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />
+                </Note>
+            )}
         </Column>
     );
 };

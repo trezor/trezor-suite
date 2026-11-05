@@ -4,11 +4,14 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { Error } from 'src/components/suite/Error';
+import { ResetCustomServersButton } from 'src/components/suite/ResetCustomServersButton';
 import { reportToSentryThunk } from 'src/utils/suite/sentry';
 
 type FallbackProps = { error: Error };
 
-const Fallback = ({ error }: FallbackProps) => <Error error={error.message} />;
+const Fallback = ({ error }: FallbackProps) => (
+    <Error error={error.message} actions={<ResetCustomServersButton />} />
+);
 
 type ErrorBoundaryProps = { children: React.ReactNode };
 

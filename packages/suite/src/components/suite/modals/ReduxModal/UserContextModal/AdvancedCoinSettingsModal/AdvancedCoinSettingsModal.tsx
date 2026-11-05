@@ -5,7 +5,7 @@ import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import { TorModal, type TorResult, toggleTorThunk } from '@suite/tor-desktop';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectNetworkExplorers } from '@suite-common/wallet-core';
+import { blockchainActions, selectNetworkExplorers } from '@suite-common/wallet-core';
 import {
     Badge,
     Banner,
@@ -25,6 +25,7 @@ import { useBackendsForm } from 'src/hooks/settings/backends';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 import { useGapLimitForm } from 'src/hooks/settings/useGapLimitForm';
 import { useSelector } from 'src/hooks/suite';
+import { selectIsCustomBackendUnreachable } from 'src/selectors/suite/backendSelectors';
 
 import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';
@@ -47,6 +48,9 @@ export const AdvancedCoinSettingsModal = ({
     const { dispatch } = useServices(injectDispatch);
     const [torModalOpen, setTorModalOpen] = useState(false);
 
+    const isCustomBackendUnreachable = useSelector(state =>
+        selectIsCustomBackendUnreachable(state, symbol),
+    );
     const explorer = useSelector(state => selectNetworkExplorers(state, symbol));
     const usesCustomExplorer = explorer.custom !== undefined;
 
@@ -73,6 +77,11 @@ export const AdvancedCoinSettingsModal = ({
                 onCancel();
             }
         }
+    };
+
+    const onUseDefaultBackendsClick = () => {
+        dispatch(blockchainActions.setBackend({ symbol, type: 'default' }));
+        onCancel();
     };
 
     const onTorResult = async (result: TorResult) => {
@@ -139,6 +148,22 @@ export const AdvancedCoinSettingsModal = ({
                 <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <Translation id="SETTINGS_BACKEND_SETTINGS_DESCRIPTION" />
                 </Paragraph>
+                {isCustomBackendUnreachable && (
+                    <Banner
+                        intent="critical"
+                        title={<Translation id="TR_CUSTOM_BACKEND_UNREACHABLE" />}
+                        description={<Translation id="TR_CUSTOM_BACKEND_UNREACHABLE_DESCRIPTION" />}
+                        rightContent={
+                            <Banner.Button
+                                onClick={onUseDefaultBackendsClick}
+                                data-testid="@settings/advance/use-default-backends"
+                            >
+                                <Translation id="TR_USE_DEFAULT_BACKENDS" />
+                            </Banner.Button>
+                        }
+                        data-testid="@settings/advance/custom-backend-unreachable"
+                    />
+                )}
                 <Card
                     header={
                         <BackendTypeSelect

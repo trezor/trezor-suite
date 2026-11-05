@@ -4,7 +4,7 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { prepareFlagsReducer } from '@suite/flags';
 import { lockDevice, lockRouter, locksInitialState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
-import { modalReducer } from '@suite/modal';
+import { modalReducer, openModal } from '@suite/modal';
 import type { GotoThunkDeps, PathString } from '@suite/router';
 import {
     createSuiteRouterHistory,
@@ -16,6 +16,7 @@ import {
     routerLocationChange,
     routerMiddleware,
     routerReducer,
+    selectRouteName,
 } from '@suite/router';
 import {
     prepareSuiteSettingsReducer,
@@ -52,6 +53,7 @@ import {
     periodicCheckTokenDefinitionsThunk,
     tokenDefinitionsInitialState,
 } from '@suite-common/token-definitions';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type InitBlockchainThunkDeps,
@@ -67,6 +69,7 @@ import {
     stakeDataActions,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import {
     type WalletConnectInitThunkDeps,
     walletConnectInitThunk,
@@ -84,6 +87,7 @@ import {
     type InitThunkState,
     initThunk,
 } from 'src/actions/suite/initAction';
+import { BACKENDS_INIT_TIMEOUT_MS, BACKENDS_POLL_INTERVAL_MS } from 'src/constants/suite/backends';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { walletReducers } from 'src/reducers/wallet';
@@ -374,5 +378,186 @@ describe('Suite init thunk', () => {
                 expect(store.getState().router.app).toEqual(options.expectedApp);
             }
         });
+    });
+});
+
+describe('Suite init thunk with a custom backend', () => {
+    type Backends = InitThunkState['wallet']['blockchain']['btc']['backends'];
+
+    const btc = asNetworkSymbol('btc');
+    const ltc = asNetworkSymbol('ltc');
+    const customBackend: Backends = {
+        selected: 'electrum',
+        urls: { electrum: ['unreachable.example:50001:t'] },
+    };
+
+    const getStateWithBtcAccount = ({
+        backends,
+        isConnected = false,
+        error,
+    }: {
+        backends: Backends;
+        isConnected?: boolean;
+        // what the BLOCKCHAIN.ERROR event of a failed connection leaves in the state
+        error?: string;
+    }): InitThunkState => {
+        const state = getInitialState();
+
+        return {
+            ...state,
+            wallet: {
+                ...state.wallet,
+                accounts: [mockWalletAccount({ symbol: btc })],
+                settings: { ...state.wallet.settings, enabledNetworks: [btc] },
+                blockchain: {
+                    ...state.wallet.blockchain,
+                    btc: {
+                        ...state.wallet.blockchain.btc,
+                        backends,
+                        connected: isConnected,
+                        error,
+                    },
+                },
+            },
+        };
+    };
+
+    const withConnectedLtcAccount = (state: InitThunkState): InitThunkState => ({
+        ...state,
+        wallet: {
+            ...state.wallet,
+            accounts: [...state.wallet.accounts, mockWalletAccount({ symbol: ltc })],
+            settings: {
+                ...state.wallet.settings,
+                enabledNetworks: [...state.wallet.settings.enabledNetworks, ltc],
+            },
+            blockchain: {
+                ...state.wallet.blockchain,
+                ltc: { ...state.wallet.blockchain.ltc, connected: true },
+            },
+        },
+    });
+
+    const dispatchInit = async (
+        state: InitThunkState,
+        reconnectResult: ReturnType<typeof TrezorConnect.blockchainUnsubscribeFiatRates>,
+        elapsedMs = BACKENDS_INIT_TIMEOUT_MS,
+    ) => {
+        jest.spyOn(TrezorConnect, 'blockchainUnsubscribeFiatRates').mockReturnValue(
+            reconnectResult,
+        );
+
+        const { store, suiteRouterHistory } = initStore(state);
+        suiteRouterHistory.navigate({ pathname: '/accounts' });
+
+        const init = store.dispatch(initThunk());
+        await jest.advanceTimersByTimeAsync(elapsedMs);
+        await init;
+
+        return store;
+    };
+
+    const hangingReconnect = () => new Promise<never>(() => {});
+    const failedReconnect = () =>
+        Promise.resolve({
+            success: false,
+            error: { message: 'connect failed', code: 'Backend_Error' },
+        } as const);
+    const successfulReconnect = () =>
+        Promise.resolve({ success: true, payload: { subscribed: false } } as const);
+
+    const getOpenedModalPayloads = (store: Awaited<ReturnType<typeof dispatchInit>>) =>
+        store
+            .getActions()
+            .filter(openModal.match)
+            .map(({ payload }) => payload);
+
+    beforeEach(() => {
+        jest.restoreAllMocks();
+        jest.useFakeTimers({ legacyFakeTimers: false });
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    it('stops waiting for a custom backend that is still connecting, without opening settings', async () => {
+        const store = await dispatchInit(
+            getStateWithBtcAccount({ backends: customBackend }),
+            hangingReconnect(),
+        );
+
+        expect(store.getActions().map(({ type }) => type)).toContain(onSuiteReady.type);
+        expect(selectRouteName(store.getState())).toBe('wallet-index');
+        expect(getOpenedModalPayloads(store)).toEqual([]);
+    });
+
+    it('does not fetch rates before the custom backends are set in Connect', async () => {
+        jest.spyOn(TrezorConnect, 'blockchainSetCustomBackend').mockReturnValue(hangingReconnect());
+
+        const store = await dispatchInit(
+            getStateWithBtcAccount({ backends: customBackend }),
+            successfulReconnect(),
+        );
+
+        const actionTypes = store.getActions().map(({ type }) => type);
+        expect(actionTypes).toContain(onSuiteReady.type);
+        expect(actionTypes).not.toContain(periodicCheckTokenDefinitionsThunk.pending.type);
+    });
+
+    it('opens the settings of a custom backend that failed to connect', async () => {
+        const store = await dispatchInit(
+            getStateWithBtcAccount({ backends: customBackend, error: 'connect failed' }),
+            failedReconnect(),
+        );
+
+        expect(selectRouteName(store.getState())).toBe('settings-coins');
+        expect(getOpenedModalPayloads(store)).toEqual([
+            { type: 'advanced-coin-settings', symbol: btc },
+        ]);
+    });
+
+    it('stays on the requested route when the custom backend is connected', async () => {
+        const store = await dispatchInit(
+            getStateWithBtcAccount({ backends: customBackend, isConnected: true }),
+            successfulReconnect(),
+        );
+
+        expect(selectRouteName(store.getState())).toBe('wallet-index');
+        expect(getOpenedModalPayloads(store)).toEqual([]);
+    });
+
+    it('does not open settings while offline', async () => {
+        const state = getStateWithBtcAccount({ backends: customBackend, error: 'connect failed' });
+        const store = await dispatchInit(
+            { ...state, suite: { ...state.suite, online: false } },
+            failedReconnect(),
+        );
+
+        expect(selectRouteName(store.getState())).toBe('wallet-index');
+        expect(getOpenedModalPayloads(store)).toEqual([]);
+    });
+
+    it('leaves loading once another network connects, without opening settings', async () => {
+        const store = await dispatchInit(
+            withConnectedLtcAccount(getStateWithBtcAccount({ backends: customBackend })),
+            hangingReconnect(),
+            BACKENDS_POLL_INTERVAL_MS,
+        );
+
+        expect(store.getActions().map(({ type }) => type)).toContain(onSuiteReady.type);
+        expect(selectRouteName(store.getState())).toBe('wallet-index');
+        expect(getOpenedModalPayloads(store)).toEqual([]);
+    });
+
+    it('stays on the requested route when only default backends are used', async () => {
+        const store = await dispatchInit(
+            getStateWithBtcAccount({ backends: {} }),
+            hangingReconnect(),
+        );
+
+        expect(store.getActions().map(({ type }) => type)).toContain(onSuiteReady.type);
+        expect(selectRouteName(store.getState())).toBe('wallet-index');
+        expect(getOpenedModalPayloads(store)).toEqual([]);
     });
 });
