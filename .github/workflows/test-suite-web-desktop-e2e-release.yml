@@ -87,9 +87,11 @@ jobs:
       - name: Resolve worker counts and Currents projects
         id: mode
         shell: bash
+        env:
+          REPORTER_WATCHDOG: ${{ inputs.reporterWatchdog }}
         # Reporter Watchdog runs minimal number of groups and reports to sandbox Currents project
         run: |
-          if [[ "${{ inputs.reporterWatchdog }}" == "true" ]]; then
+          if [[ "$REPORTER_WATCHDOG" == "true" ]]; then
             echo "max-desktop=1" >> $GITHUB_OUTPUT
             echo "max-web=1" >> $GITHUB_OUTPUT
             echo "currents-desktop=iBEsWE" >> $GITHUB_OUTPUT

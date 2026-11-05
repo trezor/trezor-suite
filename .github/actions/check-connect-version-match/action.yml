@@ -16,16 +16,18 @@ runs:
     - name: Extract branch version
       shell: bash
       id: extract-branch-version
+      env:
+        BRANCH_REF: ${{ inputs.branch_ref }}
       run: |
-        BRANCH_REF="${{ inputs.branch_ref }}"
         BRANCH_VERSION="${BRANCH_REF#refs/heads/release/connect/}"
         echo "branch_version=$BRANCH_VERSION" >> $GITHUB_OUTPUT
 
     - name: Check if version in package.json matches the one in branch name
       shell: bash
+      env:
+        BRANCH_VERSION: ${{ steps.extract-branch-version.outputs.branch_version }}
+        EXTRACTED_VERSION: ${{ inputs.extracted_version }}
       run: |
-        BRANCH_VERSION="${{ steps.extract-branch-version.outputs.branch_version }}"
-        EXTRACTED_VERSION="${{ inputs.extracted_version }}"
         echo "Branch Version: $BRANCH_VERSION"
         echo "Extracted Version: $EXTRACTED_VERSION"
         if [[ "$BRANCH_VERSION" != "$EXTRACTED_VERSION" ]]; then

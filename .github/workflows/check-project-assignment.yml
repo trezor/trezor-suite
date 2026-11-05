@@ -33,9 +33,10 @@ jobs:
       - name: Check if PR is assigned to a project (with required fields) or an issue
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           # Fetch PR labels
-          PR_LABELS=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name')
+          PR_LABELS=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name')
 
           # Check for "no-project" label
           if echo "$PR_LABELS" | grep -q "^no-project$"; then
@@ -55,7 +56,7 @@ jobs:
                 }
               }
             }
-          }' -F owner=${{ github.repository_owner }} -F repo=${{ github.event.repository.name }} -F number=${{ github.event.pull_request.number }} --jq '.data.repository.pullRequest.closingIssuesReferences.nodes | length')
+          }' -F owner="$GITHUB_REPOSITORY_OWNER" -F repo="${GITHUB_REPOSITORY#*/}" -F number="$PR_NUMBER" --jq '.data.repository.pullRequest.closingIssuesReferences.nodes | length')
 
           if [ "$LINKED_ISSUES" -gt 0 ]; then
             echo "Pass: The PR is linked to $LINKED_ISSUES issue(s)."
@@ -95,7 +96,7 @@ jobs:
                 }
               }
             }
-          }' -F owner=${{ github.repository_owner }} -F repo=${{ github.event.repository.name }} -F number=${{ github.event.pull_request.number }})
+          }' -F owner="$GITHUB_REPOSITORY_OWNER" -F repo="${GITHUB_REPOSITORY#*/}" -F number="$PR_NUMBER")
 
           PROJECT_COUNT=$(echo "$PROJECT_ITEMS" | jq '.data.repository.pullRequest.projectItems.nodes | length')
 
@@ -145,13 +146,14 @@ jobs:
       - name: Check PR description has at least one section filled (Description / Notes for QA / Screenshots)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           # The PR description must contain meaningful information for QA.
           # We require at least one of these sections to be filled in, ignoring the
           # template's HTML comment placeholders. CI-generated content (preview
           # deployments, Currents, quarantine list) lives under its own "##" headings,
           # so it is never counted as content of the "Screenshots" section.
-          PR_BODY=$(gh pr view ${{ github.event.pull_request.number }} -R ${{ github.repository }} --json body --jq '.body // ""')
+          PR_BODY=$(gh pr view "$PR_NUMBER" -R "$GITHUB_REPOSITORY" --json body --jq '.body // ""')
           printf '%s' "$PR_BODY" > pr_body.md
 
           # Sections where at least one must be filled in by the author

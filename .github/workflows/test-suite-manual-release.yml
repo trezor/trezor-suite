@@ -88,6 +88,7 @@ jobs:
           GITHUB_REPORTER_VERBOSE: true
           RELEASE_BUILD: ${{ env.release_build }}
           REPORTER_WATCHDOG: ${{ inputs.reporterWatchdog }}
+          TEST_FILTER: ${{ inputs.testFilter }}
         run: |
           echo "Starting Playwright Reporter for manual regression suite"
-          yarn workspace @trezor/suite-e2e github:report:manual ${{ inputs.testFilter }}
+          yarn workspace @trezor/suite-e2e github:report:manual $TEST_FILTER

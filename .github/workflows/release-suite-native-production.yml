@@ -188,7 +188,8 @@ jobs:
       - name: Create GitHub draft release
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          APP_VERSION: ${{ steps.get_version.outputs.app_version }}
         run: |
           gh config set prompt disabled
-          TAG="v${{ steps.get_version.outputs.app_version }}@mobile"
-          gh release create --repo trezor/trezor-suite --draft ${TAG}  --title ${TAG} --latest=false --target ${{ github.ref_name }} --notes-file release-notes.md "./Trezor-Suite-${{ steps.get_version.outputs.app_version }}.apk"
+          TAG="v${APP_VERSION}@mobile"
+          gh release create --repo trezor/trezor-suite --draft ${TAG}  --title ${TAG} --latest=false --target "$GITHUB_REF_NAME" --notes-file release-notes.md "./Trezor-Suite-${APP_VERSION}.apk"

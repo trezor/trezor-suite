@@ -25,11 +25,13 @@ runs:
 
     - name: Update PR description with LLM test selection
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      env:
+        SELECTION_FILE: ${{ inputs.selection-file }}
       with:
         github-token: ${{ steps.trezor-bot-token.outputs.token }}
         script: |
           const fs = require('fs');
-          const selectionFile = '${{ inputs.selection-file }}';
+          const selectionFile = process.env.SELECTION_FILE;
           const result = JSON.parse(fs.readFileSync(selectionFile, 'utf8'));
 
           const priorityEmoji = { high: '🔴', medium: '🟡', low: '🟢' };
