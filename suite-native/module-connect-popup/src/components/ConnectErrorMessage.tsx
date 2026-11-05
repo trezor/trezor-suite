@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { connectPopupCallInnerThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
@@ -13,7 +12,6 @@ export const ConnectErrorMessage = () => {
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation();
     const popupCall = useSelector(selectConnectPopupCall);
-    const selectedDevice = useSelector(selectSelectedDevice);
 
     if (popupCall?.state !== 'call-error' && popupCall?.state !== 'error') return null;
 
@@ -46,17 +44,13 @@ export const ConnectErrorMessage = () => {
         ['Device_Disconnected', 'Device_NotFound'].includes(popupCall.error.code);
 
     const onResume = () => {
-        if (popupCall?.state === 'call-error')
-            dispatch(
-                connectPopupCallInnerThunk({
-                    ...popupCall,
-                    payload: {
-                        ...popupCall.payload,
-                        // override previously selected device
-                        device: selectedDevice,
-                    },
-                }),
-            );
+        if (popupCall?.state === 'call-error') {
+            // The call thunk always runs on the wallet selected in Suite, so the payload must not
+            // carry a `device` of its own: it is only validated against that selection, and the
+            // snapshot taken here goes stale as soon as the device reconnects with a new path.
+            const { device: _device, ...payload } = popupCall.payload ?? {};
+            dispatch(connectPopupCallInnerThunk({ ...popupCall, payload }));
+        }
     };
     const onClose = () => {
         if (navigation.canGoBack()) {

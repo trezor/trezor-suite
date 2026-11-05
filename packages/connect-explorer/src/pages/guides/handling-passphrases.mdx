@@ -82,11 +82,18 @@ await TrezorConnect.signTransaction({
 
 Trezor Connect will automatically restore the correct passphrase wallet and sign using the intended account.
 
+### When Trezor Suite hosts the call
+
+When the call is hosted by Trezor Suite (popup, desktop, webextension or deeplink), it always runs on the wallet currently selected in Suite. A `device` naming another device, instance or passphrase wallet is rejected with `Method_InvalidParameter` before the device is asked.
+
+So on those hosts, pass the stored `staticSessionId` to _verify_ that the intended wallet is the active one, and ask the user to switch wallets in Suite when a call is refused.
+
 ## Summary
 
 - Each passphrase wallet has a unique `staticSessionId`.
 - Read it from the response’s `device.state.staticSessionId` when importing an account.
 - Store it with the account.
 - Provide it in `device.state.staticSessionId` payload for future operations.
+- With Trezor Suite as the host, it verifies the wallet selected in Suite instead of switching to the stored one.
 
 This removes the need for manual wallet switching and ensures actions always use the correct passphrase wallet.
