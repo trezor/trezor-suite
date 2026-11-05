@@ -56,6 +56,7 @@ type TradingExchangeApprovalStepCardProps = {
     totalSteps: number;
     account: Account;
     quote: ExchangeTrade;
+    pendingApprovalTxid: string | undefined;
     tokenContractAddress: string;
     spender: string;
     getCryptoInfo: GetTradingExchangeCryptoInfo;
@@ -68,6 +69,7 @@ export const TradingExchangeApprovalStepCard = ({
     totalSteps,
     account,
     quote,
+    pendingApprovalTxid,
     tokenContractAddress,
     spender,
     getCryptoInfo,
@@ -131,7 +133,7 @@ export const TradingExchangeApprovalStepCard = ({
         variant === 'revoke'
             ? (quote.preapprovedStringAmount ?? '0')
             : subunitsToUnits({ value: inputAmount, decimals: token.decimals }).toString();
-    const txid = quote.approvalSendTxHash;
+    const txid = quote.approvalSendTxHash ?? pendingApprovalTxid;
 
     const onSelectLimitType = (nextLimitType: AllowanceLimitType) => {
         selectLimitType(nextLimitType);

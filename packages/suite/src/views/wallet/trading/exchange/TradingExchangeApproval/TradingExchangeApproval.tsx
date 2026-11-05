@@ -6,7 +6,6 @@ import {
     selectTradingExchangeFormValues,
     selectTradingExchangeProviders,
 } from '@suite-common/trading';
-import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { FlowStep, FlowStepList } from '@trezor/product-components';
 
@@ -20,7 +19,8 @@ import { useTradingExchangeApprovalFlow } from './useTradingExchangeApprovalFlow
 
 export const TradingExchangeApproval = () => {
     useTradingPageHeader();
-    const { account, quote, steps, isFlowMissing } = useTradingExchangeApprovalFlow();
+    const { account, quote, steps, spender, pendingApprovalTxid, isFlowMissing } =
+        useTradingExchangeApprovalFlow();
     const formValues = useSelector(selectTradingExchangeFormValues);
     const exchangeProviders = useSelector(selectTradingExchangeProviders);
 
@@ -29,7 +29,6 @@ export const TradingExchangeApproval = () => {
     }
 
     const { contractAddress: tokenContractAddress } = parseCryptoId(quote.send);
-    const spender = getErc20ApproveSpender(quote.dexTx?.data);
     const sendSymbol = formValues?.sendCryptoSelect?.displaySymbol ?? '';
 
     const getCryptoInfo = () =>
@@ -86,6 +85,7 @@ export const TradingExchangeApproval = () => {
                             totalSteps={steps.length}
                             account={account}
                             quote={quote}
+                            pendingApprovalTxid={pendingApprovalTxid}
                             tokenContractAddress={tokenContractAddress}
                             spender={spender}
                             getCryptoInfo={getCryptoInfo}

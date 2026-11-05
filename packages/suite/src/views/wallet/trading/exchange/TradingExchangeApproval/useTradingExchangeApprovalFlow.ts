@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { gotoThunk } from '@suite/router';
@@ -7,16 +7,20 @@ import {
     selectTradingExchangeApprovalFlow,
     selectTradingExchangeApprovalFlowSteps,
     selectTradingExchangeFormValues,
+    selectTradingExchangePendingApprovalTxid,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     tradingExchangeActions,
     useTradingExchangeWatchApproval,
 } from '@suite-common/trading';
+import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
+
+import { useResumedApproval } from './useResumedApproval';
 
 export const useTradingExchangeApprovalFlow = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -27,7 +31,15 @@ export const useTradingExchangeApprovalFlow = () => {
     const approvalFlow = useSelector(selectTradingExchangeApprovalFlow);
     const steps = useSelector(selectTradingExchangeApprovalFlowSteps);
     const formValues = useSelector(selectTradingExchangeFormValues);
+    const pendingApprovalTxid = useSelector(selectTradingExchangePendingApprovalTxid);
     const { confirmApproval } = useExchangeApproval({ account });
+    const resumedApproval = useResumedApproval({ quote, pendingApprovalTxid, confirmApproval });
+
+    const quoteSpender = getErc20ApproveSpender(quote?.dexTx?.data);
+    const [spender, setSpender] = useState(quoteSpender);
+    if (quoteSpender && quoteSpender !== spender) {
+        setSpender(quoteSpender);
+    }
 
     const handledRevokeTxRef = useRef<string>(undefined);
     const handledApprovalOrderRef = useRef<string>(undefined);
@@ -100,11 +112,20 @@ export const useTradingExchangeApprovalFlow = () => {
     }, [isApprovalDone, quote, formValues, confirmApproval, dispatch]);
 
     const lastApprovalIndex = steps.findLastIndex(({ type }) => type !== 'swap');
-    const displayedSteps = isApprovalDone
-        ? steps.map((step, index) =>
-              index === lastApprovalIndex ? { ...step, status: 'pending' as const } : step,
-          )
-        : steps;
+    const displayedSteps = steps.map((step, index) => {
+        const isDisplayedPending = isApprovalDone
+            ? index === lastApprovalIndex
+            : resumedApproval.isConfirming && step.status === 'active';
 
-    return { account, quote, steps: displayedSteps, isFlowMissing };
+        return isDisplayedPending ? { ...step, status: 'pending' as const } : step;
+    });
+
+    return {
+        account,
+        quote,
+        steps: displayedSteps,
+        spender,
+        pendingApprovalTxid: resumedApproval.txid,
+        isFlowMissing,
+    };
 };
