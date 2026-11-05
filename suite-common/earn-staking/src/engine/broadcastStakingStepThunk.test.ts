@@ -225,7 +225,7 @@ describe('broadcastStakingStepThunk', () => {
         expect(adapter.broadcastStep).not.toHaveBeenCalled();
     });
 
-    it('resets the step and reports a failed broadcast', async () => {
+    it('keeps the signature after a failed broadcast, reports it and refreshes the account', async () => {
         const { store, actions } = initStore({
             broadcastStep: mock(() => Promise.reject(new StakingAdapterError('report-failed'))),
         });
@@ -233,15 +233,42 @@ describe('broadcastStakingStepThunk', () => {
 
         expect(result.payload).toBe('adapter-failed');
         expect(getStep(store)).toMatchObject({
-            status: 'composed',
+            status: 'signed',
+            attemptId,
+            signed,
             error: { kind: 'broadcast-failed', code: 'report-failed' },
         });
         expect(broadcastStatuses(actions)).toEqual([
             expect.objectContaining({ account, flow: 'stake', status: 'error' }),
         ]);
-        expect(fetchAndUpdateAccountThunk).not.toHaveBeenCalled();
+        expect(fetchAndUpdateAccountThunk).toHaveBeenCalledWith({ accountKey: account.key });
+        expect(trackStakingStepConfirmationThunk).not.toHaveBeenCalled();
         expect(console.warn).toHaveBeenCalledWith(
             'Staking step stake broadcast failed: report-failed',
+        );
+    });
+
+    it('rebroadcasts the same signature after a failed attempt', async () => {
+        let pushes = 0;
+        const { store, adapter } = initStore({
+            broadcastStep: mock<StakingProductAdapter['broadcastStep']>(() => {
+                pushes += 1;
+
+                return pushes === 1
+                    ? Promise.reject(new StakingAdapterError('push-timeout'))
+                    : Promise.resolve({ txid: 'tx1' });
+            }),
+        });
+
+        await broadcast(store);
+
+        const result = await broadcast(store);
+
+        expect(result.payload).toEqual({ txid: 'tx1' });
+        expect(getStep(store)).toMatchObject({ status: 'awaiting', txid: 'tx1', error: null });
+        expect(adapter.broadcastStep).toHaveBeenCalledTimes(2);
+        expect(adapter.broadcastStep).toHaveBeenLastCalledWith(
+            expect.objectContaining({ signedStep: signed }),
         );
     });
 });

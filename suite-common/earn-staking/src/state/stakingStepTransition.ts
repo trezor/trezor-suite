@@ -161,6 +161,7 @@ export const transitionStakingStep = (
 
             return {
                 ...getStakingStepBase(step),
+                error: null,
                 status: 'broadcasting',
                 attemptId: step.attemptId,
                 composed: step.composed,
@@ -190,10 +191,22 @@ export const transitionStakingStep = (
                 txid: event.txid,
             };
         }
+        // A failed push may still have reached the network, so the step keeps its signature: a retry
+        // sends the same bytes and cannot create a second transaction.
         case 'broadcast-failed': {
             if (step.status !== 'broadcasting' || step.attemptId !== event.attemptId) return null;
 
-            return toComposed(step, { kind: 'broadcast-failed', code: event.code });
+            return {
+                ...getStakingStepBase(step),
+                error: { kind: 'broadcast-failed', code: event.code },
+                status: 'signed',
+                attemptId: step.attemptId,
+                composed: step.composed,
+                feeLevel: step.feeLevel,
+                signingStartedAt: step.signingStartedAt,
+                expiresAt: step.expiresAt,
+                signed: step.signed,
+            };
         }
         case 'replacement-broadcast': {
             if (step.status !== 'awaiting') return null;

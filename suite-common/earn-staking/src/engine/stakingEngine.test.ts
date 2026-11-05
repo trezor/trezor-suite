@@ -526,6 +526,67 @@ describe('staking engine', () => {
         expect(adapter.signStep).toHaveBeenCalledTimes(2);
     });
 
+    it('retries a failed broadcast with the same signature and never signs twice', async () => {
+        let pushes = 0;
+        const { store, adapter } = initStore({
+            adapter: {
+                broadcastStep: mock<StakingProductAdapter['broadcastStep']>(({ step }) => {
+                    pushes += 1;
+
+                    return pushes === 1
+                        ? Promise.reject(new StakingAdapterError('push-timeout'))
+                        : Promise.resolve({ txid: `tx-${step.id}` });
+                }),
+            },
+        });
+
+        await planStake(store);
+        await compose(store);
+        await sign(store);
+
+        expect((await store.dispatch(broadcastStakingStepThunk({ sessionKey }))).payload).toBe(
+            'adapter-failed',
+        );
+        expect(getStep(store, 'freeze')).toMatchObject({
+            status: 'signed',
+            signed: { serializedTx: 'signed-freeze' },
+            error: { kind: 'broadcast-failed', code: 'push-timeout' },
+        });
+        expect(selectStakingReview(store.getState())?.step.id).toBe('freeze');
+        expect(fetchAndUpdateAccountThunk).toHaveBeenCalledWith({ accountKey: account.key });
+        expect((await store.dispatch(planStakingOperationThunk(planParams))).payload).toBe(
+            'session-active',
+        );
+
+        expect(await broadcast(store)).toEqual({ txid: 'tx-freeze' });
+        expect(getStep(store, 'freeze')).toMatchObject({
+            status: 'awaiting',
+            txid: 'tx-freeze',
+            error: null,
+        });
+        expect(adapter.signStep).toHaveBeenCalledTimes(1);
+        expect(adapter.broadcastStep).toHaveBeenLastCalledWith(
+            expect.objectContaining({ signedStep: { serializedTx: 'signed-freeze' } }),
+        );
+    });
+
+    it('returns a failed broadcast to composed only when the user cancels it', async () => {
+        const { store } = initStore({
+            adapter: {
+                broadcastStep: mock(() => Promise.reject(new StakingAdapterError('push-timeout'))),
+            },
+        });
+
+        await planStake(store);
+        await compose(store);
+        await sign(store);
+        await store.dispatch(broadcastStakingStepThunk({ sessionKey }));
+        await store.dispatch(cancelStakingStepThunk({ sessionKey })).unwrap();
+
+        expect(getStep(store, 'freeze')).toMatchObject({ status: 'composed', error: null });
+        expect(selectStakingReview(store.getState())).toBeNull();
+    });
+
     it('lets an awaiting session be discarded and planned again', async () => {
         const { store } = initStore();
 
