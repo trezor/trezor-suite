@@ -123,7 +123,7 @@ describe('utils', () => {
     describe('getErrorStrFromThunkRejectedValue', () => {
         it.each([
             [
-                '[error]: message',
+                '[error]',
                 {
                     error: { error: 'error', message: 'message' },
                 },
@@ -133,6 +133,34 @@ describe('utils', () => {
             ['Just a string error', 'Just a string error'],
             ['Unknown error', { error: {} }],
             ['Unknown error', 42],
+            [
+                '[fee-levels-compose-failed]',
+                {
+                    type: 'composeFeeLevels/rejected',
+                    payload: {
+                        error: 'fee-levels-compose-failed',
+                        message: 'Insufficient balance',
+                    },
+                    error: { message: 'Rejected' },
+                },
+            ],
+            [
+                'No selected quote found',
+                {
+                    type: 'composeTradingTransaction/rejected',
+                    payload: 'No selected quote found',
+                    error: { message: 'Rejected' },
+                },
+            ],
+            [
+                'Connection lost',
+                { type: 'composeFeeLevels/rejected', error: { message: 'Connection lost' } },
+            ],
+            [
+                '[enhance-transaction-failed]',
+                { error: 'enhance-transaction-failed', message: 'Token not found' },
+            ],
+            ['[fee-levels-compose-failed]', { error: 'fee-levels-compose-failed' }],
         ])('should return %s when called with %o', (expected, input) => {
             expect(getErrorStrFromThunkRejectedValue(input)).toBe(expected);
         });
