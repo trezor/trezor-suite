@@ -2438,6 +2438,11 @@ export const messages = {
                 viewInExplorer: 'View in explorer',
                 tokenHidden: 'Token hidden',
                 tokenShown: 'Token shown',
+                showUnrecognizedTokenAlert: {
+                    title: 'Show {asset}?',
+                    description:
+                        'This token appears to be suspicious and may be a scam. Showing it adds it to your asset list.',
+                },
             },
             balanceSection: {
                 balanceTitle: 'Balance',

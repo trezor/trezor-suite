@@ -2,16 +2,20 @@ import { useSelector } from 'react-redux';
 
 import {
     type HomeAssetTableState,
+    selectWalletAssetDisplaySymbol,
     selectWalletAssetHiddenReason,
     selectWalletAssetKey,
 } from '@suite-common/assets';
 import {
     DefinitionType,
+    type TokenDefinitionsRootState,
     TokenManagementAction,
+    selectAreCoinDefinitionsLoaded,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
@@ -22,11 +26,13 @@ import { AssetSettingsAction } from './AssetSettingsAction';
 type AssetSettingsHideTokenActionProps = {
     networkSymbol: NetworkSymbol;
     tokenContract?: TokenAddress;
+    onClose: () => void;
 };
 
 export const AssetSettingsHideTokenAction = ({
     networkSymbol,
     tokenContract,
+    onClose,
 }: AssetSettingsHideTokenActionProps) => {
     const assetKey = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
@@ -34,29 +40,40 @@ export const AssetSettingsHideTokenAction = ({
     const hiddenReason = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetHiddenReason(state, assetKey),
     );
+    const displaySymbol = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetDisplaySymbol(state, assetKey),
+    );
+    const areCoinDefinitionsLoaded = useSelector((state: TokenDefinitionsRootState) =>
+        selectAreCoinDefinitionsLoaded(state, networkSymbol),
+    );
     const { dispatch } = useServices(injectDispatch);
     const { showToast } = useToast();
+    const { showAlert } = useAlert();
 
-    if (tokenContract === undefined || hiddenReason === 'unrecognized') return null;
+    // Until the coin definitions load, every token reads as unrecognized, even one the user hid, so
+    // neither showing nor hiding it would do what the label says.
+    const isHiddenReasonPending = hiddenReason === 'unrecognized' && !areCoinDefinitionsLoaded;
 
-    const isHiddenByUser = hiddenReason === 'hiddenByUser';
+    if (tokenContract === undefined || isHiddenReasonPending) return null;
 
-    const handleToggleTokenVisibility = () => {
+    const isHidden = hiddenReason !== undefined;
+
+    const toggleTokenVisibility = () => {
         dispatch(
             tokenDefinitionsActions.setTokenStatus({
                 symbol: networkSymbol,
                 type: DefinitionType.COIN,
-                status: isHiddenByUser ? TokenManagementAction.SHOW : TokenManagementAction.HIDE,
+                status: isHidden ? TokenManagementAction.SHOW : TokenManagementAction.HIDE,
                 contractAddress: tokenContract,
             }),
         );
         showToast({
             intent: 'neutral',
-            icon: isHiddenByUser ? 'eye' : 'eyeSlash',
+            icon: isHidden ? 'eye' : 'eyeSlash',
             message: (
                 <Translation
                     id={
-                        isHiddenByUser
+                        isHidden
                             ? 'moduleAssets.assetDetailScreen.settings.tokenShown'
                             : 'moduleAssets.assetDetailScreen.settings.tokenHidden'
                     }
@@ -65,20 +82,46 @@ export const AssetSettingsHideTokenAction = ({
         });
     };
 
+    const confirmShowUnrecognizedToken = () => {
+        onClose();
+        showAlert({
+            title: (
+                <Translation
+                    id="moduleAssets.assetDetailScreen.settings.showUnrecognizedTokenAlert.title"
+                    values={{ asset: displaySymbol }}
+                />
+            ),
+            description: (
+                <Translation id="moduleAssets.assetDetailScreen.settings.showUnrecognizedTokenAlert.description" />
+            ),
+            pictogramVariant: 'warning',
+            primaryButtonTitle: (
+                <Translation id="moduleAccountManagement.tokenSettings.showToken" />
+            ),
+            onPressPrimaryButton: toggleTokenVisibility,
+            secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+            testID: '@asset-detail/settings/show-unrecognized-token-alert',
+        });
+    };
+
     return (
         <AssetSettingsAction
-            iconName={isHiddenByUser ? 'eye' : 'eyeSlash'}
+            iconName={isHidden ? 'eye' : 'eyeSlash'}
             label={
                 <Translation
                     id={
-                        isHiddenByUser
+                        isHidden
                             ? 'moduleAccountManagement.tokenSettings.showToken'
                             : 'moduleAccountManagement.tokenSettings.hideToken'
                     }
                 />
             }
-            onPress={handleToggleTokenVisibility}
-            testID={`@asset-detail/settings/${isHiddenByUser ? 'show' : 'hide'}-token-button`}
+            onPress={
+                hiddenReason === 'unrecognized'
+                    ? confirmShowUnrecognizedToken
+                    : toggleTokenVisibility
+            }
+            testID={`@asset-detail/settings/${isHidden ? 'show' : 'hide'}-token-button`}
         />
     );
 };
