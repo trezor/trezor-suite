@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-config';
 import { toTokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon, TokenLabel } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
@@ -70,24 +70,18 @@ export const TradingAsset = (props: TradingAssetProps) => {
         primaryText = primaryLabel === 'name' ? props.name : props.symbol;
         secondarySymbol = props.symbol;
     } else if (tokenContract) {
-        primaryText =
-            primaryLabel === 'name' ? (
-                <TokenName
-                    isInline
-                    networkSymbol={props.networkSymbol}
-                    contractAddress={tokenContract}
-                    variant={primaryTextVariant}
-                />
-            ) : (
-                <TokenSymbol
-                    isInline
-                    networkSymbol={props.networkSymbol}
-                    contractAddress={tokenContract}
-                    variant={primaryTextVariant}
-                />
-            );
+        primaryText = (
+            <TokenLabel
+                preferred={primaryLabel}
+                isInline
+                networkSymbol={props.networkSymbol}
+                contractAddress={tokenContract}
+                variant={primaryTextVariant}
+            />
+        );
         secondarySymbol = (
-            <TokenSymbol
+            <TokenLabel
+                preferred="symbol"
                 isInline
                 networkSymbol={props.networkSymbol}
                 contractAddress={tokenContract}

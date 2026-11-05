@@ -81,6 +81,43 @@ describe('TradingAsset', () => {
         expect(getByTestId('@test/trading-asset/network-text')).toHaveTextContent('Ethereum');
     });
 
+    it.each([
+        ['name', undefined, 'USDC', 'USDC'],
+        ['symbol', 'USD Coin', undefined, 'USD Coin'],
+        ['name', undefined, undefined, '0x0000000000000000000000000000000000000001'],
+        ['symbol', undefined, undefined, '0x0000000000000000000000000000000000000001'],
+    ] as const)(
+        'falls back from the preferred %s when token metadata is incomplete (%#)',
+        async (preferred, name, symbol, expected) => {
+            const networkSymbol = asNetworkSymbol('eth');
+            const contract = '0x0000000000000000000000000000000000000001';
+            const { getByTestId } = await renderWithStoreProvider(
+                <TokenMetadataProvider
+                    sources={[
+                        {
+                            networkSymbol,
+                            tokens: name || symbol ? [{ contract, name, symbol }] : [],
+                        },
+                    ]}
+                >
+                    <TradingAsset
+                        assetType="crypto"
+                        contractAddress={contract}
+                        networkSymbol={networkSymbol}
+                        primaryLabel={preferred}
+                        testID="@test/trading-asset"
+                    />
+                </TokenMetadataProvider>,
+                {
+                    preloadedState: { networks: mockNetworkMetadata, wallet: { accounts: [] } },
+                    services: { networks: mockNetworksServices() },
+                },
+            );
+
+            expect(getByTestId('@test/trading-asset/primary-label')).toHaveTextContent(expected);
+        },
+    );
+
     it('renders a fiat flag with name, symbol, configured size, and right content', async () => {
         const { getByLabelText, getByTestId, getByText } = await renderWithStoreProvider(
             <TradingAsset
