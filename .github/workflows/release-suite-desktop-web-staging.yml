@@ -31,7 +31,7 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   suite-desktop:

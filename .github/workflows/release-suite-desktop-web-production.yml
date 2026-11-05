@@ -33,6 +33,11 @@ on:
         required: false
         type: string
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+  queue: max
+
 jobs:
   sync-canary-suite-desktop:
     permissions:
