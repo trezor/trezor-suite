@@ -9,6 +9,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 import type { StakingRootState } from './stakingReducer';
 import {
     selectIsStakingSupportedSymbol,
+    selectStakingAccountAmountOutsideBalance,
     selectStakingAccountTotals,
     selectStakingPlatform,
     selectStakingPosition,
@@ -136,6 +137,43 @@ describe('staking selectors', () => {
         expect(selectStakingAccountTotals(stateWithUncountedPositions, accountKey)).toBe(
             selectStakingAccountTotals(stateWithUncountedPositions, accountKey),
         );
+    });
+
+    it('counts only locked positions as held outside the account balance', () => {
+        const ada = mockStakingProductDescriptor({
+            networkSymbol: asNetworkSymbol('ada'),
+            type: 'native',
+        });
+        const stateWithLiquidPosition: StakingRootState = {
+            earn: {
+                staking: mockStakingState({
+                    descriptors: [eth, ada],
+                    positions: {
+                        [accountKey]: [
+                            ethPosition,
+                            mockStakingPosition({
+                                productId: ada.id,
+                                lockup: 'liquid',
+                                balances: {
+                                    ...mockStakingPosition().balances,
+                                    staked: '994750000' as never,
+                                    unstaking: '0' as never,
+                                    rewards: '5250000' as never,
+                                },
+                            }),
+                        ],
+                    },
+                }),
+            },
+        };
+
+        expect(selectStakingAccountTotals(stateWithLiquidPosition, accountKey).staked).toBe(
+            '2000000000994750000',
+        );
+        expect(selectStakingAccountAmountOutsideBalance(stateWithLiquidPosition, accountKey)).toBe(
+            '2500000000000000000',
+        );
+        expect(selectStakingAccountAmountOutsideBalance(state, unknownAccountKey)).toBe('0');
     });
 
     it('sums balances across an account products', () => {

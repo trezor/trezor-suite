@@ -1,5 +1,14 @@
-import { stakingProductInfoSchema } from './stakingProductInfo';
+import { type StakingProductTarget, stakingProductInfoSchema } from './stakingProductInfo';
+import { stakingProviderIdSchema } from './stakingProvider';
 import { mockStakingProductInfo } from '../mocks';
+
+const target: StakingProductTarget = {
+    address: 'pool1xflehvzad4wr6rrvf6eea65jst5af0r4k0rh4xvmnqgvkzt3xjt',
+    providerId: stakingProviderIdSchema.parse('everstake'),
+    name: 'Everstake',
+    rate: 2.06,
+    saturation: 62.64,
+};
 
 describe('stakingProductInfoSchema', () => {
     it('parses product info unchanged', () => {
@@ -34,9 +43,8 @@ describe('stakingProductInfoSchema', () => {
     });
 
     it('rejects a negative target rate', () => {
-        const [target] = mockStakingProductInfo().targets;
         const result = stakingProductInfoSchema.safeParse(
-            mockStakingProductInfo({ targets: target ? [{ ...target, rate: -0.5 }] : [] }),
+            mockStakingProductInfo({ targets: [{ ...target, rate: -0.5 }] }),
         );
 
         expect(result.success).toBe(false);
@@ -61,5 +69,46 @@ describe('stakingProductInfoSchema', () => {
 
         expect(result.success).toBe(false);
         expect(result.error?.issues[0]?.path).toEqual(['nextRewardAt']);
+    });
+
+    it('accepts a target without a known saturation', () => {
+        const info = mockStakingProductInfo({ targets: [{ ...target, saturation: null }] });
+
+        expect(stakingProductInfoSchema.parse(info)).toEqual(info);
+    });
+
+    it('accepts an oversaturated target', () => {
+        const info = mockStakingProductInfo({ targets: [{ ...target, saturation: 104.2 }] });
+
+        expect(stakingProductInfoSchema.parse(info)).toEqual(info);
+    });
+
+    it('requires every target to state its saturation', () => {
+        const { saturation: _saturation, ...targetWithoutSaturation } = target;
+        const result = stakingProductInfoSchema.safeParse({
+            ...mockStakingProductInfo(),
+            targets: [targetWithoutSaturation],
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['targets', 0, 'saturation']);
+    });
+
+    it('rejects two targets with the same address', () => {
+        const result = stakingProductInfoSchema.safeParse(
+            mockStakingProductInfo({ targets: [target, { ...target, rate: 3.1 }] }),
+        );
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['targets']);
+    });
+
+    it('rejects a negative saturation', () => {
+        const result = stakingProductInfoSchema.safeParse(
+            mockStakingProductInfo({ targets: [{ ...target, saturation: -1 }] }),
+        );
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['targets', 0, 'saturation']);
     });
 });
