@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { selectTradingCoins } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { AccountTokenMetadataProvider } from '@suite-native/tokens';
+import { TokenMetadataProvider, accountsToTokenMetadataSources } from '@suite-native/tokens';
 
-import { InvityTokenMetadataProvider } from './InvityTokenMetadataProvider';
+import { invityCoinsToTokenMetadataSources } from '../../utils/general/invityCoinsToTokenMetadataSources';
 
 type TradingMetadataProviderProps = { children: ReactNode };
 
@@ -15,9 +15,14 @@ export const TradingMetadataProvider = ({ children }: TradingMetadataProviderPro
     const coins = useSelector(selectTradingCoins);
 
     return (
-        <AccountTokenMetadataProvider accounts={accounts}>
-            {/* Catalog labels take precedence; holdings supply missing precision and standards. */}
-            <InvityTokenMetadataProvider coins={coins}>{children}</InvityTokenMetadataProvider>
-        </AccountTokenMetadataProvider>
+        <TokenMetadataProvider
+            sources={[
+                // Catalog labels take precedence; holdings supply missing precision and standards.
+                ...invityCoinsToTokenMetadataSources(coins),
+                ...accountsToTokenMetadataSources(accounts),
+            ]}
+        >
+            {children}
+        </TokenMetadataProvider>
     );
 };

@@ -1,10 +1,11 @@
 import { type ReactNode } from 'react';
 
 import { Form, useWatch } from '@suite-native/forms';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import { useExchangeFormDefaultAssets } from '../../hooks/exchange/useExchangeFormDefaultAssets';
-import { TradeableAssetMetadataProvider } from '../general/TradeableAssetMetadataProvider';
+import { tradeableAssetsToTokenMetadataSources } from '../../utils/general/tradeableAssetsToTokenMetadataSources';
 
 export type ExchangeFormProviderProps = {
     children: ReactNode | ReactNode[];
@@ -19,8 +20,10 @@ export const ExchangeFormContextProvider = ({ children }: ExchangeFormProviderPr
     useExchangeFormDefaultAssets(exchangeForm);
 
     return (
-        <TradeableAssetMetadataProvider assets={[receiveAsset, sendAsset]}>
+        <TokenMetadataProvider
+            sources={tradeableAssetsToTokenMetadataSources([receiveAsset, sendAsset])}
+        >
             <Form form={exchangeForm}>{children}</Form>
-        </TradeableAssetMetadataProvider>
+        </TokenMetadataProvider>
     );
 };

@@ -7,11 +7,12 @@ import { type TradeableAssetBalances } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, EdgeFades, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeableAssetListItem } from './TradeableAssetListItem';
-import { TradeableAssetMetadataProvider } from '../TradeableAssetMetadataProvider';
+import { tradeableAssetsToTokenMetadataSources } from '../../../utils/general/tradeableAssetsToTokenMetadataSources';
 import { TradingAssetListEmptyComponent } from '../TradingAssetListEmptyComponent';
 import { TradingAssetListHeader } from '../TradingAssetListHeader';
 
@@ -102,6 +103,8 @@ export const TradeableAssetList = ({
     );
 
     return (
-        <TradeableAssetMetadataProvider assets={assets}>{content}</TradeableAssetMetadataProvider>
+        <TokenMetadataProvider sources={tradeableAssetsToTokenMetadataSources(assets)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

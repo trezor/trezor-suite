@@ -14,6 +14,7 @@ import {
 import { Translation, useTranslate } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { FeeSelector } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -21,7 +22,6 @@ import { EarnApproximateFiatAmount } from '../../components/earn/EarnApproximate
 import { EarnFeeEstimationErrorAlert } from '../../components/earn/EarnFeeEstimationErrorAlert';
 import { EarnMaxSwitch } from '../../components/earn/EarnMaxSwitch';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
-import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldFormattedAmount } from '../../components/yield/YieldFormattedAmount';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
@@ -34,6 +34,7 @@ import {
 } from '../../constants';
 import { useYieldWithdrawController } from '../../hooks/yield/controllers/useYieldWithdrawController';
 import { getYieldTokenContract } from '../../utils/yield/yieldFiatAmountUtils';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 const withdrawFormCardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderNeutral,
@@ -287,5 +288,9 @@ export const YieldWithdrawScreen = () => {
         </Screen>
     );
 
-    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
+    );
 };

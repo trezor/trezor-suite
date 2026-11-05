@@ -1,8 +1,9 @@
 import { Form, useWatch } from '@suite-native/forms';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { useBuyForm } from '../../hooks/buy/useBuyForm';
 import { useBuyFormDefaultAssets } from '../../hooks/buy/useBuyFormDefaultAssets';
-import { TradeableAssetMetadataProvider } from '../general/TradeableAssetMetadataProvider';
+import { tradeableAssetsToTokenMetadataSources } from '../../utils/general/tradeableAssetsToTokenMetadataSources';
 
 export type BuyFormProviderProps = {
     children: React.ReactNode | React.ReactNode[];
@@ -14,8 +15,8 @@ export const BuyFormContextProvider = ({ children }: BuyFormProviderProps) => {
     useBuyFormDefaultAssets(buyForm);
 
     return (
-        <TradeableAssetMetadataProvider assets={[asset]}>
+        <TokenMetadataProvider sources={tradeableAssetsToTokenMetadataSources([asset])}>
             <Form form={buyForm}>{children}</Form>
-        </TradeableAssetMetadataProvider>
+        </TokenMetadataProvider>
     );
 };

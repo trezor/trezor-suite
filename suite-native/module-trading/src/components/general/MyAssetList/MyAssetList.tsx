@@ -5,6 +5,7 @@ import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
 import { Box, EdgeFades, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { type MyAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -15,7 +16,7 @@ import {
     type TradingAssetListHeaderProps,
 } from '../TradingAssetListHeader';
 import { MyAssetListSection } from './MyAssetListSection';
-import { MyAssetMetadataProvider } from './MyAssetMetadataProvider';
+import { myAssetSectionsToTokenMetadataSources } from '../../../utils/general/myAssetSectionsToTokenMetadataSources';
 
 export type MyAssetListProps = {
     assets: MyAssetsSection[];
@@ -102,5 +103,9 @@ export const MyAssetList = ({
         </VStack>
     );
 
-    return <MyAssetMetadataProvider sections={assets}>{content}</MyAssetMetadataProvider>;
+    return (
+        <TokenMetadataProvider sources={myAssetSectionsToTokenMetadataSources(assets)}>
+            {content}
+        </TokenMetadataProvider>
+    );
 };

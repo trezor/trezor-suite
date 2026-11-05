@@ -19,6 +19,7 @@ import {
     useNavigateToInitialScreen,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -27,8 +28,8 @@ import { ApyValue } from '../../components/earn/ApyValue';
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
 import { getYieldDepositCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
-import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
 type NavigationProps = StackNavigationProps<
@@ -145,5 +146,9 @@ export const YieldDepositCompleteScreen = () => {
         </>
     );
 
-    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
+    );
 };

@@ -4,19 +4,20 @@ import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { AssetAmountInputCard } from '../../components/earn/AssetAmountInputCard';
 import { WrappedNativeFeeReserveBanner } from '../../components/earn/WrappedNativeFeeReserveBanner';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
-import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessionTxSimulationSheet';
 import { YieldWrappedNativeReceivingCard } from '../../components/yield/YieldWrappedNativeReceivingCard';
 import { YieldWrappedNativeStepFooter } from '../../components/yield/YieldWrappedNativeStepFooter';
 import { useYieldDepositWrapController } from '../../hooks/yield/controllers/useYieldDepositWrapController';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldDepositWrapScreen = () => {
     const controller = useYieldDepositWrapController();
@@ -161,5 +162,9 @@ export const YieldDepositWrapScreen = () => {
         </Screen>
     );
 
-    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
+    );
 };

@@ -3,11 +3,11 @@ import { BannerFull, Box, Text, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { AssetAmountInputCard } from '../../components/earn/AssetAmountInputCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
-import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessionTxSimulationSheet';
@@ -15,6 +15,7 @@ import { YieldWithdrawStepCard } from '../../components/yield/YieldWithdrawStepC
 import { YieldWrappedNativeReceivingCard } from '../../components/yield/YieldWrappedNativeReceivingCard';
 import { YieldWrappedNativeStepFooter } from '../../components/yield/YieldWrappedNativeStepFooter';
 import { useYieldWithdrawUnwrapController } from '../../hooks/yield/controllers/useYieldWithdrawUnwrapController';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldWithdrawUnwrapScreen = () => {
     const controller = useYieldWithdrawUnwrapController();
@@ -164,5 +165,9 @@ export const YieldWithdrawUnwrapScreen = () => {
         </Screen>
     );
 
-    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
+    );
 };

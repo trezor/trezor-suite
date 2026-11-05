@@ -1,12 +1,14 @@
 import { BannerInline, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
+import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldDepositRevokeDetailsCard } from '../../components/yield/YieldDepositRevokeDetailsCard';
-import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { useYieldDepositRevokeScreen } from '../../hooks/yield/useYieldDepositRevokeScreen';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldDepositRevokeScreen = () => {
     const revokeScreen = useYieldDepositRevokeScreen();
@@ -129,8 +131,10 @@ export const YieldDepositRevokeScreen = () => {
     );
 
     return (
-        <YieldFlowMetadataProvider data={revokeScreen.yieldFlowData}>
+        <TokenMetadataProvider
+            sources={yieldFlowDataToTokenMetadataSources(revokeScreen.yieldFlowData)}
+        >
             {content}
-        </YieldFlowMetadataProvider>
+        </TokenMetadataProvider>
     );
 };

@@ -18,13 +18,14 @@ import {
     YieldStackRoutes,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
-import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawComplete>;
 type NavigationProps = StackNavigationProps<
@@ -135,5 +136,9 @@ export const YieldWithdrawCompleteScreen = () => {
         />
     );
 
-    return <YieldFlowMetadataProvider data={yieldFlowData}>{content}</YieldFlowMetadataProvider>;
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
+    );
 };

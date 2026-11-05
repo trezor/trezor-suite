@@ -2,7 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount, toTokenAddress } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount, toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { eth1NormalAccount } from '@suite-native/trading-fixtures';
@@ -18,6 +18,7 @@ const createAsset = (name: string, contract: string, isEnabled = true): MyAsset 
     symbol: asNetworkSymbol('eth'),
     cryptoId: `ethereum--${contract}` as CryptoId,
     contract: toTokenAddress(contract),
+    tokenSymbol: toTokenSymbol(name.toUpperCase()),
     balance: '1',
     fiatBalance: asBaseCurrencyAmount(new BigNumber('0.01')),
     isEnabled,
