@@ -137,6 +137,7 @@ export const messages = {
                 tokens: 'Tokens',
                 showSmallBalances: 'Show small balances',
                 smallBalancesSummary: '{count, plural, one {# asset} other {# assets}}',
+                hiddenTokens: 'Hidden tokens',
             },
             newBanner: {
                 title: 'New! A simpler view of your assets',

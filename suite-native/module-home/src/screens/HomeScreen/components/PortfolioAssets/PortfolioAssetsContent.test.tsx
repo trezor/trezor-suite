@@ -49,6 +49,7 @@ const ASSET_ROW = /^aliceWallet@device:0\//;
 const ETH_NETWORK_HEADER = '@home/portfolio-assets/network/eth';
 const BTC_NETWORK_HEADER = '@home/portfolio-assets/network/btc';
 const SMALL_BALANCES_SWITCH = '@home/portfolio-assets/view-options/small-balances';
+const HIDDEN_TOKENS_OPTION = '@home/portfolio-assets/view-options/hidden-tokens';
 const NEW_BANNER = '@home/portfolio-assets/new-banner';
 const FEEDBACK = '@home/portfolio-assets/feedback';
 const LOADING_SKELETON = '@home/portfolio-assets/loading-skeleton';
@@ -74,9 +75,11 @@ type CreateStoreParams = {
     isNewBannerClosed?: boolean;
     isFeedbackClosed?: boolean;
     isDiscoveryRunning?: boolean;
+    unrecognizedTokenCount?: number;
 };
 
-// The Ethereum account's coin is one row, so `ethAssetCount - 1` tokens make up the rest.
+// The Ethereum account's coin is one row, so `ethAssetCount - 1` tokens make up the rest. With no rows
+// but unrecognized tokens, the account holds nothing else.
 const createStore = ({
     ethAssetCount,
     hasBitcoin = false,
@@ -87,19 +90,23 @@ const createStore = ({
     isNewBannerClosed = false,
     isFeedbackClosed = false,
     isDiscoveryRunning = false,
+    unrecognizedTokenCount = 0,
 }: CreateStoreParams) => {
     const tokenContracts = Array.from({ length: Math.max(ethAssetCount - 1, 0) }, (_, index) =>
         getTokenContract(index + 1),
     );
+    const unrecognizedTokenContracts = Array.from({ length: unrecognizedTokenCount }, (_, index) =>
+        getTokenContract(ethAssetCount + index + 1),
+    );
     const ethAccounts =
-        ethAssetCount === 0
+        ethAssetCount === 0 && unrecognizedTokenCount === 0
             ? []
             : [
                   mockWalletAccount({
                       symbol: ETH,
                       deviceState: DEVICE_STATE,
-                      formattedBalance: '1',
-                      tokens: tokenContracts.map(contract =>
+                      formattedBalance: ethAssetCount === 0 ? '0' : '1',
+                      tokens: [...tokenContracts, ...unrecognizedTokenContracts].map(contract =>
                           mockAccountToken({ contract, balance: '1' }),
                       ),
                   }),
@@ -452,6 +459,34 @@ describe('PortfolioAssetsContent', () => {
 
         expect(screen.getByText(getTranslation('moduleHome.assets.showLess'))).toBeTruthy();
         expect(screen.getByTestId(SHOW_MORE_LOADING)).toBeTruthy();
+    });
+
+    it('shows how many tokens are hidden', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 3, unrecognizedTokenCount: 2 });
+
+        expect(within(screen.getByTestId(HIDDEN_TOKENS_OPTION)).getByText('2')).toBeTruthy();
+    });
+
+    it('keeps view options reachable in a wallet that holds only hidden tokens', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 0, unrecognizedTokenCount: 2 });
+
+        expect(screen.queryAllByText(ASSET_ROW)).toHaveLength(0);
+        expect(screen.getByTestId('@home/portfolio-assets/view-options-button')).toBeTruthy();
+        expect(within(screen.getByTestId(HIDDEN_TOKENS_OPTION)).getByText('2')).toBeTruthy();
+        expect(screen.queryByTestId(NEW_BANNER)).toBeNull();
+    });
+
+    it('shows a spinner instead of the hidden token count while discovery runs', async () => {
+        await renderPortfolioAssetsContent({
+            ethAssetCount: 3,
+            unrecognizedTokenCount: 2,
+            isDiscoveryRunning: true,
+        });
+
+        const hiddenTokensOption = screen.getByTestId(HIDDEN_TOKENS_OPTION);
+
+        expect(within(hiddenTokensOption).getByTestId('@circular-spinner')).toBeTruthy();
+        expect(within(hiddenTokensOption).queryByText('2')).toBeNull();
     });
 
     it('hides the loading balances caption once discovery is finished', async () => {

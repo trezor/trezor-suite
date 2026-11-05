@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectHasShownWalletAssets } from '@suite-common/assets';
+import { selectHasHiddenWalletAssets, selectHasShownWalletAssets } from '@suite-common/assets';
 
 import { PortfolioAssetsHeader } from './PortfolioAssetsHeader';
 import { PortfolioAssetsNewBanner } from './PortfolioAssetsNewBanner';
@@ -13,17 +13,17 @@ type PortfolioAssetsListHeaderProps = {
 export const PortfolioAssetsListHeader = ({
     onViewOptionsPress,
 }: PortfolioAssetsListHeaderProps) => {
-    const hasAssets = useSelector(selectHasShownWalletAssets);
+    const hasShownAssets = useSelector(selectHasShownWalletAssets);
+    // View options is the only way to the hidden tokens, so a wallet holding nothing else still needs it.
+    const hasHiddenAssets = useSelector(selectHasHiddenWalletAssets);
 
     return (
         <>
             <PortfolioAssetsHeader />
-            {hasAssets && (
-                <>
-                    <PortfolioAssetsSectionHeader onViewOptionsPress={onViewOptionsPress} />
-                    <PortfolioAssetsNewBanner />
-                </>
+            {(hasShownAssets || hasHiddenAssets) && (
+                <PortfolioAssetsSectionHeader onViewOptionsPress={onViewOptionsPress} />
             )}
+            {hasShownAssets && <PortfolioAssetsNewBanner />}
         </>
     );
 };
