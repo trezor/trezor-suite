@@ -88,6 +88,15 @@ export {
     type StakingPositionWarning,
     type StakingPositionWarningCode,
 } from './stakingPosition';
+export {
+    SOLANA_STAKE_ACCOUNT_STATUSES,
+    solanaStakeAccountSchema,
+    solanaStakeAccountStatusSchema,
+    stakingPositionDetailsSchema,
+    type SolanaStakeAccount,
+    type SolanaStakeAccountStatus,
+    type StakingPositionDetails,
+} from './stakingPositionDetails';
 export type {
     BroadcastStepParams,
     ComposeStepParams,

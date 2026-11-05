@@ -200,6 +200,18 @@ const SOLANA_STAKE_ACCOUNTS: Record<SolanaStakingScenario, SolanaStakeAccounts> 
     },
 };
 
+// The scenarios name the mainnet validator; a devnet account delegates to the devnet one.
+const getEverstakeStakeAccounts = (
+    stakeAccounts: SolanaStakingAccount[],
+    symbol: NetworkSymbol,
+): SolanaStakingAccount[] =>
+    symbol === 'dsol'
+        ? stakeAccounts.map(stakeAccount => ({
+              ...stakeAccount,
+              voterPubkey: MOCK_SOLANA_EVERSTAKE_DEVNET_VALIDATOR,
+          }))
+        : stakeAccounts;
+
 export const mockSolanaStakingAccount = (
     scenario: SolanaStakingScenario,
     { symbol = asNetworkSymbol('sol'), ...account }: MockStakingAccountParams = {},
@@ -224,7 +236,7 @@ export const mockSolanaStakingAccount = (
         misc: {
             ...walletAccount.misc,
             rent: 890880,
-            solStakingAccounts: everstake,
+            solStakingAccounts: getEverstakeStakeAccounts(everstake, symbol),
             solExternalStakingAccounts: external,
             solEpoch: 800,
         },

@@ -1,3 +1,4 @@
+import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
@@ -98,6 +99,43 @@ describe('staking selectors', () => {
     it('selects a single position', () => {
         expect(selectStakingPosition(state, accountKey, sol.id)).toEqual(solPosition);
         expect(selectStakingPosition(state, unknownAccountKey, sol.id)).toBeNull();
+    });
+
+    it('sums only the positions of products counted in account totals', () => {
+        const external = mockStakingProductDescriptor({
+            networkSymbol: asNetworkSymbol('sol'),
+            providerId: stakingProviderIdSchema.parse('external'),
+            type: 'native',
+            operations: [],
+            consentKey: null,
+            isCountedInAccountTotals: false,
+        });
+        const unregistered = mockStakingProductDescriptor({
+            networkSymbol: asNetworkSymbol('ada'),
+            type: 'native',
+        });
+        const stateWithUncountedPositions: StakingRootState = {
+            earn: {
+                staking: mockStakingState({
+                    descriptors: [eth, sol, external],
+                    positions: {
+                        [accountKey]: [
+                            ethPosition,
+                            solPosition,
+                            mockStakingPosition({ productId: external.id }),
+                            mockStakingPosition({ productId: unregistered.id }),
+                        ],
+                    },
+                }),
+            },
+        };
+
+        expect(selectStakingAccountTotals(stateWithUncountedPositions, accountKey)).toEqual(
+            selectStakingAccountTotals(state, accountKey),
+        );
+        expect(selectStakingAccountTotals(stateWithUncountedPositions, accountKey)).toBe(
+            selectStakingAccountTotals(stateWithUncountedPositions, accountKey),
+        );
     });
 
     it('sums balances across an account products', () => {

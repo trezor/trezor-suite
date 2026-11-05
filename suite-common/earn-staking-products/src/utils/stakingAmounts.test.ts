@@ -1,6 +1,11 @@
 import { BigNumber } from '@trezor/utils';
 
-import { ZERO_STAKING_AMOUNT, isPositiveStakingAmount, toStakingAmount } from './stakingAmounts';
+import {
+    ZERO_STAKING_AMOUNT,
+    isPositiveStakingAmount,
+    sumStakingAmounts,
+    toStakingAmount,
+} from './stakingAmounts';
 
 describe('toStakingAmount', () => {
     it.each([
@@ -21,6 +26,18 @@ describe('toStakingAmount', () => {
 describe('ZERO_STAKING_AMOUNT', () => {
     it('is zero', () => {
         expect(ZERO_STAKING_AMOUNT).toBe('0');
+    });
+});
+
+describe('sumStakingAmounts', () => {
+    it('adds amounts in base units', () => {
+        expect(
+            sumStakingAmounts(['1000000000', '4000000000', '300000000'].map(toStakingAmount)),
+        ).toBe('5300000000');
+    });
+
+    it('sums nothing to zero', () => {
+        expect(sumStakingAmounts([])).toBe('0');
     });
 });
 

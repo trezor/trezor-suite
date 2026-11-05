@@ -1,6 +1,7 @@
+import { mockStakingPosition } from '../mocks';
+import { stakingAmountSchema } from './stakingAmount';
 import { stakingPositionSchema } from './stakingPosition';
 import { stakingProviderIdSchema } from './stakingProvider';
-import { mockStakingPosition } from '../mocks';
 
 describe('stakingPositionSchema', () => {
     it('parses a position unchanged', () => {
@@ -62,6 +63,38 @@ describe('stakingPositionSchema', () => {
                 balances: { ...position.balances, total: '0' },
             }).success,
         ).toBe(false);
+    });
+
+    it('parses a position without details', () => {
+        const position = mockStakingPosition({ details: null });
+
+        expect(stakingPositionSchema.parse(position)).toEqual(position);
+    });
+
+    it('parses a position with Solana stake-account details', () => {
+        const position = mockStakingPosition({
+            details: {
+                kind: 'solana-stake-accounts',
+                epoch: 800,
+                stakeAccounts: [
+                    {
+                        status: 'deactivating',
+                        stake: stakingAmountSchema.parse('2000000000'),
+                        activationEpoch: 790,
+                    },
+                ],
+            },
+        });
+
+        expect(stakingPositionSchema.parse(position)).toEqual(position);
+    });
+
+    it('rejects a position that leaves out its details', () => {
+        const { details: _details, ...position } = mockStakingPosition();
+        const result = stakingPositionSchema.safeParse(position);
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['details']);
     });
 
     it('rejects a negative unlock time', () => {

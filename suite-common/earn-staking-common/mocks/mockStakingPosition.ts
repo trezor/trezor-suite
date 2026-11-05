@@ -1,5 +1,5 @@
-import { mockStakingProductDescriptor } from './mockStakingProductDescriptor';
 import { type StakingPosition, stakingAmountSchema, stakingProviderIdSchema } from '../src';
+import { mockStakingProductDescriptor } from './mockStakingProductDescriptor';
 
 export const mockStakingPosition = (overrides: Partial<StakingPosition> = {}): StakingPosition => ({
     productId: mockStakingProductDescriptor().id,
@@ -29,5 +29,6 @@ export const mockStakingPosition = (overrides: Partial<StakingPosition> = {}): S
     operations: ['stake', 'unstake'],
     pendingTxids: [],
     warnings: [],
+    details: null,
     ...overrides,
 });

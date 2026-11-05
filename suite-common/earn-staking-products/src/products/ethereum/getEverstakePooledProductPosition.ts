@@ -95,5 +95,6 @@ export const getEverstakePooledProductPosition = ({
         operations,
         pendingTxids,
         warnings: [],
+        details: null,
     };
 };
