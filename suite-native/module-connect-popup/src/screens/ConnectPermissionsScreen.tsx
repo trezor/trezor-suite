@@ -54,7 +54,8 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
                             size="medium"
                         />
                         <VStack flex={1} spacing="sp1">
-                            <Text numberOfLines={1}>{app.manifest?.appName ?? app.origin}</Text>
+                            {/* An empty name sanitizes to '', so it must fall back to the origin. */}
+                            <Text numberOfLines={1}>{app.manifest?.appName || app.origin}</Text>
                             {app.manifest?.appName && (
                                 <Text color="contentSecondary" numberOfLines={1}>
                                     {app.origin}

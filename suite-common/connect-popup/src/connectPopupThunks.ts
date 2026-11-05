@@ -30,8 +30,8 @@ import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromi
 import { type ConnectPopupStateRootState, selectConnectPopupCall } from './connectPopupReducer';
 import {
     CALL_SOURCE_DEEPLINK,
-    SELECT_ACCOUNT_PAGE_SIZE,
     type ConnectCallSource,
+    SELECT_ACCOUNT_PAGE_SIZE,
     type SelectAccountCandidate,
     isDeviceReconnectError,
     isUtxoNetwork,
