@@ -1,5 +1,18 @@
 export { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
 export {
+    createCardanoExternalDelegationProduct,
+    type CreateCardanoExternalDelegationProductParams,
+} from './products/cardano/external/createCardanoExternalDelegationProduct';
+export {
+    type CardanoNativeDelegationProductDeps,
+    createCardanoNativeDelegationProduct,
+    type CreateCardanoNativeDelegationProductParams,
+} from './products/cardano/native/createCardanoNativeDelegationProduct';
+export {
+    createCardanoRetiredDelegationProduct,
+    type CreateCardanoRetiredDelegationProductParams,
+} from './products/cardano/retired/createCardanoRetiredDelegationProduct';
+export {
     createEverstakePooledProduct,
     type CreateEverstakePooledProductParams,
     type EverstakePooledProductDeps,

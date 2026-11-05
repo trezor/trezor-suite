@@ -63,10 +63,15 @@ export const stakingProductDescriptorSchema = stakingProductDescriptorObjectSche
             path: ['id'],
         },
     )
-    .refine(({ operations, consentKey }) => operations.length === 0 || consentKey !== null, {
-        error: 'Expected a consent key on a product with operations',
-        path: ['consentKey'],
-    })
+    .refine(
+        ({ operations, consentKey }) =>
+            !operations.some(operation => operation === 'stake' || operation === 'redelegate') ||
+            consentKey !== null,
+        {
+            error: 'Expected a consent key on a product that stakes or redelegates',
+            path: ['consentKey'],
+        },
+    )
     .refine(
         ({ operations, platforms }) =>
             Object.values(platforms).every(

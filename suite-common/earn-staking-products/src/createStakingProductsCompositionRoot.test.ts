@@ -1,6 +1,10 @@
 import { type EthOrSolStats } from '@suite-common/earn-staking-api';
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
-import { mockSolanaStakingAccount } from '@suite-common/wallet-types/mocks';
+import {
+    type CardanoStakingScenario,
+    mockCardanoStakingAccount,
+    mockSolanaStakingAccount,
+} from '@suite-common/wallet-types/mocks';
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
@@ -16,7 +20,7 @@ import { everstakeProvider } from './providers/everstake';
 describe('createStakingProductsCompositionRoot', () => {
     const adapters = createStakingProductsCompositionRoot();
 
-    it('registers the Ethereum and Solana products for mainnet testnet networks', () => {
+    it('registers the Ethereum, Solana and Cardano products for mainnet testnet networks', () => {
         expect(adapters.map(adapter => adapter.descriptor.id)).toEqual([
             'eth:eth:everstake:pooled',
             'thod:thod:everstake:pooled',
@@ -24,6 +28,9 @@ describe('createStakingProductsCompositionRoot', () => {
             'sol:sol:external:native',
             'dsol:dsol:everstake:native',
             'dsol:dsol:external:native',
+            'ada:ada:everstake:native',
+            'ada:ada:fivebinaries:native',
+            'ada:ada:external:native',
         ]);
     });
 
@@ -92,5 +99,57 @@ describe('Solana products', () => {
         const [everstake] = createProducts('dsol');
 
         expect(everstake?.descriptor.messageSystemFeatures).toEqual({});
+    });
+});
+
+describe('Cardano products', () => {
+    const cardanoProducts = createStakingProductsCompositionRoot().filter(
+        product => product.descriptor.networkSymbol === 'ada',
+    );
+
+    it('gives every Cardano product the network message-system keys', () => {
+        expect(cardanoProducts.map(product => product.descriptor.messageSystemFeatures)).toEqual([
+            {
+                stake: 'ada.staking.stake',
+                unstake: 'ada.staking.unstake',
+                claim: 'ada.staking.claim',
+                vote: 'ada.staking.vote',
+            },
+            {
+                unstake: 'ada.staking.unstake',
+                claim: 'ada.staking.claim',
+                vote: 'ada.staking.vote',
+            },
+            {
+                unstake: 'ada.staking.unstake',
+                claim: 'ada.staking.claim',
+                vote: 'ada.staking.vote',
+            },
+        ]);
+    });
+
+    it.each<{ scenario: CardanoStakingScenario; owner: string | null }>([
+        { scenario: 'notDelegated', owner: null },
+        { scenario: 'everstake', owner: 'ada:ada:everstake:native' },
+        { scenario: 'everstakeNoRewards', owner: 'ada:ada:everstake:native' },
+        { scenario: 'everstakeOtherPool', owner: 'ada:ada:everstake:native' },
+        { scenario: 'everstakeMissingDrep', owner: 'ada:ada:everstake:native' },
+        { scenario: 'everstakeAbstainDrep', owner: 'ada:ada:everstake:native' },
+        { scenario: 'fiveBinaries', owner: 'ada:ada:fivebinaries:native' },
+        { scenario: 'externalPool', owner: 'ada:ada:external:native' },
+    ])('gives the $scenario stake key to one product at most', ({ scenario, owner }) => {
+        const account = mockCardanoStakingAccount(scenario);
+
+        expect(
+            cardanoProducts.flatMap(product => {
+                const position = product.getPosition({
+                    account,
+                    productInfo: null,
+                    transactions: [],
+                });
+
+                return position === null ? [] : [position.productId];
+            }),
+        ).toEqual(owner === null ? [] : [owner]);
     });
 });

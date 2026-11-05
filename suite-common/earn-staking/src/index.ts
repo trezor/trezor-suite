@@ -85,6 +85,7 @@ export {
 } from './state/stakingReducer';
 export {
     selectIsStakingSupportedSymbol,
+    selectStakingAccountAmountOutsideBalance,
     selectStakingAccountTotals,
     selectStakingPlatform,
     selectStakingPosition,
