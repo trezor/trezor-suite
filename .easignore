@@ -204,6 +204,7 @@
 !/suite-native/keyboard
 !/suite-native/labeling
 !/suite-native/link
+!/suite-native/localized-amount-input
 !/suite-native/markdown
 !/suite-native/message-system
 !/suite-native/module-account-detail
