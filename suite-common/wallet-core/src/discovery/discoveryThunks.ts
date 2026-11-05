@@ -45,7 +45,11 @@ import { type SuiteCompatibleThunk, type WithServices, createThunk } from '@trez
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { type DiscoveryRootState } from './discoveryReducer';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
-import { shouldFetchAssetsAfterDiscovery } from './discoveryUtils';
+import {
+    describesSameWallet,
+    findDuplicateWallet,
+    shouldFetchAssetsAfterDiscovery,
+} from './discoveryUtils';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 import {
@@ -95,13 +99,6 @@ function assertStaticSessionId(
         throw new Error('assertion error: device state does not contain static session id');
     }
 }
-
-const deviceStateEqualTo = (first: DeviceState) => {
-    const firstParsed = first.staticSessionId?.split(':')[0];
-
-    return (second?: DeviceState) =>
-        firstParsed ? firstParsed === second?.staticSessionId?.split(':')[0] : false;
-};
 
 type ApplyDeviceStatesThunkState = DeviceRootState & WalletSettingsRootState;
 
@@ -399,9 +396,7 @@ export const runDiscoveryThunk = createThunk<
 
             const { discovered } = device;
 
-            const duplicate = selectDevices(getState())
-                .map(d => d.state)
-                .find(deviceStateEqualTo(deviceState));
+            const duplicate = findDuplicateWallet(selectDevices(getState()), device, deviceState);
 
             if (duplicate?.staticSessionId) {
                 if (isAddingHiddenWallet) {
@@ -442,7 +437,7 @@ export const runDiscoveryThunk = createThunk<
                         callId,
                     });
 
-                    if (res.success && deviceStateEqualTo(deviceState)(res.payload.state)) {
+                    if (res.success && describesSameWallet(deviceState)(res.payload.state)) {
                         isAddingHiddenWallet = false;
                     }
                 }
@@ -644,7 +639,7 @@ export const runDiscoveryThunk = createThunk<
             }
 
             // todo: not sure about instance, now it looks that there are 2 devices created in connect
-            if (!deviceStateEqualTo(deviceState)(getDeviceState2Res.payload.state)) {
+            if (!describesSameWallet(deviceState)(getDeviceState2Res.payload.state)) {
                 dispatch(
                     discoveryActions.updateDiscovery(
                         { status: 'passphrase-mismatch' },
