@@ -23,7 +23,7 @@ const networksPackagePattern = {
 // round. Of the workspace scopes only `@trezor/*` is below them, so it is the only one they may
 // depend on. Anything an app owns reaches a network module through dependency injection instead.
 const networksAppScopePattern = {
-    group: ['@suite/**', '@suite-cli/**', '@suite-common/**', '@suite-native/**'],
+    group: ['@suite/**', '@suite-app/**', '@suite-cli/**', '@suite-common/**', '@suite-native/**'],
     message:
         'Network packages may only depend on @trezor/* workspace packages. Take anything an app owns as an injected dependency instead.',
 };
@@ -55,9 +55,9 @@ const connectDeepImportPatterns = [
 
 // Deny importing internal suite packages from outside the suite app itself.
 const suiteInternalPatterns = {
-    group: ['@suite-common/**', '@suite-native/**'],
+    group: ['@suite-app/**', '@suite-common/**', '@suite-native/**'],
     message:
-        '@suite-common/* and @suite-native/* packages are private to the suite apps and must not be imported by other workspace packages.',
+        '@suite-app/*, @suite-common/* and @suite-native/* packages are private to the suite apps and must not be imported by other workspace packages.',
 };
 
 // Staking products are registered by the application composition roots only. Everything else

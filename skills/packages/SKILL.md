@@ -9,12 +9,13 @@ description: How to create and structure packages in the Trezor Suite monorepo, 
 
 Use command `yarn generate-package @scope/newPackageName`. For example using name `@suite-common/wallet` will create package in `/suite-common` folder. Full list of scopes:
 
-| Scope         | Folder        | Description                                                                                             | Imports from              |
-| ------------- | ------------- | ------------------------------------------------------------------------------------------------------- | ------------------------- |
-| @trezor       | /packages     | Public packages (Connect, etc...) and Suite web & desktop packages (that shall be moved to @suite soon) | @suite                    |
-| @suite-common | /suite-common | code shared between @suite and @suite native                                                            | @trezor                   |
-| @suite-native | /suite-native | mobile Suite                                                                                            | @trezor and @suite-common |
-| @suite        | /suite        | desktop & web Suite                                                                                     | @trezor and @suite-common |
+| Scope         | Folder        | Description                                                                                             | Imports from                      |
+| ------------- | ------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| @trezor       | /packages     | Public packages (Connect, etc...) and Suite web & desktop packages (that shall be moved to @suite soon) | @suite                            |
+| @suite-common | /suite-common | code shared between @suite and @suite native                                                            | @trezor                           |
+| @suite-native | /suite-native | mobile Suite                                                                                            | @trezor and @suite-common         |
+| @suite        | /suite        | desktop & web Suite                                                                                     | @trezor and @suite-common         |
+| @suite-app    | /suite-app    | desktop & web application assembly                                                                      | @suite, @trezor and @suite-common |
 
 ## Packages size
 

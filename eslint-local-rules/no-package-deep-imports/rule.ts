@@ -86,6 +86,7 @@ export const noPackageDeepImportsRule: Rule.RuleModule = {
         const packageScopes = context.options[0]?.packageScopes ?? [
             '@suite-native',
             '@suite',
+            '@suite-app',
             '@suite-common',
             '@trezor',
         ];

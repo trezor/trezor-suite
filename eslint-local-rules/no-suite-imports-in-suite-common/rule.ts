@@ -7,7 +7,9 @@ const normalizePathSeparators = (filePath: string) => filePath.replace(/\\/g, '/
 const isSuiteCommonFile = (filename: string) => filename.includes('/suite-common/');
 
 const isSuiteOrSuiteNativeImport = (sourcePath: string) =>
-    sourcePath.startsWith('@suite/') || sourcePath.startsWith('@suite-native/');
+    sourcePath.startsWith('@suite/') ||
+    sourcePath.startsWith('@suite-app/') ||
+    sourcePath.startsWith('@suite-native/');
 
 export const noSuiteImportsInSuiteCommonRule: Rule.RuleModule = {
     meta: {

@@ -85,7 +85,7 @@ window.addEventListener('load', () => {
         metaTags: props.metaTags ?? [],
     });
 
-    // this should match browserslist config (suite/web-app/browserslist)
+    // this should match browserslist config (suite-app/web-app/browserslist)
     const supportedBrowsers = [
         {
             name: 'chrome',

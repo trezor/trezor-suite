@@ -26,6 +26,11 @@ const scopes = {
         templatePath: 'package-template-native/',
         templatePackageJson: templatePackageJsonNative,
     },
+    '@suite-app': {
+        path: 'suite-app/',
+        templatePath: 'package-template/',
+        templatePackageJson: templatePackageJsonWeb,
+    },
     '@suite': {
         path: 'suite/',
         templatePath: 'package-template/',

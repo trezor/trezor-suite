@@ -61,6 +61,18 @@ ruleTester.run('no-package-deep-imports', noPackageDeepImportsRule, {
         },
     ],
     invalid: [
+        {
+            code: "import { foo } from '@suite-app/web-app/src/createWebApp';",
+            errors: [
+                {
+                    messageId: 'doNotImportPackageDeepPath',
+                    data: {
+                        sourcePath: '@suite-app/web-app/src/createWebApp',
+                        packageImportPath: '@suite-app/web-app',
+                    },
+                },
+            ],
+        },
         // Deep imports from @suite-common
         {
             code: "import { foo } from '@suite-common/wallet-utils/src/amountUtils';",

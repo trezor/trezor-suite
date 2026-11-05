@@ -13,12 +13,12 @@
         {
             "path": "../../suite-common/suite-utils"
         },
-        { "path": "../debug" },
-        { "path": "../desktop-app-api" },
+        { "path": "../../suite/debug" },
+        { "path": "../../suite/desktop-app-api" },
         {
-            "path": "../platform-encryption-webauthn"
+            "path": "../../suite/platform-encryption-webauthn"
         },
-        { "path": "../router" },
+        { "path": "../../suite/router" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"
@@ -38,8 +38,8 @@
         {
             "path": "../../suite-common/suite-config"
         },
-        { "path": "../router-config" },
-        { "path": "../sentry" },
+        { "path": "../../suite/router-config" },
+        { "path": "../../suite/sentry" },
         { "path": "../../packages/eslint" }
     ]
 }

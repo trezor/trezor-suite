@@ -28,7 +28,7 @@ when in doubt and treat the list below as a summary that can lag it by a commit.
   `packages/suite/src/{views,components,hooks}/`**. The rest of
   `packages/suite/src` — `actions`, `reducers`, `selectors`, `support`, `utils` and the other
   non-UI directories — plus `suite/*`, `packages/components`, `packages/product-components`,
-  `packages/react-utils`, `packages/icons`, `suite/web-app` and `suite/desktop-app-renderer`
+  `packages/react-utils`, `packages/icons`, `suite-app/web-app` and `suite/desktop-app-renderer`
   still ship uncompiled, so manual memoization stays its only runtime mechanism there. The
   compiler's lint rules below apply everywhere regardless.
 - **In a compiled tree, stop adding manual memoization — and don't mass-delete what is already there.**

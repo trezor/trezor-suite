@@ -1,6 +1,6 @@
 # Front-End Build
 
-Each application owns its Webpack configuration. `@suite/web-app` and `@suite/desktop-app-renderer`
+Each application owns its Webpack configuration. `@suite-app/web-app` and `@suite/desktop-app-renderer`
 each have a `webpack.config.ts` composing the shared pieces with their own targets, entry points and
 assets.
 
@@ -19,8 +19,8 @@ owning application, specified via `TS_NODE_PROJECT` so the command works regardl
 
 | Command                                            | Description                                                                   |
 | -------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `yarn workspace @suite/web-app dev`                | Watch build of the web application with development settings, and serves it.  |
-| `yarn workspace @suite/web-app build`              | Production build of the web application.                                      |
+| `yarn workspace @suite-app/web-app dev`            | Watch build of the web application with development settings, and serves it.  |
+| `yarn workspace @suite-app/web-app build`          | Production build of the web application.                                      |
 | `yarn workspace @suite/desktop-app dev`            | Watch build of the desktop renderer, serves it and runs the Electron wrapper. |
 | `yarn workspace @suite/desktop-app-renderer build` | Production build of the desktop renderer bundle.                              |
 

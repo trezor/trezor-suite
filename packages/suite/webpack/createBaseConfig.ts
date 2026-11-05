@@ -244,7 +244,7 @@ export const createBaseConfig = ({
                                         shippedProposals: true,
                                         /*
                                          `entry` rewrites the global `import 'core-js/actual'`, imported in
-                                         suite/web-app & suite/desktop-app-renderer, to only those polyfills that the
+                                         suite-app/web-app & suite/desktop-app-renderer, to only those polyfills that the
                                          browserslist targets lack, instead of shipping all the ~440 core-js features.
                                         */
                                         useBuiltIns: 'entry',
