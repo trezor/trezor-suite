@@ -348,9 +348,50 @@ export class WardHost {
         if (typeof request.entry_key !== 'string') {
             throw new RelayFailure('bad_request', 'request.entry_key is required');
         }
+        const entryKey: string = request.entry_key;
         const rows = blobRows(await this.deps.storage.getAllEntries(wardId));
+        const present = rows.some(r => r.entryKeyHex === entryKey);
+        const tree = await this.deps.storage.getTreeState(wardId);
+        this.deps.log(
+            `PROOF build entry_key=${entryKey} present=${present} entries=${rows.length}` +
+                ` counter=${tree?.counter ?? 0} root=${tree?.root || 'EMPTY'}`,
+        );
 
-        return buildProofAck(rows, request.entry_key);
+        const ack = buildProofAck(rows, entryKey);
+        this.logProof(ack, entryKey, present);
+
+        return ack;
+    }
+
+    /**
+     * What a served proof says, element by element: enough to see, when the device refuses one,
+     * which branch it disagreed on. Ported from the ward-draft daemon's verbose proof log.
+     */
+    private logProof(ack: Body, entryKey: string, present: boolean) {
+        const proof: string[] = ack.proof ?? [];
+        const witness: string | undefined = ack.witness_entry_key;
+        let kind = 'empty-tree';
+        if (present) kind = 'membership';
+        else if (witness) kind = 'non-membership';
+        // the path the proof walks: the entry itself, or the witness that sits where it would be
+        const pathKey = witness ?? entryKey;
+        const bit = (keyHex: string, n: number) =>
+            keyHex.length === 64
+                ? (parseInt(keyHex.slice((n >> 3) * 2, (n >> 3) * 2 + 2), 16) >> (7 - (n & 7))) & 1
+                : '-';
+        this.deps.log(
+            `PROOF send kind=${kind} elements=${proof.length} bytes=${proof.reduce((n, e) => n + e.length / 2, 0)}` +
+                ` witness_entry_key=${witness ?? '-'} witness_commit=${ack.witness_commit ?? '-'}`,
+        );
+        proof.forEach((element, i) => {
+            // element = u16be(split_bit) || sibling(32)
+            const splitBit = parseInt(element.slice(0, 4), 16);
+            this.deps.log(
+                `PROOF   [${i}] split_bit=${splitBit}` +
+                    ` path_bit=${bit(pathKey, splitBit)} target_bit=${bit(entryKey, splitBit)}` +
+                    ` sibling=${element.slice(4)}`,
+            );
+        });
     }
 
     async status(): Promise<RelaySyncResult> {
