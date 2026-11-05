@@ -1,6 +1,6 @@
 import { getWeakRandomNumberInRange } from '@trezor/utils';
 
-import * as middleware from '../middleware';
+import * as credentials from '../credentials';
 import { confirmationInterval } from './connectionConfirmation';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
@@ -41,17 +41,20 @@ const registerInput = async (
         return input;
     }
 
-    const { signal, coordinatorUrl, middlewareUrl } = options;
+    const { signal, coordinatorUrl } = options;
+    const { roundParameters } = round;
 
-    // request ZeroCredentials from the middleware. use them in coordinator.inputRegistration
-    const zeroAmountCredentials = await middleware.getZeroCredentials(
+    // build ZeroCredentials locally. use them in coordinator.inputRegistration
+    const zeroAmountCredentials = credentials.getZeroCredentials(
         round.amountCredentialIssuerParameters,
-        { signal, baseUrl: middlewareUrl },
+        roundParameters.MaxAmountCredentialValue,
     );
-    const zeroVsizeCredentials = await middleware.getZeroCredentials(
+    await credentials.yieldToEventLoop();
+    const zeroVsizeCredentials = credentials.getZeroCredentials(
         round.vsizeCredentialIssuerParameters,
-        { signal, baseUrl: middlewareUrl },
+        roundParameters.MaxVsizeAllocationPerAlice,
     );
+    await credentials.yieldToEventLoop();
 
     // setup random delay for registration request. we want each input to be registered in different time as different TOR identity
     // note that this may cause that the input will not be registered if phase change before expected deadline
@@ -117,7 +120,6 @@ const registerInput = async (
 
     // Calculate mining and coordinator fee
     // coordinator fee is 0 if input is remixed or amount is lower than or equal to plebsDontPayThreshold value
-    const { roundParameters } = round;
     const coordinatorFee =
         input.amount > roundParameters.CoordinationFeeRate.PlebsDontPayThreshold &&
         !registrationData.IsPayingZeroCoordinationFee
@@ -134,38 +136,40 @@ const registerInput = async (
         errorCode: WabiSabiProtocolErrorCode.AliceAlreadyRegistered,
     });
 
-    // NOTE: RegistrationData processing on middleware is intentionally not using abort signal
-    // should not be aborted if round phase was immediately changed after registration (triggered by Status change)
+    // NOTE: RegistrationData processing is intentionally not interruptible:
+    // it should not be aborted if the round phase was immediately changed after
+    // registration (triggered by a Status change)
     try {
         // process RegistrationData received from coordinator
-        // get Credentials and use them in middleware.getRealCredentials
-        const amountCredentials = await middleware.getCredentials(
+        // validate the issued Credentials and use them in credentials.getRealCredentials
+        const amountCredentials = credentials.getCredentials(
             round.amountCredentialIssuerParameters,
+            roundParameters.MaxAmountCredentialValue,
             registrationData.AmountCredentials,
             zeroAmountCredentials.CredentialsResponseValidation,
-            { baseUrl: middlewareUrl }, // NOTE: without abort signal (should not be aborted)
         );
-        const vsizeCredentials = await middleware.getCredentials(
+        const vsizeCredentials = credentials.getCredentials(
             round.vsizeCredentialIssuerParameters,
+            roundParameters.MaxVsizeAllocationPerAlice,
             registrationData.VsizeCredentials,
             zeroVsizeCredentials.CredentialsResponseValidation,
-            { baseUrl: middlewareUrl }, // NOTE: without abort signal (should not be aborted)
         );
+        await credentials.yieldToEventLoop();
 
         // use Credentials to get RealCredentials. use them in outputConfirmation
-        const realAmountCredentials = await middleware.getRealCredentials(
+        // `getRealCredentials` yields between the proofs it builds, so it needs no
+        // yield after it.
+        const realAmountCredentials = await credentials.getRealCredentials(
             [amount, 0],
             amountCredentials,
             round.amountCredentialIssuerParameters,
             roundParameters.MaxAmountCredentialValue,
-            { baseUrl: middlewareUrl },
         );
-        const realVsizeCredentials = await middleware.getRealCredentials(
+        const realVsizeCredentials = await credentials.getRealCredentials(
             [vsize, 0],
             vsizeCredentials,
             round.vsizeCredentialIssuerParameters,
             roundParameters.MaxVsizeAllocationPerAlice,
-            { baseUrl: middlewareUrl },
         );
 
         logger.info(

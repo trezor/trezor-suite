@@ -1,5 +1,6 @@
 import { clamp, getWeakRandomNumberInRange } from '@trezor/utils';
 import { type Network, Transaction, bufferutils } from '@trezor/utxo-lib';
+import { type Credential } from '@trezor/wabisabi-crypto';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
@@ -19,7 +20,6 @@ import {
     type CoinjoinStatus,
     type Round,
 } from '../types/coordinator';
-import { type Credentials } from '../types/middleware';
 
 export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
     type: T,
@@ -217,7 +217,7 @@ export const compareOutpoint = (a: string, b: string) =>
     Buffer.from(a, 'hex').compare(Buffer.from(b, 'hex')) === 0;
 
 // sum input Credentials
-export const sumCredentials = (c: Credentials[]) => c.reduce((sum, cre) => sum + cre.Value, 0);
+export const sumCredentials = (c: Credential[]) => c.reduce((sum, cre) => sum + cre.value, 0);
 
 export const getRoundParams = (roundParameters: CoinjoinRoundParameters) => ({
     fee_rate: roundParameters.CoordinationFeeRate.Rate * 10 ** 8,

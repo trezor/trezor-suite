@@ -34,7 +34,6 @@ export const COINJOIN_NETWORKS: PartialRecord<'btc' | 'test' | 'regtest', Server
             // TODO post MVP: unify filters batch size with wabisabi or implement filters on blockbooks
             // https://github.com/trezor/trezor-suite/issues/7182#issuecomment-1438182493
             filtersBatchSize: 500,
-            middlewareUrl: 'http://127.0.0.1:8081/',
         },
     },
     test: {
@@ -68,7 +67,6 @@ export const COINJOIN_NETWORKS: PartialRecord<'btc' | 'test' | 'regtest', Server
             /* */
             filtersBatchSize: 5000,
             // client settings
-            middlewareUrl: 'http://127.0.0.1:8081/',
         },
     },
     regtest: {
@@ -83,8 +81,6 @@ export const COINJOIN_NETWORKS: PartialRecord<'btc' | 'test' | 'regtest', Server
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
             filtersBatchSize: 5000,
-            // client settings
-            middlewareUrl: 'http://127.0.0.1:8081/client/',
         },
     },
 };

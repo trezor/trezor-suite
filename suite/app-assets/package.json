@@ -15,7 +15,6 @@
         "browser-detection": "TS_NODE_PROJECT=\"./tsconfig.webpack.json\" webpack --config ./browser-detection.webpack.ts",
         "favicon": "TS_NODE_PROJECT=\"./tsconfig.webpack.json\" webpack --config ./favicon.webpack.ts",
         "guide-pull-content": "yarn tsx ./src/guide/index.ts",
-        "update-coinjoin-middleware": "./files/bin/coinjoin/update.sh",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },

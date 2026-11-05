@@ -1,5 +1,6 @@
+import { type RawLiquidityClue } from '@trezor/coinjoin-analysis';
+
 import { type AllowedScriptTypes } from './coordinator';
-import { type RawLiquidityClue } from './middleware';
 
 export type RegisterAccountParams = {
     accountKey: string;

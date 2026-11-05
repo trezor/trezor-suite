@@ -104,10 +104,6 @@ module.exports = {
                 to: 'bin/tor',
             },
             {
-                from: 'build/static/bin/coinjoin/mac-${arch}',
-                to: 'bin/coinjoin',
-            },
-            {
                 from: 'build/static/bin/bluetooth/mac-${arch}',
                 to: 'bin/bluetooth',
             },
@@ -132,10 +128,6 @@ module.exports = {
             {
                 from: 'build/static/bin/tor/win-${arch}',
                 to: 'bin/tor',
-            },
-            {
-                from: 'build/static/bin/coinjoin/win-${arch}',
-                to: 'bin/coinjoin',
             },
             {
                 from: 'build/static/bin/win_hello.node',
@@ -166,10 +158,6 @@ module.exports = {
             {
                 from: 'build/static/bin/udev',
                 to: 'bin/udev',
-            },
-            {
-                from: 'build/static/bin/coinjoin/linux-${arch}',
-                to: 'bin/coinjoin',
             },
             {
                 from: 'build/static/bin/bluetooth/linux-${arch}',

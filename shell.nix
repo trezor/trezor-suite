@@ -58,10 +58,6 @@ in
       udev  # used by node_module: usb
     ];
 
-    # used by patchelf for WabiSabiClientLibrary in dev mode (see webpack nixos-interpreter-plugin)
-    NIX_PATCHELF_LIBRARY_PATH = "${openssl.out}/lib:${zlib}/lib:${gcc.cc.lib}/lib";
-    NIX_CC="${gcc}";
-
     shellHook = ''
       export NODE_OPTIONS=--max_old_space_size=8192
       export CURDIR="$(pwd)"

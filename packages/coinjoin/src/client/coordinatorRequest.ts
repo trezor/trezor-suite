@@ -25,7 +25,7 @@ export class WabiSabiProtocolException extends Error {
     description: string;
     exceptionData: ExceptionData;
 
-    // NOTE: coordinator/middleware error shape
+    // NOTE: coordinator error shape
     // {Type: string, ErrorCode: string, Description: string, ExceptionData: { Type: string } }
     constructor(error: Record<string, any>) {
         super(`${error.ErrorCode} ${error.Description}`);
@@ -48,7 +48,7 @@ const parseResult = (headers: Headers, text: string) => {
     return text;
 };
 
-// Requests to wasabi coordinator and middleware (CoinjoinClientLibrary bin)
+// Requests to the wasabi coordinator
 export const coordinatorRequest = async <R = void>(
     url: string,
     body: Record<string, any> | undefined,

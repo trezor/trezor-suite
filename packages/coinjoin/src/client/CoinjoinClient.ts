@@ -6,6 +6,7 @@ import { CoinjoinPrison } from './CoinjoinPrison';
 import { CoinjoinRound } from './CoinjoinRound';
 import { Status } from './Status';
 import { type AnalyzeTransactionsResult, analyzeTransactions } from './analyzeTransactions';
+import * as credentials from './credentials';
 import type {
     CoinjoinClientEvents,
     CoinjoinClientSettings,
@@ -51,6 +52,10 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
             this.abortController = new AbortController();
         }
 
+        // Build the credential crypto's precomputed tables now, in event-loop-sized
+        // pieces, rather than inside the first input registration. Nothing waits for it.
+        credentials.warmUp().catch(error => this.logger.warn(`Credential warm-up ${error}`));
+
         return this.status.start();
     }
 
@@ -64,7 +69,8 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
     }
 
     /**
-     * Get transactions from CoinjoinBackend.getAccountInfo and calculate anonymity in middleware.
+     * Get transactions from CoinjoinBackend.getAccountInfo and calculate anonymity with
+     * `@trezor/coinjoin-analysis`.
      * Returns { key => value } where `key` is an address and `value` is an anonymity level of that address
      */
     analyzeTransactions<T extends keyof AnalyzeTransactionsResult>(
@@ -75,9 +81,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
             txs,
             {
                 network: this.network,
-                middlewareUrl: this.settings.middlewareUrl,
                 logger: this.logger,
-                signal: this.abortController.signal,
             },
             sections,
         );
@@ -204,7 +208,6 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
                     signal: this.abortController.signal,
                     coordinatorName: this.settings.coordinatorName,
                     coordinatorUrl,
-                    middlewareUrl: this.settings.middlewareUrl,
                     logger: this.logger,
                     setSessionPhase: sessionPhase => this.setSessionPhase(sessionPhase),
                 },

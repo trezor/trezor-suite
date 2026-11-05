@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": [
+        ".",
+        "./src/__fixtures__/**/*.json"
+    ],
+    "references": [
+        { "path": "../wabisabi-crypto" },
+        { "path": "../eslint" }
+    ]
+}

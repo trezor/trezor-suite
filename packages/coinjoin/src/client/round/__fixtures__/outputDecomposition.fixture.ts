@@ -14,8 +14,8 @@ export const outputDecomposition = [
                 'account-A',
                 'A00000000000000000000000000000000000000000000000000000000000000001000000',
                 {
-                    confirmedAmountCredentials: [{ Value: 30000 }, { Value: 0 }],
-                    confirmedVsizeCredentials: [{ Value: 197 }, { Value: 0 }],
+                    confirmedAmountCredentials: [{ value: 30000 }, { value: 0 }],
+                    confirmedVsizeCredentials: [{ value: 197 }, { value: 0 }],
                 },
             ],
         ],
@@ -28,23 +28,23 @@ export const outputDecomposition = [
                 outputs: [
                     {
                         amount: 10086,
-                        amountCredentials: [{ Value: 10086 }, { Value: 0 }],
-                        vsizeCredentials: [{ Value: 43 }, { Value: 0 }],
+                        amountCredentials: [{ value: 10086 }, { value: 0 }],
+                        vsizeCredentials: [{ value: 43 }, { value: 0 }],
                     },
                     {
                         amount: 8186,
-                        amountCredentials: [{ Value: 8186 }, { Value: 0 }],
-                        vsizeCredentials: [{ Value: 43 }, { Value: 0 }],
+                        amountCredentials: [{ value: 8186 }, { value: 0 }],
+                        vsizeCredentials: [{ value: 43 }, { value: 0 }],
                     },
                     {
                         amount: 6642,
-                        amountCredentials: [{ Value: 6642 }, { Value: 0 }],
-                        vsizeCredentials: [{ Value: 43 }, { Value: 0 }],
+                        amountCredentials: [{ value: 6642 }, { value: 0 }],
+                        vsizeCredentials: [{ value: 43 }, { value: 0 }],
                     },
                     {
                         amount: 5086,
-                        amountCredentials: [{ Value: 5086 }, { Value: 0 }],
-                        vsizeCredentials: [{ Value: 43 }, { Value: 0 }],
+                        amountCredentials: [{ value: 5086 }, { value: 0 }],
+                        vsizeCredentials: [{ value: 43 }, { value: 0 }],
                     },
                 ],
             },
@@ -60,32 +60,32 @@ export const outputDecomposition = [
                 'account-A',
                 'A00000000000000000000000000000000000000000000000000000000000000001000000',
                 {
-                    confirmedAmountCredentials: [{ Value: 5000 }, { Value: 0 }],
-                    confirmedVsizeCredentials: [{ Value: 197 }, { Value: 0 }],
+                    confirmedAmountCredentials: [{ value: 5000 }, { value: 0 }],
+                    confirmedVsizeCredentials: [{ value: 197 }, { value: 0 }],
                 },
             ],
             [
                 'account-A',
                 'A00000000000000000000000000000000000000000000000000000000000000002000000',
                 {
-                    confirmedAmountCredentials: [{ Value: 5000 }, { Value: 0 }],
-                    confirmedVsizeCredentials: [{ Value: 197 }, { Value: 0 }],
+                    confirmedAmountCredentials: [{ value: 5000 }, { value: 0 }],
+                    confirmedVsizeCredentials: [{ value: 197 }, { value: 0 }],
                 },
             ],
             [
                 'account-A',
                 'A00000000000000000000000000000000000000000000000000000000000000003000000',
                 {
-                    confirmedAmountCredentials: [{ Value: 5000 }, { Value: 0 }],
-                    confirmedVsizeCredentials: [{ Value: 197 }, { Value: 0 }],
+                    confirmedAmountCredentials: [{ value: 5000 }, { value: 0 }],
+                    confirmedVsizeCredentials: [{ value: 197 }, { value: 0 }],
                 },
             ],
             [
                 'account-A',
                 'A00000000000000000000000000000000000000000000000000000000000000004000000',
                 {
-                    confirmedAmountCredentials: [{ Value: 5000 }, { Value: 0 }],
-                    confirmedVsizeCredentials: [{ Value: 197 }, { Value: 0 }],
+                    confirmedAmountCredentials: [{ value: 5000 }, { value: 0 }],
+                    confirmedVsizeCredentials: [{ value: 197 }, { value: 0 }],
                 },
             ],
         ],
@@ -98,8 +98,8 @@ export const outputDecomposition = [
                 outputs: [
                     {
                         amount: 19086,
-                        amountCredentials: [{ Value: 19086 }, { Value: 0 }],
-                        vsizeCredentials: [{ Value: 43 }, { Value: 0 }],
+                        amountCredentials: [{ value: 19086 }, { value: 0 }],
+                        vsizeCredentials: [{ value: 43 }, { value: 0 }],
                     },
                 ],
             },
@@ -115,24 +115,24 @@ export const outputDecomposition = [
                 'account-A',
                 'A00000000000000000000000000000000000000000000000000000000000000001000000',
                 {
-                    confirmedAmountCredentials: [{ Value: 10000 }, { Value: 0 }],
-                    confirmedVsizeCredentials: [{ Value: 197 }, { Value: 0 }],
+                    confirmedAmountCredentials: [{ value: 10000 }, { value: 0 }],
+                    confirmedVsizeCredentials: [{ value: 197 }, { value: 0 }],
                 },
             ],
             [
                 'account-A',
                 'A00000000000000000000000000000000000000000000000000000000000000002000000',
                 {
-                    confirmedAmountCredentials: [{ Value: 10000 }, { Value: 0 }],
-                    confirmedVsizeCredentials: [{ Value: 197 }, { Value: 0 }],
+                    confirmedAmountCredentials: [{ value: 10000 }, { value: 0 }],
+                    confirmedVsizeCredentials: [{ value: 197 }, { value: 0 }],
                 },
             ],
             [
                 'account-B',
                 'B00000000000000000000000000000000000000000000000000000000000000001000000',
                 {
-                    confirmedAmountCredentials: [{ Value: 10000 }, { Value: 0 }],
-                    confirmedVsizeCredentials: [{ Value: 197 }, { Value: 0 }],
+                    confirmedAmountCredentials: [{ value: 10000 }, { value: 0 }],
+                    confirmedVsizeCredentials: [{ value: 197 }, { value: 0 }],
                 },
             ],
         ],
@@ -147,8 +147,8 @@ export const outputDecomposition = [
                 outputs: [
                     {
                         amount: 5086,
-                        amountCredentials: [{ Value: 5086 }, { Value: 0 }],
-                        vsizeCredentials: [{ Value: 43 }, { Value: 0 }],
+                        amountCredentials: [{ value: 5086 }, { value: 0 }],
+                        vsizeCredentials: [{ value: 43 }, { value: 0 }],
                     },
                 ],
             },
@@ -157,8 +157,8 @@ export const outputDecomposition = [
                 outputs: [
                     {
                         amount: 5086,
-                        amountCredentials: [{ Value: 5086 }, { Value: 0 }],
-                        vsizeCredentials: [{ Value: 43 }, { Value: 0 }],
+                        amountCredentials: [{ value: 5086 }, { value: 0 }],
+                        vsizeCredentials: [{ value: 43 }, { value: 0 }],
                     },
                 ],
             },
@@ -174,8 +174,8 @@ export const outputDecomposition = [
                 'account-A',
                 'A00000000000000000000000000000000000000000000000000000000000000001000000',
                 {
-                    confirmedAmountCredentials: [{ Value: 30000 }, { Value: 0 }],
-                    confirmedVsizeCredentials: [{ Value: 197 }, { Value: 0 }],
+                    confirmedAmountCredentials: [{ value: 30000 }, { value: 0 }],
+                    confirmedVsizeCredentials: [{ value: 197 }, { value: 0 }],
                 },
             ],
         ],
@@ -188,8 +188,8 @@ export const outputDecomposition = [
                 outputs: [
                     {
                         amount: 20086,
-                        amountCredentials: [{ Value: 20086 }, { Value: 0 }],
-                        vsizeCredentials: [{ Value: 43 }, { Value: 0 }],
+                        amountCredentials: [{ value: 20086 }, { value: 0 }],
+                        vsizeCredentials: [{ value: 43 }, { value: 0 }],
                     },
                 ],
             },

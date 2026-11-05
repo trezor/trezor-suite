@@ -11,7 +11,7 @@ bundle:
   check. Takes the application's `suiteType` and `baseDir` explicitly.
 - `createDevConfig.ts`: development server and refresh setup. Takes the served `distPath` and `port`
   explicitly.
-- `nixosInterpreterPlugin.ts`, `shellSpawnPlugin.ts`: custom Webpack plugins.
+- `shellSpawnPlugin.ts`: custom Webpack plugin.
 - `browserPolyfills.ts`, `env.ts`, `git.ts`: build helpers.
 
 These configurations are written in TypeScript and load through the `tsconfig.webpack.json` of the

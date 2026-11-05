@@ -10,7 +10,6 @@ import { FLAGS } from '@suite-common/suite-config';
 import { createBaseConfig } from '@trezor/suite/webpack/createBaseConfig';
 import { createDevConfig } from '@trezor/suite/webpack/createDevConfig';
 import { isCodesignBuild, isDev, isTestBuild, launchElectron } from '@trezor/suite/webpack/env';
-import { NixosInterpreterPlugin } from '@trezor/suite/webpack/nixosInterpreterPlugin';
 import ShellSpawnPlugin from '@trezor/suite/webpack/shellSpawnPlugin';
 
 const electronArgsIndex = process.argv.indexOf('./webpack.config.ts') + 1;
@@ -120,17 +119,6 @@ const rendererConfig: webpack.Configuration = {
                 isOnionLocation: FLAGS.ONION_LOCATION_META,
             },
             filename: path.join(buildDir, 'index.html'),
-        }),
-        // conditionally patch binaries on NixOS dev build
-        new NixosInterpreterPlugin({
-            cwd: baseDir,
-            files: [
-                path.join(
-                    buildDir,
-                    'static/bin/coinjoin/linux-x64',
-                    'WalletWasabi.WabiSabiClientLibrary',
-                ),
-            ],
         }),
         new ShellSpawnPlugin({
             cwd: baseDir,
