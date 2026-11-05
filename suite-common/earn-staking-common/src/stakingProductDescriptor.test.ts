@@ -1,9 +1,10 @@
+import { mockStakingProductDescriptor } from '../mocks';
 import { stakingAssetSymbolSchema } from './stakingProductAsset';
 import {
     stakingProductDescriptorObjectSchema,
     stakingProductDescriptorSchema,
 } from './stakingProductDescriptor';
-import { mockStakingProductDescriptor } from '../mocks';
+import { stakingProviderIdSchema } from './stakingProvider';
 
 const polygonToken = {
     kind: 'token',
@@ -64,6 +65,82 @@ describe('stakingProductDescriptorSchema', () => {
         });
 
         expect(result.success).toBe(false);
+    });
+
+    it('parses a product without operations and without a consent key', () => {
+        const descriptor = mockStakingProductDescriptor({
+            providerId: stakingProviderIdSchema.parse('external'),
+            type: 'native',
+            operations: [],
+            consentKey: null,
+        });
+
+        expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
+    });
+
+    it('rejects a product with operations but without a consent key', () => {
+        const result = stakingProductDescriptorSchema.safeParse(
+            mockStakingProductDescriptor({ consentKey: null }),
+        );
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['consentKey']);
+    });
+
+    it('parses a platform that manages a subset of the product operations', () => {
+        const descriptor = mockStakingProductDescriptor({
+            platforms: {
+                desktop: { access: 'manage' },
+                mobile: { access: 'manage', operations: ['stake', 'unstake'] },
+            },
+        });
+
+        expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
+    });
+
+    it.each([
+        {
+            name: 'an operation the product does not offer',
+            descriptor: mockStakingProductDescriptor({
+                platforms: {
+                    desktop: { access: 'manage', operations: ['stake', 'claim'] },
+                    mobile: { access: 'read-only' },
+                },
+            }),
+        },
+        {
+            name: 'stake on a product without operations or a consent key',
+            descriptor: mockStakingProductDescriptor({
+                providerId: stakingProviderIdSchema.parse('external'),
+                type: 'native',
+                operations: [],
+                consentKey: null,
+                platforms: {
+                    desktop: { access: 'manage', operations: ['stake'] },
+                    mobile: { access: 'read-only' },
+                },
+            }),
+        },
+    ])('rejects a platform that manages $name', ({ descriptor }) => {
+        const result = stakingProductDescriptorSchema.safeParse(descriptor);
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['platforms']);
+    });
+
+    it('requires every product to say whether it counts in account totals', () => {
+        const { isCountedInAccountTotals: _isCounted, ...descriptor } =
+            mockStakingProductDescriptor();
+        const result = stakingProductDescriptorSchema.safeParse(descriptor);
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['isCountedInAccountTotals']);
+    });
+
+    it('parses a product left out of account totals', () => {
+        const descriptor = mockStakingProductDescriptor({ isCountedInAccountTotals: false });
+
+        expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
     });
 
     it('rejects an unknown operation', () => {

@@ -51,6 +51,7 @@ const emptyPosition: StakingPosition = {
     operations: ['stake'],
     pendingTransactions: [],
     warnings: [],
+    details: null,
 };
 
 const stakingTransaction = (methodId: string, blockHeight: number | undefined) =>

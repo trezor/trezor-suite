@@ -1,0 +1,34 @@
+import { z } from 'zod';
+
+import { stakingAmountSchema } from './stakingAmount';
+
+export const SOLANA_STAKE_ACCOUNT_STATUSES = [
+    'inactive',
+    'activating',
+    'active',
+    'deactivating',
+    'deactivated',
+] as const;
+
+export const solanaStakeAccountStatusSchema = z.enum(SOLANA_STAKE_ACCOUNT_STATUSES);
+
+export type SolanaStakeAccountStatus = z.infer<typeof solanaStakeAccountStatusSchema>;
+
+export const solanaStakeAccountSchema = z.strictObject({
+    status: solanaStakeAccountStatusSchema,
+    stake: stakingAmountSchema,
+    rentExemptReserve: stakingAmountSchema,
+    activationEpoch: z.number().int().nonnegative().nullable(),
+});
+
+export type SolanaStakeAccount = z.infer<typeof solanaStakeAccountSchema>;
+
+export const stakingPositionDetailsSchema = z.discriminatedUnion('kind', [
+    z.strictObject({
+        kind: z.literal('solana-stake-accounts'),
+        epoch: z.number().int().nonnegative().nullable(),
+        stakeAccounts: z.array(solanaStakeAccountSchema).readonly(),
+    }),
+]);
+
+export type StakingPositionDetails = z.infer<typeof stakingPositionDetailsSchema>;
