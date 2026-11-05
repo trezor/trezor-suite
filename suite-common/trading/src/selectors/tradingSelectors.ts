@@ -31,7 +31,9 @@ import {
 } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type TransactionsRootState,
     selectAccountByKey,
+    selectAccountTransactions,
     selectAccounts,
     selectDeviceAccounts,
     selectVisibleDeviceAccounts,
@@ -92,7 +94,10 @@ import {
     isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
-import { getApprovalFlowStepStatuses } from '../utils/exchange/approvalFlowUtils';
+import {
+    findPendingApprovalTxid,
+    getApprovalFlowStepStatuses,
+} from '../utils/exchange/approvalFlowUtils';
 import {
     getDisplayNetworkFee,
     hasEip712SignDataType,
@@ -161,6 +166,9 @@ const createMemoizedSelectorWithDeviceAndAccounts =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
 const createMemoizedFormAccountSelector =
     createWeakMapSelector.withTypes<TradingFormAccountRootState>();
+const createMemoizedFormAccountTransactionsSelector = createWeakMapSelector.withTypes<
+    TradingFormAccountRootState & TransactionsRootState
+>();
 
 export const bestBuyQuotePerPaymentMethodProjection = (quotes: BuyTrade[]) =>
     bestQuotePerPaymentMethodProjection<BuyCryptoPaymentMethod, BuyTrade>(
@@ -427,16 +435,6 @@ export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
 
 export const selectTradingExchangeApprovalFlow = (state: TradingRootState) =>
     state.wallet.trading.exchange.approvalFlow;
-
-export const selectTradingExchangeApprovalFlowSteps = createMemoizedSelector(
-    [selectTradingExchangeApprovalFlow, selectTradingExchangeSelectedQuote],
-    (approvalFlow, selectedQuote) =>
-        getApprovalFlowStepStatuses(
-            approvalFlow?.steps ?? [],
-            selectedQuote,
-            approvalFlow?.completedSteps,
-        ),
-);
 
 export const selectTradingExchangeSelectedQuoteSwapSlippage = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote?.swapSlippage;
@@ -1193,6 +1191,34 @@ const selectTradingActiveTradeSendAccount = (
 export const selectTradingSendAccount = createMemoizedFormAccountSelector(
     [selectTradingActiveTradeSendAccount, selectTradingFormAccount],
     (tradeSendAccount, formAccount) => tradeSendAccount ?? formAccount,
+);
+
+export const selectTradingExchangePendingApprovalTxid =
+    createMemoizedFormAccountTransactionsSelector(
+        [
+            state =>
+                selectAccountTransactions(
+                    state,
+                    selectTradingSendAccount(state, 'exchange')?.key ?? null,
+                ),
+            selectTradingExchangeSelectedQuote,
+        ],
+        findPendingApprovalTxid,
+    );
+
+export const selectTradingExchangeApprovalFlowSteps = createMemoizedFormAccountTransactionsSelector(
+    [
+        selectTradingExchangeApprovalFlow,
+        selectTradingExchangeSelectedQuote,
+        selectTradingExchangePendingApprovalTxid,
+    ],
+    (approvalFlow, selectedQuote, pendingApprovalTxid) =>
+        getApprovalFlowStepStatuses(
+            approvalFlow?.steps ?? [],
+            selectedQuote,
+            approvalFlow?.completedSteps,
+            !!pendingApprovalTxid,
+        ),
 );
 
 export const selectSelectedTradingAsset = createMemoizedFormAccountSelector(

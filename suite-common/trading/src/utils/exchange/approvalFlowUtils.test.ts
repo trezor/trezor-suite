@@ -1,7 +1,11 @@
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
+import { testMocks } from '@suite-common/test-utils';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+
 import {
     type ApprovalFlowStepType,
+    findPendingApprovalTxid,
     getApprovalFlowStepStatuses,
     getApprovalFlowSteps,
 } from './approvalFlowUtils';
@@ -132,9 +136,144 @@ describe('getApprovalFlowStepStatuses', () => {
         ]);
     });
 
+    it.each<[string, ApprovalFlowStepType[], Partial<ExchangeTrade>, string[]]>([
+        ['approve', APPROVE_STEPS, {}, ['pending', 'upcoming']],
+        [
+            'revoke',
+            USDT_STEPS,
+            { preapprovedStringAmount: '10' },
+            ['pending', 'upcoming', 'upcoming'],
+        ],
+        [
+            'approve after a confirmed revoke',
+            USDT_STEPS,
+            { preapprovedStringAmount: '0' },
+            ['done', 'pending', 'upcoming'],
+        ],
+        [
+            'increase',
+            ['increase', 'swap'],
+            { preapprovedStringAmount: '10' },
+            ['pending', 'upcoming'],
+        ],
+    ])(
+        'marks the current %s step pending with a pending approval tx',
+        (_, steps, quote, expected) => {
+            expect(
+                getApprovalFlowStepStatuses(steps, { ...QUOTE, ...quote }, [], true).map(
+                    ({ status }) => status,
+                ),
+            ).toEqual(expected);
+        },
+    );
+
+    it('keeps confirmed steps done with a pending approval tx', () => {
+        expect(
+            getApprovalFlowStepStatuses(
+                APPROVE_STEPS,
+                { ...QUOTE, status: 'CONFIRM' },
+                [],
+                true,
+            ).map(({ status }) => status),
+        ).toEqual(['done', 'upcoming']);
+    });
+
     it('keeps step types in order', () => {
         expect(getApprovalFlowStepStatuses(USDT_STEPS, QUOTE).map(({ type }) => type)).toEqual(
             USDT_STEPS,
         );
+    });
+});
+
+describe('findPendingApprovalTxid', () => {
+    const DAI_CONTRACT = '0x6b175474e89094c44da98b954eedeac495271d0f';
+    const SPENDER = '0x1111111254eeb25477b68fb85ed929f73a960582';
+    const OTHER_SPENDER = '0x9008d19f58aabd9ed0d60971565aa8510560ab41';
+
+    const getApproveData = (spender: string) =>
+        `0x095ea7b3${spender.slice(2).padStart(64, '0')}${'0'.padStart(64, '0')}`;
+
+    const APPROVAL_QUOTE: ExchangeTrade = {
+        ...QUOTE,
+        dexTx: { from: '0xowner', to: DAI_CONTRACT, data: getApproveData(SPENDER), value: '0' },
+    };
+
+    type ApprovalTxParams = {
+        txid?: string;
+        contract?: string;
+        data?: string;
+        blockHeight?: number;
+    };
+
+    const getApprovalTx = ({
+        txid = '0xpending',
+        contract = DAI_CONTRACT,
+        data = getApproveData(SPENDER),
+        blockHeight = 0,
+    }: ApprovalTxParams = {}): WalletAccountTransaction => {
+        const tx = testMocks.getWalletTransaction({ txid, blockHeight });
+
+        return {
+            ...tx,
+            ethereumSpecific: {
+                status: -1,
+                nonce: 1,
+                gasLimit: 60000,
+                gasUsed: 0,
+                gasPrice: '1',
+                data,
+            },
+            details: {
+                ...tx.details,
+                vout: [{ addresses: [contract], isAddress: true, n: 0, value: '0' }],
+            },
+        };
+    };
+
+    it('finds a pending approve to the quote token and spender', () => {
+        expect(findPendingApprovalTxid([getApprovalTx()], APPROVAL_QUOTE)).toBe('0xpending');
+    });
+
+    it('compares addresses case-insensitively', () => {
+        expect(
+            findPendingApprovalTxid(
+                [
+                    getApprovalTx({
+                        contract: DAI_CONTRACT.toUpperCase().replace('0X', '0x'),
+                        data: getApproveData(SPENDER.toUpperCase().replace('0X', '0x')),
+                    }),
+                ],
+                APPROVAL_QUOTE,
+            ),
+        ).toBe('0xpending');
+    });
+
+    it.each<[string, WalletAccountTransaction]>([
+        [
+            'another token',
+            getApprovalTx({ contract: '0xdac17f958d2ee523a2206206994597c13d831ec7' }),
+        ],
+        ['another spender', getApprovalTx({ data: getApproveData(OTHER_SPENDER) })],
+        ['a confirmed approve', getApprovalTx({ blockHeight: 100 })],
+        ['a non-approve call', getApprovalTx({ data: '0xa9059cbb' })],
+    ])('ignores %s', (_, tx) => {
+        expect(findPendingApprovalTxid([tx], APPROVAL_QUOTE)).toBeUndefined();
+    });
+
+    it('ignores a quote without approve calldata', () => {
+        expect(findPendingApprovalTxid([getApprovalTx()], QUOTE)).toBeUndefined();
+    });
+
+    it('ignores a quote without a token to send', () => {
+        expect(
+            findPendingApprovalTxid([getApprovalTx()], {
+                ...APPROVAL_QUOTE,
+                send: 'ethereum' as CryptoId,
+            }),
+        ).toBeUndefined();
+    });
+
+    it('returns undefined without a quote', () => {
+        expect(findPendingApprovalTxid([getApprovalTx()], undefined)).toBeUndefined();
     });
 });

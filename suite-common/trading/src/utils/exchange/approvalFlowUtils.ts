@@ -1,7 +1,15 @@
 import { type ExchangeTrade } from 'invity-api';
 
-import { type AllowanceStepState, type AllowanceStepVariant } from '@suite-common/wallet-types';
-import { tokenSupportsIncreasingAllowance } from '@suite-common/wallet-utils';
+import {
+    type AllowanceStepState,
+    type AllowanceStepVariant,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import {
+    getErc20ApproveSpender,
+    isPending,
+    tokenSupportsIncreasingAllowance,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { parseCryptoId } from '../../utils';
@@ -33,6 +41,30 @@ export const getApprovalFlowSteps = (quote: ExchangeTrade): ApprovalFlowStepType
     return tokenSupportsIncreasingAllowance(contractAddress)
         ? ['increase', 'swap']
         : ['revoke', 'approve', 'swap'];
+};
+
+const isSameAddress = (address: string, otherAddress: string | undefined) =>
+    address.toLowerCase() === otherAddress?.toLowerCase();
+
+export const findPendingApprovalTxid = (
+    transactions: WalletAccountTransaction[],
+    quote: ExchangeTrade | undefined,
+): string | undefined => {
+    const contractAddress = quote?.send ? parseCryptoId(quote.send).contractAddress : undefined;
+    const spender = getErc20ApproveSpender(quote?.dexTx?.data);
+
+    if (!contractAddress || !spender) {
+        return undefined;
+    }
+
+    return transactions.find(
+        tx =>
+            isPending(tx) &&
+            isSameAddress(spender, getErc20ApproveSpender(tx.ethereumSpecific?.data)) &&
+            tx.details.vout.some(output =>
+                output.addresses?.some(address => isSameAddress(contractAddress, address)),
+            ),
+    )?.txid;
 };
 
 const isApprovalConfirmed = (quote: ExchangeTrade) =>
@@ -67,13 +99,20 @@ const isStepDone = (
     return false;
 };
 
-const isStepPending = (type: ApprovalFlowStepType, quote: ExchangeTrade) =>
-    quote.status === 'APPROVAL_PENDING' && (type === 'revoke') === (quote.approvalType === 'ZERO');
+const isStepPending = (
+    type: ApprovalFlowStepType,
+    quote: ExchangeTrade,
+    hasPendingApprovalTx: boolean,
+) =>
+    hasPendingApprovalTx ||
+    (quote.status === 'APPROVAL_PENDING' &&
+        (type === 'revoke') === (quote.approvalType === 'ZERO'));
 
 export const getApprovalFlowStepStatuses = (
     steps: ApprovalFlowStepType[],
     quote: ExchangeTrade | undefined,
     completedSteps: ApprovalFlowStepType[] = [],
+    hasPendingApprovalTx = false,
 ): ApprovalFlowStep[] => {
     if (!quote) {
         return [];
@@ -90,6 +129,9 @@ export const getApprovalFlowStepStatuses = (
             return { type, status: 'upcoming' };
         }
 
-        return { type, status: isStepPending(type, quote) ? 'pending' : 'active' };
+        return {
+            type,
+            status: isStepPending(type, quote, hasPendingApprovalTx) ? 'pending' : 'active',
+        };
     });
 };
