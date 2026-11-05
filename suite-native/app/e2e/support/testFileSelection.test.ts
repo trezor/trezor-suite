@@ -99,6 +99,34 @@ describe('canTestSourceMatchGrep', () => {
             'a helper call next to the tests',
             `describe('Send [@androidOnly]', () => { it('sends', () => {}); declareSharedTests(); });`,
         ],
+        [
+            'a helper call nested in a condition',
+            `describe('Send [@androidOnly]', () => { it('sends', () => {}); if (isEnabled) declareSharedTests(); });`,
+        ],
+        [
+            'an awaited helper call',
+            `describe('Send [@androidOnly]', async () => { it('sends', () => {}); await declareSharedTests(); });`,
+        ],
+        [
+            'an optional helper call',
+            `describe('Send [@androidOnly]', () => { it('sends', () => {}); declareSharedTests?.(); });`,
+        ],
+        [
+            'a helper call as the describe callback body',
+            `describe('Send [@androidOnly]', () => { it('sends', () => {}); }); describe('Settings', () => declareSharedTests());`,
+        ],
+        [
+            'a describe callback defined elsewhere',
+            `const declareTests = () => { it('changes currency', () => {}); }; describe('Settings [@noDevice]', declareTests);`,
+        ],
+        [
+            'a test declared in a helper function',
+            `const declareTest = () => it('changes currency', () => {}); describe('Settings [@noDevice]', () => { const declared = declareTest(); });`,
+        ],
+        [
+            'a module imported for its side effects',
+            `import './sharedTests'; describe('Send [@androidOnly]', () => { it('sends', () => {}); });`,
+        ],
         ['a top-level helper call', `declareSharedTests('[@noDevice]');`],
         ['no test declared in the file', `const unused = 1;`],
         ['a syntax error', `describe('Send [@androidOnly]', () => {`],
@@ -156,6 +184,14 @@ describe('getTestFilesMatchingGrep', () => {
                 grep: '^(?=.*@noDevice)',
             }),
         ).toEqual([noDeviceFile]);
+    });
+
+    it('keeps the test path patterns that are not readable files', () => {
+        const testPathPatterns = ['send', testDir, path.join(testDir, 'missing.test.ts')];
+
+        expect(
+            getTestFilesMatchingGrep({ testFiles: testPathPatterns, grep: '^(?=.*@noDevice)' }),
+        ).toEqual(testPathPatterns);
     });
 
     it('keeps all files when the project has no grep', () => {

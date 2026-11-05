@@ -18,6 +18,9 @@ type WalkParams = {
     node: babelTypes.Node;
     parent?: babelTypes.Node;
     ancestorTitles: string[];
+    // The module body and describe callbacks run while Jest collects the tests. Any other function
+    // runs only when it is called, so the describe blocks of the tests it declares are unknown.
+    isCollectingTests: boolean;
     scan: TestNamesScan;
 };
 
@@ -70,43 +73,49 @@ const isTestFunctionReference = (node: babelTypes.Node, parent?: babelTypes.Node
     [...DESCRIBE_FUNCTION_NAMES, ...TEST_FUNCTION_NAMES].includes(node.name) &&
     (!parent || babelTypes.isReferenced(node, parent));
 
-// A call statement next to the tests may be a helper from another module declaring further tests,
-// and their names cannot be read from this file.
-const isUnknownCallStatement = (statement: babelTypes.Statement) => {
-    if (!babelTypes.isExpressionStatement(statement)) return false;
-    if (!babelTypes.isCallExpression(statement.expression)) return false;
+const isJestFunctionCallee = (callee: babelTypes.CallExpression['callee']) => {
+    if (getTestBlockKind(callee)) return true;
+    if (babelTypes.isIdentifier(callee) && HOOK_FUNCTION_NAMES.includes(callee.name)) return true;
 
-    const { callee } = statement.expression;
-
-    if (getTestBlockKind(callee)) return false;
-    if (babelTypes.isIdentifier(callee) && HOOK_FUNCTION_NAMES.includes(callee.name)) return false;
-
-    const isJestCall =
+    return (
         babelTypes.isMemberExpression(callee) &&
-        babelTypes.isIdentifier(callee.object, { name: 'jest' });
-
-    return !isJestCall;
+        babelTypes.isIdentifier(callee.object, { name: 'jest' })
+    );
 };
 
-const getDescribeBodyStatements = (describeCallback: babelTypes.Node | undefined) => {
-    const isFunction =
-        babelTypes.isArrowFunctionExpression(describeCallback) ||
-        babelTypes.isFunctionExpression(describeCallback);
+const getChildNodes = (node: babelTypes.Node): babelTypes.Node[] =>
+    (babelTypes.VISITOR_KEYS[node.type] ?? []).flatMap(key => {
+        const child: unknown = node[key as keyof typeof node];
 
-    if (!isFunction || !babelTypes.isBlockStatement(describeCallback.body)) return [];
+        return (Array.isArray(child) ? child : [child]).filter(babelTypes.isNode);
+    });
 
-    return describeCallback.body.body;
+// A call next to the tests, even a nested or awaited one, may be a helper from another module
+// declaring further tests, and their names cannot be read from this file. Calls in the functions
+// the expression defines only run later.
+const hasUnknownCall = (node: babelTypes.Node): boolean => {
+    if (babelTypes.isFunction(node)) return false;
+    if (babelTypes.isTaggedTemplateExpression(node)) return true;
+
+    const isCall =
+        babelTypes.isCallExpression(node) ||
+        babelTypes.isOptionalCallExpression(node) ||
+        babelTypes.isNewExpression(node);
+
+    if (isCall && !isJestFunctionCallee(node.callee)) return true;
+
+    return getChildNodes(node).some(hasUnknownCall);
 };
 
-const walk = ({ node, parent, ancestorTitles, scan }: WalkParams): void => {
+const walk = ({ node, parent, ancestorTitles, isCollectingTests, scan }: WalkParams): void => {
     if (babelTypes.isCallExpression(node)) {
         const testBlockKind = getTestBlockKind(node.callee);
 
         if (testBlockKind) {
-            const [titleArgument, ...restArguments] = node.arguments;
+            const [titleArgument, describeCallback] = node.arguments;
             const title = getStaticTitle(titleArgument);
 
-            if (title === undefined) {
+            if (!isCollectingTests || title === undefined) {
                 scan.areAllTestNamesKnown = false;
 
                 return;
@@ -119,18 +128,29 @@ const walk = ({ node, parent, ancestorTitles, scan }: WalkParams): void => {
                 return;
             }
 
-            if (getDescribeBodyStatements(restArguments[0]).some(isUnknownCallStatement)) {
+            // A callback defined elsewhere may also declare its tests outside of this describe block.
+            if (
+                !babelTypes.isArrowFunctionExpression(describeCallback) &&
+                !babelTypes.isFunctionExpression(describeCallback)
+            ) {
+                scan.areAllTestNamesKnown = false;
+
+                return;
+            }
+
+            const { body } = describeCallback;
+
+            if (!babelTypes.isBlockStatement(body) && hasUnknownCall(body)) {
                 scan.areAllTestNamesKnown = false;
             }
 
-            restArguments.forEach(argument =>
-                walk({
-                    node: argument,
-                    parent: node,
-                    ancestorTitles: [...ancestorTitles, title],
-                    scan,
-                }),
-            );
+            walk({
+                node: body,
+                parent: describeCallback,
+                ancestorTitles: [...ancestorTitles, title],
+                isCollectingTests: true,
+                scan,
+            });
 
             return;
         }
@@ -142,18 +162,28 @@ const walk = ({ node, parent, ancestorTitles, scan }: WalkParams): void => {
         scan.areAllTestNamesKnown = false;
     }
 
-    const childKeys = babelTypes.VISITOR_KEYS[node.type] ?? [];
+    if (
+        isCollectingTests &&
+        babelTypes.isExpressionStatement(node) &&
+        hasUnknownCall(node.expression)
+    ) {
+        scan.areAllTestNamesKnown = false;
+    }
 
-    childKeys.forEach(key => {
-        const child: unknown = node[key as keyof typeof node];
-        const children = Array.isArray(child) ? child : [child];
+    // A module imported only for its side effects may declare shared tests when it loads.
+    if (babelTypes.isImportDeclaration(node) && node.specifiers.length === 0) {
+        scan.areAllTestNamesKnown = false;
+    }
 
-        children.forEach(childNode => {
-            if (babelTypes.isNode(childNode)) {
-                walk({ node: childNode, parent: node, ancestorTitles, scan });
-            }
-        });
-    });
+    getChildNodes(node).forEach(childNode =>
+        walk({
+            node: childNode,
+            parent: node,
+            ancestorTitles,
+            isCollectingTests: isCollectingTests && !babelTypes.isFunction(node),
+            scan,
+        }),
+    );
 };
 
 const scanTestNames = (source: string): TestNamesScan => {
@@ -166,11 +196,7 @@ const scanTestNames = (source: string): TestNamesScan => {
 
     if (!ast) return { testNames: [], areAllTestNamesKnown: false };
 
-    if (ast.program.body.some(isUnknownCallStatement)) {
-        scan.areAllTestNamesKnown = false;
-    }
-
-    walk({ node: ast.program, ancestorTitles: [], scan });
+    walk({ node: ast.program, ancestorTitles: [], isCollectingTests: true, scan });
 
     return scan;
 };
@@ -194,6 +220,14 @@ export const canTestSourceMatchGrep = ({ source, grepRegex }: CanTestSourceMatch
     return scan.testNames.some(testName => grepRegex.test(testName));
 };
 
+const readTestSource = (testFile: string) => {
+    try {
+        return fs.readFileSync(testFile, 'utf8');
+    } catch {
+        return undefined;
+    }
+};
+
 /**
  * Leaves out the test files in which Jest would skip every test because no test name matches the
  * grep of a project. Starting such a file still costs the app installation and the file load.
@@ -204,9 +238,13 @@ export const getTestFilesMatchingGrep = ({ testFiles, grep }: GetTestFilesMatchi
     // Jest matches `testNamePattern` case-insensitively.
     const grepRegex = new RegExp(grep, 'i');
 
-    return testFiles.filter(testFile =>
-        canTestSourceMatchGrep({ source: fs.readFileSync(testFile, 'utf8'), grepRegex }),
-    );
+    return testFiles.filter(testFile => {
+        const source = readTestSource(testFile);
+
+        // Jest reads the test files given on the command line as path patterns, so a directory or
+        // a part of a file name is passed on for Jest to resolve.
+        return source === undefined || canTestSourceMatchGrep({ source, grepRegex });
+    });
 };
 
 /**
