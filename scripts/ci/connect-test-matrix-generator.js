@@ -90,9 +90,9 @@ const groups = {
         includeFilter: 'nostrGetPublicKey,nostrSignEvent,ethereumSignTransactionEip7702',
     },
     // WARD lives in a firmware branch, not a released version, and its bespoke arc runs against an
-    // emulator started FROM THAT BRANCH on T3W1. Like `experimental`, it is opt-in: it never runs as
-    // part of `all` (there is no released firmware to run it against), only via `--groups=ward` with a
-    // firmware branch. See packages/connect/e2e/tests/device/ward.test.ts.
+    // emulator started FROM THAT BRANCH. Like `experimental`, it is opt-in: it never runs as part of
+    // `all` (there is no released firmware to run it against), only via `--groups=ward` with a
+    // firmware branch. See packages/connect-core/e2e/tests/device/ward.test.ts.
     ward: {
         name: 'ward',
         pattern: 'ward',
@@ -125,10 +125,9 @@ const inputs = [
                     return firmware !== '2.5.3' && model === 'T3W1';
                 }
 
-                // WARD ships only in a firmware branch and needs T3W1 (THP); gate the group the same
-                // way `thp` is gated, and keep it out of `all` (below).
+                // WARD ships only in a firmware branch, on core models; keep it out of `all` (below).
                 if (group.name === 'ward') {
-                    return model === 'T3W1';
+                    return model !== 'T1B1';
                 }
 
                 return true;

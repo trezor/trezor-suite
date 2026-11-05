@@ -3532,6 +3532,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@evolu/common@npm:8.0.0-next.5":
+  version: 8.0.0-next.5
+  resolution: "@evolu/common@npm:8.0.0-next.5"
+  dependencies:
+    "@noble/ciphers": "npm:^2.1.1"
+    "@noble/hashes": "npm:^2.0.1"
+    "@scure/bip39": "npm:^2.0.1"
+    kysely: "npm:^0.28.15"
+    msgpackr: "npm:^1.11.8"
+    random: "npm:^5.4.1"
+  checksum: 10/a4652e066320ac519416cce37d8d54117833cc598ea34232ab5e7678f6d842441721abc7a23ab0037bd4f666e2a4401bd6db37db3fc928add0a91f961af10f3d
+  languageName: node
+  linkType: hard
+
 "@evolu/common@npm:8.10.0":
   version: 8.10.0
   resolution: "@evolu/common@npm:8.10.0"
@@ -3543,6 +3557,18 @@ __metadata:
     kysely: "npm:^0.29.5"
     random: "npm:5.5.1"
   checksum: 10/c7be03fde7960126a54a73b39c0c831551119dd88ba294891c0ae585f31c39db87239d2d25258901b263555338ca89eb84f6f33c5087765f1d5481e79b0cdb33
+  languageName: node
+  linkType: hard
+
+"@evolu/nodejs@npm:3.0.0-next.3":
+  version: 3.0.0-next.3
+  resolution: "@evolu/nodejs@npm:3.0.0-next.3"
+  dependencies:
+    better-sqlite3: "npm:^12.6.2"
+    ws: "npm:^8.19.0"
+  peerDependencies:
+    "@evolu/common": ^8.0.0-next.0
+  checksum: 10/9864d7bcb84ed3d608f373726b7aa4c3f17ad48dc49888db2683422a282be0a19ec7ec675f91be2540b3cf54642714292931a3c86877d35d5682676a1a2c4959
   languageName: node
   linkType: hard
 
@@ -5889,6 +5915,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@msgpackr-extract/msgpackr-extract-darwin-arm64@npm:3.0.4":
+  version: 3.0.4
+  resolution: "@msgpackr-extract/msgpackr-extract-darwin-arm64@npm:3.0.4"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-darwin-x64@npm:3.0.4":
+  version: 3.0.4
+  resolution: "@msgpackr-extract/msgpackr-extract-darwin-x64@npm:3.0.4"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-linux-arm64@npm:3.0.4":
+  version: 3.0.4
+  resolution: "@msgpackr-extract/msgpackr-extract-linux-arm64@npm:3.0.4"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-linux-arm@npm:3.0.4":
+  version: 3.0.4
+  resolution: "@msgpackr-extract/msgpackr-extract-linux-arm@npm:3.0.4"
+  conditions: os=linux & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-linux-x64@npm:3.0.4":
+  version: 3.0.4
+  resolution: "@msgpackr-extract/msgpackr-extract-linux-x64@npm:3.0.4"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@msgpackr-extract/msgpackr-extract-win32-x64@npm:3.0.4":
+  version: 3.0.4
+  resolution: "@msgpackr-extract/msgpackr-extract-win32-x64@npm:3.0.4"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@napi-rs/lzma-linux-x64-gnu@npm:1.5.1":
   version: 1.5.1
   resolution: "@napi-rs/lzma-linux-x64-gnu@npm:1.5.1"
@@ -6115,7 +6183,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^2.3.0":
+"@noble/ciphers@npm:^2.1.1, @noble/ciphers@npm:^2.3.0":
   version: 2.4.0
   resolution: "@noble/ciphers@npm:2.4.0"
   checksum: 10/7ab9e5d892293d047232b4340956d93b022e6cf8cc2fd547df9cd4be5d286cd962d69947bcc99a2d99db02098225c4627cfd26ae78517f17a7bcfbc077ab1c6d
@@ -6156,7 +6224,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:2.4.0, @noble/curves@npm:^2.0.1, @noble/curves@npm:^2.4.0":
+"@noble/curves@npm:2.4.0, @noble/curves@npm:^2.0.1, @noble/curves@npm:^2.2.0, @noble/curves@npm:^2.4.0":
   version: 2.4.0
   resolution: "@noble/curves@npm:2.4.0"
   dependencies:
@@ -12510,6 +12578,7 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/ward": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18836,11 +18905,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-cli@workspace:packages/connect-cli"
   dependencies:
+    "@noble/hashes": "npm:^2.0.1"
     "@trezor/connect": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
     "@trezor/transport-common": "workspace:*"
+    "@trezor/ward": "workspace:*"
+    "@trezor/wardd": "workspace:*"
+    "@types/better-sqlite3": "npm:^7.6.0"
+    better-sqlite3: "npm:^12.6.2"
     tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft
@@ -18864,6 +18938,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/ward": "workspace:*"
     "@types/chrome": "npm:^0.2.2"
     "@types/jest": "npm:30.0.0"
     "@types/node": "npm:22.13.10"
@@ -18903,6 +18978,8 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/ward": "workspace:*"
+    "@trezor/wardd": "workspace:*"
     "@types/jws": "npm:^3.2.11"
     "@types/node": "npm:22.13.10"
     "@types/w3c-web-usb": "npm:^1.0.14"
@@ -20419,6 +20496,35 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/ward@workspace:*, @trezor/ward@workspace:packages/ward":
+  version: 0.0.0-use.local
+  resolution: "@trezor/ward@workspace:packages/ward"
+  dependencies:
+    "@noble/curves": "npm:^2.2.0"
+    "@noble/hashes": "npm:^2.0.1"
+    "@types/better-sqlite3": "npm:^7.6.0"
+    better-sqlite3: "npm:^12.6.2"
+  dependenciesMeta:
+    better-sqlite3:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
+"@trezor/wardd@workspace:*, @trezor/wardd@workspace:packages/wardd":
+  version: 0.0.0-use.local
+  resolution: "@trezor/wardd@workspace:packages/wardd"
+  dependencies:
+    "@evolu/common": "npm:8.0.0-next.5"
+    "@evolu/nodejs": "npm:3.0.0-next.3"
+    "@noble/curves": "npm:^2.2.0"
+    "@noble/hashes": "npm:^2.0.1"
+    "@trezor/ward": "workspace:*"
+    "@types/ws": "npm:^8.5.13"
+    tsx: "npm:^4.21.0"
+    ws: "npm:^8.20.0"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension":
   version: 0.0.0-use.local
   resolution: "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension"
@@ -20567,6 +20673,15 @@ __metadata:
   dependencies:
     "@babel/types": "npm:^7.28.2"
   checksum: 10/371c5e1b40399ef17570e630b2943617b84fafde2860a56f0ebc113d8edb1d0534ade0175af89eda1ae35160903c33057ed42457e165d4aa287fedab2c82abcf
+  languageName: node
+  linkType: hard
+
+"@types/better-sqlite3@npm:^7.6.0":
+  version: 7.6.13
+  resolution: "@types/better-sqlite3@npm:7.6.13"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10/c74dafa3c550ac866737870016d7b1a735c7d450c16d40962eeb54510fa150e91752bfdf678f55e91894d8853771b95f909b0062122116cddac4d80491b74411
   languageName: node
   linkType: hard
 
@@ -24461,7 +24576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^12.11.1":
+"better-sqlite3@npm:^12.11.1, better-sqlite3@npm:^12.6.2":
   version: 12.11.1
   resolution: "better-sqlite3@npm:12.11.1"
   dependencies:
@@ -27701,7 +27816,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-libc@npm:^2.0.0, detect-libc@npm:^2.0.3, detect-libc@npm:^2.1.2":
+"detect-libc@npm:^2.0.0, detect-libc@npm:^2.0.1, detect-libc@npm:^2.0.3, detect-libc@npm:^2.1.2":
   version: 2.1.2
   resolution: "detect-libc@npm:2.1.2"
   checksum: 10/b736c8d97d5d46164c0d1bed53eb4e6a3b1d8530d460211e2d52f1c552875e706c58a5376854e4e54f8b828c9cada58c855288c968522eb93ac7696d65970766
@@ -35867,6 +35982,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kysely@npm:^0.28.15":
+  version: 0.28.18
+  resolution: "kysely@npm:0.28.18"
+  checksum: 10/65f2e0c36fffd8bc3162eb29fc42da49e54b23864135ee276dc65ddba1e8b4821031789336f429ba7626b561fa069b4684f4e98a78b304d170f4cbe33bfe3197
+  languageName: node
+  linkType: hard
+
 "kysely@npm:^0.29.5":
   version: 0.29.5
   resolution: "kysely@npm:0.29.5"
@@ -38184,6 +38306,49 @@ __metadata:
   languageName: node
   linkType: hard
 
+"msgpackr-extract@npm:^3.0.2":
+  version: 3.0.4
+  resolution: "msgpackr-extract@npm:3.0.4"
+  dependencies:
+    "@msgpackr-extract/msgpackr-extract-darwin-arm64": "npm:3.0.4"
+    "@msgpackr-extract/msgpackr-extract-darwin-x64": "npm:3.0.4"
+    "@msgpackr-extract/msgpackr-extract-linux-arm": "npm:3.0.4"
+    "@msgpackr-extract/msgpackr-extract-linux-arm64": "npm:3.0.4"
+    "@msgpackr-extract/msgpackr-extract-linux-x64": "npm:3.0.4"
+    "@msgpackr-extract/msgpackr-extract-win32-x64": "npm:3.0.4"
+    node-gyp: "npm:latest"
+    node-gyp-build-optional-packages: "npm:5.2.2"
+  dependenciesMeta:
+    "@msgpackr-extract/msgpackr-extract-darwin-arm64":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-darwin-x64":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-linux-arm":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-linux-arm64":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-linux-x64":
+      optional: true
+    "@msgpackr-extract/msgpackr-extract-win32-x64":
+      optional: true
+  bin:
+    download-msgpackr-prebuilds: bin/download-prebuilds.js
+  checksum: 10/05a66482eca3c7932afef4300abc0cccfbb002185506d85d77fd2cff63870d58ef6903fef879ea09ff76ed0c18c9282a0dceb0d621a58e3c02adc9e0bfb8eb33
+  languageName: node
+  linkType: hard
+
+"msgpackr@npm:^1.11.8":
+  version: 1.12.1
+  resolution: "msgpackr@npm:1.12.1"
+  dependencies:
+    msgpackr-extract: "npm:^3.0.2"
+  dependenciesMeta:
+    msgpackr-extract:
+      optional: true
+  checksum: 10/90f5eabb2b059f441714ec0b09cfccea589caf36604598ae44a023e6c113f97889ca6c899beb318bc1a6bb7d6b4d6bef75a6fc13a01aa49c3111ae08da2c6db5
+  languageName: node
+  linkType: hard
+
 "multi-sort-stream@npm:^1.0.3, multi-sort-stream@npm:^1.0.4":
   version: 1.0.4
   resolution: "multi-sort-stream@npm:1.0.4"
@@ -38742,6 +38907,19 @@ __metadata:
   version: 1.4.0
   resolution: "node-forge@npm:1.4.0"
   checksum: 10/d70fd769768e646eda73343d4d4105ccb6869315d975905a22117431c04ae5b6df6c488e34ed275b1a66b50195a09b84b5c8aeca3b8605c20605fcb8e9f109d9
+  languageName: node
+  linkType: hard
+
+"node-gyp-build-optional-packages@npm:5.2.2":
+  version: 5.2.2
+  resolution: "node-gyp-build-optional-packages@npm:5.2.2"
+  dependencies:
+    detect-libc: "npm:^2.0.1"
+  bin:
+    node-gyp-build-optional-packages: bin.js
+    node-gyp-build-optional-packages-optional: optional.js
+    node-gyp-build-optional-packages-test: build-test.js
+  checksum: 10/f448a328cf608071dc8cc4426ac5be0daec4788e4e1759e9f7ffcd286822cc799384edce17a8c79e610c4bbfc8e3aff788f3681f1d88290e0ca7aaa5342a090f
   languageName: node
   linkType: hard
 
@@ -41568,7 +41746,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"random@npm:5.5.1":
+"random@npm:5.5.1, random@npm:^5.4.1":
   version: 5.5.1
   resolution: "random@npm:5.5.1"
   checksum: 10/91a61494f6901f95831c955d410c13da4ace1a44eb46248becb486a25ab254bdd8ee278e246d562d91d7e8d44945f430cf1c54c31b136d194101e1a719209f1d
