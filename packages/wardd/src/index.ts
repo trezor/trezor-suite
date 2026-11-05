@@ -8,3 +8,4 @@ export { buildProofAck } from './proofs';
 export { DEFAULT_ORIGINS, DEFAULT_PORT, startServer, type ServerOptions } from './server';
 export { WARDD_DEFAULT_URL, WarddClient, type WarddClientOptions } from './client';
 export { EvoluWardStorage, wardOwner, wardOwnerSecret } from './evoluStorage';
+export { createConsoleLog } from './logging';

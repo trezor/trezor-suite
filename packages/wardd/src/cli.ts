@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * wardd [--port 21329] [--data-dir ~/.trezor-ward] [--memory] [--token-file F]
  *       [--wm-url URL] [--evolu-node HEX] [--relay URL] [--origin O]... [--verbose]
@@ -15,6 +14,7 @@ import path from 'path';
 import { InMemoryWardDb } from '@trezor/ward';
 
 import { EvoluWardStorage } from './evoluStorage';
+import { createConsoleLog } from './logging';
 import { DEFAULT_ORIGINS, DEFAULT_PORT, startServer } from './server';
 import { Wardd } from './service';
 import { HttpWm, MockWm } from './wm';
@@ -43,6 +43,8 @@ const readOrCreateToken = async (dataDir: string, tokenFile?: string) => {
 };
 
 const main = async () => {
+    const log = createConsoleLog();
+    const delays = flag('delays') || process.env.WARD_DELAYS === '1';
     const memory = flag('memory');
     const dataDir = value('data-dir') ?? path.join(os.homedir(), '.trezor-ward');
     await fs.mkdir(dataDir, { recursive: true, mode: 0o700 });
@@ -53,21 +55,30 @@ const main = async () => {
               dataDir,
               evoluNode: value('evolu-node'),
               relayUrl: value('relay'),
+              log,
           });
-    const wmUrl = value('wm-url');
+    const wmUrl =
+        value('wm-url') ??
+        process.env.WARD_MANAGER_URL ??
+        (process.env.WARD_MANAGER_PORT
+            ? `http://127.0.0.1:${process.env.WARD_MANAGER_PORT}`
+            : undefined);
     const wardd = new Wardd({
         storage,
-        wm: wmUrl ? new HttpWm(wmUrl) : new MockWm(),
-        log: flag('verbose') ? (...m) => console.log('[wardd]', ...m) : undefined,
+        wm: wmUrl ? new HttpWm(wmUrl, log, delays) : new MockWm(log, delays),
+        log: flag('verbose') || delays ? log : undefined,
+        delays,
     });
     const origins = values('origin');
     const server = await startServer({
         wardd,
         token: await readOrCreateToken(dataDir, value('token-file')),
-        port: Number(value('port') ?? DEFAULT_PORT),
+        port: Number(value('port') ?? process.env.WARDD_PORT ?? DEFAULT_PORT),
         allowedOrigins: origins.length ? origins : DEFAULT_ORIGINS,
+        delays,
+        log,
     });
-    console.log(
+    log(
         `wardd listening on ws://127.0.0.1:${server.port} ` +
             `(storage: ${memory ? 'memory' : dataDir}, WM: ${wmUrl ?? 'debug mock'})`,
     );

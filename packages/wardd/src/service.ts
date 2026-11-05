@@ -19,12 +19,14 @@ import {
 } from '@trezor/ward';
 
 import { type Log, WardHost } from './host';
+import { forwardingDelay, pacedStorage } from './pacing';
 import { type WmClient } from './wm';
 
 export type WarddOptions = {
     storage: WardProvider;
     wm: WmClient;
     log?: Log;
+    delays?: boolean;
 };
 
 export class Wardd implements WardRelay {
@@ -32,11 +34,13 @@ export class Wardd implements WardRelay {
     private readonly storage: WardProvider;
     private readonly wm: WmClient;
     private readonly log: Log;
+    private readonly delays: boolean;
 
     constructor(options: WarddOptions) {
-        this.storage = options.storage;
-        this.wm = options.wm;
         this.log = options.log ?? (() => {});
+        this.delays = options.delays ?? false;
+        this.storage = pacedStorage(options.storage, this.log, this.delays);
+        this.wm = options.wm;
     }
 
     /** Run `fn` after every conversation queued before it; a failed one does not block the next. */
@@ -48,7 +52,12 @@ export class Wardd implements WardRelay {
     }
 
     connect(): Promise<WardRelayEndpoint> {
-        const host = new WardHost({ storage: this.storage, wm: this.wm, log: this.log });
+        const host = new WardHost({
+            storage: this.storage,
+            wm: this.wm,
+            log: this.log,
+            delays: this.delays,
+        });
         let closed = false;
 
         const dispatch = (
@@ -79,7 +88,12 @@ export class Wardd implements WardRelay {
             call: async (method, params = {}, device) => {
                 if (closed) throw new RelayFailure('bad_request', 'the endpoint is closed');
 
-                return (await dispatch(method, params, device)) as Record<string, unknown>;
+                await forwardingDelay(this.log, `host -> wardd.${method}`, this.delays);
+                try {
+                    return (await dispatch(method, params, device)) as Record<string, unknown>;
+                } finally {
+                    await forwardingDelay(this.log, `wardd.${method} -> host`, this.delays);
+                }
             },
             close: () => {
                 closed = true;

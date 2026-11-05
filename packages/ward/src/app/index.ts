@@ -66,32 +66,61 @@ export type HydrateResult = { blobs: BlobRow[]; root: string; verifiedCounter: n
  * authenticity of `headRoot` itself is established by the device at reconcile (root
  * MAC), this proves the *contents* reconstruct to it.
  */
-// FIXME(ward, UNWIRED): hydrate + resolveHead implement the §7 backward-walk
-// reconstruction and per-batch root check, and they work (see __tests__/hydrate.test.ts)
-// -- but resolveHead has no production caller. connect uses loadHead instead, so the
-// `transitions` log written by wardUpdate is append-only-never-read. Wire resolveHead
-// into the read path to make lineage verification actually run.
-export const hydrate = (transitions: WardTransition[], headRoot: string): HydrateResult => {
-    if (headRoot === '') return { blobs: [], root: '', verifiedCounter: 0 };
-    const byTarget = new Map(transitions.map(t => [t.targetRoot, t]));
-    // Backward walk head → genesis, following target_root → prev_root.
+export const traceLineage = (
+    transitions: WardTransition[],
+    headRoot: string,
+    headCounter?: number,
+): WardTransition[] => {
+    const byHead = new Map<string, WardTransition[]>();
+    let latest = 0;
+    for (const transition of transitions) {
+        const key = `${transition.counter} ${transition.targetRoot}`;
+        const matches = byHead.get(key) ?? [];
+        matches.push(transition);
+        byHead.set(key, matches);
+        if (transition.targetRoot === headRoot) latest = Math.max(latest, transition.counter);
+    }
+    let counter = headCounter ?? latest;
+    if (!Number.isSafeInteger(counter) || counter < 0)
+        throw new Error('hydrate: invalid head counter');
+    if (counter === 0 && headRoot !== '')
+        throw new Error(`hydrate: no transition produces root ${headRoot}`);
     const chain: WardTransition[] = [];
-    const seen = new Set<string>();
     let cur = headRoot;
-    while (cur !== '') {
-        const t = byTarget.get(cur);
-        if (!t) {
+    // Counters disambiguate repeated roots, including a deletion back to empty.
+    while (counter > 0) {
+        const matches = byHead.get(`${counter} ${cur}`) ?? [];
+        if (matches.length === 0) {
             throw new Error(
-                `hydrate: no transition produces root ${cur} — lineage incomplete ` +
+                `hydrate: no transition produces root ${cur} at counter ${counter} — lineage incomplete ` +
                     '(torn / not-yet-synced batch); cannot hydrate',
             );
         }
-        if (seen.has(cur)) throw new Error(`hydrate: cycle in lineage at root ${cur}`);
-        seen.add(cur);
+        if (matches.length !== 1)
+            throw new Error(`hydrate: ambiguous lineage at counter ${counter}`);
+        const t = matches[0]!;
         chain.push(t);
         cur = t.prevRoot;
+        counter -= 1;
     }
-    chain.reverse(); // genesis → head
+    if (cur !== '') throw new Error('hydrate: lineage does not terminate at genesis');
+
+    return chain;
+};
+
+export const hydrate = (
+    transitions: WardTransition[],
+    headRoot: string,
+    headCounter?: number,
+    onReplay?: (step: {
+        counter: number;
+        root: string;
+        expectedRoot: string;
+        entries: number;
+        matches: boolean;
+    }) => void,
+): HydrateResult => {
+    const chain = traceLineage(transitions, headRoot, headCounter).toReversed();
     // Forward replay with a per-batch root check + contiguity check. Each transition
     // applies its whole batch of leaves (order-independent — positions are keyed by
     // entry_key) before the single root check at its target.
@@ -117,6 +146,13 @@ export const hydrate = (transitions: WardTransition[], headRoot: string): Hydrat
             }
         }
         const root = computeRootFromBlobs([...leaves.values()]);
+        onReplay?.({
+            counter: t.counter,
+            root,
+            expectedRoot: t.targetRoot,
+            entries: leaves.size,
+            matches: root === t.targetRoot,
+        });
         if (root !== t.targetRoot) {
             throw new Error(
                 `hydrate: batch counter ${t.counter} replays to ${root} != target ` +
@@ -144,7 +180,7 @@ export const resolveHead = async (
 ): Promise<{ rows: WardRow[]; tree: TreeState | null; hydrated?: HydrateResult }> => {
     const { rows, tree } = await loadHead(provider, wardId);
     if (provider.getTransitions === undefined || tree === null) return { rows, tree };
-    const hydrated = hydrate(await provider.getTransitions(wardId), tree.root);
+    const hydrated = hydrate(await provider.getTransitions(wardId), tree.root, tree.counter);
 
     return { rows, tree, hydrated };
 };

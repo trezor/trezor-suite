@@ -13,6 +13,9 @@
  */
 import { ZERO_MAC_HEX, signWardUpdate, signWmAttestation } from '@trezor/ward/src/mocks';
 
+import { type Log, silentLog, startActivity } from './logging';
+import { forwardingDelay } from './pacing';
+
 export type WmAttestRequest = { wardId: string; nonce: string; counter: number; mac?: string };
 export type WmCommitRequest = { wardId: string; counter: number; mac?: string };
 
@@ -37,12 +40,33 @@ export class WmConflict extends Error {
 
 /** DEV/TEST: signs with the well-known debug key, in-process and stateless. */
 export class MockWm implements WmClient {
-    attest({ wardId, nonce, counter, mac }: WmAttestRequest) {
-        return Promise.resolve(signWmAttestation(wardId, nonce, counter, mac ?? ZERO_MAC_HEX));
-    }
+    constructor(
+        private readonly log: Log = silentLog,
+        private readonly delays = false,
+    ) {}
 
-    commit({ wardId, counter, mac }: WmCommitRequest) {
-        return Promise.resolve(signWardUpdate(wardId, counter, mac ?? ZERO_MAC_HEX));
+    attest = ({ wardId, nonce, counter, mac }: WmAttestRequest) =>
+        this.sign('attest', counter, () =>
+            signWmAttestation(wardId, nonce, counter, mac ?? ZERO_MAC_HEX),
+        );
+
+    commit = ({ wardId, counter, mac }: WmCommitRequest) =>
+        this.sign('commit', counter, () => signWardUpdate(wardId, counter, mac ?? ZERO_MAC_HEX));
+
+    private async sign(method: string, counter: number, sign: () => string) {
+        const activity = startActivity(this.log, `wm.mock.${method}`, { counter });
+        try {
+            await forwardingDelay(this.log, `wardd -> mock WM ${method}`, this.delays);
+            const signature = await Promise.resolve().then(sign);
+            activity.success();
+
+            return signature;
+        } catch (error) {
+            activity.failure(error);
+            throw error;
+        } finally {
+            await forwardingDelay(this.log, `mock WM ${method} -> wardd`, this.delays);
+        }
     }
 }
 
@@ -50,7 +74,11 @@ export class MockWm implements WmClient {
 export class HttpWm implements WmClient {
     private readonly baseUrl: string;
 
-    constructor(baseUrl: string) {
+    constructor(
+        baseUrl: string,
+        private readonly log: Log = silentLog,
+        private readonly delays = false,
+    ) {
         this.baseUrl = baseUrl.replace(/\/$/, '');
     }
 
@@ -76,19 +104,52 @@ export class HttpWm implements WmClient {
     }
 
     private async post(path: string, payload: Record<string, unknown>) {
-        const response = await fetch(`${this.baseUrl}${path}`, {
+        const activity = startActivity(this.log, 'wm.http', {
             method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify(payload),
+            path,
+            counter: payload.counter,
         });
-        if (response.status === 409) {
-            const body = await response.json().catch(() => ({}));
-            throw new WmConflict(body.counter ?? Number(payload.counter), body.mac);
-        }
-        if (!response.ok) {
-            throw new Error(`WARD Manager ${path} failed: HTTP ${response.status}`);
-        }
+        let status: number | undefined;
+        try {
+            await forwardingDelay(this.log, `wardd -> WM ${path}`, this.delays);
+            const response = await fetch(`${this.baseUrl}${path}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            status = response.status;
+            if (response.status === 409) {
+                const body = await response.json().catch(() => ({}));
+                this.log('wm.head', {
+                    source: 'HTTP 409',
+                    counter: body.counter,
+                    mac: body.mac ?? 'EMPTY',
+                });
+                throw new WmConflict(body.counter ?? Number(payload.counter), body.mac);
+            }
+            if (!response.ok) {
+                throw new Error(`WARD Manager ${path} failed: HTTP ${response.status}`);
+            }
 
-        return (await response.json()) as { signature: string };
+            const body = (await response.json()) as {
+                signature: string;
+                counter?: number;
+                mac?: string;
+            };
+            if (body.counter !== undefined)
+                this.log('wm.head', {
+                    source: 'HTTP response',
+                    counter: body.counter,
+                    mac: body.mac ?? 'EMPTY',
+                });
+            activity.success({ status });
+
+            return body;
+        } catch (error) {
+            activity.failure(error, { status });
+            throw error;
+        } finally {
+            await forwardingDelay(this.log, `WM ${path} -> wardd`, this.delays);
+        }
     }
 }
