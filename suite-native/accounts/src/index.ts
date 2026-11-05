@@ -2,7 +2,7 @@ export * from './components/AddAccountsButton';
 export * from './components/AccountLabel';
 export * from './components/AccountTypeBadge';
 export * from './components/AccountsList/AccountsList';
-export * from './components/AccountsList/AccountAssetListItem';
+export * from './components/AccountsList/AssetAccountListItem';
 export * from './components/AccountsList/AccountsListItem';
 export * from './components/AccountsList/AccountsListItemBase';
 export * from './components/AccountsList/AccountsListStakingItem';
