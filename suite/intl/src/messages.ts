@@ -11951,10 +11951,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_WITHDRAW_READY',
         defaultMessage: '{amount} unstaked and ready to withdraw',
     },
-    TR_EARN_TRON_HOW_IT_WORKS: {
-        id: 'TR_EARN_TRON_HOW_IT_WORKS',
-        defaultMessage: 'How staking works',
-    },
     TR_EARN_TRON_MY_ENERGY: {
         id: 'TR_EARN_TRON_MY_ENERGY',
         defaultMessage: 'My energy',

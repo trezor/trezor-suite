@@ -3,7 +3,7 @@ import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { WalletLayout } from 'src/components/wallet';
 
-import { EverstakeFooter } from './components/EverstakeFooter';
+import { StakingFooter } from './components/StakingFooter';
 
 interface StakingDashboardProps {
     selectedAccount: SelectedAccountStatus;
@@ -20,7 +20,7 @@ export const StakingDashboard = ({ selectedAccount, dashboard }: StakingDashboar
             account={selectedAccount}
         >
             {dashboard}
-            <EverstakeFooter networkType={selectedAccount.account.networkType} />
+            <StakingFooter networkType={selectedAccount.account.networkType} />
         </WalletLayout>
     );
 };
