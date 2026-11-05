@@ -312,11 +312,15 @@ export type TradingErrorCause =
     | { source: 'invity'; message: string }
     | { source: 'unexpected'; message?: string };
 
+type TradingErrorType = 'error' | 'sign-tx-error' | 'sign-transaction-timeout' | 'sign-cancelled';
+
 export type TradingError = {
-    type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout' | 'sign-cancelled';
-    code: TradingErrorCode;
-    cause?: TradingErrorCause;
-};
+    [TType in TradingErrorType]: {
+        type: TType;
+        code: TradingErrorCode;
+        cause?: TradingErrorCause;
+    };
+}[TradingErrorType];
 
 export type TradingExchangeUserConsentProps = {
     provider: string;
