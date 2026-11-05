@@ -78,9 +78,20 @@ describe('stakingProductDescriptorSchema', () => {
         expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
     });
 
-    it('rejects a product with operations but without a consent key', () => {
+    it('parses a product with operations but without staking and without a consent key', () => {
+        const descriptor = mockStakingProductDescriptor({
+            providerId: stakingProviderIdSchema.parse('external'),
+            type: 'native',
+            operations: ['unstake', 'claim', 'vote'],
+            consentKey: null,
+        });
+
+        expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
+    });
+
+    it('rejects a product that offers staking without a consent key', () => {
         const result = stakingProductDescriptorSchema.safeParse(
-            mockStakingProductDescriptor({ consentKey: null }),
+            mockStakingProductDescriptor({ operations: ['stake'], consentKey: null }),
         );
 
         expect(result.success).toBe(false);

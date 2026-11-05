@@ -9,6 +9,12 @@ const solanaDetails = {
     ],
 };
 
+const cardanoDetails = {
+    kind: 'cardano-delegation',
+    poolId: 'pool1xflehvzad4wr6rrvf6eea65jst5af0r4k0rh4xvmnqgvkzt3xjt',
+    drep: { id: 'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3', hasScript: false },
+};
+
 describe('stakingPositionDetailsSchema', () => {
     it('parses the Solana stake accounts unchanged', () => {
         expect(stakingPositionDetailsSchema.parse(solanaDetails)).toEqual(solanaDetails);
@@ -45,5 +51,35 @@ describe('stakingPositionDetailsSchema', () => {
 
         expect(result.success).toBe(false);
         expect(result.error?.issues[0]?.path).toEqual(['stakeAccounts', 0, 'stake']);
+    });
+
+    it('parses the Cardano delegation unchanged', () => {
+        expect(stakingPositionDetailsSchema.parse(cardanoDetails)).toEqual(cardanoDetails);
+    });
+
+    it('parses a Cardano stake key without a pool and without a DRep', () => {
+        const details = { ...cardanoDetails, poolId: null, drep: null };
+
+        expect(stakingPositionDetailsSchema.parse(details)).toEqual(details);
+    });
+
+    it('rejects a Cardano DRep without an id', () => {
+        const result = stakingPositionDetailsSchema.safeParse({
+            ...cardanoDetails,
+            drep: { id: '', hasScript: false },
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['drep', 'id']);
+    });
+
+    it('rejects an unknown key on the Cardano delegation', () => {
+        const result = stakingPositionDetailsSchema.safeParse({
+            ...cardanoDetails,
+            stakeAddress: 'stake1u9ylzsgxaa6xctf4juup682ar3juj85n8tx3hthnljg47zctvm3rc',
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.code).toBe('unrecognized_keys');
     });
 });

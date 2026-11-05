@@ -117,7 +117,12 @@ describe('getSolanaDelegationProductPosition', () => {
             unlocks: [{ amount: '2300000000', availableAt: null }],
             operations: ['stake', 'unstake', 'withdraw'],
         });
-        expect(position?.details?.stakeAccounts.map(({ status }) => status)).toEqual([
+        const stakeAccounts =
+            position?.details?.kind === 'solana-stake-accounts'
+                ? position.details.stakeAccounts
+                : [];
+
+        expect(stakeAccounts.map(({ status }) => status)).toEqual([
             'activating',
             'active',
             'deactivating',

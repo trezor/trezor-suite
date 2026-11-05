@@ -22,11 +22,23 @@ export const solanaStakeAccountSchema = z.strictObject({
 
 export type SolanaStakeAccount = z.infer<typeof solanaStakeAccountSchema>;
 
+export const cardanoDrepSchema = z.strictObject({
+    id: z.string().min(1),
+    hasScript: z.boolean(),
+});
+
+export type CardanoDrep = z.infer<typeof cardanoDrepSchema>;
+
 export const stakingPositionDetailsSchema = z.discriminatedUnion('kind', [
     z.strictObject({
         kind: z.literal('solana-stake-accounts'),
         epoch: z.number().int().nonnegative().nullable(),
         stakeAccounts: z.array(solanaStakeAccountSchema).readonly(),
+    }),
+    z.strictObject({
+        kind: z.literal('cardano-delegation'),
+        poolId: z.string().min(1).nullable(),
+        drep: cardanoDrepSchema.nullable(),
     }),
 ]);
 

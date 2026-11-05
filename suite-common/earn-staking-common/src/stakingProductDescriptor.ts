@@ -63,8 +63,8 @@ export const stakingProductDescriptorSchema = stakingProductDescriptorObjectSche
             path: ['id'],
         },
     )
-    .refine(({ operations, consentKey }) => operations.length === 0 || consentKey !== null, {
-        error: 'Expected a consent key on a product with operations',
+    .refine(({ operations, consentKey }) => !operations.includes('stake') || consentKey !== null, {
+        error: 'Expected a consent key on a product that offers staking',
         path: ['consentKey'],
     });
 

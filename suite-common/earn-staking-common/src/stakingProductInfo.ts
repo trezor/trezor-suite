@@ -8,6 +8,7 @@ export const stakingProductTargetSchema = z.strictObject({
     providerId: stakingProviderIdSchema,
     name: z.string().optional(),
     rate: z.number().nullable(),
+    saturation: z.number().nonnegative().nullable(),
 });
 
 export type StakingProductTarget = z.infer<typeof stakingProductTargetSchema>;
