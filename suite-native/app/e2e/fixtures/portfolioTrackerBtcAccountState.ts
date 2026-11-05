@@ -12,7 +12,7 @@ export const portfolioTrackerBtcAccountState: PreloadedState = {
             {
                 accountLabel: PRELOADED_BTC_ACCOUNT_LABEL,
                 accountType: 'normal',
-                addresses: [],
+                addresses: { change: [], used: [], unused: [] },
                 availableBalance: '0',
                 balance: '0',
                 descriptor:
