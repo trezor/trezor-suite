@@ -13,10 +13,15 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/earn-staking-common": "workspace:*",
-        "@trezor/network-module-types": "workspace:*"
+        "@trezor/network-module-types": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@suite-common/wallet-types": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/requirements": "workspace:*"
     }
 }

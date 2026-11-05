@@ -6,7 +6,8 @@ import {
     mockStakingProductInfo,
 } from '@suite-common/earn-staking-common/mocks';
 import { type QueryClient, commonQueryKeys } from '@suite-common/react-query';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { testMocks } from '@suite-common/test-utils';
+import { initialWalletSettingsState, transactionsInitialState } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
@@ -87,6 +88,7 @@ describe('refreshStakingProductInfoThunk', () => {
         earn: { staking: mockStakingState({ descriptors: [eth, sol] }) },
         wallet: {
             accounts: [...accounts],
+            transactions: transactionsInitialState,
             settings: { ...initialWalletSettingsState, enabledNetworks },
         },
     });
@@ -213,7 +215,7 @@ describe('syncStakingPositionsThunk', () => {
         accounts: readonly Account[] = [ethAccount, btcAccount],
     ): SyncStakingPositionsThunkState => ({
         earn: { staking: mockStakingState({ descriptors: [eth, sol] }) },
-        wallet: { accounts: [...accounts] },
+        wallet: { accounts: [...accounts], transactions: transactionsInitialState },
     });
 
     const run = async (
@@ -238,6 +240,7 @@ describe('syncStakingPositionsThunk', () => {
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
             productInfo: null,
+            transactions: [],
         });
         expect(actions.filter(stakingActions.positionsSynced.match)).toEqual([
             stakingActions.positionsSynced({ accountKey: ethAccount.key, positions: [position] }),
@@ -254,6 +257,33 @@ describe('syncStakingPositionsThunk', () => {
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
             productInfo: info,
+            transactions: [],
+        });
+    });
+
+    it('passes the stored transactions of the account to the adapter', async () => {
+        const transaction = testMocks.getWalletTransaction({
+            descriptor: ethAccount.descriptor,
+            symbol: ethAccount.symbol,
+        });
+        const adapter = createAdapter(eth);
+        const state: SyncStakingPositionsThunkState = {
+            ...createState(),
+            wallet: {
+                accounts: [ethAccount],
+                transactions: {
+                    ...transactionsInitialState,
+                    transactions: { [ethAccount.key]: [transaction] },
+                },
+            },
+        };
+
+        await run(state, createDeps([adapter]));
+
+        expect(adapter.getPosition).toHaveBeenCalledWith({
+            account: ethAccount,
+            productInfo: null,
+            transactions: [transaction],
         });
     });
 
@@ -290,7 +320,10 @@ describe('syncStakingPositionsThunk', () => {
 describe('syncAllStakingPositionsThunk', () => {
     const state: SyncStakingPositionsThunkState = {
         earn: { staking: mockStakingState({ descriptors: [eth, sol] }) },
-        wallet: { accounts: [ethAccount, solAccount, btcAccount] },
+        wallet: {
+            accounts: [ethAccount, solAccount, btcAccount],
+            transactions: transactionsInitialState,
+        },
     };
 
     const run = async (params?: { networkSymbol: ReturnType<typeof asNetworkSymbol> }) => {

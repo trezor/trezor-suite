@@ -12,6 +12,7 @@ import type {
 import type { StakingPosition } from './stakingPosition';
 import type { StakingProductDescriptor } from './stakingProductDescriptor';
 import type { StakingProductInfo } from './stakingProductInfo';
+import { type StakingTransaction } from './stakingTransaction';
 
 export type FetchProductInfoParams = {
     abortSignal?: AbortSignal;
@@ -20,6 +21,7 @@ export type FetchProductInfoParams = {
 export type GetPositionParams = {
     account: StakingAccount;
     productInfo: StakingProductInfo | null;
+    transactions: readonly StakingTransaction[];
 };
 
 export type StakingAmountBounds = {

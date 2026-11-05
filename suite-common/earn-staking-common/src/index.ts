@@ -1,10 +1,10 @@
 export { networkSymbolSchema, timestampSchema } from './primitiveSchemas';
 export type { StakingAccount } from './stakingAccount';
 export {
-    STAKING_SIGNING_ERROR_CODES,
-    StakingAdapterError,
     getStakingSigningErrorCode,
     isStakingAdapterError,
+    STAKING_SIGNING_ERROR_CODES,
+    StakingAdapterError,
     type StakingConnectFailure,
     type StakingSigningErrorCode,
 } from './stakingAdapterError';
@@ -47,9 +47,9 @@ export {
     type StakingStepKind,
 } from './stakingOperation';
 export {
-    STAKING_STEP_REVIEWS,
     composedStakingStepSchema,
     signedStakingStepSchema,
+    STAKING_STEP_REVIEWS,
     stakingBroadcastResultSchema,
     stakingPlanSchema,
     stakingStepOutputSchema,
@@ -101,6 +101,16 @@ export type {
     StakingStepParams,
 } from './stakingProductAdapter';
 export {
+    getStakingAssetSymbol,
+    STAKING_ASSET_SYMBOL_PATTERN,
+    STAKING_PRODUCT_ASSET_KINDS,
+    stakingAssetSymbolSchema,
+    stakingProductAssetSchema,
+    type StakingAssetSymbol,
+    type StakingProductAsset,
+    type StakingProductAssetParams,
+} from './stakingProductAsset';
+export {
     STAKING_OPTION_KINDS,
     STAKING_PRODUCT_EXCLUSIVITIES,
     STAKING_RATE_KINDS,
@@ -114,16 +124,6 @@ export {
     type StakingProductDescriptor,
     type StakingProductLimits,
 } from './stakingProductDescriptor';
-export {
-    getStakingAssetSymbol,
-    STAKING_ASSET_SYMBOL_PATTERN,
-    STAKING_PRODUCT_ASSET_KINDS,
-    stakingAssetSymbolSchema,
-    stakingProductAssetSchema,
-    type StakingAssetSymbol,
-    type StakingProductAsset,
-    type StakingProductAssetParams,
-} from './stakingProductAsset';
 export {
     getStakingProductId,
     parseStakingProductId,
@@ -150,3 +150,4 @@ export {
     type StakingProviderLinks,
     type StakingProviderStatus,
 } from './stakingProvider';
+export { isPendingStakingTransaction, type StakingTransaction } from './stakingTransaction';
