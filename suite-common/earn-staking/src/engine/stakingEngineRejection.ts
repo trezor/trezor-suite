@@ -1,6 +1,7 @@
 export const STAKING_ENGINE_REJECTIONS = [
     'account-not-found',
     'product-not-found',
+    'operation-not-available',
     'session-not-found',
     'session-active',
     'session-replaced',

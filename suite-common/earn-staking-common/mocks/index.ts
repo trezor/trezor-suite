@@ -11,3 +11,4 @@ export { mockStakingProductAdapter } from './mockStakingProductAdapter';
 export { mockStakingProductDescriptor } from './mockStakingProductDescriptor';
 export { mockStakingProductInfo } from './mockStakingProductInfo';
 export { mockStakingProvider } from './mockStakingProvider';
+export { mockStakingTransaction } from './mockStakingTransaction';

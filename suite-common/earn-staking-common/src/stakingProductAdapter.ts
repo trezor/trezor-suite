@@ -12,6 +12,7 @@ import type {
 import type { StakingPosition } from './stakingPosition';
 import type { StakingProductDescriptor } from './stakingProductDescriptor';
 import type { StakingProductInfo } from './stakingProductInfo';
+import { type StakingTransaction } from './stakingTransaction';
 
 export type FetchProductInfoParams = {
     abortSignal?: AbortSignal;
@@ -20,8 +21,13 @@ export type FetchProductInfoParams = {
 export type GetPositionParams = {
     account: StakingAccount;
     productInfo: StakingProductInfo | null;
+    transactions: readonly StakingTransaction[];
 };
 
+/**
+ * Both bounds are inclusive: an amount is valid when `min <= amount <= max`.
+ * When `min > max`, no amount is valid, for example a balance below the minimum stake.
+ */
 export type StakingAmountBounds = {
     min: StakingAmount;
     max: StakingAmount;

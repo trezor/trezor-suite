@@ -50,6 +50,15 @@ export const stakingPositionTargetSchema = z.strictObject({
 
 export type StakingPositionTarget = z.infer<typeof stakingPositionTargetSchema>;
 
+export const stakingPositionPendingTransactionSchema = z.strictObject({
+    txid: z.string().min(1),
+    operation: stakingOperationSchema,
+});
+
+export type StakingPositionPendingTransaction = z.infer<
+    typeof stakingPositionPendingTransactionSchema
+>;
+
 export const stakingPositionSchema = z.strictObject({
     productId: stakingProductIdSchema,
     status: z.enum(STAKING_POSITION_STATUSES),
@@ -58,7 +67,7 @@ export const stakingPositionSchema = z.strictObject({
     unlocks: z.array(stakingPositionUnlockSchema).readonly(),
     targets: z.array(stakingPositionTargetSchema).readonly(),
     operations: z.array(stakingOperationSchema).readonly(),
-    pendingTxids: z.array(z.string()).readonly(),
+    pendingTransactions: z.array(stakingPositionPendingTransactionSchema).readonly(),
     warnings: z.array(stakingPositionWarningSchema).readonly(),
 });
 
