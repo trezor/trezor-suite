@@ -88,7 +88,7 @@ export const messages = {
                 required: 'Field is mandatory',
             },
             string: {
-                max: 'Number of characters exceeded',
+                max: 'Character limit exceeded',
             },
         },
     },
@@ -738,6 +738,9 @@ export const messages = {
                     'To connect to the app, activate at least one supported network in Settings.',
             },
         },
+        bottomSheets: {
+            confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
+        },
     },
     moduleDevice: {
         incompatibleFirmwareModalAppendix: {
@@ -807,6 +810,7 @@ export const messages = {
                     'Charge your Trezor to at least {percentage}% to prevent interruptions.',
             },
         },
+        confirmOnDeviceSheetTitle: 'Confirm on Trezor',
     },
     moduleDeviceBootloaderMode: {
         bootloaderScreen: {
@@ -1829,6 +1833,29 @@ export const messages = {
                 },
             },
             declineButton: "I'm not sure",
+            step1: {
+                header: 'Trusted source',
+                description:
+                    'My device was bought from the official Trezor Shop or a <link>trusted reseller</link>.',
+            },
+            step2: {
+                header: 'Holographic seal',
+                description:
+                    'The <link>holographic seal</link> was intact when I unboxed my device.',
+                modal: {
+                    alertBox:
+                        'We sold this Trezor model with two different holographic seals. Both of them are valid.',
+                    title: 'Check the holographic seal',
+                    paragraph1:
+                        'Ensure the holographic seal on your device was intact when unboxed, with no peeling, scratches, or damage.',
+                    paragraph2: 'Proceed only if the seal was intact and undamaged.',
+                },
+            },
+            step3: {
+                header: 'Packaging',
+                description:
+                    'The package was sealed and intact, with no signs of tampering before unboxing.',
+            },
         },
         deviceAuthenticitySuccessScreen: {
             title: 'Your Trezor is genuine',
@@ -2066,6 +2093,7 @@ export const messages = {
                 showAllButton: 'Show all',
                 accountCount: '{count, plural, one {# account} other {# accounts}}',
                 title: 'Filter by network',
+                showAccountsOnTitle: 'Show accounts on',
             },
             title: 'My assets',
         },
@@ -2192,7 +2220,8 @@ export const messages = {
                 },
                 apyBreakdown: {
                     autoCompounded: 'Automatically added and compounded.',
-                    manualCompound: 'Bonus rewards, claimed separately in the Earn tab.',
+                    manualCompound:
+                        'Bonus rewards are offered for a limited time and claimed separately in the Earn tab.',
                     footerApy: 'APY may change over time.',
                     footerApyApr: 'APY and APR rates can change over time.',
                     footer: 'APY may change over time.',
@@ -2441,6 +2470,7 @@ export const messages = {
             balanceSection: {
                 balanceTitle: 'Balance',
                 allAccountsButton: 'All accounts ({count})',
+                title: 'Your balance',
             },
             accountsSheet: {
                 subtitle: '{assetName} on {networkName}',
@@ -2455,6 +2485,7 @@ export const messages = {
                     description: 'Earn up to {apy}% on your {symbol}.',
                 },
             },
+            headerTitle: 'Asset details',
         },
     },
     device: {
@@ -3839,6 +3870,7 @@ export const messages = {
                     'In ~{days, plural, one {# day} other {# days}} {hours, plural, one {# hour} other {# hours}}',
                 readyInHours: 'In ~{hours, plural, one {# hour} other {# hours}}',
             },
+            unstakingCardTitle: 'Unstaking (~{days} days)',
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
@@ -3975,12 +4007,12 @@ export const messages = {
         providerSheet: {
             title: 'Providers',
             fixed: {
-                title: 'Fixed-rate CEX',
+                title: 'Fixed-rate offers',
                 titleOffers: 'Fixed-rate offers',
                 description: 'Lock in your rate for 15 minutes by paying a higher fee.',
             },
             float: {
-                title: 'Floating-rate CEX',
+                title: 'Floating-rate offers',
                 titleOffers: 'Floating-rate offers',
                 description: 'Get an estimated rate that may adjust with real-time market changes.',
             },
@@ -4103,7 +4135,7 @@ export const messages = {
             amountLabel: 'You get',
             amountNotAvailableAlert: {
                 title: 'Not available yet',
-                description: "For now, swaps only let you enter the amount you're paying.",
+                description: "Currently, swaps only let you enter the amount you're paying.",
             },
         },
         fiatCurrencySheet: {
@@ -5009,7 +5041,7 @@ export const messages = {
         precomposedTransaction: {
             errors: {
                 amountNotEnoughCurrencyFee:
-                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee.',
+                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee',
                 amountIsNotEnough: "You don't have enough funds.",
                 amountIsTooLow: 'Amount is too low.',
                 amountIsLessThanReserve: 'Recipient account requires minimum reserve to activate.',
@@ -5019,7 +5051,7 @@ export const messages = {
                 remainingBalanceLessThanRent:
                     'After sending this amount, your account will have SOL remaining lower than the rent.',
                 amountNotEnoughCurrencyFeeWithEthAmount:
-                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee.',
+                    'Insufficient {networkDisplaySymbol} to cover the current transaction fee',
             },
         },
     },
