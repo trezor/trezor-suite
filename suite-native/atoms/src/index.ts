@@ -32,6 +32,7 @@ export * from './Discreet/Discreet';
 export { Blur } from './Blur/Blur';
 export { type BlurProps } from './Blur/Blur';
 export { BlurText, type BlurTextProps } from './BlurText/BlurText';
+export { BlurUrls } from './BlurUrls/BlurUrls';
 export * from './DiscreetText/DiscreetTextTrigger';
 export * from './Sheet/BottomSheetFlashList';
 export * from './Sheet/BottomSheetGrabber';
