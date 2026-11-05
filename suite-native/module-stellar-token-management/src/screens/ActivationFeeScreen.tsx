@@ -20,6 +20,7 @@ import {
     type StellarManageTokenStackParamList,
     type StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { HELP_CENTER_XLM_URL } from '@trezor/urls';
 
@@ -72,6 +73,7 @@ export const ActivationFeeScreen = () => {
         formDraft,
         handleFeeLevelChange,
         handleCustomFeeSet,
+        tokenInfo,
         assetCode,
         tokenName,
         issuerDomain,
@@ -93,7 +95,7 @@ export const ActivationFeeScreen = () => {
 
     if (account?.networkType !== 'stellar') return null;
 
-    return (
+    const content = (
         <Form form={form}>
             <ConfirmOnTrezorWrapper
                 isManualControlEnabled
@@ -114,7 +116,7 @@ export const ActivationFeeScreen = () => {
                 >
                     <VStack spacing="sp16">
                         <TokenInfoCard
-                            tokenName={tokenName}
+                            networkSymbol={account.symbol}
                             issuerDomain={issuerDomain}
                             iconContractAddress={iconContractAddress}
                             tokenContract={tokenContract}
@@ -206,5 +208,11 @@ export const ActivationFeeScreen = () => {
                 />
             </ConfirmOnTrezorWrapper>
         </Form>
+    );
+
+    return (
+        <TokenMetadataProvider networkSymbol={account.symbol} tokens={tokenInfo ? [tokenInfo] : []}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

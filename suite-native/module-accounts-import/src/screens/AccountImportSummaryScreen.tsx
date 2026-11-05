@@ -17,6 +17,7 @@ import {
     type StackToTabCompositeScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
+import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { AccountAlreadyImportedScreen } from '../components/AccountAlreadyImportedScreen';
 import { AccountImportConfirmFormScreen } from '../components/AccountImportConfirmFormScreen';

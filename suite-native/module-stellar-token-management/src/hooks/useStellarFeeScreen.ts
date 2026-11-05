@@ -322,6 +322,7 @@ export const useStellarFeeScreen = ({
         handleFeeLevelChange,
         handleCustomFeeSet,
         // Token info
+        tokenInfo,
         assetCode,
         tokenName,
         issuerDomain,
