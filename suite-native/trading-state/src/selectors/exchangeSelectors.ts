@@ -2,7 +2,11 @@ import {
     EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE,
     type GroupedExchangeQuotesByRateType,
     selectGroupedExchangeQuotes,
+    selectTradingCoins,
+    selectTradingExchangeAccountKey,
     selectTradingExchangeBuyCryptoIds,
+    selectTradingExchangeReceiveAccountKey,
+    selectTradingExchangeReceiveAddress,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -37,16 +41,12 @@ const findAccountByKey = (accounts: Account[], accountKey: string | undefined) =
 };
 
 export const selectExchangeSelectedSendAccount = createMemoizedSelectorWithAccounts(
-    [selectAccounts, state => selectTradingExchange(state).tradingAccountKey],
+    [selectAccounts, selectTradingExchangeAccountKey],
     findAccountByKey,
 );
 
 export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAccounts(
-    [
-        selectAccounts,
-        state => selectTradingExchange(state).receiveAccountKey,
-        state => selectTradingExchange(state).receiveAddress,
-    ],
+    [selectAccounts, selectTradingExchangeReceiveAccountKey, selectTradingExchangeReceiveAddress],
     (accounts, accountKey, receiveAddress) => {
         const account = findAccountByKey(accounts, accountKey);
 
@@ -59,7 +59,7 @@ export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAc
 export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
         selectTradingExchangeBuyCryptoIds,
-        ({ wallet }) => wallet.trading.info.coins,
+        selectTradingCoins,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
