@@ -116,6 +116,8 @@ export const TransactionDetailIncludedCoins = ({
                 }
                 isCloseDisplayed
             >
+                {/* The sheet's portal renders outside the screen's metadata provider. Restore
+                    its sources here so transaction-only tokens retain their metadata. */}
                 <TokenMetadataProvider sources={metadataSources}>
                     {isEthereumCoinDisplayed && (
                         <TransactionDetailListItem
