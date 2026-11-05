@@ -6,7 +6,7 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { AccountAssetListItem } from '@suite-native/accounts';
+import { AssetAccountListItem } from '@suite-native/accounts';
 
 type AssetDetailAccountListItemProps = {
     assetAccount: AssetAccount;
@@ -26,7 +26,7 @@ export const AssetDetailAccountListItem = ({
     }
 
     return (
-        <AccountAssetListItem
+        <AssetAccountListItem
             account={account}
             assetAccount={assetAccount}
             onPress={({ account: selectedAccount }) => onAccountPress(selectedAccount.key)}

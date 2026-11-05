@@ -22,17 +22,17 @@ import { type OnSelectAccount } from '../../types';
 import { AccountLabel } from '../AccountLabel';
 import { AccountsListItemBase } from './AccountsListItemBase';
 
-type AccountAssetListItemProps = {
+type AssetAccountListItemProps = {
     account: Account;
     assetAccount: AssetAccount;
     onPress: OnSelectAccount;
 };
 
-export const AccountAssetListItem = ({
+export const AssetAccountListItem = ({
     account,
     assetAccount,
     onPress,
-}: AccountAssetListItemProps) => {
+}: AssetAccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
