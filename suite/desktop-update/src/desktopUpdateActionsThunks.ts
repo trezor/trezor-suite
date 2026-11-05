@@ -10,6 +10,7 @@ import {
     type DesktopUpdateRootState,
     UpdateState,
     desktopUpdateActions,
+    selectDesktopUpdate,
     selectDesktopUpdateAllowPrerelease,
 } from './desktopUpdateReducer';
 
@@ -49,8 +50,7 @@ type DownloadThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const downloadThunk =
     () => (dispatch: Dispatch, getState: () => DownloadThunkState, extra: DownloadThunkDeps) => {
-        // eslint-disable-next-line no-restricted-syntax
-        const { latest, allowPrerelease } = getState().desktopUpdate;
+        const { latest, allowPrerelease } = selectDesktopUpdate(getState());
 
         const payload = getAppUpdatePayload({
             status: AppUpdateEventStatus.Download,
@@ -72,8 +72,7 @@ type ReadyThunkDeps = WithServices<DesktopAnalyticsDep>;
 export const readyThunk =
     (info: UpdateInfo) =>
     (dispatch: Dispatch, getState: () => ReadyThunkState, extra: ReadyThunkDeps) => {
-        // eslint-disable-next-line no-restricted-syntax
-        const { latest, allowPrerelease } = getState().desktopUpdate;
+        const { latest, allowPrerelease } = selectDesktopUpdate(getState());
 
         // update can fail even if it was downloaded successfully
         // TODO: Update successful status from electron layer
@@ -101,8 +100,7 @@ type InstallUpdateThunkParams = { installNow: boolean };
 export const installUpdateThunk =
     ({ installNow }: InstallUpdateThunkParams) =>
     (_: Dispatch, getState: () => InstallUpdateThunkState, extra: InstallUpdateThunkDeps) => {
-        // eslint-disable-next-line no-restricted-syntax
-        const { desktopUpdate } = getState();
+        const desktopUpdate = selectDesktopUpdate(getState());
 
         const payload = getAppUpdatePayload({
             status: installNow
@@ -134,8 +132,7 @@ type ErrorThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const errorThunk =
     () => (dispatch: Dispatch, getState: () => ErrorThunkState, extra: ErrorThunkDeps) => {
-        // eslint-disable-next-line no-restricted-syntax
-        const { state, latest, allowPrerelease } = getState().desktopUpdate;
+        const { state, latest, allowPrerelease } = selectDesktopUpdate(getState());
 
         // Ignore displaying errors while checking
         if (state !== UpdateState.Checking) {
