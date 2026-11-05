@@ -20,6 +20,9 @@
             "path": "../../suite-common/delegated-identity-key"
         },
         {
+            "path": "../../suite-common/message-system-core"
+        },
+        {
             "path": "../../suite-common/platform-encryption"
         },
         {
@@ -30,6 +33,9 @@
         },
         {
             "path": "../../suite-common/suite-sync-storage"
+        },
+        {
+            "path": "../../suite-common/suite-types"
         },
         {
             "path": "../../suite-common/suite-utils"

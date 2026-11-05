@@ -21,6 +21,15 @@ import {
 
 export const SERVICE_NAME = 'request-interceptor';
 
+let isInterceptorInstalled = false;
+
+/**
+ * Tells whether `createInterceptor()` already replaced `global.fetch`. Until it did, a request
+ * from main goes out as a plain request that skips both the Tor proxy and the domain whitelist,
+ * so a caller that must not leak checks this before it reaches the network.
+ */
+export const getIsInterceptorInstalled = () => isInterceptorInstalled;
+
 /**
  * Main reason for this whitelist is to mitigate potential dependency attack,
  * where malicious dependency could send requests and potentially spy on the user, etc...
@@ -116,4 +125,6 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter, lo
         notRequiredTorDomainsList: ['127.0.0.1', 'localhost', '.sldev.cz'],
         getWhitelistedDomains,
     });
+
+    isInterceptorInstalled = true;
 };

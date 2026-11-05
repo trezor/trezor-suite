@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { type ValidMessages } from '@suite-common/message-system-core';
 import {
     type Action,
     type Category,
@@ -8,10 +9,6 @@ import {
 } from '@suite-common/suite-types';
 
 import { type MessageSystemConfigSource } from './messageSystemTypes';
-
-export type ValidMessagesPayload = {
-    [key in Category]: string[];
-};
 
 export type InclusionOverridePayload = {
     id: string;
@@ -38,7 +35,7 @@ const fetchError = createAction(`${ACTION_PREFIX}/fetchConfigError`);
 
 const updateValidMessages = createAction(
     `${ACTION_PREFIX}/updateValidMessages`,
-    (payload: ValidMessagesPayload) => ({
+    (payload: ValidMessages) => ({
         payload,
     }),
 );

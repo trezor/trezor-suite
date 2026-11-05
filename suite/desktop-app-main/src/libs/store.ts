@@ -12,6 +12,12 @@ export type WinBoundsCoords = WinBounds & {
     y?: number;
 };
 
+export type MessageSystemCache = {
+    /** The acquired JWS, kept signed so that its authenticity is verified again on every load. */
+    configJws: string;
+    sequence: number;
+};
+
 export class Store {
     private static instance: Store;
     private readonly store: ElectronStore<{
@@ -24,6 +30,7 @@ export class Store {
         connectSettings: ElectronConnectSettings;
         bioAuthSettings: BioAuthSettings;
         mcpSettings: McpSettings;
+        messageSystemCache: MessageSystemCache | undefined;
         isDebugModeActive: boolean;
     }>;
 
@@ -153,6 +160,18 @@ export class Store {
             ...this.getMcpSettings(),
             ...mcpSettings,
         });
+    }
+
+    public getMessageSystemCache() {
+        return this.store.get('messageSystemCache', undefined);
+    }
+
+    public setMessageSystemCache(messageSystemCache: MessageSystemCache) {
+        this.store.set('messageSystemCache', messageSystemCache);
+    }
+
+    public clearMessageSystemCache() {
+        this.store.delete('messageSystemCache');
     }
 
     public getIsDebugModeActive() {

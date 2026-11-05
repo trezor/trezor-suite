@@ -15,6 +15,7 @@ import {
 } from './connect-ws';
 import { createHttpReceiver } from './http-receiver';
 import { Logger } from './logger';
+import { type MessageSystemGate } from '../modules/message-system';
 
 jest.mock('@trezor/node-utils', () => ({
     ...jest.requireActual('@trezor/node-utils'),
@@ -88,6 +89,8 @@ describe('connect-ws', () => {
     let receiver: ReturnType<typeof createHttpReceiver> | undefined;
     const sockets: net.Socket[] = [];
     const clients: WebSocket[] = [];
+    // Read on every upgrade, so a test can close and reopen the gate on a running server.
+    let gate: MessageSystemGate = { isKillswitchActive: false, killswitchMessageId: undefined };
 
     const startServer = async (dependencies?: Partial<ExposeConnectWsParams>) => {
         receiver = createHttpReceiver({ logger, port: 0 });
@@ -98,6 +101,9 @@ describe('connect-ws', () => {
             logger,
             mainThreadEmitter: {} as ExposeConnectWsParams['mainThreadEmitter'],
             mainWindowProxy: {} as ExposeConnectWsParams['mainWindowProxy'],
+            messageSystem: {
+                getGate: () => gate,
+            } as unknown as ExposeConnectWsParams['messageSystem'],
             store: {} as ExposeConnectWsParams['store'],
             ...dependencies,
         });
@@ -128,6 +134,7 @@ describe('connect-ws', () => {
         sockets.splice(0).forEach(socket => socket.destroy());
         clients.splice(0).forEach(client => client.terminate());
         await receiver?.stop();
+        gate = { isKillswitchActive: false, killswitchMessageId: undefined };
     });
 
     // `new URL()` used to throw on this target. Jest fails the test on any uncaught exception.
@@ -137,6 +144,21 @@ describe('connect-ws', () => {
 
         expect(await upgrade.closed).toBe(true);
         expect(upgrade.received()).toBe('');
+    });
+
+    it('refuses an upgrade while the message system disabled the app, and accepts it again after', async () => {
+        const port = await startServer();
+        gate = { isKillswitchActive: true, killswitchMessageId: 'killswitch-message' };
+
+        const refused = probe(port, '/connect-ws');
+
+        expect(await refused.closed).toBe(true);
+        expect(refused.received()).toBe('');
+
+        gate = { isKillswitchActive: false, killswitchMessageId: undefined };
+
+        // No restart of the server in between: the gate is read on every upgrade.
+        await expect(openClient(port, 'https://probe.test')).resolves.toBeUndefined();
     });
 
     it.each([
