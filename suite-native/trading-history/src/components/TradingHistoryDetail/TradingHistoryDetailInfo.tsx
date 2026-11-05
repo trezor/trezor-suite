@@ -11,6 +11,7 @@ import { TradingHistoryDetailRateRow } from './TradingHistoryDetailRateRow';
 import { TradingHistoryDetailSlippageRow } from './TradingHistoryDetailSlippageRow';
 import { TradingHistoryDetailTradeIdRow } from './TradingHistoryDetailTradeIdRow';
 import { useTradingHistoryDetailInfo } from '../../hooks/useTradingHistoryDetailInfo';
+import { tradingHistoryAssetsToTokenMetadataSources } from '../../utils/tradingHistoryAssetsToTokenMetadataSources';
 
 const TEST_ID = '@trading/history/detail/info';
 
@@ -66,22 +67,7 @@ export const TradingHistoryDetailInfo = ({ orderId }: TradingHistoryDetailInfoPr
 
     return (
         <TokenMetadataProvider
-            sources={[payAsset, getAsset].flatMap(asset =>
-                asset?.type === 'crypto' && asset.contractAddress
-                    ? [
-                          {
-                              networkSymbol: asset.networkSymbol,
-                              tokens: [
-                                  {
-                                      contract: asset.contractAddress,
-                                      name: asset.name,
-                                      symbol: asset.displaySymbol,
-                                  },
-                              ],
-                          },
-                      ]
-                    : [],
-            )}
+            sources={tradingHistoryAssetsToTokenMetadataSources([payAsset, getAsset])}
         >
             {content}
         </TokenMetadataProvider>
