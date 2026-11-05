@@ -1,14 +1,17 @@
 import { Translation } from '@suite/intl';
-import { selectSmallBalanceSummary } from '@suite-common/assets';
+import { type SmallBalanceSummary } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+type HomeAssetSmallBalancesLabelProps = {
+    smallBalances: SmallBalanceSummary | undefined;
+};
 
-export const HomeAssetSmallBalancesLabel = () => {
+export const HomeAssetSmallBalancesLabel = ({
+    smallBalances,
+}: HomeAssetSmallBalancesLabelProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const smallBalances = useSelector(selectSmallBalanceSummary);
 
     return (
         <Column gap={2} alignItems="flex-start">

@@ -6,7 +6,7 @@ import {
     selectHasBitcoinOnlyFirmware,
 } from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
-import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccount,
@@ -45,7 +45,7 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { sumAssetAccounts } from './homeAssetTableUtils';
+import { type WalletAsset, groupWalletAssets } from './homeAssetTableUtils';
 
 export type HomeAssetTableState = AssetAccountsRootState &
     DeviceRootState &
@@ -56,54 +56,6 @@ export type HomeAssetTableState = AssetAccountsRootState &
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
 
 const ZERO = new BigNumber(0);
-
-type WalletAsset = {
-    assetKey: WalletAssetKey;
-    symbol: NetworkSymbol;
-    contractAddress: TokenAddress | undefined;
-    cryptoBalance: BigNumber;
-    amount: string;
-    tokenSymbol: TokenSymbol | null;
-    tokenDecimals: number | undefined;
-    accountCount: number;
-};
-
-const groupWalletAssets = (
-    assetAccounts: readonly AssetAccount[],
-): ReadonlyMap<WalletAssetKey, WalletAsset> => {
-    const byKey = new Map<WalletAssetKey, [AssetAccount, ...AssetAccount[]]>();
-
-    assetAccounts.forEach(assetAccount => {
-        const held = byKey.get(assetAccount.assetKey);
-
-        if (held === undefined) {
-            byKey.set(assetAccount.assetKey, [assetAccount]);
-        } else {
-            held.push(assetAccount);
-        }
-    });
-
-    const assets = new Map<WalletAssetKey, WalletAsset>();
-
-    byKey.forEach((held, assetKey) => {
-        const [{ symbol, contractAddress }] = held;
-        const { cryptoBalance, tokenInfo } = sumAssetAccounts(held);
-
-        assets.set(assetKey, {
-            assetKey,
-            symbol,
-            contractAddress,
-            cryptoBalance,
-            amount: cryptoBalance.toFixed(),
-            tokenSymbol: tokenInfo?.symbol === undefined ? null : toTokenSymbol(tokenInfo.symbol),
-            tokenDecimals: tokenInfo?.decimals,
-            accountCount: held.filter(assetAccount => isPositiveBalance(assetAccount.cryptoBalance))
-                .length,
-        });
-    });
-
-    return assets;
-};
 
 const selectPartitionedAssetAccounts = createMemoizedSelector(
     [selectDeviceAssetAccounts, selectHiddenAssetAccountKeySet],
@@ -297,20 +249,27 @@ const selectUsdToBaseCurrencyRate = createMemoizedSelector(
     },
 );
 
+/** What a small balance is worth at most in the chosen currency; nothing until the USD rate is known. */
+export const selectSmallBalanceThreshold = createMemoizedSelector(
+    [selectUsdToBaseCurrencyRate],
+    (usdToBaseCurrencyRate): BigNumber | undefined =>
+        usdToBaseCurrencyRate === undefined
+            ? undefined
+            : SMALL_BALANCE_USD_VALUE.times(usdToBaseCurrencyRate),
+);
+
 /**
  * Assets worth under $1 in the selected currency. An unpriced asset is never small, and nothing is
  * small until the USD rate is known, so nothing is hidden by mistake.
  */
 const selectSmallBalanceAssetKeySet = createMemoizedSelector(
-    [selectShownWalletAssetKeys, selectWalletAssetValues, selectUsdToBaseCurrencyRate],
-    (assetKeys, values, usdToBaseCurrencyRate): ReadonlySet<WalletAssetKey> => {
+    [selectShownWalletAssetKeys, selectWalletAssetValues, selectSmallBalanceThreshold],
+    (assetKeys, values, threshold): ReadonlySet<WalletAssetKey> => {
         const small = new Set<WalletAssetKey>();
 
-        if (usdToBaseCurrencyRate === undefined) {
+        if (threshold === undefined) {
             return small;
         }
-
-        const threshold = SMALL_BALANCE_USD_VALUE.times(usdToBaseCurrencyRate);
 
         assetKeys.forEach(assetKey => {
             // Rates and balances are never negative, so neither is a value: no `abs` needed.
@@ -638,7 +597,8 @@ export const selectWalletAssetSignVerifyAccounts = createMemoizedSelector(
 
 // A Cardano delegation stakes what the account can spend, which a pending send has already
 // reduced, as the asset's amount has; its on-chain balance would count the send too.
-const getAssetStakingBalance = (account: Account) => {
+/** What of the account's coin is staked; a Cardano delegation stakes the whole balance. */
+export const getAssetStakingBalance = (account: Account) => {
     if (account.networkType !== 'cardano') {
         return getAccountTotalStakingBalance(account);
     }

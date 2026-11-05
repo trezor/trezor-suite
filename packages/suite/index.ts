@@ -117,6 +117,7 @@ export { OnboardingFeedbackBanner } from './src/views/dashboard/OnboardingFeedba
 export { PortfolioCard } from './src/views/dashboard/PortfolioCard/PortfolioCard';
 export { useNotificationForDisconnectedDevice } from './src/views/dashboard/useNotificationForDisconnectedDevice';
 export { HomeAssetDashboard } from './src/views/home/HomeAssetDashboard';
+export { AssetFirstHomeExperiment } from './src/views/home/AssetFirstHomeExperiment';
 export { HiddenTokensList } from './src/views/dashboard/HiddenTokens/HiddenTokensList';
 export { useDiscovery } from './src/hooks/suite/useDiscovery';
 export { AssetDetailBalance } from './src/views/home/AssetDetail/AssetDetailBalance';
@@ -302,6 +303,7 @@ export { SolanaLimitedHistoryBanner } from './src/components/wallet/WalletLayout
 export { isNetworkWithGraphFeature } from './src/utils/wallet/graph/utils';
 export { TradeBox } from './src/views/wallet/transactions/TradeBox/TradeBox';
 export { SingleAccountTransactionList } from './src/views/wallet/transactions/TransactionList/SingleAccountTransactionList';
+export { AccountAssetOverview } from './src/views/wallet/transactions/AccountAssets/AccountAssetOverview';
 export { AccountEmpty } from './src/views/wallet/transactions/components/AccountEmpty';
 export { AccountOverviewBalance } from './src/views/wallet/transactions/components/AccountOverviewBalance';
 export { NoTransactions } from './src/views/wallet/transactions/components/NoTransactions';

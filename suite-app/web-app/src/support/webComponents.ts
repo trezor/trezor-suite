@@ -137,8 +137,8 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     // wallet
     'wallet-index': lazy(() =>
         import(
-            /* webpackChunkName: "wallet" */ '@suite-app/module-transactions/pages/TransactionsPage'
-        ).then(({ TransactionsPage }) => ({ default: TransactionsPage })),
+            /* webpackChunkName: "wallet" */ '@suite-app/module-transactions/pages/AccountOverviewPage'
+        ).then(({ AccountOverviewPage }) => ({ default: AccountOverviewPage })),
     ),
     'wallet-receive': lazy(() =>
         import(/* webpackChunkName: "wallet" */ '@suite-app/module-receive/pages/ReceivePage').then(
