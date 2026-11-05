@@ -17,7 +17,11 @@ import {
     type WalletLabels,
 } from '@suite-common/metadata-types';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectAccounts,
+} from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
@@ -240,7 +244,7 @@ export const selectAccountLabelsLegacy = (state: {
 }) => {
     const provider = selectSelectedProviderForLabels(state);
 
-    return state.wallet.accounts.reduce(
+    return selectAccounts(state).reduce(
         (dict, account) => {
             const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
             if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
