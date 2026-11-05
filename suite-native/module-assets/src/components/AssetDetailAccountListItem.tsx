@@ -1,24 +1,22 @@
 import { useSelector } from 'react-redux';
 
-import {
-    type AccountsRootState,
-    type AssetAccount,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { AssetAccountListItem } from '@suite-native/accounts';
 
 type AssetDetailAccountListItemProps = {
-    assetAccount: AssetAccount;
+    accountKey: AccountKey;
+    contractAddress: TokenAddress | undefined;
     onAccountPress: (accountKey: AccountKey) => void;
 };
 
 export const AssetDetailAccountListItem = ({
-    assetAccount,
+    accountKey,
+    contractAddress,
     onAccountPress,
 }: AssetDetailAccountListItemProps) => {
     const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, assetAccount.accountKey),
+        selectAccountByKey(state, accountKey),
     );
 
     if (account === null) {
@@ -28,7 +26,7 @@ export const AssetDetailAccountListItem = ({
     return (
         <AssetAccountListItem
             account={account}
-            assetAccount={assetAccount}
+            contractAddress={contractAddress}
             onPress={({ account: selectedAccount }) => onAccountPress(selectedAccount.key)}
         />
     );

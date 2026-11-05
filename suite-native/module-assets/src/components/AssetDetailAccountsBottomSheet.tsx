@@ -78,7 +78,8 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                     {assetAccounts.map(assetAccount => (
                         <AssetDetailAccountListItem
                             key={assetAccount.assetAccountKey}
-                            assetAccount={assetAccount}
+                            accountKey={assetAccount.accountKey}
+                            contractAddress={assetAccount.contractAddress}
                             onAccountPress={handleAccountPress}
                         />
                     ))}
