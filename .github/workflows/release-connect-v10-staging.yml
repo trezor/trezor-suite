@@ -6,6 +6,10 @@ permissions:
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   # Version should have been bumped by now thanks to ./scripts/ci/connect-release-init-npm.js
   extract-version:
