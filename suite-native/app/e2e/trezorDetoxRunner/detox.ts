@@ -65,6 +65,7 @@ const runProject = async (
     const env: NodeJS.ProcessEnv = {
         ...process.env,
         TDR_PROJECT_NAME: project.projectName,
+        TDR_PROJECT_STARTED_AT: String(Date.now()),
     };
 
     if (project.model) {

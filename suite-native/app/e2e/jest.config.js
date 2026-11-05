@@ -32,6 +32,7 @@ const baseReporters = [
         './e2e/support/reporter/attempts.js',
         { outputFile: `./reports/${projectName}-attempts.json` },
     ],
+    './e2e/support/reporter/timing.js',
 ];
 const githubReporter = './e2e/support/reporter/index.js';
 const reporters =
