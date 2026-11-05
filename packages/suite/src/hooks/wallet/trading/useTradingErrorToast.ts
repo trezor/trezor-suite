@@ -1,6 +1,6 @@
 import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type TradingError, isSilentSendRejection } from '@suite-common/trading';
+import { type TradingError, isSilentTradingError } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -14,7 +14,7 @@ export const useTradingErrorToast = () => {
     const { translationString } = useTranslation();
 
     const showTradingErrorToast = (tradingError: TradingError) => {
-        if (isSilentSendRejection(tradingError.type)) {
+        if (isSilentTradingError(tradingError)) {
             return;
         }
 

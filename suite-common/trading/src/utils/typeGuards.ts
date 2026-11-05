@@ -14,7 +14,7 @@ const TRADING_ERROR_TYPES = [
     'sign-cancelled',
 ] as const;
 
-const SILENT_SEND_REJECTED_TYPES = ['sign-transaction-timeout', 'sign-cancelled'] as const;
+const SILENT_TRADING_ERROR_TYPES = ['sign-transaction-timeout', 'sign-cancelled'] as const;
 
 const TRADING_ERROR_CODES: Record<TradingErrorCode, true> = {
     'cannot-send-transaction': true,
@@ -32,10 +32,16 @@ const TRADING_ERROR_CODES: Record<TradingErrorCode, true> = {
     'verify-address-failed': true,
 };
 
-export const isSilentSendRejection = (
-    type: TradingError['type'],
-): type is (typeof SILENT_SEND_REJECTED_TYPES)[number] =>
-    isArrayMember(type, SILENT_SEND_REJECTED_TYPES);
+type SilentTradingError = Extract<
+    TradingError,
+    { type: (typeof SILENT_TRADING_ERROR_TYPES)[number] }
+>;
+
+/**
+ * Whether the user already knows why the trading flow stopped, so the error is not shown.
+ */
+export const isSilentTradingError = (error: TradingError): error is SilentTradingError =>
+    isArrayMember(error.type, SILENT_TRADING_ERROR_TYPES);
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null;
