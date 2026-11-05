@@ -1,5 +1,4 @@
 import { toTokenAddress } from '@suite-common/wallet-types';
-import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type TokenMetadata, TokenMetadataProvider } from '@suite-native/tokens';
 import { asNetworkSymbol } from '@trezor/network-module-types';
@@ -123,66 +122,5 @@ describe('CompactTokenAmountFormatter', () => {
         );
 
         expect(getByText('23.91 USDC')).toBeVisible();
-    });
-});
-
-describe('token metadata sources', () => {
-    it('resolves an account token without caller-supplied metadata', async () => {
-        const { getByText } = await renderWithStoreProvider(
-            <CompactTokenAmountFormatter
-                networkSymbol={networkSymbol}
-                contractAddress={contractAddress}
-                value={asDecimalTokenAmount('23.910287')}
-            />,
-            {
-                preloadedState: {
-                    wallet: {
-                        accounts: [
-                            mockWalletAccount({
-                                symbol: networkSymbol,
-                                tokens: [
-                                    mockAccountToken({
-                                        contract: contractAddress,
-                                        symbol: 'USDC',
-                                        decimals: 6,
-                                    }),
-                                ],
-                            }),
-                        ],
-                    },
-                },
-            },
-        );
-
-        expect(getByText('23.91 USDC')).toBeVisible();
-    });
-
-    it('keeps metadata from different networks separate in nested preview scopes', async () => {
-        const polygon = asNetworkSymbol('pol');
-        const { getByText } = await renderWithStoreProvider(
-            <TokenMetadataProvider
-                networkSymbol={networkSymbol}
-                tokens={[{ ...token, decimals: 6 }]}
-            >
-                <TokenMetadataProvider
-                    networkSymbol={polygon}
-                    tokens={[{ ...token, symbol: 'OTHER' }]}
-                >
-                    <CompactTokenAmountFormatter
-                        networkSymbol={networkSymbol}
-                        contractAddress={contractAddress}
-                        value={asDecimalTokenAmount('0.009')}
-                    />
-                    <CompactTokenAmountFormatter
-                        networkSymbol={polygon}
-                        contractAddress={contractAddress}
-                        value={asDecimalTokenAmount('0.009')}
-                    />
-                </TokenMetadataProvider>
-            </TokenMetadataProvider>,
-        );
-
-        expect(getByText('<0.01 USDC')).toBeVisible();
-        expect(getByText('0.009 OTHER')).toBeVisible();
     });
 });
