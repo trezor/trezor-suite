@@ -96,6 +96,23 @@ export const getPointsInRange = (allPoints: GraphPoint[], range: GraphPathRange)
         return portionFactorX <= 1 && portionFactorX >= 0;
     });
 
+type ExtremeIndexes = {
+    lowIndex: number;
+    highIndex: number;
+};
+
+const getExtremeIndexes = (points: GraphPoint[]): ExtremeIndexes => {
+    let lowIndex = 0;
+    let highIndex = 0;
+
+    points.forEach(({ value }, index) => {
+        if (value < points[lowIndex]!.value) lowIndex = index;
+        if (value > points[highIndex]!.value) highIndex = index;
+    });
+
+    return { lowIndex, highIndex };
+};
+
 type GraphPathWithGradient = { path: SkPath; gradientPath: SkPath };
 
 function createGraphPathBase(props: GraphPathConfigWithGradient): GraphPathWithGradient;
@@ -121,7 +138,7 @@ function createGraphPathBase({
         return pathBuilder.build();
     }
 
-    const points: SkPoint[] = [];
+    const sampledIndexes: number[] = [];
 
     const startX = getXInRange(drawingWidth, graphData[0].date, range.x) + horizontalPadding;
     const endX =
@@ -158,11 +175,30 @@ function createGraphPathBase({
             if (!isExactPointInsidePixelRatio) continue;
         }
 
-        const { value } = graphData[index]!;
-        const y = drawingHeight - getYInRange(drawingHeight, value, range.y) + verticalPadding;
-
-        points.push({ x: pixel, y });
+        sampledIndexes.push(index);
     }
+
+    // The sampling above skips most points of a long series, so it can miss a one-day spike. The y
+    // range spans the high and the low, so draw them anyway, or the line falls short of the range.
+    const { lowIndex, highIndex } = getExtremeIndexes(graphData);
+    const lastIndex = graphData.length - 1;
+    const drawnIndexes = [...new Set([...sampledIndexes, lowIndex, highIndex])].toSorted(
+        (indexA, indexB) => indexA - indexB,
+    );
+
+    const points: SkPoint[] = drawnIndexes.flatMap(index => {
+        const { date, value } = graphData[index]!;
+        const point = {
+            x: drawingWidth * getXPositionInRange(date, range.x) + horizontalPadding,
+            y: drawingHeight - getYInRange(drawingHeight, value, range.y) + verticalPadding,
+        };
+        const isExtreme = index === lowIndex || index === highIndex;
+        const isEndpoint = index === 0 || index === lastIndex;
+
+        // The B-spline below smooths each point toward its neighbors and would cut a spike short.
+        // Three copies of a point pin the curve to it; the first and last points are pinned already.
+        return isExtreme && !isEndpoint ? [point, point, point] : [point];
+    });
 
     for (let i = 0; i < points.length; i++) {
         const point = points[i]!;
