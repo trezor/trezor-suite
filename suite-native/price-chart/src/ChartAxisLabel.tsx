@@ -5,7 +5,7 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { AnimatedBox, Box } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, clamp } from '@trezor/utils';
 
 import { type GraphExtreme } from './getGraphExtremes';
 
@@ -23,17 +23,6 @@ const labelPositionStyle = prepareNativeStyle<LabelPositionStyleParams>(
     }),
 );
 
-type GetLabelLeftParams = {
-    relativeX: number;
-    rowWidth: number;
-    labelWidth: number;
-    edgeGap: number;
-};
-
-// The label starts where its point lies, but never runs past either edge of the graph.
-const getLabelLeft = ({ relativeX, rowWidth, labelWidth, edgeGap }: GetLabelLeftParams) =>
-    Math.max(edgeGap, Math.min(rowWidth * relativeX, rowWidth - labelWidth - edgeGap));
-
 type ChartAxisLabelProps = {
     extreme: GraphExtreme;
 };
@@ -45,7 +34,9 @@ export const ChartAxisLabel = ({ extreme: { value, relativeX } }: ChartAxisLabel
 
     const { applyStyle, utils } = useNativeStyles();
 
-    const left = getLabelLeft({ relativeX, rowWidth, labelWidth, edgeGap: utils.spacings.sp8 });
+    const edgeGap = utils.spacings.sp8;
+    // The label starts where its point lies, but never runs past either edge of the graph.
+    const left = clamp(rowWidth * relativeX, edgeGap, rowWidth - labelWidth - edgeGap);
     const isMeasured = rowWidth > 0 && labelWidth > 0;
 
     return (

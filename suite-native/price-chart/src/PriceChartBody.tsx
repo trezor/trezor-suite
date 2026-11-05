@@ -38,7 +38,7 @@ export const PriceChartBody = ({ points, isLoading, isError, isEmpty }: PriceCha
     }
 
     return (
-        <GraphExtremesProvider points={points} isHidden={isLoading}>
+        <GraphExtremesProvider points={points}>
             <LineGraph
                 animated
                 BottomAxisLabel={LowExtremeLabel}

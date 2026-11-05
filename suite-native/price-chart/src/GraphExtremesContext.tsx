@@ -8,7 +8,7 @@ export const GraphExtremesContext = createContext<GraphExtremes | undefined>(und
 
 type GraphExtremesProviderProps = {
     points: GraphPoint[];
-    isHidden: boolean;
+    isHidden?: boolean;
     children: ReactNode;
 };
 
@@ -18,7 +18,7 @@ type GraphExtremesProviderProps = {
  */
 export const GraphExtremesProvider = ({
     points,
-    isHidden,
+    isHidden = false,
     children,
 }: GraphExtremesProviderProps) => (
     <GraphExtremesContext value={isHidden ? undefined : getGraphExtremes(points)}>
