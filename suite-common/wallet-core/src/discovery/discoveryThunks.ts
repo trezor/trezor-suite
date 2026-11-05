@@ -758,38 +758,6 @@ export const runAdditionalDiscoveryThunk = createThunk<
             }),
         );
 
-        // NOTE: prepare the device to the corresponding state eg. insert the passphrase
-        const deviceStateResponse = await TrezorConnect.getDeviceState({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: { staticSessionId: device.state.staticSessionId },
-                useEmptyPassphrase: device.useEmptyPassphrase,
-            },
-        });
-
-        if (!deviceStateResponse.success) {
-            const { message, code } = deviceStateResponse.error;
-            dispatch(applyDeviceStateErrorThunk({ error: message, code, devicePath: device.path }));
-
-            return;
-        }
-
-        assertStaticSessionId(deviceStateResponse.payload.state);
-
-        if (device.useEmptyPassphrase) {
-            dispatch(
-                deviceActions.setDeviceState({
-                    device,
-                    state: deviceStateResponse.payload.state,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
-                }),
-            );
-        }
-
-        // NOTE: keep here the previous device as default to prevent TS from screaming
-        const updatedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId) ?? device;
-
         const accountsParam = selectDiscoveryAccountsParam(
             getState(),
             staticSessionId,
@@ -832,16 +800,14 @@ export const runAdditionalDiscoveryThunk = createThunk<
 
         // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
         const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
-        // NOTE: pass only staticSessionId (not the full updatedDevice) to avoid overwriting the freshly-derived
-        // sessionId in Connect's in-memory Device cache with the stale value stored in Redux state.
-        // Connect's setState merge logic preserves the up-to-date sessionId when only staticSessionId is provided.
-        // This mirrors the behaviour of runDiscoveryThunk and prevents repeated passphrase prompts.
+        // The whole state is passed so that Connect can resume the device session by its `sessionId`
+        // instead of asking for the passphrase again.
         const result = await TrezorConnect.discoverAccounts({
             device: {
-                path: updatedDevice.path,
-                instance: updatedDevice.instance,
-                state: { staticSessionId },
-                useEmptyPassphrase: updatedDevice.useEmptyPassphrase,
+                path: device.path,
+                instance: device.instance,
+                state: device.state,
+                useEmptyPassphrase: device.useEmptyPassphrase,
             },
             coins: accountsParam,
             entropyCheckResult,
@@ -850,27 +816,28 @@ export const runAdditionalDiscoveryThunk = createThunk<
         TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
         TrezorConnect.off(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
 
-        dispatch(
-            discoveryActions.updateDiscovery(
-                result.success
-                    ? { status: 'complete' }
-                    : {
-                          status: 'failed',
-                          error: result.error.message,
-                          errorCode: result.error.code,
-                      },
-                updatedDevice.path,
-            ),
-        );
-        dispatch(deviceActions.setDiscovered(staticSessionId, result.success));
-
-        if (result.success) {
-            dispatch(reportWalletBalanceThunk());
-
-            selectAccountsByDeviceState(getState(), staticSessionId).forEach(account =>
-                dispatch(reportAccountInfoThunk(account.key)),
+        if (!result.success) {
+            dispatch(
+                applyDeviceStateErrorThunk({
+                    error: result.error.message,
+                    code: result.error.code,
+                    devicePath: device.path,
+                }),
             );
+            // Also reached when the device state validation fails or is cancelled, before any account is touched.
+            dispatch(deviceActions.setDiscovered(staticSessionId, false));
+
+            return;
         }
+
+        dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
+        dispatch(deviceActions.setDiscovered(staticSessionId, true));
+
+        dispatch(reportWalletBalanceThunk());
+
+        selectAccountsByDeviceState(getState(), staticSessionId).forEach(account =>
+            dispatch(reportAccountInfoThunk(account.key)),
+        );
     },
 );
 

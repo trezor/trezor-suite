@@ -17,9 +17,12 @@ import { createMockDispatch, mockActionType, mockReducer } from '@trezor/redux-u
 
 import { discoveryActions } from './discoveryActions';
 import {
+    type RunAdditionalDiscoveryThunkDeps,
+    type RunAdditionalDiscoveryThunkState,
     type RunDiscoveryThunkDeps,
     type RunDiscoveryThunkState,
     applyDeviceStatesThunk,
+    runAdditionalDiscoveryThunk,
     runDiscoveryThunk,
 } from './discoveryThunks';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
@@ -34,7 +37,13 @@ jest.mock('@trezor/connect', () => {
     return {
         ...actual,
         __esModule: true,
-        default: { ...actual.default, getDeviceState: jest.fn() },
+        default: {
+            ...actual.default,
+            getDeviceState: jest.fn(),
+            discoverAccounts: jest.fn(),
+            on: jest.fn(),
+            off: jest.fn(),
+        },
     };
 });
 
@@ -230,5 +239,141 @@ describe('runDiscoveryThunk duplicates', () => {
             ),
         );
         expect(actions).not.toContainEqual(deviceActions.selectDevice(existingWallet));
+    });
+});
+
+describe('runAdditionalDiscoveryThunk', () => {
+    const staticSessionId: StaticSessionId = 'standard@device-id:1';
+    const standardWallet = mockSuiteDevice({
+        path: devicePath,
+        instance: 1,
+        connected: true,
+        state: { staticSessionId, sessionId: 'session-id' },
+        useEmptyPassphrase: true,
+        discovered: true,
+    });
+
+    const state: RunAdditionalDiscoveryThunkState = {
+        wallet: {
+            accounts: [],
+            blockchain: blockchainInitialState,
+            discovery: { [devicePath]: { status: 'starting', isAddingHiddenWallet: false } },
+            settings: initialWalletSettingsState,
+        },
+        device: {
+            devices: [standardWallet],
+            selectedDevice: standardWallet,
+            buttonRequestsByPath: {},
+        },
+        persistentDeviceData: persistentDeviceDataInitialState,
+        tokenDefinitions: tokenDefinitionsInitialState,
+        networks: mockNetworksState([asNetworkSymbol('btc')]),
+    };
+
+    const extra: RunAdditionalDiscoveryThunkDeps = {
+        services: {
+            analytics: mockAnalytics<AnalyticsSharedEvents>(),
+            getTradedAccountKeys: mockGetTradedAccountKeys(),
+            reportSecurityCheck: jest.fn(),
+        },
+    };
+
+    const runAdditionalDiscovery = async (
+        discoverAccountsResult: Awaited<ReturnType<typeof TrezorConnect.discoverAccounts>>,
+    ) => {
+        jest.mocked(TrezorConnect.discoverAccounts).mockResolvedValue(discoverAccountsResult);
+        const { actions, dispatch } = createMockDispatch({ getState: () => state, extra });
+
+        await dispatch(runAdditionalDiscoveryThunk(staticSessionId));
+
+        return actions;
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        // The wallet balance report is debounced for minutes.
+        jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    it('discovers the accounts of the authorized wallet without reading its device state first', async () => {
+        const actions = await runAdditionalDiscovery({
+            success: true,
+            payload: { empty: 0, nonempty: 1, failed: 0 },
+        });
+
+        expect(TrezorConnect.getDeviceState).not.toHaveBeenCalled();
+        expect(TrezorConnect.discoverAccounts).toHaveBeenCalledWith(
+            expect.objectContaining({
+                device: {
+                    path: devicePath,
+                    instance: 1,
+                    state: { staticSessionId, sessionId: 'session-id' },
+                    useEmptyPassphrase: true,
+                },
+            }),
+        );
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: deviceActions.setDeviceState.type }),
+        );
+        expect(actions).toContainEqual(
+            discoveryActions.updateDiscovery({ status: 'complete' }, devicePath),
+        );
+        expect(actions).toContainEqual(deviceActions.setDiscovered(staticSessionId, true));
+    });
+
+    it('marks the discovery as failed when the device state is not valid', async () => {
+        const actions = await runAdditionalDiscovery({
+            success: false,
+            error: { message: 'Passphrase is incorrect', code: 'Device_InvalidState' },
+        });
+
+        expect(actions).toContainEqual(
+            discoveryActions.updateDiscovery(
+                {
+                    status: 'failed',
+                    error: 'Passphrase is incorrect',
+                    errorCode: 'Device_InvalidState',
+                },
+                devicePath,
+            ),
+        );
+        expect(actions).toContainEqual(deviceActions.setDiscovered(staticSessionId, false));
+    });
+
+    it('keeps the discovery cancelled when it was cancelled by the user', async () => {
+        const actions = await runAdditionalDiscovery({
+            success: false,
+            error: { message: 'USER_UI_CANCEL', code: 'Method_Cancel' },
+        });
+
+        expect(actions).not.toContainEqual(
+            discoveryActions.updateDiscovery(
+                { status: 'failed', error: 'USER_UI_CANCEL', errorCode: 'Method_Cancel' },
+                devicePath,
+            ),
+        );
+    });
+
+    it('marks the discovery as cancelled when it was cancelled on the device', async () => {
+        const actions = await runAdditionalDiscovery({
+            success: false,
+            error: { message: 'Action cancelled by user', code: 'Failure_ActionCancelled' },
+        });
+
+        expect(actions).toContainEqual(
+            discoveryActions.updateDiscovery({ status: 'cancelled' }, devicePath),
+        );
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({
+                type: discoveryActions.updateDiscovery.type,
+                payload: expect.objectContaining({
+                    status: expect.objectContaining({ status: 'failed' }),
+                }),
+            }),
+        );
     });
 });
