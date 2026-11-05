@@ -9,6 +9,7 @@ import {
     gotoThunk,
     routerAppChanged,
     selectCanSwitchDevice,
+    selectRoute,
 } from '@suite/router';
 import { updateOnlineStatus } from '@suite/suite-lifecycle';
 import {
@@ -29,6 +30,7 @@ import {
     forgetDisconnectedDevicesThunk,
     handleDeviceDisconnectThunk,
     observeSelectedDeviceThunk,
+    selectAccounts,
     selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -119,13 +121,13 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
 
                 setTimeout(() => {
                     const hasModalContext = state.modal.context !== '@modal/context-none';
-                    const { route } = state.router;
+                    const route = selectRoute(state);
                     const isForegroundApp = !!route?.isForegroundApp;
                     const isModalActive = hasModalContext || isForegroundApp;
 
                     if (
                         !state.flags.hasSeenDisconnectTooltip &&
-                        state.wallet.accounts.length > 0 &&
+                        selectAccounts(state).length > 0 &&
                         !isModalActive
                     ) {
                         dispatch(
