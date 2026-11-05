@@ -6,7 +6,7 @@ import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
-import { NativeCoinAmountInputCard } from '../../components/earn/NativeCoinAmountInputCard';
+import { AssetAmountInputCard } from '../../components/earn/AssetAmountInputCard';
 import { WrappedNativeFeeReserveBanner } from '../../components/earn/WrappedNativeFeeReserveBanner';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
@@ -91,7 +91,7 @@ export const YieldDepositWrapScreen = () => {
                         ))}
 
                         <Box paddingHorizontal="sp16">
-                            <NativeCoinAmountInputCard
+                            <AssetAmountInputCard
                                 amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                                 balance={amountInput.balance}
                                 isDisabled={amountInput.isDisabled}

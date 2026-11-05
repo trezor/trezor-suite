@@ -5,7 +5,7 @@ import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
-import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
+import { AssetAmountInputCard } from '../../components/earn/AssetAmountInputCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFlowMetadataProvider } from '../../components/yield/YieldFlowMetadataProvider';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
@@ -100,7 +100,7 @@ export const YieldWithdrawUnwrapScreen = () => {
                         </Box>
 
                         <Box paddingHorizontal="sp16">
-                            <WrappedNativeTokenAmountInputCard
+                            <AssetAmountInputCard
                                 amountLabel={
                                     <Translation id="earn.unwrapNativeToken.amountToUnwrap" />
                                 }

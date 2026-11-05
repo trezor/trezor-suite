@@ -6,7 +6,12 @@ import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wa
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { type ActiveView, BaseAmountInputs, Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { useCryptoFiatConverters } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CompactTokenAmountFormatter,
+    asDecimalTokenAmount,
+    useCryptoFiatConverters,
+} from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -18,10 +23,9 @@ import { EarnMaxSwitch } from './EarnMaxSwitch';
 import { AMOUNT_INPUT_UNFOCUSED_OFFSET, AMOUNT_INPUT_WRAPPER_HEIGHT } from '../../constants';
 import { type YieldDepositFormValues } from '../../utils/yield/yieldDepositFormSchema';
 
-export type WrappedNativeAmountInputCardProps = {
+type AssetAmountInputCardProps = {
     amountLabel: ReactNode;
     balance: string;
-    balanceValue: ReactNode;
     defaultAmount?: string;
     isDisabled?: boolean;
     maxAmount?: string;
@@ -31,10 +35,9 @@ export type WrappedNativeAmountInputCardProps = {
     tokenContract?: TokenAddress;
 };
 
-export const WrappedNativeAmountInputCard = ({
+export const AssetAmountInputCard = ({
     amountLabel,
     balance,
-    balanceValue,
     defaultAmount,
     isDisabled = false,
     maxAmount,
@@ -42,7 +45,7 @@ export const WrappedNativeAmountInputCard = ({
     onMaxPress,
     symbol,
     tokenContract,
-}: WrappedNativeAmountInputCardProps) => {
+}: AssetAmountInputCardProps) => {
     const { setValue, trigger } = useFormContext<YieldDepositFormValues>();
     const [isMaxSelected, setIsMaxSelected] = useState(false);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -144,7 +147,22 @@ export const WrappedNativeAmountInputCard = ({
                     <Text variant="body-sm" color="contentSecondary">
                         <Translation id="earn.yieldDepositFlowScreen.balance" />
                     </Text>
-                    {balanceValue}
+                    {tokenContract ? (
+                        <CompactTokenAmountFormatter
+                            networkSymbol={symbol}
+                            contractAddress={tokenContract}
+                            value={asDecimalTokenAmount(balance)}
+                            variant="body-sm"
+                            color="contentSecondary"
+                        />
+                    ) : (
+                        <CompactCryptoAmountFormatter
+                            symbol={symbol}
+                            value={balance}
+                            variant="body-sm"
+                            color="contentSecondary"
+                        />
+                    )}
                 </HStack>
             </VStack>
         </Card>

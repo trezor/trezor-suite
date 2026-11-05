@@ -8,9 +8,8 @@ import { Screen } from '@suite-native/navigation';
 import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { EarnFeeSection } from './EarnFeeSection';
-import { NativeCoinAmountInputCard } from './NativeCoinAmountInputCard';
+import { AssetAmountInputCard } from './AssetAmountInputCard';
 import { WrappedNativeFeeReserveBanner } from './WrappedNativeFeeReserveBanner';
-import { WrappedNativeTokenAmountInputCard } from './WrappedNativeTokenAmountInputCard';
 import { useStandaloneWrappedNativeController } from '../../hooks/earn/useStandaloneWrappedNativeController';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
 import { YieldDisabledAlert } from '../yield/YieldDisabledAlert';
@@ -53,16 +52,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
 
     const messages = wrappedNativeFlowMessages[flowType].form;
 
-    const amountInputProps = {
-        amountLabel: <Translation id={messages.amountLabel} />,
-        balance: amountInput.balance,
-        isDisabled: amountInput.isDisabled,
-        maxAmount: amountInput.maxAmount,
-        onCurrencyChange: amountInput.onCurrencyChange,
-        onMaxPress: amountInput.onMaxPress,
-        symbol: account.symbol,
-    };
-
     const content = (
         <Screen
             header={
@@ -92,14 +81,16 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                     )}
 
                     <Form form={form.form}>
-                        {flowType === 'wrap' ? (
-                            <NativeCoinAmountInputCard {...amountInputProps} />
-                        ) : (
-                            <WrappedNativeTokenAmountInputCard
-                                {...amountInputProps}
-                                tokenContract={wrappedTokenContract}
-                            />
-                        )}
+                        <AssetAmountInputCard
+                            amountLabel={<Translation id={messages.amountLabel} />}
+                            balance={amountInput.balance}
+                            isDisabled={amountInput.isDisabled}
+                            maxAmount={amountInput.maxAmount}
+                            onCurrencyChange={amountInput.onCurrencyChange}
+                            onMaxPress={amountInput.onMaxPress}
+                            symbol={account.symbol}
+                            tokenContract={spentTokenContract}
+                        />
                     </Form>
 
                     <WrappedNativeFeeReserveBanner
