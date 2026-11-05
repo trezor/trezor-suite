@@ -24,7 +24,6 @@ import {
     PackageIcon,
     QuestionFilledIcon,
     SealCheckIcon,
-    StickerIcon,
     TrezorBodyIcon,
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -95,11 +94,6 @@ const getNoFirmwareConfirmationItems = (isBelowTablet: boolean) =>
                     }}
                 />
             ),
-        },
-        {
-            id: 'plastic-wrap',
-            icon: StickerIcon,
-            content: <Translation id="TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP" />,
         },
         {
             id: 'package',

@@ -8844,10 +8844,6 @@ export const messages = defineMessages({
         id: 'TR_ONBOARDING_SECURITY_CHECK_HOLOGRAM',
         defaultMessage: 'The <hologram>hologram</hologram> was intact before you removed it.',
     },
-    TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP: {
-        id: 'TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP',
-        defaultMessage: 'The clear plastic wrap around the box had the Trezor logo printed on it.',
-    },
     TR_ONBOARDING_SECURITY_CHECK_PACKAGE: {
         id: 'TR_ONBOARDING_SECURITY_CHECK_PACKAGE',
         defaultMessage:
