@@ -777,6 +777,11 @@ export const selectHiddenWalletAssetKeys = createMemoizedSelector(
         returnStableArrayIfEmpty(byReason.get(reason) ?? []),
 );
 
+export const selectHiddenWalletAssetCount = createMemoizedSelector(
+    [selectHiddenWalletAssetKeysByReason],
+    byReason => [...byReason.values()].reduce((count, assetKeys) => count + assetKeys.length, 0),
+);
+
 export const selectHasHiddenWalletAssets = createMemoizedSelector(
     [selectHiddenWalletAssetKeysByReason],
     byReason => byReason.size > 0,
