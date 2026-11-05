@@ -1,14 +1,4 @@
-import { ChartAxisLabel } from './ChartAxisLabel';
-import { useGraphExtremes } from './useGraphExtremes';
+import { ExtremeLabel } from './ExtremeLabel';
 
 /** A line graph's `BottomAxisLabel`: the low of the points given to `GraphExtremesProvider`. */
-export const LowExtremeLabel = () => {
-    const low = useGraphExtremes()?.low;
-
-    if (low === undefined) {
-        return null;
-    }
-
-    // A new key replays the fade-in whenever the low moves.
-    return <ChartAxisLabel key={`${low.value}-${low.relativeX}`} extreme={low} />;
-};
+export const LowExtremeLabel = () => <ExtremeLabel extremeName="low" />;
