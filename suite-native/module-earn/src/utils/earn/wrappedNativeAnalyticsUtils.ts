@@ -4,6 +4,9 @@ import { type EvmPendingTxStatus, type WrappedNativeFlowType } from '@suite-comm
 
 export type WrappedNativeFlowPayload = EventInstance<typeof events.yieldWrapEvent>['payload'];
 
+export const getWrappedNativeAnalyticsSource = (flowType: WrappedNativeFlowType) =>
+    flowType === 'wrap' ? 'wrap-form' : 'unwrap-form';
+
 export const buildWrappedNativeFlowEvent = (
     flowType: WrappedNativeFlowType,
     payload: WrappedNativeFlowPayload,

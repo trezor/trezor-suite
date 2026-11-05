@@ -28,6 +28,7 @@ import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
 import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from './useWrappedNativeTokenForm';
+import { getWrappedNativeAnalyticsSource } from '../../utils/earn/wrappedNativeAnalyticsUtils';
 import { useYieldCurrencyToggleAnalytics } from '../yield/useYieldCurrencyToggleAnalytics';
 import { useYieldDepositGasReserve } from '../yield/useYieldDepositGasReserve';
 
@@ -129,7 +130,7 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         type: events.yieldNavigateEvent.name,
         payload: {
             action: 'cancel',
-            from: isWrap ? 'wrap-form' : 'unwrap-form',
+            from: getWrappedNativeAnalyticsSource(flowType),
             to: 'account-detail',
             networkSymbol: account?.symbol,
         },
