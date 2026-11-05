@@ -14,7 +14,8 @@ import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { gotoThunk } from '@suite/router';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceModel, selectSelectedDevice } from '@suite-common/device';
+import { HAS_BRANDED_PLASTIC_WRAP_PACKAGING } from '@suite-common/device-authenticity';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { Column, H3, Icon, Note, Paragraph, Text, TextButton, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -79,7 +80,7 @@ const firmwareInstalledConfirmationItems = [
     },
 ] as const satisfies SecurityConfirmationItem[];
 
-const getNoFirmwareConfirmationItems = (isBelowTablet: boolean) =>
+const getNoFirmwareConfirmationItems = (isBelowTablet: boolean, hasBrandedPlasticWrap: boolean) =>
     [
         {
             id: 'shop',
@@ -96,11 +97,15 @@ const getNoFirmwareConfirmationItems = (isBelowTablet: boolean) =>
                 />
             ),
         },
-        {
-            id: 'plastic-wrap',
-            icon: StickerIcon,
-            content: <Translation id="TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP" />,
-        },
+        ...(hasBrandedPlasticWrap
+            ? [
+                  {
+                      id: 'plastic-wrap',
+                      icon: StickerIcon,
+                      content: <Translation id="TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP" />,
+                  } as const,
+              ]
+            : []),
         {
             id: 'package',
             icon: PackageIcon,
@@ -294,13 +299,17 @@ const UILayoutWithoutFirmware = ({
     dataTestId,
 }: CommonUILayoutProps) => {
     const { isBelowTablet } = useLayoutSize();
+    const deviceModel = useSelector(selectDeviceModel) ?? DeviceModelInternal.UNKNOWN;
 
     return (
         <BaseLayoutWithFlow
             heading={<Translation id="TR_ONBOARDING_SECURITY_CHECK" />}
             secondaryButtonLabel={<Translation id="TR_I_HAVE_DOUBTS" />}
             supportUrl={TREZOR_SUPPORT_IS_MY_DEVICE_SAFE}
-            confirmationItems={getNoFirmwareConfirmationItems(isBelowTablet)}
+            confirmationItems={getNoFirmwareConfirmationItems(
+                isBelowTablet,
+                HAS_BRANDED_PLASTIC_WRAP_PACKAGING[deviceModel],
+            )}
             confirmationTooltip={<Translation id="TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP" />}
             primaryButtonLabel={<Translation id="TR_SETUP_MY_TREZOR" />}
             onPrimaryButtonClick={onPrimaryButtonClick}
