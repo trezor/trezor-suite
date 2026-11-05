@@ -52,7 +52,7 @@ export const BaseTokenAmountFormatter = ({
             />
             {token?.symbol && (
                 <>
-                    {'\u00A0'}
+                    &nbsp;
                     <TokenSymbol
                         isInline
                         isTruncated={isSymbolTruncated}
