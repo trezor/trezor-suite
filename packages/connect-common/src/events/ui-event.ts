@@ -58,11 +58,6 @@ export const UI_EVENTS = {
     /** Passphrase is being entered on the device */
     PASSPHRASE_ON_DEVICE: 'ui-event_passphrase_on_device',
 
-    // --- Transaction ---
-
-    /** Account balance is insufficient for the transaction */
-    ACCOUNT_INSUFFICIENT_FUNDS: 'ui-event_account_insufficient_funds',
-
     // --- Generic ---
 
     /** Device is requesting a physical button press confirmation */
@@ -75,15 +70,10 @@ export const UI_EVENTS = {
     CLOSE_UI_WINDOW: 'ui-event_close_ui_window',
 } as const;
 
-export type UiEventWithoutPayload =
-    | {
-          type: typeof UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS;
-          payload?: never;
-      }
-    | {
-          type: typeof UI_EVENTS.CLOSE_UI_WINDOW;
-          payload?: never;
-      };
+export type UiEventWithoutPayload = {
+    type: typeof UI_EVENTS.CLOSE_UI_WINDOW;
+    payload?: never;
+};
 
 export type UiEventDeviceAction =
     | {
