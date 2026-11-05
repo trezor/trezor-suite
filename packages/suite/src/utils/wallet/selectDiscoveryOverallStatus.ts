@@ -5,7 +5,8 @@ import {
     isDiscoveryInProgress,
     selectAccountsByDeviceState,
     selectDeviceSupportedNetworks,
-    selectDiscoveryByDevicePath,
+    selectDiscoveryForSelectedDevice,
+    selectWalletSettings,
 } from '@suite-common/wallet-core';
 import { type Account, type DiscoveryStatus } from '@suite-common/wallet-types';
 
@@ -92,8 +93,8 @@ export const selectDiscoveryOverallStatus = (state: AppState) => {
     const device = selectSelectedDevice(state);
     const deviceSupportedNetworks = selectDeviceSupportedNetworks(state);
     const accounts = device?.state && selectAccountsByDeviceState(state, device.state);
-    const discovery = selectDiscoveryByDevicePath(state, device?.path);
-    const walletSettings = state.wallet.settings;
+    const discovery = selectDiscoveryForSelectedDevice(state);
+    const walletSettings = selectWalletSettings(state);
 
     return getDiscoveryStatus({
         device,

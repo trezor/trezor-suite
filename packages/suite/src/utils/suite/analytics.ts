@@ -7,6 +7,7 @@ import {
 import {
     type LegacyLabelingVisibleRootState,
     selectIsLegacyLabelingVisible,
+    selectSelectedProviderForLabels,
 } from '@suite/metadata';
 import { AccountTransactionBaseAnchor, EarnAnchor, isEarnYieldRowAnchor } from '@suite/router';
 import {
@@ -72,11 +73,7 @@ const resolveLabelingType = (
     state: GetSuiteReadyPayloadState,
 ): MetadataProviderType | 'missing-provider' | 'suite-sync' | 'off' => {
     if (selectIsLegacyLabelingVisible(state)) {
-        return (
-            state.metadata.providers.find(
-                p => p.clientId === state.metadata.selectedProvider.labels,
-            )?.type || 'missing-provider'
-        );
+        return selectSelectedProviderForLabels(state)?.type || 'missing-provider';
     }
 
     return state.suiteSync.settings.isSuiteSyncEnabled ? 'suite-sync' : 'off';

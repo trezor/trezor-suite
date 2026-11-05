@@ -8,7 +8,11 @@ import {
 } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '@suite/labeling';
-import { type MetadataRootState, metadataLabelingActions, selectMetadata } from '@suite/metadata';
+import {
+    type MetadataRootState,
+    metadataLabelingActions,
+    selectMetadataEnabled,
+} from '@suite/metadata';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
@@ -179,10 +183,10 @@ const applySendFormMetadataLabelsThunk = createThunk<
 >(
     `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
     ({ selectedAccount, precomposedTransaction, txid }, { dispatch, getState }) => {
-        const metadata = selectMetadata(getState());
+        const metadataEnabled = selectMetadataEnabled(getState());
         const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(getState());
 
-        if (!metadata.enabled && !isSuiteSyncEnabled) {
+        if (!metadataEnabled && !isSuiteSyncEnabled) {
             return;
         }
 

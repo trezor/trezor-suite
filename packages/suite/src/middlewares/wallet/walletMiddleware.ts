@@ -1,7 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { selectSelectedAccountKey } from '@suite/account';
+import { selectSelectedAccount, selectSelectedAccountKey } from '@suite/account';
 import { routerLocationChange, selectRouteName, selectRouter } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
@@ -90,7 +90,7 @@ const walletMiddleware =
 
         if (
             deviceActions.forgetDevice.match(action) &&
-            prevState.wallet.selectedAccount.account?.deviceState ===
+            selectSelectedAccount(prevState)?.deviceState ===
                 action.payload.device.state?.staticSessionId
         ) {
             // if currently selected account is related to forgotten device

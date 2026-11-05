@@ -206,7 +206,7 @@ export const selectTradeToBeOpened = (state: TradingRootState) => {
     const orderId = state.wallet.trading.tradeOrderIdToBeOpened;
     if (!orderId) return undefined;
 
-    return state.wallet.trading.trades.find(trade => trade.data.orderId === orderId);
+    return selectTradingTradeByOrderId(state, orderId);
 };
 
 export const selectTradingFormResetRequestedFor = (state: TradingRootState) =>
