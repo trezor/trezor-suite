@@ -2,11 +2,16 @@ import { useSelector } from 'react-redux';
 
 import {
     type AccountsRootState,
-    type AssetAccount,
+    getCoinBalance,
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
-import { type Account, toTokenSymbol } from '@suite-common/wallet-types';
-import { isAccountFailed } from '@suite-common/wallet-utils';
+import {
+    type Account,
+    type TokenAddress,
+    type TokenSymbol,
+    toTokenSymbol,
+} from '@suite-common/wallet-types';
+import { findToken, isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
@@ -24,13 +29,21 @@ import { AccountsListItemBase } from './AccountsListItemBase';
 
 type AssetAccountListItemProps = {
     account: Account;
-    assetAccount: AssetAccount;
+    contractAddress?: TokenAddress;
+    tokenSymbol?: TokenSymbol;
     onPress: OnSelectAccount;
 };
 
+/**
+ * One account's holding of a single asset, for screens where the asset is already chosen
+ * (asset detail, sending or receiving a token). Unlike `AccountsListItem`, which sums up the
+ * whole account, it shows only that asset: a coin together with its staked amount, and a token
+ * the account doesn't hold as 0.
+ */
 export const AssetAccountListItem = ({
     account,
-    assetAccount,
+    contractAddress,
+    tokenSymbol,
     onPress,
 }: AssetAccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
@@ -39,13 +52,13 @@ export const AssetAccountListItem = ({
     const hasAnyKnownTokens = useSelector((state: NativeAccountsRootState) =>
         selectAccountHasAnyKnownTokens(state, account.key),
     );
-    const { contractAddress, cryptoBalance, symbol, tokenInfo } = assetAccount;
-    const tokenSymbol = tokenInfo?.symbol ? toTokenSymbol(tokenInfo.symbol) : null;
+    const token = findToken(account.tokens, contractAddress);
+    const cryptoBalance = contractAddress ? (token?.balance ?? '0') : getCoinBalance(account);
     const isFailed = isAccountFailed(account);
 
     const fiatValue = contractAddress ? (
         <TokenToFiatAmountFormatter
-            symbol={symbol}
+            symbol={account.symbol}
             contract={contractAddress}
             value={cryptoBalance}
             numberOfLines={1}
@@ -54,7 +67,7 @@ export const AssetAccountListItem = ({
     ) : (
         <CryptoToFiatAmountFormatter
             value={cryptoBalance}
-            symbol={symbol}
+            symbol={account.symbol}
             isBalance
             numberOfLines={1}
             adjustsFontSizeToFit
@@ -64,15 +77,15 @@ export const AssetAccountListItem = ({
     const cryptoValue = contractAddress ? (
         <CompactTokenAmountFormatter
             value={asDecimalTokenAmount(cryptoBalance)}
-            tokenSymbol={tokenSymbol}
-            tokenDecimals={tokenInfo?.decimals}
+            tokenSymbol={tokenSymbol ?? (token?.symbol ? toTokenSymbol(token.symbol) : null)}
+            tokenDecimals={token?.decimals}
             numberOfLines={1}
             adjustsFontSizeToFit
         />
     ) : (
         <CompactCryptoAmountFormatter
             value={cryptoBalance}
-            symbol={symbol}
+            symbol={account.symbol}
             numberOfLines={1}
             adjustsFontSizeToFit
         />

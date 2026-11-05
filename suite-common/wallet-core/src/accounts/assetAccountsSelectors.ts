@@ -63,7 +63,7 @@ export type AssetAccount = {
     tokenInfo: TokenInfo | undefined;
 };
 
-const getCoinBalance = (account: Account) => {
+export const getCoinBalance = (account: Account) => {
     // Cardano stakes the balance itself, so adding its stake would count the coin twice.
     const stakingBalance =
         account.networkType === 'cardano' ? null : getAccountTotalStakingBalance(account);
