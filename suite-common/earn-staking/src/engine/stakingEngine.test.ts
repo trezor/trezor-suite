@@ -5,6 +5,7 @@ import { deviceInitialState } from '@suite-common/device';
 import {
     STAKING_SIGNING_ERROR_CODES,
     StakingAdapterError,
+    type StakingBroadcastResult,
     type StakingProductAdapter,
 } from '@suite-common/earn-staking-common';
 import {
@@ -585,6 +586,30 @@ describe('staking engine', () => {
 
         expect(getStep(store, 'freeze')).toMatchObject({ status: 'composed', error: null });
         expect(selectStakingReview(store.getState())).toBeNull();
+    });
+
+    it('keeps a step with a malformed broadcast result discardable', async () => {
+        const { store } = initStore({
+            adapter: {
+                broadcastStep: mock<StakingProductAdapter['broadcastStep']>(() =>
+                    Promise.resolve(undefined as unknown as StakingBroadcastResult),
+                ),
+            },
+        });
+
+        await planStake(store);
+        await compose(store);
+        await sign(store);
+
+        expect((await store.dispatch(broadcastStakingStepThunk({ sessionKey }))).payload).toBe(
+            'adapter-failed',
+        );
+        expect(getStep(store, 'freeze')?.status).toBe('signed');
+
+        await store.dispatch(discardStakingSessionThunk({ sessionKey })).unwrap();
+
+        expect(selectStakingSession(store.getState(), sessionKey)).toBeNull();
+        expect(await planStake(store)).toBe(sessionKey);
     });
 
     it('lets an awaiting session be discarded and planned again', async () => {

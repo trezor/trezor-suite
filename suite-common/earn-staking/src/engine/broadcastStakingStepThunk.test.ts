@@ -4,7 +4,11 @@ const attemptId = 'attempt-1';
 
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { deviceInitialState } from '@suite-common/device';
-import { StakingAdapterError, type StakingProductAdapter } from '@suite-common/earn-staking-common';
+import {
+    StakingAdapterError,
+    type StakingBroadcastResult,
+    type StakingProductAdapter,
+} from '@suite-common/earn-staking-common';
 import {
     mockComposedStakingStep,
     mockSignedStakingStep,
@@ -246,6 +250,28 @@ describe('broadcastStakingStepThunk', () => {
         expect(console.warn).toHaveBeenCalledWith(
             'Staking step stake broadcast failed: report-failed',
         );
+    });
+
+    it.each([
+        { name: 'no result', result: undefined },
+        { name: 'no txid', result: {} },
+        { name: 'an empty txid', result: { txid: '' } },
+    ])('keeps the signature when the adapter resolves with $name', async ({ result }) => {
+        const { store, actions } = initStore({
+            broadcastStep: mock(() => Promise.resolve(result as unknown as StakingBroadcastResult)),
+        });
+
+        expect((await broadcast(store)).payload).toBe('adapter-failed');
+        expect(getStep(store)).toMatchObject({
+            status: 'signed',
+            signed,
+            error: { kind: 'broadcast-failed', code: null },
+        });
+        expect(actions.filter(stakingActions.stepBroadcast.match)).toEqual([]);
+        expect(broadcastStatuses(actions)).toEqual([
+            expect.objectContaining({ account, flow: 'stake', status: 'error' }),
+        ]);
+        expect(trackStakingStepConfirmationThunk).not.toHaveBeenCalled();
     });
 
     it('rebroadcasts the same signature after a failed attempt', async () => {

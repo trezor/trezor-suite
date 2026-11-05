@@ -56,3 +56,9 @@ export const signedStakingStepSchema = z.strictObject({
 });
 
 export type SignedStakingStep = z.infer<typeof signedStakingStepSchema>;
+
+export const stakingBroadcastResultSchema = z.object({
+    txid: z.string().min(1),
+});
+
+export type StakingBroadcastResult = z.infer<typeof stakingBroadcastResultSchema>;
