@@ -1,4 +1,6 @@
+import { createHash } from 'crypto';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 
 import TrezorConnect, {
@@ -12,6 +14,10 @@ import TrezorConnect, {
     type UiRequestThpPairing,
     initLog,
 } from '@trezor/connect';
+import type { WardLabel } from '@trezor/ward';
+import { WardDb } from '@trezor/ward/src/storage/sqlite';
+import { Wardd } from '@trezor/wardd/src/service';
+import { MockWm } from '@trezor/wardd/src/wm';
 
 import { HELP, args } from './args';
 import { stdioManager } from './stdio';
@@ -64,7 +70,449 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
     }
 };
 
-const cliStatePath = path.join(__dirname, 'thp-state.dat');
+const DB_METHODS = new Set([
+    'dbinit',
+    'dblookup',
+    'dbdisplay',
+    'dbchange',
+    'dbdelete',
+    'dbsetroot',
+    'dblistroots',
+]);
+const DB_METHODS_REQUIRING_PARAMS = new Set([
+    'dbinit',
+    'dblookup',
+    'dbdisplay',
+    'dbchange',
+    'dbdelete',
+]);
+// Methods that must send a command to firmware (need a connected device even when --db-path is set)
+const DB_METHODS_NEEDING_DEVICE = new Set([
+    'dbinit',
+    'dblookup',
+    'dbdisplay',
+    'dbchange',
+    'dbdelete',
+    'dbsetroot',
+]);
+
+// wardd runs in-process over the sqlite store, with the debug WM (debug firmware only); Connect's
+// WARD methods only relay the device to it. When --db-path is explicit, the store is known upfront
+// and wardd is given at TrezorConnect.init(). When the path must be derived from the device's
+// pubkey (no --db-path), it isn't known until after a device round-trip -- runDbMethods() then
+// gives it post-init via TrezorConnect.updateConnectSettings().
+const warddFor = (db: WardDb) => new Wardd({ storage: db, wm: new MockWm() });
+const hasExplicitDbPath = typeof args['db-path'] === 'string';
+const explicitDb = hasExplicitDbPath ? new WardDb(args['db-path'] as string) : null;
+
+const getDbPath = (identifierHex: string) => {
+    if (typeof args['db-path'] === 'string') return args['db-path'];
+    const profileDir = path.join(os.homedir(), '.trezor');
+
+    return path.join(profileDir, `auth_database_${identifierHex}.db`);
+};
+
+const getMethods = (): string[] => {
+    const methods =
+        args.method && args.method !== 'none'
+            ? String(args.method)
+                  .split(',')
+                  .map((m: string) => m.trim())
+            : [args.method ?? 'none'];
+    if (args.dblistroots && !methods.includes('dblistroots')) methods.push('dblistroots');
+
+    return methods;
+};
+
+// Run DB methods, optionally with a device for authenticity verification.
+// Returns true if all requested methods were DB methods (caller can skip TrezorConnect init).
+const runDbMethods = async (device?: Device): Promise<boolean> => {
+    const methods = getMethods();
+    const dbMethods = methods.filter(m => DB_METHODS.has(m));
+    if (dbMethods.length === 0) return false;
+
+    const needsParams = dbMethods.some(m => DB_METHODS_REQUIRING_PARAMS.has(m));
+    let params: any = {};
+    if (needsParams) {
+        if (!args['db-params']) {
+            console.error(
+                'This DB method requires --db-params (note the double dash). Example:\n' +
+                    '  --db-params=\'{"address":"...","networkSymbol":"btc"}\'',
+            );
+            process.exit(1);
+        }
+        try {
+            params = JSON.parse(args['db-params']);
+        } catch (e) {
+            console.error('Invalid JSON in --db-params:', (e as Error).message);
+            console.error('Received:', args['db-params']);
+            process.exit(1);
+        }
+    }
+    const needsDevice = dbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
+    // The high-level Ward methods key everything by the device's SLIP21-derived
+    // wardId (the WM-facing anchor). It scopes the local provider AND the device
+    // echoes its own ward_id, which the methods reject on mismatch. It can't be
+    // derived host-side, so unless the caller pins it with --ward-id we fetch it
+    // from the device below, once the provider is set.
+    const wardIdExplicit = typeof args['ward-id'] === 'string';
+    let wardId = wardIdExplicit ? (args['ward-id'] as string) : 'default';
+
+    let identifierHex: string;
+    let db: WardDb;
+
+    if (explicitDb) {
+        if (needsDevice && !device) {
+            console.error('A connected device is required for this DB method.');
+            process.exit(1);
+        }
+        identifierHex = '(explicit-path)';
+        db = explicitDb;
+    } else {
+        if (!device) {
+            console.error('A connected device is required to derive the database path.');
+            process.exit(1);
+        }
+        // Derive identifier: SHA-256 of compressed public key at m/44'/0'/0'/0/0,
+        // matching the firmware's own identifier derivation.
+        const pubKeyResult = await TrezorConnect.getPublicKey({
+            device,
+            path: "m/44'/0'/0'/0/0",
+            coin: 'btc',
+        });
+        if (!pubKeyResult.success) {
+            console.error('Failed to get public key from device:', pubKeyResult);
+            process.exit(1);
+        }
+        identifierHex = createHash('sha256')
+            .update(Buffer.from(pubKeyResult.payload.publicKey, 'hex'))
+            .digest('hex');
+        console.log('Using database identifier:', identifierHex);
+        db = new WardDb(getDbPath(identifierHex));
+
+        // The store wasn't known at TrezorConnect.init() time — the path depends on the
+        // device's pubkey — so give wardd now, before the WARD methods below relay to it.
+        await TrezorConnect.updateConnectSettings({ wardd: warddFor(db) });
+    }
+
+    // Resolve wardId to the device's real SLIP21 ward_id. WARDListPendingEdits is
+    // input-free and always echoes ward_id regardless of tree state, so it's a safe
+    // throwaway probe. (WARDLookup can't be used for this: once the tree is non-empty
+    // it rejects a proofless query before echoing anything.) Without this, every
+    // high-level method rejects the device's echoed ward_id as a mismatch and the
+    // provider is keyed under the wrong id. Skipped when the caller pinned --ward-id,
+    // or when there's no device.
+    if (!wardIdExplicit && device) {
+        try {
+            const probe = await TrezorConnect.wardListPending({ device });
+            console.log('[wardId] wardListPending probe raw result:', JSON.stringify(probe));
+            if (probe.success && probe.payload.ward_id) {
+                wardId = probe.payload.ward_id;
+                console.log('Using device ward_id:', wardId);
+            } else {
+                // Loud, not silent: if we can't resolve the device's real ward_id here, the
+                // high-level methods will reject every call ('default' != device ward_id).
+                console.warn(
+                    '[wardId] could NOT resolve device ward_id; falling back to',
+                    JSON.stringify(wardId),
+                );
+            }
+        } catch (err) {
+            console.warn(
+                '[wardId] wardListPending probe THREW:',
+                err instanceof Error ? `${err.name}: ${err.message}` : String(err),
+            );
+        }
+    }
+
+    // Pin the wallet only once it is known: wardd refuses a device whose ward_id differs.
+    const pinned = wardId === 'default' ? {} : { wardId };
+
+    try {
+        for (const method of dbMethods) {
+            if (method === 'dbinit') {
+                // WARD sync round, run by wardd: the WM attests the head wardd stores and the
+                // device adopts it (WARDSync -> IngestAttestation -> Reconcile).
+                if (!device) {
+                    console.error('dbinit requires a connected device');
+                    process.exit(1);
+                }
+                const initResult = await TrezorConnect.wardInit({ device, ...pinned });
+                if (!initResult.success) {
+                    console.error('dbinit failed:', initResult);
+                    process.exit(1);
+                }
+                console.log(JSON.stringify({ method: 'dbinit', ...initResult.payload }, null, 2));
+            }
+
+            if (method === 'dblookup') {
+                const { address, networkSymbol } = params;
+                if (!address || !networkSymbol) {
+                    console.error(
+                        'dblookup requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ',
+                    );
+                    process.exit(1);
+                }
+
+                // Domain the entry lives in; defaults to the network symbol (each
+                // network its own domain) unless --db-params names an explicit appId.
+                const appId = params.appId ?? networkSymbol;
+                const result = await TrezorConnect.wardVerify({
+                    device: device!,
+                    appId,
+                    address,
+                    networkSymbol,
+                    ...pinned,
+                });
+                if (!result.success) {
+                    console.error('wardVerify failed:', result);
+                    process.exit(1);
+                }
+                console.log(
+                    JSON.stringify(
+                        {
+                            method: 'dblookup',
+                            address,
+                            networkSymbol,
+                            isMember: result.payload.isMember,
+                            counter: result.payload.counter,
+                        },
+                        null,
+                        2,
+                    ),
+                );
+                console.log('Authenticity verified:', result.payload.valid);
+            }
+
+            if (method === 'dbdisplay') {
+                const { address, networkSymbol } = params;
+                if (!address || !networkSymbol) {
+                    console.error(
+                        'dbdisplay requires --db-params=\'{"address":"...","networkSymbol":"..."}\' ',
+                    );
+                    process.exit(1);
+                }
+
+                // Unlike dblookup (a screenless verification query), dbdisplay drives the
+                // DisplayAddress flow so the device renders the verified label on-screen.
+                // Domain defaults to the network symbol (matching dbchange/dblookup) unless
+                // --db-params names an explicit appId.
+                const appId = params.appId ?? networkSymbol;
+                const result = await TrezorConnect.wardDisplayAddress({
+                    device: device!,
+                    appId,
+                    address,
+                    networkSymbol,
+                    ...pinned,
+                });
+                if (!result.success) {
+                    console.error('wardDisplayAddress failed:', result);
+                    process.exit(1);
+                }
+                console.log(
+                    JSON.stringify(
+                        {
+                            method: 'dbdisplay',
+                            address,
+                            networkSymbol,
+                            wardId: result.payload.wardId,
+                            shown: result.payload.shown,
+                        },
+                        null,
+                        2,
+                    ),
+                );
+            }
+
+            if (method === 'dbchange') {
+                const { address, networkSymbol, metadata: rawMetadata } = params;
+                // Explicit delete. `metadata:{}` is NOT a delete -- it updates the leaf to
+                // the literal value "<networkSymbol>:{}" and the entry survives as a
+                // tombstone. A delete needs no metadata.
+                const removing = params.delete === true;
+                if (!address || !networkSymbol || (!rawMetadata && !removing)) {
+                    console.error(
+                        'dbchange requires --db-params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\'\n' +
+                            '  or, to delete: --db-params=\'{"address":"...","networkSymbol":"...","delete":true}\'',
+                    );
+                    process.exit(1);
+                }
+                const metadata: WardLabel = {
+                    ...(rawMetadata?.label !== undefined && { label: String(rawMetadata.label) }),
+                    ...(rawMetadata?.data !== undefined && { data: rawMetadata.data }),
+                };
+
+                // Domain the entry is written to; defaults to the network symbol
+                // unless --db-params names an explicit appId.
+                const appId = params.appId ?? networkSymbol;
+                const result = await TrezorConnect.wardUpdate({
+                    device: device!,
+                    appId,
+                    address,
+                    networkSymbol,
+                    metadata,
+                    ...pinned,
+                    ...(removing && { delete: true }),
+                });
+                if (!result.success) {
+                    console.error('wardUpdate failed:', result);
+                    console.log('Authenticity verified: false — database not updated');
+                } else {
+                    console.log(
+                        JSON.stringify(
+                            {
+                                method: 'dbchange',
+                                address,
+                                networkSymbol,
+                                metadata,
+                                counter: result.payload.counter,
+                                root: result.payload.root,
+                            },
+                            null,
+                            2,
+                        ),
+                    );
+                    console.log('Authenticity verified: true');
+                }
+            }
+
+            if (method === 'dbdelete') {
+                // Dedicated FULL delete: the device shows its own "Delete WARD entry"
+                // screen (br_name "ward_delete"), removes the leaf from the trie, and the
+                // host drops the record. This is NOT `dbchange` with empty metadata --
+                // that serializes to "<networkSymbol>:{}" and would leave a tombstone.
+                const { address, networkSymbol } = params;
+                if (!address || !networkSymbol) {
+                    console.error(
+                        'dbdelete requires --db-params=\'{"address":"...","networkSymbol":"..."}\'',
+                    );
+                    process.exit(1);
+                }
+                const appId = params.appId ?? networkSymbol;
+                const result = await TrezorConnect.wardUpdate({
+                    device: device!,
+                    appId,
+                    address,
+                    networkSymbol,
+                    metadata: {},
+                    ...pinned,
+                    delete: true,
+                });
+                if (!result.success) {
+                    console.error('wardUpdate(delete) failed:', result);
+                    console.log('Authenticity verified: false — entry not deleted');
+                } else {
+                    // Prove the deletion: after a FULL delete the path must be provably
+                    // ABSENT, so re-verify on-device. A tombstone would come back
+                    // isMember:true; a broken delete would come back valid:false.
+                    const check = await TrezorConnect.wardVerify({
+                        device: device!,
+                        appId,
+                        address,
+                        networkSymbol,
+                        ...pinned,
+                    });
+                    const proven = check.success && check.payload.valid && !check.payload.isMember;
+                    console.log(
+                        JSON.stringify(
+                            {
+                                method: 'dbdelete',
+                                address,
+                                networkSymbol,
+                                counter: result.payload.counter,
+                                root: result.payload.root,
+                                nonMembershipProven: proven,
+                                ...(check.success && {
+                                    verify: {
+                                        valid: check.payload.valid,
+                                        isMember: check.payload.isMember,
+                                    },
+                                }),
+                            },
+                            null,
+                            2,
+                        ),
+                    );
+                    if (proven) {
+                        console.log('Authenticity verified: true — entry absent (proven)');
+                    } else {
+                        console.log(
+                            'Authenticity verified: false — delete committed but absence NOT proven',
+                        );
+                    }
+                }
+            }
+
+            if (method === 'dbsetroot') {
+                if (!device) {
+                    console.error('dbsetroot requires a connected device');
+                    process.exit(1);
+                }
+                const treeState = db.getTreeState(wardId);
+                if (!treeState?.root) {
+                    console.error(
+                        'dbsetroot: no root stored in local database — run dbchange first',
+                    );
+                    process.exit(1);
+                }
+                // wardSetRoot now maps to the DEBUG-ONLY WARDDebugSetRoot (unauthenticated
+                // single-call root injection; rejected on production firmware). It takes only
+                // the root — the device stamps a fresh counter/mac itself.
+                const setRootParams: Parameters<typeof TrezorConnect.wardSetRoot>[0] = {
+                    device,
+                    root: treeState.root,
+                };
+                const setRootResult = await TrezorConnect.wardSetRoot(setRootParams);
+                if (!setRootResult.success) {
+                    console.error('dbsetroot failed:', setRootResult);
+                    process.exit(1);
+                }
+                console.log(
+                    JSON.stringify(
+                        {
+                            method: 'dbsetroot',
+                            root: treeState.root,
+                            counter: setRootResult.payload.counter,
+                            walletId: setRootResult.payload.wallet_id,
+                            mac: treeState.mac,
+                        },
+                        null,
+                        2,
+                    ),
+                );
+            }
+
+            if (method === 'dblistroots') {
+                const treeState = db.getTreeState(wardId);
+                if (!treeState?.root) {
+                    console.log(
+                        JSON.stringify({ method: 'dblistroots', treeState: null }, null, 2),
+                    );
+                    console.log('No root stored — run dbchange first.');
+                } else {
+                    const dbPath = getDbPath(identifierHex);
+                    const setrootCmd = [
+                        `yarn workspace @trezor/connect-cli usb --method=dbsetroot`,
+                        `--db-path=${dbPath}`,
+                    ].join(' \\\n  ');
+                    console.log(JSON.stringify({ method: 'dblistroots', treeState }, null, 2));
+                    console.log('To sync this root to another device:');
+                    console.log(`  ${setrootCmd}`);
+                }
+            }
+        }
+    } finally {
+        // db.dispose() is idempotent, so this is safe even though connect may also dispose
+        // the same instance (via TrezorConnect.dispose() or a provider swap) — whichever
+        // fires first wins, the sqlite handle only ever closes once.
+        db.dispose();
+    }
+
+    // Return true only if every requested method was a DB method
+    return methods.every(m => DB_METHODS.has(m));
+};
+
+const cliStatePath = path.join(import.meta.dirname, 'thp-state.dat');
 const readCliState = (): { credentials: NonNullable<Device['thp']>['credentials'] } => {
     try {
         return JSON.parse(fs.readFileSync(cliStatePath, 'utf8'));
@@ -97,7 +545,7 @@ const getFeatures = (device: Device) =>
 const fwUpdate = (device: Device) =>
     TrezorConnect.firmwareUpdate({
         device,
-        baseUrl: path.resolve(__dirname, '../connect-data/files'),
+        baseUrl: path.resolve(import.meta.dirname, '../connect-data/files'),
     });
 
 const runTestCase = async (device: Device) => {
@@ -182,6 +630,17 @@ const run = async () => {
         return;
     }
 
+    // Skip device initialization entirely when --db-path is explicit and no requested
+    // method needs to contact firmware (e.g. --dblistroots --db-path=...).
+    const requestedDbMethods = getMethods().filter(m => DB_METHODS.has(m));
+    const dbNeedsDevice = requestedDbMethods.some(m => DB_METHODS_NEEDING_DEVICE.has(m));
+    const canSkipDevice = hasExplicitDbPath && !dbNeedsDevice;
+
+    const wantsDevice = args.autoconnect || args.credentials;
+    if ((!wantsDevice || canSkipDevice) && (await runDbMethods())) {
+        return;
+    }
+
     let testIsRunning = false;
 
     console.log('Running @trezor/connect CLI with args', args);
@@ -214,7 +673,10 @@ const run = async () => {
                 }
             } else {
                 testIsRunning = true;
-                runTestCase(device);
+                runDbMethods(device).then(dbOnly => {
+                    if (dbOnly) process.exit(0);
+                    else runTestCase(device);
+                });
             }
         }
 
@@ -327,7 +789,11 @@ const run = async () => {
             knownCredentials: getThpCredentials(),
             pairingMethods,
         },
+        ...(explicitDb && { wardd: warddFor(explicitDb) }),
     });
+
+    // Blockchain notification handler requires a seed-derived DB path; it is wired up
+    // inside the DEVICE_EVENT handler once the device is known.
 };
 
 run();

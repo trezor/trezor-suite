@@ -2,6 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../ward" },
+        { "path": "../wardd" },
         { "path": "../connect" },
         { "path": "../transport" },
         { "path": "../transport-bluetooth" },

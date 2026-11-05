@@ -28,7 +28,7 @@ export const HELP = `@trezor/connect CLI arguments:
     --cancel-passphrase-ui                    Respond with missing payload (tests error handling)
 
   Method (default: GetAddress)
-    --method=<name>                           Run TrezorConnect method
+    --method=<name>                           Run TrezorConnect method (comma-separated to run multiple)
                                                 --method=none (retrieve device Features and exit)
                                                 --method=fw-update
                                                 --method=get-credentials
@@ -38,8 +38,30 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=authenticate-device
                                                 --method=nostr-get-public-key
                                                 --method=nostr-sign-event
+                                                --method=dbinit      Initialize device WARD state from the stored root checkpoint (WM signs freshness)
+                                                --method=dblookup    Look up a Bitcoin address in the local SQLite DB
+                                                --method=dbchange    Upsert metadata for a Bitcoin address in the local SQLite DB
+                                                --method=dbdelete    FULL delete of an entry (device shows a dedicated delete screen), then proves absence
+                                                --method=dbsetroot   Send stored root + MAC from DB to device (for initial sync)
+                                                --method=dblistroots List stored Merkle root(s) from local DB; prints ready-to-run dbsetroot command
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
+
+  Database shorthand flags (without --method=)
+    --dblistroots                             List stored Merkle root(s) from local DB; prints ready-to-run dbsetroot command
+                                                Requires either --db-path (no device needed) or a connected device to derive the path
+
+  Database options
+    --db-path=<path>                          Path to the SQLite DB file (default: ~/.trezor/auth_database_<identifier>.db)
+    --ward-id=<id>                            Ward (SLIP21 WM anchor) whose root checkpoint to read/write in tree_state (default: resolved from device)
+                                                Lets one shared DB track a separate checkpoint per wallet.
+    --db-params=<json>                        Params for database commands (JSON object)
+                                                --db-params='{"counter":<n>,"mac":"<hex>","root":"<hex>"}' (dbinit)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dbdelete)
+                                                  NOTE dbchange with metadata:{} is an UPDATE to the value "<networkSymbol>:{}",
+                                                  NOT a delete. Use dbdelete (or dbchange with "delete":true) to remove an entry.
 `;
 
 // read and parse application arguments
@@ -64,7 +86,7 @@ const parseArgv = () => {
                 // @ts-expect-error: indexing with noUncheckedIndexedAccess
                 const k: string = preKey;
                 const v = rest.join('=');
-                add(k, k === 'params' ? v : v.toLowerCase());
+                add(k, k === 'params' || k === 'db-params' ? v : v.toLowerCase());
             } else if (add(key, argv[i + 1])) i++;
         } else if (arg.startsWith('-') && arg.length === 2) {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
