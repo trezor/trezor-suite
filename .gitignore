@@ -48,9 +48,9 @@ test-results
 playwright-report
 packages/e2e-utils/src/llmTestFixer/reports/
 packages/e2e-utils/src/llmExploratoryTester/reports/
-suite-native/app/.metadata/
-suite-native/app/artifacts/
-suite-native/app/crash-reports/
+suite-native-app/app/.metadata/
+suite-native-app/app/artifacts/
+suite-native-app/app/crash-reports/
 
 # build outputs
 lib
@@ -99,11 +99,11 @@ local.properties
 # scan temporary files
 **/android/fastlane/test_output
 
-!**/suite-native/app/.env.debug
-!**/suite-native/app/.env.develop
-!**/suite-native/app/.env.preview
-!**/suite-native/app/.env.production
-!**/suite-native/app/.env.staging
+!**/suite-native-app/app/.env.debug
+!**/suite-native-app/app/.env.develop
+!**/suite-native-app/app/.env.preview
+!**/suite-native-app/app/.env.production
+!**/suite-native-app/app/.env.staging
 
 .env.local
 

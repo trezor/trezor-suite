@@ -20,7 +20,7 @@ To run the tests locally, you need to have the following installed:
 
 With the debug config, the app is running in Expo dev-client and the JavaScript bundle is served from the local Metro server. This configuration is suitable for development and testing purposes because the Metro hot reloads make it easy to debug the test scenarios. To run the tests in debug mode, follow these steps:
 
-1. Navigate to the `suite-native/app` folder
+1. Navigate to the `suite-native-app/app` folder
 2. Generate Expo native code with `NODE_ENV=test yarn prebuild` to load `.env.test`.
 3. Create a debug build:
     - (**Android**) `yarn build:e2e android.emu.debug`
@@ -38,7 +38,7 @@ The `EXPO_PUBLIC_IS_DETOX_BUILD=true` flag in `.env.test` configures Expo's deve
 
 To test the app in the release mode, you need to build the app with the release configuration. The JavaScript bundle is bundled within the app and the app is running in the standalone mode. To run the tests in the release mode, follow these steps:
 
-1. Navigate to the `suite-native/app` folder
+1. Navigate to the `suite-native-app/app` folder
 2. Generate Expo native code with `NODE_ENV=test yarn prebuild` to load `.env.test`.
 3. Create a release build:
     - (**Android**) `yarn build:e2e android.emu.release`
@@ -71,7 +71,7 @@ Some tests use Trezor-user-env to simulate the Trezor device. To make these test
 
 To run trading tests, you need to have passphrase wallet on `mnemonic_academic` with some ETH for fees and at least 10 USDC on Ethereum.
 
-Specify passphrase in the `suite-native/app/e2e/.env` as `TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE` env variable.
+Specify passphrase in the `suite-native-app/app/e2e/.env` as `TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE` env variable.
 
 ### Device model and FW version
 
@@ -107,7 +107,7 @@ then you can access the arguments in the app using `launchArguments` constant fr
 
 ### Adding a New Argument
 
-- Update type definitions in the [@suite-native/config/src/launch-arguments](../../config/src/launch-arguments.ts) to secure type safety.
+- Update type definitions in the [@suite-native/config/src/launch-arguments](../../../suite-native/config/src/launch-arguments.ts) to secure type safety.
 
 ```
 

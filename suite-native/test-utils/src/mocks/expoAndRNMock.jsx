@@ -82,9 +82,9 @@ jest.mock('expo-constants', () => {
                         userInterfaceStyle: 'automatic',
                         _internal: {
                             packageJsonPath:
-                                '/Users/danielsuchy/javascript/trezor-suite/suite-native/app/package.json',
+                                '/Users/danielsuchy/javascript/trezor-suite/suite-native-app/app/package.json',
                             projectRoot:
-                                '/Users/danielsuchy/javascript/trezor-suite/suite-native/app',
+                                '/Users/danielsuchy/javascript/trezor-suite/suite-native-app/app',
                             staticConfigPath: {},
                             pluginHistory: {
                                 detox: {
@@ -106,7 +106,7 @@ jest.mock('expo-constants', () => {
                             },
                             isDebug: false,
                             dynamicConfigPath:
-                                '/Users/danielsuchy/javascript/trezor-suite/suite-native/app/app.config.ts',
+                                '/Users/danielsuchy/javascript/trezor-suite/suite-native-app/app/app.config.ts',
                         },
                         owner: 'trezorcompany',
                         ios: {
@@ -223,7 +223,7 @@ jest.mock('expo-constants', () => {
                     expoGo: {
                         developer: {
                             projectRoot:
-                                '/Users/danielsuchy/javascript/trezor-suite/suite-native/app',
+                                '/Users/danielsuchy/javascript/trezor-suite/suite-native-app/app',
                             tool: 'expo-cli',
                         },
                         __flipperHack: 'React Native packager is running',
@@ -247,8 +247,8 @@ jest.mock('expo-constants', () => {
                 userInterfaceStyle: 'automatic',
                 _internal: {
                     packageJsonPath:
-                        '/Users/danielsuchy/javascript/trezor-suite/suite-native/app/package.json',
-                    projectRoot: '/Users/danielsuchy/javascript/trezor-suite/suite-native/app',
+                        '/Users/danielsuchy/javascript/trezor-suite/suite-native-app/app/package.json',
+                    projectRoot: '/Users/danielsuchy/javascript/trezor-suite/suite-native-app/app',
                     staticConfigPath: {},
                     pluginHistory: {
                         detox: {
@@ -270,7 +270,7 @@ jest.mock('expo-constants', () => {
                     },
                     isDebug: false,
                     dynamicConfigPath:
-                        '/Users/danielsuchy/javascript/trezor-suite/suite-native/app/app.config.ts',
+                        '/Users/danielsuchy/javascript/trezor-suite/suite-native-app/app/app.config.ts',
                 },
                 owner: 'trezorcompany',
                 ios: {
@@ -386,7 +386,7 @@ jest.mock('expo-constants', () => {
             },
             expoGoConfig: {
                 developer: {
-                    projectRoot: '/Users/danielsuchy/javascript/trezor-suite/suite-native/app',
+                    projectRoot: '/Users/danielsuchy/javascript/trezor-suite/suite-native-app/app',
                     tool: 'expo-cli',
                 },
                 __flipperHack: 'React Native packager is running',

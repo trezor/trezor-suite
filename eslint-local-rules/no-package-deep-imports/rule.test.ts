@@ -17,6 +17,7 @@ ruleTester.run('no-package-deep-imports', noPackageDeepImportsRule, {
         // Top-level package imports are allowed
         { code: "import { foo } from '@suite-common/wallet-utils';" },
         { code: "import { foo } from '@suite-native/intl';" },
+        { code: "import { foo } from '@suite-native-app/app';" },
         { code: "import { foo } from '@trezor/utils';" },
         { code: "import { foo } from '@suite/components';" },
         // Mocks entry point is allowed
@@ -69,6 +70,18 @@ ruleTester.run('no-package-deep-imports', noPackageDeepImportsRule, {
                     data: {
                         sourcePath: '@suite-app/web-app/src/createWebApp',
                         packageImportPath: '@suite-app/web-app',
+                    },
+                },
+            ],
+        },
+        {
+            code: "import { foo } from '@suite-native-app/app/src/App';",
+            errors: [
+                {
+                    messageId: 'doNotImportPackageDeepPath',
+                    data: {
+                        sourcePath: '@suite-native-app/app/src/App',
+                        packageImportPath: '@suite-native-app/app',
                     },
                 },
             ],

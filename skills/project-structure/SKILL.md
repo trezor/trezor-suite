@@ -12,7 +12,8 @@ description: Overview of the Trezor Suite monorepo structure and key directories
     - `web-app` - Web application root
     - `desktop-app`, `desktop-app-main`, `desktop-app-renderer` - Desktop application (packaging, Electron main process, renderer)
     - `storybook` - Shared web/desktop component catalogue host
-- `suite-native` - Place where Mobile only code is located.
+- `suite-native` - Mobile features and reusable building blocks.
+- `suite-native-app` - Mobile application assembly and entry point.
 - `suite-common` - Shared code, that is domain specific, but can be used in all domain (Web/Desktop, Mobile).
 - `packages`
     - The domain agnostic packages: libraries, tools, utils, etc.

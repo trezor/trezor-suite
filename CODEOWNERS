@@ -93,7 +93,7 @@
 /packages/trezor-user-env-link @Vere-Grey
 /suite/e2e @Vere-Grey
 /suite-common/e2e-evolu-client @Vere-Grey
-/suite-native/app/e2e @Vere-Grey
+/suite-native-app/app/e2e @Vere-Grey
 
 # Analytics
 /packages/analytics-docs @jvaclavik

@@ -174,7 +174,7 @@ const configWithStorybook = mergeConfig(
     jsonExpoConfig,
     withStorybook(config, {
         enabled: process.env.EXPO_PUBLIC_ENVIRONMENT !== 'production',
-        configPath: './../storybook/.rnstorybook',
+        configPath: '../../suite-native/storybook/.rnstorybook',
     }),
 );
 

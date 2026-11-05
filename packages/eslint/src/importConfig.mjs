@@ -119,6 +119,7 @@ export const importConfig = [
                         },
                         { pattern: '@trezor/**', group: 'internal' }, // Translates to /packages/** */
                         { pattern: '@suite-native/**', group: 'internal' },
+                        { pattern: '@suite-native-app/**', group: 'internal' },
                         { pattern: '@suite-common/**', group: 'internal' },
                         { pattern: '@suite/**', group: 'internal' },
                         { pattern: '@suite-app/**', group: 'internal' },

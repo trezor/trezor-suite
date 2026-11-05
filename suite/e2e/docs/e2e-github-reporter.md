@@ -150,8 +150,8 @@ The reporter can be run from a local environment for troubleshooting and develop
 
 Suite-native:
 
-- `PUBLISH_RESULTS_TO_GITHUB=true yarn workspace @suite-native/app test:e2e android.emu.debug`
-- `yarn workspace @suite-native/app github:report:manual`
+- `PUBLISH_RESULTS_TO_GITHUB=true yarn workspace @suite-native-app/app test:e2e android.emu.debug`
+- `yarn workspace @suite-native-app/app github:report:manual`
 
 ## Implementation Notes
 

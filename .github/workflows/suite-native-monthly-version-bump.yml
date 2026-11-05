@@ -26,7 +26,7 @@ jobs:
           echo NEW_VERSION="$YEAR.$MONTH.1" >>  $GITHUB_ENV
 
       - name: Update Version of package.json
-        run: jq --indent 4 --arg version "$NEW_VERSION" '.suiteNativeVersion = $version' suite-native/app/package.json > temp.json && mv temp.json suite-native/app/package.json
+        run: jq --indent 4 --arg version "$NEW_VERSION" '.suiteNativeVersion = $version' suite-native-app/app/package.json > temp.json && mv temp.json suite-native-app/app/package.json
 
       - name: Generate GitHub App token
         id: trezor-bot-token

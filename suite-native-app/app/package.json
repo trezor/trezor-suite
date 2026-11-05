@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/app",
+    "name": "@suite-native-app/app",
     "version": "1.0.0",
     "suiteNativeVersion": "26.11.1",
     "main": "index.js",

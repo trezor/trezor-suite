@@ -50,7 +50,7 @@ jobs:
           config-file: .github/pmg-config.yml
       - name: Install libs
         run: |
-          yarn workspaces focus @suite-native/app
+          yarn workspaces focus @suite-native-app/app
       - name: Build on EAS iOS
         run: eas build
           --platform ios
@@ -58,7 +58,7 @@ jobs:
           --non-interactive
           --auto-submit
           --message ${{ github.sha }}
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
       - name: Build on EAS iOS simulator
         # Archive of production builds installable to iOS Simulator
         run: eas build
@@ -67,7 +67,7 @@ jobs:
           --non-interactive
           --no-wait
           --message ${{ github.sha }}
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
   android:
     if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'iOS & Android' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
     name: Build and submit Android
@@ -96,7 +96,7 @@ jobs:
           config-file: .github/pmg-config.yml
       - name: Install libs
         run: |
-          yarn workspaces focus @suite-native/app
+          yarn workspaces focus @suite-native-app/app
       - name: Build on EAS Android
         run: eas build
           --platform android
@@ -104,7 +104,7 @@ jobs:
           --non-interactive
           --auto-submit
           --message ${{ github.sha }}
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
   androidAPK:
     if: ${{ github.event.inputs.PLATFORM == 'Android APK' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
     name: Build standalone Android APK and release to S3
@@ -139,16 +139,16 @@ jobs:
           config-file: .github/pmg-config.yml
       - name: Install libs
         run: |
-          yarn workspaces focus @suite-native/app
+          yarn workspaces focus @suite-native-app/app
 
       - name: Get Suite version
         id: get_version
         run: |
-          APP_VERSION=$(jq -r '.suiteNativeVersion' suite-native/app/package.json)
+          APP_VERSION=$(jq -r '.suiteNativeVersion' suite-native-app/app/package.json)
           echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: Build on EAS Android
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
         id: eas_build
         run: |
           BUILD_ID=$(eas build --platform android --profile productionAPK --non-interactive --message ${{ github.sha }} --wait --json | jq -r '.[0].id')

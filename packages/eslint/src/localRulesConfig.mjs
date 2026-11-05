@@ -66,6 +66,7 @@ export const localRulesConfig = [
             allRoots.suiteApp,
             allRoots.suiteCli,
             allRoots.suiteNative,
+            allRoots.suiteNativeApp,
             allRoots.suiteCommon,
         ].map(root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`),
         rules: {
@@ -74,6 +75,7 @@ export const localRulesConfig = [
                 {
                     packageScopes: [
                         '@suite-native',
+                        '@suite-native-app',
                         '@suite',
                         '@suite-app',
                         '@suite-cli',
@@ -88,7 +90,7 @@ export const localRulesConfig = [
                         // Packages expose reusable test mocks (`/mocks`) and platform-specific React
                         // bindings (`/react` for web and desktop, `/react-native` for native) through
                         // dedicated public entry points.
-                        /^@(?:suite-native|suite|suite-app|suite-cli|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
+                        /^@(?:suite-native|suite-native-app|suite|suite-app|suite-cli|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
                         // Node CLI services have a dedicated public entry point.
                         /^@suite-common\/icons\/scripts$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.

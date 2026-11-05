@@ -57,7 +57,7 @@ Provides logic shared between trading and send flow.
 ```mermaid
 graph TD
     subgraph non-trading-modules["External modules"]
-        app["@suite-native/app"]
+        app["@suite-native-app/app"]
         module-onboarding["@suite-native/module-onboarding"]
         module-settings["@suite-native/module-settings"]
         state["@suite-native/state"]

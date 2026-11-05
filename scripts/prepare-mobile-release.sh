@@ -6,7 +6,7 @@
 # For security reasons, the script can only run locally as we do not have a shared GitHub token with the necessary permissions.
 
 MAIN_BRANCH=develop
-PACKAGE_JSON_PATH=suite-native/app/package.json
+PACKAGE_JSON_PATH=suite-native-app/app/package.json
 ORIGIN='origin'
 
 if ! git diff --cached --quiet; then

@@ -1,0 +1,212 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
+            "path": "../../suite-common/firmware-authenticity"
+        },
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/react-query"
+        },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/app-init" },
+        {
+            "path": "../../suite-native/apps-embedding-demo"
+        },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/biometrics"
+        },
+        {
+            "path": "../../suite-native/blockchain"
+        },
+        {
+            "path": "../../suite-native/bluetooth"
+        },
+        { "path": "../../suite-native/config" },
+        {
+            "path": "../../suite-native/connection-status"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-authorization"
+        },
+        {
+            "path": "../../suite-native/device-bootloader-mode"
+        },
+        {
+            "path": "../../suite-native/feature-flags"
+        },
+        {
+            "path": "../../suite-native/formatters-config"
+        },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        {
+            "path": "../../suite-native/message-system"
+        },
+        {
+            "path": "../../suite-native/module-account-detail"
+        },
+        {
+            "path": "../../suite-native/module-accounts"
+        },
+        {
+            "path": "../../suite-native/module-accounts-import"
+        },
+        {
+            "path": "../../suite-native/module-activity-center"
+        },
+        {
+            "path": "../../suite-native/module-add-accounts"
+        },
+        {
+            "path": "../../suite-native/module-assets"
+        },
+        {
+            "path": "../../suite-native/module-authenticity-checks"
+        },
+        {
+            "path": "../../suite-native/module-authorize-device"
+        },
+        {
+            "path": "../../suite-native/module-connect-popup"
+        },
+        {
+            "path": "../../suite-native/module-demo-account-questionnaire"
+        },
+        {
+            "path": "../../suite-native/module-dev-utils"
+        },
+        {
+            "path": "../../suite-native/module-device-onboarding"
+        },
+        {
+            "path": "../../suite-native/module-device-settings"
+        },
+        {
+            "path": "../../suite-native/module-earn"
+        },
+        {
+            "path": "../../suite-native/module-home"
+        },
+        {
+            "path": "../../suite-native/module-onboarding"
+        },
+        {
+            "path": "../../suite-native/module-passphrase"
+        },
+        {
+            "path": "../../suite-native/module-receive"
+        },
+        {
+            "path": "../../suite-native/module-send"
+        },
+        {
+            "path": "../../suite-native/module-settings"
+        },
+        {
+            "path": "../../suite-native/module-sign-verify"
+        },
+        {
+            "path": "../../suite-native/module-stellar-token-management"
+        },
+        {
+            "path": "../../suite-native/module-trading"
+        },
+        {
+            "path": "../../suite-native/module-transactions"
+        },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        { "path": "../../suite-native/sentry" },
+        { "path": "../../suite-native/services" },
+        { "path": "../../suite-native/settings" },
+        { "path": "../../suite-native/state" },
+        { "path": "../../suite-native/storage" },
+        { "path": "../../suite-native/theme" },
+        { "path": "../../suite-native/toasts" },
+        {
+            "path": "../../suite-native/trading-consts"
+        },
+        {
+            "path": "../../suite-native/trading-residence"
+        },
+        {
+            "path": "../../suite-native/trading-state"
+        },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../packages/bundler-security"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/e2e-utils" },
+        {
+            "path": "../../packages/react-native-usb"
+        },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/theme" },
+        {
+            "path": "../../packages/trezor-user-env-link"
+        },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/e2e-evolu-client"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-native/performance-metrics"
+        },
+        {
+            "path": "../../suite-native/storybook"
+        },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        { "path": "../../packages/connect-core" },
+        {
+            "path": "../../packages/connect-mobile"
+        },
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/perf-e2e" }
+    ],
+    "include": [".", "**/*.json"]
+}

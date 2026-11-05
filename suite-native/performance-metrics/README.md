@@ -87,7 +87,7 @@ Nothing here runs, and nothing here ships, outside a Detox test build.
   (`ScreenPerformanceRoot.e2e.tsx`, `screenReadiness.e2e.ts`); only the former imports
   `useScreenPerformance`, the one module that uses `react-native-lighthouse`. Metro only prefers those files
   when `RN_SRC_EXT=e2e.ts,e2e.tsx` is set, which happens exclusively in the E2E app builds
-  (`suite-native/app/.env.test`, `template-suite-native-prepare-test-app-android.yml`,
+  (`suite-native-app/app/.env.test`, `template-suite-native-prepare-test-app-android.yml`,
   `test-suite-native-e2e-ios.yml`). Every other build resolves the plain files, which mention
   neither `react-native-lighthouse` nor any readiness selector, so none of that enters Metro's
   dependency graph. The plain `ScreenPerformanceRoot` renders its children untouched, so the
@@ -112,4 +112,4 @@ never re-render because of this package.
   the first input whether or not TTI was marked, so such a sample carries `ttiMs: null`.
 
 How the samples are collected into a report, the per-screen budgets and the variance sources are
-documented in `suite-native/app/e2e/README.md` and `docs/tests/`.
+documented in `suite-native-app/app/e2e/README.md` and `docs/tests/`.

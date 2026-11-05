@@ -6,6 +6,7 @@ on:
       - develop
     paths-ignore:
       - "suite-native/**"
+      - "suite-native-app/**"
       - "docs/**"
       - "docker/**"
       - "ci/**"

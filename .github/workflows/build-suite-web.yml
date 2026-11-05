@@ -12,6 +12,7 @@ on:
       - develop
     paths-ignore:
       - "suite-native/**"
+      - "suite-native-app/**"
       - "packages/connect*/**"
       - "packages/react-native-usb/**"
       # ignore unrelated github workflows config files
@@ -28,6 +29,7 @@ on:
       - "release-message-system-*"
     paths-ignore:
       - "suite-native/**"
+      - "suite-native-app/**"
       - "packages/connect*/**"
       - "packages/react-native-usb/**"
       - ".github/workflows/connect*"

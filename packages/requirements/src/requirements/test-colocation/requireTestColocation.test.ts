@@ -73,7 +73,7 @@ describe('isTestColocationViolation', () => {
         'packages/transport-test/e2e/tests/example.test.ts',
         'packages/trezor-user-env-link/e2e/tests/example.test.ts',
         'packages/urls/tests/e2e/example.test.ts',
-        'suite-native/app/e2e/tests/example.test.ts',
+        'suite-native-app/app/e2e/tests/example.test.ts',
         'suite/e2e/tests/example.spec.ts',
     ])('allows a test in an explicitly exempt E2E path: %s', path => {
         expect(isTestColocationViolation(path)).toBe(false);
@@ -83,7 +83,7 @@ describe('isTestColocationViolation', () => {
         'packages/example/e2e/tests/example.test.ts',
         'packages/connect-core/e2e-other/tests/example.test.ts',
         'packages/example/playwright/tests/example.test.ts',
-        'suite-native/app/detox/tests/example.test.ts',
+        'suite-native-app/app/detox/tests/example.test.ts',
     ])('does not exempt an unlisted path: %s', path => {
         expect(isTestColocationViolation(path)).toBe(true);
     });

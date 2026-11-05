@@ -85,6 +85,7 @@ export const noPackageDeepImportsRule: Rule.RuleModule = {
     create(context) {
         const packageScopes = context.options[0]?.packageScopes ?? [
             '@suite-native',
+            '@suite-native-app',
             '@suite',
             '@suite-app',
             '@suite-common',

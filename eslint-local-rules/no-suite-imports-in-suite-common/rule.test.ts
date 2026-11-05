@@ -54,5 +54,15 @@ ruleTester.run('no-suite-imports-in-suite-common', noSuiteImportsInSuiteCommonRu
                 },
             ],
         },
+        {
+            code: "import { app } from '@suite-native-app/app';",
+            filename: '/repo/suite-common/example/src/file.ts',
+            errors: [
+                {
+                    messageId: 'doNotImportSuiteIntoSuiteCommon',
+                    data: { sourcePath: '@suite-native-app/app' },
+                },
+            ],
+        },
     ],
 });

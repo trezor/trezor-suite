@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - "suite-native/**"
+      - "suite-native-app/**"
       - "suite-common/**"
       - "packages/connect/**"
       - "packages/connect-core/**"
@@ -92,8 +93,8 @@ jobs:
       cancel-in-progress: false
     uses: ./.github/workflows/template-publish-performance-history.yml
     with:
-      workspace: "@suite-native/app"
+      workspace: "@suite-native-app/app"
       artifact-pattern: android-perf-report-*
       # Not a package.json script: the scripts block is an Expo fingerprint input, and changing it
       # forces a ~50 minute native rebuild.
-      publish-command: yarn workspace @suite-native/app exec tsx e2e/support/performance/publish.ts
+      publish-command: yarn workspace @suite-native-app/app exec tsx e2e/support/performance/publish.ts

@@ -131,8 +131,8 @@ test('requires the shared Lottie atom inside Spinner', async () => {
 test('applies when a native package loads the shared config from its own directory', async () => {
     const errors = await lintRestrictedImports({
         code: "import Motion from 'react-native-reanimated';",
-        filename: `${repositoryRoot}suite-native/app/src/App.tsx`,
-        instance: createEslint(`${repositoryRoot}suite-native/app`),
+        filename: `${repositoryRoot}suite-native-app/app/src/App.tsx`,
+        instance: createEslint(`${repositoryRoot}suite-native-app/app`),
     });
     assert.equal(errors.length, 1);
 });
@@ -237,3 +237,16 @@ test('rejects the web application scope in network packages', async () => {
     assert.equal(errors.length, 1);
     assert.match(errors[0].message, /Network packages may only depend on @trezor/);
 });
+
+for (const filename of [
+    `${repositoryRoot}networks/bitcoin/network-bitcoin/src/index.ts`,
+    `${repositoryRoot}packages/example/src/index.ts`,
+]) {
+    test(`keeps native app assembly private in ${filename}`, async () => {
+        const errors = await lintRestrictedImports({
+            code: "import { app } from '@suite-native-app/app';",
+            filename,
+        });
+        assert.equal(errors.length, 1);
+    });
+}

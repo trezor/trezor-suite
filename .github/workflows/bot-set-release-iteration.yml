@@ -137,7 +137,7 @@ jobs:
             FILE_PATH="packages/suite/package.json"
             VERSION_KEY="suiteVersion"
           elif [ "$PLATFORM" = "${{ env.PLATFORM_MOBILE_ID }}" ]; then
-            FILE_PATH="suite-native/app/package.json"
+            FILE_PATH="suite-native-app/app/package.json"
             VERSION_KEY="suiteNativeVersion"
           else
             echo "Platform option '$PLATFORM' is not Desktop/Suite/Connect/Mobile — skipping."

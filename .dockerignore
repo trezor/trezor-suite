@@ -1,7 +1,8 @@
 packages/**/node_modules
 packages/blockchain-link
 suite-app/desktop-app
-suite-native/app
+suite-native-app/app
 suite-native/**/node_modules
+suite-native-app/**/node_modules
 node_modules
 .git
