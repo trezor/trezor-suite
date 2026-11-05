@@ -149,5 +149,6 @@ export const getEverstakePooledProductPosition = ({
         operations,
         pendingTransactions,
         warnings: [],
+        details: null,
     };
 };

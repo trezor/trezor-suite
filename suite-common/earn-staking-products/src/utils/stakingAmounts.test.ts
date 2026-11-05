@@ -4,6 +4,7 @@ import {
     SMALLEST_STAKING_AMOUNT,
     ZERO_STAKING_AMOUNT,
     isPositiveStakingAmount,
+    sumStakingAmounts,
     toStakingAmount,
 } from './stakingAmounts';
 
@@ -32,6 +33,18 @@ describe('ZERO_STAKING_AMOUNT', () => {
 describe('SMALLEST_STAKING_AMOUNT', () => {
     it('is one base unit', () => {
         expect(SMALLEST_STAKING_AMOUNT).toBe('1');
+    });
+});
+
+describe('sumStakingAmounts', () => {
+    it('adds amounts in base units', () => {
+        expect(
+            sumStakingAmounts(['1000000000', '4000000000', '300000000'].map(toStakingAmount)),
+        ).toBe('5300000000');
+    });
+
+    it('sums nothing to zero', () => {
+        expect(sumStakingAmounts([])).toBe('0');
     });
 });
 

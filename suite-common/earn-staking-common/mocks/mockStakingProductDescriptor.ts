@@ -34,6 +34,7 @@ const defaults: Omit<StakingProductDescriptor, 'id'> = {
         unstake: 'eth.staking.unstake',
         withdraw: 'eth.staking.claim',
     },
+    isCountedInAccountTotals: true,
 };
 
 export const mockStakingProductDescriptor = (

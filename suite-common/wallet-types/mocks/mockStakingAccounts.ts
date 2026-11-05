@@ -22,6 +22,8 @@ export const MOCK_STAKING_NOW_SECONDS = 1_800_000_000;
 
 export const MOCK_ETHEREUM_EVERSTAKE_CONTRACT = '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e';
 export const MOCK_SOLANA_EVERSTAKE_VALIDATOR = '9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF';
+export const MOCK_SOLANA_EVERSTAKE_DEVNET_VALIDATOR =
+    'GkqYQysEGmuL6V2AJoNnWZUz2ZBGWhzQXsJiXm2CLKAN';
 export const MOCK_SOLANA_EXTERNAL_VALIDATOR = 'ExternalValidatorPubkey111111111111111111111';
 export const MOCK_CARDANO_EVERSTAKE_POOL =
     'pool1xflehvzad4wr6rrvf6eea65jst5af0r4k0rh4xvmnqgvkzt3xjt';
@@ -200,6 +202,18 @@ const SOLANA_STAKE_ACCOUNTS: Record<SolanaStakingScenario, SolanaStakeAccounts> 
     },
 };
 
+// The scenarios name the mainnet validator; a devnet account delegates to the devnet one.
+const getEverstakeStakeAccounts = (
+    stakeAccounts: SolanaStakingAccount[],
+    symbol: NetworkSymbol,
+): SolanaStakingAccount[] =>
+    symbol === 'dsol'
+        ? stakeAccounts.map(stakeAccount => ({
+              ...stakeAccount,
+              voterPubkey: MOCK_SOLANA_EVERSTAKE_DEVNET_VALIDATOR,
+          }))
+        : stakeAccounts;
+
 export const mockSolanaStakingAccount = (
     scenario: SolanaStakingScenario,
     { symbol = asNetworkSymbol('sol'), ...account }: MockStakingAccountParams = {},
@@ -224,7 +238,7 @@ export const mockSolanaStakingAccount = (
         misc: {
             ...walletAccount.misc,
             rent: 890880,
-            solStakingAccounts: everstake,
+            solStakingAccounts: getEverstakeStakeAccounts(everstake, symbol),
             solExternalStakingAccounts: external,
             solEpoch: 800,
         },
