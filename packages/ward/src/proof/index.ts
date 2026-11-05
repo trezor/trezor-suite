@@ -122,10 +122,12 @@ const blobLeaf = (r: BlobRow): LeafInfo => {
 };
 
 // Path-compressed internal hash (anti-malleability) — mirrors authdb_tree._internal_hash /
-// firmware service.internal_hash:
-//   SHA-256(0x01 || u16be(split_bit) || u16be(skiplen) || left || right)
-// Binding split_bit + skiplen into every branch is what closes the non-membership malleability
-// (siblings can no longer be re-slotted at a different depth).
+// firmware apps.ward.trie.internal_hash:
+//   SHA-256(0x01 || u16be(split_bit) || left || right)
+// Binding split_bit into every branch is what closes the non-membership malleability (a step
+// cannot be relabelled to test another bit). skiplen is NOT hashed, as the firmware dropped it:
+// it is derived from the split bits, and leaving it out makes a node's hash independent of its
+// depth, so a subtree that re-parents on insert or delete keeps its hash.
 const u16be = (n: number): Uint8Array => {
     const b = new Uint8Array(2);
     new DataView(b.buffer).setUint16(0, n, false);
@@ -133,17 +135,12 @@ const u16be = (n: number): Uint8Array => {
     return b;
 };
 
-const internalHash = (
-    splitBit: number,
-    skiplen: number,
-    left: Uint8Array,
-    right: Uint8Array,
-): Uint8Array =>
-    sha256(concatBytes(new Uint8Array([0x01]), u16be(splitBit), u16be(skiplen), left, right));
+const internalHash = (splitBit: number, left: Uint8Array, right: Uint8Array): Uint8Array =>
+    sha256(concatBytes(new Uint8Array([0x01]), u16be(splitBit), left, right));
 
-// Proof element = u16be(split_bit) || u16be(skiplen) || sibling(32) = 36 bytes (72 hex chars).
-const proofElem = (splitBit: number, skiplen: number, sibling: Uint8Array): string =>
-    bytesToHex(u16be(splitBit)) + bytesToHex(u16be(skiplen)) + bytesToHex(sibling);
+// Proof element = u16be(split_bit) || sibling(32) = 34 bytes (68 hex chars).
+const proofElem = (splitBit: number, sibling: Uint8Array): string =>
+    bytesToHex(u16be(splitBit)) + bytesToHex(sibling);
 
 // Return the bit at position `bit` of `addrHash`, MSB first.
 // bit 0 = MSB of byte 0; bit 7 = LSB of byte 0; bit 8 = MSB of byte 1; …
@@ -155,19 +152,18 @@ const getBit = (addrHash: Uint8Array, bit: number): 0 | 1 =>
 //
 // Nodes:
 //   Leaf   — a single entry; its hash is the leaf hash.
-//   Branch — splits on bit `bit`; skiplen = bit − parent's start bit; hash binds both
-//            (see internalHash) so the tree is canonical and non-membership proofs are
-//            non-malleable.
+//   Branch — splits on bit `bit`; the hash binds it (see internalHash) so the tree is
+//            canonical and non-membership proofs are non-malleable.
 //
-// Proof format (leaf→root order): each element = u16be(split_bit) || u16be(skiplen) ||
-// 32-byte sibling = 36 bytes (72 hex chars). O(log N) elements. Mirrors trezorlib
+// Proof format (leaf→root order): each element = u16be(split_bit) || 32-byte sibling =
+// 34 bytes (68 hex chars). O(log N) elements. Mirrors trezorlib
 // authdb_tree.py and firmware service.py byte-for-byte.
 // ---------------------------------------------------------------------------
 
 type LeafInfo = { addrHash: Uint8Array; leafHash: Uint8Array };
 
 type LeafNode = { kind: 'leaf'; addrHash: Uint8Array; leafHash: Uint8Array };
-type BranchNode = { kind: 'branch'; bit: number; skiplen: number; left: MptNode; right: MptNode };
+type BranchNode = { kind: 'branch'; bit: number; left: MptNode; right: MptNode };
 type MptNode = LeafNode | BranchNode;
 
 // First bit (from startBit) where the leaves diverge — mirrors authdb_tree._find_split_bit.
@@ -180,8 +176,8 @@ const findSplitBit = (leaves: LeafInfo[], startBit: number): number => {
 };
 
 // Batch, order-independent path-compressed build — mirrors authdb_tree._build_mpt. Split at the
-// first diverging bit, skiplen = split_bit − start_bit, recurse from split_bit + 1. Canonical:
-// the shape depends only on the entry_key set, not insertion order.
+// first diverging bit, recurse from split_bit + 1. Canonical: the shape depends only on the
+// entry_key set, not insertion order.
 const buildMpt = (leaves: LeafInfo[], startBit = 0): MptNode => {
     if (leaves.length === 0) throw new Error('MPT: no leaves');
     if (leaves.length === 1) return { kind: 'leaf', ...leaves[0]! };
@@ -192,7 +188,6 @@ const buildMpt = (leaves: LeafInfo[], startBit = 0): MptNode => {
     return {
         kind: 'branch',
         bit,
-        skiplen: bit - startBit,
         left: buildMpt(left, bit + 1),
         right: buildMpt(right, bit + 1),
     };
@@ -201,7 +196,7 @@ const buildMpt = (leaves: LeafInfo[], startBit = 0): MptNode => {
 const hashMpt = (node: MptNode): Uint8Array =>
     node.kind === 'leaf'
         ? node.leafHash
-        : internalHash(node.bit, node.skiplen, hashMpt(node.left), hashMpt(node.right));
+        : internalHash(node.bit, hashMpt(node.left), hashMpt(node.right));
 
 // Shared membership-proof walk (leaf→root order) — mirrors authdb_tree._walk_proof. Emits the
 // sibling elements toward `targetKey`; `onLeaf` captures the leaf reached (the witness, for the
@@ -221,15 +216,15 @@ const walkProof = (
         if (getBit(targetKey, node.bit) === 0) {
             const l = walk(node.left);
             const r = hashMpt(node.right);
-            proof.push(proofElem(node.bit, node.skiplen, r));
+            proof.push(proofElem(node.bit, r));
 
-            return internalHash(node.bit, node.skiplen, l, r);
+            return internalHash(node.bit, l, r);
         }
         const l = hashMpt(node.left);
         const r = walk(node.right);
-        proof.push(proofElem(node.bit, node.skiplen, l));
+        proof.push(proofElem(node.bit, l));
 
-        return internalHash(node.bit, node.skiplen, l, r);
+        return internalHash(node.bit, l, r);
     };
     walk(root);
 
