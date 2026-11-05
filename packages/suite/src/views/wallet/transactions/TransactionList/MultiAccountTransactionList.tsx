@@ -83,6 +83,7 @@ type MultiAccountTransactionListProps = {
     isBumpFeeAllowed?: boolean;
     isExportable?: boolean;
     knownTotal?: number;
+    onTransactionDetailOpen?: (transaction: WalletAccountTransaction) => void;
     'data-testid'?: string;
 };
 
@@ -95,6 +96,7 @@ export const MultiAccountTransactionList = ({
     isBumpFeeAllowed = false,
     isExportable = false,
     knownTotal,
+    onTransactionDetailOpen,
     'data-testid': dataTestId = '@transactions/multi-account',
 }: MultiAccountTransactionListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -283,6 +285,7 @@ export const MultiAccountTransactionList = ({
                     customNoTransactions={getCustomNoTransactions()}
                     isAccountShown={isAccountShown}
                     isBumpFeeAllowed={isBumpFeeAllowed}
+                    onTransactionDetailOpen={onTransactionDetailOpen}
                 />
                 {isFailed && <LoadFailedMessage onRetry={retry} />}
                 <LoadOlderHistory accounts={accounts} />

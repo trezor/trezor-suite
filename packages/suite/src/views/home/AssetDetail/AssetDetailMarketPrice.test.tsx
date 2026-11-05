@@ -2,6 +2,8 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { fireEvent, screen } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { setAssetPriceChartRange } from '@suite/flags';
 import { messages } from '@suite/intl';
 import {
@@ -13,6 +15,7 @@ import {
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
@@ -80,8 +83,13 @@ const getInitialState = ({
     flags: { ...mockInitialAppState.flags, assetPriceChartRange: chartRange },
 });
 
+const mockReport = jest.fn();
+
 const renderMarketPrice = (state: AppState, contractAddress?: TokenAddress) => {
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+        preloadedState: state,
+        services: () => ({ analytics: mockDesktopAnalytics(mockReport) }),
+    });
 
     renderWithProviders(
         services,
@@ -93,6 +101,7 @@ const renderMarketPrice = (state: AppState, contractAddress?: TokenAddress) => {
 
 describe('the market price on the asset screen', () => {
     beforeEach(() => {
+        mockReport.mockClear();
         mockUseAssetPriceHistoryQuery.mockReset();
         mockUseAssetPriceHistoryQuery.mockReturnValue(historyQuery(PRICE_HISTORY));
     });
@@ -293,6 +302,10 @@ describe('the market price on the asset screen', () => {
             expect(store.getActions()).toContainEqual(
                 setAssetPriceChartRange(AssetPriceChartRange.Month),
             );
+            expect(mockReport).toHaveBeenCalledWith({
+                type: events.assetsTimeframeChangeEvent.name,
+                payload: { timeframe: AssetPriceChartRange.Month, networkSymbol: ETH },
+            });
         });
 
         it('holds its place with a skeleton while the history loads', () => {

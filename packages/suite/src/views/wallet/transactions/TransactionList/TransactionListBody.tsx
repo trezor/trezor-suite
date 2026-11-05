@@ -20,6 +20,7 @@ type TransactionListBodyProps = {
     customNoTransactions?: ReactNode;
     isAccountShown?: boolean;
     isBumpFeeAllowed?: boolean;
+    onTransactionDetailOpen?: (transaction: WalletAccountTransaction) => void;
 };
 
 export const TransactionListBody = ({
@@ -32,6 +33,7 @@ export const TransactionListBody = ({
     customNoTransactions,
     isAccountShown,
     isBumpFeeAllowed,
+    onTransactionDetailOpen,
 }: TransactionListBodyProps) => {
     const pendingTxsByDate = useMemo(
         () => groupTransactionsByDate(pendingTxs, 'day'),
@@ -72,6 +74,7 @@ export const TransactionListBody = ({
                             isPending={true}
                             isAccountShown={isAccountShown}
                             isBumpFeeAllowed={isBumpFeeAllowed}
+                            onTransactionDetailOpen={onTransactionDetailOpen}
                         />
                         <TransactionGroupedList
                             transactionGroups={confirmedTxsByDate}
@@ -80,6 +83,7 @@ export const TransactionListBody = ({
                             isPending={false}
                             isAccountShown={isAccountShown}
                             isBumpFeeAllowed={isBumpFeeAllowed}
+                            onTransactionDetailOpen={onTransactionDetailOpen}
                         />
                     </>
                 ))}

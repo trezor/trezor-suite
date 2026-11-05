@@ -23,6 +23,7 @@ export type DropdownProps = Omit<MenuProps, 'onClose'> &
         intent?: IconButtonProps['intent'];
         priority?: IconButtonProps['priority'];
         tooltip?: IconButtonProps['tooltip'];
+        onOpenChange?: (isOpen: boolean) => void;
         'data-testid'?: string;
     };
 
@@ -50,6 +51,7 @@ export const Dropdown = forwardRef(
             maxWidth,
             width,
             tooltip = { isActive: false },
+            onOpenChange,
         }: DropdownProps,
         ref,
     ) => {
@@ -75,6 +77,7 @@ export const Dropdown = forwardRef(
             <Popover
                 ref={popoverRef}
                 placement={placement}
+                onOpenChange={onOpenChange}
                 data-component="Dropdown"
                 content={
                     <Menu

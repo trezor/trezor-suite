@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     AssetPriceChart,
@@ -16,6 +17,7 @@ import {
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -33,6 +35,7 @@ export const AssetDetailMarketPrice = ({
     symbol,
     contractAddress,
 }: AssetDetailMarketPriceProps) => {
+    const { analytics } = useServices(injectDesktopAnalytics);
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const baseCurrency = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrency, contractAddress);
@@ -123,6 +126,16 @@ export const AssetDetailMarketPrice = ({
                     <AssetPriceChartRangeSelector
                         networkSymbol={symbol}
                         tokenContract={contractAddress}
+                        onRangeChange={timeframe =>
+                            analytics.report({
+                                type: events.assetsTimeframeChangeEvent.name,
+                                payload: {
+                                    timeframe,
+                                    networkSymbol: symbol,
+                                    ...(contractAddress ? { contractAddress } : {}),
+                                },
+                            })
+                        }
                     />
                 </Row>
                 <AssetPriceChart networkSymbol={symbol} tokenContract={contractAddress} />

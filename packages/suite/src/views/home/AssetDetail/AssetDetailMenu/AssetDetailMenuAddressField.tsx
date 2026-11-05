@@ -1,8 +1,10 @@
 import { type ClipboardEvent, type KeyboardEvent, type MouseEvent, type ReactElement } from 'react';
 
 import { copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { COPY_TO_CLIPBOARD_TYPE_BY_ADDRESS_TYPE } from '@suite-common/analytics';
 import { AddressFormatter } from '@suite-common/formatters';
 import { Box, Column, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -24,17 +26,28 @@ export const AssetDetailMenuAddressField = ({
     label,
     onCopy,
 }: AssetDetailMenuAddressFieldProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
 
     const copyAddress = (e: MouseEvent | KeyboardEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        dispatch(
-            shouldShowCopyAddressModal
-                ? showCopyAddressModal(field.value, field.type)
-                : copyAddressToClipboard(field.value),
-        );
+        if (shouldShowCopyAddressModal) {
+            dispatch(
+                showCopyAddressModal(field.value, field.type, {
+                    copyAnalyticsFrom: 'asset-detail',
+                }),
+            );
+        } else {
+            dispatch(copyAddressToClipboard(field.value));
+            analytics.report({
+                type: events.appCopyToClipboardEvent.name,
+                payload: {
+                    from: 'asset-detail',
+                    type: COPY_TO_CLIPBOARD_TYPE_BY_ADDRESS_TYPE[field.type],
+                },
+            });
+        }
         onCopy();
     };
 

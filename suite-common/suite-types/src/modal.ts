@@ -200,6 +200,7 @@ export type UserContextPayload =
           type: 'copy-address';
           addressType: AddressType;
           address: string;
+          copyAnalyticsFrom?: 'asset-detail';
       }
     | {
           type: 'unhide-token';

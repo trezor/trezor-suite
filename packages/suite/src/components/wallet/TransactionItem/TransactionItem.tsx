@@ -60,6 +60,7 @@ type TransactionItemProps = {
     disableBumpFee?: boolean;
     index: number;
     isAccountShown?: boolean;
+    onTransactionDetailOpen?: (transaction: WalletAccountTransaction) => void;
 };
 
 export const TransactionItem = memo(
@@ -73,6 +74,7 @@ export const TransactionItem = memo(
         disableBumpFee,
         index,
         isAccountShown = false,
+        onTransactionDetailOpen,
     }: TransactionItemProps) => {
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
@@ -142,6 +144,9 @@ export const TransactionItem = memo(
 
         const openTxDetailsModal = ({ flow }: OpenModalParams) => {
             if (isActionDisabled) return; // open explorer
+            if (flow === 'detail') {
+                onTransactionDetailOpen?.(transaction);
+            }
             dispatch(
                 openModal({
                     type: 'transaction-detail',
