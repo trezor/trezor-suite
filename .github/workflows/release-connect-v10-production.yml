@@ -15,6 +15,10 @@ on:
           - canary
           - stable
 
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.deploymentType }}
+  cancel-in-progress: false
+
 env:
   CONNECT_CLOUDFRONT_DISTRIBUTION_ID: E3LVNAOGT94E37
 
