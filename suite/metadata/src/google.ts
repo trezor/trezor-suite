@@ -189,14 +189,14 @@ class Client {
     static async authorize() {
         await Client.initPromise;
 
-        const redirectUri = await getOauthReceiverUrl(Client.deps);
+        const oauthAddress = await getOauthReceiverUrl(Client.deps);
 
-        if (!redirectUri) return;
+        if (!oauthAddress) return;
 
         const url = new URL(`https://accounts.google.com/o/oauth2/v2/auth`);
 
         url.searchParams.set('client_id', Client.clientId);
-        url.searchParams.set('redirect_uri', redirectUri);
+        url.searchParams.set('redirect_uri', oauthAddress.url);
         url.searchParams.set('scope', SCOPES);
 
         const challenge = getCodeChallenge();
@@ -212,7 +212,10 @@ class Client {
             url.searchParams.set('response_type', 'token');
         }
 
-        url.searchParams.set('state', getCodeChallenge());
+        // On desktop the receiver token is carried as `state` to authenticate the
+        // redirect back to the local HTTP server; on web (no token) fall back to
+        // a CSRF nonce.
+        url.searchParams.set('state', oauthAddress.token || getCodeChallenge());
 
         const { access_token, code } = await extractCredentialsFromAuthorizationFlow(
             Client.deps,
@@ -231,7 +234,7 @@ class Client {
                         clientId: Client.clientId,
                         code,
                         codeVerifier: challenge,
-                        redirectUri,
+                        redirectUri: oauthAddress.url,
                     }),
                     headers: {
                         'Content-Type': 'application/json',
