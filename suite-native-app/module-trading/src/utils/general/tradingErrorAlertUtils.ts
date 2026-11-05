@@ -27,8 +27,5 @@ const TRADING_ERROR_ALERT_DESCRIPTION_IDS = {
         'moduleTrading.tradingReviewOutputs.errorAlert.verifyAddressDescription',
 } as const satisfies Record<TradingErrorCode, TxKeyPath>;
 
-/**
- * Picks the Trade wording that tells the user why signing or sending the trade failed.
- */
 export const getTradingErrorAlertDescriptionId = (code: TradingErrorCode): TxKeyPath =>
     TRADING_ERROR_ALERT_DESCRIPTION_IDS[code];
