@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { type RepresentativeAsset } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, Column, IconButton, Row, StatusBadge, Text } from '@trezor/components';
 import { SlidersIcon } from '@trezor/icons';
@@ -22,6 +23,7 @@ type NetworkCardProps = {
     onSettings?: (symbol: NetworkSymbol) => void;
     rightContent?: ReactNode;
     showRepresentativeAssets?: boolean;
+    representativeAssets?: readonly RepresentativeAsset[];
 };
 
 export const NetworkCard = ({
@@ -35,6 +37,7 @@ export const NetworkCard = ({
     onSettings,
     rightContent,
     showRepresentativeAssets = true,
+    representativeAssets,
 }: NetworkCardProps) => {
     const isBelowMobile = useIsContentBelowBreakpoint();
 
@@ -59,7 +62,10 @@ export const NetworkCard = ({
                     </Column>
                     <Row gap={12} onClick={e => e.stopPropagation()} flex="0 0 auto">
                         {!isBelowMobile && showRepresentativeAssets && (
-                            <RepresentativeAssetIconSet symbol={symbol} />
+                            <RepresentativeAssetIconSet
+                                symbol={symbol}
+                                assets={representativeAssets}
+                            />
                         )}
                         {onSettings && (
                             // Make the clickable area bigger

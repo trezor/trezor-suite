@@ -5,7 +5,7 @@ import { type PropsWithChildren } from 'react';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
-import { QueryClient, QueryClientProvider, desktopQueryKeys } from '@suite-common/react-query';
+import { QueryClient, QueryClientProvider, commonQueryKeys } from '@suite-common/react-query';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     act,
@@ -194,6 +194,20 @@ describe('useGlobalReceiveAssets', () => {
         first.queryClient.clear();
     });
 
+    it('reuses the catalogue cached by network settings without another request', () => {
+        const queryClient = new QueryClient();
+        queryClient.setQueryData(commonQueryKeys.rankedTokenDefinitions(), definitions);
+        const { result, unmount } = renderAssets(FirmwareType.Universal, queryClient);
+
+        expect(result.current.catalogStatus).toBe('ready');
+        expect(result.current.otherAssets).toContainEqual(
+            expect.objectContaining({ asset: expect.objectContaining({ name: 'Wrapped SOL' }) }),
+        );
+        expect(fetchRankedTokenDefinitions).not.toHaveBeenCalled();
+        unmount();
+        queryClient.clear();
+    });
+
     it('returns filtered sections without rebuilding the index or reloading the catalogue', async () => {
         const { result, rerender, unmount, queryClient } = renderAssets();
         await waitFor(() => expect(result.current.catalogStatus).toBe('ready'));
@@ -258,7 +272,7 @@ describe('useGlobalReceiveAssets', () => {
             },
         ];
         act(() => {
-            queryClient.setQueryData(desktopQueryKeys.rankedTokenDefinitions(), updatedDefinitions);
+            queryClient.setQueryData(commonQueryKeys.rankedTokenDefinitions(), updatedDefinitions);
         });
 
         await waitFor(() => expect(result.current.assets).not.toBe(assets));
@@ -305,7 +319,7 @@ describe('useGlobalReceiveAssets', () => {
         act(() => result.current.retry());
         await waitFor(() => expect(result.current.catalogStatus).toBe('ready'));
         expect(fetchRankedTokenDefinitions).toHaveBeenCalledTimes(2);
-        expect(queryClient.getQueryData(desktopQueryKeys.rankedTokenDefinitions())).toEqual(
+        expect(queryClient.getQueryData(commonQueryKeys.rankedTokenDefinitions())).toEqual(
             definitions,
         );
         unmount();

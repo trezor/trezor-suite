@@ -9,6 +9,12 @@
         { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/networks" },
         {
+            "path": "../../suite-common/react-query"
+        },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -28,6 +34,9 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/redux-utils" },
-        { "path": "../../packages/styles-native" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../test-utils" }
     ]
 }

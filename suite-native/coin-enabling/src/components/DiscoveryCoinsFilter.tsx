@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { type RepresentativeAsset } from '@suite-common/token-definitions';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
 import { type DiscoveryRootState, selectDiscoveryNetworkGroups } from '@suite-native/discovery';
@@ -18,11 +19,13 @@ import {
 } from '../coinEnablingFormUtils';
 import { NetworkListItem } from './NetworkListItem';
 import { NetworkSymbolSwitch } from './NetworkSymbolSwitch';
+import { useNetworkRepresentativeAssets } from '../hooks/useNetworkRepresentativeAssets';
 
 type NetworkGroupProps = {
     networks: Network[];
     handleToggle: (symbol: NetworkSymbol, isEnabled?: boolean) => void;
     showTestnetsLabel?: boolean;
+    representativeAssets?: ReadonlyMap<NetworkSymbol, readonly RepresentativeAsset[]>;
 };
 
 type DiscoveryCoinsFilterProps = {
@@ -30,7 +33,12 @@ type DiscoveryCoinsFilterProps = {
     onDisablingLastCoin?: () => void;
 };
 
-const NetworkGroup = ({ networks, handleToggle, showTestnetsLabel }: NetworkGroupProps) => (
+const NetworkGroup = ({
+    networks,
+    handleToggle,
+    showTestnetsLabel,
+    representativeAssets,
+}: NetworkGroupProps) => (
     <VStack spacing="sp12">
         {showTestnetsLabel && (
             <Text variant="body-sm">
@@ -41,6 +49,7 @@ const NetworkGroup = ({ networks, handleToggle, showTestnetsLabel }: NetworkGrou
             <NetworkListItem
                 key={symbol}
                 symbol={symbol}
+                representativeAssets={representativeAssets?.get(symbol)}
                 accessory={<NetworkSymbolSwitch symbol={symbol} onToggle={handleToggle} />}
                 onPress={() => handleToggle(symbol)}
                 accessibilityRole="togglebutton"
@@ -62,6 +71,10 @@ export const DiscoveryCoinsFilter = ({
         useSelector((state: DiscoveryRootState) =>
             selectDiscoveryNetworkGroups(state, searchQuery),
         );
+    const representativeAssets = useNetworkRepresentativeAssets([
+        ...supportedMainnets,
+        ...unsupportedMainnets,
+    ]);
     const isAnyNetworkVisible =
         supportedMainnets.length > 0 ||
         supportedTestnets.length > 0 ||
@@ -126,7 +139,11 @@ export const DiscoveryCoinsFilter = ({
     return (
         <VStack spacing="sp32">
             <VStack spacing="sp24">
-                <MemoizedNetworkGroup networks={supportedMainnets} handleToggle={handleToggle} />
+                <MemoizedNetworkGroup
+                    networks={supportedMainnets}
+                    handleToggle={handleToggle}
+                    representativeAssets={representativeAssets}
+                />
                 {supportedTestnets.length > 0 && (
                     <MemoizedNetworkGroup
                         networks={supportedTestnets}
@@ -144,6 +161,7 @@ export const DiscoveryCoinsFilter = ({
                         <MemoizedNetworkGroup
                             networks={unsupportedMainnets}
                             handleToggle={handleToggle}
+                            representativeAssets={representativeAssets}
                         />
                         {unsupportedTestnets.length > 0 && (
                             <MemoizedNetworkGroup
