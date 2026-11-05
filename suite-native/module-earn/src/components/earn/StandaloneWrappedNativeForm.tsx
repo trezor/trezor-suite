@@ -8,6 +8,7 @@ import { Screen } from '@suite-native/navigation';
 import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { EarnFeeSection } from './EarnFeeSection';
+import { NativeCoinAmountInputCard } from './NativeCoinAmountInputCard';
 import { WrappedNativeFeeReserveBanner } from './WrappedNativeFeeReserveBanner';
 import { WrappedNativeTokenAmountInputCard } from './WrappedNativeTokenAmountInputCard';
 import { useStandaloneWrappedNativeController } from '../../hooks/earn/useStandaloneWrappedNativeController';
@@ -52,6 +53,16 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
 
     const messages = wrappedNativeFlowMessages[flowType].form;
 
+    const amountInputProps = {
+        amountLabel: <Translation id={messages.amountLabel} />,
+        balance: amountInput.balance,
+        isDisabled: amountInput.isDisabled,
+        maxAmount: amountInput.maxAmount,
+        onCurrencyChange: amountInput.onCurrencyChange,
+        onMaxPress: amountInput.onMaxPress,
+        symbol: account.symbol,
+    };
+
     const content = (
         <Screen
             header={
@@ -81,16 +92,14 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                     )}
 
                     <Form form={form.form}>
-                        <WrappedNativeTokenAmountInputCard
-                            amountLabel={<Translation id={messages.amountLabel} />}
-                            balance={amountInput.balance}
-                            isDisabled={amountInput.isDisabled}
-                            maxAmount={amountInput.maxAmount}
-                            onCurrencyChange={amountInput.onCurrencyChange}
-                            onMaxPress={amountInput.onMaxPress}
-                            symbol={account.symbol}
-                            tokenContract={spentTokenContract}
-                        />
+                        {flowType === 'wrap' ? (
+                            <NativeCoinAmountInputCard {...amountInputProps} />
+                        ) : (
+                            <WrappedNativeTokenAmountInputCard
+                                {...amountInputProps}
+                                tokenContract={wrappedTokenContract}
+                            />
+                        )}
                     </Form>
 
                     <WrappedNativeFeeReserveBanner
