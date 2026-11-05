@@ -16,7 +16,10 @@ import {
 } from '@suite-common/message-system';
 import { type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
+import {
+    processEntropyCheckResultThunk,
+    resetDeviceWithEntropyCheckThunk,
+} from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { type ERRORS } from '@trezor/connect-common/src/constants';
 import { createThunk } from '@trezor/redux-utils';
@@ -180,14 +183,19 @@ export const resetDeviceThunk =
         // Used only in tests! See deviceReducer for the property definition.
         const simulatedFailResult = selectSimulatedEntropyCheckFail(getState());
 
-        const result = await TrezorConnect.resetDevice({
-            ...defaults,
-            ...params,
-            device: {
-                path: device.path,
-            },
-            entropy_check: isEntropyCheckEnabled,
-        });
+        const result = await dispatch(
+            resetDeviceWithEntropyCheckThunk({
+                device,
+                params: {
+                    ...defaults,
+                    ...params,
+                    device: {
+                        path: device.path,
+                    },
+                    entropy_check: isEntropyCheckEnabled,
+                },
+            }),
+        ).unwrap();
 
         if (isEntropyCheckEnabled) {
             if (simulatedFailResult) {

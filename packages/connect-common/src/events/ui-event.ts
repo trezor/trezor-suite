@@ -7,7 +7,7 @@ import { createTypeGuardByType } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
 
 import type { DeviceButtonRequest } from './device';
-import type { Device } from '../types/device';
+import type { Device, XPubHashesPerBip43Path } from '../types/device';
 
 export const UI_EVENT = 'UI_EVENT';
 
@@ -66,6 +66,8 @@ export const UI_EVENTS = {
     BUNDLE_PROGRESS: 'ui-event_bundle_progress',
     /** Result of the entropy check of an account xpub during discoverAccounts */
     DISCOVERY_ENTROPY_CHECK: 'ui-event_discovery_entropy_check',
+    /** Hashes of the xpubs the device committed to in a passed wallet creation entropy check */
+    WALLET_CREATION_ENTROPY_CHECK: 'ui-event_wallet_creation_entropy_check',
     /** Signal to close the UI popup/modal window */
     CLOSE_UI_WINDOW: 'ui-event_close_ui_window',
 } as const;
@@ -150,6 +152,14 @@ export interface UiEventDiscoveryEntropyCheck {
     };
 }
 
+export interface UiEventWalletCreationEntropyCheck {
+    type: typeof UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK;
+    payload: {
+        device: Device;
+        xpubHashes: XPubHashesPerBip43Path;
+    };
+}
+
 export interface UiEventFirmwareProgress {
     type: typeof UI_EVENTS.FIRMWARE_PROGRESS;
     payload: {
@@ -207,6 +217,7 @@ export type UiEvent =
     | UiEventUnexpectedDeviceMode
     | UiEventBundleProgress<any>
     | UiEventDiscoveryEntropyCheck
+    | UiEventWalletCreationEntropyCheck
     | UiEventFirmwareProgress
     | UiEventFirmwareProgressUnexpectedDelay
     | UiEventFirmwareTypeChanged

@@ -11,7 +11,10 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { type BackupType, type ReportSecurityCheckDep } from '@suite-common/suite-types';
-import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
+import {
+    processEntropyCheckResultThunk,
+    resetDeviceWithEntropyCheckThunk,
+} from '@suite-common/wallet-core';
 import {
     deviceAccessMutex,
     requestDeviceAccess,
@@ -101,13 +104,18 @@ export const createAndBackupWalletThunk = createThunk<
         }
 
         const deviceResponse = await requestPrioritizedDeviceAccess(() =>
-            TrezorConnect.resetDevice({
-                device: { path: devicePath },
-                skip_backup: false,
-                ...getResetDeviceConfig(walletBackupType),
-                //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
-                entropy_check: isEntropyCheckEnabled,
-            }),
+            dispatch(
+                resetDeviceWithEntropyCheckThunk({
+                    device,
+                    params: {
+                        device: { path: devicePath },
+                        skip_backup: false,
+                        ...getResetDeviceConfig(walletBackupType),
+                        //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
+                        entropy_check: isEntropyCheckEnabled,
+                    },
+                }),
+            ).unwrap(),
         );
         // error from device-mutex
         if (!deviceResponse.success) return rejectWithValue(deviceResponse.error);
