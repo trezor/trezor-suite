@@ -46,6 +46,7 @@
         {
             "path": "../../packages/styles-native"
         },
+        { "path": "../../packages/type-utils" },
         { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ]

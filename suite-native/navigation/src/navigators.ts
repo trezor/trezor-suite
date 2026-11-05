@@ -109,6 +109,7 @@ export type SignAndVerifyStackParamList = {
 
 export type AssetsStackParamList = {
     [AssetsStackRoutes.AssetDetail]: AssetParams;
+    [AssetsStackRoutes.HiddenTokens]: undefined;
 };
 
 export type EarnStackParamList = {

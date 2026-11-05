@@ -2456,6 +2456,10 @@ export const messages = {
                 },
             },
         },
+        hiddenTokensScreen: {
+            title: 'Hidden tokens',
+            hiddenByUserSection: 'Hidden tokens',
+        },
     },
     device: {
         title: {
