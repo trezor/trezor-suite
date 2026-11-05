@@ -1,5 +1,5 @@
 import { TradingActions } from './TradingActions';
-import { waitForVisible, waitToHaveRegex } from '../../support/utils';
+import { waitForEnabled, waitForVisible, waitToHaveRegex } from '../../support/utils';
 
 class ExchangePreviewActions extends TradingActions {
     constructor() {
@@ -23,7 +23,9 @@ class ExchangePreviewActions extends TradingActions {
     }
 
     async goToTransactionSigning() {
-        await this.getElementById('continue-button').tap();
+        const button = this.getElementById('continue-button');
+        await waitForEnabled(button, { timeout: this.DOUBLE_LONG_TIMEOUT });
+        await button.tap();
     }
 }
 
