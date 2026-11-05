@@ -7,7 +7,7 @@ import { AbstractSignTransactionFlow } from './AbstractSignTransactionFlow';
 import { type PopupFlowPayload, type PopupFlowResponse } from './CommonPopupFlow';
 
 const fetchRefTransactions = async (payload: PopupFlowPayload<'signTransaction'>) => {
-    const { coin, refTxs, account, inputs, outputs, identity, version } = payload;
+    const { coin, refTxs, account, inputs, outputs, identity, version, callId } = payload;
 
     if (!refTxs?.length && !account?.transactions?.length) {
         const prevTxids = getPreviousTxids(inputs, coin, { version });
@@ -19,10 +19,19 @@ const fetchRefTransactions = async (payload: PopupFlowPayload<'signTransaction'>
         }
 
         const hexOnly = true;
-        const res = await TrezorConnect.blockchainGetTransactions({ coin, txs, identity, hexOnly });
+        const res = await TrezorConnect.blockchainGetTransactions({
+            coin,
+            txs,
+            identity,
+            hexOnly,
+            callId,
+        });
 
         if (res.success) {
             return res.payload;
+        }
+        if (res.error.code === 'Method_Cancel') {
+            throw res.error;
         }
     }
 };
@@ -31,6 +40,7 @@ export class SignTransaction extends AbstractSignTransactionFlow<'signTransactio
     protected async preCall(txSigningPrecomposed?: PrecomposedTransactionFinal) {
         const [transactions] = await Promise.all([
             fetchRefTransactions(this.payload).catch(error => {
+                if (error?.code === 'Method_Cancel') throw error;
                 console.error('Error in Connect Popup %s hook:', this.method, error);
             }),
             super.preCall(txSigningPrecomposed),
@@ -75,13 +85,14 @@ export class SignTransaction extends AbstractSignTransactionFlow<'signTransactio
     }
 
     protected async postCall(response: PopupFlowResponse<'signTransaction'>) {
-        const { push, coin, identity } = this.payload;
+        const { push, coin, identity, callId } = this.payload;
 
         if (push && response.success && response.payload.serializedTx) {
             const res = await TrezorConnect.pushTransaction({
                 coin,
                 identity,
                 tx: response.payload.serializedTx,
+                callId,
             });
 
             if (!res.success) {
