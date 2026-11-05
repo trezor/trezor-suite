@@ -5,7 +5,7 @@ import {
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { getAccountTotalStakingBalance, isNftToken } from '@suite-common/wallet-utils';
+import { isNftToken } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
@@ -14,6 +14,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { type AccountsRootState } from './accountsReducer';
 import { selectAccounts, selectVisibleDeviceAccounts } from './accountsSelectors';
+import { getAccountCryptoBalanceWithStaking } from '../staking/stakingSelectors';
 import { getTokens } from '../tokens/tokenUtils';
 
 export type WalletAssetKey = string & Branded<'WalletAssetKey'>;
@@ -63,16 +64,6 @@ export type AssetAccount = {
     tokenInfo: TokenInfo | undefined;
 };
 
-export const getCoinBalance = (account: Account) => {
-    // Cardano stakes the balance itself, so adding its stake would count the coin twice.
-    const stakingBalance =
-        account.networkType === 'cardano' ? null : getAccountTotalStakingBalance(account);
-
-    return stakingBalance
-        ? new BigNumber(account.formattedBalance).plus(stakingBalance).toFixed()
-        : account.formattedBalance;
-};
-
 const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
     const toAssetAccount = (
         contractAddress: TokenAddress | undefined,
@@ -97,7 +88,10 @@ const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
         .filter(token => !isNftToken(token) && new BigNumber(token.balance ?? '0').gt(0))
         .map(token => toAssetAccount(token.contract as TokenAddress, token.balance ?? '0', token));
 
-    return [toAssetAccount(undefined, getCoinBalance(account), undefined), ...tokenAccounts];
+    return [
+        toAssetAccount(undefined, getAccountCryptoBalanceWithStaking(account), undefined),
+        ...tokenAccounts,
+    ];
 };
 
 export type AssetAccountsRootState = AccountsRootState &

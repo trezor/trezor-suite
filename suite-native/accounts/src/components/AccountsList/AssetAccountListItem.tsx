@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import {
     type AccountsRootState,
-    getCoinBalance,
+    getAccountCryptoBalanceWithStaking,
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
 import {
@@ -53,7 +53,9 @@ export const AssetAccountListItem = ({
         selectAccountHasAnyKnownTokens(state, account.key),
     );
     const token = findToken(account.tokens, contractAddress);
-    const cryptoBalance = contractAddress ? (token?.balance ?? '0') : getCoinBalance(account);
+    const cryptoBalance = contractAddress
+        ? (token?.balance ?? '0')
+        : getAccountCryptoBalanceWithStaking(account);
     const isFailed = isAccountFailed(account);
 
     const fiatValue = contractAddress ? (
