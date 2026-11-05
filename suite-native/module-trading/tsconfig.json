@@ -60,6 +60,7 @@
         { "path": "../keyboard" },
         { "path": "../labeling" },
         { "path": "../link" },
+        { "path": "../localized-amount-input" },
         { "path": "../message-system" },
         {
             "path": "../module-stellar-token-management"

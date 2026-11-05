@@ -13917,6 +13917,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/localized-amount-input@workspace:*, @suite-native/localized-amount-input@workspace:suite-native/localized-amount-input":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/localized-amount-input@workspace:suite-native/localized-amount-input"
+  dependencies:
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.3.0"
+    react-native: "npm:0.88.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/markdown@workspace:*, @suite-native/markdown@workspace:suite-native/markdown":
   version: 0.0.0-use.local
   resolution: "@suite-native/markdown@workspace:suite-native/markdown"
@@ -15059,6 +15069,7 @@ __metadata:
     "@suite-native/keyboard": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/link": "workspace:*"
+    "@suite-native/localized-amount-input": "workspace:*"
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-stellar-token-management": "workspace:*"
     "@suite-native/navigation": "workspace:*"

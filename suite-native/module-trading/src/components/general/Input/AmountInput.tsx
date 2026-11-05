@@ -11,8 +11,8 @@ import {
 import { useSelector } from 'react-redux';
 
 import { Box, BoxSkeleton, HStack, TEXT_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
-import { useLocalizedAmountInput } from '@suite-native/helpers';
 import { selectLocale } from '@suite-native/intl';
+import { useLocalizedAmountInput } from '@suite-native/localized-amount-input';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle, typographyStylesBase } from '@trezor/theme';
 

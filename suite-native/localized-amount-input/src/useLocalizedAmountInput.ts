@@ -7,7 +7,7 @@ import {
     formatRawAmount,
     getDisplayMaxLength,
     getEditedRawAmount,
-} from '../localizedAmountInputUtils';
+} from './localizedAmountInputUtils';
 
 type TextSelection = {
     start: number;
