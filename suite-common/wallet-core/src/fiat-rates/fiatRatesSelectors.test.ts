@@ -14,6 +14,7 @@ import {
 import {
     selectCurrentFiatRatesByFiatRateKeys,
     selectHistoricFiatRatesByTimestamp,
+    selectIsTokenFiatRateDisallowed,
     selectTickerFromAccounts,
 } from './fiatRatesSelectors';
 import { type FiatRatesRootState } from './fiatRatesTypes';
@@ -126,6 +127,43 @@ describe('selectTickerFromAccounts', () => {
         );
 
         expect(result.map(ticker => ticker.tokenAddress)).not.toContain(UNLISTED_TOKEN);
+    });
+});
+
+describe('selectIsTokenFiatRateDisallowed', () => {
+    const ETH = asNetworkSymbol('eth');
+    const stateWithoutDefinitions = { ...getState(STANDARD_WALLET), tokenDefinitions: {} } as State;
+
+    it('allows the rate of a known token', () => {
+        expect(selectIsTokenFiatRateDisallowed(getState(STANDARD_WALLET), ETH, USDT)).toBe(false);
+    });
+
+    it('disallows the rate of a token the loaded definitions do not know', () => {
+        expect(
+            selectIsTokenFiatRateDisallowed(getState(STANDARD_WALLET), ETH, UNLISTED_TOKEN),
+        ).toBe(true);
+    });
+
+    it('does not disallow a token rate before the definitions load', () => {
+        expect(selectIsTokenFiatRateDisallowed(stateWithoutDefinitions, ETH, UNLISTED_TOKEN)).toBe(
+            false,
+        );
+    });
+
+    it('disallows the rate of a testnet token', () => {
+        expect(
+            selectIsTokenFiatRateDisallowed(
+                getState(STANDARD_WALLET),
+                asNetworkSymbol('tsep'),
+                USDT,
+            ),
+        ).toBe(true);
+    });
+
+    it('never disallows the rate of a network coin', () => {
+        expect(selectIsTokenFiatRateDisallowed(getState(STANDARD_WALLET), ETH, undefined)).toBe(
+            false,
+        );
     });
 });
 

@@ -2,6 +2,7 @@ import { A, F, pipe } from '@mobily/ts-belt';
 
 import {
     type TokenDefinitionsRootState,
+    selectAreCoinDefinitionsLoaded,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -18,6 +19,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     getFiatRateKeyFromTicker,
+    isTestnet,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -163,6 +165,22 @@ export const selectIsTokenFiatRateAllowed = (
 ) =>
     !getNetworkFeatures(symbol).includes('coin-definitions') ||
     selectIsSpecificCoinDefinitionKnown(state, symbol, tokenAddress);
+
+// Until the token definitions load (mobile does not persist them), a known token can't be told apart
+// from an unknown one, so its rate counts as pending rather than disallowed.
+export const selectIsTokenFiatRateDisallowed = (
+    state: TokenDefinitionsRootState,
+    symbol: NetworkSymbol,
+    tokenAddress: TokenAddress | undefined,
+) => {
+    if (tokenAddress === undefined) return false;
+    if (isTestnet(symbol)) return true;
+
+    return (
+        selectAreCoinDefinitionsLoaded(state, symbol) &&
+        !selectIsTokenFiatRateAllowed(state, symbol, tokenAddress)
+    );
+};
 
 export const selectTickerFromAccounts = (
     state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
