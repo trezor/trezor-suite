@@ -4,13 +4,18 @@ import { useIntl } from 'react-intl';
 
 import { Form } from '@suite/form';
 import { Translation, messages } from '@suite/intl';
-import { onReceiveFee } from '@suite/modal';
-import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { closeModal } from '@suite/modal';
+import {
+    type SelectFeeChoice,
+    getPermissionDeferred,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { sortLevels } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { Button, Column, Modal } from '@trezor/components';
 import type { ComposeOutput, UiRequestSelectFee } from '@trezor/connect';
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -122,19 +127,28 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
         formState: { errors },
     } = methods;
 
+    const onReceiveFee = (choice: SelectFeeChoice | null) => {
+        if (choice) {
+            getPermissionDeferred().resolve(choice);
+        } else {
+            getPermissionDeferred().reject(TypedError('Method_Cancel'));
+        }
+        dispatch(closeModal());
+    };
+
     const onSend = handleSubmit(data => {
         const { selectedFee, feePerUnit } = data;
         if (selectedFee === 'custom') {
-            dispatch(onReceiveFee({ type: 'select-fee-custom', value: feePerUnit }));
+            onReceiveFee({ type: 'select-fee-custom', value: feePerUnit });
         } else {
-            dispatch(onReceiveFee({ type: 'select-fee', value: selectedFee ?? 'normal' }));
+            onReceiveFee({ type: 'select-fee', value: selectedFee ?? 'normal' });
         }
     });
     const onChangeAccount = () => {
-        dispatch(onReceiveFee({ type: 'change-account' }));
+        onReceiveFee({ type: 'change-account' });
     };
     const onClose = () => {
-        dispatch(onReceiveFee(null));
+        onReceiveFee(null);
     };
 
     return (

@@ -33,6 +33,7 @@ import {
     type PopupFlowParams,
     type PopupFlowPayload,
 } from './popupFlows/CommonPopupFlow';
+import { SendTransaction } from './popupFlows/sendTransaction';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
 // manual address-phase path these tests exercise (the account-index path loops it per row). Mocking
@@ -372,7 +373,7 @@ describe('connectPopupCallInnerThunk', () => {
         jest.spyOn(CommonPopupFlow.prototype, 'run').mockRejectedValue(
             TypedError('Method_InvalidParameter'),
         );
-        const cleanup = jest.spyOn(CommonPopupFlow.prototype, 'cleanup');
+        const cleanup = jest.spyOn(SendTransaction.prototype, 'cleanup');
 
         const { dispatch, deferred, report, lockDevice } =
             await runCallThunk(interactiveComposeParams);
