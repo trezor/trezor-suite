@@ -195,7 +195,7 @@ jobs:
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           # Must be the same list of workspaces as in .github/workflows/build-suite-web.yml
-          yarn workspaces focus @suite/web-app @trezor/suite @suite/app-assets @suite-common/message-system
+          yarn workspaces focus @suite-app/web-app @trezor/suite @suite/app-assets @suite-common/message-system
 
       - name: Build suite-web
         env:
@@ -205,12 +205,12 @@ jobs:
         run: |
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
-          yarn workspace @suite/web-app build
+          yarn workspace @suite-app/web-app build
 
       # this step should upload build result to s3 bucket staging-suite.trezor.io using awscli
       - name: Upload suite-web to staging-suite.trezor.io
         run: |
-          cd suite/web-app
+          cd suite-app/web-app
           ./scripts/s3sync.sh staging-suite
 
   create-test-releases:

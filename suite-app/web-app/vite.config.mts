@@ -9,7 +9,6 @@ import { resolve } from 'path';
 import { Plugin, ViteDevServer, build, defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 
-import { suiteVersion } from '../../packages/suite/package.json';
 import {
     assetPrefix,
     isTanstackReactQueryDevTools,
@@ -19,7 +18,9 @@ import {
     reactCompilerOptions,
     shouldCompileWithReactCompiler,
 } from '@trezor/suite/webpack/reactCompiler';
+
 import { sharedAliases as alias, noopCoreJsPlugin } from './viteShared';
+import { suiteVersion } from '../../packages/suite/package.json';
 
 const require = createRequire(import.meta.url);
 
@@ -128,7 +129,7 @@ const htmlTemplatePlugin = (): Plugin => ({
 
 // Plugin to serve sessions-background-sharedworker.js as a complete bundle to be used directly as a web worker
 const sessionsSharedWorkerPlugin = () => {
-    const workerOutDir = resolve(__dirname, '../../suite/web-app/dist/workers');
+    const workerOutDir = resolve(__dirname, '../../suite-app/web-app/dist/workers');
     const workerEntryPath = resolve(
         __dirname,
         '../../packages/transport-web/src/sessions/background-sharedworker.ts',
@@ -439,7 +440,7 @@ return await response.text();
 });
 
 export default defineConfig({
-    root: '../../suite/web-app/src/static',
+    root: '../../suite-app/web-app/src/static',
     cacheDir: resolve(__dirname, '../../node_modules/.vite'),
     base: assetPrefix,
     // Use app-assets/files as the public directory

@@ -35,8 +35,7 @@ const createWorkspaceAliases = () => {
         }));
 
     const suiteAliases = readdirSync(resolve(packageDir, '../../suite'), { withFileTypes: true })
-        // web-app is the application root itself, aliasing it to @suite/web-app would be circular
-        .filter(dirent => dirent.isDirectory() && dirent.name !== 'web-app')
+        .filter(dirent => dirent.isDirectory())
         .map(dirent => ({
             find: `@suite/${dirent.name}`,
             replacement: resolve(packageDir, '../../suite', dirent.name),

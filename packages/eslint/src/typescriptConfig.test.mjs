@@ -45,6 +45,16 @@ test('keeps shared Suite services private outside application packages', async (
     assert.equal(errors.length, 1);
 });
 
+test('rejects app assembly imports in reusable libraries', async () => {
+    const errors = await lintRestrictedImports({
+        code: "import { foo } from '@suite-app/web-app';",
+        filename: `${repositoryRoot}packages/example/src/index.ts`,
+    });
+
+    assert.equal(errors.length, 1);
+    assert.match(errors[0].message, /private to the suite apps/);
+});
+
 for (const code of [
     "import Animated from 'react-native-reanimated';",
     "import Motion from 'react-native-reanimated';",
@@ -217,3 +227,13 @@ for (const filename of [
         );
     });
 }
+
+test('rejects the web application scope in network packages', async () => {
+    const errors = await lintRestrictedImports({
+        code: "import { foo } from '@suite-app/web-app';",
+        filename: `${repositoryRoot}networks/bitcoin/network-bitcoin/src/index.ts`,
+    });
+
+    assert.equal(errors.length, 1);
+    assert.match(errors[0].message, /Network packages may only depend on @trezor/);
+});

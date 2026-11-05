@@ -10,7 +10,7 @@ description: Generated code must be aligned with security headers (e.g. no unsav
 Start local server with production build and applied security headers:
 
 ```
-yarn workspace @suite/web-app preview
+yarn workspace @suite-app/web-app preview
 ```
 
 ## Build & Preview
@@ -18,7 +18,7 @@ yarn workspace @suite/web-app preview
 Build web app and run the preview command:
 
 ```
-yarn workspace @suite/web-app build:preview
+yarn workspace @suite-app/web-app build:preview
 ```
 
 or
@@ -52,8 +52,8 @@ Disabled directives (`=()`) are intentionally blocked because there is no direct
 
 ### Direct Code References
 
-- Header values source: `suite/web-app/constants/webSecurityHeaders.ts`
-- Header type constraints: `suite/web-app/types/securityHeaders.ts`
+- Header values source: `suite-app/web-app/constants/webSecurityHeaders.ts`
+- Header type constraints: `suite-app/web-app/types/securityHeaders.ts`
 
 MDN references:
 

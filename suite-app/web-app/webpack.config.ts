@@ -13,7 +13,7 @@ import { assetPrefix, isDev } from '@trezor/suite/webpack/env';
 
 const baseDir = __dirname;
 const repoRoot = path.join(baseDir, '..', '..');
-const appAssets = path.join(baseDir, '..', 'app-assets', 'files');
+const appAssets = path.join(repoRoot, 'suite', 'app-assets', 'files');
 const buildDir = path.join(baseDir, 'build');
 const browserslistConfigPath = path.resolve(baseDir, 'browserslist');
 

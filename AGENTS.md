@@ -62,10 +62,12 @@ names from manifests, not paths.
 - `suite-common/` (`@suite-common/*`): Shared wallet/domain logic, including `wallet-core`,
   `device`, `message-system`. May use shared peers and reusable `@trezor/*` libraries; must not
   depend on desktop/web or native app code.
-- `suite/` (`@suite/*`): Desktop/web features and the applications they compose; may use peers,
+- `suite-app/` (`@suite-app/*`): Desktop/web application assembly. Currently contains `web-app`,
+  the web composition root; reusable features and network modules must not depend on app assembly.
+- `suite/` (`@suite/*`): Desktop/web features and applications awaiting migration; may use peers,
   shared logic and reusable libraries, never native app code. `suite/e2e` is the Playwright
-  workspace (`@trezor/suite-e2e`). Two packages are application roots: `web-app` (web entry point
-  and composition root) and `desktop-app` (Electron packaging, distribution and installers).
+  workspace (`@trezor/suite-e2e`). `desktop-app` is the Electron application root for packaging,
+  distribution and installers.
   `desktop-app` is assembled from `desktop-app-renderer` (Electron renderer process, desktop React
   entry point), `desktop-app-main` (Electron main and preload processes) and
   `desktop-app-native-bindings` (compiled OS bindings). Both applications use `app-assets` (static
@@ -116,7 +118,7 @@ running the app, E2E or tests that load native modules requires a full install.
   `ESLINT_RUN_EXPENSIVE_CHECKS=true yarn lint:js --no-tui`, `yarn lint:styles --no-tui`, `yarn format:verify`. Styles also runs local Stylelint rule tests.
 - Library build validation: `yarn build:libs:verify --no-tui` builds affected libraries; `yarn build:libs` rebuilds all libraries without Nx cache, so reserve it for a demonstrated need.
 - Production web behavior: `yarn suite:build:web`; `yarn suite:build:web:preview` builds and serves
-  with production security headers. For an existing build: `yarn workspace @suite/web-app preview`.
+  with production security headers. For an existing build: `yarn workspace @suite-app/web-app preview`.
 - Web/desktop E2E: `yarn workspace @trezor/suite-e2e test:e2e:web <test-file> --project=<project>`
   or `test:e2e:desktop`; inspect `suite/e2e/playwright-config` for projects. Requires Playwright
   browsers/system dependencies, a running web app or built Electron app, and scenario

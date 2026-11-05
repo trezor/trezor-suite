@@ -1,4 +1,4 @@
-# @suite/desktop-app and @suite/web-app e2e tests
+# @suite/desktop-app and @suite-app/web-app e2e tests
 
 @suite/e2e uses [Playwright](https://playwright.dev/) to run e2e tests. It also uses [trezor-user-env](https://github.com/trezor/trezor-user-env) which is [daily built](https://ghcr.io/trezor/trezor-user-env) into a docker image providing all the necessary instrumentation required to run tests (bridge and emulators).
 

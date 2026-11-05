@@ -72,7 +72,7 @@ jobs:
             jq '{
               model: "typesafe/jev-1.13",
               state: {
-                tester: "The LLM exploratory tester black-box tests the PR on the Suite web preview. It cannot open the desktop or mobile app. suite-native/ is mobile. suite/desktop-app, desktop-app-main, desktop-app-renderer, and desktop-app-native-bindings are the desktop shell. packages/suite and suite/web-app are the web UI. A run takes hours.",
+                tester: "The LLM exploratory tester black-box tests the PR on the Suite web preview. It cannot open the desktop or mobile app. suite-native/ is mobile. suite/desktop-app, desktop-app-main, desktop-app-renderer, and desktop-app-native-bindings are the desktop shell. packages/suite and suite-app/web-app are the web UI. A run takes hours.",
                 pr: .
               },
               questions: { pick: {
