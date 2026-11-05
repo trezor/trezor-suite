@@ -13,6 +13,7 @@ import {
     getDexEstimationData,
     requiresErc20Approval,
     selectTradingExchangeQuoteToEstimate,
+    useTradingExchangeAllowance,
 } from '@suite-common/trading';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
@@ -51,6 +52,9 @@ export const useExchangeDexQuote = ({
 }: UseExchangeDexQuoteProps) => {
     const { dispatch } = useServices(injectDispatch);
     const { setValue, control } = methods;
+    const { currentAllowance } = useTradingExchangeAllowance({ account });
+    const chainAllowance =
+        currentAllowance.source === 'chain' ? currentAllowance.amount : undefined;
 
     const [transactionData, outputAddress, ethereumAdjustGasLimit, ethereumFixedGasLimit] =
         useWatch({
@@ -118,11 +122,19 @@ export const useExchangeDexQuote = ({
 
         const { dexTx } = quote;
 
-        setValue('transactionData', getDexEstimationData(quote) ?? '');
+        setValue('transactionData', getDexEstimationData(quote, chainAllowance) ?? '');
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
         setValue('ethereumFixedGasLimit', undefined);
-    }, [quote, exchangeType, sendCryptoSelect, isFormLoading, isLoadingQuote, setValue]);
+    }, [
+        quote,
+        chainAllowance,
+        exchangeType,
+        sendCryptoSelect,
+        isFormLoading,
+        isLoadingQuote,
+        setValue,
+    ]);
 
     const fetchFeesAndComposeRef = useCurrentRef(fetchFeesAndCompose);
     // Fetch fees when the transaction to estimate changes shape.

@@ -20,7 +20,8 @@ import { useTradingExchangeApprovalFlow } from './useTradingExchangeApprovalFlow
 
 export const TradingExchangeApproval = () => {
     useTradingPageHeader();
-    const { account, quote, steps, isFlowMissing } = useTradingExchangeApprovalFlow();
+    const { account, quote, steps, currentAllowance, isFlowMissing } =
+        useTradingExchangeApprovalFlow();
     const formValues = useSelector(selectTradingExchangeFormValues);
     const exchangeProviders = useSelector(selectTradingExchangeProviders);
 
@@ -88,6 +89,7 @@ export const TradingExchangeApproval = () => {
                             quote={quote}
                             tokenContractAddress={tokenContractAddress}
                             spender={spender}
+                            currentAllowance={currentAllowance.amount}
                             getCryptoInfo={getCryptoInfo}
                         />
                     );

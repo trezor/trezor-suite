@@ -4,15 +4,18 @@ import { useSelector } from 'react-redux';
 import { gotoThunk } from '@suite/router';
 import {
     type TradingFormAccountRootState,
+    type TradingRootState,
     selectTradingExchangeApprovalFlow,
     selectTradingExchangeApprovalFlowSteps,
     selectTradingExchangeFormValues,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     tradingExchangeActions,
+    useTradingExchangeAllowance,
     useTradingExchangeWatchApproval,
 } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
+import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
@@ -25,9 +28,25 @@ export const useTradingExchangeApprovalFlow = () => {
     );
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const approvalFlow = useSelector(selectTradingExchangeApprovalFlow);
-    const steps = useSelector(selectTradingExchangeApprovalFlowSteps);
+    const steps = useSelector((state: TradingRootState) =>
+        selectTradingExchangeApprovalFlowSteps(state, account?.key),
+    );
     const formValues = useSelector(selectTradingExchangeFormValues);
     const { confirmApproval } = useExchangeApproval({ account });
+    const { currentAllowance, refetchAllowance } = useTradingExchangeAllowance({ account });
+
+    // A settled approval transaction changed the allowance on the chain, so read it again.
+    const refetchAllowanceRef = useCurrentRef(refetchAllowance);
+    const previousQuoteStatusRef = useRef(quote?.status);
+
+    useEffect(() => {
+        const previousStatus = previousQuoteStatusRef.current;
+        previousQuoteStatusRef.current = quote?.status;
+
+        if (previousStatus === 'APPROVAL_PENDING' && quote?.status !== 'APPROVAL_PENDING') {
+            refetchAllowanceRef.current();
+        }
+    }, [quote?.status, refetchAllowanceRef]);
 
     const handledRevokeTxRef = useRef<string>(undefined);
     const handledApprovalOrderRef = useRef<string>(undefined);
@@ -106,5 +125,5 @@ export const useTradingExchangeApprovalFlow = () => {
           )
         : steps;
 
-    return { account, quote, steps: displayedSteps, isFlowMissing };
+    return { account, quote, steps: displayedSteps, currentAllowance, isFlowMissing };
 };

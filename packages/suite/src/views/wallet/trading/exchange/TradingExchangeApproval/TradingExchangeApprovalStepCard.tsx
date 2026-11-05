@@ -58,6 +58,8 @@ type TradingExchangeApprovalStepCardProps = {
     quote: ExchangeTrade;
     tokenContractAddress: string;
     spender: string;
+    /** Allowance in token units the spender currently has, read from the chain. */
+    currentAllowance: string;
     getCryptoInfo: GetTradingExchangeCryptoInfo;
 };
 
@@ -70,6 +72,7 @@ export const TradingExchangeApprovalStepCard = ({
     quote,
     tokenContractAddress,
     spender,
+    currentAllowance,
     getCryptoInfo,
 }: TradingExchangeApprovalStepCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -129,7 +132,7 @@ export const TradingExchangeApprovalStepCard = ({
     };
     const limitAmount =
         variant === 'revoke'
-            ? (quote.preapprovedStringAmount ?? '0')
+            ? currentAllowance
             : subunitsToUnits({ value: inputAmount, decimals: token.decimals }).toString();
     const txid = quote.approvalSendTxHash;
 
@@ -170,7 +173,7 @@ export const TradingExchangeApprovalStepCard = ({
                 token={stepToken}
                 limitType={limitType}
                 limitAmount={limitAmount}
-                currentLimitAmount={quote.preapprovedStringAmount}
+                currentLimitAmount={currentAllowance}
                 onEditLimit={variant === 'revoke' ? undefined : () => setIsLimitModalOpen(true)}
                 networkFee={
                     isComposing || !composedTransaction ? (
