@@ -24,6 +24,12 @@ Review all changes made by `yarn dedupe` before keeping them.
 Do not bypass `.yarnrc.yml` `npmMinimalAgeGate`.
 If a blocked version is required to fix a bug, add a targeted exception to `npmPreapprovedPackages`.
 
+Keep Nix pins in sync in the same PR:
+
+- `react-native` or `expo`: `.nix/android.nix` must include `compileSdk`, `buildTools` and `ndkVersion` from `node_modules/react-native/gradle/libs.versions.toml`.
+- `electron` or `.nvmrc`: `flake.nix` and `shell.nix`.
+- `@playwright/test`: `playwright-web-flake` in `flake.nix`.
+
 ## Monorepo Package Management
 
 ```bash
