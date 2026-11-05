@@ -11,10 +11,12 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     tradingExchangeActions,
+    useTradingExchangeAllowance,
     useTradingExchangeWatchApproval,
 } from '@suite-common/trading';
 import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectExchangeQuoteThunk } from '#src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
@@ -34,12 +36,25 @@ export const useTradingExchangeApprovalFlow = () => {
     const pendingApprovalTxid = useSelector(selectTradingExchangePendingApprovalTxid);
     const { confirmApproval } = useExchangeApproval({ account });
     const resumedApproval = useResumedApproval({ quote, pendingApprovalTxid, confirmApproval });
+    const { currentAllowance, refetchAllowance } = useTradingExchangeAllowance({ account });
 
     const quoteSpender = getErc20ApproveSpender(quote?.dexTx?.data);
     const [spender, setSpender] = useState(quoteSpender);
     if (quoteSpender && quoteSpender !== spender) {
         setSpender(quoteSpender);
     }
+
+    const refetchAllowanceRef = useCurrentRef(refetchAllowance);
+    const previousQuoteStatusRef = useRef(quote?.status);
+
+    useEffect(() => {
+        const previousStatus = previousQuoteStatusRef.current;
+        previousQuoteStatusRef.current = quote?.status;
+
+        if (previousStatus === 'APPROVAL_PENDING' && quote?.status !== 'APPROVAL_PENDING') {
+            refetchAllowanceRef.current();
+        }
+    }, [quote?.status, refetchAllowanceRef]);
 
     const handledRevokeTxRef = useRef<string>(undefined);
     const handledApprovalOrderRef = useRef<string>(undefined);
@@ -126,6 +141,7 @@ export const useTradingExchangeApprovalFlow = () => {
         steps: displayedSteps,
         spender,
         pendingApprovalTxid: resumedApproval.txid,
+        currentAllowance,
         isFlowMissing,
     };
 };

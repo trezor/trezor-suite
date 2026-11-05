@@ -10,8 +10,8 @@ import {
     isPending,
     tokenSupportsIncreasingAllowance,
 } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
 
+import { hasExistingAllowance } from './exchangeAllowanceUtils';
 import { parseCryptoId } from '../../utils';
 
 export type ApprovalFlowStepType = AllowanceStepVariant | 'swap';
@@ -28,11 +28,11 @@ export type ApprovalFlowStep = {
     status: ApprovalFlowStepStatus;
 };
 
-const hasPreapprovedAmount = (quote: ExchangeTrade) =>
-    new BigNumber(quote.preapprovedStringAmount ?? 0).gt(0);
-
-export const getApprovalFlowSteps = (quote: ExchangeTrade): ApprovalFlowStepType[] => {
-    if (!hasPreapprovedAmount(quote)) {
+export const getApprovalFlowSteps = (
+    quote: ExchangeTrade,
+    currentAllowance?: string,
+): ApprovalFlowStepType[] => {
+    if (!hasExistingAllowance(quote, currentAllowance)) {
         return ['approve', 'swap'];
     }
 
@@ -70,11 +70,14 @@ export const findPendingApprovalTxid = (
 const isApprovalConfirmed = (quote: ExchangeTrade) =>
     quote.status === 'CONFIRM' || quote.status === 'SIGN_DATA';
 
-const isStepDone = (
-    type: ApprovalFlowStepType,
-    quote: ExchangeTrade,
-    completedSteps: ApprovalFlowStepType[],
-) => {
+type IsStepDoneParams = {
+    type: ApprovalFlowStepType;
+    quote: ExchangeTrade;
+    completedSteps: ApprovalFlowStepType[];
+    currentAllowance: string | undefined;
+};
+
+const isStepDone = ({ type, quote, completedSteps, currentAllowance }: IsStepDoneParams) => {
     if (type === 'swap') {
         return false;
     }
@@ -93,7 +96,7 @@ const isStepDone = (
             quote.approvalType === 'ZERO' &&
             !!quote.approvalSendTxHash;
 
-        return !hasPreapprovedAmount(quote) || isSentRevokeConfirmed;
+        return !hasExistingAllowance(quote, currentAllowance) || isSentRevokeConfirmed;
     }
 
     return false;
@@ -108,17 +111,24 @@ const isStepPending = (
     (quote.status === 'APPROVAL_PENDING' &&
         (type === 'revoke') === (quote.approvalType === 'ZERO'));
 
+type ApprovalFlowStepStatusOptions = {
+    currentAllowance?: string;
+    hasPendingApprovalTx?: boolean;
+};
+
 export const getApprovalFlowStepStatuses = (
     steps: ApprovalFlowStepType[],
     quote: ExchangeTrade | undefined,
     completedSteps: ApprovalFlowStepType[] = [],
-    hasPendingApprovalTx = false,
+    { currentAllowance, hasPendingApprovalTx = false }: ApprovalFlowStepStatusOptions = {},
 ): ApprovalFlowStep[] => {
     if (!quote) {
         return [];
     }
 
-    const currentIndex = steps.findIndex(type => !isStepDone(type, quote, completedSteps));
+    const currentIndex = steps.findIndex(
+        type => !isStepDone({ type, quote, completedSteps, currentAllowance }),
+    );
 
     return steps.map((type, index): ApprovalFlowStep => {
         if (currentIndex === -1 || index < currentIndex) {

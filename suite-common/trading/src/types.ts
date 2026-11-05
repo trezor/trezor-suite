@@ -360,3 +360,19 @@ export type TradingVerifiedAddress =
     | undefined;
 
 export type TradingFulfillValue = Ok<{ txid: string }> | Err<SerializedError> | undefined;
+
+export type TradingExchangeAllowanceKey = {
+    accountKey: AccountKey;
+    tokenContractAddress: string;
+    spender: string;
+};
+
+export type TradingExchangeAllowanceRead = TradingExchangeAllowanceKey & {
+    requestId: string;
+};
+
+export type TradingExchangeAllowance = TradingExchangeAllowanceRead & {
+    status: 'loading' | 'loaded' | 'error';
+    amount: string | undefined;
+    errorMessage?: string;
+};

@@ -376,3 +376,38 @@ describe('tradingExchangeReducer', () => {
         });
     });
 });
+
+describe('exchangeReducer allowance', () => {
+    const READ = {
+        accountKey: 'account-1' as AccountKey,
+        tokenContractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        spender: '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae',
+        requestId: 'read-1',
+    };
+    const NEXT_READ = { ...READ, requestId: 'read-2' };
+
+    it('keeps the last amount while the same key is re-read', () => {
+        const reRead = { ...NEXT_READ, spender: READ.spender.toUpperCase() };
+        const state = [
+            tradingExchangeActions.startAllowanceRead(READ),
+            tradingExchangeActions.setAllowance({ ...READ, amount: '50' }),
+            tradingExchangeActions.startAllowanceRead(reRead),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance).toEqual({
+            ...reRead,
+            status: 'loading',
+            amount: '50',
+        });
+    });
+
+    it('forgets the failure reason when the key is read again', () => {
+        const state = [
+            tradingExchangeActions.startAllowanceRead(READ),
+            tradingExchangeActions.setAllowanceError({ ...READ, errorMessage: 'timeout' }),
+            tradingExchangeActions.startAllowanceRead(NEXT_READ),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance?.errorMessage).toBeUndefined();
+    });
+});

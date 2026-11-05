@@ -160,21 +160,18 @@ describe('getApprovalFlowStepStatuses', () => {
         'marks the current %s step pending with a pending approval tx',
         (_, steps, quote, expected) => {
             expect(
-                getApprovalFlowStepStatuses(steps, { ...QUOTE, ...quote }, [], true).map(
-                    ({ status }) => status,
-                ),
+                getApprovalFlowStepStatuses(steps, { ...QUOTE, ...quote }, [], {
+                    hasPendingApprovalTx: true,
+                }).map(({ status }) => status),
             ).toEqual(expected);
         },
     );
 
     it('keeps confirmed steps done with a pending approval tx', () => {
         expect(
-            getApprovalFlowStepStatuses(
-                APPROVE_STEPS,
-                { ...QUOTE, status: 'CONFIRM' },
-                [],
-                true,
-            ).map(({ status }) => status),
+            getApprovalFlowStepStatuses(APPROVE_STEPS, { ...QUOTE, status: 'CONFIRM' }, [], {
+                hasPendingApprovalTx: true,
+            }).map(({ status }) => status),
         ).toEqual(['done', 'upcoming']);
     });
 
@@ -275,5 +272,54 @@ describe('findPendingApprovalTxid', () => {
 
     it('returns undefined without a quote', () => {
         expect(findPendingApprovalTxid([getApprovalTx()], undefined)).toBeUndefined();
+    });
+});
+
+describe('getApprovalFlowSteps with the chain allowance', () => {
+    it('approves when the chain reports no allowance despite the provider', () => {
+        expect(getApprovalFlowSteps({ ...QUOTE, preapprovedStringAmount: '10' }, '0')).toEqual(
+            APPROVE_STEPS,
+        );
+    });
+
+    it('revokes first when the chain reports an allowance the provider does not know', () => {
+        expect(
+            getApprovalFlowSteps(
+                { ...QUOTE, send: USDT_CRYPTO_ID, preapprovedStringAmount: '0' },
+                '10',
+            ),
+        ).toEqual(USDT_STEPS);
+    });
+});
+
+describe('getApprovalFlowStepStatuses with the chain allowance', () => {
+    it('marks the revoke done once the chain reports no allowance', () => {
+        expect(
+            getApprovalFlowStepStatuses(
+                USDT_STEPS,
+                { ...QUOTE, preapprovedStringAmount: '10' },
+                [],
+                { currentAllowance: '0' },
+            ),
+        ).toEqual([
+            { type: 'revoke', status: 'done' },
+            { type: 'approve', status: 'active' },
+            { type: 'swap', status: 'upcoming' },
+        ]);
+    });
+
+    it('keeps the revoke active while the chain still reports an allowance', () => {
+        expect(
+            getApprovalFlowStepStatuses(
+                USDT_STEPS,
+                { ...QUOTE, preapprovedStringAmount: '0' },
+                [],
+                { currentAllowance: '10' },
+            ),
+        ).toEqual([
+            { type: 'revoke', status: 'active' },
+            { type: 'approve', status: 'upcoming' },
+            { type: 'swap', status: 'upcoming' },
+        ]);
     });
 });
