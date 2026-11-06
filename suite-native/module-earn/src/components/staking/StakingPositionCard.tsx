@@ -74,7 +74,7 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
                 <TokenIcon
                     networkSymbol={symbol}
                     tokenSymbol={symbol}
-                    size="extraSmall"
+                    size="small"
                     showNetworkIcon
                     wrappedTokenIcon="token"
                 />
