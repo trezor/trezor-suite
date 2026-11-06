@@ -6,6 +6,7 @@ import { processJUnitReport } from './junitReport';
 import type { Action } from './quarantine';
 import { readTestAttempts } from './testAttempts';
 import type { ProjectConfig } from './types';
+import type { ProjectTestFiles } from '../support/testFileSelection';
 
 /**
  * Performance metrics are a by-product of the run and must never change its verdict. The module is
@@ -24,14 +25,13 @@ const collectPerformanceSafely = async (projects: ProjectConfig[]): Promise<void
 };
 
 export const runAllProjects = async (
-    projects: ProjectConfig[],
+    projectTestFiles: ProjectTestFiles[],
     headless: boolean,
-    testFiles: string[],
     quarantinedActions: Action[] = [],
 ): Promise<void> => {
     const failedProjects: string[] = [];
 
-    for (const project of projects) {
+    for (const { project, testFiles } of projectTestFiles) {
         const previousArtifactsRootDirs = listDetoxArtifactsRootDirs(project.target);
         const detoxFailed = await runProjectSafely(project, headless, testFiles);
         const artifactsRootDir = findNewDetoxArtifactsRootDir(
@@ -55,7 +55,7 @@ export const runAllProjects = async (
         }
     }
 
-    await collectPerformanceSafely(projects);
+    await collectPerformanceSafely(projectTestFiles.map(({ project }) => project));
 
     if (failedProjects.length > 0) {
         console.error('\nThe following projects failed:');

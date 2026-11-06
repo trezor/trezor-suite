@@ -34,6 +34,8 @@ jobs:
   prepare_ios_test_app:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: macos-latest
+    # A native build without a warm cache takes about 70 minutes.
+    timeout-minutes: 100
     steps:
       - name: Checkout project
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -109,6 +111,9 @@ jobs:
 
   run_ios_e2e_tests:
     runs-on: macos-latest
+    # The simulator boot and test step timeouts plus about 10 minutes for the other steps, so the
+    # step timeouts fail the job before the job timeout cancels it.
+    timeout-minutes: 85
     strategy:
       fail-fast: false
       matrix:
@@ -188,9 +193,21 @@ jobs:
             suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
 
       - name: Prepare iPhone 11 Simulator
-        run: xcrun simctl create "iPhone 11"  com.apple.CoreSimulator.SimDeviceType.iPhone-11
+        id: simulator
+        run: |
+          SIMULATOR_UDID=$(xcrun simctl create "iPhone 11" com.apple.CoreSimulator.SimDeviceType.iPhone-11)
+          echo "udid=$SIMULATOR_UDID" >> "$GITHUB_OUTPUT"
+
+      # Booted in its own step so the boot time shows apart from the tests. Detox reuses a booted
+      # simulator, otherwise it boots it while preparing the first test file.
+      - name: Boot iPhone 11 Simulator
+        timeout-minutes: 15
+        env:
+          SIMULATOR_UDID: ${{ steps.simulator.outputs.udid }}
+        run: xcrun simctl bootstatus "$SIMULATOR_UDID" -b
 
       - name: Run Detox E2E iOS tests
+        timeout-minutes: 60
         working-directory: ./suite-native/app
         env:
           PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
@@ -206,6 +223,7 @@ jobs:
 
   notify_scheduled_failure_to_slack:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: ${{ failure() && github.event_name == 'schedule' }}
     needs: run_ios_e2e_tests
     steps:

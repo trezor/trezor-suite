@@ -63,6 +63,10 @@ The `detoxRunner.ts` supports several arguments to control the test execution:
 
 > Note: Sharding arguments (`--shard` and `--totalShards`) cannot be used together with specific test files.
 
+Before starting Detox, the runner reads the test names of every file and leaves out the files in which no test name matches the `grep` of a project, because Jest would only skip all their tests. Shards then split the remaining files of all projects among themselves, and a project without files in a shard is not started. A file is always kept when a test name cannot be read statically, for example a title with an expression, `it.each` or a call of a helper next to the tests. Test file arguments that are not readable files, such as a part of a file name, are passed to Jest as path patterns unchanged.
+
+The `[E2E timing]` lines in the test output show how long Detox and Jest take to start the first test file, how long every file takes before its first test starts and how long files run in which no test ran.
+
 ### Integration with Trezor-user-env
 
 Some tests use Trezor-user-env to simulate the Trezor device. To make these tests work locally, make sure that the trezor-user-env is up and running. To do so, follow the [trezor-user-env documentation](https://github.com/trezor/trezor-user-env/blob/master/README.md).
@@ -80,7 +84,7 @@ The Device model and FW version is defined in the custom detox runner config. Th
 
 ## Test tagging
 
-Since Detox/Jest doesn't natively support test tagging, we are using a common convention to achieve this goal. Tags are added as part of the test describe or test name. Tags are to be prefixed with @ and and wrapped in [] parentheses.
+Since Detox/Jest doesn't natively support test tagging, we are using a common convention to achieve this goal. Tags are added as part of the test describe or test name. Tags are to be prefixed with @ and and wrapped in [] parentheses. Keep the titles static strings, so the runner can select the test files by their tags.
 Example:
 
 ```typescript
