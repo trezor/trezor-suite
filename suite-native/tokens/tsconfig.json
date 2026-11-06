@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/token" },
         {
             "path": "../../suite-common/token-definitions"
         },
@@ -19,8 +20,12 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../atoms" },
         {
             "path": "../../packages/blockchain-link"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
         },
         { "path": "../../packages/redux-utils" }
     ]
