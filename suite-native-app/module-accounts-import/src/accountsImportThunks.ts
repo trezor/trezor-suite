@@ -150,7 +150,6 @@ export const getAccountInfoThunk = createThunk<
                         : undefined,
                     descriptor: taprootXpubWithApostrophes ?? xpubAddress,
                     details: 'txs',
-                    suppressBackupWarning: true,
                     protocols: getNetworkType(symbol) === 'ethereum' ? ['erc4626'] : undefined,
                 }),
                 dispatch(
