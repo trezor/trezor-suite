@@ -1,7 +1,7 @@
 import { type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { ExactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
+import { CompactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
@@ -44,10 +44,10 @@ export const YieldDepositApprovedAmountCard = ({
                     </Text>
                 ) : null}
                 {!isApprovedAmountUnlimited && approvedAmount ? (
-                    <ExactTokenAmountFormatter
+                    <CompactTokenAmountFormatter
                         value={asDecimalTokenAmount(approvedAmount)}
                         tokenSymbol={toTokenSymbol(tokenSymbol)}
-                        maxDisplayedDecimals={tokenDecimals}
+                        tokenDecimals={tokenDecimals}
                         variant="body-sm-strong"
                         color="contentPrimary"
                         numberOfLines={1}
