@@ -21,7 +21,9 @@ import {
 import { getFiatRateKey, isErc4626, isTestnet } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { getAssetPriceHistoryQueryKey } from './useRefreshAssetPrice';
 import { fetchLastWeekAssetPrice } from '../utils/fetchLastWeekAssetPrice';
+import { getAssetTicker } from '../utils/getAssetTicker';
 
 const REFRESH_INTERVAL = 60 * 60 * 1000;
 
@@ -72,11 +74,7 @@ export const useAssetPrice = ({
             : asBaseCurrencyAmount(new BigNumber(currentFiatRate.rate));
     const missingRateTicker: TickerId | null =
         networkSymbol && currentFiatRate?.rate === undefined && !isTestnet(networkSymbol)
-            ? {
-                  symbol: networkSymbol,
-                  tokenAddress: tokenContract,
-                  protocols: isErc4626Token ? ['erc4626'] : undefined,
-              }
+            ? getAssetTicker({ networkSymbol, tokenContract, isErc4626Token })
             : null;
 
     const missingRateQuery = useMissingRateTickersQuery({
@@ -86,14 +84,13 @@ export const useAssetPrice = ({
 
     const { data } = useQuery<HistoricalAssetPriceQueryData>({
         enabled: !!networkSymbol,
-        queryKey: [
-            'asset-price-history',
+        queryKey: getAssetPriceHistoryQueryKey(
             networkSymbol,
             tokenContract,
             isErc4626Token,
             fiatCurrencyCode,
             backendType,
-        ],
+        ),
         refetchInterval: REFRESH_INTERVAL,
         queryFn: async () => {
             if (!networkSymbol) return NULL_HISTORICAL_ASSET_PRICE_QUERY_DATA;

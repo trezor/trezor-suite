@@ -16,6 +16,7 @@ import {
 
 import { selectWalletAssetAccountHistories } from '../assetTransactionsSelectors';
 import { useAccountPageFetching } from './useAccountPageFetching';
+import { useRefreshAssetPrice } from './useRefreshAssetPrice';
 import { getAssetTransactionsView } from '../utils/getAssetTransactionsView';
 
 type UseAssetTransactionsParams = {
@@ -48,9 +49,11 @@ export const useAssetTransactions = ({
         clearFailedAccountKeys,
         reopenHistories,
     } = useAccountPageFetching(perPage);
+    const refreshAssetPrice = useRefreshAssetPrice({ networkSymbol, tokenContract });
     const { isRefreshing, refreshAccountsAndLatestTransactions } = useRefreshAccounts({
         accountKeys: accountHistories.map(accountHistory => accountHistory.accountKey),
         perPage,
+        onRefresh: refreshAssetPrice, //refreshes the chart
     });
 
     const {
