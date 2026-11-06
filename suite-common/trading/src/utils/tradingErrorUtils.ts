@@ -1,4 +1,4 @@
-import { type SignTransactionError, getSendFormErrorCause } from '@suite-common/wallet-core';
+import { type SignTransactionError } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
 import { isTradingError } from './typeGuards';
@@ -67,9 +67,7 @@ export const getTradingErrorCauseMessage = (
 
     switch (cause.source) {
         case 'send-form':
-            return cause.error.error === 'push-approval-rejected'
-                ? undefined
-                : getSendFormErrorCause(cause.error).message;
+            return cause.error.error === 'push-approval-rejected' ? undefined : cause.error.message;
         case 'precompose':
             return undefined;
         case 'connect':

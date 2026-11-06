@@ -55,11 +55,6 @@ const isOptionalString = (value: unknown): value is string | undefined =>
 const isTradingErrorCode = (value: unknown): value is TradingErrorCode =>
     isKeyOf(TRADING_ERROR_CODES, value);
 
-const hasSerializedConnectError = (error: Record<string, unknown>) =>
-    isObject(error.metadata) &&
-    isObject(error.metadata.error) &&
-    typeof error.metadata.error.message === 'string';
-
 const hasConnectCodeAndMessage = (error: Record<string, unknown>) =>
     isOptionalString(error.errorCode) && isOptionalString(error.message);
 
@@ -71,8 +66,8 @@ const SIGN_AND_PUSH_ERROR_VALIDATORS: Record<
     'enhance-transaction-failed': error => typeof error.message === 'string',
     'sign-transaction-failed': hasConnectCodeAndMessage,
     'sign-transaction-timeout': hasConnectCodeAndMessage,
-    'push-transaction-failed': hasSerializedConnectError,
-    'push-transaction-pending-conflict': hasSerializedConnectError,
+    'push-transaction-failed': hasConnectCodeAndMessage,
+    'push-transaction-pending-conflict': hasConnectCodeAndMessage,
     'push-approval-rejected': () => true,
 };
 

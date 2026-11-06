@@ -9,8 +9,6 @@ import {
 } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 import { type ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/src/constants';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { type Err } from '@trezor/type-utils';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 
@@ -54,7 +52,8 @@ export type SignTransactionTimeoutError = {
 
 export type PushTransactionError = {
     error: 'push-transaction-failed' | 'push-transaction-pending-conflict';
-    metadata: Err<SerializedError>;
+    errorCode?: CONNECT_ERRORS.ErrorCode;
+    message?: string;
 };
 
 export type SendFormError =
@@ -63,11 +62,3 @@ export type SendFormError =
     | SignTransactionError
     | SignTransactionTimeoutError
     | PushTransactionError;
-
-/**
- * The original Connect or blockchain failure behind a send form error.
- */
-export type SendFormErrorCause = {
-    code?: CONNECT_ERRORS.ErrorCode;
-    message?: string;
-};
