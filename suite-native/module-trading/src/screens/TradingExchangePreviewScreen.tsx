@@ -192,6 +192,7 @@ export const TradingExchangePreviewScreen = ({
                     txnErrorString={errorString}
                     onSignTransactionNavigation={onSignTransactionNavigation}
                     onSlippageConfirmed={handleConfirmTrade}
+                    onBridgeSpeedConfirmed={handleConfirmTrade}
                     isApproved={isApproved}
                 />
                 <Footer />

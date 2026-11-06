@@ -54,6 +54,7 @@ import {
     selectTradingExchange,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeAmountLimits,
+    selectTradingExchangeBridgeSpeed,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeCexQuotes,
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
@@ -131,6 +132,7 @@ import { type ExchangeInfo, exchangeInitialState } from '../reducers/exchangeRed
 import { type SellInfo, sellInitialState } from '../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../reducers/tradingCommonReducer';
 import type { TradingTransactionExchange, TradingTransactionSell, TradingType } from '../types';
+import { BRIDGE_SPEED, DEFAULT_BRIDGE_SPEED } from '../types/bridgeSpeed';
 
 const supportedCoins: readonly NetworkSymbol[] = [
     asNetworkSymbol('btc'),
@@ -809,7 +811,36 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingCoinInfoByCryptoId.name, () => {
+    describe('selectTradingExchangeBridgeSpeed', () => {
+        const buildState = (selectedQuote: ExchangeTrade | undefined): TradingRootState => ({
+            wallet: {
+                trading: {
+                    ...initialState,
+                    exchange: { ...initialState.exchange, selectedQuote },
+                },
+            },
+        });
+
+        it('should return the bridge speed of the selected quote', () => {
+            const fastQuote = {
+                ...tradeApiFixtures.exchangeTrade,
+                bridgeSpeed: BRIDGE_SPEED.FAST,
+            } as ExchangeTrade;
+
+            expect(selectTradingExchangeBridgeSpeed(buildState(fastQuote))).toBe(BRIDGE_SPEED.FAST);
+        });
+
+        it.each<[string, ExchangeTrade | undefined]>([
+            ['no quote is selected', undefined],
+            ['the selected quote has no bridge speed', tradeApiFixtures.exchangeTrade],
+        ])('should return the default bridge speed when %s', (_, selectedQuote) => {
+            expect(selectTradingExchangeBridgeSpeed(buildState(selectedQuote))).toBe(
+                DEFAULT_BRIDGE_SPEED,
+            );
+        });
+    });
+
+    describe('selectTradingCoinInfoByCryptoId', () => {
         it('should return coin data', () => {
             expect(selectTradingCoinInfoByCryptoId(state, 'bitcoin' as CryptoId)).toEqual({
                 symbol: 'btc',
