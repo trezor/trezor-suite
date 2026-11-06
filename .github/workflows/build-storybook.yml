@@ -52,7 +52,7 @@ jobs:
         env:
           ASSET_PREFIX: /product-components/develop
         run: |
-          yarn workspace @suite/storybook storybook-build
+          yarn workspace @suite-app/storybook storybook-build
 
       - name: Upload suite storybook to dev.suite.sldev.cz
         env:
@@ -60,4 +60,4 @@ jobs:
           PRODUCT_COMPONENTS_DEPLOY_PATH: s3://dev.suite.sldev.cz/product-components/develop
         run: |
           aws s3 sync --delete ./packages/components/.build-storybook ${COMPONENTS_DEPLOY_PATH}
-          aws s3 sync --delete ./suite/storybook/.build-storybook ${PRODUCT_COMPONENTS_DEPLOY_PATH}
+          aws s3 sync --delete ./suite-app/storybook/.build-storybook ${PRODUCT_COMPONENTS_DEPLOY_PATH}
