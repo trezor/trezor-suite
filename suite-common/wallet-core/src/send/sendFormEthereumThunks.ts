@@ -507,7 +507,6 @@ export const resolveEthereumNonce = async ({
                 identity: tryGetAccountIdentity(selectedAccount),
                 details: 'basic',
                 confirmedNonce: true,
-                suppressBackupWarning: true,
             });
 
             if (
