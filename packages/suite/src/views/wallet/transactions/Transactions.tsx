@@ -14,12 +14,14 @@ import { useSelector } from 'src/hooks/suite';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
 import { TradeBox } from './TradeBox/TradeBox';
+import { RateLimitedHistoryBanner } from './TransactionList/RateLimitedHistoryBanner';
 import { SingleAccountTransactionList } from './TransactionList/SingleAccountTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
 import { AccountOverviewBalance } from './components/AccountOverviewBalance';
 import { NoTransactions } from './components/NoTransactions';
 import { TransactionSummary } from './components/TransactionSummary';
 import { TronResources } from './components/TronResources';
+import { useWatchAccountHistory } from './useWatchAccountHistory';
 import { CardanoNewProviderCard } from '../staking/components/AdaStakingDashboard/CardanoNewProviderCard';
 
 interface LayoutProps {
@@ -41,6 +43,7 @@ export const Transactions = () => {
     const accountTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || null),
     );
+    useWatchAccountHistory(selectedAccount.account?.key);
 
     if (selectedAccount.status !== 'loaded') {
         return <Layout selectedAccount={selectedAccount} />;
@@ -104,6 +107,7 @@ export const Transactions = () => {
                     </Column>
                 )}
                 <SolanaLimitedHistoryBanner account={account} />
+                <RateLimitedHistoryBanner account={account} />
                 <SingleAccountTransactionList account={account} symbol={account.symbol} />
             </Layout>
         );

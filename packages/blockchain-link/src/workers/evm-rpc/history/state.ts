@@ -1,3 +1,5 @@
+import { MAX_DISCOVERED_TOKENS } from './constants';
+import type { ParsedTransfer } from './transferLog';
 import type { WorkerState } from '../../state';
 
 export type HistoryEntry = {
@@ -12,6 +14,11 @@ export type DescriptorHistory = {
     syncedFrom: number;
     /** Newest block scanned, inclusive, or COLD when nothing has been scanned yet. */
     syncedTo: number;
+    /**
+     * Newest block the live watcher has checked, or COLD. Says only that no change went unnoticed up
+     * to here, unlike `syncedTo`, which promises that `entries` holds everything in its bounds.
+     */
+    watchedTo: number;
     entries: Map<string, HistoryEntry>;
     /** Lowercased contract addresses seen transferring to or from this descriptor. */
     tokenContracts: Set<string>;
@@ -58,6 +65,7 @@ export const getDescriptorHistory = (state: WorkerState, descriptor: string): De
     const created: DescriptorHistory = {
         syncedFrom: COLD,
         syncedTo: COLD,
+        watchedTo: COLD,
         entries: new Map(),
         tokenContracts: new Set(),
     };
@@ -88,3 +96,22 @@ export const sortedEntries = (history: DescriptorHistory): HistoryEntry[] =>
     [...history.entries.values()].sort(
         (a, b) => b.blockNumber - a.blockNumber || b.transactionIndex - a.transactionIndex,
     );
+
+/**
+ * Remembers the contract of a transfer as a token the account holds. Anyone can make a contract emit
+ * a `Transfer` naming any address, and address-poisoning spam does exactly that with zero-value
+ * transfers, so a transfer that moved nothing is no sign of holding anything.
+ */
+export const discoverTokenContract = (
+    history: DescriptorHistory,
+    transfer: ParsedTransfer,
+    nativeAddresses: ReadonlySet<string>,
+) => {
+    if (
+        transfer.value > 0n &&
+        !nativeAddresses.has(transfer.contract) &&
+        history.tokenContracts.size < MAX_DISCOVERED_TOKENS
+    ) {
+        history.tokenContracts.add(transfer.contract);
+    }
+};
