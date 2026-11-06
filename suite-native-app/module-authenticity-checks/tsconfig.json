@@ -4,6 +4,12 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/device-authenticity"
+        },
+        {
+            "path": "../../suite-common/persistent-device-data"
+        },
+        {
             "path": "../../suite-common/suite-utils"
         },
         {
@@ -16,6 +22,7 @@
         {
             "path": "../../suite-native/navigation"
         },
+        { "path": "../../suite-native/settings" },
         {
             "path": "../../packages/dependency-injection"
         },

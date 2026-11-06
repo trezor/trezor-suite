@@ -89,7 +89,7 @@ export enum DeviceOnboardingStackRoutes {
     ThpConfirmation = 'ThpConfirmation',
     ThpCodeEntry = 'ThpCodeEntry',
     ThpPairingSuccess = 'ThpPairingSuccess',
-    DeviceAuthenticity = 'DeviceAuthenticity ',
+    DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticitySuccess = 'DeviceAuthenticitySuccess',
     DeviceTutorial = 'DeviceTutorial',
     CreateOrRecoverCrossroads = 'CreateOrRecoverCrossroads',
