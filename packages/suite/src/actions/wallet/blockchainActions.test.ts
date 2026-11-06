@@ -55,12 +55,12 @@ import { DEFAULT_ACCOUNT_SYNC_INTERVAL } from '@trezor/network-module-suite-comm
 import { typedObjectKeys } from '@trezor/utils';
 
 import * as fixtures from './__fixtures__/blockchainActions';
-import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
 
-const accountsReducer = prepareAccountsReducer(mockExtraDependencies);
-const blockchainReducer = prepareBlockchainReducer(mockExtraDependencies);
-const tradingReducer = prepareTradingReducer(mockExtraDependencies);
-const transactionsReducer = prepareTransactionsReducer(mockExtraDependencies);
+const accountsReducer = prepareAccountsReducer(mockExtraDependenciesForReducers);
+const blockchainReducer = prepareBlockchainReducer(mockExtraDependenciesForReducers);
+const tradingReducer = prepareTradingReducer(mockExtraDependenciesForReducers);
+const transactionsReducer = prepareTransactionsReducer(mockExtraDependenciesForReducers);
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 const btcSymbol = asNetworkSymbol('btc');

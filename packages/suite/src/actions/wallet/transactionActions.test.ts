@@ -13,9 +13,9 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
-import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
 
-const transactionsReducer = prepareTransactionsReducer(mockExtraDependencies);
+const transactionsReducer = prepareTransactionsReducer(mockExtraDependenciesForReducers);
 
 const btcSymbol = asNetworkSymbol('btc');
 

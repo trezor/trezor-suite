@@ -24,10 +24,10 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
 
 import messageSystemMiddleware from './messageSystemMiddleware';
-import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
 
 const walletReducers = combineReducers({
-    settings: prepareWalletSettingsReducer(mockExtraDependencies),
+    settings: prepareWalletSettingsReducer(mockExtraDependenciesForReducers),
 });
 
 jest.mock('@suite-common/message-system/src/messageSystemUtils', () => ({

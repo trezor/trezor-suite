@@ -33,7 +33,7 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { BottomNavigation } from './BottomNavigation';
 import { Navigation } from './Navigation';
 import { SIDEBAR_MIN_WIDTH } from './consts';
-import { mockExtraDependencies } from '../../../../../../mocks/mockExtraDependencies';
+import { mockExtraDependenciesForReducers } from '../../../../../../mocks/mockExtraDependenciesForReducers';
 import {
     type MockSuiteState,
     mockInitialAppState,
@@ -62,7 +62,7 @@ jest.mock('./QuickActions/QuickActions', () => ({
     QuickActions: () => <div data-testid="quick-actions" />,
 }));
 
-const flagsReducer = prepareFlagsReducer(mockExtraDependencies);
+const flagsReducer = prepareFlagsReducer(mockExtraDependenciesForReducers);
 const analytics = mockDesktopAnalytics();
 const services: DesktopAnalyticsDep & SuiteRouterHistoryDep = {
     analytics,

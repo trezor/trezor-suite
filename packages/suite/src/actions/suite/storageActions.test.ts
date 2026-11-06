@@ -70,16 +70,16 @@ import {
     type SaveWalletSettingsThunkState,
 } from './storageActions';
 import { createInMemoryDbMock } from '../../../mocks/createInMemoryDbMock';
-import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
 
-const accountsReducer = prepareAccountsReducer(mockExtraDependencies);
+const accountsReducer = prepareAccountsReducer(mockExtraDependenciesForReducers);
 const discoveryReducer = prepareDiscoveryReducer({});
-const earnOnboardingReducer = prepareEarnOnboardingReducer(mockExtraDependencies);
-const fiatRatesReducer = prepareFiatRatesReducer(mockExtraDependencies);
-const sendFormReducer = prepareSendFormReducer(mockExtraDependencies);
-const tradingReducer = prepareTradingReducer(mockExtraDependencies);
-const transactionsReducer = prepareTransactionsReducer(mockExtraDependencies);
-const walletSettingsReducer = prepareWalletSettingsReducer(mockExtraDependencies);
+const earnOnboardingReducer = prepareEarnOnboardingReducer(mockExtraDependenciesForReducers);
+const fiatRatesReducer = prepareFiatRatesReducer(mockExtraDependenciesForReducers);
+const sendFormReducer = prepareSendFormReducer(mockExtraDependenciesForReducers);
+const tradingReducer = prepareTradingReducer(mockExtraDependenciesForReducers);
+const transactionsReducer = prepareTransactionsReducer(mockExtraDependenciesForReducers);
+const walletSettingsReducer = prepareWalletSettingsReducer(mockExtraDependenciesForReducers);
 
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
@@ -102,7 +102,7 @@ const deviceReducer = prepareDesktopDeviceReducer({
 });
 const flagsReducer = prepareFlagsReducer({
     actionTypes: { storageLoad: storageLoad.type },
-    reducers: { storageLoadFlags: mockExtraDependencies.reducers.storageLoadFlags },
+    reducers: { storageLoadFlags: mockExtraDependenciesForReducers.reducers.storageLoadFlags },
 });
 const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(undefined);
 const suiteSyncReducer = prepareSuiteSyncReducer(undefined);

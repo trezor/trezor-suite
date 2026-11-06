@@ -25,7 +25,7 @@ import { type WithServices } from '@trezor/redux-utils';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailMenu } from './AssetDetailMenu';
-import { mockExtraDependencies } from '../../../../../mocks/mockExtraDependencies';
+import { mockExtraDependenciesForReducers } from '../../../../../mocks/mockExtraDependenciesForReducers';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
@@ -37,7 +37,7 @@ const ETH = asNetworkSymbol('eth');
 const XRP = asNetworkSymbol('xrp');
 const ADA = asNetworkSymbol('ada');
 
-const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(mockExtraDependencies);
+const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(mockExtraDependenciesForReducers);
 
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const HOSKY_POLICY_ID = 'a0028f350aaabe0545fdcb56b039bfb08e4bb4d8c4d7c3c7d481c235';
