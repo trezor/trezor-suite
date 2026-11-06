@@ -53,6 +53,16 @@ import { type GetWalletMiddlewaresDeps, getWalletMiddlewares } from './middlewar
 import { type EarnState, earnReducers } from './reducers/earn';
 import { type SuiteReducersState, suiteReducers } from './reducers/suite';
 
+const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
+const bluetoothReducer = prepareDesktopBluetoothReducer(extraDependencies);
+const thpReducer = prepareThpReducer(extraDependencies);
+const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
+const suiteSyncQuotaManagerReducer = prepareSuiteSyncQuotaManagerReducer(extraDependencies);
+const receiveReducer = prepareReceiveReducer(extraDependencies);
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
+const walletReducers = createWalletReducer(extraDependencies);
+
 export type AppState = SuiteReducersState & {
     networks: NetworksState;
     onboarding: OnboardingState;
@@ -81,23 +91,23 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     ...suiteReducers,
     networks: networksReducer,
     onboarding: onboardingReducers,
-    receive: prepareReceiveReducer(extraDependencies),
-    wallet: createWalletReducer(extraDependencies),
+    receive: receiveReducer,
+    wallet: walletReducers,
     earn: earnReducers,
     recovery: recoveryReducer,
-    firmware: prepareFirmwareReducer(extraDependencies),
+    firmware: firmwareReducer,
     backup: backupReducer,
     desktop: desktopReducer,
     bioAuth: prepareBioAuthReducer(extraDependencies),
-    tokenDefinitions: prepareTokenDefinitionsReducer(extraDependencies),
-    bluetooth: prepareDesktopBluetoothReducer(extraDependencies),
-    thp: prepareThpReducer(extraDependencies),
-    suiteSync: prepareSuiteSyncReducer(extraDependencies),
-    suiteSyncQuotaManager: prepareSuiteSyncQuotaManagerReducer(extraDependencies),
+    tokenDefinitions: tokenDefinitionsReducer,
+    bluetooth: bluetoothReducer,
+    thp: thpReducer,
+    suiteSync: suiteSyncReducer,
+    suiteSyncQuotaManager: suiteSyncQuotaManagerReducer,
     suiteSyncData: suiteSyncDataReducer,
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFiltersReducer,
-    persistentDeviceData: preparePersistentDeviceDataReducer(extraDependencies),
+    persistentDeviceData: persistentDeviceDataReducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
 const loggerExcludedActions = [addLog.type];
