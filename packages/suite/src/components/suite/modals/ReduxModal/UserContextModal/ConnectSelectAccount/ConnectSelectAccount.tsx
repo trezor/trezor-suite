@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { AccountLabel } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
@@ -15,6 +16,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { type AccountType } from '@suite-common/wallet-config';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Column, H3, Icon, Modal, Paragraph, Row, SubTabs, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleIcon } from '@trezor/icons';
@@ -41,6 +43,7 @@ export const ConnectSelectAccount = () => {
     const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const popupCall = useSelector(selectConnectPopupCall);
+    const accounts = useSelector(selectAccounts);
 
     // Load the first page once the picker opens (the Connect method only sets up the state).
     const isSelectAccount = popupCall?.state === 'select-account';
@@ -90,6 +93,9 @@ export const ConnectSelectAccount = () => {
     // device and get cancelled — so those actions are blocked until the visible page has settled.
     // Selection stays live: it's pure Redux state and touches no device.
     const isDiscovering = pageCandidates.some(c => c.loading);
+    // An account-only pick leaves the picker, which stops loading the rest of the page, so its rows
+    // wait until the page has loaded.
+    const isRowDisabled = isVerifying || (!!options.isAccountOnly && isDiscovering);
 
     // Verification is always available but optional (mirrors ConnectAddressConfirmation) — connecting
     // only requires a valid selection.
@@ -160,6 +166,23 @@ export const ConnectSelectAccount = () => {
     const onFinish = () => dispatch(connectPopupResolveSelectAccountThunk({ confirmed: false }));
 
     const rows = exported ? selectedCandidates : pageCandidates;
+
+    const getLabel = (candidate: SelectAccountCandidate) => {
+        const account = accounts.find(a => a.key === candidate.accountKey);
+
+        return account ? (
+            <AccountLabel account={account} />
+        ) : (
+            <Translation
+                id={
+                    isManualAddressPhase
+                        ? 'TR_CONNECT_SELECT_ACCOUNT_ADDRESS_LABEL'
+                        : 'TR_CONNECT_SELECT_ACCOUNT_LABEL'
+                }
+                values={{ index: candidate.accountIndex + 1 }}
+            />
+        );
+    };
 
     let descriptionKey: TranslationKey = 'TR_CONNECT_SELECT_ACCOUNT_DESCRIPTION';
     if (exported) {
@@ -243,9 +266,11 @@ export const ConnectSelectAccount = () => {
                             </H3>
                         )}
                         <ConnectCallSource />
-                        <Paragraph>
-                            <Translation id={descriptionKey} />
-                        </Paragraph>
+                        {!options.isAccountOnly && (
+                            <Paragraph>
+                                <Translation id={descriptionKey} />
+                            </Paragraph>
+                        )}
                         {isManualAddressPhase && (
                             <Text typographyStyle="body-xs" color="contentSecondary">
                                 <Translation
@@ -296,18 +321,9 @@ export const ConnectSelectAccount = () => {
                                 <SelectAccountRow
                                     key={`${candidate.accountTypeKey}-${candidate.accountIndex}`}
                                     candidate={candidate}
-                                    label={
-                                        <Translation
-                                            id={
-                                                isManualAddressPhase
-                                                    ? 'TR_CONNECT_SELECT_ACCOUNT_ADDRESS_LABEL'
-                                                    : 'TR_CONNECT_SELECT_ACCOUNT_LABEL'
-                                            }
-                                            values={{ index: candidate.accountIndex + 1 }}
-                                        />
-                                    }
+                                    label={getLabel(candidate)}
                                     interactionMode={rowInteractionMode}
-                                    disabled={isVerifying}
+                                    disabled={isRowDisabled}
                                     discovering={isDiscovering}
                                     deviceModelInternal={device?.features?.internal_model}
                                     onToggle={() =>

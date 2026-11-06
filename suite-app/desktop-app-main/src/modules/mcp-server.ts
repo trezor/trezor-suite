@@ -829,7 +829,7 @@ const handleXrpSend = async (
 
 /**
  * Handle BTC/UTXO transaction via a single sendTransaction call with push=true.
- * TrezorConnect handles everything internally: account discovery, fee estimation,
+ * Suite handles everything in its popup: account selection, fee estimation,
  * UTXO selection, fee level selection, signing, and broadcasting.
  */
 const handleUtxoSend = (
@@ -900,7 +900,7 @@ const handleSendTransaction = async (
             return autoBroadcast(sendPopupCall, coin, signResult, params.broadcast !== false);
         }
 
-        // Otherwise, single sendTransaction call — TrezorConnect handles everything
+        // Otherwise, single sendTransaction call — Suite handles everything
         return handleUtxoSend(params, sendPopupCall, coin);
     }
 

@@ -11,6 +11,7 @@ import { EthereumSignTransaction } from './ethereumSignTransaction';
 import { EthereumSignTypedData } from './ethereumSignTypedData';
 import { RequestLogin } from './requestLogin';
 import { SelectAccount } from './selectAccount';
+import { SendTransaction } from './sendTransaction';
 import { SignTransaction } from './signTransaction';
 import { SolanaSignTransaction } from './solanaSignTransaction';
 import { StellarSignTransaction } from './stellarSignTransaction';
@@ -24,6 +25,7 @@ const POPUP_FLOWS: { [M in CallMethodKeys]?: PopupFlowConstructor<M> } = {
     selectAccount: SelectAccount,
     requestLogin: RequestLogin,
     signTransaction: SignTransaction,
+    sendTransaction: SendTransaction,
     ethereumSignTransaction: EthereumSignTransaction,
     ethereumSignTypedData: EthereumSignTypedData,
     solanaSignTransaction: SolanaSignTransaction,

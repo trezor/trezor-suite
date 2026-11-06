@@ -14,7 +14,7 @@ import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { connectPopupActions } from './connectPopupActions';
-import { getPopupCallDeferred } from './connectPopupPromiseManager';
+import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
 import {
     prepareConnectPopupReducer,
     selectConnectPopupCall,
@@ -26,12 +26,14 @@ import {
     connectPopupCallInnerThunk,
     connectPopupFinishCallThunk,
     connectPopupLoadSelectAccountPageThunk,
+    connectPopupSelectManualAccountThunk,
 } from './connectPopupThunks';
 import {
     CommonPopupFlow,
     type PopupFlowParams,
     type PopupFlowPayload,
 } from './popupFlows/CommonPopupFlow';
+import { SendTransaction } from './popupFlows/sendTransaction';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
 // manual address-phase path these tests exercise (the account-index path loops it per row). Mocking
@@ -90,7 +92,7 @@ const connectPopupReducer = prepareConnectPopupReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const initStore = () =>
+const initStore = (activeCall: object = selectAccountState) =>
     createTestCompositionRoot<
         WithServices<LockDeviceDep>,
         ConnectPopupLoadSelectAccountPageThunkState
@@ -102,7 +104,7 @@ const initStore = () =>
             wallet: (state = { accounts: accountsInitialState }) => state,
         }),
         preloadedState: {
-            connectPopup: { activeCall: selectAccountState, permissions: [] },
+            connectPopup: { activeCall, permissions: [] },
             device: fakeDeviceState,
             wallet: { accounts: accountsInitialState },
         },
@@ -257,6 +259,43 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
     });
 });
 
+describe('connectPopupSelectManualAccountThunk — account-only picker', () => {
+    beforeEach(() => {
+        mockedPrepare.mockReset();
+    });
+
+    const initAccountOnlyStore = () =>
+        initStore({
+            ...selectAccountState,
+            options: { ...selectAccountState.options, isAccountOnly: true },
+            manualPhase: 'account',
+            manualAccountIndex: undefined,
+        });
+
+    it('ends the selection with the picked account instead of listing its addresses', async () => {
+        const store = initAccountOnlyStore();
+        const pickerDeferred = getPermissionDeferred(true);
+
+        store.dispatch(connectPopupSelectManualAccountThunk({ accountIndex: 2 }));
+
+        await expect(pickerDeferred.promise).resolves.toBeUndefined();
+        expect(selectConnectPopupCall(store.getState())).toMatchObject({
+            state: 'select-account',
+            manualPhase: 'account',
+            manualAccountIndex: 2,
+        });
+        expect(mockedPrepare).not.toHaveBeenCalled();
+    });
+
+    it('leaves the picker for the ongoing call once the flow approves it', () => {
+        const store = initAccountOnlyStore();
+
+        store.dispatch(connectPopupActions.approvePermissions());
+
+        expect(selectConnectPopupCall(store.getState())?.state).toBe('ongoing');
+    });
+});
+
 describe('connectPopupFinishCallThunk', () => {
     it('answers a call that ended with a device error when its popup is closed', async () => {
         const store = initStore();
@@ -334,7 +373,7 @@ describe('connectPopupCallInnerThunk', () => {
         jest.spyOn(CommonPopupFlow.prototype, 'run').mockRejectedValue(
             TypedError('Method_InvalidParameter'),
         );
-        const cleanup = jest.spyOn(CommonPopupFlow.prototype, 'cleanup');
+        const cleanup = jest.spyOn(SendTransaction.prototype, 'cleanup');
 
         const { dispatch, deferred, report, lockDevice } =
             await runCallThunk(interactiveComposeParams);

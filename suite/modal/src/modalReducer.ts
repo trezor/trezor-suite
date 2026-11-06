@@ -11,7 +11,6 @@ import {
     UI_REQUESTS,
     type UiRequestButtonData,
     type UiRequestConfirmation,
-    type UiRequestSelectAccount,
     type UiRequestSelectFee,
     isUiEventOfType,
     isUiRequestOfType,
@@ -49,12 +48,6 @@ export type ModalState =
           device: Device;
           windowType: DeviceContextWindowType;
           data?: UiRequestButtonData;
-          requestId?: string;
-      }
-    | {
-          context: typeof MODAL_CONTEXT_DEVICE_CONFIRMATION;
-          windowType: typeof UI_REQUESTS.REQUEST_ACCOUNT;
-          data?: UiRequestSelectAccount['payload'];
           requestId?: string;
       }
     | {
@@ -154,15 +147,6 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
             windowType: action.payload.type,
             preserve: state.preserve,
             requestId,
-        };
-    }
-
-    if (isUiRequestOfType(action, UI_REQUESTS.REQUEST_ACCOUNT)) {
-        return {
-            context: MODAL_CONTEXT_DEVICE_CONFIRMATION,
-            windowType: UI_REQUESTS.REQUEST_ACCOUNT,
-            data: action.payload,
-            preserve: state.preserve,
         };
     }
 

@@ -3,6 +3,7 @@ import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-t
 import {
     type CallMethodKeys,
     type DeviceUniquePath,
+    type FeeLevel,
     type PermissionRequest,
 } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
@@ -126,6 +127,7 @@ export type SelectAccountCandidate = {
     symbol: NetworkSymbol;
     accountIndex: number;
     accountTypeKey: string; // SelectAccountTypeTab.key of the tab this row belongs to
+    accountKey?: AccountKey; // set when Suite already has the account of this row
     path: string; // serialized derivation path of the address/account
     address?: string; // mutually exclusive with `xpub`
     xpub?: string; // mutually exclusive with `address` — set only in `options.mode === 'xpub'`
@@ -141,6 +143,12 @@ export type SelectAccountCandidate = {
 
 export const SELECT_ACCOUNT_PAGE_SIZE = 5;
 
+// What the user chose in the fee selection of `sendTransaction`.
+export type SelectFeeChoice =
+    | { type: 'change-account' }
+    | { type: 'select-fee'; value: Exclude<FeeLevel['label'], 'custom'> }
+    | { type: 'select-fee-custom'; value: string };
+
 // Picker options derived from the `selectAccount` method params (by its popup flow).
 export type SelectAccountOptions = {
     symbol: NetworkSymbol;
@@ -154,6 +162,9 @@ export type SelectAccountOptions = {
     requireOnDeviceVerification: boolean;
     minCount: number;
     maxCount?: number;
+    // Picking an account in the 'account' phase of `addressSelection: 'manual'` ends the selection
+    // instead of listing the account's addresses, for flows which need a whole account.
+    isAccountOnly?: boolean;
 };
 
 type TxSimulationConnectPopupCallLoaded = {
@@ -220,8 +231,8 @@ type ConnectPopupCallLoaded = {
           // UTXO `addressSelection: 'manual'` only: a two-phase flow — pick an account, then pick
           // one of its addresses. Undefined for every other mode (no account-drill-in phase).
           manualPhase?: 'account' | 'address';
-          // Set once `manualPhase === 'address'`: the BIP44 index of the account chosen in the
-          // 'account' phase, whose used addresses are now being listed.
+          // The BIP44 index of the account chosen in the 'account' phase, whose used addresses are
+          // then listed (unless `options.isAccountOnly`).
           manualAccountIndex?: number;
           // false while selecting, true once the selection has been sent to the app; in the
           // exported phase the modal stays open so the user can keep verifying on device.

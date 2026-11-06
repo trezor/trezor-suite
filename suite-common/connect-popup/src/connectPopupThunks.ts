@@ -18,7 +18,7 @@ import {
     getPublicKeyForNetworkType,
     prepareNewAccountPayload,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { type CallMethodAnyResponse, type CallMethodKeys } from '@trezor/connect';
+import TrezorConnect, { type CallMethodKeys } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
@@ -415,6 +415,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
                         symbol,
                         accountIndex,
                         accountTypeKey: activeTab.key,
+                        accountKey: existing.key,
                         ...(includeValue
                             ? resolveCandidateValue(mode, isUtxo, existing)
                             : { path: existing.path }),
@@ -703,6 +704,13 @@ export const connectPopupSelectManualAccountThunk = createThunk<
         const call = selectConnectPopupCall(getState());
         if (call?.state !== 'select-account' || call.options.addressSelection !== 'manual') return;
 
+        if (call.options.isAccountOnly) {
+            dispatch(connectPopupActions.updateSelectAccount({ manualAccountIndex: accountIndex }));
+            getPermissionDeferred().resolve();
+
+            return;
+        }
+
         dispatch(
             connectPopupActions.updateSelectAccount({
                 manualPhase: 'address',
@@ -863,12 +871,11 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
     },
 );
 
-// Finalizes the picker. The selectAccount popup flow is awaiting `getPermissionDeferred`; on cancel
-// we reject it (the call thunk's catch maps Method_Cancel to the final error response), on confirm
-// we override the placeholder method response with the user's selection via `getPopupCallDeferred`
-// and unblock the hook (which then flips the picker into its `exported` phase). Mirrors
-// ConnectAddressConfirmation: after export the modal stays open so the user can keep verifying the
-// exported addresses on device, and only `finishCall` (Close) actually closes it.
+// Finalizes the picker. The popup flow is awaiting `getPermissionDeferred`; on cancel we reject it
+// (the call thunk's catch maps Method_Cancel to the final error response), on confirm we resolve it
+// and the flow reads the selection from the picker state. Mirrors ConnectAddressConfirmation: after
+// export the modal stays open so the user can keep verifying the exported addresses on device, and
+// only `finishCall` (Close) actually closes it.
 type ConnectPopupResolveSelectAccountThunkState = ConnectPopupStateRootState;
 
 export const connectPopupResolveSelectAccountThunk = createThunk<
@@ -896,29 +903,6 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
         return;
     }
 
-    // Always an array, even for a 'single' selection — mirrors eth_requestAccounts. `address`
-    // and `xpub` are mutually exclusive per candidate (see SelectAccountCandidate).
-    const payload = call.candidates
-        .filter(c => c.selected && (c.address || c.xpub))
-        .map(c => ({
-            symbol: c.symbol,
-            path: c.path,
-            address: c.address,
-            xpub: c.xpub,
-            // undefined for custom (non-built-in) account-type tabs — no real AccountType to report
-            accountType: call.options.accountTypeTabs.find(tab => tab.key === c.accountTypeKey)
-                ?.accountType,
-            mac: c.mac,
-        }));
-
-    // Export: deliver the selection to the 3rd-party app and flip the picker into its `exported`
-    // phase, then unblock the popup flow. Do NOT finishCall — keep the modal open so the user can
-    // keep verifying the exported addresses on device (mirrors ConnectAddressConfirmation).
-    getPopupCallDeferred().resolve({
-        success: true,
-        payload,
-    } as Awaited<CallMethodAnyResponse>);
-    dispatch(connectPopupActions.updateSelectAccount({ exported: true }));
     getPermissionDeferred().resolve();
 });
 
