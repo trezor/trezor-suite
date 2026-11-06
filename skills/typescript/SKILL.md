@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: TypeScript-specific conventions including ts-expect-error usage, unknown vs any, const assertions, and type vs interface preferences. Use when writing TypeScript code.
+description: TypeScript-specific conventions including ts-expect-error usage, unknown vs any, typed helpers instead of `as` casts on native API results, const assertions, and type vs interface preferences. Use when writing TypeScript code.
 ---
 
 # TypeScript
@@ -34,6 +34,53 @@ const validateKey = (key: unknown): key is DictionaryKey => {
 ```
 
 If the above type guard marked `key` as `any`, calling `key()` would not throw.
+
+## Prefer typed helpers to casting native API results
+
+Do not cast (`value as T`) the result of a loosely typed native API. A type assertion is barely checked: TypeScript accepts any target type comparable to the source, and any target at all when the source is `any`. The cast compiles when the claim is wrong and keeps compiling after the data changes shape. Use a typed helper instead, so the type comes from the input and is checked where it is used. Unless noted, the helpers are in `@trezor/utils`:
+
+| Instead of                                            | Use                                                                              |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `Object.keys(obj) as (keyof typeof obj)[]`            | `typedObjectKeys(obj)`                                                           |
+| `Object.entries(obj) as [Key, Value][]`               | `typedObjectEntries(obj)`                                                        |
+| `Object.values(obj) as Value[]`                       | `typedObjectValues(obj)`                                                         |
+| `Object.fromEntries(entries) as Result`               | `typedObjectFromEntries(entries)`                                                |
+| `Object.fromEntries(Object.entries(obj).map(…)) as …` | `typedObjectTransformValues(obj, transform)`                                     |
+| `Object.hasOwn(obj, key)`, then a cast                | `hasOwn(obj, key)`, which narrows a union by the key                             |
+| `list.includes(value as Member)` (strings)            | `isArrayMember(value, list)`, which also narrows `value`                         |
+| `list.filter(Boolean) as Item[]`                      | `list.filter(isNotNullOrUndefined)`, or `isNotUndefined` / `isNotNull`           |
+| `list.reduce(…, {} as Record<string, Item>)`          | `arrayToDictionary(list, getKey)`, or `list.reduce<Record<string, Item>>(…, {})` |
+| `JSON.parse(text) as Data`                            | `parseJSON(text)`, which returns `unknown`, then a schema                        |
+| `(await response.json()) as Data`                     | a schema; `@suite-common/http-client` endpoints take one                         |
+
+🔴 Both casts compile, although `medium` is not a key, and `code` stays a `string`:
+
+```tsx
+const levels = Object.keys(feeLevels) as ('low' | 'medium')[];
+
+if (PIN_CODES.includes(code as PinCode)) {
+    // code is still a string here
+}
+```
+
+🟢 The helpers derive the types:
+
+```tsx
+const levels = typedObjectKeys(feeLevels);
+
+if (isArrayMember(code, PIN_CODES)) {
+    // code is a PinCode here
+}
+```
+
+- `typedObjectKeys`, `typedObjectEntries` and `typedObjectValues` assume the object has no keys beyond its type. Use them on objects your code builds, not on external data that may carry extra keys.
+- `Object.fromEntries` returns `any` when its entries are not tuples, for example when they are built in a variable first. `typedObjectFromEntries` rejects such entries instead.
+- `Boolean` also drops `0`, `''` and `false`, which `isNotNullOrUndefined` keeps. To drop another value, filter with an arrow function such as `item => item !== false`: TypeScript infers the type guard from it.
+- Array methods take inline type guards as well. When the check is specific to a domain type rather than general-purpose, give the callback a type predicate instead of adding a helper or casting the result, as in `tokens.filter((token): token is TokenWithBalance => token.balance !== undefined)`. `filter` and `find` return the narrowed type. TypeScript trusts the predicate without checking it, so the condition has to prove the type.
+- `{}` does not satisfy a record keyed by a union of literals, because keys are missing. Build such a record with `typedObjectFromEntries(KEYS.map(key => [key, value]))` instead of casting the seed.
+- Data from outside the app, such as a server response, a `postMessage` payload or a file, takes its type from a schema (`z.infer<typeof DataSchema>`), never from a cast.
+- `as const` and `satisfies` are not casts: they keep the checked type and stay fine.
+- If no helper fits a general-purpose operation and the same cast keeps coming back, add a helper with a type test to `@trezor/utils`, so the cast lives in one place.
 
 ## Prefer direct type assignment to indirect
 
