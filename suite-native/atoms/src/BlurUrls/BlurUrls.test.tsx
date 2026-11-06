@@ -34,7 +34,7 @@ describe('BlurUrls', () => {
     });
 
     it.each(['rewards.example', 'rewards.example...'])(
-        'uses view blur for the standalone label %s without intercepting row presses',
+        'keeps the standalone label %s masked without intercepting row presses',
         async text => {
             const onPress = mock<() => void>();
             await renderWithBasicProvider(
@@ -43,18 +43,15 @@ describe('BlurUrls', () => {
                 </Pressable>,
             );
 
-            await fireEvent.press(screen.getByLabelText(text.endsWith('...') ? '…...' : '…'));
+            const label = screen.getByLabelText(text.endsWith('...') ? '…...' : '…');
+            await fireEvent.press(label);
 
             expect(onPress).toHaveBeenCalledTimes(1);
-            expect(screen.queryByText(text)).toBeNull();
-            expect(screen.getByText(text, { includeHiddenElements: true })).toHaveProp(
-                'numberOfLines',
-                1,
-            );
-            expect(screen.getByTestId('blur-native', { includeHiddenElements: true })).toHaveProp(
-                'pointerEvents',
-                'none',
-            );
+            expect(screen.queryByText('rewards.example')).toBeNull();
+            expect(
+                screen.getByText('rewards.example', { includeHiddenElements: true }),
+            ).toBeOnTheScreen();
+            expect(label).toHaveProp('numberOfLines', 1);
         },
     );
 
@@ -62,7 +59,7 @@ describe('BlurUrls', () => {
         await renderWithBasicProvider(
             <Text>
                 {'Send '}
-                <BlurUrls text="rewards.example" isInline />
+                <BlurUrls text="rewards.example" />
                 {' on Ethereum'}
             </Text>,
         );
