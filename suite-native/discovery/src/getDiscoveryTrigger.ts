@@ -1,6 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { accountsActions, changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { type DiscoveryTrigger } from '@suite-common/wallet-types';
 import { createAndBackupWalletThunk, recoverWalletThunk } from '@suite-native/device';
@@ -19,6 +20,14 @@ export const getDiscoveryTrigger = (action: UnknownAction): DiscoveryTrigger | u
 
     // dismissDiscoveryEntropyCheck is intentionally not a trigger, the dismissing component ejects all wallets
     if (deviceActions.dismissFirmwareAuthenticityCheck.match(action)) return 'device-check'; // may no longer be device compromised
+
+    // Interactive device checks may be finished.
+    if (
+        persistentDeviceDataActions.setManualDeviceCheckSuccess.match(action) ||
+        persistentDeviceDataActions.setDeviceAuthenticityResult.match(action)
+    ) {
+        return 'device-check';
+    }
 
     if (
         accountsActions.updateAccount.match(action) || // empty account can become nonempty
