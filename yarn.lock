@@ -20009,7 +20009,6 @@ __metadata:
     minimizer-webpack-plugin: "npm:5.13.0"
     pako: "npm:^3.0.2"
     pdfmake: "npm:^0.3.11"
-    polished: "npm:^4.3.1"
     postcss-styled-syntax: "npm:^0.7.3"
     raw-loader: "npm:^4.0.2"
     react: "npm:19.3.0"

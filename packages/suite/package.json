@@ -197,7 +197,6 @@
         "lottie-react": "3.1.2",
         "pako": "^3.0.2",
         "pdfmake": "^0.3.11",
-        "polished": "^4.3.1",
         "react": "19.3.0",
         "react-dom": "19.3.0",
         "react-error-boundary": "^6.0.0",

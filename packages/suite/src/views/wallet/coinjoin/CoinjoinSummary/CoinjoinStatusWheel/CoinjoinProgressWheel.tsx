@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import { lighten } from 'polished';
 import styled, { type DefaultTheme, css, keyframes } from 'styled-components';
 
 import {
@@ -21,6 +20,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useSelector } from 'src/hooks/suite';
+import { lightenHexColor } from 'src/utils/suite/color';
 
 import {
     CoinjoinProgressContent,
@@ -89,7 +89,7 @@ const Wheel = styled.div<{
                     background: ${
                         $isWithoutProgressOutline
                             ? theme.elementFillBrandBoldPressed
-                            : lighten(0.02, theme.surfaceFillRaised)
+                            : lightenHexColor(0.02, theme.surfaceFillRaised)
                     };
                 }
             }
