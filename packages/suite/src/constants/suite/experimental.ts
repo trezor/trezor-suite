@@ -1,5 +1,6 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { type Route } from '@suite/router';
@@ -12,8 +13,6 @@ import {
     HELP_CENTER_TOR_URL,
     type Url,
 } from '@trezor/urls';
-
-import { type SuiteServices } from '../../support/createSuiteCompositionRoot';
 
 const experimentalNetworks = networksCollection.filter(
     network => network.isExperimentalOnlyNetwork,
@@ -32,7 +31,7 @@ export type ExperimentalFeatureConfig = {
         dispatch,
     }: {
         newValue: boolean;
-        services: SuiteServices;
+        services: DesktopApiDep<'getTorSettings' | 'changeTorSettings' | 'mcpSetEnabled'>;
         dispatch: Dispatch<UnknownAction>;
     }) => void;
 };

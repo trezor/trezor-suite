@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { type ExperimentalFeature } from '@suite/experimental';
 import { LearnMoreButton } from '@suite/external-links';
 import { feedbackRequested } from '@suite/feature-feedback';
@@ -7,7 +8,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
 import { Banner, Checkbox, Column, Switch } from '@trezor/components';
-import { useImperativeServices, useServices } from '@trezor/dependency-injection';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -16,7 +17,6 @@ import { typedObjectKeys } from '@trezor/utils';
 
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useSelector } from 'src/hooks/suite';
-import { selectSuiteServices } from 'src/support/createSuiteCompositionRoot';
 
 const experimentalFeatures = typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
     feature => !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.(),
@@ -28,8 +28,8 @@ type FeatureLineProps = {
 };
 
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
-    const { dispatch } = useServices(injectDispatch);
-    const services = useImperativeServices(selectSuiteServices);
+    const services = useServices(injectDesktopApi, injectDispatch);
+    const { dispatch } = services;
     const checked = enabledFeatures.includes(feature);
 
     const config = EXPERIMENTAL_FEATURES[feature];
@@ -119,8 +119,8 @@ export const Experimental = () => {
     const enabledFeatures = useSelector(selectExperimentalFeatures);
     const isExperimentalEnabled = enabledFeatures !== undefined;
 
-    const { dispatch } = useServices(injectDispatch);
-    const services = useImperativeServices(selectSuiteServices);
+    const services = useServices(injectDesktopApi, injectDispatch);
+    const { dispatch } = services;
 
     const onSwitchExperimental = () => {
         enabledFeatures?.forEach(feature =>
