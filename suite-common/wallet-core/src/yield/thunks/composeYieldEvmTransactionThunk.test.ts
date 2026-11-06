@@ -119,6 +119,16 @@ describe(composeYieldEvmTransactionThunk.name, () => {
         expect(parseUnsignedTransaction(result).gasPrice).toBe('0xb2d05e00');
     });
 
+    it('does not estimate gas when network fee levels are unavailable', async () => {
+        const result = await composeTransaction(
+            { account, to: VAULT_ADDRESS, data: CALLDATA },
+            buildFeeInfo([]),
+        );
+
+        expect(result).toEqual({ type: 'error', reason: 'missing-fee-level' });
+        expect(estimateYieldFeeLevel).not.toHaveBeenCalled();
+    });
+
     it('composes with the estimated gas limit, the current nonce and the account descriptor', async () => {
         const result = await composeTransaction({ account, to: VAULT_ADDRESS, data: CALLDATA });
 

@@ -1,86 +1,35 @@
-import { type FeeInfo, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { getYieldClaimFee } from './yieldClaimFeeUtils';
+import { buildPreparedTxFeePreview } from '../earn/preparedTxFeeUtils';
 
-import { buildYieldClaimFeeLevels, getYieldClaimFee } from './yieldClaimFeeUtils';
+const transaction = {
+    from: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
+    to: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
+    data: '0x1234',
+    chainId: 1,
+    gasLimit: '0x5208',
+    nonce: 1,
+};
 
-const feeInfo = {
-    blockHeight: 1,
-    blockTime: 12,
-    minFee: 1,
-    maxFee: 100,
-    minPriorityFee: 1,
-    levels: [
+describe('getYieldClaimFee', () => {
+    it.each([
         {
-            label: 'normal',
-            blocks: 2,
-            feePerUnit: '10',
-            maxFeePerGas: '20',
-            maxPriorityFeePerGas: '2',
+            type: 'legacy',
+            fields: { gasPrice: '0x3b9aca00' },
+            expected: { gasLimit: '21000', gasPrice: '1000000000' },
         },
-    ],
-} satisfies FeeInfo;
+        {
+            type: 'EIP-1559',
+            fields: { maxFeePerGas: '0x77359400', maxPriorityFeePerGas: '0x3b9aca00' },
+            expected: {
+                gasLimit: '21000',
+                maxFeePerGas: '2000000000',
+                maxPriorityFeePerGas: '1000000000',
+            },
+        },
+    ])('converts a shared $type preview to Claim signing units', ({ fields, expected }) => {
+        const preview = buildPreparedTxFeePreview(JSON.stringify({ ...transaction, ...fields }));
+        if (!preview) throw new Error('Expected a valid shared fee preview');
 
-describe('yieldClaimFeeUtils', () => {
-    it('builds claim fee levels with claim gas limit', () => {
-        const feeLevels = buildYieldClaimFeeLevels({
-            availableBalance: '1000000000000000000',
-            feeInfo,
-            formDraft: undefined,
-            gasLimit: '21000',
-        });
-
-        const normalFeeLevel = feeLevels.normal;
-
-        expect(isFinalPrecomposedTransaction(normalFeeLevel)).toBe(true);
-
-        if (!isFinalPrecomposedTransaction(normalFeeLevel)) {
-            return;
-        }
-
-        expect(normalFeeLevel.fee).toBe('420000000000000');
-        expect(normalFeeLevel.feeLimit).toBe('21000');
-        expect(normalFeeLevel.maxFeePerGas).toBe('20');
-        expect(normalFeeLevel.maxPriorityFeePerGas).toBe('2');
-        expect(getYieldClaimFee(normalFeeLevel)).toEqual({
-            gasLimit: '21000',
-            maxFeePerGas: '20000000000',
-            maxPriorityFeePerGas: '2000000000',
-        });
-    });
-
-    it('does not call missing fee inputs an insufficient balance', () => {
-        const feeLevels = buildYieldClaimFeeLevels({
-            availableBalance: '1000000000000000000',
-            feeInfo,
-            formDraft: undefined,
-            gasLimit: '',
-        });
-
-        expect(feeLevels.normal).toMatchObject({ type: 'error', error: 'TR_GENERIC_ERROR_TITLE' });
-    });
-
-    it('allows exact coverage of the claim fee', () => {
-        const feeLevels = buildYieldClaimFeeLevels({
-            availableBalance: '420000000000000',
-            feeInfo,
-            formDraft: undefined,
-            gasLimit: '21000',
-        });
-
-        expect(feeLevels.normal).toMatchObject({ type: 'final', fee: '420000000000000' });
-    });
-
-    it('returns a fee error when native balance cannot pay the claim fee', () => {
-        const feeLevels = buildYieldClaimFeeLevels({
-            availableBalance: '1',
-            feeInfo,
-            formDraft: undefined,
-            gasLimit: '21000',
-        });
-
-        expect(feeLevels.normal).toEqual({
-            type: 'error',
-            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-            errorMessage: { id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
-        });
+        expect(getYieldClaimFee(preview)).toEqual(expected);
     });
 });
