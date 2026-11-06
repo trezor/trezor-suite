@@ -85,7 +85,7 @@ describe('Navigation Utils', () => {
 
             const routeList = [
                 DeviceOnboardingStackRoutes.DeviceDisconnected,
-                DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                DeviceOnboardingStackRoutes.DeviceVisualCheck,
             ];
             const result = checkIsActiveRouteAnyOf(routeList);
 
