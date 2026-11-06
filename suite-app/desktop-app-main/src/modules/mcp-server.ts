@@ -531,8 +531,8 @@ const callPopup = async (
 
 /**
  * Call TrezorConnect directly, bypassing the connect-popup flow.
- * Used for data-fetching methods (getAccountInfo, blockchainEstimateFee)
- * that don't need device interaction or user confirmation.
+ * Used for backend-only calls (blockchainEstimateFee) that need neither the device
+ * nor user confirmation.
  */
 const callSilent = async (
     sendPopupCall: PopupCallFn,
@@ -679,9 +679,10 @@ const handleEvmSend = async (
     const gasLimit = (params.gasLimit as string) ?? defaultGasLimit;
     const chainId = (params.chainId as number) ?? getNetworkOptional(coin)?.chainId ?? 1;
 
-    // Auto-fill nonce (silent — no popup UI needed)
+    // Auto-fill nonce. Reading the account by path derives its address on the device, so it goes
+    // through the popup.
     if (nonce === undefined) {
-        const accountResult = await callSilent(sendPopupCall, 'getAccountInfo', {
+        const accountResult = await callPopup(sendPopupCall, 'getAccountInfo', {
             coin,
             path,
             details: 'basic',
@@ -780,9 +781,10 @@ const handleXrpSend = async (
 
     let sequence = params.nonce !== undefined ? Number(params.nonce) : undefined;
 
-    // Auto-fill sequence from account info (silent — no popup UI needed)
+    // Auto-fill sequence. Reading the account by path derives its address on the device, so it goes
+    // through the popup.
     if (sequence === undefined) {
-        const accountResult = await callSilent(sendPopupCall, 'getAccountInfo', {
+        const accountResult = await callPopup(sendPopupCall, 'getAccountInfo', {
             coin,
             path,
             details: 'basic',
