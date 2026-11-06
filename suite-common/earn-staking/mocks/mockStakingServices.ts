@@ -6,7 +6,7 @@ import type { LoadStakingProducts, StakingServices } from '../src/stakingService
 
 export const mockStakingServices = (overrides: Partial<StakingServices> = {}): StakingServices => ({
     stakingProductRepository: mockStakingProductRepository(),
-    loadStakingProducts: mock<LoadStakingProducts>(() => {}),
+    loadStakingProducts: mock<LoadStakingProducts>(() => Promise.resolve()),
     deviceAccess: mockStakingDeviceAccess(),
     ...overrides,
 });

@@ -1,7 +1,11 @@
 import type { StakingDeviceAccess } from './createStakingDeviceAccess';
 import type { StakingProductRepositoryDep } from './repository/createStakingProductRepository';
 
-export type LoadStakingProducts = () => void;
+/**
+ * Loads the products of the enabled networks and registers them in the store; a module that
+ * fails to load is logged and loaded again by the next call, so the promise never rejects.
+ */
+export type LoadStakingProducts = () => Promise<void>;
 
 export type LoadStakingProductsDep = {
     loadStakingProducts: LoadStakingProducts;
