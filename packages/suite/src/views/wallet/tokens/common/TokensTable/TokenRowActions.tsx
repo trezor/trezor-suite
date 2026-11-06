@@ -531,6 +531,7 @@ const TokenRowBasicActions = ({
                                 id={isContractToken ? 'TR_REMOVE_TOKEN' : 'TR_DEACTIVATE_TOKEN'}
                             />
                         ),
+                        'data-testid': '@wallet/stellar-token/deactivate',
                         icon: XIcon,
                         onClick: onDeactivateToken,
                         isHidden:

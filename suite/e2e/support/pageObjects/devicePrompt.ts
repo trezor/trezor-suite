@@ -4,6 +4,15 @@ import { step } from '../common';
 import { DeviceFixture } from '../device';
 import { DevicePromptHeaderSection } from './devicePromptHeaderSection';
 
+export type TrustlineOperation = 'Add trust' | 'Delete trust';
+
+// Deleting a trustline sets its limit to zero.
+const TRUSTLINE_LIMIT: Record<TrustlineOperation, string> = {
+    'Add trust': '922,337,203,685.4775807',
+    'Delete trust': '0',
+};
+const TRUSTLINE_DISPLAY_TIMEOUT = 15_000;
+
 export class DevicePrompt {
     readonly confirmOnDevicePrompt: Locator;
     readonly confirmOnDevicePromptSuccess: Locator;
@@ -131,6 +140,27 @@ export class DevicePrompt {
             await this.device.expectPassphraseOnDisplay(passphrase);
             await this.device.pressYes();
         });
+    }
+
+    @step()
+    async confirmTrustline(operation: TrustlineOperation, assetCode: string, issuerPrefix: string) {
+        await this.confirmDisplayedText(['Memo (TEXT)', assetCode]);
+        await this.confirmDisplayedText(['Limit', TRUSTLINE_LIMIT[operation], assetCode]);
+        await this.confirmDisplayedText([`${assetCode} issuer`, issuerPrefix]);
+        await this.confirmDisplayedText('Maximum fee');
+    }
+
+    private async confirmDisplayedText(expectedText: string | string[]) {
+        const expectedParts = Array.isArray(expectedText) ? expectedText : [expectedText];
+
+        await this.confirmOnDevicePromptIsShown();
+        for (const part of expectedParts) {
+            await this.device.expectToContainOnDisplay(part, {
+                timeout: TRUSTLINE_DISPLAY_TIMEOUT,
+            });
+        }
+
+        await this.device.pressYes();
     }
 
     @step()
