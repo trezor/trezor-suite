@@ -70,16 +70,16 @@ import {
     type SaveWalletSettingsThunkState,
 } from './storageActions';
 import { createInMemoryDbMock } from '../../../mocks/createInMemoryDbMock';
-import { mockExtraDependencies as extraDependencies } from '../../../mocks/mockExtraDependencies';
+import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
 
-const accountsReducer = prepareAccountsReducer(extraDependencies);
+const accountsReducer = prepareAccountsReducer(mockExtraDependencies);
 const discoveryReducer = prepareDiscoveryReducer({});
-const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
-const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
-const sendFormReducer = prepareSendFormReducer(extraDependencies);
-const tradingReducer = prepareTradingReducer(extraDependencies);
-const transactionsReducer = prepareTransactionsReducer(extraDependencies);
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+const earnOnboardingReducer = prepareEarnOnboardingReducer(mockExtraDependencies);
+const fiatRatesReducer = prepareFiatRatesReducer(mockExtraDependencies);
+const sendFormReducer = prepareSendFormReducer(mockExtraDependencies);
+const tradingReducer = prepareTradingReducer(mockExtraDependencies);
+const transactionsReducer = prepareTransactionsReducer(mockExtraDependencies);
+const walletSettingsReducer = prepareWalletSettingsReducer(mockExtraDependencies);
 
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
@@ -102,7 +102,7 @@ const deviceReducer = prepareDesktopDeviceReducer({
 });
 const flagsReducer = prepareFlagsReducer({
     actionTypes: { storageLoad: storageLoad.type },
-    reducers: { storageLoadFlags: extraDependencies.reducers.storageLoadFlags },
+    reducers: { storageLoadFlags: mockExtraDependencies.reducers.storageLoadFlags },
 });
 const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(undefined);
 const suiteSyncReducer = prepareSuiteSyncReducer(undefined);
