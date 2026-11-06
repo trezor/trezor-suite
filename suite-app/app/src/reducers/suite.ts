@@ -38,6 +38,15 @@ import {
 
 import { extraDependencies } from '../extraDependencies';
 
+const analytics = prepareAnalyticsReducer(extraDependencies);
+const messageSystem = prepareMessageSystemReducer(extraDependencies);
+const device = prepareDesktopDeviceReducer(extraDependencies);
+const flags = prepareFlagsReducer(extraDependencies);
+const suiteSettings = prepareSuiteSettingsReducer(extraDependencies);
+const debug = prepareDebugReducer(extraDependencies);
+const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
+const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
+
 export type SuiteReducersState = {
     suite: SuiteState;
     discreetMode: DiscreetModeState;
@@ -67,23 +76,23 @@ export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction>
     suite: suiteReducer,
     discreetMode: discreetModeReducer,
     tor: torReducer,
-    suiteSettings: prepareSuiteSettingsReducer(extraDependencies),
-    debug: prepareDebugReducer(extraDependencies),
-    flags: prepareFlagsReducer(extraDependencies),
+    suiteSettings,
+    debug,
+    flags,
     locks: locksReducer,
     router: routerReducer,
     modal,
-    device: prepareDesktopDeviceReducer(extraDependencies),
+    device,
     logs: logsSlice.reducer,
     notifications: createNotificationsReducer<TranslationKey>().reducer,
     window: windowReducer,
-    analytics: prepareAnalyticsReducer(extraDependencies),
+    analytics,
     metadata: metadataReducer,
     desktopUpdate: desktopUpdateReducer,
-    messageSystem: prepareMessageSystemReducer(extraDependencies),
+    messageSystem,
     guide: guideReducer,
     protocol: protocolReducer,
     featureFeedback: featureFeedbackReducer,
-    connectPopup: prepareConnectPopupReducer(extraDependencies),
-    walletConnect: prepareWalletConnectReducer(extraDependencies),
+    connectPopup: connectPopupReducer,
+    walletConnect: walletConnectReducer,
 };
