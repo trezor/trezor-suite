@@ -56,21 +56,15 @@ import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type InitBlockchainThunkDeps,
     type PeriodicFetchFiatRatesThunkDeps,
-    accountsInitialState,
-    blockchainInitialState,
     feesActions,
     fetchFiatRatesThunk,
-    fiatRatesInitialState,
     initBlockchainThunk,
     initDevicesThunk,
     initStakeDataThunk,
-    initialWalletSettingsState,
     periodicCheckStakeDataThunk,
     periodicFetchFiatRatesThunk,
     preloadFeeInfoThunk,
     stakeDataActions,
-    stakeInitialState,
-    transactionsInitialState,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import {
@@ -92,6 +86,7 @@ import {
 } from 'src/actions/suite/initAction';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { walletReducers } from 'src/reducers/wallet';
 
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {
@@ -134,14 +129,7 @@ const getInitialState = (): InitThunkState => ({
     locks: locksInitialState,
     router: routerReducer(undefined, EMPTY_ACTION),
     modal: modalReducer(undefined, EMPTY_ACTION),
-    wallet: {
-        accounts: accountsInitialState,
-        blockchain: blockchainInitialState,
-        settings: initialWalletSettingsState,
-        fiat: fiatRatesInitialState,
-        transactions: transactionsInitialState,
-        stake: stakeInitialState,
-    },
+    wallet: walletReducers(undefined, EMPTY_ACTION),
     messageSystem: messageSystemReducer(undefined, EMPTY_ACTION),
     tokenDefinitions: tokenDefinitionsInitialState,
     connectPopup: connectPopupInitialState,
