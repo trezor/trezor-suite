@@ -1,6 +1,7 @@
 import { type Evolu, type createOwnerWebSocketTransport } from '@evolu/common';
 
 import { type CreateSuiteStorage, type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { ok } from '@trezor/type-utils';
 
 import { type EvoluInstanceFactoryDep } from './createEvoluInstance';
 import { type AccountTableSchema, EvoluAccountTable } from './data/accountTable';
@@ -25,7 +26,7 @@ export type EvoluStorageFactory = CreateSuiteStorage;
  */
 export const createEvoluStorageFactory =
     (deps: CreateEvoluStorageFactoryDeps): EvoluStorageFactory =>
-    async ({ suiteSyncOwner }): Promise<SuiteSyncStorage> => {
+    async ({ suiteSyncOwner }) => {
         const evolu = await deps.evoluInstanceFactory({ suiteSyncOwner });
         const owner = await evolu.appOwner;
         let relayUrl: string | null = null;
@@ -62,7 +63,7 @@ export const createEvoluStorageFactory =
             return forceResync();
         };
 
-        return {
+        return ok<SuiteSyncStorage>({
             data: {
                 accounts: new EvoluAccountTable(
                     evolu as unknown as Evolu<typeof AccountTableSchema>,
@@ -81,5 +82,5 @@ export const createEvoluStorageFactory =
                 await disconnectRelay();
                 await evolu[Symbol.asyncDispose]();
             },
-        };
+        });
     };

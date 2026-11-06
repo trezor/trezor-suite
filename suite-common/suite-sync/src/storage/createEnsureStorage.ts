@@ -94,8 +94,18 @@ export const createEnsureStorage =
 
         const { owner, delegatedKey } = keysResult.payload;
 
-        const storage =
-            existingStorage ?? (await deps.createSuiteStorage({ suiteSyncOwner: owner }));
+        const storageResult = isNotNull(existingStorage)
+            ? ok(existingStorage)
+            : await deps.createSuiteStorage({ suiteSyncOwner: owner });
+
+        // Probably a failed download of the storage library or a bug in the code.
+        if (!storageResult.success) {
+            console.error(storageResult.error);
+
+            return err(SuiteSyncUnavailableOnDeviceError());
+        }
+
+        const storage = storageResult.payload;
 
         // We need to call this even for isWriteMode because this also register device
         const quotaResult = await deps.ensureQuota({

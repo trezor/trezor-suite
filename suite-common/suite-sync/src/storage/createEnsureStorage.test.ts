@@ -1,4 +1,5 @@
 import {
+    CreateSuiteStorageError,
     type SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
@@ -156,7 +157,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => Promise.resolve(newStorage),
+            createSuiteStorage: () => Promise.resolve(ok(newStorage)),
             ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
@@ -190,7 +191,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => Promise.resolve(newStorage),
+            createSuiteStorage: () => Promise.resolve(ok(newStorage)),
             ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
@@ -212,6 +213,38 @@ describe(createEnsureStorage.name, () => {
         expect(deps.suiteSyncStorageRepository.set).toHaveBeenCalled();
     });
 
+    it('returns SuiteSyncUnavailableOnDeviceError when the storage cannot be created', async () => {
+        const device = mockSuiteDevice();
+
+        const deps = createMockDeps<EnsureStorageDeps>({
+            getRelayUrl: null,
+            getOwnerHasAllowance: null,
+            suiteSyncStorageRepository: {
+                get: () => null,
+                set: null,
+                delete: null,
+            },
+            createSuiteStorage: () =>
+                Promise.resolve(err(CreateSuiteStorageError('Failed to load Evolu'))),
+            ensureSuiteSyncKeys: () =>
+                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
+            ensureQuota: null,
+            getDeviceForStaticSessionId: () => device,
+        });
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        const result = await createEnsureStorage(deps)({
+            deviceStaticSessionId,
+            isWriteMode: false,
+        });
+
+        expect(result).toEqual(err(SuiteSyncUnavailableOnDeviceError()));
+        expect(deps.ensureQuota).not.toHaveBeenCalled();
+        expect(deps.suiteSyncStorageRepository.set).not.toHaveBeenCalled();
+
+        consoleErrorSpy.mockRestore();
+    });
+
     it('calls updateRelayUrl with the relay URL from getRelayUrl', async () => {
         const device = mockSuiteDevice();
 
@@ -227,7 +260,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => Promise.resolve(newStorage),
+            createSuiteStorage: () => Promise.resolve(ok(newStorage)),
             ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),

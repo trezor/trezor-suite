@@ -3,6 +3,7 @@ export type {
     CreateSuiteStorage,
     CreateSuiteStorageDep,
 } from './SuiteSyncStorage';
+export { CreateSuiteStorageError } from './SuiteSyncStorage';
 export {
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
