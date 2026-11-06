@@ -40,7 +40,7 @@ import { type GetWalletMiddlewaresDeps, getWalletMiddlewares } from 'src/middlew
 import { type EarnState, earnReducers } from 'src/reducers/earn';
 import onboardingReducers from 'src/reducers/onboarding';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
-import { type SuiteReducersState, suiteReducers } from 'src/reducers/suite';
+import { type SuiteReducersState, prepareSuiteReducers } from 'src/reducers/suite';
 import { type WalletState, walletReducers } from 'src/reducers/wallet';
 import {
     type GlobalSendReceiveFiltersState,
@@ -85,7 +85,7 @@ export type AppState = SuiteReducersState & {
 export type SuiteRootReducer = Reducer<AppState, UnknownAction, Partial<AppState>>;
 
 export const rootReducer: SuiteRootReducer = combineReducers({
-    ...suiteReducers,
+    ...prepareSuiteReducers(extraDependencies),
     networks: networksReducer,
     onboarding: onboardingReducers,
     receive: receiveReducer,

@@ -5,16 +5,21 @@ import { type DesktopUpdateState, desktopUpdateReducer } from '@suite/desktop-up
 import { type DesktopDeviceState, prepareDesktopDeviceReducer } from '@suite/device';
 import { type FeedbackFeatureName } from '@suite/experimental';
 import { featureFeedbackReducer } from '@suite/feature-feedback';
-import { type FlagsState, prepareFlagsReducer } from '@suite/flags';
+import { type FlagsSliceDeps, type FlagsState, prepareFlagsReducer } from '@suite/flags';
 import { type TranslationKey } from '@suite/intl';
 import { type LocksState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { type State as ModalState, modalReducer as modal } from '@suite/modal';
 import { type RouterState, routerReducer } from '@suite/router';
-import { type SuiteSettingsState, prepareSuiteSettingsReducer } from '@suite/settings';
+import {
+    type SuiteSettingsSliceDeps,
+    type SuiteSettingsState,
+    prepareSuiteSettingsReducer,
+} from '@suite/settings';
 import { type TorState, torReducer } from '@suite/tor';
 import { type AnalyticsState, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { type ConnectPopupState, prepareConnectPopupReducer } from '@suite-common/connect-popup';
+import { type DeviceReducerDeps } from '@suite-common/device';
 import { type DiscreetModeState, discreetModeReducer } from '@suite-common/discreet-mode';
 import { type FeatureFeedbackState } from '@suite-common/feedback';
 import { type LogsSliceState, logsSlice } from '@suite-common/logger';
@@ -26,21 +31,10 @@ import {
 } from '@suite-common/toast-notifications';
 import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
-import { extraDependencies } from 'src/support/extraDependencies';
-
 import guide, { type GuideState } from './guideReducer';
 import protocol, { type ProtocolState } from './protocolReducer';
 import suite, { type SuiteState } from './suiteReducer';
 import window, { type WindowState } from './windowReducer';
-
-const analytics = prepareAnalyticsReducer(extraDependencies);
-const messageSystem = prepareMessageSystemReducer(extraDependencies);
-const device = prepareDesktopDeviceReducer(extraDependencies);
-const flags = prepareFlagsReducer(extraDependencies);
-const suiteSettings = prepareSuiteSettingsReducer(extraDependencies);
-const debug = prepareDebugReducer(extraDependencies);
-const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
-const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
 export type SuiteReducersState = {
     suite: SuiteState;
@@ -67,27 +61,31 @@ export type SuiteReducersState = {
     walletConnect: WalletConnectState;
 };
 
-export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction> = {
+export type SuiteReducersDeps = DeviceReducerDeps & FlagsSliceDeps & SuiteSettingsSliceDeps;
+
+export const prepareSuiteReducers = (
+    extraDependencies: SuiteReducersDeps,
+): ReducersMapObject<SuiteReducersState, UnknownAction> => ({
     suite,
     discreetMode: discreetModeReducer,
     tor: torReducer,
-    suiteSettings,
-    debug,
-    flags,
+    suiteSettings: prepareSuiteSettingsReducer(extraDependencies),
+    debug: prepareDebugReducer(extraDependencies),
+    flags: prepareFlagsReducer(extraDependencies),
     locks: locksReducer,
     router: routerReducer,
     modal,
-    device,
+    device: prepareDesktopDeviceReducer(extraDependencies),
     logs: logsSlice.reducer,
     notifications: createNotificationsReducer<TranslationKey>().reducer,
     window,
-    analytics,
+    analytics: prepareAnalyticsReducer(extraDependencies),
     metadata: metadataReducer,
     desktopUpdate: desktopUpdateReducer,
-    messageSystem,
+    messageSystem: prepareMessageSystemReducer(extraDependencies),
     guide,
     protocol,
     featureFeedback: featureFeedbackReducer,
-    connectPopup: connectPopupReducer,
-    walletConnect: walletConnectReducer,
-};
+    connectPopup: prepareConnectPopupReducer(extraDependencies),
+    walletConnect: prepareWalletConnectReducer(extraDependencies),
+});
