@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { createFilter } from 'react-select';
 
 import { useTranslation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
@@ -40,11 +39,9 @@ export const WordInput = memo(() => {
                 ref?.clearValue();
             }}
             options={options}
-            filterOption={createFilter({
-                ignoreCase: true,
-                trim: true,
-                matchFrom: 'start',
-            })}
+            filterOption={(option, inputValue) =>
+                option.label.startsWith(inputValue.trim().toLowerCase())
+            }
             data-testid="@word-input-select"
         />
     );

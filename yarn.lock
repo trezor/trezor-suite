@@ -20342,7 +20342,6 @@ __metadata:
     react-hook-form: "npm:^7.77.0"
     react-intl: "npm:^12.1.4"
     react-redux: "npm:9.3.0"
-    react-select: "npm:^5.10.2"
     react-toastify: "npm:^11.1.0"
     react-use: "npm:^17.6.1"
     react-zxing: "npm:^2.1.0"

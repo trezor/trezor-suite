@@ -1,6 +1,5 @@
 import { injectQueryClient } from '@suite-common/react-query';
 import { ReactQueryProvider } from '@suite-common/react-query/react';
-import { SelectCacheProvider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {
     Autodetect,
@@ -41,11 +40,7 @@ export const Main = ({ trafficLightOffset, children }: MainProps) => {
                             <OnlineStatus />
                             <RouterHandler />
                             <ConnectedIntlProvider>
-                                <SelectCacheProvider>
-                                    <ConnectedFormatterProvider>
-                                        {children}
-                                    </ConnectedFormatterProvider>
-                                </SelectCacheProvider>
+                                <ConnectedFormatterProvider>{children}</ConnectedFormatterProvider>
                             </ConnectedIntlProvider>
                         </ReactQueryProvider>
                     </ErrorBoundary>
