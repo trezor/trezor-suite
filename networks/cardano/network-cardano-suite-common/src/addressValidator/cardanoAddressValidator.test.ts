@@ -1,6 +1,6 @@
 import { type AddressType, addressType } from '@trezor/network-module-suite-common-types';
 
-import { adaValidator } from './cardanoAddressValidator';
+import { adaValidator, preloadCborDecode } from './cardanoAddressValidator';
 
 type CardanoIsAddressValidCase = {
     address: string;
@@ -133,7 +133,11 @@ const cardanoAddressTypeCases: CardanoAddressTypeCase[] = [
     },
 ];
 
+const legacyAddress = 'Ae2tdPwUPEYxYNJw1He1esdZYvjmr4NtPzUsGTiqL9zd8ohjZYQcwu6kom7';
+
 describe('cardano validator', () => {
+    beforeAll(() => preloadCborDecode());
+
     it.each(cardanoIsAddressValidCases)('validates address $address', testCase => {
         const { address, expected } = testCase;
 
@@ -144,5 +148,40 @@ describe('cardano validator', () => {
         const { address, expectedAddressType } = testCase;
 
         expect(adaValidator.getAddressType(address, 'ada')).toBe(expectedAddressType);
+    });
+});
+
+describe('cardano validator before the legacy address decoder loads', () => {
+    afterEach(() => {
+        jest.dontMock('cbor');
+    });
+
+    it('rejects a legacy address until the decoder it starts loading arrives', async () => {
+        await jest.isolateModulesAsync(async () => {
+            const isolated = await import('./cardanoAddressValidator');
+
+            expect(isolated.adaValidator.isAddressValid(legacyAddress, 'ada')).toBe(false);
+
+            await new Promise(resolve => setTimeout(resolve, 0));
+
+            expect(isolated.adaValidator.isAddressValid(legacyAddress, 'ada')).toBe(true);
+        });
+    });
+
+    it('downloads the decoder again after a failed download', async () => {
+        await jest.isolateModulesAsync(async () => {
+            jest.doMock('cbor', () => {
+                throw new Error('Loading chunk failed');
+            });
+            const isolated = await import('./cardanoAddressValidator');
+            await isolated.preloadCborDecode();
+
+            expect(isolated.adaValidator.isAddressValid(legacyAddress, 'ada')).toBe(false);
+
+            jest.dontMock('cbor');
+            await isolated.preloadCborDecode();
+
+            expect(isolated.adaValidator.isAddressValid(legacyAddress, 'ada')).toBe(true);
+        });
     });
 });
