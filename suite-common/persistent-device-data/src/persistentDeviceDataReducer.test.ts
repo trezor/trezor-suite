@@ -222,6 +222,51 @@ describe('persistentDeviceDataReducer', () => {
         expect(state.devices[0]?.lastEntropyCheckResult).toEqual({ success: true });
     });
 
+    it('keeps xpub hashes when a later entropy check result has none', () => {
+        const xpubHashes = { "m/84'/0'/0'": 'hash-of-the-xpub' };
+        const state = reduceMultipleActions(
+            deviceActions.connectDevice({ device: usbDevice }),
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: true,
+                xpubHashes,
+            }),
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+                path: "m/84'/0'/0'",
+            }),
+            // resetDevice failed after the passed check had already reported the hashes
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+            }),
+        );
+
+        expect(state.devices[0]?.lastEntropyCheckResult).toEqual({ success: false, xpubHashes });
+    });
+
+    it('replaces xpub hashes with the ones from a later entropy check result', () => {
+        const state = reduceMultipleActions(
+            deviceActions.connectDevice({ device: usbDevice }),
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: true,
+                xpubHashes: { "m/84'/0'/0'": 'old-hash' },
+            }),
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: true,
+                xpubHashes: { "m/84'/0'/0'": 'new-hash' },
+            }),
+        );
+
+        expect(state.devices[0]?.lastEntropyCheckResult).toEqual({
+            success: true,
+            xpubHashes: { "m/84'/0'/0'": 'new-hash' },
+        });
+    });
+
     it('ignores setDiscoveryEntropyCheckResult without stored entropy check result', () => {
         const state = reduceMultipleActions(
             deviceActions.connectDevice({ device: usbDevice }),

@@ -21,7 +21,7 @@ import {
     type ForgetDevicePersistentDataThunkState,
     wipeDeviceThunk,
 } from '@suite-common/wallet-core';
-import { type Response } from '@trezor/connect';
+import { type Response, type XPubHashesPerBip43Path } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
@@ -63,6 +63,8 @@ type Fixture = {
     action: () => DeviceSettingsAction;
     initialState: Partial<DeviceSettingsFixtureState>;
     deviceChange?: TrezorDevice;
+    /** Reported by the wallet creation entropy check event during the mocked call. */
+    xpubHashes?: XPubHashesPerBip43Path;
     mocks: Awaited<Response<{ message: string }>>;
     result: {
         actions: Array<any>;
@@ -379,12 +381,17 @@ const fixture: Fixture[] = [
     {
         description: 'Reset device - Entropy check success',
         action: () => deviceSettingsActions.resetDeviceThunk(),
+        xpubHashes: { "m/84'/0'/0'": 'hash-84' },
         mocks: { success: true, payload: { message: 'whatever' } },
         result: {
             actions: [
                 {
                     type: persistentDeviceDataActions.setEntropyCheckResult.type,
-                    payload: { deviceId: 'device-id', success: true },
+                    payload: {
+                        deviceId: 'device-id',
+                        success: true,
+                        xpubHashes: { "m/84'/0'/0'": 'hash-84' },
+                    },
                 } satisfies ReturnType<typeof persistentDeviceDataActions.setEntropyCheckResult>,
             ],
         },

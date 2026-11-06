@@ -133,9 +133,19 @@ export const preparePersistentDeviceDataReducer = createReducerWithExtraDeps<
                     persistentDeviceData => persistentDeviceData.device_id === deviceId,
                 );
 
+                // TODO this is a bit unpredictable, should be replaced by upsert logic at all levels of depth → create object if doesn't exist. Should be a pure fn outside of reducer.
                 // expected to exist; device must have been connected or changed for this action to happen
                 if (data === undefined) return;
-                data.lastEntropyCheckResult = entropyCheckResult;
+
+                // Keep the xpub hashes if the new result has none: resetDevice may still fail after the check
+                // passed and reported them, and the hashes are needed for the discovery entropy check.
+                // device_id changes on wipe, so these can't be hashes of a previous wallet.
+                const xpubHashes =
+                    entropyCheckResult.xpubHashes ?? data.lastEntropyCheckResult?.xpubHashes;
+                data.lastEntropyCheckResult =
+                    xpubHashes === undefined
+                        ? entropyCheckResult
+                        : { ...entropyCheckResult, xpubHashes };
             },
         )
         .addCase(
