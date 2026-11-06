@@ -9,9 +9,14 @@ interface ApyValueProps {
 export const ApyValue = ({ apy }: ApyValueProps) => {
     const { PercentageFormatter } = useFormatters();
 
-    if (apy == null || !isApyAvailable(apy)) {
+    if (apy == null || (apy !== 0 && !isApyAvailable(apy))) {
         return <Translation id="TR_EARN_APY_N_A" />;
     }
 
-    return <>~{PercentageFormatter.format(apy, { withSymbol: true })}</>;
+    return (
+        <>
+            {apy !== 0 && '~'}
+            {PercentageFormatter.format(apy, { withSymbol: true })}
+        </>
+    );
 };

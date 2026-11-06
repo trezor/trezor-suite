@@ -2,6 +2,7 @@ import { selectRouteName } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import {
     hasPendingStakeTypeTransaction,
+    isCardanoRegisteredWithoutPool,
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithFiveBinaries,
     selectAccountIsStakingActive,
@@ -38,7 +39,7 @@ export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps)
         !isNewProviderBannerEnabled ||
         !isCardanoNetworkType ||
         !isStakingActive ||
-        (!isStakedWithFiveBinaries && !isStakingRoute)
+        (!isStakedWithFiveBinaries && !isCardanoRegisteredWithoutPool(account) && !isStakingRoute)
     ) {
         return null;
     }

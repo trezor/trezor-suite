@@ -4,6 +4,7 @@ import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     fetchAllTransactionsForAccountThunk,
     hasPendingStakeTypeTransaction,
+    isCardanoRegisteredWithoutPool,
     isCardanoStakedWithEverstake,
     selectAccountIsStakingActive,
     selectCardanoPoolsInfo,
@@ -59,6 +60,9 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
     const isStakedWithEverstake =
         isCardanoStakedWithEverstake(account, cardanoStakingPools) || hasPendingTx;
 
+    const accountApy = isStakedWithEverstake ? apy : undefined;
+    const displayedApy = isCardanoRegisteredWithoutPool(account) ? 0 : accountApy;
+
     const shouldShowStakingDashboard = isStakingActive || hasPendingTx;
 
     return (
@@ -74,7 +78,7 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                                 <CardanoNewProviderCard account={account} />
 
                                 <Flex gap={12}>
-                                    <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
+                                    <ApyCard apy={displayedApy} />
                                     <PayoutCardFrequencyRewards
                                         rewardFrequency={CARDANO_EPOCH_DAYS}
                                     />

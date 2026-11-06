@@ -144,6 +144,18 @@ export const isCardanoStakedWithEverstake = [
 
 export const isCardanoStakedOutsideEverstake = [
     {
+        description: 'registered account without a pool needs a provider update',
+        account: { networkType: 'cardano', misc: { staking: { isActive: true, poolId: null } } },
+        pools: [],
+        result: true,
+    },
+    {
+        description: 'unregistered account without a pool does not need a provider update',
+        account: { networkType: 'cardano', misc: { staking: { isActive: false, poolId: null } } },
+        pools: [],
+        result: false,
+    },
+    {
         description: 'foreign pool with pool data available',
         account: cardanoAccount(foreignPool),
         pools: fetchedPools,
@@ -505,6 +517,24 @@ export const getCardanoAccountDrepId = [
     },
 ];
 
+export const isCardanoStakingActive = [
+    {
+        description: 'registered account delegated to a pool',
+        account: cardanoAccountWithDrep(null),
+        result: true,
+    },
+    {
+        description: 'registered account without a pool, e.g. after its pool retired',
+        account: { networkType: 'cardano', misc: { staking: { poolId: null, isActive: true } } },
+        result: true,
+    },
+    {
+        description: 'unregistered account',
+        account: cardanoAccountWithDrep(null, false),
+        result: false,
+    },
+];
+
 export const hasCardanoLiveVoteDelegation = [
     {
         description: 'registered account voting for a DRep',
@@ -519,6 +549,20 @@ export const hasCardanoLiveVoteDelegation = [
     {
         description: 'registered account voting to always abstain',
         account: cardanoAccountWithDrep({ drep_id: PREDEFINED_DREP_ID }),
+        result: true,
+    },
+    {
+        description: 'registered account without a pool, still voting for a DRep',
+        account: {
+            networkType: 'cardano',
+            misc: {
+                staking: {
+                    poolId: null,
+                    drep: { drep_id: CARDANO_EVERSTAKE_DREP.bech32 },
+                    isActive: true,
+                },
+            },
+        },
         result: true,
     },
     {
