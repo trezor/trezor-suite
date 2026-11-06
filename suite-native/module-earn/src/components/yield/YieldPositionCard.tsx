@@ -76,7 +76,7 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
                     networkSymbol={item.networkSymbol}
                     contractAddress={item.tokenContractAddress}
                     tokenSymbol={item.tokenSymbol}
-                    size="extraSmall"
+                    size="small"
                     showNetworkIcon
                     wrappedTokenIcon="network"
                 />
