@@ -83,6 +83,18 @@ export const useTradingOutputsReviewScreenControls = ({
 
     useOutputsReviewBackInterceptor(onReviewCanceled);
 
+    const returnToTradePreview = useCallback(() => {
+        reportToAnalytics('sign-and-send', 'cancel');
+
+        if (tradingType === 'exchange') {
+            navigation.popTo(TradingStackRoutes.TradingExchangePreview, {});
+
+            return;
+        }
+
+        navigation.popTo(TradingStackRoutes.TradingSellPreview);
+    }, [navigation, reportToAnalytics, tradingType]);
+
     const nextStep: TradingTransactionSignAndSendProps['nextStep'] = useCallback(() => {
         dispatch(tradingActions.requestTradingFormReset(tradingType));
         closeTradingFlow();
@@ -104,7 +116,12 @@ export const useTradingOutputsReviewScreenControls = ({
 
                 setIsBroadcasting(false);
 
-                // Timeout is handled by solana timer
+                if (error.type === 'sign-cancelled') {
+                    returnToTradePreview();
+
+                    return;
+                }
+
                 if (isSilentTradingError(error)) {
                     return;
                 }
@@ -127,6 +144,7 @@ export const useTradingOutputsReviewScreenControls = ({
         nextStep,
         onReviewCanceled,
         reportToAnalytics,
+        returnToTradePreview,
         showOutputsReviewErrorAlert,
         signAndSendTransaction,
     ]);
