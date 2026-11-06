@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BottomSheetModalRef } from '@suite-native/atoms';
 
@@ -24,7 +24,7 @@ type YieldSessionPendingModalProps = {
     amount?: ReactNode;
     amountLabel?: ReactNode;
     amountTokenContract?: TokenAddress;
-    amountTokenSymbol?: TokenSymbol;
+    withAmountSymbol?: boolean;
     shouldHandleDismiss?: boolean;
     title: ReactNode;
     vaultName?: string;

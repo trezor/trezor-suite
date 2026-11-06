@@ -34,12 +34,10 @@ const TradingHistoryDetailAssetContent = ({
                 <TradingAsset
                     assetType="crypto"
                     contractAddress={asset.contractAddress}
-                    name={asset.name}
                     networkDisplay="text"
                     networkSymbol={asset.networkSymbol}
                     primaryLabel="symbol"
                     primaryTextVariant="body-md"
-                    symbol={asset.displaySymbol}
                     testID={testID}
                     rightContent={
                         <VStack alignItems="flex-end" flexShrink={1} spacing={0}>

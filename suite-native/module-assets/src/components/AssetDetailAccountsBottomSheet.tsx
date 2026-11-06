@@ -3,13 +3,11 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
-    type AssetsRootState,
     type HomeAssetTableState,
-    selectAssetTokenInfo,
     selectWalletAssetHoldings,
     selectWalletAssetKey,
 } from '@suite-common/assets';
-import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BottomSheetModal, type BottomSheetModalRef, Card, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -20,6 +18,7 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { TokenSymbol } from '@suite-native/tokens';
 
 import { AssetDetailAccountListItem } from './AssetDetailAccountListItem';
 
@@ -37,9 +36,6 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
     const navigation = useNavigation<NavigationProps>();
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const tokenInfo = useSelector((state: AssetsRootState) =>
-        selectAssetTokenInfo(state, networkSymbol, tokenContract),
-    );
     const assetKey = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
@@ -63,9 +59,16 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                 <Translation
                     id="moduleAssets.assetDetailScreen.accountsSheet.subtitle"
                     values={{
-                        assetName: getDisplaySymbol(
-                            tokenInfo?.symbol ?? networkSymbol,
-                            tokenContract,
+                        assetName: tokenContract ? (
+                            <TokenSymbol
+                                isTruncated
+                                networkSymbol={networkSymbol}
+                                contractAddress={tokenContract}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
+                        ) : (
+                            getNetworkDisplaySymbol(networkSymbol)
                         ),
                         networkName: getNetwork(networkSymbol).name,
                     }}

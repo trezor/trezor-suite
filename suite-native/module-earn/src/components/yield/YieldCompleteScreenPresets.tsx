@@ -3,8 +3,9 @@ import { type ReactNode } from 'react';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenIcon } from '@suite-native/tokens';
 
 import { YieldClaimRewardRow, getYieldClaimRewardFiatAmount } from './YieldClaimRewardRow';
 import { YieldFormattedAmount, type YieldFormattedAmountValue } from './YieldFormattedAmount';
@@ -25,7 +26,6 @@ const getYieldCompleteAmountValue = ({
         <TokenIcon
             networkSymbol={accountSymbol}
             contractAddress={amount.tokenContract ?? undefined}
-            tokenSymbol={amount.tokenSymbol}
             size="extraSmall"
         />
         <Box flexShrink={1}>
@@ -168,8 +168,6 @@ export const getYieldClaimCompleteRows = (
                         fiatAmount={getYieldClaimRewardFiatAmount(reward.fiatValue)}
                         networkSymbol={reward.token.networkSymbol}
                         tokenContractAddress={reward.token.contractAddress ?? undefined}
-                        tokenDecimals={reward.token.decimals}
-                        tokenSymbol={reward.token.symbol}
                     />
                 ))}
             </VStack>

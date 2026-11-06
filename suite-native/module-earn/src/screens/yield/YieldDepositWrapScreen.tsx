@@ -1,13 +1,14 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
+import { AssetAmountInputCard } from '../../components/earn/AssetAmountInputCard';
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { WrappedNativeFeeReserveBanner } from '../../components/earn/WrappedNativeFeeReserveBanner';
-import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
@@ -16,6 +17,7 @@ import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessi
 import { YieldWrappedNativeReceivingCard } from '../../components/yield/YieldWrappedNativeReceivingCard';
 import { YieldWrappedNativeStepFooter } from '../../components/yield/YieldWrappedNativeStepFooter';
 import { useYieldDepositWrapController } from '../../hooks/yield/controllers/useYieldDepositWrapController';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldDepositWrapScreen = () => {
     const controller = useYieldDepositWrapController();
@@ -36,17 +38,15 @@ export const YieldDepositWrapScreen = () => {
         isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible,
         isInteractionBlocked,
-        nativeSymbol,
         pendingModal,
         receivingCard,
         simulationSheet,
         tokenContract,
-        wrappedTokenSymbol,
         yieldFlowData,
     } = controller;
     const { account } = yieldFlowData;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -64,7 +64,7 @@ export const YieldDepositWrapScreen = () => {
                     isSubmitLoading={footer.isSubmitLoading}
                     onSkip={footer.onSkip}
                     onSubmit={footer.onSubmit}
-                    spentSymbol={nativeSymbol}
+                    networkSymbol={account.symbol}
                 />
             }
         >
@@ -92,7 +92,7 @@ export const YieldDepositWrapScreen = () => {
                         ))}
 
                         <Box paddingHorizontal="sp16">
-                            <WrappedNativeTokenAmountInputCard
+                            <AssetAmountInputCard
                                 amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                                 balance={amountInput.balance}
                                 isDisabled={amountInput.isDisabled}
@@ -100,7 +100,6 @@ export const YieldDepositWrapScreen = () => {
                                 onCurrencyChange={amountInput.onCurrencyChange}
                                 onMaxPress={amountInput.onMaxPress}
                                 symbol={account.symbol}
-                                tokenSymbol={nativeSymbol}
                             />
                         </Box>
 
@@ -110,8 +109,6 @@ export const YieldDepositWrapScreen = () => {
                                     amount={receivingCard.amount}
                                     networkSymbol={account.symbol}
                                     tokenContract={receivingCard.tokenContract}
-                                    tokenDecimals={receivingCard.tokenDecimals}
-                                    tokenSymbol={wrappedTokenSymbol}
                                 />
                             </Box>
                         )}
@@ -157,12 +154,17 @@ export const YieldDepositWrapScreen = () => {
                 accountLabel={accountLabel}
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
-                amountTokenSymbol={nativeSymbol}
                 title={<Translation id="earn.wrapNativeToken.pendingTransactionTitle" />}
                 vaultName={yieldFlowData.vaultTokenName}
                 vaultTokenContract={tokenContract}
             />
             <YieldSessionTxSimulationSheet account={account} flow="wrap" sheet={simulationSheet} />
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

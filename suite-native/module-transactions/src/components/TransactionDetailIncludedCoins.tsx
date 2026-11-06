@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/token';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -65,6 +66,7 @@ export const TransactionDetailIncludedCoins = ({
     tokenTransfer,
     isPhishingTransaction,
 }: TransactionDetailIncludedCoinsProps) => {
+    const metadataSources = useTokenMetadataSources();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
@@ -114,28 +116,32 @@ export const TransactionDetailIncludedCoins = ({
                 }
                 isCloseDisplayed
             >
-                {isEthereumCoinDisplayed && (
-                    <TransactionDetailListItem
-                        onPress={closeModal}
-                        accountKey={accountKey}
-                        transaction={transaction}
-                        isPhishingTransaction={isPhishingTransaction}
-                        isFirst
-                    />
-                )}
+                {/* The sheet's portal renders outside the screen's metadata provider. Restore
+                    its sources here so transaction-only tokens retain their metadata. */}
+                <TokenMetadataProvider sources={metadataSources}>
+                    {isEthereumCoinDisplayed && (
+                        <TransactionDetailListItem
+                            onPress={closeModal}
+                            accountKey={accountKey}
+                            transaction={transaction}
+                            isPhishingTransaction={isPhishingTransaction}
+                            isFirst
+                        />
+                    )}
 
-                {includedTokens.map((token, index) => (
-                    <TransactionDetailListItem
-                        onPress={closeModal}
-                        key={token.contract}
-                        accountKey={accountKey}
-                        transaction={transaction}
-                        tokenTransfer={token}
-                        isPhishingTransaction={isPhishingTransaction}
-                        isFirst={!isEthereumCoinDisplayed && index === 0}
-                        isLast={index === includedTokens.length - 1}
-                    />
-                ))}
+                    {includedTokens.map((token, index) => (
+                        <TransactionDetailListItem
+                            onPress={closeModal}
+                            key={token.contract}
+                            accountKey={accountKey}
+                            transaction={transaction}
+                            tokenTransfer={token}
+                            isPhishingTransaction={isPhishingTransaction}
+                            isFirst={!isEthereumCoinDisplayed && index === 0}
+                            isLast={index === includedTokens.length - 1}
+                        />
+                    ))}
+                </TokenMetadataProvider>
             </BottomSheetModal>
         </>
     );

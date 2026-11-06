@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import type { DeviceRootState } from '@suite-common/device';
+import { type DeviceRootState } from '@suite-common/device';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { toTokenAddress } from '@suite-common/tokens';
 import {

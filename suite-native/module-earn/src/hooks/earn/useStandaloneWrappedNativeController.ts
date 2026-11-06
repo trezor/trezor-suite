@@ -148,6 +148,11 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         nativeSymbol,
         wrappedTokenSymbol: wrappedNative.symbol,
         wrappedTokenContract: toTokenAddress(wrappedNative.address),
+        wrappedTokenMetadata: {
+            contract: toTokenAddress(wrappedNative.address),
+            symbol: wrappedNative.symbol,
+            decimals: wrappedNative.decimals,
+        },
         spentSymbol,
         spentTokenContract,
         isInteractionBlocked: isFlowPending,
@@ -161,7 +166,6 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
             maxAmount: isWrap
                 ? getWrappableNativeBalance(account.formattedBalance, gasReserve.recommended)
                 : undefined,
-            tokenDecimals: isWrap ? undefined : wrappedNative.decimals,
             onCurrencyChange: reportCurrencyToggle,
             onMaxPress: flow.reportMaxSelected,
         },

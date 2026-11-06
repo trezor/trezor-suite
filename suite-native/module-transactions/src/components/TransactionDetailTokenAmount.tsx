@@ -45,8 +45,8 @@ export const TransactionDetailTokenAmount = ({
 
             <ExactTokenAmountFormatter
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                tokenSymbol={tokenTransfer.symbol ?? null}
-                maxDisplayedDecimals={tokenTransfer.decimals}
+                networkSymbol={transaction.symbol}
+                contractAddress={tokenTransfer.contract}
                 variant="headline-md"
                 color="contentPrimary"
                 numberOfLines={1}
@@ -76,7 +76,6 @@ export const TransactionDetailTokenFiatAmount = ({
             symbol={transaction.symbol}
             contract={tokenTransfer.contract}
             value={tokenTransfer.amount}
-            decimals={tokenTransfer.decimals}
             historicRate={historicRate}
             color="contentSecondary"
             useHistoricRate

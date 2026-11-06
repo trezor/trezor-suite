@@ -1,4 +1,3 @@
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -27,32 +26,30 @@ export type MyAssetListItemProps = {
 export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
-    const { symbol, name, balance, fiatBalance, tokenSymbol, contract, isEnabled, decimals } =
-        asset;
+    const { symbol, name, balance, fiatBalance, contract, isEnabled } = asset;
 
     const hasFiatBalance = fiatBalance !== null;
 
-    const cryptoBalanceValue =
-        tokenSymbol != null ? (
-            <CompactTokenAmountFormatter
-                value={asDecimalTokenAmount(balance)}
-                tokenSymbol={tokenSymbol}
-                tokenDecimals={decimals}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                color="contentSecondary"
-                variant="body-sm"
-            />
-        ) : (
-            <CompactCryptoAmountFormatter
-                value={balance}
-                symbol={symbol}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                color="contentSecondary"
-                variant="body-sm"
-            />
-        );
+    const cryptoBalanceValue = contract ? (
+        <CompactTokenAmountFormatter
+            networkSymbol={symbol}
+            contractAddress={contract}
+            value={asDecimalTokenAmount(balance)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            color="contentSecondary"
+            variant="body-sm"
+        />
+    ) : (
+        <CompactCryptoAmountFormatter
+            value={balance}
+            symbol={symbol}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            color="contentSecondary"
+            variant="body-sm"
+        />
+    );
 
     return (
         <AnimatedPressable
@@ -69,8 +66,6 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
             <Box paddingHorizontal="sp8" paddingVertical="sp12">
                 <TradingAsset
                     assetType="crypto"
-                    name={name}
-                    symbol={tokenSymbol ?? getNetworkDisplaySymbol(symbol)}
                     contractAddress={contract}
                     networkSymbol={symbol}
                     rightContent={

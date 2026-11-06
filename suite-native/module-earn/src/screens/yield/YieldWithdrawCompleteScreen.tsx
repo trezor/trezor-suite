@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type YieldRootState,
     getYieldWithdrawCompletedValues,
@@ -24,6 +25,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawComplete>;
 type NavigationProps = StackNavigationProps<
@@ -110,14 +112,10 @@ export const YieldWithdrawCompleteScreen = () => {
             receivedAmount: {
                 value: output.amount,
                 tokenContract: output.token.contractAddress,
-                tokenDecimals: output.token.decimals,
-                tokenSymbol: output.token.symbol,
             },
             withdrawalAmount: {
                 value: input.amount,
                 tokenContract: input.token.contractAddress,
-                tokenDecimals: input.token.decimals,
-                tokenSymbol: input.token.symbol,
             },
         });
     }, [account, flowType, receiptToken, resolutionStatus, session, token, vault]);
@@ -126,7 +124,7 @@ export const YieldWithdrawCompleteScreen = () => {
         return null;
     }
 
-    return (
+    const content = (
         <EarnCompleteScreenContent
             type="withdraw"
             vaultId={vault.id}
@@ -136,5 +134,11 @@ export const YieldWithdrawCompleteScreen = () => {
             title={<Translation id="earn.yieldWithdrawCompleteScreen.title" />}
             subtitle={<Translation id="earn.yieldWithdrawCompleteScreen.subtitle" />}
         />
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

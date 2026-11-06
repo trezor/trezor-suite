@@ -20,6 +20,7 @@ import { TRADING_KEYBOARD_TOOLBAR_HOST } from '../components/general/CryptoAmoun
 import { Header } from '../components/general/Header/Header';
 import { HistoryButton, type NavigationProps } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
+import { TradingMetadataProvider } from '../components/general/TradingMetadataProvider';
 import { TradingTabContent } from '../components/general/TradingTabContent';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
 import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
@@ -67,7 +68,7 @@ export const TradingScreen = () => {
         return null;
     }
 
-    return (
+    const content = (
         <Screen
             keyboardToolbarHostName={TRADING_KEYBOARD_TOOLBAR_HOST}
             noHorizontalPadding
@@ -82,4 +83,6 @@ export const TradingScreen = () => {
             <LegalGatewayContextMessage marginVertical="sp16" marginHorizontal="sp16" />
         </Screen>
     );
+
+    return <TradingMetadataProvider>{content}</TradingMetadataProvider>;
 };

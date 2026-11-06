@@ -20,6 +20,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite-common/token" },
         {
             "path": "../../suite-common/token-definitions"
         },

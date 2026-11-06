@@ -1,4 +1,5 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { BannerFull, Box, Button, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -6,9 +7,9 @@ import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
+import { AssetAmountInputCard } from './AssetAmountInputCard';
 import { EarnFeeSection } from './EarnFeeSection';
 import { WrappedNativeFeeReserveBanner } from './WrappedNativeFeeReserveBanner';
-import { WrappedNativeTokenAmountInputCard } from './WrappedNativeTokenAmountInputCard';
 import { useStandaloneWrappedNativeController } from '../../hooks/earn/useStandaloneWrappedNativeController';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
 import { YieldDisabledAlert } from '../yield/YieldDisabledAlert';
@@ -42,16 +43,16 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         nativeSymbol,
         pendingModal,
         simulationSheet,
-        spentSymbol,
         spentTokenContract,
         submit,
         wrappedTokenContract,
         wrappedTokenSymbol,
+        wrappedTokenMetadata,
     } = controller;
 
     const messages = wrappedNativeFlowMessages[flowType].form;
 
-    return (
+    const content = (
         <Screen
             header={
                 <YieldFlowScreenHeader
@@ -80,7 +81,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                     )}
 
                     <Form form={form.form}>
-                        <WrappedNativeTokenAmountInputCard
+                        <AssetAmountInputCard
                             amountLabel={<Translation id={messages.amountLabel} />}
                             balance={amountInput.balance}
                             isDisabled={amountInput.isDisabled}
@@ -89,8 +90,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                             onMaxPress={amountInput.onMaxPress}
                             symbol={account.symbol}
                             tokenContract={spentTokenContract}
-                            tokenDecimals={amountInput.tokenDecimals}
-                            tokenSymbol={spentSymbol}
                         />
                     </Form>
 
@@ -151,9 +150,16 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id={messages.amountLabel} />}
                 amountTokenContract={spentTokenContract}
-                amountTokenSymbol={spentSymbol}
                 title={<Translation id={messages.pendingTransactionTitle} />}
             />
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[{ networkSymbol: account.symbol, tokens: [wrappedTokenMetadata] }]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

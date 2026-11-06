@@ -2,14 +2,13 @@ import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { Input, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenSymbol } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -35,7 +34,6 @@ export const CryptoAmountInput = ({
     inputRef,
     symbol,
     tokenContract,
-    accountKey,
     onPress,
     isDisabled = false,
 }: SendAmountInputProps) => {
@@ -45,10 +43,6 @@ export const CryptoAmountInput = ({
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const { DisplaySymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
-
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, accountKey, tokenContract),
-    );
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
     const fiatFieldName = getOutputFieldName(recipientIndex, 'fiat');
@@ -102,11 +96,18 @@ export const CryptoAmountInput = ({
             onPress={onPress}
             hasError={!isDisabled && hasError}
             rightIcon={
-                <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                    {tokenSymbol !== null
-                        ? getDisplaySymbol(tokenSymbol, tokenContract)
-                        : formatter.format(symbol)}
-                </SendAmountCurrencyLabelWrapper>
+                tokenContract ? (
+                    <TokenSymbol
+                        isTruncated
+                        networkSymbol={symbol}
+                        contractAddress={tokenContract}
+                        color={isDisabled ? 'contentSecondary' : 'contentPrimary'}
+                    />
+                ) : (
+                    <Text color={isDisabled ? 'contentSecondary' : 'contentPrimary'}>
+                        {formatter.format(symbol)}
+                    </Text>
+                )
             }
         />
     );

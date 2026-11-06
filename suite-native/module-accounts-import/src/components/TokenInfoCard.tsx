@@ -5,14 +5,14 @@ import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, toTokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     ExactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
@@ -38,25 +38,14 @@ export const TokenInfoCard = ({ symbol, balance, contract }: TokenInfoCardProps)
             cryptoAmount={
                 <ExactTokenAmountFormatter
                     value={convertTokenValueToDecimal(balance, decimals ?? 0)}
-                    tokenSymbol={toTokenSymbol(token.symbol)}
-                    maxDisplayedDecimals={decimals}
+                    networkSymbol={symbol}
+                    contractAddress={contract}
                     variant="body-xs"
                 />
             }
-            icon={
-                <TokenIcon
-                    networkSymbol={symbol}
-                    contractAddress={contract}
-                    tokenSymbol={token.symbol}
-                />
-            }
+            icon={<TokenIcon networkSymbol={symbol} contractAddress={contract} />}
         >
-            <TokenToFiatAmountFormatter
-                symbol={symbol}
-                value={balance}
-                contract={contract}
-                decimals={decimals}
-            />
+            <TokenToFiatAmountFormatter symbol={symbol} value={balance} contract={contract} />
         </AccountImportOverviewCard>
     );
 };

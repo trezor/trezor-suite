@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -67,14 +68,10 @@ export const WrappedNativeTokenCompleteContent = ({
             receivedAmount: {
                 value: amount,
                 tokenContract: flowType === 'wrap' ? wrappedNative.address : undefined,
-                tokenDecimals: flowType === 'wrap' ? wrappedNative.decimals : undefined,
-                tokenSymbol: flowType === 'wrap' ? wrappedNative.symbol : undefined,
             },
             sentAmount: {
                 value: amount,
                 tokenContract: flowType === 'wrap' ? undefined : wrappedNative.address,
-                tokenDecimals: flowType === 'wrap' ? undefined : wrappedNative.decimals,
-                tokenSymbol: flowType === 'wrap' ? undefined : wrappedNative.symbol,
             },
         });
     }, [account, amount, flowType, wrappedNative]);
@@ -85,7 +82,7 @@ export const WrappedNativeTokenCompleteContent = ({
 
     const messages = wrappedNativeFlowMessages[flowType].complete;
 
-    return (
+    const content = (
         <EarnCompleteScreenContent
             type={flowType}
             buttonTranslationId={messages.closeButton}
@@ -99,5 +96,24 @@ export const WrappedNativeTokenCompleteContent = ({
                 />
             }
         />
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens: [
+                        {
+                            contract: wrappedNative.address,
+                            symbol: wrappedNative.symbol,
+                            decimals: wrappedNative.decimals,
+                        },
+                    ],
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

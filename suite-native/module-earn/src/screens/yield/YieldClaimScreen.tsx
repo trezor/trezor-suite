@@ -6,6 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { getClaimFeeWarning } from '@suite-common/earn-stablecoin';
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -18,7 +19,6 @@ import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerFull, Box, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useMessageSystemYield } from '@suite-native/earn';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import { ContextMessage } from '@suite-native/message-system';
@@ -29,6 +29,7 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -257,7 +258,7 @@ export const YieldClaimScreen = () => {
 
     const accountLabel = customAccountLabel ?? getNetwork(account.symbol).name;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -273,7 +274,6 @@ export const YieldClaimScreen = () => {
                                         <TokenIcon
                                             networkSymbol={account.symbol}
                                             contractAddress={vault.tokenContract}
-                                            tokenSymbol={vault.name}
                                             size="tiny"
                                         />
                                         <Box flexShrink={1}>
@@ -386,5 +386,22 @@ export const YieldClaimScreen = () => {
                 />
             )}
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens:
+                        accountRewards?.rewards.map(reward => ({
+                            ...reward.token,
+                            contract: reward.token.address,
+                        })) ?? [],
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

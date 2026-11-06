@@ -6,7 +6,6 @@ import {
     type HomeAssetTableState,
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetFiatValue,
     selectWalletAssetSymbol,
     selectWalletAssetTokenDecimals,
@@ -14,6 +13,7 @@ import {
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type WalletAssetKey, selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
@@ -24,13 +24,13 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import {
     AssetsStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { TokenIcon, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const rowStyle = prepareNativeStyle(utils => ({
@@ -52,9 +52,7 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
     const contractAddress = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetContractAddress(state, assetKey),
     );
-    const displaySymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetDisplaySymbol(state, assetKey),
-    );
+
     const tokenSymbol = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetTokenSymbol(state, assetKey),
     );
@@ -99,7 +97,6 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
             <TokenIcon
                 networkSymbol={symbol}
                 contractAddress={contractAddress}
-                tokenSymbol={tokenSymbol ?? symbol}
                 size="medium"
                 showNetworkIcon
             />
@@ -107,9 +104,19 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
                     <HStack flex={1} alignItems="center" spacing="sp8">
                         <Box flexShrink={1}>
-                            <Text variant="body-sm" numberOfLines={1}>
-                                {displaySymbol}
-                            </Text>
+                            {contractAddress ? (
+                                <TokenSymbol
+                                    isTruncated
+                                    networkSymbol={symbol}
+                                    contractAddress={contractAddress}
+                                    variant="body-sm"
+                                    numberOfLines={1}
+                                />
+                            ) : (
+                                <Text variant="body-sm" numberOfLines={1}>
+                                    {getNetworkDisplaySymbol(symbol)}
+                                </Text>
+                            )}
                         </Box>
                         <AssetYieldRateBadge
                             networkSymbol={symbol}
@@ -135,8 +142,8 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                     {contractAddress ? (
                         <CompactTokenAmountFormatter
                             value={asDecimalTokenAmount(amount)}
-                            tokenSymbol={tokenSymbol}
-                            tokenDecimals={tokenDecimals}
+                            networkSymbol={symbol}
+                            contractAddress={contractAddress}
                             variant="body-xs"
                             color="contentTertiary"
                         />

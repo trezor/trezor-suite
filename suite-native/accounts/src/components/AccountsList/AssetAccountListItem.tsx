@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     getAccountCryptoBalanceWithStaking,
@@ -16,7 +16,8 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 
 import { type NativeAccountsRootState, selectAccountHasAnyKnownTokens } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
@@ -26,7 +27,6 @@ import { AccountsListItemBase } from './AccountsListItemBase';
 type AssetAccountListItemProps = {
     account: Account;
     contractAddress?: TokenAddress;
-    tokenSymbol?: TokenSymbol;
     onPress: OnSelectAccount;
 };
 
@@ -39,7 +39,6 @@ type AssetAccountListItemProps = {
 export const AssetAccountListItem = ({
     account,
     contractAddress,
-    tokenSymbol,
     onPress,
 }: AssetAccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
@@ -75,8 +74,8 @@ export const AssetAccountListItem = ({
     const cryptoValue = contractAddress ? (
         <CompactTokenAmountFormatter
             value={asDecimalTokenAmount(cryptoBalance)}
-            tokenSymbol={tokenSymbol ?? (token?.symbol ? toTokenSymbol(token.symbol) : null)}
-            tokenDecimals={token?.decimals}
+            networkSymbol={account.symbol}
+            contractAddress={contractAddress}
             numberOfLines={1}
             adjustsFontSizeToFit
         />
@@ -91,7 +90,7 @@ export const AssetAccountListItem = ({
 
     return (
         <AccountsListItemBase
-            icon={<TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} />}
+            icon={<TokenIcon networkSymbol={account.symbol} />}
             title={<AccountLabel account={account} />}
             titleBadge={
                 formattedAccountType ? (

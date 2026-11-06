@@ -40,6 +40,7 @@
         { "path": "../navigation" },
         { "path": "../price-chart" },
         { "path": "../toasts" },
+        { "path": "../tokens" },
         {
             "path": "../../packages/dependency-injection"
         },

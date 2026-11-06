@@ -16,9 +16,13 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenName, type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    TokenIcon,
+    TokenName,
+    type TokensRootState,
+    selectAccountTokenInfo,
+} from '@suite-native/tokens';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -78,7 +82,6 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                         <TokenIcon
                             networkSymbol={symbol}
                             contractAddress={contract}
-                            tokenSymbol={token.symbol || token.name}
                             showNetworkIcon
                         />
                     </Box>
@@ -109,8 +112,8 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                     />
                     <ExactTokenAmountFormatter
                         value={asDecimalTokenAmount(token.balance ?? '0')}
-                        tokenSymbol={token.symbol}
-                        maxDisplayedDecimals={token.decimals}
+                        networkSymbol={symbol}
+                        contractAddress={contract}
                     />
                 </Box>
             </Box>

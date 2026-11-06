@@ -31,6 +31,7 @@
         "@suite-common/schemas": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
+        "@suite-common/token": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

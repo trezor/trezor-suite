@@ -2,6 +2,8 @@ import { useCallback } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { activateStellarTokenThunk } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
@@ -72,8 +74,7 @@ export const ActivationFeeScreen = () => {
         formDraft,
         handleFeeLevelChange,
         handleCustomFeeSet,
-        assetCode,
-        tokenName,
+        tokenInfo,
         issuerDomain,
         issuerAddress,
         iconContractAddress,
@@ -93,7 +94,7 @@ export const ActivationFeeScreen = () => {
 
     if (account?.networkType !== 'stellar') return null;
 
-    return (
+    const content = (
         <Form form={form}>
             <ConfirmOnTrezorWrapper
                 isManualControlEnabled
@@ -114,9 +115,10 @@ export const ActivationFeeScreen = () => {
                 >
                     <VStack spacing="sp16">
                         <TokenInfoCard
-                            tokenName={tokenName}
+                            networkSymbol={account.symbol}
                             issuerDomain={issuerDomain}
                             iconContractAddress={iconContractAddress}
+                            tokenContract={tokenContract}
                             onPress={openTokenDetail}
                         />
 
@@ -195,14 +197,28 @@ export const ActivationFeeScreen = () => {
 
                 <TokenDetailBottomSheet
                     bottomSheetRef={tokenDetailRef}
-                    tokenName={tokenName}
-                    assetCode={assetCode}
                     issuerDomain={issuerDomain}
                     issuerAddress={issuerAddress}
                     iconContractAddress={iconContractAddress}
+                    tokenContract={tokenContract}
                     onClose={closeTokenDetail}
                 />
             </ConfirmOnTrezorWrapper>
         </Form>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens: tokenInfo
+                        ? [{ ...tokenInfo, contract: toTokenAddress(tokenInfo.contract) }]
+                        : [],
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

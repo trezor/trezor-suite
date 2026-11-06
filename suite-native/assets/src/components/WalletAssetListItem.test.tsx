@@ -92,7 +92,8 @@ describe('WalletAssetListItem', () => {
             services,
         });
 
-        expect(screen.getByText('USDC')).toBeTruthy();
+        // The ticker appears in both the title and the formatted token amount.
+        expect(screen.getAllByText('USDC')).toHaveLength(2);
         expect(screen.getByText('Polygon PoS')).toBeTruthy();
         expect(screen.getByText('$720.00')).toBeTruthy();
         expect(screen.getByText(/^720(\.00)? USDC$/)).toBeTruthy();

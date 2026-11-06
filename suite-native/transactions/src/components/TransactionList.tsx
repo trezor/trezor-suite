@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
@@ -413,7 +415,7 @@ export const TransactionList = ({
         [data, accountKey],
     );
 
-    return (
+    const content = (
         <Box flex={1}>
             {scrollDivider}
             <FlashList<TransactionListItem>
@@ -468,5 +470,23 @@ export const TransactionList = ({
                 onScroll={handleScroll}
             />
         </Box>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens: transactions.flatMap(transaction =>
+                        (transaction.tokens ?? []).map(token => ({
+                            ...token,
+                            contract: toTokenAddress(token.contract),
+                        })),
+                    ),
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

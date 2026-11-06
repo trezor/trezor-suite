@@ -1,17 +1,11 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
+import { TokenIcon, TokenSymbol } from '@suite-native/tokens';
 
-type AssetDetailScreenHeaderContentProps = {
-    assetDisplaySymbol: string;
-};
-
-export const AssetDetailScreenHeaderContent = ({
-    assetDisplaySymbol,
-}: AssetDetailScreenHeaderContentProps) => {
+export const AssetDetailScreenHeaderContent = () => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
 
@@ -20,15 +14,25 @@ export const AssetDetailScreenHeaderContent = ({
             <TokenIcon
                 networkSymbol={networkSymbol}
                 contractAddress={tokenContract}
-                tokenSymbol={assetDisplaySymbol}
                 showNetworkIcon
                 size="small"
             />
 
             <VStack spacing={0} flexShrink={1}>
-                <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
-                    {assetDisplaySymbol}
-                </Text>
+                {tokenContract ? (
+                    <TokenSymbol
+                        isTruncated
+                        networkSymbol={networkSymbol}
+                        contractAddress={tokenContract}
+                        variant="body-md-strong"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    />
+                ) : (
+                    <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
+                        {getNetworkDisplaySymbol(networkSymbol)}
+                    </Text>
+                )}
                 <Text
                     variant="body-xs"
                     color="contentSecondary"

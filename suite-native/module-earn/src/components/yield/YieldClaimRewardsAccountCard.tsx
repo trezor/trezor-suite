@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -18,13 +18,14 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import {
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -95,11 +96,7 @@ export const YieldClaimRewardsAccountCard = ({
     return (
         <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
             <Box marginRight="sp12">
-                <TokenIcon
-                    tokenSymbol={item.summary.networkSymbol}
-                    networkSymbol={item.summary.networkSymbol}
-                    size="small"
-                />
+                <TokenIcon networkSymbol={item.summary.networkSymbol} size="small" />
             </Box>
 
             <VStack spacing="sp4" style={applyStyle(contentStyle)}>
@@ -119,9 +116,10 @@ export const YieldClaimRewardsAccountCard = ({
                 <VStack spacing="sp1">
                     {item.summary.tokens.map(token => (
                         <CompactTokenAmountFormatter
+                            networkSymbol={item.summary.networkSymbol}
+                            contractAddress={toTokenAddress(token.contractAddress)}
                             key={`${token.symbol}:${token.contractAddress}`}
                             value={asDecimalTokenAmount(token.claimableAmount)}
-                            tokenSymbol={toTokenSymbol(token.symbol)}
                             numberOfLines={2}
                             variant="body-xs"
                             color="contentSecondary"

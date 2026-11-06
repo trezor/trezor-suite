@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { events as commonEvents } from '@suite-common/analytics';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { type GlobalReceiveAssetListItem } from '@suite-common/receive';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { selectAccounts } from '@suite-common/wallet-core';
 import {
     AccountsList,
     AccountsListFooter,
@@ -24,6 +26,7 @@ import {
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { accountsToTokenMetadataSources } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 import { useDebounce } from '@trezor/react-utils';
@@ -38,6 +41,7 @@ import { useReceiveNavigation } from '../hooks/useReceiveNavigation';
 type Tab = 'assets' | 'accounts';
 
 export const ReceiveCrossroadsScreen = () => {
+    const accounts = useSelector(selectAccounts);
     const { analytics } = useServices(injectDispatch, injectNativeAnalytics);
     const { navigateToReceiveScreen, navigateToReceiveAddressScreen } = useReceiveNavigation();
     const { translate } = useTranslate();
@@ -60,10 +64,11 @@ export const ReceiveCrossroadsScreen = () => {
         [],
     );
 
-    const { items, loadMoreOtherAssets, resetOtherAssetsLimit } = useReceiveAssetListItems({
-        searchValue,
-        filteredNetworks,
-    });
+    const { items, metadataSources, loadMoreOtherAssets, resetOtherAssetsLimit } =
+        useReceiveAssetListItems({
+            searchValue,
+            filteredNetworks,
+        });
 
     const handleSearchChange = (value: string) => {
         debounce(() => {
@@ -129,73 +134,84 @@ export const ReceiveCrossroadsScreen = () => {
     }
 
     return (
-        <Screen
-            header={
-                <ScreenHeader
-                    title={<Translation id="moduleReceive.receiveTitle" />}
-                    closeActionType="close"
-                    rightIcon={
-                        activeTab === 'accounts' && (
-                            <AddAccountButton flowType="receive" onPress={handleAddAccount} />
-                        )
-                    }
-                />
-            }
-            isScrollable={false}
-            noHorizontalPadding
-            noBottomPadding
-            hasBottomInset={false}
+        <TokenMetadataProvider
+            sources={[...metadataSources, ...accountsToTokenMetadataSources(accounts)]}
         >
-            <VStack marginHorizontal="sp16" marginBottom="sp16" spacing="sp12">
-                <HStack spacing="sp12">
-                    <Box flex={1}>
-                        <SearchInput
-                            placeholder={translate('moduleReceive.search.placeholder')}
-                            onChange={handleSearchChange}
-                            maxLength={30}
+            <Screen
+                header={
+                    <ScreenHeader
+                        title={<Translation id="moduleReceive.receiveTitle" />}
+                        closeActionType="close"
+                        rightIcon={
+                            activeTab === 'accounts' && (
+                                <AddAccountButton flowType="receive" onPress={handleAddAccount} />
+                            )
+                        }
+                    />
+                }
+                isScrollable={false}
+                noHorizontalPadding
+                noBottomPadding
+                hasBottomInset={false}
+            >
+                <VStack marginHorizontal="sp16" marginBottom="sp16" spacing="sp12">
+                    <HStack spacing="sp12">
+                        <Box flex={1}>
+                            <SearchInput
+                                placeholder={translate('moduleReceive.search.placeholder')}
+                                onChange={handleSearchChange}
+                                maxLength={30}
+                            />
+                        </Box>
+                        <NetworkFilterButton
+                            filter={networkFilter}
+                            onPress={reportNetworkFilterOpen}
                         />
-                    </Box>
-                    <NetworkFilterButton filter={networkFilter} onPress={reportNetworkFilterOpen} />
-                </HStack>
-                {!hasBitcoinOnlyFirmware && (
-                    <SubTabs items={tabs} onChange={setActiveTabWithAnalytics} value={activeTab} />
+                    </HStack>
+                    {!hasBitcoinOnlyFirmware && (
+                        <SubTabs
+                            items={tabs}
+                            onChange={setActiveTabWithAnalytics}
+                            value={activeTab}
+                        />
+                    )}
+                </VStack>
+                {activeTab === 'assets' && (
+                    <AssetList
+                        items={items}
+                        onSelect={handleAssetSelect}
+                        ListEmptyComponent={
+                            <NoResultsPlaceholder
+                                subtitle={<Translation id="moduleReceive.search.noAssets" />}
+                            >
+                                <TextButton isUnderlined onPress={viewAccounts}>
+                                    <Translation id="moduleReceive.search.viewAccounts" />
+                                </TextButton>
+                            </NoResultsPlaceholder>
+                        }
+                        onEndReached={loadMoreOtherAssets}
+                    />
                 )}
-            </VStack>
-            {activeTab === 'assets' && (
-                <AssetList
-                    items={items}
-                    onSelect={handleAssetSelect}
-                    ListEmptyComponent={
-                        <NoResultsPlaceholder
-                            subtitle={<Translation id="moduleReceive.search.noAssets" />}
-                        >
-                            <TextButton isUnderlined onPress={viewAccounts}>
-                                <Translation id="moduleReceive.search.viewAccounts" />
-                            </TextButton>
-                        </NoResultsPlaceholder>
-                    }
-                    onEndReached={loadMoreOtherAssets}
-                />
-            )}
-            {activeTab === 'accounts' && (
-                <AccountsList
-                    searchValue={searchValue}
-                    networkFilter={filteredNetworks}
-                    onSelectAccount={navigateToReceiveAddressScreen}
-                    ListEmptyComponent={
-                        <NoResultsPlaceholder
-                            subtitle={<Translation id="moduleReceive.search.noAccounts" />}
-                        />
-                    }
-                    ListFooterComponent={
-                        <AccountsListFooter
-                            networkFilterType={networkFilter.type}
-                            activeFilterCount={filteredNetworks.length}
-                            onClearFilters={() => setFilteredNetworksWithAnalytics([])}
-                        />
-                    }
-                />
-            )}
-        </Screen>
+                {activeTab === 'accounts' && (
+                    <AccountsList
+                        searchValue={searchValue}
+                        networkFilter={filteredNetworks}
+                        onSelectAccount={navigateToReceiveAddressScreen}
+                        ListEmptyComponent={
+                            <NoResultsPlaceholder
+                                subtitle={<Translation id="moduleReceive.search.noAccounts" />}
+                            />
+                        }
+                        ListFooterComponent={
+                            <AccountsListFooter
+                                networkFilterType={networkFilter.type}
+                                activeFilterCount={filteredNetworks.length}
+                                onClearFilters={() => setFilteredNetworksWithAnalytics([])}
+                            />
+                        }
+                    />
+                )}
+            </Screen>
+        </TokenMetadataProvider>
     );
 };

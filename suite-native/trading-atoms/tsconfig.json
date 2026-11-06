@@ -7,6 +7,7 @@
         {
             "path": "../../suite-common/suite-utils"
         },
+        { "path": "../../suite-common/token" },
         { "path": "../../suite-common/tokens" },
         { "path": "../../suite-common/trading" },
         {
@@ -24,6 +25,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../tokens" },
         { "path": "../trading-types" },
         {
             "path": "../../packages/styles-native"

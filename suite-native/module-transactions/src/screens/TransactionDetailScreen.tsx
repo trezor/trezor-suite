@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     createTargets,
@@ -82,7 +84,7 @@ export const TransactionDetailScreen = ({
 
     const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
 
-    return (
+    const content = (
         <Screen
             header={
                 <ScreenHeader
@@ -126,5 +128,21 @@ export const TransactionDetailScreen = ({
                 </Button>
             </VStack>
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: transaction.symbol,
+                    tokens: (transaction.tokens ?? []).map(token => ({
+                        ...token,
+                        contract: toTokenAddress(token.contract),
+                    })),
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

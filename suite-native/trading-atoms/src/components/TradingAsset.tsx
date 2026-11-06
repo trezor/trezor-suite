@@ -1,8 +1,14 @@
 import { type ReactNode } from 'react';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { toTokenAddress } from '@suite-common/tokens';
+import {
+    type NetworkSymbol,
+    getNetwork,
+    getNetworkDisplaySymbol,
+    getNetworkDisplaySymbolName,
+} from '@suite-common/wallet-config';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
+import { TokenIcon, TokenLabel } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
@@ -14,12 +20,10 @@ export type TradingAssetNetworkDisplay = 'badge' | 'text';
 
 type TradingAssetBaseProps = {
     iconSize?: FiatCurrencyIconProps['size'];
-    name: string;
     primaryLabel?: TradingAssetPrimaryLabel;
     primaryTextVariant?: NativeTypographyStyle;
     rightContent?: ReactNode;
     spacing?: NativeSpacing | number;
-    symbol: string;
     testID?: string;
 };
 
@@ -32,6 +36,8 @@ export type TradingCryptoAssetProps = TradingAssetBaseProps & {
 
 export type TradingFiatAssetProps = TradingAssetBaseProps & {
     assetType: 'fiat';
+    name: string;
+    symbol: string;
     fiatCurrency: NonNullable<FiatCurrencyIconProps['value']>;
 };
 
@@ -46,17 +52,48 @@ export const TradingAsset = (props: TradingAssetProps) => {
     const { applyStyle } = useNativeStyles();
     const {
         iconSize = 'medium',
-        name,
         primaryLabel = 'name',
         primaryTextVariant = 'body-md',
         rightContent,
         spacing = 'sp8',
-        symbol,
         testID,
         assetType,
     } = props;
 
-    const primaryText = primaryLabel === 'name' ? name : symbol;
+    const tokenContract =
+        props.assetType === 'crypto' && props.contractAddress
+            ? toTokenAddress(props.contractAddress)
+            : undefined;
+    let primaryText: ReactNode;
+    let secondarySymbol: ReactNode;
+    if (props.assetType === 'fiat') {
+        primaryText = primaryLabel === 'name' ? props.name : props.symbol;
+        secondarySymbol = props.symbol;
+    } else if (tokenContract) {
+        primaryText = (
+            <TokenLabel
+                preferred={primaryLabel}
+                networkSymbol={props.networkSymbol}
+                contractAddress={tokenContract}
+                variant={primaryTextVariant}
+            />
+        );
+        secondarySymbol = (
+            <TokenLabel
+                preferred="symbol"
+                networkSymbol={props.networkSymbol}
+                contractAddress={tokenContract}
+                color="contentSecondary"
+                variant="body-sm"
+            />
+        );
+    } else {
+        primaryText =
+            primaryLabel === 'name'
+                ? getNetworkDisplaySymbolName(props.networkSymbol)
+                : getNetworkDisplaySymbol(props.networkSymbol);
+        secondarySymbol = getNetworkDisplaySymbol(props.networkSymbol);
+    }
     const shouldShowSymbolOnSecondaryLine = primaryLabel === 'name';
     const shouldShowSecondaryLine = shouldShowSymbolOnSecondaryLine || assetType === 'crypto';
 
@@ -66,7 +103,6 @@ export const TradingAsset = (props: TradingAssetProps) => {
                 <TokenIcon
                     networkSymbol={props.networkSymbol}
                     contractAddress={props.contractAddress}
-                    tokenSymbol={symbol || name}
                     showNetworkIcon
                     size={iconSize}
                 />
@@ -91,7 +127,7 @@ export const TradingAsset = (props: TradingAssetProps) => {
                                 testID={testID ? `${testID}/secondary-symbol` : undefined}
                                 variant="body-sm"
                             >
-                                {symbol}
+                                {secondarySymbol}
                             </Text>
                         )}
                         {props.assetType === 'crypto' &&

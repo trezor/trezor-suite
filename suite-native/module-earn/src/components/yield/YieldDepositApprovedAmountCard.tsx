@@ -1,9 +1,10 @@
-import { type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { ExactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenIcon } from '@suite-native/tokens';
 
 type YieldDepositApprovedAmountCardProps = {
     actionType?: 'edit' | 'revoke';
@@ -11,9 +12,7 @@ type YieldDepositApprovedAmountCardProps = {
     isApprovedAmountUnlimited: boolean;
     networkSymbol: NetworkSymbol;
     onActionPress?: () => void;
-    tokenDecimals?: number;
     tokenContract: string;
-    tokenSymbol: TokenSymbol;
 };
 
 export const YieldDepositApprovedAmountCard = ({
@@ -22,9 +21,7 @@ export const YieldDepositApprovedAmountCard = ({
     isApprovedAmountUnlimited,
     networkSymbol,
     onActionPress,
-    tokenDecimals,
     tokenContract,
-    tokenSymbol,
 }: YieldDepositApprovedAmountCardProps) => (
     <Card>
         <HStack alignItems="center" justifyContent="space-between">
@@ -35,7 +32,6 @@ export const YieldDepositApprovedAmountCard = ({
                 <TokenIcon
                     networkSymbol={networkSymbol}
                     contractAddress={tokenContract}
-                    tokenSymbol={tokenSymbol}
                     size={20}
                 />
                 {isApprovedAmountUnlimited ? (
@@ -45,9 +41,9 @@ export const YieldDepositApprovedAmountCard = ({
                 ) : null}
                 {!isApprovedAmountUnlimited && approvedAmount ? (
                     <ExactTokenAmountFormatter
+                        networkSymbol={networkSymbol}
+                        contractAddress={toTokenAddress(tokenContract)}
                         value={asDecimalTokenAmount(approvedAmount)}
-                        tokenSymbol={toTokenSymbol(tokenSymbol)}
-                        maxDisplayedDecimals={tokenDecimals}
                         variant="body-sm-strong"
                         color="contentPrimary"
                         numberOfLines={1}

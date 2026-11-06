@@ -1,3 +1,4 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -14,6 +15,7 @@ import {
     TradeableAssetAccountBalance,
     type TradeableAssetAccountBalanceProps,
 } from './TradeableAssetAccountBalance';
+import { tradeableAssetsToTokenMetadataSources } from '../../utils/general/tradeableAssetsToTokenMetadataSources';
 
 describe('TradeableAssetAccountBalance', () => {
     const renderTradeableAssetAccountBalance = (
@@ -21,12 +23,14 @@ describe('TradeableAssetAccountBalance', () => {
         preloadedState = {},
     ) =>
         renderWithStoreProvider(
-            <TradeableAssetAccountBalance
-                asset={undefined}
-                account={undefined}
-                testID="TEST_ID"
-                {...props}
-            />,
+            <TokenMetadataProvider sources={tradeableAssetsToTokenMetadataSources([props.asset])}>
+                <TradeableAssetAccountBalance
+                    asset={undefined}
+                    account={undefined}
+                    testID="TEST_ID"
+                    {...props}
+                />
+            </TokenMetadataProvider>,
             { preloadedState },
         );
 

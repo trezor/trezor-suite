@@ -10,7 +10,8 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type ChooseAccountBalanceData } from '../../utils/staking/chooseAccountBalanceUtils';
@@ -55,7 +56,7 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
         <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
             <PressableOpacity onPress={handlePress} style={applyStyle(rowStyle)}>
                 <Box marginRight="sp12">
-                    <TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} />
+                    <TokenIcon networkSymbol={account.symbol} />
                 </Box>
 
                 <Box style={applyStyle(labelStyle)}>
@@ -90,9 +91,9 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
                     ) : (
                         <>
                             <CompactTokenAmountFormatter
+                                networkSymbol={account.symbol}
+                                contractAddress={balanceData.tokenContractAddress}
                                 value={asDecimalTokenAmount(balanceData.value)}
-                                tokenSymbol={balanceData.tokenSymbol}
-                                tokenDecimals={balanceData.tokenDecimals}
                                 variant="body-md"
                                 color="contentPrimary"
                                 numberOfLines={1}

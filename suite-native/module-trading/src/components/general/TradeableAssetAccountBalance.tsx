@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { isSendingEvmNativeToken } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -22,9 +22,8 @@ export type TradeableAssetAccountBalanceProps = {
 
 type TokenBalanceProps = {
     accountKey: Account['key'];
+    networkSymbol: NetworkSymbol;
     tokenAddress: TokenAddress;
-    tokenDecimals?: number;
-    symbol: string;
     testID?: string;
 };
 
@@ -34,13 +33,7 @@ type AssetBalanceProps = {
     testID?: string;
 };
 
-const TokenBalance = ({
-    accountKey,
-    tokenAddress,
-    tokenDecimals,
-    symbol,
-    testID,
-}: TokenBalanceProps) => {
+const TokenBalance = ({ accountKey, networkSymbol, tokenAddress, testID }: TokenBalanceProps) => {
     const balance = useSelector(
         (state: TokensRootState) =>
             selectAccountTokenBalance(state, accountKey, tokenAddress) ?? '0',
@@ -48,9 +41,9 @@ const TokenBalance = ({
 
     return (
         <CompactTokenAmountFormatter
+            networkSymbol={networkSymbol}
+            contractAddress={tokenAddress}
             value={asDecimalTokenAmount(balance)}
-            tokenSymbol={symbol as TokenSymbol}
-            tokenDecimals={tokenDecimals}
             testID={testID}
         />
     );
@@ -66,10 +59,9 @@ const AssetBalance = ({ account, asset, testID }: AssetBalanceProps) => {
         <DiscreetTextTrigger>
             {tokenAddress ? (
                 <TokenBalance
-                    symbol={symbol}
+                    networkSymbol={account.symbol}
                     accountKey={accountKey}
                     tokenAddress={tokenAddress}
-                    tokenDecimals={asset.decimals}
                     testID={testID}
                 />
             ) : (

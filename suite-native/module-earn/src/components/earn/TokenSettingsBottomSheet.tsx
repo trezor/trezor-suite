@@ -14,8 +14,8 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, toTokenSymbol } from '@suite-common/tokens';
-import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/tokens';
+import { getNetwork, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -44,7 +44,6 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -55,6 +54,8 @@ import {
 import { isDevUtilsEnabledAtom } from '@suite-native/storage';
 import {
     type TokensRootState as NativeTokensRootState,
+    TokenIcon,
+    TokenName,
     selectAccountTokenInfo,
     selectIsUnrecognizedToken,
 } from '@suite-native/tokens';
@@ -146,10 +147,7 @@ export const TokenSettingsBottomSheet = forwardRef(
 
         if (!account || !symbol) return null;
 
-        const displaySymbol = getDisplaySymbol(account.symbol);
-
         const tokenBalance = token?.balance ?? '0';
-        const tokenSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
         const networkName = getNetwork(symbol).name;
 
         const isHidden = hiddenTokens.some(
@@ -230,7 +228,21 @@ export const TokenSettingsBottomSheet = forwardRef(
         };
 
         return (
-            <BottomSheetModal ref={ref} title={token?.name ?? displaySymbol} isCloseDisplayed>
+            <BottomSheetModal
+                ref={ref}
+                title={
+                    tokenContract ? (
+                        <TokenName
+                            networkSymbol={symbol}
+                            contractAddress={tokenContract}
+                            variant="headline-sm"
+                        />
+                    ) : (
+                        <Text variant="headline-sm">{getNetworkDisplaySymbolName(symbol)}</Text>
+                    )
+                }
+                isCloseDisplayed
+            >
                 <VStack spacing="sp16" paddingBottom="sp16">
                     <Card style={applyStyle(cardStyle)}>
                         <VStack>
@@ -260,11 +272,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                                 }
                             >
                                 <HStack alignItems="center" spacing="sp8">
-                                    <TokenIcon
-                                        tokenSymbol={symbol}
-                                        networkSymbol={symbol}
-                                        size="tiny"
-                                    />
+                                    <TokenIcon networkSymbol={symbol} size="tiny" />
                                     <Text variant="body-sm">{networkName}</Text>
                                 </HStack>
                             </DetailRow>
@@ -278,8 +286,9 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     <VStack spacing={0} alignItems="flex-end">
                                         {tokenContract ? (
                                             <ExactTokenAmountFormatter
+                                                networkSymbol={symbol}
+                                                contractAddress={tokenContract}
                                                 value={asDecimalTokenAmount(tokenBalance)}
-                                                tokenSymbol={tokenSymbol}
                                                 variant="body-sm"
                                                 color="contentPrimary"
                                                 numberOfLines={1}

@@ -1,5 +1,4 @@
 import { invariant } from '@suite-common/suite-utils';
-import { type TokenSymbol } from '@suite-common/tokens';
 import { type TradeableAssetBalance, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import {
@@ -31,7 +30,7 @@ export const TradeableAssetListItem = ({
 }: TradeableAssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
-    const { symbol, name, contractAddress, cryptoId, decimals } = asset;
+    const { name, contractAddress, cryptoId } = asset;
 
     const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
     invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
@@ -45,9 +44,9 @@ export const TradeableAssetListItem = ({
             />
             {contractAddress ? (
                 <CompactTokenAmountFormatter
+                    networkSymbol={networkSymbol}
+                    contractAddress={contractAddress}
                     value={asDecimalTokenAmount(balance.cryptoAmount)}
-                    tokenSymbol={symbol as TokenSymbol}
-                    tokenDecimals={decimals}
                     variant="body-sm"
                     color="contentSecondary"
                     numberOfLines={1}
@@ -79,8 +78,6 @@ export const TradeableAssetListItem = ({
             <Box paddingHorizontal="sp8" paddingVertical="sp12">
                 <TradingAsset
                     assetType="crypto"
-                    name={name}
-                    symbol={symbol}
                     contractAddress={contractAddress}
                     networkSymbol={networkSymbol}
                     rightContent={balanceContent}
