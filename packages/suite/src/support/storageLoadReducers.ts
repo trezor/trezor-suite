@@ -1,0 +1,250 @@
+import type { PayloadAction } from '@reduxjs/toolkit';
+
+import { fixLoadedCoinjoinAccount } from '@suite/coinjoin';
+import type { FlagsState } from '@suite/flags';
+import { type SuiteSettingsState } from '@suite/settings';
+import { type DeviceReducerState } from '@suite-common/device';
+import { type PersistentDeviceDataState } from '@suite-common/persistent-device-data';
+import { type ReceiveState } from '@suite-common/receive';
+import {
+    type TokenDefinitionsState,
+    buildTokenDefinitionsFromStorage,
+} from '@suite-common/token-definitions';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountsState,
+    type BlockchainState,
+    type EarnOnboardingState,
+    type ExplorerConfig,
+    type FiatRatesState,
+    type PhishingState,
+    type SendState,
+    type StellarContractTokensState,
+    type TransactionsState,
+    type WalletSettingsState,
+} from '@suite-common/wallet-core';
+import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
+import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
+import { type StaticSessionId } from '@trezor/connect';
+
+import { type StorageLoadAction } from 'src/actions/suite/storageLifecycleActions';
+
+import type { BioAuthState } from '../reducers/bioAuth';
+import { type TrezorDevice } from '../types/suite';
+
+export const storageLoadReducers = {
+    storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
+        payload.backendSettings.forEach(backend => {
+            const blockchain = state[backend.key as keyof typeof state];
+
+            if (blockchain) {
+                blockchain.backends = backend.value;
+            }
+        });
+    },
+    storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
+        payload.explorer.forEach(({ symbol, explorer }) => {
+            // An explorer config can outlive its network; a throw here would cost the store.
+            const config = state[symbol as keyof typeof state];
+
+            if (!config) return;
+
+            // Older configs lack newer explorer paths; unset paths keep the defaults.
+            const storedPaths = Object.fromEntries(
+                Object.entries(explorer).filter(([, value]) => value !== undefined),
+            );
+
+            config.custom = { ...config.default, ...storedPaths };
+        });
+    },
+    storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
+        const { txs, phishing } = payload;
+
+        txs.forEach(item => {
+            const k = createAccountKey({
+                accountDescriptor: item.tx.descriptor,
+                networkSymbol: item.tx.symbol,
+                deviceStaticSessionId: item.tx.deviceState,
+            });
+
+            if (!state.transactions[k]) {
+                state.transactions[k] = [];
+            }
+
+            state.transactions[k][item.order] = item.tx;
+        });
+
+        phishing.forEach(({ key, value }) => {
+            state.phishing[key] = value;
+        });
+    },
+    storageLoadPhishingMetadata: (state: PhishingState, { payload }: StorageLoadAction) => {
+        if (payload.phishingMetadata) {
+            return { ...state, ...payload.phishingMetadata };
+        }
+
+        return state;
+    },
+    storageLoadHistoricRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
+        if (payload.historicRates) {
+            const fiatRates = payload.historicRates.map(rate => rate.value);
+            const historicRates = buildHistoricRatesFromStorage(fiatRates);
+            state.historic = historicRates;
+        }
+    },
+    storageLoadTokenManagement: (state: TokenDefinitionsState, { payload }: StorageLoadAction) => {
+        if (payload.tokenManagement) {
+            const tokenDefinitions = buildTokenDefinitionsFromStorage(payload.tokenManagement);
+            Object.keys(tokenDefinitions).forEach(symbol => {
+                if (isNetworkSymbol(symbol)) {
+                    state[symbol] = tokenDefinitions[symbol];
+                }
+            });
+        }
+    },
+    storageLoadStellarContractTokens: (
+        state: StellarContractTokensState,
+        { payload }: StorageLoadAction,
+    ) => {
+        payload.stellarContractTokens.forEach(({ key, value }) => {
+            state[key as AccountKey] = value;
+        });
+    },
+    storageLoadAccounts: (_state: AccountsState, { payload }: StorageLoadAction) =>
+        // Storage returns accounts in IndexedDB key order, sort them like the reducer does.
+        sortByCoin(
+            payload.accounts
+                .filter(acc => payload.supportedNetworks.includes(acc.symbol))
+                .map(acc => (acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc)),
+            payload.supportedNetworks,
+        ),
+    setDeviceMetadataReducer: (
+        state: DeviceReducerState,
+        {
+            payload,
+        }: PayloadAction<{ deviceState: StaticSessionId; metadata: TrezorDevice['metadata'] }>,
+    ) => {
+        const { deviceState, metadata } = payload;
+        const index = state.devices.findIndex(
+            (d: TrezorDevice) => d.state?.staticSessionId === deviceState,
+        );
+        const device = state.devices[index];
+        if (!device) return;
+        device.metadata = metadata;
+    },
+    setDeviceMetadataPasswordsReducer: (
+        state: DeviceReducerState,
+        {
+            payload,
+        }: PayloadAction<{
+            deviceState: StaticSessionId;
+            metadata: TrezorDevice['passwords'];
+        }>,
+    ) => {
+        const { deviceState, metadata } = payload;
+        const index = state.devices.findIndex(
+            (d: TrezorDevice) => d.state?.staticSessionId === deviceState,
+        );
+        const device = state.devices[index];
+        if (!device) return;
+        device.passwords = metadata;
+    },
+    storageLoadDevices: (state: DeviceReducerState, { payload }: StorageLoadAction) => {
+        // @ts-expect-error loaded devices have empty path, TODO deviceReducer should have path nullable, because remembered wallets??
+        state.devices = payload.devices.map(device => {
+            const persistentDeviceData = payload.persistentDeviceData?.find(
+                ({ device_id }) => device_id === device.id,
+            );
+            if (persistentDeviceData) {
+                return {
+                    ...device,
+                    thp: persistentDeviceData.thp,
+                };
+            } else {
+                return device;
+            }
+        });
+    },
+    storageLoadPersistentDeviceData: (
+        _state: PersistentDeviceDataState,
+        { payload }: StorageLoadAction,
+    ) => ({ devices: payload.persistentDeviceData ?? [] }),
+    storageLoadEarnOnboarding: (_: EarnOnboardingState, { payload }: StorageLoadAction) =>
+        Object.fromEntries(payload.earnOnboarding.map(({ key, value }) => [key, value])),
+    storageLoadFormDrafts: (state: SendState, { payload }: StorageLoadAction) => {
+        payload.sendFormDrafts.forEach(d => {
+            state.drafts[d.key] = d.value;
+        });
+    },
+    storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
+        payload.walletSettings
+            ? {
+                  ...state,
+                  ...payload.walletSettings,
+                  enabledNetworks: payload.walletSettings.enabledNetworks.filter(symbol =>
+                      payload.supportedNetworks.includes(symbol),
+                  ),
+              }
+            : state,
+    // this is deprecated, bioAuth settings is now stored in electron store
+    storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
+        if (!payload?.bioAuth) return state;
+
+        // Only load the bioAuthEnabled property, ignore all other properties
+        if (payload.bioAuth.bioAuthEnabled !== undefined) {
+            return {
+                ...state,
+                bioAuthEnabled: payload.bioAuth.bioAuthEnabled,
+            };
+        }
+
+        return state;
+    },
+    storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
+        payload.suiteSettings
+            ? {
+                  ...state,
+                  ...payload.suiteSettings.flags,
+                  // Missing IDs in saved state represent changes introduced since that run.
+                  seenNewContentIndicators:
+                      payload.suiteSettings.flags?.seenNewContentIndicators ?? {},
+                  // The onboarding feedback banner is session-only: it is enabled when onboarding
+                  // is completed and must not survive an app restart. Reset it on every load so a
+                  // returning user only sees it again after completing onboarding once more.
+                  showOnboardingFeedbackBanner: false,
+              }
+            : state,
+    storageLoadSuiteSettings: (state: SuiteSettingsState, { payload }: StorageLoadAction) => {
+        if (!payload.suiteSettings?.settings) return state;
+
+        const loadedSettings = payload.suiteSettings.settings;
+        const theme =
+            (loadedSettings.theme?.variant as string | undefined) === 'debug'
+                ? { ...loadedSettings.theme, variant: 'light' as const }
+                : loadedSettings.theme;
+
+        return {
+            ...state,
+            ...loadedSettings,
+            theme: theme ?? state.theme,
+            enabledSecurityChecks: {
+                ...state.enabledSecurityChecks,
+                ...loadedSettings.enabledSecurityChecks,
+            },
+        };
+    },
+    storageLoadReceiveAccounts: (state: ReceiveState, { payload }: StorageLoadAction) => {
+        state.accounts =
+            payload.receive?.reduce<ReceiveState['accounts']>((accounts, { key, value }) => {
+                accounts[key] = {
+                    touchedAddresses: value.touchedAddresses.map(({ path, address }) => ({
+                        path,
+                        address,
+                    })),
+                    currentFreshAddress: value.currentFreshAddress,
+                };
+
+                return accounts;
+            }, {}) ?? {};
+    },
+};
