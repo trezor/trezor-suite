@@ -15,8 +15,10 @@ import {
     estimateYieldFeeLevel,
     ethereumGetCurrentNonceThunk,
     formDraftActions,
+    selectAreFeesLoading,
     selectConvertedNetworkFeeInfo,
     selectDeepCopyOfFormDraft,
+    selectFormDraft,
 } from '@suite-common/wallet-core';
 import {
     type AccountWithNetworkType,
@@ -27,19 +29,19 @@ import {
 import {
     type NativeSendRootState,
     getFeeAvailability,
+    isPrecomposedTransactionError,
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce, useFreshRef } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
-import {
-    getYieldClaimFormDraftKey,
-    updateYieldClaimSelectedFeeLevelThunk,
-} from '../../thunks/yield/yieldClaimThunks';
+import { getYieldClaimFormDraftKey } from '../../thunks/yield/yieldClaimThunks';
+import { getFeeInfoRevision } from '../../utils/earn/getFeeInfoRevision';
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../../utils/yield/yieldClaimFeeUtils';
+import { updateEarnSelectedFeeLevelThunk } from '../earn/useComposeEarnFees';
 import { useEarnFeeEstimationError } from '../earn/useEarnFeeEstimationError';
 
 export type PreparedYieldClaimAction = {
@@ -54,7 +56,7 @@ type UseYieldClaimFeesParams = {
 };
 
 type ClaimFeeBaseContext = {
-    account: AccountWithNetworkType<'ethereum'>;
+    preparationKey: string;
     chainId: number;
     claimCalldata: EvmHexString;
     contractAddress: EvmHexString;
@@ -76,21 +78,24 @@ const getClaimFormDraft = ({
     formDraft,
 }: Pick<PrepareClaimFeeParams, 'claimCalldata' | 'contractAddress'> & {
     formDraft: FormState | undefined;
-}): FormState => ({
-    ...buildEarnComposeFormState(contractAddress, '0', claimCalldata),
-    selectedFee: formDraft?.selectedFee ?? 'normal',
-    feePerUnit: formDraft?.feePerUnit ?? '',
-    feeLimit: formDraft?.feeLimit ?? '',
-    maxFeePerGas: formDraft?.maxFeePerGas,
-    maxPriorityFeePerGas: formDraft?.maxPriorityFeePerGas,
-});
+}): FormState => {
+    const currentDraft = formDraft?.transactionData === claimCalldata ? formDraft : undefined;
+
+    return {
+        ...buildEarnComposeFormState(contractAddress, '0', claimCalldata),
+        selectedFee: currentDraft?.selectedFee ?? 'normal',
+        feePerUnit: currentDraft?.feePerUnit ?? '',
+        feeLimit: currentDraft?.feeLimit ?? '',
+        maxFeePerGas: currentDraft?.maxFeePerGas,
+        maxPriorityFeePerGas: currentDraft?.maxPriorityFeePerGas,
+    };
+};
 
 export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFeesParams) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getState } = useServices(injectDispatch, injectGetState);
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
     const [baseContext, setBaseContext] = useState<ClaimFeeBaseContext | null>(null);
-    const [isPreparingClaimFee, setIsPreparingClaimFee] = useState(false);
     const {
         feeEstimationRetryKey,
         hasFeeEstimationError,
@@ -106,26 +111,18 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
     const feeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
-    const feeInfoRef = useFreshRef(feeInfo);
-    const formDraft = useSelector((state: FormDraftRootState) =>
-        claimFormDraftKey
-            ? (selectDeepCopyOfFormDraft(state, claimFormDraftKey) as FormState | undefined)
-            : undefined,
+    const areNetworkFeesLoading = useSelector((state: FeesRootState) =>
+        selectAreFeesLoading(state, account?.symbol),
     );
-    const formDraftRef = useFreshRef(formDraft);
+    const isWaitingForNetworkFees = areNetworkFeesLoading && !feeInfo?.levels.length;
+    const formDraft = useSelector((state: FormDraftRootState) =>
+        claimFormDraftKey ? selectFormDraft<FormState>(state, claimFormDraftKey) : undefined,
+    );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
     const selectedFee = formDraft?.selectedFee ?? 'normal';
     const selectedFeeLevel = feeLevels[selectedFee];
-    const feePreview = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel : null;
-    const { isFeeUnavailable } = getFeeAvailability({
-        feeLevels,
-        selectedFee,
-        isLoading: isPreparingClaimFee,
-    });
-
     const clearClaimFeeState = useCallback(() => {
         setBaseContext(null);
-        setIsPreparingClaimFee(false);
         dispatch(transactionManagementActions.clearFeeLevels());
     }, [dispatch]);
 
@@ -171,10 +168,14 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                 rewards,
             }: PrepareClaimFeeParams,
             requestId: number,
+            preparationKey: string,
         ) => {
-            const currentFeeInfo = feeInfoRef.current;
+            if (requestId !== requestIdRef.current) return;
+
+            const currentFeeInfo = selectConvertedNetworkFeeInfo(getState(), claimAccount.symbol);
 
             if (!currentFeeInfo || !claimFormDraftKey) {
+                setHasFeeEstimationError(true);
                 clearClaimFeeState();
 
                 return;
@@ -208,11 +209,13 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                     return;
                 }
 
+                const currentDraft = selectDeepCopyOfFormDraft(getState(), claimFormDraftKey) as
+                    FormState | undefined;
                 const claimFormDraft = {
                     ...getClaimFormDraft({
                         claimCalldata,
                         contractAddress,
-                        formDraft: formDraftRef.current,
+                        formDraft: currentDraft,
                     }),
                     estimatedFeeLimit: feeLevel.payload.feeLimit,
                 };
@@ -222,6 +225,18 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                     formDraft: claimFormDraft,
                     gasLimit: feeLevel.payload.feeLimit,
                 });
+
+                const hasFeeResult = Object.values(claimFeeLevels).some(
+                    level =>
+                        isFinalPrecomposedTransaction(level) ||
+                        (level.type === 'error' && isPrecomposedTransactionError(level.error)),
+                );
+                if (!hasFeeResult) {
+                    setHasFeeEstimationError(true);
+                    clearClaimFeeState();
+
+                    return;
+                }
 
                 dispatch(
                     transactionManagementActions.storeFeeLevels({ feeLevels: claimFeeLevels }),
@@ -233,39 +248,52 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                     }),
                 );
                 setBaseContext({
-                    account: claimAccount,
+                    preparationKey,
                     chainId,
                     claimCalldata,
                     contractAddress,
                     nonce,
                     rewards,
                 });
-                setIsPreparingClaimFee(false);
             } catch {
                 if (requestId === requestIdRef.current) {
+                    setHasFeeEstimationError(true);
                     clearClaimFeeState();
                 }
             }
         },
-        [
-            claimFormDraftKey,
-            clearClaimFeeState,
-            dispatch,
-            feeInfoRef,
-            formDraftRef,
-            setHasFeeEstimationError,
-        ],
+        [claimFormDraftKey, clearClaimFeeState, dispatch, getState, setHasFeeEstimationError],
     );
 
     const prepareClaimFeeParamsRef = useFreshRef(prepareClaimFeeParams);
 
-    // Value-stable keys of the fee preparation inputs. `prepareClaimFeeParams` gets a new identity
-    // whenever `accountRewards` does (e.g. on any fiat rates update), so keying the effect on the
-    // params object would keep re-running the fee preparation without its actual inputs changing.
-    const claimCalldata = prepareClaimFeeParams?.claimCalldata ?? null;
-    const claimContractAddress = prepareClaimFeeParams?.contractAddress ?? null;
-    const claimChainId = prepareClaimFeeParams?.chainId ?? null;
-    const feeInfoBlockHeight = feeInfo?.blockHeight ?? null;
+    // Compare actual preparation inputs; rewards objects also change on unrelated fiat updates.
+    const preparationKey = prepareClaimFeeParams
+        ? JSON.stringify([
+              accountKey,
+              account?.availableBalance,
+              prepareClaimFeeParams.chainId,
+              prepareClaimFeeParams.claimCalldata,
+              prepareClaimFeeParams.contractAddress,
+              feeInfo?.blockHeight,
+              getFeeInfoRevision(feeInfo),
+          ])
+        : null;
+    const isComposingFeeLevels =
+        preparationKey !== null &&
+        !hasFeeEstimationError &&
+        (isWaitingForNetworkFees || baseContext?.preparationKey !== preparationKey);
+    const { isFeeUnavailable } = getFeeAvailability({
+        feeLevels,
+        selectedFee,
+        isLoading: isComposingFeeLevels,
+    });
+    const feePreview =
+        baseContext?.preparationKey === preparationKey &&
+        !isComposingFeeLevels &&
+        isFinalPrecomposedTransaction(selectedFeeLevel)
+            ? selectedFeeLevel
+            : null;
 
     useEffect(() => {
         const requestId = requestIdRef.current + 1;
@@ -275,33 +303,38 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
 
         const params = prepareClaimFeeParamsRef.current;
 
-        if (!params) {
+        if (!params || !preparationKey) {
             clearClaimFeeState();
 
             return;
         }
 
         setBaseContext(null);
-        setIsPreparingClaimFee(true);
-        void debounce(() => void prepareClaimFee(params, requestId));
+        dispatch(transactionManagementActions.clearFeeLevels());
+        if (isWaitingForNetworkFees) return;
+
+        void debounce(() => void prepareClaimFee(params, requestId, preparationKey));
     }, [
-        claimCalldata,
-        claimChainId,
-        claimContractAddress,
+        isWaitingForNetworkFees,
         clearClaimFeeState,
         debounce,
+        dispatch,
         feeEstimationRetryKey,
-        feeInfoBlockHeight,
         prepareClaimFee,
         prepareClaimFeeParamsRef,
+        preparationKey,
         setHasFeeEstimationError,
     ]);
 
     useEffect(
         () => () => {
+            requestIdRef.current += 1;
             dispatch(transactionManagementActions.clearFeeLevels());
+            if (claimFormDraftKey) {
+                dispatch(formDraftActions.removeDraft({ key: claimFormDraftKey }));
+            }
         },
-        [dispatch],
+        [claimFormDraftKey, dispatch],
     );
 
     const preparedAction = useMemo((): PreparedYieldClaimAction | null => {
@@ -334,10 +367,10 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         formDraftKey: claimFormDraftKey,
         hasFeeEstimationError,
         isFeeUnavailable,
-        isPreparingClaimFee: !!prepareClaimFeeParams && isPreparingClaimFee,
+        isComposingFeeLevels,
         preparedAction,
         retryFeeEstimation,
         selectedFee,
-        updateFeeLevelThunk: updateYieldClaimSelectedFeeLevelThunk,
+        updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };
 };
