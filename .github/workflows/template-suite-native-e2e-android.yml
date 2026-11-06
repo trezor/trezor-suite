@@ -68,7 +68,21 @@ jobs:
         id: pull-tenv-images
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
-        run: docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
+        run: |
+          for attempt in 1 2 3; do
+            if docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync; then
+              exit 0
+            else
+              pull_status=$?
+            fi
+
+            if [ "$attempt" -eq 3 ]; then
+              exit "$pull_status"
+            fi
+
+            echo "Docker image pull failed (attempt $attempt/3). Retrying in $((attempt * 5)) seconds."
+            sleep "$((attempt * 5))"
+          done
         background: true
 
       - name: Install node and yarn
