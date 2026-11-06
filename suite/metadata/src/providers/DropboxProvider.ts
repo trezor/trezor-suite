@@ -1,5 +1,4 @@
-import { Dropbox, DropboxAuth } from 'dropbox';
-import type { users } from 'dropbox';
+import type { Dropbox, DropboxAuth, users } from 'dropbox';
 
 import { AbstractMetadataProvider } from '@suite-common/metadata-types';
 import { bufferUtils, getWeakRandomId } from '@trezor/utils';
@@ -12,14 +11,31 @@ import {
 
 // Dropbox messed up types, that's why @ts-expect-error occurs in this file
 
-export class DropboxProvider extends AbstractMetadataProvider {
-    client: Dropbox;
+type DropboxSDK = {
     auth: DropboxAuth;
+    client: Dropbox;
+};
+
+// Naming the exports keeps the rest of the SDK (file uploader, downloader) tree-shaken out of the chunk.
+const importDropboxSDK = () => import(/* webpackExports: ['Dropbox', 'DropboxAuth'] */ 'dropbox');
+
+/**
+ * Starts downloading the Dropbox SDK before the user picks Dropbox:
+ * on web, the OAuth popup is blocked unless it opens shortly after the click.
+ */
+export const preloadDropboxSDK = () => {
+    // A failed preload is not reported: the first real use loads the SDK again and reports that.
+    importDropboxSDK().catch(() => undefined);
+};
+
+export class DropboxProvider extends AbstractMetadataProvider {
     user?: users.FullAccount;
     isCloud = true;
     clientId: string;
 
     private readonly deps: OauthDesktopApiDep;
+    private readonly storedRefreshToken?: string;
+    private sdkPromise?: Promise<DropboxSDK>;
 
     constructor({
         token,
@@ -29,33 +45,60 @@ export class DropboxProvider extends AbstractMetadataProvider {
         super('dropbox');
 
         this.deps = { desktopApi };
-
-        const fetch = window.fetch.bind(window);
-
-        const dbxAuth = new DropboxAuth({ clientId, fetch });
-
         this.clientId = clientId;
+        this.storedRefreshToken = token;
+    }
 
-        this.auth = dbxAuth;
-
-        this.client = new Dropbox({
-            auth: dbxAuth,
+    /**
+     * Loads the Dropbox SDK on first use, so it stays out of the initial bundle.
+     * Every call shares one auth and client; a failed load rejects, and the next call retries it.
+     */
+    getSDK() {
+        this.sdkPromise ??= this.loadSDK().catch((error: unknown) => {
+            this.sdkPromise = undefined;
+            throw error;
         });
 
-        if (token) {
-            // token loaded from storage
-            this.auth.setRefreshToken(token);
+        return this.sdkPromise;
+    }
+
+    private async loadSDK(): Promise<DropboxSDK> {
+        const { Dropbox, DropboxAuth } = await importDropboxSDK();
+        const auth = new DropboxAuth({ clientId: this.clientId, fetch: window.fetch.bind(window) });
+
+        if (this.storedRefreshToken) {
+            auth.setRefreshToken(this.storedRefreshToken);
+        }
+
+        return { auth, client: new Dropbox({ auth }) };
+    }
+
+    /**
+     * Reports a failed SDK load as a connectivity error,
+     * so every provider method keeps resolving with a Result instead of rejecting.
+     */
+    private async getSDKResult() {
+        try {
+            return this.ok(await this.getSDK());
+        } catch {
+            return this.error('CONNECTIVITY_ERROR', 'Failed to load Dropbox SDK');
         }
     }
 
     async isConnected() {
+        // The SDK failed to load -> not connected; connect() then reports the failure.
+        const sdk = await this.getSDKResult();
+        if (!sdk.success) return false;
+
+        const { auth } = sdk.payload;
+
         // no token -> means not connected
-        if (!this.auth.getAccessToken()) {
+        if (!auth.getAccessToken()) {
             return false;
         }
         // refresh token is present, refresh it and return true
         try {
-            await this.auth.refreshAccessToken(['']);
+            await auth.refreshAccessToken(['']);
 
             return true;
         } catch {
@@ -64,11 +107,15 @@ export class DropboxProvider extends AbstractMetadataProvider {
     }
 
     async connect() {
+        const sdk = await this.getSDKResult();
+        if (!sdk.success) return sdk;
+
+        const { auth } = sdk.payload;
         const redirectUrl = await getOauthReceiverUrl(this.deps);
 
         if (!redirectUrl) return this.error('AUTH_ERROR', 'Failed to get oauth receiver url');
 
-        const url = await this.auth.getAuthenticationUrl(
+        const url = await auth.getAuthenticationUrl(
             redirectUrl,
             getWeakRandomId(10),
             'code',
@@ -88,13 +135,13 @@ export class DropboxProvider extends AbstractMetadataProvider {
             if (!code)
                 return this.error('AUTH_ERROR', 'Failed to extract code from authorization flow');
 
-            const { result } = await this.auth.getAccessTokenFromCode(redirectUrl, code);
+            const { result } = await auth.getAccessTokenFromCode(redirectUrl, code);
 
             // @ts-expect-error dropbox lib types result as Object, but access_token & refresh_token are available there as strings
             const { access_token: accessToken, refresh_token: refreshToken } = result;
 
-            this.auth.setAccessToken(accessToken);
-            this.auth.setRefreshToken(refreshToken);
+            auth.setAccessToken(accessToken);
+            auth.setRefreshToken(refreshToken);
         } catch (err) {
             if (err instanceof Error) {
                 return this.error('AUTH_ERROR', err.message);
@@ -110,8 +157,13 @@ export class DropboxProvider extends AbstractMetadataProvider {
     }
 
     async disconnect() {
+        const sdk = await this.getSDKResult();
+        if (!sdk.success) return sdk;
+
+        const { client } = sdk.payload;
+
         try {
-            await this.client.authTokenRevoke();
+            await client.authTokenRevoke();
 
             return this.ok();
         } catch (error) {
@@ -119,9 +171,9 @@ export class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    private async _getFileContent(file: string) {
+    private async _getFileContent(client: Dropbox, file: string) {
         try {
-            const { result } = await this.client.filesSearchV2({
+            const { result } = await client.filesSearchV2({
                 query: file,
             });
 
@@ -151,7 +203,7 @@ export class DropboxProvider extends AbstractMetadataProvider {
                 if (!match) match = matchLegacy;
 
                 if (match && 'metadata' in match.metadata) {
-                    const { result } = await this.client.filesDownload({
+                    const { result } = await client.filesDownload({
                         path: match.metadata.metadata.path_lower!,
                     });
 
@@ -170,17 +222,23 @@ export class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    getFileContent(file: string) {
-        return this.scheduleApiRequest(() => this._getFileContent(file));
+    async getFileContent(file: string) {
+        // Loaded outside the request queue, so a slow or failed load never holds up other requests.
+        const sdk = await this.getSDKResult();
+        if (!sdk.success) return sdk;
+
+        const { client } = sdk.payload;
+
+        return this.scheduleApiRequest(() => this._getFileContent(client, file));
     }
 
-    private async _setFileContent(file: string, content: Buffer) {
+    private async _setFileContent(client: Dropbox, file: string, content: Buffer) {
         try {
             const blobableContent = bufferUtils.toNonSharedBuffer(content);
             const blob = new Blob([blobableContent], {
                 type: 'text/plain;charset=UTF-8',
             });
-            await this.client.filesUpload({
+            await client.filesUpload({
                 path: `/${file}`,
                 contents: blob,
                 // @ts-expect-error
@@ -193,13 +251,23 @@ export class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    setFileContent(file: string, content: Buffer) {
-        return this.scheduleApiRequest(() => this._setFileContent(file, content));
+    async setFileContent(file: string, content: Buffer) {
+        const sdk = await this.getSDKResult();
+        if (!sdk.success) return sdk;
+
+        const { client } = sdk.payload;
+
+        return this.scheduleApiRequest(() => this._setFileContent(client, file, content));
     }
 
     async getFilesList() {
+        const sdk = await this.getSDKResult();
+        if (!sdk.success) return sdk;
+
+        const { client } = sdk.payload;
+
         try {
-            const response = await this.client.filesListFolder({ path: '' });
+            const response = await client.filesListFolder({ path: '' });
 
             if (response.result) {
                 const formattedList = response.result.entries.map(({ name }) => name);
@@ -218,8 +286,13 @@ export class DropboxProvider extends AbstractMetadataProvider {
     }
 
     async renameFile(from: string, to: string) {
+        const sdk = await this.getSDKResult();
+        if (!sdk.success) return sdk;
+
+        const { client } = sdk.payload;
+
         try {
-            await this.client.filesMoveV2({
+            await client.filesMoveV2({
                 from_path: `/${from}`,
                 to_path: `/${to}`,
             });
@@ -231,11 +304,15 @@ export class DropboxProvider extends AbstractMetadataProvider {
     }
 
     async getProviderDetails() {
-        const token = this.auth.getRefreshToken();
+        const sdk = await this.getSDKResult();
+        if (!sdk.success) return sdk;
+
+        const { auth, client } = sdk.payload;
+        const token = auth.getRefreshToken();
         if (!token) return this.error('AUTH_ERROR', 'token is missing');
 
         try {
-            const { result } = await this.client.usersGetCurrentAccount();
+            const { result } = await client.usersGetCurrentAccount();
             const account = {
                 type: this.type,
                 isCloud: this.isCloud,
