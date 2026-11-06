@@ -197,6 +197,13 @@ jobs:
         run: |
           yarn workspaces focus @trezor/suite-e2e @suite-app/desktop-app
 
+      # Remove once azure.archive.ubuntu.com stops stalling apt: https://github.com/actions/runner-images/issues/14823
+      - name: Skip Azure apt mirror
+        if: inputs.target == 'web'
+        shell: bash
+        run: |
+          sudo sed -i '/azure\.archive\.ubuntu\.com/d' /etc/apt/apt-mirrors.txt
+
       - name: Install Playwright Browsers
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit != 'true'
         shell: bash
