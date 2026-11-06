@@ -15,40 +15,40 @@ import { isDesktop } from '@trezor/env-utils';
 import { SettingsSection } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
-    AnalyticsLogging,
-    Backends,
-    CheckFirmwareAuthenticity,
-    ClearDevicePersistentData,
-    CoinjoinApi,
-    ConnectPopup,
+    DebugAnalyticsLogging,
+    DebugBackends,
+    DebugCheckFirmwareAuthenticity,
+    DebugClearDevicePersistentData,
+    DebugCoinjoinApi,
+    DebugConnectPopup,
+    DebugDefinitionsEnvironmentSelect,
+    DebugDeviceAuthenticity,
+    DebugDevkit,
+    DebugEarnStakingApi,
+    DebugEarnYieldApi,
+    DebugFirmwareUpdateEnvironmentSelect,
+    DebugFlags,
+    DebugForgetAllDevicesButton,
+    DebugGithubIssue,
     DebugMetadata,
-    DefinitionsEnvironmentSelect,
-    DeviceAuthenticity,
-    Devkit,
-    EarnStakingApi,
-    EarnYieldApi,
-    FirmwareUpdateEnvironmentSelect,
-    Flags,
-    ForgetAllDevicesButton,
-    GithubIssue,
-    N4w1Backup,
-    OAuthApi,
-    PingDevice,
-    PlatformEncryption,
-    QuotaManagerSettings,
-    ResetThpCredentials,
+    DebugN4w1Backup,
+    DebugOAuthApi,
+    DebugPingDevice,
+    DebugPlatformEncryption,
+    DebugQuotaManagerSettings,
+    DebugResetThpCredentials,
+    DebugShowBluetoothDebugInfo,
+    DebugThrowTestingError,
+    DebugTor,
+    DebugTradeApi,
+    DebugTransport,
+    DebugTransportBackends,
+    DebugTrezorConnectLogs,
+    DebugTriggerHighlight,
+    DebugTriggerToast,
+    DebugWipeData,
     SettingsLayout,
-    ShowBluetoothDebugInfo,
-    ThrowTestingError,
-    Tor,
-    TradeApi,
-    Transport,
-    TransportBackends,
-    TrezorConnectLogs,
     TriggerActivityNotification,
-    TriggerHighlight,
-    TriggerToast,
-    WipeData,
     useIsContentBelowBreakpoint,
 } from '@trezor/suite';
 import { breakpoints } from '@trezor/theme';
@@ -78,66 +78,66 @@ export const SettingsDebugPage = () => {
             <ContextMessage context={Context.getSettings('debug')} />
 
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Debug">
-                <GithubIssue />
-                {isDesktop() && <WipeData />}
-                <TriggerHighlight />
-                <TriggerToast />
+                <DebugGithubIssue />
+                {isDesktop() && <DebugWipeData />}
+                <DebugTriggerHighlight />
+                <DebugTriggerToast />
                 <TriggerActivityNotification />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Analytics">
-                <AnalyticsLogging />
+                <DebugAnalyticsLogging />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Trade">
-                <TradeApi />
+                <DebugTradeApi />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Apps embedding">
                 <AppsEmbeddingSwitch />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Earn">
-                <EarnYieldApi />
-                <EarnStakingApi />
+                <DebugEarnYieldApi />
+                <DebugEarnStakingApi />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="OAuth">
-                <OAuthApi />
+                <DebugOAuthApi />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Coinjoin">
-                <CoinjoinApi />
+                <DebugCoinjoinApi />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Device">
-                <DeviceAuthenticity />
-                <Devkit />
-                <CheckFirmwareAuthenticity />
-                <ClearDevicePersistentData />
-                <N4w1Backup />
-                <PingDevice />
+                <DebugDeviceAuthenticity />
+                <DebugDevkit />
+                <DebugCheckFirmwareAuthenticity />
+                <DebugClearDevicePersistentData />
+                <DebugN4w1Backup />
+                <DebugPingDevice />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Testing">
-                <ThrowTestingError />
+                <DebugThrowTestingError />
             </SettingsSection>
             {isDesktop() && (
                 <SettingsSection
                     hasVerticalLayout={hasContentBelowTabletWidth}
                     title="Transport backends"
                 >
-                    <TransportBackends />
+                    <DebugTransportBackends />
                 </SettingsSection>
             )}
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title="Transport clients"
             >
-                <Transport />
+                <DebugTransport />
             </SettingsSection>
             {isDesktop() && (
                 <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Tor">
-                    <Tor />
+                    <DebugTor />
                 </SettingsSection>
             )}
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Backends">
-                <Backends />
+                <DebugBackends />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Flags">
-                <Flags />
+                <DebugFlags />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Metadata">
                 <DebugMetadata />
@@ -154,30 +154,30 @@ export const SettingsDebugPage = () => {
                     hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_BLUETOOTH" />}
                 >
-                    <ShowBluetoothDebugInfo />
-                    <ForgetAllDevicesButton />
+                    <DebugShowBluetoothDebugInfo />
+                    <DebugForgetAllDevicesButton />
                 </SettingsSection>
             )}
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title="Trezor Host Protocol"
             >
-                <ResetThpCredentials />
+                <DebugResetThpCredentials />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="TrezorConnect">
-                <TrezorConnectLogs />
-                <DefinitionsEnvironmentSelect />
-                {isDesktop() && <ConnectPopup />}
+                <DebugTrezorConnectLogs />
+                <DebugDefinitionsEnvironmentSelect />
+                {isDesktop() && <DebugConnectPopup />}
             </SettingsSection>
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title="Firmware channel"
             >
-                <FirmwareUpdateEnvironmentSelect />
+                <DebugFirmwareUpdateEnvironmentSelect />
             </SettingsSection>
             <SuiteSyncSettings onError={handleWipeSuiteSyncLabelsError} />
-            <QuotaManagerSettings />
-            <PlatformEncryption />
+            <DebugQuotaManagerSettings />
+            <DebugPlatformEncryption />
         </SettingsLayout>
     );
 };

@@ -14,11 +14,12 @@ import {
     InactiveTokensTable,
     Route,
     StellarManageTokenModal,
+    type StellarTokenInput,
+    StellarTokenInputModal,
     TokensNavigation,
     WalletLayout,
     useSelector,
 } from '@trezor/suite';
-import { type StellarTokenInput, StellarTokenInputModal } from '@trezor/suite';
 
 export const TokensPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
