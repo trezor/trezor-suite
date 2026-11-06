@@ -6,6 +6,7 @@ import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryF
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -30,6 +31,7 @@ describe('Receive [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {
         await prepareTrezorEmulator();
         await openApp({ args: { preloadedState } });
+        await onDeviceOnboarding.passInitializedDeviceChecks();
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
     });
 

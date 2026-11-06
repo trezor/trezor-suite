@@ -8,6 +8,7 @@ import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { getModelFromEnv, wait } from '../support/utils';
@@ -77,6 +78,7 @@ describe('passphrase flow [@androidOnly @T3T1 @T3W1]', () => {
         beforeEach(async () => {
             await prepareTrezorEmulator({ passphrase_protection: true });
             await openApp({ args: { preloadedState } });
+            await onDeviceOnboarding.passInitializedDeviceChecks();
             await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         });
 
@@ -107,6 +109,7 @@ describe('passphrase flow [@androidOnly @T3T1 @T3W1]', () => {
         beforeEach(async () => {
             await prepareTrezorEmulator({ passphrase_protection: true });
             await openApp({ args: { preloadedState } });
+            await onDeviceOnboarding.passInitializedDeviceChecks();
             await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         });
 
