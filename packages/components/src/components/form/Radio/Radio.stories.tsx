@@ -14,7 +14,7 @@ export default meta;
 
 export const Radio: StoryObj<typeof meta> = {
     render: ({ ...args }) => {
-        // eslint-disable-next-line
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [{ isChecked }, updateArgs] = useArgs();
         const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
