@@ -31,7 +31,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, noop } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
@@ -83,6 +83,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     methods,
     setShowReserveBanner,
     shouldSuppressComposeErrors,
+    isComposeErrorPending,
 }: TradingUseComposeTransactionProps<T>): TradingUseComposeTransactionReturnProps => {
     const { dispatch } = useServices(injectDispatch);
     const accounts = useSelector(selectAccounts);
@@ -186,6 +187,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setComposedLevels,
     } = useCompose({
         ...methods,
+        setError: noop,
         formState,
         state: composeContext,
     });
@@ -293,14 +295,17 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
         if (!composed) return;
 
-        if (composed.type === 'error') {
+        if (composed.type === 'error' && !isComposeErrorPending) {
             if (shouldSuppressComposeErrors) {
                 clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
             } else if (isTranslationKey(composed.errorMessage?.id)) {
                 setError(TRADING_FORM_OUTPUT_AMOUNT, {
                     type: COMPOSE_ERROR_TYPES.COMPOSE,
                     message: translationString(
-                        composed.errorMessage.id,
+                        composed.errorMessage.id ===
+                            'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT'
+                            ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'
+                            : composed.errorMessage.id,
                         composed.errorMessage.values,
                     ),
                 });
@@ -352,6 +357,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         setValue,
         translationString,
         shouldSuppressComposeErrors,
+        isComposeErrorPending,
         type,
         account?.networkType,
         btcSwapComposeTemplate,
