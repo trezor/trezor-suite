@@ -44,6 +44,14 @@ const createUsbMock = (optional = {}) =>
         ...optional,
     }) as unknown as UsbApi['usbInterface'];
 
+// enough microtask turns to let a fire-and-forget chain settle. the chain is
+// microtask-only, so this is deterministic where a wall-clock sleep is not
+const flushMicrotasks = async () => {
+    for (let i = 0; i < 16; i += 1) {
+        await Promise.resolve();
+    }
+};
+
 class TestUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
 }
@@ -331,6 +339,51 @@ describe('Usb', () => {
                 success: true,
                 payload: null,
             });
+        });
+
+        it('releaseSync completes the release (releaseDone is called)', async () => {
+            const { transport } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes).toEqual({ success: true, payload: '1' });
+
+            transport.releaseSync(Session('1'));
+            // releaseSync is fire-and-forget; let its releaseIntent ->
+            // closeDevice -> releaseDone chain settle
+            await flushMicrotasks();
+
+            // without releaseDone the session would stay committed, so this
+            // acquire would fail immediately with "wrong previous session" (and
+            // the lock taken by releaseIntent would leak until the 4s safety-net)
+            const reacquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(reacquireRes).toEqual({ success: true, payload: '2' });
+        });
+
+        it('releaseSync completes the release even when closeDevice rejects', async () => {
+            const { transport, testUsbApi } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes).toEqual({ success: true, payload: '1' });
+
+            // releaseSync runs when the device is already gone, so closeDevice
+            // of a non-usb api may well reject
+            jest.spyOn(testUsbApi, 'closeDevice').mockRejectedValue(new Error('device is gone'));
+
+            transport.releaseSync(Session('1'));
+            await flushMicrotasks();
+
+            // releaseDone ran despite the rejection, so the session is released
+            // and the lock taken by releaseIntent is not leaked
+            const reacquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(reacquireRes).toEqual({ success: true, payload: '2' });
         });
 
         // CURRENTLY LEAKS — see PR #27978 for the fix.

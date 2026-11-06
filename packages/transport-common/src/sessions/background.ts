@@ -47,8 +47,10 @@ export class SessionsBackground
     /**
      * Dictionary where key is path and value is Descriptor
      */
-    private descriptors: DescriptorsDict = {};
-    private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = {};
+    // null prototype: paths are raw USB serial numbers, so inherited keys
+    // ('toString', '__proto__', ...) must not read as existing entries
+    private descriptors: DescriptorsDict = Object.create(null);
+    private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = Object.create(null);
 
     // if lock is set, somebody is doing something with device. we have to wait
     private locksQueue: { id: TimerId; dfd: Deferred<void> }[] = [];
@@ -252,13 +254,20 @@ export class SessionsBackground
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
-        const { descriptors } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const descriptor: Descriptor = descriptors[payload.path];
+        // release the lock first (mirroring acquireDone): it was taken by
+        // releaseIntent and must be freed even when the device is already gone,
+        // otherwise the queue head gets permanently stuck
+        this.clearLock();
+
+        const descriptor = this.descriptors[payload.path];
+
+        // device disconnected between releaseIntent and releaseDone
+        if (!descriptor) {
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
         descriptor.session = null;
         descriptor.sessionOwner = undefined;
-
-        this.clearLock();
 
         return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
     }
@@ -330,7 +339,7 @@ export class SessionsBackground
     dispose() {
         this.locksQueue.forEach(lock => clearTimeout(lock.id));
         this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
-        this.descriptors = {};
+        this.descriptors = Object.create(null);
         this.lastSessionId = 0;
         this.removeAllListeners();
     }
