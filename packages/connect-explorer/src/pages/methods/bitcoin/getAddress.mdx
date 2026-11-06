@@ -71,6 +71,27 @@ TrezorConnect.getAddress({
 });
 ```
 
+Display a receive address of a 2-of-3 P2WSH multisig wallet (testnet). `pubkeys` lists every cosigner's account xpub with the address `[chain, index]`. `pubkeys_order: 1` (`LEXICOGRAPHIC`) sorts the keys as in BIP-67, so the address matches a `wsh(sortedmulti(...))` descriptor. See [signTransaction](/methods/bitcoin/signTransaction) for spending.
+
+```javascript
+TrezorConnect.getAddress({
+    path: "m/48'/1'/1'/2'/0/1",
+    coin: 'test',
+    scriptType: 'SPENDWITNESS',
+    multisig: {
+        pubkeys: [
+            'tpubDEGquuorgFNbDrg8vepq1HnaV2mgQu9TcSBgBYfXw4AX8VMgkWqvkxHNuJmiah8iVnA3Hgj4cSvaGAXEnq814yC6hMEreckLsd7zyLL3o76', // m/48'/1'/0'/2'
+            'tpubDF4tYm8PaDydfctGdTEwCFDagcnGqGtHoghSYk6QvRzYdYMH38YnT2U1bn7GDcgrBmaCDsHhAe5YrEMYQDiuZD2TRMCm68MbPW55uSgMBgh', // m/48'/1'/1'/2'
+            'tpubDEhpbishBroZbRLEsdnrgTuuDfv2wgEqBWjqciUgbgDZLjoHFPHrtmwbCSJY2itRdwbbWrqifbJM6cNGKM2gD3WvVTxoicHjW7xw8R5pFoa', // m/48'/1'/2'/2'
+        ].map(node => ({ node, address_n: [0, 1] })),
+        signatures: ['', '', ''],
+        m: 2,
+        pubkeys_order: 1,
+    },
+});
+// address: tb1qz8rmd46qdd94ytvazjzggm8gtkwlqdjerdm90w2txq6jnyevl6qqycpewm
+```
+
 ### Result
 
 [Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/params.ts)
