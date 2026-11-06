@@ -32,6 +32,7 @@ import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/Tr
 import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
 import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
+import { TradingExchangeAllowanceDebug } from './TradingExchangeAllowanceDebug';
 import { TradingExchangeAssetsSwitchButton } from './TradingExchangeAssetsSwitchButton/TradingExchangeAssetsSwitchButton';
 import { TradingFormCard } from './TradingFormCard';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
@@ -264,6 +265,7 @@ export const TradingExchangeFormInputs = () => {
                 <TradingFormCard>
                     {!isLoading && <TradingReceiveAddress />}
                     <TradingSelectedOfferProvider />
+                    <TradingExchangeAllowanceDebug />
                 </TradingFormCard>
             )}
         </Column>
