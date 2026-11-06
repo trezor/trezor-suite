@@ -6,7 +6,6 @@ import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { type GlobalReceiveAssetListItem } from '@suite-common/receive';
 import {
     AccountsList,
-    AccountsListFooter,
     AddAccountButton,
     type NetworkFilter,
     NetworkFilterButton,
@@ -150,7 +149,11 @@ export const ReceiveCrossroadsScreen = () => {
                 <HStack spacing="sp12">
                     <Box flex={1}>
                         <SearchInput
-                            placeholder={translate('moduleReceive.search.placeholder')}
+                            placeholder={translate(
+                                activeTab === 'assets'
+                                    ? 'moduleReceive.search.placeholder.assets'
+                                    : 'moduleReceive.search.placeholder.accounts',
+                            )}
                             onChange={handleSearchChange}
                             maxLength={30}
                         />
@@ -185,13 +188,6 @@ export const ReceiveCrossroadsScreen = () => {
                     ListEmptyComponent={
                         <NoResultsPlaceholder
                             subtitle={<Translation id="moduleReceive.search.noAccounts" />}
-                        />
-                    }
-                    ListFooterComponent={
-                        <AccountsListFooter
-                            networkFilterType={networkFilter.type}
-                            activeFilterCount={filteredNetworks.length}
-                            onClearFilters={() => setFilteredNetworksWithAnalytics([])}
                         />
                     }
                 />

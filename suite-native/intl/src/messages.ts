@@ -1013,7 +1013,10 @@ export const messages = {
             allAssets: 'All assets',
         },
         search: {
-            placeholder: 'Search by name or symbol',
+            placeholder: {
+                assets: 'Search by name or symbol',
+                accounts: 'Search accounts',
+            },
             noAssets:
                 'If the token uses a network supported by Trezor Suite, you can receive it using that network account instead.',
             noAccounts: 'Check the spelling, or enable more networks to widen your search.',
