@@ -7,8 +7,7 @@ import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import { MarkdownWithComponents } from 'src/components/suite';
+import { MarkdownWithComponents } from '@trezor/suite';
 
 import { getVersionName } from './getVersionName';
 

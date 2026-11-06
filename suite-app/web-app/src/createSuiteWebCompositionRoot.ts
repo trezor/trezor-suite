@@ -1,21 +1,21 @@
 import { createBrowserHistory } from 'history';
 
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
+import {
+    createConnectLoggerFactory,
+    createHydrateReduxStore,
+    createReduxStore,
+    createSuiteServicesCompositionRoot,
+    extraDependencies,
+    rootReducer,
+} from '@suite-app/app';
 import TrezorConnect from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
 import type { CreateLogger } from '@trezor/logger';
+import { createDb, createPreloadStore } from '@trezor/suite';
 import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
-
-import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
-import { createReduxStore } from 'src/reducers/createReduxStore';
-import { rootReducer } from 'src/reducers/store';
-import { createDb } from 'src/storage/createDb';
-import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
-import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
-import { extraDependencies } from 'src/support/extraDependencies';
-import { createPreloadStore } from 'src/support/suite/createPreloadStore';
 
 import { type WebApp, createWebApp } from './createWebApp';
 import { createWebDesktopApi } from './support/createWebDesktopApi';
@@ -31,7 +31,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const getTransportsFactories = () => {
         // Pure DI: connect expects ready-made Transport instances, so the host constructs
         // them here. `id` becomes the Bridge session owner shown to the user; it mirrors
-        // the web manifest's `appName` (see packages/suite/src/support/services.ts).
+        // the web manifest's `appName` (see suite-app/app/src/createSuiteCompositionRoot.ts).
         const TRANSPORT_ID = 'Trezor Suite web';
 
         return {

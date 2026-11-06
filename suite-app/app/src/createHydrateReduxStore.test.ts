@@ -1,8 +1,6 @@
 import { createMockDeps, mock } from '@trezor/dependency-injection';
+import { type PreloadStoreAction } from '@trezor/suite';
 import { createDeferred } from '@trezor/utils';
-
-import * as STORAGE from 'src/actions/suite/constants/storageConstants';
-import { type PreloadStoreAction } from 'src/support/suite/createPreloadStore';
 
 import { type HydrateReduxStoreDeps, createHydrateReduxStore } from './createHydrateReduxStore';
 
@@ -10,7 +8,7 @@ describe(createHydrateReduxStore.name, () => {
     it('waits for preloading and the state patch before replacing the reducer', async () => {
         const preloading = createDeferred<PreloadStoreAction>();
         const statePatch = createDeferred<undefined>();
-        const preloadAction: PreloadStoreAction = { type: STORAGE.ERROR, payload: 'blocked' };
+        const preloadAction: PreloadStoreAction = { type: '@storage/error', payload: 'blocked' };
         const deps = createMockDeps<HydrateReduxStoreDeps>({
             preloadStore: () => preloading.promise,
             getStatePatch: () => statePatch.promise,

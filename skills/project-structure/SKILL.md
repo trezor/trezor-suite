@@ -9,6 +9,7 @@ description: Overview of the Trezor Suite monorepo structure and key directories
 
 - `suite` - Place where Web & Desktop only code is located.
 - `suite-app` - Web & Desktop application assembly (`@suite-app/*`).
+    - `app` - Shared web/desktop service composition and Connect event wiring
     - `web-app` - Web application root
     - `desktop-app`, `desktop-app-main`, `desktop-app-renderer` - Desktop application (packaging, Electron main process, renderer)
     - `storybook` - Shared web/desktop component catalogue host

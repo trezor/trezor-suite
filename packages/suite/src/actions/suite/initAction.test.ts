@@ -86,7 +86,11 @@ import {
 } from 'src/actions/suite/initAction';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { walletReducers } from 'src/reducers/wallet';
+import { prepareWalletReducer } from 'src/reducers/wallet';
+
+import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
+
+const walletReducers = prepareWalletReducer(mockExtraDependenciesForReducers);
 
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {

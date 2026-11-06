@@ -31,34 +31,27 @@ import {
     prepareTokenDefinitionsReducer,
 } from '@suite-common/token-definitions';
 import { isCodesignBuild } from '@trezor/env-utils';
-
-import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import onboardingMiddlewares from 'src/middlewares/onboarding';
-import { type GetSuiteMiddlewareDeps, getSuiteMiddleware } from 'src/middlewares/suite';
-import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
-import { type GetWalletMiddlewaresDeps, getWalletMiddlewares } from 'src/middlewares/wallet';
-import { type EarnState, earnReducers } from 'src/reducers/earn';
-import onboardingReducers from 'src/reducers/onboarding';
-import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
-import { type SuiteReducersState, suiteReducers } from 'src/reducers/suite';
-import { type WalletState, walletReducers } from 'src/reducers/wallet';
 import {
+    type BioAuthState,
+    type DesktopState,
     type GlobalSendReceiveFiltersState,
+    type OnboardingState,
+    type WalletState,
+    desktopReducer,
     globalSendReceiveFiltersReducer,
-} from 'src/slices/wallet/globalSendReceiveFilters';
+    onboardingMiddleware,
+    onboardingReducers,
+    prepareBioAuthReducer,
+    prepareSuiteSyncQuotaManagerReducer,
+    prepareWalletReducer,
+    toastMiddleware,
+} from '@trezor/suite';
 
-import { type BioAuthState, prepareBioAuthReducer } from './bioAuth';
-import { type DesktopState, desktopReducer } from './desktop';
-import { extraDependencies } from '../support/extraDependencies';
-
-const firmwareReducer = prepareFirmwareReducer(extraDependencies);
-const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
-const bluetoothReducer = prepareDesktopBluetoothReducer(extraDependencies);
-const thpReducer = prepareThpReducer(extraDependencies);
-const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
-const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
-const receiveReducer = prepareReceiveReducer(extraDependencies);
-const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
+import { extraDependencies } from './extraDependencies';
+import { type GetSuiteMiddlewareDeps, getSuiteMiddleware } from './middlewares/suite';
+import { type GetWalletMiddlewaresDeps, getWalletMiddlewares } from './middlewares/wallet';
+import { type EarnState, earnReducers } from './reducers/earn';
+import { type SuiteReducersState, suiteReducers } from './reducers/suite';
 
 export type AppState = SuiteReducersState & {
     networks: NetworksState;
@@ -88,23 +81,23 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     ...suiteReducers,
     networks: networksReducer,
     onboarding: onboardingReducers,
-    receive: receiveReducer,
-    wallet: walletReducers,
+    receive: prepareReceiveReducer(extraDependencies),
+    wallet: prepareWalletReducer(extraDependencies),
     earn: earnReducers,
     recovery: recoveryReducer,
-    firmware: firmwareReducer,
+    firmware: prepareFirmwareReducer(extraDependencies),
     backup: backupReducer,
     desktop: desktopReducer,
     bioAuth: prepareBioAuthReducer(extraDependencies),
-    tokenDefinitions: tokenDefinitionsReducer,
-    bluetooth: bluetoothReducer,
-    thp: thpReducer,
-    suiteSync: suiteSyncReducer,
-    suiteSyncQuotaManager: suiteSyncQuotaManagerReducer,
+    tokenDefinitions: prepareTokenDefinitionsReducer(extraDependencies),
+    bluetooth: prepareDesktopBluetoothReducer(extraDependencies),
+    thp: prepareThpReducer(extraDependencies),
+    suiteSync: prepareSuiteSyncReducer(extraDependencies),
+    suiteSyncQuotaManager: prepareSuiteSyncQuotaManagerReducer(extraDependencies),
     suiteSyncData: suiteSyncDataReducer,
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFiltersReducer,
-    persistentDeviceData: persistentDeviceDataReducer,
+    persistentDeviceData: preparePersistentDeviceDataReducer(extraDependencies),
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
 const loggerExcludedActions = [addLog.type];
@@ -116,7 +109,7 @@ export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | nu
         toastMiddleware,
         ...getSuiteMiddleware(getExtra),
         ...getWalletMiddlewares(getExtra),
-        ...onboardingMiddlewares,
+        onboardingMiddleware,
         backupMiddleware,
     ];
 

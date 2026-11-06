@@ -34,9 +34,6 @@
         {
             "path": "../../suite-common/connect-popup"
         },
-        {
-            "path": "../../suite-common/delegated-identity-key"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/device-authenticity"
@@ -55,12 +52,6 @@
         },
         {
             "path": "../../suite-common/earn-staking-api"
-        },
-        {
-            "path": "../../suite-common/earn-staking-products"
-        },
-        {
-            "path": "../../suite-common/extra-dependencies"
         },
         { "path": "../../suite-common/feedback" },
         {
@@ -188,7 +179,6 @@
         { "path": "../../suite/desktop-app-api" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
-        { "path": "../../suite/discovery" },
         { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },

@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
 import { Card, H4, Modal, Row, TextButton } from '@trezor/components';
-
-import { MarkdownWithComponents } from 'src/components/suite';
+import { MarkdownWithComponents } from '@trezor/suite';
 
 interface AvailableProps {
     onCancel: () => void;

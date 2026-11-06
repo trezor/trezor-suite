@@ -25,22 +25,18 @@ import {
     createNotificationsReducer,
 } from '@suite-common/toast-notifications';
 import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-common/walletconnect';
+import {
+    type GuideState,
+    type ProtocolState,
+    type SuiteState,
+    type WindowState,
+    guideReducer,
+    protocolReducer,
+    suiteReducer,
+    windowReducer,
+} from '@trezor/suite';
 
-import { extraDependencies } from 'src/support/extraDependencies';
-
-import guide, { type GuideState } from './guideReducer';
-import protocol, { type ProtocolState } from './protocolReducer';
-import suite, { type SuiteState } from './suiteReducer';
-import window, { type WindowState } from './windowReducer';
-
-const analytics = prepareAnalyticsReducer(extraDependencies);
-const messageSystem = prepareMessageSystemReducer(extraDependencies);
-const device = prepareDesktopDeviceReducer(extraDependencies);
-const flags = prepareFlagsReducer(extraDependencies);
-const suiteSettings = prepareSuiteSettingsReducer(extraDependencies);
-const debug = prepareDebugReducer(extraDependencies);
-const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
-const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
+import { extraDependencies } from '../extraDependencies';
 
 export type SuiteReducersState = {
     suite: SuiteState;
@@ -68,26 +64,26 @@ export type SuiteReducersState = {
 };
 
 export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction> = {
-    suite,
+    suite: suiteReducer,
     discreetMode: discreetModeReducer,
     tor: torReducer,
-    suiteSettings,
-    debug,
-    flags,
+    suiteSettings: prepareSuiteSettingsReducer(extraDependencies),
+    debug: prepareDebugReducer(extraDependencies),
+    flags: prepareFlagsReducer(extraDependencies),
     locks: locksReducer,
     router: routerReducer,
     modal,
-    device,
+    device: prepareDesktopDeviceReducer(extraDependencies),
     logs: logsSlice.reducer,
     notifications: createNotificationsReducer<TranslationKey>().reducer,
-    window,
-    analytics,
+    window: windowReducer,
+    analytics: prepareAnalyticsReducer(extraDependencies),
     metadata: metadataReducer,
     desktopUpdate: desktopUpdateReducer,
-    messageSystem,
-    guide,
-    protocol,
+    messageSystem: prepareMessageSystemReducer(extraDependencies),
+    guide: guideReducer,
+    protocol: protocolReducer,
     featureFeedback: featureFeedbackReducer,
-    connectPopup: connectPopupReducer,
-    walletConnect: walletConnectReducer,
+    connectPopup: prepareConnectPopupReducer(extraDependencies),
+    walletConnect: prepareWalletConnectReducer(extraDependencies),
 };

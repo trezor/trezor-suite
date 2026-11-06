@@ -2,12 +2,13 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { createRoot } from 'react-dom/client';
 
+import {
+    type HydrateReduxStoreDep,
+    type SuiteReduxStoreDep,
+    type SuiteServices,
+} from '@suite-app/app';
 import { ServicesProvider } from '@trezor/dependency-injection';
-
-import { type HydrateReduxStoreDep } from 'src/reducers/createHydrateReduxStore';
-import { type SuiteReduxStoreDep } from 'src/reducers/createReduxStore';
-import { type SuiteServices } from 'src/support/createSuiteCompositionRoot';
-import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
+import { LoadingScreen } from '@trezor/suite';
 
 import { MainWeb } from './MainWeb';
 import { initSentry } from './sentry';

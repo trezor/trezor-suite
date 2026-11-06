@@ -5,20 +5,19 @@
 import 'core-js/actual';
 
 import { useDebugLanguageShortcut } from '@suite/debug';
-
 import {
     AppRouter,
+    BioAuthGuard,
+    ConnectedIntlProvider,
+    FindBar,
+    Main,
+    Metadata,
     Preloader,
     ToasterProvider,
     TrafficLightDraggableWindowHeader,
-} from 'src/components/suite';
-import { BioAuthGuard } from 'src/components/suite/BioAuthGuard/BioAuthGuard';
-import { FindBar } from 'src/components/suite/FindBar/FindBar';
-import { Metadata } from 'src/components/suite/Metadata';
-import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
-import { Main } from 'src/support/suite/Main';
-import { useConnectPopupDesktop } from 'src/support/suite/useConnectPopupDesktop';
-import { useTor } from 'src/support/suite/useTor';
+    useConnectPopupDesktop,
+    useTor,
+} from '@trezor/suite';
 
 import { GlobalStyle } from './GlobalStyle';
 import { DesktopUpdater } from './support/DesktopUpdater';

@@ -6,8 +6,7 @@ import { Translation } from '@suite/intl';
 import { Card, Column, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { StarFourIcon } from '@trezor/icons';
-
-import { CheckItem } from 'src/components/suite';
+import { CheckItem } from '@trezor/suite';
 
 interface EarlyAccessEnableProps {
     hideWindow: () => void;
