@@ -16386,6 +16386,7 @@ __metadata:
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
     react: "npm:19.3.0"
   languageName: unknown
   linkType: soft
@@ -17260,7 +17261,6 @@ __metadata:
   resolution: "@suite/authenticity-checks@workspace:suite/authenticity-checks"
   dependencies:
     "@suite-common/device": "workspace:*"
-    "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/persistent-device-data": "workspace:*"
@@ -17472,6 +17472,7 @@ __metadata:
   dependencies:
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/persistent-device-data": "workspace:*"
     "@suite-common/suite-types": "workspace:*"

@@ -14,3 +14,4 @@ export {
     mockShouldRetryFirmwareRevisionCheckError,
 } from './mockSuiteServices';
 export { mockGetIsWindowVisible } from './mockGetIsWindowVisible';
+export { mockStoredAuthenticateDeviceResult } from './mockStoredAuthenticateDeviceResult';
