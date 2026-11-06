@@ -28,12 +28,12 @@ import { type TransactionNotification } from '@suite-common/toast-notifications'
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { extraDependencies } from 'src/support/extraDependencies';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { BottomNavigation } from './BottomNavigation';
 import { Navigation } from './Navigation';
 import { SIDEBAR_MIN_WIDTH } from './consts';
+import { mockExtraDependencies as extraDependencies } from '../../../../../../mocks/mockExtraDependencies';
 import {
     type MockSuiteState,
     mockInitialAppState,

@@ -25,12 +25,19 @@ import {
     testMocks,
     wireEnabledNetworksMock,
 } from '@suite-common/test-utils';
-import { tradingActions } from '@suite-common/trading';
+import { prepareTradingReducer, tradingActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ChangeCoinVisibilityThunkState,
     blockchainInitialState,
     changeCoinVisibilityThunk,
+    prepareAccountsReducer,
+    prepareDiscoveryReducer,
+    prepareEarnOnboardingReducer,
+    prepareFiatRatesReducer,
+    prepareSendFormReducer,
+    prepareTransactionsReducer,
+    prepareWalletSettingsReducer,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
@@ -49,19 +56,8 @@ import {
     prepareStorageMiddleware,
 } from 'src/middlewares/wallet/storageMiddleware';
 import suiteReducer, { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import {
-    accountsReducer,
-    discoveryReducer,
-    earnOnboardingReducer,
-    fiatRatesReducer,
-    sendFormReducer,
-    tradingReducer,
-    transactionsReducer,
-    walletSettingsReducer,
-} from 'src/reducers/wallet';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import { type Db, type DbDep } from 'src/storage/createDb';
-import { extraDependencies } from 'src/support/extraDependencies';
 import { type PreloadStore, createPreloadStore } from 'src/support/suite/createPreloadStore';
 import { type AcquiredDevice } from 'src/types/suite';
 
@@ -74,6 +70,16 @@ import {
     type SaveWalletSettingsThunkState,
 } from './storageActions';
 import { createInMemoryDbMock } from '../../../mocks/createInMemoryDbMock';
+import { mockExtraDependencies as extraDependencies } from '../../../mocks/mockExtraDependencies';
+
+const accountsReducer = prepareAccountsReducer(extraDependencies);
+const discoveryReducer = prepareDiscoveryReducer({});
+const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
+const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
+const sendFormReducer = prepareSendFormReducer(extraDependencies);
+const tradingReducer = prepareTradingReducer(extraDependencies);
+const transactionsReducer = prepareTransactionsReducer(extraDependencies);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');

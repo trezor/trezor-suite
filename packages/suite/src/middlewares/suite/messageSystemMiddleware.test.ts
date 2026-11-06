@@ -15,12 +15,20 @@ import {
 } from '@suite-common/message-system/src/messageSystemUtils';
 import { type Action } from '@suite-common/suite-types';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import {
+    type WalletSettingsRootState,
+    prepareWalletSettingsReducer,
+} from '@suite-common/wallet-core';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { type WalletState, walletReducers } from 'src/reducers/wallet';
 
 import messageSystemMiddleware from './messageSystemMiddleware';
+import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+
+const walletReducers = combineReducers({
+    settings: prepareWalletSettingsReducer(mockExtraDependencies),
+});
 
 jest.mock('@suite-common/message-system/src/messageSystemUtils', () => ({
     ...jest.requireActual('@suite-common/message-system/src/messageSystemUtils'),
@@ -46,7 +54,7 @@ const deviceReducer = prepareDeviceReducer({
 
 const getInitialState = (
     messageSystem?: Partial<MessageSystemState>,
-    wallet?: Partial<WalletState>,
+    wallet?: Partial<WalletSettingsRootState['wallet']>,
     suite?: Partial<SuiteState>,
 ): Pick<StoreState, 'wallet' | 'messageSystem' | 'suite' | 'geolocation'> => ({
     wallet: {
@@ -88,7 +96,7 @@ const reducer = combineReducers({
     geolocation: geolocationReducer,
 });
 type StoreState = {
-    wallet: WalletState;
+    wallet: WalletSettingsRootState['wallet'];
     messageSystem: MessageSystemState;
     suite: SuiteState;
     tor: TorState;

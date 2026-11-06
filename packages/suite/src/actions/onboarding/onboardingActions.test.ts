@@ -10,13 +10,18 @@ import { persistentDeviceDataInitialState } from '@suite-common/persistent-devic
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
-import { type StartDiscoveryThunkDeps } from '@suite-common/wallet-core';
+import {
+    type StartDiscoveryThunkDeps,
+    accountsInitialState,
+    blockchainInitialState,
+    discoveryInitialState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { asGetter } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { type GoToNextStepThunkState } from 'src/actions/onboarding/onboardingActions';
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
-import { walletReducers } from 'src/reducers/wallet';
 
 import { type OnboardingActionsFixture, fixtures } from './__fixtures__/onboardingActions';
 
@@ -37,7 +42,12 @@ const getInitialState = (
         networks: mockNetworksState(mockGetSupportedNetworks()),
         persistentDeviceData: persistentDeviceDataInitialState,
         tokenDefinitions: tokenDefinitionsInitialState,
-        wallet: walletReducers(undefined, action),
+        wallet: {
+            accounts: accountsInitialState,
+            blockchain: blockchainInitialState,
+            settings: initialWalletSettingsState,
+            discovery: discoveryInitialState,
+        },
         onboarding: {
             ...onboarding,
             isActive: true,

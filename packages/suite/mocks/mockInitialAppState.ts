@@ -1,5 +1,7 @@
+import { initialState as selectedAccountInitialState } from '@suite/account';
 import type { BackupState } from '@suite/backup';
 import { initialDesktopBluetoothState } from '@suite/bluetooth';
+import { initialState as coinjoinInitialState } from '@suite/coinjoin';
 import { debugInitialState } from '@suite/debug';
 import { desktopUpdateInitialState } from '@suite/desktop-update';
 import { initialState } from '@suite/device';
@@ -29,6 +31,27 @@ import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager
 import { type ThpState } from '@suite-common/thp';
 import { type NotificationsState } from '@suite-common/toast-notifications';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
+import { initialState as tradingInitialState } from '@suite-common/trading';
+import {
+    accountsInitialState,
+    accountsRefreshTimeInitialState,
+    blockchainInitialState,
+    discoveryInitialState,
+    earnOnboardingInitialState,
+    earnTransactionsInitialState,
+    explorerInitialState,
+    feesInitialState,
+    fiatRatesInitialState,
+    formDraftInitialState,
+    initialStablecoinYieldState,
+    initialWalletSettingsState,
+    phishingInitialState,
+    initialState as sendInitialState,
+    stakeInitialState,
+    stellarContractTokensInitialState,
+    transactionsInitialState,
+    tronStakeReducer,
+} from '@suite-common/wallet-core';
 import { type WalletConnectState } from '@suite-common/walletconnect';
 
 import { type DesktopState } from 'src/reducers/desktop';
@@ -36,7 +59,8 @@ import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer'
 import { type GuideState } from 'src/reducers/suite/guideReducer';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
-import { walletReducers } from 'src/reducers/wallet';
+import { accountSearchInitialState } from 'src/reducers/wallet/accountSearchReducer';
+import graphReducer from 'src/reducers/wallet/graphReducer';
 import { type GlobalSendReceiveFiltersState } from 'src/slices/wallet/globalSendReceiveFilters';
 
 /**
@@ -95,7 +119,31 @@ export const mockInitialAppState = {
     notifications: [] as NotificationsState<TranslationKey>,
     receive: receiveInitialState,
     persistentDeviceData: persistentDeviceDataInitialState,
-    wallet: walletReducers(undefined, { type: '@@INIT' }),
+    wallet: {
+        fiat: fiatRatesInitialState,
+        transactions: transactionsInitialState,
+        phishing: phishingInitialState,
+        discovery: discoveryInitialState,
+        accounts: accountsInitialState,
+        accountsRefreshTime: accountsRefreshTimeInitialState,
+        earnTransactions: earnTransactionsInitialState,
+        fees: feesInitialState,
+        blockchain: blockchainInitialState,
+        explorer: explorerInitialState,
+        send: sendInitialState,
+        formDrafts: formDraftInitialState,
+        stake: stakeInitialState,
+        settings: initialWalletSettingsState,
+        stablecoinYield: initialStablecoinYieldState,
+        stellarContractTokens: stellarContractTokensInitialState,
+        earnOnboarding: earnOnboardingInitialState,
+        graph: graphReducer(undefined, { type: '@@INIT' }),
+        selectedAccount: selectedAccountInitialState,
+        trading: tradingInitialState,
+        accountSearch: accountSearchInitialState,
+        coinjoin: coinjoinInitialState,
+        tronStake: tronStakeReducer(undefined, { type: '@@INIT' }),
+    },
     earn: { staking: stakingInitialState },
     desktopUpdate: desktopUpdateInitialState,
     router: {

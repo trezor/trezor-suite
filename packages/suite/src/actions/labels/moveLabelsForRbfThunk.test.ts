@@ -7,9 +7,8 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { createTestCompositionRoot, initPreloadedState } from '@suite-common/test-utils';
+import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
-
-import { accountsReducer } from 'src/reducers/wallet';
 
 import {
     accountReceivingCoins,
@@ -28,6 +27,9 @@ import {
     asStateBeforePush,
     moveLabelsForRbfThunk,
 } from './moveLabelsForRbfThunk';
+import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+
+const accountsReducer = prepareAccountsReducer(mockExtraDependencies);
 
 const rootReducer = combineReducers({
     wallet: combineReducers({
