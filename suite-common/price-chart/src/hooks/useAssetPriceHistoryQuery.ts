@@ -1,4 +1,4 @@
-import { type UseQueryResult, useQuery } from '@suite-common/react-query';
+import { type UseQueryResult, commonQueryKeys, useQuery } from '@suite-common/react-query';
 
 import {
     type AssetPricePoint,
@@ -13,7 +13,7 @@ const getAssetPriceHistoryQueryKey = ({
     fiatCurrency,
     range,
 }: FetchAssetPriceHistoryParams) =>
-    ['asset-price-history', ticker.symbol, ticker.tokenAddress, fiatCurrency, range] as const;
+    commonQueryKeys.assetPriceHistory(ticker.symbol, ticker.tokenAddress, fiatCurrency, range);
 
 export const useAssetPriceHistoryQuery = ({
     ticker,

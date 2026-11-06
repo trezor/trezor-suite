@@ -27,7 +27,11 @@ export const fetchLastWeekAssetPrice = async ({
         tokenContract !== undefined && networkSymbol !== 'eth',
     );
 
+    if (!historicalRates) {
+        throw new Error('Failed to fetch the last week asset price');
+    }
+
     // Providers may normalize the requested timestamp. Since only one timestamp was requested,
     // its rate is the first and only response rather than an exact timestamp match.
-    return historicalRates?.tickers[0]?.rates[fiatCurrencyCode];
+    return historicalRates.tickers[0]?.rates[fiatCurrencyCode];
 };
