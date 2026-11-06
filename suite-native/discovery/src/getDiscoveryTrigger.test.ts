@@ -1,6 +1,8 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import { mockStoredAuthenticateDeviceResult } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions, changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { type DiscoveryTrigger } from '@suite-common/wallet-types';
@@ -51,6 +53,19 @@ const fixtures: Fixture[] = [
     {
         description: 'firmware authenticity check dismissed',
         action: { type: deviceActions.dismissFirmwareAuthenticityCheck.type },
+        expectedTrigger: 'device-check',
+    },
+    {
+        description: 'manual device check passed',
+        action: persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId: 'device-id' }),
+        expectedTrigger: 'device-check',
+    },
+    {
+        description: 'device authenticity check finished',
+        action: persistentDeviceDataActions.setDeviceAuthenticityResult({
+            deviceId: 'device-id',
+            result: mockStoredAuthenticateDeviceResult(),
+        }),
         expectedTrigger: 'device-check',
     },
     {

@@ -3,7 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/device-authenticity"
+        },
         { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-common/persistent-device-data"
+        },
         {
             "path": "../../suite-common/suite-types"
         },
@@ -37,6 +43,9 @@
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/test-utils"
+        },
         { "path": "../test-utils-store" }
     ]
 }
