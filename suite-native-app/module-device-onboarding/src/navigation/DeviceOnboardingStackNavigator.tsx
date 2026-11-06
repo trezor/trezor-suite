@@ -16,6 +16,7 @@ import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceAuthenticitySuccessScreen } from '../screens/DeviceAuthenticitySuccessScreen';
 import { DeviceDisconnectedScreen } from '../screens/DeviceDisconnectedScreen';
 import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
+import { DeviceVisualCheckScreen } from '../screens/DeviceVisualCheckScreen';
 import { FirmwareInfoScreen } from '../screens/FirmwareInfoScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { RecoveryInstructionsScreen } from '../screens/RecoveryInstructionsScreen';
@@ -25,7 +26,6 @@ import { ThpCodeEntryScreen } from '../screens/ThpCodeEntryScreen';
 import { ThpConfirmationScreen } from '../screens/ThpConfirmationScreen';
 import { ThpPairingInfoScreen } from '../screens/ThpPairingInfoScreen';
 import { ThpPairingSuccessScreen } from '../screens/ThpPairingSuccessScreen';
-import { UninitializedDeviceLandingScreen } from '../screens/UninitializedDeviceLandingScreen';
 import { WalletBackupRecapScreen } from '../screens/WalletBackupRecapScreen';
 import { WalletBackupTutorialScreen } from '../screens/WalletBackupTutorialScreen';
 import { WalletCreatedSuccessScreen } from '../screens/WalletCreatedSuccessScreen';
@@ -40,7 +40,7 @@ export const DeviceOnboardingStackNavigator = () => {
 
     return (
         <DeviceOnboardingStack.Navigator
-            initialRouteName={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
+            initialRouteName={DeviceOnboardingStackRoutes.DeviceVisualCheck}
             screenOptions={stackNavigationOptionsConfig}
             screenListeners={({ route }) => ({
                 focus: () => reportStepViewed(route.name),
@@ -55,8 +55,8 @@ export const DeviceOnboardingStackNavigator = () => {
                 }}
             />
             <DeviceOnboardingStack.Screen
-                name={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
-                component={UninitializedDeviceLandingScreen}
+                name={DeviceOnboardingStackRoutes.DeviceVisualCheck}
+                component={DeviceVisualCheckScreen}
             />
             <DeviceOnboardingStack.Screen
                 name={DeviceOnboardingStackRoutes.SuspiciousDevice}

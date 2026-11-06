@@ -328,7 +328,7 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.DeviceDisconnected]: {
         wasDeviceConnectedViaBluetooth: boolean;
     };
-    [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: {
+    [DeviceOnboardingStackRoutes.DeviceVisualCheck]: {
         deviceModel: DeviceModelInternal;
     };
     [DeviceOnboardingStackRoutes.SuspiciousDevice]: {
