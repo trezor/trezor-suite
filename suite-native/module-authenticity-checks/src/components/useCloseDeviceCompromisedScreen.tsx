@@ -37,7 +37,7 @@ export const useCloseDeviceCompromisedScreen = () => {
     const handleClose = () => {
         if (!isDeviceInitialized && isDeviceSetupSupported) {
             navigation.popTo(RootStackRoutes.DeviceOnboardingStack, {
-                screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                screen: DeviceOnboardingStackRoutes.ManualDeviceCheck,
                 params: {
                     deviceModel: getDeviceInternalModel(device),
                 },

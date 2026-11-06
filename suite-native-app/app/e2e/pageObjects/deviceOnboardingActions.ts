@@ -111,8 +111,8 @@ class DeviceOnboardingActions {
         await device.enableSynchronization();
     }
 
-    async waitForUninitializedDeviceLanding() {
-        await waitForVisible(by.id('@screen/UninitializedDeviceLanding'));
+    async waitForManualDeviceCheck() {
+        await waitForVisible(by.id('@screen/ManualDeviceCheck'));
     }
 
     async waitForDeviceAuthenticitySuccess() {
@@ -129,8 +129,8 @@ class DeviceOnboardingActions {
         await waitForVisible(by.id('@screen/DeviceCompromisedModal'));
     }
 
-    async dismissTheUninitializedDeviceLanding() {
-        await element(by.id('@deviceOnboarding/UninitializedDeviceLandingScreen/confirmBtn')).tap();
+    async dismissTheManualDeviceCheck() {
+        await element(by.id('@deviceOnboarding/ManualDeviceCheckScreen/confirmBtn')).tap();
     }
 
     async skipFirmwareUpdate() {
@@ -151,8 +151,8 @@ class DeviceOnboardingActions {
     }
 
     async proceedToCreateOrRecoverCrossroads() {
-        await this.waitForUninitializedDeviceLanding();
-        await this.dismissTheUninitializedDeviceLanding();
+        await this.waitForManualDeviceCheck();
+        await this.dismissTheManualDeviceCheck();
         // During our release process, the TrezorUserEnv might not have the latest firmware version.
         // In such cases, the firmware update screen appears here.
         // We want to skip the update in e2e tests as it is not supported.

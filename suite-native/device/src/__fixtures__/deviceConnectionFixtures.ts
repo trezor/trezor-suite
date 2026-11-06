@@ -421,7 +421,7 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
 
 export const deviceConnectUninitializedFixtures: ResetNavigationFixture[] = [
     {
-        description: 'resets to Home then UninitializedDeviceLanding for new uninitialized device',
+        description: 'resets to Home then ManualDeviceCheck for new uninitialized device',
         initialState: buildInitialState({}),
         action: {
             type: deviceActions.connectDevice.type,
@@ -439,7 +439,7 @@ export const deviceConnectUninitializedFixtures: ResetNavigationFixture[] = [
                 {
                     name: RootStackRoutes.DeviceOnboardingStack,
                     params: {
-                        screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                        screen: DeviceOnboardingStackRoutes.ManualDeviceCheck,
                         params: {
                             deviceModel: DeviceModelInternal.T2T1,
                         },

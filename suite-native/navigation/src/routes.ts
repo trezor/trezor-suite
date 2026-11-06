@@ -79,7 +79,7 @@ export enum OnboardingStackRoutes {
 
 export enum DeviceOnboardingStackRoutes {
     DeviceDisconnected = 'DeviceDisconnected',
-    UninitializedDeviceLanding = 'UninitializedDeviceLanding',
+    ManualDeviceCheck = 'ManualDeviceCheck',
     SuspiciousDevice = 'SuspiciousDevice',
     SecurityCheck = 'SecurityCheck',
     FirmwareInfo = 'FirmwareInfo',

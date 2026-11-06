@@ -29,7 +29,7 @@ import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboar
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
 
-const UninitializedDeviceLandingScreenContent = ({
+const ManualDeviceCheckScreenContent = ({
     deviceModel,
 }: {
     deviceModel: SetupSupportingDeviceModel;
@@ -60,12 +60,12 @@ const UninitializedDeviceLandingScreenContent = ({
     );
 };
 
-export const UninitializedDeviceLandingScreen = ({
+export const ManualDeviceCheckScreen = ({
     navigation,
     route: { params },
 }: StackToStackCompositeScreenProps<
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+    DeviceOnboardingStackRoutes.ManualDeviceCheck,
     RootStackParamList
 >) => {
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
@@ -156,11 +156,11 @@ export const UninitializedDeviceLandingScreen = ({
         <DeviceOnboardingScreenWithExitButton {...screenHeaderProps}>
             <VStack justifyContent="space-between" flex={1}>
                 <VStack spacing="sp32">
-                    <UninitializedDeviceLandingScreenContent deviceModel={deviceModel} />
+                    <ManualDeviceCheckScreenContent deviceModel={deviceModel} />
                     <TextButton
                         isUnderlined
                         onPress={handleDeviceLooksDifferentButtonPress}
-                        testID="@deviceOnboarding/UninitializedDeviceLandingScreen/deviceLooksDifferentBtn"
+                        testID="@deviceOnboarding/ManualDeviceCheckScreen/deviceLooksDifferentBtn"
                     >
                         <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.lookDifferentLabel" />
                     </TextButton>
@@ -168,7 +168,7 @@ export const UninitializedDeviceLandingScreen = ({
                 <VStack spacing="sp12">
                     <Button
                         onPress={handleConfirmButtonPress}
-                        testID="@deviceOnboarding/UninitializedDeviceLandingScreen/confirmBtn"
+                        testID="@deviceOnboarding/ManualDeviceCheckScreen/confirmBtn"
                     >
                         {hasDeviceFirmwareInstalled ? (
                             <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.button" />
@@ -181,7 +181,7 @@ export const UninitializedDeviceLandingScreen = ({
                             intent="neutral"
                             priority="secondary"
                             onPress={handleNeverUsedThisDeviceButtonPress}
-                            testID="@deviceOnboarding/UninitializedDeviceLandingScreen/declineBtn"
+                            testID="@deviceOnboarding/ManualDeviceCheckScreen/declineBtn"
                         >
                             <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.noButton" />
                         </Button>

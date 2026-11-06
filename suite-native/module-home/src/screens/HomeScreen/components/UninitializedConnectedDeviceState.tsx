@@ -39,7 +39,7 @@ export const UninitializedConnectedDeviceState = () => {
 
     const navigateToDeviceOnboarding = () => {
         navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
-            screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+            screen: DeviceOnboardingStackRoutes.ManualDeviceCheck,
             params: {
                 deviceModel: deviceModel ?? DeviceModelInternal.UNKNOWN,
             },
