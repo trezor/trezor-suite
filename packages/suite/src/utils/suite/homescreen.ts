@@ -1,5 +1,3 @@
-import { deflateRaw } from 'pako';
-
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { splitStringEveryNCharacters } from '@trezor/utils';
 
@@ -165,8 +163,9 @@ const toGrayscale = (red: number, green: number, blue: number): number =>
     Math.round(0.299 * red + 0.587 * green + 0.114 * blue);
 
 // TOIG
-const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) => {
+const toig = async (imageData: ImageData, deviceModelInternal: DeviceModelInternal) => {
     const { width, height } = deviceModelInformation[deviceModelInternal];
+    const { deflateRaw } = await import('pako');
 
     const pixels = range(height)
         .map(row =>
