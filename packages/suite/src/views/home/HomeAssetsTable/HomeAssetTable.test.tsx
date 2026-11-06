@@ -28,11 +28,10 @@ import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
 import { getWrappedNativeToken } from '@trezor/network-ethereum/constants';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { HomeAssetTable } from './HomeAssetTable';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/earn-stablecoin-api', () => ({
     ...jest.requireActual('@suite-common/earn-stablecoin-api'),
@@ -122,7 +121,7 @@ const getInitialState = ({
     firmwareType = FirmwareType.Universal,
     grouping = 'default',
     areSmallBalancesShown = true,
-}: InitialStateParams = {}): AppState => ({
+}: InitialStateParams = {}): MockSuiteState => ({
     ...mockInitialAppState,
     messageSystem: areYieldDepositsOff
         ? messageSystemWithYieldDepositsOff
@@ -212,8 +211,8 @@ const upToApyMessage: MessageDescriptor = messages.TR_EARN_YIELD_BADGE_UP_TO_RAT
 /** What the badge says for a rate, as the user reads it. */
 const upToApy = (apy: string) => intl.formatMessage(upToApyMessage, { apy });
 
-const renderTable = (state: AppState) => {
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
+const renderTable = (state: MockSuiteState) => {
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: state });
 
     renderWithProviders({ ...services, networks: { networkIcon } }, <HomeAssetTable />);
 

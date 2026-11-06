@@ -5,12 +5,11 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useStakingAccountsVisibility } from './useStakingAccountsVisibility';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 
 const createTestServices = () =>
-    createTestCompositionRoot<void, AppState>({
+    createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             networks: mockNetworksState([
                 asNetworkSymbol('eth'),

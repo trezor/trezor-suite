@@ -9,11 +9,13 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingOfferExchangeIssueBanner } from './TradingOfferExchangeIssueBanner';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 type TranslationProps = { id: string; values?: { percent?: string } };
 
@@ -53,8 +55,11 @@ const onContinueAnywayClick = jest.fn();
 type RenderIssueBannerParams = { issue: ExchangeIssue };
 
 const renderIssueBanner = ({ issue }: RenderIssueBannerParams) => {
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
-        preloadedState: mockInitialAppState satisfies AppState,
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
+        preloadedState: mockInitialAppState satisfies MockSuiteState,
         services: () => ({ analytics: mockDesktopAnalytics() }),
     });
     renderWithProviders(

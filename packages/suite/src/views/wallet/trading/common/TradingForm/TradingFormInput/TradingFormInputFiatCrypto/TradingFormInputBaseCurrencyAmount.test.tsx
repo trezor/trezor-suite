@@ -15,11 +15,13 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { intermediaryTheme } from '@trezor/components';
 import { PROTO } from '@trezor/connect';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingFormInputBaseCurrencyAmount } from './TradingFormInputBaseCurrencyAmount';
-import { mockInitialAppState } from '../../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../../mocks/mockInitialAppState';
 
 const mockUseTradingFormContext = jest.fn();
 
@@ -157,7 +159,7 @@ const renderBaseCurrencyAmount = ({
     btcUsdRate = BTC_USD_RATE.rate,
     ...harnessProps
 }: RenderBaseCurrencyAmountParams = {}) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {

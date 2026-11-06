@@ -5,27 +5,46 @@ import { desktopUpdateInitialState } from '@suite/desktop-update';
 import { initialState } from '@suite/device';
 import { initialState as featureFeedbackInitialState } from '@suite/feature-feedback';
 import { flagsInitialState } from '@suite/flags';
+import { type TranslationKey } from '@suite/intl';
 import { locksInitialState } from '@suite/locks';
+import { type State as ModalState } from '@suite/modal';
+import { type RecoveryState } from '@suite/recovery';
 import { type RouterState } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { initialSuiteSyncDesktopState } from '@suite/suite-sync';
-import { TorStatus } from '@suite/tor';
+import { type TorState, TorStatus } from '@suite/tor';
+import { type AnalyticsState } from '@suite-common/analytics-redux';
+import { type ConnectPopupState } from '@suite-common/connect-popup';
 import { stakingInitialState } from '@suite-common/earn-staking';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
+import { type GeolocationState } from '@suite-common/geolocation';
+import { type LogsSliceState } from '@suite-common/logger';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
+import { type NetworksState } from '@suite-common/networks';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
+import { type SuiteSyncDataState } from '@suite-common/suite-sync';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
+import { type ThpState } from '@suite-common/thp';
+import { type NotificationsState } from '@suite-common/toast-notifications';
+import { type TokenDefinitionsState } from '@suite-common/token-definitions';
+import { type WalletConnectState } from '@suite-common/walletconnect';
 
+import { type DesktopState } from 'src/reducers/desktop';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
-import { type AppState } from 'src/reducers/store';
+import { type GuideState } from 'src/reducers/suite/guideReducer';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
 import { walletReducers } from 'src/reducers/wallet';
+import { type GlobalSendReceiveFiltersState } from 'src/slices/wallet/globalSendReceiveFilters';
 
-export const mockInitialAppState: AppState = {
-    networks: null,
+/**
+ * @deprecated Construct state in each test with only the slices it needs, typed against the
+ * feature's state contract. This shared fixture is retained for existing tests.
+ */
+export const mockInitialAppState = {
+    networks: null as NetworksState,
     suite: suiteInitialState,
     discreetMode: {
         isActive: false,
@@ -33,7 +52,7 @@ export const mockInitialAppState: AppState = {
     tor: {
         torStatus: TorStatus.Disabled,
         torBootstrap: null,
-    },
+    } as TorState,
     suiteSettings: suiteSettingsInitialState,
     debug: debugInitialState,
     flags: flagsInitialState,
@@ -45,10 +64,10 @@ export const mockInitialAppState: AppState = {
         autoconnectStep: null,
         lastThpCode: undefined,
         credentials: [],
-    },
+    } as ThpState,
     suiteSyncData: {
         wallets: {},
-    },
+    } as SuiteSyncDataState,
     suiteSync: initialSuiteSyncDesktopState,
     suiteSyncQuotaManager: quotaManagerInitialState,
     window: {
@@ -68,12 +87,12 @@ export const mockInitialAppState: AppState = {
         indexNode: null,
         currentNode: null,
         width: 350,
-    },
+    } as GuideState,
     messageSystem: messageSystemInitialState,
     modal: {
         context: '@modal/context-none',
-    },
-    notifications: [],
+    } as ModalState,
+    notifications: [] as NotificationsState<TranslationKey>,
     receive: receiveInitialState,
     persistentDeviceData: persistentDeviceDataInitialState,
     wallet: walletReducers(undefined, { type: '@@INIT' }),
@@ -98,29 +117,29 @@ export const mockInitialAppState: AppState = {
         recoveryInputType: 'standard',
         wordsCount: 12,
         status: 'initial',
-    },
-    analytics: { confirmed: true },
+    } as RecoveryState,
+    analytics: { confirmed: true } as AnalyticsState,
     onboarding: {} as OnboardingState, // Todo: maybe one day, fix types
     firmware: {} as FirmwareUpdateState, // Todo: maybe one day, fix types
     backup: {} as BackupState, // Todo: maybe one day, fix types
-    desktop: null,
-    tokenDefinitions: {},
+    desktop: null as DesktopState,
+    tokenDefinitions: {} as Partial<TokenDefinitionsState>,
     geolocation: {
         countryCode: null,
-    },
+    } as GeolocationState,
     logs: {
         logEntries: [],
-    },
+    } as LogsSliceState,
     metadata: {} as MetadataState, // Todo: maybe one day, fix types
     protocol: {} as ProtocolState, // Todo: maybe one day, fix types
     connectPopup: {
         activeCall: undefined,
         permissions: [],
-    },
+    } as ConnectPopupState,
     walletConnect: {
         sessions: [],
         pendingProposal: undefined,
-    },
+    } as WalletConnectState,
     bioAuth: {
         bioAuthEnabled: false,
         bioAuthAvailable: false,
@@ -130,6 +149,12 @@ export const mockInitialAppState: AppState = {
     globalSendReceiveFilters: {
         search: '',
         networkSymbol: undefined,
-    },
+    } as GlobalSendReceiveFiltersState,
     featureFeedback: featureFeedbackInitialState,
 };
+
+/**
+ * @deprecated Use the tested feature's state contract. This type describes the legacy shared
+ * fixture, not the application state.
+ */
+export type MockSuiteState = typeof mockInitialAppState;

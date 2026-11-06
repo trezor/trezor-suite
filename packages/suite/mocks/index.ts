@@ -1,1 +1,1 @@
-export { mockInitialAppState } from './mockInitialAppState';
+export { mockInitialAppState, type MockSuiteState } from './mockInitialAppState';

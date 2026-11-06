@@ -28,14 +28,16 @@ import { mock } from '@trezor/dependency-injection';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { TradingBuyFormWrapper } from 'src/views/wallet/trading/buy/TradingBuyFormWrapper';
 import { TradingExchangeFormWrapper } from 'src/views/wallet/trading/exchange/TradingExchangeFormWrapper';
 import { TradingSellFormWrapper } from 'src/views/wallet/trading/sell/TradingSellFormWrapper';
 
 import { TradingFormEmbed } from './TradingFormEmbed';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
 jest.mock('src/hooks/suite/useMessageSystemTrading', () => ({
     useMessageSystemTrading: jest.fn(),
@@ -125,9 +127,9 @@ const renderEmbed = ({ type, onTypeChange, isRegionRestricted = false }: RenderE
                 },
             },
         },
-    } as unknown as AppState;
+    } as unknown as MockSuiteState;
 
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         reducer: (state = preloadedState, action: UnknownAction) => ({
             ...state,
             wallet: { ...state.wallet, trading: tradingReducer(state.wallet.trading, action) },

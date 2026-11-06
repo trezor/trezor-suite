@@ -12,11 +12,13 @@ import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-commo
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingDetailTxId } from './TradingDetailTxId';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
 const sendAccount = mockWalletAccount({
     symbol: asNetworkSymbol('btc'),
@@ -29,7 +31,7 @@ const receiveAccount = mockWalletAccount({
 
 const payoutTxid = 'payoutTxid';
 
-const getInitialState = (): AppState => ({
+const getInitialState = (): MockSuiteState => ({
     ...mockInitialAppState,
     wallet: {
         ...mockInitialAppState.wallet,
@@ -48,12 +50,13 @@ const getInitialState = (): AppState => ({
 
 describe('TradingDetailTxId', () => {
     it('opens the transaction detail of the account holding the transaction', async () => {
-        const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>(
-            {
-                preloadedState: getInitialState(),
-                services: () => ({ analytics: mockDesktopAnalytics() }),
-            },
-        );
+        const { services } = createTestCompositionRoot<
+            WithServices<DesktopAnalyticsDep>,
+            MockSuiteState
+        >({
+            preloadedState: getInitialState(),
+            services: () => ({ analytics: mockDesktopAnalytics() }),
+        });
         const { getActions } = services.store;
 
         const { container } = renderWithProviders(
@@ -83,12 +86,13 @@ describe('TradingDetailTxId', () => {
     });
 
     it('falls back to the send account when the transaction is not on the receive account', async () => {
-        const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>(
-            {
-                preloadedState: getInitialState(),
-                services: () => ({ analytics: mockDesktopAnalytics() }),
-            },
-        );
+        const { services } = createTestCompositionRoot<
+            WithServices<DesktopAnalyticsDep>,
+            MockSuiteState
+        >({
+            preloadedState: getInitialState(),
+            services: () => ({ analytics: mockDesktopAnalytics() }),
+        });
         const { getActions } = services.store;
 
         const { container } = renderWithProviders(

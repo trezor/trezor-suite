@@ -5,13 +5,13 @@ import { screen } from '@testing-library/react';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { HomeBalanceCard } from './HomeBalanceCard';
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 import { ETH, getEthAssetState } from '../AssetDetail/assetDetailTestState';
 
-const getInitialState = (isDiscreetModeActive: boolean): AppState => ({
+const getInitialState = (isDiscreetModeActive: boolean): MockSuiteState => ({
     ...getEthAssetState({
         accounts: [mockWalletAccount({ symbol: ETH, formattedBalance: '2' })],
         ethRate: 3000,
@@ -20,8 +20,8 @@ const getInitialState = (isDiscreetModeActive: boolean): AppState => ({
     discreetMode: { isActive: isDiscreetModeActive },
 });
 
-const renderBalanceCard = (state: AppState) => {
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
+const renderBalanceCard = (state: MockSuiteState) => {
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: state });
 
     renderWithProviders(services, <HomeBalanceCard />);
 };

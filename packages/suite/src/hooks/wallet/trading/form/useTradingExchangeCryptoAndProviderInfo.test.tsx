@@ -10,10 +10,8 @@ import {
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useTradingExchangeCryptoAndProviderInfo } from './useTradingExchangeCryptoAndProviderInfo';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 type CryptoInfoFormValues = Pick<
     TradingExchangeFormProps,
@@ -65,7 +63,7 @@ const provider: ExchangeProviderInfo = {
 const selectedQuote: ExchangeTrade = { exchange: provider.name, status: 'CONFIRM' };
 
 const renderGetCryptoInfo = () => {
-    const preloadedState: AppState = {
+    const preloadedState: MockSuiteState = {
         ...mockInitialAppState,
         wallet: {
             ...mockInitialAppState.wallet,
@@ -83,7 +81,7 @@ const renderGetCryptoInfo = () => {
             },
         },
     };
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState });
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState });
 
     return renderHookWithStoreProvider(() => useTradingExchangeCryptoAndProviderInfo(), {
         services,

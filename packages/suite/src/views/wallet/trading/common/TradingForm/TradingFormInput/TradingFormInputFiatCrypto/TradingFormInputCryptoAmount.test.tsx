@@ -20,12 +20,14 @@ import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
 import { BTC_ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/accounts';
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 
 import { TradingFormInputCryptoAmount } from './TradingFormInputCryptoAmount';
-import { mockInitialAppState } from '../../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../../mocks/mockInitialAppState';
 
 const mockUseTradingFormContext = jest.fn();
 let mockQuoteCryptoAmount = '0.03615612';
@@ -179,12 +181,12 @@ const ExchangeTestHarness = () => {
 };
 
 const createServices = () =>
-    createTestCompositionRoot<void, AppState>({
+    createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: mockInitialAppState,
     }).services;
 
 const renderCryptoAmount = (asset: TradingAssetOption) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {

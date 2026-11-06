@@ -8,9 +8,8 @@ import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-c
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { createThunk } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useTradingExchangeTradeActions } from './useTradingExchangeTradeActions';
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
 const DEVICE_CANCEL_TOAST_ERROR = 'Cancelled';
 
@@ -185,7 +184,7 @@ describe('cancelling a swap on the device', () => {
     });
 
     it('reports the cancellation once and nothing else', async () => {
-        const { services } = createTestCompositionRoot<void, AppState>({ preloadedState });
+        const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState });
         const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
             services,
         });

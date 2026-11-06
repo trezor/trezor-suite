@@ -7,11 +7,13 @@ import { type CryptoId, type ExchangeProviderInfo, type ExchangeTrade } from 'in
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingOffersModalExchange } from './TradingOffersModalExchange';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
 jest.mock('react-hook-form', () => ({
     ...jest.requireActual('react-hook-form'),
@@ -69,7 +71,7 @@ const quotes: ExchangeTrade[] = [
 ];
 
 const renderOffersModal = (exchangeQuotes: ExchangeTrade[]) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -87,7 +89,7 @@ const renderOffersModal = (exchangeQuotes: ExchangeTrade[]) => {
                     },
                 },
             },
-        } satisfies AppState,
+        } satisfies MockSuiteState,
     });
 
     renderWithProviders(services, <TradingOffersModalExchange onClose={() => undefined} />);

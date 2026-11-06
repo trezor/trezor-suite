@@ -8,11 +8,13 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkType } from '@suite-common/wallet-config';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { StakingFooter } from './StakingFooter';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 jest.mock('src/hooks/guide', () => ({
     useGuideOpenNode: jest.fn(),
@@ -21,7 +23,7 @@ jest.mock('src/hooks/guide', () => ({
 const openNodeById = jest.fn();
 
 const renderFooter = (networkType: NetworkType) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: mockInitialAppState,
     });
 

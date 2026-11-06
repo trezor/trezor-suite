@@ -10,9 +10,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowFormValues } from '@suite-common/wallet-core';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useYieldFiatInput } from './useYieldFiatInput';
+import { type MockSuiteState } from '../../../../../mocks/mockInitialAppState';
 
 const ETH_RATE = 3333.35;
 const ethSymbol = asNetworkSymbol('eth');
@@ -27,7 +26,10 @@ const mockState = {
 const mockReport = jest.fn();
 
 const renderYieldFiatInput = (vaultId?: string) => {
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: mockState,
         services: () => ({ analytics: mockDesktopAnalytics(mockReport) }),
     });

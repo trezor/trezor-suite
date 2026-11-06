@@ -15,11 +15,13 @@ import { type Address } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingUtxoReceiveAddressModal } from './TradingUtxoReceiveAddressModal';
-import { mockInitialAppState } from '../../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../../mocks/mockInitialAppState';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
 global.ResizeObserver = class MockedResizeObserver {
@@ -146,7 +148,7 @@ const buildState = () => ({
 const renderModal = () => {
     const { services } = createTestCompositionRoot<
         WithServices<{ networks: AddressValidatorDep }>,
-        AppState
+        MockSuiteState
     >({
         preloadedState: buildState(),
         services: () => ({ networks: { addressValidator: mockAddressValidator() } }),

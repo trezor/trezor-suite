@@ -24,11 +24,13 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingTransactionsList } from './TradingTransactionsList';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -110,7 +112,7 @@ const exchange: TradingTransactionExchange = {
     receiveAccountKey: btcAccount.key,
 };
 
-const buildState = (trades: TradingTransaction[]): AppState => ({
+const buildState = (trades: TradingTransaction[]): MockSuiteState => ({
     ...mockInitialAppState,
     device: { ...mockInitialAppState.device, selectedDevice },
     wallet: {
@@ -127,7 +129,7 @@ const buildState = (trades: TradingTransaction[]): AppState => ({
 const renderList = (trades: TradingTransaction[]) => {
     const { services } = createTestCompositionRoot<
         WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
-        AppState
+        MockSuiteState
     >({
         preloadedState: buildState(trades),
         services: () => ({

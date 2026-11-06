@@ -2,12 +2,11 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { type AggregatedAccountHistory, type GraphRange } from 'src/types/wallet/graph';
 
 import { TransactionsGraph } from './TransactionsGraph';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -43,14 +42,14 @@ type RenderTransactionsGraphParams = {
 };
 
 const renderTransactionsGraph = ({ data, isLoading }: RenderTransactionsGraphParams) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
                 ...mockInitialAppState.wallet,
                 transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
             },
-        } as AppState,
+        } as MockSuiteState,
     });
     const { container } = renderWithProviders(
         services,

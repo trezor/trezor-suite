@@ -7,11 +7,10 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { HomeAssetIdentity } from './HomeAssetIdentity';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -24,7 +23,7 @@ const ETH = asNetworkSymbol('eth');
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const UNKNOWN_ON_ETH = '0x1111111111111111111111111111111111111111' as TokenAddress;
 
-const state: AppState = {
+const state: MockSuiteState = {
     ...mockInitialAppState,
     networks: mockNetworksState([ETH]),
     tokenDefinitions: {
@@ -35,7 +34,7 @@ const state: AppState = {
 };
 
 const renderIdentity = (contractAddress: TokenAddress) => {
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: state });
 
     renderWithProviders(
         { ...services, networks: { networkIcon: mockNetworkIcon() } },

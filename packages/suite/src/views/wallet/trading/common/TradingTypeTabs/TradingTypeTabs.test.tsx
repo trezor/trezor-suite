@@ -14,11 +14,13 @@ import {
 import { mock } from '@trezor/dependency-injection';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingTypeTabs } from './TradingTypeTabs';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -39,9 +41,9 @@ const renderTabs = (activeType?: TradingType) => {
                 exchange: { ...tradingInitialState.exchange, amountLimits },
             },
         },
-    } satisfies AppState;
+    } satisfies MockSuiteState;
 
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         reducer: (state = preloadedState, action: UnknownAction) => ({
             ...state,
             wallet: { ...state.wallet, trading: tradingReducer(state.wallet.trading, action) },

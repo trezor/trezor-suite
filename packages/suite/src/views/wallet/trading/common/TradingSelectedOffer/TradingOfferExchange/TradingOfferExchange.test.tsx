@@ -22,11 +22,13 @@ import {
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingOfferExchange } from './TradingOfferExchange';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -170,7 +172,7 @@ const renderOfferExchange = ({
     const navigate = jest.fn();
     const { services } = createTestCompositionRoot<
         { services: DesktopAnalyticsDep & SuiteRouterHistoryDep },
-        AppState
+        MockSuiteState
     >({
         preloadedState: {
             ...mockInitialAppState,
@@ -182,7 +184,7 @@ const renderOfferExchange = ({
                     exchange: { ...exchangeInitialState, selectedQuote, formStep },
                 },
             },
-        } satisfies AppState,
+        } satisfies MockSuiteState,
         services: () => ({
             analytics: mockDesktopAnalytics(report),
             suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate },

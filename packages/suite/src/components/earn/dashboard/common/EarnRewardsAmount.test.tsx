@@ -6,17 +6,16 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { toTokenSymbol } from '@suite-common/wallet-types';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { EarnRewardsAmount } from './EarnRewardsAmount';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const ethereum = asNetworkSymbol('eth');
 const usdc = toTokenSymbol('USDC');
 
 const renderRewards = (element: React.ReactElement) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: mockInitialAppState,
     });
 

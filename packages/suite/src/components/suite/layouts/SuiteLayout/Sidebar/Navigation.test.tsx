@@ -28,14 +28,16 @@ import { type TransactionNotification } from '@suite-common/toast-notifications'
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { BottomNavigation } from './BottomNavigation';
 import { Navigation } from './Navigation';
 import { SIDEBAR_MIN_WIDTH } from './consts';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
 type TranslationMockProps = { id: string };
 
@@ -71,7 +73,7 @@ type RenderNavigationParams = {
     pathname?: PathString;
     isCollapsed?: boolean;
     seenNewContentIndicators?: FlagsState['seenNewContentIndicators'];
-    notifications?: AppState['notifications'];
+    notifications?: MockSuiteState['notifications'];
     isRegionRestricted?: boolean;
     devices?: TrezorDevice[];
 };
@@ -86,7 +88,7 @@ const renderNavigation = ({
     isRegionRestricted = false,
     devices = [],
 }: RenderNavigationParams = {}) => {
-    const preloadedState: AppState = {
+    const preloadedState: MockSuiteState = {
         ...mockInitialAppState,
         messageSystem: isRegionRestricted
             ? mockMessageSystemStateWithFeatureFlags(
@@ -108,10 +110,13 @@ const renderNavigation = ({
     };
     const root = createTestCompositionRoot<
         WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
-        AppState
+        MockSuiteState
     >({
         services: () => services,
-        reducer: (state: Partial<AppState> = preloadedState, action: UnknownAction): AppState => {
+        reducer: (
+            state: Partial<MockSuiteState> = preloadedState,
+            action: UnknownAction,
+        ): MockSuiteState => {
             const currentState = { ...preloadedState, ...state };
 
             return {

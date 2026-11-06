@@ -9,11 +9,11 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailEarn } from './AssetDetailEarn';
 import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
 const ONE_ETH_IN_WEI = '1000000000000000000';
 
@@ -40,7 +40,7 @@ const mockEthereumAccount = (stakedWei: string, balance = '1'): Account =>
         },
     }) as Account;
 
-const getInitialState = (account: Account): AppState => {
+const getInitialState = (account: Account): MockSuiteState => {
     const state = getEthAssetState({ accounts: [account], ethRate: 3000 });
 
     return {
@@ -62,7 +62,7 @@ const getInitialState = (account: Account): AppState => {
 };
 
 const renderEarn = (account: Account) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: getInitialState(account),
     });
 

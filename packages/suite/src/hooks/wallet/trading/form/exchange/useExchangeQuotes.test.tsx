@@ -23,9 +23,8 @@ import {
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useExchangeQuotes } from './useExchangeQuotes';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 
 const btcSymbol = toNetworkSymbolNonTestnet('btc');
 const ethSymbol = toNetworkSymbolNonTestnet('eth');
@@ -195,7 +194,7 @@ const renderExchangeQuotes = (
     const report = jest.fn();
     const { services } = createTestCompositionRoot<
         WithServices<DesktopAnalyticsDep & { networks: AddressValidatorDep }>,
-        AppState
+        MockSuiteState
     >({
         preloadedState: {
             wallet: {

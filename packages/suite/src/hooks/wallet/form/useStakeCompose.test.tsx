@@ -9,9 +9,9 @@ import { type ComposeActionContext, type StakeFormState } from '@suite-common/wa
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
-import { type AppState } from 'src/reducers/store';
 
 import { useStakeCompose } from './useStakeCompose';
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('src/actions/wallet/stakeActions', () => ({
     composeTransaction: jest.fn(),
@@ -33,7 +33,7 @@ const composeActionContext = (): ComposeActionContext => ({
 });
 
 const renderStakeCompose = () => {
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: {} });
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: {} });
 
     return renderHookWithStoreProvider(
         () => {

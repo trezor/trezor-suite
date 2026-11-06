@@ -11,11 +11,10 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { DeviceCompromisedScreen } from './DeviceCompromisedScreen';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -41,7 +40,7 @@ const suiteRouterHistory = mockSuiteRouterHistory();
 const getInitialState = (
     device: DeviceReducerState,
     persistentDeviceData: PersistentDeviceDataState = { devices: [] },
-): AppState =>
+): MockSuiteState =>
     ({
         ...mockInitialAppState,
         device,
@@ -51,7 +50,7 @@ const getInitialState = (
             accounts: mockInitialAppState.wallet?.accounts ?? [],
         },
         persistentDeviceData,
-    }) as AppState;
+    }) as MockSuiteState;
 
 const defaultDevice = mockSuiteDevice();
 if (!deviceUtils.isDeviceAcquired(defaultDevice)) {
@@ -192,7 +191,7 @@ describe(`${DeviceCompromisedScreen.name} component`, () => {
         it(description, () => {
             const { services } = createTestCompositionRoot<
                 { services: SuiteRouterHistoryDep },
-                AppState
+                MockSuiteState
             >({
                 preloadedState: getInitialState(device, persistentDeviceData),
                 services: () => ({ suiteRouterHistory }),

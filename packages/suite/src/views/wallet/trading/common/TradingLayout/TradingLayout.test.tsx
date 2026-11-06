@@ -8,11 +8,13 @@ import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingLayout } from './TradingLayout';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -38,7 +40,7 @@ jest.mock('./TradingLayoutNavigation', () => ({
     ),
 }));
 
-const buildState = (): AppState => ({
+const buildState = (): MockSuiteState => ({
     ...mockInitialAppState,
     router: {
         ...mockInitialAppState.router,
@@ -48,17 +50,18 @@ const buildState = (): AppState => ({
             pattern: '/accounts/coinmarket/buy',
             app: 'wallet',
         },
-    } as AppState['router'],
+    } as MockSuiteState['router'],
 });
 
 describe('TradingLayout', () => {
     it('renders the discovery warning above navigation and children', () => {
-        const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>(
-            {
-                preloadedState: buildState(),
-                services: () => ({ analytics: mockDesktopAnalytics() }),
-            },
-        );
+        const { services } = createTestCompositionRoot<
+            WithServices<DesktopAnalyticsDep>,
+            MockSuiteState
+        >({
+            preloadedState: buildState(),
+            services: () => ({ analytics: mockDesktopAnalytics() }),
+        });
 
         renderWithProviders(
             { ...services, networks: { networkIcon } },

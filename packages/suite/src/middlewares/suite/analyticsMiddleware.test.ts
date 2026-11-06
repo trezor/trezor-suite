@@ -7,13 +7,11 @@ import { createRouterStateMock } from '@suite/router/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { mock } from '@trezor/dependency-injection';
 
-import { type AppState } from 'src/reducers/store';
-
 import {
     type PrepareAnalyticsMiddlewareDeps,
     prepareAnalyticsMiddleware,
 } from './analyticsMiddleware';
-import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
 describe('Earn entry analytics middleware', () => {
     it.each(['initial', 'loading', 'ready'] as const)(
@@ -22,16 +20,19 @@ describe('Earn entry analytics middleware', () => {
             const services: DesktopAnalyticsDep = {
                 analytics: mockDesktopAnalytics(mock<DesktopAnalyticsDep['analytics']['report']>()),
             };
-            const initialState: AppState = {
+            const initialState: MockSuiteState = {
                 ...mockInitialAppState,
                 suite: { ...mockInitialAppState.suite, lifecycle: { status } },
                 router: createRouterStateMock({ route: undefined }),
             };
-            const reducer: Reducer<AppState> = (state = initialState, action) => ({
+            const reducer: Reducer<MockSuiteState> = (state = initialState, action) => ({
                 ...state,
                 router: routerReducer(state.router, action),
             });
-            const { store } = createTestCompositionRoot<PrepareAnalyticsMiddlewareDeps, AppState>({
+            const { store } = createTestCompositionRoot<
+                PrepareAnalyticsMiddlewareDeps,
+                MockSuiteState
+            >({
                 preloadedState: initialState,
                 reducer,
                 middleware: [prepareAnalyticsMiddleware(() => ({ services }))],

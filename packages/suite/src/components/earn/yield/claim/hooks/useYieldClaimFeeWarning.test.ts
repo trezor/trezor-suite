@@ -14,9 +14,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useYieldClaimFeeWarning } from './useYieldClaimFeeWarning';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 
 const mockEstimateYieldFeeLevel = jest.fn();
 
@@ -75,7 +74,10 @@ const accountRewards: YieldAccountRewards = {
 type RenderParams = Partial<Parameters<typeof useYieldClaimFeeWarning>[0]>;
 
 const renderClaimFeeWarning = (params: RenderParams = {}) => {
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: mockState,
         services: () => ({ analytics: mockDesktopAnalytics(jest.fn()) }),
     });

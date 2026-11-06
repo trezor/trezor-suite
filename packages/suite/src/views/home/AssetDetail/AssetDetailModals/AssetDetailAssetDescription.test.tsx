@@ -9,16 +9,16 @@ import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailAssetDescription } from './AssetDetailAssetDescription';
+import { type MockSuiteState } from '../../../../../mocks/mockInitialAppState';
 import { ETH, getEthAssetState } from '../assetDetailTestState';
 
 const OP = asNetworkSymbol('op');
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 
-const getInitialState = (): AppState => {
+const getInitialState = (): MockSuiteState => {
     const state = getEthAssetState({
         accounts: [
             mockWalletAccount({
@@ -48,7 +48,7 @@ const getInitialState = (): AppState => {
 };
 
 const renderDescription = (symbol: NetworkSymbol, contractAddress?: TokenAddress) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: getInitialState(),
     });
     const assetKey = selectWalletAssetKey(services.store.getState(), symbol, contractAddress);

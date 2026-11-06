@@ -15,11 +15,13 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { useTradingHistoryExport } from './useTradingHistoryExport';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/suite-utils', () => ({
     ...jest.requireActual('@suite-common/suite-utils'),
@@ -98,7 +100,7 @@ const exchange: TradingTransactionExchange = {
     receiveAccountKey: ethAccount.key,
 };
 
-const buildState = (): AppState => ({
+const buildState = (): MockSuiteState => ({
     ...mockInitialAppState,
     device: { ...mockInitialAppState.device, selectedDevice },
     wallet: {
@@ -121,7 +123,7 @@ const buildState = (): AppState => ({
 });
 
 const renderExport = () => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: buildState(),
     });
     const { result } = renderHookWithProviders(services, () => useTradingHistoryExport());

@@ -5,14 +5,13 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useGapLimitForm } from './useGapLimitForm';
+import { type MockSuiteState } from '../../../mocks/mockInitialAppState';
 
 const SYMBOL = asNetworkSymbol('btc');
 
 const renderGapLimitForm = (savedGapLimit?: number) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             wallet: {
                 blockchain: {

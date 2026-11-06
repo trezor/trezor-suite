@@ -5,11 +5,13 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 
-import { type AppState } from 'src/reducers/store';
 import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { getTradingExchangeIssue, useExchangeIssueAnalytics } from './useExchangeIssueAnalytics';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 const HIGH_RISK_ISSUE: ExchangeIssue = {
     type: 'high-risk',
@@ -31,8 +33,11 @@ type IssueAnalyticsProps = {
 
 const renderIssueAnalytics = (initialProps: IssueAnalyticsProps) => {
     const report = jest.fn();
-    const { services } = createTestCompositionRoot<{ services: DesktopAnalyticsDep }, AppState>({
-        preloadedState: mockInitialAppState satisfies AppState,
+    const { services } = createTestCompositionRoot<
+        { services: DesktopAnalyticsDep },
+        MockSuiteState
+    >({
+        preloadedState: mockInitialAppState satisfies MockSuiteState,
         services: () => ({ analytics: mockDesktopAnalytics(report) }),
     });
 

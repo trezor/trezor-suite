@@ -11,9 +11,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useTradingExchangeTradeActions } from './useTradingExchangeTradeActions';
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite/device', () => ({
     ...jest.requireActual('@suite/device'),
@@ -152,7 +151,7 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: ETHEREUM_CRYPTO_ID,
     });
 
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: state });
     const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
         services,
     });

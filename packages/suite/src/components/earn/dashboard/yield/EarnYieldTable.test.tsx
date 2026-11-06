@@ -11,10 +11,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { ServicesProvider, mock } from '@trezor/dependency-injection';
 import { type Dispatch, type DispatchDep } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { EarnYieldTable } from './EarnYieldTable';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type YieldDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';
 
 let mockVisibleAccounts: Account[] = [];
@@ -57,7 +55,7 @@ jest.mock('src/components/dashboard', () => ({
     DashboardSection: ({ children }: PropsWithChildren) => children,
 }));
 jest.mock('src/hooks/suite', () => ({
-    useSelector: (selector: (state: AppState) => unknown) => selector(mockInitialAppState),
+    useSelector: (selector: (state: MockSuiteState) => unknown) => selector(mockInitialAppState),
 }));
 jest.mock('src/hooks/suite/useLayoutSize', () => ({
     useLayoutSize: () => ({ isBelowLaptop: true }),

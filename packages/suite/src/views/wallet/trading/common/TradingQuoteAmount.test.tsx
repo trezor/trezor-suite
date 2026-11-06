@@ -12,11 +12,10 @@ import {
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TradingTradeType, initialState as tradingInitialState } from '@suite-common/trading';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingQuoteAmount } from './TradingQuoteAmount';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 const ETHEREUM_CRYPTO_ID = 'ethereum' as CryptoId;
@@ -58,7 +57,7 @@ const exchangeQuote = {
 } satisfies ExchangeTrade;
 
 const renderQuoteAmount = (quote: TradingTradeType, buyQuotesRequest?: BuyTradeQuoteRequest) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -69,7 +68,7 @@ const renderQuoteAmount = (quote: TradingTradeType, buyQuotesRequest?: BuyTradeQ
                     buy: { ...tradingInitialState.buy, quotesRequest: buyQuotesRequest },
                 },
             },
-        } satisfies AppState,
+        } satisfies MockSuiteState,
     });
 
     renderWithProviders(services, <TradingQuoteAmount quote={quote} />);
