@@ -18,7 +18,7 @@ jobs:
           lfs: true
 
       - name: Setup Docker
-        uses: docker/setup-docker-action@2bf61fb9464cc67f0cbdeabed6aa0380accd1c70 # v5
+        uses: docker/setup-docker-action@7ec28a010822b4626af4874f9448a4b05ac6f3e5 # v5
 
       - name: Build transport-bluetooth binary
         working-directory: packages/transport-bluetooth
@@ -33,7 +33,7 @@ jobs:
           docker rmi trezor-bluetooth-image
 
       - name: Upload binaries as artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: transport-bluetooth-binaries-${{ github.sha }}
           path: |
