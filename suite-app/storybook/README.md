@@ -1,4 +1,4 @@
-# @suite/storybook
+# @suite-app/storybook
 
 The shared web/desktop component catalog for every `@suite/*` workspace, `@trezor/product-components`
 and `@trezor/suite`.
@@ -10,13 +10,13 @@ Other workspaces, including `@trezor/components`, `@suite-common/*` and `@suite-
 After the normal repository dependency installation, run:
 
 ```sh
-yarn workspace @suite/storybook storybook
+yarn workspace @suite-app/storybook storybook
 ```
 
 Open http://localhost:9004. To generate the static catalog:
 
 ```sh
-yarn workspace @suite/storybook storybook-build
+yarn workspace @suite-app/storybook storybook-build
 ```
 
 The output is `.build-storybook/`. The nightly pipeline publishes it at

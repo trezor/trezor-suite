@@ -3,7 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": ["."],
     "references": [
-        { "path": "../feature-feedback" },
+        {
+            "path": "../../suite/feature-feedback"
+        },
         { "path": "../../packages/components" },
         {
             "path": "../../packages/dependency-injection"
