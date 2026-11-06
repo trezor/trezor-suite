@@ -46,6 +46,7 @@ const HomeScreenContent = ({
         case 'emptyPortfolioTracker':
             return <EmptyPortfolioTrackerState />;
         case 'uninitializedDevice':
+        case 'deviceChecksRequired':
             return <UninitializedConnectedDeviceState />;
         case 'firmwareUpdateRequired':
             return <FirmwareUpdateRequiredDeviceState />;

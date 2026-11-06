@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceInitialized, selectSelectedDevice } from '@suite-common/device';
+import { selectIsAnyDeviceCheckRequired } from '@suite-common/device-authenticity';
+import { type PersistentDeviceDataRootState } from '@suite-common/persistent-device-data';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { selectIsDeviceSetupSupported } from '@suite-native/device';
@@ -14,6 +16,7 @@ import {
     type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { selectDeviceAuthenticityCheckSettings } from '@suite-native/settings';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList,
@@ -33,13 +36,23 @@ export const useCloseDeviceCompromisedScreen = () => {
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
     const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const device = useSelector(selectSelectedDevice);
+    const deviceAuthenticityCheckSettings = useSelector(selectDeviceAuthenticityCheckSettings);
+    const doesDeviceNeedInteractiveDeviceChecks = useSelector(
+        (state: PersistentDeviceDataRootState) =>
+            selectIsAnyDeviceCheckRequired(state, device, deviceAuthenticityCheckSettings),
+    );
+
+    const deviceModel = getDeviceInternalModel(device);
+    const shouldEnterDeviceOnboarding = isDeviceInitialized
+        ? doesDeviceNeedInteractiveDeviceChecks
+        : isDeviceSetupSupported;
 
     const handleClose = () => {
-        if (!isDeviceInitialized && isDeviceSetupSupported) {
+        if (shouldEnterDeviceOnboarding) {
             navigation.popTo(RootStackRoutes.DeviceOnboardingStack, {
                 screen: DeviceOnboardingStackRoutes.DeviceVisualCheck,
                 params: {
-                    deviceModel: getDeviceInternalModel(device),
+                    deviceModel,
                 },
             });
         } else if (!isAnyNetworkEnabled) {

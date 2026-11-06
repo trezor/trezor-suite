@@ -15,6 +15,7 @@
         {
             "path": "../../suite-common/earn-staking"
         },
+        { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/firmware-authenticity"
         },

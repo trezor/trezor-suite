@@ -9,8 +9,10 @@ import {
     selectIsFirmwareUpgradable,
     selectIsPortfolioTrackerDevice,
     selectIsReconnectRequested,
+    selectSelectedDevice,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/device';
+import { selectIsAnyDeviceCheckRequired } from '@suite-common/device-authenticity';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncState,
@@ -33,6 +35,7 @@ import {
 } from '@suite-native/device';
 import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { selectDeviceHistoryIgnoredNetworkSymbols } from '@suite-native/graph';
+import { selectDeviceAuthenticityCheckSettings } from '@suite-native/settings';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type HomeScreenState } from './homescreenTypes';
@@ -117,6 +120,11 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
     const hasOnlyEmptyPortfolioTracker = selectHasOnlyEmptyPortfolioTracker(state);
     const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
     const hasRunningDiscovery = selectHasRunningDiscovery(state);
+    const isAnyDeviceCheckRequired = selectIsAnyDeviceCheckRequired(
+        state,
+        selectSelectedDevice(state),
+        selectDeviceAuthenticityCheckSettings(state),
+    );
     const isDeviceFirmwareUpdateRequiredAndAvailable =
         selectIsDeviceFirmwareUpdateRequiredAndAvailable(state);
 
@@ -140,6 +148,11 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
         // is still in Redux but the physical device is already in initialize state and ready for setup.
         if (isDeviceSetupSupported && (!isDeviceInitialized || isReconnectRequested)) {
             return 'uninitializedDevice';
+        }
+
+        // Lets user re-enter the checks, if they cancelled them before.
+        if (isDeviceInitialized && isAnyDeviceCheckRequired) {
+            return 'deviceChecksRequired';
         }
 
         if (isDeviceInitialized && !isAnyNetworkEnabled) {
