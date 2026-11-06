@@ -309,7 +309,7 @@ describe('runAdditionalDiscoveryThunk', () => {
             expect.objectContaining({
                 type: updateDiscoveryMatcher.type,
                 payload: expect.objectContaining({
-                    status: expect.objectContaining({ status: 'progress' }),
+                    status: expect.objectContaining({ status: 'progress', progress: 2 }),
                 }),
             }),
         );
