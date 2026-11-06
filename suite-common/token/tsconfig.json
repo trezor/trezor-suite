@@ -13,6 +13,8 @@
         },
         {
             "path": "../../packages/redux-utils"
-        }
+        },
+        { "path": "../test-utils" },
+        { "path": "../wallet-types" }
     ]
 }

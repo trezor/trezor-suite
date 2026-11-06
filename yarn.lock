@@ -12575,8 +12575,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/token@workspace:suite-common/token"
   dependencies:
+    "@suite-common/test-utils": "workspace:*"
     "@suite-common/tokens": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     react: "npm:19.3.0"
