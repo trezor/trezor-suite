@@ -6,6 +6,7 @@ export type {
     GraphEvent,
     LineGraphProps,
     SelectionDotProps,
+    SelectionTooltipProps,
     EventTooltipComponentProps,
     EventComponentProps,
 } from './LineGraphProps';

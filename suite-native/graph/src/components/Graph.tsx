@@ -15,13 +15,13 @@ import {
     GraphExtremesProvider,
     HighExtremeLabel,
     LowExtremeLabel,
+    SelectionDotWithLine,
 } from '@suite-native/price-chart';
 import { type GraphPoint, LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type TimerId } from '@trezor/type-utils';
 
 import { GraphError } from './GraphError';
-import { SelectionDotWithLine } from './SelectionDotWithLine';
 import { TransactionEvent } from './TransactionEvent';
 import { TransactionEventTooltip } from './TransactionEventTooltip';
 
