@@ -4338,6 +4338,21 @@ export const messages = {
                 info: 'Approve this amount for the provider. Valid until used or revoked, after which a new approval and network fee will be required.',
             },
         },
+        bridgeSpeed: {
+            title: 'Bridge speed',
+            label: 'Bridge speed',
+            summary: '{title} · {fee}',
+            fast: {
+                title: 'Fast',
+                fee: '0.01%',
+                description: 'Bridge sends {symbol} sooner for a small fee.',
+            },
+            standard: {
+                title: 'Standard',
+                fee: 'Free',
+                description: 'Bridge sends {symbol} after a short wait.',
+            },
+        },
         exchangeTradePreviewCard: {
             account: 'Account',
         },

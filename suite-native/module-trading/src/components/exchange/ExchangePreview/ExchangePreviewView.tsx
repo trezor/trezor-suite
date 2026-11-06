@@ -13,6 +13,7 @@ import { AnimatedVStack, AnimatedView, BannerInline, VStack } from '@suite-nativ
 import { Translation, useTranslate } from '@suite-native/intl';
 import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
 
+import { BridgeSpeedPicker } from './BridgeSpeed';
 import { ExchangeEIP712Info } from './ExchangeEIP712Info';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
 import { ExchangeInfo } from './ExchangeInfo';
@@ -26,6 +27,7 @@ export type ExchangePreviewViewProps = {
     txnErrorString: ReactNode | null;
     onSignTransactionNavigation: () => void;
     onSlippageConfirmed: () => Promise<void>;
+    onBridgeSpeedConfirmed: () => Promise<void>;
     isApproved?: boolean;
 };
 
@@ -35,6 +37,7 @@ export const ExchangePreviewView = memo(
         txnErrorString,
         onSignTransactionNavigation,
         onSlippageConfirmed,
+        onBridgeSpeedConfirmed,
         isApproved,
     }: ExchangePreviewViewProps) => {
         const { translate } = useTranslate();
@@ -45,6 +48,12 @@ export const ExchangePreviewView = memo(
 
         const isTxnError = !!txnErrorString;
         const hasEIP712SignData = hasEip712SignData(quote);
+        const bridgeSpeedPicker = (
+            <BridgeSpeedPicker
+                providerId={quote?.exchange}
+                onBridgeSpeedConfirmed={onBridgeSpeedConfirmed}
+            />
+        );
 
         return (
             <VStack spacing="sp16">
@@ -67,6 +76,7 @@ export const ExchangePreviewView = memo(
                     <ExchangeToAccountTradePreviewCard quote={quote} />
                     {hasEIP712SignData ? (
                         <ExchangeEIP712Info exchange={quote?.exchange}>
+                            {bridgeSpeedPicker}
                             <ExchangeSlippagePicker
                                 quote={quote}
                                 onSlippageConfirmed={onSlippageConfirmed}
@@ -74,6 +84,7 @@ export const ExchangePreviewView = memo(
                         </ExchangeEIP712Info>
                     ) : (
                         <ExchangeInfo quote={quote} isTxnError={isTxnError}>
+                            {bridgeSpeedPicker}
                             <ExchangeSlippagePicker
                                 quote={quote}
                                 onSlippageConfirmed={onSlippageConfirmed}

@@ -39,6 +39,7 @@ export * from './selectors/tradeableAssetBalancesSelectors';
 export * from './hooks/useTradingDetail';
 export type * from './types/tradingDetail';
 export type * from './types';
+export * from './types/bridgeSpeed';
 export * from './utils';
 export { createAssetOption } from './utils/createAssetOption';
 export * from './utils/apiKeyUtils';
