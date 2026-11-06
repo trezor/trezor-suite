@@ -36,6 +36,15 @@ export const AppTabNavigator = () => {
         });
     };
 
+    const handleAccountsTabPress = (isAccountsTabFocused: boolean) => {
+        if (isAccountsTabFocused) return;
+
+        analytics.report({
+            type: events.navigateFlowEvent.name,
+            payload: { action: 'navigate', type: 'account-list', from: 'tab' },
+        });
+    };
+
     return (
         <Tab.Navigator
             initialRouteName={AppTabsRoutes.HomeStack}
@@ -48,7 +57,13 @@ export const AppTabNavigator = () => {
             )}
         >
             <Tab.Screen name={AppTabsRoutes.HomeStack} component={HomeStackNavigator} />
-            <Tab.Screen name={AppTabsRoutes.AccountsStack} component={AccountsStackNavigator} />
+            <Tab.Screen
+                name={AppTabsRoutes.AccountsStack}
+                component={AccountsStackNavigator}
+                listeners={({ navigation }) => ({
+                    tabPress: () => handleAccountsTabPress(navigation.isFocused()),
+                })}
+            />
             {isTradingEnabled && (
                 <Tab.Screen
                     name={AppTabsRoutes.Trading}
