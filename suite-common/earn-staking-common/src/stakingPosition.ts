@@ -76,6 +76,8 @@ export const stakingPositionSchema = z.strictObject({
     pendingTransactions: z.array(stakingPositionPendingTransactionSchema).readonly(),
     warnings: z.array(stakingPositionWarningSchema).readonly(),
     details: stakingPositionDetailsSchema.nullable(),
+    /** When the position changes without new account data, as when an unlock or a claim cooldown ends. */
+    revalidateAt: timestampSchema.nullable(),
 });
 
 export type StakingPosition = z.infer<typeof stakingPositionSchema>;

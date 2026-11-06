@@ -106,6 +106,7 @@ describe('getSolanaDelegationProductPosition', () => {
                     },
                 ],
             },
+            revalidateAt: null,
         });
     });
 
@@ -279,6 +280,7 @@ describe('getSolanaDelegationProductPosition', () => {
                     },
                 ],
             },
+            revalidateAt: null,
         });
     });
 

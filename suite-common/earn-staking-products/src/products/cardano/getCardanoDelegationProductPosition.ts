@@ -145,6 +145,7 @@ const getPendingFirstStakePosition = ({
         pendingTransactions,
         warnings: [],
         details: { kind: 'cardano-delegation', poolId: null, drep: null },
+        revalidateAt: null,
     };
 };
 
@@ -217,5 +218,6 @@ export const getCardanoDelegationProductPosition = ({
         pendingTransactions,
         warnings,
         details,
+        revalidateAt: null,
     };
 };
