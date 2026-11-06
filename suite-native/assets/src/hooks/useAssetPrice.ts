@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
 import { fetchErc4626UnderlyingAsset } from '@suite-common/fiat-services';
-import { useQuery } from '@suite-common/react-query';
+import { SILENT_QUERY_META, commonQueryKeys, useQuery } from '@suite-common/react-query';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -22,6 +22,7 @@ import { getFiatRateKey, isErc4626, isTestnet } from '@suite-common/wallet-utils
 import { BigNumber } from '@trezor/utils';
 
 import { fetchLastWeekAssetPrice } from '../utils/fetchLastWeekAssetPrice';
+import { getAssetTicker } from '../utils/getAssetTicker';
 
 const REFRESH_INTERVAL = 60 * 60 * 1000;
 
@@ -72,11 +73,7 @@ export const useAssetPrice = ({
             : asBaseCurrencyAmount(new BigNumber(currentFiatRate.rate));
     const missingRateTicker: TickerId | null =
         networkSymbol && currentFiatRate?.rate === undefined && !isTestnet(networkSymbol)
-            ? {
-                  symbol: networkSymbol,
-                  tokenAddress: tokenContract,
-                  protocols: isErc4626Token ? ['erc4626'] : undefined,
-              }
+            ? getAssetTicker({ networkSymbol, tokenContract, isErc4626Token })
             : null;
 
     const missingRateQuery = useMissingRateTickersQuery({
@@ -86,47 +83,44 @@ export const useAssetPrice = ({
 
     const { data } = useQuery<HistoricalAssetPriceQueryData>({
         enabled: !!networkSymbol,
-        queryKey: [
-            'asset-price-history',
+        queryKey: commonQueryKeys.assetPriceHistory(
             networkSymbol,
             tokenContract,
             isErc4626Token,
             fiatCurrencyCode,
             backendType,
-        ],
+        ),
         refetchInterval: REFRESH_INTERVAL,
+        // The screen just hides a missing seven day change, so a failed fetch is not worth logging.
+        meta: SILENT_QUERY_META,
         queryFn: async () => {
             if (!networkSymbol) return NULL_HISTORICAL_ASSET_PRICE_QUERY_DATA;
 
-            try {
-                // Rate providers have no tickers for ERC4626 vault share tokens, so fetch the
-                // historical rate of the underlying asset and scale it by the current vault
-                // exchange rate. Historical share-to-asset ratios are not available.
-                const underlyingAsset =
-                    isErc4626Token && tokenContract
-                        ? await fetchErc4626UnderlyingAsset({
-                              coin: networkSymbol,
-                              contract: tokenContract,
-                          })
-                        : null;
+            // Rate providers have no tickers for ERC4626 vault share tokens, so fetch the
+            // historical rate of the underlying asset and scale it by the current vault
+            // exchange rate. Historical share-to-asset ratios are not available.
+            const underlyingAsset =
+                isErc4626Token && tokenContract
+                    ? await fetchErc4626UnderlyingAsset({
+                          coin: networkSymbol,
+                          contract: tokenContract,
+                      })
+                    : null;
 
-                const weekAgoFiatRate = await fetchLastWeekAssetPrice({
-                    networkSymbol,
-                    tokenContract: underlyingAsset?.contract ?? tokenContract,
-                    fiatCurrencyCode,
-                    backendType,
-                });
-                const weekAgoPrice = underlyingAsset
-                    ? toVaultSharePrice(weekAgoFiatRate, underlyingAsset.exchangeRate)
-                    : weekAgoFiatRate;
+            const weekAgoFiatRate = await fetchLastWeekAssetPrice({
+                networkSymbol,
+                tokenContract: underlyingAsset?.contract ?? tokenContract,
+                fiatCurrencyCode,
+                backendType,
+            });
+            const weekAgoPrice = underlyingAsset
+                ? toVaultSharePrice(weekAgoFiatRate, underlyingAsset.exchangeRate)
+                : weekAgoFiatRate;
 
-                return {
-                    weekAgoPrice: weekAgoPrice ?? null,
-                    underlyingAssetContract: underlyingAsset?.contract ?? null,
-                };
-            } catch {
-                return NULL_HISTORICAL_ASSET_PRICE_QUERY_DATA;
-            }
+            return {
+                weekAgoPrice: weekAgoPrice ?? null,
+                underlyingAssetContract: underlyingAsset?.contract ?? null,
+            };
         },
     });
 

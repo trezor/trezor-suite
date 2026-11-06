@@ -43,7 +43,7 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
             <PriceChartBody
                 points={points}
                 isLoading={isLoading}
-                isError={isError}
+                isError={isError && data === undefined}
                 isEmpty={data?.length === 0}
             />
             <AssetPriceChartRangeSelector />

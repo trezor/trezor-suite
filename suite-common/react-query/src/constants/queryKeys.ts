@@ -34,6 +34,11 @@ export const commonQueryKeys = {
     ],
     merklRewards: (...args: any[]) => ['merkl-rewards', ...args],
     missingRateTickers: (...args: any[]) => ['missing-rate-tickers', ...args],
+    assetPriceHistory: (
+        symbol: string | null | undefined,
+        tokenAddress: string | undefined,
+        ...args: unknown[]
+    ) => ['asset-price-history', symbol, tokenAddress, ...args],
     transactionsPage: ({
         accountKeys,
         contractAddress,
