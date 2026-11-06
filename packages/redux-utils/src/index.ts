@@ -5,6 +5,7 @@ export * from './createMiddleware';
 export * from './createReducerWithExtraDeps';
 export * from './createSingleInstanceThunk';
 export * from './createOwnedAction';
+export * from './thunkRegistry';
 export * from './hooks/useSelectorDeepComparison';
 export * from './selectorsUtils';
 export * from './storeInjectors';

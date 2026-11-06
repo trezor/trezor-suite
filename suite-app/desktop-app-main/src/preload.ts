@@ -26,6 +26,7 @@ const desktopApi = createDesktopApiBridge(ipcRenderer);
 contextBridge.exposeInMainWorld('desktopApi', desktopApi);
 contextBridge.exposeInMainWorld('desktopFlags', {
     exposeStore: hasSwitch('expose-store'),
+    automationTools: hasSwitch('automation-tools'),
 });
 
 contextBridge.exposeInMainWorld('electronFind', {
