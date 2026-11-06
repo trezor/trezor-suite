@@ -6,7 +6,11 @@ import {
     persistentDeviceDataActions,
     preparePersistentDeviceDataReducer,
 } from '@suite-common/persistent-device-data';
-import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import {
+    defaultDevicePersistentData,
+    mockStoredAuthenticateDeviceResult,
+    mockSuiteDevice,
+} from '@suite-common/suite-types/mocks';
 import { prepareThpReducer } from '@suite-common/thp';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
@@ -78,6 +82,8 @@ type RootState = {
     featureFlags: ReturnType<typeof featureFlagsSlice.reducer>;
     thp: ReturnType<typeof thpReducer>;
 };
+
+export type DeviceConnectionFixturesRootState = RootState;
 
 // All routes typed directly from RootStackParamList
 type RouteEntry = {
@@ -169,6 +175,55 @@ const buildInitialState = ({
         ...thp,
     },
 });
+
+/**
+ * The listener middleware runs after the reducers, so the slices it reads about the connected device are processed
+ * by real reducers. Other slices stay static.
+ */
+export const fixturesReducer = (
+    state: DeviceConnectionFixturesRootState = buildInitialState(),
+    action: UnknownAction,
+): DeviceConnectionFixturesRootState => ({
+    ...state,
+    device: deviceReducer(state.device, action),
+    persistentDeviceData: persistentDeviceDataReducer(state.persistentDeviceData, action),
+});
+
+// Persisted record of a successful Manual Device Check for the default mocked device.
+const manualDeviceCheckDonePersistentDeviceData = {
+    devices: [{ ...defaultDevicePersistentData, internal_model: DeviceModelInternal.T2T1 }],
+};
+
+const buildOnboardingResetTarget = (deviceModel: DeviceModelInternal): ResetNavigationTarget => ({
+    index: 1,
+    routes: [
+        {
+            name: RootStackRoutes.AppTabs,
+            params: {
+                screen: HomeStackRoutes.Home,
+            },
+        },
+        {
+            name: RootStackRoutes.DeviceOnboardingStack,
+            params: {
+                screen: DeviceOnboardingStackRoutes.ManualDeviceCheck,
+                params: { deviceModel },
+            },
+        },
+    ],
+});
+
+const homeResetTarget: ResetNavigationTarget = {
+    index: 0,
+    routes: [
+        {
+            name: RootStackRoutes.AppTabs,
+            params: {
+                screen: HomeStackRoutes.Home,
+            },
+        },
+    ],
+};
 
 // THP Pairing Fixtures
 export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
@@ -359,6 +414,7 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
             walletSettings: {
                 enabledNetworks: [asNetworkSymbol('btc')],
             },
+            persistentDeviceData: manualDeviceCheckDonePersistentDeviceData,
         }),
         action: {
             type: deviceActions.connectDevice.type,
@@ -481,6 +537,7 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
             walletSettings: {
                 enabledNetworks: [asNetworkSymbol('btc')],
             },
+            persistentDeviceData: manualDeviceCheckDonePersistentDeviceData,
         }),
         action: {
             type: deviceActions.connectDevice.type,
@@ -499,6 +556,7 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
             device: {
                 selectedDevice: mockSuiteDevice(),
             },
+            persistentDeviceData: manualDeviceCheckDonePersistentDeviceData,
         }),
         action: {
             type: deviceActions.connectDevice.type,
@@ -515,6 +573,124 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
                 screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
             },
         },
+    },
+];
+
+export const deviceConnectAuthorizedAfterInteractiveChecksFixtures: NavigationFixture[] = [
+    {
+        description:
+            'navigates to ConnectingDevice when both interactive device checks have succeeded',
+        initialState: buildInitialState({
+            appSettings: { isDeviceAuthenticityCheckEnabled: true },
+            walletSettings: { enabledNetworks: [asNetworkSymbol('btc')] },
+            persistentDeviceData: {
+                devices: [
+                    {
+                        ...defaultDevicePersistentData,
+                        internal_model: DeviceModelInternal.T3T1,
+                        authenticityResult: mockStoredAuthenticateDeviceResult(),
+                    },
+                ],
+            },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: mockSuiteDevice(undefined, { internal_model: DeviceModelInternal.T3T1 }),
+            },
+        },
+        expectedNavigation: {
+            route: RootStackRoutes.AuthorizeDeviceStack,
+            params: { screen: AuthorizeDeviceStackRoutes.ConnectingDevice },
+        },
+    },
+];
+
+export const deviceConnectInteractiveChecksFixtures: ResetNavigationFixture[] = [
+    {
+        description: 'resets to ManualDeviceCheck for initialized device without a record',
+        initialState: buildInitialState({
+            walletSettings: { enabledNetworks: [asNetworkSymbol('btc')] },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: mockSuiteDevice() },
+        },
+        expectedReset: buildOnboardingResetTarget(DeviceModelInternal.T2T1),
+    },
+    {
+        description: 'resets to ManualDeviceCheck for initialized device of UNKNOWN model',
+        initialState: buildInitialState({
+            walletSettings: { enabledNetworks: [asNetworkSymbol('btc')] },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: mockSuiteDevice(undefined, {
+                    internal_model: DeviceModelInternal.UNKNOWN,
+                }),
+            },
+        },
+        expectedReset: buildOnboardingResetTarget(DeviceModelInternal.UNKNOWN),
+    },
+    {
+        description:
+            'resets to ManualDeviceCheck for remembered initialized device without a record',
+        initialState: buildInitialState({
+            device: { devices: [mockSuiteDevice()] },
+            walletSettings: { enabledNetworks: [asNetworkSymbol('btc')] },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: mockSuiteDevice() },
+        },
+        expectedReset: buildOnboardingResetTarget(DeviceModelInternal.T2T1),
+    },
+    {
+        description: 'resets to ManualDeviceCheck for initialized T1B1 without a record',
+        initialState: buildInitialState(),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: mockSuiteDevice(undefined, { internal_model: DeviceModelInternal.T1B1 }),
+            },
+        },
+        expectedReset: buildOnboardingResetTarget(DeviceModelInternal.T1B1),
+    },
+    {
+        description:
+            'resets to ManualDeviceCheck for initialized device with only the authenticity check pending',
+        initialState: buildInitialState({
+            appSettings: { isDeviceAuthenticityCheckEnabled: true },
+            walletSettings: { enabledNetworks: [asNetworkSymbol('btc')] },
+            persistentDeviceData: {
+                devices: [
+                    {
+                        ...defaultDevicePersistentData,
+                        internal_model: DeviceModelInternal.T3T1,
+                    },
+                ],
+            },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: mockSuiteDevice(undefined, { internal_model: DeviceModelInternal.T3T1 }),
+            },
+        },
+        expectedReset: buildOnboardingResetTarget(DeviceModelInternal.T3T1),
+    },
+    {
+        description:
+            'resets only to Home for initialized device needing checks when onboarding was cancelled',
+        initialState: buildInitialState({
+            deviceOnboarding: { wasDeviceOnboardingCancelled: true },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: mockSuiteDevice() },
+        },
+        expectedReset: homeResetTarget,
     },
 ];
 

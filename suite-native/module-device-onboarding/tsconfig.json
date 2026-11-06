@@ -19,6 +19,9 @@
             "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/thp" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
@@ -34,7 +37,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../settings" },
         { "path": "../swipeable-walkthrough" },
         { "path": "../thp" },
         { "path": "../toasts" },

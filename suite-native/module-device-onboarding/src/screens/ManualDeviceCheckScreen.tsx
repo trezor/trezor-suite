@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -6,13 +6,17 @@ import { useSetAtom } from 'jotai';
 
 import {
     selectHasDeviceFirmwareInstalled,
+    selectIsDeviceInitialized,
     selectSelectedDevice,
-    selectShouldOfferUpdateFirmware,
 } from '@suite-common/device';
-import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import {
+    type PersistentDeviceDataRootState,
+    persistentDeviceDataActions,
+    selectDeviceNeedsManualCheck,
+} from '@suite-common/persistent-device-data';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
-import { type SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
+import { useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     type DeviceOnboardingStackParamList,
@@ -21,19 +25,20 @@ import {
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
+import { resetOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
-import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
+import { useNavigateAfterManualDeviceCheck } from '../hooks/useNavigateAfterManualDeviceCheck';
 
-const ManualDeviceCheckScreenContent = ({
-    deviceModel,
-}: {
-    deviceModel: SetupSupportingDeviceModel;
-}) => {
+type ManualDeviceCheckScreenContentProps = {
+    deviceModel: DeviceModelInternal;
+};
+
+const ManualDeviceCheckScreenContent = ({ deviceModel }: ManualDeviceCheckScreenContentProps) => {
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const coinLabel = useCoinLabel();
 
@@ -62,6 +67,8 @@ const ManualDeviceCheckScreenContent = ({
 
 /**
  * First step of Manual Device check, which is shared for both devices with and without firmware.
+ * It is also the entry point of the device onboarding flow, so if the check has been already passed,
+ * it is skipped right away.
  *
  * See also ManualDeviceCheckWithoutFirmwareScreen, the 2nd step only for devices without firmware.
  * Note that this is a different design from Web/Desktop, where there are separate screens for both cases, with no 2nd step.
@@ -75,35 +82,24 @@ export const ManualDeviceCheckScreen = ({
     RootStackParamList
 >) => {
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
-    const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
+    const { deviceModel } = params;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
-    const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const device = useSelector(selectSelectedDevice);
     const deviceId = device?.id;
+    const shouldDoManualDeviceCheck = useSelector((state: PersistentDeviceDataRootState) =>
+        selectDeviceNeedsManualCheck(state, device),
+    );
+    // Decided only on mount, because confirming the check on this screen changes the record.
+    const [isManualDeviceCheckSkipped] = useState(!shouldDoManualDeviceCheck);
 
     const resetOnboardingAnalytics = useSetAtom(resetOnboardingAnalyticsAtom);
-    const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
-    const { navigateToNextScreenAfterFirmwareInstallation } =
-        useNavigateToNextScreenAfterFirmwareInstallation();
+    const { navigateAfterManualDeviceCheck } = useNavigateAfterManualDeviceCheck();
 
     const handleConfirmButtonPress = () => {
         dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
-        if (hasDeviceFirmwareInstalled) {
-            if (shouldOfferUpdateFirmware) {
-                navigation.replace(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
-            } else {
-                // If user already has the latest firmware installed, skip this update screen and navigate to device auth-check directly.
-                updateOnboardingAnalytics({
-                    firmware: 'up-to-date',
-                });
-
-                navigateToNextScreenAfterFirmwareInstallation();
-            }
-        } else {
-            // Manual Device Check has a 2nd step for devices without firmware (fresh or factory-reset).
-            navigation.replace(DeviceOnboardingStackRoutes.ManualDeviceCheckWithoutFirmware);
-        }
+        navigateAfterManualDeviceCheck();
     };
 
     const handleNeverUsedThisDeviceButtonPress = () => {
@@ -135,17 +131,26 @@ export const ManualDeviceCheckScreen = ({
     };
 
     useEffect(() => {
-        resetOnboardingAnalytics();
-        analytics.report({
-            type: events.deviceSetupStartedEvent.name,
-            payload: {
-                osName: Platform.OS,
-                deviceModel,
-            },
-        });
-        // report device-setup event only on first render of this screen
+        // Initialized device only passes the interactive device checks, it isn't being set up.
+        if (!isDeviceInitialized) {
+            resetOnboardingAnalytics();
+            analytics.report({
+                type: events.deviceSetupStartedEvent.name,
+                payload: {
+                    osName: Platform.OS,
+                    deviceModel,
+                },
+            });
+        }
+
+        // After the analytics reset, as the next step may already update the analytics.
+        if (isManualDeviceCheckSkipped) navigateAfterManualDeviceCheck();
+
+        // Run only on first render of this screen: report device-setup event, and skip the check if passed.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    if (isManualDeviceCheckSkipped) return null;
 
     const screenHeaderProps = hasDeviceFirmwareInstalled
         ? {

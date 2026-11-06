@@ -156,6 +156,11 @@ export const messages = {
                 subtitle: 'You can do this anytime.',
                 button: 'Set up my Trezor',
             },
+            interactiveDeviceChecksRequired: {
+                title: 'Check your Trezor',
+                subtitle: 'Confirm your Trezor is genuine before using it.',
+                button: 'Check my Trezor',
+            },
             initializedDevice: {
                 title: 'Your wallet is ready',
                 subtitle: 'Add the networks you want to use.',

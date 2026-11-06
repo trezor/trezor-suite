@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { selectIsDeviceInitialized } from '@suite-common/device';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -7,6 +10,7 @@ import {
 } from '@suite-native/navigation';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
+import { useExitDeviceOnboardingForInitializedDevice } from '../hooks/useExitDeviceOnboardingForInitializedDevice';
 
 export const DeviceAuthenticitySuccessScreen = ({
     navigation,
@@ -14,8 +18,16 @@ export const DeviceAuthenticitySuccessScreen = ({
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess
 >) => {
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+    const { exitDeviceOnboardingForInitializedDevice } =
+        useExitDeviceOnboardingForInitializedDevice();
+
     const handleContinueButtonPress = () => {
-        navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
+        if (isDeviceInitialized) {
+            exitDeviceOnboardingForInitializedDevice();
+        } else {
+            navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
+        }
     };
 
     return (

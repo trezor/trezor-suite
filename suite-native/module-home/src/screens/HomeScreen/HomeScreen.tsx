@@ -44,6 +44,7 @@ const HomeScreenContent = ({
         case 'emptyPortfolioTracker':
             return <EmptyPortfolioTrackerState />;
         case 'uninitializedDevice':
+        case 'interactiveDeviceChecksRequired':
             return <UninitializedConnectedDeviceState />;
         case 'noNetworkConfigured':
             return <NoNetworksConfigured />;
