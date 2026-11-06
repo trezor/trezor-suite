@@ -8,7 +8,7 @@ test.use({ startEmulator: false });
 test(
     'Join early access',
     {
-        tag: ['@desktopOnly', '@noDevice'],
+        tag: ['@desktopOnly', '@noDevice', '@windows'],
         annotation: createTestAnnotation({
             testCase: 'Verify that a user can join the early access program.',
             category: TestCategory.Settings,

@@ -32,3 +32,4 @@ description: Test tagging and Playwright project selection for Suite E2E tests: 
 - `@optional` — excluded from the full PR run; runs nightly, and on a PR only when the LLM test selector picks it or the PR edits its file. **Use for tests that are low priority and slow.** When the reason is not obvious from the test itself, state it in a one-line comment above the `describe`. Combine with a single platform (`@webOnly` or `@desktopOnly`) to conserve resources.
 - `@specificFirmware` — **required when using `test.use({ firmwareVersion: '2.10' })`**. Excluded from canary FW projects to prevent mismatched firmware runs.
 - `@group=manual` — excluded from all automated runs, reserved for manual test definitions
+- `@windows` — also runs on the Windows runner (`playwright-desktop-windows.config.ts`). **Use for tests that exercise the Electron main process or OS integration**: bridge, Connect provider, persistence, file and clipboard handling, external links.
