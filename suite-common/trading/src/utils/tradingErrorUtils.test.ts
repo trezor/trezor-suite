@@ -1,6 +1,5 @@
 import {
     getConnectErrorCause,
-    getInvityErrorCause,
     getSignAndPushRejectionError,
     getTradingErrorCauseMessage,
     toSendTransactionTradingError,
