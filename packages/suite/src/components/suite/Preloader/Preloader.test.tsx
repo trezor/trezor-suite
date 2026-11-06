@@ -8,6 +8,7 @@ import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type DesktopDeviceState } from '@suite/device';
 import { type RouterState, type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { selectDeviceAuthenticityCheckSettings } from '@suite/settings';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import {
@@ -17,6 +18,7 @@ import {
 import {
     type AcquiredDevice,
     type GetAllowPrereleaseDep,
+    type GetDeviceAuthenticityCheckSettingsDep,
     type ReportSecurityCheckDep,
     type RerunFwAuthenticityChecksCallDep,
     type ShouldRetryFirmwareRevisionCheckErrorDep,
@@ -32,6 +34,7 @@ import {
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
+import { toGetter } from '@trezor/dependency-injection';
 import { isLinux } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { type DeepPartial } from '@trezor/type-utils';
@@ -142,6 +145,7 @@ const getInitialState = ({
 type PreloaderTestServices = DesktopAnalyticsDep &
     DesktopApiDep<'getBridgeStatus' | 'getBridgeSettings' | 'on' | 'removeAllListeners'> &
     GetAllowPrereleaseDep &
+    GetDeviceAuthenticityCheckSettingsDep &
     ReportSecurityCheckDep &
     RerunFwAuthenticityChecksCallDep &
     ShouldRetryFirmwareRevisionCheckErrorDep &
@@ -149,7 +153,7 @@ type PreloaderTestServices = DesktopAnalyticsDep &
 
 type PreloaderTestDeps = WithServices<PreloaderTestServices>;
 
-const createServices = (): PreloaderTestServices => ({
+const createServices = (store: { getState: () => MockSuiteState }): PreloaderTestServices => ({
     desktopApi: {
         getBridgeStatus: () =>
             Promise.resolve({ success: true, payload: { service: true, process: true } }),
@@ -160,6 +164,11 @@ const createServices = (): PreloaderTestServices => ({
     },
     analytics: mockDesktopAnalytics(),
     getAllowPrerelease: mockGetAllowPrerelease(),
+    // Derived from the store state, so that the tests can configure the settings via preloaded state.
+    getDeviceAuthenticityCheckSettings: toGetter(
+        store.getState,
+        selectDeviceAuthenticityCheckSettings,
+    ),
     reportSecurityCheck: mockReportSecurityCheck(),
     rerunFwAuthenticityChecksCall: mockRerunFwAuthenticityChecksCall(),
     shouldRetryFirmwareRevisionCheckError: mockShouldRetryFirmwareRevisionCheckError(),

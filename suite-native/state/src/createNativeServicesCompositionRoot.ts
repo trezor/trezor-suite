@@ -21,6 +21,7 @@ import {
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
+import { selectDeviceAuthenticityCheckSettings } from '@suite-native/settings';
 import type {
     EnsureEncryptionKeyDep,
     MMKVStorageDep as NativeStorageDep,
@@ -174,6 +175,10 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         shouldRetryFirmwareRevisionCheckError: toGetter(
             deps.getState,
             selectShouldRetryFirmwareRevisionCheckError,
+        ),
+        getDeviceAuthenticityCheckSettings: toGetter(
+            deps.getState,
+            selectDeviceAuthenticityCheckSettings,
         ),
         rerunFwAuthenticityChecksCall: () => {
             deps.dispatch(rerunFwAuthenticityChecksThunk());

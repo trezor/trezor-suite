@@ -62,3 +62,12 @@ export const selectShowTranslationKeys = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.showTranslationKeys;
 export const selectIsAppsEmbeddingEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isAppsEmbeddingEnabled;
+
+/**
+ * Returns a new object on every call, so in React, subscribe to it with
+ * `useGetter(injectGetDeviceAuthenticityCheckSettings)` instead of `useSelector`.
+ */
+export const selectDeviceAuthenticityCheckSettings = (state: SuiteSettingsRootState) => ({
+    isDeviceAuthenticityCheckEnabled: selectIsDeviceAuthenticityCheckEnabled(state),
+    isUnlockedBootloaderAllowed: selectIsUnlockedBootloaderAllowed(state),
+});

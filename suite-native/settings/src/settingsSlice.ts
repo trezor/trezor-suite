@@ -109,6 +109,16 @@ export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
 export const selectIsDeviceAuthenticityCheckEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.isDeviceAuthenticityCheckEnabled;
 
+/**
+ * Returns a new object on every call, so in React, subscribe to it with
+ * `useGetter(injectGetDeviceAuthenticityCheckSettings)` instead of `useSelector`.
+ */
+export const selectDeviceAuthenticityCheckSettings = (state: SettingsSliceRootState) => ({
+    isDeviceAuthenticityCheckEnabled: selectIsDeviceAuthenticityCheckEnabled(state),
+    // There is no setting tolerating an unlocked bootloader on mobile.
+    isUnlockedBootloaderAllowed: false,
+});
+
 export const selectShouldShowAutoEjectAlert = (state: SettingsSliceRootState) =>
     state.appSettings.shouldShowAutoEjectAlert;
 

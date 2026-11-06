@@ -14,6 +14,7 @@ import {
     type ConnectInitUIEventHooksDep,
     type GetAllowPrereleaseDep,
     type GetBinFilesBaseUrlDep,
+    type GetDeviceAuthenticityCheckSettingsDep,
     type GetIsWindowVisibleDep,
     type LockDeviceDep,
     type ReloadAppDep,
@@ -45,6 +46,7 @@ export type CommonServices = SuiteSyncDep &
     ConnectInitUIEventHooksDep &
     GetAllowPrereleaseDep &
     GetBinFilesBaseUrlDep &
+    GetDeviceAuthenticityCheckSettingsDep &
     ShouldRetryFirmwareRevisionCheckErrorDep &
     RerunFwAuthenticityChecksCallDep &
     GetIsWindowVisibleDep &

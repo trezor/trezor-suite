@@ -1,18 +1,19 @@
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    type AuthenticityChecksRootState,
-    selectIsDeviceAuthenticityCheckSupportedAndEnabled,
-    selectShouldCheckDeviceAuthenticity,
-    selectShouldRouterAppSkipInteractiveDeviceChecks,
-} from '@suite/authenticity-checks';
+import { selectShouldRouterAppSkipInteractiveDeviceChecks } from '@suite/authenticity-checks';
 import { selectSelectedDevice } from '@suite-common/device';
+import {
+    getIsDeviceAuthenticityCheckSupportedAndEnabled,
+    selectShouldCheckDeviceAuthenticity,
+} from '@suite-common/device-authenticity';
 import {
     type PersistentDeviceDataRootState,
     selectDeviceNeedsManualCheck,
 } from '@suite-common/persistent-device-data';
+import { injectGetDeviceAuthenticityCheckSettings } from '@suite-common/suite-types';
 import { Box, Card } from '@trezor/components';
+import { useGetter } from '@trezor/dependency-injection';
 
 import { DeviceAuthenticityCheck } from './DeviceAuthenticityCheck';
 import { ManualDeviceCheck } from './ManualDeviceCheck';
@@ -24,17 +25,19 @@ import { ManualDeviceCheck } from './ManualDeviceCheck';
  */
 export const useInteractiveDeviceChecksFlowState = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
+    const deviceAuthenticityCheckSettings = useGetter(injectGetDeviceAuthenticityCheckSettings);
     // `selectDeviceNeedsInteractiveDeviceChecks` is not used, because we need granular information about MDC | DAC.
     const shouldDoManualDeviceCheck = useSelector((state: PersistentDeviceDataRootState) =>
         selectDeviceNeedsManualCheck(state, selectedDevice),
     );
-    const shouldDoDeviceAuthenticityCheck = useSelector((state: AuthenticityChecksRootState) =>
-        selectShouldCheckDeviceAuthenticity(state, selectedDevice),
+    const shouldDoDeviceAuthenticityCheck = useSelector((state: PersistentDeviceDataRootState) =>
+        selectShouldCheckDeviceAuthenticity(state, selectedDevice, deviceAuthenticityCheckSettings),
     );
-    const isDeviceReadyAndDeviceAuthenticityCheckEnabled = useSelector(
-        (state: AuthenticityChecksRootState) =>
-            selectIsDeviceAuthenticityCheckSupportedAndEnabled(state, selectedDevice),
-    );
+    const isDeviceReadyAndDeviceAuthenticityCheckEnabled =
+        getIsDeviceAuthenticityCheckSupportedAndEnabled({
+            device: selectedDevice,
+            ...deviceAuthenticityCheckSettings,
+        });
     const isSkippedRoute = useSelector(selectShouldRouterAppSkipInteractiveDeviceChecks);
 
     const isAnyCheckRequired = shouldDoManualDeviceCheck || shouldDoDeviceAuthenticityCheck;
@@ -88,11 +91,12 @@ export const InteractiveDeviceChecksFlow = ({
     setIsAuthenticityCheckStepActive,
 }: InteractiveDeviceChecksFlowProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const shouldDoManualDeviceCheck = useSelector((state: AuthenticityChecksRootState) =>
+    const deviceAuthenticityCheckSettings = useGetter(injectGetDeviceAuthenticityCheckSettings);
+    const shouldDoManualDeviceCheck = useSelector((state: PersistentDeviceDataRootState) =>
         selectDeviceNeedsManualCheck(state, selectedDevice),
     );
-    const shouldAuthenticateSelectedDevice = useSelector((state: AuthenticityChecksRootState) =>
-        selectShouldCheckDeviceAuthenticity(state, selectedDevice),
+    const shouldAuthenticateSelectedDevice = useSelector((state: PersistentDeviceDataRootState) =>
+        selectShouldCheckDeviceAuthenticity(state, selectedDevice, deviceAuthenticityCheckSettings),
     );
 
     /*

@@ -17,7 +17,12 @@ import {
     type SuiteRouterHistoryDep,
     createSuiteRouterHistory,
 } from '@suite/router';
-import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
+import {
+    selectDebugSettings,
+    selectDeviceAuthenticityCheckSettings,
+    selectLanguage,
+    selectTradeServerEnvironment,
+} from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
@@ -258,6 +263,10 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         shouldRetryFirmwareRevisionCheckError: toGetter(
             deps.getState,
             selectShouldRetryFirmwareRevisionCheckError,
+        ),
+        getDeviceAuthenticityCheckSettings: toGetter(
+            deps.getState,
+            selectDeviceAuthenticityCheckSettings,
         ),
         rerunFwAuthenticityChecksCall: () => {
             deps.dispatch(rerunFwAuthenticityChecksThunk());
