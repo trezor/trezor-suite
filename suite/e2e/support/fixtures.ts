@@ -45,6 +45,7 @@ import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { EarnStakingDashboardSection } from './pageObjects/staking/earnStakingDashboardSection';
 import { StakingSection } from './pageObjects/staking/stakingSection';
 import { TronStakingSection } from './pageObjects/staking/tronStakingSection';
+import { StellarTokensSection } from './pageObjects/stellarTokensSection';
 import { ToastSection } from './pageObjects/toastSection';
 import { FeeSection } from './pageObjects/trading/feeSection';
 import { TradingPage } from './pageObjects/trading/tradingPage';
@@ -88,6 +89,7 @@ type Fixtures = {
     connectSelectAccountModal: ConnectSelectAccountModal;
     stakingSection: StakingSection;
     earnStakingDashboardSection: EarnStakingDashboardSection;
+    stellarTokensSection: StellarTokensSection;
     tronStakingSection: TronStakingSection;
     tronEarnApiMock: TronEarnApiMock;
     earnStakingApiMock: EarnStakingApiMock;
@@ -219,6 +221,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     earnStakingDashboardSection: async ({ page }, use) => {
         await use(new EarnStakingDashboardSection(page));
+    },
+    stellarTokensSection: async ({ page, walletPage }, use) => {
+        await use(new StellarTokensSection(page, walletPage));
     },
     tronStakingSection: async ({ page }, use) => {
         await use(new TronStakingSection(page));
