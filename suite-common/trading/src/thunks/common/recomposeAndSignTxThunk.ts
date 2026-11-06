@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { createThunk } from '@trezor/redux-utils';
 import { type Ok, exhaustive } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import {
     type ComposeTradingTransactionThunkProps,
@@ -48,6 +48,12 @@ export type RecomposeAndSignTxThunkProps = ComposeTradingTransactionThunkProps &
     }: TradingSignAndPushSendFormTransactionProps) => Promise<TradingFulfillValue>;
 };
 
+const SIGNING_CANCEL_ERROR_CODES = [
+    'Failure_ActionCancelled',
+    'Failure_PinCancelled',
+    'Method_Cancel',
+] as const;
+
 const getSignAndPushRejectionType = (
     signAndPushError: TradingSignAndPushError,
 ): TradingError['type'] => {
@@ -56,9 +62,13 @@ const getSignAndPushRejectionType = (
             return 'sign-cancelled';
         case 'sign-transaction-timeout':
             return 'sign-transaction-timeout';
+        case 'sign-transaction-failed':
+            return signAndPushError.errorCode !== undefined &&
+                isArrayMember(signAndPushError.errorCode, SIGNING_CANCEL_ERROR_CODES)
+                ? 'sign-cancelled'
+                : 'sign-tx-error';
         case 'fee-levels-compose-failed':
         case 'enhance-transaction-failed':
-        case 'sign-transaction-failed':
         case 'push-transaction-failed':
         case 'push-transaction-pending-conflict':
             return 'sign-tx-error';
