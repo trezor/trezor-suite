@@ -19,8 +19,8 @@ import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectIsBiometricsEnabled } from '@suite-native/biometrics';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
-import { selectIsAppReady } from '@suite-native/state';
 import { useUserColorScheme } from '@suite-native/theme';
+import { selectIsAppReady } from '@suite-native-app/state';
 import { useServices } from '@trezor/dependency-injection';
 
 export const useReportAppInitToAnalytics = () => {

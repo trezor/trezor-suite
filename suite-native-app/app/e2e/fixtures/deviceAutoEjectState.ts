@@ -1,4 +1,4 @@
-import { PreloadedState } from '@suite-native/state';
+import { PreloadedState } from '@suite-native-app/state';
 
 /**
  *  State fragment that ensures that the device auto eject is enabled.

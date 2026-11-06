@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/state",
+    "name": "@suite-native-app/state",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

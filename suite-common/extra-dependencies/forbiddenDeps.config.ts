@@ -2,7 +2,7 @@ import type { ForbiddenDepsConfig } from '@trezor/requirements';
 
 export const forbiddenDepsConfig: ForbiddenDepsConfig = {
     'allowed-only-in': {
-        packages: ['@trezor/suite', '@suite-native/state'],
+        packages: ['@trezor/suite', '@suite-native-app/state'],
         reason:
             'The global dependency graph may be imported only by desktop and Native application ' +
             'wiring.',

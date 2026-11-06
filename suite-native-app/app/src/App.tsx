@@ -18,12 +18,13 @@ import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { reportStartupAppLoaded } from '@suite-native/sentry';
+import { type PostOnboardingInitDep } from '@suite-native/services';
 import {
     type NativeReduxStoreDep,
     type StorePersistorDep,
     StoreProvider,
     selectIsAppReady,
-} from '@suite-native/state';
+} from '@suite-native-app/state';
 
 import { BannersRenderer } from './BannersRenderer';
 import { ModalsRenderer } from './ModalsRenderer';
@@ -65,7 +66,7 @@ const AppComponent = () => {
 };
 
 type PureAppProps = {
-    services: QueryClientDep & NativeReduxStoreDep & StorePersistorDep;
+    services: PostOnboardingInitDep & QueryClientDep & NativeReduxStoreDep & StorePersistorDep;
 };
 
 export const PureApp = ({ services }: PureAppProps) => (

@@ -82,7 +82,7 @@ names from manifests, not paths.
   app dependencies into reusable libraries.
 
 Keep dependencies acyclic. Web/desktop Redux assembly is in `packages/suite/src/reducers/store.ts`;
-native assembly is in `suite-native/state/src/createReduxStore.ts`. Shared slices live in
+native assembly is in `suite-native-app/state/src/createReduxStore.ts`. Shared slices live in
 `suite-common/wallet-core`; follow the Redux skill's state and dependency contracts.
 IndexedDB storage and migrations live in `packages/suite/src/storage`.
 Project gates are in `.github/workflows/check-code-validation.yml`; target prerequisites are in `nx.json`.
