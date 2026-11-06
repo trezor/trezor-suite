@@ -22,6 +22,7 @@ import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -86,6 +87,7 @@ describe.skip('Suite Sync - Labelling [@androidOnly @T3T1]', () => {
         evoluClient = new NativeEvoluClient();
         await prepareTrezorEmulator({ seed: 'mnemonic_immune' });
         await openApp({ args: { preloadedState } });
+        await onDeviceOnboarding.passInitializedDeviceChecks();
         logToRelayDocker(`APP RESTARTED: ${jestExpect.getState().currentTestName!}`);
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
     }, 240_000);

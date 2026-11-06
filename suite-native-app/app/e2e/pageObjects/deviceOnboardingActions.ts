@@ -133,6 +133,24 @@ class DeviceOnboardingActions {
         await element(by.id('@deviceOnboarding/DeviceVisualCheckScreen/confirmBtn')).tap();
     }
 
+    /**
+     * An initialized device which hasn't passed the interactive device checks yet is sent to the device onboarding
+     * flow on connection: Device Visual Check, then Device Authenticity Check (if supported and enabled).
+     */
+    async passInitializedDeviceChecks() {
+        await this.waitForDeviceVisualCheck();
+        await this.dismissTheDeviceVisualCheck();
+
+        const isDeviceAuthenticityCheckDisplayed = await isElementVisible(
+            by.id('@screen/DeviceAuthenticity'),
+        );
+        if (isDeviceAuthenticityCheckDisplayed) {
+            await TrezorUserEnvLink.pressYes();
+            await this.waitForDeviceAuthenticitySuccess();
+            await this.dismissDeviceAuthenticitySuccess();
+        }
+    }
+
     async skipFirmwareUpdate() {
         const skipFirmwareUpdateButton = element(by.id('@firmware/skip-button'));
         await waitForVisible(skipFirmwareUpdateButton);
