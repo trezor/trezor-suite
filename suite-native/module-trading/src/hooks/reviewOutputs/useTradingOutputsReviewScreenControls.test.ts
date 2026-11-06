@@ -297,6 +297,51 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockShowAlert).not.toHaveBeenCalled();
         });
 
+        it.each([
+            { tradingType: 'exchange', previewRoute: TradingStackRoutes.TradingExchangePreview },
+            { tradingType: 'sell', previewRoute: TradingStackRoutes.TradingSellPreview },
+        ] as const)(
+            'should return to the $tradingType preview without an alert when signing is cancelled',
+            async ({ tradingType, previewRoute }) => {
+                store = createTestStore(tradingType);
+                await renderUseTradingOutputsReviewScreenControls({ tradingType });
+                const { onError } = mockSignAndSendTransaction.mock.calls[0]![0];
+
+                await act(() => {
+                    onError({
+                        type: 'sign-cancelled',
+                        code: 'cannot-send-transaction',
+                    });
+                });
+
+                expect(mockShowAlert).not.toHaveBeenCalled();
+                expect(mockPopTo).toHaveBeenCalledTimes(1);
+                expect(mockPopTo.mock.calls[0][0]).toBe(previewRoute);
+                expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'cancel');
+                expect(mockCloseTradingFlow).not.toHaveBeenCalled();
+                expect(store.getState().wallet.trading.formResetRequestedFor).toBeUndefined();
+            },
+        );
+
+        it('should ignore a cancel of a signing attempt the user already left', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
+            const { onError } = mockSignAndSendTransaction.mock.calls[0]![0];
+
+            await act(() => {
+                mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0]();
+            });
+            await act(() => {
+                onError({
+                    type: 'sign-cancelled',
+                    code: 'cannot-send-transaction',
+                });
+            });
+
+            expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
+            expect(mockPopTo).not.toHaveBeenCalled();
+            expect(mockReportToAnalytics).toHaveBeenCalledTimes(2);
+        });
+
         it('should display alert describing the thunk error', async () => {
             await renderUseTradingOutputsReviewScreenControls();
 
