@@ -153,6 +153,27 @@ describe(fetchFirmwareReleaseConfig.name, () => {
         expect(result).toBeUndefined();
     });
 
+    it('returns undefined for a signed config when the JWS library fails to load, but accepts an unsigned one where optional', async () => {
+        await jest
+            .isolateModulesAsync(async () => {
+                jest.doMock('jws', () => {
+                    throw new Error('Loading chunk failed');
+                });
+                const { fetchFirmwareReleaseConfig: fetchWithoutJws } =
+                    await import('./firmwareReleaseConfigUtils');
+
+                mockFetchJsonOnce({ jws: signForChannel('production', REMOTE_CONFIG) });
+                await expect(fetchWithoutJws('production')).resolves.toBeUndefined();
+
+                mockFetchJsonOnce(REMOTE_CONFIG);
+                await expect(fetchWithoutJws('localhost-unsigned')).resolves.toEqual(REMOTE_CONFIG);
+            })
+            .finally(() => {
+                // The mock factory outlives the isolated registry, and the other tests load `jws` lazily.
+                jest.dontMock('jws');
+            });
+    });
+
     it.each(ALL_CHANNELS)(
         'verifies channel %s against the appropriate codesign key',
         async channel => {
