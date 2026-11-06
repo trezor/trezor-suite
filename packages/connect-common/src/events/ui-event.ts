@@ -137,6 +137,7 @@ export interface UiEventBundleProgress<R> {
         total: number;
         progress: number;
         response: R;
+        /** @deprecated, never sent */
         error?: string;
     };
 }

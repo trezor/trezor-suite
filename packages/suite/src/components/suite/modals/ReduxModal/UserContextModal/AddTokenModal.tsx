@@ -42,7 +42,6 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 descriptor: acc.descriptor,
                 details: 'tokenBalances',
                 contractFilter: contractAddress,
-                suppressBackupWarning: true,
                 protocols: acc.networkType === 'ethereum' ? ['erc4626'] : undefined,
             });
 

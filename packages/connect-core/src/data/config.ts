@@ -10,15 +10,6 @@ export const config: Config = {
     webusb: TREZOR_USB_DESCRIPTORS,
     supportedFirmware: [
         {
-            coin: ['xrp', 'txrp'],
-            methods: ['getAccountInfo'],
-            min: { T1B1: '0', T2T1: '2.1.0' },
-            max: undefined, // NOTE: max field is not used anywhere at the moment, it is here for type compatibility
-            comment: [
-                "Since firmware 2.1.0 there is a new protobuf field 'destination_tag' in RippleSignTx",
-            ],
-        },
-        {
             coin: ['eth', 'tsep', 'thod'],
             min: { T1B1: '1.8.0', T2T1: '2.1.0' },
             comment: ['There were protobuf backwards incompatible changes.'],

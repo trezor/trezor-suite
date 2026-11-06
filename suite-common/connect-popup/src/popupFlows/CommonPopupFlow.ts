@@ -60,6 +60,12 @@ export type PopupFlowAnswer = Awaited<CallMethodAnyResponse>;
 
 export type MaybePromise<T> = T | Promise<T>;
 
+export const getPayloadOrThrow = <T>(response: Ok<T> | Err<SerializedError>) => {
+    if (!response.success) throw response.error;
+
+    return response.payload;
+};
+
 export type PopupFlow = {
     run(): Promise<PopupFlowAnswer>;
     cleanup(): void;
