@@ -73,8 +73,8 @@
 
 /packages/dom-utils @trezor/suite-growth
 
-/packages/device-authenticity/src/config/deviceAuthenticityConfig.ts @tsusanka @MiroslavProchazka
-/packages/device-authenticity/src/config/deviceAuthenticityBlacklistConfig.ts @tsusanka @MiroslavProchazka
+/packages/device-authenticity/src/config/deviceAuthenticityConfig.ts @tsusanka @MiroslavProchazka @pavelmario
+/packages/device-authenticity/src/config/deviceAuthenticityBlacklistConfig.ts @tsusanka @MiroslavProchazka @pavelmario
 
 /packages/schema-utils @martykan
 
@@ -121,7 +121,7 @@
 /suite-common/analytics/src/constants.ts @jvaclavik @kolomaznikt
 /suite-common/analytics/src/types.ts @jvaclavik @kolomaznikt
 /suite-common/graph @trezor/suite-mobile
-/suite-common/message-system @tomasklim @matejkriz @MiroslavProchazka @pavelmario
+/suite-common/message-system @tomasklim @matejkriz @pavelmario
 /suite-common/token-definitions @tomasklim
 
 # Wallet
