@@ -1,4 +1,5 @@
-import { type TokenMetadataSource } from '@suite-native/tokens';
+import { type TokenMetadataSource } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 
 import { type TradingHistoryDetailAsset } from '../hooks/useTradingHistoryDetailInfo';
 
@@ -12,7 +13,7 @@ export const tradingHistoryAssetsToTokenMetadataSources = (
                       networkSymbol: asset.networkSymbol,
                       tokens: [
                           {
-                              contract: asset.contractAddress,
+                              contract: toTokenAddress(asset.contractAddress),
                               name: asset.name,
                               symbol: asset.displaySymbol,
                           },

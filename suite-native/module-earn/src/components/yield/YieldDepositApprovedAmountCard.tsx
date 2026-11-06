@@ -1,6 +1,5 @@
-import { type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenAddress } from '@suite-common/wallet-types';
 import { Card, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { ExactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';

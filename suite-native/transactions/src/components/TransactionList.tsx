@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
@@ -27,7 +29,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import {
     type TokensRootState,
     type TypedTokenTransfer,
@@ -476,7 +477,12 @@ export const TransactionList = ({
             sources={[
                 {
                     networkSymbol: account.symbol,
-                    tokens: transactions.flatMap(transaction => transaction.tokens ?? []),
+                    tokens: transactions.flatMap(transaction =>
+                        (transaction.tokens ?? []).map(token => ({
+                            ...token,
+                            contract: toTokenAddress(token.contract),
+                        })),
+                    ),
                 },
             ]}
         >

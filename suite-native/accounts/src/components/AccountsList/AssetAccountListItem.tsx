@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     getAccountCryptoBalanceWithStaking,
@@ -27,7 +27,6 @@ import { AccountsListItemBase } from './AccountsListItemBase';
 type AssetAccountListItemProps = {
     account: Account;
     contractAddress?: TokenAddress;
-    tokenSymbol?: TokenSymbol;
     onPress: OnSelectAccount;
 };
 
@@ -40,7 +39,6 @@ type AssetAccountListItemProps = {
 export const AssetAccountListItem = ({
     account,
     contractAddress,
-    tokenSymbol,
     onPress,
 }: AssetAccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
@@ -76,7 +74,7 @@ export const AssetAccountListItem = ({
     const cryptoValue = contractAddress ? (
         <CompactTokenAmountFormatter
             value={asDecimalTokenAmount(cryptoBalance)}
-            networkSymbol={symbol}
+            networkSymbol={account.symbol}
             contractAddress={contractAddress}
             numberOfLines={1}
             adjustsFontSizeToFit

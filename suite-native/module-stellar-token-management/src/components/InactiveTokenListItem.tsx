@@ -1,5 +1,5 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, PressableOpacity } from '@suite-native/atoms';
 import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';

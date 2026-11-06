@@ -14,7 +14,7 @@ const createPreloadedState = ({
     knownContracts: TokenAddress[];
     rates: Record<string, { rate: number }>;
 }) => ({
-    wallet: { fiat: { current: rates, lastWeek: {} } },
+    wallet: { accounts: [], fiat: { current: rates, lastWeek: {} } },
     tokenDefinitions: { [ETH]: { coin: { data: knownContracts, hide: [], show: [] } } },
 });
 
@@ -45,7 +45,7 @@ describe('TokenToFiatAmountFormatter', () => {
     it('renders a placeholder before the token definitions load', async () => {
         await renderWithStoreProvider(
             <TokenToFiatAmountFormatter symbol={ETH} contract={USDC_CONTRACT} value="720" />,
-            { preloadedState: { wallet: { fiat: { current: {}, lastWeek: {} } } } },
+            { preloadedState: { wallet: { accounts: [], fiat: { current: {}, lastWeek: {} } } } },
         );
 
         expect(screen.toJSON()).not.toBeNull();

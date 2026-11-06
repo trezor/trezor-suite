@@ -14,6 +14,7 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { getNetwork, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -22,7 +23,7 @@ import {
     selectAccountHiddenTokens,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,
@@ -51,9 +52,9 @@ import {
     WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 import { isDevUtilsEnabledAtom } from '@suite-native/storage';
-import { TokenIcon } from '@suite-native/tokens';
 import {
     type TokensRootState as NativeTokensRootState,
+    TokenIcon,
     TokenName,
     selectAccountTokenInfo,
     selectIsUnrecognizedToken,

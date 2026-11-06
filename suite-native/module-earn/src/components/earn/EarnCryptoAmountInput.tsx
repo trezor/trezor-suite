@@ -3,6 +3,7 @@ import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import { useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
@@ -11,7 +12,7 @@ import { Input, type InputType, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
-import { TokenSymbol, useTokenMetadata } from '@suite-native/tokens';
+import { TokenSymbol } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 

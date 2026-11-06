@@ -1,8 +1,7 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerInline, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
-import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldDepositRevokeDetailsCard } from '../../components/yield/YieldDepositRevokeDetailsCard';

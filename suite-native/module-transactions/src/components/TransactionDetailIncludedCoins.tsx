@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/token';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -15,7 +16,6 @@ import {
 import { TransactionIdFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-native/tokens';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles-native';
 

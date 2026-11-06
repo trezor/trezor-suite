@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/token';
 import { type YieldClaimAccountItem } from '@suite-common/wallet-core';
 import {
     BottomSheetModal,
@@ -9,7 +10,6 @@ import {
     Divider,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-native/tokens';
 
 import { YieldClaimRewardsAccountCard } from './YieldClaimRewardsAccountCard';
 

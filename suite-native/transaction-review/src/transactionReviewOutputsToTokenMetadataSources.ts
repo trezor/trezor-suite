@@ -1,6 +1,7 @@
+import { type TokenMetadata, type TokenMetadataSource } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
-import { type TokenMetadata, type TokenMetadataSource } from '@suite-native/tokens';
 
 export const transactionReviewOutputsToTokenMetadataSources = (
     networkSymbol: NetworkSymbol | undefined,
@@ -13,12 +14,14 @@ export const transactionReviewOutputsToTokenMetadataSources = (
                   tokens: outputs.flatMap<TokenMetadata>(output => {
                       if (output.type === 'rewards') {
                           return output.rewards.map(reward => ({
-                              contract: reward.tokenAddress,
+                              contract: toTokenAddress(reward.tokenAddress),
                               symbol: reward.tokenSymbol,
                           }));
                       }
 
-                      return output.token ? [output.token] : [];
+                      return output.token
+                          ? [{ ...output.token, contract: toTokenAddress(output.token.contract) }]
+                          : [];
                   }),
               },
           ]

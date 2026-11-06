@@ -1,5 +1,6 @@
+import { type TokenMetadataSource } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { cryptoIdToNetworkSymbol, isSendingEvmNativeToken } from '@suite-common/trading';
-import { type TokenMetadataSource } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 export const tradeableAssetsToTokenMetadataSources = (
@@ -14,7 +15,7 @@ export const tradeableAssetsToTokenMetadataSources = (
                       networkSymbol,
                       tokens: [
                           {
-                              contract: asset.contractAddress,
+                              contract: toTokenAddress(asset.contractAddress),
                               name: asset.name,
                               symbol: asset.symbol,
                               decimals: asset.decimals,

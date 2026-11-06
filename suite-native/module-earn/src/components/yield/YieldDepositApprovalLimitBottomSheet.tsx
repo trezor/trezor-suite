@@ -1,3 +1,8 @@
+import {
+    TokenMetadataProvider,
+    useTokenMetadata,
+    useTokenMetadataSources,
+} from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AllowanceLimitType } from '@suite-common/wallet-types';
@@ -9,11 +14,6 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    TokenMetadataProvider,
-    useTokenMetadata,
-    useTokenMetadataSources,
-} from '@suite-native/tokens';
 
 import { YieldDepositApprovalLimitCard } from './YieldDepositApprovalLimitCard';
 

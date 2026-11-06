@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type EarnListRootState,
     selectYieldClaimListItems,
@@ -19,7 +20,6 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { YieldClaimRewardsSummaryCard } from './YieldClaimRewardsSummaryCard';
 import { YieldPositionsBottomSheet } from './YieldPositionsBottomSheet';

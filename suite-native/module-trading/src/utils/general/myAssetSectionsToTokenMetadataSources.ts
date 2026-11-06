@@ -1,4 +1,5 @@
-import { type TokenMetadataSource } from '@suite-native/tokens';
+import { type TokenMetadataSource } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 
 import { type MyAssetsSection } from '../../hooks/general/useMyAssetsFilteredData';
 
@@ -15,7 +16,7 @@ export const myAssetSectionsToTokenMetadataSources = (
             asset.contract
                 ? [
                       {
-                          contract: asset.contract,
+                          contract: toTokenAddress(asset.contract),
                           name: asset.name,
                           symbol: asset.tokenSymbol ?? undefined,
                           decimals: asset.decimals,

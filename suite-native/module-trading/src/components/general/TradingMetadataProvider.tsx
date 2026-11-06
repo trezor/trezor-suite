@@ -1,9 +1,10 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import { selectTradingCoins } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { TokenMetadataProvider, accountsToTokenMetadataSources } from '@suite-native/tokens';
+import { accountsToTokenMetadataSources } from '@suite-native/tokens';
 
 import { invityCoinsToTokenMetadataSources } from '../../utils/general/invityCoinsToTokenMetadataSources';
 

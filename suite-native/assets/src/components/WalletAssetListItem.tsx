@@ -8,11 +8,13 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,
     selectWalletAssetSymbol,
+    selectWalletAssetTokenDecimals,
+    selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type WalletAssetKey, selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type WalletAssetKey, selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { AssetYieldRateBadge } from '@suite-native/earn';
@@ -51,6 +53,12 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
         selectWalletAssetContractAddress(state, assetKey),
     );
 
+    const tokenSymbol = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetTokenSymbol(state, assetKey),
+    );
+    const tokenDecimals = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetTokenDecimals(state, assetKey),
+    );
     const amount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetAmount(state, assetKey),
     );
@@ -96,7 +104,19 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
                     <HStack flex={1} alignItems="center" spacing="sp8">
                         <Box flexShrink={1}>
-                            <TokenSymbol isTruncated networkSymbol={symbol} tokenContract={contractAddress} variant="body-sm" numberOfLines={1} />
+                            {contractAddress ? (
+                                <TokenSymbol
+                                    isTruncated
+                                    networkSymbol={symbol}
+                                    contractAddress={contractAddress}
+                                    variant="body-sm"
+                                    numberOfLines={1}
+                                />
+                            ) : (
+                                <Text variant="body-sm" numberOfLines={1}>
+                                    {getNetworkDisplaySymbol(symbol)}
+                                </Text>
+                            )}
                         </Box>
                         <AssetYieldRateBadge
                             networkSymbol={symbol}

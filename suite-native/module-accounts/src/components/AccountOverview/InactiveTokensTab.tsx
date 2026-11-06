@@ -6,12 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { FlashList } from '@shopify/flash-list';
 
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type StellarTokenInfo,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type AccountKey, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Loader, SearchInput, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -26,7 +25,6 @@ import {
     type StackNavigationProps,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -218,7 +216,19 @@ export const InactiveTokensTab = ({
 
     return (
         <TokenMetadataProvider
-            sources={networkSymbol ? [{ networkSymbol, tokens: inactiveTokens }] : []}
+            sources={
+                networkSymbol
+                    ? [
+                          {
+                              networkSymbol,
+                              tokens: inactiveTokens.map(token => ({
+                                  ...token,
+                                  contract: toTokenAddress(token.contract),
+                              })),
+                          },
+                      ]
+                    : []
+            }
         >
             {content}
         </TokenMetadataProvider>

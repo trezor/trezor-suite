@@ -2,6 +2,7 @@ import { type RefObject } from 'react';
 import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
@@ -11,7 +12,6 @@ import { Input, type InputType, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
-import { useTokenMetadata } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import { FIAT_INPUT_MAX_LENGTH } from '../../constants';

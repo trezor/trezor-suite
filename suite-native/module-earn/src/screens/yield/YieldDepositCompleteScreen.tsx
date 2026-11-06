@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type YieldRootState,
     selectYieldSessionByFlowKey,
@@ -19,7 +20,6 @@ import {
     useNavigateToInitialScreen,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

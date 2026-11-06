@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/token';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,
@@ -12,7 +13,6 @@ import {
 import { ClipboardCopyMenu } from '@suite-native/clipboard';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

@@ -1,6 +1,5 @@
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenAddress } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -36,7 +37,6 @@ import {
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';

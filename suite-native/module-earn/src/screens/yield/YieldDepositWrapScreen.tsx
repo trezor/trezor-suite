@@ -1,13 +1,13 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
-import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { AssetAmountInputCard } from '../../components/earn/AssetAmountInputCard';
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { WrappedNativeFeeReserveBanner } from '../../components/earn/WrappedNativeFeeReserveBanner';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';

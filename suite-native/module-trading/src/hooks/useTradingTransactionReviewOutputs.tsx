@@ -1,13 +1,9 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type TokenAddress,
-    type TransactionReviewStatefulOutput,
-    toTokenAddress,
-} from '@suite-common/wallet-types';
+import { type AccountKey, type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {

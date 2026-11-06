@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type EarnListRootState,
     selectYieldClaimAccountItems,
@@ -25,7 +26,6 @@ import { useMessageSystemYield } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';

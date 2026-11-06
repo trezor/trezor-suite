@@ -1,17 +1,18 @@
 import { useSelector } from 'react-redux';
 
+import { useTokenMetadata } from '@suite-common/token';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     ExactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
-import { TokenIcon, useTokenMetadata } from '@suite-native/tokens';
+import { TokenIcon } from '@suite-native/tokens';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 

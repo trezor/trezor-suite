@@ -2,6 +2,7 @@ import { type ReactNode, createContext, useContext, useState } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
@@ -17,7 +18,6 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type TxKeyPath } from '@suite-native/intl';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { transactionReviewOutputsToTokenMetadataSources } from '../transactionReviewOutputsToTokenMetadataSources';
 

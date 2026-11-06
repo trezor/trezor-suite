@@ -1,5 +1,6 @@
+import { type TokenMetadataSource } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type YieldClaimAccountItem } from '@suite-common/wallet-core';
-import { type TokenMetadataSource } from '@suite-native/tokens';
 
 export const yieldClaimAccountItemsToTokenMetadataSources = (
     items: readonly YieldClaimAccountItem[],
@@ -8,6 +9,6 @@ export const yieldClaimAccountItemsToTokenMetadataSources = (
         networkSymbol: item.summary.networkSymbol,
         tokens: item.summary.tokens.map(token => ({
             ...token,
-            contract: token.contractAddress,
+            contract: toTokenAddress(token.contractAddress),
         })),
     }));

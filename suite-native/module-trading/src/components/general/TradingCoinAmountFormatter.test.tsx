@@ -1,4 +1,4 @@
-import type { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';

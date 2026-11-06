@@ -2,17 +2,12 @@ import { type RefObject } from 'react';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    TokenIcon,
-    TokenMetadataProvider,
-    TokenName,
-    TokenSymbol,
-    useTokenMetadataSources,
-} from '@suite-native/tokens';
+import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
 
 type TokenDetailBottomSheetProps = {
     bottomSheetRef: RefObject<BottomSheetModalMethods | null>;

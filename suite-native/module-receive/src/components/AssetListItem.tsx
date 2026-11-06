@@ -1,15 +1,16 @@
 import React from 'react';
 
-import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
-import { toTokenAddress } from '@suite-common/wallet-types';
+import { type GlobalReceiveAssetListItem } from '@suite-common/receive';
+import { toTokenAddress } from '@suite-common/tokens';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
+    CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/tokens';
+import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type PositionedAssetListItem = GlobalReceiveAssetListItem & {
@@ -65,11 +66,31 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                         size="medium"
                     />
                 }
-                title={title}
+                title={
+                    asset.isNativeToken ? (
+                        title
+                    ) : (
+                        <TokenName
+                            isInline
+                            networkSymbol={asset.networkSymbol}
+                            contractAddress={toTokenAddress(asset.contractAddress)}
+                        />
+                    )
+                }
                 badges={
                     <HStack alignItems="center">
                         <Text variant="body-sm" priority="secondary">
-                            {asset.displaySymbol}
+                            {asset.isNativeToken ? (
+                                asset.displaySymbol
+                            ) : (
+                                <TokenSymbol
+                                    isInline
+                                    networkSymbol={asset.networkSymbol}
+                                    contractAddress={toTokenAddress(asset.contractAddress)}
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                />
+                            )}
                         </Text>
                         {title != asset.networkName && <Badge label={asset.networkName} />}
                     </HStack>
@@ -85,7 +106,14 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                 }
                 secondaryValue={
                     balance &&
-                    asset.contractAddress && (
+                    (asset.isNativeToken ? (
+                        <CompactCryptoAmountFormatter
+                            value={balance.cryptoAmount}
+                            symbol={asset.networkSymbol}
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                        />
+                    ) : (
                         <CompactTokenAmountFormatter
                             networkSymbol={asset.networkSymbol}
                             contractAddress={toTokenAddress(asset.contractAddress)}
@@ -93,7 +121,7 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                             numberOfLines={1}
                             adjustsFontSizeToFit
                         />
-                    )
+                    ))
                 }
                 isFirst={isFirst}
                 isLast={isLast}

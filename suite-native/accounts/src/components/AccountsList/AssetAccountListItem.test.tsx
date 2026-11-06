@@ -1,4 +1,5 @@
-import { type TokenSymbol, toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -22,14 +23,22 @@ jest.mock('../AccountLabel', () => ({
     AccountLabel: () => null,
 }));
 
-const renderAssetAccountListItem = (account: Account, tokenSymbol?: TokenSymbol) =>
+const renderAssetAccountListItem = (account: Account) =>
     renderWithStoreProvider(
-        <AssetAccountListItem
-            account={account}
-            contractAddress={toTokenAddress(mockToken.contract)}
-            tokenSymbol={tokenSymbol}
-            onPress={jest.fn()}
-        />,
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens: [{ ...mockToken, contract: toTokenAddress(mockToken.contract) }],
+                },
+            ]}
+        >
+            <AssetAccountListItem
+                account={account}
+                contractAddress={toTokenAddress(mockToken.contract)}
+                onPress={jest.fn()}
+            />
+        </TokenMetadataProvider>,
         { preloadedState: { wallet: { accounts: [account] }, tokenDefinitions: {} } },
     );
 
@@ -45,7 +54,7 @@ describe('AssetAccountListItem', () => {
     it('shows zero with the given symbol for a token the account does not hold', async () => {
         const account = mockWalletAccount({ symbol: asNetworkSymbol('eth'), tokens: [] });
 
-        const { getByText } = await renderAssetAccountListItem(account, toTokenSymbol('USDC'));
+        const { getByText } = await renderAssetAccountListItem(account);
 
         expect(getByText('0 USDC')).toBeOnTheScreen();
     });

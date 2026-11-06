@@ -1,11 +1,11 @@
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type TextProps } from '@suite-native/atoms';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TokenName } from './TokenName';
 import { TokenSymbol } from './TokenSymbol';
 import { TokenUrlBlur } from './TokenUrlBlur';
-import { useTokenMetadata } from '../useTokenMetadata';
 
 type TokenLabelProps = Omit<TextProps, 'children'> & {
     networkSymbol: NetworkSymbol;

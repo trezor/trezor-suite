@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import type { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import {
     type TradingRootState,
     cryptoIdToNetworkAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
 } from '@suite-common/trading';
-import type { TextProps } from '@suite-native/atoms';
+import { type TextProps } from '@suite-native/atoms';
 import {
     ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,

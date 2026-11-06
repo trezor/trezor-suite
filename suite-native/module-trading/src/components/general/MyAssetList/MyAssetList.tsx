@@ -3,9 +3,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import { Box, EdgeFades, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { type MyAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

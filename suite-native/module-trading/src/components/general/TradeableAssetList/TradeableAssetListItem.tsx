@@ -1,5 +1,4 @@
 import { invariant } from '@suite-common/suite-utils';
-import { type TokenSymbol } from '@suite-common/tokens';
 import { type TradeableAssetBalance, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import {

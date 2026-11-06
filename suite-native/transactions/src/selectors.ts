@@ -6,7 +6,7 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress, type TokenSymbol, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -26,7 +26,6 @@ import {
     type AccountKey,
     type Timestamp,
     type WalletAccountTransaction,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { createWeakMapSelector } from '@trezor/redux-utils';

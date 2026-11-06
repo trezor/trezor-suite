@@ -11,6 +11,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite-common/token" },
         { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-config"

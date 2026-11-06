@@ -16,5 +16,14 @@ export const TokenMetadataProvider = ({ sources, children }: TokenMetadataProvid
         parentTokensByNetwork: parent.tokensByNetwork,
     });
 
-    return <TokenMetadataContext value={{ tokensByNetwork }}>{children}</TokenMetadataContext>;
+    return (
+        <TokenMetadataContext
+            value={{
+                sources: [...new Set([...sources, ...parent.sources])],
+                tokensByNetwork,
+            }}
+        >
+            {children}
+        </TokenMetadataContext>
+    );
 };

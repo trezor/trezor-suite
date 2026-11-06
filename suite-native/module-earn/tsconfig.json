@@ -35,6 +35,7 @@
         {
             "path": "../../suite-common/test-utils"
         },
+        { "path": "../../suite-common/token" },
         {
             "path": "../../suite-common/token-definitions"
         },

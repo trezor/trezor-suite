@@ -11,9 +11,9 @@ import { type BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { useFormatters } from '@suite-common/formatters';
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/token';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -33,12 +33,7 @@ import {
 } from '@suite-native/formatters';
 import { Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    TokenIcon,
-    TokenMetadataProvider,
-    TokenSymbol,
-    useTokenMetadataSources,
-} from '@suite-native/tokens';
+import { TokenIcon, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldPendingTransactionModalBackdrop } from './YieldPendingTransactionModalBackdrop';

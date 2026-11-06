@@ -1,5 +1,6 @@
+import { type TokenMetadataSource } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type ResolvedYieldFlowData } from '@suite-common/wallet-core';
-import { type TokenMetadataSource } from '@suite-native/tokens';
 
 export const yieldFlowDataToTokenMetadataSources = (
     data: ResolvedYieldFlowData,
@@ -15,7 +16,7 @@ export const yieldFlowDataToTokenMetadataSources = (
                           {
                               ...data.vault.token,
                               ...data.token,
-                              contract: data.token.contractAddress,
+                              contract: toTokenAddress(data.token.contractAddress),
                           },
                       ]
                     : []),
@@ -24,7 +25,7 @@ export const yieldFlowDataToTokenMetadataSources = (
                           {
                               ...data.vault.outputToken,
                               ...data.receiptToken,
-                              contract: data.receiptToken.contractAddress,
+                              contract: toTokenAddress(data.receiptToken.contractAddress),
                           },
                       ]
                     : []),

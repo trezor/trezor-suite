@@ -1,7 +1,8 @@
 import { type Coins, type CryptoId } from 'invity-api';
 
+import { type TokenMetadataSource } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { cryptoIdToNetworkAndContractAddress } from '@suite-common/trading';
-import { type TokenMetadataSource } from '@suite-native/tokens';
 
 export const invityCoinsToTokenMetadataSources = (
     coins: Coins | undefined,
@@ -18,7 +19,7 @@ export const invityCoinsToTokenMetadataSources = (
                       tokens: [
                           {
                               ...coin,
-                              contract: contractAddress,
+                              contract: toTokenAddress(contractAddress),
                               symbol: coin.symbol.toUpperCase(),
                           },
                       ],

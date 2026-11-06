@@ -2,8 +2,9 @@ import { Fragment, type ReactNode } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
 
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import { ClipboardCopyMenu } from '@suite-native/clipboard';
 import {
@@ -13,7 +14,6 @@ import {
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
-import { useTokenMetadata } from '@suite-native/tokens';
 import { type TransactionTranfer } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

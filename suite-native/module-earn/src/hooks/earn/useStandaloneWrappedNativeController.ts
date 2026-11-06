@@ -149,7 +149,7 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         wrappedTokenSymbol: wrappedNative.symbol,
         wrappedTokenContract: toTokenAddress(wrappedNative.address),
         wrappedTokenMetadata: {
-            contract: wrappedNative.address,
+            contract: toTokenAddress(wrappedNative.address),
             symbol: wrappedNative.symbol,
             decimals: wrappedNative.decimals,
         },

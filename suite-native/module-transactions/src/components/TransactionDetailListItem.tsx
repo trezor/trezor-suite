@@ -1,8 +1,8 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Blur, Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
-import { TokenIcon } from '@suite-native/tokens';
 import {
+    TokenIcon,
     TokenName,
     type TypedTokenTransfer,
     type WalletAccountTransaction,

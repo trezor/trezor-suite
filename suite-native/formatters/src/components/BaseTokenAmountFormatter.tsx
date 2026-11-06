@@ -1,8 +1,9 @@
 import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type TextProps } from '@suite-native/atoms';
-import { TokenSymbol, useTokenMetadata } from '@suite-native/tokens';
+import { TokenSymbol } from '@suite-native/tokens';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { type DiscreetMode, type FormatterProps } from '../types';

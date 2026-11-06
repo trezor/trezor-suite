@@ -1,6 +1,6 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import {
     btcAsset,
     ethAsset,

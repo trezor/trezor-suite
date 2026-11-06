@@ -25,6 +25,7 @@
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/token": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

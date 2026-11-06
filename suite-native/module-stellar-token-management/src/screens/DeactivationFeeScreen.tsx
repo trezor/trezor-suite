@@ -2,6 +2,8 @@ import { useCallback } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { deactivateStellarTokenThunk } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
@@ -20,7 +22,6 @@ import {
     type StellarManageTokenStackParamList,
     type StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 
 import { FeeOptionsSection } from '../components/FeeOptionsSection';
@@ -174,7 +175,14 @@ export const DeactivationFeeScreen = () => {
 
     return (
         <TokenMetadataProvider
-            sources={[{ networkSymbol: account.symbol, tokens: tokenInfo ? [tokenInfo] : [] }]}
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens: tokenInfo
+                        ? [{ ...tokenInfo, contract: toTokenAddress(tokenInfo.contract) }]
+                        : [],
+                },
+            ]}
         >
             {content}
         </TokenMetadataProvider>

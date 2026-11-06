@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import { Form, useWatch } from '@suite-native/forms';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import { useExchangeFormDefaultAssets } from '../../hooks/exchange/useExchangeFormDefaultAssets';

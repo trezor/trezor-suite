@@ -1,5 +1,5 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { Card } from '@suite-native/atoms';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { TradingHistoryDetailAssetRow } from './TradingHistoryDetailAssetRow';
 import { TradingHistoryDetailMevProtectionRow } from './TradingHistoryDetailMevProtectionRow';

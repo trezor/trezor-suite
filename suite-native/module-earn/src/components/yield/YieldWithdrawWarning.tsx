@@ -1,8 +1,8 @@
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useTokenMetadata } from '@suite-native/tokens';
 
 type YieldWithdrawWarningProps = {
     isAmountTooHigh: boolean;

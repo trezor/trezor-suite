@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     createTargets,
@@ -19,7 +21,6 @@ import {
     type TransactionDetailStackParamList,
     type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
     InstantStakeBanner,
@@ -131,7 +132,15 @@ export const TransactionDetailScreen = ({
 
     return (
         <TokenMetadataProvider
-            sources={[{ networkSymbol: transaction.symbol, tokens: transaction.tokens ?? [] }]}
+            sources={[
+                {
+                    networkSymbol: transaction.symbol,
+                    tokens: (transaction.tokens ?? []).map(token => ({
+                        ...token,
+                        contract: toTokenAddress(token.contract),
+                    })),
+                },
+            ]}
         >
             {content}
         </TokenMetadataProvider>

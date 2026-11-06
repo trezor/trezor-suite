@@ -1,6 +1,6 @@
-import { toTokenAddress } from '@suite-common/wallet-types';
+import { type TokenMetadata, TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
-import { type TokenMetadata, TokenMetadataProvider } from '@suite-native/tokens';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import {

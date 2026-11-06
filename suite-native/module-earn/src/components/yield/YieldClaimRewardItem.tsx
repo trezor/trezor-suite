@@ -1,9 +1,8 @@
-import { getNetwork } from '@suite-common/wallet-config';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { useTokenMetadata } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type StablecoinYieldAccountRewards } from '@suite-common/wallet-core';
-import { toTokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
-import { useTokenMetadata } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import { YieldClaimRewardRow } from './YieldClaimRewardRow';

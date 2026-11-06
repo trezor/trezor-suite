@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import type { TokenAddress } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountNetworkSymbol,
     selectAccountNetworkType,
 } from '@suite-common/wallet-core';
-import type { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';

@@ -1,12 +1,12 @@
 import { type ReactNode } from 'react';
 
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type NetworkSymbol,
     getNetwork,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
-import { toTokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon, TokenLabel } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';

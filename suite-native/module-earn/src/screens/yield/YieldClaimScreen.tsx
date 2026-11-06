@@ -6,6 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { getClaimFeeWarning } from '@suite-common/earn-stablecoin';
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -28,7 +29,7 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import { TokenIcon, TokenMetadataProvider } from '@suite-native/tokens';
+import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

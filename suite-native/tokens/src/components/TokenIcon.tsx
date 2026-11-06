@@ -1,9 +1,8 @@
 import { type ComponentProps } from 'react';
 
-import { toTokenAddress } from '@suite-common/wallet-types';
+import { useTokenMetadata } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { TokenIcon as TokenIconView } from '@suite-native/icons';
-
-import { useTokenMetadata } from '../useTokenMetadata';
 
 type TokenIconProps = Omit<ComponentProps<typeof TokenIconView>, 'tokenSymbol'>;
 

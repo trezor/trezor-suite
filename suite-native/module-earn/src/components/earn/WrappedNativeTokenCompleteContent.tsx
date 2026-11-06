@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -12,7 +13,6 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 

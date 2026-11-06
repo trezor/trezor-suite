@@ -1,10 +1,6 @@
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type BaseCurrencyAmount,
-    asBaseCurrencyAmount,
-    toTokenAddress,
-} from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,

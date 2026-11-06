@@ -1,12 +1,12 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { getNetwork } from '@suite-common/wallet-config';
 import { BannerFull, Box, Text, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
-import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { AssetAmountInputCard } from '../../components/earn/AssetAmountInputCard';
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';

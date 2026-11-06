@@ -1,4 +1,5 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     AnimatedDoubleInput,
     Box,
@@ -14,7 +15,6 @@ import {
 import { Translation, useTranslate } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import { FeeSelector } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

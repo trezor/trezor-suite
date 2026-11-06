@@ -3,10 +3,10 @@ import { RefreshControl } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, useScrollDivider } from '@suite-native/atoms';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 import {
     OlderHistoryStatus,
     TokenTransferListItem,

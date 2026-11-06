@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import type { DeviceRootState } from '@suite-common/device';
+import { type DeviceRootState } from '@suite-common/device';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { toTokenAddress } from '@suite-common/tokens';
 import {
@@ -17,7 +17,6 @@ import {
     type StackToTabCompositeScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
 
 import { AccountAlreadyImportedScreen } from '../components/AccountAlreadyImportedScreen';
 import { AccountImportConfirmFormScreen } from '../components/AccountImportConfirmFormScreen';

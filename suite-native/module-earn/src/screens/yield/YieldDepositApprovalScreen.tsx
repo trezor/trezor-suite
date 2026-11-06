@@ -1,11 +1,10 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
-import { TokenMetadataProvider } from '@suite-native/tokens';
-import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldAmountInputCard } from '../../components/yield/YieldAmountInputCard';

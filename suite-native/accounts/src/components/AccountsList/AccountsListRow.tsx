@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -47,7 +47,6 @@ type AccountsListRowProps = {
     isLast: boolean;
     hasBottomSpacing: boolean;
     tokenContract?: TokenAddress;
-    tokenSymbol?: TokenSymbol;
     onSelectAccount: OnSelectAccount;
 };
 
@@ -57,7 +56,6 @@ export const AccountsListRow = ({
     isLast,
     hasBottomSpacing,
     tokenContract,
-    tokenSymbol,
     onSelectAccount,
 }: AccountsListRowProps) => {
     const account = useSelector((state: NativeAccountsRootState) =>
@@ -75,7 +73,6 @@ export const AccountsListRow = ({
                 <AssetAccountListItem
                     account={account}
                     contractAddress={tokenContract}
-                    tokenSymbol={tokenSymbol}
                     onPress={onSelectAccount}
                 />
             ) : (
