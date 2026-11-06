@@ -1,85 +1,38 @@
+import { HD_HARDENED_PATH_PART, fromHardenedPathPart } from '@trezor/crypto-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { addDescriptorChecksum } from '@trezor/utxo-lib';
 
-const PURPOSE_BIP44 = 44;
-const PURPOSE_BIP49 = 49;
-const PURPOSE_BIP84 = 84;
-const PURPOSE_BIP86 = 86;
-const PURPOSE_SLIP25 = 10025;
-
-const SCRIPT_TYPE_TO_PURPOSES: Partial<Record<PROTO.InternalInputScriptType, number[]>> = {
-    SPENDADDRESS: [PURPOSE_BIP44],
-    SPENDP2SHWITNESS: [PURPOSE_BIP49],
-    SPENDWITNESS: [PURPOSE_BIP84],
-    SPENDTAPROOT: [PURPOSE_BIP86, PURPOSE_SLIP25],
+const FORMATS: Partial<Record<PROTO.InputScriptType, string>> = {
+    SPENDADDRESS: 'pkh({})',
+    SPENDP2SHWITNESS: 'sh(wpkh({}))',
+    SPENDWITNESS: 'wpkh({})',
+    SPENDTAPROOT: 'tr({})',
 };
 
-const PURPOSE_TO_SCRIPT_TYPE: Record<number, PROTO.InternalInputScriptType> = {
-    [PURPOSE_BIP44]: 'SPENDADDRESS',
-    [PURPOSE_BIP49]: 'SPENDP2SHWITNESS',
-    [PURPOSE_BIP84]: 'SPENDWITNESS',
-    [PURPOSE_BIP86]: 'SPENDTAPROOT',
-    [PURPOSE_SLIP25]: 'SPENDTAPROOT',
-};
-
-type BuildOutputDescriptorBip380Params = {
-    coin?: string;
-    account: number;
-    purpose?: number;
-    scriptType?: PROTO.InternalInputScriptType;
+type BuildOutputDescriptorParams = {
+    path: number[];
+    scriptType?: PROTO.InputScriptType;
+    // without the script-dependent xpub magic
     xpub: string;
-    rootFingerprint?: number;
-    descriptor?: string;
+    // absent from firmware older than 2.3.5 and 1.9.4, decoded as null
+    rootFingerprint?: number | null;
 };
 
+// Builds the BIP-380 output descriptor for firmware older than 2.7.0 and 1.14.0, the same way as
+// newer firmware does.
 export const buildOutputDescriptor = ({
-    coin,
-    account,
-    purpose,
-    scriptType,
+    path,
+    scriptType = 'SPENDADDRESS',
     xpub,
     rootFingerprint,
-    descriptor,
-}: BuildOutputDescriptorBip380Params): string | undefined => {
-    if (descriptor !== undefined) return descriptor;
+}: BuildOutputDescriptorParams) => {
+    const format = FORMATS[scriptType];
+    if (!format) return undefined;
 
-    if (purpose === undefined) {
-        scriptType ??= 'SPENDADDRESS';
-        purpose = SCRIPT_TYPE_TO_PURPOSES[scriptType]?.[0];
-        if (purpose === undefined) return undefined;
-    } else if (scriptType === undefined) {
-        scriptType = PURPOSE_TO_SCRIPT_TYPE[purpose];
-        // If we cannot build properly the output descriptor we return undefined.
-        if (!scriptType) return undefined;
-    } else if (!SCRIPT_TYPE_TO_PURPOSES[scriptType]?.includes(purpose)) {
-        return undefined;
-    }
+    const origin = path
+        .map(i => `/${fromHardenedPathPart(i)}${i & HD_HARDENED_PATH_PART ? 'h' : ''}`)
+        .join('');
+    const fingerprint = (rootFingerprint ?? 0).toString(16).padStart(8, '0');
 
-    const COIN_TYPE: Record<string, number> = { Bitcoin: 0, Testnet: 1, Regtest: 1 };
-    const coinType = COIN_TYPE[coin ?? 'Bitcoin'];
-    if (coinType === undefined) {
-        return undefined;
-    }
-
-    let path = `m/${purpose}h/${coinType}h/${account}h`;
-    if (purpose === PURPOSE_SLIP25) {
-        if (scriptType === 'SPENDTAPROOT') {
-            path += '/1h';
-        } else {
-            return undefined;
-        }
-    }
-
-    const fmtMap: Record<Exclude<PROTO.InternalInputScriptType, 'SPENDMULTISIG'>, string> = {
-        SPENDADDRESS: 'pkh({})',
-        SPENDP2SHWITNESS: 'sh(wpkh({}))',
-        SPENDWITNESS: 'wpkh({})',
-        SPENDTAPROOT: 'tr({})',
-    };
-
-    const fmt = fmtMap[scriptType as Exclude<PROTO.InternalInputScriptType, 'SPENDMULTISIG'>];
-    const fingerprint = rootFingerprint ?? 0;
-    const inner = `[${fingerprint.toString(16).padStart(8, '0')}${path.slice(1)}]${xpub}/<0;1>/*`;
-
-    return addDescriptorChecksum(fmt.replace('{}', inner));
+    return addDescriptorChecksum(format.replace('{}', `[${fingerprint}${origin}]${xpub}/<0;1>/*`));
 };
