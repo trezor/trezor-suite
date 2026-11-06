@@ -18,7 +18,7 @@ export const selectTokenByNetworkAndContract = createMemoizedSelector(
 
             const token = account.tokens?.find(candidate => candidate.contract === tokenContract);
 
-            if (token) return token;
+            if (token) return { ...token, contract: tokenContract };
         }
 
         return null;

@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
@@ -54,8 +55,13 @@ export const AccountImportSummaryScreen = ({
         return <AccountAlreadyImportedScreen account={account} />;
     }
 
+    const tokens = (accountInfo.tokens ?? []).map(token => ({
+        ...token,
+        contract: toTokenAddress(token.contract),
+    }));
+
     return (
-        <TokenMetadataProvider sources={[{ networkSymbol, tokens: accountInfo.tokens ?? [] }]}>
+        <TokenMetadataProvider sources={[{ networkSymbol, tokens }]}>
             <AccountImportConfirmFormScreen symbol={networkSymbol} accountInfo={accountInfo} />
         </TokenMetadataProvider>
     );

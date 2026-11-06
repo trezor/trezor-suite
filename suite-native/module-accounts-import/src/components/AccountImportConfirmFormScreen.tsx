@@ -9,7 +9,7 @@ import {
     type TokenDefinitionsRootState,
     selectFilterKnownTokens,
 } from '@suite-common/token-definitions';
-import { type TokenAddress } from '@suite-common/tokens';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,

@@ -1,10 +1,10 @@
 import { createContext } from 'react';
 
-import { type TokenInfoBranded } from '@suite-common/tokens';
+import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
 export type TokenMetadata = {
-    contract: string;
+    contract: TokenAddress;
     name?: string;
     symbol?: string;
     decimals?: number;
@@ -16,7 +16,10 @@ export type TokenMetadataSource = {
     tokens: readonly TokenMetadata[];
 };
 
-export type TokenMetadataByNetwork = ReadonlyMap<NetworkSymbol, ReadonlyMap<string, TokenMetadata>>;
+export type TokenMetadataByNetwork = ReadonlyMap<
+    NetworkSymbol,
+    ReadonlyMap<TokenAddress, TokenMetadata>
+>;
 
 type TokenMetadataContextValue = {
     tokensByNetwork: TokenMetadataByNetwork;
