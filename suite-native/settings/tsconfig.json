@@ -9,6 +9,7 @@
             "path": "../../suite-common/earn-staking-api"
         },
         { "path": "../config" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/redux-utils" }
     ]
 }
