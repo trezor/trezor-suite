@@ -3130,7 +3130,8 @@ export const messages = {
         earnFormScreen: {
             title: '{assetName} staking',
             unstakeTitle: 'Unstake {displaySymbol}',
-            staked: 'Staked',
+            staked: 'Staked balance',
+            availableBalance: 'Available balance',
             unstakingTimeline: 'Unstaking timeline',
             unstakingPeriodInfo:
                 'The unstaking period is currently {days, plural, one {~# day} other {~# days}}.',
