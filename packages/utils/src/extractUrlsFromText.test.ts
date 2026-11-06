@@ -1,6 +1,41 @@
 import { extractUrlsFromText } from './extractUrlsFromText';
 
 describe('extractUrlsFromText', () => {
+    it('preserves both URLs when the text starts with consecutive URLs', () => {
+        const { textParts, urls } = extractUrlsFromText('trezor.io ledger.com');
+
+        expect(textParts).toEqual(['', ' ']);
+        expect(urls).toEqual(['trezor.io', 'ledger.com']);
+    });
+
+    it.each(['t.me', 'T.ME'])('preserves text order when a name starts with %s', domain => {
+        const { textParts, urls } = extractUrlsFromText(`${domain}/reward - Visit to claim`);
+
+        expect(textParts).toEqual(['', ' - Visit to claim']);
+        expect(urls).toEqual([`${domain}/reward`]);
+    });
+
+    it.each([
+        't.me/S/US_POOL',
+        'T.ME/S/US_POOL',
+        'example.com/claim?token=reward&amount=1#details',
+        'example.com/',
+    ])('includes the complete path, query and fragment in the bare URL %s', url => {
+        const { textParts, urls } = extractUrlsFromText(`Claim at ${url} now`);
+
+        expect(textParts).toEqual(['Claim at ', ' now']);
+        expect(urls).toEqual([url]);
+    });
+
+    it('keeps parentheses and trailing punctuation outside a bare URL with a path', () => {
+        const { textParts, urls } = extractUrlsFromText(
+            'Reward (t.me/S/US_POOL), visit example.com/claim.',
+        );
+
+        expect(textParts).toEqual(['Reward (', '), visit ', '.']);
+        expect(urls).toEqual(['t.me/S/US_POOL', 'example.com/claim']);
+    });
+
     it('should return textParts and urls for text with URLs', () => {
         const text =
             'Go to this page to claim your rewards: http://example.com/url and also check out www.phishing-site.com';
@@ -95,8 +130,8 @@ describe('extractUrlsFromText', () => {
 
         const { textParts, urls } = extractUrlsFromText(text);
 
-        expect(textParts).toEqual(['🎁10K$ gift at [', '/tpepe]']);
-        expect(urls).toEqual(['bit.ly']);
+        expect(textParts).toEqual(['🎁10K$ gift at [', ']']);
+        expect(urls).toEqual(['bit.ly/tpepe']);
     });
 
     it('should not match url in of contract address', () => {
