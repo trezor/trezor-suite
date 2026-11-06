@@ -49,10 +49,10 @@ const sessionKey = getStakingSessionKey({
     productId: eth.id,
     operation: 'stake',
 });
-const params = {
+const params: Parameters<typeof planStakingOperationThunk>[0] = {
     accountKey: account.key,
     productId: eth.id,
-    operation: 'stake' as const,
+    operation: 'stake',
     amount: plan.amount,
     options: { instant: true },
 };
@@ -197,6 +197,44 @@ describe('planStakingOperationThunk', () => {
         const result = await planStake(store, { productId: sol.id });
 
         expect(result.payload).toBe('product-not-found');
+    });
+
+    it('plans an operation the stored position offers', async () => {
+        const { store, adapter } = initStore({
+            staking: mockStakingState({
+                descriptors: [eth],
+                positions: { [account.key]: [mockStakingPosition()] },
+            }),
+        });
+        const result = await planStake(store, { operation: 'unstake' });
+
+        expect(planStakingOperationThunk.fulfilled.match(result)).toBe(true);
+        expect(adapter.planOperation).toHaveBeenCalledWith(
+            expect.objectContaining({ operation: 'unstake' }),
+        );
+    });
+
+    it.each([
+        {
+            name: 'the product does not offer',
+            operation: 'claim' as const,
+            positions: { [account.key]: [mockStakingPosition({ operations: ['stake', 'claim'] })] },
+        },
+        {
+            name: 'the stored position does not offer',
+            operation: 'withdraw' as const,
+            positions: { [account.key]: [mockStakingPosition()] },
+        },
+        { name: 'needs a position the account does not have', operation: 'unstake' as const },
+    ])('rejects an operation $name', async ({ operation, positions }) => {
+        const { store, adapter, actions } = initStore({
+            staking: mockStakingState({ descriptors: [eth], positions }),
+        });
+        const result = await planStake(store, { operation });
+
+        expect(result.payload).toBe('operation-not-available');
+        expect(adapter.planOperation).not.toHaveBeenCalled();
+        expect(actions).toEqual([]);
     });
 
     it('rejects while a session with the same key has an active step', async () => {

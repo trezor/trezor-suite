@@ -13,6 +13,14 @@ export class StakingAdapterError extends Error {
 export const isStakingAdapterError = (error: unknown): error is StakingAdapterError =>
     error instanceof StakingAdapterError && error.name === 'StakingAdapterError';
 
+export const STAKING_OPERATION_ERROR_CODES = {
+    notImplemented: 'operation-not-implemented',
+    notSupported: 'operation-not-supported',
+} as const;
+
+export type StakingOperationErrorCode =
+    (typeof STAKING_OPERATION_ERROR_CODES)[keyof typeof STAKING_OPERATION_ERROR_CODES];
+
 export const STAKING_SIGNING_ERROR_CODES = {
     cancelled: 'signing-cancelled',
     expired: 'signing-expired',

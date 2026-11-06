@@ -34,17 +34,19 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
 >((action, { dispatch, getState, next, extra }) => {
     next(action);
 
-    const syncAccount = (account: Account) => {
-        if (!extra.services.staking.stakingProductRepository.isSupportedSymbol(account.symbol)) {
+    const syncAccount = ({ key, symbol }: Pick<Account, 'key' | 'symbol'>) => {
+        if (!extra.services.staking.stakingProductRepository.isSupportedSymbol(symbol)) {
             return;
         }
 
-        dispatch(syncStakingPositionsThunk({ accountKey: account.key }));
+        dispatch(syncStakingPositionsThunk({ accountKey: key }));
     };
 
     if (
         accountsActions.createAccount.match(action) ||
-        accountsActions.updateAccount.match(action)
+        accountsActions.updateAccount.match(action) ||
+        transactionsActions.removeTransaction.match(action) ||
+        transactionsActions.resetTransaction.match(action)
     ) {
         syncAccount(action.payload.account);
     }
@@ -71,9 +73,7 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
 
         settlements.forEach(settlement => dispatch(getStakingStepSettlementAction(settlement)));
 
-        if (settlements.length > 0) {
-            dispatch(syncStakingPositionsThunk({ accountKey: account.key }));
-        }
+        syncAccount(account);
     }
 
     if (handleEarnTransactionReplacementThunk.pending.match(action)) {
@@ -114,6 +114,8 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
                 }),
             ),
         );
+
+        syncAccount({ key, symbol: tx.symbol });
     }
 
     return action;
