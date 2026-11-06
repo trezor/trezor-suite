@@ -8,7 +8,11 @@ import { type NetworkSymbol } from '@trezor/network-module-types';
 import { type TokenMetadata, TokenMetadataContext } from './TokenMetadataContext';
 import { selectTokenByNetworkAndContract } from './tokenMetadataSelectors';
 
-/** Native-coin inputs have no contract and therefore no token metadata. */
+/**
+ * Context metadata takes precedence as a whole; the account store is used only when
+ * the contract is absent from context. Missing context fields do not inherit store values.
+ * Native-coin inputs have no contract and therefore no token metadata.
+ */
 export const useTokenMetadata = (
     networkSymbol: NetworkSymbol,
     contractAddress: TokenAddress | undefined,
