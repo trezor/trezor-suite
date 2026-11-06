@@ -75,6 +75,7 @@ export const TradingTransactionReview = memo(
             orderId,
             accountKey,
             tradingType,
+            exchangeFlowType,
             isDexExchange,
             signAndSendTransaction,
             resolveTransactionSendConsent,
