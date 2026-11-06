@@ -4,11 +4,15 @@ import { act, renderHook } from '@testing-library/react';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
-import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-common/wallet-core';
+import {
+    DEFAULT_VOTING_OPTION,
+    prepareStakeReducer,
+    stakeActions,
+    stakeInitialState,
+} from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getIndexOrThrow } from '@trezor/utils';
 
-import { stakeReducer } from 'src/reducers/wallet';
 import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import {
@@ -16,6 +20,8 @@ import {
     useSeededCardanoVotingDelegation,
 } from './useCardanoAccountVotingDelegation';
 import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';
+
+const stakeReducer = prepareStakeReducer({});
 
 // Not the Everstake DRep: its legacy spelling normalises to CARDANO_EVERSTAKE_DREP.
 const CUSTOM_DREP_ID = 'drep1g2d3y3skgr806wj2ryhhc5ca3akx6vmppde87jq7kgknjmv589e';

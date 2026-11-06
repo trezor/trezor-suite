@@ -18,7 +18,7 @@ import {
     type TokenDefinitionsRootState,
     tokenDefinitionsInitialState,
 } from '@suite-common/token-definitions';
-import { type TradingRootState } from '@suite-common/trading';
+import { type TradingRootState, prepareTradingReducer } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
@@ -41,6 +41,9 @@ import {
     onBlockchainDisconnectThunk,
     onBlockchainNotificationThunk,
     preloadFeeInfoThunk,
+    prepareAccountsReducer,
+    prepareBlockchainReducer,
+    prepareTransactionsReducer,
     setCustomBackendThunk,
     stellarContractTokensInitialState,
 } from '@suite-common/wallet-core';
@@ -51,14 +54,13 @@ import { asGetter } from '@trezor/dependency-injection';
 import { DEFAULT_ACCOUNT_SYNC_INTERVAL } from '@trezor/network-module-suite-common-types';
 import { typedObjectKeys } from '@trezor/utils';
 
-import {
-    accountsReducer,
-    blockchainReducer,
-    tradingReducer,
-    transactionsReducer,
-} from 'src/reducers/wallet';
-
 import * as fixtures from './__fixtures__/blockchainActions';
+import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+
+const accountsReducer = prepareAccountsReducer(mockExtraDependencies);
+const blockchainReducer = prepareBlockchainReducer(mockExtraDependencies);
+const tradingReducer = prepareTradingReducer(mockExtraDependencies);
+const transactionsReducer = prepareTransactionsReducer(mockExtraDependencies);
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 const btcSymbol = asNetworkSymbol('btc');

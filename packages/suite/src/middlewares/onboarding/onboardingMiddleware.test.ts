@@ -10,12 +10,12 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type DeviceUniquePath } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import onboardingMiddlewares from 'src/middlewares/onboarding';
+import onboardingMiddleware from 'src/middlewares/onboarding/onboardingMiddleware';
 import onboardingReducer from 'src/reducers/onboarding/index';
 import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
 import suiteReducer, { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 
-const middlewares = [...onboardingMiddlewares];
+const middlewares = [onboardingMiddleware];
 
 jest.mock('@trezor/suite-storage', () => ({
     __esModule: true, // this property makes it work

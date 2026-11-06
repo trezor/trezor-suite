@@ -5,6 +5,7 @@ import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type TransactionsState,
+    prepareTransactionsReducer,
     transactionsActions,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
@@ -12,7 +13,9 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
-import { transactionsReducer } from 'src/reducers/wallet';
+import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+
+const transactionsReducer = prepareTransactionsReducer(mockExtraDependencies);
 
 const btcSymbol = asNetworkSymbol('btc');
 

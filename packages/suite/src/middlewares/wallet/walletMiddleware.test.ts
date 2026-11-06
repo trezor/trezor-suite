@@ -6,30 +6,39 @@ import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type AccountsRefreshTimeState,
     type AccountsState,
+    type FormDraftState,
     type SendState,
     type SyncAccountsWithBlockchainThunkDeps,
+    type TransactionsState,
     accountsRefreshTimeReducer,
     blockchainActions,
     formDraftInitialState,
+    prepareAccountsReducer,
     prepareBlockchainMiddleware,
+    prepareBlockchainReducer,
     prepareBlockchainSubscriptionMiddleware,
     prepareSendFormReducer,
+    prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
-import { type WalletSettings, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    type BlockchainNetworks,
+    type WalletSettings,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
-import {
-    type WalletState,
-    accountsReducer,
-    blockchainReducer,
-    walletSettingsReducer,
-} from 'src/reducers/wallet';
 
 import * as fixtures from './__fixtures__/walletMiddleware';
+import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+
+const accountsReducer = prepareAccountsReducer(mockExtraDependencies);
+const blockchainReducer = prepareBlockchainReducer(mockExtraDependencies);
+const walletSettingsReducer = prepareWalletSettingsReducer(mockExtraDependencies);
 
 const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -53,17 +62,16 @@ type State = {
     suite: Record<string, never>;
     device: { selectedDevice: { state: { staticSessionId: string } } };
     window: { isVisible: boolean };
-    wallet: Pick<
-        WalletState,
-        | 'accounts'
-        | 'accountsRefreshTime'
-        | 'blockchain'
-        | 'transactions'
-        | 'settings'
-        | 'selectedAccount'
-        | 'send'
-        | 'formDrafts'
-    >;
+    wallet: {
+        accounts: AccountsState;
+        accountsRefreshTime: AccountsRefreshTimeState;
+        blockchain: BlockchainNetworks;
+        transactions: TransactionsState;
+        settings: WalletSettings;
+        selectedAccount: SelectedAccountState;
+        send: SendState;
+        formDrafts: FormDraftState;
+    };
 };
 
 const getInitialState = ({
@@ -96,7 +104,7 @@ const getInitialState = ({
         accountsRefreshTime: accountsRefreshTimeReducer(undefined, { type: 'foo' } as any),
         blockchain: blockchainReducer(undefined, { type: 'foo' } as any),
         transactions: {
-            transactions: (transactions || {}) as WalletState['transactions']['transactions'],
+            transactions: (transactions || {}) as TransactionsState['transactions'],
             phishing: {},
             fetchStatusDetail: {},
         },
