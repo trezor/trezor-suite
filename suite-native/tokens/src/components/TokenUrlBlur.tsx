@@ -12,15 +12,12 @@ type TokenUrlBlurProps = TextProps & {
     text: string;
     networkSymbol: NetworkSymbol;
     contractAddress: TokenAddress;
-    /** Required when the token name is part of a surrounding Text element. */
-    isInline?: boolean;
 };
 
 export const TokenUrlBlur = ({
     text,
     networkSymbol,
     contractAddress,
-    isInline = false,
     ...textProps
 }: TokenUrlBlurProps) => {
     const isRecognized = useSelector((state: TokenDefinitionsRootState) =>
@@ -29,5 +26,5 @@ export const TokenUrlBlur = ({
 
     if (isRecognized) return <Text {...textProps}>{text}</Text>;
 
-    return <BlurUrls text={text} isInline={isInline} {...textProps} />;
+    return <BlurUrls text={text} {...textProps} />;
 };

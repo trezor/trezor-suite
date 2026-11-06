@@ -56,7 +56,6 @@ export const AccountsListTokenItem = ({
             }
             title={
                 <TokenName
-                    isInline
                     networkSymbol={account.symbol}
                     contractAddress={token.contract}
                     numberOfLines={1}
