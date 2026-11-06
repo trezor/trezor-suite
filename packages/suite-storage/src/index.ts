@@ -222,6 +222,53 @@ class CommonDB<TDBStructure> {
         }
     };
 
+    /**
+     * Deletes the items matching `deleteQueries` and puts `items` (in-line keys), in one readwrite
+     * transaction.
+     */
+    updateItems = async <
+        TStoreName extends StoreNames<TDBStructure>,
+        TItem extends StoreValue<TDBStructure, TStoreName>,
+    >(
+        store: TStoreName,
+        deleteQueries: (StoreKey<TDBStructure, TStoreName> | IDBKeyRange)[],
+        items: TItem[],
+    ) => {
+        const db = await this.getDB();
+        const tx = db.transaction(store, 'readwrite');
+
+        await Promise.all([
+            ...deleteQueries.map(query => tx.store.delete(query)),
+            ...items.map(item => tx.store.put(item)),
+            tx.done,
+        ]);
+    };
+
+    /**
+     * Replaces all items of an index key with `items` (in-line keys), in one readwrite transaction.
+     */
+    replaceItemsByIndex = async <
+        TStoreName extends StoreNames<TDBStructure>,
+        TIndexName extends IndexNames<TDBStructure, TStoreName>,
+        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>,
+        TItem extends StoreValue<TDBStructure, TStoreName>,
+    >(
+        store: TStoreName,
+        indexName: TIndexName,
+        key: TKey,
+        items: TItem[],
+    ) => {
+        const db = await this.getDB();
+        const tx = db.transaction(store, 'readwrite');
+        const primaryKeys = await tx.store.index(indexName).getAllKeys(IDBKeyRange.only(key));
+
+        await Promise.all([
+            ...primaryKeys.map(primaryKey => tx.store.delete(primaryKey)),
+            ...items.map(item => tx.store.put(item)),
+            tx.done,
+        ]);
+    };
+
     getItemsExtended = async <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
