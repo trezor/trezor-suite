@@ -6,6 +6,8 @@ import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Banner, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DropboxLogoFilledIcon, GoogleDriveLogoFilledIcon, TagIcon } from '@trezor/icons';
 
+import { usePreloadDropboxSDK } from './hooks/usePreloadDropboxSDK';
+
 type MetadataProviderSelectionModalProps = {
     onCancel: () => void;
     onSelect: (providerType: MetadataProviderType) => void;
@@ -26,60 +28,64 @@ export const MetadataProviderSelectionModal = ({
     heading,
     description,
     testId = '@modal/metadata-provider',
-}: MetadataProviderSelectionModalProps) => (
-    <Modal
-        onCancel={onCancel}
-        data-testid={testId}
-        width={600}
-        icon={TagIcon}
-        bottomContent={
-            <>
-                <Modal.Button
-                    intent="neutral"
-                    priority="secondary"
-                    onClick={() => onSelect('dropbox')}
-                    isLoading={loadingProvider === 'dropbox'}
-                    isDisabled={isDisabled || !!loadingProvider}
-                    data-testid={`${testId}/dropbox-button`}
-                    iconLeft={DropboxLogoFilledIcon}
-                >
-                    <Translation id="TR_DROPBOX" />
-                </Modal.Button>
+}: MetadataProviderSelectionModalProps) => {
+    usePreloadDropboxSDK();
 
-                <Modal.Button
-                    intent="neutral"
-                    priority="secondary"
-                    onClick={() => onSelect('google')}
-                    isLoading={loadingProvider === 'google'}
-                    isDisabled={isDisabled || !!loadingProvider}
-                    data-testid={`${testId}/google-button`}
-                    iconLeft={GoogleDriveLogoFilledIcon}
-                >
-                    <Translation id="TR_GOOGLE_DRIVE" />
-                </Modal.Button>
-
-                {/* desktop only */}
-                {isFeatureFlagEnabled('FILE_SYSTEM_SYNC') && (
+    return (
+        <Modal
+            onCancel={onCancel}
+            data-testid={testId}
+            width={600}
+            icon={TagIcon}
+            bottomContent={
+                <>
                     <Modal.Button
                         intent="neutral"
                         priority="secondary"
-                        onClick={() => onSelect('fileSystem')}
-                        isLoading={loadingProvider === 'fileSystem'}
+                        onClick={() => onSelect('dropbox')}
+                        isLoading={loadingProvider === 'dropbox'}
                         isDisabled={isDisabled || !!loadingProvider}
-                        data-testid={`${testId}/file-system-button`}
+                        data-testid={`${testId}/dropbox-button`}
+                        iconLeft={DropboxLogoFilledIcon}
                     >
-                        <Translation id="TR_LOCAL_FILE_SYSTEM" />
+                        <Translation id="TR_DROPBOX" />
                     </Modal.Button>
-                )}
-            </>
-        }
-    >
-        <Column gap={4}>
-            <H3>{heading ?? <Translation id="METADATA_MODAL_HEADING" />}</H3>
-            <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                {description ?? <Translation id="METADATA_MODAL_DESCRIPTION" />}
-            </Paragraph>
-            {error && <Banner intent="critical" icon description={error} />}
-        </Column>
-    </Modal>
-);
+
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={() => onSelect('google')}
+                        isLoading={loadingProvider === 'google'}
+                        isDisabled={isDisabled || !!loadingProvider}
+                        data-testid={`${testId}/google-button`}
+                        iconLeft={GoogleDriveLogoFilledIcon}
+                    >
+                        <Translation id="TR_GOOGLE_DRIVE" />
+                    </Modal.Button>
+
+                    {/* desktop only */}
+                    {isFeatureFlagEnabled('FILE_SYSTEM_SYNC') && (
+                        <Modal.Button
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={() => onSelect('fileSystem')}
+                            isLoading={loadingProvider === 'fileSystem'}
+                            isDisabled={isDisabled || !!loadingProvider}
+                            data-testid={`${testId}/file-system-button`}
+                        >
+                            <Translation id="TR_LOCAL_FILE_SYSTEM" />
+                        </Modal.Button>
+                    )}
+                </>
+            }
+        >
+            <Column gap={4}>
+                <H3>{heading ?? <Translation id="METADATA_MODAL_HEADING" />}</H3>
+                <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    {description ?? <Translation id="METADATA_MODAL_DESCRIPTION" />}
+                </Paragraph>
+                {error && <Banner intent="critical" icon description={error} />}
+            </Column>
+        </Modal>
+    );
+};
