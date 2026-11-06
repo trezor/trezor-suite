@@ -9,6 +9,7 @@ export type NavigateFlowType =
     | 'receive'
     | 'earn'
     | 'account-detail'
+    | 'account-list'
     | 'asset'
     | 'hidden-tokens';
 
@@ -20,6 +21,7 @@ export const NAVIGATE_FLOW_FROM = [
     'asset',
     'asset-detail',
     'dashboard',
+    'menu',
 ] as const;
 
 export type NavigateFlowFrom = (typeof NAVIGATE_FLOW_FROM)[number];
@@ -34,7 +36,7 @@ type Attributes = {
 export const navigateFlowEvent: EventDef<Attributes, EventType.NavigateFlow> = {
     name: EventType.NavigateFlow,
     descriptionTrigger:
-        'User clicks a button that starts a buy, sell, exchange, send, receive or earn flow, or opens an account detail, asset detail or hidden tokens. Shared by desktop and mobile and meant to cover these flows from every place in the app',
+        'User clicks a button that starts a buy, sell, exchange, send, receive or earn flow, or opens an account detail, account list, asset detail or hidden tokens. Shared by desktop and mobile and meant to cover these flows from every place in the app',
     changelog: [{ version: '26.11.0', notes: 'added' }],
 
     attributes: {
@@ -49,7 +51,7 @@ export const navigateFlowEvent: EventDef<Attributes, EventType.NavigateFlow> = {
         from: {
             changelog: [{ version: '26.11.0', notes: 'added' }],
             description:
-                'Where the navigation started: `dashboard/header` for the dashboard header buttons, `sidebar` for the main navigation sidebar, `tab` for an account row in the sidebar accounts list, `home-asset-table` for an asset row in the Home asset table, `asset` for the asset detail Earn section, `asset-detail` for an account in the asset detail accounts list, `dashboard` for the Home asset table filter menu',
+                'Where the navigation started: `dashboard/header` for the dashboard header buttons, `sidebar` for the main navigation sidebar, `tab` for an account row in the sidebar accounts list on desktop and the Accounts tab on mobile, `home-asset-table` for an asset row in the Home asset table, `asset` for the asset detail Earn section on desktop, `asset-detail` for an account in the asset detail accounts list and for the asset detail Earn section on mobile, `dashboard` for the Home asset table filter menu on desktop and the Home view options on mobile, `menu` for the asset detail menu on mobile',
         },
         networkSymbol: {
             changelog: [{ version: '26.11.0', notes: 'added' }],

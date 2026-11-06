@@ -5,6 +5,7 @@ import {
     setHomeAssetsTableGrouping,
 } from '@suite-common/wallet-core';
 import { type HomeAssetsTableGrouping } from '@suite-common/wallet-types';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
@@ -22,7 +23,20 @@ const GROUPING_LABELS: Record<HomeAssetsTableGrouping, TxKeyPath> = {
 export const PortfolioAssetsGroupingOptions = () => {
     const selectedGrouping = useSelector(selectHomeAssetsTableGrouping);
 
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
+
+    const chooseGrouping = (grouping: HomeAssetsTableGrouping) => {
+        if (grouping !== selectedGrouping) {
+            analytics.report({
+                type: events.dashboardAssetListMenuEvent.name,
+                payload: {
+                    type: 'grouping',
+                    value: grouping === 'networks' ? 'by-networks' : 'default',
+                },
+            });
+        }
+        dispatch(setHomeAssetsTableGrouping(grouping));
+    };
 
     return (
         <>
@@ -32,7 +46,7 @@ export const PortfolioAssetsGroupingOptions = () => {
                 return (
                     <PortfolioAssetsViewOptionsItem
                         key={grouping}
-                        onPress={() => dispatch(setHomeAssetsTableGrouping(grouping))}
+                        onPress={() => chooseGrouping(grouping)}
                         accessibilityRole="radio"
                         accessibilityState={{ checked: isSelected }}
                         testID={`@home/portfolio-assets/view-options/grouping/${grouping}`}

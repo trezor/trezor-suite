@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
         { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
         {
@@ -29,6 +32,7 @@
         },
         { "path": "../accounts" },
         { "path": "../alerts" },
+        { "path": "../analytics" },
         { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../clipboard" },

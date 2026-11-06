@@ -8,6 +8,7 @@ import {
     selectWalletAssetKey,
     selectWalletAssetStakingAmount,
 } from '@suite-common/assets';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Divider, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -19,6 +20,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { AssetDetailEarnBalanceBar } from './AssetDetailEarnBalanceBar';
 import { AssetDetailEarnBalanceRow } from './AssetDetailEarnBalanceRow';
@@ -47,14 +49,24 @@ export const AssetDetailEarnSection = () => {
         selectShouldShowWalletAssetEarnSection(state, assetKey),
     );
     const navigation = useNavigation<NavigationProps>();
+    const { analytics } = useServices(injectNativeAnalytics);
 
     if (availableAmount === undefined || stakingAmount === undefined || !isEarnAvailable) {
         return null;
     }
 
-    // Reset to a single AppTabs route instead of stacking another navigator or presenting Earn
-    // with a back transition.
-    const handlePress = () =>
+    const handlePress = () => {
+        analytics.report({
+            type: events.navigateFlowEvent.name,
+            payload: {
+                action: 'navigate',
+                type: 'earn',
+                from: 'asset-detail',
+                networkSymbol,
+            },
+        });
+        // Reset to a single AppTabs route instead of stacking another navigator or presenting Earn
+        // with a back transition.
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
@@ -69,6 +81,7 @@ export const AssetDetailEarnSection = () => {
                 ],
             }),
         );
+    };
 
     return (
         <>

@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectIsAssetListLoading } from '@suite-native/assets';
 import { Box, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -12,6 +13,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { PortfolioAssetsSpinner } from './PortfolioAssetsSpinner';
 import { PortfolioAssetsViewOptionsItem } from './PortfolioAssetsViewOptionsItem';
@@ -28,8 +30,13 @@ export const PortfolioAssetsHiddenTokensOption = ({
     const isAssetListLoading = useSelector(selectIsAssetListLoading);
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const openHiddenTokens = () => {
+        analytics.report({
+            type: events.navigateFlowEvent.name,
+            payload: { action: 'navigate', type: 'hidden-tokens', from: 'dashboard' },
+        });
         onPress();
         navigation.navigate(RootStackRoutes.AssetsStack, {
             screen: AssetsStackRoutes.HiddenTokens,

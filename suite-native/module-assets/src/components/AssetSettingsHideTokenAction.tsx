@@ -16,6 +16,7 @@ import {
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useAlert } from '@suite-native/alerts';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
@@ -46,7 +47,7 @@ export const AssetSettingsHideTokenAction = ({
     const areCoinDefinitionsLoaded = useSelector((state: TokenDefinitionsRootState) =>
         selectAreCoinDefinitionsLoaded(state, networkSymbol),
     );
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { showToast } = useToast();
     const { showAlert } = useAlert();
 
@@ -59,6 +60,14 @@ export const AssetSettingsHideTokenAction = ({
     const isHidden = hiddenReason !== undefined;
 
     const toggleTokenVisibility = () => {
+        analytics.report({
+            type: events.assetsActionsEvent.name,
+            payload: {
+                action: isHidden ? 'show-token' : 'hide-token',
+                networkSymbol,
+                contractAddress: tokenContract,
+            },
+        });
         dispatch(
             tokenDefinitionsActions.setTokenStatus({
                 symbol: networkSymbol,
