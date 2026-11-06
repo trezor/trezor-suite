@@ -6,11 +6,14 @@ import {
     createNetworkModule,
 } from '@trezor/network-module-suite-common-types';
 
-import { adaValidator } from './addressValidator/cardanoAddressValidator';
+import { adaValidator, preloadCborDecode } from './addressValidator/cardanoAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
-export const createCardanoSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
-    createNetworkModule(supportedCardanoNetworks, {
+export const createCardanoSuiteCommonNetworkModule = (): SuiteCommonNetworkModule => {
+    // Address validation is synchronous, so the legacy address decoder has to be ready before it.
+    preloadCborDecode();
+
+    return createNetworkModule(supportedCardanoNetworks, {
         icon: {
             ...cardanoAssets,
             getTokenLogoIdentifiers: (_symbol, contract) => [
@@ -22,3 +25,4 @@ export const createCardanoSuiteCommonNetworkModule = (): SuiteCommonNetworkModul
         getNetworkConfig,
         getAccountSyncInterval,
     });
+};
