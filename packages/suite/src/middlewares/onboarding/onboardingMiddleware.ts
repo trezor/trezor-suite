@@ -2,7 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import {
-    type RecoveryState,
+    type RecoveryRootState,
     isRecoveryInProgress,
     recoveryActions,
     selectRecoveryStatus,
@@ -20,9 +20,9 @@ import { type GoToNextStepThunkState } from 'src/actions/onboarding/onboardingAc
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 
-type OnboardingMiddlewareState = GoToNextStepThunkState & {
-    recovery: RecoveryState;
-} & AnalyticsRootState &
+type OnboardingMiddlewareState = GoToNextStepThunkState &
+    RecoveryRootState &
+    AnalyticsRootState &
     FirmwareRootState;
 
 const onboardingMiddleware =
