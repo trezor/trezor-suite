@@ -33,6 +33,7 @@ export const AssetSettingsTokenDetailsSection = ({
                                 <Translation id="transactionManagement.review.outputs.cardanoFingerprintLabel" />
                             }
                             value={tokenInfo.fingerprint}
+                            addressType="fingerprint"
                             testID="@asset-detail/settings/fingerprint"
                         />
                     )}
@@ -41,6 +42,7 @@ export const AssetSettingsTokenDetailsSection = ({
                             <Translation id="moduleAssets.assetDetailScreen.settings.policyId" />
                         }
                         value={tokenInfo.policyId}
+                        addressType="policyId"
                         testID="@asset-detail/settings/policy-id"
                     />
                 </>
@@ -50,6 +52,7 @@ export const AssetSettingsTokenDetailsSection = ({
                         <Translation id="moduleAccountManagement.tokenSettings.contractAddress" />
                     }
                     value={tokenInfo.contract}
+                    addressType="contract"
                     testID="@asset-detail/settings/contract-address"
                 />
             )}
