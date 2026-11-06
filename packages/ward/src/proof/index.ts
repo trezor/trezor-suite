@@ -269,3 +269,63 @@ export const nonMembershipByKey = (
         witnessCommitHex: bytesToHex(commitOf(wr.keyType, wr.identity, wr.content)),
     };
 };
+
+/** One node of a listing walk: a branch (`splitBit`, child hashes) or a leaf (its entry_key). */
+export type ServedNode =
+    | { kind: 'branch'; splitBit: number; leftHex: string; rightHex: string }
+    | { kind: 'leaf'; entryKeyHex: string };
+
+/**
+ * Serve the device's verified listing walk (WARDListEntries): the node whose hash is
+ * `nodeHashHex`, then up to `maxNodes - 1` of its descendants in pre-order (node, left subtree,
+ * right subtree) -- the order the device walks in, so one round trip can carry a whole subtree.
+ * Empty if no node has that hash. Keyless, like the proofs: the device checks every node against
+ * the hash its parent committed to. Mirrors trezorlib `WARDTree.get_nodes`.
+ */
+export const nodesByHash = (rows: BlobRow[], nodeHashHex: string, maxNodes = 16): ServedNode[] => {
+    if (rows.length === 0) return [];
+    const hashes = new Map<MptNode, string>();
+    const hashOf = (node: MptNode): string => {
+        let h = hashes.get(node);
+        if (h === undefined) {
+            h =
+                node.kind === 'leaf'
+                    ? bytesToHex(node.leafHash)
+                    : bytesToHex(
+                          internalHash(
+                              node.bit,
+                              hexToBytes(hashOf(node.left)),
+                              hexToBytes(hashOf(node.right)),
+                          ),
+                      );
+            hashes.set(node, h);
+        }
+
+        return h;
+    };
+    const find = (node: MptNode): MptNode | undefined => {
+        if (hashOf(node) === nodeHashHex) return node;
+        if (node.kind === 'leaf') return undefined;
+
+        return find(node.left) ?? find(node.right);
+    };
+    const start = find(buildMpt(rows.map(blobLeaf)));
+    const out: ServedNode[] = [];
+    const stack = start ? [start] : [];
+    while (stack.length > 0 && out.length < maxNodes) {
+        const node = stack.pop()!;
+        if (node.kind === 'leaf') {
+            out.push({ kind: 'leaf', entryKeyHex: bytesToHex(node.addrHash) });
+        } else {
+            out.push({
+                kind: 'branch',
+                splitBit: node.bit,
+                leftHex: hashOf(node.left),
+                rightHex: hashOf(node.right),
+            });
+            stack.push(node.right, node.left);
+        }
+    }
+
+    return out;
+};

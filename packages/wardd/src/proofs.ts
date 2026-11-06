@@ -13,6 +13,7 @@ import {
     ENC_ENCRYPTED,
     ENC_PLAINTEXT,
     type LeafPart,
+    nodesByHash,
     nonMembershipByKey,
     proofByKey,
 } from '@trezor/ward';
@@ -131,5 +132,29 @@ export const buildProofAck = (rows: BlobRow[], entryKeyHex: string): Body => {
         proof: nm.proof,
         witness_entry_key: nm.witnessEntryKeyHex,
         witness_commit: nm.witnessCommitHex,
+    };
+};
+
+/**
+ * The WARDNodeAck for a listing walk's WARDNodeRequest: the node with `nodeHashHex` and up to
+ * `maxNodes - 1` descendants in pre-order, leaves carrying both stored parts. Empty `nodes` if no
+ * node has that hash -- the device then fails the listing rather than show a shorter one.
+ */
+export const buildNodeAck = (rows: BlobRow[], nodeHashHex: string, maxNodes = 16): Body => {
+    const byKey = new Map(rows.map(r => [r.entryKeyHex, r]));
+
+    return {
+        nodes: nodesByHash(rows, nodeHashHex, maxNodes).map(node => {
+            if (node.kind === 'branch') {
+                return { split_bit: node.splitBit, left: node.leftHex, right: node.rightHex };
+            }
+            const row = byKey.get(node.entryKeyHex)!;
+
+            return {
+                entry_key: node.entryKeyHex,
+                content: makeLeafContent(row.content),
+                identity: makeLeafIdentity(row.keyType, row.identity),
+            };
+        }),
     };
 };

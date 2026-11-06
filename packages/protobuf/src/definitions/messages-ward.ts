@@ -62,6 +62,18 @@ export const LeafIdentity = Type.Object(
     { $id: 'LeafIdentity' },
 );
 
+export type WARDAttestation = Static<typeof WARDAttestation>;
+export const WARDAttestation = Type.Object(
+    {
+        counter: Type.Number(),
+        mac: Type.Optional(Type.String()),
+        wm_signature: Type.String(),
+        timestamp: Type.Number(),
+        head_nonce: Type.String(),
+    },
+    { $id: 'WARDAttestation' },
+);
+
 export type WARDBatchLeaf = Static<typeof WARDBatchLeaf>;
 export const WARDBatchLeaf = Type.Object(
     {
@@ -70,6 +82,52 @@ export const WARDBatchLeaf = Type.Object(
         identity: Type.Optional(LeafIdentity),
     },
     { $id: 'WARDBatchLeaf' },
+);
+
+export type WARDCacheEntry = Static<typeof WARDCacheEntry>;
+export const WARDCacheEntry = Type.Object(
+    {
+        entry_key: Type.String(),
+        sticky: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'WARDCacheEntry' },
+);
+
+export type WARDCacheEntryAck = Static<typeof WARDCacheEntryAck>;
+export const WARDCacheEntryAck = Type.Object(
+    {
+        replaced: Type.Boolean(),
+        counter: Type.Number(),
+    },
+    { $id: 'WARDCacheEntryAck' },
+);
+
+export type WARDCacheExport = Static<typeof WARDCacheExport>;
+export const WARDCacheExport = Type.Record(Type.Never(), Type.Never(), { $id: 'WARDCacheExport' });
+
+export type WARDCacheExportAck = Static<typeof WARDCacheExportAck>;
+export const WARDCacheExportAck = Type.Object(
+    {
+        entries: Type.Array(Type.String()),
+    },
+    { $id: 'WARDCacheExportAck' },
+);
+
+export type WARDCacheImport = Static<typeof WARDCacheImport>;
+export const WARDCacheImport = Type.Object(
+    {
+        entries: Type.Array(Type.String()),
+    },
+    { $id: 'WARDCacheImport' },
+);
+
+export type WARDCacheImportAck = Static<typeof WARDCacheImportAck>;
+export const WARDCacheImportAck = Type.Object(
+    {
+        imported: Type.Number(),
+        skipped: Type.Number(),
+    },
+    { $id: 'WARDCacheImportAck' },
 );
 
 export type WARDChainLink = Static<typeof WARDChainLink>;
@@ -210,6 +268,8 @@ export const WARDIngestAttestation = Type.Object(
         counter: Type.Number(),
         mac: Type.Optional(Type.String()),
         wm_signature: Type.String(),
+        timestamp: Type.Number(),
+        head_nonce: Type.String(),
     },
     { $id: 'WARDIngestAttestation' },
 );
@@ -220,6 +280,27 @@ export const WARDIngestAttestationAck = Type.Object(
         counter: Type.Number(),
     },
     { $id: 'WARDIngestAttestationAck' },
+);
+
+export type WARDListEntries = Static<typeof WARDListEntries>;
+export const WARDListEntries = Type.Object(
+    {
+        app_id: Type.Optional(Type.String()),
+        key_type: Type.Optional(Type.String()),
+        device_id: Type.Optional(Type.Number()),
+    },
+    { $id: 'WARDListEntries' },
+);
+
+export type WARDListEntriesAck = Static<typeof WARDListEntriesAck>;
+export const WARDListEntriesAck = Type.Object(
+    {
+        shown: Type.Number(),
+        entries: Type.Number(),
+        counter: Type.Number(),
+        complete: Type.Boolean(),
+    },
+    { $id: 'WARDListEntriesAck' },
 );
 
 export type WARDListPendingEdits = Static<typeof WARDListPendingEdits>;
@@ -263,6 +344,35 @@ export const WARDLookupAck = Type.Object(
         ward_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDLookupAck' },
+);
+
+export type WARDTrieNode = Static<typeof WARDTrieNode>;
+export const WARDTrieNode = Type.Object(
+    {
+        split_bit: Type.Optional(Type.Number()),
+        left: Type.Optional(Type.String()),
+        right: Type.Optional(Type.String()),
+        entry_key: Type.Optional(Type.String()),
+        content: Type.Optional(LeafContent),
+        identity: Type.Optional(LeafIdentity),
+    },
+    { $id: 'WARDTrieNode' },
+);
+
+export type WARDNodeAck = Static<typeof WARDNodeAck>;
+export const WARDNodeAck = Type.Object(
+    {
+        nodes: Type.Array(WARDTrieNode),
+    },
+    { $id: 'WARDNodeAck' },
+);
+
+export type WARDNodeRequest = Static<typeof WARDNodeRequest>;
+export const WARDNodeRequest = Type.Object(
+    {
+        node_hash: Type.String(),
+    },
+    { $id: 'WARDNodeRequest' },
 );
 
 export type WARDPerformBatch = Static<typeof WARDPerformBatch>;
@@ -345,6 +455,8 @@ export const WARDProofAck = Type.Object(
         witness_commit: Type.Optional(Type.String()),
         content: Type.Optional(LeafContent),
         identity: Type.Optional(LeafIdentity),
+        attestation: Type.Optional(WARDAttestation),
+        unavailable: Type.Optional(Type.Boolean()),
     },
     { $id: 'WARDProofAck' },
 );
@@ -354,6 +466,7 @@ export const WARDProofRequest = Type.Object(
     {
         pending_id: Type.Optional(Type.Number()),
         entry_key: Type.String(),
+        freshness_nonce: Type.Optional(Type.String()),
     },
     { $id: 'WARDProofRequest' },
 );
@@ -366,6 +479,7 @@ export const WARDQueueUpdate = Type.Object(
         app_id: Type.Optional(Type.String()),
         key_type: Type.Optional(Type.String()),
         device_id: Type.Optional(Type.Number()),
+        delete: Type.Optional(Type.Boolean()),
     },
     { $id: 'WARDQueueUpdate' },
 );
@@ -405,8 +519,28 @@ export const WARDSyncAck = Type.Object(
         nonce: Type.String(),
         version: Type.Number(),
         ward_id: Type.Optional(Type.String()),
+        counter: Type.Number(),
+        root: Type.Optional(Type.String()),
+        root_known: Type.Boolean(),
     },
     { $id: 'WARDSyncAck' },
+);
+
+export type WARDValidateCache = Static<typeof WARDValidateCache>;
+export const WARDValidateCache = Type.Record(Type.Never(), Type.Never(), {
+    $id: 'WARDValidateCache',
+});
+
+export type WARDValidateCacheAck = Static<typeof WARDValidateCacheAck>;
+export const WARDValidateCacheAck = Type.Object(
+    {
+        checked: Type.Number(),
+        unchanged: Type.Number(),
+        updated: Type.Number(),
+        removed: Type.Number(),
+        counter: Type.Number(),
+    },
+    { $id: 'WARDValidateCacheAck' },
 );
 
 export type WARDVerifyChain = Static<typeof WARDVerifyChain>;

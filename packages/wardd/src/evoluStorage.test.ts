@@ -31,3 +31,29 @@ it('logs Evolu lookup misses, hits, checkpoints and transition reads without wal
         await storage.dispose();
     }
 });
+
+it('debug fault injection removes only the selected journal row', async () => {
+    const storage = await EvoluWardStorage.open({ dataDir: null });
+    try {
+        for (const wallet of ['first', 'other']) {
+            await storage.appendTransition(wallet, {
+                counter: 1,
+                prevRoot: '',
+                targetRoot: 'aa',
+                leaves: [],
+            });
+            await storage.appendTransition(wallet, {
+                counter: 2,
+                prevRoot: 'aa',
+                targetRoot: 'bb',
+                leaves: [],
+            });
+        }
+        await storage.debugDropTransition('first', 2, 'bb');
+        expect(storage.getTransitions('first').map(record => record.counter)).toEqual([1]);
+        expect(storage.getTransitions('other').map(record => record.counter)).toEqual([1, 2]);
+        await expect(storage.debugDropTransition('first', 2, 'bb')).rejects.toThrow('not found');
+    } finally {
+        await storage.dispose();
+    }
+});

@@ -1,10 +1,12 @@
 /**
  * wardd [--port 21329] [--data-dir ~/.trezor-ward] [--memory] [--token-file F]
  *       [--wm-url URL] [--evolu-node HEX] [--relay URL] [--origin O]... [--verbose]
+ *       [--label-freshness]
  *
  * Serves the relay over a WebSocket for host libraries in another process (HWI). With no
  * --token-file, a token is generated into `<data-dir>/token` (mode 0600) and reused. With no
  * --wm-url, the WM is the in-process mock that signs with the debug key (debug firmware only).
+ * --label-freshness asks the WM once per label display, so the device can warn about a stale label.
  */
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
@@ -13,6 +15,7 @@ import path from 'path';
 
 import { InMemoryWardDb } from '@trezor/ward';
 
+import { startDebugServer } from './debug';
 import { EvoluWardStorage } from './evoluStorage';
 import { createConsoleLog } from './logging';
 import { DEFAULT_ORIGINS, DEFAULT_PORT, startServer } from './server';
@@ -63,16 +66,23 @@ const main = async () => {
         (process.env.WARD_MANAGER_PORT
             ? `http://127.0.0.1:${process.env.WARD_MANAGER_PORT}`
             : undefined);
+    const debugPort = value('debug-port') ?? process.env.WARDD_DEBUG_PORT;
     const wardd = new Wardd({
+        debugDropTransition:
+            debugPort !== undefined && storage instanceof EvoluWardStorage
+                ? (wardId, counter, root) => storage.debugDropTransition(wardId, counter, root)
+                : undefined,
         storage,
         wm: wmUrl ? new HttpWm(wmUrl, log, delays) : new MockWm(log, delays),
         log: flag('verbose') || delays ? log : undefined,
         delays,
+        labelFreshness: flag('label-freshness') || process.env.WARD_LABEL_FRESHNESS === '1',
     });
     const origins = values('origin');
+    const token = await readOrCreateToken(dataDir, value('token-file'));
     const server = await startServer({
         wardd,
-        token: await readOrCreateToken(dataDir, value('token-file')),
+        token,
         port: Number(value('port') ?? process.env.WARDD_PORT ?? DEFAULT_PORT),
         allowedOrigins: origins.length ? origins : DEFAULT_ORIGINS,
         delays,
@@ -82,7 +92,13 @@ const main = async () => {
         `wardd listening on ws://127.0.0.1:${server.port} ` +
             `(storage: ${memory ? 'memory' : dataDir}, WM: ${wmUrl ?? 'debug mock'})`,
     );
+    const debug =
+        debugPort === undefined
+            ? undefined
+            : await startDebugServer({ wardd, token, port: Number(debugPort) });
+    if (debug) log(`wardd debug listening on 127.0.0.1:${debug.port}`);
     const stop = async () => {
+        await debug?.close();
         await server.close();
         await wardd.dispose();
         process.exit(0);

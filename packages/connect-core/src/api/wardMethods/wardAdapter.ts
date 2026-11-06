@@ -56,6 +56,10 @@ export const withWard = async <T>(
 
     // A device Failure is wardd's to see -- it ends the conversation -- so it goes back as a
     // `Failure` message rather than ending the call here.
+    // KNOWN DEFICIENCY: wardd is untrusted, yet this relays ANY message the protobuf schema knows
+    // (GetPublicKey, ApplySettings, ...), not only the WARD flows -- unlike the Python and Rust
+    // adapters, which keep an allowlist (itself global rather than per conversation).
+    // FIXME(ward): allow per wardd method only the messages that method's flow sends.
     const relay: RelayDevice = async ({ name, message }) => {
         try {
             const res = await cmd.relayCall(name, stripAbsent(message));
@@ -69,8 +73,19 @@ export const withWard = async <T>(
         }
     };
 
-    cmd.setWardProofCallback(async request =>
-        stripAbsent(await endpoint.call('answerProofRequest', { request: stripAbsent(request) })),
+    // ACCEPTED: any wardd failure to serve a proof is answered `unavailable`; the device may then
+    // show a STICKY cached label, possibly stale, marked as cached.
+    cmd.setWardProofCallback(async request => {
+        try {
+            return stripAbsent(
+                await endpoint.call('answerProofRequest', { request: stripAbsent(request) }),
+            );
+        } catch {
+            return { unavailable: true };
+        }
+    });
+    cmd.setWardNodeCallback(async request =>
+        stripAbsent(await endpoint.call('answerNodeRequest', { request: stripAbsent(request) })),
     );
     try {
         return await fn(endpoint, relay);
@@ -78,7 +93,8 @@ export const withWard = async <T>(
         throw asConnectError(error);
     } finally {
         cmd.setWardProofCallback(undefined);
-        endpoint.close();
+        cmd.setWardNodeCallback(undefined);
+        await endpoint.close();
     }
 };
 

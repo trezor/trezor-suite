@@ -18,6 +18,19 @@ const blob: BlobRow = {
     content: part('ccdd'),
 };
 const root = computeRootFromBlobs([blob]);
+const manager = () => {
+    const wm = new MockWm();
+    jest.spyOn(wm, 'current').mockResolvedValue({
+        counter: 1,
+        root,
+        mac: '11'.repeat(32),
+        signature: 'signed',
+        timestamp: 1700000000,
+        headNonce: '68'.repeat(32),
+    });
+
+    return wm;
+};
 
 const replica = () => {
     const storage = new InMemoryWardDb();
@@ -71,15 +84,22 @@ it('logs the exact proof acknowledgement returned to the HWI', async () => {
     const logs: unknown[][] = [];
     const endpoint = await new Wardd({
         storage: replica(),
-        wm: new MockWm(),
+        wm: manager(),
         log: (...messages) => logs.push(messages),
     }).connect();
     const device: RelayDevice = async request => {
         await Promise.resolve();
         if (request.name === 'WARDSync')
-            return { name: 'WARDSyncAck', message: { ward_id: wardId, nonce: 'ab'.repeat(32) } };
+            return {
+                name: 'WARDSyncAck',
+                message: { ward_id: wardId, nonce: 'ab'.repeat(32), counter: 1, root_known: true },
+            };
         if (request.name === 'WARDIngestAttestation')
             return { name: 'WARDIngestAttestationAck', message: { counter: 1 } };
+        if (request.name === 'WARDListPendingEdits')
+            return { name: 'WARDListPendingEditsAck', message: { pending_ids: [] } };
+        if (request.name === 'WARDValidateCache')
+            return { name: 'Failure', message: { message: 'Unexpected message' } };
 
         return { name: 'WARDReconcileAck', message: { counter: 1, new_root: root } };
     };
@@ -96,7 +116,7 @@ it('logs the exact proof acknowledgement returned to the HWI', async () => {
 it('rejects incomplete history before sending its checkpoint to the device', async () => {
     const storage = new InMemoryWardDb();
     storage.setTreeState(wardId, { counter: 1, root });
-    const endpoint = await new Wardd({ storage, wm: new MockWm() }).connect();
+    const endpoint = await new Wardd({ storage, wm: manager() }).connect();
     const sent: string[] = [];
     const device: RelayDevice = async request => {
         await Promise.resolve();

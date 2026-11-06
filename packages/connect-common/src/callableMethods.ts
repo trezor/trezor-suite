@@ -33,6 +33,7 @@ export const connectManagementMethods = [
     'wardUpdate',
     'wardVerify',
     'wardDisplayAddress',
+    'wardCacheEntry',
 ] as const;
 
 const connectPublicCallableMethodGroups = {

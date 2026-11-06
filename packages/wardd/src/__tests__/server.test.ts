@@ -48,41 +48,28 @@ describe('wardd over the WebSocket', () => {
                 case 'WARDSync':
                     return {
                         name: 'WARDSyncAck',
-                        message: { nonce: 'ab'.repeat(32), version: 1, ward_id: WARD_ID },
+                        message: {
+                            nonce: 'ab'.repeat(32),
+                            version: 1,
+                            counter: 0,
+                            root_known: true,
+                            ward_id: WARD_ID,
+                        },
                     };
+                case 'WARDListPendingEdits':
+                    return { name: 'WARDListPendingEditsAck', message: { pending_ids: [] } };
                 case 'WARDIngestAttestation':
-                    return { name: 'WARDIngestAttestationAck', message: { counter: 0 } };
-                case 'WARDReconcile':
-                    return { name: 'WARDReconcileAck', message: { counter: 0 } };
-                case 'WARDQueueUpdate':
-                    return { name: 'WARDQueueUpdateAck', message: { pending_id: 1 } };
-                case 'WARDPerformUpdate':
                     pulls.push(
                         await endpoint.call('answerProofRequest', {
                             request: { entry_key: '11'.repeat(32) },
                         }),
                     );
 
-                    return {
-                        name: 'WARDPerformUpdateAck',
-                        message: {
-                            counter: 1,
-                            ward_id: WARD_ID,
-                            entry_key: '11'.repeat(32),
-                            new_root: '22'.repeat(32),
-                            mac: '33'.repeat(32),
-                            content: { encoding: 1, plaintext: { content: '44' } },
-                        },
-                    };
-                case 'WARDConfirmedByWM':
-                    return {
-                        name: 'WARDConfirmedByWMAck',
-                        message: {
-                            counter: 1,
-                            new_root: '22'.repeat(32),
-                            root_mac: '55'.repeat(32),
-                        },
-                    };
+                    return { name: 'WARDIngestAttestationAck', message: { counter: 0 } };
+                case 'WARDReconcile':
+                    return { name: 'WARDReconcileAck', message: { counter: 0 } };
+                case 'WARDValidateCache': // a firmware that predates the offline-cache check
+                    return { name: 'Failure', message: { message: 'Unexpected message' } };
                 default:
                     return {
                         name: 'Failure',
@@ -92,18 +79,18 @@ describe('wardd over the WebSocket', () => {
         };
 
         const result = await endpoint.call(
-            'update',
+            'sync',
             { appId: 'btc', address: 'bc1q', networkSymbol: 'btc', metadata: { label: 'x' } },
             device,
         );
 
-        expect(result).toMatchObject({ wardId: WARD_ID, counter: 1, root: '22'.repeat(32) });
+        expect(result).toMatchObject({ wardId: WARD_ID, counter: 0, root: '' });
         expect(pulls).toEqual([{ proof: [] }]);
-        expect(storage.getTreeState(WARD_ID)).toMatchObject({ counter: 1, mac: '55'.repeat(32) });
+        expect(storage.getTreeState(WARD_ID)).toMatchObject({ counter: 0, root: '' });
         await expect(endpoint.call('status')).resolves.toEqual({
             wardId: WARD_ID,
-            counter: 1,
-            root: '22'.repeat(32),
+            counter: 0,
+            root: '',
         });
         endpoint.close();
     });

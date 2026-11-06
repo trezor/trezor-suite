@@ -1,6 +1,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import type { wardCacheEntry } from './wardCacheEntry';
 import type { wardDisplayAddress } from './wardDisplayAddress';
 import type { wardInit } from './wardInit';
 import type { wardListPending } from './wardListPending';
@@ -18,5 +19,6 @@ export const TrezorConnectWard = Type.Object({
     wardUpdate: Type.Unsafe<typeof wardUpdate>(),
     wardVerify: Type.Unsafe<typeof wardVerify>(),
     wardDisplayAddress: Type.Unsafe<typeof wardDisplayAddress>(),
+    wardCacheEntry: Type.Unsafe<typeof wardCacheEntry>(),
 });
 export type TrezorConnectWard = Static<typeof TrezorConnectWard>;

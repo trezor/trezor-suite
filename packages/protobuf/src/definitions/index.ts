@@ -328,6 +328,12 @@ import {
     TronWithdrawUnfreeze,
 } from './messages-tron';
 import {
+    WARDCacheEntry,
+    WARDCacheEntryAck,
+    WARDCacheExport,
+    WARDCacheExportAck,
+    WARDCacheImport,
+    WARDCacheImportAck,
     WARDConfirmBatchByWM,
     WARDConfirmBatchByWMAck,
     WARDConfirmRevertByWM,
@@ -342,10 +348,14 @@ import {
     WARDExportKeysAck,
     WARDIngestAttestation,
     WARDIngestAttestationAck,
+    WARDListEntries,
+    WARDListEntriesAck,
     WARDListPendingEdits,
     WARDListPendingEditsAck,
     WARDLookup,
     WARDLookupAck,
+    WARDNodeAck,
+    WARDNodeRequest,
     WARDPerformBatch,
     WARDPerformBatchAck,
     WARDPerformRevert,
@@ -360,6 +370,8 @@ import {
     WARDReconcileAck,
     WARDSync,
     WARDSyncAck,
+    WARDValidateCache,
+    WARDValidateCacheAck,
     WARDVerifyChain,
     WARDVerifyChainAck,
 } from './messages-ward';
@@ -568,6 +580,18 @@ export const MessageType = Type.Object(
         WARDConfirmRevertByWMAck,
         WARDVerifyChain,
         WARDVerifyChainAck,
+        WARDListEntries,
+        WARDNodeRequest,
+        WARDNodeAck,
+        WARDListEntriesAck,
+        WARDCacheEntry,
+        WARDCacheEntryAck,
+        WARDCacheExport,
+        WARDCacheExportAck,
+        WARDCacheImport,
+        WARDCacheImportAck,
+        WARDValidateCache,
+        WARDValidateCacheAck,
         DisplayAddress,
         DisplayAddressWithProof,
         EosGetPublicKey,
@@ -840,6 +864,12 @@ export type WireInMessage =
     | 'WARDPerformRevert'
     | 'WARDConfirmRevertByWM'
     | 'WARDVerifyChain'
+    | 'WARDListEntries'
+    | 'WARDNodeAck'
+    | 'WARDCacheEntry'
+    | 'WARDCacheExport'
+    | 'WARDCacheImport'
+    | 'WARDValidateCache'
     | 'DisplayAddress'
     | 'DisplayAddressWithProof'
     | 'EosGetPublicKey'
@@ -995,6 +1025,12 @@ export type WireOutMessage =
     | 'WARDPerformRevertAck'
     | 'WARDConfirmRevertByWMAck'
     | 'WARDVerifyChainAck'
+    | 'WARDNodeRequest'
+    | 'WARDListEntriesAck'
+    | 'WARDCacheEntryAck'
+    | 'WARDCacheExportAck'
+    | 'WARDCacheImportAck'
+    | 'WARDValidateCacheAck'
     | 'EosPublicKey'
     | 'EosTxActionRequest'
     | 'EosSignedTx'

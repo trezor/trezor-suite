@@ -13,13 +13,18 @@ import { callWard, withWard } from '../wardAdapter';
 /** A device session: `relayCall` answers by name; a pull goes through the registered callback. */
 const fakeCmd = (answers: Record<string, () => Promise<{ type: string; message: any }>>) => {
     let proofCallback: ((request: any) => any) | undefined;
+    let nodeCallback: ((request: any) => any) | undefined;
     const cmd = {
         relayCall: jest.fn((name: string, _msg: Record<string, unknown>) => answers[name]!()),
         setWardProofCallback: jest.fn(cb => {
             proofCallback = cb;
         }),
+        setWardNodeCallback: jest.fn(cb => {
+            nodeCallback = cb;
+        }),
         typedCall: jest.fn(),
         pull: (request: Record<string, unknown>) => proofCallback!(request),
+        pullNodes: (request: Record<string, unknown>) => nodeCallback!(request),
     };
 
     return cmd;
@@ -35,6 +40,8 @@ const fakeWardd = (
             calls.push({ method, params });
             if (method === 'answerProofRequest')
                 return Promise.resolve({ proof: [], content: null, x: {} });
+            if (method === 'answerNodeRequest')
+                return Promise.resolve({ nodes: [{ entry_key: 'ee', content: null }] });
 
             return script(device!, endpoint);
         }),
@@ -74,6 +81,37 @@ describe('the Connect WARD adapter', () => {
         ]);
         expect(endpoint.close).toHaveBeenCalled();
         expect(cmd.setWardProofCallback).toHaveBeenLastCalledWith(undefined);
+        expect(cmd.setWardNodeCallback).toHaveBeenLastCalledWith(undefined);
+    });
+
+    it('answers a proof pull wardd cannot serve as unavailable', async () => {
+        const cmd = fakeCmd({});
+        const endpoint: WardRelayEndpoint = {
+            call: jest.fn(() => Promise.reject(new RelayFailure('no_store', 'sync first'))),
+            close: jest.fn(),
+        };
+        setWardd({ connect: () => Promise.resolve(endpoint) });
+
+        const ack = await withWard(cmd as any, 'wardDisplayAddress', () =>
+            cmd.pull({ entry_key: 'ee' }),
+        );
+
+        expect(ack).toEqual({ unavailable: true });
+    });
+
+    it("answers a listing walk's node pull through wardd's answerNodeRequest", async () => {
+        const cmd = fakeCmd({});
+        const { wardd, calls } = fakeWardd(() => Promise.resolve({}));
+        setWardd(wardd);
+
+        const ack = await withWard(cmd as any, 'wardList', () =>
+            cmd.pullNodes({ node_hash: 'ab', absent: null }),
+        );
+
+        expect(calls).toEqual([
+            { method: 'answerNodeRequest', params: { request: { node_hash: 'ab' } } },
+        ]);
+        expect(ack).toEqual({ nodes: [{ entry_key: 'ee' }] });
     });
 
     it("answers the device's proof pull through wardd's answerProofRequest", async () => {

@@ -14,7 +14,6 @@ export interface WardLookupResult {
     isMember: boolean;
     counter: number;
     /** The stored label; only when the device proved membership. */
-    metadata?: Record<string, unknown>;
 }
 
 export declare function wardLookup(params: Params<WardVerifySchema>): Response<WardLookupResult>;

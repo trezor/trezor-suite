@@ -21,6 +21,11 @@ export type WardProofCallback = (
     request: Messages.WARDProofRequest,
 ) => Messages.WARDProofAck | Promise<Messages.WARDProofAck>;
 
+/** Answers a listing walk's WARDNodeRequest (WARDListEntries) with the requested trie nodes. */
+export type WardNodeCallback = (
+    request: Messages.WARDNodeRequest,
+) => Messages.WARDNodeAck | Promise<Messages.WARDNodeAck>;
+
 /**
  * Minimal interface to communicate with a connected device through its current transport session.
  *
@@ -32,6 +37,7 @@ export interface TypedCallProvider {
     /** One message by name, any answer: the WARD relay's carrier (see DeviceCurrentSession). */
     relayCall: (type: string, msg?: Record<string, unknown>) => Promise<MessageResponse>;
     setWardProofCallback: (callback: WardProofCallback | undefined) => void;
+    setWardNodeCallback: (callback: WardNodeCallback | undefined) => void;
     isDisposed: () => boolean;
     cancelCall: () => Promise<CallResult>;
     call: (

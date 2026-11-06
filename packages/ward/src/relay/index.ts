@@ -18,8 +18,9 @@ export type RelayMessage = { name: string; message: Record<string, unknown> };
 
 /**
  * Send one message on the host library's device session and return what the device finally
- * answered. A WARDProofRequest the device raises meanwhile is NOT returned: the host library
- * answers it itself, through `answerProofRequest` on the same endpoint. A device `Failure` is returned as
+ * answered. A WARDProofRequest or WARDNodeRequest the device raises meanwhile is NOT returned: the
+ * host library answers it itself, through `answerProofRequest` / `answerNodeRequest` on the same
+ * endpoint. A device `Failure` is returned as
  * `{ name: 'Failure', message: { code, message } }`, never thrown.
  */
 export type RelayDevice = (message: RelayMessage) => Promise<RelayMessage>;
@@ -33,15 +34,64 @@ export type RelayMethod =
     | 'lookup'
     /** Conversation: `{ appId, address, networkSymbol, metadata?, delete?, wardId? }` -> `RelayUpdateResult`. */
     | 'update'
+    /**
+     * Conversation: `{ appId?, keyType?, deviceId?, wardId? }` -> `RelayListResult`. Shows every
+     * matching entry on the device screen; the device pulls the trie node by node.
+     */
+    | 'listEntries'
+    /**
+     * Conversation: `{ entryKey, wardId? }` -> `RelayCacheResult`. The device pulls the entry's
+     * proof, verifies it and copies the entry into its offline cache.
+     */
+    | 'cacheEntry'
+    /** Conversation: `{}` -> `{ entries: hex[] }`. The device's cached entries, each sealed to the wallet. */
+    | 'exportCache'
+    /** Conversation: `{ entries: hex[] }` -> `{ imported, skipped }`. Loads a backup (sticky bits kept). */
+    | 'importCache'
+    /** Conversation: `{ wardId? }` -> `RelayValidateResult`. Sync, then check every cached entry by proof. */
+    | 'validateCache'
     /** Answer one device pull: `{ request }` (a WARDProofRequest body) -> a WARDProofAck body. */
     | 'answerProofRequest'
+    /** Answer one listing pull: `{ request }` (a WARDNodeRequest body) -> a WARDNodeAck body. */
+    | 'answerNodeRequest'
     /** `{}` -> `{ wardId, counter, root }` of the wallet this endpoint last synced. */
     | 'status';
 
 /** The methods that are conversations: wardd drives the device through `RelayDevice`. */
-export const RELAY_CONVERSATIONS: readonly RelayMethod[] = ['sync', 'lookup', 'update'];
+export const RELAY_CONVERSATIONS: readonly RelayMethod[] = [
+    'sync',
+    'lookup',
+    'update',
+    'listEntries',
+    'cacheEntry',
+    'exportCache',
+    'importCache',
+    'validateCache',
+];
 
 export type RelaySyncResult = { wardId: string; counter: number; root: string };
+
+/** The entry is in the device's offline cache; nothing of its content comes back. */
+export type RelayCacheResult = { wardId: string; replaced: boolean; counter: number };
+
+/** The device's verdicts on its cached entries after a sync; counts only. */
+export type RelayCacheValidation = {
+    checked: number;
+    unchanged: number;
+    updated: number;
+    removed: number;
+};
+
+export type RelayValidateResult = RelaySyncResult & { cache: RelayCacheValidation };
+
+/** How a listing ended. Counts only: the entries themselves were shown on the device. */
+export type RelayListResult = {
+    wardId: string;
+    shown: number;
+    entries: number;
+    counter: number;
+    complete: boolean;
+};
 
 export type RelayLookupResult = {
     wardId: string;
@@ -49,16 +99,17 @@ export type RelayLookupResult = {
     valid: boolean;
     isMember: boolean;
     counter: number;
-    /** the host-side label wardd stores for the entry; only when the device proved membership */
-    metadata?: Record<string, unknown>;
+    /** Authenticated plaintext is shown only on the trusted device display. */
 };
 
 export type RelayUpdateResult = {
     wardId: string;
     counter: number;
     root: string;
-    /** the WM head moved on first; nothing was installed and the device's candidate was discarded */
+    /** The WM head moved first; nothing was installed and the intent remains queued. */
     conflict?: boolean;
+    queued?: boolean;
+    pendingId?: number;
     /** the device installed the change but wardd could not store it; resync before the next write */
     localCacheError?: string;
 };
@@ -95,7 +146,7 @@ export interface WardRelayEndpoint {
         params?: Record<string, unknown>,
         device?: RelayDevice,
     ): Promise<Record<string, unknown>>;
-    close(): void;
+    close(): void | Promise<void>;
 }
 
 /** Where a host library gets endpoints: wardd in-process, or a WebSocket client to a running wardd. */
