@@ -93,10 +93,13 @@ export {
     type StakingPositionWarningCode,
 } from './stakingPosition';
 export {
+    cardanoDrepSchema,
+    cardanoPoolIdSchema,
     SOLANA_STAKE_ACCOUNT_STATUSES,
     solanaStakeAccountSchema,
     solanaStakeAccountStatusSchema,
     stakingPositionDetailsSchema,
+    type CardanoDrep,
     type SolanaStakeAccount,
     type SolanaStakeAccountStatus,
     type StakingPositionDetails,

@@ -14,6 +14,11 @@ export const STAKING_POSITION_STATUSES = [
     'inactive',
 ] as const;
 
+/**
+ * `locked`: the position's amounts are held outside `account.balance`, as in a pool contract or a
+ * stake account. `liquid`: they are already part of `account.balance`, as Cardano delegation is,
+ * so they must never be added to it.
+ */
 export const STAKING_POSITION_LOCKUPS = ['locked', 'liquid'] as const;
 
 export const stakingPositionWarningSchema = z.discriminatedUnion('code', [

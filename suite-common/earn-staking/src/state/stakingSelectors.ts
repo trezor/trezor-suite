@@ -1,4 +1,5 @@
 import {
+    type StakingAmount,
     type StakingPosition,
     type StakingPositionBalances,
     type StakingProductDescriptor,
@@ -73,19 +74,42 @@ const sumBalance = (
             .toFixed(0),
     );
 
-export const selectStakingAccountTotals = createWeakMapSelector(
+const selectCountedStakingPositions = createWeakMapSelector(
     [selectStakingPositionsByAccount, selectStakingProducts],
-    (positions, products): StakingPositionBalances => {
-        const countedPositions = positions.filter(
-            ({ productId }) => products[productId]?.isCountedInAccountTotals === true,
-        );
+    (positions, products) =>
+        returnStableArrayIfEmpty(
+            positions.filter(
+                ({ productId }) => products[productId]?.isCountedInAccountTotals === true,
+            ),
+        ),
+);
 
-        return {
-            staked: sumBalance(countedPositions, 'staked'),
-            pending: sumBalance(countedPositions, 'pending'),
-            unstaking: sumBalance(countedPositions, 'unstaking'),
-            withdrawable: sumBalance(countedPositions, 'withdrawable'),
-            rewards: sumBalance(countedPositions, 'rewards'),
-        };
+// The stake of liquid positions is already in the account balance; only locked positions hold
+// funds outside it. Rewards are never added: they compound into the stake, are only expected, or
+// are part of the balance.
+export const selectStakingAccountAmountOutsideBalance = createWeakMapSelector(
+    [selectCountedStakingPositions],
+    (countedPositions): StakingAmount => {
+        const lockedPositions = countedPositions.filter(({ lockup }) => lockup === 'locked');
+
+        return stakingAmountSchema.parse(
+            (['staked', 'pending', 'unstaking', 'withdrawable'] as const)
+                .reduce(
+                    (sum, balance) => sum.plus(sumBalance(lockedPositions, balance)),
+                    new BigNumber(0),
+                )
+                .toFixed(0),
+        );
     },
+);
+
+export const selectStakingAccountTotals = createWeakMapSelector(
+    [selectCountedStakingPositions],
+    (countedPositions): StakingPositionBalances => ({
+        staked: sumBalance(countedPositions, 'staked'),
+        pending: sumBalance(countedPositions, 'pending'),
+        unstaking: sumBalance(countedPositions, 'unstaking'),
+        withdrawable: sumBalance(countedPositions, 'withdrawable'),
+        rewards: sumBalance(countedPositions, 'rewards'),
+    }),
 );

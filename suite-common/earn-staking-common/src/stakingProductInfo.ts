@@ -8,6 +8,7 @@ export const stakingProductTargetSchema = z.strictObject({
     providerId: stakingProviderIdSchema,
     name: z.string().optional(),
     rate: z.number().nonnegative().nullable(),
+    saturation: z.number().nonnegative().nullable(),
 });
 
 export type StakingProductTarget = z.infer<typeof stakingProductTargetSchema>;
@@ -17,7 +18,12 @@ export const stakingProductInfoSchema = z.strictObject({
     entryPeriodDays: z.number().nullable(),
     exitPeriodDays: z.number().nullable(),
     nextRewardAt: timestampSchema.nullable(),
-    targets: z.array(stakingProductTargetSchema).readonly(),
+    targets: z
+        .array(stakingProductTargetSchema)
+        .refine(targets => new Set(targets.map(({ address }) => address)).size === targets.length, {
+            error: 'Expected every target to have its own address',
+        })
+        .readonly(),
 });
 
 export type StakingProductInfo = z.infer<typeof stakingProductInfoSchema>;
