@@ -13874,6 +13874,11 @@ export const messages = defineMessages({
         id: 'TR_SUITE_SYNC_ERROR_UNAVAILABLE',
         defaultMessage: 'Suite Sync is unavailable on this device.',
     },
+    TR_SUITE_SYNC_ERROR_LAZY_LOADING: {
+        id: 'TR_SUITE_SYNC_ERROR_LAZY_LOADING',
+        defaultMessage:
+            'Something went wrong. Try reloading the app, and if it keeps happening, contact Trezor Support.',
+    },
     TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING: {
         id: 'TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING',
         defaultMessage: 'Switch to legacy labeling?',

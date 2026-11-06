@@ -9,6 +9,7 @@ import {
     type DeviceNotConnectedErrorType,
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
+import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result } from '@trezor/type-utils';
 
 export type EnsureSuiteSyncOwnerParams = {
@@ -27,6 +28,7 @@ export type EnsureSuiteSyncOwner = (
         | DeviceErrorType
         | ProofOfDelegatedSignFailedType
         | CreateSuiteSyncOwnerError
+        | LazyLoadingError
         | DeviceNotConnectedErrorType
     >
 >;

@@ -26,6 +26,7 @@
         "@suite/tor": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
+        "@trezor/lazy-loading": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },

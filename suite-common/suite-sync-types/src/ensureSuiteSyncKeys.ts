@@ -6,6 +6,7 @@ import {
     type DeviceNotConnectedErrorType,
     type TrezorDevice,
 } from '@suite-common/suite-types';
+import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result } from '@trezor/type-utils';
 
 type EnsureSuiteSyncKeysParams = {
@@ -34,6 +35,7 @@ export type EnsureSuiteSyncKeys = (
         | DeviceErrorType
         | DeviceCancelledErrType
         | DeviceNotConnectedErrorType
+        | LazyLoadingError
     >
 >;
 

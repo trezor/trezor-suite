@@ -57,6 +57,7 @@
 !/packages/eslint
 !/packages/icons
 !/packages/jsonl
+!/packages/lazy-loading
 !/packages/logger
 !/packages/node-utils
 !/packages/perf-e2e
