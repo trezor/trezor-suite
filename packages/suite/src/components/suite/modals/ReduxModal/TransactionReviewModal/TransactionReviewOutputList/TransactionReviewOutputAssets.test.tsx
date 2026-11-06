@@ -8,14 +8,16 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormStateTradingCryptoCurrency } from '@suite-common/wallet-types';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import {
     TransactionReviewOutputAssets,
     type TransactionReviewOutputAssetsProps,
 } from './TransactionReviewOutputAssets';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -34,7 +36,7 @@ const cryptoReceive: FormStateTradingCryptoCurrency = {
 };
 
 const renderAssets = (receive: TransactionReviewOutputAssetsProps['receive']) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: mockInitialAppState,
     });
 

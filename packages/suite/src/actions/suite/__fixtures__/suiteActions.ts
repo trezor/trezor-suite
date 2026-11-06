@@ -7,8 +7,7 @@ import {
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DEVICE, type Device, TRANSPORT } from '@trezor/connect';
 
-import { type AppState } from 'src/types/suite';
-
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 import { setSuiteError } from '../suiteActions';
 
 const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
@@ -234,8 +233,8 @@ const selectNewlyConnectedDevice = [
 type MarkDeviceAsRecentlyConnectedFixture = {
     description: string;
     state: {
-        suite: Partial<AppState['suite']>;
-        device: Partial<AppState['device']>;
+        suite: Partial<MockSuiteState['suite']>;
+        device: Partial<MockSuiteState['device']>;
     };
     newlyConnectedDevice: Device;
     isSetAsRecentlyConnected: boolean;

@@ -6,9 +6,8 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useSelectedTradingAsset } from './useSelectedTradingAsset';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -49,7 +48,7 @@ const buildState = (
 
 describe('useSelectedTradingAsset', () => {
     it('returns undefined when no eligible account is selected', () => {
-        const { services } = createTestCompositionRoot<void, AppState>({
+        const { services } = createTestCompositionRoot<void, MockSuiteState>({
             preloadedState: buildState([INELIGIBLE_ACCOUNT]),
         });
         const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('sell'), {
@@ -60,7 +59,7 @@ describe('useSelectedTradingAsset', () => {
     });
 
     it('returns the native asset view-model when a native account is selected', () => {
-        const { services } = createTestCompositionRoot<void, AppState>({
+        const { services } = createTestCompositionRoot<void, MockSuiteState>({
             preloadedState: buildState([ELIGIBLE_ACCOUNT], ELIGIBLE_ACCOUNT.key),
         });
         const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('sell'), {
@@ -79,7 +78,7 @@ describe('useSelectedTradingAsset', () => {
     });
 
     it('flags a prefilled token as a token asset', () => {
-        const { services } = createTestCompositionRoot<void, AppState>({
+        const { services } = createTestCompositionRoot<void, MockSuiteState>({
             preloadedState: buildState([ELIGIBLE_ACCOUNT], ELIGIBLE_ACCOUNT.key, {
                 key: ELIGIBLE_ACCOUNT.key,
                 cryptoId: TOKEN_CRYPTO_ID,

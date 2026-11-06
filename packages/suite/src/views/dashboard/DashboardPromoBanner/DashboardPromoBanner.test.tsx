@@ -14,12 +14,11 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { DashboardPromoBanner } from './DashboardPromoBanner';
 import { blackFridayHolidayBannerTypes } from './dashboardBannerTypes';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const flagsReducer = prepareFlagsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -73,7 +72,7 @@ describe('DashboardPromoBanner targeting', () => {
         'targets $model and links every offer to holiday deals',
         async ({ model, expectedBanners }) => {
             const btc = asNetworkSymbol('btc');
-            const initialState: AppState = {
+            const initialState: MockSuiteState = {
                 ...mockInitialAppState,
                 networks: mockNetworksState([btc]),
                 device: {
@@ -101,7 +100,7 @@ describe('DashboardPromoBanner targeting', () => {
             };
             const { services } = createTestCompositionRoot<
                 WithServices<DesktopAnalyticsDep>,
-                AppState
+                MockSuiteState
             >({
                 preloadedState: initialState,
                 reducer: (state = initialState, action) => ({

@@ -12,11 +12,13 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 const device = mockSuiteDevice(undefined, {
     major_version: 2,
@@ -60,7 +62,7 @@ const buildFormState = (trading?: FormStateTrading): FormState => ({
 });
 
 const renderTotalOutput = (symbol: NetworkSymbol, trading?: FormStateTrading) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             device: { ...mockInitialAppState.device, selectedDevice: device },

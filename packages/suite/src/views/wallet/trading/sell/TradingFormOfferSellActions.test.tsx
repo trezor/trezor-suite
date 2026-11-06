@@ -11,11 +11,10 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingFormOfferSellActions } from './TradingFormOfferSellActions';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const mockUseTradingFormContext = jest.fn();
 const mockUseTradingFormOfferCommon = jest.fn();
@@ -59,7 +58,10 @@ const account = mockWalletAccount({
 });
 
 const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: {
             ...mockInitialAppState,
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
@@ -71,7 +73,7 @@ const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
                     composedTransactionInfo: { composed },
                 },
             },
-        } as unknown as AppState,
+        } as unknown as MockSuiteState,
         services: () => ({ analytics: mockDesktopAnalytics() }),
     });
     renderWithProviders(services, <TradingFormOfferSellActions />);

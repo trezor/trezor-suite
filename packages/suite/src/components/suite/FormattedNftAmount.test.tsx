@@ -10,11 +10,10 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenTransfer } from '@trezor/connect';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { FormattedNftAmount } from './FormattedNftAmount';
-import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
 const ethereumAccount = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),
@@ -32,7 +31,7 @@ const nftTransfer: TokenTransfer = {
     decimals: 0,
 };
 
-const getInitialState = (): AppState => ({
+const getInitialState = (): MockSuiteState => ({
     ...mockInitialAppState,
     wallet: {
         ...mockInitialAppState.wallet,
@@ -48,7 +47,7 @@ const getInitialState = (): AppState => ({
 
 describe('FormattedNftAmount', () => {
     it('opens a token in the explorer of its own network, not of the selected account', () => {
-        const { services } = createTestCompositionRoot<void, AppState>({
+        const { services } = createTestCompositionRoot<void, MockSuiteState>({
             preloadedState: getInitialState(),
         });
 

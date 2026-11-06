@@ -17,12 +17,11 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
 import { ETH, type PendingRateStatus, getEthAssetState } from './assetDetailTestState';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/price-chart', () => ({
     ...jest.requireActual('@suite-common/price-chart'),
@@ -68,7 +67,7 @@ const getInitialState = ({
     ethRateStatus,
     chartRange = INITIAL_ASSET_PRICE_CHART_RANGE,
     knownTokens = [],
-}: InitialStateParams): AppState => ({
+}: InitialStateParams): MockSuiteState => ({
     ...getEthAssetState({
         accounts: [mockWalletAccount({ symbol: ETH, formattedBalance: '2' })],
         ethRate,
@@ -85,8 +84,11 @@ const getInitialState = ({
 
 const mockReport = jest.fn();
 
-const renderMarketPrice = (state: AppState, contractAddress?: TokenAddress) => {
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+const renderMarketPrice = (state: MockSuiteState, contractAddress?: TokenAddress) => {
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: state,
         services: () => ({ analytics: mockDesktopAnalytics(mockReport) }),
     });

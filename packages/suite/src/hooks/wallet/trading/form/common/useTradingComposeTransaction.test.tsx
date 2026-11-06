@@ -17,10 +17,10 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 
-import { type AppState } from 'src/reducers/store';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingComposeTransaction } from './useTradingComposeTransaction';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 
 const STALE_ADDRESS = 'stale-btc-placeholder';
 const BTC_PLACEHOLDER = 'btc-placeholder-address';
@@ -115,7 +115,7 @@ const renderComposeTransaction = ({
     defaultValues,
     bitcoinAmountUnit,
 }: RenderComposeTransactionParams = {}) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             wallet: {
                 accounts: [BTC_ACCOUNT, BTC_ACCOUNT_B, SOL_ACCOUNT],

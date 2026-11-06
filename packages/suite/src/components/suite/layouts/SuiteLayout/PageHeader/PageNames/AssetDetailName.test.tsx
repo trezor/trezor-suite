@@ -10,11 +10,13 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailName } from './AssetDetailName';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 type TokenUrlBlurProps = {
     text?: string;
@@ -40,7 +42,7 @@ type GetInitialStateParams = {
     isTokenRecognized: boolean;
 };
 
-const getInitialState = ({ isTokenRecognized }: GetInitialStateParams): AppState => ({
+const getInitialState = ({ isTokenRecognized }: GetInitialStateParams): MockSuiteState => ({
     ...mockInitialAppState,
     networks: mockNetworksState([ETH]),
     device: {
@@ -50,7 +52,7 @@ const getInitialState = ({ isTokenRecognized }: GetInitialStateParams): AppState
     router: {
         ...mockInitialAppState.router,
         params: { symbol: ETH, contractAddress: TOKEN },
-    } as AppState['router'],
+    } as MockSuiteState['router'],
     tokenDefinitions: {
         [ETH]: {
             coin: {
@@ -81,8 +83,8 @@ const getInitialState = ({ isTokenRecognized }: GetInitialStateParams): AppState
     },
 });
 
-const renderName = (state: AppState) => {
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
+const renderName = (state: MockSuiteState) => {
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: state });
 
     renderWithProviders({ ...services, networks: { networkIcon } }, <AssetDetailName />);
 };

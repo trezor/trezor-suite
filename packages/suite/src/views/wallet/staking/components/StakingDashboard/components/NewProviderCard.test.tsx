@@ -8,11 +8,13 @@ import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-confi
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { NewProviderCard } from './NewProviderCard';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 const renderCard = (poolId: string | null) => {
     const account: Account = {
@@ -20,7 +22,7 @@ const renderCard = (poolId: string | null) => {
         ...networkSpecificDefaultCardano,
         misc: { staking: { ...networkSpecificDefaultCardano.misc.staking, poolId } },
     };
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: mockInitialAppState,
     });
 

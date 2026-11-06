@@ -10,9 +10,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
+import { type MockSuiteState } from '../../../../../mocks/mockInitialAppState';
 
 const mockReport = jest.fn();
 const mockGetPendingTransaction = jest.fn<YieldPendingTransactionState | null, []>();
@@ -41,7 +40,10 @@ const pendingDeposit = (): YieldPendingTransactionState => ({
 type TrackingOptions = Partial<Parameters<typeof useYieldPendingTransactionTracking>[0]>;
 
 const renderTracking = (options: TrackingOptions = {}) => {
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: {},
         services: () => ({ analytics: mockDesktopAnalytics(mockReport) }),
     });

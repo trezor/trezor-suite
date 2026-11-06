@@ -12,9 +12,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useTradingSellTradeActions } from './useTradingSellTradeActions';
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
 const mockLoadInitialDataThunk = jest.fn((args: unknown) =>
     Object.assign(() => Promise.resolve(), { type: '@trading/loadInitialData', args }),
@@ -172,7 +171,7 @@ const renderActions = (overrides?: StateOverrides) => {
 
     const { services } = createTestCompositionRoot<
         { services: UseTradingSellTradeActionsServices },
-        AppState
+        MockSuiteState
     >({
         preloadedState: state,
         services: () => ({

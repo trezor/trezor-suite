@@ -14,11 +14,13 @@ import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingFormOfferOTC } from './TradingFormOfferOTC';
-import { mockInitialAppState } from '../../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../../mocks/mockInitialAppState';
 
 const mockUseTradingFormContext = jest.fn();
 
@@ -71,7 +73,10 @@ const sellContext = (amount: string) => {
 };
 
 const renderBanner = (bitcoinAmountUnit: PROTO.AmountUnit) => {
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {

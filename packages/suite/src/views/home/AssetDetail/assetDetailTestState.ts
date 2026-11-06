@@ -6,9 +6,7 @@ import { type Account, type CurrentRate, type Timestamp } from '@suite-common/wa
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { type AppState } from 'src/reducers/store';
-
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
@@ -64,7 +62,7 @@ export const getEthAssetState = ({
     ethRate,
     ethWeekAgoRate,
     ethRateStatus,
-}: EthAssetStateParams): AppState => ({
+}: EthAssetStateParams): MockSuiteState => ({
     ...mockInitialAppState,
     networks: mockNetworksState([ETH]),
     device: {

@@ -16,9 +16,8 @@ import {
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useBuyQuotes } from './useBuyQuotes';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 import { DEBOUNCE_DELAY_MS } from '../common/useTradingQuoteRequest';
 
 const btcSymbol = asNetworkSymbol('btc');
@@ -89,7 +88,10 @@ const renderBuyQuotes = (
     { resolver }: RenderBuyQuotesOptions = {},
 ) => {
     const report = jest.fn();
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: {
             wallet: {
                 trading: {

@@ -9,12 +9,14 @@ import { explorerInitialState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { type IODetailsType } from './IODetailsType';
 import { IOGroup } from './IOGroup';
-import { mockInitialAppState } from '../../../../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../../../../mocks/mockInitialAppState';
 
 const bitcoinAccount = mockWalletAccount({
     symbol: asNetworkSymbol('btc'),
@@ -35,7 +37,7 @@ const bitcoinTransaction = {
 const inputAddress = 'bc1qtestinputaddress';
 const inputs: IODetailsType[] = [{ addresses: [inputAddress] } as IODetailsType];
 
-const getInitialState = (): AppState => ({
+const getInitialState = (): MockSuiteState => ({
     ...mockInitialAppState,
     wallet: {
         ...mockInitialAppState.wallet,
@@ -52,7 +54,7 @@ const getInitialState = (): AppState => ({
 
 describe('IOGroup', () => {
     it('opens an address in the explorer of the transaction network, not of the selected account', () => {
-        const { services } = createTestCompositionRoot<void, AppState>({
+        const { services } = createTestCompositionRoot<void, MockSuiteState>({
             preloadedState: getInitialState(),
         });
 

@@ -31,8 +31,9 @@ import { PROTO } from '@trezor/connect';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { type AppState } from 'src/reducers/store';
 import protocolReducer from 'src/reducers/suite/protocolReducer';
+
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
 const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -1839,7 +1840,7 @@ export const signAndPush: SignAndPush[] = [
 type FeeChangeFixture = {
     skip?: boolean;
     description: string;
-    store: DeepPartial<AppState['wallet']>;
+    store: DeepPartial<MockSuiteState['wallet']>;
     connect: any; // note: don't blame me, it was even worse before I added this type
     actionSequence: any;
     finalResult: any;

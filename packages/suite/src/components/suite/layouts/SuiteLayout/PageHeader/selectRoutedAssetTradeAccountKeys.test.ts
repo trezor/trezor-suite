@@ -5,9 +5,8 @@ import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/types/suite';
-
 import { selectRoutedAssetTradeAccountKeys } from './selectRoutedAssetTradeAccountKeys';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 
 const ethSymbol = asNetworkSymbol('eth');
 const btcSymbol = asNetworkSymbol('btc');
@@ -22,7 +21,7 @@ const knownUsdc: TokenDefinitionsState = {
 
 type RoutedAssetParams = { symbol: NetworkSymbol; contractAddress?: string };
 
-const buildState = (accounts: Account[], params: RoutedAssetParams | undefined): AppState =>
+const buildState = (accounts: Account[], params: RoutedAssetParams | undefined): MockSuiteState =>
     ({
         wallet: { accounts },
         device: {
@@ -34,7 +33,7 @@ const buildState = (accounts: Account[], params: RoutedAssetParams | undefined):
         debug: { showDebugMenu: false },
         tokenDefinitions: knownUsdc,
         router: { params },
-    }) as unknown as AppState;
+    }) as unknown as MockSuiteState;
 
 const account = (symbol: NetworkSymbol, index: number, overrides: Partial<Account> = {}) =>
     mockWalletAccount({

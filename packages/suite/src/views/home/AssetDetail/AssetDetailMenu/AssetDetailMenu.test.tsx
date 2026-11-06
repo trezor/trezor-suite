@@ -21,12 +21,11 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { type StaticSessionId } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailMenu } from './AssetDetailMenu';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -82,7 +81,7 @@ const cardanoAccount = mockWalletAccount({
     ],
 });
 
-const getInitialState = (accounts: Account[]): AppState => ({
+const getInitialState = (accounts: Account[]): MockSuiteState => ({
     ...mockInitialAppState,
     networks: mockNetworksState([BTC, ETH, XRP, ADA]),
     device: {
@@ -112,14 +111,14 @@ const mockReport = jest.fn();
 
 const renderMenu = (accounts: Account[], symbol: NetworkSymbol, contractAddress?: TokenAddress) => {
     const initialState = getInitialState(accounts);
-    const reducer: Reducer<AppState> = (state = initialState, action) => ({
+    const reducer: Reducer<MockSuiteState> = (state = initialState, action) => ({
         ...state,
         router: routerReducer(state.router, action),
         tokenDefinitions: tokenDefinitionsReducer(state.tokenDefinitions, action),
     });
     const { services } = createTestCompositionRoot<
         GotoThunkDeps & WithServices<DesktopAnalyticsDep>,
-        AppState
+        MockSuiteState
     >({
         preloadedState: initialState,
         reducer,

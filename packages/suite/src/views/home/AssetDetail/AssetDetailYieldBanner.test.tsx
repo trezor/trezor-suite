@@ -14,11 +14,10 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { type StaticSessionId } from '@trezor/device-utils';
 import { getWrappedNativeToken } from '@trezor/network-ethereum/constants';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailYieldBanner } from './AssetDetailYieldBanner';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/earn-stablecoin-api', () => ({
     ...jest.requireActual('@suite-common/earn-stablecoin-api'),
@@ -53,7 +52,7 @@ const ethereumAccount = mockWalletAccount({
     ],
 });
 
-const getInitialState = ({ isBannerClosed = false } = {}): AppState => ({
+const getInitialState = ({ isBannerClosed = false } = {}): MockSuiteState => ({
     ...mockInitialAppState,
     networks: mockNetworksState([ETH]),
     device: {
@@ -102,8 +101,8 @@ const usdcVault = mockVault({
 const vaultsQuery = (vaults: YieldDtoV2[]) =>
     ({ data: vaults }) as ReturnType<typeof useAllYieldOpportunities>;
 
-const renderBanner = (state: AppState, assetKey = USDC_ASSET_KEY) => {
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
+const renderBanner = (state: MockSuiteState, assetKey = USDC_ASSET_KEY) => {
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: state });
 
     renderWithProviders(services, <AssetDetailYieldBanner assetKey={assetKey} />);
 };

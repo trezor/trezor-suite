@@ -7,11 +7,10 @@ import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-sy
 import { type Localization } from '@suite-common/suite-types';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingRouteGuard } from './TradingRouteGuard';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 type TranslationMockProps = { id: string };
 
@@ -36,7 +35,7 @@ type RenderGuardParams = {
 };
 
 const renderGuard = ({ routeName, isRegionRestricted, content }: RenderGuardParams) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             messageSystem: mockMessageSystemStateWithFeatureFlags(

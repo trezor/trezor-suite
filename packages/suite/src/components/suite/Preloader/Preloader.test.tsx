@@ -36,12 +36,11 @@ import { isLinux } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { findByTestId, renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { Preloader } from './Preloader';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -119,7 +118,7 @@ const getInitialState = ({
     analytics,
     // Manual Device Check already passed by default, so that InteractiveDeviceChecksFlow is not displayed
     persistentDeviceData = { devices: [matchingDevicePersistentData] },
-}: GetInitialStateProps = {}): AppState => ({
+}: GetInitialStateProps = {}): MockSuiteState => ({
     ...mockInitialAppState,
     router: { ...mockInitialAppState.router, ...router } as unknown as RouterState,
     device: { ...mockInitialAppState.device, ...device } as DesktopDeviceState,
@@ -193,7 +192,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Loading: suite is loading', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     lifecycle: {
@@ -213,7 +212,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Loading: router is loading', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 router: {
                     loaded: false,
@@ -231,7 +230,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Loading: transport is not set yet', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: undefined,
@@ -250,7 +249,7 @@ describe(`${Preloader.name} component`, () => {
 
     it('Loading: initially connected device is not in the reducer yet', () => {
         const transport = createTransportInfo({ type: 'BridgeTransport', initialDeviceCount: 1 });
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({ suite: { transport: { transports: [transport] } } }),
             services: createServices,
         });
@@ -266,7 +265,7 @@ describe(`${Preloader.name} component`, () => {
     it('Initially connected device is not awaited for more than 10 seconds', () => {
         jest.useFakeTimers();
         const transport = createTransportInfo({ type: 'BridgeTransport', initialDeviceCount: 1 });
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({ suite: { transport: { transports: [transport] } } }),
             services: createServices,
         });
@@ -287,7 +286,7 @@ describe(`${Preloader.name} component`, () => {
     it('Remembered device is in the reducer', () => {
         const device = mockSuiteDevice({ firmware: 'required' });
         const transport = createTransportInfo({ type: 'BridgeTransport', initialDeviceCount: 1 });
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: { transport: { transports: [transport] } },
                 device: { devices: [device], selectedDevice: device },
@@ -306,7 +305,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('No transport', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState(),
             services: createServices,
         });
@@ -321,7 +320,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Bridge transport, no device', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -340,7 +339,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('WebUSB transport, no device', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'WebUsbTransport' })] },
@@ -360,7 +359,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unacquired device', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -387,7 +386,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unreadable device: webusb HID', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'WebUsbTransport' })] },
@@ -416,7 +415,7 @@ describe(`${Preloader.name} component`, () => {
     it('Unreadable device: missing udev on Linux', () => {
         (isLinux as jest.Mock).mockImplementation(() => true);
 
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -445,7 +444,7 @@ describe(`${Preloader.name} component`, () => {
     it('Unreadable device: missing udev on non-Linux os (should never happen)', () => {
         (isLinux as jest.Mock).mockImplementation(() => false);
 
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -471,7 +470,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unreadable device: unknown error', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -497,7 +496,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unknown device (should never happen)', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -524,7 +523,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Seedless device', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -546,7 +545,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Recovery mode device', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -568,7 +567,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Not initialized device', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -590,7 +589,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Bootloader device with installed firmware', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -619,7 +618,7 @@ describe(`${Preloader.name} component`, () => {
 
     // Fresh or factory-reset device always needs Manual Device Check, regardless of persistent device data
     it('Bootloader device without firmware', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -644,7 +643,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Initialized device missing in persistent device data', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -665,7 +664,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Not initialized device missing in persistent device data', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
@@ -691,7 +690,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('displays DeviceCompromised when shouldDisplayDeviceCompromised is true', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 device: { selectedDevice: compromisedDevice },
             }),
@@ -707,7 +706,7 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Required FW update device', () => {
-        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
             preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },

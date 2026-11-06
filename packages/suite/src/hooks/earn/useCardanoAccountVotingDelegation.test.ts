@@ -8,7 +8,6 @@ import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-c
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getIndexOrThrow } from '@trezor/utils';
 
-import { type AppState } from 'src/reducers/store';
 import { stakeReducer } from 'src/reducers/wallet';
 import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
 
@@ -16,7 +15,7 @@ import {
     useCardanoAccountVotingDelegation,
     useSeededCardanoVotingDelegation,
 } from './useCardanoAccountVotingDelegation';
-import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
 // Not the Everstake DRep: its legacy spelling normalises to CARDANO_EVERSTAKE_DREP.
 const CUSTOM_DREP_ID = 'drep1g2d3y3skgr806wj2ryhhc5ca3akx6vmppde87jq7kgknjmv589e';
@@ -113,7 +112,7 @@ describe('useSeededCardanoVotingDelegation', () => {
             wallet: { ...mockInitialAppState.wallet, stake: stakeInitialState },
         };
 
-        const { services } = createTestCompositionRoot<void, AppState>({
+        const { services } = createTestCompositionRoot<void, MockSuiteState>({
             preloadedState,
             // The real stake reducer, so that seeding reads back the selection it just wrote.
             reducer: (state = preloadedState, action: UnknownAction) => ({

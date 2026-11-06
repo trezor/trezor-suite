@@ -3,13 +3,12 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useYieldAccountsVisibility } from './useYieldAccountsVisibility';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 import { type YieldAccountOpportunity } from '../types';
 
 const createTestServices = () =>
-    createTestCompositionRoot<void, AppState>({
+    createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             networks: mockNetworksState([asNetworkSymbol('eth'), asNetworkSymbol('base')]),
         },

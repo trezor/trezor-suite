@@ -13,10 +13,9 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 
 import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { type AppState } from 'src/reducers/store';
 
 import { useTradingAllowanceModal } from './useTradingAllowanceModal';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
@@ -83,7 +82,7 @@ const renderAllowanceModal = ({
     isOpen?: boolean;
     selectedQuote?: ExchangeTrade;
 }) => {
-    const preloadedState: AppState = {
+    const preloadedState: MockSuiteState = {
         ...mockInitialAppState,
         wallet: {
             ...mockInitialAppState.wallet,
@@ -102,7 +101,10 @@ const renderAllowanceModal = ({
         },
     };
     const analytics = mockDesktopAnalytics();
-    const { services } = createTestCompositionRoot<{ services: DesktopAnalyticsDep }, AppState>({
+    const { services } = createTestCompositionRoot<
+        { services: DesktopAnalyticsDep },
+        MockSuiteState
+    >({
         preloadedState,
         services: () => ({ analytics }),
     });

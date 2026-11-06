@@ -17,9 +17,8 @@ import { toTokenSymbol } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useYieldForm } from './useYieldForm';
+import { type MockSuiteState } from '../../../../../mocks/mockInitialAppState';
 
 const FLOW_KEY = 'yield-flow';
 const TOKEN_ADDRESS = '0x0000000000000000000000000000000000000001';
@@ -127,7 +126,7 @@ const getMockState = () => ({
 });
 
 const createTestServices = () =>
-    createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, MockSuiteState>({
         preloadedState: getMockState(),
         services: () => ({ analytics: mockDesktopAnalytics() }),
     }).services;

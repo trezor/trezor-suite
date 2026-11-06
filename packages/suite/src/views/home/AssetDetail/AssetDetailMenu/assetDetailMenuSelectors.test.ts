@@ -6,9 +6,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { type AppState } from 'src/reducers/store';
-
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
@@ -22,7 +20,7 @@ const HOSKY_POLICY_ID = 'a0028f350aaabe0545fdcb56b039bfb08e4bb4d8c4d7c3c7d481c23
 const HOSKY_ON_ADA = `${HOSKY_POLICY_ID}484f534b59` as TokenAddress;
 const HOSKY_FINGERPRINT = 'asset17q7r59zlc3dgw0venc80pdv566q6yguw03f0d9';
 
-const state: AppState = {
+const state: MockSuiteState = {
     ...mockInitialAppState,
     networks: mockNetworksState([BTC, ETH, ADA, DSOL]),
     device: {

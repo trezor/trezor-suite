@@ -6,11 +6,10 @@ import { type BuyTrade, type BuyTradeQuoteRequest, type Coins, type CryptoId } f
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingRequestedAmountShortfallNote } from './TradingRequestedAmountShortfallNote';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 
@@ -33,7 +32,7 @@ const buyQuote = {
 } satisfies BuyTrade;
 
 const renderShortfallNote = (quote: BuyTrade, buyQuotesRequest: BuyTradeQuoteRequest) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -44,7 +43,7 @@ const renderShortfallNote = (quote: BuyTrade, buyQuotesRequest: BuyTradeQuoteReq
                     buy: { ...tradingInitialState.buy, quotesRequest: buyQuotesRequest },
                 },
             },
-        } satisfies AppState,
+        } satisfies MockSuiteState,
     });
 
     renderWithProviders(services, <TradingRequestedAmountShortfallNote quote={quote} />);

@@ -10,11 +10,10 @@ import { type NotificationEntry } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { PiggyBankIcon } from '@trezor/icons';
 
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { NotificationRenderer } from './NotificationRenderer';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 const networkIcon = mockNetworkIcon();
@@ -57,7 +56,7 @@ const NotificationViewProbe = ({
 );
 
 const renderNotification = (notification: LocalizedNotificationEntry) => {
-    const { services } = createTestCompositionRoot<NotificationTestDeps, AppState>({
+    const { services } = createTestCompositionRoot<NotificationTestDeps, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -81,7 +80,7 @@ const renderNotification = (notification: LocalizedNotificationEntry) => {
 };
 const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 'id'>) => {
     const notification: TradingErrorNotification = { context: 'toast', id: 0, ...payload };
-    const { services } = createTestCompositionRoot<NotificationTestDeps, AppState>({
+    const { services } = createTestCompositionRoot<NotificationTestDeps, MockSuiteState>({
         preloadedState: mockInitialAppState,
         serializableCheck: { ignoredActions: [] },
         services: () => ({ analytics }),
@@ -95,7 +94,7 @@ const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 
 
 const renderWrapToast = (payload: Omit<WrapNotification, 'context' | 'id'>) => {
     const notification = { context: 'toast', id: 0, ...payload } as WrapNotification;
-    const { services } = createTestCompositionRoot<NotificationTestDeps, AppState>({
+    const { services } = createTestCompositionRoot<NotificationTestDeps, MockSuiteState>({
         preloadedState: mockInitialAppState,
         serializableCheck: { ignoredActions: [] },
         services: () => ({ analytics }),

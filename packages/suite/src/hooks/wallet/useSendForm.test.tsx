@@ -49,7 +49,6 @@ import { type PROTO } from '@trezor/connect';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import {
     type UserAction,
@@ -64,6 +63,7 @@ import SendIndex from 'src/views/wallet/send';
 
 import * as fixtures from './__fixtures__/useSendForm';
 import { useSendForm, useSendFormContext } from './useSendForm';
+import { type MockSuiteState } from '../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -134,7 +134,7 @@ const extraActions: OnModalCancelDep = { onModalCancel: closeModal };
 
 type SendFormTestDeps = WithServices<SendFormTestServices> & { actions: OnModalCancelDep };
 
-type SendFormTestState = AppState & { wallet: { selectedAccount: SelectedAccountLoaded } };
+type SendFormTestState = MockSuiteState & { wallet: { selectedAccount: SelectedAccountLoaded } };
 
 const createTestServices = ({
     send,
