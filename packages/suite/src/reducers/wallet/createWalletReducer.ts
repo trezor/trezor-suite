@@ -82,7 +82,7 @@ export type WalletState = {
     earnOnboarding: EarnOnboardingState;
 };
 
-export type WalletReducersDeps = AccountsReducerDeps &
+export type WalletReducerDeps = AccountsReducerDeps &
     BlockchainReducerDeps &
     EarnOnboardingSliceDeps &
     ExplorerReducerDeps &
@@ -95,22 +95,26 @@ export type WalletReducersDeps = AccountsReducerDeps &
         | 'storageLoadStellarContractTokens'
     >;
 
-export const prepareWalletReducer = (
-    extraDependencies: WalletReducersDeps,
-): Reducer<WalletState, UnknownAction, Partial<Omit<WalletState, 'graph' | 'coinjoin'>>> => {
-    const transactionsReducer = prepareTransactionsReducer(extraDependencies);
-    const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
-    const phishingReducer = preparePhishingReducer(extraDependencies);
-    const accountsReducer = prepareAccountsReducer(extraDependencies);
-    const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
-    const blockchainReducer = prepareBlockchainReducer(extraDependencies);
-    const explorerReducer = prepareExplorerReducer(extraDependencies);
-    const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
-    const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
-    const stakeReducer = prepareStakeReducer(extraDependencies);
-    const sendFormReducer = prepareSendFormReducer(extraDependencies);
-    const tradingReducer = prepareTradingReducer(extraDependencies);
-    const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+export type WalletReducer = Reducer<
+    WalletState,
+    UnknownAction,
+    Partial<Omit<WalletState, 'graph' | 'coinjoin'>>
+>;
+
+export const createWalletReducer = (deps: WalletReducerDeps): WalletReducer => {
+    const transactionsReducer = prepareTransactionsReducer(deps);
+    const stellarContractTokensReducer = prepareStellarContractTokensReducer(deps);
+    const phishingReducer = preparePhishingReducer(deps);
+    const accountsReducer = prepareAccountsReducer(deps);
+    const earnOnboardingReducer = prepareEarnOnboardingReducer(deps);
+    const blockchainReducer = prepareBlockchainReducer(deps);
+    const explorerReducer = prepareExplorerReducer(deps);
+    const fiatRatesReducer = prepareFiatRatesReducer(deps);
+    const discoveryReducer = prepareDiscoveryReducer(deps);
+    const stakeReducer = prepareStakeReducer(deps);
+    const sendFormReducer = prepareSendFormReducer(deps);
+    const tradingReducer = prepareTradingReducer(deps);
+    const walletSettingsReducer = prepareWalletSettingsReducer(deps);
 
     return combineReducers({
         fiat: fiatRatesReducer,

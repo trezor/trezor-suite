@@ -36,12 +36,12 @@ import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer'
 import { type GuideState } from 'src/reducers/suite/guideReducer';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
-import { prepareWalletReducer } from 'src/reducers/wallet';
+import { createWalletReducer } from 'src/reducers/wallet/createWalletReducer';
 import { type GlobalSendReceiveFiltersState } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { mockExtraDependenciesForReducers } from './mockExtraDependenciesForReducers';
 
-const walletReducers = prepareWalletReducer(mockExtraDependenciesForReducers);
+const walletReducers = createWalletReducer(mockExtraDependenciesForReducers);
 
 /**
  * @deprecated Construct state in each test with only the slices it needs, typed against the

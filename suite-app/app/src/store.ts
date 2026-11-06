@@ -37,13 +37,13 @@ import {
     type GlobalSendReceiveFiltersState,
     type OnboardingState,
     type WalletState,
+    createWalletReducer,
     desktopReducer,
     globalSendReceiveFiltersReducer,
     onboardingMiddleware,
     onboardingReducers,
     prepareBioAuthReducer,
     prepareSuiteSyncQuotaManagerReducer,
-    prepareWalletReducer,
     toastMiddleware,
 } from '@trezor/suite';
 
@@ -82,7 +82,7 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     networks: networksReducer,
     onboarding: onboardingReducers,
     receive: prepareReceiveReducer(extraDependencies),
-    wallet: prepareWalletReducer(extraDependencies),
+    wallet: createWalletReducer(extraDependencies),
     earn: earnReducers,
     recovery: recoveryReducer,
     firmware: prepareFirmwareReducer(extraDependencies),
