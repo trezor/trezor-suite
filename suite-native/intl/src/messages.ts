@@ -167,6 +167,11 @@ export const messages = {
                 subtitle: 'You can do this anytime.',
                 button: 'Set up my Trezor',
             },
+            deviceChecksRequired: {
+                title: 'Check your Trezor',
+                subtitle: 'Confirm your Trezor is genuine before using it.',
+                button: 'Check my Trezor',
+            },
             firmwareUpdateRequired: {
                 title: 'Firmware update required',
                 subtitle: 'Update the firmware to continue using your Trezor with this app.',
