@@ -51,7 +51,7 @@ export const navigateFlowEvent: EventDef<Attributes, EventType.NavigateFlow> = {
         from: {
             changelog: [{ version: '26.11.0', notes: 'added' }],
             description:
-                'Where the navigation started: `dashboard/header` for the dashboard header buttons, `sidebar` for the main navigation sidebar, `tab` for an account row in the sidebar accounts list on desktop and the Accounts tab on mobile, `home-asset-table` for an asset row in the Home asset table, `asset` for the asset detail Earn section on desktop, `asset-detail` for an account in the asset detail accounts list and for the asset detail Earn section on mobile, `dashboard` for the Home asset table filter menu, `menu` for the asset detail menu on mobile',
+                'Where the navigation started: `dashboard/header` for the dashboard header buttons, `sidebar` for the main navigation sidebar, `tab` for an account row in the sidebar accounts list on desktop and the Accounts tab on mobile, `home-asset-table` for an asset row in the Home asset table, `asset` for the asset detail Earn section on desktop, `asset-detail` for an account in the asset detail accounts list and for the asset detail Earn section on mobile, `dashboard` for the Home asset table filter menu on desktop and the Home view options on mobile, `menu` for the asset detail menu on mobile',
         },
         networkSymbol: {
             changelog: [{ version: '26.11.0', notes: 'added' }],
