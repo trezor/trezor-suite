@@ -11,6 +11,7 @@ import {
 } from '@suite-common/assets';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BottomSheetModal, type BottomSheetModalRef, Card, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -20,6 +21,7 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { AssetDetailAccountListItem } from './AssetDetailAccountListItem';
 
@@ -35,6 +37,7 @@ type AssetDetailAccountsBottomSheetProps = {
 
 export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBottomSheetProps) => {
     const navigation = useNavigation<NavigationProps>();
+    const { analytics } = useServices(injectNativeAnalytics);
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
     const tokenInfo = useSelector((state: AssetsRootState) =>
@@ -52,6 +55,15 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
             ref.current.dismiss();
         }
 
+        analytics.report({
+            type: events.navigateFlowEvent.name,
+            payload: {
+                action: 'navigate',
+                type: 'account-detail',
+                from: 'asset-detail',
+                networkSymbol,
+            },
+        });
         navigation.navigate(RootStackRoutes.AccountOverview, { accountKey });
     };
 
