@@ -604,18 +604,14 @@ describe('signAndPushSendFormTransactionThunk', () => {
                 mockPushTransactionResult.mockReturnValue(
                     rejectedAction({
                         error: 'push-transaction-failed',
-                        metadata: {
-                            success: false,
-                            error: { code: 'Backend_Error', message: 'Blockhash not found' },
-                        },
+                        errorCode: 'Backend_Error',
+                        message: 'Blockhash not found',
                     }),
                 ),
             {
                 error: 'push-transaction-failed',
-                metadata: {
-                    success: false,
-                    error: { code: 'Backend_Error', message: 'Blockhash not found' },
-                },
+                errorCode: 'Backend_Error',
+                message: 'Blockhash not found',
             },
         ],
     ])('rejects with the original %s error', async (_, arrangeFailure, expectedError) => {
@@ -633,6 +629,17 @@ describe('signAndPushSendFormTransactionThunk', () => {
 
         expect(result.payload).toEqual({
             error: 'sign-transaction-failed',
+            message: 'Unexpected failure',
+        });
+    });
+
+    it('keeps the thrown message when pushing rejects without a typed error', async () => {
+        mockPushTransactionResult.mockReturnValue(rejectedAction(undefined, 'Unexpected failure'));
+
+        const result = await signAndPush();
+
+        expect(result.payload).toEqual({
+            error: 'push-transaction-failed',
             message: 'Unexpected failure',
         });
     });

@@ -554,13 +554,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
             return rejectWithValue(
                 pushResult.payload ?? {
                     error: 'push-transaction-failed',
-                    metadata: {
-                        success: false,
-                        error: {
-                            code: 'Failure_UnknownCode',
-                            message: pushResult.error.message ?? 'Unknown error',
-                        },
-                    },
+                    message: pushResult.error.message,
                 },
             );
         }

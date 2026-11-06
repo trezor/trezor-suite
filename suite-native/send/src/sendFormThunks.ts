@@ -255,10 +255,7 @@ export const sendTransactionThunk = createThunk<
         if (sendResponse.payload === undefined) {
             return rejectWithValue({
                 error: 'push-transaction-failed',
-                metadata: {
-                    success: false,
-                    error: { message: 'Payload is undefined.', code: 'Failure_UnknownCode' },
-                },
+                message: 'Payload is undefined.',
             });
         }
 
