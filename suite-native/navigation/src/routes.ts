@@ -83,7 +83,7 @@ export enum DeviceOnboardingStackRoutes {
     DeviceDisconnected = 'DeviceDisconnected',
     DeviceVisualCheck = 'DeviceVisualCheck',
     SuspiciousDevice = 'SuspiciousDevice',
-    SecurityCheck = 'SecurityCheck',
+    PackagingVisualCheck = 'PackagingVisualCheck',
     FirmwareInfo = 'FirmwareInfo',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',
