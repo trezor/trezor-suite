@@ -1,7 +1,7 @@
 import { useExternalLink } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { Image, type ImageKey } from '@trezor/components';
-import { DASHBOARD_BANNER_HOLIDAY_DEALS_URL, withUtmParams } from '@trezor/urls';
+import { DASHBOARD_BANNER_HOLIDAY_DEALS_URL, withHolidayDealsUtm } from '@trezor/urls';
 
 import { Banner } from './Banner';
 import { type BlackFridayHolidayBannerType } from './dashboardBannerTypes';
@@ -64,11 +64,7 @@ export const BlackFridayHolidayBanner = ({
 }: BlackFridayHolidayBannerProps) => {
     const banner = banners[bannerType];
     const href = useExternalLink(
-        withUtmParams(DASHBOARD_BANNER_HOLIDAY_DEALS_URL, {
-            utm_source: 'trezor-suite',
-            utm_campaign: 'holiday-2026',
-            utm_content: bannerType,
-        }),
+        withHolidayDealsUtm(DASHBOARD_BANNER_HOLIDAY_DEALS_URL, bannerType),
     );
     const getResponsiveValue = useBannerResponsiveValue();
 
