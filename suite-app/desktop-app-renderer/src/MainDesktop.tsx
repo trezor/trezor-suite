@@ -4,10 +4,13 @@
 */
 import 'core-js/actual';
 
+import { Suspense } from 'react';
+
 import { useDebugLanguageShortcut } from '@suite/debug';
 
 import {
     AppRouter,
+    BundleLoader,
     Preloader,
     ToasterProvider,
     TrafficLightDraggableWindowHeader,
@@ -37,7 +40,9 @@ export const MainDesktop = () => {
             <ToasterProvider />
             <BioAuthGuard>
                 <Preloader>
-                    <AppRouter components={desktopComponents} />
+                    <Suspense fallback={<BundleLoader />}>
+                        <AppRouter components={desktopComponents} />
+                    </Suspense>
                     <ConnectedIntlProvider>
                         <FindBar />
                     </ConnectedIntlProvider>

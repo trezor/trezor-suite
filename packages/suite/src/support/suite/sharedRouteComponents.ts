@@ -1,0 +1,276 @@
+import { type ComponentType, type LazyExoticComponent, lazy } from 'react';
+
+import { type PageName } from '@suite/router';
+
+/**
+ * The general settings page differs per application,
+ * so `webComponents` and `desktopComponents` each add their own.
+ */
+type SharedPageName = Exclude<PageName, 'settings-index'>;
+
+/**
+ * Pages shared by web and desktop,
+ * loaded on demand in named chunk groups (`dashboard`, `wallet`, `trading`, …).
+ */
+export const sharedRouteComponents: Record<SharedPageName, LazyExoticComponent<ComponentType>> = {
+    'suite-refer-a-friend': lazy(() =>
+        import(/* webpackChunkName: "refer-a-friend" */ 'src/views/refer-a-friend').then(
+            ({ ReferAFriend }) => ({ default: ReferAFriend }),
+        ),
+    ),
+    'suite-index': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard/index').then(
+            ({ Dashboard }) => ({ default: Dashboard }),
+        ),
+    ),
+    /*
+     Compatibility fallback after removing the `suite-start` as a fullscreen app.
+     It used to be a route dedicated as a starting point for onboarding devices.
+     Now that screen is rendered declaratively so we don't need a route for it.
+    */
+    // TODO add a redirect option to routeConfig instead of duplication.
+    'suite-start': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard/index').then(
+            ({ Dashboard }) => ({ default: Dashboard }),
+        ),
+    ),
+    'suite-hidden-tokens': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard/HiddenTokens/index').then(
+            ({ HiddenTokens }) => ({ default: HiddenTokens }),
+        ),
+    ),
+    'suite-asset': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/home/AssetDetail/AssetDetail').then(
+            ({ AssetDetail }) => ({ default: AssetDetail }),
+        ),
+    ),
+    'suite-earn': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/index').then(({ Earn }) => ({
+            default: Earn,
+        })),
+    ),
+    'earn-yield-deposit': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/deposit/index').then(
+            ({ EarnDeposit }) => ({
+                default: EarnDeposit,
+            }),
+        ),
+    ),
+    'earn-yield-withdraw': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/withdraw/index').then(
+            ({ EarnWithdraw }) => ({
+                default: EarnWithdraw,
+            }),
+        ),
+    ),
+    'earn-yield-claim': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/claim/index').then(
+            ({ EarnClaim }) => ({
+                default: EarnClaim,
+            }),
+        ),
+    ),
+    'earn-yield-unwrap': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/unwrap/index').then(
+            ({ EarnUnwrap }) => ({
+                default: EarnUnwrap,
+            }),
+        ),
+    ),
+    'earn-yield-wrap': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/wrap/index').then(
+            ({ EarnWrap }) => ({
+                default: EarnWrap,
+            }),
+        ),
+    ),
+    'earn-tron': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronRedirect }) => ({
+                default: EarnTronRedirect,
+            }),
+        ),
+    ),
+    'earn-tron-stake': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronStake }) => ({
+                default: EarnTronStake,
+            }),
+        ),
+    ),
+    'earn-tron-vote': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronVote }) => ({
+                default: EarnTronVote,
+            }),
+        ),
+    ),
+    'earn-tron-unstake': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronUnstake }) => ({
+                default: EarnTronUnstake,
+            }),
+        ),
+    ),
+    'earn-tron-withdraw': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronWithdraw }) => ({
+                default: EarnTronWithdraw,
+            }),
+        ),
+    ),
+    'earn-tron-claim': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronClaim }) => ({
+                default: EarnTronClaim,
+            }),
+        ),
+    ),
+    'apps-embedding-index': lazy(() =>
+        import(
+            /* webpackChunkName: "apps-embedding" */ 'src/views/apps-embedding/AppsEmbedding'
+        ).then(({ AppsEmbedding }) => ({ default: AppsEmbedding })),
+    ),
+    'suite-connect-popup': lazy(() =>
+        import(/* webpackChunkName: "connect-popup" */ 'src/views/connect-popup/index').then(
+            ({ ConnectPopup }) => ({ default: ConnectPopup }),
+        ),
+    ),
+    'notifications-index': lazy(
+        () => import(/* webpackChunkName: "notifications" */ 'src/views/suite/notifications'),
+    ),
+
+    // wallet
+    'wallet-index': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/transactions/Transactions').then(
+            ({ Transactions }) => ({ default: Transactions }),
+        ),
+    ),
+    'wallet-receive': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/receive/Receive').then(
+            ({ Receive }) => ({ default: Receive }),
+        ),
+    ),
+    'wallet-details': lazy(
+        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/details'),
+    ),
+    // Debug only: trading form embed preview
+    'wallet-trade': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/trade/WalletTrade').then(
+            ({ WalletTrade }) => ({ default: WalletTrade }),
+        ),
+    ),
+    'wallet-tokens': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/tokens')),
+    'wallet-nfts': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/nfts')),
+    'wallet-send': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/send')),
+    'wallet-staking': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/staking/WalletStaking').then(
+            ({ WalletStaking }) => ({ default: WalletStaking }),
+        ),
+    ),
+    'wallet-sign-verify': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/sign-verify/SignVerifyPage').then(
+            ({ SignVerifyPage }) => ({ default: SignVerifyPage }),
+        ),
+    ),
+    'wallet-anonymize': lazy(
+        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/anonymize'),
+    ),
+    'wallet-coinjoin': lazy(
+        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/coinjoin'),
+    ),
+
+    // trading
+    'wallet-trading-buy': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyForm'
+        ).then(({ TradingBuyForm }) => ({ default: TradingBuyForm })),
+    ),
+    'wallet-trading-buy-detail': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyDetail/TradingBuyDetail'
+        ).then(({ TradingBuyDetail }) => ({ default: TradingBuyDetail })),
+    ),
+    'wallet-trading-buy-confirm': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyConfirm'
+        ).then(({ TradingBuyConfirm }) => ({ default: TradingBuyConfirm })),
+    ),
+    'wallet-trading-sell': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellForm'
+        ).then(({ TradingSellForm }) => ({ default: TradingSellForm })),
+    ),
+    'wallet-trading-sell-detail': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellDetail/TradingSellDetail'
+        ).then(({ TradingSellDetail }) => ({ default: TradingSellDetail })),
+    ),
+    'wallet-trading-sell-confirm': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellConfirm'
+        ).then(({ TradingSellConfirm }) => ({ default: TradingSellConfirm })),
+    ),
+    'wallet-trading-exchange': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeForm'
+        ).then(({ TradingExchangeForm }) => ({ default: TradingExchangeForm })),
+    ),
+    'wallet-trading-exchange-detail': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeDetail/TradingExchangeDetail'
+        ).then(({ TradingExchangeDetail }) => ({ default: TradingExchangeDetail })),
+    ),
+    'wallet-trading-exchange-confirm': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeConfirm'
+        ).then(({ TradingExchangeConfirm }) => ({ default: TradingExchangeConfirm })),
+    ),
+    'wallet-trading-exchange-approval': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeApproval/TradingExchangeApproval'
+        ).then(({ TradingExchangeApproval }) => ({ default: TradingExchangeApproval })),
+    ),
+    'wallet-trading-concierge': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/concierge/TradingConciergeDetail'
+        ).then(({ TradingConciergeDetail }) => ({ default: TradingConciergeDetail })),
+    ),
+    'wallet-trading-redirect': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/redirect/TradingRedirect'
+        ).then(({ TradingRedirect }) => ({ default: TradingRedirect })),
+    ),
+    'wallet-trading-transactions': lazy(() =>
+        import(
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/transactions/TradingTransactions'
+        ).then(({ TradingTransactions }) => ({ default: TradingTransactions })),
+    ),
+
+    // password-manager
+    'password-manager-index': lazy(
+        () => import(/* webpackChunkName: "password-manager" */ 'src/views/password-manager'),
+    ),
+
+    // settings
+    'settings-coins': lazy(() =>
+        import(
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsCoins/SettingsCoins'
+        ).then(({ SettingsCoins }) => ({ default: SettingsCoins })),
+    ),
+    'settings-debug': lazy(() =>
+        import(
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsDebug/SettingsDebug'
+        ).then(({ SettingsDebug }) => ({ default: SettingsDebug })),
+    ),
+    'settings-device': lazy(() =>
+        import(
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsDevice/SettingsDevice'
+        ).then(({ SettingsDevice }) => ({ default: SettingsDevice })),
+    ),
+    'settings-connected-apps': lazy(() =>
+        import(
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps'
+        ).then(({ SettingsConnectedApps }) => ({ default: SettingsConnectedApps })),
+    ),
+};
