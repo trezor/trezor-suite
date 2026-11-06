@@ -1,3 +1,4 @@
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { openApp, prepareTrezorEmulator } from '../support/setup';
@@ -11,6 +12,7 @@ describe('Go through onboarding and connect Trezor. [@androidOnly @T3T1]', () =>
 
     it('Navigate to dashboard', async () => {
         await onOnboarding.finishOnboarding();
+        await onDeviceOnboarding.passInitializedDeviceChecks();
 
         await onHome.scrollScreenToBottom();
         await waitForVisible(by.text('Get started'));

@@ -9,6 +9,7 @@ import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedS
 import { deviceAutoEjectState } from '../fixtures/deviceAutoEjectState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { DeepLinkServer } from '../support/deepLinkServer';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
@@ -45,6 +46,7 @@ describe('Deeplink connect popup. [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
         await prepareTrezorEmulator();
         await openApp({ args: { preloadedState } });
+        await onDeviceOnboarding.passInitializedDeviceChecks();
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
 
         // This `TrezorConnect` instance here is pretending to be the integrator or @trezor/connect-mobile

@@ -3,6 +3,7 @@ import { expect as detoxExpect } from 'detox';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -15,6 +16,7 @@ describe('Coin enabling [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {
         await prepareTrezorEmulator();
         await openApp({ args: { preloadedState } });
+        await onDeviceOnboarding.passInitializedDeviceChecks();
     });
 
     it('Coin Enabling', async () => {
