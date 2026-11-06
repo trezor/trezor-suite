@@ -52,7 +52,9 @@ export const submitRequestFormThunk =
         }
     };
 
-type ConvertDraftsThunkState = AccountsRootState & FormDraftRootState & WalletSettingsRootState;
+export type ConvertDraftsThunkState = AccountsRootState &
+    FormDraftRootState &
+    WalletSettingsRootState;
 
 export const convertDraftsThunk =
     () => (dispatch: Dispatch<UnknownAction>, getState: () => ConvertDraftsThunkState) => {

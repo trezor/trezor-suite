@@ -1,14 +1,21 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { accountsActions, selectAccounts, updateDiscoveryMatcher } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    accountsActions,
+    selectAccounts,
+    updateDiscoveryMatcher,
+} from '@suite-common/wallet-core';
 import { type Dispatch } from '@trezor/redux-utils';
 
+import { type UpdateGraphDataThunkState } from 'src/actions/wallet/graphActions';
 import * as graphActions from 'src/actions/wallet/graphActions';
-import { type AppState } from 'src/types/suite';
+
+type GraphMiddlewareState = AccountsRootState & UpdateGraphDataThunkState;
 
 const graphMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, GraphMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         next(action);

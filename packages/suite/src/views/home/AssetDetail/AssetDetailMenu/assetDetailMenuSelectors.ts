@@ -1,11 +1,9 @@
-import { selectWalletAssetSymbol } from '@suite-common/assets';
+import { type HomeAssetTableState, selectWalletAssetSymbol } from '@suite-common/assets';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/types/suite';
-
-const createMemoizedSelector = createWeakMapSelector.withTypes<AppState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
 
 export const selectWalletAssetSignVerifyAccounts = createMemoizedSelector(
     [selectVisibleDeviceAccounts, selectWalletAssetSymbol],

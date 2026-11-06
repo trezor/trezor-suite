@@ -1,22 +1,32 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
+import {
+    type RecoveryState,
+    isRecoveryInProgress,
+    recoveryActions,
+    selectRecoveryStatus,
+} from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
-import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
+import { type AnalyticsRootState, selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { firmwareActions, selectFirmware } from '@suite-common/firmware';
+import { type FirmwareRootState, firmwareActions, selectFirmware } from '@suite-common/firmware';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
 import { type PROTO, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 import { type Dispatch } from '@trezor/redux-utils';
 
+import { type GoToNextStepThunkState } from 'src/actions/onboarding/onboardingActions';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { type AppState } from 'src/types/suite';
+
+type OnboardingMiddlewareState = GoToNextStepThunkState & {
+    recovery: RecoveryState;
+} & AnalyticsRootState &
+    FirmwareRootState;
 
 const onboardingMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, OnboardingMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const isFwInstallationDone =

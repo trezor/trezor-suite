@@ -10,7 +10,7 @@ export interface WindowState extends BreakpointFlags {
     isVisible: boolean;
 }
 
-interface WindowRootState {
+export interface WindowRootState {
     window: WindowState;
 }
 

@@ -1,17 +1,30 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
-import { selectSelectedAccount } from '@suite/account';
-import { selectRouteName } from '@suite/router';
-import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
+import { type RouterRootState, selectRouteName } from '@suite/router';
 import {
+    type ConnectPopupStateRootState,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
+import {
+    type AccountsRootState,
     PAYMENT_REQUEST_BUTTON_NAMES,
+    type SendRootState,
+    type TronStakeRootState,
+    type YieldRootState,
     selectAccountByKey,
     selectSendFormAccountKey,
 } from '@suite-common/wallet-core';
 import { type DeviceButtonRequestCode, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
-import { type AppState } from 'src/types/suite';
+type ButtonRequestMiddlewareState = SelectedAccountRootState &
+    RouterRootState &
+    ConnectPopupStateRootState &
+    AccountsRootState &
+    SendRootState &
+    YieldRootState &
+    TronStakeRootState;
 
 const SIGN_TX_NETWORK_TYPES = ['cardano', 'ethereum', 'stellar', 'tron'] as const;
 
@@ -43,7 +56,7 @@ const SIGN_TX_CONNECT_METHODS = [
     'stellarSignTransaction',
 ] as const;
 
-const getAccountForButtonRequest = (state: AppState) => {
+const getAccountForButtonRequest = (state: ButtonRequestMiddlewareState) => {
     const account = selectSelectedAccount(state);
     if (account) return account;
 
@@ -62,7 +75,7 @@ const getAccountForButtonRequest = (state: AppState) => {
 const shouldRemapToSignTx = (
     code: DeviceButtonRequestCode,
     name: string | undefined,
-    state: AppState,
+    state: ButtonRequestMiddlewareState,
 ): boolean => {
     if (
         name === 'confirm_ethereum_approve' &&
@@ -95,7 +108,7 @@ const shouldRemapToSignTx = (
 };
 
 const buttonRequest =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, ButtonRequestMiddlewareState>) =>
     (next: Dispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         // firmware bug https://github.com/trezor/trezor-firmware/issues/35

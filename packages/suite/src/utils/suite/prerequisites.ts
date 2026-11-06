@@ -3,10 +3,10 @@ import { type RouterState } from '@suite/router';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 
 import type { TransportState } from 'src/reducers/suite/suiteReducer';
-import type { AppState, TrezorDevice } from 'src/types/suite';
+import type { TrezorDevice } from 'src/types/suite';
 
 type GetPrerequisiteNameParams = {
-    router: AppState['router'];
+    router: RouterState;
     device?: TrezorDevice;
     transport?: TransportState;
 };

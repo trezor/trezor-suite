@@ -1,14 +1,15 @@
 import { Translation, type TranslationKey } from '@suite/intl';
-import { getSeenAndUnseenNotifications } from '@suite-common/toast-notifications';
+import {
+    type NotificationsState,
+    getSeenAndUnseenNotifications,
+} from '@suite-common/toast-notifications';
 import { Column, H2, H4, IconCircle, Paragraph } from '@trezor/components';
 import { BellZIcon } from '@trezor/icons';
-
-import { type AppState } from 'src/types/suite';
 
 import { NotificationList } from './NotificationList/NotificationList';
 
 interface NotificationGroupProps {
-    notifications: AppState['notifications'];
+    notifications: NotificationsState<TranslationKey>;
     emptyTitle?: TranslationKey;
     emptyDescription?: TranslationKey;
 }

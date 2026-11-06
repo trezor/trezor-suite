@@ -163,7 +163,7 @@ const fetchAccountGraphDataThunk =
         }
     };
 
-type UpdateGraphDataThunkState = FetchAccountGraphDataThunkState;
+export type UpdateGraphDataThunkState = FetchAccountGraphDataThunkState;
 
 export const updateGraphDataThunk = createThunk<
     void,

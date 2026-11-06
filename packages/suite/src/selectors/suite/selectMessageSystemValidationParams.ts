@@ -1,14 +1,20 @@
-import { selectIsTorEnabled } from '@suite/tor';
-import { selectSelectedDevice } from '@suite-common/device';
-import { selectCountryCode } from '@suite-common/geolocation';
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { type TorRootState, selectIsTorEnabled } from '@suite/tor';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type GeolocationRootState, selectCountryCode } from '@suite-common/geolocation';
+import { type WalletSettingsRootState, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/types/suite';
+import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 
 import { selectActiveTransports } from './suiteSelectors';
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<AppState>();
+type MessageSystemValidationState = DeviceRootState &
+    SuiteRootState &
+    TorRootState &
+    WalletSettingsRootState &
+    GeolocationRootState;
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<MessageSystemValidationState>();
 
 export const selectMessageSystemValidationParams = createMemoizedSelector(
     [

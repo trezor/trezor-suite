@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { selectFullSelectedAccount } from '@suite/account';
+import { type SelectedAccountState, selectFullSelectedAccount } from '@suite/account';
 import {
     selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
@@ -11,7 +11,6 @@ import { Column } from '@trezor/components';
 import { CoinjoinAccountDiscoveryProgress, WalletLayout } from 'src/components/wallet';
 import { SolanaLimitedHistoryBanner } from 'src/components/wallet/WalletLayout/AccountBanners/SolanaLimitedHistoryBanner';
 import { useSelector } from 'src/hooks/suite';
-import { type AppState } from 'src/types/suite';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
 import { TradeBox } from './TradeBox/TradeBox';
@@ -24,7 +23,7 @@ import { TronResources } from './components/TronResources';
 import { CardanoNewProviderCard } from '../staking/components/AdaStakingDashboard/CardanoNewProviderCard';
 
 interface LayoutProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
+    selectedAccount: SelectedAccountState;
     children?: ReactNode;
 }
 
