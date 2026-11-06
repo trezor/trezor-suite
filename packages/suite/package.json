@@ -209,7 +209,6 @@
         "react-hook-form": "^7.77.0",
         "react-intl": "^12.1.4",
         "react-redux": "9.3.0",
-        "react-select": "^5.10.2",
         "react-toastify": "^11.1.0",
         "react-use": "^17.6.1",
         "react-zxing": "^2.1.0",
