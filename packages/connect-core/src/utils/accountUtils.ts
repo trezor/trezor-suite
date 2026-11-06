@@ -5,33 +5,6 @@ import { fromHardenedPathPart } from '@trezor/crypto-utils';
 
 import { getCoinName } from '../data/coinInfo';
 
-export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
-    if (coinInfo.type === 'bitcoin') {
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const path0: number = path[0];
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const path2: number = path[2];
-        const accountType = fromHardenedPathPart(path0);
-        const account = fromHardenedPathPart(path2);
-        let prefix = '';
-
-        if (accountType === 48) {
-            prefix = 'multisig';
-        } else if (accountType === 49 && coinInfo.segwit) {
-            prefix = 'segwit';
-        } else if (accountType === 44 && coinInfo.segwit) {
-            prefix = 'legacy';
-        }
-
-        return `${prefix} account #${account + 1}`;
-    }
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const path4: number = path[4];
-    const account = fromHardenedPathPart(path4);
-
-    return `account #${account + 1}`;
-};
-
 export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo) => {
     let hasSegwit = false;
     let coinLabel: string;
