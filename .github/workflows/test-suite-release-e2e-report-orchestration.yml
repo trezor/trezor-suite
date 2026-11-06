@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: orchestration-${{ github.workflow }}-${{ github.run_id }}
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
