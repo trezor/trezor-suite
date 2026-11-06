@@ -13,6 +13,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { getBech32Network, getSegwitNetwork } from '../data/coinInfo';
 import { resolveDescriptorForTaproot } from '../device/resolveDescriptorForTaproot';
 import type { TypedCallProvider } from '../types/typed-call-provider';
+import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import { getScriptType, getSerializedPath, isTaprootPath } from '../utils/pathUtils';
 
@@ -114,7 +115,14 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             fingerprint: publicKey.node.fingerprint,
             rootFingerprint: publicKey.root_fingerprint,
             depth: publicKey.node.depth,
-            descriptor: publicKey.descriptor,
+            descriptor:
+                publicKey.descriptor ??
+                buildOutputDescriptor({
+                    path,
+                    scriptType: params.script_type,
+                    xpub,
+                    rootFingerprint: publicKey.root_fingerprint,
+                }),
             displayablePublicKey: xpubSegwit ?? xpub,
             ...(xpubSegwit !== undefined && { xpubSegwit }),
         };

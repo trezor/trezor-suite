@@ -10,7 +10,6 @@ import type {
     PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { toCanonicalDescriptor } from '@trezor/utils';
 
 import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
@@ -19,8 +18,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 import { bundlify, validateParams } from './common/paramsValidator';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
-import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
-import { getScriptType, validatePath } from '../utils/pathUtils';
+import { validatePath } from '../utils/pathUtils';
 
 type Request = GetAccountInfoParams & { address_n: number[]; coinInfo: CoinInfo };
 
@@ -162,7 +160,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             let { descriptor } = request;
             let legacyXpub: string | undefined;
             let descriptorChecksum: string | undefined;
-            let rootFingerprint: number | undefined;
             let outputDescriptorBip380: string | undefined;
 
             if (this.disposed) break;
@@ -177,26 +174,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                         descriptor = accountDescriptor.descriptor;
                         legacyXpub = accountDescriptor.legacyXpub;
                         descriptorChecksum = accountDescriptor.descriptorChecksum;
-                        rootFingerprint = accountDescriptor.rootFingerprint;
-                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                        const accountIndex: number = address_n[2];
-                        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                        const purposeIndex: number = address_n[0];
-
-                        // outputDescriptorBip380 is provided by firmware >= 2.6.5.
-                        // For older firmware, build it from the available data (bitcoin only).
-                        outputDescriptorBip380 =
-                            accountDescriptor.outputDescriptorBip380 ??
-                            (request.coinInfo.type === 'bitcoin' && legacyXpub
-                                ? buildOutputDescriptor({
-                                      coin: request.coinInfo.name,
-                                      account: fromHardenedPathPart(accountIndex),
-                                      purpose: fromHardenedPathPart(purposeIndex),
-                                      scriptType: getScriptType(address_n),
-                                      xpub: legacyXpub,
-                                      rootFingerprint,
-                                  })
-                                : undefined);
+                        outputDescriptorBip380 = accountDescriptor.outputDescriptorBip380;
                     }
                 } catch (error) {
                     if (this.hasBundle) {
