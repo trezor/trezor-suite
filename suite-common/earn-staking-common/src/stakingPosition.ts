@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { timestampSchema } from './primitiveSchemas';
 import { stakingAmountSchema } from './stakingAmount';
 import { stakingOperationSchema } from './stakingOperation';
+import { stakingPositionDetailsSchema } from './stakingPositionDetails';
 import { stakingProductIdSchema } from './stakingProductId';
 import { stakingProviderIdSchema } from './stakingProvider';
 
@@ -69,6 +70,7 @@ export const stakingPositionSchema = z.strictObject({
     operations: z.array(stakingOperationSchema).readonly(),
     pendingTransactions: z.array(stakingPositionPendingTransactionSchema).readonly(),
     warnings: z.array(stakingPositionWarningSchema).readonly(),
+    details: stakingPositionDetailsSchema.nullable(),
 });
 
 export type StakingPosition = z.infer<typeof stakingPositionSchema>;

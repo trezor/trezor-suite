@@ -28,6 +28,7 @@ describe('createEverstakePooledProductDescriptor', () => {
                 desktop: { access: 'manage' },
                 mobile: { access: 'manage' },
             },
+            isCountedInAccountTotals: true,
         });
     });
 

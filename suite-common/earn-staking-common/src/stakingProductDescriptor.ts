@@ -47,19 +47,37 @@ export const stakingProductDescriptorObjectSchema = z.strictObject({
     rateKind: z.enum(STAKING_RATE_KINDS),
     limits: stakingProductLimitsSchema,
     options: z.array(stakingOptionFieldSchema).readonly(),
-    consentKey: stakingConsentKeySchema,
+    consentKey: stakingConsentKeySchema.nullable(),
     platforms: stakingProductPlatformsSchema,
     messageSystemFeatures: z.partialRecord(stakingOperationSchema, z.string()),
+    isCountedInAccountTotals: z.boolean(),
 });
 
-export const stakingProductDescriptorSchema = stakingProductDescriptorObjectSchema.refine(
-    ({ id, networkSymbol, asset, providerId, type }) =>
-        id ===
-        `${networkSymbol}:${asset.kind === 'native' ? networkSymbol : asset.symbol}:${providerId}:${type}`,
-    {
-        error: 'Expected the product id to match the network symbol, asset, provider and type',
-        path: ['id'],
-    },
-);
+export const stakingProductDescriptorSchema = stakingProductDescriptorObjectSchema
+    .refine(
+        ({ id, networkSymbol, asset, providerId, type }) =>
+            id ===
+            `${networkSymbol}:${asset.kind === 'native' ? networkSymbol : asset.symbol}:${providerId}:${type}`,
+        {
+            error: 'Expected the product id to match the network symbol, asset, provider and type',
+            path: ['id'],
+        },
+    )
+    .refine(({ operations, consentKey }) => operations.length === 0 || consentKey !== null, {
+        error: 'Expected a consent key on a product with operations',
+        path: ['consentKey'],
+    })
+    .refine(
+        ({ operations, platforms }) =>
+            Object.values(platforms).every(
+                support =>
+                    support.access !== 'manage' ||
+                    (support.operations ?? []).every(operation => operations.includes(operation)),
+            ),
+        {
+            error: 'Expected the platform operations to be a subset of the product operations',
+            path: ['platforms'],
+        },
+    );
 
 export type StakingProductDescriptor = z.infer<typeof stakingProductDescriptorSchema>;

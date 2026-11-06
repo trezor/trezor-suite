@@ -7,13 +7,13 @@ export const stakingProductTargetSchema = z.strictObject({
     address: z.string().min(1),
     providerId: stakingProviderIdSchema,
     name: z.string().optional(),
-    rate: z.number().nullable(),
+    rate: z.number().nonnegative().nullable(),
 });
 
 export type StakingProductTarget = z.infer<typeof stakingProductTargetSchema>;
 
 export const stakingProductInfoSchema = z.strictObject({
-    rate: z.number().nullable(),
+    rate: z.number().nonnegative().nullable(),
     entryPeriodDays: z.number().nullable(),
     exitPeriodDays: z.number().nullable(),
     nextRewardAt: timestampSchema.nullable(),

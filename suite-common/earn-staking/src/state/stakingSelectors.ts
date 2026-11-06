@@ -74,12 +74,18 @@ const sumBalance = (
     );
 
 export const selectStakingAccountTotals = createWeakMapSelector(
-    [selectStakingPositionsByAccount],
-    (positions): StakingPositionBalances => ({
-        staked: sumBalance(positions, 'staked'),
-        pending: sumBalance(positions, 'pending'),
-        unstaking: sumBalance(positions, 'unstaking'),
-        withdrawable: sumBalance(positions, 'withdrawable'),
-        rewards: sumBalance(positions, 'rewards'),
-    }),
+    [selectStakingPositionsByAccount, selectStakingProducts],
+    (positions, products): StakingPositionBalances => {
+        const countedPositions = positions.filter(
+            ({ productId }) => products[productId]?.isCountedInAccountTotals === true,
+        );
+
+        return {
+            staked: sumBalance(countedPositions, 'staked'),
+            pending: sumBalance(countedPositions, 'pending'),
+            unstaking: sumBalance(countedPositions, 'unstaking'),
+            withdrawable: sumBalance(countedPositions, 'withdrawable'),
+            rewards: sumBalance(countedPositions, 'rewards'),
+        };
+    },
 );
