@@ -1,5 +1,3 @@
-import { p256 } from '@noble/curves/nist.js';
-
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
 import { type DelegatedIdentityKey } from '@suite-common/suite-types';
 import { type ProofOfDelegatedIdentity, asProofOfDelegatedIdentity } from '@trezor/connect';
@@ -22,11 +20,11 @@ type GetProofOfDelegatedIdentityResult = Result<
     ProofOfDelegatedSignFailedType
 >;
 
-export const getProofOfDelegatedIdentity = ({
+export const getProofOfDelegatedIdentity = async ({
     delegatedKey,
     header,
     appendMessageBuffer: buffer,
-}: GetProofOfDelegatedIdentityParams): GetProofOfDelegatedIdentityResult => {
+}: GetProofOfDelegatedIdentityParams): Promise<GetProofOfDelegatedIdentityResult> => {
     const prefixedMessageInBuffer = Buffer.concat([
         bufferUtils.getChunkSize(header.length),
         Buffer.from(header),
@@ -34,6 +32,7 @@ export const getProofOfDelegatedIdentity = ({
     ]);
 
     try {
+        const { p256 } = await import('@noble/curves/nist.js');
         const signature = p256.sign(prefixedMessageInBuffer, Buffer.from(delegatedKey, 'hex'));
 
         return ok(asProofOfDelegatedIdentity(Buffer.from(signature).toString('hex')));
