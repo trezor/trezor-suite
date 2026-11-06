@@ -7,6 +7,7 @@ import {
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Alert } from '@suite-native/alerts';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
     createStoreFromPreloadedState,
@@ -18,6 +19,7 @@ import {
 import { AssetSettingsHideTokenAction } from './AssetSettingsHideTokenAction';
 
 const mockShowAlert = jest.fn<void, [Alert]>();
+const mockReport = jest.fn();
 
 jest.mock('@suite-native/alerts', () => ({
     useAlert: () => ({ showAlert: mockShowAlert, hideAlert: jest.fn() }),
@@ -44,6 +46,11 @@ const showTokenAction = tokenDefinitionsActions.setTokenStatus({
     type: DefinitionType.COIN,
 });
 
+const showTokenEvent = {
+    type: 'assets/actions',
+    payload: { action: 'show-token', networkSymbol: ETH, contractAddress: TOKEN_CONTRACT },
+};
+
 const LOADED_DEFINITIONS = { [ETH]: { coin: { data: [], hide: [], show: [] } } };
 
 const renderAction = async (tokenDefinitions: object = LOADED_DEFINITIONS) => {
@@ -57,7 +64,7 @@ const renderAction = async (tokenDefinitions: object = LOADED_DEFINITIONS) => {
             tokenContract={TOKEN_CONTRACT}
             onClose={onClose}
         />,
-        { services: { store } },
+        { services: { store, analytics: mockNativeAnalytics(mockReport) } },
     );
 
     return { dispatchSpy, onClose };
@@ -77,10 +84,12 @@ describe('AssetSettingsHideTokenAction', () => {
         expect(onClose).toHaveBeenCalled();
         expect(mockShowAlert).toHaveBeenCalled();
         expect(dispatchSpy).not.toHaveBeenCalledWith(showTokenAction);
+        expect(mockReport).not.toHaveBeenCalled();
 
         mockShowAlert.mock.lastCall?.[0].onPressPrimaryButton?.();
 
         expect(dispatchSpy).toHaveBeenCalledWith(showTokenAction);
+        expect(mockReport).toHaveBeenCalledWith(showTokenEvent);
     });
 
     it('offers no visibility action before the coin definitions load', async () => {
@@ -101,5 +110,6 @@ describe('AssetSettingsHideTokenAction', () => {
 
         expect(mockShowAlert).not.toHaveBeenCalled();
         expect(dispatchSpy).toHaveBeenCalledWith(showTokenAction);
+        expect(mockReport).toHaveBeenCalledWith(showTokenEvent);
     });
 });
