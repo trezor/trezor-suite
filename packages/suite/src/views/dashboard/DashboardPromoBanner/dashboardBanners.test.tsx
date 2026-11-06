@@ -1,7 +1,7 @@
+import { blackFridayHolidayBannerTypes } from '@suite-common/suite-constants';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { blackFridayHolidayBannerTypes } from './dashboardBannerTypes';
 import { type BannerEligibilityContext, DASHBOARD_BANNERS } from './dashboardBanners';
 
 const getEligibleCampaigns = (context: BannerEligibilityContext) =>

@@ -1,5 +1,6 @@
 import {
     type DeviceRootState,
+    selectDeviceModel,
     selectHasBitcoinOnlyFirmware,
     selectHasOnlyPortfolioDevice,
 } from '@suite-common/device';
@@ -8,14 +9,20 @@ import {
     type MessageSystemRootState,
     selectFeaturesConfig,
 } from '@suite-common/message-system';
+import {
+    type BlackFridayHolidayBannerType,
+    blackFridayHolidayBannerTypes,
+} from '@suite-common/suite-constants';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type LocaleSliceRootState } from '@suite-native/intl';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 import { type TradingRootState } from '@suite-native/trading-types';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import {
     type BannerFlagsSliceRootState,
+    selectClosedHolidayPromoBannerKeys,
     selectIsDefiYieldPromoBannerClosed,
     selectIsEthVaultPromoBannerClosed,
     selectIsTradingExperiencePromoBannerClosed,
@@ -31,7 +38,8 @@ type PromoBannersRootState = MessageSystemRootState &
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<PromoBannersRootState>();
 
-export type VisiblePromoBannerKey = 'ts7' | 'defi-yield' | 'eth-vault' | 'trading-experience';
+export type VisiblePromoBannerKey =
+    'ts7' | 'defi-yield' | 'eth-vault' | 'trading-experience' | BlackFridayHolidayBannerType;
 
 const selectPromoBannerMessages = (state: MessageSystemRootState) =>
     selectFeaturesConfig(state, Feature.banners.dashboard.promo);
@@ -98,18 +106,38 @@ export const selectIsTradingExperiencePromoBannerDisplayed = createMemoizedSelec
 
 export const selectVisiblePromoBanners = createMemoizedSelector(
     [
+        selectPromoBannerMessages,
+        selectClosedHolidayPromoBannerKeys,
+        selectDeviceModel,
         selectIsTs7PromoBannerDisplayed,
         selectIsDefiYieldPromoBannerDisplayed,
         selectIsEthVaultPromoBannerDisplayed,
         selectIsTradingExperiencePromoBannerDisplayed,
     ],
     (
+        bannerMessages,
+        closedHolidayBannerKeys,
+        deviceModel,
         isTs7PromoBannerDisplayed,
         isDefiYieldPromoBannerDisplayed,
         isEthVaultPromoBannerDisplayed,
         isTradingExperiencePromoBannerDisplayed,
     ): VisiblePromoBannerKey[] => {
-        const visibleBanners: VisiblePromoBannerKey[] = [];
+        const isSafe7 = deviceModel === DeviceModelInternal.T3W1;
+        const visibleBanners: VisiblePromoBannerKey[] = blackFridayHolidayBannerTypes.filter(
+            key => {
+                if (
+                    !isPromoBannerFeatureEnabled(bannerMessages, key) ||
+                    closedHolidayBannerKeys.includes(key)
+                )
+                    return false;
+                if (key === 'bfh26-ts7-accessory-pack' || key === 'bfh26-ts3-backup')
+                    return isSafe7;
+                if (key === 'bfh26-ts7-upgrade') return !isSafe7;
+
+                return true;
+            },
+        );
         if (isTs7PromoBannerDisplayed) visibleBanners.push('ts7');
         if (isDefiYieldPromoBannerDisplayed) visibleBanners.push('defi-yield');
         if (isEthVaultPromoBannerDisplayed) visibleBanners.push('eth-vault');

@@ -6,6 +6,7 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { prepareFlagsReducer } from '@suite/flags';
 import { Feature } from '@suite-common/message-system';
 import { mockNetworksState } from '@suite-common/networks/mocks';
+import { blackFridayHolidayBannerTypes } from '@suite-common/suite-constants';
 import { type MessageSystem } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -17,7 +18,6 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { DashboardPromoBanner } from './DashboardPromoBanner';
-import { blackFridayHolidayBannerTypes } from './dashboardBannerTypes';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const flagsReducer = prepareFlagsReducer({
