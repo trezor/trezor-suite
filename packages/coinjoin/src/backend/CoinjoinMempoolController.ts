@@ -3,7 +3,7 @@
 import { arrayDistinct, createCooldown, promiseAllSequence } from '@trezor/utils';
 import type { Network } from '@trezor/utxo-lib';
 
-import { getAllTxAddresses, isDoublespend } from './backendUtils';
+import { getAllTxAddresses, getTxIdentityIndex, isDoublespend } from './backendUtils';
 import { getAddressScript, getMultiFilter } from './filters';
 import { MEMPOOL_PURGE_CYCLE, PROGRESS_INFO_COOLDOWN } from '../constants';
 import type {
@@ -129,6 +129,24 @@ export class CoinjoinMempoolController implements MempoolControllerShape {
             return [...this.mempool.values()];
         }
 
+        // Reports real fetches to the discovery loader. Whether a fetched transaction is the
+        // account's is decided against the addresses known at that moment.
+        const addAccountTx = async (txid: string, accountAddresses: Set<string>) => {
+            if (this.mempool.has(txid)) return;
+
+            const identity = getTxIdentityIndex(txid);
+            let relevant = false;
+            onProgressInfo?.({ stage: 'mempool', activity: 'fetch-item', identity });
+            await this.client
+                .fetchTransaction(txid)
+                .then(tx => {
+                    this.onTxAdd(tx);
+                    relevant = getAllTxAddresses(tx).some(address => accountAddresses.has(address));
+                })
+                .catch(() => {});
+            onProgressInfo?.({ stage: 'mempool', activity: 'fetch-item-done', identity, relevant });
+        };
+
         const findTxs = ({ address }: { address: string }) => this.addressTxids.get(address) ?? [];
         const set = new Set<string>();
         const onTxs = (txids: string[]) => txids.forEach(set.add, set);
@@ -140,10 +158,15 @@ export class CoinjoinMempoolController implements MempoolControllerShape {
             const scripts = receive
                 .concat(change)
                 .map(({ address }) => getAddressScript(address, this.network));
+            const accountAddresses = new Set(
+                addressController.receive
+                    .concat(addressController.change)
+                    .map(({ address }) => address),
+            );
 
             await promiseAllSequence(
                 filters.map(([txid, matchAny], index) => async () => {
-                    if (matchAny(scripts)) await addTx(txid);
+                    if (matchAny(scripts)) await addAccountTx(txid, accountAddresses);
                     if (progressCooldown())
                         onProgressInfo?.({
                             stage: 'mempool',
