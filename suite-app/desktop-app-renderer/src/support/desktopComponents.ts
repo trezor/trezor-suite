@@ -1,58 +1,57 @@
 import { type ComponentType } from 'react';
 
 import { type PageName } from '@suite/router';
-
-import { AppsEmbedding } from 'src/views/apps-embedding/AppsEmbedding';
-import { ConnectPopup } from 'src/views/connect-popup';
-import { Dashboard } from 'src/views/dashboard';
-import { HiddenTokens } from 'src/views/dashboard/HiddenTokens';
-import { Earn } from 'src/views/earn';
 import {
-    EarnTronClaim,
-    EarnTronRedirect,
-    EarnTronStake,
-    EarnTronUnstake,
-    EarnTronVote,
-    EarnTronWithdraw,
-} from 'src/views/earn/tron';
-import { EarnClaim } from 'src/views/earn/yield/claim';
-import { EarnDeposit } from 'src/views/earn/yield/deposit';
-import { EarnUnwrap } from 'src/views/earn/yield/unwrap';
-import { EarnWithdraw } from 'src/views/earn/yield/withdraw';
-import { EarnWrap } from 'src/views/earn/yield/wrap';
-import { AssetDetail } from 'src/views/home/AssetDetail/AssetDetail';
-import PasswordManagerView from 'src/views/password-manager';
-import { ReferAFriend } from 'src/views/refer-a-friend';
-import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
-import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
-import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
-import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
-import { DesktopSettingsGeneral } from 'src/views/settings/SettingsGeneral/DesktopSettingsGeneral';
-import Notification from 'src/views/suite/notifications';
-import WalletAnonymize from 'src/views/wallet/anonymize';
-import WalletCoinjoin from 'src/views/wallet/coinjoin';
-import WalletDetails from 'src/views/wallet/details';
-import { Nfts } from 'src/views/wallet/nfts';
-import { Receive } from 'src/views/wallet/receive/Receive';
-import WalletSend from 'src/views/wallet/send';
-import { SignVerifyPage } from 'src/views/wallet/sign-verify/SignVerifyPage';
-import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
-import { Tokens } from 'src/views/wallet/tokens';
-import { WalletTrade } from 'src/views/wallet/trade/WalletTrade';
-import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfirm';
-import { TradingBuyDetail } from 'src/views/wallet/trading/buy/TradingBuyDetail/TradingBuyDetail';
-import { TradingBuyForm } from 'src/views/wallet/trading/buy/TradingBuyForm';
-import { TradingConciergeDetail } from 'src/views/wallet/trading/concierge/TradingConciergeDetail';
-import { TradingExchangeApproval } from 'src/views/wallet/trading/exchange/TradingExchangeApproval/TradingExchangeApproval';
-import { TradingExchangeConfirm } from 'src/views/wallet/trading/exchange/TradingExchangeConfirm';
-import { TradingExchangeDetail } from 'src/views/wallet/trading/exchange/TradingExchangeDetail/TradingExchangeDetail';
-import { TradingExchangeForm } from 'src/views/wallet/trading/exchange/TradingExchangeForm';
-import { TradingRedirect } from 'src/views/wallet/trading/redirect/TradingRedirect';
-import { TradingSellConfirm } from 'src/views/wallet/trading/sell/TradingSellConfirm';
-import { TradingSellDetail } from 'src/views/wallet/trading/sell/TradingSellDetail/TradingSellDetail';
-import { TradingSellForm } from 'src/views/wallet/trading/sell/TradingSellForm';
-import { TradingTransactions } from 'src/views/wallet/trading/transactions/TradingTransactions';
-import { Transactions } from 'src/views/wallet/transactions/Transactions';
+    AppsEmbeddingPage,
+    AssetDetailPage,
+    ConnectPopupPage,
+    DashboardPage,
+    DesktopSettingsGeneralPage,
+    EarnClaimPage,
+    EarnDepositPage,
+    EarnPage,
+    EarnTronClaimPage,
+    EarnTronRedirectPage,
+    EarnTronStakePage,
+    EarnTronUnstakePage,
+    EarnTronVotePage,
+    EarnTronWithdrawPage,
+    EarnUnwrapPage,
+    EarnWithdrawPage,
+    EarnWrapPage,
+    HiddenTokensPage,
+    NftsPage,
+    NotificationPage,
+    PasswordManagerPage,
+    ReceivePage,
+    ReferAFriendPage,
+    SettingsCoinsPage,
+    SettingsConnectedAppsPage,
+    SettingsDebugPage,
+    SettingsDevicePage,
+    SignVerifyPage,
+    TokensPage,
+    TradingBuyConfirmPage,
+    TradingBuyDetailPage,
+    TradingBuyFormPage,
+    TradingConciergeDetailPage,
+    TradingExchangeApprovalPage,
+    TradingExchangeConfirmPage,
+    TradingExchangeDetailPage,
+    TradingExchangeFormPage,
+    TradingRedirectPage,
+    TradingSellConfirmPage,
+    TradingSellDetailPage,
+    TradingSellFormPage,
+    TradingTransactionsPage,
+    TransactionsPage,
+    WalletAnonymizePage,
+    WalletCoinjoinPage,
+    WalletDetailsPage,
+    WalletSendPage,
+    WalletStakingPage,
+    WalletTradePage,
+} from '@suite-app/app';
 
 /*
  Note 1: Currently, this list contains the same components as webComponents.ts, but there could be Desktop-specific
@@ -64,64 +63,64 @@ import { Transactions } from 'src/views/wallet/transactions/Transactions';
 */
 
 export const desktopComponents: Record<PageName, ComponentType> = {
-    'suite-index': Dashboard,
+    'suite-index': DashboardPage,
     /*
      Compatibility fallback after removing the `suite-start` as a fullscreen app.
      It used to be a route dedicated as a starting point for onboarding devices.
      Now that screen is rendered declaratively so we don't need a route for it.
     */
     // TODO add a redirect option to routeConfig instead of duplication.
-    'suite-start': Dashboard,
-    'suite-hidden-tokens': HiddenTokens,
-    'suite-asset': AssetDetail,
-    'suite-earn': Earn,
-    'suite-refer-a-friend': ReferAFriend,
-    'earn-yield-deposit': EarnDeposit,
-    'earn-yield-withdraw': EarnWithdraw,
-    'earn-yield-claim': EarnClaim,
-    'earn-yield-unwrap': EarnUnwrap,
-    'earn-yield-wrap': EarnWrap,
-    'earn-tron': EarnTronRedirect,
-    'earn-tron-stake': EarnTronStake,
-    'earn-tron-vote': EarnTronVote,
-    'earn-tron-unstake': EarnTronUnstake,
-    'earn-tron-withdraw': EarnTronWithdraw,
-    'earn-tron-claim': EarnTronClaim,
-    'apps-embedding-index': AppsEmbedding,
-    'suite-connect-popup': ConnectPopup,
-    'notifications-index': Notification,
+    'suite-start': DashboardPage,
+    'suite-hidden-tokens': HiddenTokensPage,
+    'suite-asset': AssetDetailPage,
+    'suite-earn': EarnPage,
+    'suite-refer-a-friend': ReferAFriendPage,
+    'earn-yield-deposit': EarnDepositPage,
+    'earn-yield-withdraw': EarnWithdrawPage,
+    'earn-yield-claim': EarnClaimPage,
+    'earn-yield-unwrap': EarnUnwrapPage,
+    'earn-yield-wrap': EarnWrapPage,
+    'earn-tron': EarnTronRedirectPage,
+    'earn-tron-stake': EarnTronStakePage,
+    'earn-tron-vote': EarnTronVotePage,
+    'earn-tron-unstake': EarnTronUnstakePage,
+    'earn-tron-withdraw': EarnTronWithdrawPage,
+    'earn-tron-claim': EarnTronClaimPage,
+    'apps-embedding-index': AppsEmbeddingPage,
+    'suite-connect-popup': ConnectPopupPage,
+    'notifications-index': NotificationPage,
 
-    'wallet-index': Transactions,
-    'wallet-receive': Receive,
-    'wallet-details': WalletDetails,
+    'wallet-index': TransactionsPage,
+    'wallet-receive': ReceivePage,
+    'wallet-details': WalletDetailsPage,
     // Debug only: trading form embed preview
-    'wallet-trade': WalletTrade,
-    'wallet-send': WalletSend,
-    'wallet-staking': WalletStaking,
+    'wallet-trade': WalletTradePage,
+    'wallet-send': WalletSendPage,
+    'wallet-staking': WalletStakingPage,
     'wallet-sign-verify': SignVerifyPage,
-    'wallet-anonymize': WalletAnonymize,
-    'wallet-coinjoin': WalletCoinjoin,
-    'wallet-tokens': Tokens,
-    'wallet-nfts': Nfts,
-    'wallet-trading-buy': TradingBuyForm,
-    'wallet-trading-buy-detail': TradingBuyDetail,
-    'wallet-trading-buy-confirm': TradingBuyConfirm,
-    'wallet-trading-sell': TradingSellForm,
-    'wallet-trading-sell-detail': TradingSellDetail,
-    'wallet-trading-sell-confirm': TradingSellConfirm,
-    'wallet-trading-exchange': TradingExchangeForm,
-    'wallet-trading-exchange-detail': TradingExchangeDetail,
-    'wallet-trading-exchange-confirm': TradingExchangeConfirm,
-    'wallet-trading-exchange-approval': TradingExchangeApproval,
-    'wallet-trading-concierge': TradingConciergeDetail,
-    'wallet-trading-redirect': TradingRedirect,
-    'wallet-trading-transactions': TradingTransactions,
+    'wallet-anonymize': WalletAnonymizePage,
+    'wallet-coinjoin': WalletCoinjoinPage,
+    'wallet-tokens': TokensPage,
+    'wallet-nfts': NftsPage,
+    'wallet-trading-buy': TradingBuyFormPage,
+    'wallet-trading-buy-detail': TradingBuyDetailPage,
+    'wallet-trading-buy-confirm': TradingBuyConfirmPage,
+    'wallet-trading-sell': TradingSellFormPage,
+    'wallet-trading-sell-detail': TradingSellDetailPage,
+    'wallet-trading-sell-confirm': TradingSellConfirmPage,
+    'wallet-trading-exchange': TradingExchangeFormPage,
+    'wallet-trading-exchange-detail': TradingExchangeDetailPage,
+    'wallet-trading-exchange-confirm': TradingExchangeConfirmPage,
+    'wallet-trading-exchange-approval': TradingExchangeApprovalPage,
+    'wallet-trading-concierge': TradingConciergeDetailPage,
+    'wallet-trading-redirect': TradingRedirectPage,
+    'wallet-trading-transactions': TradingTransactionsPage,
 
-    'password-manager-index': PasswordManagerView,
+    'password-manager-index': PasswordManagerPage,
 
-    'settings-index': DesktopSettingsGeneral,
-    'settings-coins': SettingsCoins,
-    'settings-debug': SettingsDebug,
-    'settings-device': SettingsDevice,
-    'settings-connected-apps': SettingsConnectedApps,
+    'settings-index': DesktopSettingsGeneralPage,
+    'settings-coins': SettingsCoinsPage,
+    'settings-debug': SettingsDebugPage,
+    'settings-device': SettingsDevicePage,
+    'settings-connected-apps': SettingsConnectedAppsPage,
 };

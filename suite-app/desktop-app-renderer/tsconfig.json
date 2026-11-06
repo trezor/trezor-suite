@@ -13,6 +13,7 @@
         "../../packages/suite/global.d.ts"
     ],
     "references": [
+        { "path": "../app" },
         {
             "path": "../../suite-common/react-query"
         },
