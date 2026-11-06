@@ -24,6 +24,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
+        "test:e2e": "docker compose -f e2e/docker-compose.yml up -d --build --wait && (yarn g:jest -c jest.config.e2e.cjs; status=$?; docker compose -f e2e/docker-compose.yml down; exit $status)",
         "type-check": "yarn g:tsc --build",
         "lint:rs": "cargo fmt --all -- --check",
         "lint:rs:fix": "cargo fmt --all",
