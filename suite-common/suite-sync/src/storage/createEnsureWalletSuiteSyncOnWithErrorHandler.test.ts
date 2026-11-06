@@ -1,5 +1,6 @@
 import { type StaticSessionId } from '@trezor/connect';
 import { createMockDeps } from '@trezor/dependency-injection';
+import { LazyLoadingError } from '@trezor/lazy-loading';
 import { err, ok } from '@trezor/type-utils';
 
 import type { EnsureWalletSuiteSyncOnWithErrorHandlerDeps } from './createEnsureWalletSuiteSyncOnWithErrorHandler';
@@ -79,6 +80,23 @@ describe(createEnsureWalletSuiteSyncOnWithErrorHandler.name, () => {
             );
         },
     );
+
+    it('passes a LazyLoadingError through without storing it for the device', async () => {
+        const innerResult = err(LazyLoadingError('Failed to start Evolu: network error'));
+
+        const deps = createMockDeps<EnsureWalletSuiteSyncOnWithErrorHandlerDeps>({
+            dispatch: jest.fn(),
+            ensureWalletSuiteSyncOn: () => Promise.resolve(innerResult),
+        });
+
+        const result = await createEnsureWalletSuiteSyncOnWithErrorHandler(deps)({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
+        });
+
+        expect(result).toBe(innerResult);
+        expect(deps.dispatch).not.toHaveBeenCalled();
+    });
 
     it('delegates to ensureWalletSuiteSyncOn with correct params', async () => {
         const ensureResult = ok({ data: {} } as any);

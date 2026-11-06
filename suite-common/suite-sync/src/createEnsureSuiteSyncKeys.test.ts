@@ -1,7 +1,8 @@
 import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { createMockDeps as createDependencyMocks } from '@trezor/dependency-injection';
-import { ok } from '@trezor/type-utils';
+import { LazyLoadingError } from '@trezor/lazy-loading';
+import { err, ok } from '@trezor/type-utils';
 
 import {
     type EnsureSuiteSyncKeysDeps,
@@ -102,6 +103,24 @@ describe(createEnsureSuiteSyncKeys.name, () => {
             device: mockDevice,
             delegatedKey: 'delegated-key-value',
         });
+    });
+
+    it('passes a LazyLoadingError from the owner through without a toast', async () => {
+        const deps = createMockDeps();
+        deps.ensureDelegatedIdentityKey.mockResolvedValue(
+            ok(asDelegatedIdentityKey('delegated-key-value')),
+        );
+        deps.ensureSuiteSyncOwner.mockResolvedValue(
+            err(LazyLoadingError('Failed to load Evolu: network error')),
+        );
+
+        const mockDevice = createDevice();
+        deps.getDeviceForStaticSessionId.mockImplementation(() => mockDevice);
+
+        const result = await createEnsureSuiteSyncKeys(deps)({ device: mockDevice });
+
+        expect(result).toEqual(err(LazyLoadingError('Failed to load Evolu: network error')));
+        expect(deps.dispatch).not.toHaveBeenCalled();
     });
 
     it('returns owner and delegatedKey on success', async () => {

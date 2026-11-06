@@ -11508,6 +11508,7 @@ __metadata:
     "@suite/tor": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/lazy-loading": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -12545,6 +12546,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/lazy-loading": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -12562,6 +12564,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/lazy-loading": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -12593,6 +12596,7 @@ __metadata:
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/lazy-loading": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -19335,6 +19339,14 @@ __metadata:
   dependencies:
     "@trezor/type-utils": "workspace:*"
     yup: "npm:1.7.1"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/lazy-loading@workspace:*, @trezor/lazy-loading@workspace:packages/lazy-loading":
+  version: 0.0.0-use.local
+  resolution: "@trezor/lazy-loading@workspace:packages/lazy-loading"
+  dependencies:
+    "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

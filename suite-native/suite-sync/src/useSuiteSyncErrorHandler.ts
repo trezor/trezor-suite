@@ -22,6 +22,7 @@ export const useSuiteSyncErrorHandler = () => {
             case 'DeviceCancelled':
             case 'SuiteSyncUpdateError':
             case 'QuotaManagerCommunicationFailed':
+            case 'LazyLoadingError':
                 showToast({
                     intent: 'critical',
                     icon: 'warning',

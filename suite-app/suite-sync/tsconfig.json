@@ -31,6 +31,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/lazy-loading" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/requirements" }

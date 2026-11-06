@@ -8,4 +8,5 @@ export const suiteSyncErrorMessageMap: Record<SuiteSyncUserFacingErrorType, TxKe
     SuiteSyncUnavailableOnDeviceError: 'suiteSync.errors.suiteSyncUnavailable',
     SuiteSyncFirmwareUpgradeNeededDeviceErrorType: 'suiteSync.errors.suiteSyncUnavailable',
     QuotaManagerCommunicationFailed: 'suiteSync.errors.quotaManagerCommunicationFailed',
+    LazyLoadingError: 'suiteSync.errors.lazyLoadingError',
 };

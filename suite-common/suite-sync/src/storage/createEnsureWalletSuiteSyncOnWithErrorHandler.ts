@@ -43,6 +43,7 @@ export const createEnsureWalletSuiteSyncOnWithErrorHandler =
                     break;
 
                 case 'QuotaManagerCommunicationFailed':
+                case 'LazyLoadingError':
                     return result; // This is edge-case handled only imperatively by showing the toast notification.
 
                 default:

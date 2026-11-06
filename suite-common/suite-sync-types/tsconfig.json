@@ -14,6 +14,7 @@
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/lazy-loading" },
         { "path": "../../packages/type-utils" }
     ]
 }
