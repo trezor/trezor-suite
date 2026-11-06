@@ -7,7 +7,7 @@ import { type TradingType, isSilentTradingError } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
-import { TradingStackRoutes } from '@suite-native/navigation';
+import { type ExchangeFlowType, TradingStackRoutes } from '@suite-native/navigation';
 import type {
     TradingExchangeAnalyticReportCallback,
     TradingSellAnalyticReportCallback,
@@ -21,6 +21,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import { useTradingTxValidityTimer } from './useTradingTxValidityTimer';
@@ -39,12 +40,14 @@ export type UseTradingOutputsReviewScreenControlsProps = Pick<
     tradingType: Exclude<TradingType, 'buy'>;
     reportToAnalytics: TradingExchangeAnalyticReportCallback | TradingSellAnalyticReportCallback;
     isDexExchange?: boolean;
+    exchangeFlowType?: ExchangeFlowType;
 };
 
 export const useTradingOutputsReviewScreenControls = ({
     orderId,
     accountKey,
     tradingType,
+    exchangeFlowType,
     signAndSendTransaction,
     resolveTransactionSendConsent,
     reportToAnalytics,
@@ -83,17 +86,47 @@ export const useTradingOutputsReviewScreenControls = ({
 
     useOutputsReviewBackInterceptor(onReviewCanceled);
 
+    const returnToExchangePreview = useCallback(() => {
+        navigation.popTo(TradingStackRoutes.TradingExchangePreview, {}, { merge: true });
+    }, [navigation]);
+
     const returnToTradePreview = useCallback(() => {
         reportToAnalytics('sign-and-send', 'cancel');
+        dispatch(sendFormActions.clearSignedTransactionData());
 
-        if (tradingType === 'exchange') {
-            navigation.popTo(TradingStackRoutes.TradingExchangePreview, {});
+        if (tradingType === 'sell') {
+            navigation.popTo(TradingStackRoutes.TradingSellCompletion);
 
             return;
         }
 
-        navigation.popTo(TradingStackRoutes.TradingSellPreview);
-    }, [navigation, reportToAnalytics, tradingType]);
+        switch (exchangeFlowType) {
+            case 'approve':
+                navigation.popTo(TradingStackRoutes.TradingExchangeApproval, {}, { merge: true });
+
+                return;
+            case 'revoke':
+            case 'revoke-and-approve':
+                navigation.popTo(TradingStackRoutes.TradingExchangeRevoke, {}, { merge: true });
+
+                return;
+            case 'swap':
+            case 'sign-data':
+            case undefined:
+                returnToExchangePreview();
+
+                return;
+            default:
+                return exhaustive(exchangeFlowType);
+        }
+    }, [
+        dispatch,
+        exchangeFlowType,
+        navigation,
+        reportToAnalytics,
+        returnToExchangePreview,
+        tradingType,
+    ]);
 
     const nextStep: TradingTransactionSignAndSendProps['nextStep'] = useCallback(() => {
         dispatch(tradingActions.requestTradingFormReset(tradingType));
@@ -179,7 +212,7 @@ export const useTradingOutputsReviewScreenControls = ({
         setIsBroadcasting(false);
 
         if (isDexExchange) {
-            navigation.popTo(TradingStackRoutes.TradingExchangePreview, {});
+            returnToExchangePreview();
 
             return;
         }
@@ -190,7 +223,7 @@ export const useTradingOutputsReviewScreenControls = ({
     }, [
         dispatch,
         isDexExchange,
-        navigation,
+        returnToExchangePreview,
         resolveTransactionSendConsent,
         revealConfirmOnTrezorSheet,
         startSigning,

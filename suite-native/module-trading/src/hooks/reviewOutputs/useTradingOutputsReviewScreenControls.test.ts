@@ -153,6 +153,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
     const renderUseTradingOutputsReviewScreenControls = ({
         accountKey,
         tradingType = 'exchange',
+        exchangeFlowType,
         isDexExchange,
     }: RenderUseTradingOutputsReviewScreenControlsParams = {}) =>
         renderHookWithStoreProvider(
@@ -170,6 +171,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                     resolveTransactionSendConsent: mockResolveTransactionSendConsent,
                     reportToAnalytics: mockReportToAnalytics,
                     isDexExchange,
+                    exchangeFlowType,
                 }),
             { services: { store } },
         );
@@ -298,13 +300,38 @@ describe('useTradingOutputsReviewScreenControls', () => {
         });
 
         it.each([
-            { tradingType: 'exchange', previewRoute: TradingStackRoutes.TradingExchangePreview },
-            { tradingType: 'sell', previewRoute: TradingStackRoutes.TradingSellPreview },
+            {
+                flow: 'sell',
+                tradingType: 'sell',
+                exchangeFlowType: undefined,
+                popToArgs: [TradingStackRoutes.TradingSellCompletion],
+            },
+            ...(['swap', 'sign-data'] as const).map(exchangeFlowType => ({
+                flow: exchangeFlowType,
+                tradingType: 'exchange' as const,
+                exchangeFlowType,
+                popToArgs: [TradingStackRoutes.TradingExchangePreview, {}, { merge: true }],
+            })),
+            {
+                flow: 'approve',
+                tradingType: 'exchange',
+                exchangeFlowType: 'approve',
+                popToArgs: [TradingStackRoutes.TradingExchangeApproval, {}, { merge: true }],
+            },
+            ...(['revoke', 'revoke-and-approve'] as const).map(exchangeFlowType => ({
+                flow: exchangeFlowType,
+                tradingType: 'exchange' as const,
+                exchangeFlowType,
+                popToArgs: [TradingStackRoutes.TradingExchangeRevoke, {}, { merge: true }],
+            })),
         ] as const)(
-            'should return to the $tradingType preview without an alert when signing is cancelled',
-            async ({ tradingType, previewRoute }) => {
+            'should return to the screen that opened the $flow review without an alert when signing is cancelled',
+            async ({ tradingType, exchangeFlowType, popToArgs }) => {
                 store = createTestStore(tradingType);
-                await renderUseTradingOutputsReviewScreenControls({ tradingType });
+                await renderUseTradingOutputsReviewScreenControls({
+                    tradingType,
+                    exchangeFlowType,
+                });
                 const { onError } = mockSignAndSendTransaction.mock.calls[0]![0];
 
                 await act(() => {
@@ -316,12 +343,42 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
                 expect(mockShowAlert).not.toHaveBeenCalled();
                 expect(mockPopTo).toHaveBeenCalledTimes(1);
-                expect(mockPopTo.mock.calls[0][0]).toBe(previewRoute);
+                expect(mockPopTo).toHaveBeenCalledWith(...popToArgs);
                 expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'cancel');
                 expect(mockCloseTradingFlow).not.toHaveBeenCalled();
                 expect(store.getState().wallet.trading.formResetRequestedFor).toBeUndefined();
             },
         );
+
+        it('should drop a transaction signed by an earlier attempt when a retry is cancelled', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
+
+            // the first attempt signs the transaction, then pushing it fails
+            await act(() => {
+                store.dispatch(
+                    sendFormActions.storeSignedTransaction({
+                        serializedTx: { symbol: asNetworkSymbol('btc'), tx: 'txid' },
+                    }),
+                );
+                mockSignAndSendTransaction.mock.calls[0]![0].onError({
+                    type: 'error',
+                    code: 'cannot-send-transaction',
+                });
+            });
+            await act(() => {
+                mockShowAlert.mock.calls[0][0].onPressPrimaryButton();
+            });
+            await act(() => {
+                mockSignAndSendTransaction.mock.calls[1]![0].onError({
+                    type: 'sign-cancelled',
+                    code: 'cannot-send-transaction',
+                });
+            });
+
+            expect(store.getState().wallet.send.serializedTx).toBeUndefined();
+            expect(store.getState().wallet.send.signedTx).toBeUndefined();
+            expect(mockPopTo).toHaveBeenCalledTimes(1);
+        });
 
         it('should ignore a cancel of a signing attempt the user already left', async () => {
             await renderUseTradingOutputsReviewScreenControls();
@@ -535,7 +592,13 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockTrezorConnectCancel).toHaveBeenCalledWith('tx-timeout');
             expect(store.getState().wallet.send.serializedTx).toBeUndefined();
             expect(mockPop).not.toHaveBeenCalled();
-            expect(mockPopTo).toHaveBeenCalledWith(TradingStackRoutes.TradingExchangePreview, {});
+            expect(mockPopTo).toHaveBeenCalledWith(
+                TradingStackRoutes.TradingExchangePreview,
+                {},
+                {
+                    merge: true,
+                },
+            );
             expect(
                 mockUseConfirmOnTrezorController.revealConfirmOnTrezorSheet,
             ).not.toHaveBeenCalled();
