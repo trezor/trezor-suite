@@ -1,7 +1,11 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
+    type DiscoveryRootState,
+    type WalletSettingsRootState,
     isDiscoveryInProgress,
     selectAccountsByDeviceState,
     selectDeviceSupportedNetworks,
@@ -10,9 +14,13 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type DiscoveryStatus } from '@suite-common/wallet-types';
 
-import { type AppState } from 'src/types/suite';
-
 import { type DiscoveryStatusType } from '../../types/wallet';
+
+export type DiscoveryOverallStatusState = NetworksRootState &
+    DeviceRootState &
+    AccountsRootState &
+    DiscoveryRootState &
+    WalletSettingsRootState;
 
 type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;
@@ -89,7 +97,7 @@ const getDiscoveryStatus = ({
 };
 
 // TODO move this selector somewhere more sensible
-export const selectDiscoveryOverallStatus = (state: AppState) => {
+export const selectDiscoveryOverallStatus = (state: DiscoveryOverallStatusState) => {
     const device = selectSelectedDevice(state);
     const deviceSupportedNetworks = selectDeviceSupportedNetworks(state);
     const accounts = device?.state && selectAccountsByDeviceState(state, device.state);

@@ -9,11 +9,12 @@ import {
 } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
+import { type SelectedAccountState } from '@suite/account';
 import { gotoThunk } from '@suite/router';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { useExcludedUtxos } from '@suite-common/transaction-search';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { type FormState } from '@suite-common/wallet-types';
+import { type FeesState, type FormState } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -35,7 +36,6 @@ import {
 } from 'src/actions/wallet/send/sendFormThunks';
 import { useSelector } from 'src/hooks/suite';
 import { selectProtocol } from 'src/selectors/suite/protocolSelectors';
-import { type AppState } from 'src/types/suite';
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useFees } from './form/useFees';
@@ -52,9 +52,9 @@ SendContext.displayName = 'SendContext';
 
 // Props of @wallet-views/send/index
 export interface SendFormProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
+    selectedAccount: SelectedAccountState;
     localCurrency: BaseCurrencyCode;
-    fees: AppState['wallet']['fees'];
+    fees: FeesState;
     online: boolean;
     metadataEnabled: boolean;
     targetAnonymity?: number;

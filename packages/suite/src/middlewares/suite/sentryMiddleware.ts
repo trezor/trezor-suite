@@ -4,7 +4,7 @@ import { type MiddlewareAPI } from 'redux';
 import { desktopUpdateActions } from '@suite/desktop-update';
 import { METADATA } from '@suite/metadata';
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
-import { routerLocationChange, selectRouterUrl } from '@suite/router';
+import { type RouterRootState, routerLocationChange, selectRouterUrl } from '@suite/router';
 import { suiteSettingsActions } from '@suite/settings';
 import { onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
 import { torActions } from '@suite/tor';
@@ -23,8 +23,7 @@ import { DEVICE, TRANSPORT, isTransportEventOfType } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
 import { PROTOCOL } from 'src/actions/suite/constants';
-import { type AppState } from 'src/types/suite';
-import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
+import { type GetSuiteReadyPayloadState, getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import {
     addSentryBreadcrumb,
     captureSentryMessage,
@@ -32,6 +31,8 @@ import {
     setSentryTag,
     withSentryScope,
 } from 'src/utils/suite/sentry';
+
+type SentryMiddlewareState = GetSuiteReadyPayloadState & RouterRootState;
 
 const deviceContextName = 'trezor-device';
 
@@ -75,7 +76,7 @@ const breadcrumbActions = new Set<UnknownAction['type']>([
 ]);
 
 const sentryMiddleware =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, SentryMiddlewareState>) =>
     (next: Dispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         // pass action

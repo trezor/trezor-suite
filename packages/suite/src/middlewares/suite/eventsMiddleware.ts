@@ -1,10 +1,16 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { routerAppChanged, selectRouterApp } from '@suite/router';
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { type RouterRootState, routerAppChanged, selectRouterApp } from '@suite/router';
+import {
+    type DeviceRootState,
+    deviceActions,
+    selectDevices,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
+    type NotificationsRootState,
     notificationsActions,
     removeAccountEventsThunk,
     selectNotifications,
@@ -13,8 +19,9 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/types/suite';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
+
+type EventsMiddlewareState = RouterRootState & DeviceRootState & NotificationsRootState;
 
 /*
  * Middleware for event notifications.
@@ -22,7 +29,7 @@ import { reportSecurityCheck } from 'src/utils/suite/sentry';
  */
 
 const eventsMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, EventsMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();

@@ -1,9 +1,15 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { selectFullSelectedAccount } from '@suite/account';
-import { type Route, routerLocationChange, selectRouteName } from '@suite/router';
+import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import {
+    type Route,
+    type RouterRootState,
+    routerLocationChange,
+    selectRouteName,
+} from '@suite/router';
+import {
+    type TradingRootState,
     selectTradingAccountAccordingActiveSection,
     selectTradingAccountKeyByTradeType,
     selectTradingActiveSection,
@@ -16,9 +22,13 @@ import {
     tradingSellActions,
     tradingThunks,
 } from '@suite-common/trading';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/types/suite';
+type TradingMiddlewareState = SelectedAccountRootState &
+    RouterRootState &
+    TradingRootState &
+    AccountsRootState;
 
 const TRADING_ENTRY_ROUTES: Route['name'][] = [
     'wallet-trading-buy',
@@ -40,7 +50,7 @@ const resetTradingAccountKeys = (dispatch: ReduxDispatch<UnknownAction>) => {
 };
 
 export const tradingMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, TradingMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();

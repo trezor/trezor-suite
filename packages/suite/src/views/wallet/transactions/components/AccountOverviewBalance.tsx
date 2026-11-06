@@ -1,3 +1,4 @@
+import { type SelectedAccountState } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
@@ -10,7 +11,6 @@ import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/s
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
 import { useAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
-import { type AppState } from 'src/types/suite';
 
 type AccountOverviewBalanceSkeletonProps = {
     animate?: boolean;
@@ -43,7 +43,7 @@ const getBalanceExcludesTranslationId = (hasTokens: boolean, hasStaking: boolean
 };
 
 type AccountOverviewBalanceProps = {
-    selectedAccount: AppState['wallet']['selectedAccount'];
+    selectedAccount: SelectedAccountState;
 };
 
 export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalanceProps) => {

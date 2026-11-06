@@ -1,11 +1,15 @@
-import { selectRouterParams } from '@suite/router';
-import { selectWalletAssetKey, selectWalletAssetSymbol } from '@suite-common/assets';
+import { type RouterRootState, selectRouterParams } from '@suite/router';
+import {
+    type HomeAssetTableState,
+    selectWalletAssetKey,
+    selectWalletAssetSymbol,
+} from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { toTokenAddress } from '@suite-common/wallet-types';
 
-import { type AppState } from 'src/types/suite';
+export type RoutedAssetState = RouterRootState & HomeAssetTableState;
 
-export const selectRoutedAssetKey = (state: AppState): WalletAssetKey | undefined => {
+export const selectRoutedAssetKey = (state: RoutedAssetState): WalletAssetKey | undefined => {
     const params = selectRouterParams(state);
 
     if (params === undefined || !('symbol' in params) || params.symbol === undefined) {

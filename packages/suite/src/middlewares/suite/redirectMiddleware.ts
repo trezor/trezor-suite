@@ -3,18 +3,30 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { selectIsRouterLocked } from '@suite/locks';
 import {
+    type GotoThunkState,
     closeModalAppThunk,
     gotoThunk,
     selectRouteName,
     selectRouterApp,
     selectRouterParams,
 } from '@suite/router';
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    deviceActions,
+    selectDevices,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import { type AppState, type TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from 'src/types/suite';
 
-const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
+type RedirectMiddlewareState = GotoThunkState & DeviceRootState;
+
+const handleDeviceRedirect = (
+    dispatch: Dispatch,
+    state: RedirectMiddlewareState,
+    device?: TrezorDevice,
+) => {
     // no device, no redirect
     if (!device?.features) {
         return;
@@ -52,7 +64,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
  * Middleware containing all redirection logic
  */
 const redirect =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, RedirectMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const isRouterLocked = selectIsRouterLocked(api.getState());

@@ -1,12 +1,13 @@
+import { type TranslationKey } from '@suite/intl';
+import { type NotificationsState } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 
 import { NotificationRenderer } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
-import type { AppState } from 'src/types/suite';
 
 import { NotificationView } from './NotificationView';
 
 interface NotificationListProps {
-    notifications: AppState['notifications'];
+    notifications: NotificationsState<TranslationKey>;
 }
 
 export const NotificationList = ({ notifications }: NotificationListProps) => (

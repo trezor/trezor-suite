@@ -1,14 +1,17 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
-import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import {
+    type NotificationsRootState,
+    type ToastPayload,
+    notificationsActions,
+} from '@suite-common/toast-notifications';
 
 import { saveCoinProtocol } from 'src/actions/suite/protocolActions';
-import type { AppState } from 'src/types/suite';
 
 // close custom protocol notification of given type
 const closeNotifications = (
-    api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>,
+    api: MiddlewareAPI<Dispatch<UnknownAction>, NotificationsRootState>,
     type: ToastPayload['type'],
 ) => {
     api.getState()
@@ -19,7 +22,7 @@ const closeNotifications = (
 };
 
 const protocolMiddleware =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, NotificationsRootState>) =>
     (next: Dispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         next(action);

@@ -1,7 +1,10 @@
-import { selectIsDebugModeActive } from '@suite/debug';
+import { type DebugRootState, selectIsDebugModeActive } from '@suite/debug';
 import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import {
+    type TokenDefinitionsRootState,
+    selectTokenDefinitions,
+} from '@suite-common/token-definitions';
 import { getCryptoId, isAccountEligibleForTrade, isSellableAccount } from '@suite-common/trading';
 import {
     type AssetAccount,
@@ -13,8 +16,12 @@ import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { filterReceiveAccounts, isPositiveBalance } from '@suite-common/wallet-utils';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/types/suite';
-import { selectRoutedAssetKey } from 'src/views/home/AssetDetail/selectRoutedAssetKey';
+import {
+    type RoutedAssetState,
+    selectRoutedAssetKey,
+} from 'src/views/home/AssetDetail/selectRoutedAssetKey';
+
+type RoutedAssetTradeState = RoutedAssetState & DebugRootState & TokenDefinitionsRootState;
 
 type RoutedAssetTradeAccountKeys = {
     buy: AccountKey | undefined;
@@ -26,7 +33,7 @@ type SellableAssetAccount = {
     account: Account;
 };
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<AppState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<RoutedAssetTradeState>();
 
 export const selectRoutedAssetTradeAccountKeys = createMemoizedSelector(
     [

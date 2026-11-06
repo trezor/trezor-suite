@@ -4,7 +4,7 @@ import { deviceActions } from '@suite-common/device';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { changeNetworks } from '@suite-common/wallet-core';
 
-import { type AppState } from 'src/types/suite';
+export type AccountSearchRootState = { wallet: { accountSearch: AccountSearchState } };
 
 export const ACCOUNT_SEARCH_PREFIX = '@suite/account-search';
 
@@ -57,6 +57,6 @@ const accountSearchSlice = createSlice({
 export const accountSearchActions = accountSearchSlice.actions;
 export const accountSearchReducer = accountSearchSlice.reducer;
 
-export const selectAccountSearch = (state: AppState) => state.wallet.accountSearch;
+export const selectAccountSearch = (state: AccountSearchRootState) => state.wallet.accountSearch;
 
 export default accountSearchReducer;

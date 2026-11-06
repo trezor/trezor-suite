@@ -7,6 +7,8 @@ import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
+    type SendRootState,
+    type SyncAccountsWithBlockchainThunkState,
     WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
@@ -23,13 +25,20 @@ import {
 import { type Dispatch } from '@trezor/redux-utils';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
+import { type SyncSelectedAccountThunkState } from 'src/actions/wallet/selectedAccountActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
+import { type ConvertDraftsThunkState } from 'src/actions/wallet/trading/tradingCommonActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
-import type { AppState } from 'src/types/suite';
+import { type WindowRootState, selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
+
+type WalletMiddlewareState = SyncSelectedAccountThunkState &
+    SyncAccountsWithBlockchainThunkState &
+    ConvertDraftsThunkState &
+    SendRootState &
+    WindowRootState;
 
 const walletMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, WalletMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();
