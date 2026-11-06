@@ -235,48 +235,107 @@ describe('sessions', () => {
         await client1.acquireDone({ path: PathPublic('1'), abort: true });
     });
 
-    // CURRENTLY LEAKS — see PR #27978 for the fix.
-    //
-    // SessionsClient subscribes to 'descriptors' and 'releaseRequest' on the background in
-    // its constructor. SessionsClient.dispose() removes its own listeners and triggers a
-    // 'dispose' request to the background, but it does not call background.off() to remove
-    // the constructor-registered handlers from the background itself. A real shared
-    // SessionsBackground masks this via its destructive dispose() (which calls
-    // removeAllListeners() unconditionally) — so this test uses a minimal mock to isolate
-    // the SessionsClient -> SessionsBackgroundInterface contract.
-    //
-    // When the fix lands SessionsBackgroundInterface gains an off() method and
-    // SessionsClient.dispose() uses it to remove its own handler refs.
-    test('client.dispose() leaks listeners on shared background (TODO: fix in #27978)', () => {
+    test('setBackground() with the already set background keeps it subscribed', () => {
         const listeners = {
             descriptors: [] as ((d: any) => void)[],
             releaseRequest: [] as ((d: any) => void)[],
         };
-        const mockBackground = {
-            on: (event: 'descriptors' | 'releaseRequest', listener: (d: any) => void) => {
+        let backgroundDisposeCalls = 0;
+        const mockBackground: SessionsBackgroundInterface = {
+            on: (event, listener) => {
                 listeners[event].push(listener);
             },
-            // off() is not part of the current SessionsBackgroundInterface; included on the
-            // mock so the test can detect whether dispose() reaches for it once the fix lands.
-            off: (event: 'descriptors' | 'releaseRequest', listener: (d: any) => void) => {
+            off: (event, listener) => {
                 const idx = listeners[event].indexOf(listener);
                 if (idx >= 0) listeners[event].splice(idx, 1);
             },
             handleMessage: () =>
                 Promise.resolve({ success: true, payload: undefined, id: 0 } as any),
-            dispose: () => {},
-        } as unknown as SessionsBackgroundInterface;
+            dispose: () => {
+                backgroundDisposeCalls++;
+            },
+        };
 
         const client = new SessionsClient(mockBackground);
+        // AbstractApiTransport.init() sets the background it already holds
+        client.setBackground(mockBackground);
+
+        // BrowserSessionsBackground.dispose() closes its SharedWorker port, so disposing the
+        // instance that is being set again would break every request made after it
+        expect(backgroundDisposeCalls).toBe(0);
         expect(listeners.descriptors.length).toBe(1);
         expect(listeners.releaseRequest.length).toBe(1);
+    });
 
-        client.dispose();
+    // Previously this test pinned the leak (see #27981): `SessionsClient.dispose()` did
+    // not call `background.off()` for its constructor-registered handlers, so a shared
+    // `SessionsBackground` accumulated handler refs across client lifecycles. The fix in
+    // this PR adds `off()` to `SessionsBackgroundInterface` and uses it on dispose. Test
+    // asserts the fixed behavior across 15 cycles with an isolated mock.
+    test('client.dispose() removes its background listeners via off()', () => {
+        const listeners = {
+            descriptors: [] as ((d: any) => void)[],
+            releaseRequest: [] as ((d: any) => void)[],
+        };
+        let disposeRequests = 0;
+        let backgroundDisposeCalls = 0;
+        const mockBackground: SessionsBackgroundInterface = {
+            on: (event, listener) => {
+                listeners[event].push(listener);
+            },
+            off: (event, listener) => {
+                const idx = listeners[event].indexOf(listener);
+                if (idx >= 0) listeners[event].splice(idx, 1);
+            },
+            handleMessage: params => {
+                if ((params as any).type === 'dispose') {
+                    disposeRequests++;
+                    // what SessionsBackground.handleMessage() does for this message type
+                    mockBackground.dispose();
+                }
 
-        // TODO(#27978): after the fix lands, both counts must be 0 here because
-        // SessionsClient.dispose() will call background.off() for each handler it
-        // registered in the constructor. Update the expectations below.
-        expect(listeners.descriptors.length).toBe(1); // leaked: dispose() does not call background.off
-        expect(listeners.releaseRequest.length).toBe(1); // leaked
+                return Promise.resolve({ success: true, payload: undefined, id: 0 } as any);
+            },
+            dispose: () => {
+                backgroundDisposeCalls++;
+            },
+        };
+
+        for (let i = 0; i < 15; i++) {
+            const client = new SessionsClient(mockBackground);
+            expect(listeners.descriptors.length).toBe(1);
+            expect(listeners.releaseRequest.length).toBe(1);
+
+            client.dispose();
+            expect(listeners.descriptors.length).toBe(0);
+            expect(listeners.releaseRequest.length).toBe(0);
+        }
+
+        // What off() delivers is asserted inside the loop: the client removes its own two
+        // handlers by reference, so a shared background does not accumulate handler refs
+        // across client lifecycles. The `dispose` *request* still reaches the background and
+        // resets its shared state (SessionsBackground.handleMessage routes it to dispose()) -
+        // pre-existing, which is why AbstractApiTransport.stop() does not call
+        // sessionsClient.dispose().
+        expect(disposeRequests).toBe(15);
+        expect(backgroundDisposeCalls).toBe(15);
+    });
+
+    // The catch-all error response used to carry `id: message.type`, which a client pairing
+    // responses by the numeric request id (see BrowserSessionsBackground) can never match,
+    // so the request it is meant to unblock stayed in a "hanged" state instead.
+    test('unexpected error response is paired with the request id', async () => {
+        const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        // unknown message type, handled by the `default` branch which throws
+        const response = await background.handleMessage({ type: 'bogus', id: 7 } as any);
+
+        expect(response).toEqual({
+            success: false,
+            error: { code: 'unexpected error' },
+            id: 7,
+        });
+
+        consoleError.mockRestore();
     });
 });

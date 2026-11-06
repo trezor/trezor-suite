@@ -12,8 +12,29 @@ import {
 } from '@trezor/connect-common/src/utils/cancelParams';
 
 let _channel: any;
+let _reconnect: (() => void) | undefined;
 
-const dispose = () => Promise.resolve(undefined);
+const dispose = () => {
+    if (_channel) {
+        // the reconnect listener would re-enter init() on the next port disconnect and keep the
+        // service worker alive, which is exactly what dispose() is called to stop
+        if (_reconnect) {
+            _channel.port.onDisconnect.removeListener(_reconnect);
+            _reconnect = undefined;
+        }
+        // the port is about to close, so no response can arrive for calls still in flight.
+        // Settling them keeps the documented response shape instead of hanging the client.
+        _channel.resolveMessagePromises({
+            success: false,
+            error: ERRORS.TypedError('Method_Interrupted'),
+        });
+        _channel.disconnect();
+        _channel.clear();
+        _channel = null;
+    }
+
+    return Promise.resolve(undefined);
+};
 
 const cancel = (params?: CancelParams) => {
     if (_channel) {
@@ -38,10 +59,14 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
         // By connecting again we keep the service worker active.
         cancel();
         _channel = null;
+        _reconnect = undefined;
         init(settings);
     };
 
-    _channel.port.onDisconnect.removeListener(reconnect);
+    if (_reconnect) {
+        _channel.port.onDisconnect.removeListener(_reconnect);
+    }
+    _reconnect = reconnect;
     _channel.port.onDisconnect.addListener(reconnect);
 
     return _channel.init().then(() =>
@@ -56,6 +81,9 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
 };
 
 const call = async (params: any) => {
+    if (!_channel) {
+        return createErrorMessage(ERRORS.TypedError('Init_NotInitialized'));
+    }
     try {
         const response = await _channel.postMessage({
             type: CORE_CALL,
@@ -67,7 +95,8 @@ const call = async (params: any) => {
 
         return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
     } catch (error) {
-        _channel.clear();
+        // dispose() can run while the call above is awaiting, which leaves _channel null
+        _channel?.clear();
 
         return createErrorMessage(error);
     }

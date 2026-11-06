@@ -267,6 +267,7 @@ describe('bootstrap (iframe mode)', () => {
         });
 
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const abortListenerSpy = jest.spyOn(AbortSignal.prototype, 'addEventListener');
 
         bootstrap();
         startHandshake();
@@ -277,6 +278,10 @@ describe('bootstrap (iframe mode)', () => {
         jest.advanceTimersByTime(500 * 5);
 
         await jest.advanceTimersByTimeAsync(0);
+
+        // The abort listener is registered once for the whole retry loop, not per attempt.
+        expect(abortListenerSpy).toHaveBeenCalledTimes(1);
+        abortListenerSpy.mockRestore();
 
         const { calls } = errorSpy.mock;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
