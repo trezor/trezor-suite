@@ -52,7 +52,7 @@ import { TradingSellConfirm } from 'src/views/wallet/trading/sell/TradingSellCon
 import { TradingSellDetail } from 'src/views/wallet/trading/sell/TradingSellDetail/TradingSellDetail';
 import { TradingSellForm } from 'src/views/wallet/trading/sell/TradingSellForm';
 import { TradingTransactions } from 'src/views/wallet/trading/transactions/TradingTransactions';
-import { Transactions } from 'src/views/wallet/transactions/Transactions';
+import { AccountOverview } from 'src/views/wallet/transactions/AccountOverview';
 
 /*
  Note 1: Currently, this list contains the same components as webComponents.ts, but there could be Desktop-specific
@@ -91,7 +91,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,
 
-    'wallet-index': Transactions,
+    'wallet-index': AccountOverview,
     'wallet-receive': Receive,
     'wallet-details': WalletDetails,
     // Debug only: trading form embed preview

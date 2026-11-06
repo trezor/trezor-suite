@@ -1,12 +1,10 @@
 import { useRef } from 'react';
 
-import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { gotoThunk } from '@suite/router';
 import {
     type HomeAssetGrouping,
+    type SmallBalanceSummary,
     selectIsHomeAssetTableMenuAvailable,
-    selectSmallBalanceSummary,
 } from '@suite-common/assets';
 import {
     GhostContainer,
@@ -17,59 +15,35 @@ import {
     Row,
     Switch,
 } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
 import { CaretRightIcon, CheckIcon, FunnelSimpleIcon } from '@trezor/icons';
-import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
 import { HomeAssetSmallBalancesLabel } from './HomeAssetSmallBalancesLabel';
 
 type HomeAssetTableFilterProps = {
-    grouping: HomeAssetGrouping;
+    /** Left out where the rows are one network's, as an account's are: there is nothing to group. */
+    grouping?: HomeAssetGrouping;
     areSmallBalancesShown: boolean;
-    onGroupingChange: (grouping: HomeAssetGrouping) => void;
+    smallBalances: SmallBalanceSummary | undefined;
+    onGroupingChange?: (grouping: HomeAssetGrouping) => void;
     onSmallBalancesChange: (areShown: boolean) => void;
+    onOpenHiddenTokens: () => void;
 };
 
 const HomeAssetTableFilter = ({
     grouping,
     areSmallBalancesShown,
+    smallBalances,
     onGroupingChange,
     onSmallBalancesChange,
+    onOpenHiddenTokens,
 }: HomeAssetTableFilterProps) => {
     const popoverRef = useRef<PopoverRef>(null);
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const smallBalances = useSelector(selectSmallBalanceSummary);
 
     const choose = (chosen: HomeAssetGrouping) => {
-        if (chosen !== grouping) {
-            analytics.report({
-                type: events.dashboardAssetListMenuEvent.name,
-                payload: {
-                    type: 'grouping',
-                    value: chosen === 'networks' ? 'by-networks' : 'default',
-                },
-            });
-        }
-        onGroupingChange(chosen);
+        onGroupingChange?.(chosen);
         popoverRef.current?.close();
-    };
-
-    const toggleSmallBalances = () => {
-        analytics.report({
-            type: events.dashboardAssetListMenuEvent.name,
-            payload: { type: 'show-small-balances', value: !areSmallBalancesShown },
-        });
-        onSmallBalancesChange(!areSmallBalancesShown);
-    };
-
-    const openHiddenTokens = () => {
-        analytics.report({
-            type: events.navigateFlowEvent.name,
-            payload: { action: 'navigate', type: 'hidden-tokens', from: 'dashboard' },
-        });
-        dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' }));
     };
 
     return (
@@ -83,17 +57,19 @@ const HomeAssetTableFilter = ({
                         {
                             label: <Translation id="TR_HOME_ASSET_GROUPING_DEFAULT" />,
                             iconRight: grouping === 'default' ? CheckIcon : undefined,
+                            isHidden: grouping === undefined,
                             onClick: () => choose('default'),
                             'data-testid': '@dashboard/home-asset/grouping/default',
                         },
                         {
                             label: <Translation id="TR_HOME_ASSET_GROUPING_NETWORKS" />,
                             iconRight: grouping === 'networks' ? CheckIcon : undefined,
+                            isHidden: grouping === undefined,
                             onClick: () => choose('networks'),
                             'data-testid': '@dashboard/home-asset/grouping/networks',
                         },
                         {
-                            label: <HomeAssetSmallBalancesLabel />,
+                            label: <HomeAssetSmallBalancesLabel smallBalances={smallBalances} />,
                             rightContent: (
                                 <Row pointerEvents="none">
                                     <Switch
@@ -104,16 +80,17 @@ const HomeAssetTableFilter = ({
                                 </Row>
                             ),
                             isHidden: smallBalances === undefined,
-                            hasSeparatorBefore: true,
+                            hasSeparatorBefore: grouping !== undefined,
                             closeOnClick: false,
-                            onClick: toggleSmallBalances,
+                            onClick: () => onSmallBalancesChange(!areSmallBalancesShown),
                             'data-testid': '@dashboard/home-asset/small-balances-toggle',
                         },
                         {
                             label: <Translation id="TR_HIDDEN_TOKENS" />,
                             iconRight: CaretRightIcon,
-                            hasSeparatorBefore: true,
-                            onClick: openHiddenTokens,
+                            hasSeparatorBefore:
+                                grouping !== undefined || smallBalances !== undefined,
+                            onClick: onOpenHiddenTokens,
                             'data-testid': '@dashboard/home-asset/hidden-tokens',
                         },
                     ]}
