@@ -1,9 +1,11 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
+import { type PostOnboardingInit, type PostOnboardingInitDep } from '@suite-native/services';
 import {
     type SettingsSliceRootState,
     appSettingsReducer,
+    selectIsOnboardingFinished,
     setIsOnboardingFinished,
 } from '@suite-native/settings';
 import {
@@ -12,6 +14,7 @@ import {
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
+import { mock } from '@trezor/dependency-injection';
 
 import { useExitOnboardingFlow } from './useExitOnboardingFlow';
 
@@ -24,18 +27,14 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-jest.mock('@suite-native/app-init', () => ({
-    ...jest.requireActual('@suite-native/app-init'),
-    postOnboardingInitThunk: () => ({
-        type: 'postOnboardingInitMock',
-    }),
-}));
-
 describe('useExitOnboardingFlow', () => {
     let store: Store<SettingsSliceRootState>;
+    const services: PostOnboardingInitDep = { postOnboardingInit: mock<PostOnboardingInit>() };
 
     const renderUseExitOnboardingFlow = () =>
-        renderHookWithStoreProvider(() => useExitOnboardingFlow(), { services: { store } });
+        renderHookWithStoreProvider(() => useExitOnboardingFlow(), {
+            services: { store, ...services },
+        });
 
     beforeEach(() => {
         store = createLightStore({
@@ -59,6 +58,9 @@ describe('useExitOnboardingFlow', () => {
 
     it('should set onboarding flag and navigate', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
+        jest.mocked(services.postOnboardingInit).mockImplementation(() => {
+            expect(selectIsOnboardingFinished(store.getState())).toBe(true);
+        });
         const { result } = await renderUseExitOnboardingFlow();
 
         // call the returned callback
@@ -68,9 +70,7 @@ describe('useExitOnboardingFlow', () => {
 
         // assert that onboarding finished action was dispatched
         expect(dispatchSpy).toHaveBeenCalledWith(setIsOnboardingFinished());
-        expect(dispatchSpy).toHaveBeenCalledWith(
-            expect.objectContaining({ type: 'postOnboardingInitMock' }),
-        );
+        expect(services.postOnboardingInit).toHaveBeenCalledTimes(1);
 
         // assert that navigation.reset was dispatched to navigate to AppTabs -> Home
         expect(mockNavigationDispatch).toHaveBeenCalledTimes(1);

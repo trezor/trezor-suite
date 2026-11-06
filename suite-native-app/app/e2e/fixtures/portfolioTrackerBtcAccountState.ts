@@ -1,5 +1,5 @@
 import { Account } from '@suite-common/wallet-types';
-import { PreloadedState } from '@suite-native/state';
+import { PreloadedState } from '@suite-native-app/state';
 
 export const PRELOADED_BTC_ACCOUNT_LABEL = 'BTC SegWit';
 

@@ -52,7 +52,7 @@ import {
     selectEarnYieldWorkerBaseUrl,
     selectIsOnboardingFinished,
 } from '@suite-native/settings';
-import { setIsAppReady } from '@suite-native/state';
+import { setIsAppReady } from '@suite-native-app/state';
 import { createThunk } from '@trezor/redux-utils';
 
 const ACTION_PREFIX = '@suite-native/app';

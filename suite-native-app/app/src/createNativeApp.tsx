@@ -6,20 +6,21 @@ import * as SplashScreen from 'expo-splash-screen';
 import { type StakingDep } from '@suite-common/earn-staking';
 import { type NetworksDep } from '@suite-common/networks';
 import { type QueryClientDep } from '@suite-common/react-query';
-import { applicationInitThunk } from '@suite-native/app-init';
 import { configureNetInfo } from '@suite-native/connection-status';
-import { type MMKVStorageDep } from '@suite-native/services';
+import { type MMKVStorageDep, type PostOnboardingInitDep } from '@suite-native/services';
+import { applicationInitThunk } from '@suite-native-app/app-init';
 import {
     type HydrateReduxStoreDep,
     type NativeReduxStoreDep,
     type StorePersistorDep,
-} from '@suite-native/state';
+} from '@suite-native-app/state';
 
 import { PureApp } from './App';
 import { disableRTL } from './rtl';
 
 type NativeAppDeps = {
-    services: MMKVStorageDep &
+    services: PostOnboardingInitDep &
+        MMKVStorageDep &
         NetworksDep &
         StakingDep &
         QueryClientDep &

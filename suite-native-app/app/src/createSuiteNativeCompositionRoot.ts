@@ -1,5 +1,7 @@
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { launchArguments } from '@suite-native/config';
+import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
+import { createPostOnboardingInit } from '@suite-native-app/app-init';
 import {
     type PreloadedState,
     createHydrateReduxStore,
@@ -8,8 +10,7 @@ import {
     createStorePersistor,
     extraDependencies,
     prepareRootReducers,
-} from '@suite-native/state';
-import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
+} from '@suite-native-app/state';
 import TrezorConnect from '@trezor/connect';
 
 import { type NativeApp, createNativeApp } from './createNativeApp';
@@ -44,7 +45,13 @@ export const createSuiteNativeCompositionRoot = (
     });
     const storePersistor = createStorePersistor({ store });
     const hydrateReduxStore = createHydrateReduxStore({ storePersistor });
-    const services = { ...nativeServices, store, storePersistor, hydrateReduxStore };
+    const services = {
+        ...nativeServices,
+        store,
+        storePersistor,
+        hydrateReduxStore,
+        postOnboardingInit: createPostOnboardingInit({ dispatch: store.dispatch }),
+    };
 
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app starts persistence.

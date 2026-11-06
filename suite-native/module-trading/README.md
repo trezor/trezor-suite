@@ -60,7 +60,7 @@ graph TD
         app["@suite-native-app/app"]
         module-onboarding["@suite-native/module-onboarding"]
         module-settings["@suite-native/module-settings"]
-        state["@suite-native/state"]
+        state["@suite-native-app/state"]
         module-dev-utils["@suite-native/module-dev-utils"]
     end
     module-trading["@suite-native/module-trading"]

@@ -168,7 +168,6 @@
 !/suite-native/alerts
 !/suite-native/analytics
 !/suite-native/analytics-redux
-!/suite-native/app-init
 !/suite-native/apps-embedding
 !/suite-native/apps-embedding-demo
 !/suite-native/assets
@@ -249,7 +248,6 @@
 !/suite-native/sentry
 !/suite-native/services
 !/suite-native/settings
-!/suite-native/state
 !/suite-native/storage
 !/suite-native/storybook
 !/suite-native/suite-sync
@@ -281,6 +279,8 @@
 !/suite-native/wallet
 /suite-native-app/*
 !/suite-native-app/app
+!/suite-native-app/app-init
+!/suite-native-app/state
 /networks/bitcoin/*
 !/networks/bitcoin/network-bitcoin-assets
 !/networks/bitcoin/network-bitcoin-suite-common
