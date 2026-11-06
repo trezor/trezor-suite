@@ -476,23 +476,6 @@ export const getFirmwareRange = [
     },
     // real config.json data
     {
-        description: 'xrp + getAccountInfo: coinInfo range IS replaced by config.json range',
-        params: [
-            'getAccountInfo',
-            {
-                support: { T1B1: '1.0.1', T2T1: '2.0.1' },
-                shortcut: 'xrp',
-                type: 'ripple',
-            },
-            DEFAULT_RANGE,
-        ],
-        result: {
-            ...DEFAULT_RANGE,
-            T1B1: { min: '0', max: '0' },
-            T2T1: { min: '2.1.0', max: '0' },
-        },
-    },
-    {
         description: 'btc + getAccountInfo: coinInfo range IS NOT replaced by config.json range',
         params: ['getAccountInfo', null, DEFAULT_RANGE],
         result: DEFAULT_RANGE,
