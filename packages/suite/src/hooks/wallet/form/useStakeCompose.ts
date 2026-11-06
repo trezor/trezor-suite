@@ -9,7 +9,7 @@ import {
     type PrecomposedTransaction,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import { findComposeErrors } from '@suite-common/wallet-utils';
+import { findComposeErrors, isPositiveBalance } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
@@ -34,6 +34,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     ...props
 }: Props<TFieldValues>) => {
     const [isLoading, setLoading] = useState(false);
+    const [hasComposeError, setHasComposeError] = useState(false);
     const composeRequestIDRef = useRef(0);
     const prevFeeInfoRef = useRef(state?.feeInfo);
     const defaultFieldRef = useRef(defaultField || DEFAULT_FIELD);
@@ -57,6 +58,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
             if (!state) return;
             // reset precomposed transactions
             setComposedLevels(undefined);
+            setHasComposeError(false);
             // set ref for later use in useEffect
             composeRequestIDRef.current += 1;
             // clear errors from previous compose process
@@ -71,21 +73,32 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
             // store current request ID before async debounced process and compare it later. see explanation below
             const resultID = composeRequestIDRef.current;
-            const result = await debounce(() => {
+            let hasUnexpectedError = false;
+            const result = await debounce(async () => {
                 if (Object.keys(errors).length > 0) {
                     return Promise.resolve(undefined);
                 }
 
                 const values = getValues();
 
-                return dispatch(composeTransaction(values, state));
+                const composed = await dispatch(composeTransaction(values, state));
+                hasUnexpectedError =
+                    composed === undefined &&
+                    (values.stakeType === 'change-delegate' ||
+                        isPositiveBalance(values.outputs?.[0]?.amount ?? '0'));
+
+                return composed;
             }).catch(error => {
                 // The compose thunk reaches TrezorConnect, whose rejection messages may embed the
                 // composed account payload. `composeRequest` is fired without a `.catch` from the
                 // effects below, so a rejection escaping here would become an unhandled rejection
                 // and get reported verbatim by Sentry's global handler. Only the error name, never
                 // its message, is safe to log.
-                console.warn('Stake compose failed', error instanceof Error ? error.name : error);
+                console.warn(
+                    'Stake compose failed',
+                    error instanceof Error ? error.name : 'UnknownError',
+                );
+                hasUnexpectedError = true;
 
                 return undefined;
             });
@@ -95,6 +108,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
             // therefore another debounce process was not called yet to interrupt current one
             // unexpected result: `updateComposedValues` is trying to work with updated/newer FormState
             if (resultID === composeRequestIDRef.current) {
+                setHasComposeError(hasUnexpectedError);
                 if (result) {
                     // set new composed transactions
                     setComposedLevels(result);
@@ -113,13 +127,18 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
         (composed: PrecomposedTransaction) => {
             const values = getValues();
             if (!composed) return;
+            setHasComposeError(false);
 
             if (composed.type === 'error') {
-                const { error, errorMessage } = composed;
-                if (!errorMessage || !isTranslationKey(errorMessage.id)) {
-                    // composed tx doesn't have an errorMessage (Translation props)
-                    // this error is unexpected and should be handled in sendFormActions
-                    console.warn('Compose unexpected error', error);
+                const { errorMessage } = composed;
+                if (
+                    !errorMessage ||
+                    !isTranslationKey(errorMessage.id) ||
+                    errorMessage.id === 'TR_GENERIC_ERROR_TITLE'
+                ) {
+                    // Unclassified failures need a retryable error instead of a field validation error.
+                    console.warn('Stake compose returned an unclassified error');
+                    setHasComposeError(true);
                     setLoading(false);
 
                     return;
@@ -188,7 +207,12 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
             let composed = composedLevels[selectedFee || 'normal'];
 
             // composed transaction does not exists (should never happen)
-            if (!composed) return;
+            if (!composed) {
+                setHasComposeError(true);
+                setLoading(false);
+
+                return;
+            }
 
             // selectedFee was not set yet (no interaction with Fees) and default (normal) fee tx is not valid
             // OR setMax option was used
@@ -249,6 +273,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
     return {
         isLoading,
+        hasComposeError,
         composeRequest,
         composedLevels,
         onFeeLevelChange,
