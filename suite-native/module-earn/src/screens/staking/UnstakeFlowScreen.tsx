@@ -169,6 +169,15 @@ export const UnstakeFlowScreen = () => {
                     </Box>
                 )}
 
+                {canClaim && networkSymbol && (
+                    <Box marginTop="sp16">
+                        <UnstakeCanClaimAlert
+                            claimableAmount={claimableAmount}
+                            symbol={networkSymbol}
+                        />
+                    </Box>
+                )}
+
                 <Box marginTop="sp16">
                     <UnstakingTimelineCard accountKey={accountKey} />
                 </Box>
@@ -195,14 +204,6 @@ export const UnstakeFlowScreen = () => {
                         <BannerInline
                             intent="warning"
                             title={<Translation id="earn.earnFormScreen.networkFeeWarning" />}
-                        />
-                    </Box>
-                )}
-                {canClaim && networkSymbol && (
-                    <Box marginTop="sp16">
-                        <UnstakeCanClaimAlert
-                            claimableAmount={claimableAmount}
-                            symbol={networkSymbol}
                         />
                     </Box>
                 )}
