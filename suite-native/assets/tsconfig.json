@@ -36,6 +36,7 @@
         { "path": "../accounts" },
         { "path": "../atoms" },
         { "path": "../discovery" },
+        { "path": "../earn" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },

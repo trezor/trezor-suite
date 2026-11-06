@@ -45,7 +45,6 @@
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
-        { "path": "../earn" },
         { "path": "../experimental-features" },
         { "path": "../feature-feedback" },
         { "path": "../feedback-form" },

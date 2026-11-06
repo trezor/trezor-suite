@@ -30,6 +30,7 @@
         "@suite-native/accounts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/discovery": "workspace:*",
+        "@suite-native/earn": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
