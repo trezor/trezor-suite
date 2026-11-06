@@ -2,6 +2,7 @@ import { Text } from 'react-native';
 
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -56,6 +57,7 @@ const LOADING_SKELETON = '@home/portfolio-assets/loading-skeleton';
 const SHOW_MORE = '@home/portfolio-assets/show-more';
 const SHOW_MORE_LOADING = '@home/portfolio-assets/show-more/loading';
 const DEVICE_PATH = 'devicePath';
+const REFERRAL_BUTTON = getTranslation('moduleHome.buttons.referral');
 
 const walletSettingsReducer = prepareWalletSettingsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -76,6 +78,7 @@ type CreateStoreParams = {
     isFeedbackClosed?: boolean;
     isDiscoveryRunning?: boolean;
     unrecognizedTokenCount?: number;
+    deviceId?: string;
 };
 
 // The Ethereum account's coin is one row, so `ethAssetCount - 1` tokens make up the rest. With no rows
@@ -91,6 +94,7 @@ const createStore = ({
     isFeedbackClosed = false,
     isDiscoveryRunning = false,
     unrecognizedTokenCount = 0,
+    deviceId,
 }: CreateStoreParams) => {
     const tokenContracts = Array.from({ length: Math.max(ethAssetCount - 1, 0) }, (_, index) =>
         getTokenContract(index + 1),
@@ -119,6 +123,7 @@ const createStore = ({
         reducer: {
             device: createStaticReducer({
                 selectedDevice: {
+                    id: deviceId,
                     path: DEVICE_PATH,
                     state: { staticSessionId: DEVICE_STATE },
                     firmwareType,
@@ -197,6 +202,21 @@ describe('PortfolioAssetsContent', () => {
 
         expect(screen.getByTestId('@home/portfolio-assets/show-more')).toBeTruthy();
         expect(screen.getByTestId(FEEDBACK)).toBeTruthy();
+    });
+
+    it('shows the referral button under the list', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 9 });
+
+        expect(screen.getByText(REFERRAL_BUTTON)).toBeTruthy();
+    });
+
+    it('hides the referral button for the portfolio tracker', async () => {
+        await renderPortfolioAssetsContent({
+            ethAssetCount: 3,
+            deviceId: PORTFOLIO_TRACKER_DEVICE_ID,
+        });
+
+        expect(screen.queryByText(REFERRAL_BUTTON)).toBeNull();
     });
 
     it('hides the new banner once dismissed', async () => {
