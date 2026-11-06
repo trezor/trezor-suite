@@ -10,6 +10,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
+import { type QueryClientDep } from '@suite-common/react-query';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/react-native';
 import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
 import { useFormattersConfig } from '@suite-native/formatters-config';
@@ -19,7 +20,6 @@ import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { reportStartupAppLoaded } from '@suite-native/sentry';
 import {
     type NativeReduxStoreDep,
-    type NativeServices,
     type StorePersistorDep,
     StoreProvider,
     selectIsAppReady,
@@ -65,7 +65,7 @@ const AppComponent = () => {
 };
 
 type PureAppProps = {
-    services: NativeServices & NativeReduxStoreDep & StorePersistorDep;
+    services: QueryClientDep & NativeReduxStoreDep & StorePersistorDep;
 };
 
 export const PureApp = ({ services }: PureAppProps) => (

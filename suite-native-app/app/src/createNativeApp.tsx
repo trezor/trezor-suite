@@ -3,12 +3,15 @@ import { type ComponentType } from 'react';
 import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
+import { type StakingDep } from '@suite-common/earn-staking';
+import { type NetworksDep } from '@suite-common/networks';
+import { type QueryClientDep } from '@suite-common/react-query';
 import { applicationInitThunk } from '@suite-native/app-init';
 import { configureNetInfo } from '@suite-native/connection-status';
+import { type MMKVStorageDep } from '@suite-native/services';
 import {
     type HydrateReduxStoreDep,
     type NativeReduxStoreDep,
-    type NativeServices,
     type StorePersistorDep,
 } from '@suite-native/state';
 
@@ -16,7 +19,13 @@ import { PureApp } from './App';
 import { disableRTL } from './rtl';
 
 type NativeAppDeps = {
-    services: NativeServices & HydrateReduxStoreDep & NativeReduxStoreDep & StorePersistorDep;
+    services: MMKVStorageDep &
+        NetworksDep &
+        StakingDep &
+        QueryClientDep &
+        HydrateReduxStoreDep &
+        NativeReduxStoreDep &
+        StorePersistorDep;
 };
 
 export type NativeApp = () => ComponentType;
