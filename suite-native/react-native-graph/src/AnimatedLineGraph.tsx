@@ -68,6 +68,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     onGestureEnd,
     panGestureDelay = 300,
     SelectionDot = DefaultSelectionDot,
+    SelectionTooltip,
     enableIndicator = false,
     indicatorPulsating = false,
     horizontalPadding = enableIndicator
@@ -607,6 +608,8 @@ export function AnimatedLineGraph<TEventPayload extends object>({
             {EventTooltipComponent && eventTooltipProps && (
                 <EventTooltipComponent {...eventTooltipProps} />
             )}
+
+            {SelectionTooltip != null && <SelectionTooltip circleX={circleX} circleY={circleY} />}
         </View>
     );
 }

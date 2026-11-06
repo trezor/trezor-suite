@@ -60,6 +60,11 @@ export interface SelectionDotProps {
     circleY: SharedValue<number>;
 }
 
+export type SelectionTooltipProps = {
+    circleX: SharedValue<number>;
+    circleY: SharedValue<number>;
+};
+
 interface BaseLineGraphProps extends ViewProps {
     /**
      * All points to be marked in the graph. Coordinate system will adjust to scale automatically.
@@ -139,6 +144,11 @@ export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraph
      * The element that renders the selection dot
      */
     SelectionDot?: ComponentType<SelectionDotProps> | null;
+
+    /**
+     * The element that gets rendered next to the selection dot while the user pans over the graph
+     */
+    SelectionTooltip?: ComponentType<SelectionTooltipProps> | null;
 
     /**
      * The element that gets rendered above the Graph (usually the "max" point/value of the Graph)

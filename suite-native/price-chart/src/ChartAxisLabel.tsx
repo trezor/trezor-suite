@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FadeIn } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { AnimatedBox, Box } from '@suite-native/atoms';
@@ -40,6 +40,7 @@ export const ChartAxisLabel = ({ extreme: { value, relativeX } }: ChartAxisLabel
         <AnimatedBox
             flex={1}
             entering={FadeIn}
+            exiting={FadeOut}
             onLayout={event => setRowWidth(event.nativeEvent.layout.width)}
         >
             <Box
