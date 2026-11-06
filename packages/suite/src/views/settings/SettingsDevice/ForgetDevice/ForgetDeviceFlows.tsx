@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
-import { unpairCurrentBondThunk } from '@suite/bluetooth';
+import { injectBluetooth } from '@suite/bluetooth';
 import { gotoThunk } from '@suite/router';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ConfirmationModal } from './ConfirmationModal';
 import { OsAndTrezorCleanupModal } from './OsAndTrezorCleanupModal';
@@ -83,18 +85,17 @@ export const ThpBtConnectedForgetFlow = ({ onCancel }: ForgetFlowProps) => {
     type Step = 'confirmation' | 'bt-removal';
     const [step, setStep] = useState<Step>('confirmation');
     const { dispatch, forgetDevice } = useForgetDevice();
+    const { bluetooth } = useServices(injectBluetooth);
 
     const handleConfirm = async () => {
-        try {
-            const result = await dispatch(unpairCurrentBondThunk({})).unwrap();
+        const result = await bluetooth.unpairCurrentBond();
 
-            if (!result) {
-                return;
+        if (!result.success) {
+            if (result.error) {
+                dispatch(notificationsActions.addToast({ type: 'error', error: result.error }));
             }
-        } catch {
-            // bleUnpair may throw when the device disconnects mid-call.
-            // The unpair has already happened on the device side,
-            // so we proceed to OS removal regardless.
+
+            return;
         }
 
         setStep('bt-removal');
