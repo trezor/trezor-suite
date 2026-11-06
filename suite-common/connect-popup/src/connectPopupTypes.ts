@@ -244,6 +244,9 @@ type ConnectPopupCallLoaded = {
           state: 'call-error';
           error: ConnectSerializedError;
           payload: any;
+          // The deeplink callback answering the failed call, held until the popup showing the
+          // error closes.
+          callbackUrl?: string;
       }
     | TxSimulationConnectPopupCallLoaded
     | {
@@ -257,6 +260,7 @@ type ConnectPopupCallLoaded = {
 type ConnectPopupCallError = {
     state: 'error';
     error: ConnectSerializedError;
+    callbackUrl?: string;
 };
 
 type ConnectPopupCallDeviceMeta = {
