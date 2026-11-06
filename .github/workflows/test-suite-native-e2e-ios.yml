@@ -28,6 +28,8 @@ env:
   NODE_ENV: "test"
   DETOX_BINARY_PATH: ../../node_modules/.bin/detox
   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  # E2E builds must not depend on credentials for uploading release sourcemaps.
+  SENTRY_DISABLE_AUTO_UPLOAD: "true"
   RN_SRC_EXT: "e2e.ts,e2e.tsx"
 
 jobs:
