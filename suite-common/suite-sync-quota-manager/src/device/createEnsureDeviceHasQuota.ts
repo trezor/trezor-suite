@@ -40,10 +40,14 @@ export type EnsureDeviceHasQuotaDep = {
 export const createEnsureDeviceHasQuota =
     (deps: EnsureDeviceHasQuotaDeps): EnsureDeviceHasQuota =>
     async ({ device, delegatedKey }) => {
-        const delegatedKeyPublic = getPublicIdentityKeyFromDelegatedKey(delegatedKey);
+        const delegatedKeyPublic = await getPublicIdentityKeyFromDelegatedKey(delegatedKey);
+
+        if (!delegatedKeyPublic.success) {
+            return delegatedKeyPublic;
+        }
 
         const hasPublicKeyStorage = await deps.checkStorageByPublicKeyFetch({
-            publicKey: delegatedKeyPublic,
+            publicKey: delegatedKeyPublic.payload,
         });
 
         if (!hasPublicKeyStorage.success) {

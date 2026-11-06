@@ -65,7 +65,11 @@ const getIsEvoluSignRegistrationRequestV2Supported = (device: TrezorDeviceWithSt
 export const createRegisterDevice =
     (deps: RegisterDeviceDeps): RegisterDevice =>
     async ({ device, delegatedKey }) => {
-        const delegatedKeyPublic = getPublicIdentityKeyFromDelegatedKey(delegatedKey);
+        const delegatedKeyPublic = await getPublicIdentityKeyFromDelegatedKey(delegatedKey);
+
+        if (!delegatedKeyPublic.success) {
+            return delegatedKeyPublic;
+        }
 
         const sessionChallenge = await deps.prepareChallengeSessionFetch();
 
@@ -73,7 +77,7 @@ export const createRegisterDevice =
             return err(QuotaManagerCommunicationFailed(sessionChallenge.error));
         }
 
-        const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
+        const proofOfDelegatedIdentity = await getProofOfDelegatedIdentity({
             delegatedKey,
             header: EVOLU_SIGN_REGISTRATION_REQUEST_HEADER,
             appendMessageBuffer: prepareMessageBufferEvoluSignRegistrationRequest({
@@ -122,7 +126,7 @@ export const createRegisterDevice =
             proof: registrationRequestResult.payload.signature,
             sessionId: sessionChallenge.payload.sessionId,
             deviceModel: device.features.internal_model,
-            publicKey: delegatedKeyPublic,
+            publicKey: delegatedKeyPublic.payload,
             ...(getIsEvoluSignRegistrationRequestV2Supported(device)
                 ? { rotationIndex: rotation_index ?? 0 }
                 : {}),

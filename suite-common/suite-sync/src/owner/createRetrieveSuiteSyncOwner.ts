@@ -54,7 +54,7 @@ export const createRetrieveSuiteSyncOwner =
             );
         }
 
-        const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
+        const proofOfDelegatedIdentity = await getProofOfDelegatedIdentity({
             delegatedKey,
             header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
         });
