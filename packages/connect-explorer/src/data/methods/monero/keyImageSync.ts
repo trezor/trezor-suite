@@ -1,15 +1,36 @@
 const name = 'moneroKeyImageSync';
 
-const tdiFields = [
+type TransferDetail = {
+    out_key: string;
+    tx_pub_key: string;
+    internal_output_index: number;
+    sub_addr_minor: number;
+};
+
+const accountTransferDetail: TransferDetail = {
+    out_key: '7dec0733b4075ec403f0671f1e15e4f3d5c1be34b371bacf9db69355d0bf2ded',
+    tx_pub_key: 'e3c8b1f31e695a57ed073bf7cb09d85c82870766887673974ea154dfbb55e565',
+    internal_output_index: 1,
+    sub_addr_minor: 0,
+};
+
+const subaddressTransferDetail: TransferDetail = {
+    out_key: 'bb20e1f5bb0eaa2d3d41e14abc332045eac8668a90f3bade80aac351fc0ac957',
+    tx_pub_key: '20d05f96031bcb263d0a9a751184fe9b3fa2f8814138611ef68dd3f6f0fb1bcf',
+    internal_output_index: 1,
+    sub_addr_minor: 1,
+};
+
+const getTdiFields = (transferDetail: TransferDetail) => [
     {
         name: 'out_key',
         type: 'input',
-        value: 'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+        value: transferDetail.out_key,
     },
     {
         name: 'tx_pub_key',
         type: 'input',
-        value: 'fedcba0987654321fedcba0987654321fedcba0987654321fedcba0987654321',
+        value: transferDetail.tx_pub_key,
     },
     {
         name: 'additional_tx_pub_keys',
@@ -20,7 +41,7 @@ const tdiFields = [
     {
         name: 'internal_output_index',
         type: 'number',
-        value: 0,
+        value: transferDetail.internal_output_index,
     },
     {
         name: 'sub_addr_major',
@@ -31,7 +52,7 @@ const tdiFields = [
     {
         name: 'sub_addr_minor',
         type: 'number',
-        value: 0,
+        value: transferDetail.sub_addr_minor,
         optional: true,
     },
 ];
@@ -59,10 +80,10 @@ const fields = [
         batch: [
             {
                 type: 'transfer-details',
-                fields: tdiFields,
+                fields: getTdiFields(accountTransferDetail),
             },
         ],
-        items: [tdiFields, tdiFields],
+        items: [getTdiFields(accountTransferDetail), getTdiFields(subaddressTransferDetail)],
     },
 ];
 

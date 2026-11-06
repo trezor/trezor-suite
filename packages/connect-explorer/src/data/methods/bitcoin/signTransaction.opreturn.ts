@@ -8,16 +8,16 @@ const test = {
     inputs: [
         {
             address_n: [
-                (49 | 0x80000000) >>> 0,
+                (84 | 0x80000000) >>> 0,
                 (1 | 0x80000000) >>> 0,
                 (0 | 0x80000000) >>> 0,
-                1,
+                0,
                 0,
             ],
-            amount: '999500',
-            prev_index: 0,
-            prev_hash: 'dcd403a9109821e07f928f46895c33c990f56a6d8ad9679b40f6d4f3532514c2',
-            script_type: 'SPENDP2SHWITNESS',
+            prev_hash: 'bb0f9ece9adbca11c7e5a69351c8c4aa7548591f2c06defa690baaa110ad3f44',
+            prev_index: 1,
+            amount: '1000000',
+            script_type: 'SPENDWITNESS',
         },
     ],
     outputs: [
@@ -28,14 +28,14 @@ const test = {
         },
         {
             address_n: [
-                (49 | 0x80000000) >>> 0,
+                (84 | 0x80000000) >>> 0,
                 (1 | 0x80000000) >>> 0,
                 (0 | 0x80000000) >>> 0,
                 1,
                 0,
             ],
-            amount: '999320',
-            script_type: 'PAYTOP2SHWITNESS',
+            amount: '999000',
+            script_type: 'PAYTOWITNESS',
         },
     ],
 };
@@ -54,13 +54,12 @@ export default [
                 type: 'select',
                 value: 'test',
                 affect: ['inputs', 'outputs'],
-                data: select.map(v => {
+                data: select.flatMap(v => {
                     const example = examples[v.value];
 
-                    return {
-                        ...v,
-                        affectedValue: example ? [example.inputs, example.outputs] : undefined,
-                    };
+                    return example
+                        ? [{ ...v, affectedValue: [example.inputs, example.outputs] }]
+                        : [];
                 }),
             },
             {
