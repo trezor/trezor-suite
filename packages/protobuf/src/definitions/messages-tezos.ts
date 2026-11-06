@@ -10,7 +10,7 @@ export enum TezosBallotType {
 }
 
 export type EnumTezosBallotType = Static<typeof EnumTezosBallotType>;
-export const EnumTezosBallotType = Type.Enum(TezosBallotType);
+export const EnumTezosBallotType = /*#__PURE__*/ Type.Enum(TezosBallotType);
 
 export enum TezosContractType {
     Implicit = 0,
@@ -18,176 +18,181 @@ export enum TezosContractType {
 }
 
 export type EnumTezosContractType = Static<typeof EnumTezosContractType>;
-export const EnumTezosContractType = Type.Enum(TezosContractType);
+export const EnumTezosContractType = /*#__PURE__*/ Type.Enum(TezosContractType);
 
 export type TezosAddress = Static<typeof TezosAddress>;
-export const TezosAddress = Type.Object(
+export const TezosAddress = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        mac: Type.Optional(Type.String()),
+        address: /*#__PURE__*/ Type.String(),
+        mac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'TezosAddress' },
 );
 
 export type TezosBallotOp = Static<typeof TezosBallotOp>;
-export const TezosBallotOp = Type.Object(
+export const TezosBallotOp = /*#__PURE__*/ Type.Object(
     {
-        source: Type.String(),
-        period: Type.Number(),
-        proposal: Type.String(),
+        source: /*#__PURE__*/ Type.String(),
+        period: /*#__PURE__*/ Type.Number(),
+        proposal: /*#__PURE__*/ Type.String(),
         ballot: EnumTezosBallotType,
     },
     { $id: 'TezosBallotOp' },
 );
 
 export type TezosContractID = Static<typeof TezosContractID>;
-export const TezosContractID = Type.Object(
+export const TezosContractID = /*#__PURE__*/ Type.Object(
     {
-        tag: Type.Number(),
-        hash: Type.Uint8Array(),
+        tag: /*#__PURE__*/ Type.Number(),
+        hash: /*#__PURE__*/ Type.Uint8Array(),
     },
     { $id: 'TezosContractID' },
 );
 
 export type TezosDelegationOp = Static<typeof TezosDelegationOp>;
-export const TezosDelegationOp = Type.Object(
+export const TezosDelegationOp = /*#__PURE__*/ Type.Object(
     {
-        source: Type.Uint8Array(),
-        fee: Type.Uint(),
-        counter: Type.Number(),
-        gas_limit: Type.Number(),
-        storage_limit: Type.Number(),
-        delegate: Type.Uint8Array(),
+        source: /*#__PURE__*/ Type.Uint8Array(),
+        fee: /*#__PURE__*/ Type.Uint(),
+        counter: /*#__PURE__*/ Type.Number(),
+        gas_limit: /*#__PURE__*/ Type.Number(),
+        storage_limit: /*#__PURE__*/ Type.Number(),
+        delegate: /*#__PURE__*/ Type.Uint8Array(),
     },
     { $id: 'TezosDelegationOp' },
 );
 
 export type TezosGetAddress = Static<typeof TezosGetAddress>;
-export const TezosGetAddress = Type.Object(
+export const TezosGetAddress = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'TezosGetAddress' },
 );
 
 export type TezosGetPublicKey = Static<typeof TezosGetPublicKey>;
-export const TezosGetPublicKey = Type.Object(
+export const TezosGetPublicKey = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'TezosGetPublicKey' },
 );
 
 export type TezosManagerTransfer = Static<typeof TezosManagerTransfer>;
-export const TezosManagerTransfer = Type.Object(
+export const TezosManagerTransfer = /*#__PURE__*/ Type.Object(
     {
         destination: TezosContractID,
-        amount: Type.Uint(),
+        amount: /*#__PURE__*/ Type.Uint(),
     },
     { $id: 'TezosManagerTransfer' },
 );
 
 export type TezosOriginationOp = Static<typeof TezosOriginationOp>;
-export const TezosOriginationOp = Type.Object(
+export const TezosOriginationOp = /*#__PURE__*/ Type.Object(
     {
-        source: Type.Uint8Array(),
-        fee: Type.Uint(),
-        counter: Type.Number(),
-        gas_limit: Type.Number(),
-        storage_limit: Type.Number(),
-        manager_pubkey: Type.Optional(Type.String()),
-        balance: Type.Number(),
-        spendable: Type.Optional(Type.Boolean()),
-        delegatable: Type.Optional(Type.Boolean()),
-        delegate: Type.Optional(Type.Uint8Array()),
-        script: Type.Union([Type.String(), Type.Array(Type.Number())]),
+        source: /*#__PURE__*/ Type.Uint8Array(),
+        fee: /*#__PURE__*/ Type.Uint(),
+        counter: /*#__PURE__*/ Type.Number(),
+        gas_limit: /*#__PURE__*/ Type.Number(),
+        storage_limit: /*#__PURE__*/ Type.Number(),
+        manager_pubkey: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        balance: /*#__PURE__*/ Type.Number(),
+        spendable: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        delegatable: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        delegate: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint8Array()),
+        script: /*#__PURE__*/ Type.Union([
+            /*#__PURE__*/ Type.String(),
+            /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        ]),
     },
     { $id: 'TezosOriginationOp' },
 );
 
 export type TezosParametersManager = Static<typeof TezosParametersManager>;
-export const TezosParametersManager = Type.Object(
+export const TezosParametersManager = /*#__PURE__*/ Type.Object(
     {
-        set_delegate: Type.Optional(Type.Uint8Array()),
-        cancel_delegate: Type.Optional(Type.Boolean()),
-        transfer: Type.Optional(TezosManagerTransfer),
+        set_delegate: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint8Array()),
+        cancel_delegate: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        transfer: /*#__PURE__*/ Type.Optional(TezosManagerTransfer),
     },
     { $id: 'TezosParametersManager' },
 );
 
 export type TezosProposalOp = Static<typeof TezosProposalOp>;
-export const TezosProposalOp = Type.Object(
+export const TezosProposalOp = /*#__PURE__*/ Type.Object(
     {
-        source: Type.String(),
-        period: Type.Number(),
-        proposals: Type.Array(Type.String()),
+        source: /*#__PURE__*/ Type.String(),
+        period: /*#__PURE__*/ Type.Number(),
+        proposals: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
     },
     { $id: 'TezosProposalOp' },
 );
 
 export type TezosPublicKey = Static<typeof TezosPublicKey>;
-export const TezosPublicKey = Type.Object(
+export const TezosPublicKey = /*#__PURE__*/ Type.Object(
     {
-        public_key: Type.String(),
+        public_key: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TezosPublicKey' },
 );
 
 export type TezosRevealOp = Static<typeof TezosRevealOp>;
-export const TezosRevealOp = Type.Object(
+export const TezosRevealOp = /*#__PURE__*/ Type.Object(
     {
-        source: Type.Uint8Array(),
-        fee: Type.Uint(),
-        counter: Type.Number(),
-        gas_limit: Type.Number(),
-        storage_limit: Type.Number(),
-        public_key: Type.Uint8Array(),
+        source: /*#__PURE__*/ Type.Uint8Array(),
+        fee: /*#__PURE__*/ Type.Uint(),
+        counter: /*#__PURE__*/ Type.Number(),
+        gas_limit: /*#__PURE__*/ Type.Number(),
+        storage_limit: /*#__PURE__*/ Type.Number(),
+        public_key: /*#__PURE__*/ Type.Uint8Array(),
     },
     { $id: 'TezosRevealOp' },
 );
 
 export type TezosSignedTx = Static<typeof TezosSignedTx>;
-export const TezosSignedTx = Type.Object(
+export const TezosSignedTx = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
-        sig_op_contents: Type.String(),
-        operation_hash: Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
+        sig_op_contents: /*#__PURE__*/ Type.String(),
+        operation_hash: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TezosSignedTx' },
 );
 
 export type TezosTransactionOp = Static<typeof TezosTransactionOp>;
-export const TezosTransactionOp = Type.Object(
+export const TezosTransactionOp = /*#__PURE__*/ Type.Object(
     {
-        source: Type.Uint8Array(),
-        fee: Type.Uint(),
-        counter: Type.Number(),
-        gas_limit: Type.Number(),
-        storage_limit: Type.Number(),
-        amount: Type.Uint(),
+        source: /*#__PURE__*/ Type.Uint8Array(),
+        fee: /*#__PURE__*/ Type.Uint(),
+        counter: /*#__PURE__*/ Type.Number(),
+        gas_limit: /*#__PURE__*/ Type.Number(),
+        storage_limit: /*#__PURE__*/ Type.Number(),
+        amount: /*#__PURE__*/ Type.Uint(),
         destination: TezosContractID,
-        parameters: Type.Optional(Type.Array(Type.Number())),
-        parameters_manager: Type.Optional(TezosParametersManager),
+        parameters: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        ),
+        parameters_manager: /*#__PURE__*/ Type.Optional(TezosParametersManager),
     },
     { $id: 'TezosTransactionOp' },
 );
 
 export type TezosSignTx = Static<typeof TezosSignTx>;
-export const TezosSignTx = Type.Object(
+export const TezosSignTx = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        branch: Type.Uint8Array(),
-        reveal: Type.Optional(TezosRevealOp),
-        transaction: Type.Optional(TezosTransactionOp),
-        origination: Type.Optional(TezosOriginationOp),
-        delegation: Type.Optional(TezosDelegationOp),
-        proposal: Type.Optional(TezosProposalOp),
-        ballot: Type.Optional(TezosBallotOp),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        branch: /*#__PURE__*/ Type.Uint8Array(),
+        reveal: /*#__PURE__*/ Type.Optional(TezosRevealOp),
+        transaction: /*#__PURE__*/ Type.Optional(TezosTransactionOp),
+        origination: /*#__PURE__*/ Type.Optional(TezosOriginationOp),
+        delegation: /*#__PURE__*/ Type.Optional(TezosDelegationOp),
+        proposal: /*#__PURE__*/ Type.Optional(TezosProposalOp),
+        ballot: /*#__PURE__*/ Type.Optional(TezosBallotOp),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'TezosSignTx' },
 );

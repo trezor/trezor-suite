@@ -341,7 +341,7 @@ export * from './messages-tron';
 export type * from './messages';
 
 export type MessageType = Static<typeof MessageType>;
-export const MessageType = Type.Object(
+export const MessageType = /*#__PURE__*/ Type.Object(
     {
         Success,
         Failure,

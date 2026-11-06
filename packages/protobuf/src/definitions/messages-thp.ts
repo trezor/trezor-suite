@@ -11,63 +11,63 @@ export enum ThpPairingMethod {
 }
 
 export type EnumThpPairingMethod = Static<typeof EnumThpPairingMethod>;
-export const EnumThpPairingMethod = Type.Enum(ThpPairingMethod);
+export const EnumThpPairingMethod = /*#__PURE__*/ Type.Enum(ThpPairingMethod);
 
 export type ThpCodeEntryChallenge = Static<typeof ThpCodeEntryChallenge>;
-export const ThpCodeEntryChallenge = Type.Object(
+export const ThpCodeEntryChallenge = /*#__PURE__*/ Type.Object(
     {
-        challenge: Type.String(),
+        challenge: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpCodeEntryChallenge' },
 );
 
 export type ThpCodeEntryCommitment = Static<typeof ThpCodeEntryCommitment>;
-export const ThpCodeEntryCommitment = Type.Object(
+export const ThpCodeEntryCommitment = /*#__PURE__*/ Type.Object(
     {
-        commitment: Type.String(),
+        commitment: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpCodeEntryCommitment' },
 );
 
 export type ThpCodeEntryCpaceHostTag = Static<typeof ThpCodeEntryCpaceHostTag>;
-export const ThpCodeEntryCpaceHostTag = Type.Object(
+export const ThpCodeEntryCpaceHostTag = /*#__PURE__*/ Type.Object(
     {
-        cpace_host_public_key: Type.String(),
-        tag: Type.String(),
+        cpace_host_public_key: /*#__PURE__*/ Type.String(),
+        tag: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpCodeEntryCpaceHostTag' },
 );
 
 export type ThpCodeEntryCpaceTrezor = Static<typeof ThpCodeEntryCpaceTrezor>;
-export const ThpCodeEntryCpaceTrezor = Type.Object(
+export const ThpCodeEntryCpaceTrezor = /*#__PURE__*/ Type.Object(
     {
-        cpace_trezor_public_key: Type.String(),
+        cpace_trezor_public_key: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpCodeEntryCpaceTrezor' },
 );
 
 export type ThpCodeEntrySecret = Static<typeof ThpCodeEntrySecret>;
-export const ThpCodeEntrySecret = Type.Object(
+export const ThpCodeEntrySecret = /*#__PURE__*/ Type.Object(
     {
-        secret: Type.String(),
+        secret: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpCodeEntrySecret' },
 );
 
 export type ThpCreateNewSession = Static<typeof ThpCreateNewSession>;
-export const ThpCreateNewSession = Type.Intersect(
+export const ThpCreateNewSession = /*#__PURE__*/ Type.Intersect(
     [
-        Type.Object({
-            derive_cardano: Type.Optional(Type.Boolean()),
+        /*#__PURE__*/ Type.Object({
+            derive_cardano: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
         }),
-        Type.Union([
-            Type.Object({
-                passphrase: Type.String(),
-                on_device: Type.Optional(Type.Undefined()),
+        /*#__PURE__*/ Type.Union([
+            /*#__PURE__*/ Type.Object({
+                passphrase: /*#__PURE__*/ Type.String(),
+                on_device: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Undefined()),
             }),
-            Type.Object({
-                passphrase: Type.Optional(Type.Undefined()),
-                on_device: Type.Boolean(),
+            /*#__PURE__*/ Type.Object({
+                passphrase: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Undefined()),
+                on_device: /*#__PURE__*/ Type.Boolean(),
             }),
         ]),
     ],
@@ -75,105 +75,117 @@ export const ThpCreateNewSession = Type.Intersect(
 );
 
 export type ThpCredentialRequest = Static<typeof ThpCredentialRequest>;
-export const ThpCredentialRequest = Type.Object(
+export const ThpCredentialRequest = /*#__PURE__*/ Type.Object(
     {
-        host_static_public_key: Type.String(),
-        autoconnect: Type.Optional(Type.Boolean()),
-        credential: Type.Optional(Type.String()),
+        host_static_public_key: /*#__PURE__*/ Type.String(),
+        autoconnect: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        credential: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'ThpCredentialRequest' },
 );
 
 export type ThpCredentialResponse = Static<typeof ThpCredentialResponse>;
-export const ThpCredentialResponse = Type.Object(
+export const ThpCredentialResponse = /*#__PURE__*/ Type.Object(
     {
-        trezor_static_public_key: Type.String(),
-        credential: Type.String(),
+        trezor_static_public_key: /*#__PURE__*/ Type.String(),
+        credential: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpCredentialResponse' },
 );
 
 export type ThpDeviceProperties = Static<typeof ThpDeviceProperties>;
-export const ThpDeviceProperties = Type.Object(
+export const ThpDeviceProperties = /*#__PURE__*/ Type.Object(
     {
-        internal_model: Type.String(),
-        model_variant: Type.Number(),
-        protocol_version_major: Type.Number(),
-        protocol_version_minor: Type.Number(),
-        pairing_methods: Type.Array(Type.KeyOfEnum(ThpPairingMethod)),
+        internal_model: /*#__PURE__*/ Type.String(),
+        model_variant: /*#__PURE__*/ Type.Number(),
+        protocol_version_major: /*#__PURE__*/ Type.Number(),
+        protocol_version_minor: /*#__PURE__*/ Type.Number(),
+        pairing_methods: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.KeyOfEnum(ThpPairingMethod)),
     },
     { $id: 'ThpDeviceProperties' },
 );
 
 export type ThpEndRequest = Static<typeof ThpEndRequest>;
-export const ThpEndRequest = Type.Record(Type.Never(), Type.Never(), { $id: 'ThpEndRequest' });
+export const ThpEndRequest = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'ThpEndRequest' },
+);
 
 export type ThpEndResponse = Static<typeof ThpEndResponse>;
-export const ThpEndResponse = Type.Record(Type.Never(), Type.Never(), { $id: 'ThpEndResponse' });
+export const ThpEndResponse = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'ThpEndResponse' },
+);
 
 export type ThpHandshakeCompletionReqNoisePayload = Static<
     typeof ThpHandshakeCompletionReqNoisePayload
 >;
-export const ThpHandshakeCompletionReqNoisePayload = Type.Object(
+export const ThpHandshakeCompletionReqNoisePayload = /*#__PURE__*/ Type.Object(
     {
-        host_pairing_credential: Type.Optional(Type.String()),
+        host_pairing_credential: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'ThpHandshakeCompletionReqNoisePayload' },
 );
 
 export type ThpNfcTagHost = Static<typeof ThpNfcTagHost>;
-export const ThpNfcTagHost = Type.Object(
+export const ThpNfcTagHost = /*#__PURE__*/ Type.Object(
     {
-        tag: Type.String(),
+        tag: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpNfcTagHost' },
 );
 
 export type ThpNfcTagTrezor = Static<typeof ThpNfcTagTrezor>;
-export const ThpNfcTagTrezor = Type.Object(
+export const ThpNfcTagTrezor = /*#__PURE__*/ Type.Object(
     {
-        tag: Type.String(),
+        tag: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpNfcTagTrezor' },
 );
 
 export type ThpPairingPreparationsFinished = Static<typeof ThpPairingPreparationsFinished>;
-export const ThpPairingPreparationsFinished = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'ThpPairingPreparationsFinished',
-});
+export const ThpPairingPreparationsFinished = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'ThpPairingPreparationsFinished' },
+);
 
 export type ThpPairingRequest = Static<typeof ThpPairingRequest>;
-export const ThpPairingRequest = Type.Object(
+export const ThpPairingRequest = /*#__PURE__*/ Type.Object(
     {
-        host_name: Type.String(),
-        app_name: Type.String(),
+        host_name: /*#__PURE__*/ Type.String(),
+        app_name: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpPairingRequest' },
 );
 
 export type ThpPairingRequestApproved = Static<typeof ThpPairingRequestApproved>;
-export const ThpPairingRequestApproved = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'ThpPairingRequestApproved',
-});
+export const ThpPairingRequestApproved = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'ThpPairingRequestApproved' },
+);
 
 export type ThpQrCodeSecret = Static<typeof ThpQrCodeSecret>;
-export const ThpQrCodeSecret = Type.Object(
+export const ThpQrCodeSecret = /*#__PURE__*/ Type.Object(
     {
-        secret: Type.String(),
+        secret: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpQrCodeSecret' },
 );
 
 export type ThpQrCodeTag = Static<typeof ThpQrCodeTag>;
-export const ThpQrCodeTag = Type.Object(
+export const ThpQrCodeTag = /*#__PURE__*/ Type.Object(
     {
-        tag: Type.String(),
+        tag: /*#__PURE__*/ Type.String(),
     },
     { $id: 'ThpQrCodeTag' },
 );
 
 export type ThpSelectMethod = Static<typeof ThpSelectMethod>;
-export const ThpSelectMethod = Type.Object(
+export const ThpSelectMethod = /*#__PURE__*/ Type.Object(
     {
         selected_pairing_method: EnumThpPairingMethod,
     },

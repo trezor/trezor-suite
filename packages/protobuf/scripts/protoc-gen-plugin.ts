@@ -57,6 +57,19 @@ const disclaimer = (file?: Schema<PluginOptions>['files'][number]) =>
         .filter(Boolean)
         .join('\n');
 
+// A call of a schema builder from @trezor/schema-utils, e.g. `Type.Object(` or `CloneType(`.
+const SCHEMA_BUILDER_CALL = /(?<![\w.])(Type\.\w+|CloneType)\(/g;
+
+/**
+ * Marks every schema builder call as free of side effects,
+ * so bundlers drop the schemas of a module that an app imports only enums from
+ * (the desktop renderer reads `AmountUnit` and never validates a message),
+ * and `@trezor/schema-utils` and typebox with them.
+ * Nested calls are marked too: webpack treats a call as pure only when its arguments are.
+ */
+const markSchemaBuildersPure = (code: string) =>
+    code.replace(SCHEMA_BUILDER_CALL, '/*#__PURE__*/ $1(');
+
 const scalarToProtoName = (scalar: ScalarType) => {
     switch (scalar) {
         case ScalarType.UINT32:
@@ -536,7 +549,7 @@ const generateIndexFile = (
     lines.push('');
 
     lines.push('export type MessageType = Static<typeof MessageType>;');
-    lines.push('export const MessageType = Type.Object({');
+    lines.push('export const MessageType = /*#__PURE__*/ Type.Object({');
     for (const messageName of messageType.wireMessages) {
         lines.push(messageName + ': ' + messageName + ',');
     }
@@ -584,7 +597,7 @@ const generateTs = (schema: Schema<PluginOptions>) => {
         // Step 3: generate schema definitions from typescript definitions
         // collect imports for referenced items
         // apply manual patches for specific cases
-        const schemaContent = generateTypeBox(source);
+        const schemaContent = markSchemaBuildersPure(generateTypeBox(source));
 
         const schemaImports = buildImportLines(
             result.externalTypes,

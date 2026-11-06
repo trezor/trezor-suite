@@ -11,7 +11,7 @@ export enum DefinitionType {
 }
 
 export type EnumDefinitionType = Static<typeof EnumDefinitionType>;
-export const EnumDefinitionType = Type.Enum(DefinitionType);
+export const EnumDefinitionType = /*#__PURE__*/ Type.Enum(DefinitionType);
 
 export enum EthereumABIType {
     ABI_ADDRESS = 0,
@@ -42,7 +42,7 @@ export enum EthereumABIType {
 }
 
 export type EnumEthereumABIType = Static<typeof EnumEthereumABIType>;
-export const EnumEthereumABIType = Type.Enum(EthereumABIType);
+export const EnumEthereumABIType = /*#__PURE__*/ Type.Enum(EthereumABIType);
 
 export enum EthereumERC7730ContainerPath {
     FROM = 1,
@@ -51,7 +51,9 @@ export enum EthereumERC7730ContainerPath {
 }
 
 export type EnumEthereumERC7730ContainerPath = Static<typeof EnumEthereumERC7730ContainerPath>;
-export const EnumEthereumERC7730ContainerPath = Type.Enum(EthereumERC7730ContainerPath);
+export const EnumEthereumERC7730ContainerPath = /*#__PURE__*/ Type.Enum(
+    EthereumERC7730ContainerPath,
+);
 
 export enum EthereumERC7730FieldFormatterType {
     FORMATTER_ADDRESS_NAME = 0,
@@ -68,79 +70,81 @@ export enum EthereumERC7730FieldFormatterType {
 export type EnumEthereumERC7730FieldFormatterType = Static<
     typeof EnumEthereumERC7730FieldFormatterType
 >;
-export const EnumEthereumERC7730FieldFormatterType = Type.Enum(EthereumERC7730FieldFormatterType);
+export const EnumEthereumERC7730FieldFormatterType = /*#__PURE__*/ Type.Enum(
+    EthereumERC7730FieldFormatterType,
+);
 
 export type EthereumERC7730EnumEntry = Static<typeof EthereumERC7730EnumEntry>;
-export const EthereumERC7730EnumEntry = Type.Object(
+export const EthereumERC7730EnumEntry = /*#__PURE__*/ Type.Object(
     {
-        key: Type.Number(),
-        value: Type.String(),
+        key: /*#__PURE__*/ Type.Number(),
+        value: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumERC7730EnumEntry' },
 );
 
 export type EthereumERC7730Path = Static<typeof EthereumERC7730Path>;
-export const EthereumERC7730Path = Type.Object(
+export const EthereumERC7730Path = /*#__PURE__*/ Type.Object(
     {
-        path: Type.Array(Type.Number()),
-        container_path: Type.Optional(EnumEthereumERC7730ContainerPath),
-        const_value: Type.Optional(Type.String()),
-        slice_start: Type.Optional(Type.Number()),
-        slice_end: Type.Optional(Type.Number()),
+        path: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        container_path: /*#__PURE__*/ Type.Optional(EnumEthereumERC7730ContainerPath),
+        const_value: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        slice_start: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        slice_end: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'EthereumERC7730Path' },
 );
 
 export type EthereumERC7730FieldInfo = Static<typeof EthereumERC7730FieldInfo>;
-export const EthereumERC7730FieldInfo = Type.Object(
+export const EthereumERC7730FieldInfo = /*#__PURE__*/ Type.Object(
     {
         path: EthereumERC7730Path,
-        label: Type.String(),
+        label: /*#__PURE__*/ Type.String(),
         formatter: EnumEthereumERC7730FieldFormatterType,
-        token_path: Type.Optional(EthereumERC7730Path),
-        threshold: Type.Optional(Type.String()),
-        threshold_message: Type.Optional(Type.String()),
-        native_currency_address: Type.Array(Type.String()),
-        decimals: Type.Optional(Type.Number()),
-        base: Type.Optional(Type.String()),
-        prefix: Type.Optional(Type.Boolean()),
-        const_token_address: Type.Optional(Type.String()),
-        callee_path: Type.Optional(EthereumERC7730Path),
-        selector: Type.Optional(Type.String()),
-        enum_values: Type.Array(EthereumERC7730EnumEntry),
+        token_path: /*#__PURE__*/ Type.Optional(EthereumERC7730Path),
+        threshold: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        threshold_message: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        native_currency_address: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        decimals: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        base: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        prefix: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        const_token_address: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        callee_path: /*#__PURE__*/ Type.Optional(EthereumERC7730Path),
+        selector: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        enum_values: /*#__PURE__*/ Type.Array(EthereumERC7730EnumEntry),
     },
     { $id: 'EthereumERC7730FieldInfo' },
 );
 
 export type EthereumNetworkInfo = Static<typeof EthereumNetworkInfo>;
-export const EthereumNetworkInfo = Type.Object(
+export const EthereumNetworkInfo = /*#__PURE__*/ Type.Object(
     {
-        chain_id: Type.Number(),
-        symbol: Type.String(),
-        slip44: Type.Number(),
-        name: Type.String(),
+        chain_id: /*#__PURE__*/ Type.Number(),
+        symbol: /*#__PURE__*/ Type.String(),
+        slip44: /*#__PURE__*/ Type.Number(),
+        name: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumNetworkInfo' },
 );
 
 export type EthereumTokenInfo = Static<typeof EthereumTokenInfo>;
-export const EthereumTokenInfo = Type.Object(
+export const EthereumTokenInfo = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        chain_id: Type.Number(),
-        symbol: Type.String(),
-        decimals: Type.Number(),
-        name: Type.String(),
+        address: /*#__PURE__*/ Type.String(),
+        chain_id: /*#__PURE__*/ Type.Number(),
+        symbol: /*#__PURE__*/ Type.String(),
+        decimals: /*#__PURE__*/ Type.Number(),
+        name: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumTokenInfo' },
 );
 
 export type SolanaTokenInfo = Static<typeof SolanaTokenInfo>;
-export const SolanaTokenInfo = Type.Object(
+export const SolanaTokenInfo = /*#__PURE__*/ Type.Object(
     {
-        mint: Type.String(),
-        symbol: Type.String(),
-        name: Type.String(),
+        mint: /*#__PURE__*/ Type.String(),
+        symbol: /*#__PURE__*/ Type.String(),
+        name: /*#__PURE__*/ Type.String(),
     },
     { $id: 'SolanaTokenInfo' },
 );

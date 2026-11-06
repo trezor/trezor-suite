@@ -4,49 +4,49 @@
 import { type Static, Type } from '@trezor/schema-utils';
 
 export type NostrEventSignature = Static<typeof NostrEventSignature>;
-export const NostrEventSignature = Type.Object(
+export const NostrEventSignature = /*#__PURE__*/ Type.Object(
     {
-        pubkey: Type.String(),
-        id: Type.String(),
-        signature: Type.String(),
+        pubkey: /*#__PURE__*/ Type.String(),
+        id: /*#__PURE__*/ Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
     },
     { $id: 'NostrEventSignature' },
 );
 
 export type NostrGetPubkey = Static<typeof NostrGetPubkey>;
-export const NostrGetPubkey = Type.Object(
+export const NostrGetPubkey = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'NostrGetPubkey' },
 );
 
 export type NostrPubkey = Static<typeof NostrPubkey>;
-export const NostrPubkey = Type.Object(
+export const NostrPubkey = /*#__PURE__*/ Type.Object(
     {
-        pubkey: Type.String(),
+        pubkey: /*#__PURE__*/ Type.String(),
     },
     { $id: 'NostrPubkey' },
 );
 
 export type NostrTag = Static<typeof NostrTag>;
-export const NostrTag = Type.Object(
+export const NostrTag = /*#__PURE__*/ Type.Object(
     {
-        key: Type.String(),
-        value: Type.Optional(Type.String()),
-        extra: Type.Array(Type.String()),
+        key: /*#__PURE__*/ Type.String(),
+        value: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        extra: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
     },
     { $id: 'NostrTag' },
 );
 
 export type NostrSignEvent = Static<typeof NostrSignEvent>;
-export const NostrSignEvent = Type.Object(
+export const NostrSignEvent = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        created_at: Type.Number(),
-        kind: Type.Number(),
-        tags: Type.Array(NostrTag),
-        content: Type.String(),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        created_at: /*#__PURE__*/ Type.Number(),
+        kind: /*#__PURE__*/ Type.Number(),
+        tags: /*#__PURE__*/ Type.Array(NostrTag),
+        content: /*#__PURE__*/ Type.String(),
     },
     { $id: 'NostrSignEvent' },
 );

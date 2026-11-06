@@ -4,35 +4,38 @@
 import { type Static, Type } from '@trezor/schema-utils';
 
 export type FirmwareErase = Static<typeof FirmwareErase>;
-export const FirmwareErase = Type.Object(
+export const FirmwareErase = /*#__PURE__*/ Type.Object(
     {
-        length: Type.Optional(Type.Number()),
+        length: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'FirmwareErase' },
 );
 
 export type FirmwareRequest = Static<typeof FirmwareRequest>;
-export const FirmwareRequest = Type.Object(
+export const FirmwareRequest = /*#__PURE__*/ Type.Object(
     {
-        offset: Type.Number(),
-        length: Type.Number(),
+        offset: /*#__PURE__*/ Type.Number(),
+        length: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'FirmwareRequest' },
 );
 
 export type FirmwareUpload = Static<typeof FirmwareUpload>;
-export const FirmwareUpload = Type.Object(
+export const FirmwareUpload = /*#__PURE__*/ Type.Object(
     {
-        payload: Type.Union([Type.Buffer(), Type.ArrayBuffer()]),
-        hash: Type.Optional(Type.String()),
+        payload: /*#__PURE__*/ Type.Union([
+            /*#__PURE__*/ Type.Buffer(),
+            /*#__PURE__*/ Type.ArrayBuffer(),
+        ]),
+        hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'FirmwareUpload' },
 );
 
 export type ProdTestT1 = Static<typeof ProdTestT1>;
-export const ProdTestT1 = Type.Object(
+export const ProdTestT1 = /*#__PURE__*/ Type.Object(
     {
-        payload: Type.Optional(Type.String()),
+        payload: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'ProdTestT1' },
 );

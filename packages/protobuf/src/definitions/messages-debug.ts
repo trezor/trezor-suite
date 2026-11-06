@@ -10,7 +10,7 @@ export enum DebugButton {
 }
 
 export type EnumDebugButton = Static<typeof EnumDebugButton>;
-export const EnumDebugButton = Type.Enum(DebugButton);
+export const EnumDebugButton = /*#__PURE__*/ Type.Enum(DebugButton);
 
 export enum DebugPhysicalButton {
     LEFT_BTN = 0,
@@ -19,7 +19,7 @@ export enum DebugPhysicalButton {
 }
 
 export type EnumDebugPhysicalButton = Static<typeof EnumDebugPhysicalButton>;
-export const EnumDebugPhysicalButton = Type.Enum(DebugPhysicalButton);
+export const EnumDebugPhysicalButton = /*#__PURE__*/ Type.Enum(DebugPhysicalButton);
 
 export enum DebugTouchEventType {
     TOUCH_FULL_CLICK = 0,
@@ -28,7 +28,7 @@ export enum DebugTouchEventType {
 }
 
 export type EnumDebugTouchEventType = Static<typeof EnumDebugTouchEventType>;
-export const EnumDebugTouchEventType = Type.Enum(DebugTouchEventType);
+export const EnumDebugTouchEventType = /*#__PURE__*/ Type.Enum(DebugTouchEventType);
 
 export enum DebugWaitType {
     IMMEDIATE = 0,
@@ -37,110 +37,118 @@ export enum DebugWaitType {
 }
 
 export type EnumDebugWaitType = Static<typeof EnumDebugWaitType>;
-export const EnumDebugWaitType = Type.Enum(DebugWaitType);
+export const EnumDebugWaitType = /*#__PURE__*/ Type.Enum(DebugWaitType);
 
 export type DebugLinkGcInfoItem = Static<typeof DebugLinkGcInfoItem>;
-export const DebugLinkGcInfoItem = Type.Object(
+export const DebugLinkGcInfoItem = /*#__PURE__*/ Type.Object(
     {
-        name: Type.String(),
-        value: Type.Number(),
+        name: /*#__PURE__*/ Type.String(),
+        value: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'DebugLinkGcInfoItem' },
 );
 
 export type DebugLinkGcInfo = Static<typeof DebugLinkGcInfo>;
-export const DebugLinkGcInfo = Type.Object(
+export const DebugLinkGcInfo = /*#__PURE__*/ Type.Object(
     {
-        items: Type.Array(DebugLinkGcInfoItem),
+        items: /*#__PURE__*/ Type.Array(DebugLinkGcInfoItem),
     },
     { $id: 'DebugLinkGcInfo' },
 );
 
 export type DebugLinkGetGcInfo = Static<typeof DebugLinkGetGcInfo>;
-export const DebugLinkGetGcInfo = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'DebugLinkGetGcInfo',
-});
+export const DebugLinkGetGcInfo = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'DebugLinkGetGcInfo' },
+);
 
 export type DebugLinkGetPairingInfo = Static<typeof DebugLinkGetPairingInfo>;
-export const DebugLinkGetPairingInfo = Type.Object(
+export const DebugLinkGetPairingInfo = /*#__PURE__*/ Type.Object(
     {
-        channel_id: Type.Optional(Type.String()),
-        handshake_hash: Type.Optional(Type.String()),
-        nfc_secret_host: Type.Optional(Type.String()),
+        channel_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        handshake_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        nfc_secret_host: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'DebugLinkGetPairingInfo' },
 );
 
 export type DebugLinkN1W1Connected = Static<typeof DebugLinkN1W1Connected>;
-export const DebugLinkN1W1Connected = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'DebugLinkN1W1Connected',
-});
+export const DebugLinkN1W1Connected = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'DebugLinkN1W1Connected' },
+);
 
 export type DebugLinkN1W1Read = Static<typeof DebugLinkN1W1Read>;
-export const DebugLinkN1W1Read = Type.Object(
+export const DebugLinkN1W1Read = /*#__PURE__*/ Type.Object(
     {
-        key: Type.Optional(Type.String()),
+        key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'DebugLinkN1W1Read' },
 );
 
 export type DebugLinkN1W1Response = Static<typeof DebugLinkN1W1Response>;
-export const DebugLinkN1W1Response = Type.Object(
+export const DebugLinkN1W1Response = /*#__PURE__*/ Type.Object(
     {
-        value: Type.Optional(Type.String()),
+        value: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'DebugLinkN1W1Response' },
 );
 
 export type DebugLinkN1W1Write = Static<typeof DebugLinkN1W1Write>;
-export const DebugLinkN1W1Write = Type.Object(
+export const DebugLinkN1W1Write = /*#__PURE__*/ Type.Object(
     {
-        key: Type.Optional(Type.String()),
-        value: Type.Optional(Type.String()),
+        key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        value: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'DebugLinkN1W1Write' },
 );
 
 export type DebugLinkOptigaSetSecMax = Static<typeof DebugLinkOptigaSetSecMax>;
-export const DebugLinkOptigaSetSecMax = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'DebugLinkOptigaSetSecMax',
-});
+export const DebugLinkOptigaSetSecMax = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'DebugLinkOptigaSetSecMax' },
+);
 
 export type DebugLinkPairingInfo = Static<typeof DebugLinkPairingInfo>;
-export const DebugLinkPairingInfo = Type.Object(
+export const DebugLinkPairingInfo = /*#__PURE__*/ Type.Object(
     {
-        channel_id: Type.Optional(Type.String()),
-        handshake_hash: Type.Optional(Type.String()),
-        code_entry_code: Type.Optional(Type.Number()),
-        code_qr_code: Type.Optional(Type.String()),
-        nfc_secret_trezor: Type.Optional(Type.String()),
+        channel_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        handshake_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        code_entry_code: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        code_qr_code: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        nfc_secret_trezor: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'DebugLinkPairingInfo' },
 );
 
 export type DebugLinkResetDebugEvents = Static<typeof DebugLinkResetDebugEvents>;
-export const DebugLinkResetDebugEvents = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'DebugLinkResetDebugEvents',
-});
+export const DebugLinkResetDebugEvents = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'DebugLinkResetDebugEvents' },
+);
 
 export type DebugLinkSetBatteryState = Static<typeof DebugLinkSetBatteryState>;
-export const DebugLinkSetBatteryState = Type.Object(
+export const DebugLinkSetBatteryState = /*#__PURE__*/ Type.Object(
     {
-        soc: Type.Optional(Type.Number()),
-        usb_connected: Type.Optional(Type.Boolean()),
-        wireless_connected: Type.Optional(Type.Boolean()),
-        ntc_connected: Type.Optional(Type.Boolean()),
-        charging_limited: Type.Optional(Type.Boolean()),
-        temp_control_active: Type.Optional(Type.Boolean()),
-        battery_connected: Type.Optional(Type.Boolean()),
+        soc: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        usb_connected: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        wireless_connected: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        ntc_connected: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        charging_limited: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        temp_control_active: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        battery_connected: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'DebugLinkSetBatteryState' },
 );
 
 export type DebugLinkSetLogFilter = Static<typeof DebugLinkSetLogFilter>;
-export const DebugLinkSetLogFilter = Type.Object(
+export const DebugLinkSetLogFilter = /*#__PURE__*/ Type.Object(
     {
-        filter: Type.Optional(Type.String()),
+        filter: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'DebugLinkSetLogFilter' },
 );

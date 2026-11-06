@@ -6,84 +6,84 @@ import { type Static, Type } from '@trezor/schema-utils';
 import { PaymentRequest } from './messages-common';
 
 export type CipheredKeyValue = Static<typeof CipheredKeyValue>;
-export const CipheredKeyValue = Type.Object(
+export const CipheredKeyValue = /*#__PURE__*/ Type.Object(
     {
-        value: Type.String(),
+        value: /*#__PURE__*/ Type.String(),
     },
     { $id: 'CipheredKeyValue' },
 );
 
 export type CipherKeyValue = Static<typeof CipherKeyValue>;
-export const CipherKeyValue = Type.Object(
+export const CipherKeyValue = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        key: Type.String(),
-        value: Type.String(),
-        encrypt: Type.Optional(Type.Boolean()),
-        ask_on_encrypt: Type.Optional(Type.Boolean()),
-        ask_on_decrypt: Type.Optional(Type.Boolean()),
-        iv: Type.Optional(Type.String()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        key: /*#__PURE__*/ Type.String(),
+        value: /*#__PURE__*/ Type.String(),
+        encrypt: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        ask_on_encrypt: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        ask_on_decrypt: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        iv: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CipherKeyValue' },
 );
 
 export type ECDHSessionKey = Static<typeof ECDHSessionKey>;
-export const ECDHSessionKey = Type.Object(
+export const ECDHSessionKey = /*#__PURE__*/ Type.Object(
     {
-        session_key: Type.String(),
-        public_key: Type.Optional(Type.String()),
+        session_key: /*#__PURE__*/ Type.String(),
+        public_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'ECDHSessionKey' },
 );
 
 export type IdentityType = Static<typeof IdentityType>;
-export const IdentityType = Type.Object(
+export const IdentityType = /*#__PURE__*/ Type.Object(
     {
-        proto: Type.Optional(Type.String()),
-        user: Type.Optional(Type.String()),
-        host: Type.Optional(Type.String()),
-        port: Type.Optional(Type.String()),
-        path: Type.Optional(Type.String()),
-        index: Type.Optional(Type.Number()),
+        proto: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        user: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        host: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        port: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        path: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'IdentityType' },
 );
 
 export type GetECDHSessionKey = Static<typeof GetECDHSessionKey>;
-export const GetECDHSessionKey = Type.Object(
+export const GetECDHSessionKey = /*#__PURE__*/ Type.Object(
     {
         identity: IdentityType,
-        peer_public_key: Type.String(),
-        ecdsa_curve_name: Type.Optional(Type.String()),
+        peer_public_key: /*#__PURE__*/ Type.String(),
+        ecdsa_curve_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'GetECDHSessionKey' },
 );
 
 export type PaymentNotification = Static<typeof PaymentNotification>;
-export const PaymentNotification = Type.Object(
+export const PaymentNotification = /*#__PURE__*/ Type.Object(
     {
-        payment_req: Type.Optional(PaymentRequest),
+        payment_req: /*#__PURE__*/ Type.Optional(PaymentRequest),
     },
     { $id: 'PaymentNotification' },
 );
 
 export type SignedIdentity = Static<typeof SignedIdentity>;
-export const SignedIdentity = Type.Object(
+export const SignedIdentity = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        public_key: Type.String(),
-        signature: Type.String(),
+        address: /*#__PURE__*/ Type.String(),
+        public_key: /*#__PURE__*/ Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
     },
     { $id: 'SignedIdentity' },
 );
 
 export type SignIdentity = Static<typeof SignIdentity>;
-export const SignIdentity = Type.Object(
+export const SignIdentity = /*#__PURE__*/ Type.Object(
     {
         identity: IdentityType,
-        challenge_hidden: Type.Optional(Type.String()),
-        challenge_visual: Type.Optional(Type.String()),
-        ecdsa_curve_name: Type.Optional(Type.String()),
+        challenge_hidden: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        challenge_visual: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        ecdsa_curve_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'SignIdentity' },
 );

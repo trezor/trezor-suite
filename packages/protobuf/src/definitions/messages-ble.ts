@@ -4,10 +4,10 @@
 import { type Static, Type } from '@trezor/schema-utils';
 
 export type BleUnpair = Static<typeof BleUnpair>;
-export const BleUnpair = Type.Object(
+export const BleUnpair = /*#__PURE__*/ Type.Object(
     {
-        all: Type.Optional(Type.Boolean()),
-        addr: Type.Optional(Type.String()),
+        all: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        addr: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'BleUnpair' },
 );

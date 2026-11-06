@@ -6,63 +6,63 @@ import { type Static, Type } from '@trezor/schema-utils';
 import { PaymentRequest } from './messages-common';
 
 export type RippleAccountDelete = Static<typeof RippleAccountDelete>;
-export const RippleAccountDelete = Type.Object(
+export const RippleAccountDelete = /*#__PURE__*/ Type.Object(
     {
-        destination: Type.String(),
+        destination: /*#__PURE__*/ Type.String(),
     },
     { $id: 'RippleAccountDelete' },
 );
 
 export type RippleAddress = Static<typeof RippleAddress>;
-export const RippleAddress = Type.Object(
+export const RippleAddress = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        mac: Type.Optional(Type.String()),
+        address: /*#__PURE__*/ Type.String(),
+        mac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'RippleAddress' },
 );
 
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
-export const RippleGetAddress = Type.Object(
+export const RippleGetAddress = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'RippleGetAddress' },
 );
 
 export type RipplePayment = Static<typeof RipplePayment>;
-export const RipplePayment = Type.Object(
+export const RipplePayment = /*#__PURE__*/ Type.Object(
     {
-        amount: Type.Uint(),
-        destination: Type.String(),
-        destination_tag: Type.Optional(Type.Number()),
+        amount: /*#__PURE__*/ Type.Uint(),
+        destination: /*#__PURE__*/ Type.String(),
+        destination_tag: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'RipplePayment' },
 );
 
 export type RippleSignedTx = Static<typeof RippleSignedTx>;
-export const RippleSignedTx = Type.Object(
+export const RippleSignedTx = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
-        serialized_tx: Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
+        serialized_tx: /*#__PURE__*/ Type.String(),
     },
     { $id: 'RippleSignedTx' },
 );
 
 export type RippleSignTx = Static<typeof RippleSignTx>;
-export const RippleSignTx = Type.Object(
+export const RippleSignTx = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        fee: Type.Uint(),
-        flags: Type.Optional(Type.Number()),
-        sequence: Type.Number(),
-        last_ledger_sequence: Type.Optional(Type.Number()),
-        payment: Type.Optional(RipplePayment),
-        chunkify: Type.Optional(Type.Boolean()),
-        payment_req: Type.Optional(PaymentRequest),
-        account_delete: Type.Optional(RippleAccountDelete),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        fee: /*#__PURE__*/ Type.Uint(),
+        flags: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        sequence: /*#__PURE__*/ Type.Number(),
+        last_ledger_sequence: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        payment: /*#__PURE__*/ Type.Optional(RipplePayment),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        payment_req: /*#__PURE__*/ Type.Optional(PaymentRequest),
+        account_delete: /*#__PURE__*/ Type.Optional(RippleAccountDelete),
     },
     { $id: 'RippleSignTx' },
 );

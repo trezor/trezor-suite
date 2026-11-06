@@ -16,7 +16,7 @@ export enum TronRawContractType {
 }
 
 export type EnumTronRawContractType = Static<typeof EnumTronRawContractType>;
-export const EnumTronRawContractType = Type.Enum(TronRawContractType);
+export const EnumTronRawContractType = /*#__PURE__*/ Type.Enum(TronRawContractType);
 
 export enum TronResourceCode {
     BANDWIDTH = 0,
@@ -24,66 +24,68 @@ export enum TronResourceCode {
 }
 
 export type EnumTronResourceCode = Static<typeof EnumTronResourceCode>;
-export const EnumTronResourceCode = Type.Enum(TronResourceCode);
+export const EnumTronResourceCode = /*#__PURE__*/ Type.Enum(TronResourceCode);
 
 export type TronAddress = Static<typeof TronAddress>;
-export const TronAddress = Type.Object(
+export const TronAddress = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        mac: Type.Optional(Type.String()),
+        address: /*#__PURE__*/ Type.String(),
+        mac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'TronAddress' },
 );
 
 export type TronContractRequest = Static<typeof TronContractRequest>;
-export const TronContractRequest = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'TronContractRequest',
-});
+export const TronContractRequest = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'TronContractRequest' },
+);
 
 export type TronDelegateResourceContract = Static<typeof TronDelegateResourceContract>;
-export const TronDelegateResourceContract = Type.Object(
+export const TronDelegateResourceContract = /*#__PURE__*/ Type.Object(
     {
-        owner_address: Type.String(),
-        resource: Type.Optional(EnumTronResourceCode),
-        balance: Type.Number(),
-        receiver_address: Type.String(),
-        lock: Type.Optional(Type.Boolean()),
-        lock_period: Type.Optional(Type.Number()),
+        owner_address: /*#__PURE__*/ Type.String(),
+        resource: /*#__PURE__*/ Type.Optional(EnumTronResourceCode),
+        balance: /*#__PURE__*/ Type.Number(),
+        receiver_address: /*#__PURE__*/ Type.String(),
+        lock: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        lock_period: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'TronDelegateResourceContract' },
 );
 
 export type TronFreezeBalanceV2Contract = Static<typeof TronFreezeBalanceV2Contract>;
-export const TronFreezeBalanceV2Contract = Type.Object(
+export const TronFreezeBalanceV2Contract = /*#__PURE__*/ Type.Object(
     {
-        owner_address: Type.String(),
-        balance: Type.Number(),
-        resource: Type.Optional(EnumTronResourceCode),
+        owner_address: /*#__PURE__*/ Type.String(),
+        balance: /*#__PURE__*/ Type.Number(),
+        resource: /*#__PURE__*/ Type.Optional(EnumTronResourceCode),
     },
     { $id: 'TronFreezeBalanceV2Contract' },
 );
 
 export type TronGetAddress = Static<typeof TronGetAddress>;
-export const TronGetAddress = Type.Object(
+export const TronGetAddress = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'TronGetAddress' },
 );
 
 export type TronRawParameter = Static<typeof TronRawParameter>;
-export const TronRawParameter = Type.Object(
+export const TronRawParameter = /*#__PURE__*/ Type.Object(
     {
-        type_url: Type.String(),
-        value: Type.String(),
+        type_url: /*#__PURE__*/ Type.String(),
+        value: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TronRawParameter' },
 );
 
 export type TronRawContract = Static<typeof TronRawContract>;
-export const TronRawContract = Type.Object(
+export const TronRawContract = /*#__PURE__*/ Type.Object(
     {
         type: EnumTronRawContractType,
         parameter: TronRawParameter,
@@ -92,114 +94,114 @@ export const TronRawContract = Type.Object(
 );
 
 export type TronRawTransaction = Static<typeof TronRawTransaction>;
-export const TronRawTransaction = Type.Object(
+export const TronRawTransaction = /*#__PURE__*/ Type.Object(
     {
-        ref_block_bytes: Type.String(),
-        ref_block_hash: Type.String(),
-        expiration: Type.Number(),
-        data: Type.Optional(Type.String()),
-        contract: Type.Array(TronRawContract),
-        timestamp: Type.Number(),
-        fee_limit: Type.Optional(Type.Number()),
+        ref_block_bytes: /*#__PURE__*/ Type.String(),
+        ref_block_hash: /*#__PURE__*/ Type.String(),
+        expiration: /*#__PURE__*/ Type.Number(),
+        data: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        contract: /*#__PURE__*/ Type.Array(TronRawContract),
+        timestamp: /*#__PURE__*/ Type.Number(),
+        fee_limit: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'TronRawTransaction' },
 );
 
 export type TronSignature = Static<typeof TronSignature>;
-export const TronSignature = Type.Object(
+export const TronSignature = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TronSignature' },
 );
 
 export type TronSignTx = Static<typeof TronSignTx>;
-export const TronSignTx = Type.Object(
+export const TronSignTx = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        ref_block_bytes: Type.String(),
-        ref_block_hash: Type.String(),
-        expiration: Type.Number(),
-        data: Type.Optional(Type.String()),
-        timestamp: Type.Number(),
-        fee_limit: Type.Optional(Type.Number()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        ref_block_bytes: /*#__PURE__*/ Type.String(),
+        ref_block_hash: /*#__PURE__*/ Type.String(),
+        expiration: /*#__PURE__*/ Type.Number(),
+        data: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        timestamp: /*#__PURE__*/ Type.Number(),
+        fee_limit: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'TronSignTx' },
 );
 
 export type TronTransferContract = Static<typeof TronTransferContract>;
-export const TronTransferContract = Type.Object(
+export const TronTransferContract = /*#__PURE__*/ Type.Object(
     {
-        owner_address: Type.String(),
-        to_address: Type.String(),
-        amount: Type.Uint(),
+        owner_address: /*#__PURE__*/ Type.String(),
+        to_address: /*#__PURE__*/ Type.String(),
+        amount: /*#__PURE__*/ Type.Uint(),
     },
     { $id: 'TronTransferContract' },
 );
 
 export type TronTriggerSmartContract = Static<typeof TronTriggerSmartContract>;
-export const TronTriggerSmartContract = Type.Object(
+export const TronTriggerSmartContract = /*#__PURE__*/ Type.Object(
     {
-        owner_address: Type.String(),
-        contract_address: Type.String(),
-        call_value: Type.Optional(Type.Number()),
-        data: Type.String(),
+        owner_address: /*#__PURE__*/ Type.String(),
+        contract_address: /*#__PURE__*/ Type.String(),
+        call_value: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        data: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TronTriggerSmartContract' },
 );
 
 export type TronUnDelegateResourceContract = Static<typeof TronUnDelegateResourceContract>;
-export const TronUnDelegateResourceContract = Type.Object(
+export const TronUnDelegateResourceContract = /*#__PURE__*/ Type.Object(
     {
-        owner_address: Type.String(),
-        resource: Type.Optional(EnumTronResourceCode),
-        balance: Type.Number(),
-        receiver_address: Type.String(),
+        owner_address: /*#__PURE__*/ Type.String(),
+        resource: /*#__PURE__*/ Type.Optional(EnumTronResourceCode),
+        balance: /*#__PURE__*/ Type.Number(),
+        receiver_address: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TronUnDelegateResourceContract' },
 );
 
 export type TronUnfreezeBalanceV2Contract = Static<typeof TronUnfreezeBalanceV2Contract>;
-export const TronUnfreezeBalanceV2Contract = Type.Object(
+export const TronUnfreezeBalanceV2Contract = /*#__PURE__*/ Type.Object(
     {
-        owner_address: Type.String(),
-        balance: Type.Number(),
-        resource: Type.Optional(EnumTronResourceCode),
+        owner_address: /*#__PURE__*/ Type.String(),
+        balance: /*#__PURE__*/ Type.Number(),
+        resource: /*#__PURE__*/ Type.Optional(EnumTronResourceCode),
     },
     { $id: 'TronUnfreezeBalanceV2Contract' },
 );
 
 export type TronVote = Static<typeof TronVote>;
-export const TronVote = Type.Object(
+export const TronVote = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        count: Type.Number(),
+        address: /*#__PURE__*/ Type.String(),
+        count: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'TronVote' },
 );
 
 export type TronVoteWitnessContract = Static<typeof TronVoteWitnessContract>;
-export const TronVoteWitnessContract = Type.Object(
+export const TronVoteWitnessContract = /*#__PURE__*/ Type.Object(
     {
-        owner_address: Type.String(),
-        votes: Type.Array(TronVote),
+        owner_address: /*#__PURE__*/ Type.String(),
+        votes: /*#__PURE__*/ Type.Array(TronVote),
     },
     { $id: 'TronVoteWitnessContract' },
 );
 
 export type TronWithdrawBalance = Static<typeof TronWithdrawBalance>;
-export const TronWithdrawBalance = Type.Object(
+export const TronWithdrawBalance = /*#__PURE__*/ Type.Object(
     {
-        owner_address: Type.String(),
+        owner_address: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TronWithdrawBalance' },
 );
 
 export type TronWithdrawUnfreeze = Static<typeof TronWithdrawUnfreeze>;
-export const TronWithdrawUnfreeze = Type.Object(
+export const TronWithdrawUnfreeze = /*#__PURE__*/ Type.Object(
     {
-        owner_address: Type.String(),
+        owner_address: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TronWithdrawUnfreeze' },
 );

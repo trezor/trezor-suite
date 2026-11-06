@@ -4,130 +4,132 @@
 import { type Static, Type } from '@trezor/schema-utils';
 
 export type EosAsset = Static<typeof EosAsset>;
-export const EosAsset = Type.Object(
+export const EosAsset = /*#__PURE__*/ Type.Object(
     {
-        amount: Type.Uint(),
-        symbol: Type.String(),
+        amount: /*#__PURE__*/ Type.Uint(),
+        symbol: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosAsset' },
 );
 
 export type EosActionBuyRam = Static<typeof EosActionBuyRam>;
-export const EosActionBuyRam = Type.Object(
+export const EosActionBuyRam = /*#__PURE__*/ Type.Object(
     {
-        payer: Type.String(),
-        receiver: Type.String(),
+        payer: /*#__PURE__*/ Type.String(),
+        receiver: /*#__PURE__*/ Type.String(),
         quantity: EosAsset,
     },
     { $id: 'EosActionBuyRam' },
 );
 
 export type EosActionBuyRamBytes = Static<typeof EosActionBuyRamBytes>;
-export const EosActionBuyRamBytes = Type.Object(
+export const EosActionBuyRamBytes = /*#__PURE__*/ Type.Object(
     {
-        payer: Type.String(),
-        receiver: Type.String(),
-        bytes: Type.Number(),
+        payer: /*#__PURE__*/ Type.String(),
+        receiver: /*#__PURE__*/ Type.String(),
+        bytes: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'EosActionBuyRamBytes' },
 );
 
 export type EosPermissionLevel = Static<typeof EosPermissionLevel>;
-export const EosPermissionLevel = Type.Object(
+export const EosPermissionLevel = /*#__PURE__*/ Type.Object(
     {
-        actor: Type.String(),
-        permission: Type.String(),
+        actor: /*#__PURE__*/ Type.String(),
+        permission: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosPermissionLevel' },
 );
 
 export type EosActionCommon = Static<typeof EosActionCommon>;
-export const EosActionCommon = Type.Object(
+export const EosActionCommon = /*#__PURE__*/ Type.Object(
     {
-        account: Type.String(),
-        name: Type.String(),
-        authorization: Type.Array(EosPermissionLevel),
+        account: /*#__PURE__*/ Type.String(),
+        name: /*#__PURE__*/ Type.String(),
+        authorization: /*#__PURE__*/ Type.Array(EosPermissionLevel),
     },
     { $id: 'EosActionCommon' },
 );
 
 export type EosActionDelegate = Static<typeof EosActionDelegate>;
-export const EosActionDelegate = Type.Object(
+export const EosActionDelegate = /*#__PURE__*/ Type.Object(
     {
-        sender: Type.String(),
-        receiver: Type.String(),
+        sender: /*#__PURE__*/ Type.String(),
+        receiver: /*#__PURE__*/ Type.String(),
         net_quantity: EosAsset,
         cpu_quantity: EosAsset,
-        transfer: Type.Boolean(),
+        transfer: /*#__PURE__*/ Type.Boolean(),
     },
     { $id: 'EosActionDelegate' },
 );
 
 export type EosActionDeleteAuth = Static<typeof EosActionDeleteAuth>;
-export const EosActionDeleteAuth = Type.Object(
+export const EosActionDeleteAuth = /*#__PURE__*/ Type.Object(
     {
-        account: Type.String(),
-        permission: Type.String(),
+        account: /*#__PURE__*/ Type.String(),
+        permission: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosActionDeleteAuth' },
 );
 
 export type EosActionLinkAuth = Static<typeof EosActionLinkAuth>;
-export const EosActionLinkAuth = Type.Object(
+export const EosActionLinkAuth = /*#__PURE__*/ Type.Object(
     {
-        account: Type.String(),
-        code: Type.String(),
-        type: Type.String(),
-        requirement: Type.String(),
+        account: /*#__PURE__*/ Type.String(),
+        code: /*#__PURE__*/ Type.String(),
+        type: /*#__PURE__*/ Type.String(),
+        requirement: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosActionLinkAuth' },
 );
 
 export type EosAuthorizationKey = Static<typeof EosAuthorizationKey>;
-export const EosAuthorizationKey = Type.Object(
+export const EosAuthorizationKey = /*#__PURE__*/ Type.Object(
     {
-        type: Type.Optional(Type.Number()),
-        key: Type.String(),
-        address_n: Type.Optional(Type.Array(Type.Number())),
-        weight: Type.Number(),
+        type: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        key: /*#__PURE__*/ Type.String(),
+        address_n: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        ),
+        weight: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'EosAuthorizationKey' },
 );
 
 export type EosAuthorizationAccount = Static<typeof EosAuthorizationAccount>;
-export const EosAuthorizationAccount = Type.Object(
+export const EosAuthorizationAccount = /*#__PURE__*/ Type.Object(
     {
         account: EosPermissionLevel,
-        weight: Type.Number(),
+        weight: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'EosAuthorizationAccount' },
 );
 
 export type EosAuthorizationWait = Static<typeof EosAuthorizationWait>;
-export const EosAuthorizationWait = Type.Object(
+export const EosAuthorizationWait = /*#__PURE__*/ Type.Object(
     {
-        wait_sec: Type.Number(),
-        weight: Type.Number(),
+        wait_sec: /*#__PURE__*/ Type.Number(),
+        weight: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'EosAuthorizationWait' },
 );
 
 export type EosAuthorization = Static<typeof EosAuthorization>;
-export const EosAuthorization = Type.Object(
+export const EosAuthorization = /*#__PURE__*/ Type.Object(
     {
-        threshold: Type.Number(),
-        keys: Type.Array(EosAuthorizationKey),
-        accounts: Type.Array(EosAuthorizationAccount),
-        waits: Type.Array(EosAuthorizationWait),
+        threshold: /*#__PURE__*/ Type.Number(),
+        keys: /*#__PURE__*/ Type.Array(EosAuthorizationKey),
+        accounts: /*#__PURE__*/ Type.Array(EosAuthorizationAccount),
+        waits: /*#__PURE__*/ Type.Array(EosAuthorizationWait),
     },
     { $id: 'EosAuthorization' },
 );
 
 export type EosActionNewAccount = Static<typeof EosActionNewAccount>;
-export const EosActionNewAccount = Type.Object(
+export const EosActionNewAccount = /*#__PURE__*/ Type.Object(
     {
-        creator: Type.String(),
-        name: Type.String(),
+        creator: /*#__PURE__*/ Type.String(),
+        name: /*#__PURE__*/ Type.String(),
         owner: EosAuthorization,
         active: EosAuthorization,
     },
@@ -135,38 +137,38 @@ export const EosActionNewAccount = Type.Object(
 );
 
 export type EosActionRefund = Static<typeof EosActionRefund>;
-export const EosActionRefund = Type.Object(
+export const EosActionRefund = /*#__PURE__*/ Type.Object(
     {
-        owner: Type.String(),
+        owner: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosActionRefund' },
 );
 
 export type EosActionSellRam = Static<typeof EosActionSellRam>;
-export const EosActionSellRam = Type.Object(
+export const EosActionSellRam = /*#__PURE__*/ Type.Object(
     {
-        account: Type.String(),
-        bytes: Type.Number(),
+        account: /*#__PURE__*/ Type.String(),
+        bytes: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'EosActionSellRam' },
 );
 
 export type EosActionTransfer = Static<typeof EosActionTransfer>;
-export const EosActionTransfer = Type.Object(
+export const EosActionTransfer = /*#__PURE__*/ Type.Object(
     {
-        sender: Type.String(),
-        receiver: Type.String(),
+        sender: /*#__PURE__*/ Type.String(),
+        receiver: /*#__PURE__*/ Type.String(),
         quantity: EosAsset,
-        memo: Type.String(),
+        memo: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosActionTransfer' },
 );
 
 export type EosActionUndelegate = Static<typeof EosActionUndelegate>;
-export const EosActionUndelegate = Type.Object(
+export const EosActionUndelegate = /*#__PURE__*/ Type.Object(
     {
-        sender: Type.String(),
-        receiver: Type.String(),
+        sender: /*#__PURE__*/ Type.String(),
+        receiver: /*#__PURE__*/ Type.String(),
         net_quantity: EosAsset,
         cpu_quantity: EosAsset,
     },
@@ -174,123 +176,123 @@ export const EosActionUndelegate = Type.Object(
 );
 
 export type EosActionUnknown = Static<typeof EosActionUnknown>;
-export const EosActionUnknown = Type.Object(
+export const EosActionUnknown = /*#__PURE__*/ Type.Object(
     {
-        data_size: Type.Number(),
-        data_chunk: Type.String(),
+        data_size: /*#__PURE__*/ Type.Number(),
+        data_chunk: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosActionUnknown' },
 );
 
 export type EosActionUnlinkAuth = Static<typeof EosActionUnlinkAuth>;
-export const EosActionUnlinkAuth = Type.Object(
+export const EosActionUnlinkAuth = /*#__PURE__*/ Type.Object(
     {
-        account: Type.String(),
-        code: Type.String(),
-        type: Type.String(),
+        account: /*#__PURE__*/ Type.String(),
+        code: /*#__PURE__*/ Type.String(),
+        type: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosActionUnlinkAuth' },
 );
 
 export type EosActionUpdateAuth = Static<typeof EosActionUpdateAuth>;
-export const EosActionUpdateAuth = Type.Object(
+export const EosActionUpdateAuth = /*#__PURE__*/ Type.Object(
     {
-        account: Type.String(),
-        permission: Type.String(),
-        parent: Type.String(),
+        account: /*#__PURE__*/ Type.String(),
+        permission: /*#__PURE__*/ Type.String(),
+        parent: /*#__PURE__*/ Type.String(),
         auth: EosAuthorization,
     },
     { $id: 'EosActionUpdateAuth' },
 );
 
 export type EosActionVoteProducer = Static<typeof EosActionVoteProducer>;
-export const EosActionVoteProducer = Type.Object(
+export const EosActionVoteProducer = /*#__PURE__*/ Type.Object(
     {
-        voter: Type.String(),
-        proxy: Type.String(),
-        producers: Type.Array(Type.String()),
+        voter: /*#__PURE__*/ Type.String(),
+        proxy: /*#__PURE__*/ Type.String(),
+        producers: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
     },
     { $id: 'EosActionVoteProducer' },
 );
 
 export type EosGetPublicKey = Static<typeof EosGetPublicKey>;
-export const EosGetPublicKey = Type.Object(
+export const EosGetPublicKey = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'EosGetPublicKey' },
 );
 
 export type EosPublicKey = Static<typeof EosPublicKey>;
-export const EosPublicKey = Type.Object(
+export const EosPublicKey = /*#__PURE__*/ Type.Object(
     {
-        wif_public_key: Type.String(),
-        raw_public_key: Type.String(),
+        wif_public_key: /*#__PURE__*/ Type.String(),
+        raw_public_key: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosPublicKey' },
 );
 
 export type EosSignedTx = Static<typeof EosSignedTx>;
-export const EosSignedTx = Type.Object(
+export const EosSignedTx = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EosSignedTx' },
 );
 
 export type EosTxHeader = Static<typeof EosTxHeader>;
-export const EosTxHeader = Type.Object(
+export const EosTxHeader = /*#__PURE__*/ Type.Object(
     {
-        expiration: Type.Number(),
-        ref_block_num: Type.Number(),
-        ref_block_prefix: Type.Number(),
-        max_net_usage_words: Type.Number(),
-        max_cpu_usage_ms: Type.Number(),
-        delay_sec: Type.Number(),
+        expiration: /*#__PURE__*/ Type.Number(),
+        ref_block_num: /*#__PURE__*/ Type.Number(),
+        ref_block_prefix: /*#__PURE__*/ Type.Number(),
+        max_net_usage_words: /*#__PURE__*/ Type.Number(),
+        max_cpu_usage_ms: /*#__PURE__*/ Type.Number(),
+        delay_sec: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'EosTxHeader' },
 );
 
 export type EosSignTx = Static<typeof EosSignTx>;
-export const EosSignTx = Type.Object(
+export const EosSignTx = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        chain_id: Type.String(),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        chain_id: /*#__PURE__*/ Type.String(),
         header: EosTxHeader,
-        num_actions: Type.Number(),
-        chunkify: Type.Optional(Type.Boolean()),
+        num_actions: /*#__PURE__*/ Type.Number(),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'EosSignTx' },
 );
 
 export type EosTxActionAck = Static<typeof EosTxActionAck>;
-export const EosTxActionAck = Type.Object(
+export const EosTxActionAck = /*#__PURE__*/ Type.Object(
     {
         common: EosActionCommon,
-        transfer: Type.Optional(EosActionTransfer),
-        delegate: Type.Optional(EosActionDelegate),
-        undelegate: Type.Optional(EosActionUndelegate),
-        refund: Type.Optional(EosActionRefund),
-        buy_ram: Type.Optional(EosActionBuyRam),
-        buy_ram_bytes: Type.Optional(EosActionBuyRamBytes),
-        sell_ram: Type.Optional(EosActionSellRam),
-        vote_producer: Type.Optional(EosActionVoteProducer),
-        update_auth: Type.Optional(EosActionUpdateAuth),
-        delete_auth: Type.Optional(EosActionDeleteAuth),
-        link_auth: Type.Optional(EosActionLinkAuth),
-        unlink_auth: Type.Optional(EosActionUnlinkAuth),
-        new_account: Type.Optional(EosActionNewAccount),
-        unknown: Type.Optional(EosActionUnknown),
+        transfer: /*#__PURE__*/ Type.Optional(EosActionTransfer),
+        delegate: /*#__PURE__*/ Type.Optional(EosActionDelegate),
+        undelegate: /*#__PURE__*/ Type.Optional(EosActionUndelegate),
+        refund: /*#__PURE__*/ Type.Optional(EosActionRefund),
+        buy_ram: /*#__PURE__*/ Type.Optional(EosActionBuyRam),
+        buy_ram_bytes: /*#__PURE__*/ Type.Optional(EosActionBuyRamBytes),
+        sell_ram: /*#__PURE__*/ Type.Optional(EosActionSellRam),
+        vote_producer: /*#__PURE__*/ Type.Optional(EosActionVoteProducer),
+        update_auth: /*#__PURE__*/ Type.Optional(EosActionUpdateAuth),
+        delete_auth: /*#__PURE__*/ Type.Optional(EosActionDeleteAuth),
+        link_auth: /*#__PURE__*/ Type.Optional(EosActionLinkAuth),
+        unlink_auth: /*#__PURE__*/ Type.Optional(EosActionUnlinkAuth),
+        new_account: /*#__PURE__*/ Type.Optional(EosActionNewAccount),
+        unknown: /*#__PURE__*/ Type.Optional(EosActionUnknown),
     },
     { $id: 'EosTxActionAck' },
 );
 
 export type EosTxActionRequest = Static<typeof EosTxActionRequest>;
-export const EosTxActionRequest = Type.Object(
+export const EosTxActionRequest = /*#__PURE__*/ Type.Object(
     {
-        data_size: Type.Optional(Type.Number()),
+        data_size: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'EosTxActionRequest' },
 );

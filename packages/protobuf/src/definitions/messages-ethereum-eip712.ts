@@ -17,69 +17,69 @@ export enum EthereumDataType {
 }
 
 export type EnumEthereumDataType = Static<typeof EnumEthereumDataType>;
-export const EnumEthereumDataType = Type.Enum(EthereumDataType);
+export const EnumEthereumDataType = /*#__PURE__*/ Type.Enum(EthereumDataType);
 
 export type EthereumFieldType = Static<typeof EthereumFieldType>;
-export const EthereumFieldType = Type.Recursive(
+export const EthereumFieldType = /*#__PURE__*/ Type.Recursive(
     This =>
-        Type.Object({
+        /*#__PURE__*/ Type.Object({
             data_type: EnumEthereumDataType,
-            size: Type.Optional(Type.Number()),
-            entry_type: Type.Optional(This),
-            struct_name: Type.Optional(Type.String()),
+            size: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            entry_type: /*#__PURE__*/ Type.Optional(This),
+            struct_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
         }),
     { $id: 'EthereumFieldType' },
 );
 
 export type EthereumSignTypedData = Static<typeof EthereumSignTypedData>;
-export const EthereumSignTypedData = Type.Object(
+export const EthereumSignTypedData = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        primary_type: Type.String(),
-        metamask_v4_compat: Type.Optional(Type.Boolean()),
-        definitions: Type.Optional(EthereumDefinitions),
-        show_message_hash: Type.Optional(Type.String()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        primary_type: /*#__PURE__*/ Type.String(),
+        metamask_v4_compat: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        definitions: /*#__PURE__*/ Type.Optional(EthereumDefinitions),
+        show_message_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'EthereumSignTypedData' },
 );
 
 export type EthereumStructMember = Static<typeof EthereumStructMember>;
-export const EthereumStructMember = Type.Object(
+export const EthereumStructMember = /*#__PURE__*/ Type.Object(
     {
         type: EthereumFieldType,
-        name: Type.String(),
+        name: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumStructMember' },
 );
 
 export type EthereumTypedDataStructAck = Static<typeof EthereumTypedDataStructAck>;
-export const EthereumTypedDataStructAck = Type.Object(
+export const EthereumTypedDataStructAck = /*#__PURE__*/ Type.Object(
     {
-        members: Type.Array(EthereumStructMember),
+        members: /*#__PURE__*/ Type.Array(EthereumStructMember),
     },
     { $id: 'EthereumTypedDataStructAck' },
 );
 
 export type EthereumTypedDataStructRequest = Static<typeof EthereumTypedDataStructRequest>;
-export const EthereumTypedDataStructRequest = Type.Object(
+export const EthereumTypedDataStructRequest = /*#__PURE__*/ Type.Object(
     {
-        name: Type.String(),
+        name: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumTypedDataStructRequest' },
 );
 
 export type EthereumTypedDataValueAck = Static<typeof EthereumTypedDataValueAck>;
-export const EthereumTypedDataValueAck = Type.Object(
+export const EthereumTypedDataValueAck = /*#__PURE__*/ Type.Object(
     {
-        value: Type.String(),
+        value: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumTypedDataValueAck' },
 );
 
 export type EthereumTypedDataValueRequest = Static<typeof EthereumTypedDataValueRequest>;
-export const EthereumTypedDataValueRequest = Type.Object(
+export const EthereumTypedDataValueRequest = /*#__PURE__*/ Type.Object(
     {
-        member_path: Type.Array(Type.Number()),
+        member_path: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'EthereumTypedDataValueRequest' },
 );

@@ -6,115 +6,115 @@ import { type Static, Type } from '@trezor/schema-utils';
 import { PaymentRequest } from './messages-common';
 
 export type SolanaAddress = Static<typeof SolanaAddress>;
-export const SolanaAddress = Type.Object(
+export const SolanaAddress = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        mac: Type.Optional(Type.String()),
+        address: /*#__PURE__*/ Type.String(),
+        mac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'SolanaAddress' },
 );
 
 export type SolanaGetAddress = Static<typeof SolanaGetAddress>;
-export const SolanaGetAddress = Type.Object(
+export const SolanaGetAddress = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'SolanaGetAddress' },
 );
 
 export type SolanaGetPublicKey = Static<typeof SolanaGetPublicKey>;
-export const SolanaGetPublicKey = Type.Object(
+export const SolanaGetPublicKey = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'SolanaGetPublicKey' },
 );
 
 export type SolanaMessageSignature = Static<typeof SolanaMessageSignature>;
-export const SolanaMessageSignature = Type.Object(
+export const SolanaMessageSignature = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
-        signed_data: Type.Optional(Type.String()),
+        signature: /*#__PURE__*/ Type.String(),
+        signed_data: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'SolanaMessageSignature' },
 );
 
 export type SolanaOffchainMessageV1 = Static<typeof SolanaOffchainMessageV1>;
-export const SolanaOffchainMessageV1 = Type.Object(
+export const SolanaOffchainMessageV1 = /*#__PURE__*/ Type.Object(
     {
-        message: Type.String(),
-        signers: Type.Array(Type.String()),
+        message: /*#__PURE__*/ Type.String(),
+        signers: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
     },
     { $id: 'SolanaOffchainMessageV1' },
 );
 
 export type SolanaPublicKey = Static<typeof SolanaPublicKey>;
-export const SolanaPublicKey = Type.Object(
+export const SolanaPublicKey = /*#__PURE__*/ Type.Object(
     {
-        public_key: Type.String(),
+        public_key: /*#__PURE__*/ Type.String(),
     },
     { $id: 'SolanaPublicKey' },
 );
 
 export type SolanaSignMessage = Static<typeof SolanaSignMessage>;
-export const SolanaSignMessage = Type.Object(
+export const SolanaSignMessage = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
         message: SolanaOffchainMessageV1,
     },
     { $id: 'SolanaSignMessage' },
 );
 
 export type SolanaTxTokenAccountInfo = Static<typeof SolanaTxTokenAccountInfo>;
-export const SolanaTxTokenAccountInfo = Type.Object(
+export const SolanaTxTokenAccountInfo = /*#__PURE__*/ Type.Object(
     {
-        base_address: Type.String(),
-        token_program: Type.String(),
-        token_mint: Type.String(),
-        token_account: Type.String(),
+        base_address: /*#__PURE__*/ Type.String(),
+        token_program: /*#__PURE__*/ Type.String(),
+        token_mint: /*#__PURE__*/ Type.String(),
+        token_account: /*#__PURE__*/ Type.String(),
     },
     { $id: 'SolanaTxTokenAccountInfo' },
 );
 
 export type SolanaTxAdditionalInfo = Static<typeof SolanaTxAdditionalInfo>;
-export const SolanaTxAdditionalInfo = Type.Object(
+export const SolanaTxAdditionalInfo = /*#__PURE__*/ Type.Object(
     {
-        token_accounts_infos: Type.Array(SolanaTxTokenAccountInfo),
-        encoded_token: Type.Optional(Type.ArrayBuffer()),
+        token_accounts_infos: /*#__PURE__*/ Type.Array(SolanaTxTokenAccountInfo),
+        encoded_token: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.ArrayBuffer()),
     },
     { $id: 'SolanaTxAdditionalInfo' },
 );
 
 export type SolanaSignTx = Static<typeof SolanaSignTx>;
-export const SolanaSignTx = Type.Object(
+export const SolanaSignTx = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        serialized_tx: Type.String(),
-        additional_info: Type.Optional(SolanaTxAdditionalInfo),
-        payment_req: Type.Optional(PaymentRequest),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        serialized_tx: /*#__PURE__*/ Type.String(),
+        additional_info: /*#__PURE__*/ Type.Optional(SolanaTxAdditionalInfo),
+        payment_req: /*#__PURE__*/ Type.Optional(PaymentRequest),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'SolanaSignTx' },
 );
 
 export type SolanaTxSignature = Static<typeof SolanaTxSignature>;
-export const SolanaTxSignature = Type.Object(
+export const SolanaTxSignature = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
     },
     { $id: 'SolanaTxSignature' },
 );
 
 export type SolanaVerifyMessage = Static<typeof SolanaVerifyMessage>;
-export const SolanaVerifyMessage = Type.Object(
+export const SolanaVerifyMessage = /*#__PURE__*/ Type.Object(
     {
-        chunkify: Type.Optional(Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
         message: SolanaOffchainMessageV1,
-        signatures: Type.Array(Type.String()),
+        signatures: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
     },
     { $id: 'SolanaVerifyMessage' },
 );

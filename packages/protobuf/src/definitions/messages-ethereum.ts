@@ -6,208 +6,208 @@ import { type Static, Type } from '@trezor/schema-utils';
 import { HDNodeType, PaymentRequest } from './messages-common';
 
 export type EthereumAccessList = Static<typeof EthereumAccessList>;
-export const EthereumAccessList = Type.Object(
+export const EthereumAccessList = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        storage_keys: Type.Array(Type.String()),
+        address: /*#__PURE__*/ Type.String(),
+        storage_keys: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
     },
     { $id: 'EthereumAccessList' },
 );
 
 export type EthereumAddress = Static<typeof EthereumAddress>;
-export const EthereumAddress = Type.Object(
+export const EthereumAddress = /*#__PURE__*/ Type.Object(
     {
-        _old_address: Type.Optional(Type.String()),
-        address: Type.String(),
-        mac: Type.Optional(Type.String()),
+        _old_address: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        address: /*#__PURE__*/ Type.String(),
+        mac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'EthereumAddress' },
 );
 
 export type EthereumAuth7702 = Static<typeof EthereumAuth7702>;
-export const EthereumAuth7702 = Type.Object(
+export const EthereumAuth7702 = /*#__PURE__*/ Type.Object(
     {
-        delegate: Type.String(),
+        delegate: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumAuth7702' },
 );
 
 export type EthereumAuth7702Tuple = Static<typeof EthereumAuth7702Tuple>;
-export const EthereumAuth7702Tuple = Type.Object(
+export const EthereumAuth7702Tuple = /*#__PURE__*/ Type.Object(
     {
-        items: Type.Array(Type.String()),
+        items: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
     },
     { $id: 'EthereumAuth7702Tuple' },
 );
 
 export type EthereumDefinitions = Static<typeof EthereumDefinitions>;
-export const EthereumDefinitions = Type.Object(
+export const EthereumDefinitions = /*#__PURE__*/ Type.Object(
     {
-        encoded_network: Type.Optional(Type.ArrayBuffer()),
-        encoded_token: Type.Optional(Type.ArrayBuffer()),
-        encoded_display_format: Type.Optional(Type.String()),
+        encoded_network: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.ArrayBuffer()),
+        encoded_token: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.ArrayBuffer()),
+        encoded_display_format: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'EthereumDefinitions' },
 );
 
 export type EthereumDefinitionAck = Static<typeof EthereumDefinitionAck>;
-export const EthereumDefinitionAck = Type.Object(
+export const EthereumDefinitionAck = /*#__PURE__*/ Type.Object(
     {
-        definitions: Type.Optional(EthereumDefinitions),
+        definitions: /*#__PURE__*/ Type.Optional(EthereumDefinitions),
     },
     { $id: 'EthereumDefinitionAck' },
 );
 
 export type EthereumDefinitionRequest = Static<typeof EthereumDefinitionRequest>;
-export const EthereumDefinitionRequest = Type.Object(
+export const EthereumDefinitionRequest = /*#__PURE__*/ Type.Object(
     {
-        chain_id: Type.Number(),
-        token_address: Type.String(),
-        func_sig: Type.Optional(Type.String()),
+        chain_id: /*#__PURE__*/ Type.Number(),
+        token_address: /*#__PURE__*/ Type.String(),
+        func_sig: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'EthereumDefinitionRequest' },
 );
 
 export type EthereumGetAddress = Static<typeof EthereumGetAddress>;
-export const EthereumGetAddress = Type.Object(
+export const EthereumGetAddress = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        encoded_network: Type.Optional(Type.ArrayBuffer()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        encoded_network: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.ArrayBuffer()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'EthereumGetAddress' },
 );
 
 export type EthereumGetPublicKey = Static<typeof EthereumGetPublicKey>;
-export const EthereumGetPublicKey = Type.Object(
+export const EthereumGetPublicKey = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'EthereumGetPublicKey' },
 );
 
 export type EthereumMessageSignature = Static<typeof EthereumMessageSignature>;
-export const EthereumMessageSignature = Type.Object(
+export const EthereumMessageSignature = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
-        address: Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
+        address: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumMessageSignature' },
 );
 
 export type EthereumPublicKey = Static<typeof EthereumPublicKey>;
-export const EthereumPublicKey = Type.Object(
+export const EthereumPublicKey = /*#__PURE__*/ Type.Object(
     {
         node: HDNodeType,
-        xpub: Type.String(),
+        xpub: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumPublicKey' },
 );
 
 export type EthereumSignMessage = Static<typeof EthereumSignMessage>;
-export const EthereumSignMessage = Type.Object(
+export const EthereumSignMessage = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        message: Type.String(),
-        encoded_network: Type.Optional(Type.ArrayBuffer()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        message: /*#__PURE__*/ Type.String(),
+        encoded_network: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.ArrayBuffer()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'EthereumSignMessage' },
 );
 
 export type EthereumSignTx = Static<typeof EthereumSignTx>;
-export const EthereumSignTx = Type.Object(
+export const EthereumSignTx = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        nonce: Type.Optional(Type.String()),
-        gas_price: Type.String(),
-        gas_limit: Type.String(),
-        to: Type.Optional(Type.String()),
-        value: Type.Optional(Type.String()),
-        data_initial_chunk: Type.Optional(Type.String()),
-        data_length: Type.Optional(Type.Number()),
-        chain_id: Type.Number(),
-        tx_type: Type.Optional(Type.Number()),
-        definitions: Type.Optional(EthereumDefinitions),
-        chunkify: Type.Optional(Type.Boolean()),
-        payment_req: Type.Optional(PaymentRequest),
-        supports_definition_request: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        nonce: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        gas_price: /*#__PURE__*/ Type.String(),
+        gas_limit: /*#__PURE__*/ Type.String(),
+        to: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        value: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        data_initial_chunk: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        data_length: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        chain_id: /*#__PURE__*/ Type.Number(),
+        tx_type: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        definitions: /*#__PURE__*/ Type.Optional(EthereumDefinitions),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        payment_req: /*#__PURE__*/ Type.Optional(PaymentRequest),
+        supports_definition_request: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'EthereumSignTx' },
 );
 
 export type EthereumSignTxEIP1559 = Static<typeof EthereumSignTxEIP1559>;
-export const EthereumSignTxEIP1559 = Type.Object(
+export const EthereumSignTxEIP1559 = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        nonce: Type.String(),
-        max_gas_fee: Type.String(),
-        max_priority_fee: Type.String(),
-        gas_limit: Type.String(),
-        to: Type.Optional(Type.String()),
-        value: Type.String(),
-        data_initial_chunk: Type.Optional(Type.String()),
-        data_length: Type.Number(),
-        chain_id: Type.Number(),
-        access_list: Type.Array(EthereumAccessList),
-        definitions: Type.Optional(EthereumDefinitions),
-        chunkify: Type.Optional(Type.Boolean()),
-        payment_req: Type.Optional(PaymentRequest),
-        supports_definition_request: Type.Optional(Type.Boolean()),
-        auth7702: Type.Optional(EthereumAuth7702),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        nonce: /*#__PURE__*/ Type.String(),
+        max_gas_fee: /*#__PURE__*/ Type.String(),
+        max_priority_fee: /*#__PURE__*/ Type.String(),
+        gas_limit: /*#__PURE__*/ Type.String(),
+        to: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        value: /*#__PURE__*/ Type.String(),
+        data_initial_chunk: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        data_length: /*#__PURE__*/ Type.Number(),
+        chain_id: /*#__PURE__*/ Type.Number(),
+        access_list: /*#__PURE__*/ Type.Array(EthereumAccessList),
+        definitions: /*#__PURE__*/ Type.Optional(EthereumDefinitions),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        payment_req: /*#__PURE__*/ Type.Optional(PaymentRequest),
+        supports_definition_request: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        auth7702: /*#__PURE__*/ Type.Optional(EthereumAuth7702),
     },
     { $id: 'EthereumSignTxEIP1559' },
 );
 
 export type EthereumSignTypedHash = Static<typeof EthereumSignTypedHash>;
-export const EthereumSignTypedHash = Type.Object(
+export const EthereumSignTypedHash = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        domain_separator_hash: Type.String(),
-        message_hash: Type.Optional(Type.String()),
-        encoded_network: Type.Optional(Type.ArrayBuffer()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        domain_separator_hash: /*#__PURE__*/ Type.String(),
+        message_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        encoded_network: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.ArrayBuffer()),
     },
     { $id: 'EthereumSignTypedHash' },
 );
 
 export type EthereumTxAck = Static<typeof EthereumTxAck>;
-export const EthereumTxAck = Type.Object(
+export const EthereumTxAck = /*#__PURE__*/ Type.Object(
     {
-        data_chunk: Type.String(),
+        data_chunk: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumTxAck' },
 );
 
 export type EthereumTxRequest = Static<typeof EthereumTxRequest>;
-export const EthereumTxRequest = Type.Object(
+export const EthereumTxRequest = /*#__PURE__*/ Type.Object(
     {
-        data_length: Type.Optional(Type.Number()),
-        signature_v: Type.Optional(Type.Number()),
-        signature_r: Type.Optional(Type.String()),
-        signature_s: Type.Optional(Type.String()),
-        auth7702_list: Type.Array(EthereumAuth7702Tuple),
+        data_length: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        signature_v: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        signature_r: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        signature_s: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        auth7702_list: /*#__PURE__*/ Type.Array(EthereumAuth7702Tuple),
     },
     { $id: 'EthereumTxRequest' },
 );
 
 export type EthereumTypedDataSignature = Static<typeof EthereumTypedDataSignature>;
-export const EthereumTypedDataSignature = Type.Object(
+export const EthereumTypedDataSignature = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
-        address: Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
+        address: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EthereumTypedDataSignature' },
 );
 
 export type EthereumVerifyMessage = Static<typeof EthereumVerifyMessage>;
-export const EthereumVerifyMessage = Type.Object(
+export const EthereumVerifyMessage = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
-        message: Type.String(),
-        address: Type.String(),
-        chunkify: Type.Optional(Type.Boolean()),
+        signature: /*#__PURE__*/ Type.String(),
+        message: /*#__PURE__*/ Type.String(),
+        address: /*#__PURE__*/ Type.String(),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'EthereumVerifyMessage' },
 );

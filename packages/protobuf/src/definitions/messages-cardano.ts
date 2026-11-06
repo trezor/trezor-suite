@@ -20,7 +20,7 @@ export enum CardanoAddressType {
 }
 
 export type EnumCardanoAddressType = Static<typeof EnumCardanoAddressType>;
-export const EnumCardanoAddressType = Type.Enum(CardanoAddressType);
+export const EnumCardanoAddressType = /*#__PURE__*/ Type.Enum(CardanoAddressType);
 
 export enum CardanoCertificateType {
     STAKE_REGISTRATION = 0,
@@ -33,7 +33,7 @@ export enum CardanoCertificateType {
 }
 
 export type EnumCardanoCertificateType = Static<typeof EnumCardanoCertificateType>;
-export const EnumCardanoCertificateType = Type.Enum(CardanoCertificateType);
+export const EnumCardanoCertificateType = /*#__PURE__*/ Type.Enum(CardanoCertificateType);
 
 export enum CardanoCVoteRegistrationFormat {
     CIP15 = 0,
@@ -41,7 +41,9 @@ export enum CardanoCVoteRegistrationFormat {
 }
 
 export type EnumCardanoCVoteRegistrationFormat = Static<typeof EnumCardanoCVoteRegistrationFormat>;
-export const EnumCardanoCVoteRegistrationFormat = Type.Enum(CardanoCVoteRegistrationFormat);
+export const EnumCardanoCVoteRegistrationFormat = /*#__PURE__*/ Type.Enum(
+    CardanoCVoteRegistrationFormat,
+);
 
 export enum CardanoDerivationType {
     LEDGER = 0,
@@ -50,7 +52,7 @@ export enum CardanoDerivationType {
 }
 
 export type EnumCardanoDerivationType = Static<typeof EnumCardanoDerivationType>;
-export const EnumCardanoDerivationType = Type.Enum(CardanoDerivationType);
+export const EnumCardanoDerivationType = /*#__PURE__*/ Type.Enum(CardanoDerivationType);
 
 export enum CardanoDRepType {
     KEY_HASH = 0,
@@ -60,7 +62,7 @@ export enum CardanoDRepType {
 }
 
 export type EnumCardanoDRepType = Static<typeof EnumCardanoDRepType>;
-export const EnumCardanoDRepType = Type.Enum(CardanoDRepType);
+export const EnumCardanoDRepType = /*#__PURE__*/ Type.Enum(CardanoDRepType);
 
 export enum CardanoNativeScriptHashDisplayFormat {
     HIDE = 0,
@@ -71,7 +73,7 @@ export enum CardanoNativeScriptHashDisplayFormat {
 export type EnumCardanoNativeScriptHashDisplayFormat = Static<
     typeof EnumCardanoNativeScriptHashDisplayFormat
 >;
-export const EnumCardanoNativeScriptHashDisplayFormat = Type.Enum(
+export const EnumCardanoNativeScriptHashDisplayFormat = /*#__PURE__*/ Type.Enum(
     CardanoNativeScriptHashDisplayFormat,
 );
 
@@ -85,7 +87,7 @@ export enum CardanoNativeScriptType {
 }
 
 export type EnumCardanoNativeScriptType = Static<typeof EnumCardanoNativeScriptType>;
-export const EnumCardanoNativeScriptType = Type.Enum(CardanoNativeScriptType);
+export const EnumCardanoNativeScriptType = /*#__PURE__*/ Type.Enum(CardanoNativeScriptType);
 
 export enum CardanoPoolRelayType {
     SINGLE_HOST_IP = 0,
@@ -94,7 +96,7 @@ export enum CardanoPoolRelayType {
 }
 
 export type EnumCardanoPoolRelayType = Static<typeof EnumCardanoPoolRelayType>;
-export const EnumCardanoPoolRelayType = Type.Enum(CardanoPoolRelayType);
+export const EnumCardanoPoolRelayType = /*#__PURE__*/ Type.Enum(CardanoPoolRelayType);
 
 export enum CardanoTxAuxiliaryDataSupplementType {
     NONE = 0,
@@ -104,7 +106,7 @@ export enum CardanoTxAuxiliaryDataSupplementType {
 export type EnumCardanoTxAuxiliaryDataSupplementType = Static<
     typeof EnumCardanoTxAuxiliaryDataSupplementType
 >;
-export const EnumCardanoTxAuxiliaryDataSupplementType = Type.Enum(
+export const EnumCardanoTxAuxiliaryDataSupplementType = /*#__PURE__*/ Type.Enum(
     CardanoTxAuxiliaryDataSupplementType,
 );
 
@@ -116,7 +118,9 @@ export enum CardanoTxOutputSerializationFormat {
 export type EnumCardanoTxOutputSerializationFormat = Static<
     typeof EnumCardanoTxOutputSerializationFormat
 >;
-export const EnumCardanoTxOutputSerializationFormat = Type.Enum(CardanoTxOutputSerializationFormat);
+export const EnumCardanoTxOutputSerializationFormat = /*#__PURE__*/ Type.Enum(
+    CardanoTxOutputSerializationFormat,
+);
 
 export enum CardanoTxSigningMode {
     ORDINARY_TRANSACTION = 0,
@@ -126,7 +130,7 @@ export enum CardanoTxSigningMode {
 }
 
 export type EnumCardanoTxSigningMode = Static<typeof EnumCardanoTxSigningMode>;
-export const EnumCardanoTxSigningMode = Type.Enum(CardanoTxSigningMode);
+export const EnumCardanoTxSigningMode = /*#__PURE__*/ Type.Enum(CardanoTxSigningMode);
 
 export enum CardanoTxWitnessType {
     BYRON_WITNESS = 0,
@@ -134,55 +138,55 @@ export enum CardanoTxWitnessType {
 }
 
 export type EnumCardanoTxWitnessType = Static<typeof EnumCardanoTxWitnessType>;
-export const EnumCardanoTxWitnessType = Type.Enum(CardanoTxWitnessType);
+export const EnumCardanoTxWitnessType = /*#__PURE__*/ Type.Enum(CardanoTxWitnessType);
 
 export type CardanoAddress = Static<typeof CardanoAddress>;
-export const CardanoAddress = Type.Object(
+export const CardanoAddress = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        mac: Type.Optional(Type.String()),
+        address: /*#__PURE__*/ Type.String(),
+        mac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CardanoAddress' },
 );
 
 export type CardanoBlockchainPointerType = Static<typeof CardanoBlockchainPointerType>;
-export const CardanoBlockchainPointerType = Type.Object(
+export const CardanoBlockchainPointerType = /*#__PURE__*/ Type.Object(
     {
-        block_index: Type.Number(),
-        tx_index: Type.Number(),
-        certificate_index: Type.Number(),
+        block_index: /*#__PURE__*/ Type.Number(),
+        tx_index: /*#__PURE__*/ Type.Number(),
+        certificate_index: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'CardanoBlockchainPointerType' },
 );
 
 export type CardanoAddressParametersType = Static<typeof CardanoAddressParametersType>;
-export const CardanoAddressParametersType = Type.Object(
+export const CardanoAddressParametersType = /*#__PURE__*/ Type.Object(
     {
         address_type: EnumCardanoAddressType,
-        address_n: Type.Array(Type.Number()),
-        address_n_staking: Type.Array(Type.Number()),
-        staking_key_hash: Type.Optional(Type.String()),
-        certificate_pointer: Type.Optional(CardanoBlockchainPointerType),
-        script_payment_hash: Type.Optional(Type.String()),
-        script_staking_hash: Type.Optional(Type.String()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        address_n_staking: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        staking_key_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        certificate_pointer: /*#__PURE__*/ Type.Optional(CardanoBlockchainPointerType),
+        script_payment_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        script_staking_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CardanoAddressParametersType' },
 );
 
 export type CardanoAssetGroup = Static<typeof CardanoAssetGroup>;
-export const CardanoAssetGroup = Type.Object(
+export const CardanoAssetGroup = /*#__PURE__*/ Type.Object(
     {
-        policy_id: Type.String(),
-        tokens_count: Type.Number(),
+        policy_id: /*#__PURE__*/ Type.String(),
+        tokens_count: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'CardanoAssetGroup' },
 );
 
 export type CardanoCVoteRegistrationDelegation = Static<typeof CardanoCVoteRegistrationDelegation>;
-export const CardanoCVoteRegistrationDelegation = Type.Object(
+export const CardanoCVoteRegistrationDelegation = /*#__PURE__*/ Type.Object(
     {
-        vote_public_key: Type.String(),
-        weight: Type.Uint(),
+        vote_public_key: /*#__PURE__*/ Type.String(),
+        weight: /*#__PURE__*/ Type.Uint(),
     },
     { $id: 'CardanoCVoteRegistrationDelegation' },
 );
@@ -190,60 +194,64 @@ export const CardanoCVoteRegistrationDelegation = Type.Object(
 export type CardanoCVoteRegistrationParametersType = Static<
     typeof CardanoCVoteRegistrationParametersType
 >;
-export const CardanoCVoteRegistrationParametersType = Type.Object(
+export const CardanoCVoteRegistrationParametersType = /*#__PURE__*/ Type.Object(
     {
-        vote_public_key: Type.Optional(Type.String()),
-        staking_path: Type.Array(Type.Number()),
-        payment_address_parameters: Type.Optional(CardanoAddressParametersType),
-        nonce: Type.Uint(),
-        format: Type.Optional(EnumCardanoCVoteRegistrationFormat),
-        delegations: Type.Optional(Type.Array(CardanoCVoteRegistrationDelegation)),
-        voting_purpose: Type.Optional(Type.Uint()),
-        payment_address: Type.Optional(Type.String()),
+        vote_public_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        staking_path: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        payment_address_parameters: /*#__PURE__*/ Type.Optional(CardanoAddressParametersType),
+        nonce: /*#__PURE__*/ Type.Uint(),
+        format: /*#__PURE__*/ Type.Optional(EnumCardanoCVoteRegistrationFormat),
+        delegations: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Array(CardanoCVoteRegistrationDelegation),
+        ),
+        voting_purpose: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+        payment_address: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CardanoCVoteRegistrationParametersType' },
 );
 
 export type CardanoDRep = Static<typeof CardanoDRep>;
-export const CardanoDRep = Type.Object(
+export const CardanoDRep = /*#__PURE__*/ Type.Object(
     {
         type: EnumCardanoDRepType,
-        key_hash: Type.Optional(Type.String()),
-        script_hash: Type.Optional(Type.String()),
+        key_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        script_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CardanoDRep' },
 );
 
 export type CardanoGetAddress = Static<typeof CardanoGetAddress>;
-export const CardanoGetAddress = Type.Object(
+export const CardanoGetAddress = /*#__PURE__*/ Type.Object(
     {
-        show_display: Type.Optional(Type.Boolean()),
-        protocol_magic: Type.Number(),
-        network_id: Type.Number(),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        protocol_magic: /*#__PURE__*/ Type.Number(),
+        network_id: /*#__PURE__*/ Type.Number(),
         address_parameters: CardanoAddressParametersType,
         derivation_type: EnumCardanoDerivationType,
-        chunkify: Type.Optional(Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'CardanoGetAddress' },
 );
 
 export type CardanoNativeScript = Static<typeof CardanoNativeScript>;
-export const CardanoNativeScript = Type.Recursive(
+export const CardanoNativeScript = /*#__PURE__*/ Type.Recursive(
     This =>
-        Type.Object({
+        /*#__PURE__*/ Type.Object({
             type: EnumCardanoNativeScriptType,
-            scripts: Type.Optional(Type.Array(This)),
-            key_hash: Type.Optional(Type.String()),
-            key_path: Type.Optional(Type.Array(Type.Number())),
-            required_signatures_count: Type.Optional(Type.Number()),
-            invalid_before: Type.Optional(Type.Uint()),
-            invalid_hereafter: Type.Optional(Type.Uint()),
+            scripts: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Array(This)),
+            key_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+            key_path: /*#__PURE__*/ Type.Optional(
+                /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+            ),
+            required_signatures_count: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            invalid_before: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+            invalid_hereafter: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
         }),
     { $id: 'CardanoNativeScript' },
 );
 
 export type CardanoGetNativeScriptHash = Static<typeof CardanoGetNativeScriptHash>;
-export const CardanoGetNativeScriptHash = Type.Object(
+export const CardanoGetNativeScriptHash = /*#__PURE__*/ Type.Object(
     {
         script: CardanoNativeScript,
         display_format: EnumCardanoNativeScriptHashDisplayFormat,
@@ -253,319 +261,331 @@ export const CardanoGetNativeScriptHash = Type.Object(
 );
 
 export type CardanoGetPublicKey = Static<typeof CardanoGetPublicKey>;
-export const CardanoGetPublicKey = Type.Object(
+export const CardanoGetPublicKey = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
         derivation_type: EnumCardanoDerivationType,
     },
     { $id: 'CardanoGetPublicKey' },
 );
 
 export type CardanoMessageDataRequest = Static<typeof CardanoMessageDataRequest>;
-export const CardanoMessageDataRequest = Type.Object(
+export const CardanoMessageDataRequest = /*#__PURE__*/ Type.Object(
     {
-        length: Type.Number(),
-        offset: Type.Number(),
+        length: /*#__PURE__*/ Type.Number(),
+        offset: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'CardanoMessageDataRequest' },
 );
 
 export type CardanoMessageDataResponse = Static<typeof CardanoMessageDataResponse>;
-export const CardanoMessageDataResponse = Type.Object(
+export const CardanoMessageDataResponse = /*#__PURE__*/ Type.Object(
     {
-        data: Type.String(),
+        data: /*#__PURE__*/ Type.String(),
     },
     { $id: 'CardanoMessageDataResponse' },
 );
 
 export type CardanoMessageSignature = Static<typeof CardanoMessageSignature>;
-export const CardanoMessageSignature = Type.Object(
+export const CardanoMessageSignature = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.String(),
-        address: Type.String(),
-        pub_key: Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
+        address: /*#__PURE__*/ Type.String(),
+        pub_key: /*#__PURE__*/ Type.String(),
     },
     { $id: 'CardanoMessageSignature' },
 );
 
 export type CardanoNativeScriptHash = Static<typeof CardanoNativeScriptHash>;
-export const CardanoNativeScriptHash = Type.Object(
+export const CardanoNativeScriptHash = /*#__PURE__*/ Type.Object(
     {
-        script_hash: Type.String(),
+        script_hash: /*#__PURE__*/ Type.String(),
     },
     { $id: 'CardanoNativeScriptHash' },
 );
 
 export type CardanoPoolMetadataType = Static<typeof CardanoPoolMetadataType>;
-export const CardanoPoolMetadataType = Type.Object(
+export const CardanoPoolMetadataType = /*#__PURE__*/ Type.Object(
     {
-        url: Type.String(),
-        hash: Type.String(),
+        url: /*#__PURE__*/ Type.String(),
+        hash: /*#__PURE__*/ Type.String(),
     },
     { $id: 'CardanoPoolMetadataType' },
 );
 
 export type CardanoPoolOwner = Static<typeof CardanoPoolOwner>;
-export const CardanoPoolOwner = Type.Object(
+export const CardanoPoolOwner = /*#__PURE__*/ Type.Object(
     {
-        staking_key_path: Type.Optional(Type.Array(Type.Number())),
-        staking_key_hash: Type.Optional(Type.String()),
+        staking_key_path: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        ),
+        staking_key_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CardanoPoolOwner' },
 );
 
 export type CardanoPoolParametersType = Static<typeof CardanoPoolParametersType>;
-export const CardanoPoolParametersType = Type.Object(
+export const CardanoPoolParametersType = /*#__PURE__*/ Type.Object(
     {
-        pool_id: Type.String(),
-        vrf_key_hash: Type.String(),
-        pledge: Type.Uint(),
-        cost: Type.Uint(),
-        margin_numerator: Type.Uint(),
-        margin_denominator: Type.Uint(),
-        reward_account: Type.String(),
-        metadata: Type.Optional(CardanoPoolMetadataType),
-        owners_count: Type.Number(),
-        relays_count: Type.Number(),
+        pool_id: /*#__PURE__*/ Type.String(),
+        vrf_key_hash: /*#__PURE__*/ Type.String(),
+        pledge: /*#__PURE__*/ Type.Uint(),
+        cost: /*#__PURE__*/ Type.Uint(),
+        margin_numerator: /*#__PURE__*/ Type.Uint(),
+        margin_denominator: /*#__PURE__*/ Type.Uint(),
+        reward_account: /*#__PURE__*/ Type.String(),
+        metadata: /*#__PURE__*/ Type.Optional(CardanoPoolMetadataType),
+        owners_count: /*#__PURE__*/ Type.Number(),
+        relays_count: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'CardanoPoolParametersType' },
 );
 
 export type CardanoPoolRelayParameters = Static<typeof CardanoPoolRelayParameters>;
-export const CardanoPoolRelayParameters = Type.Object(
+export const CardanoPoolRelayParameters = /*#__PURE__*/ Type.Object(
     {
         type: EnumCardanoPoolRelayType,
-        ipv4_address: Type.Optional(Type.String()),
-        ipv6_address: Type.Optional(Type.String()),
-        host_name: Type.Optional(Type.String()),
-        port: Type.Optional(Type.Number()),
+        ipv4_address: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        ipv6_address: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        host_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        port: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'CardanoPoolRelayParameters' },
 );
 
 export type CardanoPublicKey = Static<typeof CardanoPublicKey>;
-export const CardanoPublicKey = Type.Object(
+export const CardanoPublicKey = /*#__PURE__*/ Type.Object(
     {
-        xpub: Type.String(),
+        xpub: /*#__PURE__*/ Type.String(),
         node: HDNodeType,
     },
     { $id: 'CardanoPublicKey' },
 );
 
 export type CardanoSignMessageInit = Static<typeof CardanoSignMessageInit>;
-export const CardanoSignMessageInit = Type.Object(
+export const CardanoSignMessageInit = /*#__PURE__*/ Type.Object(
     {
-        protocol_magic: Type.Optional(Type.Number()),
-        network_id: Type.Optional(Type.Number()),
-        signing_path: Type.Array(Type.Number()),
-        payload_size: Type.Number(),
-        prefer_hex_display: Type.Boolean(),
-        address_parameters: Type.Optional(CardanoAddressParametersType),
+        protocol_magic: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        network_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        signing_path: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        payload_size: /*#__PURE__*/ Type.Number(),
+        prefer_hex_display: /*#__PURE__*/ Type.Boolean(),
+        address_parameters: /*#__PURE__*/ Type.Optional(CardanoAddressParametersType),
         derivation_type: EnumCardanoDerivationType,
     },
     { $id: 'CardanoSignMessageInit' },
 );
 
 export type CardanoSignTxFinished = Static<typeof CardanoSignTxFinished>;
-export const CardanoSignTxFinished = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'CardanoSignTxFinished',
-});
+export const CardanoSignTxFinished = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'CardanoSignTxFinished' },
+);
 
 export type CardanoSignTxInit = Static<typeof CardanoSignTxInit>;
-export const CardanoSignTxInit = Type.Object(
+export const CardanoSignTxInit = /*#__PURE__*/ Type.Object(
     {
         signing_mode: EnumCardanoTxSigningMode,
-        protocol_magic: Type.Number(),
-        network_id: Type.Number(),
-        inputs_count: Type.Number(),
-        outputs_count: Type.Number(),
-        fee: Type.Uint(),
-        ttl: Type.Optional(Type.Uint()),
-        certificates_count: Type.Number(),
-        withdrawals_count: Type.Number(),
-        has_auxiliary_data: Type.Boolean(),
-        validity_interval_start: Type.Optional(Type.Uint()),
-        witness_requests_count: Type.Number(),
-        minting_asset_groups_count: Type.Number(),
+        protocol_magic: /*#__PURE__*/ Type.Number(),
+        network_id: /*#__PURE__*/ Type.Number(),
+        inputs_count: /*#__PURE__*/ Type.Number(),
+        outputs_count: /*#__PURE__*/ Type.Number(),
+        fee: /*#__PURE__*/ Type.Uint(),
+        ttl: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+        certificates_count: /*#__PURE__*/ Type.Number(),
+        withdrawals_count: /*#__PURE__*/ Type.Number(),
+        has_auxiliary_data: /*#__PURE__*/ Type.Boolean(),
+        validity_interval_start: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+        witness_requests_count: /*#__PURE__*/ Type.Number(),
+        minting_asset_groups_count: /*#__PURE__*/ Type.Number(),
         derivation_type: EnumCardanoDerivationType,
-        include_network_id: Type.Optional(Type.Boolean()),
-        script_data_hash: Type.Optional(Type.String()),
-        collateral_inputs_count: Type.Number(),
-        required_signers_count: Type.Number(),
-        has_collateral_return: Type.Optional(Type.Boolean()),
-        total_collateral: Type.Optional(Type.Uint()),
-        reference_inputs_count: Type.Optional(Type.Number()),
-        chunkify: Type.Optional(Type.Boolean()),
-        tag_cbor_sets: Type.Optional(Type.Boolean()),
-        payment_req: Type.Optional(PaymentRequest),
+        include_network_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        script_data_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        collateral_inputs_count: /*#__PURE__*/ Type.Number(),
+        required_signers_count: /*#__PURE__*/ Type.Number(),
+        has_collateral_return: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        total_collateral: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+        reference_inputs_count: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        tag_cbor_sets: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        payment_req: /*#__PURE__*/ Type.Optional(PaymentRequest),
     },
     { $id: 'CardanoSignTxInit' },
 );
 
 export type CardanoToken = Static<typeof CardanoToken>;
-export const CardanoToken = Type.Object(
+export const CardanoToken = /*#__PURE__*/ Type.Object(
     {
-        asset_name_bytes: Type.String(),
-        amount: Type.Optional(Type.Uint()),
-        mint_amount: Type.Optional(Type.Uint({ allowNegative: true })),
+        asset_name_bytes: /*#__PURE__*/ Type.String(),
+        amount: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+        mint_amount: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint({ allowNegative: true })),
     },
     { $id: 'CardanoToken' },
 );
 
 export type CardanoTxAuxiliaryData = Static<typeof CardanoTxAuxiliaryData>;
-export const CardanoTxAuxiliaryData = Type.Object(
+export const CardanoTxAuxiliaryData = /*#__PURE__*/ Type.Object(
     {
-        cvote_registration_parameters: Type.Optional(CardanoCVoteRegistrationParametersType),
-        hash: Type.Optional(Type.String()),
+        cvote_registration_parameters: /*#__PURE__*/ Type.Optional(
+            CardanoCVoteRegistrationParametersType,
+        ),
+        hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CardanoTxAuxiliaryData' },
 );
 
 export type CardanoTxAuxiliaryDataSupplement = Static<typeof CardanoTxAuxiliaryDataSupplement>;
-export const CardanoTxAuxiliaryDataSupplement = Type.Object(
+export const CardanoTxAuxiliaryDataSupplement = /*#__PURE__*/ Type.Object(
     {
         type: EnumCardanoTxAuxiliaryDataSupplementType,
-        auxiliary_data_hash: Type.Optional(Type.String()),
-        cvote_registration_signature: Type.Optional(Type.String()),
+        auxiliary_data_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        cvote_registration_signature: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CardanoTxAuxiliaryDataSupplement' },
 );
 
 export type CardanoTxBodyHash = Static<typeof CardanoTxBodyHash>;
-export const CardanoTxBodyHash = Type.Object(
+export const CardanoTxBodyHash = /*#__PURE__*/ Type.Object(
     {
-        tx_hash: Type.String(),
+        tx_hash: /*#__PURE__*/ Type.String(),
     },
     { $id: 'CardanoTxBodyHash' },
 );
 
 export type CardanoTxCertificate = Static<typeof CardanoTxCertificate>;
-export const CardanoTxCertificate = Type.Object(
+export const CardanoTxCertificate = /*#__PURE__*/ Type.Object(
     {
         type: EnumCardanoCertificateType,
-        path: Type.Optional(Type.Array(Type.Number())),
-        pool: Type.Optional(Type.String()),
-        pool_parameters: Type.Optional(CardanoPoolParametersType),
-        script_hash: Type.Optional(Type.String()),
-        key_hash: Type.Optional(Type.String()),
-        deposit: Type.Optional(Type.Uint()),
-        drep: Type.Optional(CardanoDRep),
+        path: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number())),
+        pool: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        pool_parameters: /*#__PURE__*/ Type.Optional(CardanoPoolParametersType),
+        script_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        key_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        deposit: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+        drep: /*#__PURE__*/ Type.Optional(CardanoDRep),
     },
     { $id: 'CardanoTxCertificate' },
 );
 
 export type CardanoTxCollateralInput = Static<typeof CardanoTxCollateralInput>;
-export const CardanoTxCollateralInput = Type.Object(
+export const CardanoTxCollateralInput = /*#__PURE__*/ Type.Object(
     {
-        prev_hash: Type.String(),
-        prev_index: Type.Number(),
+        prev_hash: /*#__PURE__*/ Type.String(),
+        prev_index: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'CardanoTxCollateralInput' },
 );
 
 export type CardanoTxHostAck = Static<typeof CardanoTxHostAck>;
-export const CardanoTxHostAck = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'CardanoTxHostAck',
-});
+export const CardanoTxHostAck = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'CardanoTxHostAck' },
+);
 
 export type CardanoTxInlineDatumChunk = Static<typeof CardanoTxInlineDatumChunk>;
-export const CardanoTxInlineDatumChunk = Type.Object(
+export const CardanoTxInlineDatumChunk = /*#__PURE__*/ Type.Object(
     {
-        data: Type.String(),
+        data: /*#__PURE__*/ Type.String(),
     },
     { $id: 'CardanoTxInlineDatumChunk' },
 );
 
 export type CardanoTxInput = Static<typeof CardanoTxInput>;
-export const CardanoTxInput = Type.Object(
+export const CardanoTxInput = /*#__PURE__*/ Type.Object(
     {
-        prev_hash: Type.String(),
-        prev_index: Type.Number(),
+        prev_hash: /*#__PURE__*/ Type.String(),
+        prev_index: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'CardanoTxInput' },
 );
 
 export type CardanoTxItemAck = Static<typeof CardanoTxItemAck>;
-export const CardanoTxItemAck = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'CardanoTxItemAck',
-});
+export const CardanoTxItemAck = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'CardanoTxItemAck' },
+);
 
 export type CardanoTxMint = Static<typeof CardanoTxMint>;
-export const CardanoTxMint = Type.Object(
+export const CardanoTxMint = /*#__PURE__*/ Type.Object(
     {
-        asset_groups_count: Type.Number(),
+        asset_groups_count: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'CardanoTxMint' },
 );
 
 export type CardanoTxOutput = Static<typeof CardanoTxOutput>;
-export const CardanoTxOutput = Type.Object(
+export const CardanoTxOutput = /*#__PURE__*/ Type.Object(
     {
-        address: Type.Optional(Type.String()),
-        address_parameters: Type.Optional(CardanoAddressParametersType),
-        amount: Type.Uint(),
-        asset_groups_count: Type.Number(),
-        datum_hash: Type.Optional(Type.String()),
-        format: Type.Optional(EnumCardanoTxOutputSerializationFormat),
-        inline_datum_size: Type.Optional(Type.Number()),
-        reference_script_size: Type.Optional(Type.Number()),
+        address: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        address_parameters: /*#__PURE__*/ Type.Optional(CardanoAddressParametersType),
+        amount: /*#__PURE__*/ Type.Uint(),
+        asset_groups_count: /*#__PURE__*/ Type.Number(),
+        datum_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        format: /*#__PURE__*/ Type.Optional(EnumCardanoTxOutputSerializationFormat),
+        inline_datum_size: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        reference_script_size: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'CardanoTxOutput' },
 );
 
 export type CardanoTxReferenceInput = Static<typeof CardanoTxReferenceInput>;
-export const CardanoTxReferenceInput = Type.Object(
+export const CardanoTxReferenceInput = /*#__PURE__*/ Type.Object(
     {
-        prev_hash: Type.String(),
-        prev_index: Type.Number(),
+        prev_hash: /*#__PURE__*/ Type.String(),
+        prev_index: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'CardanoTxReferenceInput' },
 );
 
 export type CardanoTxReferenceScriptChunk = Static<typeof CardanoTxReferenceScriptChunk>;
-export const CardanoTxReferenceScriptChunk = Type.Object(
+export const CardanoTxReferenceScriptChunk = /*#__PURE__*/ Type.Object(
     {
-        data: Type.String(),
+        data: /*#__PURE__*/ Type.String(),
     },
     { $id: 'CardanoTxReferenceScriptChunk' },
 );
 
 export type CardanoTxRequiredSigner = Static<typeof CardanoTxRequiredSigner>;
-export const CardanoTxRequiredSigner = Type.Object(
+export const CardanoTxRequiredSigner = /*#__PURE__*/ Type.Object(
     {
-        key_hash: Type.Optional(Type.String()),
-        key_path: Type.Optional(Type.Array(Type.Number())),
+        key_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        key_path: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        ),
     },
     { $id: 'CardanoTxRequiredSigner' },
 );
 
 export type CardanoTxWithdrawal = Static<typeof CardanoTxWithdrawal>;
-export const CardanoTxWithdrawal = Type.Object(
+export const CardanoTxWithdrawal = /*#__PURE__*/ Type.Object(
     {
-        path: Type.Optional(Type.Array(Type.Number())),
-        amount: Type.Uint(),
-        script_hash: Type.Optional(Type.String()),
-        key_hash: Type.Optional(Type.String()),
+        path: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number())),
+        amount: /*#__PURE__*/ Type.Uint(),
+        script_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        key_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CardanoTxWithdrawal' },
 );
 
 export type CardanoTxWitnessRequest = Static<typeof CardanoTxWitnessRequest>;
-export const CardanoTxWitnessRequest = Type.Object(
+export const CardanoTxWitnessRequest = /*#__PURE__*/ Type.Object(
     {
-        path: Type.Array(Type.Number()),
+        path: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'CardanoTxWitnessRequest' },
 );
 
 export type CardanoTxWitnessResponse = Static<typeof CardanoTxWitnessResponse>;
-export const CardanoTxWitnessResponse = Type.Object(
+export const CardanoTxWitnessResponse = /*#__PURE__*/ Type.Object(
     {
         type: EnumCardanoTxWitnessType,
-        pub_key: Type.String(),
-        signature: Type.String(),
-        chain_code: Type.Optional(Type.String()),
+        pub_key: /*#__PURE__*/ Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
+        chain_code: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CardanoTxWitnessResponse' },
 );

@@ -27,10 +27,10 @@ export enum Enum_ButtonRequestType {
 }
 
 export type EnumEnum_ButtonRequestType = Static<typeof EnumEnum_ButtonRequestType>;
-export const EnumEnum_ButtonRequestType = Type.Enum(Enum_ButtonRequestType);
+export const EnumEnum_ButtonRequestType = /*#__PURE__*/ Type.Enum(Enum_ButtonRequestType);
 
 export type ButtonRequestType = Static<typeof ButtonRequestType>;
-export const ButtonRequestType = Type.KeyOfEnum(Enum_ButtonRequestType, {
+export const ButtonRequestType = /*#__PURE__*/ Type.KeyOfEnum(Enum_ButtonRequestType, {
     $id: 'ButtonRequestType',
 });
 
@@ -57,10 +57,10 @@ export enum Enum_FailureType {
 }
 
 export type EnumEnum_FailureType = Static<typeof EnumEnum_FailureType>;
-export const EnumEnum_FailureType = Type.Enum(Enum_FailureType);
+export const EnumEnum_FailureType = /*#__PURE__*/ Type.Enum(Enum_FailureType);
 
 export type FailureType = Static<typeof FailureType>;
-export const FailureType = Type.KeyOfEnum(Enum_FailureType, { $id: 'FailureType' });
+export const FailureType = /*#__PURE__*/ Type.KeyOfEnum(Enum_FailureType, { $id: 'FailureType' });
 
 export enum Enum_PinMatrixRequestType {
     PinMatrixRequestType_Current = 1,
@@ -71,144 +71,150 @@ export enum Enum_PinMatrixRequestType {
 }
 
 export type EnumEnum_PinMatrixRequestType = Static<typeof EnumEnum_PinMatrixRequestType>;
-export const EnumEnum_PinMatrixRequestType = Type.Enum(Enum_PinMatrixRequestType);
+export const EnumEnum_PinMatrixRequestType = /*#__PURE__*/ Type.Enum(Enum_PinMatrixRequestType);
 
 export type PinMatrixRequestType = Static<typeof PinMatrixRequestType>;
-export const PinMatrixRequestType = Type.KeyOfEnum(Enum_PinMatrixRequestType, {
+export const PinMatrixRequestType = /*#__PURE__*/ Type.KeyOfEnum(Enum_PinMatrixRequestType, {
     $id: 'PinMatrixRequestType',
 });
 
 export type ButtonAck = Static<typeof ButtonAck>;
-export const ButtonAck = Type.Record(Type.Never(), Type.Never(), { $id: 'ButtonAck' });
+export const ButtonAck = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'ButtonAck' },
+);
 
 export type ButtonRequest = Static<typeof ButtonRequest>;
-export const ButtonRequest = Type.Object(
+export const ButtonRequest = /*#__PURE__*/ Type.Object(
     {
-        code: Type.Optional(ButtonRequestType),
-        pages: Type.Optional(Type.Number()),
-        name: Type.Optional(Type.String()),
+        code: /*#__PURE__*/ Type.Optional(ButtonRequestType),
+        pages: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'ButtonRequest' },
 );
 
 export type CoinPurchaseMemo = Static<typeof CoinPurchaseMemo>;
-export const CoinPurchaseMemo = Type.Object(
+export const CoinPurchaseMemo = /*#__PURE__*/ Type.Object(
     {
-        coin_type: Type.Number(),
-        amount: Type.String(),
-        address: Type.String(),
-        address_n: Type.Array(Type.Number()),
-        mac: Type.String(),
+        coin_type: /*#__PURE__*/ Type.Number(),
+        amount: /*#__PURE__*/ Type.String(),
+        address: /*#__PURE__*/ Type.String(),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        mac: /*#__PURE__*/ Type.String(),
     },
     { $id: 'CoinPurchaseMemo' },
 );
 
 export type Failure = Static<typeof Failure>;
-export const Failure = Type.Object(
+export const Failure = /*#__PURE__*/ Type.Object(
     {
-        code: Type.Optional(FailureType),
-        message: Type.Optional(Type.String()),
+        code: /*#__PURE__*/ Type.Optional(FailureType),
+        message: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'Failure' },
 );
 
 export type HDNodeType = Static<typeof HDNodeType>;
-export const HDNodeType = Type.Object(
+export const HDNodeType = /*#__PURE__*/ Type.Object(
     {
-        depth: Type.Number(),
-        fingerprint: Type.Number(),
-        child_num: Type.Number(),
-        chain_code: Type.String(),
-        private_key: Type.Optional(Type.String()),
-        public_key: Type.String(),
+        depth: /*#__PURE__*/ Type.Number(),
+        fingerprint: /*#__PURE__*/ Type.Number(),
+        child_num: /*#__PURE__*/ Type.Number(),
+        chain_code: /*#__PURE__*/ Type.String(),
+        private_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        public_key: /*#__PURE__*/ Type.String(),
     },
     { $id: 'HDNodeType' },
 );
 
 export type PassphraseAck = Static<typeof PassphraseAck>;
-export const PassphraseAck = Type.Object(
+export const PassphraseAck = /*#__PURE__*/ Type.Object(
     {
-        passphrase: Type.Optional(Type.String()),
-        on_device: Type.Optional(Type.Boolean()),
+        passphrase: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        on_device: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'PassphraseAck' },
 );
 
 export type PassphraseRequest = Static<typeof PassphraseRequest>;
-export const PassphraseRequest = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'PassphraseRequest',
-});
+export const PassphraseRequest = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'PassphraseRequest' },
+);
 
 export type TextMemo = Static<typeof TextMemo>;
-export const TextMemo = Type.Object(
+export const TextMemo = /*#__PURE__*/ Type.Object(
     {
-        text: Type.String(),
+        text: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TextMemo' },
 );
 
 export type RefundMemo = Static<typeof RefundMemo>;
-export const RefundMemo = Type.Object(
+export const RefundMemo = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        address_n: Type.Array(Type.Number()),
-        mac: Type.String(),
+        address: /*#__PURE__*/ Type.String(),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        mac: /*#__PURE__*/ Type.String(),
     },
     { $id: 'RefundMemo' },
 );
 
 export type TextDetailsMemo = Static<typeof TextDetailsMemo>;
-export const TextDetailsMemo = Type.Object(
+export const TextDetailsMemo = /*#__PURE__*/ Type.Object(
     {
-        title: Type.String(),
-        text: Type.String(),
+        title: /*#__PURE__*/ Type.String(),
+        text: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TextDetailsMemo' },
 );
 
 export type PaymentRequestMemo = Static<typeof PaymentRequestMemo>;
-export const PaymentRequestMemo = Type.Object(
+export const PaymentRequestMemo = /*#__PURE__*/ Type.Object(
     {
-        text_memo: Type.Optional(TextMemo),
-        refund_memo: Type.Optional(RefundMemo),
-        coin_purchase_memo: Type.Optional(CoinPurchaseMemo),
-        text_details_memo: Type.Optional(TextDetailsMemo),
+        text_memo: /*#__PURE__*/ Type.Optional(TextMemo),
+        refund_memo: /*#__PURE__*/ Type.Optional(RefundMemo),
+        coin_purchase_memo: /*#__PURE__*/ Type.Optional(CoinPurchaseMemo),
+        text_details_memo: /*#__PURE__*/ Type.Optional(TextDetailsMemo),
     },
     { $id: 'PaymentRequestMemo' },
 );
 
 export type PaymentRequest = Static<typeof PaymentRequest>;
-export const PaymentRequest = Type.Object(
+export const PaymentRequest = /*#__PURE__*/ Type.Object(
     {
-        nonce: Type.Optional(Type.String()),
-        recipient_name: Type.String(),
-        memos: Type.Optional(Type.Array(PaymentRequestMemo)),
-        amount: Type.Optional(Type.String()),
-        signature: Type.String(),
+        nonce: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        recipient_name: /*#__PURE__*/ Type.String(),
+        memos: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Array(PaymentRequestMemo)),
+        amount: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        signature: /*#__PURE__*/ Type.String(),
     },
     { $id: 'PaymentRequest' },
 );
 
 export type PinMatrixAck = Static<typeof PinMatrixAck>;
-export const PinMatrixAck = Type.Object(
+export const PinMatrixAck = /*#__PURE__*/ Type.Object(
     {
-        pin: Type.String(),
+        pin: /*#__PURE__*/ Type.String(),
     },
     { $id: 'PinMatrixAck' },
 );
 
 export type PinMatrixRequest = Static<typeof PinMatrixRequest>;
-export const PinMatrixRequest = Type.Object(
+export const PinMatrixRequest = /*#__PURE__*/ Type.Object(
     {
-        type: Type.Optional(PinMatrixRequestType),
+        type: /*#__PURE__*/ Type.Optional(PinMatrixRequestType),
     },
     { $id: 'PinMatrixRequest' },
 );
 
 export type Success = Static<typeof Success>;
-export const Success = Type.Object(
+export const Success = /*#__PURE__*/ Type.Object(
     {
-        message: Type.String(),
+        message: /*#__PURE__*/ Type.String(),
     },
     { $id: 'Success' },
 );

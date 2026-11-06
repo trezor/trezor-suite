@@ -13,7 +13,7 @@ export enum AmountUnit {
 }
 
 export type EnumAmountUnit = Static<typeof EnumAmountUnit>;
-export const EnumAmountUnit = Type.Enum(AmountUnit);
+export const EnumAmountUnit = /*#__PURE__*/ Type.Enum(AmountUnit);
 
 export enum DecredStakingSpendType {
     SSGen = 0,
@@ -21,7 +21,7 @@ export enum DecredStakingSpendType {
 }
 
 export type EnumDecredStakingSpendType = Static<typeof EnumDecredStakingSpendType>;
-export const EnumDecredStakingSpendType = Type.Enum(DecredStakingSpendType);
+export const EnumDecredStakingSpendType = /*#__PURE__*/ Type.Enum(DecredStakingSpendType);
 
 export enum Enum_InputScriptType {
     SPENDADDRESS = 0,
@@ -33,10 +33,12 @@ export enum Enum_InputScriptType {
 }
 
 export type EnumEnum_InputScriptType = Static<typeof EnumEnum_InputScriptType>;
-export const EnumEnum_InputScriptType = Type.Enum(Enum_InputScriptType);
+export const EnumEnum_InputScriptType = /*#__PURE__*/ Type.Enum(Enum_InputScriptType);
 
 export type InputScriptType = Static<typeof InputScriptType>;
-export const InputScriptType = Type.KeyOfEnum(Enum_InputScriptType, { $id: 'InputScriptType' });
+export const InputScriptType = /*#__PURE__*/ Type.KeyOfEnum(Enum_InputScriptType, {
+    $id: 'InputScriptType',
+});
 
 export enum MultisigPubkeysOrder {
     PRESERVED = 0,
@@ -44,7 +46,7 @@ export enum MultisigPubkeysOrder {
 }
 
 export type EnumMultisigPubkeysOrder = Static<typeof EnumMultisigPubkeysOrder>;
-export const EnumMultisigPubkeysOrder = Type.Enum(MultisigPubkeysOrder);
+export const EnumMultisigPubkeysOrder = /*#__PURE__*/ Type.Enum(MultisigPubkeysOrder);
 
 export enum Enum_OutputScriptType {
     PAYTOADDRESS = 0,
@@ -57,10 +59,12 @@ export enum Enum_OutputScriptType {
 }
 
 export type EnumEnum_OutputScriptType = Static<typeof EnumEnum_OutputScriptType>;
-export const EnumEnum_OutputScriptType = Type.Enum(Enum_OutputScriptType);
+export const EnumEnum_OutputScriptType = /*#__PURE__*/ Type.Enum(Enum_OutputScriptType);
 
 export type OutputScriptType = Static<typeof OutputScriptType>;
-export const OutputScriptType = Type.KeyOfEnum(Enum_OutputScriptType, { $id: 'OutputScriptType' });
+export const OutputScriptType = /*#__PURE__*/ Type.KeyOfEnum(Enum_OutputScriptType, {
+    $id: 'OutputScriptType',
+});
 
 export enum Enum_RequestType {
     TXINPUT = 0,
@@ -74,274 +78,280 @@ export enum Enum_RequestType {
 }
 
 export type EnumEnum_RequestType = Static<typeof EnumEnum_RequestType>;
-export const EnumEnum_RequestType = Type.Enum(Enum_RequestType);
+export const EnumEnum_RequestType = /*#__PURE__*/ Type.Enum(Enum_RequestType);
 
 export type RequestType = Static<typeof RequestType>;
-export const RequestType = Type.KeyOfEnum(Enum_RequestType, { $id: 'RequestType' });
+export const RequestType = /*#__PURE__*/ Type.KeyOfEnum(Enum_RequestType, { $id: 'RequestType' });
 
 export type Address = Static<typeof Address>;
-export const Address = Type.Object(
+export const Address = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        mac: Type.Optional(Type.String()),
+        address: /*#__PURE__*/ Type.String(),
+        mac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'Address' },
 );
 
 export type AuthorizeCoinJoin = Static<typeof AuthorizeCoinJoin>;
-export const AuthorizeCoinJoin = Type.Object(
+export const AuthorizeCoinJoin = /*#__PURE__*/ Type.Object(
     {
-        coordinator: Type.String(),
-        max_rounds: Type.Number(),
-        max_coordinator_fee_rate: Type.Number(),
-        max_fee_per_kvbyte: Type.Number(),
-        address_n: Type.Array(Type.Number()),
-        coin_name: Type.Optional(Type.String()),
-        script_type: Type.Optional(InputScriptType),
-        amount_unit: Type.Optional(EnumAmountUnit),
+        coordinator: /*#__PURE__*/ Type.String(),
+        max_rounds: /*#__PURE__*/ Type.Number(),
+        max_coordinator_fee_rate: /*#__PURE__*/ Type.Number(),
+        max_fee_per_kvbyte: /*#__PURE__*/ Type.Number(),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        coin_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        script_type: /*#__PURE__*/ Type.Optional(InputScriptType),
+        amount_unit: /*#__PURE__*/ Type.Optional(EnumAmountUnit),
     },
     { $id: 'AuthorizeCoinJoin' },
 );
 
 export type CoinJoinRequest = Static<typeof CoinJoinRequest>;
-export const CoinJoinRequest = Type.Object(
+export const CoinJoinRequest = /*#__PURE__*/ Type.Object(
     {
-        fee_rate: Type.Number(),
-        no_fee_threshold: Type.Number(),
-        min_registrable_amount: Type.Number(),
-        mask_public_key: Type.Optional(Type.String()),
-        signature: Type.Optional(Type.String()),
+        fee_rate: /*#__PURE__*/ Type.Number(),
+        no_fee_threshold: /*#__PURE__*/ Type.Number(),
+        min_registrable_amount: /*#__PURE__*/ Type.Number(),
+        mask_public_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        signature: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CoinJoinRequest' },
 );
 
 export type HDNodePathType = Static<typeof HDNodePathType>;
-export const HDNodePathType = Type.Object(
+export const HDNodePathType = /*#__PURE__*/ Type.Object(
     {
-        node: Type.Union([HDNodeType, Type.String()]),
-        address_n: Type.Array(Type.Number()),
+        node: /*#__PURE__*/ Type.Union([HDNodeType, /*#__PURE__*/ Type.String()]),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'HDNodePathType' },
 );
 
 export type MultisigRedeemScriptType = Static<typeof MultisigRedeemScriptType>;
-export const MultisigRedeemScriptType = Type.Object(
+export const MultisigRedeemScriptType = /*#__PURE__*/ Type.Object(
     {
-        pubkeys: Type.Array(HDNodePathType),
-        signatures: Type.Array(Type.String()),
-        m: Type.Number(),
-        nodes: Type.Optional(Type.Array(HDNodeType)),
-        address_n: Type.Optional(Type.Array(Type.Number())),
-        pubkeys_order: Type.Optional(EnumMultisigPubkeysOrder),
+        pubkeys: /*#__PURE__*/ Type.Array(HDNodePathType),
+        signatures: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        m: /*#__PURE__*/ Type.Number(),
+        nodes: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Array(HDNodeType)),
+        address_n: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        ),
+        pubkeys_order: /*#__PURE__*/ Type.Optional(EnumMultisigPubkeysOrder),
     },
     { $id: 'MultisigRedeemScriptType' },
 );
 
 export type GetAddress = Static<typeof GetAddress>;
-export const GetAddress = Type.Object(
+export const GetAddress = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        coin_name: Type.Optional(Type.String()),
-        show_display: Type.Optional(Type.Boolean()),
-        multisig: Type.Optional(MultisigRedeemScriptType),
-        script_type: Type.Optional(InputScriptType),
-        ignore_xpub_magic: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        coin_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        multisig: /*#__PURE__*/ Type.Optional(MultisigRedeemScriptType),
+        script_type: /*#__PURE__*/ Type.Optional(InputScriptType),
+        ignore_xpub_magic: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'GetAddress' },
 );
 
 export type GetOwnershipId = Static<typeof GetOwnershipId>;
-export const GetOwnershipId = Type.Object(
+export const GetOwnershipId = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        coin_name: Type.Optional(Type.String()),
-        multisig: Type.Optional(MultisigRedeemScriptType),
-        script_type: Type.Optional(InputScriptType),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        coin_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        multisig: /*#__PURE__*/ Type.Optional(MultisigRedeemScriptType),
+        script_type: /*#__PURE__*/ Type.Optional(InputScriptType),
     },
     { $id: 'GetOwnershipId' },
 );
 
 export type GetOwnershipProof = Static<typeof GetOwnershipProof>;
-export const GetOwnershipProof = Type.Object(
+export const GetOwnershipProof = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        coin_name: Type.Optional(Type.String()),
-        script_type: Type.Optional(InputScriptType),
-        multisig: Type.Optional(MultisigRedeemScriptType),
-        user_confirmation: Type.Optional(Type.Boolean()),
-        ownership_ids: Type.Optional(Type.Array(Type.String())),
-        commitment_data: Type.Optional(Type.String()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        coin_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        script_type: /*#__PURE__*/ Type.Optional(InputScriptType),
+        multisig: /*#__PURE__*/ Type.Optional(MultisigRedeemScriptType),
+        user_confirmation: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        ownership_ids: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        ),
+        commitment_data: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'GetOwnershipProof' },
 );
 
 export type GetPublicKey = Static<typeof GetPublicKey>;
-export const GetPublicKey = Type.Object(
+export const GetPublicKey = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        ecdsa_curve_name: Type.Optional(Type.String()),
-        show_display: Type.Optional(Type.Boolean()),
-        coin_name: Type.Optional(Type.String()),
-        script_type: Type.Optional(InputScriptType),
-        ignore_xpub_magic: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        ecdsa_curve_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        coin_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        script_type: /*#__PURE__*/ Type.Optional(InputScriptType),
+        ignore_xpub_magic: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'GetPublicKey' },
 );
 
 export type MessageSignature = Static<typeof MessageSignature>;
-export const MessageSignature = Type.Object(
+export const MessageSignature = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        signature: Type.String(),
+        address: /*#__PURE__*/ Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
     },
     { $id: 'MessageSignature' },
 );
 
 export type OwnershipId = Static<typeof OwnershipId>;
-export const OwnershipId = Type.Object(
+export const OwnershipId = /*#__PURE__*/ Type.Object(
     {
-        ownership_id: Type.String(),
+        ownership_id: /*#__PURE__*/ Type.String(),
     },
     { $id: 'OwnershipId' },
 );
 
 export type OwnershipProof = Static<typeof OwnershipProof>;
-export const OwnershipProof = Type.Object(
+export const OwnershipProof = /*#__PURE__*/ Type.Object(
     {
-        ownership_proof: Type.String(),
-        signature: Type.String(),
+        ownership_proof: /*#__PURE__*/ Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
     },
     { $id: 'OwnershipProof' },
 );
 
 export type PrevInput = Static<typeof PrevInput>;
-export const PrevInput = Type.Object(
+export const PrevInput = /*#__PURE__*/ Type.Object(
     {
-        prev_hash: Type.String(),
-        prev_index: Type.Number(),
-        script_sig: Type.String(),
-        sequence: Type.Number(),
-        decred_tree: Type.Optional(Type.Number()),
+        prev_hash: /*#__PURE__*/ Type.String(),
+        prev_index: /*#__PURE__*/ Type.Number(),
+        script_sig: /*#__PURE__*/ Type.String(),
+        sequence: /*#__PURE__*/ Type.Number(),
+        decred_tree: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'PrevInput' },
 );
 
 export type PrevOutput = Static<typeof PrevOutput>;
-export const PrevOutput = Type.Object(
+export const PrevOutput = /*#__PURE__*/ Type.Object(
     {
-        amount: Type.Uint(),
-        script_pubkey: Type.String(),
-        decred_script_version: Type.Optional(Type.Number()),
+        amount: /*#__PURE__*/ Type.Uint(),
+        script_pubkey: /*#__PURE__*/ Type.String(),
+        decred_script_version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'PrevOutput' },
 );
 
 export type PrevTx = Static<typeof PrevTx>;
-export const PrevTx = Type.Object(
+export const PrevTx = /*#__PURE__*/ Type.Object(
     {
-        version: Type.Number(),
-        lock_time: Type.Number(),
-        inputs_count: Type.Number(),
-        outputs_count: Type.Number(),
-        extra_data_len: Type.Optional(Type.Number()),
-        expiry: Type.Optional(Type.Number()),
-        version_group_id: Type.Optional(Type.Number()),
-        timestamp: Type.Optional(Type.Number()),
-        branch_id: Type.Optional(Type.Number()),
+        version: /*#__PURE__*/ Type.Number(),
+        lock_time: /*#__PURE__*/ Type.Number(),
+        inputs_count: /*#__PURE__*/ Type.Number(),
+        outputs_count: /*#__PURE__*/ Type.Number(),
+        extra_data_len: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        expiry: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        version_group_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        timestamp: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        branch_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'PrevTx' },
 );
 
 export type PublicKey = Static<typeof PublicKey>;
-export const PublicKey = Type.Object(
+export const PublicKey = /*#__PURE__*/ Type.Object(
     {
         node: HDNodeType,
-        xpub: Type.String(),
-        root_fingerprint: Type.Optional(Type.Number()),
-        descriptor: Type.Optional(Type.String()),
+        xpub: /*#__PURE__*/ Type.String(),
+        root_fingerprint: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        descriptor: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'PublicKey' },
 );
 
 export type SignMessage = Static<typeof SignMessage>;
-export const SignMessage = Type.Object(
+export const SignMessage = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        message: Type.String(),
-        coin_name: Type.Optional(Type.String()),
-        script_type: Type.Optional(InputScriptType),
-        no_script_type: Type.Optional(Type.Boolean()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        message: /*#__PURE__*/ Type.String(),
+        coin_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        script_type: /*#__PURE__*/ Type.Optional(InputScriptType),
+        no_script_type: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'SignMessage' },
 );
 
 export type SignTx = Static<typeof SignTx>;
-export const SignTx = Type.Object(
+export const SignTx = /*#__PURE__*/ Type.Object(
     {
-        outputs_count: Type.Number(),
-        inputs_count: Type.Number(),
-        coin_name: Type.Optional(Type.String()),
-        version: Type.Optional(Type.Number()),
-        lock_time: Type.Optional(Type.Number()),
-        expiry: Type.Optional(Type.Number()),
-        overwintered: Type.Optional(Type.Boolean()),
-        version_group_id: Type.Optional(Type.Number()),
-        timestamp: Type.Optional(Type.Number()),
-        branch_id: Type.Optional(Type.Number()),
-        amount_unit: Type.Optional(EnumAmountUnit),
-        decred_staking_ticket: Type.Optional(Type.Boolean()),
-        serialize: Type.Optional(Type.Boolean()),
-        coinjoin_request: Type.Optional(CoinJoinRequest),
-        chunkify: Type.Optional(Type.Boolean()),
+        outputs_count: /*#__PURE__*/ Type.Number(),
+        inputs_count: /*#__PURE__*/ Type.Number(),
+        coin_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        lock_time: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        expiry: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        overwintered: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        version_group_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        timestamp: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        branch_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        amount_unit: /*#__PURE__*/ Type.Optional(EnumAmountUnit),
+        decred_staking_ticket: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        serialize: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        coinjoin_request: /*#__PURE__*/ Type.Optional(CoinJoinRequest),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'SignTx' },
 );
 
 export type InternalInputScriptType = Static<typeof InternalInputScriptType>;
-export const InternalInputScriptType = Type.Exclude(InputScriptType, Type.Literal('EXTERNAL'), {
-    $id: 'InternalInputScriptType',
-});
+export const InternalInputScriptType = /*#__PURE__*/ Type.Exclude(
+    InputScriptType,
+    /*#__PURE__*/ Type.Literal('EXTERNAL'),
+    { $id: 'InternalInputScriptType' },
+);
 
 type CommonTxInputType = Static<typeof CommonTxInputType>;
-const CommonTxInputType = Type.Object(
+const CommonTxInputType = /*#__PURE__*/ Type.Object(
     {
-        prev_hash: Type.String(),
-        prev_index: Type.Number(),
-        amount: Type.Uint(),
-        sequence: Type.Optional(Type.Number()),
-        multisig: Type.Optional(MultisigRedeemScriptType),
-        decred_tree: Type.Optional(Type.Number()),
-        orig_hash: Type.Optional(Type.String()),
-        orig_index: Type.Optional(Type.Number()),
-        decred_staking_spend: Type.Optional(EnumDecredStakingSpendType),
-        script_pubkey: Type.Optional(Type.String()),
-        coinjoin_flags: Type.Optional(Type.Number()),
-        script_sig: Type.Optional(Type.String()),
-        witness: Type.Optional(Type.String()),
-        ownership_proof: Type.Optional(Type.String()),
-        commitment_data: Type.Optional(Type.String()),
+        prev_hash: /*#__PURE__*/ Type.String(),
+        prev_index: /*#__PURE__*/ Type.Number(),
+        amount: /*#__PURE__*/ Type.Uint(),
+        sequence: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        multisig: /*#__PURE__*/ Type.Optional(MultisigRedeemScriptType),
+        decred_tree: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        orig_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        orig_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        decred_staking_spend: /*#__PURE__*/ Type.Optional(EnumDecredStakingSpendType),
+        script_pubkey: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        coinjoin_flags: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        script_sig: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        witness: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        ownership_proof: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        commitment_data: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'CommonTxInputType' },
 );
 
 export type TxInputType = Static<typeof TxInputType>;
-export const TxInputType = Type.Union(
+export const TxInputType = /*#__PURE__*/ Type.Union(
     [
-        Type.Intersect([
+        /*#__PURE__*/ Type.Intersect([
             CommonTxInputType,
-            Type.Object({
-                address_n: Type.Array(Type.Number()),
-                script_type: Type.Optional(InternalInputScriptType),
+            /*#__PURE__*/ Type.Object({
+                address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+                script_type: /*#__PURE__*/ Type.Optional(InternalInputScriptType),
             }),
         ]),
-        Type.Intersect([
+        /*#__PURE__*/ Type.Intersect([
             CommonTxInputType,
-            Type.Object({
-                address_n: Type.Optional(Type.Never()),
-                script_type: Type.Literal('EXTERNAL'),
-                script_pubkey: Type.String(),
+            /*#__PURE__*/ Type.Object({
+                address_n: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Never()),
+                script_type: /*#__PURE__*/ Type.Literal('EXTERNAL'),
+                script_pubkey: /*#__PURE__*/ Type.String(),
             }),
         ]),
     ],
@@ -349,98 +359,101 @@ export const TxInputType = Type.Union(
 );
 
 export type TxInput = Static<typeof TxInput>;
-export const TxInput = CloneType(TxInputType, { $id: 'TxInput' });
+export const TxInput = /*#__PURE__*/ CloneType(TxInputType, { $id: 'TxInput' });
 
 export type TxOutputBinType = Static<typeof TxOutputBinType>;
-export const TxOutputBinType = Type.Object(
+export const TxOutputBinType = /*#__PURE__*/ Type.Object(
     {
-        amount: Type.Uint(),
-        script_pubkey: Type.String(),
-        decred_script_version: Type.Optional(Type.Number()),
+        amount: /*#__PURE__*/ Type.Uint(),
+        script_pubkey: /*#__PURE__*/ Type.String(),
+        decred_script_version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'TxOutputBinType' },
 );
 
 export type ChangeOutputScriptType = Static<typeof ChangeOutputScriptType>;
-export const ChangeOutputScriptType = Type.Exclude(
+export const ChangeOutputScriptType = /*#__PURE__*/ Type.Exclude(
     OutputScriptType,
-    Type.Literal('PAYTOOPRETURN'),
+    /*#__PURE__*/ Type.Literal('PAYTOOPRETURN'),
     { $id: 'ChangeOutputScriptType' },
 );
 
 export type TxOutputType = Static<typeof TxOutputType>;
-export const TxOutputType = Type.Union(
+export const TxOutputType = /*#__PURE__*/ Type.Union(
     [
-        Type.Object({
-            address: Type.String(),
-            address_n: Type.Optional(Type.Never()),
-            script_type: Type.Optional(Type.Literal('PAYTOADDRESS')),
-            amount: Type.Uint(),
-            multisig: Type.Optional(MultisigRedeemScriptType),
-            orig_hash: Type.Optional(Type.String()),
-            orig_index: Type.Optional(Type.Number()),
-            payment_req_index: Type.Optional(Type.Number()),
+        /*#__PURE__*/ Type.Object({
+            address: /*#__PURE__*/ Type.String(),
+            address_n: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Never()),
+            script_type: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Literal('PAYTOADDRESS')),
+            amount: /*#__PURE__*/ Type.Uint(),
+            multisig: /*#__PURE__*/ Type.Optional(MultisigRedeemScriptType),
+            orig_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+            orig_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            payment_req_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
         }),
-        Type.Object({
-            address: Type.Optional(Type.Never()),
-            address_n: Type.Array(Type.Number()),
-            script_type: Type.Optional(ChangeOutputScriptType),
-            amount: Type.Uint(),
-            multisig: Type.Optional(MultisigRedeemScriptType),
-            orig_hash: Type.Optional(Type.String()),
-            orig_index: Type.Optional(Type.Number()),
-            payment_req_index: Type.Optional(Type.Number()),
+        /*#__PURE__*/ Type.Object({
+            address: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Never()),
+            address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+            script_type: /*#__PURE__*/ Type.Optional(ChangeOutputScriptType),
+            amount: /*#__PURE__*/ Type.Uint(),
+            multisig: /*#__PURE__*/ Type.Optional(MultisigRedeemScriptType),
+            orig_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+            orig_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            payment_req_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
         }),
-        Type.Object({
-            address: Type.Optional(Type.Never()),
-            address_n: Type.Optional(Type.Never()),
-            amount: Type.Union([Type.Literal('0'), Type.Literal(0)]),
-            op_return_data: Type.String(),
-            script_type: Type.Literal('PAYTOOPRETURN'),
-            orig_hash: Type.Optional(Type.String()),
-            orig_index: Type.Optional(Type.Number()),
-            payment_req_index: Type.Optional(Type.Number()),
+        /*#__PURE__*/ Type.Object({
+            address: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Never()),
+            address_n: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Never()),
+            amount: /*#__PURE__*/ Type.Union([
+                /*#__PURE__*/ Type.Literal('0'),
+                /*#__PURE__*/ Type.Literal(0),
+            ]),
+            op_return_data: /*#__PURE__*/ Type.String(),
+            script_type: /*#__PURE__*/ Type.Literal('PAYTOOPRETURN'),
+            orig_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+            orig_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            payment_req_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
         }),
     ],
     { $id: 'TxOutputType' },
 );
 
 export type TxOutput = Static<typeof TxOutput>;
-export const TxOutput = CloneType(TxOutputType, { $id: 'TxOutput' });
+export const TxOutput = /*#__PURE__*/ CloneType(TxOutputType, { $id: 'TxOutput' });
 
 export type TxAckResponse = Static<typeof TxAckResponse>;
-export const TxAckResponse = Type.Union(
+export const TxAckResponse = /*#__PURE__*/ Type.Union(
     [
-        Type.Object({
-            inputs: Type.Array(Type.Union([TxInputType, PrevInput])),
+        /*#__PURE__*/ Type.Object({
+            inputs: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Union([TxInputType, PrevInput])),
         }),
-        Type.Object({
-            bin_outputs: Type.Array(TxOutputBinType),
+        /*#__PURE__*/ Type.Object({
+            bin_outputs: /*#__PURE__*/ Type.Array(TxOutputBinType),
         }),
-        Type.Object({
-            outputs: Type.Array(TxOutputType),
+        /*#__PURE__*/ Type.Object({
+            outputs: /*#__PURE__*/ Type.Array(TxOutputType),
         }),
-        Type.Object({
-            extra_data: Type.String(),
+        /*#__PURE__*/ Type.Object({
+            extra_data: /*#__PURE__*/ Type.String(),
         }),
-        Type.Object({
-            version: Type.Optional(Type.Number()),
-            lock_time: Type.Optional(Type.Number()),
-            inputs_cnt: Type.Number(),
-            outputs_cnt: Type.Number(),
-            extra_data: Type.Optional(Type.String()),
-            extra_data_len: Type.Optional(Type.Number()),
-            timestamp: Type.Optional(Type.Number()),
-            version_group_id: Type.Optional(Type.Number()),
-            expiry: Type.Optional(Type.Number()),
-            branch_id: Type.Optional(Type.Number()),
+        /*#__PURE__*/ Type.Object({
+            version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            lock_time: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            inputs_cnt: /*#__PURE__*/ Type.Number(),
+            outputs_cnt: /*#__PURE__*/ Type.Number(),
+            extra_data: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+            extra_data_len: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            timestamp: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            version_group_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            expiry: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+            branch_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
         }),
     ],
     { $id: 'TxAckResponse' },
 );
 
 export type TxAck = Static<typeof TxAck>;
-export const TxAck = Type.Object(
+export const TxAck = /*#__PURE__*/ Type.Object(
     {
         tx: TxAckResponse,
     },
@@ -448,7 +461,7 @@ export const TxAck = Type.Object(
 );
 
 export type TxAckInputWrapper = Static<typeof TxAckInputWrapper>;
-export const TxAckInputWrapper = Type.Object(
+export const TxAckInputWrapper = /*#__PURE__*/ Type.Object(
     {
         input: TxInput,
     },
@@ -456,7 +469,7 @@ export const TxAckInputWrapper = Type.Object(
 );
 
 export type TxAckInput = Static<typeof TxAckInput>;
-export const TxAckInput = Type.Object(
+export const TxAckInput = /*#__PURE__*/ Type.Object(
     {
         tx: TxAckInputWrapper,
     },
@@ -464,7 +477,7 @@ export const TxAckInput = Type.Object(
 );
 
 export type TxAckOutputWrapper = Static<typeof TxAckOutputWrapper>;
-export const TxAckOutputWrapper = Type.Object(
+export const TxAckOutputWrapper = /*#__PURE__*/ Type.Object(
     {
         output: TxOutput,
     },
@@ -472,7 +485,7 @@ export const TxAckOutputWrapper = Type.Object(
 );
 
 export type TxAckOutput = Static<typeof TxAckOutput>;
-export const TxAckOutput = Type.Object(
+export const TxAckOutput = /*#__PURE__*/ Type.Object(
     {
         tx: TxAckOutputWrapper,
     },
@@ -480,15 +493,15 @@ export const TxAckOutput = Type.Object(
 );
 
 export type TxAckPrevExtraDataWrapper = Static<typeof TxAckPrevExtraDataWrapper>;
-export const TxAckPrevExtraDataWrapper = Type.Object(
+export const TxAckPrevExtraDataWrapper = /*#__PURE__*/ Type.Object(
     {
-        extra_data_chunk: Type.String(),
+        extra_data_chunk: /*#__PURE__*/ Type.String(),
     },
     { $id: 'TxAckPrevExtraDataWrapper' },
 );
 
 export type TxAckPrevExtraData = Static<typeof TxAckPrevExtraData>;
-export const TxAckPrevExtraData = Type.Object(
+export const TxAckPrevExtraData = /*#__PURE__*/ Type.Object(
     {
         tx: TxAckPrevExtraDataWrapper,
     },
@@ -496,7 +509,7 @@ export const TxAckPrevExtraData = Type.Object(
 );
 
 export type TxAckPrevInputWrapper = Static<typeof TxAckPrevInputWrapper>;
-export const TxAckPrevInputWrapper = Type.Object(
+export const TxAckPrevInputWrapper = /*#__PURE__*/ Type.Object(
     {
         input: PrevInput,
     },
@@ -504,7 +517,7 @@ export const TxAckPrevInputWrapper = Type.Object(
 );
 
 export type TxAckPrevInput = Static<typeof TxAckPrevInput>;
-export const TxAckPrevInput = Type.Object(
+export const TxAckPrevInput = /*#__PURE__*/ Type.Object(
     {
         tx: TxAckPrevInputWrapper,
     },
@@ -512,7 +525,7 @@ export const TxAckPrevInput = Type.Object(
 );
 
 export type TxAckPrevMeta = Static<typeof TxAckPrevMeta>;
-export const TxAckPrevMeta = Type.Object(
+export const TxAckPrevMeta = /*#__PURE__*/ Type.Object(
     {
         tx: PrevTx,
     },
@@ -520,7 +533,7 @@ export const TxAckPrevMeta = Type.Object(
 );
 
 export type TxAckPrevOutputWrapper = Static<typeof TxAckPrevOutputWrapper>;
-export const TxAckPrevOutputWrapper = Type.Object(
+export const TxAckPrevOutputWrapper = /*#__PURE__*/ Type.Object(
     {
         output: PrevOutput,
     },
@@ -528,7 +541,7 @@ export const TxAckPrevOutputWrapper = Type.Object(
 );
 
 export type TxAckPrevOutput = Static<typeof TxAckPrevOutput>;
-export const TxAckPrevOutput = Type.Object(
+export const TxAckPrevOutput = /*#__PURE__*/ Type.Object(
     {
         tx: TxAckPrevOutputWrapper,
     },
@@ -536,44 +549,44 @@ export const TxAckPrevOutput = Type.Object(
 );
 
 export type TxRequestDetailsType = Static<typeof TxRequestDetailsType>;
-export const TxRequestDetailsType = Type.Object(
+export const TxRequestDetailsType = /*#__PURE__*/ Type.Object(
     {
-        request_index: Type.Optional(Type.Number()),
-        tx_hash: Type.Optional(Type.String()),
-        extra_data_len: Type.Optional(Type.Number()),
-        extra_data_offset: Type.Optional(Type.Number()),
+        request_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        tx_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        extra_data_len: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        extra_data_offset: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'TxRequestDetailsType' },
 );
 
 export type TxRequestSerializedType = Static<typeof TxRequestSerializedType>;
-export const TxRequestSerializedType = Type.Object(
+export const TxRequestSerializedType = /*#__PURE__*/ Type.Object(
     {
-        signature_index: Type.Optional(Type.Number()),
-        signature: Type.Optional(Type.String()),
-        serialized_tx: Type.Optional(Type.String()),
+        signature_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        signature: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        serialized_tx: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'TxRequestSerializedType' },
 );
 
 export type TxRequest = Static<typeof TxRequest>;
-export const TxRequest = Type.Object(
+export const TxRequest = /*#__PURE__*/ Type.Object(
     {
-        request_type: Type.Optional(RequestType),
-        details: Type.Optional(TxRequestDetailsType),
-        serialized: Type.Optional(TxRequestSerializedType),
+        request_type: /*#__PURE__*/ Type.Optional(RequestType),
+        details: /*#__PURE__*/ Type.Optional(TxRequestDetailsType),
+        serialized: /*#__PURE__*/ Type.Optional(TxRequestSerializedType),
     },
     { $id: 'TxRequest' },
 );
 
 export type VerifyMessage = Static<typeof VerifyMessage>;
-export const VerifyMessage = Type.Object(
+export const VerifyMessage = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
-        signature: Type.String(),
-        message: Type.String(),
-        coin_name: Type.Optional(Type.String()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address: /*#__PURE__*/ Type.String(),
+        signature: /*#__PURE__*/ Type.String(),
+        message: /*#__PURE__*/ Type.String(),
+        coin_name: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'VerifyMessage' },
 );

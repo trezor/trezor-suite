@@ -4,15 +4,19 @@
 import { type Static, Type } from '@trezor/schema-utils';
 
 export type Telemetry = Static<typeof Telemetry>;
-export const Telemetry = Type.Object(
+export const Telemetry = /*#__PURE__*/ Type.Object(
     {
-        min_temp_c: Type.Optional(Type.Number()),
-        max_temp_c: Type.Optional(Type.Number()),
-        battery_errors: Type.Optional(Type.Number()),
-        battery_cycles: Type.Optional(Type.Number()),
+        min_temp_c: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        max_temp_c: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        battery_errors: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        battery_cycles: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'Telemetry' },
 );
 
 export type TelemetryGet = Static<typeof TelemetryGet>;
-export const TelemetryGet = Type.Record(Type.Never(), Type.Never(), { $id: 'TelemetryGet' });
+export const TelemetryGet = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'TelemetryGet' },
+);

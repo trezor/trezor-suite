@@ -11,278 +11,288 @@ export enum MoneroNetworkType {
 }
 
 export type EnumMoneroNetworkType = Static<typeof EnumMoneroNetworkType>;
-export const EnumMoneroNetworkType = Type.Enum(MoneroNetworkType);
+export const EnumMoneroNetworkType = /*#__PURE__*/ Type.Enum(MoneroNetworkType);
 
 export type DebugMoneroDiagAck = Static<typeof DebugMoneroDiagAck>;
-export const DebugMoneroDiagAck = Type.Object(
+export const DebugMoneroDiagAck = /*#__PURE__*/ Type.Object(
     {
-        ins: Type.Optional(Type.Number()),
-        p1: Type.Optional(Type.Number()),
-        p2: Type.Optional(Type.Number()),
-        pd: Type.Array(Type.Number()),
-        data1: Type.Optional(Type.String()),
-        data2: Type.Optional(Type.String()),
+        ins: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        p1: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        p2: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        pd: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        data1: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        data2: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'DebugMoneroDiagAck' },
 );
 
 export type DebugMoneroDiagRequest = Static<typeof DebugMoneroDiagRequest>;
-export const DebugMoneroDiagRequest = Type.Object(
+export const DebugMoneroDiagRequest = /*#__PURE__*/ Type.Object(
     {
-        ins: Type.Optional(Type.Number()),
-        p1: Type.Optional(Type.Number()),
-        p2: Type.Optional(Type.Number()),
-        pd: Type.Array(Type.Number()),
-        data1: Type.Optional(Type.String()),
-        data2: Type.Optional(Type.String()),
+        ins: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        p1: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        p2: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        pd: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        data1: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        data2: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'DebugMoneroDiagRequest' },
 );
 
 export type MoneroAccountPublicAddress = Static<typeof MoneroAccountPublicAddress>;
-export const MoneroAccountPublicAddress = Type.Object(
+export const MoneroAccountPublicAddress = /*#__PURE__*/ Type.Object(
     {
-        spend_public_key: Type.Optional(Type.String()),
-        view_public_key: Type.Optional(Type.String()),
+        spend_public_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        view_public_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroAccountPublicAddress' },
 );
 
 export type MoneroAddress = Static<typeof MoneroAddress>;
-export const MoneroAddress = Type.Object(
+export const MoneroAddress = /*#__PURE__*/ Type.Object(
     {
-        address: Type.String(),
+        address: /*#__PURE__*/ Type.String(),
     },
     { $id: 'MoneroAddress' },
 );
 
 export type MoneroExportedKeyImage = Static<typeof MoneroExportedKeyImage>;
-export const MoneroExportedKeyImage = Type.Object(
+export const MoneroExportedKeyImage = /*#__PURE__*/ Type.Object(
     {
-        iv: Type.Optional(Type.String()),
-        blob: Type.Optional(Type.String()),
+        iv: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        blob: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroExportedKeyImage' },
 );
 
 export type MoneroGetAddress = Static<typeof MoneroGetAddress>;
-export const MoneroGetAddress = Type.Object(
+export const MoneroGetAddress = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        show_display: Type.Optional(Type.Boolean()),
-        network_type: Type.Optional(EnumMoneroNetworkType),
-        account: Type.Optional(Type.Number()),
-        minor: Type.Optional(Type.Number()),
-        payment_id: Type.Optional(Type.String()),
-        chunkify: Type.Optional(Type.Boolean()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        network_type: /*#__PURE__*/ Type.Optional(EnumMoneroNetworkType),
+        account: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        minor: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        payment_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'MoneroGetAddress' },
 );
 
 export type MoneroGetTxKeyAck = Static<typeof MoneroGetTxKeyAck>;
-export const MoneroGetTxKeyAck = Type.Object(
+export const MoneroGetTxKeyAck = /*#__PURE__*/ Type.Object(
     {
-        salt: Type.Optional(Type.String()),
-        tx_keys: Type.Optional(Type.String()),
-        tx_derivations: Type.Optional(Type.String()),
+        salt: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        tx_keys: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        tx_derivations: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroGetTxKeyAck' },
 );
 
 export type MoneroGetTxKeyRequest = Static<typeof MoneroGetTxKeyRequest>;
-export const MoneroGetTxKeyRequest = Type.Object(
+export const MoneroGetTxKeyRequest = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        network_type: Type.Optional(EnumMoneroNetworkType),
-        salt1: Type.String(),
-        salt2: Type.String(),
-        tx_enc_keys: Type.String(),
-        tx_prefix_hash: Type.String(),
-        reason: Type.Optional(Type.Number()),
-        view_public_key: Type.Optional(Type.String()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        network_type: /*#__PURE__*/ Type.Optional(EnumMoneroNetworkType),
+        salt1: /*#__PURE__*/ Type.String(),
+        salt2: /*#__PURE__*/ Type.String(),
+        tx_enc_keys: /*#__PURE__*/ Type.String(),
+        tx_prefix_hash: /*#__PURE__*/ Type.String(),
+        reason: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        view_public_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroGetTxKeyRequest' },
 );
 
 export type MoneroGetWatchKey = Static<typeof MoneroGetWatchKey>;
-export const MoneroGetWatchKey = Type.Object(
+export const MoneroGetWatchKey = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        network_type: Type.Optional(EnumMoneroNetworkType),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        network_type: /*#__PURE__*/ Type.Optional(EnumMoneroNetworkType),
     },
     { $id: 'MoneroGetWatchKey' },
 );
 
 export type MoneroKeyImageExportInitAck = Static<typeof MoneroKeyImageExportInitAck>;
-export const MoneroKeyImageExportInitAck = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'MoneroKeyImageExportInitAck',
-});
+export const MoneroKeyImageExportInitAck = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'MoneroKeyImageExportInitAck' },
+);
 
 export type MoneroSubAddressIndicesList = Static<typeof MoneroSubAddressIndicesList>;
-export const MoneroSubAddressIndicesList = Type.Object(
+export const MoneroSubAddressIndicesList = /*#__PURE__*/ Type.Object(
     {
-        account: Type.Number(),
-        minor_indices: Type.Array(Type.Number()),
+        account: /*#__PURE__*/ Type.Number(),
+        minor_indices: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'MoneroSubAddressIndicesList' },
 );
 
 export type MoneroKeyImageExportInitRequest = Static<typeof MoneroKeyImageExportInitRequest>;
-export const MoneroKeyImageExportInitRequest = Type.Object(
+export const MoneroKeyImageExportInitRequest = /*#__PURE__*/ Type.Object(
     {
-        num: Type.Number(),
-        hash: Type.Uint8Array(),
-        address_n: Type.Array(Type.Number()),
-        network_type: Type.Optional(EnumMoneroNetworkType),
-        subs: Type.Array(MoneroSubAddressIndicesList),
+        num: /*#__PURE__*/ Type.Number(),
+        hash: /*#__PURE__*/ Type.Uint8Array(),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        network_type: /*#__PURE__*/ Type.Optional(EnumMoneroNetworkType),
+        subs: /*#__PURE__*/ Type.Array(MoneroSubAddressIndicesList),
     },
     { $id: 'MoneroKeyImageExportInitRequest' },
 );
 
 export type MoneroKeyImageSyncFinalAck = Static<typeof MoneroKeyImageSyncFinalAck>;
-export const MoneroKeyImageSyncFinalAck = Type.Object(
+export const MoneroKeyImageSyncFinalAck = /*#__PURE__*/ Type.Object(
     {
-        enc_key: Type.Optional(Type.String()),
+        enc_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroKeyImageSyncFinalAck' },
 );
 
 export type MoneroKeyImageSyncFinalRequest = Static<typeof MoneroKeyImageSyncFinalRequest>;
-export const MoneroKeyImageSyncFinalRequest = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'MoneroKeyImageSyncFinalRequest',
-});
+export const MoneroKeyImageSyncFinalRequest = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'MoneroKeyImageSyncFinalRequest' },
+);
 
 export type MoneroKeyImageSyncStepAck = Static<typeof MoneroKeyImageSyncStepAck>;
-export const MoneroKeyImageSyncStepAck = Type.Object(
+export const MoneroKeyImageSyncStepAck = /*#__PURE__*/ Type.Object(
     {
-        kis: Type.Array(MoneroExportedKeyImage),
+        kis: /*#__PURE__*/ Type.Array(MoneroExportedKeyImage),
     },
     { $id: 'MoneroKeyImageSyncStepAck' },
 );
 
 export type MoneroTransferDetails = Static<typeof MoneroTransferDetails>;
-export const MoneroTransferDetails = Type.Object(
+export const MoneroTransferDetails = /*#__PURE__*/ Type.Object(
     {
-        out_key: Type.Uint8Array(),
-        tx_pub_key: Type.Uint8Array(),
-        additional_tx_pub_keys: Type.Array(Type.Uint8Array()),
-        internal_output_index: Type.Number(),
-        sub_addr_major: Type.Optional(Type.Number()),
-        sub_addr_minor: Type.Optional(Type.Number()),
+        out_key: /*#__PURE__*/ Type.Uint8Array(),
+        tx_pub_key: /*#__PURE__*/ Type.Uint8Array(),
+        additional_tx_pub_keys: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Uint8Array()),
+        internal_output_index: /*#__PURE__*/ Type.Number(),
+        sub_addr_major: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        sub_addr_minor: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'MoneroTransferDetails' },
 );
 
 export type MoneroKeyImageSyncStepRequest = Static<typeof MoneroKeyImageSyncStepRequest>;
-export const MoneroKeyImageSyncStepRequest = Type.Object(
+export const MoneroKeyImageSyncStepRequest = /*#__PURE__*/ Type.Object(
     {
-        tdis: Type.Array(MoneroTransferDetails),
+        tdis: /*#__PURE__*/ Type.Array(MoneroTransferDetails),
     },
     { $id: 'MoneroKeyImageSyncStepRequest' },
 );
 
 export type MoneroLiveRefreshFinalAck = Static<typeof MoneroLiveRefreshFinalAck>;
-export const MoneroLiveRefreshFinalAck = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'MoneroLiveRefreshFinalAck',
-});
+export const MoneroLiveRefreshFinalAck = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'MoneroLiveRefreshFinalAck' },
+);
 
 export type MoneroLiveRefreshFinalRequest = Static<typeof MoneroLiveRefreshFinalRequest>;
-export const MoneroLiveRefreshFinalRequest = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'MoneroLiveRefreshFinalRequest',
-});
+export const MoneroLiveRefreshFinalRequest = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'MoneroLiveRefreshFinalRequest' },
+);
 
 export type MoneroLiveRefreshStartAck = Static<typeof MoneroLiveRefreshStartAck>;
-export const MoneroLiveRefreshStartAck = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'MoneroLiveRefreshStartAck',
-});
+export const MoneroLiveRefreshStartAck = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'MoneroLiveRefreshStartAck' },
+);
 
 export type MoneroLiveRefreshStartRequest = Static<typeof MoneroLiveRefreshStartRequest>;
-export const MoneroLiveRefreshStartRequest = Type.Object(
+export const MoneroLiveRefreshStartRequest = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        network_type: Type.Optional(EnumMoneroNetworkType),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        network_type: /*#__PURE__*/ Type.Optional(EnumMoneroNetworkType),
     },
     { $id: 'MoneroLiveRefreshStartRequest' },
 );
 
 export type MoneroLiveRefreshStepAck = Static<typeof MoneroLiveRefreshStepAck>;
-export const MoneroLiveRefreshStepAck = Type.Object(
+export const MoneroLiveRefreshStepAck = /*#__PURE__*/ Type.Object(
     {
-        salt: Type.Optional(Type.String()),
-        key_image: Type.Optional(Type.String()),
+        salt: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        key_image: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroLiveRefreshStepAck' },
 );
 
 export type MoneroLiveRefreshStepRequest = Static<typeof MoneroLiveRefreshStepRequest>;
-export const MoneroLiveRefreshStepRequest = Type.Object(
+export const MoneroLiveRefreshStepRequest = /*#__PURE__*/ Type.Object(
     {
-        out_key: Type.String(),
-        recv_deriv: Type.String(),
-        real_out_idx: Type.Number(),
-        sub_addr_major: Type.Number(),
-        sub_addr_minor: Type.Number(),
+        out_key: /*#__PURE__*/ Type.String(),
+        recv_deriv: /*#__PURE__*/ Type.String(),
+        real_out_idx: /*#__PURE__*/ Type.Number(),
+        sub_addr_major: /*#__PURE__*/ Type.Number(),
+        sub_addr_minor: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'MoneroLiveRefreshStepRequest' },
 );
 
 export type MoneroMultisigKLRki = Static<typeof MoneroMultisigKLRki>;
-export const MoneroMultisigKLRki = Type.Object(
+export const MoneroMultisigKLRki = /*#__PURE__*/ Type.Object(
     {
-        K: Type.Optional(Type.String()),
-        L: Type.Optional(Type.String()),
-        R: Type.Optional(Type.String()),
-        ki: Type.Optional(Type.String()),
+        K: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        L: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        R: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        ki: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroMultisigKLRki' },
 );
 
 export type MoneroRctKeyPublic = Static<typeof MoneroRctKeyPublic>;
-export const MoneroRctKeyPublic = Type.Object(
+export const MoneroRctKeyPublic = /*#__PURE__*/ Type.Object(
     {
-        dest: Type.String(),
-        commitment: Type.String(),
+        dest: /*#__PURE__*/ Type.String(),
+        commitment: /*#__PURE__*/ Type.String(),
     },
     { $id: 'MoneroRctKeyPublic' },
 );
 
 export type MoneroOutputEntry = Static<typeof MoneroOutputEntry>;
-export const MoneroOutputEntry = Type.Object(
+export const MoneroOutputEntry = /*#__PURE__*/ Type.Object(
     {
-        idx: Type.Optional(Type.Number()),
-        key: Type.Optional(MoneroRctKeyPublic),
+        idx: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        key: /*#__PURE__*/ Type.Optional(MoneroRctKeyPublic),
     },
     { $id: 'MoneroOutputEntry' },
 );
 
 export type MoneroRingCtSig = Static<typeof MoneroRingCtSig>;
-export const MoneroRingCtSig = Type.Object(
+export const MoneroRingCtSig = /*#__PURE__*/ Type.Object(
     {
-        txn_fee: Type.Optional(Type.Number()),
-        message: Type.Optional(Type.String()),
-        rv_type: Type.Optional(Type.Number()),
+        txn_fee: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        message: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        rv_type: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'MoneroRingCtSig' },
 );
 
 export type MoneroTransactionRsigData = Static<typeof MoneroTransactionRsigData>;
-export const MoneroTransactionRsigData = Type.Object(
+export const MoneroTransactionRsigData = /*#__PURE__*/ Type.Object(
     {
-        rsig_type: Type.Optional(Type.Number()),
-        offload_type: Type.Optional(Type.Number()),
-        grouping: Type.Array(Type.Number()),
-        mask: Type.Optional(Type.String()),
-        rsig: Type.Optional(Type.String()),
-        rsig_parts: Type.Array(Type.String()),
-        bp_version: Type.Optional(Type.Number()),
+        rsig_type: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        offload_type: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        grouping: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        mask: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        rsig: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        rsig_parts: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        bp_version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'MoneroTransactionRsigData' },
 );
 
 export type MoneroTransactionAllInputsSetAck = Static<typeof MoneroTransactionAllInputsSetAck>;
-export const MoneroTransactionAllInputsSetAck = Type.Object(
+export const MoneroTransactionAllInputsSetAck = /*#__PURE__*/ Type.Object(
     {
-        rsig_data: Type.Optional(MoneroTransactionRsigData),
+        rsig_data: /*#__PURE__*/ Type.Optional(MoneroTransactionRsigData),
     },
     { $id: 'MoneroTransactionAllInputsSetAck' },
 );
@@ -290,209 +300,215 @@ export const MoneroTransactionAllInputsSetAck = Type.Object(
 export type MoneroTransactionAllInputsSetRequest = Static<
     typeof MoneroTransactionAllInputsSetRequest
 >;
-export const MoneroTransactionAllInputsSetRequest = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'MoneroTransactionAllInputsSetRequest',
-});
+export const MoneroTransactionAllInputsSetRequest = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'MoneroTransactionAllInputsSetRequest' },
+);
 
 export type MoneroTransactionAllOutSetAck = Static<typeof MoneroTransactionAllOutSetAck>;
-export const MoneroTransactionAllOutSetAck = Type.Object(
+export const MoneroTransactionAllOutSetAck = /*#__PURE__*/ Type.Object(
     {
-        extra: Type.Optional(Type.String()),
-        tx_prefix_hash: Type.String(),
+        extra: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        tx_prefix_hash: /*#__PURE__*/ Type.String(),
         rv: MoneroRingCtSig,
-        full_message_hash: Type.Optional(Type.String()),
+        full_message_hash: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroTransactionAllOutSetAck' },
 );
 
 export type MoneroTransactionAllOutSetRequest = Static<typeof MoneroTransactionAllOutSetRequest>;
-export const MoneroTransactionAllOutSetRequest = Type.Object(
+export const MoneroTransactionAllOutSetRequest = /*#__PURE__*/ Type.Object(
     {
-        rsig_data: Type.Optional(MoneroTransactionRsigData),
+        rsig_data: /*#__PURE__*/ Type.Optional(MoneroTransactionRsigData),
     },
     { $id: 'MoneroTransactionAllOutSetRequest' },
 );
 
 export type MoneroTransactionDestinationEntry = Static<typeof MoneroTransactionDestinationEntry>;
-export const MoneroTransactionDestinationEntry = Type.Object(
+export const MoneroTransactionDestinationEntry = /*#__PURE__*/ Type.Object(
     {
-        amount: Type.Optional(Type.Uint()),
-        addr: Type.Optional(MoneroAccountPublicAddress),
-        is_subaddress: Type.Optional(Type.Boolean()),
-        original: Type.Optional(Type.String()),
-        is_integrated: Type.Optional(Type.Boolean()),
+        amount: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+        addr: /*#__PURE__*/ Type.Optional(MoneroAccountPublicAddress),
+        is_subaddress: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        original: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        is_integrated: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'MoneroTransactionDestinationEntry' },
 );
 
 export type MoneroTransactionData = Static<typeof MoneroTransactionData>;
-export const MoneroTransactionData = Type.Object(
+export const MoneroTransactionData = /*#__PURE__*/ Type.Object(
     {
-        version: Type.Optional(Type.Number()),
-        payment_id: Type.Optional(Type.String()),
-        unlock_time: Type.Optional(Type.Number()),
-        outputs: Type.Array(MoneroTransactionDestinationEntry),
-        change_dts: Type.Optional(MoneroTransactionDestinationEntry),
-        num_inputs: Type.Optional(Type.Number()),
-        mixin: Type.Optional(Type.Number()),
-        fee: Type.Optional(Type.Uint()),
-        account: Type.Optional(Type.Number()),
-        minor_indices: Type.Array(Type.Number()),
-        rsig_data: Type.Optional(MoneroTransactionRsigData),
-        integrated_indices: Type.Array(Type.Number()),
-        client_version: Type.Optional(Type.Number()),
-        hard_fork: Type.Optional(Type.Number()),
-        monero_version: Type.Optional(Type.String()),
-        chunkify: Type.Optional(Type.Boolean()),
+        version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        payment_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        unlock_time: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        outputs: /*#__PURE__*/ Type.Array(MoneroTransactionDestinationEntry),
+        change_dts: /*#__PURE__*/ Type.Optional(MoneroTransactionDestinationEntry),
+        num_inputs: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        mixin: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        fee: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+        account: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        minor_indices: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        rsig_data: /*#__PURE__*/ Type.Optional(MoneroTransactionRsigData),
+        integrated_indices: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        client_version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        hard_fork: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        monero_version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        chunkify: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'MoneroTransactionData' },
 );
 
 export type MoneroTransactionFinalAck = Static<typeof MoneroTransactionFinalAck>;
-export const MoneroTransactionFinalAck = Type.Object(
+export const MoneroTransactionFinalAck = /*#__PURE__*/ Type.Object(
     {
-        cout_key: Type.Optional(Type.String()),
-        salt: Type.Optional(Type.String()),
-        rand_mult: Type.Optional(Type.String()),
-        tx_enc_keys: Type.Optional(Type.String()),
-        opening_key: Type.Optional(Type.String()),
+        cout_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        salt: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        rand_mult: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        tx_enc_keys: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        opening_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroTransactionFinalAck' },
 );
 
 export type MoneroTransactionFinalRequest = Static<typeof MoneroTransactionFinalRequest>;
-export const MoneroTransactionFinalRequest = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'MoneroTransactionFinalRequest',
-});
+export const MoneroTransactionFinalRequest = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'MoneroTransactionFinalRequest' },
+);
 
 export type MoneroTransactionInitAck = Static<typeof MoneroTransactionInitAck>;
-export const MoneroTransactionInitAck = Type.Object(
+export const MoneroTransactionInitAck = /*#__PURE__*/ Type.Object(
     {
-        hmacs: Type.Array(Type.String()),
-        rsig_data: Type.Optional(MoneroTransactionRsigData),
+        hmacs: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        rsig_data: /*#__PURE__*/ Type.Optional(MoneroTransactionRsigData),
     },
     { $id: 'MoneroTransactionInitAck' },
 );
 
 export type MoneroTransactionInitRequest = Static<typeof MoneroTransactionInitRequest>;
-export const MoneroTransactionInitRequest = Type.Object(
+export const MoneroTransactionInitRequest = /*#__PURE__*/ Type.Object(
     {
-        version: Type.Optional(Type.Number()),
-        address_n: Type.Array(Type.Number()),
-        network_type: Type.Optional(EnumMoneroNetworkType),
-        tsx_data: Type.Optional(MoneroTransactionData),
+        version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        network_type: /*#__PURE__*/ Type.Optional(EnumMoneroNetworkType),
+        tsx_data: /*#__PURE__*/ Type.Optional(MoneroTransactionData),
     },
     { $id: 'MoneroTransactionInitRequest' },
 );
 
 export type MoneroTransactionInputViniAck = Static<typeof MoneroTransactionInputViniAck>;
-export const MoneroTransactionInputViniAck = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'MoneroTransactionInputViniAck',
-});
+export const MoneroTransactionInputViniAck = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'MoneroTransactionInputViniAck' },
+);
 
 export type MoneroTransactionSourceEntry = Static<typeof MoneroTransactionSourceEntry>;
-export const MoneroTransactionSourceEntry = Type.Object(
+export const MoneroTransactionSourceEntry = /*#__PURE__*/ Type.Object(
     {
-        outputs: Type.Array(MoneroOutputEntry),
-        real_output: Type.Optional(Type.Number()),
-        real_out_tx_key: Type.Optional(Type.String()),
-        real_out_additional_tx_keys: Type.Array(Type.String()),
-        real_output_in_tx_index: Type.Optional(Type.Number()),
-        amount: Type.Optional(Type.Uint()),
-        rct: Type.Optional(Type.Boolean()),
-        mask: Type.Optional(Type.String()),
-        multisig_kLRki: Type.Optional(MoneroMultisigKLRki),
-        subaddr_minor: Type.Optional(Type.Number()),
+        outputs: /*#__PURE__*/ Type.Array(MoneroOutputEntry),
+        real_output: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        real_out_tx_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        real_out_additional_tx_keys: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        real_output_in_tx_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        amount: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Uint()),
+        rct: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        mask: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        multisig_kLRki: /*#__PURE__*/ Type.Optional(MoneroMultisigKLRki),
+        subaddr_minor: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'MoneroTransactionSourceEntry' },
 );
 
 export type MoneroTransactionInputViniRequest = Static<typeof MoneroTransactionInputViniRequest>;
-export const MoneroTransactionInputViniRequest = Type.Object(
+export const MoneroTransactionInputViniRequest = /*#__PURE__*/ Type.Object(
     {
-        src_entr: Type.Optional(MoneroTransactionSourceEntry),
-        vini: Type.Optional(Type.String()),
-        vini_hmac: Type.Optional(Type.String()),
-        pseudo_out: Type.Optional(Type.String()),
-        pseudo_out_hmac: Type.Optional(Type.String()),
-        orig_idx: Type.Optional(Type.Number()),
+        src_entr: /*#__PURE__*/ Type.Optional(MoneroTransactionSourceEntry),
+        vini: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        vini_hmac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        pseudo_out: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        pseudo_out_hmac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        orig_idx: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'MoneroTransactionInputViniRequest' },
 );
 
 export type MoneroTransactionSetInputAck = Static<typeof MoneroTransactionSetInputAck>;
-export const MoneroTransactionSetInputAck = Type.Object(
+export const MoneroTransactionSetInputAck = /*#__PURE__*/ Type.Object(
     {
-        vini: Type.String(),
-        vini_hmac: Type.String(),
-        pseudo_out: Type.String(),
-        pseudo_out_hmac: Type.String(),
-        pseudo_out_alpha: Type.String(),
-        spend_key: Type.String(),
+        vini: /*#__PURE__*/ Type.String(),
+        vini_hmac: /*#__PURE__*/ Type.String(),
+        pseudo_out: /*#__PURE__*/ Type.String(),
+        pseudo_out_hmac: /*#__PURE__*/ Type.String(),
+        pseudo_out_alpha: /*#__PURE__*/ Type.String(),
+        spend_key: /*#__PURE__*/ Type.String(),
     },
     { $id: 'MoneroTransactionSetInputAck' },
 );
 
 export type MoneroTransactionSetInputRequest = Static<typeof MoneroTransactionSetInputRequest>;
-export const MoneroTransactionSetInputRequest = Type.Object(
+export const MoneroTransactionSetInputRequest = /*#__PURE__*/ Type.Object(
     {
-        src_entr: Type.Optional(MoneroTransactionSourceEntry),
+        src_entr: /*#__PURE__*/ Type.Optional(MoneroTransactionSourceEntry),
     },
     { $id: 'MoneroTransactionSetInputRequest' },
 );
 
 export type MoneroTransactionSetOutputAck = Static<typeof MoneroTransactionSetOutputAck>;
-export const MoneroTransactionSetOutputAck = Type.Object(
+export const MoneroTransactionSetOutputAck = /*#__PURE__*/ Type.Object(
     {
-        tx_out: Type.Optional(Type.String()),
-        vouti_hmac: Type.Optional(Type.String()),
-        rsig_data: Type.Optional(MoneroTransactionRsigData),
-        out_pk: Type.Optional(Type.String()),
-        ecdh_info: Type.Optional(Type.String()),
+        tx_out: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        vouti_hmac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        rsig_data: /*#__PURE__*/ Type.Optional(MoneroTransactionRsigData),
+        out_pk: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        ecdh_info: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroTransactionSetOutputAck' },
 );
 
 export type MoneroTransactionSetOutputRequest = Static<typeof MoneroTransactionSetOutputRequest>;
-export const MoneroTransactionSetOutputRequest = Type.Object(
+export const MoneroTransactionSetOutputRequest = /*#__PURE__*/ Type.Object(
     {
-        dst_entr: Type.Optional(MoneroTransactionDestinationEntry),
-        dst_entr_hmac: Type.Optional(Type.String()),
-        rsig_data: Type.Optional(MoneroTransactionRsigData),
-        is_offloaded_bp: Type.Optional(Type.Boolean()),
+        dst_entr: /*#__PURE__*/ Type.Optional(MoneroTransactionDestinationEntry),
+        dst_entr_hmac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        rsig_data: /*#__PURE__*/ Type.Optional(MoneroTransactionRsigData),
+        is_offloaded_bp: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'MoneroTransactionSetOutputRequest' },
 );
 
 export type MoneroTransactionSignInputAck = Static<typeof MoneroTransactionSignInputAck>;
-export const MoneroTransactionSignInputAck = Type.Object(
+export const MoneroTransactionSignInputAck = /*#__PURE__*/ Type.Object(
     {
-        signature: Type.Optional(Type.String()),
-        pseudo_out: Type.Optional(Type.String()),
+        signature: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        pseudo_out: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'MoneroTransactionSignInputAck' },
 );
 
 export type MoneroTransactionSignInputRequest = Static<typeof MoneroTransactionSignInputRequest>;
-export const MoneroTransactionSignInputRequest = Type.Object(
+export const MoneroTransactionSignInputRequest = /*#__PURE__*/ Type.Object(
     {
-        src_entr: Type.Optional(MoneroTransactionSourceEntry),
-        vini: Type.Optional(Type.String()),
-        vini_hmac: Type.Optional(Type.String()),
-        pseudo_out: Type.Optional(Type.String()),
-        pseudo_out_hmac: Type.Optional(Type.String()),
-        pseudo_out_alpha: Type.Optional(Type.String()),
-        spend_key: Type.Optional(Type.String()),
-        orig_idx: Type.Optional(Type.Number()),
+        src_entr: /*#__PURE__*/ Type.Optional(MoneroTransactionSourceEntry),
+        vini: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        vini_hmac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        pseudo_out: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        pseudo_out_hmac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        pseudo_out_alpha: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        spend_key: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        orig_idx: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'MoneroTransactionSignInputRequest' },
 );
 
 export type MoneroWatchKey = Static<typeof MoneroWatchKey>;
-export const MoneroWatchKey = Type.Object(
+export const MoneroWatchKey = /*#__PURE__*/ Type.Object(
     {
-        watch_key: Type.String(),
-        address: Type.String(),
+        watch_key: /*#__PURE__*/ Type.String(),
+        address: /*#__PURE__*/ Type.String(),
     },
     { $id: 'MoneroWatchKey' },
 );

@@ -10,7 +10,7 @@ export enum AuthenticityProofType {
 }
 
 export type EnumAuthenticityProofType = Static<typeof EnumAuthenticityProofType>;
-export const EnumAuthenticityProofType = Type.Enum(AuthenticityProofType);
+export const EnumAuthenticityProofType = /*#__PURE__*/ Type.Enum(AuthenticityProofType);
 
 export enum Enum_BackupAvailability {
     NotAvailable = 0,
@@ -19,10 +19,10 @@ export enum Enum_BackupAvailability {
 }
 
 export type EnumEnum_BackupAvailability = Static<typeof EnumEnum_BackupAvailability>;
-export const EnumEnum_BackupAvailability = Type.Enum(Enum_BackupAvailability);
+export const EnumEnum_BackupAvailability = /*#__PURE__*/ Type.Enum(Enum_BackupAvailability);
 
 export type BackupAvailability = Static<typeof BackupAvailability>;
-export const BackupAvailability = Type.KeyOfEnum(Enum_BackupAvailability, {
+export const BackupAvailability = /*#__PURE__*/ Type.KeyOfEnum(Enum_BackupAvailability, {
     $id: 'BackupAvailability',
 });
 
@@ -32,7 +32,7 @@ export enum BackupMethod {
 }
 
 export type EnumBackupMethod = Static<typeof EnumBackupMethod>;
-export const EnumBackupMethod = Type.Enum(BackupMethod);
+export const EnumBackupMethod = /*#__PURE__*/ Type.Enum(BackupMethod);
 
 export enum Enum_BackupType {
     Bip39 = 0,
@@ -44,10 +44,10 @@ export enum Enum_BackupType {
 }
 
 export type EnumEnum_BackupType = Static<typeof EnumEnum_BackupType>;
-export const EnumEnum_BackupType = Type.Enum(Enum_BackupType);
+export const EnumEnum_BackupType = /*#__PURE__*/ Type.Enum(Enum_BackupType);
 
 export type BackupType = Static<typeof BackupType>;
-export const BackupType = Type.KeyOfEnum(Enum_BackupType, { $id: 'BackupType' });
+export const BackupType = /*#__PURE__*/ Type.KeyOfEnum(Enum_BackupType, { $id: 'BackupType' });
 
 export enum BootCommand {
     STOP_AND_WAIT = 0,
@@ -55,7 +55,7 @@ export enum BootCommand {
 }
 
 export type EnumBootCommand = Static<typeof EnumBootCommand>;
-export const EnumBootCommand = Type.Enum(BootCommand);
+export const EnumBootCommand = /*#__PURE__*/ Type.Enum(BootCommand);
 
 export enum Enum_Capability {
     Capability_Bitcoin = 1,
@@ -89,10 +89,10 @@ export enum Enum_Capability {
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
-export const EnumEnum_Capability = Type.Enum(Enum_Capability);
+export const EnumEnum_Capability = /*#__PURE__*/ Type.Enum(Enum_Capability);
 
 export type Capability = Static<typeof Capability>;
-export const Capability = Type.KeyOfEnum(Enum_Capability, { $id: 'Capability' });
+export const Capability = /*#__PURE__*/ Type.KeyOfEnum(Enum_Capability, { $id: 'Capability' });
 
 export enum DeviceModelInternal {
     T1B1 = 'T1B1',
@@ -105,7 +105,7 @@ export enum DeviceModelInternal {
 }
 
 export type EnumDeviceModelInternal = Static<typeof EnumDeviceModelInternal>;
-export const EnumDeviceModelInternal = Type.Enum(DeviceModelInternal);
+export const EnumDeviceModelInternal = /*#__PURE__*/ Type.Enum(DeviceModelInternal);
 
 export enum Enum_DisplayRotation {
     North = 0,
@@ -115,10 +115,12 @@ export enum Enum_DisplayRotation {
 }
 
 export type EnumEnum_DisplayRotation = Static<typeof EnumEnum_DisplayRotation>;
-export const EnumEnum_DisplayRotation = Type.Enum(Enum_DisplayRotation);
+export const EnumEnum_DisplayRotation = /*#__PURE__*/ Type.Enum(Enum_DisplayRotation);
 
 export type DisplayRotation = Static<typeof DisplayRotation>;
-export const DisplayRotation = Type.KeyOfEnum(Enum_DisplayRotation, { $id: 'DisplayRotation' });
+export const DisplayRotation = /*#__PURE__*/ Type.KeyOfEnum(Enum_DisplayRotation, {
+    $id: 'DisplayRotation',
+});
 
 export enum Enum_HomescreenFormat {
     Toif = 1,
@@ -127,10 +129,12 @@ export enum Enum_HomescreenFormat {
 }
 
 export type EnumEnum_HomescreenFormat = Static<typeof EnumEnum_HomescreenFormat>;
-export const EnumEnum_HomescreenFormat = Type.Enum(Enum_HomescreenFormat);
+export const EnumEnum_HomescreenFormat = /*#__PURE__*/ Type.Enum(Enum_HomescreenFormat);
 
 export type HomescreenFormat = Static<typeof HomescreenFormat>;
-export const HomescreenFormat = Type.KeyOfEnum(Enum_HomescreenFormat, { $id: 'HomescreenFormat' });
+export const HomescreenFormat = /*#__PURE__*/ Type.KeyOfEnum(Enum_HomescreenFormat, {
+    $id: 'HomescreenFormat',
+});
 
 export enum RecoveryDeviceInputMethod {
     ScrambledWords = 0,
@@ -138,7 +142,7 @@ export enum RecoveryDeviceInputMethod {
 }
 
 export type EnumRecoveryDeviceInputMethod = Static<typeof EnumRecoveryDeviceInputMethod>;
-export const EnumRecoveryDeviceInputMethod = Type.Enum(RecoveryDeviceInputMethod);
+export const EnumRecoveryDeviceInputMethod = /*#__PURE__*/ Type.Enum(RecoveryDeviceInputMethod);
 
 export enum Enum_RecoveryStatus {
     Nothing = 0,
@@ -147,10 +151,12 @@ export enum Enum_RecoveryStatus {
 }
 
 export type EnumEnum_RecoveryStatus = Static<typeof EnumEnum_RecoveryStatus>;
-export const EnumEnum_RecoveryStatus = Type.Enum(Enum_RecoveryStatus);
+export const EnumEnum_RecoveryStatus = /*#__PURE__*/ Type.Enum(Enum_RecoveryStatus);
 
 export type RecoveryStatus = Static<typeof RecoveryStatus>;
-export const RecoveryStatus = Type.KeyOfEnum(Enum_RecoveryStatus, { $id: 'RecoveryStatus' });
+export const RecoveryStatus = /*#__PURE__*/ Type.KeyOfEnum(Enum_RecoveryStatus, {
+    $id: 'RecoveryStatus',
+});
 
 export enum Enum_RecoveryType {
     NormalRecovery = 0,
@@ -159,10 +165,12 @@ export enum Enum_RecoveryType {
 }
 
 export type EnumEnum_RecoveryType = Static<typeof EnumEnum_RecoveryType>;
-export const EnumEnum_RecoveryType = Type.Enum(Enum_RecoveryType);
+export const EnumEnum_RecoveryType = /*#__PURE__*/ Type.Enum(Enum_RecoveryType);
 
 export type RecoveryType = Static<typeof RecoveryType>;
-export const RecoveryType = Type.KeyOfEnum(Enum_RecoveryType, { $id: 'RecoveryType' });
+export const RecoveryType = /*#__PURE__*/ Type.KeyOfEnum(Enum_RecoveryType, {
+    $id: 'RecoveryType',
+});
 
 export enum Enum_SafetyCheckLevel {
     Strict = 0,
@@ -171,10 +179,12 @@ export enum Enum_SafetyCheckLevel {
 }
 
 export type EnumEnum_SafetyCheckLevel = Static<typeof EnumEnum_SafetyCheckLevel>;
-export const EnumEnum_SafetyCheckLevel = Type.Enum(Enum_SafetyCheckLevel);
+export const EnumEnum_SafetyCheckLevel = /*#__PURE__*/ Type.Enum(Enum_SafetyCheckLevel);
 
 export type SafetyCheckLevel = Static<typeof SafetyCheckLevel>;
-export const SafetyCheckLevel = Type.KeyOfEnum(Enum_SafetyCheckLevel, { $id: 'SafetyCheckLevel' });
+export const SafetyCheckLevel = /*#__PURE__*/ Type.KeyOfEnum(Enum_SafetyCheckLevel, {
+    $id: 'SafetyCheckLevel',
+});
 
 export enum SdProtectOperationType {
     DISABLE = 0,
@@ -183,7 +193,7 @@ export enum SdProtectOperationType {
 }
 
 export type EnumSdProtectOperationType = Static<typeof EnumSdProtectOperationType>;
-export const EnumSdProtectOperationType = Type.Enum(SdProtectOperationType);
+export const EnumSdProtectOperationType = /*#__PURE__*/ Type.Enum(SdProtectOperationType);
 
 export enum Enum_WordRequestType {
     WordRequestType_Plain = 0,
@@ -192,420 +202,527 @@ export enum Enum_WordRequestType {
 }
 
 export type EnumEnum_WordRequestType = Static<typeof EnumEnum_WordRequestType>;
-export const EnumEnum_WordRequestType = Type.Enum(Enum_WordRequestType);
+export const EnumEnum_WordRequestType = /*#__PURE__*/ Type.Enum(Enum_WordRequestType);
 
 export type WordRequestType = Static<typeof WordRequestType>;
-export const WordRequestType = Type.KeyOfEnum(Enum_WordRequestType, { $id: 'WordRequestType' });
+export const WordRequestType = /*#__PURE__*/ Type.KeyOfEnum(Enum_WordRequestType, {
+    $id: 'WordRequestType',
+});
 
 export type ApplyFlags = Static<typeof ApplyFlags>;
-export const ApplyFlags = Type.Object(
+export const ApplyFlags = /*#__PURE__*/ Type.Object(
     {
-        flags: Type.Number(),
+        flags: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'ApplyFlags' },
 );
 
 export type ApplySettings = Static<typeof ApplySettings>;
-export const ApplySettings = Type.Object(
+export const ApplySettings = /*#__PURE__*/ Type.Object(
     {
-        language: Type.Optional(Type.String()),
-        label: Type.Optional(Type.String()),
-        use_passphrase: Type.Optional(Type.Boolean()),
-        homescreen: Type.Optional(Type.String()),
-        _passphrase_source: Type.Optional(Type.Number()),
-        auto_lock_delay_ms: Type.Optional(Type.Number()),
-        display_rotation: Type.Optional(Type.Union([DisplayRotation, EnumEnum_DisplayRotation])),
-        passphrase_always_on_device: Type.Optional(Type.Boolean()),
-        safety_checks: Type.Optional(SafetyCheckLevel),
-        experimental_features: Type.Optional(Type.Boolean()),
-        hide_passphrase_from_host: Type.Optional(Type.Boolean()),
-        haptic_feedback: Type.Optional(Type.Boolean()),
-        homescreen_length: Type.Optional(Type.Number()),
-        auto_lock_delay_battery_ms: Type.Optional(Type.Number()),
+        language: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        label: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        use_passphrase: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        homescreen: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        _passphrase_source: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        auto_lock_delay_ms: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        display_rotation: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([DisplayRotation, EnumEnum_DisplayRotation]),
+        ),
+        passphrase_always_on_device: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        safety_checks: /*#__PURE__*/ Type.Optional(SafetyCheckLevel),
+        experimental_features: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        hide_passphrase_from_host: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        haptic_feedback: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        homescreen_length: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        auto_lock_delay_battery_ms: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'ApplySettings' },
 );
 
 export type AuthenticateDevice = Static<typeof AuthenticateDevice>;
-export const AuthenticateDevice = Type.Object(
+export const AuthenticateDevice = /*#__PURE__*/ Type.Object(
     {
-        challenge: Type.String(),
-        stream: Type.Optional(Type.Boolean()),
+        challenge: /*#__PURE__*/ Type.String(),
+        stream: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'AuthenticateDevice' },
 );
 
 export type AuthenticityProof = Static<typeof AuthenticityProof>;
-export const AuthenticityProof = Type.Object(
+export const AuthenticityProof = /*#__PURE__*/ Type.Object(
     {
-        optiga_certificates: Type.Array(Type.String()),
-        optiga_signature: Type.String(),
-        tropic_certificates: Type.Array(Type.String()),
-        tropic_signature: Type.Optional(Type.String()),
-        mcu_certificates: Type.Array(Type.String()),
-        mcu_signature: Type.Optional(Type.String()),
+        optiga_certificates: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        optiga_signature: /*#__PURE__*/ Type.String(),
+        tropic_certificates: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        tropic_signature: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        mcu_certificates: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        mcu_signature: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'AuthenticityProof' },
 );
 
 export type AuthenticityProofChunk = Static<typeof AuthenticityProofChunk>;
-export const AuthenticityProofChunk = Type.Object(
+export const AuthenticityProofChunk = /*#__PURE__*/ Type.Object(
     {
-        chunk: Type.String(),
+        chunk: /*#__PURE__*/ Type.String(),
     },
     { $id: 'AuthenticityProofChunk' },
 );
 
 export type AuthenticityProofSizes = Static<typeof AuthenticityProofSizes>;
-export const AuthenticityProofSizes = Type.Object(
+export const AuthenticityProofSizes = /*#__PURE__*/ Type.Object(
     {
-        optiga_certificates: Type.Array(Type.Number()),
-        optiga_signature: Type.Number(),
-        tropic_certificates: Type.Array(Type.Number()),
-        tropic_signature: Type.Optional(Type.Number()),
-        mcu_certificates: Type.Array(Type.Number()),
-        mcu_signature: Type.Optional(Type.Number()),
+        optiga_certificates: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        optiga_signature: /*#__PURE__*/ Type.Number(),
+        tropic_certificates: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        tropic_signature: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        mcu_certificates: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        mcu_signature: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'AuthenticityProofSizes' },
 );
 
 export type Slip39Group = Static<typeof Slip39Group>;
-export const Slip39Group = Type.Object(
+export const Slip39Group = /*#__PURE__*/ Type.Object(
     {
-        member_threshold: Type.Number(),
-        member_count: Type.Number(),
+        member_threshold: /*#__PURE__*/ Type.Number(),
+        member_count: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'Slip39Group' },
 );
 
 export type BackupDevice = Static<typeof BackupDevice>;
-export const BackupDevice = Type.Object(
+export const BackupDevice = /*#__PURE__*/ Type.Object(
     {
-        group_threshold: Type.Optional(Type.Number()),
-        groups: Type.Optional(Type.Array(Slip39Group)),
-        backup_method: Type.Optional(EnumBackupMethod),
+        group_threshold: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        groups: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Array(Slip39Group)),
+        backup_method: /*#__PURE__*/ Type.Optional(EnumBackupMethod),
     },
     { $id: 'BackupDevice' },
 );
 
 export type Cancel = Static<typeof Cancel>;
-export const Cancel = Type.Record(Type.Never(), Type.Never(), { $id: 'Cancel' });
+export const Cancel = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'Cancel' },
+);
 
 export type CancelAuthorization = Static<typeof CancelAuthorization>;
-export const CancelAuthorization = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'CancelAuthorization',
-});
+export const CancelAuthorization = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'CancelAuthorization' },
+);
 
 export type ChangeLanguage = Static<typeof ChangeLanguage>;
-export const ChangeLanguage = Type.Object(
+export const ChangeLanguage = /*#__PURE__*/ Type.Object(
     {
-        data_length: Type.Number(),
-        show_display: Type.Optional(Type.Boolean()),
+        data_length: /*#__PURE__*/ Type.Number(),
+        show_display: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'ChangeLanguage' },
 );
 
 export type ChangePin = Static<typeof ChangePin>;
-export const ChangePin = Type.Object(
+export const ChangePin = /*#__PURE__*/ Type.Object(
     {
-        remove: Type.Optional(Type.Boolean()),
+        remove: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'ChangePin' },
 );
 
 export type ChangeWipeCode = Static<typeof ChangeWipeCode>;
-export const ChangeWipeCode = Type.Object(
+export const ChangeWipeCode = /*#__PURE__*/ Type.Object(
     {
-        remove: Type.Optional(Type.Boolean()),
+        remove: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'ChangeWipeCode' },
 );
 
 export type DataChunkAck = Static<typeof DataChunkAck>;
-export const DataChunkAck = Type.Object(
+export const DataChunkAck = /*#__PURE__*/ Type.Object(
     {
-        data_chunk: Type.String(),
+        data_chunk: /*#__PURE__*/ Type.String(),
     },
     { $id: 'DataChunkAck' },
 );
 
 export type DataChunkRequest = Static<typeof DataChunkRequest>;
-export const DataChunkRequest = Type.Object(
+export const DataChunkRequest = /*#__PURE__*/ Type.Object(
     {
-        data_length: Type.Number(),
-        data_offset: Type.Number(),
+        data_length: /*#__PURE__*/ Type.Number(),
+        data_offset: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'DataChunkRequest' },
 );
 
 export type DoPreauthorized = Static<typeof DoPreauthorized>;
-export const DoPreauthorized = Type.Record(Type.Never(), Type.Never(), { $id: 'DoPreauthorized' });
+export const DoPreauthorized = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'DoPreauthorized' },
+);
 
 export type EndSession = Static<typeof EndSession>;
-export const EndSession = Type.Record(Type.Never(), Type.Never(), { $id: 'EndSession' });
+export const EndSession = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'EndSession' },
+);
 
 export type Entropy = Static<typeof Entropy>;
-export const Entropy = Type.Object(
+export const Entropy = /*#__PURE__*/ Type.Object(
     {
-        entropy: Type.String(),
+        entropy: /*#__PURE__*/ Type.String(),
     },
     { $id: 'Entropy' },
 );
 
 export type EntropyAck = Static<typeof EntropyAck>;
-export const EntropyAck = Type.Object(
+export const EntropyAck = /*#__PURE__*/ Type.Object(
     {
-        entropy: Type.String(),
+        entropy: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EntropyAck' },
 );
 
 export type EntropyCheckContinue = Static<typeof EntropyCheckContinue>;
-export const EntropyCheckContinue = Type.Object(
+export const EntropyCheckContinue = /*#__PURE__*/ Type.Object(
     {
-        finish: Type.Optional(Type.Boolean()),
+        finish: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'EntropyCheckContinue' },
 );
 
 export type EntropyCheckReady = Static<typeof EntropyCheckReady>;
-export const EntropyCheckReady = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'EntropyCheckReady',
-});
+export const EntropyCheckReady = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'EntropyCheckReady' },
+);
 
 export type EntropyRequest = Static<typeof EntropyRequest>;
-export const EntropyRequest = Type.Object(
+export const EntropyRequest = /*#__PURE__*/ Type.Object(
     {
-        entropy_commitment: Type.Optional(Type.String()),
-        prev_entropy: Type.Optional(Type.String()),
+        entropy_commitment: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        prev_entropy: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'EntropyRequest' },
 );
 
 export type Features = Static<typeof Features>;
-export const Features = Type.Object(
+export const Features = /*#__PURE__*/ Type.Object(
     {
-        vendor: Type.Optional(Type.String()),
-        major_version: Type.Number(),
-        minor_version: Type.Number(),
-        patch_version: Type.Number(),
-        build_version: Type.Optional(Type.Number()),
-        bootloader_mode: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        device_id: Type.Union([Type.String(), Type.Null()]),
-        pin_protection: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        passphrase_protection: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        language: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-        label: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-        initialized: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        revision: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-        bootloader_hash: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-        imported: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        unlocked: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        _passphrase_cached: Type.Optional(Type.Boolean()),
-        firmware_present: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        backup_availability: Type.Optional(Type.Union([BackupAvailability, Type.Null()])),
-        flags: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
-        model: Type.String(),
-        fw_major: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
-        fw_minor: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
-        fw_patch: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
-        fw_build: Type.Optional(Type.Number()),
-        fw_vendor: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-        unfinished_backup: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        no_backup: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        recovery_status: Type.Optional(Type.Union([RecoveryStatus, Type.Null()])),
-        capabilities: Type.Array(Capability),
-        backup_type: Type.Optional(Type.Union([BackupType, Type.Null()])),
-        sd_card_present: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        sd_protection: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        wipe_code_protection: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        session_id: Type.Optional(Type.Union([Type.String(), Type.Null()])),
-        passphrase_always_on_device: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        safety_checks: Type.Optional(Type.Union([SafetyCheckLevel, Type.Null()])),
-        auto_lock_delay_ms: Type.Optional(Type.Union([Type.Number(), Type.Null()])),
-        display_rotation: Type.Optional(Type.Union([DisplayRotation, Type.Null()])),
-        experimental_features: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])),
-        busy: Type.Optional(Type.Boolean()),
-        homescreen_format: Type.Optional(Type.Union([HomescreenFormat, Type.Null()])),
-        hide_passphrase_from_host: Type.Optional(Type.Boolean()),
+        vendor: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        major_version: /*#__PURE__*/ Type.Number(),
+        minor_version: /*#__PURE__*/ Type.Number(),
+        patch_version: /*#__PURE__*/ Type.Number(),
+        build_version: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        bootloader_mode: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        device_id: /*#__PURE__*/ Type.Union([
+            /*#__PURE__*/ Type.String(),
+            /*#__PURE__*/ Type.Null(),
+        ]),
+        pin_protection: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        passphrase_protection: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        language: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.String(), /*#__PURE__*/ Type.Null()]),
+        ),
+        label: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.String(), /*#__PURE__*/ Type.Null()]),
+        ),
+        initialized: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        revision: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.String(), /*#__PURE__*/ Type.Null()]),
+        ),
+        bootloader_hash: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.String(), /*#__PURE__*/ Type.Null()]),
+        ),
+        imported: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        unlocked: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        _passphrase_cached: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        firmware_present: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        backup_availability: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([BackupAvailability, /*#__PURE__*/ Type.Null()]),
+        ),
+        flags: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Number(), /*#__PURE__*/ Type.Null()]),
+        ),
+        model: /*#__PURE__*/ Type.String(),
+        fw_major: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Number(), /*#__PURE__*/ Type.Null()]),
+        ),
+        fw_minor: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Number(), /*#__PURE__*/ Type.Null()]),
+        ),
+        fw_patch: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Number(), /*#__PURE__*/ Type.Null()]),
+        ),
+        fw_build: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        fw_vendor: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.String(), /*#__PURE__*/ Type.Null()]),
+        ),
+        unfinished_backup: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        no_backup: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        recovery_status: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([RecoveryStatus, /*#__PURE__*/ Type.Null()]),
+        ),
+        capabilities: /*#__PURE__*/ Type.Array(Capability),
+        backup_type: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([BackupType, /*#__PURE__*/ Type.Null()]),
+        ),
+        sd_card_present: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        sd_protection: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        wipe_code_protection: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        session_id: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.String(), /*#__PURE__*/ Type.Null()]),
+        ),
+        passphrase_always_on_device: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        safety_checks: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([SafetyCheckLevel, /*#__PURE__*/ Type.Null()]),
+        ),
+        auto_lock_delay_ms: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Number(), /*#__PURE__*/ Type.Null()]),
+        ),
+        display_rotation: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([DisplayRotation, /*#__PURE__*/ Type.Null()]),
+        ),
+        experimental_features: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([/*#__PURE__*/ Type.Boolean(), /*#__PURE__*/ Type.Null()]),
+        ),
+        busy: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        homescreen_format: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([HomescreenFormat, /*#__PURE__*/ Type.Null()]),
+        ),
+        hide_passphrase_from_host: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
         internal_model: EnumDeviceModelInternal,
-        unit_color: Type.Optional(Type.Number()),
-        unit_btconly: Type.Optional(Type.Boolean()),
-        homescreen_width: Type.Optional(Type.Number()),
-        homescreen_height: Type.Optional(Type.Number()),
-        bootloader_locked: Type.Optional(Type.Boolean()),
-        language_version_matches: Type.Optional(Type.Boolean()),
-        unit_packaging: Type.Optional(Type.Number()),
-        haptic_feedback: Type.Optional(Type.Boolean()),
-        recovery_type: Type.Optional(Type.Union([RecoveryType, Type.Null()])),
-        optiga_sec: Type.Optional(Type.Number()),
-        soc: Type.Optional(Type.Number()),
-        firmware_corrupted: Type.Optional(Type.Boolean()),
-        auto_lock_delay_battery_ms: Type.Optional(Type.Number()),
-        led: Type.Optional(Type.Boolean()),
-        usb_connected: Type.Optional(Type.Boolean()),
-        wireless_connected: Type.Optional(Type.Boolean()),
-        tap_to_wake: Type.Optional(Type.Boolean()),
-        max_passphrase_len: Type.Optional(Type.Number()),
+        unit_color: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        unit_btconly: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        homescreen_width: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        homescreen_height: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        bootloader_locked: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        language_version_matches: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        unit_packaging: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        haptic_feedback: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        recovery_type: /*#__PURE__*/ Type.Optional(
+            /*#__PURE__*/ Type.Union([RecoveryType, /*#__PURE__*/ Type.Null()]),
+        ),
+        optiga_sec: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        soc: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        firmware_corrupted: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        auto_lock_delay_battery_ms: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        led: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        usb_connected: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        wireless_connected: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        tap_to_wake: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        max_passphrase_len: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'Features' },
 );
 
 export type FirmwareHash = Static<typeof FirmwareHash>;
-export const FirmwareHash = Type.Object(
+export const FirmwareHash = /*#__PURE__*/ Type.Object(
     {
-        hash: Type.String(),
+        hash: /*#__PURE__*/ Type.String(),
     },
     { $id: 'FirmwareHash' },
 );
 
 export type GetAuthenticityProofChunk = Static<typeof GetAuthenticityProofChunk>;
-export const GetAuthenticityProofChunk = Type.Object(
+export const GetAuthenticityProofChunk = /*#__PURE__*/ Type.Object(
     {
-        proof_type: Type.Optional(EnumAuthenticityProofType),
-        index: Type.Optional(Type.Number()),
-        offset: Type.Number(),
-        size: Type.Number(),
+        proof_type: /*#__PURE__*/ Type.Optional(EnumAuthenticityProofType),
+        index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        offset: /*#__PURE__*/ Type.Number(),
+        size: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'GetAuthenticityProofChunk' },
 );
 
 export type GetEntropy = Static<typeof GetEntropy>;
-export const GetEntropy = Type.Object(
+export const GetEntropy = /*#__PURE__*/ Type.Object(
     {
-        size: Type.Number(),
+        size: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'GetEntropy' },
 );
 
 export type GetFeatures = Static<typeof GetFeatures>;
-export const GetFeatures = Type.Record(Type.Never(), Type.Never(), { $id: 'GetFeatures' });
+export const GetFeatures = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'GetFeatures' },
+);
 
 export type GetFirmwareHash = Static<typeof GetFirmwareHash>;
-export const GetFirmwareHash = Type.Object(
+export const GetFirmwareHash = /*#__PURE__*/ Type.Object(
     {
-        challenge: Type.Optional(Type.String()),
+        challenge: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'GetFirmwareHash' },
 );
 
 export type GetNextU2FCounter = Static<typeof GetNextU2FCounter>;
-export const GetNextU2FCounter = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'GetNextU2FCounter',
-});
+export const GetNextU2FCounter = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'GetNextU2FCounter' },
+);
 
 export type GetNonce = Static<typeof GetNonce>;
-export const GetNonce = Type.Record(Type.Never(), Type.Never(), { $id: 'GetNonce' });
+export const GetNonce = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'GetNonce' },
+);
 
 export type GetSerialNumber = Static<typeof GetSerialNumber>;
-export const GetSerialNumber = Type.Record(Type.Never(), Type.Never(), { $id: 'GetSerialNumber' });
+export const GetSerialNumber = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'GetSerialNumber' },
+);
 
 export type Initialize = Static<typeof Initialize>;
-export const Initialize = Type.Object(
+export const Initialize = /*#__PURE__*/ Type.Object(
     {
-        session_id: Type.Optional(Type.String()),
-        _skip_passphrase: Type.Optional(Type.Boolean()),
-        derive_cardano: Type.Optional(Type.Boolean()),
+        session_id: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        _skip_passphrase: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        derive_cardano: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'Initialize' },
 );
 
 export type LoadDevice = Static<typeof LoadDevice>;
-export const LoadDevice = Type.Object(
+export const LoadDevice = /*#__PURE__*/ Type.Object(
     {
-        mnemonics: Type.Array(Type.String()),
-        pin: Type.Optional(Type.String()),
-        passphrase_protection: Type.Optional(Type.Boolean()),
-        language: Type.Optional(Type.String()),
-        label: Type.Optional(Type.String()),
-        skip_checksum: Type.Optional(Type.Boolean()),
-        u2f_counter: Type.Optional(Type.Number()),
-        needs_backup: Type.Optional(Type.Boolean()),
-        no_backup: Type.Optional(Type.Boolean()),
-        unfinished_backup: Type.Optional(Type.Boolean()),
+        mnemonics: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        pin: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        passphrase_protection: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        language: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        label: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        skip_checksum: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        u2f_counter: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        needs_backup: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        no_backup: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        unfinished_backup: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'LoadDevice' },
 );
 
 export type LockDevice = Static<typeof LockDevice>;
-export const LockDevice = Type.Record(Type.Never(), Type.Never(), { $id: 'LockDevice' });
+export const LockDevice = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'LockDevice' },
+);
 
 export type NextU2FCounter = Static<typeof NextU2FCounter>;
-export const NextU2FCounter = Type.Object(
+export const NextU2FCounter = /*#__PURE__*/ Type.Object(
     {
-        u2f_counter: Type.Number(),
+        u2f_counter: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'NextU2FCounter' },
 );
 
 export type Nonce = Static<typeof Nonce>;
-export const Nonce = Type.Object(
+export const Nonce = /*#__PURE__*/ Type.Object(
     {
-        nonce: Type.String(),
+        nonce: /*#__PURE__*/ Type.String(),
     },
     { $id: 'Nonce' },
 );
 
 export type Ping = Static<typeof Ping>;
-export const Ping = Type.Object(
+export const Ping = /*#__PURE__*/ Type.Object(
     {
-        message: Type.Optional(Type.String()),
-        button_protection: Type.Optional(Type.Boolean()),
+        message: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        button_protection: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'Ping' },
 );
 
 export type PreauthorizedRequest = Static<typeof PreauthorizedRequest>;
-export const PreauthorizedRequest = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'PreauthorizedRequest',
-});
+export const PreauthorizedRequest = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'PreauthorizedRequest' },
+);
 
 export type RebootToBootloader = Static<typeof RebootToBootloader>;
-export const RebootToBootloader = Type.Object(
+export const RebootToBootloader = /*#__PURE__*/ Type.Object(
     {
-        boot_command: Type.Optional(EnumBootCommand),
-        firmware_header: Type.Optional(Type.String()),
+        boot_command: /*#__PURE__*/ Type.Optional(EnumBootCommand),
+        firmware_header: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'RebootToBootloader' },
 );
 
 export type RecoveryDevice = Static<typeof RecoveryDevice>;
-export const RecoveryDevice = Type.Object(
+export const RecoveryDevice = /*#__PURE__*/ Type.Object(
     {
-        word_count: Type.Optional(Type.Number()),
-        passphrase_protection: Type.Optional(Type.Boolean()),
-        pin_protection: Type.Optional(Type.Boolean()),
-        language: Type.Optional(Type.String()),
-        label: Type.Optional(Type.String()),
-        enforce_wordlist: Type.Optional(Type.Boolean()),
-        input_method: Type.Optional(EnumRecoveryDeviceInputMethod),
-        u2f_counter: Type.Optional(Type.Number()),
-        type: Type.Optional(RecoveryType),
-        backup_method: Type.Optional(EnumBackupMethod),
+        word_count: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        passphrase_protection: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        pin_protection: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        language: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        label: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        enforce_wordlist: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        input_method: /*#__PURE__*/ Type.Optional(EnumRecoveryDeviceInputMethod),
+        u2f_counter: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        type: /*#__PURE__*/ Type.Optional(RecoveryType),
+        backup_method: /*#__PURE__*/ Type.Optional(EnumBackupMethod),
     },
     { $id: 'RecoveryDevice' },
 );
 
 export type ResetDevice = Static<typeof ResetDevice>;
-export const ResetDevice = Type.Object(
+export const ResetDevice = /*#__PURE__*/ Type.Object(
     {
-        strength: Type.Optional(Type.Number()),
-        passphrase_protection: Type.Optional(Type.Boolean()),
-        pin_protection: Type.Optional(Type.Boolean()),
-        language: Type.Optional(Type.String()),
-        label: Type.Optional(Type.String()),
-        u2f_counter: Type.Optional(Type.Number()),
-        skip_backup: Type.Optional(Type.Boolean()),
-        no_backup: Type.Optional(Type.Boolean()),
-        backup_type: Type.Optional(EnumEnum_BackupType),
-        entropy_check: Type.Optional(Type.Boolean()),
-        backup_method: Type.Optional(EnumBackupMethod),
+        strength: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        passphrase_protection: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        pin_protection: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        language: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        label: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        u2f_counter: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        skip_backup: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        no_backup: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        backup_type: /*#__PURE__*/ Type.Optional(EnumEnum_BackupType),
+        entropy_check: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
+        backup_method: /*#__PURE__*/ Type.Optional(EnumBackupMethod),
     },
     { $id: 'ResetDevice' },
 );
 
 export type SdProtect = Static<typeof SdProtect>;
-export const SdProtect = Type.Object(
+export const SdProtect = /*#__PURE__*/ Type.Object(
     {
         operation: EnumSdProtectOperationType,
     },
@@ -613,77 +730,85 @@ export const SdProtect = Type.Object(
 );
 
 export type SerialNumber = Static<typeof SerialNumber>;
-export const SerialNumber = Type.Object(
+export const SerialNumber = /*#__PURE__*/ Type.Object(
     {
-        serial_number: Type.String(),
+        serial_number: /*#__PURE__*/ Type.String(),
     },
     { $id: 'SerialNumber' },
 );
 
 export type SetBrightness = Static<typeof SetBrightness>;
-export const SetBrightness = Type.Object(
+export const SetBrightness = /*#__PURE__*/ Type.Object(
     {
-        value: Type.Optional(Type.Number()),
+        value: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'SetBrightness' },
 );
 
 export type SetBusy = Static<typeof SetBusy>;
-export const SetBusy = Type.Object(
+export const SetBusy = /*#__PURE__*/ Type.Object(
     {
-        expiry_ms: Type.Optional(Type.Number()),
+        expiry_ms: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'SetBusy' },
 );
 
 export type SetU2FCounter = Static<typeof SetU2FCounter>;
-export const SetU2FCounter = Type.Object(
+export const SetU2FCounter = /*#__PURE__*/ Type.Object(
     {
-        u2f_counter: Type.Number(),
+        u2f_counter: /*#__PURE__*/ Type.Number(),
     },
     { $id: 'SetU2FCounter' },
 );
 
 export type ShowDeviceTutorial = Static<typeof ShowDeviceTutorial>;
-export const ShowDeviceTutorial = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'ShowDeviceTutorial',
-});
+export const ShowDeviceTutorial = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'ShowDeviceTutorial' },
+);
 
 export type UnlockBootloader = Static<typeof UnlockBootloader>;
-export const UnlockBootloader = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'UnlockBootloader',
-});
+export const UnlockBootloader = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'UnlockBootloader' },
+);
 
 export type UnlockedPathRequest = Static<typeof UnlockedPathRequest>;
-export const UnlockedPathRequest = Type.Object(
+export const UnlockedPathRequest = /*#__PURE__*/ Type.Object(
     {
-        mac: Type.String(),
+        mac: /*#__PURE__*/ Type.String(),
     },
     { $id: 'UnlockedPathRequest' },
 );
 
 export type UnlockPath = Static<typeof UnlockPath>;
-export const UnlockPath = Type.Object(
+export const UnlockPath = /*#__PURE__*/ Type.Object(
     {
-        address_n: Type.Array(Type.Number()),
-        mac: Type.Optional(Type.String()),
+        address_n: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.Number()),
+        mac: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
     },
     { $id: 'UnlockPath' },
 );
 
 export type WipeDevice = Static<typeof WipeDevice>;
-export const WipeDevice = Type.Record(Type.Never(), Type.Never(), { $id: 'WipeDevice' });
+export const WipeDevice = /*#__PURE__*/ Type.Record(
+    /*#__PURE__*/ Type.Never(),
+    /*#__PURE__*/ Type.Never(),
+    { $id: 'WipeDevice' },
+);
 
 export type WordAck = Static<typeof WordAck>;
-export const WordAck = Type.Object(
+export const WordAck = /*#__PURE__*/ Type.Object(
     {
-        word: Type.String(),
+        word: /*#__PURE__*/ Type.String(),
     },
     { $id: 'WordAck' },
 );
 
 export type WordRequest = Static<typeof WordRequest>;
-export const WordRequest = Type.Object(
+export const WordRequest = /*#__PURE__*/ Type.Object(
     {
         type: WordRequestType,
     },

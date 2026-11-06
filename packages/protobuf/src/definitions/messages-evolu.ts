@@ -4,73 +4,73 @@
 import { type Static, Type } from '@trezor/schema-utils';
 
 export type EvoluDelegatedIdentityKey = Static<typeof EvoluDelegatedIdentityKey>;
-export const EvoluDelegatedIdentityKey = Type.Object(
+export const EvoluDelegatedIdentityKey = /*#__PURE__*/ Type.Object(
     {
-        private_key: Type.String(),
-        rotation_index: Type.Optional(Type.Number()),
+        private_key: /*#__PURE__*/ Type.String(),
+        rotation_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'EvoluDelegatedIdentityKey' },
 );
 
 export type EvoluGetDelegatedIdentityKey = Static<typeof EvoluGetDelegatedIdentityKey>;
-export const EvoluGetDelegatedIdentityKey = Type.Object(
+export const EvoluGetDelegatedIdentityKey = /*#__PURE__*/ Type.Object(
     {
-        thp_credential: Type.Optional(Type.String()),
-        rotation_index: Type.Optional(Type.Number()),
-        rotate: Type.Optional(Type.Boolean()),
+        thp_credential: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.String()),
+        rotation_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
+        rotate: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Boolean()),
     },
     { $id: 'EvoluGetDelegatedIdentityKey' },
 );
 
 export type EvoluGetNode = Static<typeof EvoluGetNode>;
-export const EvoluGetNode = Type.Object(
+export const EvoluGetNode = /*#__PURE__*/ Type.Object(
     {
-        proof_of_delegated_identity: Type.String(),
-        node_rotation_index: Type.Optional(Type.Number()),
+        proof_of_delegated_identity: /*#__PURE__*/ Type.String(),
+        node_rotation_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'EvoluGetNode' },
 );
 
 export type EvoluIndexManagement = Static<typeof EvoluIndexManagement>;
-export const EvoluIndexManagement = Type.Object(
+export const EvoluIndexManagement = /*#__PURE__*/ Type.Object(
     {
-        rotation_index: Type.Optional(Type.Number()),
+        rotation_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'EvoluIndexManagement' },
 );
 
 export type EvoluIndexManagementResponse = Static<typeof EvoluIndexManagementResponse>;
-export const EvoluIndexManagementResponse = Type.Object(
+export const EvoluIndexManagementResponse = /*#__PURE__*/ Type.Object(
     {
-        rotation_index: Type.Optional(Type.Number()),
+        rotation_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'EvoluIndexManagementResponse' },
 );
 
 export type EvoluNode = Static<typeof EvoluNode>;
-export const EvoluNode = Type.Object(
+export const EvoluNode = /*#__PURE__*/ Type.Object(
     {
-        data: Type.String(),
+        data: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EvoluNode' },
 );
 
 export type EvoluRegistrationRequest = Static<typeof EvoluRegistrationRequest>;
-export const EvoluRegistrationRequest = Type.Object(
+export const EvoluRegistrationRequest = /*#__PURE__*/ Type.Object(
     {
-        certificate_chain: Type.Array(Type.String()),
-        signature: Type.String(),
-        rotation_index: Type.Optional(Type.Number()),
+        certificate_chain: /*#__PURE__*/ Type.Array(/*#__PURE__*/ Type.String()),
+        signature: /*#__PURE__*/ Type.String(),
+        rotation_index: /*#__PURE__*/ Type.Optional(/*#__PURE__*/ Type.Number()),
     },
     { $id: 'EvoluRegistrationRequest' },
 );
 
 export type EvoluSignRegistrationRequest = Static<typeof EvoluSignRegistrationRequest>;
-export const EvoluSignRegistrationRequest = Type.Object(
+export const EvoluSignRegistrationRequest = /*#__PURE__*/ Type.Object(
     {
-        challenge_from_server: Type.String(),
-        size_to_acquire: Type.Number(),
-        proof_of_delegated_identity: Type.String(),
+        challenge_from_server: /*#__PURE__*/ Type.String(),
+        size_to_acquire: /*#__PURE__*/ Type.Number(),
+        proof_of_delegated_identity: /*#__PURE__*/ Type.String(),
     },
     { $id: 'EvoluSignRegistrationRequest' },
 );
