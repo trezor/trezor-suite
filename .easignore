@@ -146,6 +146,7 @@
 !/suite-common/test-utils
 !/suite-common/thp
 !/suite-common/toast-notifications
+!/suite-common/token
 !/suite-common/token-definitions
 !/suite-common/tokens
 !/suite-common/trading

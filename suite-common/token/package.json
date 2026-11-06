@@ -9,12 +9,15 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
-        "@trezor/redux-utils": "workspace:*"
+        "@trezor/redux-utils": "workspace:*",
+        "react": "19.3.0",
+        "react-redux": "9.3.0"
     }
 }

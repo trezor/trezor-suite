@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type AccountsRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
@@ -53,5 +54,9 @@ export const AccountImportSummaryScreen = ({
         return <AccountAlreadyImportedScreen account={account} />;
     }
 
-    return <AccountImportConfirmFormScreen symbol={networkSymbol} accountInfo={accountInfo} />;
+    return (
+        <TokenMetadataProvider sources={[{ networkSymbol, tokens: accountInfo.tokens ?? [] }]}>
+            <AccountImportConfirmFormScreen symbol={networkSymbol} accountInfo={accountInfo} />
+        </TokenMetadataProvider>
+    );
 };
