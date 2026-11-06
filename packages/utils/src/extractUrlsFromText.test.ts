@@ -32,6 +32,13 @@ describe('extractUrlsFromText', () => {
         });
     });
 
+    it('preserves a Unicode URL after spaces around a dot following a URL', () => {
+        expect(extractUrlsFromText('https://example.com . ᴄ.io')).toEqual({
+            textParts: ['', ' . '],
+            urls: ['https://example.com', 'ᴄ.io'],
+        });
+    });
+
     it('preserves a second URL after punctuation and a space', () => {
         expect(extractUrlsFromText('https://example.com. t.me/reward')).toEqual({
             textParts: ['', '. '],
