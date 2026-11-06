@@ -1,9 +1,6 @@
-import { useSelector } from 'react-redux';
-
-import { selectTokenByNetworkAndContract } from '@suite-common/token';
+import { useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
-import { type AccountsRootState } from '@suite-common/wallet-core';
 
 import { TokenUrlBlur } from './TokenUrlBlur';
 
@@ -18,9 +15,7 @@ export const TokenSymbol = ({
     tokenContract,
     isTruncated = false,
 }: TokenSymbolProps) => {
-    const token = useSelector((state: AccountsRootState) =>
-        selectTokenByNetworkAndContract(state, networkSymbol, tokenContract),
-    );
+    const token = useTokenMetadata(networkSymbol, tokenContract);
     const symbol = token?.symbol ?? '';
     const displaySymbol = isTruncated ? getDisplaySymbol(symbol, tokenContract) : symbol;
 

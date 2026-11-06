@@ -16,7 +16,6 @@
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/type-utils": "workspace:*",

@@ -9,7 +9,7 @@ import {
     type TokenDefinitionsRootState,
     selectFilterKnownTokens,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -104,10 +104,7 @@ export const AccountImportConfirmFormScreen = ({
             <Box marginBottom="sp12">
                 <TokenInfoCard
                     symbol={symbol}
-                    tokenSymbol={item.symbol as TokenSymbol}
                     balance={item.balance}
-                    decimals={item.decimals}
-                    name={item.name}
                     contract={item.contract as TokenAddress}
                 />
             </Box>

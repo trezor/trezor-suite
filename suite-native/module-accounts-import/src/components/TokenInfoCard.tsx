@@ -1,10 +1,11 @@
 import { useSelector } from 'react-redux';
 
+import { useTokenMetadata } from '@suite-common/token';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     ExactTokenAmountFormatter,
@@ -17,26 +18,19 @@ import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
 type TokenInfoCardProps = {
     symbol: NetworkSymbol;
-    tokenSymbol?: TokenSymbol;
     balance?: string;
-    name?: string;
-    decimals?: number;
     contract: TokenAddress;
 };
 
-export const TokenInfoCard = ({
-    symbol,
-    tokenSymbol,
-    balance,
-    name,
-    decimals,
-    contract,
-}: TokenInfoCardProps) => {
+export const TokenInfoCard = ({ symbol, balance, contract }: TokenInfoCardProps) => {
+    const token = useTokenMetadata(symbol, contract);
     const isSpecificCoinDefinitionKnown = useSelector((state: TokenDefinitionsRootState) =>
         selectIsSpecificCoinDefinitionKnown(state, symbol, contract),
     );
 
-    if (!tokenSymbol || !balance || !name || !isSpecificCoinDefinitionKnown) return null;
+    if (!token?.symbol || !balance || !token.name || !isSpecificCoinDefinitionKnown) return null;
+
+    const { name, decimals } = token;
 
     return (
         <AccountImportOverviewCard
@@ -44,7 +38,7 @@ export const TokenInfoCard = ({
             cryptoAmount={
                 <ExactTokenAmountFormatter
                     value={convertTokenValueToDecimal(balance, decimals ?? 0)}
-                    tokenSymbol={tokenSymbol}
+                    tokenSymbol={toTokenSymbol(token.symbol)}
                     maxDisplayedDecimals={decimals}
                     variant="body-xs"
                 />
@@ -53,7 +47,7 @@ export const TokenInfoCard = ({
                 <TokenIcon
                     networkSymbol={symbol}
                     contractAddress={contract}
-                    tokenSymbol={tokenSymbol || name}
+                    tokenSymbol={token.symbol}
                 />
             }
         >
