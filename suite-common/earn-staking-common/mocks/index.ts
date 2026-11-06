@@ -10,5 +10,6 @@ export { mockStakingPosition } from './mockStakingPosition';
 export { mockStakingProductAdapter } from './mockStakingProductAdapter';
 export { mockStakingProductDescriptor } from './mockStakingProductDescriptor';
 export { mockStakingProductInfo } from './mockStakingProductInfo';
+export { mockStakingProductModule } from './mockStakingProductModule';
 export { mockStakingProvider } from './mockStakingProvider';
 export { mockStakingTransaction } from './mockStakingTransaction';

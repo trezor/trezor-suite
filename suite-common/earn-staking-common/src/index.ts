@@ -154,6 +154,7 @@ export {
     type StakingProductInfo,
     type StakingProductTarget,
 } from './stakingProductInfo';
+export type { StakingProductModule } from './stakingProductModule';
 export {
     stakingProviderIdSchema,
     stakingProviderLinksSchema,
