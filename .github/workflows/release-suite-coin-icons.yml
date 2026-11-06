@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
+        uses: safedep/pmg@ad7d74efddce4ed5c8b161a11945bd6e55be266c # v0.33.0
         continue-on-error: true
         with:
           version: v0.32.0

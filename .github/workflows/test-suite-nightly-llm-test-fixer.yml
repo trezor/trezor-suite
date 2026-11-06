@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -69,7 +69,7 @@ jobs:
 
       - name: Upload report
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: llm-test-fixer-report
           path: packages/e2e-utils/src/llmTestFixer/reports/
@@ -77,7 +77,7 @@ jobs:
 
       - name: Upload analyze cost artifact
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: slack-analyze-cost
           path: /tmp/llm-token-usage.json
@@ -92,7 +92,7 @@ jobs:
       has-tasks: ${{ steps.set-matrix.outputs.has-tasks }}
     steps:
       - name: Download report
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: llm-test-fixer-report
           path: report-download/
@@ -128,7 +128,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -158,7 +158,7 @@ jobs:
         run: tar -czf web-build.tar.gz -C suite-app/web-app build
 
       - name: Upload web build artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: web-app-build-e2e
           path: web-build.tar.gz
@@ -187,7 +187,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -227,7 +227,7 @@ jobs:
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Download desktop artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: desktop-app-build-e2e
           path: artifact-download
@@ -236,7 +236,7 @@ jobs:
         run: tar -xzf artifact-download/app-build.tar.gz -C suite-app/desktop-app
 
       - name: Download web artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: web-app-build-e2e
           path: artifact-download
@@ -248,7 +248,7 @@ jobs:
         run: nohup yarn workspace @suite-app/web-app preview > /tmp/web-preview.log 2>&1 &
 
       - name: Download report
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: llm-test-fixer-report
           path: report-download/
@@ -293,7 +293,7 @@ jobs:
 
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -310,7 +310,7 @@ jobs:
 
       - name: Upload Slack fix summary artifact
         if: ${{ !cancelled() && steps.run-llm-test-fixer.outcome != 'skipped' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: slack-fix-summary-${{ matrix.task-id }}
           path: slack-fix-summary-${{ matrix.task-id }}.json
@@ -318,7 +318,7 @@ jobs:
 
       - name: Upload errors artifact
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: fix-errors-${{ matrix.task-id }}
           path: llm-test-fixer-errors-${{ matrix.task-id }}.txt
@@ -339,7 +339,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -357,21 +357,21 @@ jobs:
         run: yarn workspaces focus @trezor/e2e-utils
 
       - name: Download report artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: llm-test-fixer-report
           path: report-download/
         continue-on-error: true
 
       - name: Download analyze cost artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: slack-analyze-cost
           path: analyze-cost-download/
         continue-on-error: true
 
       - name: Download Slack fix summary artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: slack-fix-summary-*
           path: summaries/
@@ -379,7 +379,7 @@ jobs:
         continue-on-error: true
 
       - name: Download fix errors artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: fix-errors-*
           path: fix-errors/
@@ -409,7 +409,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v6
         with:
           node-version-file: ".nvmrc"
 
@@ -433,13 +433,13 @@ jobs:
           aws-region: "eu-central-1"
 
       - name: Download report artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: llm-test-fixer-report
           path: report-download/
 
       - name: Download Slack fix summary artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: slack-fix-summary-*
           path: summaries/
