@@ -1,5 +1,5 @@
 import { base58, bech32 } from '@scure/base';
-import * as cbor from 'cbor';
+import type { decode } from 'cbor';
 import crc32 from 'crc/calculators/crc32';
 
 import type { CardanoNetworkSymbol } from '@trezor/network-cardano-types';
@@ -20,11 +20,43 @@ const getNetworkEnvironment = (address: string): NetworkEnvironment => {
     return 'prod';
 };
 
+/**
+ * `cbor` only decodes legacy (Byron) addresses and is too heavy for the initial bundle,
+ * so it loads in the background while validation stays synchronous:
+ * until it arrives, a legacy address does not validate.
+ */
+let cborDecode: typeof decode | undefined;
+let cborDecodeLoading: Promise<void> | undefined;
+
+const loadCborDecode = async () => {
+    try {
+        const { decode: loadedCborDecode } = await import('cbor');
+        cborDecode = loadedCborDecode;
+    } catch {
+        // Not cached on failure, so the next legacy address downloads it again.
+        cborDecodeLoading = undefined;
+    }
+};
+
+/**
+ * Loads the legacy address decoder ahead of the first validation, which cannot wait for it.
+ */
+export const preloadCborDecode = () => {
+    cborDecodeLoading ??= loadCborDecode();
+
+    return cborDecodeLoading;
+};
+
 function getDecoded(address: string): any {
     try {
         const decoded = base58.decode(address);
+        if (!cborDecode) {
+            preloadCborDecode();
 
-        return cbor.decode(new Uint8Array(decoded).buffer);
+            return null;
+        }
+
+        return cborDecode(new Uint8Array(decoded).buffer);
     } catch {
         return null;
     }
