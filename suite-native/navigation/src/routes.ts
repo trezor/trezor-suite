@@ -81,7 +81,7 @@ export enum DeviceOnboardingStackRoutes {
     DeviceDisconnected = 'DeviceDisconnected',
     ManualDeviceCheck = 'ManualDeviceCheck',
     SuspiciousDevice = 'SuspiciousDevice',
-    SecurityCheck = 'SecurityCheck',
+    ManualDeviceCheckWithoutFirmware = 'ManualDeviceCheckWithoutFirmware',
     FirmwareInfo = 'FirmwareInfo',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',

@@ -9,7 +9,7 @@ export const screenToAnalyticsStepMap: Record<
     [DeviceOnboardingStackRoutes.DeviceDisconnected]: null,
     [DeviceOnboardingStackRoutes.ManualDeviceCheck]: 'security-check',
     [DeviceOnboardingStackRoutes.SuspiciousDevice]: null,
-    [DeviceOnboardingStackRoutes.SecurityCheck]: 'security-check',
+    [DeviceOnboardingStackRoutes.ManualDeviceCheckWithoutFirmware]: 'security-check',
     [DeviceOnboardingStackRoutes.FirmwareInfo]: 'firmware',
     [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: 'firmware',
     [DeviceOnboardingStackRoutes.FirmwareInstallation]: 'firmware',

@@ -22,7 +22,7 @@ import { SecuritySealDescription } from '../components/SecuritySealDescription';
 
 type CardStepperStep = NonNullable<CardStepperMap<DeviceSuspicionCause>[number]>;
 
-const getSecurityCheckSteps = (
+const getManualDeviceCheckWithoutFirmwareSteps = (
     analytics: Analytics<AnalyticsNativeEvents>,
     hasBrandedPlasticWrap: boolean,
 ): CardStepperStep[] => [
@@ -91,9 +91,15 @@ const getSecurityCheckSteps = (
 const toNumberedSteps = (steps: CardStepperStep[]): CardStepperMap<DeviceSuspicionCause> =>
     Object.fromEntries(steps.map((step, index) => [index + 1, step]));
 
-export const SecurityCheckScreen = ({
+/**
+ * Second step of Manual Device check, displayed only for devices without firmware (fresh or factory-reset).
+ */
+export const ManualDeviceCheckWithoutFirmwareScreen = ({
     navigation,
-}: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.SecurityCheck>) => {
+}: StackProps<
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.ManualDeviceCheckWithoutFirmware
+>) => {
     const { analytics } = useServices(injectNativeAnalytics);
     const deviceModel = useSelector(selectDeviceModel) ?? DeviceModelInternal.UNKNOWN;
 
@@ -133,7 +139,7 @@ export const SecurityCheckScreen = ({
                     primaryButtonText={<Translation id="generic.buttons.yes" />}
                     onPressSecondaryButton={handlePressSecondaryButton}
                     stepToContentMap={toNumberedSteps(
-                        getSecurityCheckSteps(
+                        getManualDeviceCheckWithoutFirmwareSteps(
                             analytics,
                             HAS_BRANDED_PLASTIC_WRAP_PACKAGING[deviceModel],
                         ),

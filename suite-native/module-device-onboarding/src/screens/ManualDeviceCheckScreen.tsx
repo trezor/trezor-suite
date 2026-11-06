@@ -60,6 +60,12 @@ const ManualDeviceCheckScreenContent = ({
     );
 };
 
+/**
+ * First step of Manual Device check, which is shared for both devices with and without firmware.
+ *
+ * See also ManualDeviceCheckWithoutFirmwareScreen, the 2nd step only for devices without firmware.
+ * Note that this is a different design from Web/Desktop, where there are separate screens for both cases, with no 2nd step.
+ */
 export const ManualDeviceCheckScreen = ({
     navigation,
     route: { params },
@@ -95,8 +101,8 @@ export const ManualDeviceCheckScreen = ({
                 navigateToNextScreenAfterFirmwareInstallation();
             }
         } else {
-            // Security check is relevant for brand new devices without FW only.
-            navigation.replace(DeviceOnboardingStackRoutes.SecurityCheck);
+            // Manual Device Check has a 2nd step for devices without firmware (fresh or factory-reset).
+            navigation.replace(DeviceOnboardingStackRoutes.ManualDeviceCheckWithoutFirmware);
         }
     };
 

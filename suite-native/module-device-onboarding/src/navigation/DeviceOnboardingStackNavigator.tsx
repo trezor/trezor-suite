@@ -19,8 +19,8 @@ import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
 import { FirmwareInfoScreen } from '../screens/FirmwareInfoScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { ManualDeviceCheckScreen } from '../screens/ManualDeviceCheckScreen';
+import { ManualDeviceCheckWithoutFirmwareScreen } from '../screens/ManualDeviceCheckWithoutFirmwareScreen';
 import { RecoveryInstructionsScreen } from '../screens/RecoveryInstructionsScreen';
-import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
 import { SuspiciousDeviceScreen } from '../screens/SuspiciousDeviceScreen';
 import { ThpCodeEntryScreen } from '../screens/ThpCodeEntryScreen';
 import { ThpConfirmationScreen } from '../screens/ThpConfirmationScreen';
@@ -63,8 +63,8 @@ export const DeviceOnboardingStackNavigator = () => {
                 component={SuspiciousDeviceScreen}
             />
             <DeviceOnboardingStack.Screen
-                name={DeviceOnboardingStackRoutes.SecurityCheck}
-                component={SecurityCheckScreen}
+                name={DeviceOnboardingStackRoutes.ManualDeviceCheckWithoutFirmware}
+                component={ManualDeviceCheckWithoutFirmwareScreen}
             />
             <DeviceOnboardingStack.Screen
                 name={DeviceOnboardingStackRoutes.FirmwareInfo}
