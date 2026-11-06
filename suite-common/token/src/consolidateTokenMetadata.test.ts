@@ -1,3 +1,4 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { type TokenMetadata, type TokenMetadataByNetwork } from './TokenMetadataContext';
@@ -6,7 +7,7 @@ import { consolidateTokenMetadata } from './consolidateTokenMetadata';
 const eth = asNetworkSymbol('eth');
 const arb = asNetworkSymbol('arb');
 const token: TokenMetadata = {
-    contract: 'token-a',
+    contract: toTokenAddress('token-a'),
     name: 'Token A',
     symbol: 'AAA',
     decimals: 18,
@@ -39,7 +40,7 @@ describe('consolidateTokenMetadata', () => {
 
     it('inherits parent fields and other tokens without mutating any input', () => {
         const parentToken = Object.freeze({ ...token });
-        const otherToken = Object.freeze({ ...token, contract: 'token-b' });
+        const otherToken = Object.freeze({ ...token, contract: toTokenAddress('token-b') });
         const parentTokens = new Map([
             [parentToken.contract, parentToken],
             [otherToken.contract, otherToken],
