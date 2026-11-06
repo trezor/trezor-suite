@@ -28,7 +28,6 @@
         {
             "path": "../../suite-common/react-query"
         },
-        { "path": "../../suite-common/schemas" },
         {
             "path": "../../suite-common/suite-types"
         },

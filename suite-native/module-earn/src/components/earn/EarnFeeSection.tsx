@@ -4,7 +4,10 @@ import { FeeSelector, type FeeSelectorProps } from '@suite-native/transaction-ma
 
 import { EarnFeeEstimationErrorAlert } from './EarnFeeEstimationErrorAlert';
 
-type EarnFees = Pick<FeeSelectorProps, 'formDraft' | 'formDraftKey' | 'selectedFee'> & {
+type EarnFees = Pick<
+    FeeSelectorProps,
+    'formDraft' | 'formDraftKey' | 'selectedFee' | 'getCustomFeeLevel'
+> & {
     hasFeeEstimationError: boolean;
     isComposingFeeLevels?: boolean;
     retryFeeEstimation: () => void;
@@ -32,6 +35,7 @@ export const EarnFeeSection = ({ accountKey, fees, tokenContract }: EarnFeeSecti
             selectedFeePerUnit={fees.formDraft?.feePerUnit}
             formDraft={fees.formDraft}
             formDraftKey={fees.formDraftKey}
+            getCustomFeeLevel={fees.getCustomFeeLevel}
         />
     );
 };

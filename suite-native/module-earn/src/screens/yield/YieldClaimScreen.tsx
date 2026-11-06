@@ -117,7 +117,7 @@ export const YieldClaimScreen = () => {
     const isClaimSubmitting = session?.action.isSubmitting ?? false;
     const claimFee = useYieldClaimFees({
         accountRewards,
-        isEnabled: !!account && !isClaimPending,
+        isEnabled: !!account && isFocused && !isClaimPending,
     });
     const feeFiatAmount = useFiatFromCryptoValue({
         cryptoValue: claimFee.feePreview?.fee ?? null,
@@ -130,29 +130,22 @@ export const YieldClaimScreen = () => {
         feeFiatAmount,
         totalFiatClaimableAmount,
     });
-    const [hasClaimBeenPrepared, setHasClaimBeenPrepared] = useState(false);
     const isClaimPrepared =
         !isClaimRewardsLoading &&
         !isClaimRewardsFiatLoading &&
-        !claimFee.isPreparingClaimFee &&
+        !claimFee.isComposingFeeLevels &&
         !!claimFee.preparedAction;
-
-    useEffect(() => {
-        if (isClaimPrepared) {
-            setHasClaimBeenPrepared(true);
-        }
-    }, [isClaimPrepared]);
 
     const shouldShowFeeWarning = claimFeeWarning === 'fee-exceeds-rewards';
 
     const shouldShowUnverifiableFeeWarning =
-        claimFeeWarning === 'unverifiable-rewards-value' && hasClaimBeenPrepared;
+        claimFeeWarning === 'unverifiable-rewards-value' && isClaimPrepared;
 
     const isContinueDisabled =
         isClaimPending ||
         isClaimSubmitting ||
         isClaimRewardsLoading ||
-        claimFee.isPreparingClaimFee ||
+        claimFee.isComposingFeeLevels ||
         claimFee.isFeeUnavailable ||
         !accountRewards ||
         !claimFee.preparedAction ||
