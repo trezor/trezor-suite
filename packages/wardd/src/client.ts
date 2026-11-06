@@ -75,6 +75,9 @@ class SocketEndpoint implements WardRelayEndpoint {
         const waiting = this.pending.get(frame.id);
         if (!waiting) return;
         if ('deviceCall' in frame) {
+            // KNOWN DEFICIENCY: the server is untrusted, yet any deviceCall is forwarded to the
+            // caller's device -- no allowlist, unlike the Python and Rust adapters.
+            // FIXME(ward): allow per method only the messages that method's flow sends.
             void this.answer(frame.id, frame.deviceCall, waiting.device);
 
             return;

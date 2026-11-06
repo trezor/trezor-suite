@@ -11,8 +11,8 @@ import { bytesToHex, concatBytes, hexToBytes } from '@noble/hashes/utils.js';
 
 // WARD attestation domains — must match apps.ward._qm / trezorlib.ward.
 const WARD_FINAL_DOMAIN = new TextEncoder().encode('WARD FINAL v1');
-const WARD_ATTEST_DOMAIN = new TextEncoder().encode('WARD ATTEST v1');
-const WARD_ATTEST_VERSION = 1;
+const WARD_ATTEST_DOMAIN = new TextEncoder().encode('WARD ATTEST v2');
+const WARD_ATTEST_VERSION = 2;
 
 // All-zero MAC used when the tree is empty (no root MAC to bind).
 export const ZERO_MAC_HEX = '00'.repeat(32);
@@ -71,7 +71,11 @@ export const signWmAttestation = (
     counter: number,
     macHex: string,
     seed: Uint8Array = DEBUG_QM_SEED,
+    timestamp = 1700000000,
+    headNonce = '68'.repeat(32),
 ): string => {
+    const time = new Uint8Array(8);
+    new DataView(time.buffer).setBigUint64(0, BigInt(timestamp));
     const message = concatBytes(
         WARD_ATTEST_DOMAIN,
         Uint8Array.of(WARD_ATTEST_VERSION),
@@ -79,6 +83,8 @@ export const signWmAttestation = (
         hexToBytes(wardIdHex),
         counterBE4(counter),
         hexToBytes(macHex),
+        time,
+        hexToBytes(headNonce),
     );
 
     return bytesToHex(ed25519.sign(message, seed));

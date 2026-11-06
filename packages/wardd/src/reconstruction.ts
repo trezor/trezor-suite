@@ -9,13 +9,22 @@ import {
 } from '@trezor/ward';
 
 import type { Log } from './logging';
+import { reconstructAvailable } from './recoveryReconstruction';
+import type { SignedTransition } from './transition';
 
 export const rebuildTrie = async (
     storage: WardProvider,
     wardId: string,
     head: TreeState | null,
     log: Log,
+    history?: SignedTransition[],
 ): Promise<BlobRow[]> => {
+    if (head && history?.some(record => record.kind === 'revert')) {
+        const result = await reconstructAvailable({ storage, wardId, head, history, log });
+        if (!result.complete) throw new Error('WARD trie recovery still has unavailable data');
+
+        return result.blobs;
+    }
     const root = head?.root ?? '';
     const counter = head?.counter ?? 0;
     log('trie.head', {

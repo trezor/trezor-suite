@@ -80,7 +80,11 @@ export { WardInitSchema, type WardInitResult } from './api/ward/wardInit';
 export { type WardLookupResult } from './api/ward/wardLookup';
 export { WardUpdateSchema, type WardUpdateResult } from './api/ward/wardUpdate';
 export { WardVerifySchema, type WardVerifyResult } from './api/ward/wardVerify';
-export { WardDisplayAddressSchema, type WardDisplayAddressResult } from './api/ward/wardDisplayAddress';
+export {
+    WardDisplayAddressSchema,
+    type WardDisplayAddressResult,
+} from './api/ward/wardDisplayAddress';
+export { WardCacheEntrySchema, type WardCacheEntryResult } from './api/ward/wardCacheEntry';
 export { FirmwareType } from '@trezor/device-utils';
 
 export type {

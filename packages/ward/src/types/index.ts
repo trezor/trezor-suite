@@ -97,6 +97,8 @@ export type TreeState = {
  * back at reconcile (likewise opaque to the host).
  */
 export type WardTransition = {
+    kind?: 'commit' | 'revert';
+    headNonce?: string;
     counter: number;
     prevRoot: string; // root before this commit; '' = from empty tree (genesis)
     targetRoot: string; // root after; '' = tree became empty

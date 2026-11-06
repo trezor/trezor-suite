@@ -15,7 +15,11 @@ import {
 import { scheduleAction } from '@trezor/utils';
 
 import type { IDevice } from '../types/idevice';
-import type { TypedCallProvider, WardProofCallback } from '../types/typed-call-provider';
+import type {
+    TypedCallProvider,
+    WardNodeCallback,
+    WardProofCallback,
+} from '../types/typed-call-provider';
 
 const blacklist: Record<string, string[] | true> = {
     PassphraseAck: ['passphrase'],
@@ -103,6 +107,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     private callPromise?: Promise<unknown>;
     private abortController?: AbortController;
     private wardProofCallback?: WardProofCallback;
+    private wardNodeCallback?: WardNodeCallback;
 
     constructor(device: IDevice, transport: Transport, session: Session, logger: Logger) {
         this.device = device;
@@ -136,6 +141,12 @@ export class DeviceCurrentSession implements TypedCallProvider {
             callback ? 'registered for current call' : 'cleared for current call',
         );
         this.wardProofCallback = callback;
+    }
+
+    // Register (or clear) the answer to a listing walk's WARDNodeRequest (WARDListEntries): the
+    // device pulls the trie node by node and verifies each before using it.
+    setWardNodeCallback(callback: WardNodeCallback | undefined) {
+        this.wardNodeCallback = callback;
     }
 
     async typedCall(
@@ -346,9 +357,10 @@ export class DeviceCurrentSession implements TypedCallProvider {
                     // WARD pull model: the device asks the host for a proof mid-call.
                     // The driving method registers the answer via setWardProofCallback.
                     if (!this.wardProofCallback) {
-                        return fail(
-                            'WARDProofRequest received but no WARD proof callback is registered',
-                        );
+                        // No WARD host for this call: say so. The device may then use a sticky
+                        // cached entry (shown unverified) instead of waiting for a proof.
+                        [name, data] = ['WARDProofAck', { unavailable: true }];
+                        break;
                     }
                     let ack;
                     try {
@@ -365,6 +377,21 @@ export class DeviceCurrentSession implements TypedCallProvider {
                         return error(err instanceof Error ? err : new Error(String(err)));
                     }
                     [name, data] = ['WARDProofAck', ack];
+                    break;
+                }
+                case 'WARDNodeRequest': {
+                    if (!this.wardNodeCallback) {
+                        return fail(
+                            'WARDNodeRequest received but no WARD node callback is registered',
+                        );
+                    }
+                    let ack;
+                    try {
+                        ack = await this.wardNodeCallback(res.message);
+                    } catch (err) {
+                        return error(err instanceof Error ? err : new Error(String(err)));
+                    }
+                    [name, data] = ['WARDNodeAck', ack];
                     break;
                 }
                 default: {

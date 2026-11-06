@@ -6,6 +6,8 @@
  * an Evolu-backed implementation for suite-desktop is planned.
  */
 import type { TreeState, WardEntry, WardRow, WardTransition } from '../types';
+import { transitionFingerprint } from './transition';
+export { transitionFingerprint } from './transition';
 
 /**
  * WardProvider — the host-storage seam (data plane).
@@ -144,11 +146,23 @@ export class InMemoryWardDb implements WardProvider {
 
     appendTransition(wardId: string, transition: WardTransition): void {
         const list = this.transitions.get(wardId) ?? [];
-        list.push(transition);
+        const previous = list.find(
+            record =>
+                record.counter === transition.counter &&
+                record.targetRoot === transition.targetRoot,
+        );
+        if (previous) {
+            if (transitionFingerprint(previous) !== transitionFingerprint(transition))
+                throw new Error('cannot rewrite an existing WARD transition');
+            return;
+        }
+        list.push(structuredClone(transition));
         this.transitions.set(wardId, list);
     }
 
     getTransitions(wardId: string): WardTransition[] {
-        return [...(this.transitions.get(wardId) ?? [])].sort((a, b) => a.counter - b.counter);
+        return structuredClone(this.transitions.get(wardId) ?? []).toSorted(
+            (a, b) => a.counter - b.counter,
+        );
     }
 }

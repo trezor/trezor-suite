@@ -67,6 +67,7 @@ import path from 'path';
 import { WebSocket } from 'ws';
 
 import type { TreeState, WardEntry, WardProvider, WardRow, WardTransition } from '@trezor/ward';
+import { transitionFingerprint } from '@trezor/ward';
 
 import { type Log, silentLog, startActivity } from './logging';
 
@@ -260,6 +261,7 @@ const readOrCreateSecret = async (dataDir: string | null): Promise<Uint8Array> =
 };
 
 export class EvoluWardStorage implements WardProvider {
+    private transitionWrites: Promise<void> = Promise.resolve();
     private constructor(
         private readonly evolu: Evolu<typeof WardSchema>,
         private readonly queries: ReturnType<typeof createQueries>,
@@ -450,20 +452,37 @@ export class EvoluWardStorage implements WardProvider {
     }
 
     appendTransition(wardId: string, transition: WardTransition) {
-        return this.write(onComplete =>
-            this.evolu.upsert(
-                'wardTransition',
-                {
-                    id: createIdFromString(
-                        `${wardId} ${transition.counter} ${transition.targetRoot}`,
-                    ),
-                    wardId,
-                    counter: getOrThrow(NonNegativeInt.from(transition.counter)),
-                    body: JSON.stringify(transition),
-                },
-                { onComplete },
-            ),
-        );
+        const append = async () => {
+            const previous = this.getTransitions(wardId).find(
+                record =>
+                    record.counter === transition.counter &&
+                    record.targetRoot === transition.targetRoot,
+            );
+            if (previous) {
+                if (transitionFingerprint(previous) !== transitionFingerprint(transition))
+                    throw new Error('cannot rewrite an existing WARD transition');
+
+                return;
+            }
+            await this.write(onComplete =>
+                this.evolu.upsert(
+                    'wardTransition',
+                    {
+                        id: createIdFromString(
+                            `${wardId} ${transition.counter} ${transition.targetRoot}`,
+                        ),
+                        wardId,
+                        counter: getOrThrow(NonNegativeInt.from(transition.counter)),
+                        body: JSON.stringify(transition),
+                    },
+                    { onComplete },
+                ),
+            );
+        };
+        const run = this.transitionWrites.then(append, append);
+        this.transitionWrites = run.catch(() => {});
+
+        return run;
     }
 
     getTransitions(wardId: string): WardTransition[] {
@@ -475,6 +494,26 @@ export class EvoluWardStorage implements WardProvider {
                     .map(body => JSON.parse(body) as WardTransition)
                     .sort((a, b) => a.counter - b.counter),
             value => ({ rows: value.length }),
+        );
+    }
+
+    /** Fault injection for the explicitly enabled debug channel. */
+    async debugDropTransition(wardId: string, counter: number, root: string): Promise<void> {
+        if (
+            !this.getTransitions(wardId).some(
+                record => record.counter === counter && record.targetRoot === root,
+            )
+        )
+            throw new Error('debug transition not found');
+        await this.write(onComplete =>
+            this.evolu.update(
+                'wardTransition',
+                {
+                    id: createIdFromString(`${wardId} ${counter} ${root}`),
+                    isDeleted: sqliteTrue,
+                },
+                { onComplete },
+            ),
         );
     }
 

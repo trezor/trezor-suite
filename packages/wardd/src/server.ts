@@ -82,7 +82,7 @@ export const startServer = async (opts: ServerOptions) => {
         });
 
         const handle = async (call: RelayCallFrame): Promise<Record<string, unknown>> => {
-            const params = (call.params ?? {});
+            const params = call.params ?? {};
             if (call.method === 'hello') {
                 await forwardingDelay(opts.log ?? silentLog, 'host -> wardd hello', opts.delays);
                 if (

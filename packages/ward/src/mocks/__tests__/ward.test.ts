@@ -17,10 +17,9 @@ const EXPECTED_FINAL_SIG =
 
 // sign(DEBUG_QM_SEED,
 //   b"WARD ATTEST v1" || version(1) || nonce(cd*32) || wallet_id(ab*20) || counter(4B BE=7) || mac(bb*32))
-const ATTEST_WALLET_ID = 'ab'.repeat(20);
+const ATTEST_WALLET_ID = 'ab'.repeat(32);
 const EXPECTED_ATTEST_SIG =
-    '62f3148706399826b631ccbc1e662e91a52aafada947d142dd67461e266d456c' +
-    'bc83865b5040eea3825ad3fec26d73443db2652279bb939413f4de1873509708';
+    '2fbfa21700fe0387398aa6c953e932d9606bb10f920e116a74a3658260de16a43cd462135d52651b9278b23a677d8ff444637a8cd608f3967fe78887756e9f0f';
 
 // The provisioned debug QM public key in core/src/apps/ward/_qm.py.
 const QM_PUBKEY_DEBUG = '17b4c21f6b55935405d5a48ee3f2f29f42d78c9a650d8f686a705b21ef62b0b6';

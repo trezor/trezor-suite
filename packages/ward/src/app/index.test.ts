@@ -73,5 +73,8 @@ it('rejects missing history and an ambiguous checkpoint', () => {
             5,
         ),
     ).toThrow('lineage incomplete');
-    expect(() => hydrate([...history, history[2]!], rootA, 3)).toThrow('ambiguous lineage');
+    expect(hydrate([...history, structuredClone(history[2]!)], rootA, 3).root).toBe(rootA);
+    expect(() =>
+        hydrate([...history, { ...history[2]!, prevRoot: 'ff'.repeat(32) }], rootA, 3),
+    ).toThrow('ambiguous lineage');
 });

@@ -1,3 +1,4 @@
+export { default as wardCacheEntry } from './wardCacheEntry';
 export { default as wardDisplayAddress } from './wardDisplayAddress';
 export { default as wardInit } from './wardInit';
 export { default as wardListPending } from './wardListPending';

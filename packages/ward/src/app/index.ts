@@ -12,6 +12,8 @@
  *
  * Reuses the proof primitives in `../proof` — it never reimplements hashing/proofs.
  */
+import { transitionFingerprint } from '../storage/transition';
+
 import { bytesToHex } from '@noble/hashes/utils.js';
 
 import type { BlobRow } from '../proof';
@@ -71,12 +73,12 @@ export const traceLineage = (
     headRoot: string,
     headCounter?: number,
 ): WardTransition[] => {
-    const byHead = new Map<string, WardTransition[]>();
+    const byHead = new Map<string, Map<string, WardTransition>>();
     let latest = 0;
     for (const transition of transitions) {
         const key = `${transition.counter} ${transition.targetRoot}`;
-        const matches = byHead.get(key) ?? [];
-        matches.push(transition);
+        const matches = byHead.get(key) ?? new Map<string, WardTransition>();
+        matches.set(transitionFingerprint(transition), transition);
         byHead.set(key, matches);
         if (transition.targetRoot === headRoot) latest = Math.max(latest, transition.counter);
     }
@@ -89,16 +91,15 @@ export const traceLineage = (
     let cur = headRoot;
     // Counters disambiguate repeated roots, including a deletion back to empty.
     while (counter > 0) {
-        const matches = byHead.get(`${counter} ${cur}`) ?? [];
-        if (matches.length === 0) {
+        const matches = byHead.get(`${counter} ${cur}`) ?? new Map<string, WardTransition>();
+        if (matches.size === 0) {
             throw new Error(
                 `hydrate: no transition produces root ${cur} at counter ${counter} — lineage incomplete ` +
                     '(torn / not-yet-synced batch); cannot hydrate',
             );
         }
-        if (matches.length !== 1)
-            throw new Error(`hydrate: ambiguous lineage at counter ${counter}`);
-        const t = matches[0]!;
+        if (matches.size !== 1) throw new Error(`hydrate: ambiguous lineage at counter ${counter}`);
+        const t = matches.values().next().value!;
         chain.push(t);
         cur = t.prevRoot;
         counter -= 1;

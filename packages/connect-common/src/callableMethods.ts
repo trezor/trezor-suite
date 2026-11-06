@@ -38,6 +38,7 @@ const connectManagementMethods = [
     'wardUpdate',
     'wardVerify',
     'wardDisplayAddress',
+    'wardCacheEntry',
 ] as const;
 
 type ManagementKey = keyof TrezorConnectManagement;
