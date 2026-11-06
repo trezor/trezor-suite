@@ -8,7 +8,6 @@ import { TokenUrlBlur } from './TokenUrlBlur';
 type TokenNameProps = Omit<TextProps, 'children'> & {
     networkSymbol: NetworkSymbol;
     contractAddress: TokenAddress;
-    isInline?: boolean;
 };
 
 export const TokenName = ({ networkSymbol, contractAddress, ...props }: TokenNameProps) => {

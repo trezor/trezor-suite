@@ -56,7 +56,6 @@ export const TokenOfNetworkAlertBody = ({
                         tokenSymbol:
                             tokenSymbol === null ? null : (
                                 <TokenSymbol
-                                    isInline
                                     networkSymbol={symbol}
                                     contractAddress={tokenContract}
                                     variant="headline-sm"

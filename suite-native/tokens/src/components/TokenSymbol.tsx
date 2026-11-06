@@ -11,7 +11,6 @@ const MAX_SYMBOL_LENGTH = 10;
 type TokenSymbolProps = Omit<TextProps, 'children'> & {
     networkSymbol: NetworkSymbol;
     contractAddress: TokenAddress;
-    isInline?: boolean;
     isTruncated?: boolean;
 };
 
