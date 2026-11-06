@@ -17,7 +17,7 @@ import {
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { AnimatedBox, AnimatedScrollView, VStack } from '@suite-native/atoms';
+import { AnimatedBox, AnimatedScrollView, Box, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import {
     type AppTabsParamList,
@@ -41,8 +41,7 @@ import { DevicesToggleButton } from './DevicesToggleButton';
 import { WalletList } from './WalletList';
 import { useDeviceManager } from '../hooks/useDeviceManager';
 
-const scrollViewStyle = prepareNativeStyle(utils => ({
-    gap: utils.spacings.sp12,
+const scrollViewStyle = prepareNativeStyle(() => ({
     flexGrow: 0,
     flexShrink: 1,
 }));
@@ -142,42 +141,37 @@ export const DeviceManagerContent = () => {
                 alwaysBounceVertical={false}
                 showsVerticalScrollIndicator={false}
             >
-                <VStack spacing={0}>
-                    <AnimatedBox
-                        accessibilityElementsHidden={!isDeviceListVisible}
-                        importantForAccessibility={
-                            isDeviceListVisible ? 'auto' : 'no-hide-descendants'
-                        }
-                        pointerEvents={isDeviceListVisible ? 'auto' : 'none'}
-                        style={deviceListAnimatedStyle}
+                <AnimatedBox
+                    accessibilityElementsHidden={!isDeviceListVisible}
+                    importantForAccessibility={isDeviceListVisible ? 'auto' : 'no-hide-descendants'}
+                    pointerEvents={isDeviceListVisible ? 'auto' : 'none'}
+                    style={deviceListAnimatedStyle}
+                >
+                    <Box
+                        onLayout={event => {
+                            deviceListHeight.set(event.nativeEvent.layout.height);
+                        }}
+                        style={applyStyle(deviceListWrapperStyle)}
                     >
-                        <VStack
-                            onLayout={event => {
-                                deviceListHeight.set(event.nativeEvent.layout.height);
-                            }}
-                            paddingBottom={isWalletListVisible ? 'sp12' : undefined}
-                            style={applyStyle(deviceListWrapperStyle)}
-                        >
-                            <DeviceList
-                                onSelectDevice={handleSelectDevice}
-                                hasBottomBorder={isWalletListVisible}
-                            />
-                        </VStack>
-                    </AnimatedBox>
-                    {isWalletListVisible && (
-                        <VStack marginTop="sp12">
-                            {deviceStaticSessionId && (
-                                <WalletList onSelectDevice={handleSelectDevice} />
+                        <DeviceList
+                            onSelectDevice={handleSelectDevice}
+                            hasBottomBorder={isWalletListVisible}
+                        />
+                    </Box>
+                </AnimatedBox>
+                {isWalletListVisible && (
+                    <VStack paddingVertical="sp16" spacing="sp16">
+                        {deviceStaticSessionId && (
+                            <WalletList onSelectDevice={handleSelectDevice} />
+                        )}
+                        <VStack paddingHorizontal="sp16" spacing="sp12">
+                            <DeviceSettingsButton />
+                            {isAddHiddenWalletButtonVisible && (
+                                <AddHiddenWalletButton isDisabled={hasRunningDiscovery} />
                             )}
-                            <VStack paddingHorizontal="sp16" paddingBottom="sp16" spacing="sp12">
-                                <DeviceSettingsButton />
-                                {isAddHiddenWalletButtonVisible && (
-                                    <AddHiddenWalletButton isDisabled={hasRunningDiscovery} />
-                                )}
-                            </VStack>
                         </VStack>
-                    )}
-                </VStack>
+                    </VStack>
+                )}
             </AnimatedScrollView>
         </DeviceManagerModal>
     );
