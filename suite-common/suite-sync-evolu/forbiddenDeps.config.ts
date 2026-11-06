@@ -3,7 +3,7 @@ import type { ForbiddenDepsConfig } from '@trezor/requirements';
 export const forbiddenDepsConfig: ForbiddenDepsConfig = {
     'allowed-only-in': {
         packages: [
-            '@suite/suite-sync',
+            '@suite-app/suite-sync',
             '@suite-native/suite-sync',
             '@suite-common/e2e-evolu-client',
             '@trezor/suite-e2e',

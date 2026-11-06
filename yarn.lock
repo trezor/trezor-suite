@@ -11374,6 +11374,7 @@ __metadata:
   dependencies:
     "@sentry/electron": "npm:^7.20.1"
     "@suite-app/app": "workspace:*"
+    "@suite-app/suite-sync": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -11459,6 +11460,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-app/suite-sync@workspace:*, @suite-app/suite-sync@workspace:suite-app/suite-sync":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/suite-sync@workspace:suite-app/suite-sync"
+  dependencies:
+    "@evolu/common": "npm:8.10.0"
+    "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch"
+    "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/suite-sync-evolu": "workspace:*"
+    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite/analytics": "workspace:*"
+    "@suite/suite-sync": "workspace:*"
+    "@suite/tor": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-app/web-app@workspace:suite-app/web-app":
   version: 0.0.0-use.local
   resolution: "@suite-app/web-app@workspace:suite-app/web-app"
@@ -11467,6 +11490,7 @@ __metadata:
     "@rolldown/plugin-babel": "npm:^0.2.1"
     "@sentry/browser": "npm:10.75.2"
     "@suite-app/app": "workspace:*"
+    "@suite-app/suite-sync": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -17651,8 +17675,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
-    "@evolu/common": "npm:8.10.0"
-    "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch"
     "@hookform/resolvers": "npm:^5.4.0"
     "@reduxjs/toolkit": "npm:2.13.0"
     "@suite-common/delegated-identity-key-types": "workspace:*"
@@ -17661,7 +17683,6 @@ __metadata:
     "@suite-common/persistent-device-data": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
-    "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"

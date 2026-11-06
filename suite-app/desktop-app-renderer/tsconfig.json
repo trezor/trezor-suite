@@ -9,6 +9,7 @@
     ],
     "references": [
         { "path": "../app" },
+        { "path": "../suite-sync" },
         {
             "path": "../../suite-common/react-query"
         },
