@@ -3,18 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
-import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { Input, Text } from '@suite-native/atoms';
-import { useCryptoFiatConverters } from '@suite-native/formatters';
-import { useField, useFormContext } from '@suite-native/forms';
+import { useField } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 import { type Color } from '@trezor/theme';
-import { BigNumber } from '@trezor/utils';
 
-import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { useSendFormContext } from '../hooks/useSendFormContext';
 import { type SendAmountInputProps } from '../types';
 import { getOutputFieldName } from '../utils';
 
@@ -39,10 +35,8 @@ export const CryptoAmountInput = ({
     onPress,
     isDisabled = false,
 }: SendAmountInputProps) => {
-    const { setValue, trigger } = useFormContext<SendOutputsFormValues>();
+    const { setValue, trigger, updateFiatAmount } = useSendFormContext();
     const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
-    const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const { DisplaySymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
 
@@ -51,32 +45,17 @@ export const CryptoAmountInput = ({
     );
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
-    const fiatFieldName = getOutputFieldName(recipientIndex, 'fiat');
 
     const { onChange, onBlur, value, hasError } = useField({
         name: cryptoFieldName,
         valueTransformer: cryptoAmountTransformer,
     });
 
-    const converters = useCryptoFiatConverters({ symbol, tokenContract });
-
-    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
-        code: baseCurrencyCode,
-        isInSats: isBaseCurrencyInSats,
-    });
-
     const handleChangeValue = (newValue: string) => {
         const transformedValue = cryptoAmountTransformer(newValue);
         onChange(transformedValue);
 
-        if (transformedValue) {
-            const fiatValue = converters?.convertCryptoToFiat?.(new BigNumber(transformedValue));
-            if (fiatValue && !fiatValue.isNaN()) {
-                setValue(fiatFieldName, fiatValue.toFixed(baseCurrencyDecimals));
-            }
-        } else {
-            setValue(fiatFieldName, '');
-        }
+        updateFiatAmount({ amount: transformedValue, recipientIndex });
         setValue('setMaxOutputId', undefined);
         debounce(() => {
             trigger(cryptoFieldName);

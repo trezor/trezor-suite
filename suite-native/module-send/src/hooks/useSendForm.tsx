@@ -65,9 +65,10 @@ import {
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport-common';
 
+import { createSendAmountConversion } from '../createSendAmountConversion';
 import { selectDestinationTagFromDraft } from '../selectors';
 import {
     type SendOutputsFormValues,
@@ -122,10 +123,11 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         variant: 'B',
     });
     const { translate } = useTranslate();
-    const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
+    const { addressValidator, getNamedAddressSupport, dispatch, getState } = useServices(
         injectAddressValidator,
         injectGetNamedAddressSupport,
         injectDispatch,
+        injectGetState,
     );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
@@ -208,6 +210,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         }),
     });
 
+    const amountConversion = createSendAmountConversion({ form, getState }, accountKey);
     const { handleSubmit, control, getValues, trigger, setError } = form;
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
@@ -634,7 +637,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     return {
         handleSubmitSendForm,
-        form,
+        form: { ...form, ...amountConversion },
         network,
         amount,
         maxSpendableAmount,

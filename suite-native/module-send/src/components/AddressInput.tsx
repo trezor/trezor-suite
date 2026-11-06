@@ -26,7 +26,7 @@ import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
-import { TextInputField, useFormContext, useWatch } from '@suite-native/forms';
+import { TextInputField, useWatch } from '@suite-native/forms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -45,7 +45,7 @@ import { SendFormLabelEditable } from './SendFormLabelEditable';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
 import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
 import { useResolvedAddress } from '../hooks/useResolvedAddress';
-import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { useSendFormContext } from '../hooks/useSendFormContext';
 import { getOutputFieldName } from '../utils';
 
 const AUTOCORRECT_MESSAGE_TIMEOUT_MS = 3000;
@@ -70,9 +70,8 @@ type AddressInputProps = {
 export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
-    const amountFieldName = getOutputFieldName(index, 'amount');
     const tokenFieldName = getOutputFieldName(index, 'token');
-    const { setValue, control } = useFormContext<SendOutputsFormValues>();
+    const { setValue, control, prefillAmount } = useSendFormContext();
     const { getState, analytics, addressValidator, getNamedAddressSupport } = useServices(
         injectGetState,
         injectNativeAnalytics,
@@ -193,7 +192,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
                 setValue(tokenFieldName, erc681.token, { shouldDirty: true });
                 const displayAmount = toDisplayAmount(account);
                 if (displayAmount !== undefined) {
-                    setValue(amountFieldName, displayAmount, { shouldValidate: true });
+                    prefillAmount({ amount: displayAmount, recipientIndex: index });
                 }
             }
             analytics.report({
@@ -214,7 +213,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
             onQrNetworkMismatch?.(null);
             setValue(addressFieldName, bip321.address, { shouldValidate: true });
             if (bip321.amount) {
-                setValue(amountFieldName, bip321.amount, { shouldValidate: true });
+                prefillAmount({ amount: bip321.amount, recipientIndex: index });
             }
             if (bip321.label) {
                 setValue(utxoLabelFieldName, bip321.label, { shouldValidate: true });
