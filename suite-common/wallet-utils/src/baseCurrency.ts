@@ -4,7 +4,7 @@ import {
     getNetwork,
     getNetworks,
 } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber, type BigNumberRoundingMode } from '@trezor/utils';
 
@@ -30,6 +30,36 @@ export const getDecimalsForBaseCurrency = ({
     }
 
     return code in getNetworks() ? getNetwork(code as NetworkSymbol).decimals : 2;
+};
+
+export const DISPLAY_AMOUNT_CACHE_MAX_SIZE = 10_000;
+
+const displayAmountCache = new Map<string, BaseCurrencyAmount>();
+
+type ToBaseCurrencyDisplayAmountParams = {
+    value: BigNumber;
+    baseCurrencyCode: BaseCurrencyCode;
+};
+
+export const toBaseCurrencyDisplayAmount = ({
+    value,
+    baseCurrencyCode,
+}: ToBaseCurrencyDisplayAmountParams): BaseCurrencyAmount => {
+    const displayValue = value.toFixed(
+        getDecimalsForBaseCurrency({ code: baseCurrencyCode, isInSats: false }),
+    );
+
+    const cachedAmount = displayAmountCache.get(displayValue);
+    if (cachedAmount) return cachedAmount;
+
+    if (displayAmountCache.size >= DISPLAY_AMOUNT_CACHE_MAX_SIZE) {
+        displayAmountCache.clear();
+    }
+
+    const displayAmount = asBaseCurrencyAmount(new BigNumber(displayValue));
+    displayAmountCache.set(displayValue, displayAmount);
+
+    return displayAmount;
 };
 
 type AmountToFiatCurrencyWithSatsConversionParams = {

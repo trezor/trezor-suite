@@ -16,7 +16,7 @@ import {
 import { selectAccountLabel } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerFull, Box, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { useFiatFromCryptoValue } from '@suite-native/formatters';
+import { useExactFiatFromCryptoValue } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
@@ -119,7 +119,7 @@ export const YieldClaimScreen = () => {
         accountRewards,
         isEnabled: !!account && !isClaimPending,
     });
-    const feeFiatAmount = useFiatFromCryptoValue({
+    const feeFiatAmount = useExactFiatFromCryptoValue({
         cryptoValue: claimFee.feePreview?.fee ?? null,
         symbol: account?.symbol ?? asNetworkSymbol('eth'),
         isBalance: false,
