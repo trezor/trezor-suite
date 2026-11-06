@@ -29,7 +29,20 @@ describe('stakingReducer', () => {
             expect(registered.products).toEqual({ [eth.id]: eth, [sol.id]: sol });
         });
 
-        it('replaces the descriptors when products are registered again', () => {
+        it('merges the descriptors of a module registered later', () => {
+            const ada = mockStakingProductDescriptor({
+                networkSymbol: asNetworkSymbol('ada'),
+                type: 'native',
+            });
+            const state = stakingReducer(
+                registered,
+                stakingActions.productsRegistered({ platform: 'desktop', descriptors: [ada] }),
+            );
+
+            expect(state.products).toEqual({ [eth.id]: eth, [sol.id]: sol, [ada.id]: ada });
+        });
+
+        it('replaces a descriptor registered again', () => {
             const updatedEth = mockStakingProductDescriptor({ rateKind: 'apr' });
             const state = stakingReducer(
                 registered,
@@ -40,7 +53,7 @@ describe('stakingReducer', () => {
             );
 
             expect(state.platform).toBe('mobile');
-            expect(state.products).toEqual({ [eth.id]: updatedEth });
+            expect(state.products).toEqual({ [eth.id]: updatedEth, [sol.id]: sol });
         });
 
         it('keeps positions', () => {

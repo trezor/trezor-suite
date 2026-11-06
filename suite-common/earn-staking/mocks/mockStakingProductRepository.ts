@@ -9,5 +9,6 @@ export const mockStakingProductRepository = (
     list: mock<StakingProductRepository['list']>(() => []),
     listBySymbol: mock<StakingProductRepository['listBySymbol']>(() => []),
     isSupportedSymbol: mock<StakingProductRepository['isSupportedSymbol']>(() => false),
+    ensureLoaded: mock<StakingProductRepository['ensureLoaded']>(() => Promise.resolve()),
     ...overrides,
 });

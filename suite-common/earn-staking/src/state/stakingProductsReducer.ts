@@ -20,16 +20,12 @@ const stakingProductsSlice = createSlice({
     initialState: stakingProductsInitialState,
     reducers: {
         productsRegistered(
-            _state: StakingProductsState,
+            state: StakingProductsState,
             { payload }: PayloadAction<ProductsRegisteredPayload>,
         ) {
-            const products: StakingProductsState = {};
-
             payload.descriptors.forEach(descriptor => {
-                products[descriptor.id] = descriptor;
+                state[descriptor.id] = descriptor;
             });
-
-            return products;
         },
     },
 });

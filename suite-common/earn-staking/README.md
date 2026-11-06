@@ -2,7 +2,7 @@
 
 Staking logic shared by the desktop, web and mobile apps: the product repository and, later, the staking state, engine and view-model hooks. Apps and shared packages import this package and `@suite-common/earn-staking-common`, which holds the contracts.
 
-The products live in `@suite-common/earn-staking-products`, which this package must not import; `forbiddenDeps.config.ts` enforces it. The application composition roots register the products and expose them to this package as the injected product repository, under `services.staking`.
+The products live in `@suite-common/earn-staking-products`, which this package must not import; `forbiddenDeps.config.ts` enforces it. The application composition roots hand this package the product modules, one per network family behind a dynamic import, and expose the staking services, including the product repository that loads them, under `services.staking`. A module loads once one of its networks is enabled: `loadStakingProducts` loads the modules of the enabled networks after the store is hydrated, and `prepareStakingMiddleware` loads a newly enabled network's module on `changeNetworks` before it refreshes the product info. Each module registers its descriptors as it loads, which syncs the positions of its networks; a module that fails to load is logged and loaded again by the next call.
 
 Both apps register the state as `state.earn.staking`, under the `earn` key that yield and lending will join later. Shared code never names the root: selectors and thunks are typed on `StakingRootState`.
 

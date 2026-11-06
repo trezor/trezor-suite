@@ -1,5 +1,9 @@
 import { type EthOrSolStats } from '@suite-common/earn-staking-api';
-import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
+import {
+    type StakingProductAdapter,
+    type StakingProductModule,
+    stakingProductDescriptorSchema,
+} from '@suite-common/earn-staking-common';
 import {
     type CardanoStakingScenario,
     mockCardanoStakingAccount,
@@ -9,6 +13,7 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
+import { createCardanoStakingProducts } from './products/cardano/createCardanoStakingProducts';
 import { createSolanaExternalDelegationProduct } from './products/solana/external/createSolanaExternalDelegationProduct';
 import {
     type SolanaNativeDelegationProductDeps,
@@ -17,10 +22,29 @@ import {
 import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductDescriptor';
 import { everstakeProvider } from './providers/everstake';
 
-describe('createStakingProductsCompositionRoot', () => {
-    const adapters = createStakingProductsCompositionRoot();
+type LoadedStakingProductModule = {
+    module: StakingProductModule;
+    adapters: readonly StakingProductAdapter[];
+};
 
-    it('registers the Ethereum, Solana, Cardano and Tron products for mainnet testnet networks', () => {
+describe('createStakingProductsCompositionRoot', () => {
+    const productModules = createStakingProductsCompositionRoot();
+    const loadedModules: Promise<readonly LoadedStakingProductModule[]> = Promise.all(
+        productModules.map(async module => ({ module, adapters: await module.load() })),
+    );
+
+    it('declares the Ethereum, Solana, Cardano and Tron modules by the networks they serve', () => {
+        expect(productModules.map(module => module.networkSymbols)).toEqual([
+            ['eth', 'thod'],
+            ['sol', 'dsol'],
+            ['ada'],
+            ['trx'],
+        ]);
+    });
+
+    it('registers the Ethereum, Solana, Cardano and Tron products for mainnet testnet networks', async () => {
+        const adapters = (await loadedModules).flatMap(loaded => loaded.adapters);
+
         expect(adapters.map(adapter => adapter.descriptor.id)).toEqual([
             'eth:eth:everstake:pooled',
             'thod:thod:everstake:pooled',
@@ -35,10 +59,32 @@ describe('createStakingProductsCompositionRoot', () => {
         ]);
     });
 
-    it('registers descriptors that match the contract', () => {
-        adapters.forEach(adapter => {
-            expect(stakingProductDescriptorSchema.safeParse(adapter.descriptor).success).toBe(true);
+    it('serves every product from the module declared for its network', async () => {
+        (await loadedModules).forEach(({ module, adapters }) => {
+            adapters.forEach(adapter => {
+                expect(module.networkSymbols).toContain(adapter.descriptor.networkSymbol);
+            });
         });
+    });
+
+    it('serves every declared network with at least one product', async () => {
+        (await loadedModules).forEach(({ module, adapters }) => {
+            module.networkSymbols.forEach(networkSymbol => {
+                expect(
+                    adapters.some(adapter => adapter.descriptor.networkSymbol === networkSymbol),
+                ).toBe(true);
+            });
+        });
+    });
+
+    it('registers descriptors that match the contract', async () => {
+        (await loadedModules)
+            .flatMap(loaded => loaded.adapters)
+            .forEach(adapter => {
+                expect(stakingProductDescriptorSchema.safeParse(adapter.descriptor).success).toBe(
+                    true,
+                );
+            });
     });
 });
 
@@ -104,9 +150,7 @@ describe('Solana products', () => {
 });
 
 describe('Cardano products', () => {
-    const cardanoProducts = createStakingProductsCompositionRoot().filter(
-        product => product.descriptor.networkSymbol === 'ada',
-    );
+    const cardanoProducts = createCardanoStakingProducts();
 
     it('gives every Cardano product the network message-system keys', () => {
         expect(cardanoProducts.map(product => product.descriptor.messageSystemFeatures)).toEqual([

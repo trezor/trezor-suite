@@ -56,6 +56,7 @@ import {
     selectAccountTransactionsFetchStatus,
     selectAccountsByDeviceState,
     selectAccountsTransactions,
+    selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
@@ -167,12 +168,13 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     const staking = createStakingCompositionRoot({
         platform: 'desktop',
-        adapters: createStakingProductsCompositionRoot(),
+        productModules: createStakingProductsCompositionRoot(),
         deviceAccess: createStakingDeviceAccess({
             getTrezorConnect: deps.getTrezorConnect,
             runStakingDeviceCall: callback => callback(),
         }),
         dispatch: deps.dispatch,
+        getEnabledNetworks: toGetter(deps.getState, selectEnabledNetworks),
     });
 
     const queryClient = createQueryClient({ shouldRefetchOnEvents: true });

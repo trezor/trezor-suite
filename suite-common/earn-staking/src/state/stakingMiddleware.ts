@@ -54,11 +54,19 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
     }
 
     if (changeNetworks.match(action)) {
-        dispatch(refreshStakingProductInfoThunk());
+        extra.services.staking
+            .loadStakingProducts()
+            .then(() => dispatch(refreshStakingProductInfoThunk()));
     }
 
     if (stakingActions.productsRegistered.match(action)) {
-        dispatch(syncAllStakingPositionsThunk());
+        const registeredSymbols = new Set(
+            action.payload.descriptors.map(descriptor => descriptor.networkSymbol),
+        );
+
+        registeredSymbols.forEach(networkSymbol =>
+            dispatch(syncAllStakingPositionsThunk({ networkSymbol })),
+        );
     }
 
     if (transactionsActions.addTransaction.match(action)) {

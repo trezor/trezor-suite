@@ -37,7 +37,7 @@ export const createWebApp =
         await deps.services.hydrateReduxStore();
 
         deps.services.networks.loadNetworkModules();
-        deps.services.staking.loadStakingProducts();
+        void deps.services.staking.loadStakingProducts();
 
         root.render(
             <ServicesProvider services={deps.services}>

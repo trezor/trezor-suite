@@ -1,11 +1,15 @@
 import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
-import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
+import type {
+    StakingProductAdapter,
+    StakingProductModule,
+} from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
     mockStakingProductAdapter,
     mockStakingProductDescriptor,
     mockStakingProductInfo,
+    mockStakingProductModule,
 } from '@suite-common/earn-staking-common/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
@@ -16,6 +20,7 @@ import {
     changeNetworks,
     handleEarnTransactionReplacementThunk,
     initialWalletSettingsState,
+    selectEnabledNetworks,
     transactionsActions,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
@@ -25,7 +30,7 @@ import type {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { mock } from '@trezor/dependency-injection';
+import { mock, toGetter } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import {
@@ -48,9 +53,12 @@ type StakingMiddlewareTestState = StakingRootState &
     WalletSettingsRootState;
 
 const eth = mockStakingProductDescriptor();
+const sol = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('sol'), type: 'native' });
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const solAccount = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
 const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const position = mockStakingPosition();
+const solPosition = mockStakingPosition({ productId: sol.id, lockup: 'liquid' });
 
 const flushThunks = () => new Promise(resolve => setTimeout(resolve, 0));
 
@@ -80,6 +88,21 @@ const initStore = (
         ),
         ...adapterOverrides,
     });
+    const solAdapter = mockStakingProductAdapter({
+        descriptor: sol,
+        getPosition: mock<StakingProductAdapter['getPosition']>(() => solPosition),
+        fetchProductInfo: mock<StakingProductAdapter['fetchProductInfo']>(() =>
+            Promise.resolve(mockStakingProductInfo()),
+        ),
+    });
+    const ethModule = mockStakingProductModule({
+        networkSymbols: [asNetworkSymbol('eth')],
+        load: mock<StakingProductModule['load']>(() => Promise.resolve([adapter])),
+    });
+    const solModule = mockStakingProductModule({
+        networkSymbols: [asNetworkSymbol('sol')],
+        load: mock<StakingProductModule['load']>(() => Promise.resolve([solAdapter])),
+    });
     const queryClient = mockStakingQueryClient();
     let getExtra: () => StakingMiddlewareDeps = () => {
         throw new Error('Services are not composed yet');
@@ -88,9 +111,10 @@ const initStore = (
         services: store => {
             const staking = createStakingCompositionRoot({
                 platform: 'desktop',
-                adapters: [adapter],
+                productModules: [ethModule, solModule],
                 deviceAccess: mockStakingDeviceAccess(),
                 dispatch: store.dispatch,
+                getEnabledNetworks: toGetter(store.getState, selectEnabledNetworks),
             });
             getExtra = () => ({ services: { staking, queryClient } });
 
@@ -100,9 +124,12 @@ const initStore = (
         reducer: {
             earn: combineReducers({ staking: stakingReducer }),
             wallet: combineReducers({
-                accounts: (state = [ethAccount, btcAccount]) => state,
+                accounts: (state = [ethAccount, solAccount, btcAccount]) => state,
                 transactions: transactionsReducer,
-                settings: (state = initialWalletSettingsState) => state,
+                settings: (state = initialWalletSettingsState, action: UnknownAction) =>
+                    changeNetworks.match(action)
+                        ? { ...state, enabledNetworks: action.payload.enabledNetworks }
+                        : state,
             }),
         },
         preloadedState: {
@@ -116,16 +143,18 @@ const initStore = (
         },
     });
 
-    return { ...root.services, adapter, queryClient };
+    return { ...root.services, adapter, solAdapter, ethModule, solModule, queryClient };
 };
 
 describe('prepareStakingMiddleware', () => {
-    it('syncs every account once the products are registered', async () => {
-        const { store, staking, adapter } = initStore();
+    it('syncs the accounts of a network once its products are registered', async () => {
+        const { store, staking, adapter, solAdapter, solModule } = initStore();
 
         staking.loadStakingProducts();
         await flushThunks();
 
+        expect(solModule.load).not.toHaveBeenCalled();
+        expect(solAdapter.getPosition).not.toHaveBeenCalled();
         expect(adapter.getPosition).toHaveBeenCalledTimes(1);
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
@@ -135,6 +164,41 @@ describe('prepareStakingMiddleware', () => {
         expect(selectStakingPositionsByAccount(store.getState(), ethAccount.key)).toEqual([
             position,
         ]);
+    });
+
+    it('loads the products of a newly enabled network, syncs its accounts and fetches its info', async () => {
+        const { store, staking, adapter, solAdapter, solModule } = initStore();
+
+        staking.loadStakingProducts();
+        await flushThunks();
+        jest.mocked(adapter.getPosition).mockClear();
+
+        store.dispatch(
+            changeNetworks(
+                [asNetworkSymbol('eth'), asNetworkSymbol('sol')],
+                [asNetworkSymbol('eth'), asNetworkSymbol('sol')],
+            ),
+        );
+        await flushThunks();
+
+        expect(solModule.load).toHaveBeenCalledTimes(1);
+        expect(solAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
+        expect(solAdapter.getPosition).toHaveBeenCalledWith({
+            account: solAccount,
+            productInfo: null,
+            transactions: [],
+        });
+        expect(solAdapter.getPosition).toHaveBeenLastCalledWith({
+            account: solAccount,
+            productInfo: mockStakingProductInfo(),
+            transactions: [],
+        });
+        expect(selectStakingPositionsByAccount(store.getState(), solAccount.key)).toEqual([
+            solPosition,
+        ]);
+        expect(adapter.getPosition).not.toHaveBeenCalledWith(
+            expect.objectContaining({ account: ethAccount, productInfo: null }),
+        );
     });
 
     it('syncs an account that was created or updated on a network with a product', async () => {
@@ -238,9 +302,22 @@ describe('prepareStakingMiddleware', () => {
             });
         const getStep = (store: ReturnType<typeof initStore>['store']) =>
             selectStakingSession(store.getState(), sessionKey)?.steps[0];
+        /**
+         * A session only starts once its product is registered, so the awaiting state is
+         * preloaded on a store whose Ethereum module has been loaded.
+         */
+        const initAwaitingStore = async () => {
+            const result = initStore({}, awaiting());
+
+            result.staking.loadStakingProducts();
+            await flushThunks();
+            jest.mocked(result.adapter.getPosition).mockClear();
+
+            return result;
+        };
 
         it('confirms an awaiting step from its mined transaction and re-syncs the positions', async () => {
-            const { store, adapter } = initStore({}, awaiting());
+            const { store, adapter } = await initAwaitingStore();
 
             store.dispatch(
                 transactionsActions.addTransaction({
@@ -312,7 +389,7 @@ describe('prepareStakingMiddleware', () => {
         });
 
         it('keeps waiting for a pending transaction or one of another account', async () => {
-            const { store, adapter } = initStore({}, awaiting());
+            const { store, adapter } = await initAwaitingStore();
 
             store.dispatch(
                 transactionsActions.addTransaction({
