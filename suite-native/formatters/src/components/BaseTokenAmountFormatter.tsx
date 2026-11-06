@@ -4,7 +4,7 @@ import {
     useFormatters,
 } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
-import { type TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenSymbol } from '@suite-common/tokens';
 import { type TextProps } from '@suite-native/atoms';
 
 import { type DiscreetMode, type FormatterProps } from '../types';

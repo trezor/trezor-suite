@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux';
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 
 import { type NetworksRootState } from '@suite-common/networks';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';

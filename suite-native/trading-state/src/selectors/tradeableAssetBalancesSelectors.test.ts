@@ -1,5 +1,6 @@
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -9,9 +10,7 @@ import {
 import {
     type Account,
     type CurrentRatesByKey,
-    type TokenAddress,
     asAccountDescriptor,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';

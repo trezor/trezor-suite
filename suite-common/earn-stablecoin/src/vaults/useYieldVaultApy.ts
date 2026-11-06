@@ -7,9 +7,9 @@ import {
     type MessageSystemRootState,
     selectIsYieldFeatureDisabled,
 } from '@suite-common/message-system';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { getYieldVaultsForInputToken } from '@suite-common/wallet-core';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 
 import { getWrappedNativeYieldVaults } from './getWrappedNativeYieldVaults';

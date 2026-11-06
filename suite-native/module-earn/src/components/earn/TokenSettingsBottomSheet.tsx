@@ -14,6 +14,7 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -22,7 +23,7 @@ import {
     selectAccountHiddenTokens,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,

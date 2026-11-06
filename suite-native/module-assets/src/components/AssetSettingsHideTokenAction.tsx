@@ -10,8 +10,8 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';

@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWrapErrorReason,
@@ -10,7 +11,6 @@ import {
     getYieldNativeFeeStatus,
     getYieldVaultContractAddress,
 } from '@suite-common/wallet-core';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { useMessageSystemYield } from '@suite-native/earn';
 import {

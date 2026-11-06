@@ -3,6 +3,7 @@ import {
     selectWalletAssetAccountKeys,
     selectWalletAssetCandidateAccountKeys,
 } from '@suite-common/assets';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
@@ -11,7 +12,7 @@ import {
     selectAreAllAccountTransactionsLoaded,
     selectIsPageAlreadyFetched,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { getHistoryCoveredSince, getOlderHistoryFrom } from '@suite-common/wallet-utils';
 import {
     type TokensRootState,

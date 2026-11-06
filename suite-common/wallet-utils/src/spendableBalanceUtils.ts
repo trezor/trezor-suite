@@ -1,4 +1,5 @@
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
 
 import { isPositiveBalance } from './balanceUtils';
 import { findToken } from './sendFormUtils';

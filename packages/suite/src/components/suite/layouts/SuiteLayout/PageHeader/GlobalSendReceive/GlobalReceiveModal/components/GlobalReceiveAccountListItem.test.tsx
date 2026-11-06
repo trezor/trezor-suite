@@ -4,18 +4,14 @@ import { initialMetadataState } from '@suite/metadata';
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type TradingAssetOption,
     createAssetNativeTokenOption,
     createAssetTokenOption,
 } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type CurrentRate,
-    type Timestamp,
-    type TokenAddress,
-    asAccountDescriptor,
-} from '@suite-common/wallet-types';
+import { type CurrentRate, type Timestamp, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';

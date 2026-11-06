@@ -1,5 +1,6 @@
 import { normalizeForSearch } from '@suite-common/suite-utils';
 import { type RankedTokenStructure } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type TradeableAssetBalance,
     type TradeableAssetBalances,
@@ -15,7 +16,7 @@ import {
     type NetworkSymbol,
     toNetworkSymbolNonTestnet,
 } from '@suite-common/wallet-config';
-import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 type BuildGlobalReceiveAssetOptionsParams = {

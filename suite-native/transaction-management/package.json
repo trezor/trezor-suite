@@ -53,6 +53,7 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*"

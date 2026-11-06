@@ -2,13 +2,13 @@ import { pipe } from '@mobily/ts-belt';
 
 import { DISCREET_PLACEHOLDER } from '@suite-common/discreet-mode';
 import { LANGUAGES, type Locale } from '@suite-common/locale';
+import { type TokenSymbol } from '@suite-common/tokens';
 import {
     type NetworkSymbol,
     getNetwork,
     getNetworkOptional,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { type TokenSymbol } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,

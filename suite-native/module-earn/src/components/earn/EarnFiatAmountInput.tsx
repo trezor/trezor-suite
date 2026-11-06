@@ -2,9 +2,10 @@ import { type RefObject } from 'react';
 import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
-import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { Input, type InputType, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';

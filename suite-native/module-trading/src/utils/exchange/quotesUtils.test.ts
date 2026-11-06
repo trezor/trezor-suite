@@ -2,8 +2,8 @@ import { act } from 'react';
 
 import type { CryptoId } from 'invity-api';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { type MinimalExchangeFormProps } from '@suite-common/trading';
-import type { TokenAddress } from '@suite-common/wallet-types';
 import {
     btc1NormalAccount,
     btcAsset,

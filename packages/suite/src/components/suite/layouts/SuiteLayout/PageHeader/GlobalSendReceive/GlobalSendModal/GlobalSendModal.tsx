@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type Account, toTokenAddress } from '@suite-common/wallet-types';
+import { toTokenAddress } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';

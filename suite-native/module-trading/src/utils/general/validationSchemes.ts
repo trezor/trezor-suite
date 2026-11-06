@@ -1,9 +1,10 @@
+import { type TokenSymbol } from '@suite-common/tokens';
 import {
     type NetworkSymbol,
     getNetworkDisplaySymbol,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { yup } from '@suite-native/forms';
 import { type TradingFormContext } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';

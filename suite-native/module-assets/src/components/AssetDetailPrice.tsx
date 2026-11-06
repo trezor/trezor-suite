@@ -1,5 +1,5 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { AssetPriceChange, useAssetPrice } from '@suite-native/assets';
 import { Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountHeaderFormatter } from '@suite-native/formatters';

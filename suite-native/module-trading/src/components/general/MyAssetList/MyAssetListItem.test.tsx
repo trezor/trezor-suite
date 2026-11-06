@@ -1,8 +1,9 @@
 import type { CryptoId } from 'invity-api';
 
 import { mockNetworksServices } from '@suite-common/networks/mocks';
+import { type TokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 

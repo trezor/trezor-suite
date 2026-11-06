@@ -13,7 +13,7 @@ import {
     useAssetPriceHistoryQuery,
 } from '@suite-common/price-chart';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 

@@ -12,8 +12,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
-        "@suite-common/wallet-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*"
     }

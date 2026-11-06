@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_COUNTRY_SELECT,
@@ -16,7 +17,6 @@ import {
     selectTradingBuySupportedCryptoIds,
     tradingActions,
 } from '@suite-common/trading';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';

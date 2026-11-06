@@ -1,3 +1,4 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type FormDraftRootState,
     REVOKE_ALLOWANCE_AMOUNT,
@@ -11,7 +12,6 @@ import {
     type AllowanceLimitType,
     type AllowanceTransactionType,
     type FormState,
-    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';

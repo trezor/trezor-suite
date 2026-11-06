@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
-import { toTokenSymbol } from '@suite-common/wallet-types';
+import { toTokenSymbol } from '@suite-common/tokens';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import {

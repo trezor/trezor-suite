@@ -1,8 +1,9 @@
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListItem } from './AccountsListItem';

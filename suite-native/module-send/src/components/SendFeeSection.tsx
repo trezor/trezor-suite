@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -10,7 +11,7 @@ import {
     selectSendFormDraftByKey,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerInline, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { updateSelectedFeeLevelThunk } from '@suite-native/send';

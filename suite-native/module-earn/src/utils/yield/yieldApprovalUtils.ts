@@ -1,3 +1,4 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type YieldApproveModalState,
     type YieldFlowToken,
@@ -8,7 +9,6 @@ import {
     type FeeLevelLabel,
     type FormState,
     type PrecomposedTransactionFinal,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { getAllowanceAmountForLimit, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 

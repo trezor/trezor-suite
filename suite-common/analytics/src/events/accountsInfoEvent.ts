@@ -1,5 +1,5 @@
+import { type TokenSymbol } from '@suite-common/tokens';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenSymbol } from '@suite-common/wallet-types';
 
 import { EventType } from '../constants';
 import type { AttributeDef, EventDef } from '../eventDefinition';

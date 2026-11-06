@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { selectAssetPriceChartRange, setAssetPriceChartRange } from '@suite/flags';
 import { type AssetPriceChartRange, assetPriceChartRangeOptions } from '@suite-common/price-chart';
+import { type TokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

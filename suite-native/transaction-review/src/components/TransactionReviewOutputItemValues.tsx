@@ -1,12 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type TokenAddress,
-    type TokenInfoBranded,
-} from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     CoinToFiatAmountFormatter,

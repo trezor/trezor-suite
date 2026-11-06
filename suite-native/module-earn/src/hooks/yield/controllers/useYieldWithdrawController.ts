@@ -4,6 +4,7 @@ import { Keyboard } from 'react-native';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWithdrawErrorReason,
@@ -14,7 +15,6 @@ import {
     splitYieldPendingTransaction,
     yieldActions,
 } from '@suite-common/wallet-core';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { asAmountSubunit, getApyBreakdown, subunitsToUnits } from '@suite-common/wallet-utils';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';

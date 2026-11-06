@@ -13,6 +13,7 @@ import {
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     type TradingTransaction,
@@ -39,12 +40,7 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbol,
     selectVisibleDeviceAccountsMap,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type AccountKey,
-    type TokenAddress,
-    type TokenSymbol,
-} from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getAccountFiatBalance,
     getFiatRateKey,

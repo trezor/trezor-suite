@@ -7,13 +7,13 @@ import {
     useState,
 } from 'react';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import type {
     AccountKey,
     FeeLevelLabel,
     FormState,
     GeneralPrecomposedLevels,
-    TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,

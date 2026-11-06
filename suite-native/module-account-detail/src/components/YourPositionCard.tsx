@@ -1,5 +1,6 @@
+import { type TokenInfoBranded, type TokenSymbol } from '@suite-common/tokens';
 import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Box, Card, HStack, Text } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
@@ -20,7 +21,6 @@ import {
     selectFiatRatesByFiatRateKey,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     parseBaseCurrencyToFormattedCrypto,

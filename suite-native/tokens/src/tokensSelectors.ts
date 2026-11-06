@@ -5,6 +5,7 @@ import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, type TokenInfoBranded, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -19,9 +20,6 @@ import {
 import {
     type AccountKey,
     type WalletAccountTransaction as CommonWalletAccountTransaction,
-    type TokenAddress,
-    type TokenInfoBranded,
-    type TokenSymbol,
 } from '@suite-common/wallet-types';
 import { isNftToken, shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link';

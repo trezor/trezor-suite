@@ -5,13 +5,13 @@ import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { TokenName } from '@suite/token';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import {
     type Explorer,
     getNetwork,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,

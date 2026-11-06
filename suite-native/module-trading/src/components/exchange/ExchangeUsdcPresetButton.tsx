@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { cryptoIdToNetworkSymbol, tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Button, Text } from '@suite-native/atoms';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';

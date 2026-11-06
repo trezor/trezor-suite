@@ -6,6 +6,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type EnhancePrecomposedTransactionThunkState,
@@ -30,7 +31,6 @@ import {
     type AccountKey,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';

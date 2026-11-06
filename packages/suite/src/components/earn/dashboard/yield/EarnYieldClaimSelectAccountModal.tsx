@@ -12,8 +12,8 @@ import {
 } from '@suite-common/earn-stablecoin-api';
 import { getCompactAmount, useFormatters } from '@suite-common/formatters';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { toTokenSymbol } from '@suite-common/tokens';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     compareAccountsByCoin,

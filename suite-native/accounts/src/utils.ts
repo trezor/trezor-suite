@@ -1,9 +1,10 @@
 import { A } from '@mobily/ts-belt';
 
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getFormattedAccountType } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     findToken,
     hasAccountOrTokenSpendableBalance,

@@ -13,12 +13,12 @@ import {
     selectNetworkTokenDefinitions,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import type { TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type {
     Account,
     AccountKey,
     Timestamp,
-    TokenAddress,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {

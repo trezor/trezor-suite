@@ -5,11 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { FlashList } from '@shopify/flash-list';
 
-import {
-    type AccountKey,
-    type StellarTokenInfo,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountKey, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Loader, SearchInput, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';

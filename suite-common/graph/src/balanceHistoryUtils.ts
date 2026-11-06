@@ -1,4 +1,5 @@
-import type { TokenAddress, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/tokens';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getEffectiveGasPrice } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 

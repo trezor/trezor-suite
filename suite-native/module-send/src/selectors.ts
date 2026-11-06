@@ -1,13 +1,10 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     selectAccountByKey,
     selectSendFormDraftByKey,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type GeneralPrecomposedTransaction,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type AccountKey, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import {
     type AmountSubunit,
     getCardanoTokenSendMinAdaAmount,

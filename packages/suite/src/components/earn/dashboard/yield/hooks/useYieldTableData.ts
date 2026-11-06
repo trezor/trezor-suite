@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { type TokenInfoBranded, toTokenSymbol } from '@suite-common/tokens';
 import {
     type NetworkSymbol,
     getNetworkByYieldXyzId,
@@ -13,7 +14,7 @@ import {
     getYieldDepositableBalance,
     selectDeviceSupportedNetworks,
 } from '@suite-common/wallet-core';
-import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     compareEarnByAmountDesc,
     compareEarnByApyDesc,

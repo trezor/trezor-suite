@@ -1,11 +1,8 @@
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type TokenInfoBranded } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
-import {
-    type Account,
-    type TokenInfoBranded,
-    asAccountDescriptor,
-} from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import {

@@ -2,8 +2,8 @@ import { Fragment, type ReactNode } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
 
+import { type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import { ClipboardCopyMenu } from '@suite-native/clipboard';
 import {

@@ -1,6 +1,6 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     getWrappedNativeAddress,
     isWrappedNativeToken,

@@ -1,4 +1,5 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type CryptoBaseCurrencyPair,
@@ -6,7 +7,6 @@ import {
     type TickerId,
     type TickerResult,
     type Timestamp,
-    type TokenAddress,
     type WalletAccountTransaction,
     asCryptoBaseCurrencyCode,
     asTimestamp,

@@ -1,6 +1,6 @@
 import { invariant } from '@suite-common/suite-utils';
+import { type TokenSymbol } from '@suite-common/tokens';
 import { type TradeableAssetBalance, cryptoIdToNetworkSymbol } from '@suite-common/trading';
-import { type TokenSymbol } from '@suite-common/wallet-types';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,

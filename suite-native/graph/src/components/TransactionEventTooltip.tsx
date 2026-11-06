@@ -6,8 +6,9 @@ import { N } from '@mobily/ts-belt';
 
 import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
 import { type SignValue } from '@suite-common/suite-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { AnimatedView, Box, Card, Text } from '@suite-native/atoms';
 import {
     ExactCryptoAmountFormatter,

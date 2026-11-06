@@ -147,6 +147,7 @@
 !/suite-common/thp
 !/suite-common/toast-notifications
 !/suite-common/token-definitions
+!/suite-common/tokens
 !/suite-common/trading
 !/suite-common/transaction-search
 !/suite-common/transfer-uri

@@ -1,4 +1,5 @@
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { btcAccount, ethAccount } from './__fixtures__/accounts';
 import { type TokensRootState, selectAccountTokenInfo } from './tokensSelectors';

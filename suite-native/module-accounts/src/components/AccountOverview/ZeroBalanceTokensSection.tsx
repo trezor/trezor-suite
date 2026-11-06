@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
+import { type TokenInfoBranded } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
 import { AccordionContent, AnimatedBox, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';

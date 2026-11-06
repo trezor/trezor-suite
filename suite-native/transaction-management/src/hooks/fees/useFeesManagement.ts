@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { AccountKey, FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/tokens';
+import type { AccountKey, FeeLevelLabel } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 
 import { useFeeCalculation } from './useFeeCalculation';

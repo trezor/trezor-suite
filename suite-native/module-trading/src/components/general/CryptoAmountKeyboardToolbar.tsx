@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -7,7 +8,7 @@ import {
     selectAccountFormattedBalance,
     selectIsAmountInSats,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, HStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { KeyboardToolbarPortal } from '@suite-native/keyboard';

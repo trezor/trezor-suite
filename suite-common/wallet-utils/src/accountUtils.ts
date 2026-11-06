@@ -1,4 +1,5 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountType,
     type NetworkAccount,
@@ -20,7 +21,6 @@ import {
     type PrecomposedTransactionFinal,
     type RatesByKey,
     type SuccessfulAccount,
-    type TokenAddress,
     type WalletAccountTransaction,
     asBaseCurrencyAmount,
     createAccountKey,

@@ -4,11 +4,12 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceRemembered } from '@suite-common/device';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type SignTransactionError,
     type SignTransactionTimeoutError,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     type RootStackParamList,
     type SendStackParamList,

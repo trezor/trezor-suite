@@ -1,10 +1,7 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TransactionsRootState, getWalletAssetKey } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type TokenAddress,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {

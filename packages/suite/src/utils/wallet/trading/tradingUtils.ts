@@ -1,13 +1,13 @@
 import { type CoinExtraField, type CryptoId } from 'invity-api';
 
 import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type TradingType, cryptoIdToNetwork } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type Output,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';

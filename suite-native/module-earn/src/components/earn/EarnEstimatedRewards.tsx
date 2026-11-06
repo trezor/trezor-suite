@@ -1,9 +1,10 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { calculateRewards } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,

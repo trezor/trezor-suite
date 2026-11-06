@@ -4,13 +4,13 @@ import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { type TokenDefinitions, isPhishingTransaction } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { subtypeToStakeTypeMap } from '@suite-common/wallet-core';
 import {
     type ExportFileType,
     type RatesByTimestamps,
     type Timestamp,
-    type TokenAddress,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {

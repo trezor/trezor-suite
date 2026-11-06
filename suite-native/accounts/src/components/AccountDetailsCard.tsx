@@ -2,8 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import { BannerFull, Card, ErrorMessage, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';

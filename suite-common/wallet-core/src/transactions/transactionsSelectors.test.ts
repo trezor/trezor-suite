@@ -9,11 +9,11 @@ import {
     DUST_PHISHING_THRESHOLD,
     type TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import {
     type Account,
     type AccountKey,
-    type TokenAddress,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';

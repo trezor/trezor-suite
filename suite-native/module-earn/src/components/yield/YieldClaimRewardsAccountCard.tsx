@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { toTokenSymbol } from '@suite-common/tokens';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type YieldClaimAccountItem,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import { AccountLabel } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';

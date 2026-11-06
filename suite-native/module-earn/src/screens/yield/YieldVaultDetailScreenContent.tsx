@@ -4,16 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
+import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getYieldDepositableBalance,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type TokenInfoBranded,
-    toTokenAddress,
-    toTokenSymbol,
-} from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {

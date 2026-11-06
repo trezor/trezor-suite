@@ -1,11 +1,11 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { testMocks } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type RatesByTimestamps,
     type TickerResult,
     type Timestamp,
-    type TokenAddress,
     type WalletAccountTransaction,
     asTimestamp,
 } from '@suite-common/wallet-types';

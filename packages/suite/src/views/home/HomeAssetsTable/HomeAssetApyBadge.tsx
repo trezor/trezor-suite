@@ -1,6 +1,6 @@
 import { useYieldVaultApy } from '@suite-common/earn-stablecoin';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 
 import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';

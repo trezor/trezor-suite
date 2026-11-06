@@ -1,10 +1,7 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import {
-    type FormState,
-    type GeneralPrecomposedTransaction,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type FormState, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 import { type NativeSendRootState } from '@suite-native/transaction-management';

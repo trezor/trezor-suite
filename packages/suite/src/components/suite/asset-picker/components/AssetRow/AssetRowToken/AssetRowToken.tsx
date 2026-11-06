@@ -1,5 +1,6 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account, asBaseCurrencyAmount, toTokenAddress } from '@suite-common/wallet-types';
+import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
 

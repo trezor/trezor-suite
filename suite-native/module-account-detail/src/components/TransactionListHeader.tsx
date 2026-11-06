@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -10,7 +11,7 @@ import {
     selectIsTestnetAccount,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     AccountDiscoveryFailedBanner,
     type NativeAccountsRootState,

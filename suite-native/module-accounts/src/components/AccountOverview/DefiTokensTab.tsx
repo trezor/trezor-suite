@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { type TokenInfoBranded } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type TokensRootState,
     selectAccountByKey,
     selectAccountDefiTokens,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
 import { Card, PictogramTitleHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

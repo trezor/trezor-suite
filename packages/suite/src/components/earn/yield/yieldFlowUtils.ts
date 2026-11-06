@@ -1,3 +1,4 @@
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldAllowanceStatus,
@@ -9,7 +10,6 @@ import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
     isYieldWithdrawFlow,
 } from '@suite-common/wallet-core';
-import { type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getContractAddressForNetworkSymbol,

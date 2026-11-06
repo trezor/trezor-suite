@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
+import { type TokenInfoBranded } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
 import {
     CompactTokenAmountFormatter,
     TokenToFiatAmountFormatter,

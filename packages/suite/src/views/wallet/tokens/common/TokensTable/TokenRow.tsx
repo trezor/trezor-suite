@@ -8,13 +8,14 @@ import {
     type TokenManagementAction,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import {
     removeStellarContractTokenThunk,
     selectIsStellarContractTokenWatched,
 } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';

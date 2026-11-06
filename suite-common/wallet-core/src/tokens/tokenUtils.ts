@@ -1,10 +1,11 @@
 import { type TokenDefinition, isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import { type TokenSymbol } from '@suite-common/tokens';
 import {
     type NetworkSymbol,
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
-import { type Account, type TokenSymbol } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isNftMatchesSearch, isNftToken, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';

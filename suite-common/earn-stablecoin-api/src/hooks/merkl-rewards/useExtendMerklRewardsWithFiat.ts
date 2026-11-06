@@ -1,12 +1,8 @@
 import { useMemo } from 'react';
 
+import { toTokenAddress } from '@suite-common/tokens';
 import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
-import {
-    type RatesByKey,
-    type TickerId,
-    asBaseCurrencyAmount,
-    toTokenAddress,
-} from '@suite-common/wallet-types';
+import { type RatesByKey, type TickerId, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     getContractAddressForNetworkSymbol,

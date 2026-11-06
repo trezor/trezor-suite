@@ -17,6 +17,7 @@
         {
             "path": "../../suite-common/token-definitions"
         },
+        { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/transaction-search"
         },

@@ -1,11 +1,8 @@
 import { selectWalletAssetAccounts } from '@suite-common/assets';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountKey,
-    type TokenAddress,
-    asAccountDescriptor,
-} from '@suite-common/wallet-types';
+import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { selectFilteredDeviceAccountListRows } from '@suite-native/accounts';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';

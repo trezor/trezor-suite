@@ -6,8 +6,9 @@ import {
     useGetMerklRewards,
     useGetMerklRewardsQueryEntries,
 } from '@suite-common/earn-stablecoin-api';
+import { toTokenAddress } from '@suite-common/tokens';
 import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
-import { type CryptoBaseCurrencyPair, toTokenAddress } from '@suite-common/wallet-types';
+import { type CryptoBaseCurrencyPair } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol, getFiatRateKey } from '@suite-common/wallet-utils';
 
 import { selectYieldClaimAccounts } from '../../earn/earnDashboardSelectors';

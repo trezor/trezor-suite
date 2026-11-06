@@ -1,8 +1,9 @@
 import { useCallback, useRef, useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';

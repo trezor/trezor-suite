@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
+import type { TokenSymbol } from '@suite-common/tokens';
 import { type TradingRootState, selectTradingCoinSymbolByCryptoId } from '@suite-common/trading';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
-import type { TokenSymbol } from '@suite-common/wallet-types';
 import type { TextProps } from '@suite-native/atoms';
 import {
     ExactCryptoAmountFormatter,

@@ -4,8 +4,8 @@ import { screen } from '@testing-library/react';
 
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 

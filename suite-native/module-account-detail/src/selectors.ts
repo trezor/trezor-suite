@@ -1,4 +1,5 @@
 import { type AccountItem } from '@suite-common/graph';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -8,7 +9,7 @@ import {
     selectAccountManuallyHiddenTokens,
     selectAccountUnrecognizedTokens,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { hasAccountOrTokenMobileSpendableBalance } from '@suite-native/accounts';
 import { type AccountOverviewTab } from '@suite-native/navigation';

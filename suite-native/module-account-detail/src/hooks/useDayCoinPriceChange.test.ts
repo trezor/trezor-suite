@@ -2,8 +2,9 @@ import {
     fetchErc4626UnderlyingAsset,
     getFiatRatesForTimestamps,
 } from '@suite-common/fiat-services';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, asTimestamp, toTokenAddress } from '@suite-common/wallet-types';
+import { asTimestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import { BigNumber } from '@trezor/utils';

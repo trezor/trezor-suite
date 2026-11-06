@@ -1,11 +1,11 @@
 import { deviceInitialState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { fiatRatesInitialState, transactionsInitialState } from '@suite-common/wallet-core';
 import {
     type Account,
-    type TokenAddress,
     type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';

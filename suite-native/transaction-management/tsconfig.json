@@ -47,6 +47,7 @@
         },
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
+        { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-types"
         },

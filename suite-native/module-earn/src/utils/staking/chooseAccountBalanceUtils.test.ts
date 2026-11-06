@@ -1,5 +1,5 @@
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getChooseAccountBalanceData } from './chooseAccountBalanceUtils';

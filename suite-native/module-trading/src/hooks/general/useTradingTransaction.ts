@@ -5,6 +5,7 @@ import { isFulfilled, miniSerializeError } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type TradingFulfillValue,
     type TradingRootStateWithDeviceAndAccounts,
@@ -28,7 +29,7 @@ import {
     selectIsAmountInSats,
     selectSendSerializedTx,
 } from '@suite-common/wallet-core';
-import { type FeeLevelLabel, type TokenAddress } from '@suite-common/wallet-types';
+import { type FeeLevelLabel } from '@suite-common/wallet-types';
 import { type TxKeyPath } from '@suite-native/intl';
 import { type SettingsSliceRootState } from '@suite-native/settings';
 import { type TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';

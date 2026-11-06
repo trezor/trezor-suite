@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type TradingAmountLimitProps } from '@suite-common/trading';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 import { type TradingFormContext } from '@suite-native/trading-types';
 import { useMaxSpendableAmount } from '@suite-native/transaction-management';

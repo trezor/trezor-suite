@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { AnimatedView, Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType, TradingStackRoutes } from '@suite-native/navigation';

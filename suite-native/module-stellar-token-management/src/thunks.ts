@@ -1,5 +1,6 @@
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -19,7 +20,6 @@ import {
     type FormState,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
-    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {

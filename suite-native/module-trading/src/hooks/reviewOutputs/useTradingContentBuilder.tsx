@@ -4,13 +4,13 @@ import { useSelector, useStore } from 'react-redux';
 import type { FiatCurrencyCode } from 'invity-api';
 
 import type { DeviceRootState } from '@suite-common/device';
+import { type TokenAddress } from '@suite-common/tokens';
 import { selectTradingExchangeSelectedQuoteIsDex } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type FormStateTradingCryptoCurrency,
     type FormStateTradingFiatCurrency,
-    type TokenAddress,
     type TransactionReviewOutputType,
 } from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';

@@ -9,13 +9,9 @@
 import { useCallback } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import {
-    type FormOptions,
-    type FormState,
-    type Output,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type FormOptions, type FormState, type Output } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     parseBaseCurrencyToFormattedCrypto,

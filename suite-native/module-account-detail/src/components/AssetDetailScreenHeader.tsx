@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isAccountFailed, isStakingSymbol } from '@suite-common/wallet-utils';
 import {
     AccountLabel,

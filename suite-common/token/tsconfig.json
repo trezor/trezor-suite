@@ -4,11 +4,9 @@
         "outDir": "libDev"
     },
     "references": [
+        { "path": "../tokens" },
         {
             "path": "../wallet-core"
-        },
-        {
-            "path": "../wallet-types"
         },
         {
             "path": "../../networks/network-module/network-module-types"

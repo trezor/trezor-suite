@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -12,7 +13,6 @@ import type {
     AccountKey,
     FeeLevelLabel,
     GeneralPrecomposedTransactionFinal,
-    TokenAddress,
 } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';

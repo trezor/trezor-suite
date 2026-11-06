@@ -1,11 +1,7 @@
 import { useCallback } from 'react';
 
-import {
-    type AccountKey,
-    type TokenAddress,
-    type TokenSymbol,
-    type TransactionReviewStatefulOutput,
-} from '@suite-common/wallet-types';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type AccountKey, type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {

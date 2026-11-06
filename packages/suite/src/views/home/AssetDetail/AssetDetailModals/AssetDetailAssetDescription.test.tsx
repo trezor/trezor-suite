@@ -5,8 +5,8 @@ import { screen } from '@testing-library/react';
 import { selectWalletAssetKey } from '@suite-common/assets';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';

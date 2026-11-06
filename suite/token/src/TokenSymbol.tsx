@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
 import { selectTokenByNetworkAndContract } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 
 import { TokenUrlBlur } from './TokenUrlBlur';
 

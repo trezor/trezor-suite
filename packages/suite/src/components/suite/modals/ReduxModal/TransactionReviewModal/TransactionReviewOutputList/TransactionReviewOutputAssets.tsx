@@ -6,12 +6,12 @@ import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { useFormatters } from '@suite-common/formatters';
+import { type TokenAddress } from '@suite-common/tokens';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
 import {
     type FormStateTradingCryptoCurrency,
     type FormStateTradingFiatCurrency,
-    type TokenAddress,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { Card, Column, Divider, Flag, H4, InfoItem, Row, Text } from '@trezor/components';

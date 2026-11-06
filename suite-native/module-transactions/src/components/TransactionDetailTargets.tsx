@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type Target } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { getTargetAmountRaw } from '@suite-common/wallet-utils';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 

@@ -1,6 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import type { TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -17,7 +18,6 @@ import type {
     FormDraftWithSendKeyPrefix,
     FormState,
     GeneralPrecomposedTransaction,
-    TokenAddress,
     TransactionReviewOutputState,
     TransactionReviewStatefulOutput,
     TransactionReviewSummaryOutput,

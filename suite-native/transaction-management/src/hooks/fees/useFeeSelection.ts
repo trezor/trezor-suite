@@ -1,10 +1,10 @@
 import { useCallback, useRef } from 'react';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import type {
     AccountKey,
     FeeLevelLabel,
     GeneralPrecomposedLevels,
-    TokenAddress,
 } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';

@@ -1,10 +1,7 @@
 import { getNativeAssetIconSymbol } from '@suite-common/icons';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type StakeType,
-    type TokenAddress,
-    type TransactionType,
-} from '@suite-common/wallet-types';
+import { type StakeType, type TransactionType } from '@suite-common/wallet-types';
 import {
     Box,
     CircularSpinner,

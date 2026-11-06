@@ -1,5 +1,6 @@
 import { fetchCoinGeckoMarketChart } from '@suite-common/fiat-services';
-import { type TickerId, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type TickerId } from '@suite-common/wallet-types';
 
 import { fetchAssetPriceHistory } from './fetchAssetPriceHistory';
 import { AssetPriceChartRange } from '../config/assetPriceChartRange';

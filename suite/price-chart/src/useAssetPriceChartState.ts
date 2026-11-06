@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { selectAssetPriceChartRange } from '@suite/flags';
 import { useAssetPriceHistoryQuery } from '@suite-common/price-chart';
+import { type TokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 
 type UseAssetPriceChartStateParams = {
     networkSymbol: NetworkSymbol;

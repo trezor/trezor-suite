@@ -1,9 +1,6 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountKey,
-    type AllowanceAction,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type AccountKey, type AllowanceAction } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
 import { Translation, type TxKeyPath, useTranslate } from '@suite-native/intl';
 

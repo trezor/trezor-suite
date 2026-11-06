@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { isSendingEvmNativeToken } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -13,7 +14,6 @@ import type {
     AccountKey,
     FeeLevelLabel,
     PrecomposedTransactionFinal,
-    TokenAddress,
 } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type UseFormReturn, useForm } from '@suite-native/forms';

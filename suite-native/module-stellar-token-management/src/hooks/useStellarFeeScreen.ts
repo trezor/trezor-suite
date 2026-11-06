@@ -9,6 +9,7 @@ import {
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -19,7 +20,6 @@ import {
 import {
     type AccountKey,
     type FormState,
-    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';

@@ -1,9 +1,9 @@
 import { testMocks } from '@suite-common/test-utils';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type PrecomposedTransactionFinal,
     type WalletAccountTransaction,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
 import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';

@@ -15,6 +15,7 @@
         "@suite-common/feedback": "workspace:*",
         "@suite-common/locale": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",

@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 

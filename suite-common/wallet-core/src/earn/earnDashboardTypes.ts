@@ -1,12 +1,7 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type Account,
-    type AccountKey,
-    type BaseCurrencyAmount,
-    type TokenAddress,
-    type TokenSymbol,
-} from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface YieldOpportunity extends YieldDtoV2 {}

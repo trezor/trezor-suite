@@ -24,6 +24,7 @@
         "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/transaction-search": "workspace:*",
         "@suite-common/transfer-uri": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

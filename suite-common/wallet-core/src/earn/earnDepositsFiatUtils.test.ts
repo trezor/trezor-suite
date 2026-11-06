@@ -1,3 +1,4 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Rate,
@@ -6,7 +7,6 @@ import {
     asBaseCurrencyAmount,
     asCryptoBaseCurrencyCode,
     asTimestamp,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
