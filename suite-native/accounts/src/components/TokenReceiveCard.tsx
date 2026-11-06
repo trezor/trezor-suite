@@ -18,7 +18,7 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
+import { TokenName, type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -70,8 +70,6 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
         );
     }
 
-    const tokenName = getTokenName(token.name);
-
     return (
         <VStack>
             <Box flexDirection="row" justifyContent="space-between" alignItems="center">
@@ -85,7 +83,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                         />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
-                        <Text>{tokenName}</Text>
+                        <TokenName networkSymbol={symbol} contractAddress={contract} />
 
                         <HStack alignItems="center" spacing="sp4">
                             <Text
