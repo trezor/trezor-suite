@@ -348,9 +348,7 @@ export const DASHBOARD_BANNER_TS7_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-safe-7?utm_source=trezor_suite&utm_campaign=ts7_introduction',
 );
 
-export const DASHBOARD_BANNER_HOLIDAY_DEALS_URL: Url = withPlatformUtm(
-    'https://trezor.io/holiday-deals',
-);
+export const DASHBOARD_BANNER_HOLIDAY_DEALS_URL: Url = 'https://trezor.io/holiday-deals';
 
 export const DASHBOARD_ONBOARDING_FEEDBACK_URL: Url =
     'https://satoshilabs.typeform.com/to/fsiLqgmd';

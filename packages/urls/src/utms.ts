@@ -59,3 +59,12 @@ export const withPlatformUtm = (url: Url): Url => {
 
     return withUtmParams(url, utmMedium ? { utm_medium: utmMedium } : {});
 };
+
+export const withHolidayDealsUtm = (url: Url, bannerId: string): Url =>
+    withPlatformUtm(
+        withUtmParams(url, {
+            utm_source: 'trezor-suite',
+            utm_campaign: 'holiday-2026',
+            utm_content: bannerId,
+        }),
+    );
