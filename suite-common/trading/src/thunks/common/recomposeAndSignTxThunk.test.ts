@@ -702,6 +702,19 @@ describe('recomposeAndSignTxThunk', () => {
             },
             expectedType: 'sign-transaction-timeout',
         },
+        ...(['Failure_ActionCancelled', 'Failure_PinCancelled', 'Method_Cancel'] as const).map(
+            errorCode => ({
+                signingResult: {
+                    success: false as const,
+                    error: {
+                        error: 'sign-transaction-failed' as const,
+                        errorCode,
+                        message: 'Cancelled',
+                    },
+                },
+                expectedType: 'sign-cancelled',
+            }),
+        ),
         {
             signingResult: {
                 success: false,
