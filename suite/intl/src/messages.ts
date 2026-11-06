@@ -834,6 +834,39 @@ export const messages = defineMessages({
         defaultMessage: 'Slippage must be between 0.01% and 50%',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE',
     },
+    TR_TRADING_BRIDGE_SPEED: {
+        defaultMessage: 'Bridge speed',
+        id: 'TR_TRADING_BRIDGE_SPEED',
+    },
+    TR_TRADING_BRIDGE_SPEED_INFO: {
+        defaultMessage:
+            'Choose how quickly the bridge delivers your funds. Faster delivery costs a small fee.',
+        id: 'TR_TRADING_BRIDGE_SPEED_INFO',
+    },
+    TR_TRADING_BRIDGE_SPEED_FAST: {
+        defaultMessage: 'Fast',
+        id: 'TR_TRADING_BRIDGE_SPEED_FAST',
+    },
+    TR_TRADING_BRIDGE_SPEED_FAST_DESC: {
+        defaultMessage: 'Bridge sends {symbol} sooner for a small fee.',
+        id: 'TR_TRADING_BRIDGE_SPEED_FAST_DESC',
+    },
+    TR_TRADING_BRIDGE_SPEED_STANDARD: {
+        defaultMessage: 'Standard',
+        id: 'TR_TRADING_BRIDGE_SPEED_STANDARD',
+    },
+    TR_TRADING_BRIDGE_SPEED_STANDARD_DESC: {
+        defaultMessage: 'Bridge sends {symbol} after a short wait.',
+        id: 'TR_TRADING_BRIDGE_SPEED_STANDARD_DESC',
+    },
+    TR_TRADING_BRIDGE_SPEED_FREE: {
+        defaultMessage: 'Free',
+        id: 'TR_TRADING_BRIDGE_SPEED_FREE',
+    },
+    TR_TRADING_BRIDGE_SPEED_ERROR: {
+        defaultMessage: 'Failed to update bridge speed. Please try again.',
+        id: 'TR_TRADING_BRIDGE_SPEED_ERROR',
+    },
     TR_EXCHANGE_SWAP_SLIPPAGE_ERROR: {
         defaultMessage: 'Failed to update slippage. Please try again.',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_ERROR',
