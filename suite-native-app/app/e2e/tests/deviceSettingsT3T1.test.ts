@@ -5,6 +5,7 @@ import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryF
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySuccess';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
@@ -18,6 +19,7 @@ describe('Device settings T3T1 [@androidOnly @T3T1]', () => {
     beforeEach(async () => {
         await prepareTrezorEmulator({ model: Model.T3T1 });
         await openApp({ args: { preloadedState: preloadedStateT3T1 } });
+        await onDeviceOnboarding.passInitializedDeviceChecks();
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         await onDeviceManager.tapDeviceSwitch();
         await onDeviceManager.tapDeviceSettingsButton();

@@ -6,6 +6,7 @@ import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onSendAddressReview } from '../pageObjects/send/sendAddressReviewActions';
@@ -70,6 +71,7 @@ describe('Send transaction flow. [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {
         await prepareTrezorEmulator();
         await openApp({ args: { preloadedState } });
+        await onDeviceOnboarding.passInitializedDeviceChecks();
 
         await onHome.waitForScreen();
         await onTabBar.navigateToMyAssets();
