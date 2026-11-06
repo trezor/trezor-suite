@@ -1,9 +1,10 @@
 import { type ReactNode } from 'react';
 
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp } from '@suite-common/wallet-types';
 import {
     getErc4626Contracts,
     getFiatRateKey,

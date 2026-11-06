@@ -1,13 +1,9 @@
 import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectDeviceButtonRequests } from '@suite-common/device';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import {
-    type AccountKey,
-    type FormState,
-    type Output,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type AccountKey, type FormState, type Output } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 

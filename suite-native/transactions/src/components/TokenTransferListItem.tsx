@@ -1,9 +1,10 @@
 import { type ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
+import { toTokenSymbol } from '@suite-common/tokens';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
-import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import {
     CompactTokenAmountFormatter,

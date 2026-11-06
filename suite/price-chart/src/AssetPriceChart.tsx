@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { type TokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Button, Skeleton } from '@trezor/components';
 import { ArrowsClockwiseIcon } from '@trezor/icons';
 

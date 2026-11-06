@@ -1,8 +1,9 @@
 import { type RefObject } from 'react';
 import { type TextInputProps } from 'react-native';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { type InputType } from '@suite-native/atoms';
 import { type Utxo } from '@trezor/blockchain-link-types';
 

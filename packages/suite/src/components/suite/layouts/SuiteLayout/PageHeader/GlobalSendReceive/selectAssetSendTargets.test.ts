@@ -1,11 +1,12 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccountsRootState,
     type WalletAssetKey,
     getWalletAssetKey,
 } from '@suite-common/wallet-core';
-import { type Account, asAccountDescriptor, toTokenAddress } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { selectAssetSendTargets } from './selectAssetSendTargets';

@@ -1,4 +1,5 @@
-import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { useForm, yup } from '@suite-native/forms';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';

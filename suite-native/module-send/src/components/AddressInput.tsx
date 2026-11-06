@@ -10,6 +10,7 @@ import {
     injectGetNamedAddressSupport,
     selectNetworkSymbolForProtocol,
 } from '@suite-common/networks';
+import { toTokenAddress } from '@suite-common/tokens';
 import { parseTransferUri } from '@suite-common/transfer-uri';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -19,7 +20,7 @@ import {
     selectAccountNetworkSymbol,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { type AccountKey, toTokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';

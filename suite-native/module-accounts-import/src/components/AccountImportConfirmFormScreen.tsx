@@ -9,12 +9,12 @@ import {
     type TokenDefinitionsRootState,
     selectFilterKnownTokens,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountsByNetworkAndDeviceState,
 } from '@suite-common/wallet-core';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { type AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, Text } from '@suite-native/atoms';

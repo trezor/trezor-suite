@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     selectAccountNetworkSymbol,
@@ -13,7 +14,6 @@ import {
 import {
     type AccountKey,
     type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';

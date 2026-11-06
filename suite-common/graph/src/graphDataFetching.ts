@@ -2,9 +2,10 @@ import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestampThunk } from '@suite-common/wallet-core';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';

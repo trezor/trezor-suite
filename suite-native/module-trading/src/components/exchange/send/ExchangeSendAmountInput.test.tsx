@@ -1,5 +1,6 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';

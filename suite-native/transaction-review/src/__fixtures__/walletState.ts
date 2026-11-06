@@ -1,3 +1,4 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FiatRatesState } from '@suite-common/wallet-core';
 import {
@@ -5,7 +6,6 @@ import {
     AddressDisplayOptions,
     type CurrentRate,
     type CurrentRatesByKey,
-    type TokenAddress,
     type WalletSettings,
     asAccountDescriptor,
     asCryptoBaseCurrencyCode,

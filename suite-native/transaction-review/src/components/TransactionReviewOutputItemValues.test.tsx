@@ -1,4 +1,5 @@
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';

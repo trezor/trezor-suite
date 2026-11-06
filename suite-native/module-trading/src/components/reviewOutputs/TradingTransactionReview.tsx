@@ -1,8 +1,9 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { ErrorMessage } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';

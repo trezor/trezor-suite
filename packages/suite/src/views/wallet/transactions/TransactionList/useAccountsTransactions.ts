@@ -1,10 +1,11 @@
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     injectTransactionRetriever,
     isAccountsTransactionsPageReady,
     selectAccountsTransactions,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';

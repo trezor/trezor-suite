@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -7,7 +8,6 @@ import {
     asAccountDescriptor,
     asBaseCurrencyAmount,
     asTimestamp,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';

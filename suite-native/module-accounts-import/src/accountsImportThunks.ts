@@ -9,6 +9,7 @@ import {
     selectFilterKnownTokens,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountType, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -19,7 +20,7 @@ import {
     selectNetworkBlockchainInfo,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp } from '@suite-common/wallet-types';
 import {
     getAccountIdentity,
     getBackendFromSettings,

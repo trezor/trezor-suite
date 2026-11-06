@@ -1,4 +1,5 @@
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     UNDATED_TRANSACTIONS_GROUP_KEY,
     getTransactionDateGroupKey,

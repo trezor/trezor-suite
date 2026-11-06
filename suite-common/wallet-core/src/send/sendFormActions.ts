@@ -1,10 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountKey,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 

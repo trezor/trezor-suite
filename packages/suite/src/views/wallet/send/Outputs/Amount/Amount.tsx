@@ -4,9 +4,10 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { TokenSymbol } from '@suite/token';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { type Output, type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
+import { type Output } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     findToken,

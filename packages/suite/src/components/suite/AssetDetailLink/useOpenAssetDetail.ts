@@ -1,8 +1,8 @@
 import { gotoThunk } from '@suite/router';
 import { selectWalletAssetKey, selectWalletAssetSymbol } from '@suite-common/assets';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

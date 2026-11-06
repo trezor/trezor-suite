@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux';
 import { useAtomValue, useSetAtom } from 'jotai';
 
 import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     Graph,
     type GraphSliceRootState,

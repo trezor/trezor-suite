@@ -3,13 +3,14 @@ import { Text } from 'react-native';
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockNetworksState } from '@suite-common/networks/mocks';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type WalletAssetKey,
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
-import { type HomeAssetsTableGrouping, type TokenAddress } from '@suite-common/wallet-types';
+import { type HomeAssetsTableGrouping } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';

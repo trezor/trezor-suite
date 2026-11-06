@@ -9,6 +9,7 @@ import {
 } from '@suite/metadata';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type Target,
     selectBaseCurrency,
@@ -16,7 +17,7 @@ import {
     selectIsSuspiciousTransactionsBlurringEnabled,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type Timestamp } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,

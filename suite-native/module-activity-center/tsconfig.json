@@ -9,11 +9,9 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
+        { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-core"
-        },
-        {
-            "path": "../../suite-common/wallet-types"
         },
         { "path": "../activity-center" },
         { "path": "../atoms" },

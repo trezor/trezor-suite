@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -17,7 +18,7 @@ import {
     selectIsPageAlreadyFetched,
     useDirectRpcHistoryState,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     type MonthKey,
     getOlderHistoryFrom,

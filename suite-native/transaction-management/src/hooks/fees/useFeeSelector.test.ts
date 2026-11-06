@@ -1,5 +1,6 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type FormState, toTokenAddress } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useFeeSelector } from './useFeeSelector';

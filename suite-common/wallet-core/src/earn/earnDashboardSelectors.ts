@@ -6,6 +6,12 @@ import {
     selectSupportedNetworkSymbols,
 } from '@suite-common/networks';
 import {
+    type TokenAddress,
+    type TokenSymbol,
+    toTokenAddress,
+    toTokenSymbol,
+} from '@suite-common/tokens';
+import {
     type NetworkSymbol,
     PROD_STAKING_SYMBOLS,
     STAKING_SYMBOLS,
@@ -19,10 +25,6 @@ import {
     type CryptoBaseCurrencyPair,
     type RatesByKey,
     type TickerId,
-    type TokenAddress,
-    type TokenSymbol,
-    toTokenAddress,
-    toTokenSymbol,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
@@ -10,12 +11,7 @@ import {
     selectFiatRatesByFiatRateKey,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import {
-    type FiatRatesResult,
-    type Rate,
-    type Timestamp,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type FiatRatesResult, type Rate, type Timestamp } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     getFiatRateKey,

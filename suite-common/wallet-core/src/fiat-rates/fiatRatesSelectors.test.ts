@@ -2,13 +2,13 @@ import { type DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type CryptoBaseCurrencyPair,
     type Rate,
     type Timestamp,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 
 import {

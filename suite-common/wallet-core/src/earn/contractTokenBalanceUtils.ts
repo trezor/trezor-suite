@@ -1,4 +1,5 @@
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol, isPositiveBalance } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 

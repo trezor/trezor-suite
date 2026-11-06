@@ -9,6 +9,7 @@ import {
     isPhishingTransaction,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     selectActiveDustPhishingThreshold,
@@ -16,11 +17,7 @@ import {
     selectIsHideSuspiciousTransactions,
     selectPhishingTransactions,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type TokenAddress,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getDirectRpcHistoryState,
     getOlderHistoryFrom,

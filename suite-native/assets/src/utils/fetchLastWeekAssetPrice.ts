@@ -1,8 +1,9 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, type WalletSettings } from '@suite-common/wallet-types';
+import { type WalletSettings } from '@suite-common/wallet-types';
 
 type FetchLastWeekAssetPriceParams = {
     networkSymbol: NetworkSymbol;

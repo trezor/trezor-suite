@@ -1,4 +1,4 @@
-import { type TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenSymbol } from '@suite-common/tokens';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import {

@@ -1,7 +1,8 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { filterKeysByPartialMatch } from '@suite-native/storage';
 
 import {

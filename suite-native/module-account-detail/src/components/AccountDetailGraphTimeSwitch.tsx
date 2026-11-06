@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type GraphSliceRootState,

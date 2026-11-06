@@ -1,5 +1,6 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { type TradingAssetOption } from '@suite-common/trading';
-import { type Account, toTokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { findToken } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 

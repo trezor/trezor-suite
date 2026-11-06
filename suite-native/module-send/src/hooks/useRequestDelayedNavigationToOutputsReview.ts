@@ -2,7 +2,8 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     type RootStackParamList,
     type SendStackParamList,

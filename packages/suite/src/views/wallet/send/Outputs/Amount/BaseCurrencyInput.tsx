@@ -3,13 +3,13 @@ import { Controller } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { type TokenAddress } from '@suite-common/tokens';
 import { AMOUNT_MAX_LENGTH, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyOption,
     type FiatRatesResult,
     type Output,
     type Timestamp,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     buildCurrencyLongOption,

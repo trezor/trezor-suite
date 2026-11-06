@@ -1,6 +1,7 @@
 import { type ChainRewardsWithFiat, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     FIVE_BINARIES_POOLS,
     PROD_STAKING_SYMBOLS,
@@ -17,7 +18,6 @@ import {
     asAccountDescriptor,
     asBaseCurrencyAmount,
     asTimestamp,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import {
     mockAccountToken,

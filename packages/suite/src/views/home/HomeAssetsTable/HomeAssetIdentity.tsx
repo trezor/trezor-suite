@@ -3,8 +3,8 @@ import { type ReactNode } from 'react';
 import { TokenSymbol } from '@suite/token';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, TOOLTIP_DELAY_LONG, Text, TruncateWithTooltip } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 

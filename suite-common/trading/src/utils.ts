@@ -11,6 +11,7 @@ import {
     type SellTradeFinalStatus,
 } from 'invity-api';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Network,
@@ -20,12 +21,7 @@ import {
     getNetworkByCoingeckoId,
     getNetworkByTradeCryptoId,
 } from '@suite-common/wallet-config';
-import type {
-    Account,
-    AccountKey,
-    FormStateTrading,
-    TokenAddress,
-} from '@suite-common/wallet-types';
+import type { Account, AccountKey, FormStateTrading } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';

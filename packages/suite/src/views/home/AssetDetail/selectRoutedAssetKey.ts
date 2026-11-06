@@ -4,8 +4,8 @@ import {
     selectWalletAssetKey,
     selectWalletAssetSymbol,
 } from '@suite-common/assets';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { toTokenAddress } from '@suite-common/wallet-types';
 
 export type RoutedAssetState = RouterRootState & HomeAssetTableState;
 

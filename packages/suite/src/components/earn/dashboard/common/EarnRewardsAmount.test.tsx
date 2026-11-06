@@ -3,8 +3,8 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 

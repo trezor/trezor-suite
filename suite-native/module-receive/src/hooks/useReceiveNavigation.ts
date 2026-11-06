@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceStaticSessionId, selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { toTokenAddress } from '@suite-common/tokens';
 import type { TradingAssetOption } from '@suite-common/trading';
 import { changeCoinVisibilityThunk, selectAccounts } from '@suite-common/wallet-core';
-import { toTokenAddress } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 import { type OnSelectAccount, useAccountAlerts } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';

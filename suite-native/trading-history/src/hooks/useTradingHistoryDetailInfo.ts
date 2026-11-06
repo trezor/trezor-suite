@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import type { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { type TokenSymbol } from '@suite-common/tokens';
 import {
     type TradingAssetOption,
     type TradingRootState,
@@ -14,7 +15,6 @@ import {
 } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
-import { type TokenSymbol } from '@suite-common/wallet-types';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import { getTradeOperationData } from '@suite-native/trading-quote-utils';
 import { selectAccountLabelWithNetworkFallback } from '@suite-native/trading-state';

@@ -6,11 +6,11 @@ import {
     type TransactionNotification,
     type TransactionNotificationType,
 } from '@suite-common/toast-notifications';
+import { toTokenSymbol } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import { Divider, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,

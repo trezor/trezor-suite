@@ -19,6 +19,7 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -39,8 +40,6 @@ import {
     type AccountDescriptor,
     type AccountKey,
     type RatesByKey,
-    type TokenAddress,
-    type TokenInfoBranded,
     areBaseCurrencyAmountsEqual,
     asBaseCurrencyAmount,
     createAccountKey,

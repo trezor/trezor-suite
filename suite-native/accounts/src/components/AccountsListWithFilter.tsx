@@ -2,8 +2,8 @@ import { type ReactNode, useCallback, useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { type AddCoinFlowType, type CloseActionType } from '@suite-native/navigation';
 
 import { type NetworkFilterType, type OnSelectAccount } from '../types';

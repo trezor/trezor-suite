@@ -1,13 +1,9 @@
 import { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { type FeesRootState, selectNetworkFeeLevel } from '@suite-common/wallet-core';
-import type {
-    AccountKey,
-    FeeLevelLabel,
-    FormState,
-    TokenAddress,
-} from '@suite-common/wallet-types';
+import type { AccountKey, FeeLevelLabel, FormState } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';

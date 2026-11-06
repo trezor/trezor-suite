@@ -1,14 +1,13 @@
 import { type LayoutChangeEvent, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type SendRootState, selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type FormDraftWithSendKeyPrefix,
-    type TokenAddress,
     type TransactionReviewSummaryOutput,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';

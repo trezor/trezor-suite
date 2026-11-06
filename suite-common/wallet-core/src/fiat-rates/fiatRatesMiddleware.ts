@@ -1,6 +1,7 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { type TickerId, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type TickerId, type Timestamp } from '@suite-common/wallet-types';
 import { isNative } from '@trezor/env-utils';
 import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 

@@ -1,5 +1,5 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 

@@ -1,6 +1,6 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type ResolvedYieldFlowData } from '../src/yield/utils/getResolvedYieldFlowData';

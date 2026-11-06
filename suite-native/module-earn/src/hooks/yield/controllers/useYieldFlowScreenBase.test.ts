@@ -1,6 +1,7 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/wallet-core/mocks';
-import { type AccountKey, toTokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useMessageSystemYield } from '@suite-native/earn';
 import { type YieldFlowParams } from '@suite-native/navigation';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';

@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type TokenSymbol } from '@suite-common/tokens';
 import {
     type YieldFlowToken,
     getYieldDepositAvailableBalance,
     selectBaseCurrency,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
-import { type TokenSymbol } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useForm, useWatch } from '@suite-native/forms';

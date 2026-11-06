@@ -4,6 +4,7 @@ import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     type CryptoBaseCurrencyPair,
@@ -14,7 +15,6 @@ import {
     type RatesByTimestamps,
     type TickerId,
     type Timestamp,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     getFiatRateKeyFromTicker,

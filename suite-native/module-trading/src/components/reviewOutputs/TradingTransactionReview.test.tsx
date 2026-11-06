@@ -1,5 +1,5 @@
 import { mockNetworksServices } from '@suite-common/networks/mocks';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';

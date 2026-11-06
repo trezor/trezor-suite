@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 

@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     selectAccountNetworkSymbol,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
 import { selectIsUnrecognizedToken } from '@suite-native/tokens';
 import { TransactionsEmptyState } from '@suite-native/transactions';

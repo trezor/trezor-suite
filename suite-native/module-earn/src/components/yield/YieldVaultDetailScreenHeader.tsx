@@ -2,7 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import {
     AccountLabel,

@@ -6,6 +6,7 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -24,8 +25,6 @@ import {
 import {
     type AccountKey,
     type Timestamp,
-    type TokenAddress,
-    type TokenSymbol,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';

@@ -1,8 +1,8 @@
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type Account,
     type AccountKey,
-    type TokenAddress,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';

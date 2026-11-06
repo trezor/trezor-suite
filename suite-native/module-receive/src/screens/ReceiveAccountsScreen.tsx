@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { AccountsList } from '@suite-native/accounts';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import {

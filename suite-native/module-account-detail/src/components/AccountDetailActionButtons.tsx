@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, HStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';

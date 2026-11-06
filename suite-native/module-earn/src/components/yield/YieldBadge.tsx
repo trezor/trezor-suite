@@ -4,8 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
+import { toTokenAddress } from '@suite-common/tokens';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
-import { type Account, toTokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Badge, type BadgeProps } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {

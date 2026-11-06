@@ -1,7 +1,8 @@
 import { useTranslation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { type GeneralPrecomposedTransaction, type TokenAddress } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import {
     type TronFeeBreakdown,
     convertAmountSubunitsToUnits,

@@ -3,7 +3,8 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {

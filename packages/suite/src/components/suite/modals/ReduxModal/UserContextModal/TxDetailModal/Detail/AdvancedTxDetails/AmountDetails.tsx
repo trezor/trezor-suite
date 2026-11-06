@@ -1,10 +1,11 @@
 import { Translation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     selectBaseCurrency,
     selectHistoricFiatRates,
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatCardanoDeposit,

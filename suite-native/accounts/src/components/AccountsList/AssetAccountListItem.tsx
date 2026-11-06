@@ -1,16 +1,12 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     getAccountCryptoBalanceWithStaking,
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type TokenAddress,
-    type TokenSymbol,
-    toTokenSymbol,
-} from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { findToken, isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {

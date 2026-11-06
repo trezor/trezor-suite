@@ -7,12 +7,9 @@ import { HiddenPlaceholder, type HiddenPlaceholderProps } from '@suite/discreet-
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
-import {
-    type RateTypeWithoutHistoric,
-    type TokenAddress,
-    asBaseCurrencyAmount,
-} from '@suite-common/wallet-types';
+import { type RateTypeWithoutHistoric, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Skeleton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

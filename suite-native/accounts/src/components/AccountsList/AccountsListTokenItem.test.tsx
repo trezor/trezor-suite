@@ -1,5 +1,5 @@
+import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { Text } from '@suite-native/atoms';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';

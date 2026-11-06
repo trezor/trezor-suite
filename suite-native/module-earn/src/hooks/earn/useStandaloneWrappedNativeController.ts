@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -15,7 +16,6 @@ import {
     getYieldNativeFeeStatus,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import {
     type WrappedNativeTokenStackParamList,
     type WrappedNativeTokenStackRoutes,

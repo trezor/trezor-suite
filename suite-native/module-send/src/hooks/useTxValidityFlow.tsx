@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type SendRootState,
@@ -11,7 +12,7 @@ import {
     selectSendPrecomposedTx,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     type RootStackParamList,
     type SendStackParamList,

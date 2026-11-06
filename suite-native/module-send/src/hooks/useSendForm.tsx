@@ -10,6 +10,7 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { injectAddressValidator, injectGetNamedAddressSupport } from '@suite-common/networks';
+import { type TokenAddress } from '@suite-common/tokens';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -32,7 +33,6 @@ import {
     type AccountKey,
     type FeeLevelLabel,
     type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {

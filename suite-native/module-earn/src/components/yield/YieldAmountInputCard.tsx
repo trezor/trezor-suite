@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from 'react';
 
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import {
     type ActiveView,
     BaseAmountInputs,

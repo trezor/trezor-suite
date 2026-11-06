@@ -4,8 +4,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
+import { toTokenAddress } from '@suite-common/tokens';
 import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/wallet-core/mocks';
-import { toTokenAddress } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';

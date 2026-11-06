@@ -1,12 +1,13 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
 import {
     tradingBuyActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { eth1NormalAccount, invityDexQuote } from '@suite-native/trading-fixtures';

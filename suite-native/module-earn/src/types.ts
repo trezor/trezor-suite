@@ -1,9 +1,9 @@
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import {
     type SignTransactionError,
     type SignTransactionTimeoutError,
     type StakeLiveStateInvalidError,
 } from '@suite-common/wallet-core';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { type BottomSheetModalRef } from '@suite-native/atoms';
 import { type StakingPendingTxParams } from '@suite-native/navigation';
 

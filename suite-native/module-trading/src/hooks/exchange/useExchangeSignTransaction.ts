@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     isFinalStatus,
     parseCryptoId,
@@ -11,7 +12,6 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { TradingStackRoutes } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { type TradingStackNavigationProp } from '@suite-native/trading-types';

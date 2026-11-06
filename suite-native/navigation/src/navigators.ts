@@ -2,6 +2,7 @@ import { type NavigatorScreenParams } from '@react-navigation/native';
 import { type RequireAllOrNone } from 'type-fest';
 
 import { type BackupType } from '@suite-common/suite-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type TradingAssetOption, type TradingType } from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -10,7 +11,6 @@ import {
     type AllowanceLimitType,
     type AllowanceTransactionType,
     type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
     type XpubAddress,
 } from '@suite-common/wallet-types';
 import { type ExperimentalFeature } from '@suite-native/settings';

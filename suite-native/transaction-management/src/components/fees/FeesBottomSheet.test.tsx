@@ -1,5 +1,5 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {

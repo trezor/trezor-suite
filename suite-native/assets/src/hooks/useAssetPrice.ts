@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
 import { fetchErc4626UnderlyingAsset } from '@suite-common/fiat-services';
 import { useQuery } from '@suite-common/react-query';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
@@ -15,7 +16,6 @@ import {
 import {
     type BaseCurrencyAmount,
     type TickerId,
-    type TokenAddress,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey, isErc4626, isTestnet } from '@suite-common/wallet-utils';

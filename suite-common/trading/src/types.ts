@@ -22,13 +22,13 @@ import type {
 
 import { type CountryCode } from '@suite-common/geolocation';
 import { type Network } from '@suite-common/networks';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type Account,
     type AccountKey,
     type BaseCurrencyOption,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { type PROTO, type TokenInfo } from '@trezor/connect';
 import { type SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';

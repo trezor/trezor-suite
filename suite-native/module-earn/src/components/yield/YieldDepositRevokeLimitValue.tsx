@@ -1,4 +1,5 @@
-import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

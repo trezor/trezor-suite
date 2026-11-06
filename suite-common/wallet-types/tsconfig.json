@@ -4,6 +4,7 @@
     "references": [
         { "path": "../legacy-network-config" },
         { "path": "../metadata-types" },
+        { "path": "../tokens" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
         {

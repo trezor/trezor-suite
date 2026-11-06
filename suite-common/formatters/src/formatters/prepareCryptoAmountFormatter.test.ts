@@ -1,7 +1,7 @@
 import { createIntl } from 'react-intl';
 
+import { type TokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenSymbol } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
 import { joinAmountWithSymbol, prepareCryptoAmountFormatter } from './prepareCryptoAmountFormatter';

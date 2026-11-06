@@ -7,6 +7,7 @@ import {
     type Merge,
 } from 'react-hook-form';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import {
     type Network,
     type NetworkSymbol,
@@ -36,7 +37,6 @@ import type {
     Output,
     RbfTransactionParams,
     SendFormDraftKey,
-    TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     type BaseCurrencyCode,

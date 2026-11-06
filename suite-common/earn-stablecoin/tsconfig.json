@@ -5,6 +5,7 @@
         { "path": "../earn-stablecoin-api" },
         { "path": "../message-system" },
         { "path": "../schemas" },
+        { "path": "../tokens" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },

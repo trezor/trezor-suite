@@ -7,8 +7,8 @@ import {
     createNetworkModulesCompositionRoot,
 } from '@suite-common/networks';
 import { mockNetworkMetadata } from '@suite-common/networks/mocks';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { act, fireEvent, renderWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { mock } from '@trezor/dependency-injection';

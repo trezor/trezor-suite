@@ -1,11 +1,12 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     accountsActions,
     fetchWrappedNativeTokenInfo,
     yieldReducer,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     act,
     createLightStore,

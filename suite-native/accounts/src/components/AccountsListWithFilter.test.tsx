@@ -1,4 +1,4 @@
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { AccountsListWithFilter } from './AccountsListWithFilter';

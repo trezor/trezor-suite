@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import { AssetPriceChange } from '@suite-native/assets';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';

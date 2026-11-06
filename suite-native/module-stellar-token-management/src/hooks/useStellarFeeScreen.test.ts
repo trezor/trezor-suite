@@ -1,9 +1,10 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, type FormDraftRootState } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     AuthorizeDeviceStackRoutes,

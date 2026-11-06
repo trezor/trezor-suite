@@ -8,6 +8,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite-common/tokens" },
         { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-config"

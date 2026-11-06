@@ -1,10 +1,6 @@
+import { type TokenSymbol, toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type Account,
-    type TokenSymbol,
-    toTokenAddress,
-    toTokenSymbol,
-} from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 

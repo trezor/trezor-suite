@@ -6,10 +6,10 @@ import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-st
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
 import { mockYieldVault } from '@suite-common/wallet-core/mocks';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { getWrappedNativeToken } from '@trezor/network-ethereum/constants';

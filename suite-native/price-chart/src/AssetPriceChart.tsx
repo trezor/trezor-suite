@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { useAtomValue } from 'jotai';
 
 import { useAssetPriceHistoryQuery } from '@suite-common/price-chart';
+import type { TokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import type { TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { type GraphPoint } from '@suite-native/react-native-graph';
 

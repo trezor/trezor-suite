@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_CRYPTO_TOKEN,
@@ -18,7 +19,6 @@ import {
     type Account,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';

@@ -1,10 +1,7 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type HomeAssetsTableGrouping,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type Account, type HomeAssetsTableGrouping } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';

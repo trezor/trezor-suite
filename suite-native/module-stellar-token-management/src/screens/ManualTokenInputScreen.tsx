@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { resolveStellarContractId } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Card, Input, Text, VStack } from '@suite-native/atoms';

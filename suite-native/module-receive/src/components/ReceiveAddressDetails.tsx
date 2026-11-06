@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountDescriptor, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { AddressLabelEditable } from '@suite-native/address';
 import { Box, VStack } from '@suite-native/atoms';
 import { ClipboardCopyMenu } from '@suite-native/clipboard';

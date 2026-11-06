@@ -6,8 +6,8 @@ import {
     selectWalletAssetExplorerUrl,
     selectWalletAssetKey,
 } from '@suite-common/assets';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 

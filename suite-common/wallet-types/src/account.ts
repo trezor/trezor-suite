@@ -7,7 +7,7 @@ import type {
     StakingPool,
     TronAccountExtraData,
 } from '@trezor/blockchain-link-types';
-import type { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
+import type { AccountInfo, PROTO } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 import { type Getter } from '@trezor/dependency-injection';
 import type { StaticSessionId } from '@trezor/device-utils';
@@ -15,18 +15,7 @@ import { type Branded } from '@trezor/type-utils';
 
 export type XpubAddress = string;
 
-export type TokenSymbol = string & Branded<'TokenSymbol'>;
-export const toTokenSymbol = (value: string) => value as TokenSymbol;
-
-export type TokenAddress = string & Branded<'TokenAddress'>;
-export const toTokenAddress = (value: string) => value as TokenAddress;
-
 export type AddressType = 'contract' | 'fingerprint' | 'policyId';
-
-export type TokenInfoBranded = TokenInfo & {
-    symbol: TokenSymbol;
-    contract: TokenAddress;
-};
 
 type AccountNetworkSpecific =
     | {

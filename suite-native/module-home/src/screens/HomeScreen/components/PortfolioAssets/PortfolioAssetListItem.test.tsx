@@ -1,7 +1,8 @@
 import { mockNetworksServices } from '@suite-common/networks/mocks';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { AssetsStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';

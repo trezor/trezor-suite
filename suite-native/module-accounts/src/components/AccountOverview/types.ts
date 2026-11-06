@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react';
 import { type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 
 export type { AccountOverviewFlow, AccountOverviewTab } from '@suite-native/navigation';
 

@@ -1,6 +1,6 @@
 import { useWindowDimensions } from 'react-native';
 
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
 import { type CloseActionType, Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';

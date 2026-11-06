@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Skeleton } from '@trezor/components';
 import { typography } from '@trezor/theme';

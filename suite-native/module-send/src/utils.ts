@@ -1,12 +1,12 @@
 import { CommonActions } from '@react-navigation/native';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountKey,
     type FormOptions,
     type FormState,
     type GeneralPrecomposedTransaction,
-    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';

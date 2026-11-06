@@ -6,6 +6,7 @@ import {
     selectHasBitcoinOnlyFirmware,
 } from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
+import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccount,
@@ -31,10 +32,7 @@ import {
     type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
     type Rate,
-    type TokenAddress,
-    type TokenSymbol,
     asBaseCurrencyAmount,
-    toTokenSymbol,
 } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,

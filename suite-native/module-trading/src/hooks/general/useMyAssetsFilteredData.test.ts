@@ -1,11 +1,8 @@
 import type { CryptoId } from 'invity-api';
 
+import { type TokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type BaseCurrencyAmount,
-    type TokenSymbol,
-    asBaseCurrencyAmount,
-} from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { act, renderHook } from '@suite-native/test-utils';
 import { btc1NormalAccount, eth1NormalAccount } from '@suite-native/trading-fixtures';
 import { type MyAsset } from '@suite-native/trading-types';

@@ -1,7 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/networks';
+import { toTokenSymbol } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import { type AlertBoxIntent, BannerFull, Box, type BoxProps } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 

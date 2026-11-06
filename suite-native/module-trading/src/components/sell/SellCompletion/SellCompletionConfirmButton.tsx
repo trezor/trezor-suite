@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import type { SellFiatTrade } from 'invity-api';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { parseCryptoId } from '@suite-common/trading';
 import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradingStackRoutes } from '@suite-native/navigation';

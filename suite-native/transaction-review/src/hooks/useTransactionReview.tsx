@@ -2,6 +2,7 @@ import { type ReactNode, createContext, useContext, useState } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -11,7 +12,6 @@ import {
 import {
     type Account,
     type AccountKey,
-    type TokenAddress,
     type TransactionReviewStatefulOutput,
     type TransactionReviewSummaryOutput,
     type WalletAccountTransaction,

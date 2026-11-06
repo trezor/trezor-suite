@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { AssetAccountListItem } from '@suite-native/accounts';
 
 type AssetDetailAccountListItemProps = {

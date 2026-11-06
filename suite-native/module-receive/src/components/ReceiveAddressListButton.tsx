@@ -2,8 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { IconButton } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import {

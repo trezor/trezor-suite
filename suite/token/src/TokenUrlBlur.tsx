@@ -5,8 +5,8 @@ import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { BlurUrls, type BlurUrlsProps } from '@trezor/components';
 import { type OptionalKey } from '@trezor/type-utils';
 

@@ -1,13 +1,14 @@
 import { useSelector } from 'react-redux';
 
 import { injectGetNamedAddressSupport } from '@suite-common/networks';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type SendRootState,
     selectAccountNetworkSymbol,
     selectSendFormDraftOutputsByAccountKey,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';

@@ -3,8 +3,8 @@ import { RefreshControl } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, useScrollDivider } from '@suite-native/atoms';
 import {
     OlderHistoryStatus,

@@ -1,6 +1,6 @@
 import { TokenName, TokenSymbol } from '@suite/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { hasOwn } from '@trezor/utils';
 

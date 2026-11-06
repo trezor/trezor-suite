@@ -1,8 +1,8 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type EvmTransactionPurpose,
     type PrecomposedTransactionFinal,
-    type TokenAddress,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';

@@ -1,8 +1,6 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     AccountDetailStackRoutes,

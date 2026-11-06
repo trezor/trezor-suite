@@ -4,6 +4,7 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     FALLBACK_YIELD_GAS_RESERVE,
@@ -13,7 +14,6 @@ import {
     type YieldSessionState,
     initialStablecoinYieldSessionState,
 } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 

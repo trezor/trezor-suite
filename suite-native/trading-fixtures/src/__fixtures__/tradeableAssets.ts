@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 export const btcAsset: TradeableAsset = {

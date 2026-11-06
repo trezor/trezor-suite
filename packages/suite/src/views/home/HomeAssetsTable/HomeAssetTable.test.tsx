@@ -15,13 +15,13 @@ import {
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockYieldVault } from '@suite-common/wallet-core/mocks';
 import {
     type Account,
     type CurrentRate,
     type HomeAssetsTableGrouping,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';

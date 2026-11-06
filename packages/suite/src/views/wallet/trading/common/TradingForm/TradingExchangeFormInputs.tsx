@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -18,7 +19,6 @@ import {
     selectTradingSendAccount,
 } from '@suite-common/trading';
 import { useFetchFees } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 
 import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';

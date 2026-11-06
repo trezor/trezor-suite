@@ -1,6 +1,7 @@
 import { addDays, startOfMonth } from 'date-fns';
 
 import { type SignOperator } from '@suite-common/suite-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkFeature, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -15,7 +16,6 @@ import {
     type RbfTransactionParamsBitcoin,
     type RbfTransactionParamsEthereum,
     type Timestamp,
-    type TokenAddress,
     type WalletAccountTransaction,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';

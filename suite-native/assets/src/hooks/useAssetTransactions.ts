@@ -5,8 +5,8 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { type AssetDetailState, selectWalletAssetAccountKeys } from '@suite-common/assets';
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { type TokensRootState } from '@suite-native/tokens';
 import {
     getNextRequestedTransactionCount,

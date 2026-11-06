@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
-import type { AccountKey, FormState, TokenAddress } from '@suite-common/wallet-types';
+import type { AccountKey, FormState } from '@suite-common/wallet-types';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

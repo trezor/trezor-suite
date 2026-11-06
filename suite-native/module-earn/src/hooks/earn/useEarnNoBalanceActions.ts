@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import {
     AppTabsRoutes,

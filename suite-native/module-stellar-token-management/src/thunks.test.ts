@@ -1,3 +1,4 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     composeSendFormTransactionFeeLevelsThunk,
@@ -5,7 +6,7 @@ import {
     selectConvertedNetworkFeeInfo,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { type FeeInfo, type TokenAddress } from '@suite-common/wallet-types';
+import { type FeeInfo } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { createStoreFromPreloadedState } from '@suite-native/test-utils-store';
 

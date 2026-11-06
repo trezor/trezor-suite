@@ -12,9 +12,10 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { type SelectedAccountStatus, toTokenAddress } from '@suite-common/wallet-types';
+import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     NFT_MULTITOKEN_STANDARDS,
     NFT_SINGLETOKEN_STANDARDS,

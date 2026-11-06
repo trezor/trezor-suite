@@ -4,13 +4,13 @@ import { type Store } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { joinAmountWithSymbol } from '@suite-common/formatters';
+import { type TokenAddress } from '@suite-common/tokens';
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
 import {
     type AccountsRootState,
     type WalletSettingsRootState,
     setBaseCurrency,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
