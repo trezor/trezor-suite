@@ -7,17 +7,9 @@ import {
 } from '@suite-common/message-system';
 import { selectHasUnseenNonPhishingTransactionNotifications } from '@suite-common/wallet-core';
 import { ActivityCenterButton } from '@suite-native/activity-center';
-import { Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
 
 import { DeviceManager } from './DeviceManager';
-import { useDeviceManager } from '../hooks/useDeviceManager';
-
-const activityCenterButtonStyle = prepareNativeStyle<{ isDeviceManagerVisible: boolean }>(
-    (_, { isDeviceManagerVisible }) => ({
-        opacity: isDeviceManagerVisible ? 0 : 1,
-    }),
-);
 
 type DeviceManagerScreenHeaderProps = {
     noBottomPadding?: boolean;
@@ -26,8 +18,6 @@ type DeviceManagerScreenHeaderProps = {
 export const DeviceManagerScreenHeader = ({
     noBottomPadding,
 }: DeviceManagerScreenHeaderProps = {}) => {
-    const { applyStyle } = useNativeStyles();
-    const { isDeviceManagerVisible } = useDeviceManager();
     const isActivityCenterEnabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureEnabled(state, Feature.activityCenter, true),
     );
@@ -38,9 +28,7 @@ export const DeviceManagerScreenHeader = ({
             <HStack spacing="sp12">
                 <DeviceManager />
                 {isActivityCenterEnabled && (
-                    <Box style={applyStyle(activityCenterButtonStyle, { isDeviceManagerVisible })}>
-                        <ActivityCenterButton hasUnseenNotifications={hasUnseenNotifications} />
-                    </Box>
+                    <ActivityCenterButton hasUnseenNotifications={hasUnseenNotifications} />
                 )}
             </HStack>
         </ScreenHeaderWrapper>
