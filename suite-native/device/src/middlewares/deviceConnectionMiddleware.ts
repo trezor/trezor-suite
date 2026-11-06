@@ -92,7 +92,7 @@ const handleDeviceConnectNavigation = ({
                     {
                         name: RootStackRoutes.DeviceOnboardingStack,
                         params: {
-                            screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                            screen: DeviceOnboardingStackRoutes.DeviceVisualCheck,
                             params: {
                                 deviceModel,
                             },
