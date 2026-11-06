@@ -10,6 +10,7 @@
     },
     "include": ["."],
     "references": [
+        { "path": "../app" },
         {
             "path": "../../suite-common/suite-utils"
         },
