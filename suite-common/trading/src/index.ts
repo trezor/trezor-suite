@@ -56,6 +56,7 @@ export * from './utils/tradeableAssetListUtils';
 export * from './utils/tradeOperationUtils';
 export * from './utils/tradeHistoryExportUtils';
 export * from './utils/exchange/approvalFlowUtils';
+export * from './utils/exchange/bridgeSpeedUtils';
 export * from './utils/exchange/canSwitchExchangeAssets';
 export * from './utils/exchange/composeDexTxSimulationAction';
 export * from './utils/exchange/exchangeUtils';

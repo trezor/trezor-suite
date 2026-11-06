@@ -4,13 +4,15 @@ import { Translation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     cryptoIdToNetwork,
+    getTradeBridgeFastFeePercent,
+    getTradeBridgeSpeed,
     selectTradingDisplayComposedFee,
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
     selectTradingExchangeReceiveAccountKey,
     useTradingUtils,
 } from '@suite-common/trading';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getDisplaySymbol, networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
@@ -24,6 +26,7 @@ import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/form
 
 import { TradingUtilsProviderKyc } from '../../TradingUtils/TradingUtilsProviderKyc';
 import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
+import { TradingExchangeBridgeSpeedInfoItem } from '../TradingInfo/TradingExchangeBridgeSpeedInfoItem';
 import { TradingExchangeMevProtectionInfoItem } from '../TradingInfo/TradingExchangeMevProtectionInfoItem';
 import { TradingExchangeMinimumReceivedInfoItem } from '../TradingInfo/TradingExchangeMinimumReceivedInfoItem';
 import { TradingExchangeRateInfoItem } from '../TradingInfo/TradingExchangeRateInfoItem';
@@ -78,6 +81,7 @@ export const TradingOfferExchangeDetails = ({
         : undefined;
     const rateType = provider?.isFixedRate ? 'fixed' : 'floating';
     const dexSlippage = exchangeQuote.isDex ? exchangeQuote.swapSlippage : undefined;
+    const bridgeSpeed = getTradeBridgeSpeed(exchangeQuote);
 
     const quoteReceiveAmount = new BigNumber(exchangeQuote.receiveStringAmount ?? '');
     const minimumYouGetAmount = formatCryptoAmountAsAmount(
@@ -108,6 +112,20 @@ export const TradingOfferExchangeDetails = ({
                 )}
 
                 {!exchangeQuote.isDex && <TradingExchangeRateInfoItem rateType={rateType} />}
+
+                {bridgeSpeed !== undefined && (
+                    <TradingExchangeBridgeSpeedInfoItem
+                        isEditable
+                        bridgeSpeed={bridgeSpeed}
+                        fastFeePercent={getTradeBridgeFastFeePercent(exchangeQuote)}
+                        receiveSymbol={
+                            receiveCoinSymbol
+                                ? getDisplaySymbol(receiveCoinSymbol, receiveContractAddress)
+                                : undefined
+                        }
+                        selectedQuote={exchangeQuote}
+                    />
+                )}
 
                 <TradingComposedNetworkFeeInfoItem
                     account={account}

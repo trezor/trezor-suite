@@ -360,3 +360,15 @@ export type TradingVerifiedAddress =
     | undefined;
 
 export type TradingFulfillValue = Ok<{ txid: string }> | Err<SerializedError> | undefined;
+
+export type TradingBridgeSpeed = (typeof constants.TRADING_BRIDGE_SPEEDS)[number];
+
+// Temporary local contract: invity-api does not expose the CCTP bridge speed on ExchangeTrade yet,
+// so these fields are read and written only through the bridge speed utils until the API types
+// catch up.
+export type TradingBridgeSpeedFields = {
+    bridgeSpeed?: TradingBridgeSpeed;
+    bridgeFastFeePercent?: string;
+};
+
+export type TradingBridgeExchangeTrade = ExchangeTrade & TradingBridgeSpeedFields;
