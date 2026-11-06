@@ -9,7 +9,6 @@ export {
     createReduxStore,
 } from './createReduxStore';
 export { createNativeServicesCompositionRoot } from './createNativeServicesCompositionRoot';
-export { type NativeServices } from './NativeServices';
 export { createHydrateReduxStore, type HydrateReduxStoreDep } from './createHydrateReduxStore';
 export { createStorePersistor, type StorePersistorDep } from './createStorePersistor';
 export { prepareRootReducers } from './reducers';
