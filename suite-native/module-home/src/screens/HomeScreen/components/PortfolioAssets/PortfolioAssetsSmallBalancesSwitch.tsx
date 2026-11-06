@@ -3,9 +3,11 @@ import { useSelector } from 'react-redux';
 import { selectSmallBalanceSummary } from '@suite-common/assets';
 import { selectAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { HStack, Switch, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { PortfolioAssetsViewOptionsItem } from './PortfolioAssetsViewOptionsItem';
 
@@ -18,12 +20,19 @@ export const PortfolioAssetsSmallBalancesSwitch = ({
 }: PortfolioAssetsSmallBalancesSwitchProps) => {
     const smallBalances = useSelector(selectSmallBalanceSummary);
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesShown);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     if (smallBalances === undefined) {
         return null;
     }
 
-    const toggle = () => onChange(!areSmallBalancesShown);
+    const toggle = () => {
+        analytics.report({
+            type: events.dashboardAssetListMenuEvent.name,
+            payload: { type: 'show-small-balances', value: !areSmallBalancesShown },
+        });
+        onChange(!areSmallBalancesShown);
+    };
 
     return (
         <PortfolioAssetsViewOptionsItem
