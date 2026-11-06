@@ -1,53 +1,13 @@
-import { memo } from 'react';
-import { createFilter } from 'react-select';
+import { Suspense, lazy, memo } from 'react';
 
-import { useTranslation } from '@suite/intl';
-import { selectModalRequestId } from '@suite/modal';
-import { Select, type SelectRef } from '@trezor/components';
-import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
-import { bip39EnglishWordlist } from '@trezor/crypto-utils';
-import { resolveAfter } from '@trezor/utils';
+const WordInputInner = lazy(() =>
+    import('./WordInputInner').then(module => ({ default: module.WordInputInner })),
+);
 
-import { useSelector } from 'src/hooks/suite';
-
-const options = bip39EnglishWordlist.map(item => ({ label: item, value: item }));
-
-type Option = { label: string; value: string };
-
-export const WordInput = memo(() => {
-    const { translationString } = useTranslation();
-    const requestId = useSelector(selectModalRequestId);
-
-    type NoOptionsMessageParams = { inputValue: string };
-
-    return (
-        <Select
-            // eslint-disable-next-line jsx-a11y/no-autofocus
-            autoFocus
-            isSearchable
-            isClearable={false}
-            isMenuOpen
-            noOptionsMessage={({ inputValue }: NoOptionsMessageParams) =>
-                translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
-            }
-            onChange={async (item: Option, ref?: SelectRef | null) => {
-                await resolveAfter(600);
-                TrezorConnect.uiResponse({
-                    type: UI_RESPONSE.RECEIVE_WORD,
-                    payload: item.value,
-                    requestId,
-                });
-                ref?.clearValue();
-            }}
-            options={options}
-            filterOption={createFilter({
-                ignoreCase: true,
-                trim: true,
-                matchFrom: 'start',
-            })}
-            data-testid="@word-input-select"
-        />
-    );
-});
+export const WordInput = memo(() => (
+    <Suspense fallback={null}>
+        <WordInputInner />
+    </Suspense>
+));
 
 WordInput.displayName = 'WordInput';

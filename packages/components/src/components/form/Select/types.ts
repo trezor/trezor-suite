@@ -1,3 +1,10 @@
+import { type ReactNode } from 'react';
+import { type Props as ReactSelectProps } from 'react-select';
+
+import { type FrameProps } from '../../../utils/frameProps';
+import { type FormCellProps, type allowedFormCellFrameProps } from '../FormCell/FormCell';
+import { type InputSize } from '../types';
+
 export type Option = any;
 
 export type SelectMenuAlign = 'start' | 'end';
@@ -12,3 +19,28 @@ export type CustomSelectProps = {
      */
     menuAlign?: SelectMenuAlign;
 };
+
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedFormCellFrameProps)[number]>;
+
+// This intentionally exposes only the capability used by consumers instead of deriving it from
+// react-select's generic SelectInstance, which would leak that implementation type into our public API.
+export type SelectRef = {
+    clearValue: () => void;
+};
+
+export type SelectProps = AllowedFrameProps &
+    Omit<FormCellProps, 'children'> &
+    Omit<ReactSelectProps<Option>, 'onChange' | 'menuIsOpen' | 'styles'> &
+    CustomSelectProps & {
+        label?: ReactNode;
+        size?: InputSize;
+        minValueWidth?: number;
+        isClean?: boolean;
+        isMenuOpen?: boolean;
+        isLoading?: boolean;
+        onChange?: (value: Option, ref?: SelectRef | null) => void;
+        'data-testid'?: string;
+        openMenuOnFocus?: boolean;
+        /** When using menuPortalTarget (e.g. in modals), set this so the menu appears above the modal */
+        menuPortalZIndex?: number;
+    };
