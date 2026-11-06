@@ -132,11 +132,13 @@ const createTestStore = (fees: FeesState = FEES_STATE) =>
 
 const renderYieldClaimFees = async (initialProps: HookProps, fees: FeesState = FEES_STATE) => {
     const store = createTestStore(fees);
+    const analytics = mockNativeAnalytics();
 
     return {
         store,
+        analytics,
         ...(await renderHookWithStoreProvider((props: HookProps) => useYieldClaimFees(props), {
-            services: { store, analytics: mockNativeAnalytics() },
+            services: { store, analytics },
             initialProps,
         })),
     };
@@ -170,6 +172,56 @@ describe('useYieldClaimFees', () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.useRealTimers();
+    });
+
+    it('does not report stale shared fee errors while rewards are unavailable', async () => {
+        const rewards = createAccountRewards();
+        const { store, analytics, rerender } = await renderYieldClaimFees({
+            accountRewards: null,
+            isEnabled: false,
+        });
+        await act(() => {
+            store.dispatch(
+                transactionManagementActions.storeFeeLevels({
+                    feeLevels: { normal: { type: 'error', error: 'NOT-ENOUGH-FUNDS' } },
+                }),
+            );
+        });
+
+        await rerender({
+            accountRewards: { ...rewards, rewards: [] },
+            isEnabled: true,
+        });
+        await rerender({ accountRewards: rewards, isEnabled: true });
+        await settleDebounce();
+
+        expect(analytics.report).not.toHaveBeenCalled();
+    });
+
+    it('reports Claim estimation failure, explicit retry and usable recovery without private context', async () => {
+        estimateYieldFeeLevelMock.mockResolvedValueOnce({
+            success: false,
+            error: 'fee-estimation-failed',
+        });
+        const { result, analytics } = await renderYieldClaimFees({
+            accountRewards: createAccountRewards(),
+            isEnabled: true,
+        });
+
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        await act(() => result.current.retryFeeEstimation());
+        await settleDebounce();
+
+        expect(result.current.preparedAction).not.toBeNull();
+        expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+            ['fee-estimation-error-banner', 'fee-estimation-retry', 'fee-estimation-recovered'].map(
+                element => ({
+                    type: 'yield/interaction',
+                    payload: { element, value: 'merkl-claim', networkSymbol: 'eth' },
+                }),
+            ),
+        );
     });
 
     it('does not show a previous flow fee before the current claim is prepared', async () => {

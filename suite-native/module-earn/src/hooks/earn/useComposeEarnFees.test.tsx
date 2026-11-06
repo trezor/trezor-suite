@@ -132,11 +132,15 @@ const createTestStore = (account = ACCOUNT, additionalAccounts: Account[] = []) 
         },
     });
 
-const renderFees = () =>
-    renderHookWithStoreProvider(useComposeEarnFees, {
-        services: { store: createTestStore(), analytics: mockNativeAnalytics() },
+const renderFees = async () => {
+    const analytics = mockNativeAnalytics();
+    const rendered = await renderHookWithStoreProvider(useComposeEarnFees, {
+        services: { store: createTestStore(), analytics },
         initialProps: { accountKey: ACCOUNT.key, formState: FORM_STATE, formDraftPrefix: 'stake' },
     });
+
+    return { ...rendered, analytics };
+};
 
 type FeeFlowProps = Parameters<typeof useComposeEarnFees>[0] & { isCustomOpen?: boolean };
 
@@ -247,27 +251,63 @@ describe('useComposeEarnFees recovery', () => {
                 );
             else
                 mockCompose.mockResolvedValueOnce(failure === 'empty' ? fulfilled({}) : rejected());
-            const { result } = await renderFees();
+            const { result, analytics } = await renderFees();
             expect(result.current.isFeeReady).toBe(false);
             await settleDebounce();
             expect(result.current.hasFeeEstimationError).toBe(true);
             expect(result.current.isFeeReady).toBe(false);
             await act(() => result.current.retryFeeEstimation());
+            expect(analytics.report).toHaveBeenCalledTimes(2);
+            expect(result.current.isFeeReady).toBe(false);
             await settleDebounce();
             expect(result.current.hasFeeEstimationError).toBe(false);
             expect(result.current.isFeeReady).toBe(true);
             expect(result.current.formDraft?.outputs[0]?.amount).toBe('1');
+            expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+                [
+                    'fee-estimation-error-banner',
+                    'fee-estimation-retry',
+                    'fee-estimation-recovered',
+                ].map(element => ({
+                    type: 'yield/interaction',
+                    payload: { element, value: 'stake', networkSymbol: 'eth' },
+                })),
+            );
         },
     );
+
+    it('reports an unaffordable estimate once without reporting recovery', async () => {
+        mockCompose.mockResolvedValueOnce(
+            fulfilled({ normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' } }),
+        );
+        const { result, analytics } = await renderFees();
+
+        await settleDebounce();
+        await act(() => jest.advanceTimersByTimeAsync(3000));
+
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(result.current.isFeeReady).toBe(false);
+        expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual([
+            {
+                type: 'yield/interaction',
+                payload: {
+                    element: 'fee-unavailable-banner',
+                    value: 'stake',
+                    networkSymbol: 'eth',
+                },
+            },
+        ]);
+    });
 
     it.each([
         ['unstake', 'TR_GENERIC_ERROR_TITLE'],
         ['claim', 'TR_STAKE_TX_PREPARATION_FAILED'],
     ] as const)('offers retry for Solana %s after %s and recovers', async (stakeType, error) => {
         const account = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
+        const analytics = mockNativeAnalytics();
         mockSolanaCompose.mockResolvedValueOnce(fulfilled({ normal: { type: 'error', error } }));
         const { result } = await renderHookWithStoreProvider(useComposeEarnFees, {
-            services: { store: createTestStore(account), analytics: mockNativeAnalytics() },
+            services: { store: createTestStore(account), analytics },
             initialProps: {
                 accountKey: account.key,
                 formState: buildEarnComposeFormState(account.descriptor, '1.1', ''),
@@ -284,6 +324,14 @@ describe('useComposeEarnFees recovery', () => {
         expect(result.current.formDraft?.outputs[0]?.amount).toBe('1.1');
         expect(mockSolanaCompose).toHaveBeenCalledTimes(2);
         expect(mockCompose).not.toHaveBeenCalled();
+        expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+            ['fee-estimation-error-banner', 'fee-estimation-retry', 'fee-estimation-recovered'].map(
+                element => ({
+                    type: 'yield/interaction',
+                    payload: { element, value: stakeType, networkSymbol: 'sol' },
+                }),
+            ),
+        );
     });
 
     it('does not report previous-flow error levels as a new failure at mount', async () => {

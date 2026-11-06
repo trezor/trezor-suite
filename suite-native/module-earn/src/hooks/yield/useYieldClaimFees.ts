@@ -42,6 +42,7 @@ import { getFeeInfoRevision } from '../../utils/earn/getFeeInfoRevision';
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../../utils/yield/yieldClaimFeeUtils';
 import { updateEarnSelectedFeeLevelThunk } from '../earn/useComposeEarnFees';
+import { useEarnFeeAnalytics } from '../earn/useEarnFeeAnalytics';
 import { useEarnFeeEstimationError } from '../earn/useEarnFeeEstimationError';
 
 export type PreparedYieldClaimAction = {
@@ -361,6 +362,17 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         };
     }, [baseContext, feePreview]);
 
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey: claimFormDraftKey,
+        flow: 'merkl-claim',
+        networkSymbol: account?.symbol,
+        isEnabled: preparationKey !== null,
+        hasEstimationError: hasFeeEstimationError,
+        isFeeUnavailable,
+        isReady: !!preparedAction,
+        retry: retryFeeEstimation,
+    });
+
     return {
         feePreview,
         formDraft,
@@ -369,7 +381,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         isFeeUnavailable,
         isComposingFeeLevels,
         preparedAction,
-        retryFeeEstimation,
+        retryFeeEstimation: retryWithAnalytics,
         selectedFee,
         updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };

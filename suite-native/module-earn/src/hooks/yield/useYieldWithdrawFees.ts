@@ -73,6 +73,7 @@ export const useYieldWithdrawFees = ({
     );
     const fees = usePreparedTxFees({
         amount,
+        analyticsFlow: flowType === 'redeem' ? 'yield-redeem' : 'yield-withdraw',
         availableBalance: flowData?.account.availableBalance,
         composeTransaction,
         contextKey: `${formDraftKey}/${flowType}`,
