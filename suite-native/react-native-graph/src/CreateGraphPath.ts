@@ -8,8 +8,6 @@ import type {
     GraphYRange,
 } from './LineGraphProps';
 
-const PIXEL_RATIO = 2;
-
 type GraphPathConfig = {
     /**
      * Graph Points to use for the Path. Will be normalized and centered.
@@ -96,22 +94,34 @@ export const getPointsInRange = (allPoints: GraphPoint[], range: GraphPathRange)
         return portionFactorX <= 1 && portionFactorX >= 0;
     });
 
-type ExtremeIndexes = {
-    lowIndex: number;
-    highIndex: number;
+const getSlope = (from: SkPoint, to: SkPoint) => {
+    const dx = to.x - from.x;
+
+    return dx === 0 ? 0 : (to.y - from.y) / dx;
 };
 
-const getExtremeIndexes = (points: GraphPoint[]): ExtremeIndexes => {
-    let lowIndex = 0;
-    let highIndex = 0;
+// Steffen's monotone tangents: the curve passes through every point and never overshoots them.
+const getMonotoneTangents = (points: SkPoint[]): number[] =>
+    points.map((point, i) => {
+        const prev = points[i - 1];
+        const next = points[i + 1];
 
-    points.forEach(({ value }, index) => {
-        if (value < points[lowIndex]!.value) lowIndex = index;
-        if (value > points[highIndex]!.value) highIndex = index;
+        if (prev == null) return next == null ? 0 : getSlope(point, next);
+        if (next == null) return getSlope(prev, point);
+
+        const prevWidth = point.x - prev.x;
+        const nextWidth = next.x - point.x;
+        const prevSlope = getSlope(prev, point);
+        const nextSlope = getSlope(point, next);
+        const widthSum = prevWidth + nextWidth;
+        const parabolaSlope =
+            widthSum === 0 ? 0 : (prevSlope * nextWidth + nextSlope * prevWidth) / widthSum;
+
+        return (
+            (Math.sign(prevSlope) + Math.sign(nextSlope)) *
+            Math.min(Math.abs(prevSlope), Math.abs(nextSlope), Math.abs(parabolaSlope) / 2)
+        );
     });
-
-    return { lowIndex, highIndex };
-};
 
 type GraphPathWithGradient = { path: SkPath; gradientPath: SkPath };
 
@@ -138,97 +148,31 @@ function createGraphPathBase({
         return pathBuilder.build();
     }
 
-    const sampledIndexes: number[] = [];
-
-    const startX = getXInRange(drawingWidth, graphData[0].date, range.x) + horizontalPadding;
-    const endX =
-        getXInRange(drawingWidth, graphData[graphData.length - 1]!.date, range.x) +
-        horizontalPadding;
-
-    const getGraphDataIndex = (pixel: number) =>
-        Math.round(((pixel - startX) / (endX - startX)) * (graphData.length - 1));
-
-    const getNextPixelValue = (pixel: number) => {
-        if (pixel === endX || pixel + PIXEL_RATIO < endX) return pixel + PIXEL_RATIO;
-
-        return endX;
-    };
-
-    for (let pixel = startX; startX <= pixel && pixel <= endX; pixel = getNextPixelValue(pixel)) {
-        const index = getGraphDataIndex(pixel);
-
-        // Draw first point only on the very first pixel
-        if (index === 0 && pixel !== startX) continue;
-        // Draw last point only on the very last pixel
-
-        if (index === graphData.length - 1 && pixel !== endX) continue;
-
-        if (index !== 0 && index !== graphData.length - 1) {
-            // Only draw point, when the point is exact
-            const exactPointX =
-                getXInRange(drawingWidth, graphData[index]!.date, range.x) + horizontalPadding;
-
-            const isExactPointInsidePixelRatio = Array(PIXEL_RATIO)
-                .fill(0)
-                .some((_value, additionalPixel) => pixel + additionalPixel === exactPointX);
-
-            if (!isExactPointInsidePixelRatio) continue;
-        }
-
-        sampledIndexes.push(index);
-    }
-
-    // The sampling above skips most points of a long series, so it can miss a one-day spike. The y
-    // range spans the high and the low, so draw them anyway, or the line falls short of the range.
-    const { lowIndex, highIndex } = getExtremeIndexes(graphData);
-    const lastIndex = graphData.length - 1;
-    const drawnIndexes = [...new Set([...sampledIndexes, lowIndex, highIndex])].toSorted(
-        (indexA, indexB) => indexA - indexB,
-    );
-
-    const points: SkPoint[] = drawnIndexes.flatMap(index => {
-        const { date, value } = graphData[index]!;
-        const point = {
-            x: drawingWidth * getXPositionInRange(date, range.x) + horizontalPadding,
-            y: drawingHeight - getYInRange(drawingHeight, value, range.y) + verticalPadding,
-        };
-        const isExtreme = index === lowIndex || index === highIndex;
-        const isEndpoint = index === 0 || index === lastIndex;
-
-        // The B-spline below smooths each point toward its neighbors and would cut a spike short.
-        // Three copies of a point pin the curve to it; the first and last points are pinned already.
-        return isExtreme && !isEndpoint ? [point, point, point] : [point];
-    });
+    const points: SkPoint[] = graphData.map(({ date, value }) => ({
+        x: drawingWidth * getXPositionInRange(date, range.x) + horizontalPadding,
+        y: drawingHeight - getYInRange(drawingHeight, value, range.y) + verticalPadding,
+    }));
+    const tangents = getMonotoneTangents(points);
 
     for (let i = 0; i < points.length; i++) {
         const point = points[i]!;
-
-        // first point needs to start the path
-        if (i === 0) {
-            pathBuilder.moveTo(point.x, point.y);
-        }
-
         const prev = points[i - 1];
-        const prevPrev = points[i - 2];
 
         if (prev == null) {
+            pathBuilder.moveTo(point.x, point.y);
             continue;
         }
 
-        const p0 = prevPrev ?? prev;
-        const p1 = prev;
-        const cp1x = (2 * p0.x + p1.x) / 3;
-        const cp1y = (2 * p0.y + p1.y) / 3;
-        const cp2x = (p0.x + 2 * p1.x) / 3;
-        const cp2y = (p0.y + 2 * p1.y) / 3;
-        const cp3x = (p0.x + 4 * p1.x + point.x) / 6;
-        const cp3y = (p0.y + 4 * p1.y + point.y) / 6;
+        const third = (point.x - prev.x) / 3;
 
-        pathBuilder.cubicTo(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y);
-
-        if (i === points.length - 1) {
-            pathBuilder.cubicTo(point.x, point.y, point.x, point.y, point.x, point.y);
-        }
+        pathBuilder.cubicTo(
+            prev.x + third,
+            prev.y + tangents[i - 1]! * third,
+            point.x - third,
+            point.y - tangents[i]! * third,
+            point.x,
+            point.y,
+        );
     }
 
     if (!shouldFillGradient) {
@@ -237,7 +181,7 @@ function createGraphPathBase({
 
     const path = pathBuilder.build();
 
-    pathBuilder.lineTo(endX, height + verticalPadding);
+    pathBuilder.lineTo(points.at(-1)!.x, height + verticalPadding);
     pathBuilder.lineTo(horizontalPadding, height + verticalPadding);
 
     return { path, gradientPath: pathBuilder.build() };
