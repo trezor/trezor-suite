@@ -62,10 +62,8 @@ export const SendOutputsScreen = ({
             sendForm.form.setValue(getOutputFieldName(0, 'address'), initialAddress, {
                 shouldValidate: true,
             });
-        if (initialAmount)
-            sendForm.form.setValue(getOutputFieldName(0, 'amount'), initialAmount, {
-                shouldValidate: true,
-            });
+        if (initialAmount !== undefined)
+            sendForm.form.prefillAmount({ amount: initialAmount, recipientIndex: 0 });
     }, [sendForm, initialAddress, initialAmount]);
 
     if (!sendForm) {
