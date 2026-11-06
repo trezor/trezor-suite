@@ -38,12 +38,7 @@ const renderIdentity = (contractAddress: TokenAddress) => {
 
     renderWithProviders(
         { ...services, networks: { networkIcon: mockNetworkIcon() } },
-        <HomeAssetIdentity
-            symbol={ETH}
-            contractAddress={contractAddress}
-            displaySymbol="TKN"
-            tokenSymbol={null}
-        />,
+        <HomeAssetIdentity symbol={ETH} contractAddress={contractAddress} displaySymbol="TKN" />,
     );
 };
 

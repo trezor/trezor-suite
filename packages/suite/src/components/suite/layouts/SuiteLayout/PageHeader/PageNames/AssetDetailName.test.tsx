@@ -8,6 +8,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type BlurUrlsProps } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
@@ -18,14 +19,9 @@ import {
     mockInitialAppState,
 } from '../../../../../../../mocks/mockInitialAppState';
 
-type TokenUrlBlurProps = {
-    text?: string;
-};
-
-jest.mock('src/components/suite/TokenUrlBlur', () => ({
-    TokenUrlBlur: ({ text }: TokenUrlBlurProps) => (
-        <span data-testid="@token-url-blur">{text}</span>
-    ),
+jest.mock('@trezor/components', () => ({
+    ...jest.requireActual('@trezor/components'),
+    BlurUrls: ({ text }: BlurUrlsProps) => <span data-testid="@token-url-blur">{text}</span>,
 }));
 
 const networkIcon = mockNetworkIcon();

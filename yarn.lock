@@ -12561,6 +12561,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/token@workspace:*, @suite-common/token@workspace:suite-common/token":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/token@workspace:suite-common/token"
+  dependencies:
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/trading@workspace:*, @suite-common/trading@workspace:suite-common/trading":
   version: 0.0.0-use.local
   resolution: "@suite-common/trading@workspace:suite-common/trading"
@@ -17542,6 +17553,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/token@workspace:*, @suite/token@workspace:suite/token":
+  version: 0.0.0-use.local
+  resolution: "@suite/token@workspace:suite/token"
+  dependencies:
+    "@suite-common/token": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/tor-desktop@workspace:*, @suite/tor-desktop@workspace:suite/tor-desktop":
   version: 0.0.0-use.local
   resolution: "@suite/tor-desktop@workspace:suite/tor-desktop"
@@ -19836,6 +19865,7 @@ __metadata:
     "@suite/suite-lifecycle": "workspace:*"
     "@suite/suite-sync": "workspace:*"
     "@suite/thp": "workspace:*"
+    "@suite/token": "workspace:*"
     "@suite/tor": "workspace:*"
     "@suite/tor-desktop": "workspace:*"
     "@suite/tor-web": "workspace:*"

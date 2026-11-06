@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
+import { Translation } from '@suite/intl';
 import { isSignValuePositive, useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
 import {
@@ -10,13 +11,11 @@ import {
 } from '@suite-common/wallet-config';
 import { LOW_BALANCE_THRESHOLD } from '@suite-common/wallet-constants';
 import { type AmountUnit } from '@suite-common/wallet-utils';
-import { Text } from '@trezor/components';
+import { BlurUrls, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { Sign } from 'src/components/suite/Sign';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-
-import { TokenUrlBlur } from './TokenUrlBlur';
 
 const MAX_TOKEN_DISPLAYED_DECIMALS = 18;
 
@@ -151,10 +150,16 @@ export const FormattedCryptoAmount = ({
                     {' '}
                     {isSymbolSecondary ? (
                         <Text intent="neutral" priority="secondary">
-                            <TokenUrlBlur text={formattedSymbol} />
+                            <BlurUrls
+                                tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
+                                text={formattedSymbol}
+                            />
                         </Text>
                     ) : (
-                        <TokenUrlBlur text={formattedSymbol} />
+                        <BlurUrls
+                            tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
+                            text={formattedSymbol}
+                        />
                     )}
                 </>
             )}
