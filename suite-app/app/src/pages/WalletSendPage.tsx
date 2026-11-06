@@ -6,7 +6,8 @@ export const WalletSendPage = () => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const currentRoute = useSelector(selectRouteName);
 
-    // Account selection and the route can temporarily disagree during navigation.
+    // Workaround for a send-form race condition that still needs fixing: loaded account state
+    // alone is insufficient; the route must also match.
     if (selectedAccount.status !== 'loaded' || currentRoute !== 'wallet-send') {
         return <WalletLayout title="TR_NAV_SEND" account={selectedAccount} />;
     }
