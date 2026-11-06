@@ -6,6 +6,11 @@ import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type AssetFiatBalance } from '@suite-common/assets';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
 import { type NetworksRootState } from '@suite-common/networks';
 import {
     type TokenDefinitionsRootState,
@@ -124,6 +129,9 @@ export const AssetCard = ({
         selectCoinDefinitions(state, symbol),
     );
     const isRegionRestricted = useSelector(selectIsRegionRestricted);
+    const isBuyDisabled = useSelector((state: MessageSystemRootState) =>
+        selectIsFeatureDisabled(state, Feature.trading.buy),
+    );
     const isBuyAvailable = useSelector((state: TradingRootState & NetworksRootState) =>
         selectIsTradingBuyAvailableForNetworkSymbol(state, symbol),
     );
@@ -235,7 +243,7 @@ export const AssetCard = ({
                                     </AssetActionButton>
                                 )}
 
-                                {!isRegionRestricted && isBuyAvailable && (
+                                {!isRegionRestricted && !isBuyDisabled && isBuyAvailable && (
                                     <AssetActionButton
                                         symbol={symbol}
                                         routeName="wallet-trading-buy"

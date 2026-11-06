@@ -6,6 +6,11 @@ import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
 import { type NetworksRootState } from '@suite-common/networks';
 import {
     type TokenDefinitionsRootState,
@@ -93,6 +98,9 @@ export const AssetRow = memo(
             selectCoinDefinitions(state, network.symbol),
         );
         const isRegionRestricted = useSelector(selectIsRegionRestricted);
+        const isBuyDisabled = useSelector((state: MessageSystemRootState) =>
+            selectIsFeatureDisabled(state, Feature.trading.buy),
+        );
         const isBuyAvailable = useSelector((state: TradingRootState & NetworksRootState) =>
             selectIsTradingBuyAvailableForNetworkSymbol(state, symbol),
         );
@@ -218,16 +226,19 @@ export const AssetRow = memo(
                                 </AssetActionButton>
                             )}
 
-                            {!isTestnet(symbol) && !isRegionRestricted && isBuyAvailable && (
-                                <AssetActionButton
-                                    symbol={symbol}
-                                    routeName="wallet-trading-buy"
-                                    data-testid={`@dashboard/asset/${symbol}/buy-button`}
-                                    onClick={onBuyButtonClick}
-                                >
-                                    <Translation id="TR_BUY_BUY" />
-                                </AssetActionButton>
-                            )}
+                            {!isTestnet(symbol) &&
+                                !isRegionRestricted &&
+                                !isBuyDisabled &&
+                                isBuyAvailable && (
+                                    <AssetActionButton
+                                        symbol={symbol}
+                                        routeName="wallet-trading-buy"
+                                        data-testid={`@dashboard/asset/${symbol}/buy-button`}
+                                        onClick={onBuyButtonClick}
+                                    >
+                                        <Translation id="TR_BUY_BUY" />
+                                    </AssetActionButton>
+                                )}
                             <IconButton
                                 icon={ArrowRightIcon}
                                 intent="neutral"
