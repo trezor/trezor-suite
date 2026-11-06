@@ -50,6 +50,18 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
         expect(result.success && result.payload).toBe(owner1);
     });
 
+    it('succeeds when the owner is created asynchronously', async () => {
+        const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
+            createSuiteSyncOwner: () => Promise.resolve(ok(owner1)),
+            getTrezorConnect: mockGetTrezorConnect,
+        });
+
+        const result = await ensureSuiteSyncOwner({ device, delegatedKey: DELEGATED_IDENTITY_KEY });
+
+        expect(result.success).toBe(true);
+        expect(result.success && result.payload).toBe(owner1);
+    });
+
     it('fails for invalid DelegatedIdentityKey', async () => {
         const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
             createSuiteSyncOwner: () => ok(owner1),

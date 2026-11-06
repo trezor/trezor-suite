@@ -9,8 +9,13 @@ export const CreateSuiteSyncOwnerError = (message: string): CreateSuiteSyncOwner
     message,
 });
 
+type CreateSuiteSyncOwnerResult = Result<SuiteSyncOwner, CreateSuiteSyncOwnerError>;
+
+/**
+ * May resolve asynchronously, so an implementation can load its library on demand.
+ */
 export type CreateSuiteSyncOwner = (params: {
     data: string;
-}) => Result<SuiteSyncOwner, CreateSuiteSyncOwnerError>;
+}) => CreateSuiteSyncOwnerResult | Promise<CreateSuiteSyncOwnerResult>;
 
 export type CreateSuiteSyncOwnerDep = { createSuiteSyncOwner: CreateSuiteSyncOwner };

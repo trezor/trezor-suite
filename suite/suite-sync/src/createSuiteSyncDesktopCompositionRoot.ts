@@ -8,13 +8,12 @@ import {
     createSuiteSyncCompositionRoot,
     createUpdateRelayConnectionStatus,
 } from '@suite-common/suite-sync';
-import { evoluCreateSuiteSyncOwner } from '@suite-common/suite-sync-evolu';
 import { type OnStorageEnsured, type SuiteSync } from '@suite-common/suite-sync-types';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { type FetchDep } from '@trezor/type-utils';
 
-import { createEvoluDeps } from './evolu/createEvoluDeps';
+import { createLazyEvoluDeps } from './evolu/createLazyEvoluDeps';
 import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
 import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 
@@ -34,7 +33,7 @@ export const createSuiteSyncDesktopCompositionRoot = (
     const updateRelayConnectionStatus = createUpdateRelayConnectionStatus({
         dispatch: deps.dispatch,
     });
-    const { createSuiteStorage, subscribeError } = createEvoluDeps({
+    const evoluDeps = createLazyEvoluDeps({
         dispatch: deps.dispatch,
         updateRelayConnectionStatus,
     });
@@ -43,11 +42,11 @@ export const createSuiteSyncDesktopCompositionRoot = (
     // accepts `suiteSyncErrorHandler` and creates the evolu instance accordingly.
     const suiteSync = createSuiteSyncCompositionRoot({
         ...deps,
-        createSuiteStorage,
-        createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        createSuiteStorage: evoluDeps.createSuiteStorage,
+        createSuiteSyncOwner: evoluDeps.createSuiteSyncOwner,
         getIsTorEnabled: toGetter(deps.getState, selectIsTorEnabled),
         analytics: deps.analytics,
-        subscribeError,
+        subscribeError: evoluDeps.subscribeError,
         suiteSyncUncontrolledErrorHandler: ({ device, error }) =>
             suiteSyncErrorHandler({
                 error,
