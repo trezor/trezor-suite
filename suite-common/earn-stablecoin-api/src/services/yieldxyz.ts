@@ -1,11 +1,9 @@
 import type z from 'zod';
 
-import {
-    type GetYieldsV2QueryParams,
-    YieldResponseV2,
-    type YieldResponseV2Output,
-    YieldsResponseV2,
-    type YieldsResponseV2Output,
+import type {
+    GetYieldsV2QueryParams,
+    YieldResponseV2Output,
+    YieldsResponseV2Output,
 } from '@suite-common/earn-stablecoin-defs';
 import { createHttpClient } from '@suite-common/http-client';
 import { getSuiteVersion } from '@trezor/env-utils';
@@ -35,18 +33,18 @@ type GetYieldOptions = YieldXyzRequestOptions & {
 
 // [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
-export const getYields: (options?: GetYieldsOptions) => Promise<YieldsResponseV2Output> =
-    yieldXyzApi('/yields', {
-        method: 'GET',
-        schema: YieldsResponseV2,
-    });
+export const getYields = async (options?: GetYieldsOptions): Promise<YieldsResponseV2Output> => {
+    // The generated schemas are large, so they load with the first request, not with the app.
+    const { YieldsResponseV2 } = await import('@suite-common/earn-stablecoin-defs');
+
+    return yieldXyzApi('/yields', { method: 'GET', schema: YieldsResponseV2 })(options);
+};
 
 // [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
-export const getYield: (options: GetYieldOptions) => Promise<YieldResponseV2Output> = yieldXyzApi(
-    '/yields/:vaultId',
-    {
-        method: 'GET',
-        schema: YieldResponseV2,
-    },
-);
+export const getYield = async (options: GetYieldOptions): Promise<YieldResponseV2Output> => {
+    // The generated schemas are large, so they load with the first request, not with the app.
+    const { YieldResponseV2 } = await import('@suite-common/earn-stablecoin-defs');
+
+    return yieldXyzApi('/yields/:vaultId', { method: 'GET', schema: YieldResponseV2 })(options);
+};
