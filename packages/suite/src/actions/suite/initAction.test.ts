@@ -86,7 +86,7 @@ import {
 } from 'src/actions/suite/initAction';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { createWalletReducer } from 'src/reducers/wallet/createWalletReducer';
+import { createWalletReducer } from 'src/reducers/wallet';
 
 import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
 
