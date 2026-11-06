@@ -233,7 +233,6 @@ export const TokenSettingsBottomSheet = forwardRef(
                 title={
                     tokenContract ? (
                         <TokenName
-                            isInline
                             networkSymbol={symbol}
                             contractAddress={tokenContract}
                             variant="headline-sm"

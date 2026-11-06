@@ -40,7 +40,6 @@ export const AssetSettingsBottomSheet = ({
                 tokenContract ? (
                     <TokenSymbol
                         isTruncated
-                        isInline
                         networkSymbol={networkSymbol}
                         contractAddress={tokenContract}
                         variant="headline-sm"

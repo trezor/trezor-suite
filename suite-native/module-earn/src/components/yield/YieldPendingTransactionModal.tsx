@@ -276,7 +276,6 @@ export const YieldPendingTransactionModal = ({
                                             {amount}{' '}
                                             {amountTokenContract ? (
                                                 <TokenSymbol
-                                                    isInline
                                                     networkSymbol={accountSymbol}
                                                     contractAddress={amountTokenContract}
                                                     variant="body-sm"

@@ -95,7 +95,6 @@ export const EarnCryptoAmountInput = ({
                 <Text color={isDisabled ? 'contentSecondary' : 'contentPrimary'}>
                     {tokenContract ? (
                         <TokenSymbol
-                            isInline
                             networkSymbol={symbol}
                             contractAddress={tokenContract}
                             color={isDisabled ? 'contentSecondary' : 'contentPrimary'}

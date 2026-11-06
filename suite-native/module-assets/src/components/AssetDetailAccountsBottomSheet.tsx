@@ -62,7 +62,6 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                         assetName: tokenContract ? (
                             <TokenSymbol
                                 isTruncated
-                                isInline
                                 networkSymbol={networkSymbol}
                                 contractAddress={tokenContract}
                                 variant="body-sm"

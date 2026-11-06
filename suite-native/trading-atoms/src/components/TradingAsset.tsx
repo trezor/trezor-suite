@@ -73,7 +73,6 @@ export const TradingAsset = (props: TradingAssetProps) => {
         primaryText = (
             <TokenLabel
                 preferred={primaryLabel}
-                isInline
                 networkSymbol={props.networkSymbol}
                 contractAddress={tokenContract}
                 variant={primaryTextVariant}
@@ -82,7 +81,6 @@ export const TradingAsset = (props: TradingAssetProps) => {
         secondarySymbol = (
             <TokenLabel
                 preferred="symbol"
-                isInline
                 networkSymbol={props.networkSymbol}
                 contractAddress={tokenContract}
                 color="contentSecondary"

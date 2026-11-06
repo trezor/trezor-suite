@@ -56,7 +56,6 @@ export const YieldDepositRevokeLimitValue = ({
                     <>
                         <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />{' '}
                         <TokenSymbol
-                            isInline
                             networkSymbol={networkSymbol}
                             contractAddress={tokenContract}
                             variant="body-sm-strong"

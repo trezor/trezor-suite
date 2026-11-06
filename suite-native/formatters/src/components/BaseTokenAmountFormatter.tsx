@@ -55,7 +55,6 @@ export const BaseTokenAmountFormatter = ({
                 <>
                     &nbsp;
                     <TokenSymbol
-                        isInline
                         isTruncated={isSymbolTruncated}
                         networkSymbol={networkSymbol}
                         contractAddress={contractAddress}

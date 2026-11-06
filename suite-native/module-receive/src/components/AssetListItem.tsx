@@ -71,7 +71,6 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                         title
                     ) : (
                         <TokenName
-                            isInline
                             networkSymbol={asset.networkSymbol}
                             contractAddress={toTokenAddress(asset.contractAddress)}
                         />
@@ -84,7 +83,6 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                                 asset.displaySymbol
                             ) : (
                                 <TokenSymbol
-                                    isInline
                                     networkSymbol={asset.networkSymbol}
                                     contractAddress={toTokenAddress(asset.contractAddress)}
                                     variant="body-sm"

@@ -371,7 +371,6 @@ export const useYieldTransactionReviewOutputs = ({
                                 <Text key={`${reward.tokenAddress}:${index}`} variant="body-sm">
                                     {reward.tokenSymbol ? (
                                         <TokenSymbol
-                                            isInline
                                             networkSymbol={account.symbol}
                                             contractAddress={toTokenAddress(reward.tokenAddress)}
                                             variant="body-sm"

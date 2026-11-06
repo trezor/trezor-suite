@@ -11,7 +11,6 @@ type TokenLabelProps = Omit<TextProps, 'children'> & {
     networkSymbol: NetworkSymbol;
     contractAddress: TokenAddress;
     preferred: 'name' | 'symbol';
-    isInline?: boolean;
 };
 
 /** Prefers the requested label, then the other label, then the contract address. */
