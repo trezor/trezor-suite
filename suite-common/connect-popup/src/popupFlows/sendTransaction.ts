@@ -7,21 +7,14 @@ import TrezorConnect, {
     type UiRequestSelectFee,
     asCoinSymbol,
 } from '@trezor/connect';
-import { type SerializedError, TypedError } from '@trezor/connect-common/src/constants/errors';
-import { type Err, type Ok } from '@trezor/type-utils';
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 
-import { CommonPopupFlow } from './CommonPopupFlow';
+import { CommonPopupFlow, getPayloadOrThrow } from './CommonPopupFlow';
 import { buildOptions, pickAccounts } from './selectAccount';
 import { SignTransaction } from './signTransaction';
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { CALL_SOURCE_DEEPLINK, type ConnectPopupCallWithState } from '../connectPopupTypes';
-
-const getPayloadOrThrow = <T>(response: Ok<T> | Err<SerializedError>) => {
-    if (!response.success) throw response.error;
-
-    return response.payload;
-};
 
 /** Lets the user pick an account and a fee for the outputs, then signs it like signTransaction. */
 export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
