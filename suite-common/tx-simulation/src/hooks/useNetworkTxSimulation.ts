@@ -1,7 +1,7 @@
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 import { exhaustive } from '@trezor/type-utils';
 
-import { client } from '../client';
+import { getBlockaidClient } from '../client';
 import {
     type NetworkTxSimulationResult,
     type SolanaMessageScanResponse,
@@ -45,6 +45,8 @@ async function handleTxScan(input: GetTxSimulationParams): Promise<NetworkTxSimu
     if (!input) {
         throw new Error('TX Simulation params are missing.');
     }
+
+    const client = await getBlockaidClient();
 
     switch (input.method) {
         case 'ethereumSignTransaction':
