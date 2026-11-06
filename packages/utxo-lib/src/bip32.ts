@@ -2,6 +2,7 @@
 // differences:
 // - add missing `compressed` field on BIP32Interface
 // - changed order of `fromPrivateKeyLocal/fromPublicKeyLocal` (eslint no-use-before-define)
+// - `derive` refuses to go beyond depth 255, which BIP32 cannot serialize
 
 import * as wif from 'wif';
 
@@ -225,6 +226,8 @@ class BIP32 implements BIP32Interface {
     // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#child-key-derivation-ckd-functions
     derive(index: number): BIP32Interface {
         assertType(UInt32, index);
+
+        if (this.depth >= 255) throw new TypeError('Cannot derive keys with depth over 255');
 
         const isHardened = index >= HIGHEST_BIT;
         const data = Buffer.allocUnsafe(37);
