@@ -66,10 +66,8 @@ describe('getSignAndPushRejectionError', () => {
     it('returns the send form error the step rejected with', () => {
         const pushError: TradingSignAndPushError = {
             error: 'push-transaction-failed',
-            metadata: {
-                success: false,
-                error: { code: 'Backend_Error', message: 'Blockhash not found' },
-            },
+            errorCode: 'Backend_Error',
+            message: 'Blockhash not found',
         };
 
         expect(
@@ -106,10 +104,8 @@ describe(getTradingErrorCauseMessage.name, () => {
                 source: 'send-form',
                 error: {
                     error: 'push-transaction-failed',
-                    metadata: {
-                        success: false,
-                        error: { code: 'Backend_Error', message: 'Blockhash not found' },
-                    },
+                    errorCode: 'Backend_Error',
+                    message: 'Blockhash not found',
                 },
             },
             'Blockhash not found',

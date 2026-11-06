@@ -509,10 +509,7 @@ export const pushSendFormTransactionThunk = createThunk<
         if (!serializedTx || !precomposedTransaction)
             return rejectWithValue({
                 error: 'push-transaction-failed',
-                metadata: {
-                    success: false,
-                    error: { message: 'Transaction not found.', code: 'Failure_UnknownCode' },
-                },
+                message: 'Transaction not found.',
             });
 
         const txData = getMevProtectedTxData(
@@ -643,7 +640,8 @@ export const pushSendFormTransactionThunk = createThunk<
             error: isPendingConflict
                 ? 'push-transaction-pending-conflict'
                 : 'push-transaction-failed',
-            metadata: pushTxResponse,
+            errorCode: pushTxResponse.error.code,
+            message: pushTxResponse.error.message,
         });
     },
 );
