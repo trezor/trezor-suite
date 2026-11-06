@@ -26,9 +26,6 @@
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" },
-        { "path": "../test-utils-store" },
-        {
-            "path": "../../packages/dependency-injection"
-        }
+        { "path": "../test-utils-store" }
     ]
 }

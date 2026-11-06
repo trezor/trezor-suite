@@ -13323,7 +13323,6 @@ __metadata:
     "@suite-native/intl": "workspace:^"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
-    "@trezor/dependency-injection": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
