@@ -1,13 +1,13 @@
 import { type ReactNode } from 'react';
 
+import { TokenSymbol } from '@suite/token';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, TOOLTIP_DELAY_LONG, Text, TruncateWithTooltip } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { useSelector } from 'src/hooks/suite';
 
 import { HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
@@ -16,7 +16,6 @@ type HomeAssetIdentityProps = {
     symbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
     displaySymbol: string | undefined;
-    tokenSymbol: TokenSymbol | null | undefined;
     badge?: ReactNode;
 };
 
@@ -24,7 +23,6 @@ export const HomeAssetIdentity = ({
     symbol,
     contractAddress,
     displaySymbol,
-    tokenSymbol,
     badge,
 }: HomeAssetIdentityProps) => {
     const { NetworkNameFormatter } = useFormatters();
@@ -53,7 +51,14 @@ export const HomeAssetIdentity = ({
                         data-testid="@dashboard/home-asset/name"
                     >
                         <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                            <TokenUrlBlur text={tokenSymbol ?? displaySymbol} />
+                            {contractAddress ? (
+                                <TokenSymbol
+                                    networkSymbol={symbol}
+                                    tokenContract={contractAddress}
+                                />
+                            ) : (
+                                displaySymbol
+                            )}
                         </TruncateWithTooltip>
                     </Text>
                     {badge}

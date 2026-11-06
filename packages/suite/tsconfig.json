@@ -233,6 +233,7 @@
         { "path": "../../suite/suite-lifecycle" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/thp" },
+        { "path": "../../suite/token" },
         { "path": "../../suite/tor" },
         { "path": "../../suite/tor-desktop" },
         { "path": "../../suite/tor-web" },

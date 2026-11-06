@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { TokenName } from '@suite/token';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type Explorer,
@@ -10,7 +11,7 @@ import {
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
@@ -144,8 +145,14 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                     typographyStyle="body-md"
                                     data-testid={`@wallet/send/token-name/${outputId}`}
                                 >
-                                    {selectedToken?.name ||
-                                        getNetworkDisplaySymbolName(account.symbol)}
+                                    {selectedToken?.name ? (
+                                        <TokenName
+                                            networkSymbol={account.symbol}
+                                            tokenContract={toTokenAddress(selectedToken.contract)}
+                                        />
+                                    ) : (
+                                        getNetworkDisplaySymbolName(account.symbol)
+                                    )}
                                 </Text>
                             </Row>
                             <Row>

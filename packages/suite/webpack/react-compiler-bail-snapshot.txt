@@ -17,7 +17,6 @@ packages/suite/src/components/earn/yield/hooks/useYieldFlow.ts	bail	(BuildHIR::l
 packages/suite/src/components/earn/yield/hooks/useYieldPendingTransactionTracking.ts	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause
 packages/suite/src/components/onboarding/ThpPairingStep/ThpPairingStep.tsx	bail	Cannot access refs during render
 packages/suite/src/components/suite/FindBar/useFindInPage.ts	bail	(BuildHIR::lowerStatement) Handle TryStatement without a catch clause
-packages/suite/src/components/suite/TokenUrlBlur.tsx	bail	(BuildHIR::node.lowerReorderableExpression) Expression type `JSXElement` cannot be safely reordered
 packages/suite/src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceSelector.tsx	partial	Cannot access refs during render
 packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalSendModal/hooks/useAccountWithTokensOptions.ts	bail	Cannot access refs during render
 packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/AccountName/AccountName.tsx	bail	React Compiler has skipped optimizing this component because one or more React ESLint rules were disabled

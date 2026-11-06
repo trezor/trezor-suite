@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { TokenName } from '@suite/token';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
@@ -27,7 +28,6 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { AssetDetailLink } from 'src/components/suite/AssetDetailLink/AssetDetailLink';
-import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { useSelector } from 'src/hooks/suite';
 
@@ -118,7 +118,10 @@ export const TokenRow = ({
                                 size={24}
                                 shouldTryToFetch={isTokenKnown}
                             />
-                            {isTokenKnown ? token.name : <TokenUrlBlur text={token.name} />}
+                            <TokenName
+                                networkSymbol={account.symbol}
+                                tokenContract={toTokenAddress(token.contract)}
+                            />
                         </AssetDetailLink>
                         {yieldBadge && (
                             <YieldBadge

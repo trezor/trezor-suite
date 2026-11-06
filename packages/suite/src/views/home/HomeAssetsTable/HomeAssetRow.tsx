@@ -68,7 +68,6 @@ export const HomeAssetRow = memo(function HomeAssetRow({
                     symbol={symbol}
                     contractAddress={contractAddress}
                     displaySymbol={displaySymbol}
-                    tokenSymbol={tokenSymbol}
                     badge={
                         <HomeAssetApyBadge
                             symbol={symbol}

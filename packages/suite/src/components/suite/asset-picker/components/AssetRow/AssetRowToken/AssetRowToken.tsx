@@ -1,9 +1,9 @@
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, asBaseCurrencyAmount, toTokenAddress } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { AssetDetails } from '../AssetDetails';
@@ -55,6 +55,7 @@ export function AssetRowToken({
                     displaySymbol={token.symbol!}
                     networkSymbol={account.symbol}
                     isDisabled={isDisabled}
+                    tokenContract={toTokenAddress(token.contract)}
                 />
             </Row>
             {token.balance && (

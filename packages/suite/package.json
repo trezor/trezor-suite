@@ -144,6 +144,7 @@
         "@suite/suite-lifecycle": "workspace:*",
         "@suite/suite-sync": "workspace:*",
         "@suite/thp": "workspace:*",
+        "@suite/token": "workspace:*",
         "@suite/tor": "workspace:*",
         "@suite/tor-desktop": "workspace:*",
         "@suite/tor-web": "workspace:*",

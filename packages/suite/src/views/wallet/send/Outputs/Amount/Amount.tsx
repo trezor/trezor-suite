@@ -3,9 +3,10 @@ import { useEffect } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { TokenSymbol } from '@suite/token';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { type Output, type TokenAddress } from '@suite-common/wallet-types';
+import { type Output, type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     findToken,
@@ -112,6 +113,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
     const displayTicker = shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol);
+    const amountSymbol = withTokens && token ? token.symbol : displayTicker;
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const hasError = !!error;
     const bottomText = isLowAnonymity ? undefined : error?.message;
@@ -236,7 +238,14 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         control={control}
                         rightContent={
                             <Text intent="neutral" priority="secondary">
-                                {withTokens && token ? token?.symbol : displayTicker}
+                                {withTokens && token ? (
+                                    <TokenSymbol
+                                        networkSymbol={symbol}
+                                        tokenContract={toTokenAddress(token.contract)}
+                                    />
+                                ) : (
+                                    amountSymbol
+                                )}
                             </Text>
                         }
                     />

@@ -5,7 +5,6 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
     selectWalletAssetSymbol,
-    selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
@@ -54,7 +53,6 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
     const displaySymbol = useSelector(state =>
         selectWalletAssetDisplaySymbol(state, assetKey, true),
     );
-    const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey, true));
 
     if (symbol === undefined) {
         return null;
@@ -83,7 +81,6 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
                         symbol={symbol}
                         contractAddress={contractAddress}
                         displaySymbol={displaySymbol}
-                        tokenSymbol={tokenSymbol}
                     />
                 </Row>
                 <Column
