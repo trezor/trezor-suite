@@ -34,11 +34,11 @@ import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 
 import * as fixtures from './__fixtures__/walletMiddleware';
-import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
 
-const accountsReducer = prepareAccountsReducer(mockExtraDependencies);
-const blockchainReducer = prepareBlockchainReducer(mockExtraDependencies);
-const walletSettingsReducer = prepareWalletSettingsReducer(mockExtraDependencies);
+const accountsReducer = prepareAccountsReducer(mockExtraDependenciesForReducers);
+const blockchainReducer = prepareBlockchainReducer(mockExtraDependenciesForReducers);
+const walletSettingsReducer = prepareWalletSettingsReducer(mockExtraDependenciesForReducers);
 
 const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },

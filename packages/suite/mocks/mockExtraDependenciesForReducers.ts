@@ -3,7 +3,7 @@ import { changeNetworks } from '@suite-common/wallet-core';
 
 import { storageLoadReducers } from '../src/support/storageLoadReducers';
 
-export const mockExtraDependencies = {
+export const mockExtraDependenciesForReducers = {
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
         changeNetworks,

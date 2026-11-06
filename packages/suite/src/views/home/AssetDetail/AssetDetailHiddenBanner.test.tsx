@@ -18,7 +18,7 @@ import { type StaticSessionId } from '@trezor/device-utils';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailHiddenBanner } from './AssetDetailHiddenBanner';
-import { mockExtraDependencies } from '../../../../mocks/mockExtraDependencies';
+import { mockExtraDependenciesForReducers } from '../../../../mocks/mockExtraDependenciesForReducers';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
@@ -33,7 +33,7 @@ const UNKNOWN_TOKEN = '0x1111111111111111111111111111111111111111' as TokenAddre
 const SUSPICIOUS_BANNER = '@asset-detail/suspicious-token-banner';
 const HIDDEN_BANNER = '@asset-detail/hidden-token-banner';
 
-const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(mockExtraDependencies);
+const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(mockExtraDependenciesForReducers);
 
 const ethereumAccount = mockWalletAccount({
     symbol: ETH,

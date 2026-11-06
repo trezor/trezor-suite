@@ -27,9 +27,9 @@ import {
     asStateBeforePush,
     moveLabelsForRbfThunk,
 } from './moveLabelsForRbfThunk';
-import { mockExtraDependencies } from '../../../mocks/mockExtraDependencies';
+import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
 
-const accountsReducer = prepareAccountsReducer(mockExtraDependencies);
+const accountsReducer = prepareAccountsReducer(mockExtraDependenciesForReducers);
 
 const rootReducer = combineReducers({
     wallet: combineReducers({
