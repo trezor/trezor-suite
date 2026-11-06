@@ -13,12 +13,15 @@ import {
     type EarnTransactionsState,
     type ExplorerConfig,
     type ExplorerReducerDeps,
+    type FiatRatesReducerDeps,
     type FiatRatesState,
     type FormDraftState,
+    type PhishingReducerDeps,
     type PhishingState,
     type SendFormReducerDeps,
     type SendState,
     type StakeState,
+    type StellarContractTokensDeps,
     type StellarContractTokensState,
     type TransactionsReducerDeps,
     type TransactionsState,
@@ -50,7 +53,6 @@ import {
     type SelectedAccountStatus,
     type WalletSettings,
 } from '@suite-common/wallet-types';
-import { type ReducersDep } from '@trezor/redux-utils';
 
 import accountSearchReducer, { type AccountSearchState } from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
@@ -89,11 +91,9 @@ export type WalletReducerDeps = AccountsReducerDeps &
     SendFormReducerDeps &
     TransactionsReducerDeps &
     WalletSettingsReducerDeps &
-    ReducersDep<
-        | 'storageLoadHistoricRates'
-        | 'storageLoadPhishingMetadata'
-        | 'storageLoadStellarContractTokens'
-    >;
+    FiatRatesReducerDeps &
+    PhishingReducerDeps &
+    StellarContractTokensDeps;
 
 export type WalletReducer = Reducer<
     WalletState,
