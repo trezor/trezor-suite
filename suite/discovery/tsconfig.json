@@ -7,6 +7,9 @@
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/device-authenticity"
+        },
+        {
             "path": "../../suite-common/persistent-device-data"
         },
         {
@@ -26,6 +29,7 @@
         { "path": "../locks" },
         { "path": "../router" },
         { "path": "../router-config" },
+        { "path": "../settings" },
         { "path": "../../packages/redux-utils" },
         {
             "path": "../../suite-common/message-system"
@@ -33,7 +37,6 @@
         {
             "path": "../../suite-common/test-utils"
         },
-        { "path": "../settings" },
         {
             "path": "../../packages/connect-common"
         },
