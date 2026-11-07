@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import { useIntl } from 'react-intl';
 
 import { messages } from '@suite/intl';
@@ -10,6 +9,10 @@ type MetadataProps = {
     url?: string;
 };
 
+/**
+ * React 19 hoists `<title>` and `<meta>` into `<head>` from anywhere in the tree. The `<title>` of the most
+ * recently mounted instance comes first in `<head>`, so it sets the document title until it unmounts.
+ */
 export const Metadata = ({
     title = 'Trezor Suite',
     description,
@@ -19,7 +22,7 @@ export const Metadata = ({
     description = description || intl.formatMessage(messages.TR_SUITE_META_DESCRIPTION);
 
     return (
-        <Helmet>
+        <>
             <title>{title}</title>
             <meta name="title" key="title" content={title} />
             <meta name="description" key="description" content={description} />
@@ -37,6 +40,6 @@ export const Metadata = ({
             <meta property="twitter:title" key="twitter:title" content={title} />
             <meta property="twitter:description" key="twitter:description" content={description} />
             {/* <meta property="twitter:image" key="twitter:image" content={image} /> */}
-        </Helmet>
+        </>
     );
 };
