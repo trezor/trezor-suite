@@ -134,6 +134,7 @@ describe('createEnsureEncryptionKey', () => {
             'Unable to load app data',
             expect.any(String),
             expect.any(Array),
+            { cancelable: false },
         );
     });
 });
