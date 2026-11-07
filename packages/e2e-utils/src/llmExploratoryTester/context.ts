@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { error, log } from '../logger';
 import { downloadAttachmentImages } from './contextImages';
 import { CONTEXT_FILE, writeJson } from './paths';
-import { DeviceModelSchema, type PrContext } from './schemas';
+import { DeviceModelSchema, PlatformSchema, type PrContext } from './schemas';
 import { ghView, loadLinkedNumbersFrom, parseTarget } from './target';
 
 const PREVIEW_SUITE_URL_BASE = 'https://dev.suite.sldev.cz/suite-web';
@@ -78,6 +78,7 @@ async function main(): Promise<void> {
     }
 
     const target = parseTarget(process.env.TARGET);
+    const platform = PlatformSchema.parse(process.env.LLM_EXPLORATORY_TESTER_PLATFORM ?? 'web');
     const deviceModel = DeviceModelSchema.parse(process.env.DEVICE_MODEL ?? DEFAULT_MODEL);
 
     let prs: PullRequest[];
@@ -108,6 +109,7 @@ async function main(): Promise<void> {
     }
 
     const context: PrContext = {
+        platform,
         prNumber: pr.number,
         prUrl: pr.url,
         prTitle: pr.title,
@@ -121,7 +123,8 @@ async function main(): Promise<void> {
 
     writeJson(CONTEXT_FILE, context);
     log(`PR #${context.prNumber}: ${context.prTitle}`);
-    log(`Suite URL: ${context.suiteUrl}`);
+    log(`Platform: ${platform}`);
+    log(`Suite: ${platform === 'desktop' ? 'local Electron build' : context.suiteUrl}`);
     log(`Device model: ${context.deviceModel}`);
     log(`Context images: ${context.contextImages.length}`);
 }
