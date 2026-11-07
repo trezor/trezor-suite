@@ -10,6 +10,7 @@ import { type Storage } from 'redux-persist';
 import { unecryptedJotaiStorage } from './atomWithUnecryptedStorage';
 import { ENCRYPTION_KEY, type EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
 import { ENCRYPTED_STORAGE_ID } from './encryptedStorageId';
+import { getStorageKeyFailureTags } from './getStorageKeyFailureTags';
 import { waitForActiveAppState } from './waitForActiveAppState';
 
 export const clearStorage = ({ mmkvInstance }: { mmkvInstance: MMKV | null }) => {
@@ -38,15 +39,17 @@ export const resetEncryptedStorage = async () => {
 
         // MMKV ignores errors when deleting the files, so report when the storage still exists.
         if (existsMMKV(ENCRYPTED_STORAGE_ID)) {
-            captureException(new Error('Encrypted storage still exists after deletion'));
+            captureException(new Error('Encrypted storage still exists after deletion'), {
+                tags: getStorageKeyFailureTags('delete-failed'),
+            });
         }
 
         await SecureStore.deleteItemAsync(ENCRYPTION_KEY).catch(error => {
-            captureException(error);
+            captureException(error, { tags: getStorageKeyFailureTags('delete-failed') });
         });
         unecryptedJotaiStorage.clearAll();
     } catch (error) {
-        captureException(error);
+        captureException(error, { tags: getStorageKeyFailureTags('delete-failed') });
     } finally {
         await flushSentryEvents();
         // Restart even when deletion fails, so the user is not left without any screen.
