@@ -7,6 +7,8 @@ export {
     entryToValueBytes,
     // keyed / encrypted-leaf model (serve proofs by the device's entry_key)
     commitOf,
+    leafValueBytes,
+    EMPTY_ROOT_HEX,
     leafFromCommit,
     computeRootFromBlobs,
     proofByKey,

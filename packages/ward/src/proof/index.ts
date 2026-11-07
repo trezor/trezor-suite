@@ -26,6 +26,8 @@ export const entryToValueBytes = (networkSymbol: string, entry: WardEntry): Uint
 
 const ZERO = new Uint8Array([0x00]);
 
+export const EMPTY_ROOT_HEX = bytesToHex(sha256(Uint8Array.of(0x02)));
+
 /** Part encodings — the byte that goes into the commit. */
 export const ENC_ENCRYPTED = 0;
 export const ENC_PLAINTEXT = 1;
@@ -75,28 +77,33 @@ const partBytes = (p: LeafPart | undefined): Uint8Array => {
     );
 };
 
-// commit = SHA-256(0x02 || len8(key_type) || key_type
+// commit = SHA-256(0x03 || len8(key_type) || key_type
 //                       || len32(id_part) || id_part || len32(val_part) || val_part)
 // Keyless (§2.2): a host holding no keys recomputes it from stored bytes whatever each
 // part's encoding is. Each part's encoding byte is inside the commit, so an encrypted
-// and a plaintext part can never collide. An empty content body is a delete.
-export const commitOf = (keyType: string, identity: LeafPart, content: LeafPart): Uint8Array => {
+// and a plaintext part can never collide. An explicit delete clears both parts
+// and removes the leaf; empty application values retain their content framing.
+export const leafValueBytes = (
+    keyType: string,
+    identity: LeafPart,
+    content: LeafPart,
+): Uint8Array => {
     const kt = utf8(keyType);
     const idPart = partBytes(identity);
     const valPart = partBytes(content);
 
-    return sha256(
-        concatBytes(
-            new Uint8Array([0x02]),
-            len8(kt.length),
-            kt,
-            len32(idPart.length),
-            idPart,
-            len32(valPart.length),
-            valPart,
-        ),
+    return concatBytes(
+        len8(kt.length),
+        kt,
+        len32(idPart.length),
+        idPart,
+        len32(valPart.length),
+        valPart,
     );
 };
+
+export const commitOf = (keyType: string, identity: LeafPart, content: LeafPart): Uint8Array =>
+    sha256(concatBytes(Uint8Array.of(0x03), leafValueBytes(keyType, identity, content)));
 
 // leaf = SHA-256(0x00 || entry_key || commit)  (§2.2). entry_key == LeafIdentityMAC.
 export const leafFromCommit = (ek: Uint8Array, commit: Uint8Array): Uint8Array =>
@@ -237,9 +244,9 @@ const walkProof = (
 // Mirrors trezorlib WARDTree get_proof_by_key / get_nonmembership_proof_by_key.
 // ---------------------------------------------------------------------------
 
-/** Recompute the root over stored leaf blobs. '' when empty. */
+/** Recompute the root over stored leaf blobs, using SHA-256(0x02) when empty. */
 export const computeRootFromBlobs = (rows: BlobRow[]): string =>
-    rows.length === 0 ? '' : bytesToHex(hashMpt(buildMpt(rows.map(blobLeaf))));
+    rows.length === 0 ? EMPTY_ROOT_HEX : bytesToHex(hashMpt(buildMpt(rows.map(blobLeaf))));
 
 /** Membership proof for `entryKeyHex` over stored blobs (leaf→root order). */
 export const proofByKey = (rows: BlobRow[], entryKeyHex: string): MerkleProof =>

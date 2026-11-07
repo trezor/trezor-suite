@@ -1,4 +1,10 @@
-import { EMPTY_PART, computeRootFromBlobs, nonMembershipByKey, proofByKey } from '../proof';
+import {
+    EMPTY_PART,
+    EMPTY_ROOT_HEX,
+    computeRootFromBlobs,
+    nonMembershipByKey,
+    proofByKey,
+} from '../proof';
 import type { BlobRow } from '../proof';
 
 // The host side of a FULL delete. These are the exact functions buildAckByKey uses to
@@ -54,7 +60,7 @@ describe('delete round — the host serves provable absence', () => {
     });
 
     it('deleting the last row empties the tree: no witness, empty root', () => {
-        expect(computeRootFromBlobs([])).toBe('');
+        expect(computeRootFromBlobs([])).toBe(EMPTY_ROOT_HEX);
         const nm = nonMembershipByKey([], target.entryKeyHex);
         expect(nm).toEqual({ proof: [], witnessEntryKeyHex: null, witnessCommitHex: null });
     });

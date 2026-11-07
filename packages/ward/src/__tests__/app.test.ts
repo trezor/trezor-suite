@@ -116,7 +116,7 @@ describe('ward app layer', () => {
         // The device reports no root at all when the tree becomes empty. Skipping the
         // checkpoint write would pin tree_state to the pre-delete root while the device
         // moved on -- a silent desync that breaks every later proof. '' is the host's
-        // canonical empty root (computeRootFromBlobs([]) === '').
+        // Empty wire checkpoint (''); the canonical digest is SHA-256(0x02).
         const db = seed();
         await db.setTreeState(WARD_ID, { root: 'oldroot', counter: 4, mac: 'oldmac' });
 

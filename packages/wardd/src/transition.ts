@@ -2,7 +2,9 @@ import { ed25519 } from '@noble/curves/ed25519.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, concatBytes, hexToBytes } from '@noble/hashes/utils.js';
 
-export const EMPTY_ROOT_HEX = bytesToHex(sha256(Uint8Array.of(3)));
+import { EMPTY_ROOT_HEX } from '@trezor/ward';
+
+export { EMPTY_ROOT_HEX } from '@trezor/ward';
 export const normalizeRoot = (root?: string): string =>
     root === EMPTY_ROOT_HEX ? '' : (root ?? '');
 export const genesisNonce = (wardId: string): string =>
@@ -28,11 +30,13 @@ export const transitionMessage = (record: SignedTransition): Uint8Array => {
             throw new Error('invalid transition counter');
         const bytes = new Uint8Array(4);
         new DataView(bytes.buffer).setUint32(0, value);
+
         return bytes;
     };
     const word = (hex: string): Uint8Array => {
         const bytes = hexToBytes(hex);
         if (bytes.length !== 32) throw new Error('invalid transition word');
+
         return bytes;
     };
     if (record.kind !== 'commit' && record.kind !== 'revert')

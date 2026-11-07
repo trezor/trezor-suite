@@ -10,7 +10,7 @@ import {
 
 import type { Log } from './logging';
 import { reconstructAvailable } from './recoveryReconstruction';
-import type { SignedTransition } from './transition';
+import { type SignedTransition, normalizeRoot } from './transition';
 
 export const rebuildTrie = async (
     storage: WardProvider,
@@ -75,7 +75,7 @@ export const rebuildTrie = async (
     }
     for (const [index, row] of rows.entries()) log('trie.entry', JSON.stringify({ index, ...row }));
     log('trie.rebuild.start', { counter, entries: rows.length });
-    const rebuiltRoot = computeRootFromBlobs(rows);
+    const rebuiltRoot = normalizeRoot(computeRootFromBlobs(rows));
     log('trie.rebuild.complete', {
         counter,
         entries: rows.length,
