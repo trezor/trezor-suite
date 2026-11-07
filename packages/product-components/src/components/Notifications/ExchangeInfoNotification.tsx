@@ -7,8 +7,6 @@ import { ExchangeAmountWithSymbol } from './ExchangeAmountWithSymbol';
 import { ExchangeAssetWithFallback } from './ExchangeAssetWithFallback';
 import { type ExchangeInfoAmountSide, type ExchangeInfoAsset } from './notificationsTypes';
 
-export type { ExchangeInfoAmountSide, ExchangeInfoAsset } from './notificationsTypes';
-
 export type ExchangeInfoNotificationProps = {
     message: ReactNode;
     send: ExchangeInfoAsset;
