@@ -317,25 +317,6 @@ export const selectLabelableEntities = (state: MetadataRootState, deviceState: S
 
 /**
  * @deprecated Legacy Labeling
- */
-const selectLabelableEntityByKey = (
-    state: MetadataRootState,
-    deviceState: StaticSessionId,
-    entityKey: string,
-) =>
-    selectLabelableEntities(state, deviceState).find(e => {
-        if ('key' in e) {
-            return e.key === entityKey;
-        }
-        if ('state' in e) {
-            return e.state?.staticSessionId === entityKey;
-        }
-
-        return false;
-    });
-
-/**
- * @deprecated Legacy Labeling
  * Is everything ready to add label?
  */
 export const selectIsLabelingAvailable = (state: MetadataRootState) => {
@@ -377,16 +358,30 @@ export const selectIsLabelingAvailableForEntity = (
     entityKey: string,
     deviceStaticSessionId?: StaticSessionId,
 ): boolean => {
-    const device = deviceStaticSessionId
-        ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
-        : selectSelectedDevice(state);
-    if (!device?.state?.staticSessionId) return false;
-    const entity = selectLabelableEntityByKey(state, device.state.staticSessionId, entityKey);
+    if (!selectIsLabelingAvailable(state)) {
+        return false;
+    }
 
-    return Boolean(
-        selectIsLabelingAvailable(state) &&
-        entity?.[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName,
-    );
+    const walletId = deviceStaticSessionId ?? selectSelectedDevice(state)?.state?.staticSessionId;
+    if (!walletId) {
+        return false;
+    }
+
+    const device = selectDeviceByStaticSessionId(state, walletId);
+    if (!device) {
+        return false;
+    }
+
+    const account = selectAccountByKey(state, entityKey as AccountKey);
+    if (account?.deviceState === walletId) {
+        return Boolean(account.metadata[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName);
+    }
+
+    if (entityKey === walletId) {
+        return Boolean(device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName);
+    }
+
+    return false;
 };
 
 /**
