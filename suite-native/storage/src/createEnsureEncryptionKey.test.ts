@@ -23,6 +23,16 @@ const generatedKey = '01'.repeat(16);
 
 const flushPromises = () => new Promise(resolve => setTimeout(resolve, 0));
 
+const getSentryPayload = () =>
+    JSON.stringify(
+        jest
+            .mocked(captureException)
+            .mock.calls.map(([exception, captureContext]) => [
+                exception instanceof Error ? [exception.message, exception.stack] : exception,
+                captureContext,
+            ]),
+    );
+
 describe('createEnsureEncryptionKey', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -55,6 +65,7 @@ describe('createEnsureEncryptionKey', () => {
         expect(captureException).toHaveBeenCalledTimes(1);
         expect(captureException).toHaveBeenCalledWith(
             new Error('Encryption key is missing for existing encrypted storage'),
+            { tags: { storageKeyFailure: 'read-null-with-existing-data', appState: 'active' } },
         );
     });
 
@@ -116,6 +127,64 @@ describe('createEnsureEncryptionKey', () => {
         await expect(keyPromise).resolves.toBe(storedKey);
         expect(getRandomBytes).not.toHaveBeenCalled();
         expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
+    });
+
+    it('returns null and reports when the new key cannot be stored', async () => {
+        const writeError = new Error('Keychain write failed');
+        jest.mocked(SecureStore.getItemAsync).mockResolvedValue(null);
+        jest.mocked(MMKV.existsMMKV).mockReturnValue(false);
+        jest.mocked(SecureStore.setItemAsync).mockRejectedValue(writeError);
+
+        await expect(createEnsureEncryptionKey()()).resolves.toBeNull();
+
+        expect(captureException).toHaveBeenCalledTimes(1);
+        expect(captureException).toHaveBeenCalledWith(writeError, {
+            tags: { storageKeyFailure: 'set-failed', appState: 'active' },
+        });
+    });
+
+    it('reports both failed reads so that Sentry Dedupe keeps the second one', async () => {
+        mockAppState('background');
+        const firstReadError = new Error('User interaction is not allowed.');
+        const secondReadError = new Error('User interaction is not allowed.');
+        jest.mocked(SecureStore.getItemAsync)
+            .mockRejectedValueOnce(firstReadError)
+            .mockRejectedValueOnce(secondReadError);
+
+        await expect(createEnsureEncryptionKey()()).resolves.toBeNull();
+
+        expect(jest.mocked(captureException).mock.calls).toEqual([
+            [
+                firstReadError,
+                { tags: { storageKeyFailure: 'read-threw', appState: 'background', attempt: 1 } },
+            ],
+            [
+                secondReadError,
+                {
+                    tags: { storageKeyFailure: 'read-threw', appState: 'background', attempt: 2 },
+                    fingerprint: ['{{ default }}'],
+                },
+            ],
+        ]);
+    });
+
+    it('never sends the encryption key to Sentry', async () => {
+        const storedKey = 'stored-encryption-key';
+        jest.mocked(MMKV.existsMMKV).mockReturnValue(false);
+        jest.mocked(SecureStore.getItemAsync)
+            .mockRejectedValueOnce(new Error('Keychain unavailable'))
+            .mockResolvedValueOnce(null)
+            .mockRejectedValueOnce(new Error('Keychain unavailable'))
+            .mockResolvedValueOnce(storedKey);
+        jest.mocked(SecureStore.setItemAsync).mockRejectedValue(new Error('Keychain write failed'));
+        const ensureEncryptionKey = createEnsureEncryptionKey();
+
+        await expect(ensureEncryptionKey()).resolves.toBeNull();
+        await expect(ensureEncryptionKey()).resolves.toBe(storedKey);
+
+        expect(captureException).toHaveBeenCalledTimes(3);
+        expect(getSentryPayload()).not.toContain(generatedKey);
+        expect(getSentryPayload()).not.toContain(storedKey);
     });
 
     it('reads the key again after it was unavailable', async () => {

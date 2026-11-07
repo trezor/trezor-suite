@@ -335,8 +335,11 @@ describe('createMMKVStorage', () => {
 
             expect(captureException).toHaveBeenCalledWith(
                 new Error('Encrypted storage still exists after deletion'),
+                { tags: { storageKeyFailure: 'delete-failed', appState: 'active' } },
             );
-            expect(captureException).toHaveBeenCalledWith(keyDeletionError);
+            expect(captureException).toHaveBeenCalledWith(keyDeletionError, {
+                tags: { storageKeyFailure: 'delete-failed', appState: 'active' },
+            });
             expect(unecryptedJotaiStorage.clearAll).toHaveBeenCalledTimes(1);
             expect(RNRestart.restart).toHaveBeenCalledTimes(1);
         });
