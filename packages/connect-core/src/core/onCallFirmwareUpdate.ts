@@ -56,6 +56,38 @@ type ReconnectContext = {
     };
 };
 
+type WaitForDeviceDisconnectParams = Pick<ReconnectContext, 'deviceList' | 'abortSignal'>;
+
+const waitForDeviceDisconnect = ({ deviceList, abortSignal }: WaitForDeviceDisconnectParams) => {
+    let stopWaiting = () => {};
+    const promise = new Promise<void>((resolve, reject) => {
+        const onDisconnect = () => {
+            stopWaiting();
+            resolve();
+        };
+        const onAbort = () => {
+            stopWaiting();
+            reject(ERRORS.TypedError('Method_Interrupted'));
+        };
+        stopWaiting = () => {
+            deviceList.off('device-disconnect', onDisconnect);
+            abortSignal.removeEventListener('abort', onAbort);
+        };
+
+        if (abortSignal.aborted) {
+            onAbort();
+
+            return;
+        }
+        deviceList.once('device-disconnect', onDisconnect);
+        abortSignal.addEventListener('abort', onAbort);
+    });
+    // The caller may stop waiting before it awaits the promise.
+    promise.catch(() => {});
+
+    return { promise, stopWaiting };
+};
+
 // create UI promise and wait for:
 // - pairing confirmation
 // - device disconnection
@@ -135,9 +167,7 @@ const waitForReconnectedDevice = async (
                 i,
             }),
         );
-        await new Promise(resolve => {
-            deviceList.once('device-disconnect', resolve);
-        });
+        await waitForDeviceDisconnect({ deviceList, abortSignal }).promise;
     }
 
     log.debug(
@@ -235,7 +265,8 @@ const waitForReconnectedDevice = async (
                 )))
     );
 
-    if (!reconnectedDevice) {
+    // An abort ends the loop early, possibly with a device in the wrong mode.
+    if (abortSignal.aborted || !reconnectedDevice) {
         throw ERRORS.TypedError('Method_Interrupted');
     }
 
@@ -253,10 +284,16 @@ type WaitForBluetoothRebootParams = {
     target: 'bootloader' | 'normal';
     device: Device;
     postMessage: PostMessage;
+    abortSignal: AbortSignal;
 };
 
-const waitForBluetoothReboot = ({ device, target, postMessage }: WaitForBluetoothRebootParams) =>
-    new Promise<void>(resolve => {
+const waitForBluetoothReboot = ({
+    device,
+    target,
+    postMessage,
+    abortSignal,
+}: WaitForBluetoothRebootParams) =>
+    new Promise<void>((resolve, reject) => {
         postMessage(
             createUiEventMessage(UI_EVENTS.FIRMWARE_RECONNECT, {
                 device: device.toMessageObject(),
@@ -267,17 +304,33 @@ const waitForBluetoothReboot = ({ device, target, postMessage }: WaitForBluetoot
             }),
         );
 
+        let stopWaiting = () => {};
         const handler = () => {
             const deviceIsReady =
                 (target === 'bootloader' && device.features?.bootloader_mode) ||
                 (target === 'normal' && device.getThpState()?.properties);
 
             if (deviceIsReady) {
-                device.lifecycle.off('device-changed', handler);
+                stopWaiting();
                 resolve();
             }
         };
+        const onAbort = () => {
+            stopWaiting();
+            reject(ERRORS.TypedError('Method_Interrupted'));
+        };
+        stopWaiting = () => {
+            device.lifecycle.off('device-changed', handler);
+            abortSignal.removeEventListener('abort', onAbort);
+        };
+
+        if (abortSignal.aborted) {
+            onAbort();
+
+            return;
+        }
         device.lifecycle.on('device-changed', handler);
+        abortSignal.addEventListener('abort', onAbort);
     });
 
 const getInstallationParams = (device: Device, params: Params) => {
@@ -411,11 +464,27 @@ type OnCallFirmwareUpdateParams = {
     context: Context;
 };
 
-export const onCallFirmwareUpdate = async ({
+// The update holds a transport session from entering the bootloader until the final release,
+// on a different device instance after every reboot. Whichever phase fails, the session of the
+// device held in that phase is released.
+type FirmwareUpdateState =
+    | { phase: 'preparing' }
+    | { phase: 'enteringBootloader'; device: Device }
+    | { phase: 'installing'; device: Device }
+    | { phase: 'waitingForNormalMode'; device: Device }
+    | { phase: 'verifying'; device: Device }
+    | { phase: 'finished' };
+
+type FirmwareUpdateFlow = { state: FirmwareUpdateState };
+
+type UpdateFirmwareParams = OnCallFirmwareUpdateParams & { flow: FirmwareUpdateFlow };
+
+const updateFirmware = async ({
     params,
     context,
-}: OnCallFirmwareUpdateParams): Promise<FirmwareUpdateResponse> => {
-    const { deviceList, registerEvents, postMessage, selectDevice, log } = context;
+    flow,
+}: UpdateFirmwareParams): Promise<FirmwareUpdateResponse> => {
+    const { deviceList, registerEvents, postMessage, selectDevice, log, abortSignal } = context;
     log.debug('onCallFirmwareUpdate with params: ', params);
 
     // Firmware type can be determined by the device.firmwareType but in case of switching form one to other we use params.btcOnly.
@@ -503,6 +572,7 @@ export const onCallFirmwareUpdate = async ({
     const firmwareTypeChanged = device.firmwareType && device.firmwareType !== firmwareType;
 
     let reconnectedDevice: Device = device;
+    flow.state = { phase: 'enteringBootloader', device };
 
     if (deviceInitiallyConnectedInBootloader) {
         // Device started in bootloader, just acquire it
@@ -527,29 +597,36 @@ export const onCallFirmwareUpdate = async ({
 
         await device.acquire();
 
-        const disconnectedPromise = new Promise(resolve => {
-            deviceList.once('device-disconnect', resolve);
-        });
+        const disconnected = waitForDeviceDisconnect({ deviceList, abortSignal });
 
-        await device.getCommands().typedCall('RebootToBootloader', 'Success', rebootParams);
+        try {
+            await device.getCommands().typedCall('RebootToBootloader', 'Success', rebootParams);
 
-        log.info(
-            'onCallFirmwareUpdate',
-            'waiting for disconnected event after rebootToBootloader...',
-        );
+            log.info(
+                'onCallFirmwareUpdate',
+                'waiting for disconnected event after rebootToBootloader...',
+            );
 
-        if (device.descriptor.apiType === 'bluetooth') {
-            // close device
-            await device.release();
-            // wait for device-change
-            await waitForBluetoothReboot({ device, target: 'bootloader', postMessage });
-        } else {
-            await disconnectedPromise;
+            if (device.descriptor.apiType === 'bluetooth') {
+                // close device
+                await device.release();
+                // wait for device-change
+                await waitForBluetoothReboot({
+                    device,
+                    target: 'bootloader',
+                    postMessage,
+                    abortSignal,
+                });
+            } else {
+                await disconnected.promise;
 
-            // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
-            if (device.features.major_version === 1) {
-                await resolveAfter(2000);
+                // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
+                if (device.features.major_version === 1) {
+                    await resolveAfter(2000);
+                }
             }
+        } finally {
+            disconnected.stopWaiting();
         }
 
         reconnectedDevice = await waitForReconnectedDevice(
@@ -558,6 +635,7 @@ export const onCallFirmwareUpdate = async ({
         );
     }
 
+    flow.state = { phase: 'installing', device: reconnectedDevice };
     const bootloaderVersion = reconnectedDevice.getVersion();
 
     // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
@@ -586,6 +664,7 @@ export const onCallFirmwareUpdate = async ({
             { bootloader: true, method: 'manual', intermediary: true },
             { ...context, device: reconnectedDevice },
         );
+        flow.state = { phase: 'installing', device: reconnectedDevice };
 
         stripped = stripFwHeaders(finalBinaryInfo.binary);
         // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
@@ -601,9 +680,10 @@ export const onCallFirmwareUpdate = async ({
         });
     }
 
+    flow.state = { phase: 'waitingForNormalMode', device: reconnectedDevice };
     let method: ReconnectParams['method'] = 'wait';
     if (device.descriptor.apiType === 'bluetooth') {
-        await waitForBluetoothReboot({ device, target: 'normal', postMessage });
+        await waitForBluetoothReboot({ device, target: 'normal', postMessage, abortSignal });
         method = 'auto';
     }
 
@@ -611,6 +691,7 @@ export const onCallFirmwareUpdate = async ({
         { bootloader: false, method },
         { ...context, device: reconnectedDevice },
     );
+    flow.state = { phase: 'verifying', device: reconnectedDevice };
 
     const installedVersion = reconnectedDevice.getVersion();
     if (!bootloaderVersion || !installedVersion) {
@@ -626,6 +707,7 @@ export const onCallFirmwareUpdate = async ({
         : true; // binary
 
     await reconnectedDevice.release();
+    flow.state = { phase: 'finished' };
 
     log.info('onCallFirmwareUpdate', `firmware updated to version ${installedVersion}`);
 
@@ -636,4 +718,26 @@ export const onCallFirmwareUpdate = async ({
         binaryVersion,
         releaseVersion: release?.version,
     };
+};
+
+export const onCallFirmwareUpdate = async ({
+    params,
+    context,
+}: OnCallFirmwareUpdateParams): Promise<FirmwareUpdateResponse> => {
+    const flow: FirmwareUpdateFlow = { state: { phase: 'preparing' } };
+
+    try {
+        return await updateFirmware({ params, context, flow });
+    } catch (error) {
+        const { state } = flow;
+        if (state.phase !== 'preparing' && state.phase !== 'finished') {
+            context.log.debug(
+                'onCallFirmwareUpdate',
+                `releasing device after ${state.phase} failed`,
+            );
+            await state.device.release()?.catch(() => {});
+        }
+
+        throw error;
+    }
 };
