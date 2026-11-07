@@ -1,180 +1,77 @@
-import { type ReactNode, useCallback, useId, useMemo, useRef } from 'react';
-import ReactSelect, {
-    type ControlProps,
-    type OptionProps,
-    type Props as ReactSelectProps,
-    type SelectInstance,
-    type ValueContainerProps,
-} from 'react-select';
+import {
+    type ComponentType,
+    type LazyExoticComponent,
+    Suspense,
+    lazy,
+    useEffect,
+    useState,
+} from 'react';
 
-import {
-    FormCell,
-    type FormCellProps,
-    allowedFormCellFrameProps,
-    pickFormCellProps,
-} from '../FormCell/FormCell';
-import { type InputSize } from '../types';
-import {
-    Control,
-    DropdownIndicator,
-    Group,
-    GroupHeading,
-    IndicatorsContainer,
-    LoadingIndicator,
-    Menu,
-    MenuList,
-    Option,
-    Placeholder,
-    SingleValue,
-    ValueContainer,
-} from './customComponents';
-import { type CustomSelectProps, type Option as OptionType } from './types';
-import { createSharedMenuStyles } from './utils';
-import { type FrameProps } from '../../../utils/frameProps';
+import { SelectFallback } from './SelectFallback';
+import { type SelectProps } from './types';
+import { FormCell, allowedFormCellFrameProps, pickFormCellProps } from '../FormCell/FormCell';
+
+/**
+ * react-select (with its emotion runtime) loads with the first rendered Select, not with the app.
+ * A failed download renders a disabled control instead of crashing the app. Each Select keeps the
+ * component it mounted with, so its re-renders never download again, and the failed control re-arms
+ * the loader once it has committed, so the next mounted Select tries once more.
+ */
+let SelectInner: LazyExoticComponent<ComponentType<SelectProps>>;
+
+const loadSelectInner = (): Promise<{ default: ComponentType<SelectProps> }> =>
+    import('./SelectInner').then(
+        module => ({ default: module.SelectInner }),
+        () => {
+            const failedSelectInner = SelectInner;
+
+            const SelectLoadFailed = ({ size, isClean, hasError }: SelectProps) => {
+                /**
+                 * Re-armed after the commit, not in the loader: React renders a tree that has not
+                 * committed yet again once the load settles, and a fresh lazy there downloads again.
+                 */
+                useEffect(() => {
+                    if (SelectInner === failedSelectInner) {
+                        SelectInner = lazy(loadSelectInner);
+                    }
+                }, []);
+
+                return (
+                    <SelectFallback size={size} isClean={isClean} hasError={hasError} isDisabled />
+                );
+            };
+
+            return { default: SelectLoadFailed };
+        },
+    );
+
+SelectInner = lazy(loadSelectInner);
 
 export const allowedSelectFrameProps = allowedFormCellFrameProps;
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[number]>;
 
-export type { Option } from './types';
-export { Option as SelectOption } from './customComponents';
+export type { Option, SelectProps, SelectRef } from './types';
+export { SelectOption } from './SelectOption';
 
-// This intentionally exposes only the capability used by consumers instead of deriving it from
-// react-select's generic SelectInstance, which would leak that implementation type into our public API.
-export type SelectRef = {
-    clearValue: () => void;
-};
-
-export type SelectProps = AllowedFrameProps &
-    Omit<FormCellProps, 'children'> &
-    Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'> &
-    CustomSelectProps & {
-        label?: ReactNode;
-        size?: InputSize;
-        minValueWidth?: number;
-        isClean?: boolean;
-        isMenuOpen?: boolean;
-        isLoading?: boolean;
-        onChange?: (value: OptionType, ref?: SelectRef | null) => void;
-        'data-testid'?: string;
-        openMenuOnFocus?: boolean;
-        /** When using menuPortalTarget (e.g. in modals), set this so the menu appears above the modal */
-        menuPortalZIndex?: number;
-    };
-
-export const Select = ({
-    label,
-    size = 'large',
-    isClean,
-    isSearchable = false,
-    minValueWidth,
-    isMenuOpen,
-    onChange,
-    placeholder,
-    isLoading = false,
-    openMenuOnFocus = true,
-    menuPortalZIndex,
-    menuAlign,
-    components,
-    'data-testid': dataTest,
-    ...rest
-}: SelectProps) => {
-    const selectRef = useRef<SelectInstance<OptionType, boolean>>(null);
-    const autoInstanceId = useId();
-
-    const formCellProps = pickFormCellProps(rest);
-    const { isDisabled, hasError } = formCellProps;
-
-    const reactSelectProps = Object.entries(rest).reduce(
-        (props, [propKey, propValue]) => {
-            if (!(propKey in formCellProps)) {
-                (props as Record<string, unknown>)[propKey] = propValue;
-            }
-
-            return props;
-        },
-        {} as Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen' | 'styles'>,
-    );
-
-    const menuStyles = useMemo(
-        () => createSharedMenuStyles<OptionType>({ menuPortalZIndex, menuAlign }),
-        [menuPortalZIndex, menuAlign],
-    );
-
-    const closeMenuOnScroll = (e: Event) => {
-        const menuList = selectRef.current?.menuListRef;
-        if (!menuList) return false;
-
-        return !menuList.contains(e.target as Node);
-    };
-
-    const handleOnChange = useCallback<Required<ReactSelectProps<OptionType>>['onChange']>(
-        value => {
-            if (value) {
-                onChange?.(value, selectRef.current);
-            }
-
-            return null;
-        },
-        [onChange],
-    );
-
-    const memoizedComponents = useMemo(
-        () => ({
-            Control: (controlProps: ControlProps) => (
-                <Control
-                    {...controlProps}
-                    hasError={hasError}
-                    size={size}
-                    data-testid={dataTest}
-                    isClean={isClean}
-                    label={label}
-                />
-            ),
-            Option: (optionProps: OptionProps) => (
-                <Option {...optionProps} size={size} data-testid={dataTest} />
-            ),
-            Menu,
-            MenuList,
-            GroupHeading,
-            Group,
-            IndicatorsContainer,
-            DropdownIndicator,
-            ValueContainer: (valueContainerProps: ValueContainerProps) => (
-                <ValueContainer
-                    {...valueContainerProps}
-                    minValueWidth={minValueWidth}
-                    hasLabel={!!label && !isClean}
-                    size={size}
-                />
-            ),
-            SingleValue,
-            LoadingIndicator,
-            Placeholder,
-            ...components,
-        }),
-        [dataTest, hasError, size, minValueWidth, label, isClean, components],
-    );
+export const Select = (props: SelectProps) => {
+    const [MountedSelectInner] = useState(() => SelectInner);
+    const { size = 'large', isClean, isLoading } = props;
+    const formCellProps = pickFormCellProps(props);
+    const { hasError, isDisabled } = formCellProps;
 
     return (
         <FormCell {...formCellProps} data-component="Select">
-            <ReactSelect
-                ref={selectRef}
-                openMenuOnFocus={openMenuOnFocus}
-                closeMenuOnScroll={closeMenuOnScroll}
-                menuPosition="fixed"
-                onChange={handleOnChange}
-                isSearchable={isSearchable}
-                menuIsOpen={isMenuOpen}
-                isDisabled={isDisabled ?? false}
-                isLoading={isLoading}
-                menuPlacement="auto"
-                placeholder={placeholder ?? ''}
-                unstyled
-                styles={menuStyles}
-                components={memoizedComponents}
-                instanceId={autoInstanceId}
-                {...reactSelectProps}
-            />
+            <Suspense
+                fallback={
+                    <SelectFallback
+                        size={size}
+                        isClean={isClean}
+                        hasError={hasError}
+                        isDisabled={isDisabled || isLoading}
+                    />
+                }
+            >
+                <MountedSelectInner {...props} />
+            </Suspense>
         </FormCell>
     );
 };
