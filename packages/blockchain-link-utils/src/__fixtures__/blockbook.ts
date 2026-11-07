@@ -196,6 +196,46 @@ export const filterTokenTransfers = [
         transfers: ['A', null, 1, {}],
         parsed: [],
     },
+    {
+        description: 'EIP-7708 pseudo-token transfer is dropped, real token transfer is kept',
+        addresses: 'B',
+        transfers: [
+            { ...tIn, from: 'A', to: 'B' },
+            {
+                ...tIn,
+                name: '',
+                symbol: '',
+                contract: '0xfffffffffffffffffffffffffffffffffffffffe',
+                value: '100',
+                from: 'A',
+                to: 'B',
+            },
+        ],
+        parsed: [
+            {
+                ...tOut,
+                type: 'recv',
+                from: 'A',
+                to: 'B',
+            },
+        ],
+    },
+    {
+        description: 'EIP-7708 pseudo-token transfer with checksummed contract is dropped',
+        addresses: 'B',
+        transfers: [
+            {
+                ...tIn,
+                name: '',
+                symbol: '',
+                contract: '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE',
+                value: '100',
+                from: 'A',
+                to: 'B',
+            },
+        ],
+        parsed: [],
+    },
 ];
 
 type BlockbookAccountToken = NonNullable<BlockbookAccountInfo['tokens']>[number];
