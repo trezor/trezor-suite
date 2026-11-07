@@ -474,3 +474,117 @@ describe('BaseProcess.stop', () => {
         });
     });
 });
+
+describe('BaseProcess.start', () => {
+    // Readiness checks without `autoRestart`: the first one 20 ms after the spawn, then 40, 80 and 160 ms
+    // later, and every 200 ms from there on.
+    const CHECK_TIMES_MS = [20, 60, 140, 300, 500, 700];
+
+    beforeEach(() => {
+        global.resourcesPath = '/tmp/resources';
+        jest.useFakeTimers();
+        jest.mocked(spawn).mockReset();
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    // The service listens from the given readiness check on; the first status call is the pre-start check.
+    const startWithServiceUpOnCheck = (serviceUpOnCheck: number) => {
+        const child = new FakeChildProcess();
+        jest.mocked(spawn).mockReturnValue(child);
+        const testProcess = new TestProcess({ autoRestart: 0 });
+        let statusCalls = 0;
+        testProcess.status.mockImplementation(() => {
+            statusCalls += 1;
+
+            return Promise.resolve({
+                service: statusCalls > serviceUpOnCheck,
+                process: !!child,
+            });
+        });
+        const started = testProcess.start();
+        const state = { settled: false };
+        // A rejection is asserted explicitly where expected; the watcher keeps it from being unhandled.
+        started.then(
+            () => {
+                state.settled = true;
+            },
+            () => {
+                state.settled = true;
+            },
+        );
+
+        return { testProcess, child, started, state };
+    };
+
+    it('resolves on the first readiness check when the service listens right away', async () => {
+        const { testProcess, state } = startWithServiceUpOnCheck(1);
+
+        await jest.advanceTimersByTimeAsync(CHECK_TIMES_MS[0]! - 1);
+        expect(state.settled).toBe(false);
+        expect(testProcess.status).toHaveBeenCalledTimes(1);
+
+        await jest.advanceTimersByTimeAsync(1);
+        expect(state.settled).toBe(true);
+        expect(testProcess.status).toHaveBeenCalledTimes(2);
+    });
+
+    it('backs off between readiness checks and caps the delay', async () => {
+        const { testProcess, state } = startWithServiceUpOnCheck(CHECK_TIMES_MS.length);
+
+        let elapsedMs = 0;
+        for (const [index, checkTimeMs] of CHECK_TIMES_MS.entries()) {
+            await jest.advanceTimersByTimeAsync(checkTimeMs - 1 - elapsedMs);
+            expect(testProcess.status).toHaveBeenCalledTimes(index + 1);
+            expect(state.settled).toBe(false);
+
+            await jest.advanceTimersByTimeAsync(1);
+            elapsedMs = checkTimeMs;
+            expect(testProcess.status).toHaveBeenCalledTimes(index + 2);
+        }
+
+        expect(state.settled).toBe(true);
+    });
+
+    it('stops listening for the spawn failure once the service listens', async () => {
+        const { child } = startWithServiceUpOnCheck(1);
+
+        await jest.advanceTimersByTimeAsync(CHECK_TIMES_MS[0]!);
+
+        // Only the exit handler installed for every process stays attached.
+        expect(child.listenerCount('close')).toBe(1);
+    });
+
+    it('keeps checking while an earlier status request is still pending', async () => {
+        const child = new FakeChildProcess();
+        jest.mocked(spawn).mockReturnValue(child);
+        const testProcess = new TestProcess({ autoRestart: 0 });
+        testProcess.status
+            // The pre-start check, then a first readiness check that never settles.
+            .mockResolvedValueOnce({ service: false, process: false })
+            .mockReturnValueOnce(new Promise<Status>(() => {}))
+            .mockResolvedValue({ service: true, process: true });
+        const state = watchPromiseSettled(testProcess.start());
+
+        await jest.advanceTimersByTimeAsync(CHECK_TIMES_MS[1]!);
+
+        expect(testProcess.status).toHaveBeenCalledTimes(3);
+        expect(state.settled).toBe(true);
+    });
+
+    it('rejects when the process closes before the service listens and checks no further', async () => {
+        const { testProcess, child, started } = startWithServiceUpOnCheck(Number.MAX_SAFE_INTEGER);
+
+        await jest.advanceTimersByTimeAsync(CHECK_TIMES_MS[0]!);
+        expect(testProcess.status).toHaveBeenCalledTimes(2);
+
+        child.emit('close', 1);
+        await expect(started).rejects.toThrow('Process test not started. 1');
+        expect(testProcess.hasProcess()).toBe(false);
+
+        await jest.advanceTimersByTimeAsync(1000);
+        expect(testProcess.status).toHaveBeenCalledTimes(2);
+    });
+});

@@ -21,10 +21,13 @@ export const SERVICE_NAME = '@trezor/transport-bluetooth';
 // getTransport function is reassigned in onLoad, onQuit
 type BluetoothModuleState = {
     getTransport: () => BluetoothTransport | undefined;
+    // Resolves once a helper start that is still in progress has settled, with the transport if it is up.
+    getTransportWhenStarted: () => Promise<BluetoothTransport | undefined>;
 };
 
 export const bluetoothModuleState: BluetoothModuleState = {
     getTransport: () => undefined,
+    getTransportWhenStarted: () => Promise.resolve(undefined),
 };
 
 export const init: ModuleInit = ({ logger }) => {
@@ -58,6 +61,13 @@ export const init: ModuleInit = ({ logger }) => {
         err => logger.error(SERVICE_NAME, `Failed to stop process: ${err}`),
     );
 
+    // The helper takes a few hundred milliseconds to come up, so it starts here, in parallel with the
+    // window and the renderer boot, instead of once the renderer asks for it. A failed start is not
+    // fatal: the renderer's init request starts it again and reports the failure to the user.
+    lazyBluetooth
+        .getOrInit()
+        .catch(err => logger.warn(SERVICE_NAME, `Early helper start failed: ${err}`));
+
     const getClient = () =>
         (lazyBluetooth.get() ?? throwError('BluetoothIpc api not initialized')).client;
 
@@ -74,6 +84,13 @@ export const init: ModuleInit = ({ logger }) => {
                   // writeWithDelay: isWindows(),
               })
             : undefined;
+    };
+
+    const getBluetoothTransportWhenStarted = async () => {
+        // A start the renderer did not wait for may still be in progress.
+        await lazyBluetooth.getPending()?.catch(() => undefined);
+
+        return getBluetoothTransport();
     };
 
     const proxyOptions: IpcProxyHandlerOptions<BluetoothIpcApi> = {
@@ -144,6 +161,7 @@ export const init: ModuleInit = ({ logger }) => {
     const unregisterProxy = createIpcProxyHandler(looselyTypedIpcMain, 'Bluetooth', proxyOptions);
     const onLoad = () => {
         bluetoothModuleState.getTransport = getBluetoothTransport;
+        bluetoothModuleState.getTransportWhenStarted = getBluetoothTransportWhenStarted;
     };
 
     const onQuit = async () => {
@@ -151,6 +169,7 @@ export const init: ModuleInit = ({ logger }) => {
         unregisterProxy();
         await lazyBluetooth.dispose();
         bluetoothModuleState.getTransport = () => undefined;
+        bluetoothModuleState.getTransportWhenStarted = () => Promise.resolve(undefined);
     };
 
     return { onLoad, onQuit };
