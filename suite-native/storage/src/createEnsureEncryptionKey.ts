@@ -79,7 +79,15 @@ export const createEnsureEncryptionKey = (): EnsureEncryptionKey => {
     let secureKeyPromise: Promise<StorageEncryptionKey | null> | null = null;
 
     return () => {
-        secureKeyPromise ??= resolveEncryptionKey();
+        // Concurrent callers share one read. Only a key is cached, because a key that is unavailable
+        // now can become readable later, e.g. after the device is unlocked.
+        secureKeyPromise ??= resolveEncryptionKey().then(secureKey => {
+            if (secureKey === null) {
+                secureKeyPromise = null;
+            }
+
+            return secureKey;
+        });
 
         return secureKeyPromise;
     };

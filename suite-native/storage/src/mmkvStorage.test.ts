@@ -8,11 +8,13 @@ import * as SecureStore from 'expo-secure-store';
 import { unecryptedJotaiStorage } from './atomWithUnecryptedStorage';
 import {
     ENCRYPTION_KEY,
+    type EnsureEncryptionKey,
     type EnsureEncryptionKeyDep,
     type StorageEncryptionKey,
 } from './createEnsureEncryptionKey';
 import { ENCRYPTED_STORAGE_ID } from './encryptedStorageId';
 import { createMMKVStorage } from './mmkvStorage';
+import { mockAppState } from '../mocks/mockAppState';
 
 jest.mock('react-native-mmkv', () => {
     const actual = jest.requireActual<typeof MMKV>('react-native-mmkv');
@@ -57,6 +59,7 @@ const pressAlertButton = (buttonText: string) => {
 describe('createMMKVStorage', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockAppState('active');
     });
 
     afterEach(() => {
@@ -113,6 +116,104 @@ describe('createMMKVStorage', () => {
 
         expect(MMKV.createMMKV).not.toHaveBeenCalled();
         expect(alertSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('retries initialization without an alert once the app becomes active', async () => {
+        const { changeAppState, getListenerCount } = mockAppState('background');
+        const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+        const lockedKeyDeps: EnsureEncryptionKeyDep = {
+            ensureEncryptionKey: jest
+                .fn<ReturnType<EnsureEncryptionKey>, Parameters<EnsureEncryptionKey>>()
+                .mockResolvedValueOnce(null)
+                .mockResolvedValueOnce(encryptionKey),
+        };
+        const storage = createMMKVStorage(lockedKeyDeps);
+
+        const mmkvPromise = storage.getMMKV();
+        await flushPromises();
+        changeAppState('inactive');
+        await flushPromises();
+
+        expect(lockedKeyDeps.ensureEncryptionKey).toHaveBeenCalledTimes(1);
+        expect(alertSpy).not.toHaveBeenCalled();
+
+        changeAppState('active');
+        const instance = await mmkvPromise;
+
+        expect(await storage.getMMKV()).toBe(instance);
+        expect(lockedKeyDeps.ensureEncryptionKey).toHaveBeenCalledTimes(2);
+        expect(MMKV.createMMKV).toHaveBeenCalledTimes(1);
+        expect(alertSpy).not.toHaveBeenCalled();
+        expect(getListenerCount()).toBe(0);
+    });
+
+    it('retries without an alert after MMKV creation fails in background', async () => {
+        const { changeAppState } = mockAppState('background');
+        const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+        jest.mocked(MMKV.createMMKV).mockImplementationOnce(() => {
+            throw new Error('Unable to open storage');
+        });
+        const storage = createMMKVStorage(deps);
+
+        const mmkvPromise = storage.getMMKV();
+        await flushPromises();
+        changeAppState('active');
+        await mmkvPromise;
+
+        expect(MMKV.createMMKV).toHaveBeenCalledTimes(2);
+        expect(alertSpy).not.toHaveBeenCalled();
+    });
+
+    it('retries once before the alert when an attempt started in background fails after the app became active', async () => {
+        const { changeAppState } = mockAppState('background');
+        const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+        let resolveBackgroundKey: (encryptionKey: StorageEncryptionKey | null) => void = () => {};
+        const backgroundKeyDeps: EnsureEncryptionKeyDep = {
+            ensureEncryptionKey: jest
+                .fn<ReturnType<EnsureEncryptionKey>, Parameters<EnsureEncryptionKey>>()
+                .mockReturnValueOnce(
+                    new Promise(resolve => {
+                        resolveBackgroundKey = resolve;
+                    }),
+                )
+                .mockResolvedValueOnce(null),
+        };
+        const storage = createMMKVStorage(backgroundKeyDeps);
+
+        const mmkvPromise = storage.getMMKV();
+        changeAppState('active');
+        resolveBackgroundKey(null);
+
+        await expect(mmkvPromise).rejects.toThrow('Encryption key is unreadable!');
+        expect(backgroundKeyDeps.ensureEncryptionKey).toHaveBeenCalledTimes(2);
+        expect(alertSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows one alert to concurrent callers when the retry in foreground fails', async () => {
+        const { changeAppState, getListenerCount } = mockAppState('background');
+        const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+        const storage = createMMKVStorage(unreadableKeyDeps);
+
+        const results = Promise.allSettled([
+            storage.getMMKV(),
+            storage.getMMKV(),
+            storage.getItem('persist:root'),
+        ]);
+        await flushPromises();
+
+        expect(getListenerCount()).toBe(1);
+        expect(alertSpy).not.toHaveBeenCalled();
+
+        changeAppState('active');
+
+        expect(await results).toEqual(
+            Array(3).fill({
+                status: 'rejected',
+                reason: new Error('Encryption key is unreadable!'),
+            }),
+        );
+        expect(alertSpy).toHaveBeenCalledTimes(1);
+        expect(getListenerCount()).toBe(0);
     });
 
     describe('storage alert', () => {
