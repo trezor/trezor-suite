@@ -36,7 +36,7 @@ const expectedCommit = (keyType: string, identity: LeafPart, content: LeafPart) 
     return bytesToHex(
         sha256(
             concatBytes(
-                new Uint8Array([0x02]),
+                new Uint8Array([0x03]),
                 len8(kt.length),
                 kt,
                 len32(id.length),
@@ -163,12 +163,9 @@ describe('WARD two-part leaf commit — host mirror of service.py / ward_crypto'
         expect(computeRootFromBlobs(flipped)).not.toBe(root);
     });
 
-    it('an empty content body is the delete sentinel, identity survives it', () => {
-        const idBody = clear(bytesToHex(packIdentity(utf8('gone'), 'bitcoin', 0)));
-        const tombstone = commitOf('address', idBody, EMPTY_PART);
+    it('commits both empty parts of an explicit deletion marker', () => {
+        const deletion = commitOf('address', EMPTY_PART, EMPTY_PART);
 
-        expect(bytesToHex(tombstone)).toBe(expectedCommit('address', idBody, EMPTY_PART));
-        // the tombstone is still self-describing: the identity part is intact
-        expect(idBody.bodyHex).not.toBe('');
+        expect(bytesToHex(deletion)).toBe(expectedCommit('address', EMPTY_PART, EMPTY_PART));
     });
 });

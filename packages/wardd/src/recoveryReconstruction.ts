@@ -127,7 +127,7 @@ export const reconstructAvailable = async ({
                         content: leaf.content,
                     });
             }
-        const rebuilt = local ? computeRootFromBlobs([...next.values()]) : undefined;
+        const rebuilt = local ? normalizeRoot(computeRootFromBlobs([...next.values()])) : undefined;
         if (!local || rebuilt === undefined || rebuilt !== normalizeRoot(record.root)) {
             log('trie.replay.unavailable', {
                 counter: record.counter,
@@ -157,7 +157,7 @@ export const reconstructAvailable = async ({
         entries: leaves.size,
         freshReconstruction: true,
     });
-    root = computeRootFromBlobs([...leaves.values()]);
+    root = normalizeRoot(computeRootFromBlobs([...leaves.values()]));
     if (root !== head.root) throw new Error('recovery trie does not match the authoritative head');
     for (const [index, row] of [...leaves.values()].entries())
         log('trie.entry', JSON.stringify({ index, ...row }));

@@ -12,13 +12,13 @@
  *
  * Reuses the proof primitives in `../proof` — it never reimplements hashing/proofs.
  */
-import { transitionFingerprint } from '../storage/transition';
 
 import { bytesToHex } from '@noble/hashes/utils.js';
 
 import type { BlobRow } from '../proof';
-import { computeRootFromBlobs, entryToValueBytes } from '../proof';
+import { EMPTY_ROOT_HEX, computeRootFromBlobs, entryToValueBytes } from '../proof';
 import type { WardProvider } from '../storage';
+import { transitionFingerprint } from '../storage/transition';
 import type {
     TreeState,
     WardEntry,
@@ -146,7 +146,8 @@ export const hydrate = (
                 });
             }
         }
-        const root = computeRootFromBlobs([...leaves.values()]);
+        const digest = computeRootFromBlobs([...leaves.values()]);
+        const root = digest === EMPTY_ROOT_HEX ? '' : digest;
         onReplay?.({
             counter: t.counter,
             root,
@@ -266,7 +267,7 @@ export const commitLocal = async (
     }
     // The checkpoint ALWAYS advances after a confirmed device round -- including a
     // delete that empties the tree, where the device reports no root at all. The host's
-    // canonical empty root is '' (what computeRootFromBlobs([]) returns), so skipping
+    // empty checkpoint uses '' on the wire, so skipping
     // the write here would leave tree_state pinned to the pre-delete root while the
     // device moved on: a silent desync that makes every later proof fail.
     await provider.setTreeState(wardId, {

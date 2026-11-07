@@ -13,7 +13,7 @@ import {
 } from '@trezor/ward';
 
 import { readLeafContent, readLeafIdentity } from '../src/proofs';
-import { transitionMessage } from '../src/transition';
+import { normalizeRoot, transitionMessage } from '../src/transition';
 
 const WALLET_KEY = new Uint8Array(32).fill(18);
 export const WARD_ID = bytesToHex(ed25519.getPublicKey(WALLET_KEY));
@@ -50,7 +50,7 @@ export const fakeDevice = (endpoint: () => WardRelayEndpoint, opts: { wardId?: s
     let counter = 0;
     let headNonce = '';
     let pending: { entryKey: string; body: string; deleting: boolean } | undefined;
-    const root = () => computeRootFromBlobs([...leaves.values()]);
+    const root = () => normalizeRoot(computeRootFromBlobs([...leaves.values()]));
     const entryKeyOf = (address: string) => utf8Hex(address).padEnd(64, '0').slice(0, 64);
     const pull = async (entryKey: string) => {
         const ack = await endpoint().call('answerProofRequest', {
