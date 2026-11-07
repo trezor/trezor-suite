@@ -98,6 +98,7 @@ export const useExchangeDexQuote = ({
         if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
             setValue('transactionData', '');
             setValue(TRADING_FORM_OUTPUT_ADDRESS, '');
+            setValue('ethereumAdjustGasLimit', undefined);
             setValue('ethereumFixedGasLimit', undefined);
 
             return;
@@ -106,6 +107,7 @@ export const useExchangeDexQuote = ({
         if (!quote?.dexTx) {
             setValue('transactionData', '');
             setValue(TRADING_FORM_OUTPUT_ADDRESS, '');
+            setValue('ethereumAdjustGasLimit', undefined);
             setValue(
                 'ethereumFixedGasLimit',
                 requiresErc20Approval(sendCryptoSelect.id)
