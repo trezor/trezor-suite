@@ -30,6 +30,9 @@ export type BaseProcessOptions = {
 };
 
 const DEFAULT_MAX_KILL_ATTEMPTS = 2;
+// Delay before the first readiness check of a started service, doubled on every miss up to the maximum.
+const READINESS_POLL_INITIAL_MS = 20;
+const READINESS_POLL_MAX_MS = 200;
 
 const defaultOptions: BaseProcessOptions = {
     startupCooldown: 0,
@@ -170,13 +173,14 @@ export abstract class BaseProcess {
             // When running without `autoRestart` the responsibility of restarting it is in the module
             // that started the process, so if it fails an error is thrown to let the module knows something
             // went wrong.
-            // eslint-disable-next-line prefer-const
-            let resolveTimeout: TimerId | undefined;
+            let readinessTimer: TimerId | undefined;
+            let settled = false;
             const spawnErrorHandler = (message: any) => {
                 // This error handler will be triggered if there is an error during spawn of the process,
                 // it will reject with an error so the user can be notified that something went wrong.
+                settled = true;
                 this.process = null;
-                clearTimeout(resolveTimeout);
+                clearTimeout(readinessTimer);
                 reject(new Error(`Process ${this.processName} not started. ${message}`));
             };
 
@@ -184,15 +188,28 @@ export abstract class BaseProcess {
             // https://nodejs.org/api/child_process.html#event-close
             this.process.once('close', spawnErrorHandler);
 
-            resolveTimeout = setInterval(async () => {
+            // The bundled services usually listen within milliseconds of the spawn, so the first checks
+            // come quickly and the delay backs off to keep the polling cheap for a slow starter like the coinjoin backend.
+            const checkReadiness = async (delayMs: number) => {
+                // Scheduled first so a slow-to-fail status request cannot hold back the next check.
+                const nextDelayMs = Math.min(delayMs * 2, READINESS_POLL_MAX_MS);
+                readinessTimer = setTimeout(() => checkReadiness(nextDelayMs), nextDelayMs);
+
                 const currentStatus = await this.status();
+                if (settled) return;
+
                 // We make sure that the service is available and then stop listening for initial error.
                 if (currentStatus.service && this.process) {
-                    clearTimeout(resolveTimeout);
+                    settled = true;
+                    clearTimeout(readinessTimer);
                     this.process.removeListener('close', spawnErrorHandler);
                     resolve();
                 }
-            }, 200);
+            };
+            readinessTimer = setTimeout(
+                () => checkReadiness(READINESS_POLL_INITIAL_MS),
+                READINESS_POLL_INITIAL_MS,
+            );
         });
     }
 

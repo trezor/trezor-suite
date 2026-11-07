@@ -21,10 +21,13 @@ export const SERVICE_NAME = '@trezor/transport-bluetooth';
 // getTransport function is reassigned in onLoad, onQuit
 type BluetoothModuleState = {
     getTransport: () => BluetoothTransport | undefined;
+    // Resolves once a helper start that is still in progress has settled, with the transport if it is up.
+    getTransportWhenStarted: () => Promise<BluetoothTransport | undefined>;
 };
 
 export const bluetoothModuleState: BluetoothModuleState = {
     getTransport: () => undefined,
+    getTransportWhenStarted: () => Promise.resolve(undefined),
 };
 
 export const init: ModuleInit = ({ logger }) => {
@@ -58,6 +61,20 @@ export const init: ModuleInit = ({ logger }) => {
         err => logger.error(SERVICE_NAME, `Failed to stop process: ${err}`),
     );
 
+    let earlyStartError: unknown;
+    let isQuitting = false;
+
+    // The helper takes a few hundred milliseconds to come up, so it starts here,
+    // in parallel with the window and the renderer boot, instead of once the renderer asks for it.
+    // A failed start is not fatal: the renderer's init request starts it again and reports the failure to the user.
+    lazyBluetooth.getOrInit().catch(error => {
+        // Quitting rejects a start that is still in progress, which is not a failure.
+        if (isQuitting) return;
+
+        earlyStartError = error;
+        logger.warn(SERVICE_NAME, `Early helper start failed: ${error}`);
+    });
+
     const getClient = () =>
         (lazyBluetooth.get() ?? throwError('BluetoothIpc api not initialized')).client;
 
@@ -76,12 +93,32 @@ export const init: ModuleInit = ({ logger }) => {
             : undefined;
     };
 
+    const getBluetoothTransportWhenStarted = async () => {
+        // The helper starts at module init, so it may not be up yet when connect asks.
+        // Waits for a helper start that is still in progress; if it fails, there is no transport.
+        await lazyBluetooth.getPending()?.catch(() => undefined);
+
+        return getBluetoothTransport();
+    };
+
+    const describeHelperState = () => {
+        const api = lazyBluetooth.get();
+        if (api) return `Helper running at ${api.process.getUrl()}`;
+        if (lazyBluetooth.getPending()) return 'Helper start in progress';
+
+        return earlyStartError === undefined
+            ? 'Helper not running'
+            : `Helper not running, early start failed: ${earlyStartError}`;
+    };
+
     const proxyOptions: IpcProxyHandlerOptions<BluetoothIpcApi> = {
         onCreateInstance() {
             return {
                 onRequest: async (method, params) => {
                     logger.debug(SERVICE_NAME, `call ${method}`);
                     if (method === 'init') {
+                        // A start in progress settles first, so its failure is retried too.
+                        await lazyBluetooth.getPending()?.catch(() => undefined);
                         await lazyBluetooth.getOrInit();
                     }
 
@@ -143,14 +180,19 @@ export const init: ModuleInit = ({ logger }) => {
 
     const unregisterProxy = createIpcProxyHandler(looselyTypedIpcMain, 'Bluetooth', proxyOptions);
     const onLoad = () => {
+        // Repeats the early start's outcome, which is logged before file logging is turned on.
+        logger.info(SERVICE_NAME, describeHelperState());
         bluetoothModuleState.getTransport = getBluetoothTransport;
+        bluetoothModuleState.getTransportWhenStarted = getBluetoothTransportWhenStarted;
     };
 
     const onQuit = async () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
+        isQuitting = true;
         unregisterProxy();
         await lazyBluetooth.dispose();
         bluetoothModuleState.getTransport = () => undefined;
+        bluetoothModuleState.getTransportWhenStarted = () => Promise.resolve(undefined);
     };
 
     return { onLoad, onQuit };
