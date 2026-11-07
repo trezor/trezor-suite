@@ -10,7 +10,7 @@ import {
     CryptoToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type EarnAmountCardProps = {
@@ -48,8 +48,17 @@ export const EarnAmountCard = ({ accountKey, label, cryptoAmount }: EarnAmountCa
         <Card noPadding noShadow style={applyStyle(cardStyle)}>
             <AccountsListItemBase
                 icon={<TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} />}
-                title={label ?? <AccountLabel account={account} />}
+                title={label ?? <Translation id="earn.earnFormScreen.availableBalance" />}
                 titleBadge={<AccountTypeBadge accountKey={accountKey} />}
+                badges={
+                    label === undefined ? (
+                        <AccountLabel
+                            account={account}
+                            variant="body-sm"
+                            color="contentSecondary"
+                        />
+                    ) : undefined
+                }
                 mainValue={
                     <CompactCryptoAmountFormatter
                         value={amount}

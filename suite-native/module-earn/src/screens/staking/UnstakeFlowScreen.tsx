@@ -145,6 +145,14 @@ export const UnstakeFlowScreen = () => {
             footerHorizontalPadding="sp16"
         >
             <Box pointerEvents={isPending ? 'none' : 'auto'}>
+                {canClaim && networkSymbol && (
+                    <Box marginBottom="sp16">
+                        <UnstakeCanClaimAlert
+                            claimableAmount={claimableAmount}
+                            symbol={networkSymbol}
+                        />
+                    </Box>
+                )}
                 <EarnAmountCard
                     accountKey={accountKey}
                     label={<Translation id="earn.earnFormScreen.staked" />}
@@ -195,14 +203,6 @@ export const UnstakeFlowScreen = () => {
                         <BannerInline
                             intent="warning"
                             title={<Translation id="earn.earnFormScreen.networkFeeWarning" />}
-                        />
-                    </Box>
-                )}
-                {canClaim && networkSymbol && (
-                    <Box marginTop="sp16">
-                        <UnstakeCanClaimAlert
-                            claimableAmount={claimableAmount}
-                            symbol={networkSymbol}
                         />
                     </Box>
                 )}
