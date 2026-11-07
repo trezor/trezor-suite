@@ -94,6 +94,8 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
             removeOutput: (index: number) => void; // useFieldArray remove
             addOpReturn: () => void;
             removeOpReturn: (index: number) => void;
+            addNameOp: () => void;
+            removeNameOp: (index: number) => void;
             // useSendFormCompose
             setDraftSaveRequest: Dispatch<SetStateAction<boolean>>;
             // UTXO selection

@@ -38,6 +38,13 @@
 - rename receive `revealedAddresses` to `touchedAddresses`
 - remove `isVerified` flag from receive address entries
 - remove receive data belonging to devices that are not remembered
+## Unreleased
+
+- Namecoin (`nmc`) re-enabled in Suite. Storage migration 52 (which purged
+  existing NMC accounts, transactions, wallet-settings and backend-settings on
+  upgrade) is intentionally **not** reverted. Users who upgraded past v26.x
+  before this release will need to re-add their NMC accounts manually; re-adding
+  the account creates fresh storage entries naturally.
 
 ## 26.6.0
 

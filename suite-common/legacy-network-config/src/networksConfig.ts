@@ -58,6 +58,7 @@ export const networks: LegacyNetworkConfigs = {
     ltc: withSymbol('ltc', bitcoinConfigs.ltc),
     bch: withSymbol('bch', bitcoinConfigs.bch),
     doge: withSymbol('doge', bitcoinConfigs.doge),
+    nmc: withSymbol('nmc', bitcoinConfigs.nmc),
     zec: withSymbol('zec', bitcoinConfigs.zec),
     test: withSymbol('test', bitcoinConfigs.test),
     regtest: withSymbol('regtest', bitcoinConfigs.regtest),
