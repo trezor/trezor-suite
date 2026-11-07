@@ -16,6 +16,8 @@
 - [Architecture decision records](./adr/README.md)
     - [ADR template](./adr/TEMPLATE.md)
     - [Separate application composition from reusable building blocks](./adr/001-separate-app-and-lego-code.md)
+    - [Ubiquitous Language](./adr/002-ubiquitous-language.md)
+- [Ubiquitous Language glossary](./ubiquitous-language.md)
 - [Analytics](./analytics/index.md)
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)

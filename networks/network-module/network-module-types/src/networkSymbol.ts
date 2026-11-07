@@ -1,11 +1,17 @@
 import type { Branded } from '@trezor/type-utils';
 
 /**
- * Addresses a network across the whole set of registered modules.
+ * Identifies a specific blockchain network across the registered modules, e.g. 'btc' for Bitcoin.
+ * Mainnet and testnet have distinct symbols.
+ *
+ * Also identifies the network's native token: its built-in asset, such as BTC on Bitcoin or ETH
+ * on Ethereum. The native token and the network are distinct concepts sharing this identifier.
  *
  * Deliberately open: callers outside the modules cannot know which networks the registered modules
  * handle, so any string may be branded. Each module narrows it to its own closed symbol type at
  * its boundary, in `createNetworkModule`.
+ *
+ * @see https://github.com/trezor/trezor-suite/blob/develop/docs/ubiquitous-language.md
  */
 export type NetworkSymbol = string & Branded<'NetworkSymbol'>;
 
