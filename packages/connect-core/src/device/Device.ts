@@ -84,11 +84,25 @@ type DeviceParams = {
     createLogger: CreateLogger;
 };
 
+type AcquirePromise = ReturnType<Transport['acquire']>;
+type ReleasePromise = ReturnType<Transport['release']>;
+
+// Ownership of the transport session. An async acquire or release applies its result only while
+// the state it started from is still current, so a disconnect or a takeover by another application
+// in the meantime is not overwritten. `keep` holds the session across calls (`keepSession`).
+// A re-acquire holds the previous session until the transport hands over the new one or until
+// the previous session is requested elsewhere (the transport asks its holder, i.e. this device).
+type TransportSessionState =
+    | { status: 'released' }
+    | { status: 'acquiring'; session: Session | null; promise: AcquirePromise }
+    | { status: 'acquired'; session: Session; keep: boolean }
+    | { status: 'releasing'; session: Session; promise: ReleasePromise };
+
 export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     public readonly transport: Transport;
     private thp: protocolThp.ThpState | undefined;
     public readonly descriptor: Pick<Descriptor, 'apiType' | 'id' | 'type' | 'path' | 'model'>;
-    private sessionAcquired: Session | null;
+    private sessionState: TransportSessionState = { status: 'released' };
 
     // protocol related
     private _protocol: TransportProtocol;
@@ -131,14 +145,9 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     private wasUsedElsewhere = false;
 
-    // variables used in one workflow: acquire -> transportSession -> commands -> run -> keepTransportSession -> release
-    private acquirePromise?: ReturnType<Transport['acquire']>;
-    private releasePromise?: ReturnType<Transport['release']>;
-
     private runAbort?: AbortController;
     private runPromise?: Promise<void>;
 
-    private keepTransportSession = false;
     private currentSession?: DeviceCurrentSession;
 
     private instance = 0;
@@ -208,8 +217,6 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             // debug, debugSession are not relevant here
         };
 
-        this.sessionAcquired = null;
-
         transport.on(TRANSPORT.STOPPED, this.onTransportStopped);
         transport.deviceEvents.on(this.descriptor.path, this.onTransportDeviceEvent);
     }
@@ -267,34 +274,104 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         return response;
     }
 
-    acquire() {
+    private getAcquiredSession() {
+        const { sessionState } = this;
+
+        return sessionState.status === 'released' ? null : sessionState.session;
+    }
+
+    private isTransportSessionKept() {
+        return this.sessionState.status === 'acquired' && this.sessionState.keep;
+    }
+
+    private setKeepTransportSession(keep: boolean) {
+        if (this.sessionState.status === 'acquired') {
+            this.sessionState = { ...this.sessionState, keep };
+        }
+    }
+
+    private waitForPendingSessionChange() {
+        const { sessionState } = this;
+
+        if (sessionState.status === 'acquiring' || sessionState.status === 'releasing') {
+            // Callers only need the transition to settle, its failure is handled by the initiator.
+            return sessionState.promise.then(
+                () => {},
+                () => {},
+            );
+        }
+    }
+
+    acquire(): AcquirePromise {
+        const previousState = this.sessionState;
+
+        if (previousState.status === 'acquiring') {
+            return previousState.promise;
+        }
+
+        if (previousState.status === 'releasing') {
+            const acquireAfterRelease = () => this.acquire();
+
+            return previousState.promise.then(acquireAfterRelease, acquireAfterRelease);
+        }
+
         const sessionPromise = this.getSessionChangePromise();
         const previous = this.transport.getDescriptor(this.descriptor.path)?.session ?? null;
+        const heldSession = this.getAcquiredSession();
+        const keep = previousState.status === 'acquired' && previousState.keep;
 
-        this.acquirePromise = this.transport
+        // Completions compare against this promise to detect that the acquire was superseded.
+        const acquired = createDeferred<Awaited<AcquirePromise>>();
+        const isCurrentAcquire = () =>
+            this.sessionState.status === 'acquiring' &&
+            this.sessionState.promise === acquired.promise;
+        // The held session may have been dropped while acquiring.
+        const restorePreviousState = () => {
+            this.sessionState = this.getAcquiredSession() ? previousState : { status: 'released' };
+        };
+
+        this.transport
             .acquire({ input: { path: this.descriptor.path, previous } })
             .then(result => this.waitAndCompareSession(result, sessionPromise))
-            .then(result => {
-                if (result.success) {
+            .then(
+                result => {
+                    if (!isCurrentAcquire()) {
+                        // Only a disconnect ends the acquiring state from outside.
+                        throw ERRORS.TypedError('Device_Disconnected');
+                    }
+
+                    if (!result.success) {
+                        restorePreviousState();
+                        throw new Error(result.error.code);
+                    }
+
                     this.wasUsedElsewhere = false;
-                    this.sessionAcquired = result.payload;
+                    this.sessionState = { status: 'acquired', session: result.payload, keep };
                     this.currentSession = new DeviceCurrentSession(
                         this,
                         this.transport,
-                        this.sessionAcquired,
+                        result.payload,
                         this.createLogger('DeviceCommands'),
                     );
 
                     return result;
-                } else {
-                    throw new Error(result.error.code);
-                }
-            })
-            .finally(() => {
-                this.acquirePromise = undefined;
-            });
+                },
+                error => {
+                    if (isCurrentAcquire()) {
+                        restorePreviousState();
+                    }
+                    throw error;
+                },
+            )
+            .then(acquired.resolve, acquired.reject);
 
-        return this.acquirePromise;
+        this.sessionState = {
+            status: 'acquiring',
+            session: heldSession,
+            promise: acquired.promise,
+        };
+
+        return acquired.promise;
     }
 
     reset() {
@@ -312,28 +389,49 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         this.busy = value;
     }
 
-    release() {
-        if (!this.sessionAcquired || this.keepTransportSession || this.releasePromise) {
+    release(): ReleasePromise | undefined {
+        const previousState = this.sessionState;
+
+        if (previousState.status === 'releasing') {
+            return previousState.promise;
+        }
+
+        if (previousState.status !== 'acquired' || previousState.keep) {
             return;
         }
 
+        const { session } = previousState;
         const sessionPromise = this.getSessionChangePromise();
 
-        this.releasePromise = this.transport
-            .release({ session: this.sessionAcquired, path: this.descriptor.path })
+        // Completions compare against this promise to detect that the release was superseded.
+        const released = createDeferred<Awaited<ReleasePromise>>();
+        const isCurrentRelease = () =>
+            this.sessionState.status === 'releasing' &&
+            this.sessionState.promise === released.promise;
+
+        this.transport
+            .release({ session, path: this.descriptor.path })
             .then(result => this.waitAndCompareSession(result, sessionPromise))
-            .then(result => {
-                if (result.success) {
-                    this.sessionAcquired = null;
-                }
+            .then(
+                result => {
+                    if (isCurrentRelease()) {
+                        this.sessionState = result.success ? { status: 'released' } : previousState;
+                    }
 
-                return result;
-            })
-            .finally(() => {
-                this.releasePromise = undefined;
-            });
+                    return result;
+                },
+                error => {
+                    if (isCurrentRelease()) {
+                        this.sessionState = previousState;
+                    }
+                    throw error;
+                },
+            )
+            .then(released.resolve, released.reject);
 
-        return this.releasePromise;
+        this.sessionState = { status: 'releasing', session, promise: released.promise };
+
+        return released.promise;
     }
 
     setupThp() {
@@ -395,20 +493,20 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     private async updateDescriptor(descriptor: Descriptor) {
         this.sessionDfd?.resolve(descriptor.session);
 
-        await Promise.all([this.acquirePromise, this.releasePromise]);
+        await this.waitForPendingSessionChange();
 
         // TODO improve these conditions
 
         // Session changed to different than the current one
         // -> acquired by someone else
-        if (descriptor.session && descriptor.session !== this.sessionAcquired) {
+        if (descriptor.session && descriptor.session !== this.getAcquiredSession()) {
             this.usedElsewhere();
         }
 
         // Session changed to null
         // -> released
         if (!descriptor.session) {
-            this.keepTransportSession = false;
+            this.setKeepTransportSession(false);
         }
 
         this.emitDeviceChanged();
@@ -458,8 +556,8 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
         this.runPromise = promiseRaceWithSignal(this._runInner(fn, options, signal), signal)
             .catch(async err => {
-                this.keepTransportSession = false;
-                await this.acquirePromise;
+                this.setKeepTransportSession(false);
+                await this.waitForPendingSessionChange();
                 await this.stopPiggybackAck();
                 await this.release();
 
@@ -498,15 +596,19 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         this.wasUsedElsewhere = true;
 
         // only makes sense to continue when device held by this instance
-        if (!this.sessionAcquired) {
+        const session = this.getAcquiredSession();
+        if (!session) {
             return;
         }
 
         // session was acquired by another instance. but another might not have power to release interface
         // so it only notified about its session acquiral and the interrupted instance should cooperate
         // and release device too.
-        this.transport.releaseDevice(this.sessionAcquired);
-        this.sessionAcquired = null;
+        this.transport.releaseDevice(session);
+        this.sessionState =
+            this.sessionState.status === 'acquiring'
+                ? { ...this.sessionState, session: null }
+                : { status: 'released' };
 
         this.logger.debug('interruptionFromOutside');
 
@@ -521,17 +623,24 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         // typically when using cancel/override, device might be releasing
         // note: I am tempted to do this check at the beginning of device.acquire but on the other hand I would like
         // to have methods as atomic as possible and shift responsibility for deciding when to call them on the caller
-        if (this.releasePromise) {
-            await this.releasePromise;
+        if (this.sessionState.status === 'releasing') {
+            await this.sessionState.promise;
         }
+
+        // The run may have been aborted while waiting for the release. Its cleanup has already
+        // finished, so acquiring now would leave a session that no run owns.
+        if (abortSignal.aborted) throw abortSignal.reason;
 
         const acquireNeeded = !this.isUsedHere() || this.currentSession?.isDisposed();
         if (acquireNeeded) {
             // acquire session
             await this.acquire();
-        }
 
-        if (abortSignal.aborted) throw abortSignal.reason;
+            if (abortSignal.aborted) {
+                await this.release();
+                throw abortSignal.reason;
+            }
+        }
 
         const { staticSessionId, deriveCardano } = this.getState() || {};
         if (acquireNeeded || !staticSessionId || (!deriveCardano && options.useCardanoDerivation)) {
@@ -604,7 +713,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         // if keepSession is set do not release device
         // until method with keepSession: false will be called
         if (options.keepSession) {
-            this.keepTransportSession = true;
+            this.setKeepTransportSession(true);
         }
 
         // call inner function
@@ -618,10 +727,10 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         }
 
         if (
-            (!this.keepTransportSession && typeof options.keepSession !== 'boolean') ||
+            (!this.isTransportSessionKept() && typeof options.keepSession !== 'boolean') ||
             options.keepSession === false
         ) {
-            this.keepTransportSession = false;
+            this.setKeepTransportSession(false);
             await this.stopPiggybackAck();
             await this.release();
         }
@@ -643,10 +752,10 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         if (this.instance !== instance) {
             // if requested instance is different than current
             // and device wasn't released in previous call (example: interrupted discovery which set "keepSession" to true but never released)
-            // clear "keepTransportSession" and reset "transportSession" to ensure that "initialize" will be called
-            if (this.keepTransportSession) {
-                this.sessionAcquired = null;
-                this.keepTransportSession = false;
+            // forget the kept transport session without releasing it to ensure that "initialize" will be called
+            // (the next acquire takes it over as the previous session)
+            if (this.isTransportSessionKept()) {
+                this.sessionState = { status: 'released' };
             }
         }
         this.instance = instance;
@@ -957,10 +1066,12 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
         this.sessionDfd?.reject(new Error());
 
-        if (this.sessionAcquired) {
-            this.transport.releaseSync(this.sessionAcquired);
-            this.sessionAcquired = null; // set to null to prevent transport.release and cancelableAction
+        const session = this.getAcquiredSession();
+        if (session) {
+            this.transport.releaseSync(session);
         }
+        // released state prevents transport.release and cancelableAction
+        this.sessionState = { status: 'released' };
 
         this.lifecycle.emit(DEVICE.DISCONNECT);
 
@@ -1001,7 +1112,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     isUsedHere() {
-        return !!this.sessionAcquired;
+        return !!this.getAcquiredSession();
     }
 
     getBusy() {
@@ -1077,7 +1188,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                 type: 'unacquired',
                 label: 'Unacquired device',
                 name: this.name,
-                transportSessionOwner: this.sessionAcquired ? undefined : sessionOwner,
+                transportSessionOwner: this.getAcquiredSession() ? undefined : sessionOwner,
                 thp: this.getDeviceThp(),
                 status: this.busy ? this.busy : undefined,
             };
