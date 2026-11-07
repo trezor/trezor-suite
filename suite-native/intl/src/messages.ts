@@ -4833,6 +4833,16 @@ export const messages = {
         },
     },
     banner: {
+        blackFridayHolidayPromoBanner: {
+            ts7AccessoryPack: 'Complete your setup',
+            keepMetal: 'Back up your wallet',
+            ts3Gift: 'A gift for someone close',
+            ts3Backup: 'Get a backup device',
+            ts7CompleteKit: 'Gift the full setup',
+            egiftCard: 'Give a Trezor eGift Card',
+            ts7Upgrade: 'Your next Trezor',
+            button: 'Buy',
+        },
         stellarLimitedHistoryBanner: {
             title: 'Transaction history limited to 12 months',
             description:

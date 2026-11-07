@@ -1,15 +1,10 @@
+import { blackFridayHolidayBannerTypes } from '@suite-common/suite-constants';
 import { isArrayMember } from '@trezor/utils';
 
-export const blackFridayHolidayBannerTypes = [
-    'bfh26-ts7-accessory-pack',
-    'bfh26-keep-metal',
-    'bfh26-ts3-gift',
-    'bfh26-ts3-backup',
-    'bfh26-ts7-complete-kit',
-    'bfh26-egift-card',
-    'bfh26-ts7-upgrade',
-] as const;
-export type BlackFridayHolidayBannerType = (typeof blackFridayHolidayBannerTypes)[number];
+export {
+    blackFridayHolidayBannerTypes,
+    type BlackFridayHolidayBannerType,
+} from '@suite-common/suite-constants';
 
 export const dashboardBannerTypes = [
     'ts7',
