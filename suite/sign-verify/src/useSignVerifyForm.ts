@@ -1,24 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useController, useForm, useWatch } from 'react-hook-form';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
-import { yup } from '@suite/forms';
 import { type AddressValidator, injectAddressValidator } from '@suite-common/networks';
 import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
+import { isHex } from '@trezor/utils';
 
 export type SignVerifyFormFields = ReturnType<typeof useSignVerifyForm>;
 
-type SignVerifyContext = {
+type GetSignVerifySchemaParams = {
     addressValidator: AddressValidator;
     isSignPage: boolean;
-    symbol: NetworkSymbol;
+    symbol?: NetworkSymbol;
 };
 
-// yup doesn't type properly conditionally required fields → need to declare type rather than infer it
 export type SignVerifyFields = {
     message: string;
     address: string;
@@ -30,39 +30,43 @@ export type SignVerifyFields = {
     cardanoPubKeyCose?: boolean;
 };
 
-const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
-    message: yup
-        .string()
-        .max(MAX_LENGTH_MESSAGE, 'TR_TOO_LONG')
-        .required()
-        .when('hex', {
-            is: true,
-            then: schema => schema.isHex(),
-        }),
-    address: yup
-        .string()
-        .test(
-            'isAddressValid',
-            'TR_ADD_TOKEN_ADDRESS_NOT_VALID',
-            (value, { options }) =>
-                value &&
-                options.context?.symbol &&
-                options.context.addressValidator.isAddressValid(value, options.context.symbol),
-        )
-        .required(),
-    path: yup.string().when('$isSignPage', {
-        is: true,
-        then: schema => schema.required(),
-    }),
-    signature: yup.string().when('$isSignPage', {
-        is: false,
-        then: schema => schema.required(),
-    }),
-    hex: yup.boolean().required(),
-    isElectrum: yup.boolean(),
-    pubKey: yup.string(),
-    cardanoPubKeyCose: yup.boolean(),
-});
+// Messages are translation keys, rendered via `translationString`.
+const getSignVerifySchema = ({ addressValidator, isSignPage, symbol }: GetSignVerifySchemaParams) =>
+    z
+        .object({
+            message: z
+                .string('TR_REQUIRED_FIELD')
+                .max(MAX_LENGTH_MESSAGE, 'TR_TOO_LONG')
+                .min(1, 'TR_REQUIRED_FIELD'),
+            address: z
+                .string('TR_REQUIRED_FIELD')
+                .refine(
+                    address =>
+                        !!address && !!symbol && addressValidator.isAddressValid(address, symbol),
+                    'TR_ADD_TOKEN_ADDRESS_NOT_VALID',
+                ),
+            path: z
+                .string()
+                .optional()
+                .refine(path => !isSignPage || !!path, 'TR_REQUIRED_FIELD'),
+            signature: z
+                .string()
+                .optional()
+                .refine(signature => isSignPage || !!signature, 'TR_REQUIRED_FIELD'),
+            hex: z.boolean('TR_REQUIRED_FIELD'),
+            isElectrum: z.boolean().optional(),
+            pubKey: z.string().optional(),
+            cardanoPubKeyCose: z.boolean().optional(),
+        })
+        .superRefine(({ message, hex }, context) => {
+            if (hex && !isHex(message, { prefix: 'optional', allowEmpty: false })) {
+                context.addIssue({
+                    code: 'custom',
+                    path: ['message'],
+                    message: 'DATA_NOT_VALID_HEX',
+                });
+            }
+        }) satisfies z.ZodType<SignVerifyFields>;
 
 const DEFAULT_VALUES: SignVerifyFields = {
     message: '',
@@ -77,16 +81,15 @@ const DEFAULT_VALUES: SignVerifyFields = {
 
 export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
     const { addressValidator } = useServices(injectAddressValidator);
+    const signVerifySchema = useMemo(
+        () => getSignVerifySchema({ addressValidator, isSignPage, symbol: account?.symbol }),
+        [addressValidator, isSignPage, account?.symbol],
+    );
     const { register, handleSubmit, formState, reset, setValue, clearErrors, control, trigger } =
-        useForm<SignVerifyFields, SignVerifyContext>({
+        useForm<SignVerifyFields>({
             mode: 'onBlur',
             reValidateMode: 'onChange',
-            resolver: yupResolver(signVerifySchema),
-            context: {
-                addressValidator,
-                isSignPage,
-                symbol: account?.symbol,
-            },
+            resolver: zodResolver(signVerifySchema),
             defaultValues: DEFAULT_VALUES,
         });
 

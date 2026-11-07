@@ -11668,7 +11668,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    yup: "npm:1.7.1"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -12257,7 +12257,7 @@ __metadata:
     react-redux: "npm:9.3.0"
     semver: "npm:^7.7.1"
     tsx: "npm:^4.21.0"
-    yup: "npm:1.7.1"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -12597,7 +12597,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    yup: "npm:1.7.1"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -12804,7 +12804,6 @@ __metadata:
     react: "npm:19.3.0"
     react-intl: "npm:^12.1.4"
     react-redux: "npm:9.3.0"
-    yup: "npm:1.7.1"
     zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
@@ -15457,6 +15456,7 @@ __metadata:
     react-native-reanimated: "npm:4.7.1"
     type-fest: "npm:5.5.0"
     yup: "npm:1.7.1"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -16517,6 +16517,7 @@ __metadata:
     react: "npm:19.3.0"
     react-native: "npm:0.88.1"
     react-redux: "npm:9.3.0"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -17231,15 +17232,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/forms@workspace:*, @suite/forms@workspace:suite/forms":
-  version: 0.0.0-use.local
-  resolution: "@suite/forms@workspace:suite/forms"
-  dependencies:
-    "@trezor/utils": "workspace:*"
-    yup: "npm:1.7.1"
-  languageName: unknown
-  linkType: soft
-
 "@suite/github@workspace:*, @suite/github@workspace:suite/github":
   version: 0.0.0-use.local
   resolution: "@suite/github@workspace:suite/github"
@@ -17350,7 +17342,6 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite/external-links": "workspace:*"
-    "@suite/forms": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/settings": "workspace:*"
@@ -17664,7 +17655,6 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite/forms": "workspace:*"
     "@suite/locks": "workspace:*"
     "@suite/modal": "workspace:*"
     "@suite/router-config": "workspace:*"
@@ -17673,6 +17663,7 @@ __metadata:
     history: "npm:^5.3.0"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -17722,18 +17713,19 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/address": "workspace:*"
     "@suite/device": "workspace:*"
-    "@suite/forms": "workspace:*"
     "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.3.0"
     react: "npm:19.3.0"
     react-hook-form: "npm:^7.77.0"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -19315,7 +19307,7 @@ __metadata:
   resolution: "@trezor/jsonl@workspace:packages/jsonl"
   dependencies:
     "@trezor/type-utils": "workspace:*"
-    yup: "npm:1.7.1"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -19755,7 +19747,7 @@ __metadata:
     stylelint-config-standard: "npm:^40.0.0"
     svgo: "npm:^4.1.0"
     typescript-styled-plugin: "npm:^0.18.3"
-    yup: "npm:1.7.1"
+    zod: "npm:4.6.7"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
   linkType: soft
@@ -20100,7 +20092,6 @@ __metadata:
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/form": "workspace:*"
-    "@suite/forms": "workspace:*"
     "@suite/github": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -20208,6 +20199,7 @@ __metadata:
     styled-components: "npm:^6.5.3"
     stylelint: "npm:^17.16.0"
     stylelint-config-standard: "npm:^40.0.0"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
