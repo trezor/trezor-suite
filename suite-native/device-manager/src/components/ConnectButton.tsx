@@ -1,4 +1,4 @@
-import { FadeInUp, FadeOutUp, LinearTransition } from 'react-native-reanimated';
+import { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
@@ -51,12 +51,7 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
     };
 
     return (
-        <AnimatedBox
-            style={applyStyle(buttonWrapperStyle)}
-            layout={LinearTransition}
-            entering={FadeInUp}
-            exiting={FadeOutUp}
-        >
+        <AnimatedBox style={applyStyle(buttonWrapperStyle)} entering={FadeInUp} exiting={FadeOutUp}>
             <Box style={applyStyle(buttonSurfaceStyle)}>
                 <Button
                     iconLeft="trezorDevices"
