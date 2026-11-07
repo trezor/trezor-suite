@@ -40,6 +40,7 @@ export { dashboardReceiveModalEvent } from './dashboardReceiveModalEvent';
 export { dashboardReceiveModalOptionsEvent } from './dashboardReceiveModalOptionsEvent';
 export { dashboardSendModalEvent } from './dashboardSendModalEvent';
 export { dashboardSendModalOptionsEvent } from './dashboardSendModalOptionsEvent';
+export { deviceChangeHomescreenEvent } from './deviceChangeHomescreenEvent';
 export { deviceConnectEvent } from './deviceConnectEvent';
 export { deviceConnectionConnectButtonEvent } from './deviceConnectionConnectButtonEvent';
 export { deviceConnectionHintModalEvent } from './deviceConnectionHintModalEvent';
