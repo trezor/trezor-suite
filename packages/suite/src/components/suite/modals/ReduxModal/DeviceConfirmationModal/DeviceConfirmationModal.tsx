@@ -1,10 +1,25 @@
+import { lazy } from 'react';
+
 import { type MODAL_CONTEXT_DEVICE_CONFIRMATION } from '@suite/modal';
 import { UI_REQUESTS } from '@trezor/connect';
 
-import { NoBackupModal } from './NoBackupModal';
-import { SelectAccountModal } from './SelectAccountModal';
-import { SelectFeeModal } from './SelectFeeModal';
 import type { ReduxModalProps } from '../ReduxModalProps';
+
+const NoBackupModal = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ './NoBackupModal').then(m => ({
+        default: m.NoBackupModal,
+    })),
+);
+const SelectAccountModal = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ './SelectAccountModal').then(m => ({
+        default: m.SelectAccountModal,
+    })),
+);
+const SelectFeeModal = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ './SelectFeeModal').then(m => ({
+        default: m.SelectFeeModal,
+    })),
+);
 
 /** Modals requested from `trezor-connect` */
 export const DeviceConfirmationModal = ({
