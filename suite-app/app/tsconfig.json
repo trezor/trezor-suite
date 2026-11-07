@@ -1,21 +1,72 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "./libDev"
-    },
+    "compilerOptions": { "outDir": "./libDev" },
     "include": ["."],
     "references": [
         {
-            "path": "../../suite-common/assets"
+            "path": "../../suite-common/analytics-redux"
+        },
+        { "path": "../../suite-common/assets" },
+        { "path": "../../suite-common/bip329" },
+        {
+            "path": "../../suite-common/connect-init"
         },
         {
-            "path": "../../suite-common/device"
+            "path": "../../suite-common/connect-popup"
         },
+        {
+            "path": "../../suite-common/delegated-identity-key"
+        },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/device-authenticity"
         },
         {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
+            "path": "../../suite-common/earn-staking-products"
+        },
+        {
+            "path": "../../suite-common/extra-dependencies"
+        },
+        { "path": "../../suite-common/feedback" },
+        { "path": "../../suite-common/firmware" },
+        {
+            "path": "../../suite-common/firmware-authenticity"
+        },
+        {
+            "path": "../../suite-common/geolocation"
+        },
+        { "path": "../../suite-common/logger" },
+        {
             "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/metadata-types"
+        },
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-common/persistent-device-data"
+        },
+        {
+            "path": "../../suite-common/platform-encryption"
+        },
+        {
+            "path": "../../suite-common/react-query"
+        },
+        { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/suite-rbf-labels-migrations"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-quota-manager"
         },
         {
             "path": "../../suite-common/suite-sync-storage"
@@ -29,12 +80,14 @@
         {
             "path": "../../suite-common/suite-utils"
         },
+        { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/toast-notifications"
         },
         {
-            "path": "../../suite-common/trading"
+            "path": "../../suite-common/token-definitions"
         },
+        { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -48,103 +101,67 @@
             "path": "../../suite-common/wallet-utils"
         },
         {
-            "path": "../../suite/account"
+            "path": "../../suite-common/walletconnect"
         },
-        {
-            "path": "../../suite/analytics"
-        },
+        { "path": "../../suite/account" },
+        { "path": "../../suite/analytics" },
         {
             "path": "../../suite/apps-embedding-demo"
         },
         {
             "path": "../../suite/authenticity-checks"
         },
+        { "path": "../../suite/backup" },
+        { "path": "../../suite/bluetooth" },
+        { "path": "../../suite/coinjoin" },
+        { "path": "../../suite/debug" },
+        { "path": "../../suite/desktop-app-api" },
+        { "path": "../../suite/desktop-update" },
+        { "path": "../../suite/device" },
+        { "path": "../../suite/discovery" },
+        { "path": "../../suite/experimental" },
+        { "path": "../../suite/external-links" },
         {
-            "path": "../../suite/backup"
+            "path": "../../suite/feature-feedback"
         },
+        { "path": "../../suite/flags" },
+        { "path": "../../suite/intl" },
+        { "path": "../../suite/locks" },
+        { "path": "../../suite/message-system" },
+        { "path": "../../suite/metadata" },
         {
-            "path": "../../suite/coinjoin"
+            "path": "../../suite/metadata-migration"
         },
-        {
-            "path": "../../suite/debug"
-        },
-        {
-            "path": "../../suite/device"
-        },
-        {
-            "path": "../../suite/external-links"
-        },
-        {
-            "path": "../../suite/flags"
-        },
-        {
-            "path": "../../suite/intl"
-        },
-        {
-            "path": "../../suite/message-system"
-        },
-        {
-            "path": "../../suite/modal"
-        },
-        {
-            "path": "../../suite/receive"
-        },
-        {
-            "path": "../../suite/recovery"
-        },
-        {
-            "path": "../../suite/router"
-        },
-        {
-            "path": "../../suite/settings"
-        },
-        {
-            "path": "../../suite/sign-verify"
-        },
-        {
-            "path": "../../suite/suite-sync"
-        },
-        {
-            "path": "../../suite/tor-desktop"
-        },
-        {
-            "path": "../../suite/tor-web"
-        },
-        {
-            "path": "../../packages/components"
-        },
-        {
-            "path": "../../packages/connect"
-        },
+        { "path": "../../suite/modal" },
+        { "path": "../../suite/receive" },
+        { "path": "../../suite/recovery" },
+        { "path": "../../suite/router" },
+        { "path": "../../suite/settings" },
+        { "path": "../../suite/sign-verify" },
+        { "path": "../../suite/suite-sync" },
+        { "path": "../../suite/tor" },
+        { "path": "../../suite/tor-desktop" },
+        { "path": "../../suite/tor-web" },
+        { "path": "../../suite/trading" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"
         },
-        {
-            "path": "../../packages/device-utils"
-        },
-        {
-            "path": "../../packages/env-utils"
-        },
-        {
-            "path": "../../packages/icons"
-        },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/logger" },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {
             "path": "../../packages/product-components"
         },
-        {
-            "path": "../../packages/redux-utils"
-        },
-        {
-            "path": "../../packages/suite"
-        },
-        {
-            "path": "../../packages/theme"
-        },
-        {
-            "path": "../../packages/urls"
-        }
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" }
     ]
 }

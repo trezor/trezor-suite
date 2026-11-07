@@ -24,14 +24,14 @@ import {
     type WalletConnectMiddlewareDeps,
     prepareWalletConnectMiddleware,
 } from '@suite-common/walletconnect';
-
-import { type DbDep } from 'src/storage/createDb';
-
-import graphMiddleware from './graphMiddleware';
-import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
-import { prepareStorageMiddleware } from './storageMiddleware';
-import { tradingMiddleware } from './tradingMiddleware';
-import walletMiddleware from './walletMiddleware';
+import {
+    type DbDep,
+    graphMiddleware,
+    prepareStorageMiddleware,
+    replaceByFeeErrorMiddleware,
+    walletTradingMiddleware as tradingMiddleware,
+    walletMiddleware,
+} from '@trezor/suite';
 
 export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps &
     TokenDefinitionsMiddlewareDeps & {

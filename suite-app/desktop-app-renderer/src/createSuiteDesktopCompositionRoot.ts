@@ -2,16 +2,16 @@ import { createMemoryHistory } from 'history';
 
 import { createElectronDesktopApi } from '@suite/desktop-app-api-electron';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
+import {
+    createHydrateReduxStore,
+    createReduxStore,
+    createSuiteServicesCompositionRoot,
+    extraDependencies,
+    rootReducer,
+} from '@suite-app/app';
 import TrezorConnect from '@trezor/connect-electron';
 import { toGetter } from '@trezor/dependency-injection';
-
-import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
-import { createReduxStore } from 'src/reducers/createReduxStore';
-import { rootReducer } from 'src/reducers/store';
-import { createDb } from 'src/storage/createDb';
-import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
-import { extraDependencies } from 'src/support/extraDependencies';
-import { createPreloadStore } from 'src/support/suite/createPreloadStore';
+import { createDb, createPreloadStore } from '@trezor/suite';
 
 import { type DesktopApp, createDesktopApp } from './createDesktopApp';
 

@@ -81,7 +81,7 @@ names from manifests, not paths.
   composition depends on `@suite/*` and `@suite-common/*`; this is not permission to introduce
   app dependencies into reusable libraries.
 
-Keep dependencies acyclic. Web/desktop Redux assembly is in `packages/suite/src/reducers/store.ts`;
+Keep dependencies acyclic. Web/desktop Redux assembly is in `suite-app/app/src/store.ts`;
 native assembly is in `suite-native/state/src/createReduxStore.ts`. Shared slices live in
 `suite-common/wallet-core`; follow the Redux skill's state and dependency contracts.
 IndexedDB storage and migrations live in `packages/suite/src/storage`.

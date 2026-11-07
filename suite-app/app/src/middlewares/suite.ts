@@ -5,19 +5,19 @@ import { routerMiddleware } from '@suite/router';
 import { tradingMiddleware } from '@suite/trading';
 import { logsMiddleware } from '@suite-common/logger';
 import { preparePushNotificationMiddleware } from '@suite-common/wallet-core';
-
 import {
     type PrepareAnalyticsMiddlewareDeps,
+    type PrepareSuiteMiddlewareDeps,
+    buttonRequestMiddleware as buttonRequest,
+    eventsMiddleware as events,
+    logsMiddleware as log,
+    messageSystemMiddleware as messageSystem,
     prepareAnalyticsMiddleware,
-} from './analyticsMiddleware';
-import buttonRequest from './buttonRequestMiddleware';
-import events from './eventsMiddleware';
-import log from './logsMiddleware';
-import messageSystem from './messageSystemMiddleware';
-import protocol from './protocolMiddleware';
-import redirect from './redirectMiddleware';
-import sentry from './sentryMiddleware';
-import { type PrepareSuiteMiddlewareDeps, prepareSuiteMiddleware } from './suiteMiddleware';
+    prepareSuiteMiddleware,
+    protocolMiddleware as protocol,
+    redirectMiddleware as redirect,
+    sentryMiddleware as sentry,
+} from '@trezor/suite';
 
 export type GetSuiteMiddlewareDeps = PrepareSuiteMiddlewareDeps & PrepareAnalyticsMiddlewareDeps;
 

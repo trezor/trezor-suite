@@ -12,7 +12,7 @@ export const forbiddenDepsConfig: ForbiddenDepsConfig = {
         },
     ],
     'allowed-only-in': {
-        packages: ['@trezor/suite', '@suite-native/state'],
+        packages: ['@suite-app/app', '@suite-native/state'],
         reason: 'Only the application composition roots register staking products. Everything else reaches them through the injected product repository from @suite-common/earn-staking.',
     },
 };

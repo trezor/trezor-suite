@@ -1,13 +1,80 @@
+export { type WalletState, createWalletReducer } from './src/reducers/wallet';
+export { default as guideReducer, type GuideState } from './src/reducers/suite/guideReducer';
+export {
+    default as protocolReducer,
+    type ProtocolState,
+} from './src/reducers/suite/protocolReducer';
+export { default as suiteReducer, type SuiteState } from './src/reducers/suite/suiteReducer';
+export { default as windowReducer, type WindowState } from './src/reducers/suite/windowReducer';
+export { default as buttonRequestMiddleware } from './src/middlewares/suite/buttonRequestMiddleware';
+export { default as eventsMiddleware } from './src/middlewares/suite/eventsMiddleware';
+export { default as logsMiddleware } from './src/middlewares/suite/logsMiddleware';
+export { default as messageSystemMiddleware } from './src/middlewares/suite/messageSystemMiddleware';
+export { default as protocolMiddleware } from './src/middlewares/suite/protocolMiddleware';
+export { default as redirectMiddleware } from './src/middlewares/suite/redirectMiddleware';
+export { default as sentryMiddleware } from './src/middlewares/suite/sentryMiddleware';
+export {
+    type PrepareAnalyticsMiddlewareDeps,
+    prepareAnalyticsMiddleware,
+} from './src/middlewares/suite/analyticsMiddleware';
+export {
+    type PrepareSuiteMiddlewareDeps,
+    prepareSuiteMiddleware,
+} from './src/middlewares/suite/suiteMiddleware';
+export { default as graphMiddleware } from './src/middlewares/wallet/graphMiddleware';
+export { default as walletMiddleware } from './src/middlewares/wallet/walletMiddleware';
+export { replaceByFeeErrorMiddleware } from './src/middlewares/wallet/replaceByFeeErrorMiddleware';
+export { prepareStorageMiddleware } from './src/middlewares/wallet/storageMiddleware';
+export { tradingMiddleware as walletTradingMiddleware } from './src/middlewares/wallet/tradingMiddleware';
+export { default as onboardingMiddleware } from './src/middlewares/onboarding/onboardingMiddleware';
+export { prepareSuiteSyncQuotaManagerReducer } from './src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
+export { toastMiddleware } from './src/middlewares/suite/toastMiddleware';
+export { default as onboardingReducers } from './src/reducers/onboarding/onboardingReducer';
+export { type OnboardingState } from './src/reducers/onboarding/onboardingReducer';
+export {
+    type GlobalSendReceiveFiltersState,
+    globalSendReceiveFiltersReducer,
+} from './src/slices/wallet/globalSendReceiveFilters';
+export { type BioAuthState, prepareBioAuthReducer } from './src/reducers/bioAuth';
+export { type DesktopState, desktopReducer } from './src/reducers/desktop';
 export { ConnectedThemeProvider } from './src/support/suite/ConnectedThemeProvider';
 export { ResponsiveContextProvider } from './src/support/suite/ResponsiveContext';
-export { type Store } from './src/types/suite';
-export { createHydrateReduxStore } from './src/reducers/createHydrateReduxStore';
-export { type SuiteReduxStore, createReduxStore } from './src/reducers/createReduxStore';
-export { type AppState, rootReducer } from './src/reducers/store';
-export { createSuiteServicesCompositionRoot } from './src/support/createSuiteCompositionRoot';
-export { extraDependencies } from './src/support/extraDependencies';
-export { type PreloadStoreAction } from './src/support/suite/createPreloadStore';
+export { createDb, type DbDep } from './src/storage/createDb';
+export { selectIsWindowVisible } from './src/reducers/suite/windowReducer';
+export { reportSecurityCheck } from './src/utils/suite/sentry';
+export { markDeviceAsRecentlyConnectedThunk } from './src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
+export { storageLoadReducers } from './src/support/storageLoadReducers';
+export {
+    createPreloadStore,
+    type PreloadStoreAction,
+    type PreloadStoreDep,
+} from './src/support/suite/createPreloadStore';
 export { type DashboardBannerType } from './src/views/dashboard/DashboardPromoBanner/dashboardBannerTypes';
+
+export * as storageConstants from './src/actions/suite/constants/storageConstants';
+export { desktopHandshake } from './src/actions/suite/suiteActions';
+
+export { FIND_HIGHLIGHT_SELECTOR } from './src/components/suite/FindBar/consts';
+export { MARK_HIGHLIGHT_PULSE_SELECTOR } from './src/components/suite/FindBar/consts';
+export { AppRouter } from './src/components/suite/AppRouter';
+export { Preloader } from './src/components/suite/Preloader/Preloader';
+export { ToasterProvider } from './src/components/suite/notifications/Toaster/ToasterProvider';
+export { TrafficLightDraggableWindowHeader } from '@suite/macos';
+export { BioAuthGuard } from './src/components/suite/BioAuthGuard/BioAuthGuard';
+export { FindBar } from './src/components/suite/FindBar/FindBar';
+export { Metadata } from './src/components/suite/Metadata';
+export { ConnectedIntlProvider } from './src/support/suite/ConnectedIntlProvider';
+export { Main } from './src/support/suite/Main';
+export { useConnectPopupDesktop } from './src/support/suite/useConnectPopupDesktop';
+export { useTor } from './src/support/suite/useTor';
+export { ErrorScreen } from './src/support/suite/screens/ErrorScreen';
+export { LoadingScreen } from './src/support/suite/screens/LoadingScreen';
+export { ThemeProvider } from './src/support/suite/ThemeProvider';
+export { MarkdownWithComponents } from './src/components/suite/MarkdownWithComponents';
+export { CheckItem } from './src/components/suite/CheckItem';
+export { BundleLoader } from './src/components/suite/BundleLoader';
+export { useConnectPopupWeb } from './src/support/suite/useConnectPopupWeb';
+export { useConnectPopupWebextension } from './src/support/suite/useConnectPopupWebextension';
 
 export { PageHeader } from './src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
 export { useLayout } from './src/hooks/suite/useLayout';
