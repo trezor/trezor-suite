@@ -1,9 +1,9 @@
 import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { yup } from '@suite/forms';
 import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
@@ -16,8 +16,8 @@ import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useSelector } from 'src/hooks/suite';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
-    yup.object({
-        deviceLabel: yup
+    z.object({
+        deviceLabel: z
             .string()
             .max(
                 MAX_LABEL_LENGTH,
@@ -25,22 +25,14 @@ const changeDeviceLabelSchema = (t: TranslationFunction) =>
                     length: MAX_LABEL_LENGTH,
                 }),
             )
-            .test({
-                test: isAscii,
-                message: t('TR_LABEL_ERROR_CHARACTERS'),
-            }),
+            .refine(isAscii, t('TR_LABEL_ERROR_CHARACTERS'))
+            .optional(),
     });
 
+type ChangeDeviceLabelFields = z.infer<ReturnType<typeof changeDeviceLabelSchema>>;
+
 export const useChangeDeviceLabel = (): {
-    form: UseFormReturn<
-        {
-            deviceLabel: string | undefined;
-        },
-        unknown,
-        {
-            deviceLabel?: string | undefined;
-        }
-    >;
+    form: UseFormReturn<ChangeDeviceLabelFields, unknown, ChangeDeviceLabelFields>;
     handleSubmit: (onSuccess?: () => void) => void;
 } => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -48,7 +40,7 @@ export const useChangeDeviceLabel = (): {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     const form = useForm({
-        resolver: yupResolver(changeDeviceLabelSchema(translationString)),
+        resolver: zodResolver(changeDeviceLabelSchema(translationString)),
         defaultValues: {
             deviceLabel,
         },

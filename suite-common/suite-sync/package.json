@@ -39,6 +39,6 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "yup": "1.7.1"
+        "zod": "4.6.7"
     }
 }

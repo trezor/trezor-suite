@@ -21,7 +21,6 @@
         },
         { "path": "../address" },
         { "path": "../device" },
-        { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../../packages/components" },
         {
@@ -29,6 +28,7 @@
         },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/icons" },
-        { "path": "../../packages/redux-utils" }
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/utils" }
     ]
 }

@@ -1,4 +1,5 @@
-import { yup } from '@suite/forms';
+import { z } from 'zod';
+
 import {
     type AccountType,
     type NetworkSymbol,
@@ -22,21 +23,24 @@ const accountTypes = [
     'ledger',
 ] as const satisfies readonly AccountType[];
 
-const earnParamsSchema = yup.object({
-    symbol: yup.mixed<NetworkSymbol>().required(),
-    accountIndex: yup.number().required(),
-    accountType: yup.mixed<AccountType>().oneOf(accountTypes).required(),
-    vaultAddress: yup.string().optional(),
+const isEarnAccountType = (accountType: unknown): accountType is AccountType =>
+    accountTypes.some(earnAccountType => earnAccountType === accountType);
+
+const earnParamsSchema = z.object({
+    symbol: z.custom<NetworkSymbol>(symbol => symbol !== undefined && symbol !== null),
+    accountIndex: z.number(),
+    accountType: z.custom<AccountType>(isEarnAccountType),
+    vaultAddress: z.string().optional(),
 });
 
-export type EarnParams = yup.InferType<typeof earnParamsSchema>;
+export type EarnParams = z.infer<typeof earnParamsSchema>;
+
+// Type guards rather than `parse`, so callers get the router params object itself, not a copy.
+const isEarnParams = (params: unknown): params is EarnParams =>
+    earnParamsSchema.safeParse(params).success;
 
 export function parseEarnParams(params: unknown): EarnParams | undefined {
-    try {
-        return earnParamsSchema.validateSync(params, { abortEarly: false, strict: true });
-    } catch {
-        return undefined;
-    }
+    return isEarnParams(params) ? params : undefined;
 }
 
 export type AssetParams = {
@@ -50,19 +54,18 @@ export const parseAssetParams = ({
 }: Partial<Record<keyof AssetParams, string>>): AssetParams | undefined =>
     symbol !== undefined && isNetworkSymbol(symbol) ? { symbol, contractAddress } : undefined;
 
-const dashboardParamsSchema = yup.object({
-    networkSymbol: yup.mixed<NetworkSymbol>().notRequired(),
-    modal: yup.mixed<NonNullable<GlobalSendReceiveType>>().oneOf(['send', 'receive']).required(),
+const dashboardParamsSchema = z.object({
+    networkSymbol: z.custom<NetworkSymbol>().nullish(),
+    modal: z.enum(['send', 'receive'] satisfies NonNullable<GlobalSendReceiveType>[]),
 });
 
-export type DashboardParams = yup.InferType<typeof dashboardParamsSchema>;
+export type DashboardParams = z.infer<typeof dashboardParamsSchema>;
+
+const isDashboardParams = (params: unknown): params is DashboardParams =>
+    dashboardParamsSchema.safeParse(params).success;
 
 export function parseDashboardParams(params: unknown): DashboardParams | undefined {
-    try {
-        return dashboardParamsSchema.validateSync(params, { abortEarly: false, strict: true });
-    } catch {
-        return undefined;
-    }
+    return isDashboardParams(params) ? params : undefined;
 }
 
 export const decodeEarnVaultAddress = (rawVaultAddress?: string): string | undefined => {

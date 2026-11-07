@@ -1,6 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
-import { useTranslation } from '@suite/intl';
 import {
     CATEGORY_OPTIONS,
     messageSystemActions,
@@ -16,14 +15,7 @@ import { MessageSystemManagerToolbar } from '../MessageSystemManager/MessageSyst
 
 export const MessageSystemFormMessage = () => {
     const [showForm, setShowForm] = useState(false);
-    const { translationString } = useTranslation();
     const { dispatch } = useServices(injectDispatch);
-
-    const formatFieldError = useCallback(
-        (message: string) =>
-            message === 'TR_REQUIRED_FIELD' ? translationString(message) : message,
-        [translationString],
-    );
 
     const {
         formData,
@@ -35,7 +27,7 @@ export const MessageSystemFormMessage = () => {
         formatJSON,
         applyPreset,
         resetForm,
-    } = useMessageSystemMessageForm({ formatFieldError });
+    } = useMessageSystemMessageForm();
 
     const { availableConditionOptions, canAddCondition, addCondition } = useConditionControls(
         parsedData,

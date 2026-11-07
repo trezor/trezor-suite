@@ -1,4 +1,6 @@
-import * as yup from 'yup';
+import { z } from 'zod';
+
+import { isUrl } from '@trezor/utils';
 
 export type SuiteSyncServerTypeOption<T> = {
     label: T;
@@ -29,20 +31,28 @@ type CreateChangeSuiteSyncServerSchemaProps = {
 export const createChangeSuiteSyncServerSchema = ({
     requiredTranslation,
     invalidUrlTranslation,
-}: CreateChangeSuiteSyncServerSchemaProps): yup.ObjectSchema<ChangeServerModalFields> =>
-    yup.object({
-        server: yup
-            .mixed<SuiteSyncServerTypeSelectValue>()
-            .oneOf(['default', 'custom'] satisfies SuiteSyncServerTypeSelectValue[])
-            .required(),
-        customRelayUrl: yup
-            .string()
-            .nullable()
-            .default(null)
-            .when('server', {
-                is: (server: SuiteSyncServerTypeSelectValue) =>
-                    server === SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP.custom.value,
-                then: schema => schema.required(requiredTranslation).url(invalidUrlTranslation),
-                otherwise: schema => schema.nullable().default(null),
-            }),
-    });
+}: CreateChangeSuiteSyncServerSchemaProps) =>
+    z
+        .object({
+            server: z.enum(['default', 'custom'] satisfies SuiteSyncServerTypeSelectValue[]),
+            customRelayUrl: z.string().nullable(),
+        })
+        .superRefine(({ server, customRelayUrl }, context) => {
+            if (server !== SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP.custom.value) {
+                return;
+            }
+
+            if (!customRelayUrl) {
+                context.addIssue({
+                    code: 'custom',
+                    path: ['customRelayUrl'],
+                    message: requiredTranslation,
+                });
+            } else if (!isUrl(customRelayUrl)) {
+                context.addIssue({
+                    code: 'custom',
+                    path: ['customRelayUrl'],
+                    message: invalidUrlTranslation,
+                });
+            }
+        }) satisfies z.ZodType<ChangeServerModalFields, ChangeServerModalFields>;

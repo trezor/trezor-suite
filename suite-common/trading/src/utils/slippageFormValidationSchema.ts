@@ -1,4 +1,4 @@
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { SLIPPAGE_MAX, SLIPPAGE_MIN } from '../constants';
 
@@ -13,12 +13,12 @@ export interface SlippageFormValidationMessages {
 }
 
 export const getSlippageFormValidationSchema = (messages: SlippageFormValidationMessages) =>
-    yup
-        .string()
-        .required(messages.required)
-        .test('is-number', messages.notNumber, value => !Number.isNaN(Number(value)))
-        .test('in-range', messages.outOfRange, value => {
+    z
+        .string(messages.required)
+        .min(1, messages.required)
+        .refine(value => !Number.isNaN(Number(value)), messages.notNumber)
+        .refine(value => {
             const slippage = Number(value);
 
             return slippage >= Number(SLIPPAGE_MIN) && slippage <= Number(SLIPPAGE_MAX);
-        });
+        }, messages.outOfRange);

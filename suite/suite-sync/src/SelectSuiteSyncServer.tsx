@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Translation, useTranslation } from '@suite/intl';
 import {
@@ -51,7 +51,7 @@ export const SelectSuiteSyncServer = ({ onCancel }: SelectSuiteSyncServerProps) 
     );
 
     const form = useForm<ChangeServerModalFields>({
-        resolver: yupResolver(formSchema),
+        resolver: zodResolver(formSchema),
         defaultValues: {
             server: customRelayUrl
                 ? SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP.custom.value

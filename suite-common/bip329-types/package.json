@@ -16,6 +16,6 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "yup": "1.7.1"
+        "zod": "4.6.7"
     }
 }

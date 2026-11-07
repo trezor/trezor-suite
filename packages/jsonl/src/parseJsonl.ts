@@ -1,4 +1,4 @@
-import { type ObjectSchema } from 'yup';
+import { type z } from 'zod';
 
 import { type Result, err, ok } from '@trezor/type-utils';
 
@@ -11,7 +11,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 export const parseJsonl = <T extends Record<string, unknown>>(
     content: string,
-    schema: ObjectSchema<T>,
+    schema: z.ZodType<T>,
 ): Result<T[], ParseJsonlError> => {
     const parsedData: T[] = [];
 

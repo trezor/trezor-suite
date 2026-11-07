@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { yup } from '@suite/forms';
-import { useTranslation } from '@suite/intl';
 import {
     type ValidateError,
     getDefaultExperiment,
+    getMessageSystemValidationErrors,
     messageSystemActions,
     selectMessageSystemConfig,
     stripFieldFromMessage,
@@ -31,7 +30,6 @@ export const MessageSystemFormExperiment = () => {
         parsedData,
         setFormData,
     );
-    const { translationString } = useTranslation();
     const { dispatch } = useServices(injectDispatch);
 
     const isValid = validationErrors.length === 0;
@@ -67,15 +65,9 @@ export const MessageSystemFormExperiment = () => {
                 return;
             }
 
-            if (error instanceof yup.ValidationError) {
-                const errors = (error.inner?.length ? error.inner : [error]).map(e => ({
-                    field: e.path ?? 'value',
-                    message:
-                        e.message === 'TR_REQUIRED_FIELD'
-                            ? translationString(e.message)
-                            : e.message,
-                }));
+            const errors = getMessageSystemValidationErrors(error);
 
+            if (errors) {
                 setValidationErrors(stripFieldFromMessage(errors));
 
                 return;
@@ -84,7 +76,7 @@ export const MessageSystemFormExperiment = () => {
             setParsedData(null);
             setValidationErrors([{ field: 'JSON', message: 'Unknown error occurred' }]);
         }
-    }, [formData, experimentIds, translationString]);
+    }, [formData, experimentIds]);
 
     const formatJSON = useCallback(() => {
         setFormData(JSON.stringify(parsedData, null, 2));
