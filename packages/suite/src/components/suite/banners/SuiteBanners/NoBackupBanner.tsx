@@ -15,7 +15,7 @@ export const NoBackup = () => {
     return (
         <Banner
             icon
-            intent="critical"
+            intent="warning"
             rightContent={
                 <Banner.Button
                     onClick={() => dispatch(gotoThunk({ routeName: 'backup-index' }))}
