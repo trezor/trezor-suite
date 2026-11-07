@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert, AppState } from 'react-native';
 import { type MMKV, createMMKV, deleteMMKV, existsMMKV } from 'react-native-mmkv';
 import RNRestart from 'react-native-restart';
 
@@ -10,6 +10,7 @@ import { type Storage } from 'redux-persist';
 import { unecryptedJotaiStorage } from './atomWithUnecryptedStorage';
 import { ENCRYPTION_KEY, type EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
 import { ENCRYPTED_STORAGE_ID } from './encryptedStorageId';
+import { waitForActiveAppState } from './waitForActiveAppState';
 
 export const clearStorage = ({ mmkvInstance }: { mmkvInstance: MMKV | null }) => {
     captureMessage('User triggered Clear App Storage action.', 'error');
@@ -105,19 +106,6 @@ const alertUser = () => {
     );
 };
 
-const tryInitStorage = (encryptionKey: string) => {
-    try {
-        return createMMKV({
-            id: ENCRYPTED_STORAGE_ID,
-            encryptionKey,
-        });
-    } catch (error) {
-        alertUser();
-        // rethrow error so it can be caught by Sentry
-        throw error;
-    }
-};
-
 type MMKVStorageDeps = EnsureEncryptionKeyDep;
 
 type GetMMKVRaw = {
@@ -129,24 +117,51 @@ export type MMKVStorage = Storage & GetMMKVRaw;
 export type MMKVStorageDep = { mmkvStorage: MMKVStorage };
 
 export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
-    let mmkv: MMKV | null = null;
+    let mmkvPromise: Promise<MMKV> | null = null;
 
-    const ensureMMKV = async () => {
-        if (mmkv !== null) {
-            return mmkv;
-        }
-
+    const openMMKV = async () => {
         const encryptionKey = await deps.ensureEncryptionKey();
 
         if (encryptionKey === null) {
-            alertUser();
             throw new Error('Encryption key is unreadable!');
         }
 
-        // Another caller may have initialized storage while we awaited the encryption key.
-        mmkv ??= tryInitStorage(encryptionKey);
+        return createMMKV({
+            id: ENCRYPTED_STORAGE_ID,
+            encryptionKey,
+        });
+    };
 
-        return mmkv;
+    const initMMKV = async (): Promise<MMKV> => {
+        const hasStartedActive = AppState.currentState === 'active';
+
+        try {
+            return await openMMKV();
+        } catch (error) {
+            // In background, the key can be unreadable only until the device is unlocked, and the
+            // user would not see the alert. Retry once the app becomes active instead, also when
+            // an attempt started in background fails only after the app became active.
+            if (!hasStartedActive || AppState.currentState !== 'active') {
+                await waitForActiveAppState();
+
+                return initMMKV();
+            }
+
+            alertUser();
+            // Rethrow the error so it can be caught by Sentry.
+            throw error;
+        }
+    };
+
+    const ensureMMKV = () => {
+        // Concurrent callers share one initialization, which may wait until the app becomes active.
+        mmkvPromise ??= initMMKV().catch(error => {
+            // Let the next call try again after a failure.
+            mmkvPromise = null;
+            throw error;
+        });
+
+        return mmkvPromise;
     };
 
     return {

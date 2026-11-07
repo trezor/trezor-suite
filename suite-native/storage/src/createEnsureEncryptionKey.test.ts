@@ -118,6 +118,32 @@ describe('createEnsureEncryptionKey', () => {
         expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
     });
 
+    it('reads the key again after it was unavailable', async () => {
+        const storedKey = 'stored-encryption-key';
+        jest.mocked(SecureStore.getItemAsync)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(storedKey);
+        jest.mocked(MMKV.existsMMKV).mockReturnValue(true);
+        const ensureEncryptionKey = createEnsureEncryptionKey();
+
+        await expect(ensureEncryptionKey()).resolves.toBeNull();
+        await expect(ensureEncryptionKey()).resolves.toBe(storedKey);
+
+        expect(SecureStore.getItemAsync).toHaveBeenCalledTimes(2);
+    });
+
+    it('shares a pending read and caches the key', async () => {
+        const storedKey = 'stored-encryption-key';
+        jest.mocked(SecureStore.getItemAsync).mockResolvedValue(storedKey);
+        const ensureEncryptionKey = createEnsureEncryptionKey();
+
+        const keys = await Promise.all([ensureEncryptionKey(), ensureEncryptionKey()]);
+
+        expect(keys).toEqual([storedKey, storedKey]);
+        await expect(ensureEncryptionKey()).resolves.toBe(storedKey);
+        expect(SecureStore.getItemAsync).toHaveBeenCalledTimes(1);
+    });
+
     it('shows the storage alert without replacing the key when both SecureStore reads fail', async () => {
         const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
         jest.mocked(SecureStore.getItemAsync).mockRejectedValue(new Error('Keychain unavailable'));
