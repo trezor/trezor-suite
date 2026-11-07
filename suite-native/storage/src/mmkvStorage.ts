@@ -8,8 +8,7 @@ import { type Storage } from 'redux-persist';
 
 import { unecryptedJotaiStorage } from './atomWithUnecryptedStorage';
 import { type EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
-
-export const ENCRYPTED_STORAGE_ID = 'trezorSuite-app-storage';
+import { ENCRYPTED_STORAGE_ID } from './encryptedStorageId';
 
 export const clearStorage = ({ mmkvInstance }: { mmkvInstance: MMKV | null }) => {
     captureMessage('User triggered Clear App Storage action.', 'error');

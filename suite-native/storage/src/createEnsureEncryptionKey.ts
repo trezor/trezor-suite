@@ -1,9 +1,15 @@
 export const ENCRYPTION_KEY = 'STORAGE_ENCRYPTION_KEY';
+import { AppState } from 'react-native';
+import { existsMMKV } from 'react-native-mmkv';
+
 import { captureException } from '@sentry/react-native';
 import { getRandomBytes } from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 
 import { type Branded } from '@trezor/type-utils';
+
+import { ENCRYPTED_STORAGE_ID } from './encryptedStorageId';
+import { waitForActiveAppState } from './waitForActiveAppState';
 
 export type StorageEncryptionKey = string & Branded<'StorageEncryptionKey'>;
 
@@ -36,6 +42,23 @@ const resolveEncryptionKey = (): Promise<StorageEncryptionKey | null> =>
         .then(secureKey => {
             if (secureKey === undefined) return null;
             if (secureKey != null) return secureKey as StorageEncryptionKey;
+
+            // The encrypted storage file is created on every successful start, so a missing key
+            // next to it means the key was lost. A new key would let redux-persist overwrite the
+            // unreadable data with defaults, so report it and leave recovery to the storage alert.
+            if (existsMMKV(ENCRYPTED_STORAGE_ID)) {
+                captureException(
+                    new Error('Encryption key is missing for existing encrypted storage'),
+                );
+
+                return null;
+            }
+
+            // In background, the process can be suspended for minutes before a new key is written.
+            // Decide on a read made while the app is active, so the key is written right after it.
+            if (AppState.currentState !== 'active') {
+                return waitForActiveAppState().then(resolveEncryptionKey);
+            }
 
             // If we are here, it means that we have no encryption key in storage.
             // We need to generate a new one. This should happen only once on first app start.
