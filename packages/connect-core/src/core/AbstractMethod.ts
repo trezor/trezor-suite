@@ -40,6 +40,10 @@ export type MethodContext = {
     createUiPromise: UiPromiseCreator;
 };
 
+// A call waits for its device while `pending`, is `running` once `device.run` starts and is
+// `answered` when its response is sent. A cancel may answer a call before it starts running.
+export type CallStatus = 'pending' | 'running' | 'answered';
+
 export type MethodMessage<Name extends CallMethodPayload['method']> = {
     id?: string;
     payload: Payload<Name>;
@@ -116,6 +120,11 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public overridden: boolean;
 
+    private _callStatus: CallStatus = 'pending';
+    public get callStatus() {
+        return this._callStatus;
+    }
+
     public readonly name: Name; // method name
 
     protected get info() {
@@ -191,6 +200,30 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         code: DeviceButtonRequestCode,
         name?: string,
     ): UiRequestButtonData | undefined;
+
+    /**
+     * Moves a pending call to running. Returns false when the call was already answered.
+     */
+    public startRunning() {
+        if (this._callStatus !== 'pending') {
+            return false;
+        }
+        this._callStatus = 'running';
+
+        return true;
+    }
+
+    /**
+     * Marks the call as answered. Returns false when it was answered already.
+     */
+    public markAnswered() {
+        if (this._callStatus === 'answered') {
+            return false;
+        }
+        this._callStatus = 'answered';
+
+        return true;
+    }
 
     constructor(message: MethodMessage<Name>, params: Params) {
         const { payload } = message;

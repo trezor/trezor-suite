@@ -15,6 +15,15 @@ type TrezorConnectDynamicParams = {
     implementations: Record<ImplType, ConnectImpl>;
 };
 
+type CallBatch = {
+    activeCalls: number;
+    beforeCall: Promise<void>;
+};
+
+// Concurrent calls share one batch so that `handleBeforeCall` runs only once per batch. The batch
+// ends when its last call settles; `init` and `dispose` abandon it without waiting for its calls.
+type CallBatchState = { status: 'idle' } | { status: 'active'; batch: CallBatch };
+
 /**
  * Implementation of TrezorConnect that can dynamically switch between different implementations.
  *
@@ -25,7 +34,7 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
 
     private coreMode?: ConnectDynamicSettings['coreMode'];
     private implSettings?: ConnectImplSettings;
-    private callPending = 0;
+    private callBatchState: CallBatchState = { status: 'idle' };
     private beforeCallSynchronize = getSynchronize();
 
     public constructor({ implementations }: TrezorConnectDynamicParams) {
@@ -50,15 +59,45 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
 
-        // Go back to the old target if the new target fails to initialize
-        const oldTargetType = this.getTargetType();
-        const oldTarget = this.getTarget();
+        // Keep the old target if the new target fails to initialize.
         try {
-            this.currentTarget = target;
-            await this.getTarget().init(this.implSettings);
+            await this.implementations[target].init(this.implSettings);
+        } catch {
+            return;
+        }
+
+        const oldTarget = this.getTarget();
+        this.currentTarget = target;
+
+        try {
             await oldTarget.dispose();
         } catch {
-            this.currentTarget = oldTargetType;
+            // The new target is already active, a failed dispose of the old one must not revert it.
+        }
+    }
+
+    private joinCallBatch() {
+        if (this.callBatchState.status === 'idle') {
+            const batch: CallBatch = {
+                activeCalls: 0,
+                beforeCall: this.beforeCallSynchronize(() => this.handleBeforeCall()),
+            };
+            this.callBatchState = { status: 'active', batch };
+        }
+
+        const { batch } = this.callBatchState;
+        batch.activeCalls++;
+
+        return batch;
+    }
+
+    private leaveCallBatch(batch: CallBatch) {
+        batch.activeCalls--;
+
+        const isCurrentBatch =
+            this.callBatchState.status === 'active' && this.callBatchState.batch === batch;
+        if (isCurrentBatch && batch.activeCalls === 0) {
+            this.callBatchState = { status: 'idle' };
         }
     }
 
@@ -82,7 +121,7 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
         };
 
         this.currentTarget = this.getInitTarget();
-        this.callPending = 0;
+        this.callBatchState = { status: 'idle' };
 
         // Initialize the target
         try {
@@ -109,14 +148,10 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
             );
         }
 
+        const batch = this.joinCallBatch();
+
         try {
-            // Edge case - if there are simultaneous calls, we only want to call `handleBeforeCall` once
-            if (this.callPending === 0) {
-                await this.beforeCallSynchronize(async () => {
-                    this.callPending++;
-                    await this.handleBeforeCall();
-                });
-            }
+            await batch.beforeCall;
             const response = await this.getTarget().call(params);
             if (!response.success) {
                 if (await this.handleErrorFallback(response.error.code)) {
@@ -129,7 +164,7 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
             // Don't throw but return error payload
             return createErrorMessage(error);
         } finally {
-            this.callPending--;
+            this.leaveCallBatch(batch);
         }
     }
 
@@ -138,7 +173,7 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
     }
 
     public dispose() {
-        this.callPending = 0;
+        this.callBatchState = { status: 'idle' };
 
         return this.getTarget().dispose();
     }

@@ -1,5 +1,6 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
 import type { CoinInfo, CoreEventMessage } from '@trezor/connect-common';
+import { createDeferred } from '@trezor/utils';
 
 import { BackendManager } from './BackendManager';
 import type { Blockchain } from './Blockchain';
@@ -194,5 +195,55 @@ describe('backend/BackendManager', () => {
         }
 
         expect(connects).toBeLessThanOrEqual(6);
+    });
+
+    it('does not let a replaced backend remove its successor', async () => {
+        const firstConnect = createDeferred<boolean>();
+        const connectSpy = jest
+            .spyOn(BlockchainLink.prototype, 'connect')
+            .mockImplementationOnce(() => firstConnect.promise);
+
+        const first = manager.getOrConnect({ coinInfo, postMessage }).catch(error => error);
+        await delay(0);
+
+        connectSpy.mockRestore();
+        const [replacement] = await manager.reconnectAll();
+
+        firstConnect.reject(new Error('link disposed'));
+        expect(await first).toMatchObject({ code: 'Backend_Error' });
+
+        expect(manager.get('BTC')).toBe(replacement);
+        await expect(manager.getOrConnect({ coinInfo, postMessage })).resolves.toBe(replacement);
+    });
+
+    it('does not schedule a reconnect after dispose', async () => {
+        const backend = await manager.getOrConnect({ coinInfo, postMessage });
+        await backend.subscribeBlocks();
+        const connect = createDeferred<boolean>();
+        jest.spyOn(BlockchainLink.prototype, 'connect').mockImplementation(() => connect.promise);
+        backend.link.emit('disconnected');
+        await delay(1000);
+        postMessage.mockClear();
+
+        manager.dispose();
+        connect.reject(new Error('foo'));
+        await delay(25000);
+
+        expect(postMessage).not.toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'blockchain-reconnecting' }),
+        );
+        expect(manager.get('BTC')).toBeNull();
+    });
+
+    it('shares one connection attempt between concurrent callers', async () => {
+        const connectSpy = jest.spyOn(BlockchainLink.prototype, 'connect');
+
+        const [backend1, backend2] = await Promise.all([
+            manager.getOrConnect({ coinInfo, postMessage }),
+            manager.getOrConnect({ coinInfo, postMessage }),
+        ]);
+
+        expect(backend1).toBe(backend2);
+        expect(connectSpy).toHaveBeenCalledTimes(1);
     });
 });

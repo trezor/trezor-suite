@@ -299,6 +299,25 @@ describe('onCallFirmwareUpdate', () => {
         jest.useRealTimers();
     });
 
+    // Like runFirmwareUpdate, but captures a rejection before advancing the timers.
+    const runFailingFirmwareUpdate = async ({
+        params,
+        context,
+    }: Parameters<typeof onCallFirmwareUpdate>[0]) => {
+        jest.useFakeTimers();
+        const errorPromise = onCallFirmwareUpdate({
+            params: { baseUrl: ASSETS_BASE_URL, ...params },
+            context,
+        }).then(
+            () => undefined,
+            error => error,
+        );
+        await jest.advanceTimersByTimeAsync(10 * 1000);
+        jest.useRealTimers();
+
+        return errorPromise;
+    };
+
     const runFirmwareUpdate = async ({
         params,
         context,
@@ -558,6 +577,59 @@ describe('onCallFirmwareUpdate', () => {
         });
 
         expect(result.versionCheck).toEqual(true);
+
+        await deviceList.dispose();
+    });
+
+    it('T2T1: releases the device when the update fails', async () => {
+        const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
+
+        await waitForDeviceList([
+            // GetFeatures in bootloader mode
+            buildFixture('0037', {
+                bootloader_mode: true,
+            }),
+            // Initialize in bootloader mode fails
+            buildFixture('0000', { code: 'Failure_ProcessError', message: 'boom' }, 'Failure'),
+        ]);
+        const device = context.selectDevice();
+
+        // The device stays connected, the default postMessage would simulate a reboot.
+        expect(
+            await runFailingFirmwareUpdate({
+                params: {},
+                context: { ...context, postMessage: () => {} },
+            }),
+        ).toMatchObject({ message: 'boom' });
+        expect(deviceList.getAllDevices()).toEqual([device]);
+        expect(device.isUsedHere()).toBe(false);
+
+        await deviceList.dispose();
+    });
+
+    it('T1B1: stops waiting for a manual reboot when aborted', async () => {
+        const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
+
+        const t1 = { major_version: 1, minor_version: 0, patch_version: 0 };
+        await waitForDeviceList([
+            // GetFeatures before reboot
+            buildFixture('0037', t1),
+        ]);
+
+        const abortController = new AbortController();
+        // The user never disconnects the device to reboot it manually.
+        const postMessage = ({ type, payload }: any) => {
+            if (type === UI_EVENTS.FIRMWARE_RECONNECT && !payload.disconnected) {
+                abortController.abort();
+            }
+        };
+
+        expect(
+            await runFailingFirmwareUpdate({
+                params: {},
+                context: { ...context, postMessage, abortSignal: abortController.signal },
+            }),
+        ).toMatchObject({ code: 'Method_Interrupted' });
 
         await deviceList.dispose();
     });
