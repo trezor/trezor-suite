@@ -23,13 +23,17 @@ export type Params = {
 // How often to check if popup window is still open (ms).
 const POPUP_CLOSE_INTERVAL = 500;
 
+// Every opened popup is a session with its own handshake, from opening until the popup closes or
+// fails to open. Closing settles only the handshake of the session it ends, so a late failure of
+// a previous popup cannot reject the handshake of the next one, and a close is reported once.
+type PopupState = { status: 'closed' } | { status: 'open'; handshake: Deferred<void> };
+
 /**
  * Abstract base for opening the suite-web popup window.
  * Subclasses implement platform-specific behavior for web and webextension environments.
  */
 export abstract class Popup extends EventEmitter {
     public channel: AbstractMessageChannel<CoreEventMessage>;
-    public handshakePromise: Deferred<void> | undefined;
     protected logger: Log;
     protected readonly popupSrc: Params['popupSrc'];
 
@@ -37,8 +41,7 @@ export abstract class Popup extends EventEmitter {
     private readonly version: Params['version'];
     private readonly requestedPermissions: Params['requestedPermissions'];
     private closeInterval: IntervalId | undefined;
-    private locked = false;
-    private closedEmitted = false;
+    private state: PopupState = { status: 'closed' };
     private pendingFocusOrCreate: Promise<void> = Promise.resolve();
 
     constructor({ popupSrc, manifest, version, logger, requestedPermissions }: Params) {
@@ -49,10 +52,6 @@ export abstract class Popup extends EventEmitter {
         this.version = version;
         this.requestedPermissions = requestedPermissions;
         this.channel = this.createChannel(getOrigin(popupSrc));
-        this.handshakePromise = createDeferred();
-        // Prevent unhandled rejection when the promise is rejected before
-        // call() attaches its own handler (e.g. popup blocked scenario).
-        this.handshakePromise.promise.catch(() => {});
         this.channel.on('message', this.handleCoreMessage.bind(this));
     }
 
@@ -61,6 +60,13 @@ export abstract class Popup extends EventEmitter {
     protected abstract closePopup(): void;
     protected abstract isOpen(): Promise<boolean>;
     protected abstract onReset(focus: boolean): void;
+
+    /**
+     * Handshake of the currently open popup, resolved once its core is loaded.
+     */
+    public get handshakePromise(): Deferred<void> | undefined {
+        return this.state.status === 'open' ? this.state.handshake : undefined;
+    }
 
     /**
      * focus existing or open — serialized so concurrent calls don't interleave
@@ -77,11 +83,11 @@ export abstract class Popup extends EventEmitter {
         const isOpen = await this.isOpen();
 
         // Clean up stale state only if we previously had a popup that is now gone.
-        if (!isOpen && this.locked) {
+        if (!isOpen && this.state.status === 'open') {
             this.reset(false);
         }
 
-        if (this.locked) {
+        if (this.state.status === 'open') {
             this.focusPopup();
 
             return;
@@ -92,8 +98,11 @@ export abstract class Popup extends EventEmitter {
             await this.close();
         }
 
-        this.locked = true;
-        this.closedEmitted = false;
+        const handshake = createDeferred();
+        // Prevent unhandled rejection when the promise is rejected before
+        // call() attaches its own handler (e.g. popup blocked scenario).
+        handshake.promise.catch(() => {});
+        this.state = { status: 'open', handshake };
 
         return this.open();
     }
@@ -134,20 +143,19 @@ export abstract class Popup extends EventEmitter {
     }
 
     private handlePopupClosed() {
+        // The close monitor and POPUP.CLOSED may race each other, only the first one closes.
+        if (this.state.status !== 'open') return;
+
         this.emitClosed();
         this.reset();
     }
 
     private reset(focus = true) {
-        // Guard against double reset. Without this, a second reset() would reject
-        // the freshly-created handshakePromise (unhandled rejection). This can
-        // happen when e.g. close monitor and POPUP.CLOSED race each other.
-        if (!this.locked) return;
+        if (this.state.status !== 'open') return;
 
-        this.locked = false;
-        this.handshakePromise?.reject(ERRORS.TypedError('Method_Interrupted'));
-        this.handshakePromise = createDeferred();
-        this.handshakePromise.promise.catch(() => {});
+        const { handshake } = this.state;
+        this.state = { status: 'closed' };
+        handshake.reject(ERRORS.TypedError('Method_Interrupted'));
         // Reject any pending channel-level handshake so that callers
         // awaiting channel.init() don't hang forever.  Without this,
         // disconnect() → clear() drops the handshakeFinished reference
@@ -169,9 +177,12 @@ export abstract class Popup extends EventEmitter {
      */
     protected handleOpenFailure(reason: string): void {
         this.logger.error('Failed to open popup:', reason);
-        const error = new Error(reason);
+        // The failure may be reported more than once, e.g. by a bootstrap error message and
+        // by the aborted bootstrap handshake. The first report already closed the popup.
+        if (this.state.status !== 'open') return;
+
         this.channel.abortHandshake(reason);
-        this.handshakePromise?.reject(error);
+        this.state.handshake.reject(new Error(reason));
         this.handlePopupClosed();
     }
 
@@ -184,9 +195,6 @@ export abstract class Popup extends EventEmitter {
     }
 
     private emitClosed() {
-        if (this.closedEmitted) return;
-        this.closedEmitted = true;
-
         // When popup is closed we should create a not-real response as if the request was interrupted.
         // Because when popup closes and TrezorConnect is living there it cannot respond, but we know
         // it was interrupted so we safely fake it.
