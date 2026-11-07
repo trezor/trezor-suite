@@ -1191,7 +1191,7 @@
             "conditions": [
                 {
                     "os": {
-                        "macos": ">=11.0.0 <12.0.0",
+                        "macos": ">=11.0.0 <13.0.0",
                         "linux": "!",
                         "windows": "!",
                         "android": "!",
@@ -1206,25 +1206,25 @@
                 }
             ],
             "message": {
-                "id": "0b5a5270-7480-4983-95f6-da4a2a2f0ffb",
+                "id": "12c43645-03a2-4036-b4f0-adaaa4be2e82",
                 "priority": 92,
                 "dismissible": true,
                 "variant": "warning",
                 "category": "banner",
                 "content": {
-                    "en-GB": "Don't update Trezor Suite—the latest version isn't supported on your operating system. To continue, go to the web app.",
-                    "en": "Don't update Trezor Suite—the latest version isn’t supported on your operating system.",
-                    "es": "No actualices Trezor Suite; la última versión no es compatible con tu sistema operativo.",
-                    "cs": "Neaktualizujte Trezor Suite – nejnovější verze není vaším operačním systémem podporována.",
-                    "ru": "Не обновляйте Trezor Suite — последняя версия не поддерживается вашей операционной системой.",
-                    "ja": "Trezor Suiteを更新しないでください。最新バージョンはお使いのオペレーティングシステムでサポートされていません。",
-                    "hu": "Ne frissítse a Trezor Suite-ot – a legújabb verziót az Ön operációs rendszere nem támogatja.",
-                    "it": "Non aggiornare Trezor Suite: l'ultima versione non è supportata dal tuo sistema operativo.",
-                    "fr": "Ne mettez pas à jour Trezor Suite : la dernière version n'est pas prise en charge par votre système d'exploitation.",
-                    "de": "Aktualisiere Trezor Suite nicht – die neueste Version wird von deinem Betriebssystem nicht unterstützt.",
-                    "tr": "Trezor Suite'i güncellemeyin; en son sürüm işletim sisteminizde desteklenmiyor.",
-                    "pt": "Não atualize o Trezor Suite — a versão mais recente não é compatível com o seu sistema operacional.",
-                    "uk": "Не оновлюйте Trezor Suite — остання версія не підтримується вашою операційною системою."
+                    "en-GB": "Don't update Trezor Suite — the latest version isn't supported on your operating system. To continue, go to the web app.",
+                    "en": "Don't update Trezor Suite — the latest version isn’t supported on your operating system. To continue, go to the web app.",
+                    "es": "No actualices Trezor Suite; la última versión no es compatible con tu sistema operativo. Para continuar, ve a la aplicación web.",
+                    "cs": "Neaktualizujte Trezor Suite – nejnovější verze není vaším operačním systémem podporována. Pro pokračování přejděte do webové aplikace.",
+                    "ru": "Не обновляйте Trezor Suite — последняя версия не поддерживается вашей операционной системой. Чтобы продолжить, перейдите в веб-приложение.",
+                    "ja": "Trezor Suiteを更新しないでください。最新バージョンはお使いのオペレーティングシステムでサポートされていません。続行するには、Webアプリをご利用ください。",
+                    "hu": "Ne frissítse a Trezor Suite-ot – a legújabb verziót az Ön operációs rendszere nem támogatja. A folytatáshoz lépjen tovább a webalkalmazásra.",
+                    "it": "Non aggiornare Trezor Suite: l'ultima versione non è supportata dal tuo sistema operativo. Per continuare, vai alla web app.",
+                    "fr": "Ne mettez pas à jour Trezor Suite : la dernière version n'est pas prise en charge par votre système d'exploitation. Pour continuer, accédez à l'application web.",
+                    "de": "Aktualisiere Trezor Suite nicht – die neueste Version wird von deinem Betriebssystem nicht unterstützt. Um fortzufahren, wechsle zur Web-App.",
+                    "tr": "Trezor Suite'i güncellemeyin; en son sürüm işletim sisteminizde desteklenmiyor. Devam etmek için web uygulamasına gidin.",
+                    "pt": "Não atualize o Trezor Suite — a versão mais recente não é compatível com o seu sistema operacional. Para continuar, acesse a aplicação web.",
+                    "uk": "Не оновлюйте Trezor Suite — остання версія не підтримується вашою операційною системою. Щоб продовжити, перейдіть у веб-додаток."
                 },
                 "cta": {
                     "action": "external-link",
