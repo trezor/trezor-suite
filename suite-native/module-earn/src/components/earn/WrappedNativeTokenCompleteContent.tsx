@@ -16,6 +16,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnCompleteScreenContent } from './EarnCompleteScreenContent';
+import { getWrappedNativeAnalyticsSource } from '../../utils/earn/wrappedNativeAnalyticsUtils';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
 import { getWrappedNativeCompleteRows } from '../yield/YieldCompleteScreenPresets';
 
@@ -48,7 +49,7 @@ export const WrappedNativeTokenCompleteContent = ({
             type: events.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: flowType === 'wrap' ? 'wrap-form' : 'unwrap-form',
+                from: getWrappedNativeAnalyticsSource(flowType),
                 to: 'account-detail',
                 networkSymbol: account?.symbol,
             },
