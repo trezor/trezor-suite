@@ -1,0 +1,140 @@
+appId: io.trezor.suite.develop
+name: Onboard and connect an emulated Trezor (Safe 5 / T3T1)
+tags:
+    - suite-native
+    - device
+    - flashlight
+---
+# Device setup via the HTTP->WS shim (mirrors prepareTrezorEmulator).
+# Requires the shim on :9011 and `adb reverse tcp:21328 tcp:21328`.
+- runScript: setupDevice.js
+
+# App onboarding (mirrors onOnboarding.finishOnboarding)
+- launchApp:
+      clearState: true
+- extendedWaitUntil:
+      visible:
+          id: '@onboarding/Welcome/nextBtn'
+      timeout: 35000
+- tapOn:
+      id: '@onboarding/Welcome/nextBtn'
+      retryTapIfNoChange: true
+- tapOn:
+      id: '@onboarding/AnalyticsConsent/nextBtn'
+      retryTapIfNoChange: true
+- tapOn:
+      id: '@onboarding/Biometrics/skipBtn'
+      retryTapIfNoChange: true
+- waitForAnimationToEnd
+
+# Dismiss the trading-residence prompt if the develop build shows it
+- runFlow:
+      when:
+          visible:
+              id: '@trading-residence'
+      commands:
+          - tapOn:
+                text: 'Not now'
+                retryTapIfNoChange: true
+
+# Enable coins via the Get started button (mirrors onCoinEnabling.handleCoinEnablingInit).
+# All coins start disabled here, so each toggle tap enables one.
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Home'
+      timeout: 35000
+- waitForAnimationToEnd
+# Coin enabling opens via Get started, unless a connected device routed straight to it.
+- runFlow:
+      when:
+          notVisible:
+              id: '@screen/CoinEnablingInit'
+      commands:
+          - extendedWaitUntil:
+                visible:
+                    id: '@home/get-started-button'
+                timeout: 20000
+          - tapOn:
+                id: '@home/get-started-button'
+                retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/CoinEnablingInit'
+      timeout: 30000
+- runFlow:
+      file: enableAllCoins.yaml
+- tapOn:
+      id: '@coin-enabling/button-save'
+      retryTapIfNoChange: true
+
+# Wait for discovery to finish: Home + a populated portfolio graph
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Home'
+      timeout: 60000
+- extendedWaitUntil:
+      visible:
+          id: '@home/portfolio/graph'
+      timeout: 120000
+
+# Open the assets tab and the first discovered account
+- tapOn:
+      id: '@tabBar/AccountsStack'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Accounts'
+      timeout: 30000
+- extendedWaitUntil:
+      visible:
+          id: '@accountList/item/title'
+      timeout: 30000
+- tapOn:
+      id: '@accountList/item/title'
+      index: 0
+      retryTapIfNoChange: true
+
+# Token-bearing coins land on AccountAssets first; drill into AccountDetail
+- runFlow:
+      when:
+          visible:
+              id: '@screen/AccountAssets'
+      commands:
+          - tapOn:
+                id: '@accountList/item/title'
+                index: 0
+                retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/AccountDetail'
+      timeout: 30000
+
+# Wait for the discovered account's transaction list to render.
+- extendedWaitUntil:
+      visible:
+          id: '@transactions/item/.*'
+      timeout: 30000
+
+# Scroll through the transaction list (load more history as it appears).
+# We intentionally do NOT open a transaction detail: a null byte (U+0) in the
+# TransactionDetail content crashes Maestro 2.6.1's view-hierarchy dump.
+- repeat:
+      times: 10
+      commands:
+          - swipe:
+                start: '50%,92%'
+                end: '50%,72%'
+                duration: 300
+          - runFlow:
+                when:
+                    visible:
+                        id: '@transactions/list/more-button'
+                commands:
+                    - tapOn:
+                          id: '@transactions/list/more-button'
+                          retryTapIfNoChange: true
+                    - waitForAnimationToEnd
+
+# Measured endpoint: transaction list scrolled. No teardown here — persisting for the
+# warm reload (Home -> disconnect -> keep view-only) runs between measurements via
+# passphrase-wallet/_persist.yaml, so this measured flow has no app restart/disconnect.
