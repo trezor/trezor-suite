@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "./libDev" },
     "include": [".", "**/*.json"],
     "references": [
-        {
-            "path": "../../suite-common/delegated-identity-key-types"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
@@ -14,13 +11,7 @@
             "path": "../../suite-common/persistent-device-data"
         },
         {
-            "path": "../../suite-common/platform-encryption"
-        },
-        {
             "path": "../../suite-common/suite-sync"
-        },
-        {
-            "path": "../../suite-common/suite-sync-evolu"
         },
         {
             "path": "../../suite-common/suite-sync-storage"
@@ -34,7 +25,6 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
-        { "path": "../analytics" },
         { "path": "../debug" },
         { "path": "../firmware-upgrade" },
         { "path": "../intl" },
