@@ -1,5 +1,5 @@
 import { type MessageSystem } from '@suite-common/suite-types';
-import { PollingController, decodeJws, verifyJws } from '@suite-common/suite-utils';
+import { PollingController, decodeJws, preloadJws, verifyJws } from '@suite-common/suite-utils';
 import { isCodesignBuild, isNative } from '@trezor/env-utils';
 import { createThunk } from '@trezor/redux-utils';
 import { scheduleAction } from '@trezor/utils';
@@ -83,9 +83,13 @@ export const fetchConfigThunk = createThunk<void, void, { state: FetchConfigThun
 
         if (shouldFetchConfig(useLocalConfig, timestamp)) {
             try {
-                const { configJws, isRemote } = await getConfigJws(useLocalConfig);
+                // The JWS library downloads while the config is fetched, so verification does not wait for it.
+                const [{ configJws, isRemote }] = await Promise.all([
+                    getConfigJws(useLocalConfig),
+                    preloadJws(),
+                ]);
 
-                const decodedJws = decodeJws(configJws);
+                const decodedJws = await decodeJws(configJws);
 
                 if (!decodedJws) {
                     throw Error('Decoding of config failed');
@@ -96,7 +100,7 @@ export const fetchConfigThunk = createThunk<void, void, { state: FetchConfigThun
                     throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
                 }
 
-                const isAuthenticityValid = verifyJws(configJws, JWS_SIGN_ALGORITHM);
+                const isAuthenticityValid = await verifyJws(configJws, JWS_SIGN_ALGORITHM);
 
                 if (!isAuthenticityValid) {
                     throw Error('Config authenticity is invalid');

@@ -1,5 +1,5 @@
 import type * as JwsModule from './jws';
-import { verifyJws } from './jws';
+import { decodeJws, verifyJws } from './jws';
 
 // Signed by the message-system dev private key, payload: {"version":1,"timestamp":"2021-03-03T03:48:16+00:00","sequence":1,"actions":[]}
 const validJws =
@@ -8,26 +8,56 @@ const validJws =
 const [header = '', payload = '', signature = ''] = validJws.split('.');
 
 describe('verifyJws', () => {
-    it('accepts a config signed by the dev key', () => {
-        expect(verifyJws(validJws, 'ES256')).toBe(true);
+    it('accepts a config signed by the dev key', async () => {
+        await expect(verifyJws(validJws, 'ES256')).resolves.toBe(true);
     });
 
-    it('rejects a tampered payload', () => {
-        expect(verifyJws(`${header}.${payload}A.${signature}`, 'ES256')).toBe(false);
+    it('rejects a tampered payload', async () => {
+        await expect(verifyJws(`${header}.${payload}A.${signature}`, 'ES256')).resolves.toBe(false);
     });
 
-    it('rejects a tampered signature', () => {
-        expect(verifyJws(`${header}.${payload}.${signature.slice(0, -2)}AA`, 'ES256')).toBe(false);
+    it('rejects a tampered signature', async () => {
+        await expect(
+            verifyJws(`${header}.${payload}.${signature.slice(0, -2)}AA`, 'ES256'),
+        ).resolves.toBe(false);
     });
 
-    it('throws when the public key is not defined', () => {
-        jest.isolateModules(() => {
+    it('throws when the public key is not defined', async () => {
+        await jest.isolateModulesAsync(async () => {
             jest.doMock('@trezor/env-utils', () => ({ getJWSPublicKey: () => undefined }));
             const { verifyJws: verifyWithoutKey } = require('./jws') as typeof JwsModule;
 
-            expect(() => verifyWithoutKey(validJws, 'ES256')).toThrow(
+            await expect(verifyWithoutKey(validJws, 'ES256')).rejects.toThrow(
                 'JWS public key is not defined!',
             );
         });
+    });
+});
+
+describe('decodeJws', () => {
+    it('decodes the header and payload', async () => {
+        const decoded = await decodeJws(validJws);
+
+        expect(decoded?.header.alg).toBe('ES256');
+        expect(JSON.parse(decoded?.payload ?? '')).toMatchObject({ version: 1, sequence: 1 });
+    });
+
+    it('rejects when the JWS library fails to load', async () => {
+        await jest
+            .isolateModulesAsync(async () => {
+                jest.doMock('jws', () => {
+                    throw new Error('Loading chunk failed');
+                });
+                const isolated = require('./jws') as typeof JwsModule;
+
+                await expect(isolated.preloadJws()).rejects.toThrow('Loading chunk failed');
+                await expect(isolated.decodeJws(validJws)).rejects.toThrow('Loading chunk failed');
+            })
+            .finally(() => {
+                // The mock factory outlives the isolated registry, and the other tests load `jws` lazily.
+                jest.dontMock('jws');
+            });
+
+        await expect(decodeJws(validJws)).resolves.toMatchObject({ header: { alg: 'ES256' } });
     });
 });

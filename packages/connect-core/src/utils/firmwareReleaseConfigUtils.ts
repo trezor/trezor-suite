@@ -1,4 +1,4 @@
-import { decode, verify } from 'jws';
+import type * as JwsLibrary from 'jws';
 
 import type { FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 import { firmwareConfigCodesignPublicKey, firmwareConfigDevPublicKey } from '@trezor/connect-data';
@@ -56,7 +56,11 @@ const fetchRemoteFwConfig = async (firmwareChannel: FirmwareChannel) => {
     }
 };
 
-const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConfig => {
+const verifyAndDecodeJws = (
+    jws: string,
+    publicKey: string,
+    { decode, verify }: Pick<typeof JwsLibrary, 'decode' | 'verify'>,
+): FirmwareReleaseConfig => {
     const decoded = decode(jws);
 
     if (!decoded?.payload || !decoded.header) {
@@ -85,10 +89,22 @@ const fetchAndDecodeConfig = async (
     publicKey: string,
     isSignatureOptional: boolean,
 ): Promise<FirmwareReleaseConfig> => {
+    // `jws` loads on demand, alongside the config, so verification does not wait for a second download.
+    // A failed download matters only when the config is signed.
+    const jwsLibraryPromise = import('jws').catch(() => undefined);
+
     const data = await fetchRemoteFwConfig(firmwareChannel);
 
     // Even if `isSignatureOptional`, when JWS is present, always parse it strictly.
-    if (typeof data.jws === 'string') return verifyAndDecodeJws(data.jws, publicKey);
+    if (typeof data.jws === 'string') {
+        const jwsLibrary = await jwsLibraryPromise;
+
+        if (!jwsLibrary) {
+            throw new Error('Failed to load the JWS library.');
+        }
+
+        return verifyAndDecodeJws(data.jws, publicKey, jwsLibrary);
+    }
 
     if (isSignatureOptional) return data as FirmwareReleaseConfig;
 
