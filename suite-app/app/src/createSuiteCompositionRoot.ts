@@ -11,7 +11,7 @@ import { selectLabelingDataForAccount } from '@suite/metadata';
 import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migration';
 import { type HistoryDep, createSuiteRouterHistory } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
-import { type SuiteSyncDesktopFactoryDep } from '@suite/suite-sync';
+import { createSuiteSyncDesktopCompositionRoot } from '@suite-app/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
     type ConnectInitSettings,
@@ -83,8 +83,7 @@ export type SuiteAppDeps = StoreAPIDep &
     ReloadAppDep &
     ThpHostNameDep &
     GetTransportsFactoriesDep &
-    GetTrezorConnectPrivilegedDep &
-    SuiteSyncDesktopFactoryDep;
+    GetTrezorConnectPrivilegedDep;
 
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
@@ -119,7 +118,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             ...writeLabels,
         });
 
-    const suiteSync = deps.suiteSyncDesktopFactory({
+    const suiteSync = createSuiteSyncDesktopCompositionRoot({
         dispatch: deps.dispatch,
         getState: deps.getState,
         platformEncryption: deps.platformEncryption,

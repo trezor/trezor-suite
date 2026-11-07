@@ -14,6 +14,8 @@
         "@evolu/common": "8.10.0",
         "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch",
         "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/delegated-identity-key-types": "workspace:*",
+        "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
@@ -22,6 +24,7 @@
         "@suite/analytics": "workspace:*",
         "@suite/suite-sync": "workspace:*",
         "@suite/tor": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"

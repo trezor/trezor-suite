@@ -1,8 +1,3 @@
-export type {
-    SuiteSyncDesktopFactory,
-    SuiteSyncDesktopFactoryDeps,
-    SuiteSyncDesktopFactoryDep,
-} from './suiteSyncDesktopFactory';
 export { SelectSuiteSyncServer } from './SelectSuiteSyncServer';
 export { SuiteSyncInteractionsTooltip } from './SuiteSyncInteractionsTooltip';
 export { suiteSyncErrorHandler } from './suiteSyncErrorHandler';

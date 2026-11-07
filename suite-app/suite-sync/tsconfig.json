@@ -4,6 +4,12 @@
     "include": [".", "**/*.json"],
     "references": [
         {
+            "path": "../../suite-common/delegated-identity-key-types"
+        },
+        {
+            "path": "../../suite-common/platform-encryption"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -21,6 +27,7 @@
         { "path": "../../suite/analytics" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/tor" },
+        { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"
         },

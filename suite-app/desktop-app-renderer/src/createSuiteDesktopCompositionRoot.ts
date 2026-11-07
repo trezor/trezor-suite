@@ -9,7 +9,6 @@ import {
     extraDependencies,
     rootReducer,
 } from '@suite-app/app';
-import { createSuiteSyncDesktopCompositionRoot } from '@suite-app/suite-sync';
 import TrezorConnect from '@trezor/connect-electron';
 import { toGetter } from '@trezor/dependency-injection';
 import { createDb, createPreloadStore } from '@trezor/suite';
@@ -40,7 +39,6 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     });
     const db = createDb({ dispatch: store.dispatch, reloadApp });
     const suiteServices = createSuiteServicesCompositionRoot({
-        suiteSyncDesktopFactory: createSuiteSyncDesktopCompositionRoot,
         db,
         desktopApi,
         dispatch: store.dispatch,
