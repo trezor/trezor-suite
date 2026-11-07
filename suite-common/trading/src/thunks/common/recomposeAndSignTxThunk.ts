@@ -26,11 +26,12 @@ import {
     selectTradingIsSlip24SellAllowed,
 } from '../../selectors/tradingSelectors';
 import type {
+    TradingError,
     TradingFulfillValue,
-    TradingSendRejectedProps,
     TradingSignAndPushError,
     TradingSignAndPushSendFormTransactionProps,
 } from '../../types';
+import { toTradingError } from '../../utils/tradingErrorUtils';
 
 export type RecomposeAndSignTxThunkProps = ComposeTradingTransactionThunkProps & {
     /**
@@ -49,7 +50,7 @@ export type RecomposeAndSignTxThunkProps = ComposeTradingTransactionThunkProps &
 
 const getSignAndPushRejectionType = (
     signAndPushError: TradingSignAndPushError,
-): TradingSendRejectedProps['type'] => {
+): TradingError['type'] => {
     switch (signAndPushError.error) {
         case 'push-approval-rejected':
             return 'sign-cancelled';
@@ -83,7 +84,7 @@ export const recomposeAndSignTxThunk = createThunk<
     Ok<{ txid: string }>,
     RecomposeAndSignTxThunkProps,
     {
-        rejectValue: TradingSendRejectedProps;
+        rejectValue: TradingError;
         state: RecomposeAndSignTxThunkState;
     }
 >(
@@ -127,10 +128,10 @@ export const recomposeAndSignTxThunk = createThunk<
 
         if (isRejected(composeTradingTransactionThunk)(composeResult)) {
             return rejectWithValue(
-                composeResult.payload ?? {
+                toTradingError(composeResult.payload ?? composeResult.error, {
                     type: 'sign-tx-error',
-                    error: { id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION' },
-                },
+                    code: 'cannot-create-transaction',
+                }),
             );
         }
 
@@ -202,14 +203,15 @@ export const recomposeAndSignTxThunk = createThunk<
         if (!resultOfSignedTransaction) {
             return rejectWithValue({
                 type: 'sign-cancelled',
-                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                code: 'cannot-send-transaction',
             });
         }
 
         if (!resultOfSignedTransaction.success) {
             return rejectWithValue({
                 type: getSignAndPushRejectionType(resultOfSignedTransaction.error),
-                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                code: 'cannot-send-transaction',
+                cause: { source: 'send-form', error: resultOfSignedTransaction.error },
             });
         }
 

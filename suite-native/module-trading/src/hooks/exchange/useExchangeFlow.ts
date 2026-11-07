@@ -6,12 +6,12 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import {
-    type TradingSendRejectedProps,
+    type TradingError,
     exchangeThunks,
     selectTradingExchangeSelectedQuote,
+    toSendTransactionTradingError,
 } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { type TxKeyPath } from '@suite-native/intl';
 import { type ExchangeFlowType, TradingStackRoutes } from '@suite-native/navigation';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
@@ -33,7 +33,7 @@ export type TradingExchangeConfirmTradeProps = {
 
 export type TradingExchangeSignAndSendTransactionProps = {
     nextStep: () => void;
-    onError: (error: TradingSendRejectedProps) => void;
+    onError: (error: TradingError) => void;
 };
 
 export type UseExchangeFlowProps = {
@@ -205,7 +205,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
 
                 return true;
             } catch (e) {
-                onError(e as TradingSendRejectedProps<TxKeyPath>);
+                onError(toSendTransactionTradingError(e));
 
                 return false;
             }

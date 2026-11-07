@@ -111,14 +111,14 @@ describe('getPaymentRequestOutputsThunk', () => {
         expect(result.type).toBe(getPaymentRequestOutputsThunk.rejected.type);
         expect(result.payload).toEqual({
             type: 'sign-tx-error',
-            error: { id: 'TR_DEVICE_NOT_CONNECTED' },
+            code: 'device-not-connected',
         });
     });
 
     it('rejects when the change address cannot be resolved', async () => {
         (TrezorConnect.getAddress as jest.Mock).mockResolvedValue({
             success: false,
-            payload: { error: 'Device disconnected' },
+            error: { code: 'Device_Disconnected', message: 'Device disconnected' },
         });
 
         const result = await createMockStore().dispatch(
@@ -128,7 +128,12 @@ describe('getPaymentRequestOutputsThunk', () => {
         expect(result.type).toBe(getPaymentRequestOutputsThunk.rejected.type);
         expect(result.payload).toEqual({
             type: 'sign-tx-error',
-            error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+            code: 'payment-requests-failed',
+            cause: {
+                source: 'connect',
+                code: 'Device_Disconnected',
+                message: 'Device disconnected',
+            },
         });
     });
 });

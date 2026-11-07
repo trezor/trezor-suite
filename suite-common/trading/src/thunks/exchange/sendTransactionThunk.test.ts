@@ -15,7 +15,7 @@ import { type TradingExchangeState } from '../../reducers/exchangeReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
-import { type TradingTransactionExchange } from '../../types';
+import { type TradingError, type TradingTransactionExchange } from '../../types';
 import { tradingThunks } from '../common';
 
 import { exchangeThunks } from './index';
@@ -168,7 +168,7 @@ describe('sendTransactionThunk', () => {
         });
         const rejectValue = {
             type: 'error',
-            error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            code: 'cannot-send-transaction',
         };
 
         const sendDexTransactionThunkSpy = (
@@ -237,26 +237,42 @@ describe('sendTransactionThunk', () => {
             expect(result.meta.requestStatus).toEqual('rejected');
             expect(result.payload).toEqual({
                 type: 'error',
-                error: {
-                    id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
-                },
+                code: 'cannot-send-transaction',
             });
         });
     });
 
     describe('should return error after recompose and sign transaction', () => {
-        it.each([
-            ['when payload is undefined', undefined],
-            ['when payload contains error', { type: 'error', error: { id: 'TR_ERROR' } }],
-            ['when payload is not successful', { success: false }],
+        it.each<[string, unknown, TradingError]>([
             [
-                'when the signing was cancelled on the device',
+                'when payload is undefined',
+                undefined,
                 {
-                    type: 'sign-cancelled',
-                    error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                    type: 'sign-tx-error',
+                    code: 'cannot-send-transaction',
+                    cause: { source: 'unexpected', message: 'Rejected' },
                 },
             ],
-        ])('%s', async (_, recomposeAndSignPayload) => {
+            [
+                'when payload is a trading error',
+                { type: 'error', code: 'payment-requests-failed' },
+                { type: 'error', code: 'payment-requests-failed' },
+            ],
+            [
+                'when payload is not a trading error',
+                { success: false },
+                {
+                    type: 'sign-tx-error',
+                    code: 'cannot-send-transaction',
+                    cause: { source: 'unexpected', message: undefined },
+                },
+            ],
+            [
+                'when the signing was cancelled on the device',
+                { type: 'sign-cancelled', code: 'cannot-send-transaction' },
+                { type: 'sign-cancelled', code: 'cannot-send-transaction' },
+            ],
+        ])('%s', async (_, recomposeAndSignPayload, expectedPayload) => {
             const { store, returnUrl, account, trade } = getMocks();
 
             const sendDexTransactionThunkSpy = sendDexTransactionThunk as unknown as jest.Mock;
@@ -286,16 +302,7 @@ describe('sendTransactionThunk', () => {
             expect(sendDexTransactionThunkSpy).toHaveBeenCalledTimes(0);
             expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
             expect(result.meta.requestStatus).toEqual('rejected');
-            expect(result.payload).toEqual(
-                recomposeAndSignPayload && 'error' in recomposeAndSignPayload
-                    ? recomposeAndSignPayload
-                    : {
-                          type: 'sign-tx-error',
-                          error: {
-                              id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
-                          },
-                      },
-            );
+            expect(result.payload).toEqual(expectedPayload);
         });
     });
 

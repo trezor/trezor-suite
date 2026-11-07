@@ -145,9 +145,7 @@ describe('getPurchaseAddress thunk', () => {
             expect(result.type).toBe(getPurchaseAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
             });
 
             // Verify confirmAddressOnDeviceThunk was not called
@@ -170,9 +168,8 @@ describe('getPurchaseAddress thunk', () => {
             expect(result.type).toBe(getPurchaseAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
+                cause: { source: 'connect', message: 'Device confirmation failed' },
             });
         });
 
@@ -195,9 +192,7 @@ describe('getPurchaseAddress thunk', () => {
             expect(result.type).toBe(getPurchaseAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
             });
         });
     });
