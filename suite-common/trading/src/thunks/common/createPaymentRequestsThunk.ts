@@ -39,6 +39,7 @@ import {
     tradingSellCreatePaymentRequest,
 } from '../../utils/signature/signatureUtils';
 import { validatePaymentRequestSignature } from '../../utils/signature/validatePaymentRequest';
+import { toTradingError } from '../../utils/tradingErrorUtils';
 
 type CreateSignatureThunkProps = {
     type: TradingTradeSellExchangeType;
@@ -68,224 +69,234 @@ export const createPaymentRequestsThunk = createThunk<
         { type, account, composedLevels, formattedMaxAmount, destinationTag },
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
-        const { mac: macRefund, path: pathRefund } = await dispatch(
-            getRefundAddressThunk({ account }),
-        ).unwrap();
-        const nonce = await dispatch(getNonceThunk()).unwrap();
+        try {
+            const { mac: macRefund, path: pathRefund } = await dispatch(
+                getRefundAddressThunk({ account }),
+            ).unwrap();
+            const nonce = await dispatch(getNonceThunk()).unwrap();
 
-        if (!('outputs' in composedLevels)) {
-            return rejectWithValue({
-                type: 'sign-tx-error',
-                code: 'payment-requests-failed',
-            });
-        }
+            if (!('outputs' in composedLevels)) {
+                return rejectWithValue({
+                    type: 'sign-tx-error',
+                    code: 'payment-requests-failed',
+                });
+            }
 
-        switch (type) {
-            case 'exchange': {
-                const quote = selectTradingExchangeSelectedQuote(getState());
-                const providers = selectTradingExchangeProviders(getState());
-                const receiveDisplaySymbol = selectTradingCoinSymbolByCryptoId(
-                    getState(),
-                    quote?.receive,
-                );
+            switch (type) {
+                case 'exchange': {
+                    const quote = selectTradingExchangeSelectedQuote(getState());
+                    const providers = selectTradingExchangeProviders(getState());
+                    const receiveDisplaySymbol = selectTradingCoinSymbolByCryptoId(
+                        getState(),
+                        quote?.receive,
+                    );
 
-                const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
-                const receiveAddress = selectTradingExchangeReceiveAddress(getState());
-                const receiveAccount = selectAccountByKey(getState(), receiveAccountKey);
-                const sendNetwork = cryptoIdToNetwork(quote?.send);
+                    const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
+                    const receiveAddress = selectTradingExchangeReceiveAddress(getState());
+                    const receiveAccount = selectAccountByKey(getState(), receiveAccountKey);
+                    const sendNetwork = cryptoIdToNetwork(quote?.send);
 
-                if (
-                    !quote?.orderId ||
-                    receiveAddress === undefined ||
-                    !receiveAccount ||
-                    !receiveDisplaySymbol ||
-                    !sendNetwork
-                ) {
-                    return rejectWithValue({
-                        type: 'sign-tx-error',
-                        code: 'payment-requests-failed',
-                    });
-                }
+                    if (
+                        !quote?.orderId ||
+                        receiveAddress === undefined ||
+                        !receiveAccount ||
+                        !receiveDisplaySymbol ||
+                        !sendNetwork
+                    ) {
+                        return rejectWithValue({
+                            type: 'sign-tx-error',
+                            code: 'payment-requests-failed',
+                        });
+                    }
 
-                const { mac: macPurchase, path: pathPurchase } = await dispatch(
-                    getPurchaseAddressThunk({ account: receiveAccount, address: receiveAddress }),
-                ).unwrap();
+                    const { mac: macPurchase, path: pathPurchase } = await dispatch(
+                        getPurchaseAddressThunk({
+                            account: receiveAccount,
+                            address: receiveAddress,
+                        }),
+                    ).unwrap();
 
-                const outputs = await dispatch(
-                    getPaymentRequestOutputsThunk({
-                        account,
-                        network: sendNetwork,
-                        composedLevels,
-                        destinationTag,
-                    }),
-                ).unwrap();
+                    const outputs = await dispatch(
+                        getPaymentRequestOutputsThunk({
+                            account,
+                            network: sendNetwork,
+                            composedLevels,
+                            destinationTag,
+                        }),
+                    ).unwrap();
 
-                const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
-                const receiveSlip44 = getSlip44ByPath(validatePath(pathPurchase));
+                    const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
+                    const receiveSlip44 = getSlip44ByPath(validatePath(pathPurchase));
 
-                const tradeApiKey = selectTradingTradeApiKey(getState(), quote.orderId);
-                const trade = await tradeApi.getSignedTrade<
-                    ExchangeTradeSigned,
-                    CreateTradeSignatureRequestExchange
-                >(
-                    {
-                        type: 'exchange',
-                        id: quote.orderId,
+                    const tradeApiKey = selectTradingTradeApiKey(getState(), quote.orderId);
+                    const trade = await tradeApi.getSignedTrade<
+                        ExchangeTradeSigned,
+                        CreateTradeSignatureRequestExchange
+                    >(
+                        {
+                            type: 'exchange',
+                            id: quote.orderId,
+                            nonce,
+                            sendSlip44,
+                            receiveSlip44,
+                            outputs,
+                        },
+                        tradeApiKey,
+                    );
+
+                    const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
+                    const sendStringAmount = formattedMaxAmount ?? trade?.sendStringAmount;
+
+                    if (!provider || !trade || !sendStringAmount) {
+                        return rejectWithValue({
+                            type: 'sign-tx-error',
+                            code: 'payment-requests-failed',
+                        });
+                    }
+
+                    const paymentRequest = tradingExchangeCreatePaymentRequest({
+                        trade,
+                        provider,
+                        macPurchase,
+                        pathPurchase,
+                        macRefund,
+                        pathRefund,
                         nonce,
-                        sendSlip44,
                         receiveSlip44,
-                        outputs,
-                    },
-                    tradeApiKey,
-                );
-
-                const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
-                const sendStringAmount = formattedMaxAmount ?? trade?.sendStringAmount;
-
-                if (!provider || !trade || !sendStringAmount) {
-                    return rejectWithValue({
-                        type: 'sign-tx-error',
-                        code: 'payment-requests-failed',
+                        receiveDisplaySymbol,
+                        sendStringAmount,
+                        sendTokenDecimals: composedLevels.token?.decimals,
                     });
-                }
 
-                const paymentRequest = tradingExchangeCreatePaymentRequest({
-                    trade,
-                    provider,
-                    macPurchase,
-                    pathPurchase,
-                    macRefund,
-                    pathRefund,
-                    nonce,
-                    receiveSlip44,
-                    receiveDisplaySymbol,
-                    sendStringAmount,
-                    sendTokenDecimals: composedLevels.token?.decimals,
-                });
+                    if (!paymentRequest) {
+                        return rejectWithValue({
+                            type: 'sign-tx-error',
+                            code: 'payment-requests-failed',
+                        });
+                    }
 
-                if (!paymentRequest) {
-                    return rejectWithValue({
-                        type: 'sign-tx-error',
-                        code: 'payment-requests-failed',
-                    });
-                }
-
-                validatePaymentRequestSignature({
-                    paymentRequest,
-                    sendSlip44,
-                    outputs,
-                    sentAsset: {
-                        network: sendNetwork.symbol,
-                        isToken: !!composedLevels.token,
-                    },
-                });
-
-                return fulfillWithValue([paymentRequest]);
-            }
-            case 'sell': {
-                const quote = selectTradingSellSelectedQuote(getState());
-                const providers = selectTradingSellProviders(getState());
-
-                if (!quote?.paymentId || !quote.cryptoCurrency) {
-                    return rejectWithValue({
-                        type: 'sign-tx-error',
-                        code: 'payment-requests-failed',
-                    });
-                }
-
-                const sendNetwork = cryptoIdToNetwork(quote.cryptoCurrency);
-                if (!sendNetwork) {
-                    return rejectWithValue({
-                        type: 'sign-tx-error',
-                        code: 'payment-requests-failed',
-                    });
-                }
-
-                const sendDisplaySymbol = selectTradingCoinSymbolByCryptoId(
-                    getState(),
-                    quote.cryptoCurrency,
-                );
-
-                if (!sendDisplaySymbol) {
-                    return rejectWithValue({
-                        type: 'sign-tx-error',
-                        code: 'payment-requests-failed',
-                    });
-                }
-
-                const memoAmount = formattedMaxAmount ?? quote.cryptoStringAmount;
-                const memoText = `Selling ${memoAmount} ${sendDisplaySymbol} for ${quote.fiatStringAmount} ${quote.fiatCurrency}`;
-
-                const outputs = await dispatch(
-                    getPaymentRequestOutputsThunk({
-                        account,
-                        network: sendNetwork,
-                        composedLevels,
-                        destinationTag,
-                    }),
-                ).unwrap();
-
-                const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
-
-                const tradeApiKey = selectTradingTradeApiKey(getState(), quote.orderId);
-                const trade = await tradeApi.getSignedTrade<
-                    SellFiatTradeSigned,
-                    CreateTradeSignatureRequestSell
-                >(
-                    {
-                        type: 'sell',
-                        id: quote.paymentId,
+                    validatePaymentRequestSignature({
+                        paymentRequest,
                         sendSlip44,
-                        nonce,
                         outputs,
+                        sentAsset: {
+                            network: sendNetwork.symbol,
+                            isToken: !!composedLevels.token,
+                        },
+                    });
+
+                    return fulfillWithValue([paymentRequest]);
+                }
+                case 'sell': {
+                    const quote = selectTradingSellSelectedQuote(getState());
+                    const providers = selectTradingSellProviders(getState());
+
+                    if (!quote?.paymentId || !quote.cryptoCurrency) {
+                        return rejectWithValue({
+                            type: 'sign-tx-error',
+                            code: 'payment-requests-failed',
+                        });
+                    }
+
+                    const sendNetwork = cryptoIdToNetwork(quote.cryptoCurrency);
+                    if (!sendNetwork) {
+                        return rejectWithValue({
+                            type: 'sign-tx-error',
+                            code: 'payment-requests-failed',
+                        });
+                    }
+
+                    const sendDisplaySymbol = selectTradingCoinSymbolByCryptoId(
+                        getState(),
+                        quote.cryptoCurrency,
+                    );
+
+                    if (!sendDisplaySymbol) {
+                        return rejectWithValue({
+                            type: 'sign-tx-error',
+                            code: 'payment-requests-failed',
+                        });
+                    }
+
+                    const memoAmount = formattedMaxAmount ?? quote.cryptoStringAmount;
+                    const memoText = `Selling ${memoAmount} ${sendDisplaySymbol} for ${quote.fiatStringAmount} ${quote.fiatCurrency}`;
+
+                    const outputs = await dispatch(
+                        getPaymentRequestOutputsThunk({
+                            account,
+                            network: sendNetwork,
+                            composedLevels,
+                            destinationTag,
+                        }),
+                    ).unwrap();
+
+                    const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
+
+                    const tradeApiKey = selectTradingTradeApiKey(getState(), quote.orderId);
+                    const trade = await tradeApi.getSignedTrade<
+                        SellFiatTradeSigned,
+                        CreateTradeSignatureRequestSell
+                    >(
+                        {
+                            type: 'sell',
+                            id: quote.paymentId,
+                            sendSlip44,
+                            nonce,
+                            outputs,
+                            memoText,
+                        },
+                        tradeApiKey,
+                    );
+
+                    const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
+                    const sendStringAmount = formattedMaxAmount ?? trade?.cryptoStringAmount;
+
+                    if (!provider || !trade || !sendStringAmount) {
+                        return rejectWithValue({
+                            type: 'sign-tx-error',
+                            code: 'payment-requests-failed',
+                        });
+                    }
+
+                    const paymentRequest = tradingSellCreatePaymentRequest({
+                        trade,
+                        provider,
+                        macRefund,
+                        pathRefund,
+                        nonce,
                         memoText,
-                    },
-                    tradeApiKey,
-                );
-
-                const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
-                const sendStringAmount = formattedMaxAmount ?? trade?.cryptoStringAmount;
-
-                if (!provider || !trade || !sendStringAmount) {
-                    return rejectWithValue({
-                        type: 'sign-tx-error',
-                        code: 'payment-requests-failed',
+                        sendStringAmount,
+                        sendTokenDecimals: composedLevels.token?.decimals,
                     });
+
+                    if (!paymentRequest) {
+                        return rejectWithValue({
+                            type: 'sign-tx-error',
+                            code: 'payment-requests-failed',
+                        });
+                    }
+
+                    validatePaymentRequestSignature({
+                        paymentRequest,
+                        sendSlip44,
+                        outputs,
+                        sentAsset: {
+                            network: sendNetwork.symbol,
+                            isToken: !!composedLevels.token,
+                        },
+                    });
+
+                    return fulfillWithValue([paymentRequest]);
                 }
 
-                const paymentRequest = tradingSellCreatePaymentRequest({
-                    trade,
-                    provider,
-                    macRefund,
-                    pathRefund,
-                    nonce,
-                    memoText,
-                    sendStringAmount,
-                    sendTokenDecimals: composedLevels.token?.decimals,
-                });
-
-                if (!paymentRequest) {
-                    return rejectWithValue({
-                        type: 'sign-tx-error',
-                        code: 'payment-requests-failed',
-                    });
-                }
-
-                validatePaymentRequestSignature({
-                    paymentRequest,
-                    sendSlip44,
-                    outputs,
-                    sentAsset: {
-                        network: sendNetwork.symbol,
-                        isToken: !!composedLevels.token,
-                    },
-                });
-
-                return fulfillWithValue([paymentRequest]);
+                default:
+                    throw exhaustive(type);
             }
-
-            default:
-                throw exhaustive(type);
+        } catch (error) {
+            // `unwrap` rethrows a sub-thunk's trading error, which is kept over the fallback.
+            return rejectWithValue(
+                toTradingError(error, { type: 'sign-tx-error', code: 'payment-requests-failed' }),
+            );
         }
     },
 );

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type TradingType, isSilentSendRejection } from '@suite-common/trading';
+import { type TradingType, isSilentTradingError } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
@@ -105,7 +105,7 @@ export const useTradingOutputsReviewScreenControls = ({
                 setIsBroadcasting(false);
 
                 // Timeout is handled by solana timer
-                if (isSilentSendRejection(error.type)) {
+                if (isSilentTradingError(error)) {
                     return;
                 }
 
