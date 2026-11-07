@@ -11323,7 +11323,6 @@ __metadata:
     minimizer-webpack-plugin: "npm:5.13.0"
     raw-loader: "npm:^4.0.2"
     react: "npm:19.3.0"
-    react-helmet-async: "npm:^3.0.0"
     react-intl: "npm:^12.1.4"
     react-redux: "npm:9.3.0"
     react-refresh: "npm:^0.19.0"
@@ -20226,7 +20225,6 @@ __metadata:
     react-dom: "npm:19.3.0"
     react-error-boundary: "npm:^6.0.0"
     react-focus-lock: "npm:^2.13.7"
-    react-helmet-async: "npm:^3.0.0"
     react-hook-form: "npm:^7.77.0"
     react-intl: "npm:^12.1.4"
     react-redux: "npm:9.3.0"
@@ -41766,13 +41764,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-fast-compare@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "react-fast-compare@npm:3.2.2"
-  checksum: 10/a6826180ba75cefba1c8d3ac539735f9b627ca05d3d307fe155487f5d0228d376dac6c9708d04a283a7b9f9aee599b637446635b79c8c8753d0b4eece56c125c
-  languageName: node
-  linkType: hard
-
 "react-fela@npm:^12.2.1":
   version: 12.2.1
   resolution: "react-fela@npm:12.2.1"
@@ -41813,19 +41804,6 @@ __metadata:
   peerDependencies:
     react: ">=17.0.0"
   checksum: 10/1dc433319341ec3dca84513c4197ef4f4c8232604d35f83546a8abfb41d9591f934b66aaaa4dc3dc8b1b65f488705a2a48ae6c1d9792660119a9cdedeab4ca8f
-  languageName: node
-  linkType: hard
-
-"react-helmet-async@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "react-helmet-async@npm:3.0.0"
-  dependencies:
-    invariant: "npm:^2.2.4"
-    react-fast-compare: "npm:^3.2.2"
-    shallowequal: "npm:^1.1.0"
-  peerDependencies:
-    react: ^16.6.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/c828f59b73098ff89afe06703f3991ff75b0c1bf70252cdbb5fb2c7c3e293f41abd265c9c549f9ac884ed515d02df9cda2e32ab21e2bbc37d8a4a4c643e2651c
   languageName: node
   linkType: hard
 
@@ -44475,13 +44453,6 @@ __metadata:
   version: 1.2.1
   resolution: "shallow-equal@npm:1.2.1"
   checksum: 10/4f1645cc516e7754c4438db687e1da439a5f29a7dba2ba90c5f88e5708aeb17bc4355ba45cad805b0e95dc898e37d8bf6d77d854919c7512f89939986cff8cd1
-  languageName: node
-  linkType: hard
-
-"shallowequal@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "shallowequal@npm:1.1.0"
-  checksum: 10/f4c1de0837f106d2dbbfd5d0720a5d059d1c66b42b580965c8f06bb1db684be8783538b684092648c981294bf817869f743a066538771dbecb293df78f765e00
   languageName: node
   linkType: hard
 

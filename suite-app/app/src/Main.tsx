@@ -1,5 +1,3 @@
-import { HelmetProvider } from 'react-helmet-async';
-
 import { injectQueryClient } from '@suite-common/react-query';
 import { ReactQueryProvider } from '@suite-common/react-query/react';
 import { SelectCacheProvider } from '@trezor/components';
@@ -30,7 +28,7 @@ export const Main = ({ trafficLightOffset, children }: MainProps) => {
     return (
         // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
         // <StrictMode>
-        <HelmetProvider>
+        <>
             {trafficLightOffset ?? null}
             <ConnectPopupModals />
             <ConnectedThemeProvider>
@@ -53,7 +51,7 @@ export const Main = ({ trafficLightOffset, children }: MainProps) => {
                     </ErrorBoundary>
                 </ResponsiveContextProvider>
             </ConnectedThemeProvider>
-        </HelmetProvider>
+        </>
         // </StrictMode>
     );
 };
