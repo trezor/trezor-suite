@@ -76,3 +76,31 @@ describe('AbstractMethod Cardano enablement', () => {
         });
     });
 });
+
+describe('AbstractMethod call status', () => {
+    it('runs a pending call and answers it once', () => {
+        const method = make('getFeatures');
+
+        expect(method.callStatus).toBe('pending');
+        expect(method.startRunning()).toBe(true);
+        expect(method.callStatus).toBe('running');
+        expect(method.markAnswered()).toBe(true);
+        expect(method.markAnswered()).toBe(false);
+        expect(method.callStatus).toBe('answered');
+    });
+
+    it('does not run a call answered while pending', () => {
+        const method = make('getFeatures');
+
+        expect(method.markAnswered()).toBe(true);
+        expect(method.startRunning()).toBe(false);
+        expect(method.callStatus).toBe('answered');
+    });
+
+    it('does not start a running call again', () => {
+        const method = make('getFeatures');
+        method.startRunning();
+
+        expect(method.startRunning()).toBe(false);
+    });
+});

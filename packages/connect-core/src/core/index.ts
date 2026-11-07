@@ -110,6 +110,19 @@ const getDeviceIdentity = (device: Device) => ({
 });
 
 /**
+ * Sends the response of a call unless the call was already answered, e.g. by a cancel.
+ */
+const respond = (
+    { sendCoreMessage }: Pick<CoreContext, 'sendCoreMessage'>,
+    method: AbstractMethod<any>,
+    response: CoreEventMessage,
+) => {
+    if (method.markAnswered()) {
+        sendCoreMessage(response);
+    }
+};
+
+/**
  * This function will run inside Device.run() after device will be acquired and initialized
  */
 const inner = async (context: CoreContext, method: AbstractMethod<any>, device: Device) => {
@@ -215,11 +228,7 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
             response = createResponseMessage(method.responseID, false, { error });
         }
 
-        // A cancel that arrived while this call was awaiting may have answered it already:
-        // abortRunningCall answers a call without a device itself.
-        if (callMethods.includes(method)) {
-            sendCoreMessage(response);
-        }
+        respond(context, method, response);
 
         return Promise.resolve();
     }
@@ -240,9 +249,17 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
                 sendCoreMessage: sendCoreMessageWithCallId,
                 createUiPromise: uiPromises.create,
             });
-            sendCoreMessageWithCallId(createResponseMessage(method.responseID, true, response));
+            respond(
+                methodContext,
+                method,
+                createResponseMessage(method.responseID, true, response),
+            );
         } catch (error) {
-            sendCoreMessageWithCallId(createResponseMessage(method.responseID, false, { error }));
+            respond(
+                methodContext,
+                method,
+                createResponseMessage(method.responseID, false, { error }),
+            );
         }
 
         return Promise.resolve();
@@ -256,7 +273,7 @@ const onCallDevice = async (
     message: CoreCallMessage,
     method: AbstractMethod<any>,
 ): Promise<void> => {
-    const { deviceList, callMethods, sendCoreMessage, logger } = context;
+    const { deviceList, callMethods, logger } = context;
     const responseID = message.id;
 
     // find device
@@ -265,7 +282,7 @@ const onCallDevice = async (
         tempDevice = selectDevice(context, message.payload.device);
     } catch (error) {
         // TODO: this should not be returned here before user agrees on "read" perms...
-        sendCoreMessage(createResponseMessage(responseID, false, { error }));
+        respond(context, method, createResponseMessage(responseID, false, { error }));
         throw error;
     }
 
@@ -293,7 +310,9 @@ const onCallDevice = async (
         // if current method was overridden while waiting for device.override result
         // return response with status false
         if (method.overridden) {
-            sendCoreMessage(
+            respond(
+                context,
+                method,
                 createResponseMessage(method.responseID, false, { error: overrideError }),
             );
             throw overrideError;
@@ -305,13 +324,22 @@ const onCallDevice = async (
             // wait for self-release and then carry on
             await device.currentRun;
         } else {
-            sendCoreMessage(
+            respond(
+                context,
+                method,
                 createResponseMessage(responseID, false, {
                     error: ERRORS.TypedError('Device_CallInProgress'),
                 }),
             );
             throw ERRORS.TypedError('Device_CallInProgress');
         }
+    }
+
+    // A cancel may have answered the call while it was waiting for the device.
+    if (!method.startRunning()) {
+        method.dispose();
+
+        return;
     }
 
     // set device instance. default is 0
@@ -402,7 +430,7 @@ const onCallDevice = async (
                 deviceList.removeAuthPenalty(device);
             }
 
-            sendCoreMessage(response);
+            respond(context, method, response);
         }
     }
 };
@@ -646,7 +674,7 @@ const registerDeviceEvents =
 // promises remain untouched. When `callId` is undefined, all in-flight work
 // is aborted (legacy behavior).
 const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: string) => {
-    const { uiPromises, deviceList, callMethods, sendCoreMessage } = context;
+    const { uiPromises, deviceList, callMethods } = context;
 
     if (callId) {
         const method = callMethods.find(m => m.callId === callId);
@@ -654,15 +682,16 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
             return;
         }
 
-        if (method.device?.isUsedHere()) {
-            // Aborting the device session causes device.run to reject which
+        if (method.callStatus === 'running') {
+            // Aborting the device run causes device.run to reject which
             // propagates through the onCallDevice try/catch block and emits
             // the response for this method only.
-            method.device.interrupt(error);
+            method.device?.interrupt(error);
         } else {
-            // Method has not acquired a device yet. Respond directly and
-            // let sendCoreMessage's RESPONSE_EVENT handler prune callMethods.
-            sendCoreMessage(createResponseMessage(method.responseID, false, { error }));
+            // Method has not started running on its device yet. Respond directly,
+            // onCallDevice will not run an answered call. sendCoreMessage's
+            // RESPONSE_EVENT handler prunes callMethods.
+            respond(context, method, createResponseMessage(method.responseID, false, { error }));
         }
 
         return;
@@ -677,7 +706,7 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
                 const success = uiPromises.resolve({ type: DEVICE.DISCONNECT, payload: undefined });
                 if (!success) {
                     callMethods.forEach(m => {
-                        sendCoreMessage(createResponseMessage(m.responseID, false, { error }));
+                        respond(context, m, createResponseMessage(m.responseID, false, { error }));
                     });
                     callMethods.splice(0, callMethods.length);
                 }
