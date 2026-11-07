@@ -24,7 +24,8 @@ Nested mandatory skills still apply within their stated scope.
   [Defensive programming](skills/defensive-programming/SKILL.md), [Comments](skills/comments/SKILL.md).
 - React/UI: [Components](skills/components/SKILL.md), [React hooks](skills/performance-react-hooks/SKILL.md).
   For relevant operations: [Collections](skills/performance-complexity/SKILL.md),
-  [DOM/CSS](skills/performance-dom/SKILL.md), [Scheduling](skills/performance-scheduling/SKILL.md).
+  [DOM/CSS](skills/performance-dom/SKILL.md), [Scheduling](skills/performance-scheduling/SKILL.md),
+  [Code splitting](skills/performance-code-splitting/SKILL.md).
 - State/services: [Redux](skills/redux/SKILL.md),
   [Dependency injection](skills/dependency-injection/SKILL.md) where the package uses DI.
 - Tests: [Test conventions](skills/tests/SKILL.md), [Commands](skills/tests-commands/SKILL.md),
