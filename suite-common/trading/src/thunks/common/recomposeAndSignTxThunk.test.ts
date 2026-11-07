@@ -731,10 +731,8 @@ describe('recomposeAndSignTxThunk', () => {
                 success: false,
                 error: {
                     error: 'push-transaction-failed',
-                    metadata: {
-                        success: false,
-                        error: { code: 'Backend_Error', message: 'Blockhash not found' },
-                    },
+                    errorCode: 'Backend_Error',
+                    message: 'Blockhash not found',
                 },
             },
             expectedType: 'sign-tx-error',

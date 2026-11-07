@@ -27,10 +27,8 @@ describe('typeGuards', () => {
                     source: 'send-form',
                     error: {
                         error: 'push-transaction-failed',
-                        metadata: {
-                            success: false,
-                            error: { code: 'Backend_Error', message: 'Blockhash not found' },
-                        },
+                        errorCode: 'Backend_Error',
+                        message: 'Blockhash not found',
                     },
                 },
             ],
@@ -59,8 +57,8 @@ describe('typeGuards', () => {
                 { source: 'send-form', error: { error: 'unknown-error' } },
             ],
             [
-                'a push cause without Connect metadata',
-                { source: 'send-form', error: { error: 'push-transaction-failed' } },
+                'a push cause with a non-string message',
+                { source: 'send-form', error: { error: 'push-transaction-failed', message: 42 } },
             ],
             ['a precompose cause without a message', { source: 'precompose' }],
             ['a connect cause without a message', { source: 'connect', code: 'Method_Cancel' }],

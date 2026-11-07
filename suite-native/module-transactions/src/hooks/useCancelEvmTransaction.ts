@@ -33,10 +33,7 @@ import {
     type TransactionDetailStackParamList,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import {
-    type SignAndPushEvmCancelTransactionError,
-    signAndPushEvmCancelTransactionThunk,
-} from '@suite-native/send';
+import { signAndPushEvmCancelTransactionThunk } from '@suite-native/send';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -52,19 +49,6 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 const hasEthereumRbfParams = (
     tx: WalletAccountTransaction,
 ): tx is WalletAccountTransactionWithRequiredRbfParams => tx.rbfParams?.type === 'ethereum';
-
-// Extracts a human-readable failure reason: push failures carry the node's message in `metadata`
-// (e.g. "nonce too low", "could not replace existing tx"), while signing failures/timeouts expose
-// it directly on `message`.
-const getCancelFailureReason = (
-    error: SignAndPushEvmCancelTransactionError,
-): string | undefined => {
-    if (!error) return undefined;
-
-    if ('metadata' in error) return error.metadata.error?.message;
-
-    return error.message;
-};
 
 type UseCancelEvmTransactionParams = {
     accountKey: AccountKey;
@@ -179,7 +163,7 @@ export const useCancelEvmTransaction = ({
             return;
         }
 
-        const reason = getCancelFailureReason(response.payload);
+        const reason = response.payload?.message;
         showToast({
             intent: 'critical',
             message: reason
