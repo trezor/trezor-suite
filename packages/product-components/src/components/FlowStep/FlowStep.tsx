@@ -44,7 +44,7 @@ export const FlowStep = ({
                     <Column gap={4}>
                         <Text
                             typographyStyle="body-sm-strong"
-                            case="small-caps"
+                            isAllCaps
                             intent="neutral"
                             priority="secondary"
                         >
@@ -64,7 +64,7 @@ export const FlowStep = ({
         <Card type="raised" data-testid={dataTest} data-state={state}>
             <Column gap={16}>
                 <Column gap={4}>
-                    <Text typographyStyle="body-sm-strong" case="small-caps" intent="brand">
+                    <Text typographyStyle="body-sm-strong" isAllCaps intent="brand">
                         {label}
                     </Text>
                     <Text typographyStyle="headline-sm">{title}</Text>

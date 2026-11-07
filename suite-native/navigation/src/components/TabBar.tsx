@@ -1,6 +1,10 @@
+import { useContext } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import {
+    BottomTabBarHeightCallbackContext,
+    type BottomTabBarProps,
+} from '@react-navigation/bottom-tabs';
 
 import { Box } from '@suite-native/atoms';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
@@ -20,14 +24,14 @@ const tabBarStyle = prepareNativeStyle<{
     insetsBottom: number;
 }>((utils, { insetLeft, insetRight, insetsBottom }) => ({
     width: '100%',
-    backgroundColor: utils.colors.surfaceFillPage,
-    borderTopColor: utils.colors.borderNeutral,
+    backgroundColor: utils.colors.surfaceFillModal,
+    borderTopColor: utils.colors.surfaceBorderModal,
     borderTopWidth: utils.borders.widths.small,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    paddingLeft: Math.max(insetLeft, 20),
-    paddingRight: Math.max(insetRight, 20),
+    paddingLeft: Math.max(insetLeft, utils.spacings.sp12),
+    paddingRight: Math.max(insetRight, utils.spacings.sp12),
     paddingBottom: insetsBottom,
 }));
 
@@ -42,10 +46,12 @@ const TabBarLabelTxKeys = {
 export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
+    const onHeightChange = useContext(BottomTabBarHeightCallbackContext);
     const insets = useSafeAreaInsets();
 
     return (
         <Box
+            onLayout={event => onHeightChange?.(event.nativeEvent.layout.height)}
             style={applyStyle(tabBarStyle, {
                 insetLeft: insets.left,
                 insetRight: insets.right,
