@@ -1,7 +1,7 @@
 import { type ChangeEvent, type ReactNode, useId, useRef, useState } from 'react';
 
 import styled from 'styled-components';
-import type { ObjectSchema } from 'yup';
+import type { z } from 'zod';
 
 import {
     Button,
@@ -46,7 +46,7 @@ export type JsonlReaderProps<T extends Record<string, unknown> = Record<string, 
         Omit<FormCellProps, 'children'> & {
             buttonLabel: ReactNode;
             loadingLabel: ReactNode;
-            schema: ObjectSchema<T>;
+            schema: z.ZodType<T>;
             onDataLoaded: (data: T[]) => void;
             onError?: (error: JsonlReaderError) => void;
             variant?: 'form-cell' | 'button';

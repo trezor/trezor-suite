@@ -1,9 +1,9 @@
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { parseJsonl } from './parseJsonl';
 
-const testSchema = yup.object({
-    label: yup.string().required(),
+const testSchema = z.object({
+    label: z.string().min(1),
 });
 
 describe(parseJsonl.name, () => {

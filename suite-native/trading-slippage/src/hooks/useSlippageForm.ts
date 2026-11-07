@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
+import { z } from 'zod';
+
 import {
     SLIPPAGE_MAX,
     SLIPPAGE_MIN,
@@ -7,7 +9,7 @@ import {
     TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
     getSlippageFormValidationSchema,
 } from '@suite-common/trading';
-import { useForm, yup } from '@suite-native/forms';
+import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
 type SlippageForm = ReturnType<typeof useForm<SlippageFormValues>>;
@@ -26,7 +28,7 @@ export const useSlippageForm = (
 
     const validationSchema = useMemo(
         () =>
-            yup.object({
+            z.object({
                 slippage: getSlippageFormValidationSchema({
                     required: translate('moduleTrading.slippage.validation.required'),
                     notNumber: translate('moduleTrading.slippage.validation.notNumber'),

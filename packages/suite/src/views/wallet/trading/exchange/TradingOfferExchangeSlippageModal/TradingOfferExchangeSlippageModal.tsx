@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { type ExchangeTrade } from 'invity-api';
+import { z } from 'zod';
 
 import { Form } from '@suite/form';
-import { yup } from '@suite/forms';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     type SlippageFormValues,
@@ -40,8 +40,8 @@ export const TradingOfferExchangeSlippageModal = ({
             slippage:
                 selectedQuote.swapSlippage ?? TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
         },
-        resolver: yupResolver(
-            yup.object({
+        resolver: zodResolver(
+            z.object({
                 slippage: getSlippageFormValidationSchema({
                     required: translationString('TR_EXCHANGE_SWAP_SLIPPAGE_NOT_SET'),
                     notNumber: translationString('TR_EXCHANGE_SWAP_SLIPPAGE_NOT_NUMBER'),

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { type Meta, type StoryObj } from '@storybook/react';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { Card, Column, Text, getFramePropsStory } from '@trezor/components';
 
@@ -17,9 +17,9 @@ type StoryItem = {
     amount: number;
 };
 
-const storyItemSchema = yup.object({
-    label: yup.string().required(),
-    amount: yup.number().required(),
+const storyItemSchema = z.object({
+    label: z.string().min(1),
+    amount: z.number(),
 });
 
 const exampleJsonl = `{"label":"First","amount":1}\n{"label":"Second","amount":2}`;

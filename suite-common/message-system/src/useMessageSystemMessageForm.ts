@@ -1,22 +1,16 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import * as yup from 'yup';
-
 import { type Action, type Category } from '@suite-common/suite-types';
 
 import { selectMessageSystemConfig } from './messageSystemSelectors';
 import { getDefaultActionByCategory } from './messageSystemUtils';
 import {
     type ValidateError,
+    getMessageSystemValidationErrors,
     stripFieldFromMessage,
     validateMessageForm,
 } from './messageSystemValidation';
-
-type UseMessageSystemMessageFormArgs = {
-    // Maps a raw yup error message (e.g. the 'TR_REQUIRED_FIELD' key) to a display string.
-    formatFieldError?: (message: string) => string;
-};
 
 type MessageSystemMessageFormValidationResult = {
     parsedData: Action | null;
@@ -26,13 +20,11 @@ type MessageSystemMessageFormValidationResult = {
 type ParseAndValidateMessageFormArgs = {
     formData: string;
     messageIds: Set<string>;
-    formatFieldError?: (message: string) => string;
 };
 
 const parseAndValidateMessageForm = ({
     formData,
     messageIds,
-    formatFieldError,
 }: ParseAndValidateMessageFormArgs): MessageSystemMessageFormValidationResult => {
     let parsedData: Action | null = null;
 
@@ -61,13 +53,10 @@ const parseAndValidateMessageForm = ({
             return { parsedData: null, validationErrors: [{ field: 'JSON', message }] };
         }
 
-        if (error instanceof yup.ValidationError) {
-            const errors = (error.inner?.length ? error.inner : [error]).map(e => ({
-                field: e.path ?? 'value',
-                message: formatFieldError ? formatFieldError(e.message) : e.message,
-            }));
+        const validationErrors = getMessageSystemValidationErrors(error);
 
-            return { parsedData, validationErrors: stripFieldFromMessage(errors) };
+        if (validationErrors) {
+            return { parsedData, validationErrors: stripFieldFromMessage(validationErrors) };
         }
 
         return {
@@ -77,9 +66,7 @@ const parseAndValidateMessageForm = ({
     }
 };
 
-export const useMessageSystemMessageForm = ({
-    formatFieldError,
-}: UseMessageSystemMessageFormArgs = {}) => {
+export const useMessageSystemMessageForm = () => {
     const config = useSelector(selectMessageSystemConfig);
     const [formData, setFormData] = useState<string>(() =>
         JSON.stringify(getDefaultActionByCategory('banner'), null, 2),
@@ -90,8 +77,8 @@ export const useMessageSystemMessageForm = ({
     );
 
     const { parsedData, validationErrors } = useMemo(
-        () => parseAndValidateMessageForm({ formData, messageIds, formatFieldError }),
-        [formData, formatFieldError, messageIds],
+        () => parseAndValidateMessageForm({ formData, messageIds }),
+        [formData, messageIds],
     );
 
     const formatJSON = useCallback(() => {

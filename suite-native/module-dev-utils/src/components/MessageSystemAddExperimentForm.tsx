@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import {
     EXPERIMENT_MAP,
     getDefaultExperiment,
+    getMessageSystemValidationErrors,
     messageSystemActions,
     selectMessageSystemConfig,
     validateExperimentForm,
@@ -62,9 +63,9 @@ const getExperimentFormValidation = (experimentIds: Set<string>) =>
                 } catch (error) {
                     return context.createError({
                         message:
-                            error instanceof yup.ValidationError
-                                ? error.errors.join('\n')
-                                : String(error),
+                            getMessageSystemValidationErrors(error)
+                                ?.map(({ field, message }) => `${field} ${message}`)
+                                .join('\n') ?? String(error),
                     });
                 }
             }),
