@@ -164,9 +164,11 @@ export const signTransactionThunk =
             return signedTx;
         }
 
-        return applySolanaStakingSignature({
+        const serializedTx = await applySolanaStakingSignature({
             txShim: txData.txShim,
             descriptor: account.descriptor,
             signature: signedTx.payload.signature,
         });
+
+        return { serializedTx, solanaTxMeta: txData.solanaTxMeta };
     };
