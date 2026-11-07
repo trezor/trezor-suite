@@ -41,6 +41,7 @@ import { OAuthApi } from './OAuthApi';
 import { PingDevice } from './PingDevice';
 import { PlatformEncryption } from './PlatformEncryption';
 import { QuotaManagerSettings } from './QuotaManagerSettings';
+import { ReduxLogger } from './ReduxLogger';
 import { ResetThpCredentials } from './ResetThpCredentials';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { ThrowTestingError } from './ThrowTestingError';
@@ -83,6 +84,7 @@ export const SettingsDebug = () => {
                 <TriggerHighlight />
                 <TriggerToast />
                 <TriggerActivityNotification />
+                <ReduxLogger />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Analytics">
                 <AnalyticsLogging />

@@ -13,6 +13,7 @@ import { createLogger } from 'redux-logger';
 import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup';
 import { type DesktopBluetoothState, prepareDesktopBluetoothReducer } from '@suite/bluetooth';
 import { type RecoveryState, recoveryReducer } from '@suite/recovery';
+import { selectIsReduxLoggerEnabled } from '@suite/settings';
 import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
@@ -121,7 +122,13 @@ export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | nu
     ];
 
     if (!isCodesignBuild()) {
-        const excludeLogger = (_getState: any, action: any): boolean =>
+        /**
+         * Everything passed to console.* stays reachable while DevTools are attached,
+         * so logging every action with both states grows memory for as long as the app runs.
+         * Opt in from the debug settings instead.
+         */
+        const excludeLogger = (getState: () => AppState, action: any): boolean =>
+            selectIsReduxLoggerEnabled(getState()) &&
             // exclude generated lifecycle actions
             // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
             !action?.meta?.requestId &&
