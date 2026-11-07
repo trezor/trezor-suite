@@ -97,9 +97,11 @@ export const createDesktopApp =
         // establish ipc connection with TrezorConnect living in main process
         await TrezorConnect.initIpcProxy();
 
-        // init bluetooth module
-        // TODO should it really be here instead of initAction.ts?
-        await deps.services.bluetooth.init();
+        // The bluetooth helper takes a few hundred milliseconds to start, so the app renders without
+        // waiting for it. Init reports its own failures to the user; only an unexpected rejection is logged.
+        void deps.services.bluetooth
+            .init()
+            .catch(error => console.error('Bluetooth init failed', error));
 
         // finally render whole app
         root.render(

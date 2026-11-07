@@ -8,6 +8,7 @@ import TrezorConnect, {
 import { ERRORS, initLog } from '@trezor/connect-common';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
+import { type BluetoothTransport } from '@trezor/transport-bluetooth';
 import { BridgeTransport } from '@trezor/transport-common';
 import { parseElectrumUrl } from '@trezor/utils';
 
@@ -64,11 +65,11 @@ export const getTransportsParam = (
     rawTransports?: ConnectSettings['transports'],
     createLogger?: CreateLogger,
     usbImplementation?: UsbImplementation,
+    bluetooth: BluetoothTransport | undefined = bluetoothModuleState.getTransport(),
 ): ConnectSettings['transports'] => {
     const transports = rawTransports
         ?.map(transport => transportFactory(transport, createLogger, usbImplementation))
         .filter((transport): transport is ConnectSettingsTransport => transport !== undefined);
-    const bluetooth = bluetoothModuleState.getTransport();
 
     // An explicit non-empty selection (e.g. from the debug transport picker) is honored as-is.
     if (transports && transports.length > 0) {
@@ -156,6 +157,9 @@ export const initBackground: ModuleInitBackground = ({
                         settings.transports,
                         createLogger,
                         getUsbImplementation(),
+                        // The helper starts in parallel with the boot; a start still in progress is
+                        // awaited so the Bluetooth transport is not left out of this init.
+                        await bluetoothModuleState.getTransportWhenStarted(),
                     );
 
                     const response = await TrezorConnect.init(settings);
