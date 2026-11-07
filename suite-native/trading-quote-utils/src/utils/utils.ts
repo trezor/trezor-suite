@@ -183,22 +183,49 @@ export type TradeStatusStep = ReturnType<typeof getTradeStatusStep>;
 export const getFormDraftKeyPrefixFromTradingType = (tradingType: TradingType) =>
     `trading-${tradingType}` as const satisfies FormDraftKeyPrefix;
 
-export const getErrorStrFromThunkRejectedValue = (rejectedValue: unknown) => {
-    const asAny = rejectedValue as any;
-    if (asAny?.error?.error) {
-        return `[${asAny.error.error}]: ${asAny.error.message ?? 'No description'}`;
-    }
+const isObject = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null;
 
-    if (asAny?.error?.message) {
-        return asAny.error.message;
+const formatErrorCode = (code: string) => `[${code}]`;
+
+/**
+ * Describes why a thunk failed, from its rejected action, an unwrapped rejection or a thrown value.
+ * A send form error is described by its code only, since its message may come from Connect and
+ * this description is logged, and logged errors are reported to Sentry.
+ */
+export const getErrorStrFromThunkRejectedValue = (rejectedValue: unknown): string => {
+    if (typeof rejectedValue === 'string') {
+        return rejectedValue;
     }
 
     if (rejectedValue instanceof Error) {
         return rejectedValue.message;
     }
 
-    if (typeof rejectedValue === 'string') {
-        return rejectedValue;
+    if (!isObject(rejectedValue)) {
+        return 'Unknown error';
+    }
+
+    // RTK sets the error of an action rejected with a value to a generic "Rejected", so the
+    // payload is what says why it failed.
+    if (rejectedValue.payload !== undefined) {
+        return getErrorStrFromThunkRejectedValue(rejectedValue.payload);
+    }
+
+    const { error } = rejectedValue;
+
+    if (typeof error === 'string') {
+        return formatErrorCode(error);
+    }
+
+    if (isObject(error)) {
+        if (typeof error.error === 'string') {
+            return formatErrorCode(error.error);
+        }
+
+        if (typeof error.message === 'string') {
+            return error.message;
+        }
     }
 
     return 'Unknown error';

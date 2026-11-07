@@ -4302,6 +4302,16 @@ export const messages = {
                     'Not confirmed on your Trezor in time. Go back to the summary to try again.',
                 button: 'Back to summary',
             },
+            errorAlert: {
+                title: 'Transaction failed',
+                prepareTransactionDescription: "We couldn't prepare the transaction. Try again.",
+                quoteExpiredDescription: 'The quote expired. Go back and get a new quote.',
+                providerNoResponseDescription: "The trading provider didn't respond. Try again.",
+                paymentRequestDescription: "Payment request couldn't be created. Try again.",
+                deviceNotConnectedDescription: 'Connect your Trezor and try again.',
+                nonceDescription: "Nonce couldn't be generated. Try again.",
+                verifyAddressDescription: "Address couldn't be verified. Try again.",
+            },
             signData: {
                 heading: 'Sign EIP-712 typed data',
                 address: 'Address',
