@@ -1,25 +1,26 @@
-import { type ReactNode, useState } from 'react';
-import { DateRange } from 'react-date-range';
+import {
+    type ComponentType,
+    type LazyExoticComponent,
+    type ReactNode,
+    Suspense,
+    lazy,
+    useEffect,
+    useState,
+} from 'react';
 
 import type { Locale } from 'date-fns';
 import styled, { css } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
 
+import type { TimerangeCalendarProps } from './TimerangeCalendar';
 import { commonFocusStyles } from '../../utils/utils';
 import { Row } from '../Flex/Flex';
 import { DROPDOWN_MENU } from '../Menu/Menu';
 import { Button } from '../buttons/Button/Button';
+import { Spinner } from '../loaders/Spinner/Spinner';
 
-type Selection = {
-    key: string;
-    startDate: Date;
-    endDate: Date;
-};
-
-export type TimerangeSelection = {
-    selection: Selection;
-};
+export type { TimerangeSelection } from './TimerangeCalendar';
 
 const datepickerStyle = css`
     /* stylelint-disable */
@@ -595,6 +596,68 @@ const Calendar = styled.div`
 `;
 /* stylelint-enable */
 
+// The calendar without its week rows, and one week row (3em of the 14px day font).
+const CALENDAR_HEIGHT_WITHOUT_WEEKS = 137;
+const WEEK_ROW_HEIGHT = 42;
+
+/**
+ * The calendar's height for the month it opens on (the range start, else today), so the popover keeps
+ * its size when the calendar replaces the placeholder. A month spans 4 to 6 week rows, depending on
+ * the locale's first day of the week.
+ */
+const getCalendarHeight = (startDate: Date | null, locale?: Locale) => {
+    const shownMonth = startDate ?? new Date();
+    const year = shownMonth.getFullYear();
+    const month = shownMonth.getMonth();
+    const weekStartsOn = locale?.options?.weekStartsOn ?? 0;
+    const leadingDays = (new Date(year, month, 1).getDay() - weekStartsOn + 7) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const weekRows = Math.ceil((leadingDays + daysInMonth) / 7);
+
+    return CALENDAR_HEIGHT_WITHOUT_WEEKS + weekRows * WEEK_ROW_HEIGHT;
+};
+
+const CalendarPlaceholder = styled.div<{ $height: number }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: ${({ $height }) => $height}px;
+`;
+
+/**
+ * react-date-range (with the date-fns build it uses) loads when a Timerange first opens, not with the app.
+ * A failed download leaves the calendar area empty instead of crashing the app. Each Timerange keeps the
+ * calendar it mounted with, so its re-renders never download again, and the failed calendar re-arms the
+ * loader once it has committed, so the next Timerange tries once more.
+ */
+let TimerangeCalendar: LazyExoticComponent<ComponentType<TimerangeCalendarProps>>;
+
+const loadTimerangeCalendar = (): Promise<{ default: ComponentType<TimerangeCalendarProps> }> =>
+    import('./TimerangeCalendar').then(
+        module => ({ default: module.TimerangeCalendar }),
+        () => {
+            const failedTimerangeCalendar = TimerangeCalendar;
+
+            const TimerangeCalendarLoadFailed = ({ range, locale }: TimerangeCalendarProps) => {
+                /**
+                 * Re-armed after the commit, not in the loader: React renders a tree that has not
+                 * committed yet again once the load settles, and a fresh lazy there downloads again.
+                 */
+                useEffect(() => {
+                    if (TimerangeCalendar === failedTimerangeCalendar) {
+                        TimerangeCalendar = lazy(loadTimerangeCalendar);
+                    }
+                }, []);
+
+                return <CalendarPlaceholder $height={getCalendarHeight(range.startDate, locale)} />;
+            };
+
+            return { default: TimerangeCalendarLoadFailed };
+        },
+    );
+
+TimerangeCalendar = lazy(loadTimerangeCalendar);
+
 export interface TimerangeProps {
     onSubmit: (startDate: Date, endDate: Date) => any;
     onCancel: () => any;
@@ -606,6 +669,7 @@ export interface TimerangeProps {
 }
 
 const Timerange = (props: TimerangeProps) => {
+    const [MountedTimerangeCalendar] = useState(() => TimerangeCalendar);
     const today = new Date();
 
     const [state, setState] = useState({
@@ -627,16 +691,22 @@ const Timerange = (props: TimerangeProps) => {
     return (
         <StyledTimerange data-component="Timerange">
             <Calendar>
-                <DateRange
-                    editableDateInputs
-                    onChange={(item: TimerangeSelection) => setState(item.selection)}
-                    moveRangeOnFirstSelection={false}
-                    maxDate={today}
-                    ranges={[state]}
-                    startDatePlaceholder=""
-                    endDatePlaceholder=""
-                    locale={props.locale}
-                />
+                <Suspense
+                    fallback={
+                        <CalendarPlaceholder
+                            $height={getCalendarHeight(state.startDate, props.locale)}
+                        >
+                            <Spinner size={32} />
+                        </CalendarPlaceholder>
+                    }
+                >
+                    <MountedTimerangeCalendar
+                        range={state}
+                        maxDate={today}
+                        locale={props.locale}
+                        onChange={setState}
+                    />
+                </Suspense>
             </Calendar>
             <Row gap={12} padding={12}>
                 <Button flex="1" intent="neutral" priority="secondary" onClick={onCancel}>
