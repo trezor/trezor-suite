@@ -94,6 +94,7 @@ export const TronReassignVotesModal = ({
                 {isOverAllocated && (
                     <Banner
                         intent="warning"
+                        data-testid="@staking/tron-reassign-votes/votes-exceed-banner"
                         description={
                             <Translation
                                 id="TR_EARN_TRON_VOTES_EXCEED_TOTAL"

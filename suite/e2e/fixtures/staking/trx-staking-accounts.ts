@@ -33,6 +33,11 @@ type TrxVotedAccountParams = TrxFrozenAccountParams & {
     representativeAddress: string;
 };
 
+type TrxRevotedAccountParams = TrxVotedAccountParams & {
+    revoteTxid: string;
+    newVotes: { address: string; count: string }[];
+};
+
 type TrxUnstakingAccountParams = TrxVotedAccountParams & {
     unstakeAmount: string;
     unstakeAmountSun: string;
@@ -132,6 +137,42 @@ export const buildTrxVotedAccountState = (params: TrxVotedAccountParams) => {
                     votes: [
                         { address: params.representativeAddress, voteCount: params.stakeAmount },
                     ],
+                },
+            },
+        },
+    };
+};
+
+// The voted account after a confirmed vote replaced the allocation with `newVotes`. Representatives
+// missing from the new allocation simply disappear from the votes.
+export const buildTrxRevotedAccountState = (params: TrxRevotedAccountParams) => {
+    const votedAccountState = buildTrxVotedAccountState(params);
+    const revoteTx = buildTrxStakingTx({
+        txid: params.revoteTxid,
+        address: TRX_FIRST_ACCOUNT_ADDRESS,
+        blockHeight: TRX_BEST_BLOCK.height + 3,
+        payload: {
+            contractType: 'VoteWitnessContract',
+            operation: 'vote',
+            votes: params.newVotes,
+        },
+    });
+
+    return {
+        ...votedAccountState,
+        txs: 4,
+        nonTokenTxs: 4,
+        transactions: [revoteTx, ...votedAccountState.transactions],
+        chainExtraData: {
+            payloadType: 'tron',
+            payload: {
+                ...votedAccountState.chainExtraData.payload,
+                stakingInfo: {
+                    ...votedAccountState.chainExtraData.payload.stakingInfo,
+                    votes: params.newVotes.map(({ address, count }) => ({
+                        address,
+                        voteCount: count,
+                    })),
                 },
             },
         },

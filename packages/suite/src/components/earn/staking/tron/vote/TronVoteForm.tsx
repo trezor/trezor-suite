@@ -26,7 +26,7 @@ export const TronVoteForm = () => {
         <Form form={form.methods} formState={formState}>
             <Column gap={16}>
                 <Row gap={8} width="100%" justifyContent="space-between" alignItems="flex-end">
-                    <Text typographyStyle="headline-md">
+                    <Text typographyStyle="headline-md" data-testid="@staking/tron-vote/title">
                         <Translation id="TR_EARN_TRON_CHANGE_REPRESENTATIVE" />
                     </Text>
 
