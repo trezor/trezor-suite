@@ -40,9 +40,9 @@ const VAULT_ADDRESS_API_PATTERN = /\/vaults\/v1\//;
 const MERKL_API_PATTERN = /\/merkl\/v1\/users\/rewards/;
 const BLOCKAID_API_PATTERN = /\/evm\/json-rpc\/scan/;
 
-const USDC_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+export const USDC_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 // Trezor Steakhouse USDC Prime Vault
-const YIELD_USDC_VAULT_ADDRESS = '0xde6c23E561F3e55846207EC45A91b777e0F7C889';
+export const YIELD_USDC_VAULT_ADDRESS = '0xde6c23E561F3e55846207EC45A91b777e0F7C889';
 const USDC_VAULT = YIELD_USDC_VAULT_ADDRESS.toLowerCase();
 
 const WETH_CONTRACT = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
