@@ -1,6 +1,7 @@
 import { type WritableDraft, createReducer, isAnyOf } from '@reduxjs/toolkit';
 
 import { notificationsActions } from './notificationsActions';
+import { isSameTransactionNotification } from './notificationsUtils';
 import {
     type NotificationEntry,
     type NotificationsState,
@@ -40,6 +41,15 @@ export function createNotificationsReducer<
             .addMatcher(
                 isAnyOf(notificationsActions.addEvent, notificationsActions.addToast),
                 (state, { payload }) => {
+                    if (
+                        payload.context === 'event' &&
+                        state.some(notification =>
+                            isSameTransactionNotification(notification, payload),
+                        )
+                    ) {
+                        return;
+                    }
+
                     state.unshift(payload as WritableDraft<NotificationEntry<TranslationKey>>);
                 },
             );
