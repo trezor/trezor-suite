@@ -1,7 +1,13 @@
 import { Alert } from 'react-native';
 import * as MMKV from 'react-native-mmkv';
+import RNRestart from 'react-native-restart';
 
+import { captureException, flush } from '@sentry/react-native';
+import * as SecureStore from 'expo-secure-store';
+
+import { unecryptedJotaiStorage } from './atomWithUnecryptedStorage';
 import {
+    ENCRYPTION_KEY,
     type EnsureEncryptionKeyDep,
     type StorageEncryptionKey,
 } from './createEnsureEncryptionKey';
@@ -11,13 +17,41 @@ import { createMMKVStorage } from './mmkvStorage';
 jest.mock('react-native-mmkv', () => {
     const actual = jest.requireActual<typeof MMKV>('react-native-mmkv');
 
-    return { ...actual, createMMKV: jest.fn(actual.createMMKV) };
+    return {
+        ...actual,
+        createMMKV: jest.fn(actual.createMMKV),
+        deleteMMKV: jest.fn(),
+        existsMMKV: jest.fn(),
+    };
 });
+jest.mock('react-native-restart', () => ({ __esModule: true, default: { restart: jest.fn() } }));
+jest.mock('@sentry/react-native', () => ({
+    captureException: jest.fn(),
+    captureMessage: jest.fn(),
+    flush: jest.fn(),
+}));
+jest.mock('expo-secure-store', () => ({ deleteItemAsync: jest.fn() }));
 
 const encryptionKey = 'test-encryption-key' as StorageEncryptionKey;
 const encryptionKeyPromise = Promise.resolve(encryptionKey);
 const deps: EnsureEncryptionKeyDep = {
     ensureEncryptionKey: () => encryptionKeyPromise,
+};
+const unreadableKeyDeps: EnsureEncryptionKeyDep = {
+    ensureEncryptionKey: () => Promise.resolve(null),
+};
+
+const flushPromises = () => new Promise(resolve => setTimeout(resolve, 0));
+
+const pressAlertButton = (buttonText: string) => {
+    const buttons = jest.mocked(Alert.alert).mock.lastCall?.[2];
+    const button = buttons?.find(({ text }) => text === buttonText);
+
+    if (!button?.onPress) {
+        throw new Error(`Alert button "${buttonText}" not found`);
+    }
+
+    button.onPress();
 };
 
 describe('createMMKVStorage', () => {
@@ -73,14 +107,137 @@ describe('createMMKVStorage', () => {
 
     it('does not create MMKV when the encryption key is unreadable', async () => {
         const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
-        const unreadableKeyDeps: EnsureEncryptionKeyDep = {
-            ensureEncryptionKey: () => Promise.resolve(null),
-        };
         const storage = createMMKVStorage(unreadableKeyDeps);
 
         await expect(storage.getMMKV()).rejects.toThrow('Encryption key is unreadable!');
 
         expect(MMKV.createMMKV).not.toHaveBeenCalled();
         expect(alertSpy).toHaveBeenCalledTimes(1);
+    });
+
+    describe('storage alert', () => {
+        const showStorageAlert = async () => {
+            const storage = createMMKVStorage(unreadableKeyDeps);
+
+            await expect(storage.getMMKV()).rejects.toThrow('Encryption key is unreadable!');
+        };
+
+        const expectNothingDeleted = () => {
+            expect(MMKV.deleteMMKV).not.toHaveBeenCalled();
+            expect(SecureStore.deleteItemAsync).not.toHaveBeenCalled();
+            expect(unecryptedJotaiStorage.clearAll).not.toHaveBeenCalled();
+            expect(RNRestart.restart).not.toHaveBeenCalled();
+        };
+
+        beforeEach(() => {
+            jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+            jest.spyOn(unecryptedJotaiStorage, 'clearAll');
+            jest.mocked(MMKV.existsMMKV).mockReturnValue(false);
+            jest.mocked(SecureStore.deleteItemAsync).mockResolvedValue(undefined);
+            jest.mocked(flush).mockResolvedValue(true);
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
+        it('asks for confirmation before clearing app storage', async () => {
+            await showStorageAlert();
+
+            expect(Alert.alert).toHaveBeenLastCalledWith(
+                'Unable to load app data',
+                expect.any(String),
+                expect.any(Array),
+                { cancelable: false },
+            );
+
+            pressAlertButton('Clear app storage');
+
+            expect(Alert.alert).toHaveBeenLastCalledWith(
+                'Clear app storage?',
+                expect.any(String),
+                expect.any(Array),
+                { cancelable: false },
+            );
+            expectNothingDeleted();
+        });
+
+        it('shows the storage alert again when clearing is cancelled', async () => {
+            await showStorageAlert();
+            pressAlertButton('Clear app storage');
+            pressAlertButton('Cancel');
+            await flushPromises();
+
+            expect(Alert.alert).toHaveBeenCalledTimes(3);
+            expect(Alert.alert).toHaveBeenLastCalledWith(
+                'Unable to load app data',
+                expect.any(String),
+                expect.any(Array),
+                { cancelable: false },
+            );
+            expectNothingDeleted();
+        });
+
+        it('deletes encrypted storage, its key and unencrypted storage before restarting', async () => {
+            await showStorageAlert();
+            pressAlertButton('Clear app storage');
+            pressAlertButton('Clear app storage');
+            await flushPromises();
+
+            expect(MMKV.deleteMMKV).toHaveBeenCalledWith(ENCRYPTED_STORAGE_ID);
+            expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith(ENCRYPTION_KEY);
+            expect(RNRestart.restart).toHaveBeenCalledTimes(1);
+
+            // A function that was not called gets NaN, which fails every comparison below.
+            const [deleteStorageOrder = NaN] = jest.mocked(MMKV.deleteMMKV).mock
+                .invocationCallOrder;
+            const [deleteKeyOrder = NaN] = jest.mocked(SecureStore.deleteItemAsync).mock
+                .invocationCallOrder;
+            const [clearUnencryptedStorageOrder = NaN] = jest.mocked(
+                unecryptedJotaiStorage.clearAll,
+            ).mock.invocationCallOrder;
+            const [flushOrder = NaN] = jest.mocked(flush).mock.invocationCallOrder;
+            const [restartOrder = NaN] = jest.mocked(RNRestart.restart).mock.invocationCallOrder;
+
+            expect(deleteStorageOrder).toBeLessThan(deleteKeyOrder);
+            expect(deleteKeyOrder).toBeLessThan(clearUnencryptedStorageOrder);
+            expect(clearUnencryptedStorageOrder).toBeLessThan(flushOrder);
+            expect(flushOrder).toBeLessThan(restartOrder);
+        });
+
+        it('waits at most 2 seconds for Sentry to send its events before restarting', async () => {
+            jest.useFakeTimers();
+            jest.mocked(flush).mockReturnValue(new Promise(() => {}));
+
+            await showStorageAlert();
+            pressAlertButton('Clear app storage');
+            pressAlertButton('Clear app storage');
+            await jest.advanceTimersByTimeAsync(1999);
+
+            expect(flush).toHaveBeenCalledTimes(1);
+            expect(RNRestart.restart).not.toHaveBeenCalled();
+
+            await jest.advanceTimersByTimeAsync(1);
+
+            expect(RNRestart.restart).toHaveBeenCalledTimes(1);
+        });
+
+        it('reports failed deletions and restarts anyway', async () => {
+            const keyDeletionError = new Error('Keychain unavailable');
+            jest.mocked(MMKV.existsMMKV).mockReturnValue(true);
+            jest.mocked(SecureStore.deleteItemAsync).mockRejectedValue(keyDeletionError);
+
+            await showStorageAlert();
+            pressAlertButton('Clear app storage');
+            pressAlertButton('Clear app storage');
+            await flushPromises();
+
+            expect(captureException).toHaveBeenCalledWith(
+                new Error('Encrypted storage still exists after deletion'),
+            );
+            expect(captureException).toHaveBeenCalledWith(keyDeletionError);
+            expect(unecryptedJotaiStorage.clearAll).toHaveBeenCalledTimes(1);
+            expect(RNRestart.restart).toHaveBeenCalledTimes(1);
+        });
     });
 });
