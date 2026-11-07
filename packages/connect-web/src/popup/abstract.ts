@@ -158,7 +158,7 @@ export abstract class Popup extends EventEmitter {
         handshake.reject(ERRORS.TypedError('Method_Interrupted'));
         // Reject any pending channel-level handshake so that callers
         // awaiting channel.init() don't hang forever.  Without this,
-        // disconnect() → clear() drops the handshakeFinished reference
+        // disconnect() → clear() drops the pending handshake
         // without settling the promise.
         this.channel.abortHandshake('Popup closed');
         this.channel.disconnect();
