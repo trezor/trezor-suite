@@ -6,39 +6,43 @@ import type {
     UiPromiseCreator,
     UiPromiseResponse,
 } from '../events/ui-promise';
+import type { IDevice } from '../types/idevice';
+
+// Promises are shared by concurrent calls on different devices. A promise is registered while
+// pending and leaves the registry exactly once: resolved by a matching UI response, rejected
+// with an error, or dropped when the call on its device ends. Scoping reject and drop to
+// a device keeps one call from settling prompts that another device is still waiting for.
+type UiPromiseScope = { device?: IDevice };
+
+const isInScope = (uiPromise: AnyUiPromise, { device }: UiPromiseScope) =>
+    !device || uiPromise.device === device;
 
 export const createUiPromiseManager = () => {
     let _uiPromises: AnyUiPromise[] = [];
+
+    const unregister = (uiPromise: AnyUiPromise) => {
+        _uiPromises = _uiPromises.filter(p => p !== uiPromise);
+    };
 
     const exists = (type: UiPromiseResponse['type']) => _uiPromises.some(p => p.id === type);
 
     // Creates an instance of uiPromise.
     const create: UiPromiseCreator = (promiseEvent, device) => {
-        const requestId = crypto.randomUUID();
         const uiPromise: UiPromise<typeof promiseEvent> = {
             ...createDeferred(promiseEvent),
             device,
-            requestId,
+            requestId: crypto.randomUUID(),
         };
-
-        // Only evict an existing promise of the same type if it has no requestId.
-        // Promises with a requestId are uniquely identified and can coexist (e.g. two
-        // devices simultaneously requesting the same input type).
-        // If we assume requestId will be available for all the requests this code is unnecessary.
-        const existing = _uiPromises.findIndex(p => p.id === promiseEvent && !p.requestId);
-        if (existing >= 0) {
-            console.warn(`UiPromise '${promiseEvent}' already exists.`);
-            _uiPromises.splice(existing, 1);
-        }
+        const registeredPromise = uiPromise as unknown as AnyUiPromise;
 
         // enhance Deferred reject fn
         const { reject } = uiPromise;
         uiPromise.reject = (error: Error) => {
             reject(error);
-            _uiPromises = _uiPromises.filter(p => p.requestId !== requestId);
+            unregister(registeredPromise);
         };
 
-        _uiPromises.push(uiPromise as unknown as AnyUiPromise);
+        _uiPromises.push(registeredPromise);
 
         return uiPromise;
     };
@@ -55,18 +59,18 @@ export const createUiPromiseManager = () => {
         }) as UiPromise<typeof event.type> | undefined;
         if (!uiPromise) return false;
         uiPromise.resolve(event);
-        _uiPromises = _uiPromises.filter(p => p !== uiPromise);
+        unregister(uiPromise as unknown as AnyUiPromise);
 
         return true;
     };
 
-    const rejectAll = (error: Error) => {
-        _uiPromises.forEach(p => p.reject(error));
-        _uiPromises = [];
+    const rejectAll = (error: Error, scope: UiPromiseScope = {}) => {
+        _uiPromises.filter(p => isInScope(p, scope)).forEach(p => p.reject(error));
     };
 
-    const clear = () => {
-        _uiPromises = [];
+    // Dropped promises are never settled. Their callers race them against the call abort signal.
+    const clear = (scope: UiPromiseScope = {}) => {
+        _uiPromises = _uiPromises.filter(p => !isInScope(p, scope));
     };
 
     return { exists, create, resolve, rejectAll, clear };

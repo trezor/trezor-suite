@@ -392,7 +392,7 @@ const onCallDevice = async (
             device.eventNames().forEach(e => device.removeAllListeners(e as keyof DeviceEvents));
 
             closePopup(context);
-            cleanup(context);
+            cleanup(context, device);
 
             if (method) {
                 method.dispose();
@@ -408,12 +408,10 @@ const onCallDevice = async (
 };
 
 /**
- * Clean up all variables and references.
- * @returns {void}
- * @memberof Core
+ * Drop pending UI promises of the given device, or of all devices when none is given.
  */
-const cleanup = ({ uiPromises, logger }: CoreContext) => {
-    uiPromises.clear();
+const cleanup = ({ uiPromises, logger }: CoreContext, device?: Device) => {
+    uiPromises.clear({ device });
     logger.debug('Cleanup...');
 };
 
