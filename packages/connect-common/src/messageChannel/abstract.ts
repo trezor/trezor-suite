@@ -214,6 +214,13 @@ export abstract class AbstractMessageChannel<
         this.messages.resolveAll(id => ({ id, payload }));
     }
 
+    rejectMessagePromises(error: Error) {
+        // Same purpose as resolveMessagePromises, but for callers whose response shape is built
+        // from a thrown error. resolveMessagePromises resolves with `{ id, payload }`, which only
+        // matches channels that nest their responses one level deeper.
+        this.messages.rejectAll(error);
+    }
+
     /**
      * Clear any pending outgoing messages so that the next send is not
      * blocked behind queued work.  Override in subclasses that serialise
