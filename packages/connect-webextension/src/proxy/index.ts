@@ -18,7 +18,14 @@ let _reconnect: (() => void) | undefined;
 // Rejecting them routes the error through call()'s catch, which formats it into the
 // documented Err shape instead of hanging the client.
 const settleInFlightCalls = () => {
-    _channel?.rejectMessagePromises(ERRORS.TypedError('Method_Interrupted'));
+    // the Method_Interrupted default message is 'Popup closed', but this proxy has no popup, only
+    // a port to the extension service worker
+    _channel?.rejectMessagePromises(
+        ERRORS.TypedError(
+            'Method_Interrupted',
+            'Connection to Trezor Connect service worker interrupted',
+        ),
+    );
 };
 
 const dispose = () => {

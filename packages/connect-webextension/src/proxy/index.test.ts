@@ -7,7 +7,7 @@ const interrupted = {
     success: false,
     error: {
         code: 'Method_Interrupted',
-        message: 'Popup closed',
+        message: 'Connection to Trezor Connect service worker interrupted',
     },
 };
 
