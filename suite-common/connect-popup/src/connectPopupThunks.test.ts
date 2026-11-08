@@ -309,7 +309,7 @@ describe('connectPopupFinishCallThunk', () => {
         expect(selectConnectPopupCall(store.getState())?.state).toBe('finished');
     });
 
-    it('drops the deeplink callback of a failed call when its popup is closed', () => {
+    it('opens the deeplink callback of a failed call when its popup is closed', () => {
         const store = initStore();
         store.dispatch(
             connectPopupActions.setError(serializeError(TypedError('Failure_ActionCancelled'))),
@@ -319,14 +319,9 @@ describe('connectPopupFinishCallThunk', () => {
 
         store.dispatch(connectPopupFinishCallThunk());
 
-        // Documents the bug: the reducer takes `deeplinkCallback` only from `finished` or
-        // `address-confirmation`, so the failed call never gets the callback url and the
-        // third-party app that opened the deeplink is left without a response.
         expect(selectConnectPopupCall(store.getState())).toMatchObject({
-            state: 'finished',
-        });
-        expect(selectConnectPopupCall(store.getState())).not.toMatchObject({
             state: 'deeplink-callback',
+            callbackUrl: 'app://callback',
         });
     });
 
@@ -350,6 +345,29 @@ describe('connectPopupFinishCallThunk', () => {
         expect(selectConnectPopupCall(store.getState())).toMatchObject({
             state: 'deeplink-callback',
             callbackUrl: 'app://callback',
+        });
+    });
+
+    it('does not answer a new failed call with an earlier deeplink callback', () => {
+        const store = initStore();
+        store.dispatch(
+            connectPopupActions.setError(serializeError(TypedError('Failure_ActionCancelled'))),
+        );
+        store.dispatch(connectPopupActions.deeplinkCallback({ callbackUrl: 'app1://callback' }));
+        store.dispatch(connectPopupFinishCallThunk());
+        expect(selectConnectPopupCall(store.getState())?.state).toBe('deeplink-callback');
+
+        // A second deeplink fails before `initiateCall`, e.g. with Method_NotAllowed, so its error
+        // lands on the call still kept in `deeplink-callback` from the first one.
+        store.dispatch(
+            connectPopupActions.setError(serializeError(TypedError('Method_NotAllowed'))),
+        );
+        store.dispatch(connectPopupFinishCallThunk());
+
+        // Closing it must not open the first app's callback url, which carries the first response.
+        expect(selectConnectPopupCall(store.getState())).toMatchObject({
+            state: 'finished',
+            callbackUrl: undefined,
         });
     });
 });
