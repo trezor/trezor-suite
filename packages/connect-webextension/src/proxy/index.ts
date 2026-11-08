@@ -30,6 +30,9 @@ const dispose = () => {
             _reconnect = undefined;
         }
         settleInFlightCalls();
+        // clear() below only drops the handshake deferred without settling it, which would leave
+        // an init() that is still handshaking pending forever
+        _channel.abortHandshake('Connect proxy disposed');
         _channel.disconnect();
         _channel.clear();
         _channel = null;
@@ -62,10 +65,14 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
         // The channel below is replaced by a fresh one, which takes the pending call promises of
         // the old one out of reach, so they have to be settled before that happens.
         settleInFlightCalls();
+        // cancel() reaches clear(), which drops the handshake deferred of the old channel without
+        // settling it, so an init() still handshaking on it would never settle
+        _channel.abortHandshake('Connect proxy reconnecting');
         cancel();
         _channel = null;
         _reconnect = undefined;
-        init(settings);
+        // nobody awaits this init(), so it needs a terminal handler of its own
+        init(settings).catch(() => {});
     };
 
     if (_reconnect) {

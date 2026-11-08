@@ -122,6 +122,16 @@ describe('connect-webextension proxy lifecycle', () => {
         await expect(pending).resolves.toEqual(interrupted);
     });
 
+    it('dispose() rejects an init() whose handshake is not confirmed yet', async () => {
+        peerConfirmsHandshake = false;
+        const TrezorConnect = await loadProxy();
+
+        const pending = TrezorConnect.init({ manifest });
+        await TrezorConnect.dispose();
+
+        await expect(pending).rejects.toThrow('Connect proxy disposed');
+    });
+
     it('a port disconnect settles calls in flight and reconnects on a fresh port', async () => {
         const TrezorConnect = await loadProxy();
         await TrezorConnect.init({ manifest });
