@@ -76,4 +76,56 @@ describe('BrowserSessionsBackground', () => {
             id: 1,
         });
     });
+
+    test('dispose() detaches every tracked listener and closes the port', () => {
+        const background = new BrowserSessionsBackground('sessions-background.js');
+        background.on('descriptors', jest.fn());
+        background.on('releaseRequest', jest.fn());
+        void background.handleMessage({ type: 'handshake', id: 1 });
+
+        background.dispose();
+
+        expect(port.listenerCount).toBe(0);
+        expect(port.removeEventListener).toHaveBeenCalledTimes(3);
+        expect(port.close).toHaveBeenCalledTimes(1);
+    });
+
+    test('answered requests do not accumulate port listeners', async () => {
+        const background = new BrowserSessionsBackground('sessions-background.js');
+
+        for (let id = 1; id <= 15; id++) {
+            const request = background.handleMessage({ type: 'handshake', id });
+            port.emit({ success: true, payload: undefined, id });
+            await expect(request).resolves.toEqual({ success: true, payload: undefined, id });
+        }
+
+        expect(port.listenerCount).toBe(0);
+        expect(port.removeEventListener).toHaveBeenCalledTimes(15);
+
+        // each answered request also dropped its entry from the tracked listeners, so dispose()
+        // has nothing stale left to detach
+        background.dispose();
+        expect(port.removeEventListener).toHaveBeenCalledTimes(15);
+        expect(port.close).toHaveBeenCalledTimes(1);
+    });
+
+    test('a request made after dispose() is answered instead of hanging on the closed port', async () => {
+        const background = new BrowserSessionsBackground('sessions-background.js');
+        background.dispose();
+
+        const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        background.on('descriptors', jest.fn());
+
+        // nothing is registered on, or sent through, the closed port
+        expect(port.listenerCount).toBe(0);
+        expect(port.postMessage).not.toHaveBeenCalled();
+        expect(consoleWarn).toHaveBeenCalledTimes(1);
+        await expect(background.handleMessage({ type: 'handshake', id: 1 })).resolves.toEqual({
+            success: false,
+            error: { code: TRANSPORT_ERROR.UNEXPECTED_ERROR },
+            id: 1,
+        });
+
+        consoleWarn.mockRestore();
+    });
 });

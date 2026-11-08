@@ -19,6 +19,9 @@ import {
  */
 export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     private readonly background;
+    // dispose() closes the port, after which postMessage is silently discarded and no
+    // registration can ever be answered or broadcast to
+    private disposed = false;
     // in-flight handleMessage requests: port listener -> callback settling its promise
     private readonly pendingRequests = new Map<(e: MessageEvent<any>) => void, () => void>();
     private readonly portListeners: Array<(e: MessageEvent<any>) => void> = [];
@@ -48,6 +51,17 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     }
 
     handleMessage<M extends HandleMessageParams>(params: M): Promise<HandleMessageResponse<M>> {
+        if (this.disposed) {
+            // the port is closed, so postMessage below would be discarded and the promise
+            // returned here would never settle
+            const abandoned: AbandonedResponse = {
+                ...error({ code: TRANSPORT_ERROR.UNEXPECTED_ERROR }),
+                id: params.id!,
+            };
+
+            return Promise.resolve(abandoned as HandleMessageResponse<M>);
+        }
+
         const { background } = this;
 
         return new Promise(resolve => {
@@ -84,6 +98,11 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     on(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
     on(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
     on(event: 'descriptors' | 'releaseRequest', listener: (descriptors: any) => void): void {
+        if (this.disposed) {
+            console.warn('background-browser on() called after dispose(), the port is closed');
+
+            return;
+        }
         const wrappedListener = (
             e: MessageEvent<
                 //  either standard response from sessions background (we ignore this one)
@@ -124,6 +143,10 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     }
 
     dispose() {
+        if (this.disposed) {
+            return;
+        }
+        this.disposed = true;
         // detaching the listeners below makes pending responses undeliverable, settle them first
         this.settlePendingRequests();
         for (const listener of this.portListeners) {
@@ -131,6 +154,11 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
         }
         this.portListeners.length = 0;
         this.listenerMap.clear();
+        // closes the page side of the port: broadcasts from the worker stop being delivered and
+        // queued here, and the port becomes collectable. The worker keeps its own entangled port
+        // in the module-level `ports` array either way (background-sharedworker) - that array is
+        // never pruned, so one entry per constructed instance stays there for the worker's life.
+        this.background.port.close();
     }
 
     private removePortListener(listener: (e: MessageEvent<any>) => void) {
