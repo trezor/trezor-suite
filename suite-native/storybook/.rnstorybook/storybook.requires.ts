@@ -8,7 +8,7 @@ import "@storybook/addon-ondevice-controls/register";
 const normalizedStories = [
   {
     titlePrefix: "",
-    directory: "..",
+    directory: "../../suite-native",
     files: "**/stories/**/*.stories.?(ts|tsx|js|jsx)",
     importPathMatcher: /^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)stories(?:\/(?!\.)(?:(?:(?!(?:^|\/)\.).)*?)\/|\/|$)(?!\.)(?=.)[^/]*?\.stories\.(?:ts|tsx|js|jsx)?)$/,
     req: require.context(
