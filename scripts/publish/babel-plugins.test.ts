@@ -307,6 +307,32 @@ describe('publish import transforms — package root lookup', () => {
         });
         expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
+
+    // Characterizes the current behavior: the networks/<chain>/<pkg> workspaces run the same
+    // replace-imports.sh pipeline, and the packages root is not the parent of their own package
+    // directory, so no lib/ segment of the transformed file leads to it — the src/ stat misses and
+    // a directory specifier silently ships as the bare .js path asserted below. The fixture gets
+    // its own subtree so that the link stays out of the lib/ segment cases above.
+    it('loses the packages root in a networks/<chain>/<pkg> layout', () => {
+        const monorepo = path.join(root, 'monorepo');
+        const fixturePkg = path.join(monorepo, 'packages', 'fixture-pkg');
+        const workers = path.join(fixturePkg, 'src', 'workers', 'solana');
+        fs.mkdirSync(workers, { recursive: true });
+        fs.writeFileSync(path.join(workers, 'index.ts'), '');
+        // Every workspace package is linked into node_modules, as yarn's node-modules linker does.
+        const linked = path.join(monorepo, 'node_modules', '@trezor');
+        fs.mkdirSync(linked, { recursive: true });
+        fs.symlinkSync(fixturePkg, path.join(linked, 'fixture-pkg'), 'dir');
+        const pkg = path.join(monorepo, 'networks', 'ethereum', 'network-ethereum');
+        const filename = path.join(pkg, 'lib', 'foo.js');
+        fs.mkdirSync(path.dirname(filename), { recursive: true });
+
+        const out = transform(`import { solana } from '@trezor/fixture-pkg/src/workers/solana';`, {
+            filename,
+            plugins: [sanitizeInternalImports, addEsmExtension],
+        });
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana.js');
+    });
 });
 
 describe('publish import transforms — preserved behaviors', () => {
