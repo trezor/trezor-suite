@@ -26,6 +26,23 @@ const splitSuffix = specifier => {
     return at === -1 ? [specifier, ''] : [specifier.slice(0, at), specifier.slice(at)];
 };
 
+// Locate the src/ tree of the imported @trezor package. It is a workspace package symlinked into
+// node_modules, so walking the node_modules chain up from the file being transformed finds it in
+// any layout: packages/<pkg> as well as the networks/<chain>/<pkg> workspaces, whose package root
+// is not an ancestor of the file. The package directory is addressed directly because a manifest's
+// exports map does not have to expose ./package.json, which rules out require.resolve.
+const resolveLinkedPackageSrc = (filename, packageName) => {
+    let dir = path.dirname(filename);
+
+    while (dir !== path.dirname(dir)) {
+        const src = path.join(dir, 'node_modules', '@trezor', packageName, 'src');
+        if (fs.existsSync(src)) return src;
+        dir = path.dirname(dir);
+    }
+
+    return null;
+};
+
 // Locate the packages root (the directory holding every @trezor package) from the absolute path of
 // the file being transformed, i.e. the parent of the package directory whose lib/ holds the file.
 // A path can contain several lib/ segments, so the candidates are validated rather than guessed:
@@ -50,6 +67,12 @@ const resolvePackagesRoot = (filename, packageName) => {
     return path.dirname(filename.substring(0, innermost));
 };
 
+// The node_modules link is authoritative; the lib/ segment walk stays as the fallback for a tree
+// where the imported package is not installed.
+const resolvePackageSrc = (filename, packageName) =>
+    resolveLinkedPackageSrc(filename, packageName) ??
+    path.join(resolvePackagesRoot(filename, packageName), packageName, 'src');
+
 /**
  * Babel plugin to rewrite import/export statements to their runtime ESM extensions.
  * This way we can keep our codebase with moduleResolution: bundler (imports without extensions).
@@ -70,10 +93,9 @@ const addEsmExtensionPlugin = ({ types }) => {
             const match = src.match(/^@trezor\/([^/]+)\/lib\/(.+)$/);
             const [, packageName, subpath] = match;
 
-            const packagesRoot = resolvePackagesRoot(filename, packageName);
             // Check src/ instead of lib/ — src/ is always present in the repo regardless of
             // build order, whereas lib/ may not exist yet in CI when this package is compiled.
-            const resolvedSrcPath = path.join(packagesRoot, packageName, 'src', subpath);
+            const resolvedSrcPath = path.join(resolvePackageSrc(filename, packageName), subpath);
 
             const isDirectory =
                 fs.existsSync(resolvedSrcPath) && fs.statSync(resolvedSrcPath).isDirectory();
