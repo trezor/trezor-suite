@@ -2,7 +2,7 @@ import type { Horizon } from '@stellar/stellar-sdk';
 
 import { BigNumber } from '@trezor/utils';
 
-import { toStroops } from '../../constants';
+import { toStroops } from '../../constants/decimals';
 
 type EffectRecord = Horizon.ServerApi.EffectRecord;
 

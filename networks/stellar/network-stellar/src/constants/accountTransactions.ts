@@ -4,17 +4,17 @@ import type {
     TokenTransfer,
     Transaction,
 } from '@trezor/blockchain-link-types';
-import { isCodesignBuild } from '@trezor/env-utils';
-import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import type { StellarOperationType } from '@trezor/network-stellar-types';
+import { BigNumber } from '@trezor/utils';
+
+import { STELLAR_DECIMALS } from './decimals';
 import type {
     DescribedTransaction,
     StellarAssetAmount,
     StellarBalanceDelta,
     StellarContractTokenTransfer,
-    StellarOperationType,
     TokenTransferInfo,
-} from '@trezor/network-stellar/types';
-import { BigNumber } from '@trezor/utils';
+} from '../types';
 
 // A host function can move other parties' assets too; only the account's own transfers are kept.
 const transformTokenTransfers = (
@@ -169,7 +169,7 @@ const transformMovements = ({
     };
 };
 
-export const transformTransaction = (
+export const transformStellarTransaction = (
     identifiedTx: DescribedTransaction,
     descriptor: string,
     tokenDetailByMint: TokenDetailByMint,
@@ -365,24 +365,8 @@ export const transformTransaction = (
     };
 };
 
-export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
-    const env = isCodesignBuild() ? 'stable' : 'develop';
-
-    const response = await fetch(
-        `https://data.trezor.io/suite/definitions/${env}/stellar.advanced.coin.definitions.v1.json`,
-    );
-
-    if (!response.ok) {
-        throw Error(`Failed to fetch token metadata: ${response.statusText}`);
-    }
-
-    const data: TokenDetailByMint = await response.json();
-
-    return data;
-};
-
 /** A SEP-41 transfer as the token's own event reports it, in the token's base units. */
-export const transformContractTokenTransfer = (
+export const transformStellarContractTokenTransfer = (
     transfer: StellarContractTokenTransfer,
     token: Pick<TokenInfo, 'contract' | 'name' | 'symbol' | 'decimals'>,
     descriptor: string,
@@ -402,7 +386,7 @@ export const transformContractTokenTransfer = (
  * Horizon reports the balances a call moved for classic assets only, so a SEP-41 transfer reaches
  * the history as a call that moved nothing; the token's own events say what it moved.
  */
-export const withContractTokenTransfers = (
+export const withStellarContractTokenTransfers = (
     tx: Transaction,
     transfers: readonly TokenTransfer[],
     descriptor: string,
@@ -430,7 +414,7 @@ export const withContractTokenTransfers = (
  * its signers, so the other party never sees it. Nothing native moved and the fee was not this
  * account's, so the record carries the token movement alone.
  */
-export const transformContractTokenReceipt = (
+export const transformStellarContractTokenReceipt = (
     receipt: Pick<StellarContractTokenTransfer, 'txHash' | 'ledger' | 'closedAt'>,
     transfers: readonly TokenTransfer[],
     descriptor: string,
@@ -438,7 +422,7 @@ export const transformContractTokenReceipt = (
     const [first] = transfers;
     const counterparty = transfers.find(({ from }) => from !== descriptor)?.from ?? first?.to ?? '';
 
-    return withContractTokenTransfers(
+    return withStellarContractTokenTransfers(
         {
             txid: receipt.txHash,
             type: 'unknown',

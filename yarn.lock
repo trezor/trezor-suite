@@ -18486,7 +18486,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
-    "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-stellar-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
@@ -18506,7 +18506,6 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/network-ripple": "workspace:*"
     "@trezor/network-solana": "workspace:*"
-    "@trezor/network-stellar": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   peerDependencies:
@@ -19427,6 +19426,9 @@ __metadata:
   resolution: "@trezor/network-stellar@workspace:networks/stellar/network-stellar"
   dependencies:
     "@stellar/stellar-sdk": "npm:17.2.1"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/network-stellar-types": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft

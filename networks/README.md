@@ -48,7 +48,7 @@ Each general network package follows a consistent three-entrypoint layout:
 
 ```
 networks/<network>/network-<network>/src/
-  constants/   – Static values, constants, custom enums etc…
+  constants/   – Static values, custom enums and helpers without 3rd party dependencies
   types/       – TypeScript type definitions (incl. reexported by using `export type`)
   runtime/     – Dynamically exported utilities, helpers, reexported functions…
   index.ts     – Reexport from constants/index.ts, types/index.ts and runtime/exports.ts

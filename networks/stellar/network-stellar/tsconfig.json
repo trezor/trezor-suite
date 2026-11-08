@@ -3,6 +3,11 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        {
+            "path": "../../../packages/blockchain-link-types"
+        },
+        { "path": "../../../packages/env-utils" },
+        { "path": "../network-stellar-types" },
         { "path": "../../../packages/utils" }
     ]
 }

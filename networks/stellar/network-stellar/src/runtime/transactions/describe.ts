@@ -1,11 +1,11 @@
 import { Horizon, StrKey, extractBaseAddress } from '@stellar/stellar-sdk';
 
+import type { StellarOperationType } from '@trezor/network-stellar-types';
 import { BigNumber } from '@trezor/utils';
 
 import { type StellarBalanceDelta, readBalanceDeltas } from './balances';
 import { decodeSorobanInvocation } from './decodeContractCall';
-import { toStroops } from '../../constants';
-import type { StellarOperationType } from '../../types/operations';
+import { toStroops } from '../../constants/decimals';
 import { parseCanonicalAsset } from '../assets';
 
 type OperationRecord = Horizon.ServerApi.OperationRecord;

@@ -37,6 +37,7 @@
         "@trezor/network-solana",
         "@trezor/network-solana-types",
         "@trezor/network-stellar",
+        "@trezor/network-stellar-types",
         "@trezor/network-tron",
         "@trezor/protobuf",
         "@trezor/protocol",

@@ -1,12 +1,11 @@
 import { Address, scValToNative, xdr } from '@stellar/stellar-sdk';
 
-import { isNotUndefined } from '@trezor/utils';
-
 import type {
     StellarAuthorizedCallData,
     StellarContractCallArgument,
     StellarContractCallData,
-} from '../../types/contractCall';
+} from '@trezor/network-stellar-types';
+import { isNotUndefined } from '@trezor/utils';
 
 /** A contract argument in a shape the UI can render; addresses stay distinguishable from text. */
 export type StellarScValue =

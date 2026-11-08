@@ -7,7 +7,7 @@
     },
     "references": [
         {
-            "path": "../../networks/stellar/network-stellar"
+            "path": "../../networks/stellar/network-stellar-types"
         },
         { "path": "../type-utils" },
         { "path": "../utils" },

@@ -14,9 +14,6 @@
         {
             "path": "../../networks/solana/network-solana"
         },
-        {
-            "path": "../../networks/stellar/network-stellar"
-        },
         { "path": "../utils" },
         { "path": "../eslint" },
         { "path": "../type-utils" }
