@@ -308,6 +308,50 @@ describe('connectPopupFinishCallThunk', () => {
         await expect(deferred.promise).resolves.toEqual({ success: false, error });
         expect(selectConnectPopupCall(store.getState())?.state).toBe('finished');
     });
+
+    it('drops the deeplink callback of a failed call when its popup is closed', () => {
+        const store = initStore();
+        store.dispatch(
+            connectPopupActions.setError(serializeError(TypedError('Failure_ActionCancelled'))),
+        );
+        store.dispatch(connectPopupActions.deeplinkCallback({ callbackUrl: 'app://callback' }));
+        expect(selectConnectPopupCall(store.getState())?.state).toBe('call-error');
+
+        store.dispatch(connectPopupFinishCallThunk());
+
+        // Documents the bug: the reducer takes `deeplinkCallback` only from `finished` or
+        // `address-confirmation`, so the failed call never gets the callback url and the
+        // third-party app that opened the deeplink is left without a response.
+        expect(selectConnectPopupCall(store.getState())).toMatchObject({
+            state: 'finished',
+        });
+        expect(selectConnectPopupCall(store.getState())).not.toMatchObject({
+            state: 'deeplink-callback',
+        });
+    });
+
+    it('lets the deeplink callback of a device-reconnect error through', async () => {
+        const store = initStore();
+        const deferred = getPopupCallDeferred(true);
+        const error = serializeError(TypedError('Device_NotFound'));
+
+        // A device-reconnect error leaves the popup open for a retry, so the call is still
+        // unanswered and the deeplink thunk has not dispatched its callback yet.
+        store.dispatch(connectPopupActions.setError(error));
+        expect(selectConnectPopupCall(store.getState())?.state).toBe('call-error');
+
+        store.dispatch(connectPopupFinishCallThunk());
+
+        await expect(deferred.promise).resolves.toEqual({ success: false, error });
+
+        // The deeplink thunk dispatches its own callback once that response settles, which must
+        // land on the call the thunk has meanwhile moved to `finished`.
+        store.dispatch(connectPopupActions.deeplinkCallback({ callbackUrl: 'app://callback' }));
+        expect(selectConnectPopupCall(store.getState())).toMatchObject({
+            state: 'deeplink-callback',
+            callbackUrl: 'app://callback',
+        });
+    });
 });
 
 describe('connectPopupCallInnerThunk', () => {
