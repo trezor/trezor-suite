@@ -270,11 +270,11 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
 });
 
 describe('publish import transforms — package root lookup', () => {
-    // Characterizes the current behavior: the @trezor/<pkg>/lib/<subpath> branch locates the
-    // packages root by the first lib/ segment of the file being transformed, so an ancestor
-    // directory named lib is mistaken for it — the src/ stat misses and a directory specifier
-    // silently ships as the bare .js path asserted below.
-    it('mistakes an ancestor directory named lib for the package root', () => {
+    // The @trezor/<pkg>/lib/<subpath> branch locates the packages root by a lib/ segment of the
+    // file being transformed, so neither an ancestor directory named lib nor one nested in the
+    // package's own output must be mistaken for it — otherwise the src/ stat misses and a
+    // directory specifier silently ships as a bare .js path.
+    it('resolves the package root under an ancestor directory named lib', () => {
         const nested = path.join(root, 'lib', 'packages');
         const workers = path.join(nested, 'fixture-pkg', 'src', 'workers');
         fs.mkdirSync(path.join(workers, 'blockbook'), { recursive: true });
@@ -286,7 +286,26 @@ describe('publish import transforms — package root lookup', () => {
             `import { blockbook } from '@trezor/fixture-pkg/src/workers/blockbook';`,
             { filename, plugins: [sanitizeInternalImports, addEsmExtension] },
         );
-        expect(out).toContain('@trezor/fixture-pkg/lib/workers/blockbook.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/blockbook/index.js');
+    });
+
+    // lib/ mirrors src/ one-to-one, so a src/**/lib/ directory in a published package yields a
+    // transformed file with a lib/ segment below the package's own one. Nested under the ancestor
+    // lib as well, so the case fails both for a first-segment and for a last-segment lookup: only
+    // validating each candidate against <pkg>/src picks the package's own lib/ here.
+    it('resolves the package root with a lib directory inside the package output', () => {
+        const nested = path.join(root, 'lib', 'packages');
+        const workers = path.join(nested, 'fixture-pkg', 'src', 'workers', 'solana');
+        fs.mkdirSync(workers, { recursive: true });
+        fs.writeFileSync(path.join(workers, 'index.ts'), '');
+        const filename = path.join(nested, 'connect-core', 'lib', 'device', 'lib', 'helpers.js');
+        fs.mkdirSync(path.dirname(filename), { recursive: true });
+
+        const out = transform(`import { solana } from '@trezor/fixture-pkg/src/workers/solana';`, {
+            filename,
+            plugins: [sanitizeInternalImports, addEsmExtension],
+        });
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 });
 
