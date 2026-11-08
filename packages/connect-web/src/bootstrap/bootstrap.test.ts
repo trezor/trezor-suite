@@ -279,9 +279,8 @@ describe('bootstrap (iframe mode)', () => {
 
         await jest.advanceTimersByTimeAsync(0);
 
-        // TODO: one abort listener is registered per retry attempt on the AbortSignal shared by
-        // the whole handshake, and none of them is ever removed.
-        expect(abortListenerSpy).toHaveBeenCalledTimes(5);
+        // The abort listener is registered once for the whole retry loop, not per attempt.
+        expect(abortListenerSpy).toHaveBeenCalledTimes(1);
         abortListenerSpy.mockRestore();
 
         const { calls } = errorSpy.mock;
