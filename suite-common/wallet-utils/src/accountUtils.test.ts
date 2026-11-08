@@ -23,6 +23,7 @@ import {
     getAccountTypeTech,
     getBip43Type,
     getDirectRpcHistoryState,
+    getFirmwareDescriptor,
     getHistoryCoveredSince,
     getNetworkAccountFeatures,
     getOlderHistoryFrom,
@@ -730,5 +731,21 @@ describe(convertAmountUnitsToSubunits.name, () => {
 describe(convertAmountSubunitsToUnits.name, () => {
     it('converts Sats->BTC', () => {
         expect(convertAmountSubunitsToUnits('1', 8)).toEqual('0.00000001');
+    });
+});
+
+describe(getFirmwareDescriptor.name, () => {
+    it('appends the checksum only when asked for and when the account has one', () => {
+        const descriptor = asAccountDescriptor("tr([71d98c03/86'/0'/0']xpub6CXYp/<0;1>/*)");
+        const firmwareDescriptor = 'tr([71d98c03/86h/0h/0h]xpub6CXYp/<0;1>/*)';
+        const account = { descriptor, descriptorChecksum: 'gvfjd7ak' };
+
+        expect(getFirmwareDescriptor(account)).toEqual(firmwareDescriptor);
+        expect(getFirmwareDescriptor(account, { withChecksum: true })).toEqual(
+            `${firmwareDescriptor}#gvfjd7ak`,
+        );
+        expect(getFirmwareDescriptor({ descriptor }, { withChecksum: true })).toEqual(
+            firmwareDescriptor,
+        );
     });
 });
