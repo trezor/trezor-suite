@@ -45,7 +45,14 @@ import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
-import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
+import {
+    BigNumber,
+    type FirmwareDescriptor,
+    arrayDistinct,
+    bufferUtils,
+    toFirmwareDescriptor,
+    typedObjectKeys,
+} from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isDirectRpcBackendType } from './backendUtils';
@@ -339,6 +346,15 @@ export const findAccountsByAddress = (
 
             return a.descriptor === address;
         });
+
+type GetFirmwareDescriptorOptions = { withChecksum?: boolean };
+
+/** The account descriptor as firmware displays it; `withChecksum` appends its `#<checksum>`. */
+export const getFirmwareDescriptor = (
+    account: Pick<Account, 'descriptor' | 'descriptorChecksum'>,
+    { withChecksum = false }: GetFirmwareDescriptorOptions = {},
+): FirmwareDescriptor =>
+    toFirmwareDescriptor(account.descriptor, withChecksum ? account.descriptorChecksum : undefined);
 
 /**
  * The account that owns every input of the transaction, or undefined when any input is missing,
