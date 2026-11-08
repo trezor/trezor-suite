@@ -3,6 +3,14 @@ const PEER = '@trezor/connect-service-worker-proxy';
 
 const manifest = { appName: 'test', appUrl: 'https://example.com', email: 'test@example.com' };
 
+const interrupted = {
+    success: false,
+    error: {
+        code: 'Method_Interrupted',
+        message: 'Popup closed',
+    },
+};
+
 type Listener = (...args: any[]) => void;
 
 const createListenerRegistry = () => {
@@ -93,5 +101,18 @@ describe('connect-webextension proxy lifecycle', () => {
 
         expect(ports).toHaveLength(1);
         expect(currentPort().onDisconnect.listeners).toHaveLength(1);
+    });
+
+    it('dispose() detaches the reconnect listener and settles calls in flight', async () => {
+        const TrezorConnect = await loadProxy();
+        await TrezorConnect.init({ manifest });
+        const port = currentPort();
+
+        const pending = TrezorConnect.call({ method: 'getFeatures' });
+        await TrezorConnect.dispose();
+
+        expect(port.onDisconnect.listeners).toHaveLength(0);
+        expect(port.disconnect).toHaveBeenCalled();
+        await expect(pending).resolves.toEqual(interrupted);
     });
 });
