@@ -125,7 +125,8 @@ export const ConnectAddressConfirmation = () => {
                             values={{
                                 thirdParty: (
                                     <b>
-                                        {popupCall.source.manifest?.appName ??
+                                        {/* `??` would show an empty name, not the origin. */}
+                                        {popupCall.source.manifest?.appName ||
                                             popupCall.source.origin}
                                     </b>
                                 ),
