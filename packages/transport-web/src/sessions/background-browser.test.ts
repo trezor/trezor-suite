@@ -1,4 +1,8 @@
-import { type Descriptor } from '@trezor/transport-common';
+import {
+    type Descriptor,
+    type HandleMessageParams,
+    TRANSPORT_ERROR,
+} from '@trezor/transport-common';
 
 import { BrowserSessionsBackground } from './background-browser';
 
@@ -56,5 +60,20 @@ describe('BrowserSessionsBackground', () => {
         background.off('descriptors', listener);
         port.emit({ type: 'descriptors', payload: descriptors });
         expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    test('dispose() settles in-flight requests instead of leaving them hanged', async () => {
+        const background = new BrowserSessionsBackground('sessions-background.js');
+        const params: HandleMessageParams = { type: 'handshake', id: 1 };
+
+        const request = background.handleMessage(params);
+        // no response arrives, the port listener is detached by dispose()
+        background.dispose();
+
+        await expect(request).resolves.toEqual({
+            success: false,
+            error: { code: TRANSPORT_ERROR.UNEXPECTED_ERROR },
+            id: 1,
+        });
     });
 });
