@@ -74,6 +74,12 @@ const currentPort = () => {
     return port;
 };
 
+/** the service worker went away, which is what chrome.runtime signals via onDisconnect */
+const disconnectPort = (port: MockPort) =>
+    [...port.onDisconnect.listeners].forEach(listener => listener());
+
+const flushMicrotasks = () => new Promise(resolve => setTimeout(resolve, 0));
+
 const loadProxy = async () => (await import('./index')).default;
 
 describe('connect-webextension proxy lifecycle', () => {
@@ -114,5 +120,21 @@ describe('connect-webextension proxy lifecycle', () => {
         expect(port.onDisconnect.listeners).toHaveLength(0);
         expect(port.disconnect).toHaveBeenCalled();
         await expect(pending).resolves.toEqual(interrupted);
+    });
+
+    it('a port disconnect settles calls in flight and reconnects on a fresh port', async () => {
+        const TrezorConnect = await loadProxy();
+        await TrezorConnect.init({ manifest });
+        const firstPort = currentPort();
+
+        const pending = TrezorConnect.call({ method: 'getFeatures' });
+        disconnectPort(firstPort);
+
+        await expect(pending).resolves.toEqual(interrupted);
+        await flushMicrotasks();
+
+        expect(ports).toHaveLength(2);
+        expect(currentPort()).not.toBe(firstPort);
+        expect(currentPort().onDisconnect.listeners).toHaveLength(1);
     });
 });

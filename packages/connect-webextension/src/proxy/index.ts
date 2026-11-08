@@ -14,6 +14,13 @@ import {
 let _channel: any;
 let _reconnect: (() => void) | undefined;
 
+// the port is gone or about to go, so no response can arrive for calls still in flight.
+// Rejecting them routes the error through call()'s catch, which formats it into the
+// documented Err shape instead of hanging the client.
+const settleInFlightCalls = () => {
+    _channel?.rejectMessagePromises(ERRORS.TypedError('Method_Interrupted'));
+};
+
 const dispose = () => {
     if (_channel) {
         // the reconnect listener would re-enter init() on the next port disconnect and keep the
@@ -22,10 +29,7 @@ const dispose = () => {
             _channel.port.onDisconnect.removeListener(_reconnect);
             _reconnect = undefined;
         }
-        // the port is about to close, so no response can arrive for calls still in flight.
-        // Rejecting them routes the error through call()'s catch, which formats it into the
-        // documented Err shape instead of hanging the client.
-        _channel.rejectMessagePromises(ERRORS.TypedError('Method_Interrupted'));
+        settleInFlightCalls();
         _channel.disconnect();
         _channel.clear();
         _channel = null;
@@ -55,6 +59,9 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
 
     const reconnect = () => {
         // By connecting again we keep the service worker active.
+        // The channel below is replaced by a fresh one, which takes the pending call promises of
+        // the old one out of reach, so they have to be settled before that happens.
+        settleInFlightCalls();
         cancel();
         _channel = null;
         _reconnect = undefined;
@@ -79,11 +86,12 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
 };
 
 const call = async (params: any) => {
-    if (!_channel) {
+    const channel = _channel;
+    if (!channel) {
         return createErrorMessage(ERRORS.TypedError('Init_NotInitialized'));
     }
     try {
-        const response = await _channel.postMessage({
+        const response = await channel.postMessage({
             type: CORE_CALL,
             payload: params,
         });
@@ -93,8 +101,12 @@ const call = async (params: any) => {
 
         return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
     } catch (error) {
-        // dispose() can run while the call above is awaiting, which leaves _channel null
-        _channel?.clear();
+        // dispose() or reconnect() can run while the call above is awaiting, which leaves
+        // _channel null or already replaced by a channel that is mid-handshake - clearing that
+        // one would drop its handshake deferred
+        if (_channel === channel) {
+            channel.clear();
+        }
 
         return createErrorMessage(error);
     }
