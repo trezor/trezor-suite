@@ -336,6 +336,20 @@ describe('publish import transforms — package root lookup', () => {
         });
         expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
+
+    // Characterizes the current behavior: a lookup that locates no candidate falls back to the
+    // innermost lib/, so the src/ stat misses and the specifier takes the file branch — "the
+    // lookup is broken" is indistinguishable from "the subpath is a file", and the guess asserted
+    // below ships from a successful publish build with no signal at all.
+    it('ships a bare .js path when the imported package cannot be located', () => {
+        const filename = path.join(root, 'connect-core', 'lib', 'workers', 'workers.js');
+
+        const out = transform(`import { x } from '@trezor/not-a-workspace/src/workers/solana';`, {
+            filename,
+            plugins: [sanitizeInternalImports, addEsmExtension],
+        });
+        expect(out).toContain('@trezor/not-a-workspace/lib/workers/solana.js');
+    });
 });
 
 describe('publish import transforms — preserved behaviors', () => {
