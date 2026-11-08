@@ -50,6 +50,9 @@
     },
     "dependencies": {
         "@stellar/stellar-sdk": "17.2.1",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/network-stellar-types": "workspace:*",
         "@trezor/utils": "workspace:*"
     }
 }

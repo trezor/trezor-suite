@@ -9,8 +9,13 @@ export type * from './rpc';
 export type { StellarAssetAmount, TokenTransferInfo } from '../runtime/transactions/describe';
 export type { StellarBalanceDelta } from '../runtime/transactions/balances';
 export type { StellarContractTokenTransfer } from '../runtime/rpc/events';
-export type * from './contractCall';
-export type * from './operations';
+export type {
+    StellarAuthorizedCallData,
+    StellarClaimableBalanceOffer,
+    StellarContractCallArgument,
+    StellarContractCallData,
+    StellarOperationType,
+} from '@trezor/network-stellar-types';
 
 export type StellarHorizonServer = Horizon.Server;
 

@@ -1,7 +1,7 @@
 import type { MessageTypes, Response } from '@trezor/blockchain-link-types';
 import { CustomError, MESSAGES } from '@trezor/blockchain-link-types';
-import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
+import { getStellarTokenMetadata } from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import type { StellarConnection } from '@trezor/network-stellar/types';
 import { createLazy } from '@trezor/utils';
@@ -36,7 +36,7 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
 };
 
 export class StellarWorker extends BaseWorker<StellarConnection> {
-    private lazyTokens = createLazy(() => utils.getTokenMetadata());
+    private lazyTokens = createLazy(() => getStellarTokenMetadata());
     // The base reserve has changed once in the network's history; one read per worker is enough.
     private lazyBaseReserve = createLazy(async () => {
         const api = await this.connect();

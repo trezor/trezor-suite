@@ -4,7 +4,7 @@ import type {
     StellarClaimableBalanceOffer,
     StellarContractCallData,
     StellarOperationType,
-} from '@trezor/network-stellar/types';
+} from '@trezor/network-stellar-types';
 
 import type { BaseCurrencyCode } from './baseCurrency';
 import type { TokenProtocols, TronAccountExtraData, TronChainExtraData } from './blockbook-api';

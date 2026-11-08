@@ -8,9 +8,9 @@ import { BlockchainLink } from '../../index';
 
 import StellarWorker from './index';
 
-jest.mock('@trezor/blockchain-link-utils/src/stellar', () => ({
-    ...jest.requireActual('@trezor/blockchain-link-utils/src/stellar'),
-    getTokenMetadata: () => Promise.resolve({}),
+jest.mock('@trezor/network-stellar/constants', () => ({
+    ...jest.requireActual('@trezor/network-stellar/constants'),
+    getStellarTokenMetadata: () => Promise.resolve({}),
 }));
 
 const DESCRIPTOR = 'GCEEMZKTHUH44YRZWQLJK6HDHKYIM5K4UYFQJSUCODVLLL7SJEYAEOET';

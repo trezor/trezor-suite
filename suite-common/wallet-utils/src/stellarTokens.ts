@@ -1,15 +1,15 @@
 import type { Account, StellarTokenInfo } from '@suite-common/wallet-types';
 import type { TokenDetailByMint } from '@trezor/blockchain-link-types';
-import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import {
     STELLAR_DECIMALS,
     fitStellarMemoText,
+    getStellarTokenMetadata,
     isStellarClassicAssetKey,
 } from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import { createLazy, scheduleAction } from '@trezor/utils';
 
-export const lazyStellarTokenMetadata = createLazy(getTokenMetadata);
+export const lazyStellarTokenMetadata = createLazy(getStellarTokenMetadata);
 
 /** Resolves a pasted Stellar Asset Contract id to the classic asset the definitions list. */
 export const resolveStellarContractId = async (contractId: string) => {
@@ -48,7 +48,7 @@ export const getStellarTrustlineMemo = async (contract: string) => {
 export const getStellarInactiveTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
     if (account.symbol !== 'xlm') return [];
 
-    const allTokens: TokenDetailByMint = await getTokenMetadata();
+    const allTokens: TokenDetailByMint = await getStellarTokenMetadata();
 
     // Get the currently active token contract addresses for the user
     const activeTokenContracts = new Set(account.tokens?.map(token => token.contract) || []);

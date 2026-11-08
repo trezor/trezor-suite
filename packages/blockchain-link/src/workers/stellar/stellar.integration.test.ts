@@ -1,10 +1,10 @@
-import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
     createStellarConnection,
     describeTransaction,
     groupOperationsByTransaction,
     toStroops,
+    transformStellarTransaction,
 } from '@trezor/network-stellar';
 import type { StellarHorizonServer } from '@trezor/network-stellar/types';
 
@@ -163,7 +163,7 @@ describe('Stellar', () => {
         const expectedCursor = groups[groups.length - 1]?.cursor;
         const expectedTxs = await Promise.all(
             groups.map(async ({ operations }) =>
-                utils.transformTransaction(
+                transformStellarTransaction(
                     describeTransaction(operations, await operations[0].transaction()),
                     descriptor,
                     {},
