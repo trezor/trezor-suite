@@ -19009,6 +19009,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@types/chrome": "npm:^0.2.2"
+    "@types/jest": "npm:30.0.0"
     "@types/w3c-web-usb": "npm:^1.0.14"
     babel-loader: "npm:^10.1.1"
     rimraf: "npm:^6.1.2"

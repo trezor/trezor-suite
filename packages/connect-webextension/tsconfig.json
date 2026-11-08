@@ -3,7 +3,7 @@
     "compilerOptions": {
         "isolatedModules": false,
         "outDir": "./lib",
-        "types": ["chrome", "w3c-web-usb"]
+        "types": ["chrome", "jest", "w3c-web-usb"]
     },
     "include": ["**/*.ts", "**/*.js"],
     "references": [

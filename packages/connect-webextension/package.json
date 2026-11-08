@@ -46,6 +46,7 @@
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -57,6 +58,7 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/requirements": "workspace:*",
         "@types/chrome": "^0.2.2",
+        "@types/jest": "30.0.0",
         "@types/w3c-web-usb": "^1.0.14",
         "babel-loader": "^10.1.1",
         "rimraf": "^6.1.2",

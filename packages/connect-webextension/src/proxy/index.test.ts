@@ -1,0 +1,97 @@
+const HERE = '@trezor/connect-foreground-proxy';
+const PEER = '@trezor/connect-service-worker-proxy';
+
+const manifest = { appName: 'test', appUrl: 'https://example.com', email: 'test@example.com' };
+
+type Listener = (...args: any[]) => void;
+
+const createListenerRegistry = () => {
+    const listeners: Listener[] = [];
+
+    return {
+        listeners,
+        addListener: (listener: Listener) => {
+            listeners.push(listener);
+        },
+        removeListener: (listener: Listener) => {
+            const index = listeners.indexOf(listener);
+            if (index !== -1) {
+                listeners.splice(index, 1);
+            }
+        },
+    };
+};
+
+type MockPort = {
+    name: string;
+    postMessage: jest.Mock;
+    disconnect: jest.Mock;
+    onMessage: ReturnType<typeof createListenerRegistry>;
+    onDisconnect: ReturnType<typeof createListenerRegistry>;
+};
+
+const deliverFromPeer = (port: MockPort, message: Record<string, any>) =>
+    [...port.onMessage.listeners].forEach(listener =>
+        listener({ channel: { here: PEER, peer: HERE }, ...message }),
+    );
+
+/** whether the faked peer answers a channel-handshake-request, set before init() */
+let peerConfirmsHandshake = true;
+
+const createPort = (): MockPort => {
+    const port: MockPort = {
+        name: 'trezor-connect-proxy',
+        postMessage: jest.fn((message: any) => {
+            if (message.type === 'channel-handshake-request' && peerConfirmsHandshake) {
+                // a real service worker answers asynchronously
+                void Promise.resolve().then(() =>
+                    deliverFromPeer(port, { type: 'channel-handshake-confirm' }),
+                );
+            }
+        }),
+        disconnect: jest.fn(),
+        onMessage: createListenerRegistry(),
+        onDisconnect: createListenerRegistry(),
+    };
+
+    return port;
+};
+
+let ports: MockPort[] = [];
+
+const currentPort = () => {
+    const port = ports.at(-1);
+    if (!port) throw new Error('no port was opened');
+
+    return port;
+};
+
+const loadProxy = async () => (await import('./index')).default;
+
+describe('connect-webextension proxy lifecycle', () => {
+    beforeEach(() => {
+        ports = [];
+        peerConfirmsHandshake = true;
+        (globalThis as any).chrome = {
+            runtime: {
+                connect: jest.fn(() => {
+                    const port = createPort();
+                    ports.push(port);
+
+                    return port;
+                }),
+            },
+        };
+        jest.resetModules();
+    });
+
+    it('keeps a single reconnect listener when init() is called again', async () => {
+        const TrezorConnect = await loadProxy();
+
+        await TrezorConnect.init({ manifest });
+        await TrezorConnect.init({ manifest });
+
+        expect(ports).toHaveLength(1);
+        expect(currentPort().onDisconnect.listeners).toHaveLength(1);
+    });
+});
