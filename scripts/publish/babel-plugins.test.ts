@@ -13,6 +13,10 @@ import sanitizeInternalImports from './babel-plugin-sanitize-internal-imports.js
 //   <root>/fixture-pkg/src/workers/baseWorker.ts                (file       → .js)
 //   <root>/connect-core/lib/workers/localdir/index.js           (directory  → /index.js)
 //   <root>/connect-core/lib/workers/localfile.js                (file       → .js)
+//
+// The imported package is deliberately named after no workspace: the lookup also searches
+// <ancestor>/node_modules/@trezor/<pkg>/src up to the filesystem root, so a fixture named like a
+// real workspace resolves against the checkout's link instead whenever TMPDIR sits under it.
 let root: string;
 let esmFilename: string;
 let dtsFilename: string;
@@ -308,12 +312,11 @@ describe('publish import transforms — package root lookup', () => {
         expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 
-    // Characterizes the current behavior: the networks/<chain>/<pkg> workspaces run the same
-    // replace-imports.sh pipeline, and the packages root is not the parent of their own package
-    // directory, so no lib/ segment of the transformed file leads to it — the src/ stat misses and
-    // a directory specifier silently ships as the bare .js path asserted below. The fixture gets
-    // its own subtree so that the link stays out of the lib/ segment cases above.
-    it('loses the packages root in a networks/<chain>/<pkg> layout', () => {
+    // The networks/<chain>/<pkg> workspaces run the same replace-imports.sh pipeline, and the
+    // packages root is not the parent of their own package directory, so no lib/ segment of the
+    // transformed file leads to it — only the node_modules link does. The fixture gets its own
+    // subtree so that the link stays out of the lib/ segment cases above.
+    it('resolves an imported package from a networks/<chain>/<pkg> layout', () => {
         const monorepo = path.join(root, 'monorepo');
         const fixturePkg = path.join(monorepo, 'packages', 'fixture-pkg');
         const workers = path.join(fixturePkg, 'src', 'workers', 'solana');
@@ -331,7 +334,7 @@ describe('publish import transforms — package root lookup', () => {
             filename,
             plugins: [sanitizeInternalImports, addEsmExtension],
         });
-        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 });
 
