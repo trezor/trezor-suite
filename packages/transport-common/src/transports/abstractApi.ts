@@ -512,6 +512,15 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     }
 
     stop() {
+        // Remove listeners added by listen() before they can accumulate on repeated stop/listen cycles.
+        // sessionsClient itself is not disposed (see comment below), but the listeners registered by
+        // this transport must be removed by reference to avoid touching any other subscribers.
+        this.api.off('transport-interface-change', this.onTransportInterfaceChange);
+        // a `once` listener is only unregistered when it fires, so the goodbye listener armed by a
+        // previous stop() has to be removed too, otherwise every init()/stop() cycle adds another one.
+        this.api.off('transport-interface-change', this.onApiChangeAfterStop);
+        this.sessionsClient.off('descriptors', this.onSessionsDescriptors);
+        this.sessionsClient.off('releaseRequest', this.onSessionsReleaseRequest);
         if (!this.stopped) {
             this.api.once('transport-interface-change', this.onApiChangeAfterStop);
         }
