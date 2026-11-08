@@ -9,10 +9,10 @@ import sanitizeInternalImports from './babel-plugin-sanitize-internal-imports.js
 // These plugins decide file-vs-directory by stat-ing the on-disk src/ tree next to the file being
 // transformed, so the suite builds a throwaway package layout and points `filename` into its lib/.
 //
-//   <root>/blockchain-link/src/workers/{solana,blockbook}/index.ts  (directories → /index.js)
-//   <root>/blockchain-link/src/workers/baseWorker.ts                (file       → .js)
-//   <root>/connect-core/lib/workers/localdir/index.js               (directory  → /index.js)
-//   <root>/connect-core/lib/workers/localfile.js                    (file       → .js)
+//   <root>/fixture-pkg/src/workers/{solana,blockbook}/index.ts  (directories → /index.js)
+//   <root>/fixture-pkg/src/workers/baseWorker.ts                (file       → .js)
+//   <root>/connect-core/lib/workers/localdir/index.js           (directory  → /index.js)
+//   <root>/connect-core/lib/workers/localfile.js                (file       → .js)
 let root: string;
 let esmFilename: string;
 let dtsFilename: string;
@@ -20,7 +20,7 @@ let dtsFilename: string;
 beforeAll(() => {
     root = fs.mkdtempSync(path.join(os.tmpdir(), 'publish-transform-'));
 
-    const workers = path.join(root, 'blockchain-link', 'src', 'workers');
+    const workers = path.join(root, 'fixture-pkg', 'src', 'workers');
     for (const dir of ['solana', 'blockbook']) {
         fs.mkdirSync(path.join(workers, dir), { recursive: true });
         fs.writeFileSync(path.join(workers, dir, 'index.ts'), '');
@@ -71,15 +71,15 @@ const runDts = (code: string) =>
 
 describe('publish import transforms — specifier positions', () => {
     it('static import: src→lib and directory → /index.js', () => {
-        const out = runEsm(`import { solana } from '@trezor/blockchain-link/src/workers/solana';`);
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
+        const out = runEsm(`import { solana } from '@trezor/fixture-pkg/src/workers/solana';`);
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 
     it('static import: file specifier → .js', () => {
         const out = runEsm(
-            `import { baseWorker } from '@trezor/blockchain-link/src/workers/baseWorker';`,
+            `import { baseWorker } from '@trezor/fixture-pkg/src/workers/baseWorker';`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/baseWorker.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/baseWorker.js');
     });
 
     it('relative import: directory → /index.js, file → .js', () => {
@@ -90,16 +90,16 @@ describe('publish import transforms — specifier positions', () => {
 
     it('dynamic import(): src→lib and directory → /index.js', () => {
         const out = runEsm(
-            `export const w = () => import('@trezor/blockchain-link/src/workers/solana');`,
+            `export const w = () => import('@trezor/fixture-pkg/src/workers/solana');`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 
     it('new URL(..., import.meta.url): rewrites the worker specifier', () => {
         const out = runEsm(
-            `new Worker(new URL('@trezor/blockchain-link/src/workers/blockbook', import.meta.url));`,
+            `new Worker(new URL('@trezor/fixture-pkg/src/workers/blockbook', import.meta.url));`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/blockbook/index.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/blockbook/index.js');
     });
 
     it('new URL(relative, import.meta.url): appends the extension', () => {
@@ -109,25 +109,25 @@ describe('publish import transforms — specifier positions', () => {
 
     it('export * / export … from: src→lib and the runtime extension', () => {
         const out = runEsm(
-            `export * from '@trezor/blockchain-link/src/workers/solana';\n` +
-                `export { baseWorker } from '@trezor/blockchain-link/src/workers/baseWorker';`,
+            `export * from '@trezor/fixture-pkg/src/workers/solana';\n` +
+                `export { baseWorker } from '@trezor/fixture-pkg/src/workers/baseWorker';`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/baseWorker.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/baseWorker.js');
     });
 
     // Pins the plugin order replace-imports.sh depends on: a re-export that keeps the extensionless
     // /lib/ specifier does not resolve under a consumer's NodeNext, and the named exports vanish.
     it('export * from in a .d.ts: appends the extension', () => {
-        const out = runDts(`export * from '@trezor/blockchain-link/lib/workers/solana';`);
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
+        const out = runDts(`export * from '@trezor/fixture-pkg/lib/workers/solana';`);
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 
     it('TSImportType in .d.ts: appends the extension', () => {
         const out = runDts(
-            `export declare const w: import('@trezor/blockchain-link/lib/workers/solana').Worker;`,
+            `export declare const w: import('@trezor/fixture-pkg/lib/workers/solana').Worker;`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 });
 
@@ -142,7 +142,7 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
     // the gate fails the build instead — the same choice the CJS require path already makes.
     it('throws on a new URL(@trezor/*/src, base) when base is not import.meta.url', () => {
         expect(() =>
-            runEsm(`const u = new URL('@trezor/blockchain-link/src/workers/blockbook', base);`),
+            runEsm(`const u = new URL('@trezor/fixture-pkg/src/workers/blockbook', base);`),
         ).toThrow(/published packages ship lib\/ only/);
     });
 
@@ -151,7 +151,7 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
     it('throws on a non-worker new URL(@trezor/*/src, import.meta.url)', () => {
         expect(() =>
             runEsm(
-                `const d = readFileSync(new URL('@trezor/blockchain-link/src/workers/blockbook', import.meta.url));`,
+                `const d = readFileSync(new URL('@trezor/fixture-pkg/src/workers/blockbook', import.meta.url));`,
             ),
         ).toThrow(/published packages ship lib\/ only/);
     });
@@ -161,8 +161,8 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
     // The .d.ts half of the same src->lib rewrite is the sed in replace-imports.sh:48,51, which is
     // shell and so uncovered here — keep its pattern in sync with internalSrcSpecifier.
     it('leaves a new URL(@trezor/*/src-maps, base) untouched', () => {
-        const out = runEsm(`const u = new URL('@trezor/blockchain-link/src-maps/foo', base);`);
-        expect(out).toContain('@trezor/blockchain-link/src-maps/foo');
+        const out = runEsm(`const u = new URL('@trezor/fixture-pkg/src-maps/foo', base);`);
+        expect(out).toContain('@trezor/fixture-pkg/src-maps/foo');
     });
 
     // A query or a fragment terminates the path segment as well, so a suffixed specifier is an
@@ -170,9 +170,9 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
     // the build instead of publishing an unresolvable /src path.
     it('rewrites a gated new URL(@trezor/*/src?suffix, import.meta.url)', () => {
         const out = runEsm(
-            `new Worker(new URL('@trezor/blockchain-link/src?worker', import.meta.url));`,
+            `new Worker(new URL('@trezor/fixture-pkg/src?worker', import.meta.url));`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib?worker');
+        expect(out).toContain('@trezor/fixture-pkg/lib?worker');
         expect(out).not.toContain('lib?worker.js');
     });
 
@@ -181,9 +181,9 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
     // workers/solana?worker.js, which resolves to nothing in the published package.
     it('rewrites a gated new URL(@trezor/*/src/<dir>?suffix, import.meta.url) before the suffix', () => {
         const out = runEsm(
-            `new Worker(new URL('@trezor/blockchain-link/src/workers/solana?worker', import.meta.url));`,
+            `new Worker(new URL('@trezor/fixture-pkg/src/workers/solana?worker', import.meta.url));`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js?worker');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js?worker');
         expect(out).not.toContain('?worker.js');
     });
 
@@ -194,9 +194,9 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
     });
 
     it('throws on a non-worker new URL(@trezor/*/src#fragment, base)', () => {
-        expect(() =>
-            runEsm(`const u = new URL('@trezor/blockchain-link/src#frag', base);`),
-        ).toThrow(/published packages ship lib\/ only/);
+        expect(() => runEsm(`const u = new URL('@trezor/fixture-pkg/src#frag', base);`)).toThrow(
+            /published packages ship lib\/ only/,
+        );
     });
 
     it('leaves a single-argument new URL(literal) untouched', () => {
@@ -214,9 +214,9 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
 
     it('rewrites the specifier of a new SharedWorker(new URL(...)) too', () => {
         const out = runEsm(
-            `new SharedWorker(new URL('@trezor/blockchain-link/src/workers/solana', import.meta.url));`,
+            `new SharedWorker(new URL('@trezor/fixture-pkg/src/workers/solana', import.meta.url));`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 
     // Webpack and Vite resolve a new URL(..., import.meta.url) in these call positions as a module
@@ -240,25 +240,25 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
 
     it('rewrites the specifier of a navigator?.serviceWorker.register(new URL(...))', () => {
         const out = runEsm(
-            `navigator?.serviceWorker.register(new URL('@trezor/blockchain-link/src/workers/solana', import.meta.url));`,
+            `navigator?.serviceWorker.register(new URL('@trezor/fixture-pkg/src/workers/solana', import.meta.url));`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 
     it('rewrites the specifier of an audioWorklet.addModule(new URL(...))', () => {
         const out = runEsm(
-            `audioWorklet.addModule(new URL('@trezor/blockchain-link/src/workers/solana', import.meta.url));`,
+            `audioWorklet.addModule(new URL('@trezor/fixture-pkg/src/workers/solana', import.meta.url));`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
     });
 
     // Pins what the gate still rejects: a specifier shape the throw cannot flag either, because it
     // already points at lib/. Reading a data file next to the module must not gain an extension.
     it('leaves a non-worker new URL(@trezor/*/lib, import.meta.url) untouched', () => {
         const out = runEsm(
-            `const d = readFileSync(new URL('@trezor/blockchain-link/lib/workers/solana', import.meta.url));`,
+            `const d = readFileSync(new URL('@trezor/fixture-pkg/lib/workers/solana', import.meta.url));`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana');
         expect(out).not.toContain('/solana/index.js');
     });
 
@@ -286,9 +286,9 @@ describe('publish import transforms — preserved behaviors', () => {
 
     it('is idempotent: transforming already-transformed output is a no-op', () => {
         const source = [
-            `import { solana } from '@trezor/blockchain-link/src/workers/solana';`,
+            `import { solana } from '@trezor/fixture-pkg/src/workers/solana';`,
             `import './localdir';`,
-            `export const w = () => import('@trezor/blockchain-link/src/workers/blockbook');`,
+            `export const w = () => import('@trezor/fixture-pkg/src/workers/blockbook');`,
             `new Worker(new URL('./localfile', import.meta.url));`,
         ].join('\n');
 
