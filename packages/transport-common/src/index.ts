@@ -71,6 +71,7 @@ export {
 export { SessionsBackground } from './sessions/background';
 export { SessionsClient } from './sessions/client';
 export type {
+    AbandonedResponse,
     HandleMessageParams,
     HandleMessageResponse,
     SessionsBackgroundInterface,

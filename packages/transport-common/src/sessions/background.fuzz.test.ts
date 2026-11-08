@@ -348,6 +348,7 @@ describe('sessions fuzz (concurrency + stealing)', () => {
             }
 
             const sessions = await c0.getSessions();
+            if (!sessions.success) throw new Error(sessions.error.code);
             const current = committedSession(sessions.payload.descriptors);
 
             // c0 was notified it was superseded; c1 was not (it is the new owner).

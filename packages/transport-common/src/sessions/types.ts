@@ -1,5 +1,3 @@
-import type { Ok } from '@trezor/type-utils';
-
 import type * as ERRORS from '../errors';
 import type { AcquireInput } from '../transports/abstract';
 import type {
@@ -11,21 +9,32 @@ import type {
     Session,
 } from '../types';
 
-type BackgroundResponseWithError<T, E extends string> = ResultWithTypedError<T, E> & {
+/**
+ * Every response can be settled as an AbandonedResponse, so UNEXPECTED_ERROR is part of every
+ * error union and no response type can forget to admit it. Consumers have to check `success`
+ * even on requests the background itself always answers successfully.
+ */
+type BackgroundResponseWithError<T, E extends string = never> = ResultWithTypedError<
+    T,
+    E | typeof ERRORS.UNEXPECTED_ERROR
+> & {
     id: number;
 };
-type BackgroundResponse<T> = Ok<T> & { id: number };
+
+/**
+ * How a client settles an in-flight request whose response can no longer be delivered
+ * (see BrowserSessionsBackground), instead of leaving it in a "hanged" state.
+ */
+export type AbandonedResponse = BackgroundResponseWithError<never>;
 
 export type HandshakeRequest = Record<string, never>;
-export type HandshakeResponse = BackgroundResponse<undefined>;
+export type HandshakeResponse = BackgroundResponseWithError<undefined>;
 
 export type EnumerateDoneRequest = {
     descriptors: DescriptorApiLevel[];
 };
 
-export type EnumerateDoneResponse = BackgroundResponse<{
-    descriptors: Descriptor[];
-}>;
+export type EnumerateDoneResponse = BackgroundResponseWithError<{ descriptors: Descriptor[] }>;
 
 export type AcquireIntentRequest = AcquireInput;
 
@@ -64,14 +73,10 @@ export interface ReleaseDoneRequest {
     path: PathInternal;
 }
 
-export type ReleaseDoneResponse = BackgroundResponse<{
-    descriptors: Descriptor[];
-}>;
+export type ReleaseDoneResponse = BackgroundResponseWithError<{ descriptors: Descriptor[] }>;
 
 export type GetSessionsRequest = Record<string, never>;
-export type GetSessionsResponse = BackgroundResponse<{
-    descriptors: Descriptor[];
-}>;
+export type GetSessionsResponse = BackgroundResponseWithError<{ descriptors: Descriptor[] }>;
 export interface GetPathBySessionRequest {
     session: Session;
 }
@@ -99,7 +104,7 @@ export interface HandleMessageApi {
     releaseDone: (payload: ReleaseDoneRequest) => ReleaseDoneResponse;
     getSessions: () => GetSessionsResponse;
     getPathBySession: (payload: GetPathBySessionRequest) => GetPathBySessionResponse;
-    dispose: () => BackgroundResponse<void>;
+    dispose: () => BackgroundResponseWithError<void>;
 }
 
 type UnwrapParams<T, Fn> = Fn extends () => any

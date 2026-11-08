@@ -126,6 +126,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     descriptors,
                 });
 
+                if (!enumerateDoneResponse.success) {
+                    return error({ code: enumerateDoneResponse.error.code });
+                }
+
                 return success(enumerateDoneResponse.payload.descriptors);
             },
             { signal },

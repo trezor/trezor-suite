@@ -162,6 +162,24 @@ describe('Usb', () => {
             });
         });
 
+        // Regression: BrowserSessionsBackground settles in-flight requests with an error when
+        // their response can no longer be delivered. `enumerate()` used to read `payload` of such
+        // an `enumerateDone` response unconditionally and rejected with a TypeError.
+        it('enumerate with an abandoned enumerateDone response -> error', async () => {
+            const { transport } = await initTest();
+            const { sessionsClient } = transport as any;
+            jest.spyOn(sessionsClient, 'enumerateDone').mockResolvedValue({
+                success: false,
+                error: { code: 'unexpected error' },
+                id: 0,
+            });
+
+            await expect(transport.enumerate()).resolves.toEqual({
+                success: false,
+                error: { code: 'unexpected error' },
+            });
+        });
+
         it('acquire. transport is not listening', async () => {
             const { transport } = await initTest();
             jest.useFakeTimers();
