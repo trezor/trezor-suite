@@ -338,13 +338,12 @@ describe('sessions', () => {
 
         consoleError.mockRestore();
     });
-    // TODO: the `dispose` branch leaves `result` unset, so the response is serialized from
-    // `{ ...undefined, id: message.id }` and comes out as just `{ id }` - without the
-    // `success` key the declared response type promises, so a consumer that reads `success`
-    // to pick a branch matches neither.
-    test('dispose response carries no result', async () => {
+
+    // The `dispose` branch used to leave `result` unset, so the response was just `{ id }` -
+    // no `success` key, matching neither branch of the declared response union.
+    test('dispose response reports success', async () => {
         const response = await background.handleMessage({ type: 'dispose', id: 3 });
 
-        expect(response).toEqual({ id: 3 });
+        expect(response).toEqual({ success: true, id: 3 });
     });
 });

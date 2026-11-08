@@ -94,6 +94,9 @@ export class SessionsBackground
                     break;
                 case 'dispose':
                     this.dispose();
+                    // without this the response would be just `{ id }`, which matches neither
+                    // branch of the declared union and traps a consumer checking `success`
+                    result = success(undefined);
                     break;
                 default:
                     throw new Error(ERRORS.UNEXPECTED_ERROR);
