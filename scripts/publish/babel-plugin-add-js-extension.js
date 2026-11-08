@@ -62,13 +62,17 @@ const resolvePackagesRoot = (filename, packageName) => {
         index = filename.lastIndexOf(segment, index - 1);
     }
 
-    // No candidate holds the package: fall back to the innermost lib/, so the src/ stat below
-    // misses and the specifier stays on the file branch, as before.
-    return path.dirname(filename.substring(0, innermost));
+    // No candidate holds <packageName>/src: inside the monorepo that is never a legitimate state —
+    // every @trezor/* specifier addresses a workspace package with a src/ tree — so the lookup is
+    // broken and the file-vs-directory decision below would be a guess rather than a verdict.
+    throw new Error(
+        `add-js-extension: cannot locate @trezor/${packageName} from ${filename}; ` +
+            `the file-vs-directory decision for its subpaths would be a guess`,
+    );
 };
 
 // The node_modules link is authoritative; the lib/ segment walk stays as the fallback for a tree
-// where the imported package is not installed.
+// where the imported package is not installed, and throws when it finds nothing either.
 const resolvePackageSrc = (filename, packageName) =>
     resolveLinkedPackageSrc(filename, packageName) ??
     path.join(resolvePackagesRoot(filename, packageName), packageName, 'src');
