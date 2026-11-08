@@ -235,6 +235,38 @@ describe('sessions', () => {
         await client1.acquireDone({ path: PathPublic('1'), abort: true });
     });
 
+    test('setBackground() with the already set background keeps it subscribed', () => {
+        const listeners = {
+            descriptors: [] as ((d: any) => void)[],
+            releaseRequest: [] as ((d: any) => void)[],
+        };
+        let backgroundDisposeCalls = 0;
+        const mockBackground: SessionsBackgroundInterface = {
+            on: (event, listener) => {
+                listeners[event].push(listener);
+            },
+            off: (event, listener) => {
+                const idx = listeners[event].indexOf(listener);
+                if (idx >= 0) listeners[event].splice(idx, 1);
+            },
+            handleMessage: () =>
+                Promise.resolve({ success: true, payload: undefined, id: 0 } as any),
+            dispose: () => {
+                backgroundDisposeCalls++;
+            },
+        };
+
+        const client = new SessionsClient(mockBackground);
+        // AbstractApiTransport.init() sets the background it already holds
+        client.setBackground(mockBackground);
+
+        // BrowserSessionsBackground.dispose() closes its SharedWorker port, so disposing the
+        // instance that is being set again would break every request made after it
+        expect(backgroundDisposeCalls).toBe(0);
+        expect(listeners.descriptors.length).toBe(1);
+        expect(listeners.releaseRequest.length).toBe(1);
+    });
+
     // Previously this test pinned the leak (see #27981): `SessionsClient.dispose()` did
     // not call `background.off()` for its constructor-registered handlers, so a shared
     // `SessionsBackground` accumulated handler refs across client lifecycles. The fix in

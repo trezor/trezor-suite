@@ -38,6 +38,11 @@ export class SessionsClient extends TypedEmitter<{
     }
 
     public setBackground(background: SessionsBackgroundInterface) {
+        if (background === this.background) {
+            // already subscribed, there is nothing to tear down. Disposing and re-subscribing the
+            // same instance would release resources (a SharedWorker port) that stay in use.
+            return;
+        }
         this.background.dispose();
 
         this.id = 0;
