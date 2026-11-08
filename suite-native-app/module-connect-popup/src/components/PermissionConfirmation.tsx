@@ -78,7 +78,8 @@ export const PermissionConfirmation = () => {
                         size="large"
                     />
                     <VStack flex={1} spacing="sp4">
-                        <Text>{popupCall.source.manifest?.appName ?? popupCall.source.origin}</Text>
+                        {/* `??` would show an empty name, not the origin. */}
+                        <Text>{popupCall.source.manifest?.appName || popupCall.source.origin}</Text>
                         {popupCall.source.manifest?.appName && (
                             <Text color="contentSecondary">{popupCall.source.origin}</Text>
                         )}
