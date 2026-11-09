@@ -19,15 +19,9 @@ The Connect popup now displays a deprecation notice naming the application that 
 
 Fixed the `Invalid definition` error on Trezor Model One with firmware 1.14.2 and newer, which accepts only the new format of Ethereum network and token definitions.
 
-Security fixes:
+Removed the internal Evolu methods, which were not intended for public use.
 
-- The popup displays the real origin of the requesting application again when Connect runs in the iframe, which also restores the warning about suspicious origins.
-- `trezor-connect.js` hosted on connect.trezor.io accepts popup messages only from the expected origin.
-- Removed the internal `evoluGetNode`, `evoluGetDelegatedIdentityKey` and `evoluSignRegistrationRequest` methods.
-- PIN, recovery words, THP passphrase and other secrets are no longer written to the Connect debug log.
-- Transport rejects messages that declare an implausibly large length.
-
-These fixes are deployed to connect.trezor.io only. Applications bundling Connect 9 from npm should migrate to Trezor Connect 10.
+This release also includes stability and security improvements.
 
 # 9.7.3
 
