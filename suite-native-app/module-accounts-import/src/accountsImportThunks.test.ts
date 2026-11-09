@@ -20,7 +20,10 @@ jest.mock('@trezor/connect', () => ({
     __esModule: true,
     ...jest.requireActual('@trezor/connect'),
     default: {
-        getAccountInfo: jest.fn().mockResolvedValue({ success: true, payload: {} }),
+        // The backend echoes the descriptor it was asked for.
+        getAccountInfo: jest.fn(({ descriptor }: { descriptor: string }) =>
+            Promise.resolve({ success: true, payload: { descriptor } }),
+        ),
     },
 }));
 
@@ -105,7 +108,7 @@ describe('importAccountThunk', () => {
 });
 
 describe('getAccountInfoThunk', () => {
-    it('keeps the firmware checksum the xpub sheet copies, so the descriptor fails it', async () => {
+    const requestAccountInfo = async (xpubAddress: string) => {
         const symbol = asNetworkSymbol('btc');
         const getState = () => buildState(symbol);
         const extra = createMockDeps<ImportAccountThunkDeps>({
@@ -116,16 +119,65 @@ describe('getAccountInfoThunk', () => {
         await getAccountInfoThunk({
             symbol,
             baseCurrencyCode: 'usd' as BaseCurrencyCode,
-            xpubAddress: 'tr([71d98c03/86h/0h/0h]xpub6CXYp/<0;1>/*)#qmnlgwmu',
+            xpubAddress,
         })(dispatch, getState, extra);
+    };
 
-        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledWith(
+    it('asks for the canonical descriptor without the firmware checksum the xpub sheet copies', async () => {
+        await requestAccountInfo('tr([71d98c03/86h/0h/0h]xpub6CXYp/<0;1>/*)#qmnlgwmu');
+
+        expect(TrezorConnect.getAccountInfo).toHaveBeenLastCalledWith(
             expect.objectContaining({
-                // Documents the bug: the body is rewritten to the canonical apostrophe form while
-                // the `#<checksum>` computed over the `h` form is kept, so the descriptor handed to
-                // `getAccountInfo` fails its own checksum.
-                descriptor: "tr([71d98c03/86'/0'/0']xpub6CXYp/<0;1>/*)#qmnlgwmu",
+                descriptor: "tr([71d98c03/86'/0'/0']xpub6CXYp/<0;1>/*)",
             }),
         );
+    });
+
+    it('leaves a value without a checksum unchanged', async () => {
+        await requestAccountInfo('zpub6rFR7y4Q2AijBE');
+
+        expect(TrezorConnect.getAccountInfo).toHaveBeenLastCalledWith(
+            expect.objectContaining({ descriptor: 'zpub6rFR7y4Q2AijBE' }),
+        );
+    });
+});
+
+describe('importing an already imported account', () => {
+    const descriptor = "tr([71d98c03/86'/0'/0']xpub6CXYp/<0;1>/*)";
+    const firmwareDescriptor = 'tr([71d98c03/86h/0h/0h]xpub6CXYp/<0;1>/*)';
+
+    it.each([
+        { stored: descriptor, scanned: `${firmwareDescriptor}#qmnlgwmu` },
+        { stored: `${descriptor}#qmnlgwmu`, scanned: firmwareDescriptor },
+    ])('recognises $stored when $scanned is imported', async ({ stored, scanned }) => {
+        const symbol = asNetworkSymbol('btc');
+        const existingAccount = mockWalletAccount({
+            symbol,
+            descriptor: asAccountDescriptor(stored),
+            deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
+            imported: true,
+        });
+        const state = buildState(symbol, [existingAccount]);
+        const getState = () => state;
+        const extra = createMockDeps<ImportAccountThunkDeps>({
+            services: { getTokenDefinitionsEnabledNetworks: asGetter(() => []) },
+        });
+        const { actions, dispatch } = createMockDispatch({ getState, extra });
+
+        const { payload } = await getAccountInfoThunk({
+            symbol,
+            baseCurrencyCode: 'usd' as BaseCurrencyCode,
+            xpubAddress: scanned,
+        })(dispatch, getState, extra);
+        await importAccountThunk({
+            accountInfo: { ...accountInfo, ...(payload as Pick<AccountInfo, 'descriptor'>) },
+            accountLabel: 'Imported',
+            symbol,
+        })(dispatch, getState, extra);
+
+        expect(actions.find(accountsActions.updateAccount.match)?.payload.account.key).toBe(
+            existingAccount.key,
+        );
+        expect(actions.find(accountsActions.createAccount.match)).toBeUndefined();
     });
 });

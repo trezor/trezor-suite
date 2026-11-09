@@ -36,6 +36,7 @@ import { convertTaprootXpub } from '@trezor/utils';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
 import { paymentTypeToAccountType } from './constants';
+import { isSameImportedDescriptor, withoutDescriptorChecksum } from './descriptorChecksum';
 
 const ACCOUNTS_IMPORT_MODULE_PREFIX = '@suite-native/accountsImport';
 
@@ -85,8 +86,8 @@ export const importAccountThunk = createThunk<
             deviceState,
             symbol,
         );
-        const existingAccount = deviceNetworkAccounts.find(
-            account => account.descriptor === accountInfo.descriptor,
+        const existingAccount = deviceNetworkAccounts.find(account =>
+            isSameImportedDescriptor(account.descriptor, accountInfo.descriptor),
         );
 
         if (existingAccount) {
@@ -133,9 +134,11 @@ export const getAccountInfoThunk = createThunk<
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
     async ({ symbol, baseCurrencyCode, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
+        const bareXpubAddress = withoutDescriptorChecksum(xpubAddress);
+
         // Connect requires apostrophe in Taproot descriptors thus a conversion is necessary.
         const taprootXpubWithApostrophes = convertTaprootXpub({
-            xpub: xpubAddress,
+            xpub: bareXpubAddress,
             direction: 'h-to-apostrophe',
         });
 
@@ -148,7 +151,7 @@ export const getAccountInfoThunk = createThunk<
                               deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
                           })
                         : undefined,
-                    descriptor: taprootXpubWithApostrophes ?? xpubAddress,
+                    descriptor: taprootXpubWithApostrophes ?? bareXpubAddress,
                     details: 'txs',
                     suppressBackupWarning: true,
                     protocols: getNetworkType(symbol) === 'ethereum' ? ['erc4626'] : undefined,
