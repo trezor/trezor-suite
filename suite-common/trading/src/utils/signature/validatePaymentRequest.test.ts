@@ -38,7 +38,7 @@ const fixtureSendSlip44 = 2;
 const fixtureOutputs: Slip24Output[] = [{ address: '1A2B3C', amount: '1000' }];
 const fixtureSentAsset = { network: 'btc', isToken: false };
 
-describe(validatePaymentRequestSignature.name, () => {
+describe('validatePaymentRequestSignature', () => {
     let consoleErrorSpy: jest.SpyInstance;
 
     beforeEach(() => {

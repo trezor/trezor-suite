@@ -2,7 +2,7 @@ import type { BtcSwapComposeTemplate } from 'invity-api';
 
 import { parseBtcSwapComposeTemplate } from './btcSwapComposeTemplateSchema';
 
-describe(parseBtcSwapComposeTemplate.name, () => {
+describe('parseBtcSwapComposeTemplate', () => {
     beforeEach(() => {
         jest.spyOn(console, 'error').mockImplementation(() => {});
     });

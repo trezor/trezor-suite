@@ -9,7 +9,7 @@ type TestQuote = {
     rate?: number;
 };
 
-describe(bestQuotePerPaymentMethodProjection.name, () => {
+describe('bestQuotePerPaymentMethodProjection', () => {
     it('returns first valid quote for each payment method and sorts by rate', () => {
         const quotes: TestQuote[] = [
             {
