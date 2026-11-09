@@ -1,0 +1,106 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        { "path": "../../suite-common/assets" },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/feedback" },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-quota-manager"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
+        },
+        { "path": "../../suite-common/tokens" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../../suite-native/accounts" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/assets" },
+        { "path": "../../suite-native/atoms" },
+        { "path": "../../suite-native/banners" },
+        {
+            "path": "../../suite-native/blockchain"
+        },
+        {
+            "path": "../../suite-native/bluetooth"
+        },
+        {
+            "path": "../../suite-native/confirm-on-trezor"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-manager"
+        },
+        {
+            "path": "../../suite-native/discovery"
+        },
+        {
+            "path": "../../suite-native/experimental-features"
+        },
+        {
+            "path": "../../suite-native/feature-feedback"
+        },
+        {
+            "path": "../../suite-native/feedback-form"
+        },
+        { "path": "../../suite-native/firmware" },
+        {
+            "path": "../../suite-native/formatters"
+        },
+        { "path": "../../suite-native/graph" },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        {
+            "path": "../../suite-native/performance-metrics"
+        },
+        { "path": "../../suite-native/settings" },
+        {
+            "path": "../../suite-native/suite-sync"
+        },
+        { "path": "../../suite-native/toasts" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        { "path": "../../packages/requirements" }
+    ],
+    "include": [".", "**/*.json"]
+}

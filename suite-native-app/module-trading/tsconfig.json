@@ -1,0 +1,193 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/geolocation"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        { "path": "../../suite-common/mev" },
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
+        { "path": "../../suite-common/tokens" },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-constants"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        {
+            "path": "../module-stellar-token-management"
+        },
+        { "path": "../../suite-native/accounts" },
+        {
+            "path": "../../suite-native/add-coin-account"
+        },
+        { "path": "../../suite-native/address" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/confirm-on-trezor"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-authorization"
+        },
+        {
+            "path": "../../suite-native/device-manager"
+        },
+        {
+            "path": "../../suite-native/device-mutex"
+        },
+        {
+            "path": "../../suite-native/discovery"
+        },
+        {
+            "path": "../../suite-native/feature-flags"
+        },
+        {
+            "path": "../../suite-native/formatters"
+        },
+        { "path": "../../suite-native/forms" },
+        { "path": "../../suite-native/helpers" },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/keyboard" },
+        { "path": "../../suite-native/labeling" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/localized-amount-input"
+        },
+        {
+            "path": "../../suite-native/message-system"
+        },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        { "path": "../../suite-native/regions" },
+        { "path": "../../suite-native/settings" },
+        { "path": "../../suite-native/tokens" },
+        {
+            "path": "../../suite-native/trading-analytics"
+        },
+        {
+            "path": "../../suite-native/trading-atoms"
+        },
+        {
+            "path": "../../suite-native/trading-browser-auth"
+        },
+        {
+            "path": "../../suite-native/trading-consts"
+        },
+        {
+            "path": "../../suite-native/trading-debug"
+        },
+        {
+            "path": "../../suite-native/trading-history"
+        },
+        {
+            "path": "../../suite-native/trading-provider-utils"
+        },
+        {
+            "path": "../../suite-native/trading-quote-utils"
+        },
+        {
+            "path": "../../suite-native/trading-residence"
+        },
+        {
+            "path": "../../suite-native/trading-slippage"
+        },
+        {
+            "path": "../../suite-native/trading-state"
+        },
+        {
+            "path": "../../suite-native/trading-types"
+        },
+        {
+            "path": "../../suite-native/transaction-management"
+        },
+        {
+            "path": "../../suite-native/transaction-review"
+        },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        { "path": "../../packages/react-utils" },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
+            "path": "../../suite-common/tx-simulation"
+        },
+        {
+            "path": "../../suite-native/bluetooth"
+        },
+        {
+            "path": "../../suite-native/test-utils"
+        },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        {
+            "path": "../../suite-native/trading-fixtures"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        { "path": "../../packages/requirements" }
+    ]
+}

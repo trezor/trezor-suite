@@ -38,7 +38,35 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../app-init" },
+        { "path": "../module-account-detail" },
+        { "path": "../module-accounts" },
+        { "path": "../module-accounts-import" },
+        { "path": "../module-activity-center" },
+        { "path": "../module-add-accounts" },
+        { "path": "../module-assets" },
+        {
+            "path": "../module-authenticity-checks"
+        },
+        { "path": "../module-authorize-device" },
+        { "path": "../module-connect-popup" },
+        {
+            "path": "../module-demo-account-questionnaire"
+        },
+        { "path": "../module-dev-utils" },
+        { "path": "../module-device-onboarding" },
+        { "path": "../module-device-settings" },
+        { "path": "../module-home" },
         { "path": "../module-onboarding" },
+        { "path": "../module-passphrase" },
+        { "path": "../module-receive" },
+        { "path": "../module-send" },
+        { "path": "../module-settings" },
+        { "path": "../module-sign-verify" },
+        {
+            "path": "../module-stellar-token-management"
+        },
+        { "path": "../module-trading" },
+        { "path": "../module-transactions" },
         { "path": "../state" },
         { "path": "../../suite-native/alerts" },
         {
@@ -80,73 +108,7 @@
             "path": "../../suite-native/message-system"
         },
         {
-            "path": "../../suite-native/module-account-detail"
-        },
-        {
-            "path": "../../suite-native/module-accounts"
-        },
-        {
-            "path": "../../suite-native/module-accounts-import"
-        },
-        {
-            "path": "../../suite-native/module-activity-center"
-        },
-        {
-            "path": "../../suite-native/module-add-accounts"
-        },
-        {
-            "path": "../../suite-native/module-assets"
-        },
-        {
-            "path": "../../suite-native/module-authenticity-checks"
-        },
-        {
-            "path": "../../suite-native/module-authorize-device"
-        },
-        {
-            "path": "../../suite-native/module-connect-popup"
-        },
-        {
-            "path": "../../suite-native/module-demo-account-questionnaire"
-        },
-        {
-            "path": "../../suite-native/module-dev-utils"
-        },
-        {
-            "path": "../../suite-native/module-device-onboarding"
-        },
-        {
-            "path": "../../suite-native/module-device-settings"
-        },
-        {
             "path": "../../suite-native/module-earn"
-        },
-        {
-            "path": "../../suite-native/module-home"
-        },
-        {
-            "path": "../../suite-native/module-passphrase"
-        },
-        {
-            "path": "../../suite-native/module-receive"
-        },
-        {
-            "path": "../../suite-native/module-send"
-        },
-        {
-            "path": "../../suite-native/module-settings"
-        },
-        {
-            "path": "../../suite-native/module-sign-verify"
-        },
-        {
-            "path": "../../suite-native/module-stellar-token-management"
-        },
-        {
-            "path": "../../suite-native/module-trading"
-        },
-        {
-            "path": "../../suite-native/module-transactions"
         },
         {
             "path": "../../suite-native/navigation"

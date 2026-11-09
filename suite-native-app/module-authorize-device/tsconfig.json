@@ -1,0 +1,62 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        {
+            "path": "../../suite-common/bluetooth"
+        },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/thp" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../module-connect-popup" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/bluetooth"
+        },
+        {
+            "path": "../../suite-native/coin-enabling"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-authorization"
+        },
+        {
+            "path": "../../suite-native/discovery"
+        },
+        { "path": "../../suite-native/firmware" },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        {
+            "path": "../../suite-native/passphrase"
+        },
+        { "path": "../../suite-native/theme" },
+        { "path": "../../suite-native/thp" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
+    ],
+    "include": [".", "**/*.json"]
+}

@@ -111,8 +111,8 @@
 /suite-native/analytics/src/events @jvaclavik @kolomaznikt
 /suite-native/analytics/src/constants.ts @jvaclavik @kolomaznikt
 /suite-native/analytics/src/types.ts @jvaclavik @kolomaznikt
-/suite-native/module-authorize-device @juriczech
-/suite-native/module-passphrase @juriczech
+/suite-native-app/module-authorize-device @juriczech
+/suite-native-app/module-passphrase @juriczech
 /suite-native/passphrase @juriczech
 
 # Suite Common Packages
@@ -128,6 +128,6 @@
 /suite-common/assets @trezor/suite-wallet
 /suite-common/price-chart @trezor/suite-wallet
 /suite/price-chart @trezor/suite-wallet
-/suite-native/module-assets @trezor/suite-wallet
-/suite-native/module-send @trezor/suite-wallet
+/suite-native-app/module-assets @trezor/suite-wallet
+/suite-native-app/module-send @trezor/suite-wallet
 /suite-native/price-chart @trezor/suite-wallet

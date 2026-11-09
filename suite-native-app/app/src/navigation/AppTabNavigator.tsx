@@ -4,14 +4,14 @@ import { type BottomTabBarProps, createBottomTabNavigator } from '@react-navigat
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { AccountsStackNavigator } from '@suite-native/module-accounts';
 import { EarnStackNavigator } from '@suite-native/module-earn';
-import { HomeStackNavigator } from '@suite-native/module-home';
-import { SettingsScreen } from '@suite-native/module-settings';
-import { TradingScreen } from '@suite-native/module-trading';
 import { type AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import { DEFAULT_TRADING_TYPE } from '@suite-native/trading-consts';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
+import { AccountsStackNavigator } from '@suite-native-app/module-accounts';
+import { HomeStackNavigator } from '@suite-native-app/module-home';
+import { SettingsScreen } from '@suite-native-app/module-settings';
+import { TradingScreen } from '@suite-native-app/module-trading';
 import { useServices } from '@trezor/dependency-injection';
 
 import { rootTabsOptions, rootTabsOptionsWithoutEarn } from './routes';

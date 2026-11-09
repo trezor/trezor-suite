@@ -1,0 +1,109 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        {
+            "path": "../../suite-common/analytics-redux"
+        },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/device-authenticity"
+        },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
+        { "path": "../../suite-common/logger" },
+        { "path": "../../suite-common/mev" },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        { "path": "../../suite-common/support" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../module-connect-popup" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        { "path": "../../suite-native/banners" },
+        {
+            "path": "../../suite-native/biometrics"
+        },
+        {
+            "path": "../../suite-native/coin-enabling"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-manager"
+        },
+        {
+            "path": "../../suite-native/experimental-features"
+        },
+        {
+            "path": "../../suite-native/feature-feedback"
+        },
+        { "path": "../../suite-native/forms" },
+        { "path": "../../suite-native/helpers" },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        { "path": "../../suite-native/search" },
+        { "path": "../../suite-native/settings" },
+        { "path": "../../suite-native/storage" },
+        {
+            "path": "../../suite-native/suite-sync"
+        },
+        { "path": "../../suite-native/theme" },
+        { "path": "../../suite-native/toasts" },
+        {
+            "path": "../../suite-native/trading-residence"
+        },
+        {
+            "path": "../../suite-native/trading-state"
+        },
+        { "path": "../../suite-native/wallet" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        { "path": "../../packages/requirements" }
+    ],
+    "include": [".", "**/*.json"]
+}

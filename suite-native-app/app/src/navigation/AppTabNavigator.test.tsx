@@ -13,13 +13,13 @@ import {
 
 import { AppTabNavigator } from './AppTabNavigator';
 
-jest.mock('@suite-native/module-home', () => ({ HomeStackNavigator: () => null }));
-jest.mock('@suite-native/module-accounts', () => ({
+jest.mock('@suite-native-app/module-home', () => ({ HomeStackNavigator: () => null }));
+jest.mock('@suite-native-app/module-accounts', () => ({
     AccountsStackNavigator: () => null,
 }));
 jest.mock('@suite-native/module-earn', () => ({ EarnStackNavigator: () => null }));
-jest.mock('@suite-native/module-settings', () => ({ SettingsScreen: () => null }));
-jest.mock('@suite-native/module-trading', () => {
+jest.mock('@suite-native-app/module-settings', () => ({ SettingsScreen: () => null }));
+jest.mock('@suite-native-app/module-trading', () => {
     const { View } = require('react-native');
 
     return {
