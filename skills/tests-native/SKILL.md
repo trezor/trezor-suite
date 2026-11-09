@@ -1,6 +1,6 @@
 ---
 name: tests-native
-description: Use when writing component or hook tests in suite-native and need to choose between renderWithBasicProvider, renderWithStoreProvider, or store helpers like createStoreFromPreloadedState, createLightStore, or mergePreloadedState.
+description: 'Use when writing or reviewing suite-native component or hook tests. Covers test providers, Redux store setup and choosing native test utilities.'
 ---
 
 # Native Test Utilities

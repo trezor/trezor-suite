@@ -1,6 +1,6 @@
 ---
 name: common-tasks
-description: Dependency management, package creation, and troubleshooting commands for the Trezor Suite monorepo. Use when managing dependencies or debugging build issues.
+description: 'Use for Trezor Suite dependency changes, package scaffolding, submodule updates or build-environment repairs after diagnosis. Covers Yarn commands and related Nix pins.'
 ---
 
 # Common Tasks

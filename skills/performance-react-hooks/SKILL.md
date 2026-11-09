@@ -1,6 +1,6 @@
 ---
 name: performance-react-hooks
-description: React render performance for Trezor Suite — memoization under React Compiler, referentially stable hook dependencies, minimal dependency arrays, and telling a wasted memo from a render loop. Use when adding useMemo, useCallback or memo, when writing a dependency array, or when a component re-renders or refetches more than it should.
+description: 'Use when adding, removing or reviewing React memoization or hook dependencies, or diagnosing repeated renders or refetches in Trezor Suite. Covers React Compiler constraints and reference stability.'
 ---
 
 # React Hooks Performance

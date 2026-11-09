@@ -1,6 +1,6 @@
 ---
 name: idb-migrations
-description: How to create and implement IndexedDB storage migrations in the Trezor Suite web app. Use when writing migrations that transform persisted data between Suite versions.
+description: 'Use when creating, changing or reviewing IndexedDB schema or data migrations between Trezor Suite versions.'
 ---
 
 # IDB Storage Migrations

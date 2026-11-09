@@ -1,6 +1,6 @@
 ---
 name: security-headers
-description: Generated code must be aligned with security headers (e.g. no unsave JS eval). The permissions policy is especially relevant when changing any code related with the `navigator` object.
+description: 'Use when changing or reviewing Trezor Suite web security headers or browser API permissions, or diagnosing CSP or Permissions-Policy blocking. Covers production-header preview.'
 ---
 
 # Security headers

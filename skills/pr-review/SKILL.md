@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: Review pull requests using the GitHub CLI with agent and model attribution on every comment; never approve or merge.
+description: 'Use when asked to review a Trezor Suite pull request. Covers GitHub CLI review comments and attribution; never approve or merge.'
 ---
 
 Use the GitHub CLI (`gh`) for all GitHub interactions during PR reviews.
