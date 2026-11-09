@@ -17,8 +17,9 @@ import { exhaustive } from '@trezor/type-utils';
 import { DiscoveryNotFinished } from './components/DiscoveryNotFinished';
 import { EmptyPortfolioCrossroads } from './components/EmptyPortfolioCrossroads';
 import { EmptyPortfolioTrackerState } from './components/EmptyPortfolioTrackerState';
-import { NoNetworksConfigured } from './components/NoNetworksConfigured';
+import { NoNetworksConfigured as LegacyNoNetworksConfigured } from './components/NoNetworksConfigured';
 import { PortfolioAssetsContent } from './components/PortfolioAssets/PortfolioAssetsContent';
+import { PortfolioAssetsNoNetworksConfigured } from './components/PortfolioAssets/PortfolioAssetsNoNetworksConfigured';
 import { PortfolioContent as LegacyPortfolioContent } from './components/PortfolioContent';
 import { type PortfolioGraphRef } from './components/PortfolioGraph';
 import { UninitializedConnectedDeviceState } from './components/UninitializedConnectedDeviceState';
@@ -46,7 +47,11 @@ const HomeScreenContent = ({
         case 'uninitializedDevice':
             return <UninitializedConnectedDeviceState />;
         case 'noNetworkConfigured':
-            return <NoNetworksConfigured />;
+            return isAssetsFirstHomeScreenEnabled ? (
+                <PortfolioAssetsNoNetworksConfigured />
+            ) : (
+                <LegacyNoNetworksConfigured />
+            );
         case 'discoveryNotFinished':
             return <DiscoveryNotFinished />;
         case 'portfolioContent':
@@ -92,7 +97,9 @@ export const HomeScreen = () => {
 
     useShowAutoEjectAlert();
 
-    const doesHomeContentHandleHorizontalPadding = homeScreenState === 'portfolioContent';
+    const doesHomeContentHandleHorizontalPadding =
+        homeScreenState === 'portfolioContent' ||
+        (homeScreenState === 'noNetworkConfigured' && isAssetsFirstHomeScreenEnabled);
 
     return (
         <ScreenPerformanceRoot screen="home" isReady={isScreenReady}>
