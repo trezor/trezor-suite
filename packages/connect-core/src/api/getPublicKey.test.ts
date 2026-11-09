@@ -1,11 +1,13 @@
-import type { CoinSymbol } from '@trezor/connect-common';
+import type { GetPublicKey as GetPublicKeyParams } from '@trezor/connect-common/src/types/api/account/getPublicKey';
 
 import GetPublicKey from './getPublicKey';
 
-const createMethod = (params: { path: string; coin?: CoinSymbol }, v9Compat?: boolean) =>
+const createMethod = (params: GetPublicKeyParams, v9Compat?: boolean) =>
     new GetPublicKey({
         payload: { method: 'getPublicKey', ...params, _v9_compat: v9Compat },
     });
+
+const getPermissions = (params: GetPublicKeyParams) => createMethod(params).requiredPermissions;
 
 describe('GetPublicKey permissions', () => {
     it('requires a coin permission for a bitcoin path', () => {
@@ -49,6 +51,36 @@ describe('GetPublicKey permissions', () => {
         expect(method.requiredPermissions).toEqual([
             { permission: 'read_xpub', coin: 'btc' },
             { permission: 'read_xpub' },
+        ]);
+    });
+});
+
+describe('GetPublicKey requiredPermissions', () => {
+    it('requires read_xpub for the coin of the path', () => {
+        expect(getPermissions({ coin: 'test', path: "m/84'/1'/0'" })).toEqual([
+            { permission: 'read_xpub', coin: 'test' },
+        ]);
+    });
+
+    // A crossChain path derives a key of another network, yet the permission names `coin`.
+    it('requires read_xpub for `coin` instead of the network of a crossChain path', () => {
+        expect(getPermissions({ coin: 'btc', path: "m/84'/2'/0'", crossChain: true })).toEqual([
+            { permission: 'read_xpub', coin: 'btc' },
+        ]);
+    });
+
+    it('requires read_xpub for `coin` instead of the other-family network of a crossChain path', () => {
+        expect(getPermissions({ coin: 'btc', path: "m/44'/60'/0'", crossChain: true })).toEqual([
+            { permission: 'read_xpub', coin: 'btc' },
+        ]);
+        expect(getPermissions({ coin: 'btc', path: "m/1852'/1815'/0'", crossChain: true })).toEqual(
+            [{ permission: 'read_xpub', coin: 'btc' }],
+        );
+    });
+
+    it('requires read_xpub for `coin` for a path of a coin type no network knows', () => {
+        expect(getPermissions({ coin: 'btc', path: "m/44'/9999'/0'", crossChain: true })).toEqual([
+            { permission: 'read_xpub', coin: 'btc' },
         ]);
     });
 });
