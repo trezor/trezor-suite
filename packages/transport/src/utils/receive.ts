@@ -1,15 +1,10 @@
 import { decodeMessage } from '@trezor/protobuf';
 import { TransportProtocol } from '@trezor/protocol';
-import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 
 import { success } from './result';
 import { AbstractApi } from '../api/abstract';
 
 type Receiver = () => ReturnType<AbstractApi['read']>;
-
-// The length comes from the wire header, so a rogue device or bridge could otherwise make us
-// allocate up to 4 GiB. Device responses are far smaller than this limit.
-const MESSAGE_MAX_SIZE = 16 * 1024 * 1024;
 
 export async function receive<T extends Receiver>(receiver: T, protocol: TransportProtocol) {
     const readResult = await receiver();
@@ -18,9 +13,6 @@ export async function receive<T extends Receiver>(receiver: T, protocol: Transpo
     }
     const data = readResult.payload;
     const { length, messageType, payload, header } = protocol.decode(data);
-    if (length > MESSAGE_MAX_SIZE) {
-        throw new Error(PROTOCOL_MALFORMED);
-    }
     const result = Buffer.alloc(length);
     const [, chunkHeader] = protocol.getHeaders(Buffer.from(data));
 
