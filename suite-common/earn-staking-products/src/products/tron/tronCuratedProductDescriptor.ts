@@ -8,15 +8,6 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 import { TRON_CURATED_PRODUCT_LIMITS } from './tronCuratedProductLimits';
 import { curatedProvider } from '../../providers/curated';
 
-export const TRON_CURATED_MESSAGE_SYSTEM_FEATURES: StakingProductDescriptor['messageSystemFeatures'] =
-    {
-        stake: 'trx.staking.stake',
-        unstake: 'trx.staking.unstake',
-        withdraw: 'trx.staking.withdraw',
-        claim: 'trx.staking.claim',
-        vote: 'trx.staking.vote',
-    };
-
 export type CreateTronCuratedProductDescriptorParams = {
     networkSymbol: NetworkSymbol;
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];

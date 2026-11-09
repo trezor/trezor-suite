@@ -10,7 +10,9 @@ import {
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { TRON_CURATED_PRODUCT_LIMITS, TRON_STAKE_RESERVE } from './tronCuratedProductLimits';
+import { TRON_RESOURCES, TRON_STAKE_RESERVE } from './constants';
+import { TRON_CURATED_PRODUCT_LIMITS } from './tronCuratedProductLimits';
+import { isTronResource } from './utils';
 import {
     NO_STAKING_AMOUNT_BOUNDS,
     SMALLEST_STAKING_AMOUNT,
@@ -18,13 +20,6 @@ import {
     sumStakingAmounts,
     toStakingAmount,
 } from '../../utils/stakingAmounts';
-
-const TRON_RESOURCES = ['energy', 'bandwidth'] as const;
-
-type TronResource = (typeof TRON_RESOURCES)[number];
-
-const isTronResource = (value: StakingOptionValue): value is TronResource =>
-    TRON_RESOURCES.some(resource => resource === value);
 
 type GetUnstakeableAmountParams = {
     position: StakingPosition | null;
@@ -36,7 +31,9 @@ const getUnstakeableAmount = ({
     position,
     resource,
 }: GetUnstakeableAmountParams): StakingAmount => {
-    if (position?.details?.kind !== 'tron-staking') return ZERO_STAKING_AMOUNT;
+    if (position?.details?.kind !== 'tron-staking') {
+        return ZERO_STAKING_AMOUNT;
+    }
 
     const { frozen } = position.details;
 
@@ -44,7 +41,11 @@ const getUnstakeableAmount = ({
         return sumStakingAmounts(TRON_RESOURCES.map(tronResource => frozen[tronResource]));
     }
 
-    return isTronResource(resource) ? frozen[resource] : ZERO_STAKING_AMOUNT;
+    if (isTronResource(resource)) {
+        return frozen[resource];
+    }
+
+    return ZERO_STAKING_AMOUNT;
 };
 
 // The legacy freeze form's Max; the fee is checked when the transaction is composed.

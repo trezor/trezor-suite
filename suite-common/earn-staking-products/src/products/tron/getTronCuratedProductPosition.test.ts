@@ -16,11 +16,9 @@ import {
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { getTronCuratedProductPosition } from './getTronCuratedProductPosition';
-import {
-    TRON_CURATED_MESSAGE_SYSTEM_FEATURES,
-    createTronCuratedProductDescriptor,
-} from './tronCuratedProductDescriptor';
-import { getTronRepresentatives } from './tronRepresentatives';
+import { createTronCuratedProductDescriptor } from './tronCuratedProductDescriptor';
+import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './tronCuratedProductMessageSystemFeatures';
+import { getTronRepresentatives } from './utils';
 import { luganodesProvider } from '../../providers/luganodes';
 import { p2pProvider } from '../../providers/p2p';
 

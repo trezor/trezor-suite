@@ -11,7 +11,7 @@ import {
     type TronCuratedProductInfoDeps,
     fetchTronCuratedProductInfo,
 } from './tronCuratedProductInfo';
-import { getTronRepresentatives } from './tronRepresentatives';
+import { getTronRepresentatives } from './utils';
 import { luganodesProvider } from '../../providers/luganodes';
 import { p2pProvider } from '../../providers/p2p';
 

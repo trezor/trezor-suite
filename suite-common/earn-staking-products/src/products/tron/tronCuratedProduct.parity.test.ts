@@ -19,7 +19,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
 import { type TronCuratedProductDeps, createTronCuratedProduct } from './createTronCuratedProduct';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './tronCuratedProductDescriptor';
+import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './tronCuratedProductMessageSystemFeatures';
 import { luganodesProvider } from '../../providers/luganodes';
 import { p2pProvider } from '../../providers/p2p';
 
