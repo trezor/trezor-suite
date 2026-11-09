@@ -12,7 +12,6 @@ type WalletParams = {
     symbol?: NetworkSymbol;
     type?: 'normal' | 'legacy' | 'segwit' | 'ledger';
     atIndex?: number;
-    subAccount?: 'tokens' | 'staking';
 };
 
 type GetTokenBalanceParams = {
@@ -21,7 +20,7 @@ type GetTokenBalanceParams = {
     tokenName: string;
 };
 
-type TokenWalletParams = Omit<WalletParams, 'subAccount'> & { tokenName: string };
+type TokenWalletParams = WalletParams & { tokenName: string };
 
 type SelectSendTokenParams = {
     networkSymbol: NetworkSymbol;
@@ -46,12 +45,11 @@ export class WalletPage {
         this.tokenRow(tokenName).getByTestId('@trading/tokens/swap-button');
     readonly balanceOfAccount = (params: WalletParams) =>
         this.accountButton(params).getByTestId(`@wallet/coin-balance/value-${params.symbol}`);
-    readonly balanceOfAccountWithSymbol = (params: WalletParams) =>
-        this.accountButton(params).getByTestId(
-            `@wallet/coin-balance/value-${params.symbol}-with-symbol`,
-        );
-    readonly stakingRewardsReducedLabel = (params: WalletParams) =>
-        this.accountButton(params).getByTestId('@account-menu/staking/rewards-reduced');
+    readonly accountError = (params: WalletParams) =>
+        this.accountButton(params).getByTestId('@account-menu/account/error');
+    readonly stakingBadge = (params: WalletParams) =>
+        this.accountButton(params).getByTestId('@account-menu/staking/badge');
+    readonly tokensTabButton: Locator;
     readonly accountDetailsTabButton: Locator;
     readonly accountDetails: Locator;
     readonly showPublicKeyButton: Locator;
@@ -191,6 +189,7 @@ export class WalletPage {
         this.emptyAccount = this.page.getByTestId('@accounts/empty-account');
         this.buyButton = this.page.getByTestId('@accounts/empty-account/buy');
         this.swapButton = this.page.getByTestId('@trading/menu/wallet-trading-exchange');
+        this.tokensTabButton = this.page.getByTestId('@wallet/menu/wallet-tokens');
         this.overviewTabButton = this.page.getByTestId('@wallet/menu/wallet-overview');
         this.deviceConnectedStatus = this.page
             .getByTestId('@menu/switch-device')
@@ -217,11 +216,8 @@ export class WalletPage {
         symbol = asNetworkSymbol('btc'),
         type = 'normal',
         atIndex = 0,
-        subAccount,
     }: WalletParams = {}): Locator =>
-        this.page.getByTestId(
-            `@account-menu/${symbol}/${type}/${atIndex}${subAccount ? `/${subAccount}` : ''}`,
-        );
+        this.page.getByTestId(`@account-menu/${symbol}/${type}/${atIndex}`);
 
     accountLabel = ({
         symbol = asNetworkSymbol('btc'),
@@ -274,7 +270,8 @@ export class WalletPage {
 
     @step()
     async openBuyTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
-        await this.openAccount({ ...params, subAccount: 'tokens' });
+        await this.openAccount(params);
+        await this.tokensTabButton.click();
         await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenBuyButton.click();
@@ -282,7 +279,8 @@ export class WalletPage {
 
     @step()
     async openSellTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
-        await this.openAccount({ ...params, subAccount: 'tokens' });
+        await this.openAccount(params);
+        await this.tokensTabButton.click();
         await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins', {
             timeout: 15_000,
         });
@@ -292,7 +290,8 @@ export class WalletPage {
 
     @step()
     async openSwapTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
-        await this.openAccount({ ...params, subAccount: 'tokens' });
+        await this.openAccount(params);
+        await this.tokensTabButton.click();
         await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
         await this.tokenRowSwapButton(tokenName).click();
     }

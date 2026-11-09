@@ -79,11 +79,10 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             stakingSection,
             blockbookMock,
         }) => {
-            const stakingAccountItemInLeftSection = walletPage.accountButton({
+            const stakingAccountItemInLeftSection = walletPage.stakingBadge({
                 symbol: adaSymbol,
                 type: 'normal',
                 atIndex: 0,
-                subAccount: 'staking',
             });
 
             await test.step('Verify staked account with rewards', async () => {

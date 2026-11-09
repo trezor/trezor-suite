@@ -60,17 +60,16 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
                     timeout: DISCOVERY_LIMIT,
                 });
                 for (const symbol of coinsToActivate) {
-                    await walletPage
-                        .balanceOfAccount({ symbol, atIndex: 0 })
-                        .scrollIntoViewIfNeeded();
+                    await walletPage.accountButton({ symbol, atIndex: 0 }).scrollIntoViewIfNeeded();
                     await expect
                         .soft(
-                            walletPage.balanceOfAccount({ symbol, atIndex: 0 }),
+                            walletPage.accountButton({ symbol, atIndex: 0 }),
                             `Failed to discover ${symbol} account`,
                         )
                         .toBeVisible({
                             timeout: DISCOVERY_LIMIT,
                         });
+                    await expect.soft(walletPage.accountError({ symbol, atIndex: 0 })).toBeHidden();
                 }
             });
         },
