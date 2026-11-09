@@ -2,7 +2,7 @@
 
 The in-app browser primitives of Suite mobile: everything needed to run a web app inside Suite, and
 nothing specific to a showcase. The debug-only showcase that exercises them lives in
-`@suite-native/apps-embedding-demo`.
+`@suite-native-app/apps-embedding-demo`.
 
 Two ways of opening a site are offered, and they differ a lot in what Suite can see and control:
 

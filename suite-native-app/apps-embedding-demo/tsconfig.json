@@ -5,9 +5,13 @@
         {
             "path": "../../suite-common/apps-embedding"
         },
-        { "path": "../apps-embedding" },
-        { "path": "../atoms" },
-        { "path": "../navigation" },
+        {
+            "path": "../../suite-native/apps-embedding"
+        },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/navigation"
+        },
         {
             "path": "../../packages/styles-native"
         },

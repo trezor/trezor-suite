@@ -13479,6 +13479,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native-app/app-init": "workspace:*"
+    "@suite-native-app/apps-embedding-demo": "workspace:*"
     "@suite-native-app/module-account-detail": "workspace:*"
     "@suite-native-app/module-accounts": "workspace:*"
     "@suite-native-app/module-accounts-import": "workspace:*"
@@ -13506,7 +13507,6 @@ __metadata:
     "@suite-native-app/storybook": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
-    "@suite-native/apps-embedding-demo": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
@@ -13633,6 +13633,22 @@ __metadata:
     uri-scheme: "npm:^2.2.0"
     vm-browserify: "npm:^1.1.2"
     xml2js: "npm:^0.6.2"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native-app/apps-embedding-demo@workspace:*, @suite-native-app/apps-embedding-demo@workspace:suite-native-app/apps-embedding-demo":
+  version: 0.0.0-use.local
+  resolution: "@suite-native-app/apps-embedding-demo@workspace:suite-native-app/apps-embedding-demo"
+  dependencies:
+    "@suite-common/apps-embedding": "workspace:*"
+    "@suite-native/apps-embedding": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.3.0"
+    react-native: "npm:0.88.1"
   languageName: unknown
   linkType: soft
 
@@ -15083,22 +15099,6 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:^"
-    react-native: "npm:0.88.1"
-  languageName: unknown
-  linkType: soft
-
-"@suite-native/apps-embedding-demo@workspace:*, @suite-native/apps-embedding-demo@workspace:suite-native/apps-embedding-demo":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/apps-embedding-demo@workspace:suite-native/apps-embedding-demo"
-  dependencies:
-    "@suite-common/apps-embedding": "workspace:*"
-    "@suite-native/apps-embedding": "workspace:*"
-    "@suite-native/atoms": "workspace:*"
-    "@suite-native/navigation": "workspace:*"
-    "@trezor/styles-native": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
-    react: "npm:19.3.0"
     react-native: "npm:0.88.1"
   languageName: unknown
   linkType: soft
