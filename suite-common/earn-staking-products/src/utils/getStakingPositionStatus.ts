@@ -9,13 +9,17 @@ export type GetStakingPositionStatusParams = {
 export const getStakingPositionStatus = ({
     balances,
 }: GetStakingPositionStatusParams): StakingPosition['status'] => {
-    if (isPositiveStakingAmount(balances.staked)) return 'active';
-    if (isPositiveStakingAmount(balances.pending)) return 'activating';
+    const { staked, pending, unstaking, withdrawable } = balances;
 
-    if (
-        isPositiveStakingAmount(balances.unstaking) ||
-        isPositiveStakingAmount(balances.withdrawable)
-    ) {
+    if (isPositiveStakingAmount(staked)) {
+        return 'active';
+    }
+
+    if (isPositiveStakingAmount(pending)) {
+        return 'activating';
+    }
+
+    if (isPositiveStakingAmount(unstaking) || isPositiveStakingAmount(withdrawable)) {
         return 'deactivating';
     }
 

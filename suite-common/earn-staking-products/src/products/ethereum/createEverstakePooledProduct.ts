@@ -7,13 +7,13 @@ import type {
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { createUnimplementedStakingOperations } from '../unimplementedStakingOperations';
+import { EVERSTAKE_POOLED_PRODUCT_POOL_ADDRESSES } from './constants';
 import { getEverstakePooledProductAmountBounds } from './everstakePooledProductAmountBounds';
 import { createEverstakePooledProductDescriptor } from './everstakePooledProductDescriptor';
 import {
     type EverstakePooledProductInfoDeps,
     fetchEverstakePooledProductInfo,
 } from './everstakePooledProductInfo';
-import { EVERSTAKE_POOLED_PRODUCT_POOL_ADDRESSES } from './everstakePooledProductPoolAddresses';
 import { getEverstakePooledProductPosition } from './getEverstakePooledProductPosition';
 
 export type EverstakePooledProductDeps = EverstakePooledProductInfoDeps;
