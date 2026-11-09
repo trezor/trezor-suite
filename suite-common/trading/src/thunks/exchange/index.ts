@@ -11,7 +11,7 @@ import { sendTransactionThunk } from './sendTransactionThunk';
 import { signDataAndConfirmThunk } from './signDataAndConfirmThunk';
 import { watchExchangeApprovalThunk } from './watchExchangeApprovalThunk';
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 type ExchangeThunks = {
     loadInfoThunk: typeof loadExchangeInfoThunk;

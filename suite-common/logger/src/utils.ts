@@ -26,7 +26,7 @@ export const startTime = new Date().toUTCString();
 
 export const prettifyLog = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 type RedactedAccount = Omit<
     DeepPartial<Account>,
@@ -95,7 +95,7 @@ export const redactAccount = (
     };
 };
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 type RedactedDevice = Omit<
     DeepPartial<TrezorDevice>,
