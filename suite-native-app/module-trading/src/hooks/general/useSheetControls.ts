@@ -10,7 +10,7 @@ import {
 
 type BottomSheetControls = ReturnType<typeof useBottomSheetControls>;
 type FormUnion = BuyFormValues | ExchangeFormValues | SellFormValues;
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 type SheetControls<
     FormValues extends FormUnion,

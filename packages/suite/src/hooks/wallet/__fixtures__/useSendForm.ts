@@ -79,7 +79,7 @@ const UTXO = {
     }),
 };
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Partial<Network> } = {
     status: 'loaded',
@@ -277,7 +277,7 @@ const DEFAULT_FEES: FeesState = {
 
 // - default selectedAccount needs to be explicitly passed from test. merging default with custom will override custom
 // - default fees needs to be explicitly passed from test. merge Arrays will add items, not replace them
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 // Todo: Replace `any` with an accurate type.
 export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>

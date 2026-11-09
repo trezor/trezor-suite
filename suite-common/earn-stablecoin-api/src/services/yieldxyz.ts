@@ -31,7 +31,7 @@ type GetYieldOptions = YieldXyzRequestOptions & {
     routeParams: { vaultId: string };
 };
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 export const getYields = async (options?: GetYieldsOptions): Promise<YieldsResponseV2Output> => {
     // The generated schemas are large, so they load with the first request, not with the app.
@@ -40,7 +40,7 @@ export const getYields = async (options?: GetYieldsOptions): Promise<YieldsRespo
     return yieldXyzApi('/yields', { method: 'GET', schema: YieldsResponseV2 })(options);
 };
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 export const getYield = async (options: GetYieldOptions): Promise<YieldResponseV2Output> => {
     // The generated schemas are large, so they load with the first request, not with the app.
