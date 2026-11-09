@@ -16,13 +16,15 @@ import { type WithServices } from '@trezor/redux-utils';
 
 import { useUtxoSelection } from 'src/hooks/wallet/form/useUtxoSelection';
 import { SendContext } from 'src/hooks/wallet/useSendForm';
-import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 import { UtxoSelectionList } from './UtxoSelectionList';
-import { mockInitialAppState } from '../../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../../mocks/mockInitialAppState';
 
 // The editable address label of every row measures itself with an observer jsdom lacks.
 global.ResizeObserver = class MockedResizeObserver {
@@ -119,7 +121,7 @@ const Harness = ({ account, defaultValues, composedLevels, utxos }: HarnessProps
 };
 
 const renderList = (props: HarnessProps, transactions: WalletAccountTransaction[] = []) => {
-    const { services } = createTestCompositionRoot<UtxoSelectionListTestDeps, AppState>({
+    const { services } = createTestCompositionRoot<UtxoSelectionListTestDeps, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             metadata: initialMetadataState,

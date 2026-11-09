@@ -1,7 +1,5 @@
 import { TorLoader } from '@suite/tor-desktop';
-
-import { ThemeProvider } from 'src/support/suite/ThemeProvider';
-import { useTor } from 'src/support/suite/useTor';
+import { ThemeProvider, useTor } from '@trezor/suite';
 
 type TorLoadingScreenProps = {
     callback: (value?: unknown) => void;

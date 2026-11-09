@@ -3,18 +3,21 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
 
 import { type DesktopApiDep } from '@suite/desktop-app-api';
+import {
+    type HydrateReduxStoreDep,
+    type SuiteReduxStoreDep,
+    type SuiteServices,
+} from '@suite-app/app';
 import { ReactQueryProvider } from '@suite-common/react-query/react';
 import TrezorConnect from '@trezor/connect-electron';
 import { ServicesProvider } from '@trezor/dependency-injection';
-
-import * as STORAGE from 'src/actions/suite/constants/storageConstants';
-import { desktopHandshake } from 'src/actions/suite/suiteActions';
-import { type HydrateReduxStoreDep } from 'src/reducers/createHydrateReduxStore';
-import { type SuiteReduxStoreDep } from 'src/reducers/createReduxStore';
-import { type SuiteServices } from 'src/support/createSuiteCompositionRoot';
-import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
-import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
-import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
+import {
+    ConnectedIntlProvider,
+    ErrorScreen,
+    LoadingScreen,
+    storageConstants as STORAGE,
+    desktopHandshake,
+} from '@trezor/suite';
 
 import { MainDesktop } from './MainDesktop';
 import { initSentry } from './sentry';

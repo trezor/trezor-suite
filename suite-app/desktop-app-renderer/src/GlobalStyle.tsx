@@ -1,9 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
-import {
-    FIND_HIGHLIGHT_SELECTOR,
-    MARK_HIGHLIGHT_PULSE_SELECTOR,
-} from 'src/components/suite/FindBar/consts';
+import { FIND_HIGHLIGHT_SELECTOR, MARK_HIGHLIGHT_PULSE_SELECTOR } from '@trezor/suite';
 
 export const GlobalStyle = createGlobalStyle`
 

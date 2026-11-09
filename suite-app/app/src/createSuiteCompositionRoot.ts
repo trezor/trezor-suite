@@ -1,22 +1,15 @@
 import { saveAs } from 'file-saver';
 
 import { selectFullSelectedAccount } from '@suite/account';
-import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import { createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
-import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
+import { createBluetoothCompositionRoot } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import { lockDevice } from '@suite/locks';
 import { selectLabelingDataForAccount } from '@suite/metadata';
-import {
-    type MetadataMigrationDep,
-    createMetadataMigrationCompositionRoot,
-} from '@suite/metadata-migration';
-import {
-    type HistoryDep,
-    type SuiteRouterHistoryDep,
-    createSuiteRouterHistory,
-} from '@suite/router';
+import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migration';
+import { type HistoryDep, createSuiteRouterHistory } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
@@ -24,7 +17,6 @@ import {
     type ConnectInitSettings,
     type CreateTransports,
     type GetTransportsFactoriesDep,
-    type TransportsDep,
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
@@ -33,7 +25,6 @@ import {
     createStakingDeviceAccess,
 } from '@suite-common/earn-staking';
 import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';
-import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
@@ -49,7 +40,6 @@ import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/sui
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import {
-    type TransactionRetrieverDep,
     createTransactionRetriever,
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
@@ -62,15 +52,13 @@ import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
-
-import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
-import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
-import { type DbDep } from 'src/storage/createDb';
-import { reportSecurityCheck } from 'src/utils/suite/sentry';
+import { type DbDep, reportSecurityCheck, selectIsWindowVisible } from '@trezor/suite';
 
 import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
 import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
-import { type AppState } from '../types/suite';
+import { type SuiteReduxStore } from './createReduxStore';
+import { type AppState } from './store';
+import { type SuiteServices } from './suiteServices';
 
 const connectInitSettings: ConnectInitSettings = {
     debug: false,
@@ -82,16 +70,6 @@ const connectInitSettings: ConnectInitSettings = {
     enableFirmwareHashCheck: true,
     firmwareHashCheckTimeouts: FW_HASH_CHECK_DEFAULT_TIMEOUTS,
 };
-
-export type SuiteServices = CommonServices &
-    DbDep &
-    DesktopApiDep &
-    DesktopAnalyticsDep &
-    MetadataMigrationDep &
-    SuiteRouterHistoryDep &
-    TransportsDep &
-    BluetoothDep &
-    TransactionRetrieverDep;
 
 export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
@@ -106,8 +84,6 @@ export type SuiteAppDeps = StoreAPIDep &
     ThpHostNameDep &
     GetTransportsFactoriesDep &
     GetTrezorConnectPrivilegedDep;
-
-export const selectSuiteServices = (services: any): SuiteServices => services;
 
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({

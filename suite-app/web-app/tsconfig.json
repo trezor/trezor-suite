@@ -1,12 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "./libDev",
-        "paths": {
-            "src/*": [
-                "../../packages/suite/src/*"
-            ]
-        }
+        "outDir": "./libDev"
     },
     "include": ["."],
     "references": [

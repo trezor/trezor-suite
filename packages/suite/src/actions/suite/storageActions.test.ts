@@ -49,7 +49,7 @@ import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
-import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
+import { prepareSuiteSyncQuotaManagerReducer } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import {
     type StorageMiddlewareState,
@@ -104,7 +104,7 @@ const flagsReducer = prepareFlagsReducer({
     actionTypes: { storageLoad: storageLoad.type },
     reducers: { storageLoadFlags: mockExtraDependenciesForReducers.reducers.storageLoadFlags },
 });
-const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(undefined);
+const quotaManagerSliceReducer = prepareSuiteSyncQuotaManagerReducer(undefined);
 const suiteSyncReducer = prepareSuiteSyncReducer(undefined);
 const receiveReducer = prepareReceiveReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },

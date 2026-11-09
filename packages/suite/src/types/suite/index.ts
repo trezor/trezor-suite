@@ -1,10 +1,4 @@
-import type { UnknownAction } from '@reduxjs/toolkit';
-import type { Store as ReduxStore } from 'redux';
-import type { ThunkAction as TAction } from 'redux-thunk';
-
 import { type Route } from '@suite/router';
-
-import type { AppState } from 'src/reducers/store';
 
 // reexport
 export type {
@@ -15,13 +9,8 @@ export type {
     UnknownDevice,
     UnreadableDevice,
 } from '@suite-common/suite-types';
-export type { AppState } from 'src/reducers/store';
 export type { PrerequisiteType } from 'src/utils/suite/prerequisites';
 export type { Route };
-
-export type ThunkAction = TAction<any, AppState, any, UnknownAction>;
-
-export type Store = ReduxStore<AppState, UnknownAction>;
 
 export type ForegroundAppRoute = Extract<
     Route,

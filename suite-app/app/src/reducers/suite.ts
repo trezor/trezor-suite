@@ -25,13 +25,18 @@ import {
     createNotificationsReducer,
 } from '@suite-common/toast-notifications';
 import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-common/walletconnect';
+import {
+    type GuideState,
+    type ProtocolState,
+    type SuiteState,
+    type WindowState,
+    guideReducer,
+    protocolReducer,
+    suiteReducer,
+    windowReducer,
+} from '@trezor/suite';
 
-import { extraDependencies } from 'src/support/extraDependencies';
-
-import guide, { type GuideState } from './guideReducer';
-import protocol, { type ProtocolState } from './protocolReducer';
-import suite, { type SuiteState } from './suiteReducer';
-import window, { type WindowState } from './windowReducer';
+import { extraDependencies } from '../extraDependencies';
 
 const analytics = prepareAnalyticsReducer(extraDependencies);
 const messageSystem = prepareMessageSystemReducer(extraDependencies);
@@ -68,7 +73,7 @@ export type SuiteReducersState = {
 };
 
 export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction> = {
-    suite,
+    suite: suiteReducer,
     discreetMode: discreetModeReducer,
     tor: torReducer,
     suiteSettings,
@@ -80,13 +85,13 @@ export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction>
     device,
     logs: logsSlice.reducer,
     notifications: createNotificationsReducer<TranslationKey>().reducer,
-    window,
+    window: windowReducer,
     analytics,
     metadata: metadataReducer,
     desktopUpdate: desktopUpdateReducer,
     messageSystem,
-    guide,
-    protocol,
+    guide: guideReducer,
+    protocol: protocolReducer,
     featureFeedback: featureFeedbackReducer,
     connectPopup: connectPopupReducer,
     walletConnect: walletConnectReducer,

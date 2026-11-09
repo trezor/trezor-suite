@@ -15,7 +15,7 @@ export const phishingInitialState: PhishingState = {
     },
 };
 
-type PhishingReducerDeps = ActionTypesDep<'storageLoad'> &
+export type PhishingReducerDeps = ActionTypesDep<'storageLoad'> &
     ReducersDep<'storageLoadPhishingMetadata'>;
 
 export const preparePhishingReducer = createReducerWithExtraDeps(

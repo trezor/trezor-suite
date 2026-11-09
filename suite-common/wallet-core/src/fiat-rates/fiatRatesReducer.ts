@@ -15,7 +15,8 @@ export const fiatRatesInitialState: FiatRatesState = {
     historic: {},
 };
 
-type FiatRatesReducerDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadHistoricRates'>;
+export type FiatRatesReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadHistoricRates'>;
 
 export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     fiatRatesInitialState,
