@@ -18,6 +18,8 @@ const SILENT_TRADING_ERROR_TYPES = ['sign-transaction-timeout', 'sign-cancelled'
 
 const TRADING_ERROR_CODES: Record<TradingErrorCode, true> = {
     'cannot-send-transaction': true,
+    'sign-transaction-failed': true,
+    'push-transaction-failed': true,
     'cannot-create-transaction': true,
     'compose-failed': true,
     'missing-composed-data': true,

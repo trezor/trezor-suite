@@ -19,7 +19,7 @@ import { type RecomposeAndSignTxThunkState } from './recomposeAndSignTxThunk';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
-import { type TradingError, type TradingFulfillValue } from '../../types';
+import { type TradingError, type TradingErrorCode, type TradingFulfillValue } from '../../types';
 
 import { tradingThunks } from './index';
 
@@ -690,10 +690,15 @@ describe('recomposeAndSignTxThunk', () => {
     });
 
     it.each([
-        { signingResult: undefined, expectedType: 'sign-cancelled' },
+        {
+            signingResult: undefined,
+            expectedType: 'sign-cancelled',
+            expectedCode: 'cannot-send-transaction',
+        },
         {
             signingResult: { success: false, error: { error: 'push-approval-rejected' } },
             expectedType: 'sign-cancelled',
+            expectedCode: 'cannot-send-transaction',
         },
         {
             signingResult: {
@@ -701,6 +706,7 @@ describe('recomposeAndSignTxThunk', () => {
                 error: { error: 'sign-transaction-timeout', message: 'Signing process timed out.' },
             },
             expectedType: 'sign-transaction-timeout',
+            expectedCode: 'sign-transaction-failed',
         },
         ...(['Failure_ActionCancelled', 'Failure_PinCancelled', 'Method_Cancel'] as const).map(
             errorCode => ({
@@ -712,19 +718,41 @@ describe('recomposeAndSignTxThunk', () => {
                         message: 'Cancelled',
                     },
                 },
-                expectedType: 'sign-cancelled',
+                expectedType: 'sign-cancelled' as const,
+                expectedCode: 'sign-transaction-failed' as const,
             }),
         ),
+        ...(['Device_Disconnected', 'Device_NotFound'] as const).map(errorCode => ({
+            signingResult: {
+                success: false as const,
+                error: {
+                    error: 'sign-transaction-failed' as const,
+                    errorCode,
+                    message: 'Device disconnected',
+                },
+            },
+            expectedType: 'sign-tx-error' as const,
+            expectedCode: 'device-not-connected' as const,
+        })),
         {
             signingResult: {
                 success: false,
                 error: {
                     error: 'sign-transaction-failed',
-                    errorCode: 'Device_Disconnected',
-                    message: 'Device disconnected',
+                    errorCode: 'Failure_DataError',
+                    message: 'Invalid data',
                 },
             },
             expectedType: 'sign-tx-error',
+            expectedCode: 'sign-transaction-failed',
+        },
+        {
+            signingResult: {
+                success: false,
+                error: { error: 'sign-transaction-failed', message: 'Unknown error' },
+            },
+            expectedType: 'sign-tx-error',
+            expectedCode: 'sign-transaction-failed',
         },
         {
             signingResult: {
@@ -736,10 +764,39 @@ describe('recomposeAndSignTxThunk', () => {
                 },
             },
             expectedType: 'sign-tx-error',
+            expectedCode: 'push-transaction-failed',
         },
-    ] satisfies { signingResult: TradingFulfillValue; expectedType: string }[])(
-        'should reject as $expectedType when signing returns $signingResult',
-        async ({ signingResult, expectedType }) => {
+        {
+            signingResult: {
+                success: false,
+                error: { error: 'push-transaction-pending-conflict', message: 'Pending conflict' },
+            },
+            expectedType: 'sign-tx-error',
+            expectedCode: 'push-transaction-failed',
+        },
+        {
+            signingResult: {
+                success: false,
+                error: { error: 'fee-levels-compose-failed', message: 'Insufficient funds' },
+            },
+            expectedType: 'sign-tx-error',
+            expectedCode: 'compose-failed',
+        },
+        {
+            signingResult: {
+                success: false,
+                error: { error: 'enhance-transaction-failed', message: 'Fee too low' },
+            },
+            expectedType: 'sign-tx-error',
+            expectedCode: 'compose-failed',
+        },
+    ] satisfies {
+        signingResult: TradingFulfillValue;
+        expectedType: TradingError['type'];
+        expectedCode: TradingErrorCode;
+    }[])(
+        'should reject as $expectedType with $expectedCode when signing returns $signingResult',
+        async ({ signingResult, expectedType, expectedCode }) => {
             const { store, account, tradingFormState } = getMocks();
 
             const mockSignAndPushSendFormTransaction = jest
@@ -778,7 +835,7 @@ describe('recomposeAndSignTxThunk', () => {
             expect(response.meta.requestStatus).toBe('rejected');
             expect(response.payload).toEqual({
                 type: expectedType,
-                code: 'cannot-send-transaction',
+                code: expectedCode,
                 cause:
                     signingResult?.success === false
                         ? { source: 'send-form', error: signingResult.error }

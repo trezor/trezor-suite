@@ -4,6 +4,10 @@ import { type TxKeyPath } from '@suite-native/intl';
 const TRADING_ERROR_ALERT_DESCRIPTION_IDS = {
     'cannot-send-transaction':
         'moduleTrading.tradingReviewOutputs.errorAlert.prepareTransactionDescription',
+    'sign-transaction-failed':
+        'moduleTrading.tradingReviewOutputs.errorAlert.signTransactionDescription',
+    'push-transaction-failed':
+        'moduleTrading.tradingReviewOutputs.errorAlert.pushTransactionDescription',
     'cannot-create-transaction':
         'moduleTrading.tradingReviewOutputs.errorAlert.prepareTransactionDescription',
     'compose-failed': 'moduleTrading.tradingReviewOutputs.errorAlert.prepareTransactionDescription',

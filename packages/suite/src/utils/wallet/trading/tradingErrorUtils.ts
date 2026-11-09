@@ -12,6 +12,8 @@ type TradingErrorTranslation = {
 
 const TRADING_ERROR_TRANSLATION_KEYS: Record<TradingErrorCode, TranslationKey> = {
     'cannot-send-transaction': 'TR_TRADING_CANNOT_SEND_TRANSACTION',
+    'sign-transaction-failed': 'TR_TRADING_SIGN_TRANSACTION_FAILED',
+    'push-transaction-failed': 'TR_TRADING_PUSH_TRANSACTION_FAILED',
     'cannot-create-transaction': 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
     'compose-failed': 'TR_TRADING_COMPOSE_FAILED',
     'missing-composed-data': 'TR_TRADING_MISSING_COMPOSED_DATA',

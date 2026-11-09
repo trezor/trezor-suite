@@ -27,6 +27,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import type {
     TradingError,
+    TradingErrorCode,
     TradingFulfillValue,
     TradingSignAndPushError,
     TradingSignAndPushSendFormTransactionProps,
@@ -54,6 +55,8 @@ const SIGNING_CANCEL_ERROR_CODES = [
     'Method_Cancel',
 ] as const;
 
+const DEVICE_NOT_CONNECTED_ERROR_CODES = ['Device_Disconnected', 'Device_NotFound'] as const;
+
 const getSignAndPushRejectionType = (
     signAndPushError: TradingSignAndPushError,
 ): TradingError['type'] => {
@@ -72,6 +75,27 @@ const getSignAndPushRejectionType = (
         case 'push-transaction-failed':
         case 'push-transaction-pending-conflict':
             return 'sign-tx-error';
+        default:
+            return exhaustive(signAndPushError);
+    }
+};
+
+const getSignAndPushErrorCode = (signAndPushError: TradingSignAndPushError): TradingErrorCode => {
+    switch (signAndPushError.error) {
+        case 'sign-transaction-failed':
+        case 'sign-transaction-timeout':
+            return signAndPushError.errorCode !== undefined &&
+                isArrayMember(signAndPushError.errorCode, DEVICE_NOT_CONNECTED_ERROR_CODES)
+                ? 'device-not-connected'
+                : 'sign-transaction-failed';
+        case 'push-transaction-failed':
+        case 'push-transaction-pending-conflict':
+            return 'push-transaction-failed';
+        case 'fee-levels-compose-failed':
+        case 'enhance-transaction-failed':
+            return 'compose-failed';
+        case 'push-approval-rejected':
+            return 'cannot-send-transaction';
         default:
             return exhaustive(signAndPushError);
     }
@@ -222,7 +246,7 @@ export const recomposeAndSignTxThunk = createThunk<
             if (!resultOfSignedTransaction.success) {
                 return rejectWithValue({
                     type: getSignAndPushRejectionType(resultOfSignedTransaction.error),
-                    code: 'cannot-send-transaction',
+                    code: getSignAndPushErrorCode(resultOfSignedTransaction.error),
                     cause: { source: 'send-form', error: resultOfSignedTransaction.error },
                 });
             }

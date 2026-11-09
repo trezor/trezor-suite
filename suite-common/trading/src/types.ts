@@ -286,6 +286,8 @@ export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' |
 
 export type TradingErrorCode =
     | 'cannot-send-transaction'
+    | 'sign-transaction-failed'
+    | 'push-transaction-failed'
     | 'cannot-create-transaction'
     | 'compose-failed'
     | 'missing-composed-data'

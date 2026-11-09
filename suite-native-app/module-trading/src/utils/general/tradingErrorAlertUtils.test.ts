@@ -10,6 +10,14 @@ describe('getTradingErrorAlertDescriptionId', () => {
             'moduleTrading.tradingReviewOutputs.errorAlert.prepareTransactionDescription',
         ],
         [
+            'sign-transaction-failed',
+            'moduleTrading.tradingReviewOutputs.errorAlert.signTransactionDescription',
+        ],
+        [
+            'push-transaction-failed',
+            'moduleTrading.tradingReviewOutputs.errorAlert.pushTransactionDescription',
+        ],
+        [
             'cannot-create-transaction',
             'moduleTrading.tradingReviewOutputs.errorAlert.prepareTransactionDescription',
         ],
