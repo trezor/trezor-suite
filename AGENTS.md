@@ -19,6 +19,7 @@ Read applicable skills once before making changes, using the task and their desc
 them; unrelated skills need not be loaded.
 Nested mandatory skills still apply within their stated scope.
 
+- All changes and reviews: [Architecture decisions](skills/architecture-decisions/SKILL.md).
 - TypeScript changes: [Syntax](skills/basic-syntax/SKILL.md), [TypeScript](skills/typescript/SKILL.md),
   [Naming](skills/naming/SKILL.md), [Imports](skills/import-export/SKILL.md),
   [Defensive programming](skills/defensive-programming/SKILL.md), [Comments](skills/comments/SKILL.md).
