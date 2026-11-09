@@ -5,7 +5,11 @@ import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useYieldDetailNavigation, useYieldFlowData } from '@suite-native/module-earn';
+import {
+    useYieldDetailNavigation,
+    useYieldEntryNavigationAnalytics,
+    useYieldFlowData,
+} from '@suite-native/module-earn';
 
 type YieldVaultBannerProps = {
     accountKey: AccountKey;
@@ -22,6 +26,7 @@ export const YieldVaultBanner = ({ accountKey, tokenContract }: YieldVaultBanner
     const { account, resolutionStatus, vault } = yieldFlowData;
 
     const { navigateToYieldDetail } = useYieldDetailNavigation();
+    const reportYieldEntryNavigation = useYieldEntryNavigationAnalytics();
 
     const handleManagePositionPress = useCallback(() => {
         if (!account || !vault) {
@@ -34,11 +39,16 @@ export const YieldVaultBanner = ({ accountKey, tokenContract }: YieldVaultBanner
             return;
         }
 
+        reportYieldEntryNavigation({
+            destination: 'vault-detail',
+            from: 'account-banner',
+            item: { networkSymbol: account.symbol, yieldId: vault.id },
+        });
         navigateToYieldDetail({
             accountKey: account.key,
             tokenContract: toTokenAddress(vaultTokenContract),
         });
-    }, [account, vault, navigateToYieldDetail]);
+    }, [account, vault, navigateToYieldDetail, reportYieldEntryNavigation]);
 
     if (resolutionStatus !== 'resolved') return null;
 

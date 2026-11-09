@@ -86,7 +86,7 @@ export const YieldClaimScreen = () => {
         payload: {
             action: 'cancel',
             from: 'claim-form',
-            to: 'claim-form',
+            to: 'earn-dashboard',
             networkSymbol: account?.symbol,
         },
     });

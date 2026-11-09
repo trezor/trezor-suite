@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
@@ -33,6 +34,7 @@ import { EarnClaimTokenIconSet } from '../earn/EarnClaimTokenIconSet';
 
 export const YieldClaimRewardsSummaryCard = () => {
     const { analytics } = useServices(injectNativeAnalytics);
+    const isClaimSelectionPendingRef = useRef(false);
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
 
@@ -90,7 +92,34 @@ export const YieldClaimRewardsSummaryCard = () => {
             return;
         }
 
+        isClaimSelectionPendingRef.current = true;
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'earn-dashboard',
+                to: 'claim-select-account-modal',
+            },
+        });
         openYieldClaimRewardsSheet();
+    };
+
+    const onClaimAccountSelect = () => {
+        isClaimSelectionPendingRef.current = false;
+        closeYieldClaimRewardsSheet();
+    };
+
+    const onClaimSelectionDismiss = () => {
+        if (!isClaimSelectionPendingRef.current) return;
+        isClaimSelectionPendingRef.current = false;
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'cancel',
+                from: 'claim-select-account-modal',
+                to: 'claim-select-account-modal',
+            },
+        });
     };
 
     return (
@@ -176,6 +205,8 @@ export const YieldClaimRewardsSummaryCard = () => {
                 ref={yieldClaimRewardsSheetRef}
                 items={claimAccountItems}
                 onClose={closeYieldClaimRewardsSheet}
+                onAccountSelect={onClaimAccountSelect}
+                onDismiss={onClaimSelectionDismiss}
             />
         </>
     );

@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { type StakingNavigateFrom } from '@suite-common/analytics';
 import { type Account } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
@@ -10,12 +11,12 @@ export const useStakingNavigateAnalytics = () => {
     const { analytics } = useServices(injectNativeAnalytics);
 
     return useCallback(
-        (account: Account) => {
+        (account: Account, from?: StakingNavigateFrom) => {
             analytics.report({
                 type: events.stakingNavigateEvent.name,
                 payload: {
                     action: 'navigate',
-                    from: getStakingAnalyticsNavigateFrom(account),
+                    from: from ?? getStakingAnalyticsNavigateFrom(account),
                     networkSymbol: account.symbol,
                 },
             });

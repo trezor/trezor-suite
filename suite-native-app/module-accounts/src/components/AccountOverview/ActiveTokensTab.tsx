@@ -16,6 +16,7 @@ import {
     StakingApyBadge,
     TokenYieldRateBadge,
     useStakingDetailNavigation,
+    useStakingNavigateAnalytics,
 } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -59,6 +60,7 @@ export const ActiveTokensTab = ({
     const { applyStyle } = useNativeStyles();
     const listContentStyle = useAccountOverviewListContentStyle();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
+    const reportStakingNavigate = useStakingNavigateAnalytics();
 
     const activeTokensSections = useSelector((state: NativeAccountsRootState) =>
         selectAccountListSectionsWithZeroBalanceGroup(state, accountKey),
@@ -67,13 +69,14 @@ export const ActiveTokensTab = ({
     const handleSelectAccount: OnSelectAccount = useCallback(
         ({ account, tokenAddress, tokenSymbol, isStaking }) => {
             if (isStaking) {
+                reportStakingNavigate(account, 'account/navigation');
                 navigateToStakingDetail({ accountKey: account.key, symbol: account.symbol });
 
                 return;
             }
             onSelect({ tokenContract: tokenAddress, tokenSymbol });
         },
-        [onSelect, navigateToStakingDetail],
+        [onSelect, navigateToStakingDetail, reportStakingNavigate],
     );
 
     const listItems: ActiveTokenListItem[] = useMemo(

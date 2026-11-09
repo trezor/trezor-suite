@@ -77,7 +77,7 @@ export const YieldClaimRewardsAccountCard = ({
             type: events.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'earn-dashboard',
+                from: 'claim-select-account-modal',
                 to: 'claim-form',
                 networkSymbol: item.summary.networkSymbol,
             },

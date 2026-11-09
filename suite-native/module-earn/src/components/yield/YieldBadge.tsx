@@ -18,6 +18,7 @@ import {
 } from '@suite-native/navigation';
 
 import { useYieldDetailNavigation } from '../../hooks/yield/useYieldDetailNavigation';
+import { useYieldEntryNavigationAnalytics } from '../../hooks/yield/useYieldEntryNavigationAnalytics';
 
 type YieldBadgeVariant = 'inactive' | 'active' | 'promo';
 
@@ -55,16 +56,20 @@ export const YieldBadge = ({ apy, variant, account, vaultId }: YieldBadgeProps) 
     const navigation = useNavigation<NavigationProps>();
     const { data: vault } = useYieldOpportunity(vaultId);
     const { navigateToYieldDetail } = useYieldDetailNavigation();
+    const reportYieldEntryNavigation = useYieldEntryNavigationAnalytics();
 
     const { translationId, intent } = variantConfigMap[variant];
 
     const vaultTokenContract = vault ? getYieldVaultContractAddress(vault) : null;
 
     const goToVault = () => {
-        if (!vaultTokenContract) return;
-
         // for promo, we want to navigate to the earn tab screen
         if (variant === 'promo') {
+            reportYieldEntryNavigation({
+                destination: 'earn-dashboard',
+                from: 'account-detail',
+                item: { networkSymbol: account.symbol },
+            });
             navigation.popTo(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.EarnStack,
                 params: { screen: EarnStackRoutes.Earn },
@@ -73,6 +78,13 @@ export const YieldBadge = ({ apy, variant, account, vaultId }: YieldBadgeProps) 
             return;
         }
 
+        if (!vaultTokenContract) return;
+
+        reportYieldEntryNavigation({
+            destination: 'vault-detail',
+            from: 'account-detail',
+            item: { networkSymbol: account.symbol, yieldId: vaultId },
+        });
         navigateToYieldDetail({
             accountKey: account.key,
             tokenContract: toTokenAddress(vaultTokenContract),
@@ -80,7 +92,11 @@ export const YieldBadge = ({ apy, variant, account, vaultId }: YieldBadgeProps) 
     };
 
     return (
-        <Pressable onPress={goToVault} disabled={variant !== 'promo' && !vaultTokenContract}>
+        <Pressable
+            testID="@earn/yield-badge"
+            onPress={goToVault}
+            disabled={variant !== 'promo' && !vaultTokenContract}
+        >
             <Badge
                 intent={intent}
                 size="small"

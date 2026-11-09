@@ -24,10 +24,17 @@ import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 
 let mockNavigationRoutes: unknown[];
+const mockBeforeRemove = jest.fn(
+    (_name: string, _listener: (event: { data: { action: { type: string } } }) => void) => () =>
+        undefined,
+);
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
+    useFocusEffect: jest.fn(),
     useNavigation: () => ({
+        addListener: mockBeforeRemove,
+        isFocused: () => true,
         navigate: jest.fn(),
         getState: () => ({ routes: mockNavigationRoutes }),
     }),
@@ -173,6 +180,28 @@ describe('useYieldDepositApprovalController', () => {
         expect(useYieldApprovalFeesMock).toHaveBeenLastCalledWith(
             expect.objectContaining({ isEnabled: false }),
         );
+    });
+
+    it('reports leaving Approval while its transaction is pending', async () => {
+        useYieldPendingTransactionMock.mockReturnValue(
+            mockYieldPendingTransactionResult({
+                pendingTransaction: { type: 'approve', txid: '0xpending', amount: '5' },
+            }),
+        );
+        const { services } = await renderApprovalController();
+        const listener = mockBeforeRemove.mock.calls.at(-1)?.[1];
+        if (!listener) throw new Error('Missing exit listener');
+        await act(() => listener({ data: { action: { type: 'POP_TO_TOP' } } }));
+        expect(services.analytics.report).toHaveBeenCalledWith({
+            type: 'yield/navigate',
+            payload: {
+                action: 'cancel',
+                from: 'deposit-form',
+                to: 'earn-dashboard',
+                networkSymbol: 'eth',
+                vaultId: 'vault-id',
+            },
+        });
     });
 
     it('offers the skip only while the approve step shows an approved amount', async () => {

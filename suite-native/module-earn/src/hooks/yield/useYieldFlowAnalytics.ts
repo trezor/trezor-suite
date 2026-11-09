@@ -2,10 +2,12 @@ import { useCallback } from 'react';
 
 import { type EventInstance, events } from '@suite-common/analytics';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type YieldPositionFlowType } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 
 import { useEarnDeviceStatus } from '../earn/useEarnDeviceStatus';
+import { useNavigateBackAnalytics } from '../earn/useNavigateBackAnalytics';
 
 type YieldFlowAnalyticsContext = {
     networkSymbol: NetworkSymbol | undefined;
@@ -75,4 +77,28 @@ export const useYieldFlowAnalytics = ({ networkSymbol, vaultId }: YieldFlowAnaly
     );
 
     return { reportDeposit, reportInteraction, reportWithdraw };
+};
+
+type UseYieldFormExitAnalyticsParams = {
+    flowType: YieldPositionFlowType;
+    networkSymbol?: NetworkSymbol;
+    vaultId?: string;
+    isEnabled: boolean;
+};
+
+export const useYieldFormExitAnalytics = ({
+    flowType,
+    networkSymbol,
+    vaultId,
+    isEnabled,
+}: UseYieldFormExitAnalyticsParams) => {
+    const form = flowType === 'deposit' ? 'deposit-form' : 'withdraw-form';
+
+    useNavigateBackAnalytics(
+        {
+            type: events.yieldNavigateEvent.name,
+            payload: { action: 'cancel', from: form, to: 'earn-dashboard', networkSymbol, vaultId },
+        },
+        isEnabled,
+    );
 };

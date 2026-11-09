@@ -61,7 +61,7 @@ export const useYieldDepositController = () => {
         payload: {
             action: 'cancel',
             from: 'deposit-form',
-            to: 'deposit-form',
+            to: 'earn-dashboard',
             networkSymbol: account?.symbol,
             vaultId: yieldFlowData.vault?.id,
         },

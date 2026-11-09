@@ -79,7 +79,7 @@ export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigat
                 },
             ],
             description:
-                'Navigation origin. Shared dashboard states use dashboard/staking-dashboard/* on both platforms. Native account selection and network enabling cancellations use choose-account-sheet and enable-network-sheet; unknown means the state could not be classified. Desktop also has sidebar, account and asset-detail/banner (staking banner on the Home asset detail) origins.',
+                'Navigation origin. Shared dashboard states use dashboard/staking-dashboard/* on both platforms. Native sheet cancellations use choose-account-sheet and enable-network-sheet; successful network activation also uses enable-network-sheet. Mobile staking rows use account/navigation. Unknown means the state could not be classified. Desktop also has sidebar, account and asset-detail/banner (staking banner on the Home asset detail) origins.',
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
