@@ -25,7 +25,10 @@ import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { config } from '@trezor/connect/src/data/config';
 import { LogWriter, initLog } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
-import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
+import {
+    CONNECT_DEPRECATION_WARNING,
+    isConnectOutdated,
+} from '@trezor/connect/src/utils/versionCheck';
 import { EventType, analytics } from '@trezor/connect-analytics';
 import { getSystemInfo, storage } from '@trezor/connect-common';
 
@@ -293,6 +296,8 @@ const filterDeviceEvent = (message: DeviceEvent) => {
 
 const init = async (payload: IFrameInit['payload'], origin: string) => {
     if (DataManager.getSettings('origin')) return; // already initialized
+
+    console.warn(CONNECT_DEPRECATION_WARNING);
 
     const parsedSettings = parseConnectSettings(
         {

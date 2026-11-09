@@ -2,6 +2,9 @@ import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { ConnectSettings } from '../types/settings';
 
+export const CONNECT_DEPRECATION_WARNING =
+    'Trezor Connect 9 is deprecated and its support ends on December 31, 2026. Please migrate to Trezor Connect 10: https://connect.trezor.io/10/guides/migrating-to-connect-10';
+
 const MAX_APP_NAME_LENGTH = 64;
 
 /**

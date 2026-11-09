@@ -4,6 +4,7 @@ import { UI } from './events';
 import type { CallMethod, CallMethodKeys } from './events/call';
 import type { TrezorConnect } from './types';
 import type { InitType } from './types/api/init';
+import { CONNECT_DEPRECATION_WARNING } from './utils/versionCheck';
 
 export interface ConnectFactoryDependencies<SettingsType extends Record<string, any>> {
     init: InitType<SettingsType>;
@@ -142,7 +143,11 @@ export const factory = <
 
     return {
         manifest,
-        init,
+        init: (...args: Parameters<typeof init>) => {
+            console.warn(CONNECT_DEPRECATION_WARNING);
+
+            return init(...args);
+        },
         setTransports,
 
         on: <T extends string, P extends (...args: any[]) => any>(type: T, fn: P) => {
