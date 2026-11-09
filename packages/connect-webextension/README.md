@@ -1,5 +1,8 @@
 # @trezor/connect-webextension
 
+> [!WARNING]
+> Trezor Connect 9 is deprecated and 9.7.4 is its final release. Support ends on December 31, 2026. Please migrate to Trezor Connect 10 as soon as possible, see the [migration guide](https://connect.trezor.io/10/guides/migrating-to-connect-10).
+
 [![Build Status](https://github.com/trezor/trezor-suite/actions/workflows/test-connect.yml/badge.svg)](https://github.com/trezor/trezor-suite/actions/workflows/test-connect.yml)
 [![NPM](https://img.shields.io/npm/v/@trezor/connect-webextension.svg)](https://www.npmjs.org/package/@trezor/connect-webextension)
 [![Known Vulnerabilities](https://snyk.io/test/github/trezor/connect-webextension/badge.svg?targetFile=package.json)](https://snyk.io/test/github/trezor/trezor-suite?targetFile=packages/connect-webextension/package.json)
