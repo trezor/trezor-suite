@@ -13,7 +13,12 @@ import { initLog } from '../utils/debug';
 
 const blacklist: Record<string, string[] | true> = {
     PassphraseAck: ['passphrase'],
+    PinMatrixAck: ['pin'],
+    WordAck: ['word'],
+    ThpCreateNewSession: ['passphrase'],
+    CipherKeyValue: ['value'],
     CipheredKeyValue: ['value'],
+    LoadDevice: ['mnemonics', 'pin'],
     GetPublicKey: ['address_n'],
     PublicKey: ['node', 'xpub'],
     DecryptedMessage: ['message', 'address'],
