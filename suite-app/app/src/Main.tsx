@@ -4,18 +4,19 @@ import { injectQueryClient } from '@suite-common/react-query';
 import { ReactQueryProvider } from '@suite-common/react-query/react';
 import { SelectCacheProvider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import {
+    Autodetect,
+    ConnectPopupModals,
+    ConnectedFormatterProvider,
+    ConnectedIntlProvider,
+    ConnectedThemeProvider,
+    ErrorBoundary,
+    OnlineStatus,
+    Protocol,
+    Resize,
+    ResponsiveContextProvider,
+} from '@trezor/suite';
 
-import Autodetect from 'src/support/suite/Autodetect';
-import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
-import { ErrorBoundary } from 'src/support/suite/ErrorBoundary';
-import OnlineStatus from 'src/support/suite/OnlineStatus';
-import Protocol from 'src/support/suite/Protocol';
-import Resize from 'src/support/suite/Resize';
-import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
-
-import { ConnectPopupModals } from './ConnectPopupModals';
-import { ConnectedFormatterProvider } from './ConnectedFormatterProvider';
-import { ConnectedIntlProvider } from './ConnectedIntlProvider';
 import { RouterHandler } from './RouterHandler';
 
 type MainProps = {

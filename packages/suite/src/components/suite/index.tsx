@@ -39,7 +39,6 @@ import { PinMatrix } from './PinMatrix/PinMatrix';
 import { StakingFeature } from './StakingFeature';
 import { StakeAmountWrapper } from './StakeAmountWrapper';
 import { MarkdownWithComponents } from './MarkdownWithComponents';
-import { AppRouter } from './AppRouter';
 
 export {
     DeviceConfirmImage,
@@ -77,7 +76,6 @@ export {
     StakingFeature,
     StakeAmountWrapper,
     MarkdownWithComponents,
-    AppRouter,
     getMessageId,
 };
 export * from './graph';

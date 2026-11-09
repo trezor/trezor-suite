@@ -7,10 +7,9 @@ import 'core-js/actual';
 import { Suspense } from 'react';
 
 import { useDebugLanguageShortcut } from '@suite/debug';
+import { AppRouter, Main } from '@suite-app/app';
 import {
-    AppRouter,
     BundleLoader,
-    Main,
     Metadata,
     Preloader,
     ToasterProvider,
