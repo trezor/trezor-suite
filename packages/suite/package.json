@@ -13,8 +13,8 @@
             "types": "./libDev/mocks/index.d.ts",
             "default": "./mocks/index.ts"
         },
-        "./webpack/*": "./webpack/*.ts",
-        "./jest.sourceConfig": "./jest.sourceConfig.js"
+        "./jest.sourceConfig": "./jest.sourceConfig.js",
+        "./package.json": "./package.json"
     },
     "scripts": {
         "depcheck": "yarn g:depcheck",
@@ -24,8 +24,7 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "react-compiler:check": "yarn g:tsx ./webpack/checkReactCompilerFrozenReads.ts"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@floating-ui/react": "^0.27.20",
@@ -210,41 +209,20 @@
         "styled-components": "^6.5.3"
     },
     "devDependencies": {
-        "@babel/core": "7.29.7",
-        "@pmmmwh/react-refresh-webpack-plugin": "^0.6.3",
-        "@sentry/webpack-plugin": "^5.4.1",
         "@testing-library/jest-dom": "7.0.1",
         "@testing-library/react": "^16.3.3",
         "@testing-library/user-event": "^14.6.7",
-        "@trezor/bundler-security": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@types/invity-api": "^1.1.23",
         "@types/pdfmake": "^0.3.3",
         "@types/react": "19.3.0",
         "@types/react-dom": "19.3.0",
         "@types/semver": "^7.7.0",
-        "@types/webpack-bundle-analyzer": "^4.7.0",
-        "@types/webpack-plugin-serve": "^1.4.7",
-        "babel-loader": "^10.1.1",
-        "babel-plugin-react-compiler": "^1.0.0",
-        "babel-plugin-styled-components": "^2.3.0",
-        "buffer": "^6.0.3",
-        "core-js": "^3.50.0",
-        "crypto-browserify": "3.12.1",
-        "dotenv": "18.0.6",
         "jest-canvas-mock": "^2.5.8",
         "jest-watch-typeahead": "3.0.1",
         "lodash-es": "^4.18.1",
-        "minimizer-webpack-plugin": "5.13.0",
         "postcss-styled-syntax": "^0.7.3",
-        "raw-loader": "^4.0.2",
-        "react-refresh": "^0.19.0",
-        "stream-browserify": "^3.0.0",
         "stylelint": "^17.16.0",
-        "stylelint-config-standard": "^40.0.0",
-        "vm-browserify": "^1.1.2",
-        "webpack": "5.111.1",
-        "webpack-bundle-analyzer": "^5.4.0",
-        "webpack-plugin-serve": "^1.6.0"
+        "stylelint-config-standard": "^40.0.0"
     }
 }

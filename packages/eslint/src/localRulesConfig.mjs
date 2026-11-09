@@ -98,9 +98,6 @@ export const localRulesConfig = [
                         // `@suite/intl` ships the translation catalogs as files next to its sources;
                         // e2e tests import a catalog by path to assert translated text.
                         /^@suite\/intl\/translations\/[\w-]+\.json$/,
-                        // The applications import the Webpack pieces they share from this
-                        // build-only entry point; it is never part of an application bundle.
-                        /^@trezor\/suite\/webpack\/[\w/-]+$/,
                     ],
                 },
             ],

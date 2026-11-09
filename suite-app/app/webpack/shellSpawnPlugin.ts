@@ -21,7 +21,7 @@ const defaultOptions: Options = {
 // Importing the ESM-only @trezor/env-utils package there fails before webpack starts.
 const isWindows = () => process.platform === 'win32';
 
-class ShellSpawnPlugin {
+export class ShellSpawnPlugin {
     initialRun = false;
     options: Options;
 
@@ -59,5 +59,3 @@ class ShellSpawnPlugin {
         });
     }
 }
-
-export default ShellSpawnPlugin;

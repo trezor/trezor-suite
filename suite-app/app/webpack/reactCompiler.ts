@@ -10,7 +10,7 @@ import path from 'path';
 
 /**
  * Webpack loads this through ts-node as CommonJS, but Vite's config loader externalizes bare
- * imports, so `@trezor/suite/webpack/reactCompiler` reaches Node as an ES module where `__dirname`
+ * imports, so `@suite-app/app/webpack` reaches Node as an ES module where `__dirname`
  * does not exist. The repository root is therefore found by walking up from the working directory,
  * as `env.ts` does.
  */

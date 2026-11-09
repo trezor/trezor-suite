@@ -264,7 +264,7 @@ jobs:
       - name: Verify Workspace Resolutions
         run: yarn check-workspace-resolutions
       # Neither ESLint nor jest can see a React Compiler frozen form read; see
-      # packages/suite/webpack/reactCompilerFrozenReads.ts.
+      # suite-app/app/webpack/reactCompilerFrozenReads.ts.
       - name: React Compiler frozen form reads
         run: yarn react-compiler:check
       - name: Msg-system Config Validation

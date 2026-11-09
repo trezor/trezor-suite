@@ -9,15 +9,17 @@ import { resolve } from 'path';
 import { Plugin, ViteDevServer, build, defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 
+// Vite loads its config as native ES modules, which cannot run the CommonJS Webpack index, so it
+// imports these self-contained modules directly.
 import {
     assetPrefix,
     isTanstackReactQueryDevTools,
     transportBrowserPing,
-} from '@trezor/suite/webpack/env';
+} from '@suite-app/app/webpack/env';
 import {
     reactCompilerOptions,
     shouldCompileWithReactCompiler,
-} from '@trezor/suite/webpack/reactCompiler';
+} from '@suite-app/app/webpack/reactCompiler';
 
 import { sharedAliases as alias, noopCoreJsPlugin } from './viteShared';
 import { suiteVersion } from '../../packages/suite/package.json';
@@ -379,7 +381,7 @@ const bufferPolyfillPlugin = (): Plugin => {
     const resolvedVirtualModuleId = '\0' + virtualModuleId;
 
     const polyfillCode = `
-import { installBrowserPolyfills } from '@trezor/suite/webpack/browserPolyfills';
+import { installBrowserPolyfills } from '@suite-app/app/webpack/browserPolyfills';
 installBrowserPolyfills();
 `;
 

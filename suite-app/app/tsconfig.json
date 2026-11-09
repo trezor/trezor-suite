@@ -169,6 +169,9 @@
         {
             "path": "../../suite-common/test-utils"
         },
+        {
+            "path": "../../packages/bundler-security"
+        },
         { "path": "../../packages/type-utils" }
     ]
 }
