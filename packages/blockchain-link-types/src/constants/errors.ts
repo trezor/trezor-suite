@@ -1,5 +1,7 @@
 const PREFIX = 'blockchain_link/';
 
+export const isBlockchainLinkErrorCode = (code: string) => code.startsWith(PREFIX);
+
 const ERROR: { [key: string]: string | undefined } = {
     connect: undefined,
     worker_not_found: 'Worker not found',

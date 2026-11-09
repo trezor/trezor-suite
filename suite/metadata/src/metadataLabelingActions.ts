@@ -113,7 +113,7 @@ type SetAccountMetadataKeyThunkState = MetadataRootState;
 
 export const setAccountMetadataKeyThunk =
     (account: Account, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: () => SetAccountMetadataKeyThunkState) => {
+    (dispatch: Dispatch, getState: () => SetAccountMetadataKeyThunkState): Account => {
         const device = selectDeviceByStaticSessionId(getState(), account.deviceState);
         const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
 
