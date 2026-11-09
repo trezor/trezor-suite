@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/state",
+    "name": "@suite-native-app/state",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -60,7 +60,6 @@
         "@suite-native/message-system": "workspace:*",
         "@suite-native/send": "workspace:*",
         "@suite-native/sentry": "workspace:*",
-        "@suite-native/services": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",

@@ -21,10 +21,7 @@ import {
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import type {
-    EnsureEncryptionKeyDep,
-    MMKVStorageDep as NativeStorageDep,
-} from '@suite-native/storage';
+import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
@@ -55,7 +52,7 @@ const transports = transportsPerDeviceType[deviceType];
 
 type NativeAppDeps = Pick<NativeReduxStore, 'getState' | 'dispatch'> &
     EnsureEncryptionKeyDep &
-    NativeStorageDep &
+    MMKVStorageDep &
     GetTrezorConnectPrivilegedDep;
 
 export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): NativeServices => {

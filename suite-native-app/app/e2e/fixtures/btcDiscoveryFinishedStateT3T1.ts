@@ -1,5 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { PreloadedState } from '@suite-native/state';
+import { PreloadedState } from '@suite-native-app/state';
 
 /**
  *  reflects state after BTC discovery of connected device with `mnemonic_immune` seed from @packages/trezor-user-env-link constants.

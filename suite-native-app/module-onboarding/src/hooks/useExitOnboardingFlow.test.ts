@@ -24,8 +24,8 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-jest.mock('@suite-native/app-init', () => ({
-    ...jest.requireActual('@suite-native/app-init'),
+jest.mock('@suite-native-app/app-init', () => ({
+    ...jest.requireActual('@suite-native-app/app-init'),
     postOnboardingInitThunk: () => ({
         type: 'postOnboardingInitMock',
     }),

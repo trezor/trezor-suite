@@ -41,7 +41,7 @@
             "path": "../../suite-common/persistent-device-data"
         },
         {
-            "path": "../platform-encryption-native"
+            "path": "../../suite-native/platform-encryption-native"
         },
         {
             "path": "../../suite-common/react-query"
@@ -78,30 +78,57 @@
         {
             "path": "../../suite-common/walletconnect"
         },
-        { "path": "../analytics" },
-        { "path": "../banners" },
-        { "path": "../biometrics" },
-        { "path": "../blockchain" },
-        { "path": "../bluetooth" },
-        { "path": "../device" },
-        { "path": "../device-authorization" },
-        { "path": "../device-mutex" },
-        { "path": "../device-onboarding" },
-        { "path": "../discovery" },
-        { "path": "../feature-feedback" },
-        { "path": "../feature-flags" },
-        { "path": "../firmware" },
-        { "path": "../graph" },
-        { "path": "../intl" },
-        { "path": "../message-system" },
-        { "path": "../send" },
-        { "path": "../sentry" },
-        { "path": "../services" },
-        { "path": "../settings" },
-        { "path": "../storage" },
-        { "path": "../suite-sync" },
-        { "path": "../trading-state" },
-        { "path": "../transaction-management" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/banners" },
+        {
+            "path": "../../suite-native/biometrics"
+        },
+        {
+            "path": "../../suite-native/blockchain"
+        },
+        {
+            "path": "../../suite-native/bluetooth"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-authorization"
+        },
+        {
+            "path": "../../suite-native/device-mutex"
+        },
+        {
+            "path": "../../suite-native/device-onboarding"
+        },
+        {
+            "path": "../../suite-native/discovery"
+        },
+        {
+            "path": "../../suite-native/feature-feedback"
+        },
+        {
+            "path": "../../suite-native/feature-flags"
+        },
+        { "path": "../../suite-native/firmware" },
+        { "path": "../../suite-native/graph" },
+        { "path": "../../suite-native/intl" },
+        {
+            "path": "../../suite-native/message-system"
+        },
+        { "path": "../../suite-native/send" },
+        { "path": "../../suite-native/sentry" },
+        { "path": "../../suite-native/settings" },
+        { "path": "../../suite-native/storage" },
+        {
+            "path": "../../suite-native/suite-sync"
+        },
+        {
+            "path": "../../suite-native/trading-state"
+        },
+        {
+            "path": "../../suite-native/transaction-management"
+        },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"

@@ -58,9 +58,9 @@ Provides logic shared between trading and send flow.
 graph TD
     subgraph non-trading-modules["External modules"]
         app["@suite-native-app/app"]
-        module-onboarding["@suite-native/module-onboarding"]
+        module-onboarding["@suite-native-app/module-onboarding"]
         module-settings["@suite-native/module-settings"]
-        state["@suite-native/state"]
+        state["@suite-native-app/state"]
         module-dev-utils["@suite-native/module-dev-utils"]
     end
     module-trading["@suite-native/module-trading"]

@@ -195,7 +195,7 @@ const stakingProductsImport =
 
 for (const filename of [
     `${repositoryRoot}packages/suite/src/support/createSuiteCompositionRoot.ts`,
-    `${repositoryRoot}suite-native/state/src/createNativeServicesCompositionRoot.ts`,
+    `${repositoryRoot}suite-native-app/state/src/createNativeServicesCompositionRoot.ts`,
 ]) {
     test(`allows staking products in the composition root ${filename}`, async () => {
         assert.deepEqual(

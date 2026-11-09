@@ -23,7 +23,7 @@ import {
     type StorePersistorDep,
     StoreProvider,
     selectIsAppReady,
-} from '@suite-native/state';
+} from '@suite-native-app/state';
 
 import { BannersRenderer } from './BannersRenderer';
 import { ModalsRenderer } from './ModalsRenderer';
