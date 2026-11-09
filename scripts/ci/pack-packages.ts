@@ -4,9 +4,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import util from 'node:util';
 
-import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import { exec, getTrezorPackageDir } from './helpers';
-import { collectPublishClosure, toReleaseScriptName } from './publish-closure';
+import {
+    CONNECT_PUBLISH_ROOTS,
+    collectPublishClosure,
+    toReleaseScriptName,
+} from './publish-closure';
 
 const mkdir = util.promisify(fs.mkdir);
 const removeDir = util.promisify(fs.rm);
