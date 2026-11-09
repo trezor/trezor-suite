@@ -65,12 +65,69 @@ body {
     font-size: 14px;
     color: #494949;
     background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+.deprecation-banner {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    font-size: 14px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    color: #5a3a00;
+    background-color: #fff4e0;
+    border-bottom: 1px solid #f3d19c;
+}
+.deprecation-banner svg {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    color: #d97a00;
+}
+.deprecation-banner p {
+    flex: 1 1 auto;
+    color: inherit;
+}
+.deprecation-banner button {
+    flex: none;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #5a3a00;
+    background: transparent;
+    border: 1px solid #d97a00;
+}
+.deprecation-banner button:hover,
+.deprecation-banner button:active {
+    background: #ffe7bf;
+}
+.deprecation-banner button[hidden] {
+    display: none;
+}
+@media (max-width: 520px) {
+    .deprecation-banner {
+        flex-wrap: wrap;
+    }
+    .deprecation-banner p {
+        flex-basis: calc(100% - 34px);
+    }
+    .deprecation-banner button {
+        margin-left: 34px;
+    }
+}
+.deprecation-banner strong,
+.deprecation-banner span {
+    font-weight: 600;
 }
 main {
+    flex: 1 1 auto;
     width: 100%;
-    height: 100%;
+    min-height: 0;
     min-width: 300px;
-    min-height: none;
     display: flex;
 }
 section {

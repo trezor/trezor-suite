@@ -4,7 +4,7 @@ icon: lightning
 ---
 
 import Link from 'next/link';
-import { Card, Cards, Steps, Tabs } from 'nextra/components';
+import { Callout, Card, Cards, Steps, Tabs } from 'nextra/components';
 import styled from 'styled-components';
 
 import { Button, CollapsibleBox, Card as TrezorCard, variables } from '@trezor/components';
@@ -82,6 +82,12 @@ export const ExampleHeading = styled.h3`
 `;
 
 # Integrate Trezor devices with your project
+
+<Callout type="warning">
+    Trezor Connect 9 is deprecated and its support ends on December 31, 2026. Please migrate to
+    Trezor Connect 10, see the [migration
+    guide](https://connect.trezor.io/10/guides/migrating-to-connect-10).
+</Callout>
 
 <SectionCard>
     ### Explore Trezor Connect SDKs

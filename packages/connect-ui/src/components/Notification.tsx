@@ -3,10 +3,6 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, Icon } from '@trezor/components';
-import { useWindowFocus } from '@trezor/react-utils';
-import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
-
-import { openDeeplinkWithWebFallback } from '../utils/openDeeplinkWithWebFallback';
 
 const NotificationBox = styled.div`
     background-color: ${({ color }) => color};
@@ -117,23 +113,6 @@ const Notification = ({ header, body, cta, variant }: NotificationProps) => {
     );
 };
 
-export const UseSuiteDesktopNotification = () => {
-    const windowFocused = useWindowFocus();
-
-    return (
-        <Notification
-            variant="warning"
-            header="Try something new"
-            body="Switch to Trezor Suite desktop for the best experience."
-            cta={{
-                desc: 'Try Trezor Suite',
-                onClick: () => {
-                    openDeeplinkWithWebFallback(windowFocused, SUITE_BRIDGE_DEEPLINK, SUITE_URL);
-                },
-            }}
-        />
-    );
-};
 export const SuspiciousOriginNotification = () => (
     <Notification
         variant="danger"
