@@ -5,7 +5,7 @@ import {
     stakingProductInfoSchema,
 } from '@suite-common/earn-staking-common';
 
-import { SOLANA_EPOCH_DAYS } from './solanaEpochReward';
+import { SOLANA_EPOCH_DAYS } from './constants';
 
 export const SOLANA_EXTERNAL_PRODUCT_INFO = stakingProductInfoSchema.parse({
     rate: null,

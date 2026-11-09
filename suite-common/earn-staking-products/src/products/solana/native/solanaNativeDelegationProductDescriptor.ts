@@ -8,13 +8,6 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS } from './solanaNativeDelegationProductLimits';
 
-export const EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES: StakingProductDescriptor['messageSystemFeatures'] =
-    {
-        stake: 'sol.staking.stake',
-        unstake: 'sol.staking.unstake',
-        withdraw: 'sol.staking.claim',
-    };
-
 export type CreateSolanaNativeDelegationProductDescriptorParams = {
     networkSymbol: NetworkSymbol;
     provider: StakingProvider;

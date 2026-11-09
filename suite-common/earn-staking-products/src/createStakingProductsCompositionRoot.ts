@@ -17,7 +17,7 @@ import { createCardanoRetiredDelegationProduct } from './products/cardano/retire
 import { createEverstakePooledProduct } from './products/ethereum/createEverstakePooledProduct';
 import { createSolanaExternalDelegationProduct } from './products/solana/external/createSolanaExternalDelegationProduct';
 import { createSolanaNativeDelegationProduct } from './products/solana/native/createSolanaNativeDelegationProduct';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductDescriptor';
+import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductMessageSystemFeatures';
 import { createTronCuratedProduct } from './products/tron/createTronCuratedProduct';
 import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './products/tron/tronCuratedProductDescriptor';
 import { everstakeProvider } from './providers/everstake';
