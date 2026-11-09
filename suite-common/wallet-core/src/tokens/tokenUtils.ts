@@ -4,9 +4,15 @@ import {
     type NetworkSymbol,
     getNetworkDisplaySymbol,
     getNetworkFeatures,
+    getNetworkType,
 } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { isNftMatchesSearch, isNftToken, isTokenMatchesSearch } from '@suite-common/wallet-utils';
+import {
+    getContractAddressForNetworkSymbol,
+    isNftMatchesSearch,
+    isNftToken,
+    isTokenMatchesSearch,
+} from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -49,13 +55,17 @@ export const getTokens = <T extends TokenInfo = TokenInfo>({
     const unverifiedWithBalance: T[] = [];
     const unverifiedWithoutBalance: T[] = [];
 
-    const hiddenTokens = new Set(tokenDefinitions?.hide);
-    const shownTokens = new Set(tokenDefinitions?.show);
+    const isEvmNetwork = getNetworkType(symbol) === 'ethereum';
+    const normalizeContract = (contract: string) =>
+        isEvmNetwork ? getContractAddressForNetworkSymbol(symbol, contract) : contract;
+    const hiddenTokens = new Set(tokenDefinitions?.hide.map(normalizeContract));
+    const shownTokens = new Set(tokenDefinitions?.show.map(normalizeContract));
 
     filteredTokens.forEach(token => {
         const isKnown = isTokenDefinitionKnown(tokenDefinitions?.data, symbol, token.contract);
-        const isHidden = hiddenTokens.has(token.contract);
-        const isShown = shownTokens.has(token.contract);
+        const contract = normalizeContract(token.contract);
+        const isHidden = hiddenTokens.has(contract);
+        const isShown = shownTokens.has(contract);
 
         const query = searchQuery ? searchQuery.trim().toLowerCase() : '';
 
