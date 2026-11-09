@@ -24,7 +24,13 @@ cut -f2 "$caches" | sort -u | while IFS= read -r ref; do
         while IFS=$'\t' read -r cache_id bytes; do
             printf 'Closed PR #%s: cache %s (%s bytes), ref %s\n' "$pr_number" "$cache_id" "$bytes" "$ref"
             if [[ "${CACHE_DELETE:-false}" == true ]]; then
-                gh api --method DELETE "repos/$repository/actions/caches/$cache_id"
+                if ! delete_status=$(gh api --include --silent --method DELETE "repos/$repository/actions/caches/$cache_id" |
+                    awk 'NR == 1 { print $2 }'); then
+                    if [[ "$delete_status" != 404 ]]; then
+                        exit 1
+                    fi
+                    printf 'Cache %s has already been removed.\n' "$cache_id"
+                fi
             fi
         done
 done
