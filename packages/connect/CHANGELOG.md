@@ -1,9 +1,9 @@
 |             Package              | Stable | Canary |
 | :------------------------------: | :----: | :----: |
-|       npm @trezor/connect        | 9.7.3  |   -    |
-|     npm @trezor/connect-web      | 9.7.3  |   -    |
-| npm @trezor/connect-webextension | 9.7.3  |   -    |
-|    npm @trezor/connect-mobile    | 9.7.3  |   -    |
+|       npm @trezor/connect        | 9.7.4  |   -    |
+|     npm @trezor/connect-web      | 9.7.4  |   -    |
+| npm @trezor/connect-webextension | 9.7.4  |   -    |
+|    npm @trezor/connect-mobile    | 9.7.4  |   -    |
 
 |     Deployment     | Stable | Canary |
 | :----------------: | :----: | :----: |
@@ -13,7 +13,7 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
 
 # 9.7.4
 
-This is the final release of Trezor Connect 9. Version 9 is deprecated and no further updates are planned. Please migrate to Trezor Connect 10 as soon as possible, see the [migration guide](https://connect.trezor.io/10/guides/migrating-to-connect-10).
+This is the final release of Trezor Connect 9. Version 9 is deprecated and its support ends on December 31, 2026. Please migrate to Trezor Connect 10 as soon as possible, see the [migration guide](https://connect.trezor.io/10/guides/migrating-to-connect-10).
 
 The Connect popup now displays a deprecation notice naming the application that opened it.
 
