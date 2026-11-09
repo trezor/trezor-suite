@@ -109,7 +109,7 @@ Skip any item whose API you do not use.
     - `payload.path` → `result.serializedPath` on every `*GetPublicKey`.
     - Coin-agnostic consumers: read `result.displayablePublicKey`.
 
-- [ ] **`getAccountInfo` called without `path` or `descriptor` now throws** `Method_InvalidParameter`. Pass `path` (derive on device, then query backend) or `descriptor` (backend only). For the old discovery behaviour use `discoverAccounts`, or [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) for user-facing selection.
+- [ ] **`getAccountInfo` called without `path` or `descriptor` now throws** `Method_InvalidParameter`. Pass `path` (derive on device, then query backend) or `descriptor` (backend only). For user-facing selection use [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount).
 
 - [ ] **The event and UI-plumbing methods are gone from the client packages:** `on`, `off`, `removeAllListeners`, `uiResponse` and `updateConnectSettings`. In `@trezor/connect-web`, `@trezor/connect-webextension` and `@trezor/connect-mobile` they are absent from the object you import, so a call throws `TypeError: TrezorConnect.on is not a function`. `@trezor/connect` keeps them, see [Node, Electron and React Native apps](#node-electron-and-react-native-apps).
 
