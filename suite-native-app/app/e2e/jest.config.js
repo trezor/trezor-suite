@@ -51,6 +51,10 @@ module.exports = {
     },
     rootDir: process.cwd(),
     testTimeout: 120000,
+    // When the Android emulator disappears mid-run, Detox leaves handles open and Jest does not
+    // exit on its own. The Detox runner then waits until the CI step times out and the results
+    // never reach Currents. Jest force-exits only after the reporters and the global teardown.
+    forceExit: true,
     globalSetup: 'detox/runners/jest/globalSetup',
     globalTeardown: 'detox/runners/jest/globalTeardown',
     transform: {
