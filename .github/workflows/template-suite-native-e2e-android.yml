@@ -205,11 +205,13 @@ jobs:
           set -euo pipefail
           LOG_DIR="suite-native-app/app/crash-reports"
           mkdir -p "$LOG_DIR/tombstones"
-          # Emulator crash DB written by QEMU to the host filesystem on abnormal termination
+          # Crashpad databases are directories; preserve their minidumps and metadata.
           find /tmp "$HOME/.android/avd" -name "emu-crash*.db" -print0 2>/dev/null \
             | while IFS= read -r -d '' db; do
-              cp "$db" "$LOG_DIR/$(basename "$db")" || true
-              sqlite3 "$db" "SELECT * FROM Crash;" > "$LOG_DIR/$(basename "$db" .db)-report.txt" 2>&1 || true
+              cp -r "$db" "$LOG_DIR/$(basename "$db")" || true
+              if [[ -f "$db" ]]; then
+                sqlite3 "$db" "SELECT * FROM Crash;" > "$LOG_DIR/$(basename "$db" .db)-report.txt" 2>&1 || true
+              fi
             done || true
           # Android tombstones (only available if the emulator is still reachable via ADB)
           adb shell ls /data/tombstones/ 2>/dev/null \
