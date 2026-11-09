@@ -78,6 +78,31 @@ describe('applyRequestCompatibility', () => {
         });
     });
 
+    describe('getAccountInfo', () => {
+        const payload = { path: "m/44'/60'/0'", coin: 'btc' };
+
+        it('sets the _v9_compat flag for 9.x callers', () => {
+            expect(
+                applyRequestCompatibility(createParams({ method: 'getAccountInfo', payload })),
+            ).toEqual(
+                createParams({
+                    method: 'getAccountInfo',
+                    payload: { ...payload, _v9_compat: true },
+                }),
+            );
+        });
+
+        it('leaves the call of a non-9.x caller untouched', () => {
+            const params = createParams({
+                method: 'getAccountInfo',
+                payload,
+                manifest: { appName: 'app', npmVersion: '10.0.0' },
+            });
+
+            expect(applyRequestCompatibility(params)).toBe(params);
+        });
+    });
+
     describe('composeTransaction', () => {
         const outputs = [{ type: 'payment', address: 'bc1qrecipient', amount: '1000' }];
 

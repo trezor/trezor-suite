@@ -32,6 +32,10 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         // assume that device will not be used
         let willUseDevice = false;
 
+        // Flag set by Suite for connect 9.x host apps (see connect-popup `applyRequestCompatibility`);
+        // connect 9 did not check that a path belongs to the coin, so those callers keep working.
+        const v9Compat = !!message.payload._v9_compat;
+
         const { hasBundle, payload } = bundlify(message.payload);
 
         // validate bundle type
@@ -88,6 +92,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 // mainnet funds. Other networks' firmware apps check their own paths. With a
                 // descriptor nothing is derived, so the path is only a label and is left alone.
                 if (
+                    !v9Compat &&
                     batchUsesDevice &&
                     (coinInfo.type === 'bitcoin' ||
                         (coinInfo.type === 'ethereum' &&

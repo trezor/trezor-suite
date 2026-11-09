@@ -3,6 +3,7 @@ import type {
     GetAccountInfo as GetAccountInfoParams,
     Params,
 } from '@trezor/connect-common';
+import type { GetAccountInfoV9Compat } from '@trezor/connect-common/src/types/api/account/getAccountInfo';
 
 import { default as GetAccountInfo } from './getAccountInfo';
 import { initBlockchain } from '../backend/BlockchainLink';
@@ -33,7 +34,8 @@ const createMethod = (stellarContractTokens?: string[]) =>
     });
 
 const createMethodWith = (
-    params: Params<GetAccountInfoParams> | BundledParams<GetAccountInfoParams>,
+    params: (Params<GetAccountInfoParams> | BundledParams<GetAccountInfoParams>) &
+        GetAccountInfoV9Compat,
 ) => new GetAccountInfo({ payload: { method: 'getAccountInfo', ...params } });
 
 describe(GetAccountInfo.name, () => {
@@ -132,6 +134,24 @@ describe('GetAccountInfo path and coin', () => {
                 descriptor:
                     'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
                 path: "m/44'/60'/0'",
+            }),
+        ).not.toThrow();
+    });
+
+    it('accepts a path of another coin from a connect 9 host', () => {
+        expect(() =>
+            createMethodWith({ coin: 'btc', path: "m/44'/60'/0'", _v9_compat: true }),
+        ).not.toThrow();
+    });
+
+    it('accepts a bundle with a path of another coin from a connect 9 host', () => {
+        expect(() =>
+            createMethodWith({
+                bundle: [
+                    { coin: 'btc', path: "m/84'/0'/0'" },
+                    { coin: 'btc', path: "m/44'/195'/0'" },
+                ],
+                _v9_compat: true,
             }),
         ).not.toThrow();
     });

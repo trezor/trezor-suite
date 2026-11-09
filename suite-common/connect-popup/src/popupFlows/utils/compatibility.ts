@@ -64,18 +64,18 @@ const applyComposeTransactionCompatibility = (
 };
 
 /**
- * Connect v10 rejects non-bitcoin coins/paths in `getPublicKey`, which broke host apps still on
- * `@trezor/connect` 9.x. For those callers, inject `_v9_compat` so connect restores the v9 btc
- * fallback (e.g. for Ethereum or Tron). A no-op for bitcoin-like calls.
+ * Connect v10 rejects non-bitcoin coins/paths in `getPublicKey` and a `path` outside the coin type
+ * of `coin` in `getAccountInfo`, which would break host apps still on `@trezor/connect` 9.x. For
+ * those callers, inject `_v9_compat` so connect keeps the v9 behavior. A no-op for calls v10 accepts.
  */
-const applyGetPublicKeyCompatibility = (
+const applyV9CompatFlag = (
     params: PopupFlowParams<CallMethodKeys>,
 ): PopupFlowParams<CallMethodKeys> => {
     if (!isConnectV9Source(params.source)) {
         return params;
     }
 
-    const payload = params.payload as PopupFlowPayload<'getPublicKey'>;
+    const payload = params.payload as PopupFlowPayload<'getPublicKey' | 'getAccountInfo'>;
 
     return { ...params, payload: { ...payload, _v9_compat: true } };
 };
@@ -88,7 +88,8 @@ export const applyRequestCompatibility = (
         case 'composeTransaction':
             return applyComposeTransactionCompatibility(params);
         case 'getPublicKey':
-            return applyGetPublicKeyCompatibility(params);
+        case 'getAccountInfo':
+            return applyV9CompatFlag(params);
         default:
             return params;
     }

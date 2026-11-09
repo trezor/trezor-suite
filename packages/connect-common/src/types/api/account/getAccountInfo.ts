@@ -15,7 +15,12 @@ export interface GetAccountInfo extends Omit<BlockchainLinkParams<'getAccountInf
     suppressBackupWarning?: boolean;
 }
 
-export declare function getAccountInfo(params: Params<GetAccountInfo>): Response<AccountInfo>;
+// Internal flag set by Suite for connect 9.x host apps; skips the check that `path` belongs to `coin`.
+export type GetAccountInfoV9Compat = { _v9_compat?: boolean };
+
 export declare function getAccountInfo(
-    params: BundledParams<GetAccountInfo>,
+    params: Params<GetAccountInfo> & GetAccountInfoV9Compat,
+): Response<AccountInfo>;
+export declare function getAccountInfo(
+    params: BundledParams<GetAccountInfo> & GetAccountInfoV9Compat,
 ): Response<(AccountInfo | null)[]>;
