@@ -1,0 +1,100 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/bip329" },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/earn-stablecoin"
+        },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
+            "path": "../../suite-common/fiat-services"
+        },
+        { "path": "../../suite-common/graph" },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
+        },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
+        { "path": "../../suite-common/tokens" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../module-device-onboarding" },
+        {
+            "path": "../module-stellar-token-management"
+        },
+        { "path": "../../suite-native/accounts" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/assets" },
+        { "path": "../../suite-native/atoms" },
+        { "path": "../../suite-native/banners" },
+        { "path": "../../suite-native/bip329" },
+        { "path": "../../suite-native/device" },
+        { "path": "../../suite-native/earn" },
+        {
+            "path": "../../suite-native/feature-feedback"
+        },
+        {
+            "path": "../../suite-native/formatters"
+        },
+        { "path": "../../suite-native/forms" },
+        { "path": "../../suite-native/graph" },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/labeling" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/module-earn"
+        },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        {
+            "path": "../../suite-native/performance-metrics"
+        },
+        { "path": "../../suite-native/qr-code" },
+        {
+            "path": "../../suite-native/suite-sync"
+        },
+        { "path": "../../suite-native/tokens" },
+        {
+            "path": "../../suite-native/transactions"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/utils" },
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        { "path": "../../packages/requirements" }
+    ]
+}

@@ -1,0 +1,70 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        { "path": "../../suite-common/assets" },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/formatters"
+        },
+        { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
+        { "path": "../../suite-common/tokens" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        {
+            "path": "../../suite-common/walletconnect"
+        },
+        { "path": "../../suite-native/accounts" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/assets" },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/clipboard"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/formatters"
+        },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        {
+            "path": "../../suite-native/price-chart"
+        },
+        { "path": "../../suite-native/toasts" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/type-utils" },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        { "path": "../../packages/requirements" }
+    ]
+}

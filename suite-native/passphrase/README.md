@@ -22,16 +22,16 @@ This package provides the shared components and logic needed for passphrase entr
 
 This package is used in two main scenarios:
 
-1. **Wallet Creation** (`@suite-native/module-passphrase`): When creating a new hidden passphrase wallet during discovery. The passphrase is entered, validated, and then used to create a new wallet.
-2. **Device Authorization** (`@suite-native/module-authorize-device`): When unlocking a device that has a passphrase-protected wallet. The passphrase is entered to authorize access to an existing wallet's features (e.g., receive, sign transaction, etc.)
+1. **Wallet Creation** (`@suite-native-app/module-passphrase`): When creating a new hidden passphrase wallet during discovery. The passphrase is entered, validated, and then used to create a new wallet.
+2. **Device Authorization** (`@suite-native-app/module-authorize-device`): When unlocking a device that has a passphrase-protected wallet. The passphrase is entered to authorize access to an existing wallet's features (e.g., receive, sign transaction, etc.)
 
 Both scenarios share the same UI components and validation logic, but have different navigation flows and completion handlers.
 
 ## Relationship with Other Packages
 
 - **Used by**:
-    - `@suite-native/module-passphrase` - Uses these components for wallet creation flow
-    - `@suite-native/module-authorize-device` - Uses these components for device authorization flow
+    - `@suite-native-app/module-passphrase` - Uses these components for wallet creation flow
+    - `@suite-native-app/module-authorize-device` - Uses these components for device authorization flow
 - **Purpose**: Provides shared, reusable passphrase UI and logic to avoid duplication across different navigation modules
 
 ### Dependency Constraints

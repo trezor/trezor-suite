@@ -5,32 +5,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AppsEmbeddingScreen } from '@suite-native/apps-embedding-demo';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
-import { AccountDetailStackNavigator } from '@suite-native/module-account-detail';
-import { AccountOverviewScreen } from '@suite-native/module-accounts';
-import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
-import { ActivityCenterStackNavigator } from '@suite-native/module-activity-center';
-import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
-import { AssetsStackNavigator } from '@suite-native/module-assets';
-import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-checks';
-import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
-import {
-    ConnectPermissionsScreen,
-    ConnectPopupScreen,
-    WalletConnectPairScreen,
-    WalletConnectSessionPopupScreen,
-    WalletConnectSwitchAccountScreen,
-} from '@suite-native/module-connect-popup';
-import { DemoAccountQuestionnaireStackNavigator } from '@suite-native/module-demo-account-questionnaire';
-import {
-    DevUtilsScreen,
-    MessageSystemExperimentsScreen,
-    MessageSystemManagerScreen,
-} from '@suite-native/module-dev-utils';
-import {
-    BackupFailedModalScreen,
-    DeviceOnboardingStackNavigator,
-} from '@suite-native/module-device-onboarding';
-import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import {
     EarnConsentsScreen,
     EarnDeviceConnectionGuard,
@@ -45,15 +19,6 @@ import {
     YieldStackNavigator,
     YieldVaultDetailScreen,
 } from '@suite-native/module-earn';
-import { FeatureFeedbackModalScreen } from '@suite-native/module-home';
-import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
-import { ReceiveStackNavigator } from '@suite-native/module-receive';
-import { SendStackNavigator } from '@suite-native/module-send';
-import { SettingsStackNavigator } from '@suite-native/module-settings';
-import { SignAndVerifyScreen, SignAndVerifyStackNavigator } from '@suite-native/module-sign-verify';
-import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
-import { TradingStackNavigator } from '@suite-native/module-trading';
-import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -62,7 +27,45 @@ import {
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';
 import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-state';
+import { AccountDetailStackNavigator } from '@suite-native-app/module-account-detail';
+import { AccountOverviewScreen } from '@suite-native-app/module-accounts';
+import { AccountsImportStackNavigator } from '@suite-native-app/module-accounts-import';
+import { ActivityCenterStackNavigator } from '@suite-native-app/module-activity-center';
+import { AddCoinAccountStackNavigator } from '@suite-native-app/module-add-accounts';
+import { AssetsStackNavigator } from '@suite-native-app/module-assets';
+import { DeviceCompromisedModalScreen } from '@suite-native-app/module-authenticity-checks';
+import { AuthorizeDeviceStackNavigator } from '@suite-native-app/module-authorize-device';
+import {
+    ConnectPermissionsScreen,
+    ConnectPopupScreen,
+    WalletConnectPairScreen,
+    WalletConnectSessionPopupScreen,
+    WalletConnectSwitchAccountScreen,
+} from '@suite-native-app/module-connect-popup';
+import { DemoAccountQuestionnaireStackNavigator } from '@suite-native-app/module-demo-account-questionnaire';
+import {
+    DevUtilsScreen,
+    MessageSystemExperimentsScreen,
+    MessageSystemManagerScreen,
+} from '@suite-native-app/module-dev-utils';
+import {
+    BackupFailedModalScreen,
+    DeviceOnboardingStackNavigator,
+} from '@suite-native-app/module-device-onboarding';
+import { DeviceSettingsStackNavigator } from '@suite-native-app/module-device-settings';
+import { FeatureFeedbackModalScreen } from '@suite-native-app/module-home';
 import { OnboardingStackNavigator } from '@suite-native-app/module-onboarding';
+import { PassphraseStackNavigator } from '@suite-native-app/module-passphrase';
+import { ReceiveStackNavigator } from '@suite-native-app/module-receive';
+import { SendStackNavigator } from '@suite-native-app/module-send';
+import { SettingsStackNavigator } from '@suite-native-app/module-settings';
+import {
+    SignAndVerifyScreen,
+    SignAndVerifyStackNavigator,
+} from '@suite-native-app/module-sign-verify';
+import { StellarManageTokenStackNavigator } from '@suite-native-app/module-stellar-token-management';
+import { TradingStackNavigator } from '@suite-native-app/module-trading';
+import { TransactionDetailStackNavigator } from '@suite-native-app/module-transactions';
 import { StorybookUI } from '@suite-native-app/storybook';
 
 import { AppTabNavigator } from './AppTabNavigator';

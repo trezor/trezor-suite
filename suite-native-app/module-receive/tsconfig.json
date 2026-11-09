@@ -1,0 +1,88 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/address" },
+        {
+            "path": "../../suite-common/analytics"
+        },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/networks" },
+        { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        { "path": "../../suite-common/tokens" },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../../suite-native/accounts" },
+        { "path": "../../suite-native/address" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/clipboard"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-authorization"
+        },
+        {
+            "path": "../../suite-native/device-mutex"
+        },
+        {
+            "path": "../../suite-native/feature-flags"
+        },
+        {
+            "path": "../../suite-native/formatters"
+        },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        {
+            "path": "../../suite-native/performance-metrics"
+        },
+        { "path": "../../suite-native/qr-code" },
+        { "path": "../../suite-native/toasts" },
+        { "path": "../../suite-native/tokens" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/crypto-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        { "path": "../../packages/react-utils" },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        {
+            "path": "../../suite-native/test-utils"
+        },
+        {
+            "path": "../../suite-native/test-utils-store"
+        }
+    ]
+}

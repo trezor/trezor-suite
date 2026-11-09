@@ -1,0 +1,62 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/message-system"
+        },
+        { "path": "../../suite-common/tokens" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        {
+            "path": "../module-stellar-token-management"
+        },
+        { "path": "../../suite-native/accounts" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        { "path": "../../suite-native/banners" },
+        {
+            "path": "../../suite-native/device-manager"
+        },
+        {
+            "path": "../../suite-native/discovery"
+        },
+        {
+            "path": "../../suite-native/formatters"
+        },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        {
+            "path": "../../suite-native/module-earn"
+        },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        {
+            "path": "../../suite-native/performance-metrics"
+        },
+        { "path": "../../suite-native/tokens" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/requirements" }
+    ]
+}

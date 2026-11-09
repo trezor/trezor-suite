@@ -1,0 +1,68 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/analytics-redux"
+        },
+        {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
+            "path": "../../suite-common/earn-staking-api"
+        },
+        { "path": "../../suite-common/firmware" },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/persistent-device-data"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-quota-manager"
+        },
+        {
+            "path": "../../suite-common/suite-sync-types"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        { "path": "../../suite-common/trading" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/clipboard"
+        },
+        { "path": "../../suite-native/config" },
+        {
+            "path": "../../suite-native/feature-flags"
+        },
+        { "path": "../../suite-native/forms" },
+        { "path": "../../suite-native/intl" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        { "path": "../../suite-native/sentry" },
+        { "path": "../../suite-native/settings" },
+        { "path": "../../suite-native/storage" },
+        { "path": "../../suite-native/toasts" },
+        {
+            "path": "../../suite-native/trading-state"
+        },
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/requirements" }
+    ]
+}

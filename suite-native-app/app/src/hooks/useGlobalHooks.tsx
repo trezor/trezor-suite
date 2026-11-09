@@ -13,7 +13,7 @@ import {
     useRenderDeviceDangerBanner,
 } from '@suite-native/device';
 import { useHandleDeviceAuthorization } from '@suite-native/device-authorization';
-import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
+import { useConnectPopupNavigation } from '@suite-native-app/module-connect-popup';
 
 /**
  * @description This hook is used to initialize all the hooks,

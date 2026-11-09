@@ -1,0 +1,76 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/react-query"
+        },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
+        { "path": "../../suite-common/tokens" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../../suite-native/address" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/clipboard"
+        },
+        { "path": "../../suite-native/config" },
+        {
+            "path": "../../suite-native/confirm-on-trezor"
+        },
+        {
+            "path": "../../suite-native/formatters"
+        },
+        { "path": "../../suite-native/icons" },
+        {
+            "path": "../../suite-native/in-app-rating"
+        },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/labeling" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        { "path": "../../suite-native/send" },
+        { "path": "../../suite-native/toasts" },
+        { "path": "../../suite-native/tokens" },
+        {
+            "path": "../../suite-native/transaction-management"
+        },
+        {
+            "path": "../../suite-native/transactions"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        { "path": "../../packages/requirements" }
+    ]
+}
