@@ -7,9 +7,27 @@
 
 |     Deployment     | Stable | Canary |
 | :----------------: | :----: | :----: |
-| connect.trezor.io/ | 9.7.3  |   -    |
+| connect.trezor.io/ | 9.7.4  |   -    |
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
+
+# 9.7.4
+
+This is the final release of Trezor Connect 9. Version 9 is deprecated and no further updates are planned. Please migrate to Trezor Connect 10 as soon as possible, see the [migration guide](https://connect.trezor.io/10/guides/migrating-to-connect-10).
+
+The Connect popup now displays a deprecation notice naming the application that opened it.
+
+Fixed the `Invalid definition` error on Trezor Model One with firmware 1.14.2 and newer, which accepts only the new format of Ethereum network and token definitions.
+
+Security fixes:
+
+- The popup displays the real origin of the requesting application again when Connect runs in the iframe, which also restores the warning about suspicious origins.
+- `trezor-connect.js` hosted on connect.trezor.io accepts popup messages only from the expected origin.
+- Removed the internal `evoluGetNode`, `evoluGetDelegatedIdentityKey` and `evoluSignRegistrationRequest` methods.
+- PIN, recovery words, THP passphrase and other secrets are no longer written to the Connect debug log.
+- Transport rejects messages that declare an implausibly large length.
+
+These fixes are deployed to connect.trezor.io only. Applications bundling Connect 9 from npm should migrate to Trezor Connect 10.
 
 # 9.7.3
 
