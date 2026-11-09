@@ -13,14 +13,9 @@ import useSWR from 'swr';
 import { CollapsibleBox } from '@trezor/components';
 import { useMDXComponents } from '@trezor/connect-explorer-theme';
 import { spacings } from '@trezor/theme';
-import { isNewer } from '@trezor/utils/src/versionUtils';
 
-export const MAJOR_VERSION = '9'; // This Connect Explorer is deployed for the v9 line.
-
-export const loadNPMVersions = () =>
-    fetch(`https://registry.npmjs.org/@trezor/connect`)
-        .then(res => res.json())
-        .then(data => Object.keys(data.versions));
+// The final v9 release is deployed to connect.trezor.io only, so npm does not know about it.
+export const FINAL_V9_VERSION = '9.7.4';
 
 export const loadChangelog = branch => fetch(
         `https://raw.githubusercontent.com/trezor/trezor-suite/${branch}/packages/connect/CHANGELOG.md`,
@@ -40,17 +35,7 @@ export const loadChangelog = branch => fetch(
             return { versionOverview, changelog };
         });
 
-export const loadData = async () => {
-    // Pin the changelog to the v9 line: pick the newest 9.x version from npm
-    // instead of following the `latest`/`beta` dist-tags, which now point to v10.
-    const versions = await loadNPMVersions();
-    const newestVersion = versions
-        .filter(version => version.startsWith(`${MAJOR_VERSION}.`))
-        .reduce((newest, version) => (isNewer(version, newest) ? version : newest));
-
-    return loadChangelog(`release/connect/${newestVersion}`);
-
-};
+export const loadData = () => loadChangelog(`release/connect/${FINAL_V9_VERSION}`);
 
 export const MarkdownCustom = ({ children }) => {
     const components = useMDXComponents();
