@@ -62,6 +62,22 @@ describe('ConnectProcessLabel', () => {
         expect(await hoverLabel()).toBeUndefined();
     });
 
+    // An empty name would be a badge with no text at all, so the label has to name something else.
+    it('labels a process whose name sanitized to nothing by its path', async () => {
+        renderLabel({ name: '', fullPath: '/usr/bin/foo', warning: false });
+
+        expect(screen.getByTestId('@process')).toHaveTextContent('/usr/bin/foo');
+        // The path is already on the badge, so the tooltip does not repeat it.
+        expect(await hoverLabel()).toBeUndefined();
+    });
+
+    it('labels a process with neither a usable name nor a path as unknown', async () => {
+        renderLabel({ name: '', fullPath: '', warning: false });
+
+        expect(screen.getByTestId('@process')).toHaveTextContent(UNKNOWN_PROCESS.name);
+        expect(await hoverLabel()).toHaveTextContent('TR_CONNECT_PROCESS_UNIDENTIFIED');
+    });
+
     it('says that a warned-about process without a path could not be identified', async () => {
         renderLabel({ name: 'Claude Code', fullPath: '', warning: true });
 
