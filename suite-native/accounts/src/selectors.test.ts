@@ -554,6 +554,40 @@ describe('selectAccountFiatBalance', () => {
         ).toEqual([visibleContract]);
     });
 
+    it('keeps a checksummed hidden token out of the count, list and total', () => {
+        const state = createState();
+        state.wallet.accounts = [
+            {
+                ...account,
+                tokens: account.tokens?.map(token =>
+                    token.contract === hiddenContract
+                        ? { ...token, contract: toTokenAddress('0x' + 'B'.repeat(40)) }
+                        : token,
+                ),
+            },
+        ];
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(1);
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('7350');
+        expect(
+            selectAccountListSectionsWithZeroBalanceGroup(state, account.key)
+                .filter(section => section.type === 'token')
+                .map(section => section.token.contract),
+        ).toEqual([visibleContract]);
+    });
+
+    it('includes a manually shown token regardless of EVM contract casing', () => {
+        const state = createState([hiddenContract], ['0x' + 'C'.repeat(40)]);
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(2);
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('7450');
+        expect(
+            selectAccountListSectionsWithZeroBalanceGroup(state, account.key)
+                .filter(section => section.type === 'token')
+                .map(section => section.token.contract),
+        ).toEqual([visibleContract, unverifiedContract]);
+    });
+
     it('counts a visible DeFi token once without duplicating it in the regular token list', () => {
         const state = createState();
         state.wallet.accounts = [
