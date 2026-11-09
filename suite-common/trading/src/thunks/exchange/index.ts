@@ -8,10 +8,11 @@ import { prefetchDexQuoteApprovalThunk } from './prefetchDexQuoteApprovalThunk';
 import { selectExchangeQuoteThunk } from './selectExchangeQuoteThunk';
 import { sendDexTransactionThunk } from './sendDexTransactionThunk';
 import { sendTransactionThunk } from './sendTransactionThunk';
+import { setBridgeSpeedThunk } from './setBridgeSpeedThunk';
 import { signDataAndConfirmThunk } from './signDataAndConfirmThunk';
 import { watchExchangeApprovalThunk } from './watchExchangeApprovalThunk';
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performacetypescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 type ExchangeThunks = {
     loadInfoThunk: typeof loadExchangeInfoThunk;
@@ -19,6 +20,7 @@ type ExchangeThunks = {
     selectQuoteThunk: typeof selectExchangeQuoteThunk;
     confirmTradeThunk: typeof confirmExchangeTradeThunk;
     fetchSelectedProviderQuoteThunk: typeof fetchSelectedProviderQuoteThunk;
+    setBridgeSpeedThunk: typeof setBridgeSpeedThunk;
     composeTradeFeeLevelsThunk: typeof composeExchangeTradeFeeLevelsThunk;
     confirmApprovalThunk: typeof confirmApprovalThunk;
     prefetchDexQuoteApprovalThunk: typeof prefetchDexQuoteApprovalThunk;
@@ -34,6 +36,7 @@ export const exchangeThunks: ExchangeThunks = {
     selectQuoteThunk: selectExchangeQuoteThunk,
     confirmTradeThunk: confirmExchangeTradeThunk,
     fetchSelectedProviderQuoteThunk,
+    setBridgeSpeedThunk,
     composeTradeFeeLevelsThunk: composeExchangeTradeFeeLevelsThunk,
     confirmApprovalThunk,
     prefetchDexQuoteApprovalThunk,

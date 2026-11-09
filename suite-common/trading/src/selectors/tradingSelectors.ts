@@ -84,6 +84,7 @@ import {
     type TradingTransactionSell,
     type TradingType,
 } from '../types';
+import { DEFAULT_BRIDGE_SPEED } from '../types/bridgeSpeed';
 import {
     cryptoIdToNetwork,
     cryptoIdToNetworkSymbol,
@@ -442,6 +443,9 @@ export const selectTradingExchangeSelectedQuoteSwapSlippage = (state: TradingRoo
 
 export const selectTradingExchangeSelectedQuoteIsDex = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote?.isDex;
+
+export const selectTradingExchangeBridgeSpeed = (state: TradingRootState) =>
+    state.wallet.trading.exchange.selectedQuote?.bridgeSpeed ?? DEFAULT_BRIDGE_SPEED;
 
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;

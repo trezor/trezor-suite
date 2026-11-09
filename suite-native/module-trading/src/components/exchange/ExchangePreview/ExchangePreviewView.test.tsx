@@ -51,6 +51,7 @@ describe('ExchangePreviewView', () => {
                 txnErrorString={null}
                 onSignTransactionNavigation={jest.fn()}
                 onSlippageConfirmed={jest.fn()}
+                onBridgeSpeedConfirmed={jest.fn()}
                 {...props}
             />,
             {
