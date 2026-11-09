@@ -1,10 +1,8 @@
 name: "[Chore] Clean closed PR caches"
 
 on:
-  pull_request_target:
+  pull_request:
     types: [closed]
-  schedule:
-    - cron: "11 */6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -13,12 +11,17 @@ permissions:
   actions: write
 
 concurrency:
-  group: closed-pr-cache-cleanup
+  group: closed-pr-cache-cleanup-${{ github.event.pull_request.number || 'manual' }}
   cancel-in-progress: false
 
 jobs:
   cleanup:
-    if: github.repository == 'trezor/trezor-suite'
+    # Fork and Dependabot runs receive a read-only token.
+    if: >-
+      github.repository == 'trezor/trezor-suite' &&
+      (github.event_name == 'workflow_dispatch' ||
+        (github.event.pull_request.head.repo.full_name == github.repository &&
+          github.actor != 'dependabot[bot]'))
     runs-on: ubuntu-latest
     steps:
       # Never run PR-controlled code with the cache deletion token.
