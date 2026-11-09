@@ -38,6 +38,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../app-init" },
+        { "path": "../apps-embedding-demo" },
         { "path": "../module-account-detail" },
         { "path": "../module-accounts" },
         { "path": "../module-accounts-import" },
@@ -71,9 +72,6 @@
         { "path": "../../suite-native/alerts" },
         {
             "path": "../../suite-native/analytics"
-        },
-        {
-            "path": "../../suite-native/apps-embedding-demo"
         },
         { "path": "../../suite-native/atoms" },
         {

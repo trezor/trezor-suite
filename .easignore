@@ -170,7 +170,6 @@
 !/suite-native/analytics
 !/suite-native/analytics-redux
 !/suite-native/apps-embedding
-!/suite-native/apps-embedding-demo
 !/suite-native/assets
 !/suite-native/atoms
 !/suite-native/banners
@@ -255,6 +254,7 @@
 /suite-native-app/*
 !/suite-native-app/app
 !/suite-native-app/app-init
+!/suite-native-app/apps-embedding-demo
 !/suite-native-app/module-account-detail
 !/suite-native-app/module-accounts
 !/suite-native-app/module-accounts-import

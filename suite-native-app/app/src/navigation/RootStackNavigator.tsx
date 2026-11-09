@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { AppsEmbeddingScreen } from '@suite-native/apps-embedding-demo';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
 import {
@@ -27,6 +26,7 @@ import {
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';
 import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-state';
+import { AppsEmbeddingScreen } from '@suite-native-app/apps-embedding-demo';
 import { AccountDetailStackNavigator } from '@suite-native-app/module-account-detail';
 import { AccountOverviewScreen } from '@suite-native-app/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native-app/module-accounts-import';
