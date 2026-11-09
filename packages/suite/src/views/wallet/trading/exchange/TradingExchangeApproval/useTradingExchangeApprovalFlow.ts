@@ -10,7 +10,6 @@ import {
     selectTradingExchangePendingApprovalTxid,
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
-    tradingExchangeActions,
     useTradingExchangeWatchApproval,
 } from '@suite-common/trading';
 import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
@@ -41,7 +40,6 @@ export const useTradingExchangeApprovalFlow = () => {
         setSpender(quoteSpender);
     }
 
-    const handledRevokeTxRef = useRef<string>(undefined);
     const handledApprovalOrderRef = useRef<string>(undefined);
 
     useTradingExchangeWatchApproval({ account, isEnabled: true });
@@ -55,24 +53,6 @@ export const useTradingExchangeApprovalFlow = () => {
         }
     }, [isFlowMissing, dispatch]);
 
-    const revokeTxid =
-        quote?.status === 'APPROVAL_REQ' && quote.approvalType === 'ZERO'
-            ? quote.approvalSendTxHash
-            : undefined;
-
-    useEffect(() => {
-        if (!quote?.receiveAddress || !revokeTxid || handledRevokeTxRef.current === revokeTxid) {
-            return;
-        }
-
-        handledRevokeTxRef.current = revokeTxid;
-        dispatch(tradingExchangeActions.completeApprovalFlowStep('revoke'));
-        confirmApproval({
-            trade: { ...quote, approvalType: 'MINIMAL', approvalSendTxHash: undefined },
-            receiveAddress: quote.receiveAddress,
-        });
-    }, [quote, revokeTxid, confirmApproval, dispatch]);
-
     const isApprovalDone =
         steps.length > 0 && steps.every(({ type, status }) => type === 'swap' || status === 'done');
 
@@ -81,12 +61,12 @@ export const useTradingExchangeApprovalFlow = () => {
             !isApprovalDone ||
             !quote?.receiveAddress ||
             !quote.orderId ||
-            handledApprovalOrderRef.current === quote.orderId
+            handledApprovalOrderRef.current === `${quote.orderId}:${quote.status}`
         ) {
             return;
         }
 
-        handledApprovalOrderRef.current = quote.orderId;
+        handledApprovalOrderRef.current = `${quote.orderId}:${quote.status}`;
         const { receiveAddress } = quote;
 
         const proceedToSwap = async () => {

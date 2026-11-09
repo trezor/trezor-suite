@@ -323,7 +323,7 @@ describe('tradingMiddleware', () => {
         expect(store.getState().wallet.trading.exchange.tradingAccountKey).toBe(boundAccountKey);
     });
 
-    const approvalFlow: ApprovalFlowState = { steps: ['approve', 'swap'], completedSteps: [] };
+    const approvalFlow: ApprovalFlowState = { steps: ['approve', 'swap'], sentTxids: {} };
 
     it.each([
         ['clears', 'the form', tradingMiddlewareFixtures.TRADING_EXCHANGE_ROUTE, undefined],
