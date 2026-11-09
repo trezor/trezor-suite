@@ -38,6 +38,10 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
         {
             version: '26.11.0',
+            notes: 'Mobile reports APY detail presentation once per opening, matching the desktop APY interaction.',
+        },
+        {
+            version: '26.11.0',
             notes: 'Reused for mobile Earn fee error banners, retry and recovery; no new event or attributes.',
         },
     ],

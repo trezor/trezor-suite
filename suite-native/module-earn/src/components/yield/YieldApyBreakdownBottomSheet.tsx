@@ -1,3 +1,6 @@
+import { useRef } from 'react';
+
+import { events } from '@suite-common/analytics';
 import {
     type RewardDtoV2,
     type YieldDtoV2,
@@ -7,6 +10,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -17,6 +21,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon, TokenIcon, tokenIconSizes } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 const getYieldApyBreakdownDescriptionKey = (
     yieldSource: RewardDtoV2['yieldSource'],
@@ -125,6 +130,25 @@ export const YieldApyBreakdownBottomSheet = ({
     account,
     vault,
 }: YieldApyBreakdownBottomSheetProps) => {
+    const { analytics } = useServices(injectNativeAnalytics);
+    const hasReportedPresentationRef = useRef(false);
+    const handleDismiss = () => {
+        hasReportedPresentationRef.current = false;
+    };
+    const handleSheetChange = (index: number) => {
+        if (index < 0) {
+            handleDismiss();
+
+            return;
+        }
+        if (hasReportedPresentationRef.current || !vault) return;
+        hasReportedPresentationRef.current = true;
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: { element: 'apy-tooltip', networkSymbol: account.symbol, vaultId: vault.id },
+        });
+    };
+
     if (!vault?.outputToken?.name) return null;
 
     const networkSymbol = account.symbol;
@@ -141,6 +165,8 @@ export const YieldApyBreakdownBottomSheet = ({
             title={vault.outputToken?.name}
             isCloseDisplayed
             onClose={onClose}
+            onDismiss={handleDismiss}
+            bottomSheetCustomProps={{ onChange: handleSheetChange }}
         >
             <Box testID="@account-detail/stablecoin-yield/apy-breakdown-sheet">
                 <VStack spacing="sp20">
