@@ -12,6 +12,7 @@ export * from './hooks/useProviderMetadataChangeEffect';
 export * from './hooks/useTradingFiatValues';
 export * from './hooks/useExchangeFiatDeviation';
 export * from './hooks/useTradingRequestedAmountShortfall';
+export * from './hooks/useFormattedRequestedAmountShortfall';
 export * from './hooks/useTradingRequestedSide';
 export * from './hooks/useFormatCryptoValue';
 export * from './hooks/useChangeStringsExtractor';
