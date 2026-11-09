@@ -1,15 +1,27 @@
 |             Package              | Stable | Canary |
 | :------------------------------: | :----: | :----: |
-|       npm @trezor/connect        | 9.7.3  |   -    |
-|     npm @trezor/connect-web      | 9.7.3  |   -    |
-| npm @trezor/connect-webextension | 9.7.3  |   -    |
-|    npm @trezor/connect-mobile    | 9.7.3  |   -    |
+|       npm @trezor/connect        | 9.7.4  |   -    |
+|     npm @trezor/connect-web      | 9.7.4  |   -    |
+| npm @trezor/connect-webextension | 9.7.4  |   -    |
+|    npm @trezor/connect-mobile    | 9.7.4  |   -    |
 
 |     Deployment     | Stable | Canary |
 | :----------------: | :----: | :----: |
-| connect.trezor.io/ | 9.7.3  |   -    |
+| connect.trezor.io/ | 9.7.4  |   -    |
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
+
+# 9.7.4
+
+This is the final release of Trezor Connect 9. Version 9 is deprecated and its support ends on December 31, 2026. Please migrate to Trezor Connect 10 as soon as possible, see the [migration guide](https://connect.trezor.io/10/guides/migrating-to-connect-10).
+
+The Connect popup now displays a deprecation notice naming the application that opened it.
+
+Fixed the `Invalid definition` error on Trezor Model One with firmware 1.14.2 and newer, which accepts only the new format of Ethereum network and token definitions.
+
+Removed the internal Evolu methods, which were not intended for public use.
+
+This release also includes stability and security improvements.
 
 # 9.7.3
 
