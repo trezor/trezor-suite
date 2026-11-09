@@ -15,6 +15,7 @@ export const retrieveDelegatedIdentityKeyFromDevice = async ({
 }: RetrieveDelegatedIdentityKeyParams) => {
     const thpCredential = device.thp?.credentials?.[0].credential;
 
+    // @ts-expect-error Evolu methods were removed from Connect 9 and Suite is not released from this branch.
     const result = await TrezorConnect.evoluGetDelegatedIdentityKey({
         device: {
             path: device.path,
