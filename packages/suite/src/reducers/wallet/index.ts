@@ -4,19 +4,29 @@ import { selectedAccountReducer } from '@suite/account';
 import { type CoinjoinState, coinjoinReducer } from '@suite/coinjoin';
 import { type TradingState, prepareTradingReducer } from '@suite-common/trading';
 import {
+    type AccountsReducerDeps,
     type AccountsRefreshTimeState,
     type AccountsState,
+    type BlockchainReducerDeps,
+    type EarnOnboardingSliceDeps,
     type EarnOnboardingState,
     type EarnTransactionsState,
     type ExplorerConfig,
+    type ExplorerReducerDeps,
+    type FiatRatesReducerDeps,
     type FiatRatesState,
     type FormDraftState,
+    type PhishingReducerDeps,
     type PhishingState,
+    type SendFormReducerDeps,
     type SendState,
     type StakeState,
+    type StellarContractTokensDeps,
     type StellarContractTokensState,
+    type TransactionsReducerDeps,
     type TransactionsState,
     type TronStakeReducerState,
+    type WalletSettingsReducerDeps,
     type YieldState,
     accountsRefreshTimeReducer,
     earnTransactionsReducer,
@@ -44,25 +54,9 @@ import {
     type WalletSettings,
 } from '@suite-common/wallet-types';
 
-import { extraDependencies } from 'src/support/extraDependencies';
-
 import accountSearchReducer, { type AccountSearchState } from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import graphReducer, { type GraphState } from './graphReducer';
-
-export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
-export const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
-export const phishingReducer = preparePhishingReducer(extraDependencies);
-export const accountsReducer = prepareAccountsReducer(extraDependencies);
-export const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
-export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
-export const explorerReducer = prepareExplorerReducer(extraDependencies);
-export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
-export const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
-export const stakeReducer = prepareStakeReducer(extraDependencies);
-export const sendFormReducer = prepareSendFormReducer(extraDependencies);
-export const tradingReducer = prepareTradingReducer(extraDependencies);
-export const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 
 export type WalletState = {
     fiat: FiatRatesState;
@@ -90,32 +84,61 @@ export type WalletState = {
     earnOnboarding: EarnOnboardingState;
 };
 
-export const walletReducers: Reducer<
+export type WalletReducerDeps = AccountsReducerDeps &
+    BlockchainReducerDeps &
+    EarnOnboardingSliceDeps &
+    ExplorerReducerDeps &
+    SendFormReducerDeps &
+    TransactionsReducerDeps &
+    WalletSettingsReducerDeps &
+    FiatRatesReducerDeps &
+    PhishingReducerDeps &
+    StellarContractTokensDeps;
+
+export type WalletReducer = Reducer<
     WalletState,
     UnknownAction,
     Partial<Omit<WalletState, 'graph' | 'coinjoin'>>
-> = combineReducers({
-    fiat: fiatRatesReducer,
-    graph: graphReducer,
-    transactions: transactionsReducer,
-    phishing: phishingReducer,
-    discovery: discoveryReducer,
-    accounts: accountsReducer,
-    accountsRefreshTime: accountsRefreshTimeReducer,
-    earnTransactions: earnTransactionsReducer,
-    selectedAccount: selectedAccountReducer,
-    fees: feesReducer,
-    blockchain: blockchainReducer,
-    explorer: explorerReducer,
-    trading: tradingReducer,
-    send: sendFormReducer,
-    accountSearch: accountSearchReducer,
-    formDrafts: formDraftReducer,
-    coinjoin: coinjoinReducer,
-    stake: stakeReducer,
-    settings: walletSettingsReducer,
-    stablecoinYield: yieldReducer,
-    stellarContractTokens: stellarContractTokensReducer,
-    tronStake: tronStakeReducer,
-    earnOnboarding: earnOnboardingReducer,
-});
+>;
+
+export const createWalletReducer = (deps: WalletReducerDeps): WalletReducer => {
+    const transactionsReducer = prepareTransactionsReducer(deps);
+    const stellarContractTokensReducer = prepareStellarContractTokensReducer(deps);
+    const phishingReducer = preparePhishingReducer(deps);
+    const accountsReducer = prepareAccountsReducer(deps);
+    const earnOnboardingReducer = prepareEarnOnboardingReducer(deps);
+    const blockchainReducer = prepareBlockchainReducer(deps);
+    const explorerReducer = prepareExplorerReducer(deps);
+    const fiatRatesReducer = prepareFiatRatesReducer(deps);
+    const discoveryReducer = prepareDiscoveryReducer(deps);
+    const stakeReducer = prepareStakeReducer(deps);
+    const sendFormReducer = prepareSendFormReducer(deps);
+    const tradingReducer = prepareTradingReducer(deps);
+    const walletSettingsReducer = prepareWalletSettingsReducer(deps);
+
+    return combineReducers({
+        fiat: fiatRatesReducer,
+        graph: graphReducer,
+        transactions: transactionsReducer,
+        phishing: phishingReducer,
+        discovery: discoveryReducer,
+        accounts: accountsReducer,
+        accountsRefreshTime: accountsRefreshTimeReducer,
+        earnTransactions: earnTransactionsReducer,
+        selectedAccount: selectedAccountReducer,
+        fees: feesReducer,
+        blockchain: blockchainReducer,
+        explorer: explorerReducer,
+        trading: tradingReducer,
+        send: sendFormReducer,
+        accountSearch: accountSearchReducer,
+        formDrafts: formDraftReducer,
+        coinjoin: coinjoinReducer,
+        stake: stakeReducer,
+        settings: walletSettingsReducer,
+        stablecoinYield: yieldReducer,
+        stellarContractTokens: stellarContractTokensReducer,
+        tronStake: tronStakeReducer,
+        earnOnboarding: earnOnboardingReducer,
+    });
+};

@@ -5,9 +5,9 @@ import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { type TokenDefinitionsMiddlewareDeps } from '@suite-common/token-definitions';
 import { changeNetworks } from '@suite-common/wallet-core';
 import { type WithServices } from '@trezor/redux-utils';
+import { storageLoadReducers } from '@trezor/suite';
 
-import { type SuiteServices } from './createSuiteCompositionRoot';
-import { storageLoadReducers } from './storageLoadReducers';
+import { type SuiteServices } from './suiteServices';
 
 export type ExtraDependenciesSuite = ExtraDependenciesStatic &
     TokenDefinitionsMiddlewareDeps &

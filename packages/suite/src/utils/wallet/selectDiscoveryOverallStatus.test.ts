@@ -1,7 +1,5 @@
-import { type AppState } from 'src/types/suite';
-
 import { selectDiscoveryOverallStatus } from './selectDiscoveryOverallStatus';
-import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
 describe('selectDiscoveryOverallStatus', () => {
     it('waits for a device when none is selected', () => {
@@ -13,7 +11,7 @@ describe('selectDiscoveryOverallStatus', () => {
 
     it('returns the same reference while its inputs do not change', () => {
         const first = selectDiscoveryOverallStatus(mockInitialAppState);
-        const unrelatedChange: AppState = {
+        const unrelatedChange: MockSuiteState = {
             ...mockInitialAppState,
             flags: { ...mockInitialAppState.flags },
         };

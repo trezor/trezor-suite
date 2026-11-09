@@ -5,12 +5,11 @@ import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { type TokenDefinitionsMiddlewareDeps } from '@suite-common/token-definitions';
 import { type ReduxStoreWithThunk, createReduxExtra } from '@trezor/redux-utils';
 
-import { type SuiteServices } from 'src/support/createSuiteCompositionRoot';
-import { type ExtraDependenciesSuite } from 'src/support/extraDependencies';
-
+import { type ExtraDependenciesSuite } from './extraDependencies';
 import { type AppState, type SuiteRootReducer, devTools, getCustomMiddleware } from './store';
+import { type SuiteServices } from './suiteServices';
 
-type ReduxStoreDeps = {
+export type ReduxStoreDeps = {
     reducer: SuiteRootReducer;
     extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddlewareDeps;
 };

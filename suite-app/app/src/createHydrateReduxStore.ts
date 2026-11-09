@@ -1,16 +1,13 @@
+import { type Store } from '@reduxjs/toolkit';
+
 import { isCodesignBuild } from '@trezor/env-utils';
+import { type PreloadStoreAction, type PreloadStoreDep } from '@trezor/suite';
 import { mergeDeepObject } from '@trezor/utils';
 
-import {
-    type PreloadStoreAction,
-    type PreloadStoreDep,
-} from 'src/support/suite/createPreloadStore';
-
-import { type SuiteReduxStore } from './createReduxStore';
 import { type AppState, type SuiteRootReducer } from './store';
 
 export type HydrateReduxStoreDeps = PreloadStoreDep & {
-    store: Pick<SuiteReduxStore, 'replaceReducer'>;
+    store: Pick<Store<AppState>, 'replaceReducer'>;
     reducer: SuiteRootReducer;
     getStatePatch: () => Promise<Record<string, unknown> | undefined>;
 };

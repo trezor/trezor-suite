@@ -7,18 +7,17 @@ import 'core-js/actual';
 import { Suspense } from 'react';
 
 import { useDebugLanguageShortcut } from '@suite/debug';
-
 import {
     AppRouter,
     BundleLoader,
+    Main,
     Metadata,
     Preloader,
     ToasterProvider,
-} from 'src/components/suite';
-import { Main } from 'src/support/suite/Main';
-import { useConnectPopupWeb } from 'src/support/suite/useConnectPopupWeb';
-import { useConnectPopupWebextension } from 'src/support/suite/useConnectPopupWebextension';
-import { useTor } from 'src/support/suite/useTor';
+    useConnectPopupWeb,
+    useConnectPopupWebextension,
+    useTor,
+} from '@trezor/suite';
 
 import { usePlaywright } from './support/usePlaywright';
 import { webComponents } from './support/webComponents';
