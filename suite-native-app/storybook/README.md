@@ -1,4 +1,4 @@
-# @suite-native/storybook
+# @suite-native-app/storybook
 
 This package contains the Storybook setup for the Trezor Suite mobile app. If you are unfamiliar with Storybook, please refer to the [Storybook documentation](https://storybook.js.org/docs/get-started/whats-a-story).
 
@@ -24,7 +24,7 @@ All the relevant source code is located in the [.rnstorybook](.rnstorybook) dire
 Unlike the web, which scans for stories files dynamically, React Native Metro bundler requires this auto-generated manifest to help the Metro bundler "find" and load stories on-device. It is updated automatically whenever you launch the app in debug build and metro server is running. In case you would need to generate it manually, you can do so by running the following command:
 
 ```bash
-yarn workspace @suite-native/storybook storybook:generate
+yarn workspace @suite-native-app/storybook storybook:generate
 ```
 
 Make sure to always push this auto-generated file to the git repository. so the newly created stories are available in the app for everyone.
@@ -40,13 +40,13 @@ All the relevant source code is located in the [.storybook](.storybook) director
 Run the following command from the root of the monorepo:
 
 ```bash
-yarn workspace @suite-native/storybook storybook:web
+yarn workspace @suite-native-app/storybook storybook:web
 ```
 
 This will start the Storybook development server at `http://localhost:6006`.
 
 ### Remote deployment
 
-Whenever the `@suite-native/storybook` package or any `stories.tsx` files are updated and merged into the develop branch, these changes are automatically deployed to the remote server through a [GitHub Actions workflow](../../.github/workflows/build-storybook-native.yml).
+Whenever the `@suite-native-app/storybook` package or any `stories.tsx` files are updated and merged into the develop branch, these changes are automatically deployed to the remote server through a [GitHub Actions workflow](../../.github/workflows/build-storybook-native.yml).
 
 The deployed storybook is available at https://dev.suite.sldev.cz/suite-mobile/components/develop/.

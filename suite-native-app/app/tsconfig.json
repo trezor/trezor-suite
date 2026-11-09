@@ -193,11 +193,9 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../storybook" },
         {
             "path": "../../suite-native/performance-metrics"
-        },
-        {
-            "path": "../../suite-native/storybook"
         },
         {
             "path": "../../suite-native/test-utils-store"

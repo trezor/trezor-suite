@@ -247,7 +247,6 @@
 !/suite-native/sentry
 !/suite-native/settings
 !/suite-native/storage
-!/suite-native/storybook
 !/suite-native/suite-sync
 !/suite-native/swipeable-walkthrough
 !/suite-native/test-utils
@@ -280,6 +279,7 @@
 !/suite-native-app/app-init
 !/suite-native-app/module-onboarding
 !/suite-native-app/state
+!/suite-native-app/storybook
 !/suite-native-app/suite-sync
 /networks/bitcoin/*
 !/networks/bitcoin/network-bitcoin-assets

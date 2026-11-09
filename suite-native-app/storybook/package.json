@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/storybook",
+    "name": "@suite-native-app/storybook",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

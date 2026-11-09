@@ -13041,6 +13041,7 @@ __metadata:
     "@suite-native-app/app-init": "workspace:*"
     "@suite-native-app/module-onboarding": "workspace:*"
     "@suite-native-app/state": "workspace:*"
+    "@suite-native-app/storybook": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/apps-embedding-demo": "workspace:*"
@@ -13086,7 +13087,6 @@ __metadata:
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
-    "@suite-native/storybook": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@suite-native/toasts": "workspace:*"
@@ -13309,6 +13309,38 @@ __metadata:
     react-redux: "npm:9.3.0"
     redux-logger: "npm:^3.0.6"
     redux-persist: "npm:6.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native-app/storybook@workspace:*, @suite-native-app/storybook@workspace:suite-native-app/storybook":
+  version: 0.0.0-use.local
+  resolution: "@suite-native-app/storybook@workspace:suite-native-app/storybook"
+  dependencies:
+    "@gorhom/bottom-sheet": "npm:5.2.9"
+    "@lottiefiles/dotlottie-react": "npm:0.20.0"
+    "@react-native-community/datetimepicker": "npm:9.2.1"
+    "@react-native-community/slider": "npm:5.2.1"
+    "@react-navigation/native": "npm:7.1.31"
+    "@react-navigation/native-stack": "npm:7.12.0"
+    "@shopify/react-native-skia": "npm:2.14.0"
+    "@storybook/addon-ondevice-controls": "npm:^10.6.2"
+    "@storybook/react": "npm:^10.6.2"
+    "@storybook/react-native": "npm:^10.6.2"
+    "@storybook/react-native-web-vite": "npm:^10.6.2"
+    "@suite-native/alerts": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@trezor/eslint": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    react: "npm:19.3.0"
+    react-dom: "npm:19.3.0"
+    react-native: "npm:0.88.1"
+    react-native-mmkv: "npm:~4.3.2"
+    react-native-safe-area-context: "npm:~5.10.1"
+    react-native-web: "npm:^0.21.0"
+    storybook: "npm:^10.6.2"
+    vite: "npm:^8.3.3"
+    vite-plugin-node-polyfills: "npm:^0.28.0"
   languageName: unknown
   linkType: soft
 
@@ -15934,38 +15966,6 @@ __metadata:
     react-native-mmkv: "npm:~4.3.2"
     react-native-restart: "npm:0.0.27"
     redux-persist: "npm:6.0.0"
-  languageName: unknown
-  linkType: soft
-
-"@suite-native/storybook@workspace:*, @suite-native/storybook@workspace:suite-native/storybook":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/storybook@workspace:suite-native/storybook"
-  dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.9"
-    "@lottiefiles/dotlottie-react": "npm:0.20.0"
-    "@react-native-community/datetimepicker": "npm:9.2.1"
-    "@react-native-community/slider": "npm:5.2.1"
-    "@react-navigation/native": "npm:7.1.31"
-    "@react-navigation/native-stack": "npm:7.12.0"
-    "@shopify/react-native-skia": "npm:2.14.0"
-    "@storybook/addon-ondevice-controls": "npm:^10.6.2"
-    "@storybook/react": "npm:^10.6.2"
-    "@storybook/react-native": "npm:^10.6.2"
-    "@storybook/react-native-web-vite": "npm:^10.6.2"
-    "@suite-native/alerts": "workspace:*"
-    "@suite-native/intl": "workspace:*"
-    "@trezor/eslint": "workspace:*"
-    "@trezor/styles-native": "workspace:*"
-    "@trezor/theme": "workspace:*"
-    react: "npm:19.3.0"
-    react-dom: "npm:19.3.0"
-    react-native: "npm:0.88.1"
-    react-native-mmkv: "npm:~4.3.2"
-    react-native-safe-area-context: "npm:~5.10.1"
-    react-native-web: "npm:^0.21.0"
-    storybook: "npm:^10.6.2"
-    vite: "npm:^8.3.3"
-    vite-plugin-node-polyfills: "npm:^0.28.0"
   languageName: unknown
   linkType: soft
 

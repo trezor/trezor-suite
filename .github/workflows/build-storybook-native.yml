@@ -10,7 +10,7 @@ on:
     branches:
       - develop
     paths:
-      - "suite-native/storybook/**"
+      - "suite-native-app/storybook/**"
       - "suite-native/**/*.story.*"
   pull_request:
     paths:
@@ -60,12 +60,12 @@ jobs:
           yarn install
 
       - name: Build storybook
-        working-directory: ./suite-native/storybook
+        working-directory: ./suite-native-app/storybook
         run: |
           yarn storybook:web:build
 
       - name: Upload suite native storybook to dev.suite.sldev.cz
-        working-directory: ./suite-native/storybook
+        working-directory: ./suite-native-app/storybook
         env:
           COMPONENTS_DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-mobile/components/develop
         run: |

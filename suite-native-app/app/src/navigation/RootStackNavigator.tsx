@@ -60,10 +60,10 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
-import { StorybookUI } from '@suite-native/storybook';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';
 import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-state';
 import { OnboardingStackNavigator } from '@suite-native-app/module-onboarding';
+import { StorybookUI } from '@suite-native-app/storybook';
 
 import { AppTabNavigator } from './AppTabNavigator';
 import { NavigatorLayoutWithGlobalHooks } from './RootStackNavigatorGlobalHooksWrapper';

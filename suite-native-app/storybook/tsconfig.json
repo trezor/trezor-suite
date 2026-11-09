@@ -2,8 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../alerts" },
-        { "path": "../intl" },
+        { "path": "../../suite-native/alerts" },
+        { "path": "../../suite-native/intl" },
         { "path": "../../packages/eslint" },
         {
             "path": "../../packages/styles-native"
