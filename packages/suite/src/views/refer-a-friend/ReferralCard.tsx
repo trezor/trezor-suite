@@ -6,7 +6,7 @@ import styled, { useTheme } from 'styled-components';
 import { Translation } from '@suite/intl';
 import { Box, Column, Icon, SvgImage, Text, Tooltip } from '@trezor/components';
 import { TrezorLogoIcon } from '@trezor/icons';
-import { breakpoints } from '@trezor/theme';
+import { breakpoints, palette } from '@trezor/theme';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
@@ -21,7 +21,7 @@ const TiltCard = styled(motion.div)`
     width: 100%;
     height: 100%;
     border-radius: 8px;
-    background: ${({ theme }) => theme.contentBrandHovered};
+    background: ${palette.lightGreen800};
     transform-style: preserve-3d;
     overflow: hidden;
 `;
@@ -43,7 +43,6 @@ export const ReferralCard = ({
     const tilt = useMotionValue(INITIAL_TILT);
     const shouldReduceMotion = useReducedMotion();
     const theme = useTheme();
-    const border = `inset 0 0 0 1px ${theme.elementBorderOnDarkField}`;
     const translationValues = { rewardAmount, minimumOrderAmount, friendDiscountPercentage };
 
     const transform = useTransform(
@@ -53,8 +52,8 @@ export const ReferralCard = ({
     );
     const boxShadow = useTransform(tilt, ({ px, py, active }) =>
         active
-            ? `${-px * 14}px ${-py * 14 + 12}px 20px -2px ${theme.shadowKeyActionHover}, 0 0 12px ${theme.shadowAmbientActionHover}, ${border}`
-            : `${theme.elementShadowElevated}, ${border}`,
+            ? `${-px * 14}px ${-py * 14 + 12}px 20px -2px ${theme.shadowKeyActionHover}, 0 0 12px ${theme.shadowAmbientActionHover}`
+            : `${theme.elementShadowElevated}`,
     );
     const transition = useTransform(tilt, ({ active }) =>
         active || shouldReduceMotion
