@@ -126,7 +126,7 @@ export const getAllowanceAmount = ({
     return { inputAmount, allowanceAmount };
 };
 
-const APPROVAL_TYPE_BY_LIMIT_TYPE = {
+export const APPROVAL_TYPE_BY_LIMIT_TYPE = {
     minimal: 'MINIMAL',
     unlimited: 'INFINITE',
 } as const satisfies Record<AllowanceLimitType, GetAllowanceAmountParams['approvalType']>;

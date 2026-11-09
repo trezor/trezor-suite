@@ -1,8 +1,9 @@
 import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { transactionsActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { type TradingExchangeFormProps } from '../types';
@@ -239,42 +240,85 @@ describe('tradingExchangeReducer', () => {
                 tradingExchangeActions.startApprovalFlow([...STEPS]),
             );
 
-            expect(state.approvalFlow).toEqual({ steps: STEPS, completedSteps: [] });
+            expect(state.approvalFlow).toEqual({ steps: STEPS, sentTxids: {} });
         });
 
-        it('records completed steps', () => {
+        it('tracks a sent tx per step and replaces it on resend', () => {
             const actions = [
                 tradingExchangeActions.startApprovalFlow([...STEPS]),
-                tradingExchangeActions.completeApprovalFlowStep('revoke'),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xfailed',
+                }),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xresent',
+                }),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'approve',
+                    txid: '0xapprove',
+                }),
             ];
 
             const state = actions.reduce(tradingExchangeReducer, undefined);
 
-            expect(state?.approvalFlow?.completedSteps).toEqual(['revoke']);
+            expect(state?.approvalFlow?.sentTxids).toEqual({
+                revoke: '0xresent',
+                approve: '0xapprove',
+            });
         });
 
-        it('records a completed step only once', () => {
+        it('ignores a sent tx without a flow', () => {
+            const state = tradingExchangeReducer(
+                undefined,
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xrevoke',
+                }),
+            );
+
+            expect(state.approvalFlow).toBeUndefined();
+        });
+
+        it('starts a new flow without sent txs', () => {
             const actions = [
                 tradingExchangeActions.startApprovalFlow([...STEPS]),
-                tradingExchangeActions.completeApprovalFlowStep('revoke'),
-                tradingExchangeActions.completeApprovalFlowStep('revoke'),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xrevoke',
+                }),
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
             ];
 
             const state = actions.reduce(tradingExchangeReducer, undefined);
 
-            expect(state?.approvalFlow?.completedSteps).toEqual(['revoke']);
+            expect(state?.approvalFlow?.sentTxids).toEqual({});
         });
 
-        it('starts a new flow without completed steps', () => {
+        it('follows a sent tx replaced by a speed-up', () => {
             const actions = [
                 tradingExchangeActions.startApprovalFlow([...STEPS]),
-                tradingExchangeActions.completeApprovalFlowStep('revoke'),
-                tradingExchangeActions.startApprovalFlow([...STEPS]),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xrevoke',
+                }),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'approve',
+                    txid: '0xapprove',
+                }),
+                transactionsActions.replaceTransaction({
+                    key: 'account-1' as AccountKey,
+                    txid: '0xrevoke',
+                    tx: testMocks.getWalletTransaction({ txid: '0xspedup' }),
+                }),
             ];
 
             const state = actions.reduce(tradingExchangeReducer, undefined);
 
-            expect(state?.approvalFlow?.completedSteps).toEqual([]);
+            expect(state?.approvalFlow?.sentTxids).toEqual({
+                revoke: '0xspedup',
+                approve: '0xapprove',
+            });
         });
 
         it('keeps the step plan when the selected quote is replaced', () => {
