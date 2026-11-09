@@ -3,8 +3,6 @@ import { type DefaultValues, useForm } from 'react-hook-form';
 import { fireEvent, screen } from '@testing-library/react';
 
 import { initialMetadataState } from '@suite/metadata';
-import { mock } from '@suite-common/dependency-injection';
-import { type WithServices } from '@suite-common/redux-utils';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
@@ -12,7 +10,9 @@ import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account, type FormState, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type AccountUtxo, type PROTO } from '@trezor/connect';
+import { mock } from '@trezor/dependency-injection';
 import { ShieldCheckIcon } from '@trezor/icons';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { useUtxoSelection } from 'src/hooks/wallet/form/useUtxoSelection';
 import { SendContext } from 'src/hooks/wallet/useSendForm';
