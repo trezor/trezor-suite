@@ -86,10 +86,11 @@ export const Feature = {
     firmwareHashCheckTimeout: 'security.firmware.hashCheck.timeout',
 
     // Disables wallet-creation entropy check UI, making it silent on Desktop/Web.
+    // Also disables discovery entropy check UI, because it relies on the wallet-creation check.
     entropyCheck: 'security.entropyCheck',
     // Like `entropyCheck` for Mobile. DO NOT separate flags per platform, rather use conditions in the message. Kept here for compatibility.
     entropyCheckMobile: 'security.entropyCheck.mobile',
-    // Disables discovery entropy check UI, making it silent.
+    // Disables discovery entropy check UI, making it silent. Doesn't affect wallet-creation entropy check.
     entropyCheckDiscovery: 'security.entropyCheck.discovery',
 
     // Disables UI for Optiga proof result on Device Authenticity Check.

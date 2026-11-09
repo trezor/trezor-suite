@@ -14,6 +14,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
         "@suite-common/device": "workspace:*",
+        "@suite-common/persistent-device-data": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@trezor/connect": "workspace:*",

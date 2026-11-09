@@ -63,7 +63,7 @@ const mockResetDevice = ({
     });
 };
 
-const resetDevice = async () => {
+const resetDevice = async ({ isEntropyCheckEnabled = true } = {}) => {
     const extra: ProcessEntropyCheckResultThunkDeps = {
         services: { reportSecurityCheck: jest.fn() },
     };
@@ -71,7 +71,10 @@ const resetDevice = async () => {
     const { actions, dispatch } = createMockDispatch({ getState, extra });
 
     const result = await dispatch(
-        resetDeviceWithEntropyCheckThunk({ device, params: { entropy_check: true } }),
+        resetDeviceWithEntropyCheckThunk({
+            device,
+            params: { entropy_check: isEntropyCheckEnabled },
+        }),
     ).unwrap();
     await dispatch(processEntropyCheckResultThunk({ device, result }));
 
@@ -82,6 +85,9 @@ const passedEntropyCheckAction = persistentDeviceDataActions.setEntropyCheckResu
     deviceId: device.id,
     success: true,
     xpubHashes,
+});
+const clearXPubHashesAction = persistentDeviceDataActions.clearEntropyCheckXPubHashes({
+    deviceId: device.id,
 });
 
 describe('wallet creation entropy check', () => {
@@ -94,6 +100,7 @@ describe('wallet creation entropy check', () => {
         const { actions } = await resetDevice();
 
         expect(actions).toContainEqual(passedEntropyCheckAction);
+        expect(actions).not.toContainEqual(clearXPubHashesAction);
         expect(actions).not.toContainEqual(
             expect.objectContaining({ type: notificationsActions.addToast.type }),
         );
@@ -132,6 +139,23 @@ describe('wallet creation entropy check', () => {
                 type: persistentDeviceDataActions.setEntropyCheckResult.type,
             }),
         );
+    });
+
+    it('clears stale xpub hashes when a wallet is created without the entropy check', async () => {
+        mockResetDevice({ result: successResult, eventDevice: null });
+        const { actions } = await resetDevice({ isEntropyCheckEnabled: false });
+
+        expect(actions).toContainEqual(clearXPubHashesAction);
+    });
+
+    it('keeps xpub hashes when a wallet creation without the entropy check fails', async () => {
+        mockResetDevice({
+            result: createErrorResult('Failure_ActionCancelled', 'Cancelled'),
+            eventDevice: null,
+        });
+        const { actions } = await resetDevice({ isEntropyCheckEnabled: false });
+
+        expect(actions).not.toContainEqual(clearXPubHashesAction);
     });
 
     it('persists a failed entropy check', async () => {

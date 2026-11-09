@@ -264,8 +264,10 @@ export const selectIsEntropyCheckEnabledAndFailedForSelectedDevice = (
 // Dismissal is not taken into account.
 export const selectIsDiscoveryEntropyCheckEnabledAndFailed = createMemoizedSelector(
     [
-        (state: FwAuthenticityCheckState) =>
-            selectIsFeatureEnabled(state, Feature.entropyCheckDiscovery, true),
+        // Discovery check relies on the wallet creation check, so it's disabled by both flags.
+        (state: MessageSystemRootState) =>
+            selectIsFeatureEnabled(state, Feature.entropyCheckDiscovery, true) &&
+            selectIsFeatureEnabled(state, Feature.entropyCheckMobile, true),
         selectIsDiscoveryEntropyCheckFailed,
     ],
     (isFeatureEnabled, isDiscoveryEntropyCheckFailed) =>

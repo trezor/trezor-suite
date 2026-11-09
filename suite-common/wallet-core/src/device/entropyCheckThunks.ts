@@ -52,6 +52,7 @@ type ResetDeviceWithEntropyCheckThunkParams = {
 /**
  * Calls resetDevice and persists the xpub hashes of a passed wallet creation entropy check as soon as Connect
  * reports them, so that they are known for the discovery entropy check even if the call fails afterwards.
+ * A wallet created without reported hashes (entropy check disabled) drops the hashes of any previous attempt.
  */
 export const resetDeviceWithEntropyCheckThunk = createThunk<
     ResetDeviceResult,
@@ -60,12 +61,14 @@ export const resetDeviceWithEntropyCheckThunk = createThunk<
 >(
     `${DEVICE_MODULE_PREFIX}/resetDeviceWithEntropyCheckThunk`,
     async ({ device, params }, { dispatch }) => {
+        let isXPubHashesReported = false;
         const onWalletCreationEntropyCheck = ({
             device: checkedDevice,
             xpubHashes,
         }: UiEventWalletCreationEntropyCheck['payload']) => {
             // Ignore events from other devices being reset concurrently. Should not happen – just in case.
             if (checkedDevice.id !== device.id) return;
+            isXPubHashesReported = true;
             dispatch(
                 persistentDeviceDataActions.setEntropyCheckResult({
                     deviceId: device.id,
@@ -77,7 +80,18 @@ export const resetDeviceWithEntropyCheckThunk = createThunk<
 
         TrezorConnect.on(UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK, onWalletCreationEntropyCheck);
         try {
-            return await TrezorConnect.resetDevice(params);
+            const result = await TrezorConnect.resetDevice(params);
+            // With the entropy check enabled, Connect always reports the hashes before succeeding.
+            // Otherwise, the stored hashes may belong to an earlier attempt whose seed was never stored.
+            if (result.success && !isXPubHashesReported) {
+                dispatch(
+                    persistentDeviceDataActions.clearEntropyCheckXPubHashes({
+                        deviceId: device.id,
+                    }),
+                );
+            }
+
+            return result;
         } finally {
             TrezorConnect.off(
                 UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK,

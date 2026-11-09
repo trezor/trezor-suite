@@ -10,6 +10,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { type BackupType, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import {
     processEntropyCheckResultThunk,
@@ -141,7 +142,8 @@ export const recoverWalletThunk = createThunk<
     Response<PROTO.Success>,
     void,
     { state: RecoverWalletThunkState }
->(`${NATIVE_DEVICE_MODULE_PREFIX}/recoverWalletThunk`, async (_, { getState }) => {
+>(`${NATIVE_DEVICE_MODULE_PREFIX}/recoverWalletThunk`, async (_, { getState, dispatch }) => {
+    const device = selectSelectedDevice(getState());
     const devicePath = selectDevicePath(getState());
 
     const deviceResponse = await requestPrioritizedDeviceAccess(() =>
@@ -150,6 +152,13 @@ export const recoverWalletThunk = createThunk<
 
     if (!deviceResponse.success) {
         throw new Error(deviceResponse.error);
+    }
+
+    // The recovered seed replaces any seed whose xpub hashes were stored by the wallet creation entropy check
+    // (e.g. if the device was disconnected during backup, the seed was never stored).
+    // Must happen before fulfilled, because that triggers discovery.
+    if (deviceResponse.payload.success && device?.id) {
+        dispatch(persistentDeviceDataActions.clearEntropyCheckXPubHashes({ deviceId: device.id }));
     }
 
     return deviceResponse.payload;
