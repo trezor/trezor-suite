@@ -15,13 +15,18 @@ import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sen
 type UseAllowanceSendParams = {
     account: Account;
     methods: UseFormReturn<FormState>;
+    shouldShowApprovalToast?: boolean;
 };
 
 type SendParams = {
     composedTransaction: PrecomposedTransactionFinal;
 };
 
-export const useAllowanceSend = ({ account, methods }: UseAllowanceSendParams) => {
+export const useAllowanceSend = ({
+    account,
+    methods,
+    shouldShowApprovalToast,
+}: UseAllowanceSendParams) => {
     const { dispatch } = useServices(injectDispatch);
     const methodsRef = useCurrentRef(methods);
     const accountRef = useCurrentRef(account);
@@ -35,6 +40,7 @@ export const useAllowanceSend = ({ account, methods }: UseAllowanceSendParams) =
                     formState,
                     precomposedTransaction: composedTransaction,
                     selectedAccount: accountRef.current,
+                    shouldShowApprovalToast,
                 }),
             ).unwrap();
 
@@ -54,7 +60,7 @@ export const useAllowanceSend = ({ account, methods }: UseAllowanceSendParams) =
 
             return null;
         },
-        [dispatch, methodsRef, accountRef],
+        [dispatch, methodsRef, accountRef, shouldShowApprovalToast],
     );
 
     return { send };

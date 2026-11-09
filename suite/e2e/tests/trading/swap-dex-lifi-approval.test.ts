@@ -13,8 +13,6 @@ const ethSymbol = asNetworkSymbol('eth');
 const ethereumChainId = 1;
 
 const approvalAmount = '60';
-// The toast shows the approved amount compactly, and a stablecoin reads money-like.
-const compactApprovalAmount = '60.00';
 const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
 
 test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
@@ -43,15 +41,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
     test(
         'User can approve USDC spending for a LI.FI DEX swap',
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
-        async ({
-            page,
-            tradingPage,
-            devicePrompt,
-            device,
-            tradingMock,
-            toastSection,
-            tradingResponses,
-        }) => {
+        async ({ page, tradingPage, devicePrompt, device, tradingMock, tradingResponses }) => {
             const dexProvider = await tradingResponses.swap.companyName('lifi');
 
             await test.step('Select USDC to ETH LI.FI DEX offer', async () => {
@@ -168,10 +158,6 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
 
             await test.step('Submit the USDC approval with broadcast blocked by mock', async () => {
                 await devicePrompt.sendButton.click();
-                await expect(toastSection.approvedMessage).toHaveTranslation('TOAST_TX_APPROVED');
-                await expect(toastSection.approvedAmount).toHaveText(
-                    `${compactApprovalAmount}USDC`,
-                );
                 await expect(tradingPage.approvalSteps.continueButton).toHaveTranslation(
                     'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
                 );

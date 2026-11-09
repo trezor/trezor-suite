@@ -36,7 +36,8 @@ const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): Ru
     }
 };
 
-const AddressWrapper = styled.p<{ $device?: DeviceModelInternal }>`
+const AddressWrapper = styled.p<{ $device?: DeviceModelInternal; $isUnderlined: boolean }>`
+    ${({ $isUnderlined }) => $isUnderlined && 'text-decoration: underline;'}
     ${({ $device }) =>
         $device &&
         css`
@@ -57,6 +58,7 @@ type AddressBaseProps = {
     priority?: TextProps['priority'];
     isDisabled?: TextProps['isDisabled'];
     isCopyAllowed?: boolean;
+    isUnderlined?: boolean;
     onCopy?: () => void;
 };
 
@@ -83,6 +85,7 @@ export const Address = ({
     isDisabled,
     'data-testid': dataTestId,
     isCopyAllowed = false,
+    isUnderlined = false,
     onCopy,
 }: AddressProps) => {
     const { dispatch } = useServices(injectDispatch);
@@ -151,6 +154,7 @@ export const Address = ({
                     data-testid={dataTestId}
                     id={value}
                     $device={isDeviceRendered ? deviceModelInternal : undefined}
+                    $isUnderlined={isUnderlined}
                 >
                     {isDeviceRendered ? deviceRenderedValue : formattedValue}
                 </AddressWrapper>

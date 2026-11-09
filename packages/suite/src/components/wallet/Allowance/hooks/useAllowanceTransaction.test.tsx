@@ -288,6 +288,19 @@ describe('useAllowanceTransaction', () => {
         expect(mockSignAndPush).not.toHaveBeenCalled();
     });
 
+    it('forwards the approval toast opt-out to the send thunk', async () => {
+        const { result } = renderAllowanceTransaction({ shouldShowApprovalToast: false });
+        await waitForComposed(result);
+
+        await act(async () => {
+            await result.current.confirmAndSend();
+        });
+
+        expect(mockSignAndPush).toHaveBeenCalledWith(
+            expect.objectContaining({ shouldShowApprovalToast: false }),
+        );
+    });
+
     it('hands a cancel over to the caller', () => {
         const { result, callbacks } = renderAllowanceTransaction();
 

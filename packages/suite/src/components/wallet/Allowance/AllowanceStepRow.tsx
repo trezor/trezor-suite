@@ -34,7 +34,7 @@ export const AllowanceStepRow = ({
                     {children}
                 </TextButton>
             ) : (
-                <Text as="div" typographyStyle="body-sm-strong" data-testid={dataTest}>
+                <Text as="div" typographyStyle="body-sm" data-testid={dataTest}>
                     {children}
                 </Text>
             )}
