@@ -14,6 +14,7 @@ import {
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
+import { countBytesInString } from '@trezor/utils';
 
 import { type SendFieldName, type SendOutputsFormValues } from '../sendOutputsFormSchema';
 
@@ -25,7 +26,7 @@ export const SolanaMemoInput = () => {
 
     const memoFieldName: SendFieldName = 'destinationTag';
     const currentMemo = useWatch({ control, name: memoFieldName }) ?? '';
-    const memoByteSize = Buffer.from(localMemo, 'utf8').length;
+    const memoByteSize = countBytesInString(localMemo);
 
     const handleOpen = () => {
         setLocalMemo(currentMemo);
