@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
+import { readJson } from '@trezor/node-utils';
 import { getWeakRandomInt, scheduleAction, unique } from '@trezor/utils';
 
 import { error, log, output, printProblemSummary, warn } from '../logger';
@@ -925,10 +926,8 @@ const main = async () => {
     }
 
     // 4. Map changed files → tests via coverage index
-    const index: CoverageIndex = JSON.parse(fs.readFileSync(indexFile, 'utf8'));
-    const llmAnalysis: Record<string, unknown> = JSON.parse(
-        fs.readFileSync(llmAnalysisFile, 'utf8'),
-    );
+    const index = readJson<CoverageIndex>(indexFile);
+    const llmAnalysis = readJson<Record<string, unknown>>(llmAnalysisFile);
 
     const { matchedByFile, uncovered: uncoveredFiles } = selectTestsByChangedFiles(
         index,

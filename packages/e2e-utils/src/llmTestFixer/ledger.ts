@@ -1,6 +1,8 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+
+import { readJson } from '@trezor/node-utils';
 
 import { error, log, warn } from '../logger';
 import { readSummaries } from './common';
@@ -49,7 +51,7 @@ function main(): void {
     }).trim();
     const ledgerFilePath = join(root, 'ledger.json');
 
-    const report = AnalysisReportSchema.safeParse(JSON.parse(readFileSync(reportPath, 'utf-8')));
+    const report = AnalysisReportSchema.safeParse(readJson(reportPath));
     if (!report.success) {
         error(`[update-ledger] report.json failed schema validation: ${report.error.message}`);
         process.exit(1);

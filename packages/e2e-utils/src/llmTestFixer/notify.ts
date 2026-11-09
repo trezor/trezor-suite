@@ -1,5 +1,7 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+
+import { readJson } from '@trezor/node-utils';
 
 import { error, log } from '../logger';
 import { githubRunLink, postSlackMessage } from '../slack';
@@ -23,7 +25,7 @@ function formatCost(usd: number): string {
 function readAnalysisCost(costFile: string | undefined): number | null {
     if (!costFile || !existsSync(costFile)) return null;
     try {
-        const usage = JSON.parse(readFileSync(costFile, 'utf-8'));
+        const usage = readJson<{ total_cost_usd?: unknown }>(costFile);
 
         return typeof usage.total_cost_usd === 'number' ? usage.total_cost_usd : null;
     } catch {
@@ -51,9 +53,7 @@ function errorLines(errors: string[], indent: string): string[] {
 
 function readReport(reportPath: string): AnalysisReport | null {
     try {
-        const parsed = AnalysisReportSchema.safeParse(
-            JSON.parse(readFileSync(reportPath, 'utf-8')),
-        );
+        const parsed = AnalysisReportSchema.safeParse(readJson(reportPath));
 
         return parsed.success ? parsed.data : null;
     } catch (err) {
