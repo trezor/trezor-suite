@@ -4,15 +4,30 @@ import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config
 import { accountsActions, blockchainInitialState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { type AccountInfo } from '@trezor/connect';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 import { asGetter, createMockDeps } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import {
     type ImportAccountThunkDeps,
     type ImportAccountThunkState,
+    getAccountInfoThunk,
     importAccountThunk,
 } from './accountsImportThunks';
+
+jest.mock('@trezor/connect', () => ({
+    __esModule: true,
+    ...jest.requireActual('@trezor/connect'),
+    default: {
+        getAccountInfo: jest.fn().mockResolvedValue({ success: true, payload: {} }),
+    },
+}));
+
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    updateFiatRatesThunk: jest.fn(() => ({ type: 'mock/updateFiatRates' })),
+}));
 
 const accountInfo: AccountInfo = {
     descriptor: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
@@ -86,5 +101,31 @@ describe('importAccountThunk', () => {
         const updateAction = actions.find(accountsActions.updateAccount.match);
 
         expect(updateAction?.payload.account.backendType).toBe('evm-rpc');
+    });
+});
+
+describe('getAccountInfoThunk', () => {
+    it('keeps the firmware checksum the xpub sheet copies, so the descriptor fails it', async () => {
+        const symbol = asNetworkSymbol('btc');
+        const getState = () => buildState(symbol);
+        const extra = createMockDeps<ImportAccountThunkDeps>({
+            services: { getTokenDefinitionsEnabledNetworks: asGetter(() => []) },
+        });
+        const { dispatch } = createMockDispatch({ getState, extra });
+
+        await getAccountInfoThunk({
+            symbol,
+            baseCurrencyCode: 'usd' as BaseCurrencyCode,
+            xpubAddress: 'tr([71d98c03/86h/0h/0h]xpub6CXYp/<0;1>/*)#qmnlgwmu',
+        })(dispatch, getState, extra);
+
+        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledWith(
+            expect.objectContaining({
+                // Documents the bug: the body is rewritten to the canonical apostrophe form while
+                // the `#<checksum>` computed over the `h` form is kept, so the descriptor handed to
+                // `getAccountInfo` fails its own checksum.
+                descriptor: "tr([71d98c03/86'/0'/0']xpub6CXYp/<0;1>/*)#qmnlgwmu",
+            }),
+        );
     });
 });
