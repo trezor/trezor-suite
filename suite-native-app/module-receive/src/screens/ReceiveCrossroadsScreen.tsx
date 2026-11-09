@@ -151,8 +151,8 @@ export const ReceiveCrossroadsScreen = () => {
                         <SearchInput
                             placeholder={translate(
                                 activeTab === 'assets'
-                                    ? 'moduleReceive.search.placeholder.assets'
-                                    : 'moduleReceive.search.placeholder.accounts',
+                                    ? 'moduleReceive.search.placeholders.assets'
+                                    : 'moduleReceive.search.placeholders.accounts',
                             )}
                             onChange={handleSearchChange}
                             maxLength={30}

@@ -1014,7 +1014,7 @@ export const messages = {
             allAssets: 'All assets',
         },
         search: {
-            placeholder: {
+            placeholders: {
                 assets: 'Search by name or symbol',
                 accounts: 'Search accounts',
             },
