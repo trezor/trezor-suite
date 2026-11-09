@@ -189,6 +189,12 @@ describe('permissionsAreCovered', () => {
             false,
         );
     });
+
+    it('is not covered when a legacy persisted record has no granted list', () => {
+        const legacyGranted = undefined as unknown as PermissionRequest[];
+
+        expect(permissionsAreCovered([{ permission: 'read_features' }], legacyGranted)).toBe(false);
+    });
 });
 
 describe('groupPermissionsByCoin', () => {
