@@ -3,8 +3,8 @@ import fetch from 'cross-fetch';
 import { resolveConfig } from 'detox/internals';
 
 import { LaunchArguments } from '@suite-native/config';
-import { PreloadedState } from '@suite-native/state';
-import { mockInitialAppState } from '@suite-native/state/mocks';
+import { PreloadedState } from '@suite-native-app/state';
+import { mockInitialAppState } from '@suite-native-app/state/mocks';
 import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { mergeDeepObject } from '@trezor/utils';
 

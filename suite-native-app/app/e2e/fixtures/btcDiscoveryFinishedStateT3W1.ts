@@ -1,5 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { PreloadedState } from '@suite-native/state';
+import { PreloadedState } from '@suite-native-app/state';
 import { THP_CREDENTIALS } from '@trezor/connect-core/e2e/common-thp-credentials';
 
 /**

@@ -5,7 +5,7 @@ import { useMMKVDevTools } from '@rozenite/mmkv-plugin';
 import { useNetworkActivityDevTools } from '@rozenite/network-activity-plugin';
 import { usePerformanceMonitorDevTools } from '@rozenite/performance-monitor-plugin';
 
-import { injectMMKVStorage } from '@suite-native/services';
+import { injectGetMMKVStorage } from '@suite-native/storage';
 import { useServices } from '@trezor/dependency-injection';
 
 type InitRozeniteMMKVPluginInternalProps = {
@@ -25,7 +25,7 @@ const InitRozeniteMMKVPluginInternal = memo(
 );
 
 const InitRozeniteMMKVPlugin = memo(() => {
-    const { getMMKVStorage } = useServices(injectMMKVStorage);
+    const { getMMKVStorage } = useServices(injectGetMMKVStorage);
     const [mmkvStorage, setMMKVStorage] = useState<MMKV | null>(null);
 
     useEffect(() => {

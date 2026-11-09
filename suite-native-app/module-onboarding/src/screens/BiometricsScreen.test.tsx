@@ -39,8 +39,8 @@ jest.mock('@react-navigation/native', () => ({
 // Stub out postOnboardingInit so exiting the onboarding flow does not dispatch
 // initStakeDataThunk, which calls up-fetch and throws in the jsdom test env
 // because the global Request constructor is not available.
-jest.mock('@suite-native/app-init', () => ({
-    ...jest.requireActual('@suite-native/app-init'),
+jest.mock('@suite-native-app/app-init', () => ({
+    ...jest.requireActual('@suite-native-app/app-init'),
     postOnboardingInitThunk: () => ({
         type: 'postOnboardingInitMock',
     }),

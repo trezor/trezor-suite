@@ -41,7 +41,6 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../sentry" },
-        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../toasts" },

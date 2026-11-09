@@ -4,7 +4,7 @@ import {
     asAccountDescriptor,
     createAccountKey,
 } from '@suite-common/wallet-types';
-import { type PreloadedState } from '@suite-native/state';
+import { type PreloadedState } from '@suite-native-app/state';
 
 import {
     tokenReceiveAccountInfoUSDC,

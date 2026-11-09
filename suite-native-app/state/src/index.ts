@@ -1,5 +1,4 @@
 export * from './StoreProvider';
-export * from './appSlice';
 export {
     type FullAppState,
     type FullPersistedAppState,
@@ -13,3 +12,4 @@ export { createHydrateReduxStore, type HydrateReduxStoreDep } from './createHydr
 export { createStorePersistor, type StorePersistorDep } from './createStorePersistor';
 export { prepareRootReducers } from './reducers';
 export { extraDependencies } from './createNativeExtraDependencies';
+export { selectIsAppReady, setIsAppReady } from './appSlice';

@@ -1,8 +1,8 @@
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
-import { postOnboardingInitThunk } from '@suite-native/app-init';
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { setIsOnboardingFinished } from '@suite-native/settings';
+import { postOnboardingInitThunk } from '@suite-native-app/app-init';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

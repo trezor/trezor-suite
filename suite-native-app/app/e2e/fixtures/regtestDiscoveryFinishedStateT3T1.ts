@@ -1,5 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { PreloadedState } from '@suite-native/state';
+import { PreloadedState } from '@suite-native-app/state';
 
 /**
  *  reflects state after REGTEST discovery of connected T3T1 device with `mnemonic_immune` seed from @packages/trezor-user-env-link constants.

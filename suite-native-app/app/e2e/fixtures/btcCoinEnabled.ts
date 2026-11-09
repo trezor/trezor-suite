@@ -1,4 +1,4 @@
-import { PreloadedState } from '@suite-native/state';
+import { PreloadedState } from '@suite-native-app/state';
 
 /**
  *  reflects state after BTC coin enabling.
