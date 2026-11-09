@@ -2,7 +2,7 @@ import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type Account } from '@suite-common/wallet-types';
 
-import { createQuoteLink, createTxLink, getStatusMessage } from 'src/utils/wallet/trading/buyUtils';
+import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 import { buyUtilsFixtures } from './__fixtures__/buyUtils';
 
@@ -39,14 +39,5 @@ describe('buyUtils', () => {
         expect(await createTxLink(deps, buyUtilsFixtures.QUOTE, accountMock)).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#detail/btc/normal/1/e709df77-ee9e-4d12-98c2-84004a19c546`,
         );
-    });
-
-    it('getStatusMessage', () => {
-        expect(getStatusMessage('LOGIN_REQUEST')).toBe('TR_BUY_STATUS_PENDING');
-        expect(getStatusMessage('APPROVAL_PENDING')).toBe('TR_BUY_STATUS_PENDING');
-        expect(getStatusMessage('SUBMITTED')).toBe('TR_BUY_STATUS_PENDING_GO_TO_GATEWAY');
-        expect(getStatusMessage('BLOCKED')).toBe('TR_BUY_STATUS_ERROR');
-        expect(getStatusMessage('ERROR')).toBe('TR_BUY_STATUS_ERROR');
-        expect(getStatusMessage('SUCCESS')).toBe('TR_BUY_STATUS_SUCCESS');
     });
 });

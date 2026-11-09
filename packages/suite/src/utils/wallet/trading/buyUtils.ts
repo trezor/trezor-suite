@@ -1,4 +1,4 @@
-import { type BuyTrade, type BuyTradeQuoteRequest, type BuyTradeStatus } from 'invity-api';
+import { type BuyTrade, type BuyTradeQuoteRequest } from 'invity-api';
 
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
@@ -47,23 +47,4 @@ export const createTxLink = async (
     }
 
     return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
-};
-
-export const getStatusMessage = (status: BuyTradeStatus) => {
-    switch (status) {
-        case 'LOGIN_REQUEST':
-        case 'APPROVAL_PENDING':
-            return 'TR_BUY_STATUS_PENDING';
-        case 'SUBMITTED':
-            return 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY';
-        case 'WAITING_FOR_USER':
-            return 'TR_BUY_STATUS_ACTION_REQUIRED';
-        case 'BLOCKED':
-        case 'ERROR':
-            return 'TR_BUY_STATUS_ERROR';
-        case 'SUCCESS':
-            return 'TR_BUY_STATUS_SUCCESS';
-        default:
-            return 'TR_BUY_STATUS_PENDING';
-    }
 };

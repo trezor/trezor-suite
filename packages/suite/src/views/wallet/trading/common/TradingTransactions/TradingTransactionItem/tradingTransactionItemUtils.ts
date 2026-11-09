@@ -9,6 +9,7 @@ import { type TranslationKey } from '@suite/intl';
 import {
     type TradingTradeType,
     type TradingTransaction,
+    buyUtils,
     exchangeUtils,
     getTradeOperationData,
     sellUtils,
@@ -16,8 +17,6 @@ import {
 import { type IconCircleIntent, type IconComponent } from '@trezor/components';
 import { CheckIcon, SpinnerGapIcon, WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
-
-import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 
 export type TradingTransactionSide =
     | { type: 'crypto'; amount: string; cryptoId: CryptoId }
@@ -70,7 +69,7 @@ export const getTradingTransactionSides = (
 };
 
 const getBuyStatusData = (status: BuyTradeStatus): TradingTransactionStatusData => {
-    const messageId = getBuyStatusMessage(status);
+    const messageId = buyUtils.getStatusMessage(status);
 
     switch (messageId) {
         case 'TR_BUY_STATUS_PENDING':

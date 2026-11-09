@@ -53,3 +53,17 @@ describe('getAmountLimits', () => {
         expect(amountLimits).toStrictEqual(expectedResult);
     });
 });
+
+describe('getStatusMessage', () => {
+    it.each([
+        ['LOGIN_REQUEST' as const, 'TR_BUY_STATUS_PENDING'],
+        ['APPROVAL_PENDING' as const, 'TR_BUY_STATUS_PENDING'],
+        ['SUBMITTED' as const, 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY'],
+        ['WAITING_FOR_USER' as const, 'TR_BUY_STATUS_ACTION_REQUIRED'],
+        ['BLOCKED' as const, 'TR_BUY_STATUS_ERROR'],
+        ['ERROR' as const, 'TR_BUY_STATUS_ERROR'],
+        ['SUCCESS' as const, 'TR_BUY_STATUS_SUCCESS'],
+    ])('should return %s for %s', (status, expected) => {
+        expect(buyUtils.getStatusMessage(status)).toBe(expected);
+    });
+});
