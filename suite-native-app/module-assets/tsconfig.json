@@ -54,6 +54,7 @@
             "path": "../../suite-native/price-chart"
         },
         { "path": "../../suite-native/toasts" },
+        { "path": "../../suite-native/tokens" },
         {
             "path": "../../packages/dependency-injection"
         },
