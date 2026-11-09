@@ -280,6 +280,7 @@
 !/suite-native-app/app-init
 !/suite-native-app/module-onboarding
 !/suite-native-app/state
+!/suite-native-app/suite-sync
 /networks/bitcoin/*
 !/networks/bitcoin/network-bitcoin-assets
 !/networks/bitcoin/network-bitcoin-suite-common

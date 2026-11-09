@@ -4,7 +4,7 @@ export const forbiddenDepsConfig: ForbiddenDepsConfig = {
     'allowed-only-in': {
         packages: [
             '@suite/suite-sync',
-            '@suite-native/suite-sync',
+            '@suite-native-app/suite-sync',
             '@suite-common/e2e-evolu-client',
             '@trezor/suite-e2e',
         ],
