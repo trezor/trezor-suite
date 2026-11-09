@@ -22,11 +22,13 @@ import {
 } from './connectPopupReducer';
 import {
     type ConnectPopupCallInnerThunkDeps,
+    type ConnectPopupCallInnerThunkState,
     type ConnectPopupLoadSelectAccountPageThunkState,
     connectPopupCallInnerThunk,
     connectPopupFinishCallThunk,
     connectPopupLoadSelectAccountPageThunk,
 } from './connectPopupThunks';
+import { CALL_SOURCE_WEB } from './connectPopupTypes';
 import {
     CommonPopupFlow,
     type PopupFlowParams,
@@ -68,6 +70,7 @@ const selectAccountState = {
     method: 'selectAccount',
     state: 'select-account',
     payload: {},
+    source: { type: CALL_SOURCE_WEB, origin: 'https://example.com', manifest: { appName: 'App' } },
     options: {
         symbol: 'btc',
         mode: 'address',
@@ -300,7 +303,11 @@ describe('connectPopupCallInnerThunk', () => {
         };
         const deferred = getPopupCallDeferred(true);
 
-        await connectPopupCallInnerThunk(params)(dispatch, jest.fn(), extra);
+        // A store without the message system: selectConnectV9RefusalMessage, the first thing the
+        // thunk reads the state for, declines nothing then.
+        const getState = jest.fn(() => ({}) as ConnectPopupCallInnerThunkState);
+
+        await connectPopupCallInnerThunk(params)(dispatch, getState, extra);
 
         return { dispatch, deferred, ...extra.services, report: extra.services.analytics.report };
     };
