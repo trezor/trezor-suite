@@ -17,7 +17,7 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { type TronCuratedProductDeps, createTronCuratedProduct } from './createTronCuratedProduct';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './tronCuratedProductDescriptor';
+import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './tronCuratedProductMessageSystemFeatures';
 import { everstakeProvider } from '../../providers/everstake';
 import { luganodesProvider } from '../../providers/luganodes';
 import { p2pProvider } from '../../providers/p2p';

@@ -19,7 +19,7 @@ import { createSolanaExternalDelegationProduct } from './products/solana/externa
 import { createSolanaNativeDelegationProduct } from './products/solana/native/createSolanaNativeDelegationProduct';
 import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductMessageSystemFeatures';
 import { createTronCuratedProduct } from './products/tron/createTronCuratedProduct';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './products/tron/tronCuratedProductDescriptor';
+import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './products/tron/tronCuratedProductMessageSystemFeatures';
 import { everstakeProvider } from './providers/everstake';
 import { fivebinariesProvider } from './providers/fivebinaries';
 import { luganodesProvider } from './providers/luganodes';

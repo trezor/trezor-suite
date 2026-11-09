@@ -5,7 +5,7 @@ import {
     stakingProductInfoSchema,
 } from '@suite-common/earn-staking-common';
 
-import type { TronRepresentative } from './tronRepresentatives';
+import { type TronRepresentative } from './types';
 
 // Copied from wallet-core tronStakingConstants.ts.
 export const TRON_UNFREEZE_DELAY_DAYS = 14;

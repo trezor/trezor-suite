@@ -8,6 +8,7 @@ import type {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
+import { createUnimplementedStakingOperations } from '../unimplementedStakingOperations';
 import { getTronCuratedProductPosition } from './getTronCuratedProductPosition';
 import { getTronCuratedProductAmountBounds } from './tronCuratedProductAmountBounds';
 import { createTronCuratedProductDescriptor } from './tronCuratedProductDescriptor';
@@ -15,8 +16,7 @@ import {
     type TronCuratedProductInfoDeps,
     fetchTronCuratedProductInfo,
 } from './tronCuratedProductInfo';
-import { getTronRepresentatives } from './tronRepresentatives';
-import { createUnimplementedStakingOperations } from '../unimplementedStakingOperations';
+import { getTronRepresentatives } from './utils';
 
 export type TronCuratedProductDeps = TronCuratedProductInfoDeps;
 
