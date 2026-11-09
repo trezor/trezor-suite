@@ -20,4 +20,3 @@ export type {
 } from '@suite-common/wallet-types';
 
 export type { WalletParams } from '@suite/router';
-export type AccountItemType = 'coin' | 'tokens' | 'staking';

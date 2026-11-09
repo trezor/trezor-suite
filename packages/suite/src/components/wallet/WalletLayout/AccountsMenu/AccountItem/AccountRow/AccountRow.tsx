@@ -3,11 +3,11 @@ import styled, { css } from 'styled-components';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Row } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
+import { TokenIcon } from '@trezor/product-components';
 
-import { type Account, type AccountItemType } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { AccountItemContent } from './AccountItemContent';
-import { AccountItemLogo } from '../AccountItemLogo/AccountItemLogo';
 
 const Container = styled.button<{ $isActive?: boolean; $isCollapsed?: boolean }>`
     display: flex;
@@ -22,6 +22,7 @@ const Container = styled.button<{ $isActive?: boolean; $isCollapsed?: boolean }>
     cursor: pointer;
     border: 0;
     background: none;
+    min-width: 0;
     -webkit-app-region: no-drag;
 
     &:focus-visible {
@@ -53,12 +54,12 @@ export type AccountRowProps = {
     isSelected: boolean;
     handleHeaderClick: () => void;
     isCollapsed?: boolean;
-    dataTestKey?: string;
-    type: AccountItemType;
+    dataTestKey: string;
+    tokenCount: number;
+    hasStaking: boolean;
     account: Account;
     customFiatValue?: BaseCurrencyAmount;
-    formattedBalance: string;
-    isFiatLoading?: boolean;
+    isFiatLoading: boolean;
 };
 
 export const AccountRow = ({
@@ -66,10 +67,10 @@ export const AccountRow = ({
     handleHeaderClick,
     isCollapsed = false,
     dataTestKey,
-    type,
+    tokenCount,
+    hasStaking,
     account,
     customFiatValue,
-    formattedBalance,
     isFiatLoading,
 }: AccountRowProps) => (
     <Container
@@ -79,18 +80,18 @@ export const AccountRow = ({
         data-testid={dataTestKey}
         type="button"
     >
-        <Row gap={16} width="100%">
+        <Row gap={8} width="100%">
             <Box position={{ type: 'relative' }} zIndex={0}>
-                <AccountItemLogo type={type} account={account} />
+                <TokenIcon size={24} symbol={account.symbol} />
             </Box>
             {!isCollapsed && (
                 <AccountItemContent
                     customFiatValue={customFiatValue}
                     account={account}
-                    type={type}
-                    formattedBalance={formattedBalance}
+                    tokenCount={tokenCount}
+                    hasStaking={hasStaking}
                     dataTestKey={dataTestKey}
-                    isFiatLoading={Boolean(isFiatLoading)}
+                    isFiatLoading={isFiatLoading}
                 />
             )}
         </Row>

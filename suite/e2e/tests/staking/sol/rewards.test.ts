@@ -1,6 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
-import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import {
     rewards,
@@ -19,16 +18,6 @@ const firstStakedAmount = solStakingAccountFirst.stakeInSol;
 const secondStakedAmount = solStakingAccountSecond.stakeInSol;
 const stakedTotal = (Number(firstStakedAmount) + Number(secondStakedAmount)).toFixed(9);
 const unstakingTotal = solStakingAccountDeactivating.stakeInSol;
-const stakingAccountTotal = new BigNumber(
-    Number(firstStakedAmount) + Number(secondStakedAmount) + Number(unstakingTotal),
-);
-// An account balance is compact: two decimals from 1 upwards, and no ellipsis.
-const stakingAccountTotalFormatted = `${localizeNumber(
-    stakingAccountTotal.decimalPlaces(2, BigNumber.ROUND_DOWN),
-    'en-US',
-    2,
-    2,
-)} SOL`;
 const totalRewardsInSol = (Number(totalReward.response.total) / 1_000_000_000).toFixed(9);
 const activeEpoch = solStakingAccountDeactivating.deactivationEpoch;
 // Rewards history before and after the reward for the previous epoch is published
@@ -91,11 +80,10 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await expect(
-                    walletPage.balanceOfAccountWithSymbol({
+                    walletPage.stakingBadge({
                         symbol: solSymbol,
-                        subAccount: 'staking',
                     }),
-                ).toHaveText(stakingAccountTotalFormatted);
+                ).toBeVisible();
                 await expect(stakingSection.unstakeToClaimButton).toBeEnabled();
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
             });
@@ -121,13 +109,6 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                         unstaking: unstakingTotal,
                     },
                 });
-                await expect(
-                    walletPage.balanceOfAccountWithSymbol({
-                        symbol: solSymbol,
-                        subAccount: 'staking',
-                    }),
-                ).toHaveText(stakingAccountTotalFormatted);
-
                 // The reward for the previous epoch is not in rewards history yet
                 await expect(stakingSection.rewardsWarningBanner).toHaveTranslation(
                     'TR_SOL_STAKING_REWARD_WARNING',
