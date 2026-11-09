@@ -24,4 +24,9 @@ it('AESGCM encode/decode', () => {
     aesCtx2.auth(authData);
     const decryptedData = aesCtx2.decrypt(staticPubKey, tag);
     expect(decryptedData.toString('hex')).toEqual(plaintext.toString('hex'));
+
+    // decode with invalid tag length
+    expect(() => aesCtx.decrypt(staticPubKey, Buffer.alloc(15))).toThrow(
+        'Invalid authentication tag length: 15',
+    );
 });
