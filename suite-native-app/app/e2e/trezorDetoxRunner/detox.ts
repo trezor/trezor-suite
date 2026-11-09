@@ -30,7 +30,8 @@ const runDetox = (
     testFiles?: string[],
 ): Promise<void> =>
     new Promise((resolve, reject) => {
-        const args = ['detox', 'test', '--configuration', detoxConfiguration];
+        // Let Jest finish its reporters, then exit even if a crashed emulator left open handles.
+        const args = ['detox', 'test', '--configuration', detoxConfiguration, '--forceExit'];
         if (headless) {
             args.push('--headless');
         }
