@@ -3,7 +3,6 @@ import {
     selectDevicePath,
     selectIsDeviceInitialized,
     selectSelectedDevice,
-    selectSimulatedEntropyCheckFail,
 } from '@suite-common/device';
 import {
     Feature,
@@ -11,9 +10,9 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { type BackupType, type ReportSecurityCheckDep } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import {
-    processEntropyCheckResultThunk,
+    type ResetDeviceWithEntropyCheckThunkDeps,
     resetDeviceWithEntropyCheckThunk,
 } from '@suite-common/wallet-core';
 import {
@@ -23,7 +22,7 @@ import {
 } from '@suite-native/device-mutex';
 import TrezorConnect, { type OkWithDevice, PROTO, type Response } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { type WithServices, createThunk } from '@trezor/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { type Err, exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
@@ -51,7 +50,7 @@ const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice =
 
 type CreateAndBackupWalletThunkState = DeviceRootState & MessageSystemRootState;
 
-type CreateAndBackupWalletThunkDeps = WithServices<ReportSecurityCheckDep>;
+type CreateAndBackupWalletThunkDeps = ResetDeviceWithEntropyCheckThunkDeps;
 
 export const createAndBackupWalletThunk = createThunk<
     Err<SerializedError> | OkWithDevice<PROTO.Success>,
@@ -72,8 +71,6 @@ export const createAndBackupWalletThunk = createThunk<
             Feature.entropyCheckMobile,
             true,
         );
-        // Used only in tests! See deviceReducer for the property definition.
-        const simulatedFailResult = selectSimulatedEntropyCheckFail(getState());
 
         if (!device?.features || !devicePath) {
             return rejectWithValue('Device not found');
@@ -112,27 +109,15 @@ export const createAndBackupWalletThunk = createThunk<
                         device: { path: devicePath },
                         skip_backup: false,
                         ...getResetDeviceConfig(walletBackupType),
-                        //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
-                        entropy_check: isEntropyCheckEnabled,
                     },
+                    isEntropyCheckEnabled,
                 }),
             ).unwrap(),
         );
         // error from device-mutex
         if (!deviceResponse.success) return rejectWithValue(deviceResponse.error);
 
-        // full response from connect, which is either success or error
-        const result = deviceResponse.payload;
-        if (isEntropyCheckEnabled) {
-            if (simulatedFailResult) {
-                dispatch(processEntropyCheckResultThunk({ device, result: simulatedFailResult }));
-
-                return fulfillWithValue(simulatedFailResult);
-            }
-            dispatch(processEntropyCheckResultThunk({ device, result }));
-        }
-
-        return fulfillWithValue(result);
+        return fulfillWithValue(deviceResponse.payload);
     },
 );
 
