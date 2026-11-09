@@ -24,7 +24,7 @@ const recoverWallet = async () => {
         device: { ...deviceInitialState, devices: [device], selectedDevice: device },
     };
     const getState = () => state;
-    const { actions, dispatch } = createMockDispatch({ getState, extra: undefined });
+    const { actions, dispatch } = createMockDispatch({ getState, extra: {} });
 
     await dispatch(recoverWalletThunk());
 

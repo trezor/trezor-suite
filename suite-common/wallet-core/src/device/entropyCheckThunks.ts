@@ -1,4 +1,9 @@
-import { DEVICE_MODULE_PREFIX, getIsIgnoredEntropyCheckError } from '@suite-common/device';
+import {
+    DEVICE_MODULE_PREFIX,
+    type DeviceRootState,
+    getIsIgnoredEntropyCheckError,
+    selectSimulatedEntropyCheckFail,
+} from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { type AcquiredDevice, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -46,21 +51,28 @@ type ResetDeviceResult = Awaited<ReturnType<typeof TrezorConnect.resetDevice>>;
 
 type ResetDeviceWithEntropyCheckThunkParams = {
     device: AcquiredDevice;
-    params: Parameters<typeof TrezorConnect.resetDevice>[0];
+    params: Omit<Parameters<typeof TrezorConnect.resetDevice>[0], 'entropy_check'>;
+    isEntropyCheckEnabled: boolean;
 };
 
+type ResetDeviceWithEntropyCheckThunkState = DeviceRootState;
+
+export type ResetDeviceWithEntropyCheckThunkDeps = FailEntropyCheckThunkDeps;
+
 /**
- * Calls resetDevice and persists the xpub hashes of a passed wallet creation entropy check as soon as Connect
- * reports them, so that they are known for the discovery entropy check even if the call fails afterwards.
- * A wallet created without reported hashes (entropy check disabled) drops the hashes of any previous attempt.
+ * Calls resetDevice and handles the result of the wallet creation entropy check:
+ * - The xpub hashes of a passed check are persisted as soon as Connect reports them, so that they are known
+ *   for the discovery entropy check even if the call fails afterward.
+ * - A wallet created without reported hashes (entropy check disabled) drops the hashes of any previous attempt.
+ * - A failed check is persisted and reported once the call finishes.
  */
 export const resetDeviceWithEntropyCheckThunk = createThunk<
     ResetDeviceResult,
     ResetDeviceWithEntropyCheckThunkParams,
-    void
+    { state: ResetDeviceWithEntropyCheckThunkState; extra: ResetDeviceWithEntropyCheckThunkDeps }
 >(
     `${DEVICE_MODULE_PREFIX}/resetDeviceWithEntropyCheckThunk`,
-    async ({ device, params }, { dispatch }) => {
+    async ({ device, params, isEntropyCheckEnabled }, { dispatch, getState }) => {
         let isXPubHashesReported = false;
         const onWalletCreationEntropyCheck = ({
             device: checkedDevice,
@@ -79,44 +91,35 @@ export const resetDeviceWithEntropyCheckThunk = createThunk<
         };
 
         TrezorConnect.on(UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK, onWalletCreationEntropyCheck);
+        let connectResult: ResetDeviceResult;
         try {
-            const result = await TrezorConnect.resetDevice(params);
-            // With the entropy check enabled, Connect always reports the hashes before succeeding.
-            // Otherwise, the stored hashes may belong to an earlier attempt whose seed was never stored.
-            if (result.success && !isXPubHashesReported) {
-                dispatch(
-                    persistentDeviceDataActions.clearEntropyCheckXPubHashes({
-                        deviceId: device.id,
-                    }),
-                );
-            }
-
-            return result;
+            connectResult = await TrezorConnect.resetDevice({
+                ...params,
+                entropy_check: isEntropyCheckEnabled,
+            });
         } finally {
             TrezorConnect.off(
                 UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK,
                 onWalletCreationEntropyCheck,
             );
         }
-    },
-);
 
-type ProcessEntropyCheckResultThunkParams = {
-    device: AcquiredDevice;
-    result: ResetDeviceResult;
-};
+        // With the entropy check enabled, Connect always reports the hashes before succeeding.
+        // Otherwise, the stored hashes may belong to an earlier attempt whose seed was never stored.
+        if (connectResult.success && !isXPubHashesReported) {
+            dispatch(
+                persistentDeviceDataActions.clearEntropyCheckXPubHashes({ deviceId: device.id }),
+            );
+        }
 
-export type ProcessEntropyCheckResultThunkDeps = FailEntropyCheckThunkDeps;
+        // If entropy check is not enabled, then resetDevice doesn't do it, and its response has no entropy check payload, so no need to process it.
+        if (!isEntropyCheckEnabled) return connectResult;
 
-export const processEntropyCheckResultThunk = createThunk<
-    void,
-    ProcessEntropyCheckResultThunkParams,
-    { extra: ProcessEntropyCheckResultThunkDeps }
->(
-    `${DEVICE_MODULE_PREFIX}/processEntropyCheckResultThunk`,
-    ({ device, result }: ProcessEntropyCheckResultThunkParams, { dispatch }) => {
-        // A passed check is already persisted by resetDeviceWithEntropyCheckThunk.
-        if (result.success) return;
+        // Used only in tests! See deviceReducer for the property definition.
+        const result = selectSimulatedEntropyCheckFail(getState()) ?? connectResult;
+
+        // A passed check is already persisted when the hashes were reported.
+        if (result.success) return result;
 
         // But failure is persisted only after resetDevice finishes, because only at that point we have all runtime
         // errors collected by Connect (e.g. transport errors).
@@ -126,5 +129,7 @@ export const processEntropyCheckResultThunk = createThunk<
         if (result.error.code === 'Failure_EntropyCheck') {
             dispatch(failEntropyCheckThunk({ device, error: result.error }));
         }
+
+        return result;
     },
 );

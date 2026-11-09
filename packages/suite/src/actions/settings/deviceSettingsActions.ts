@@ -3,21 +3,16 @@ import { type ThunkDispatch } from 'redux-thunk';
 
 import { openModal } from '@suite/modal';
 import { type SuiteSettingsRootState, selectIsEntropyCheckEnabled } from '@suite/settings';
-import {
-    type DeviceRootState,
-    selectSelectedDevice,
-    selectSimulatedEntropyCheckFail,
-} from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    processEntropyCheckResultThunk,
+    type ResetDeviceWithEntropyCheckThunkDeps,
     resetDeviceWithEntropyCheckThunk,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
@@ -119,7 +114,7 @@ export type ResetDeviceThunkState = DeviceRootState &
     SuiteSettingsRootState &
     MessageSystemRootState;
 
-type ResetDeviceThunkDeps = { services: ReportSecurityCheckDep };
+type ResetDeviceThunkDeps = ResetDeviceWithEntropyCheckThunkDeps;
 
 export const resetDeviceThunk =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
@@ -178,12 +173,7 @@ export const resetDeviceThunk =
             passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
         };
 
-        const isEntropyCheckEnabled =
-            isEntropyCheckEnabledInSettings && !isEntropyCheckDisabledByMessageSystem;
-        // Used only in tests! See deviceReducer for the property definition.
-        const simulatedFailResult = selectSimulatedEntropyCheckFail(getState());
-
-        const result = await dispatch(
+        return dispatch(
             resetDeviceWithEntropyCheckThunk({
                 device,
                 params: {
@@ -192,21 +182,11 @@ export const resetDeviceThunk =
                     device: {
                         path: device.path,
                     },
-                    entropy_check: isEntropyCheckEnabled,
                 },
+                isEntropyCheckEnabled:
+                    isEntropyCheckEnabledInSettings && !isEntropyCheckDisabledByMessageSystem,
             }),
         ).unwrap();
-
-        if (isEntropyCheckEnabled) {
-            if (simulatedFailResult) {
-                dispatch(processEntropyCheckResultThunk({ device, result: simulatedFailResult }));
-
-                return simulatedFailResult;
-            }
-            dispatch(processEntropyCheckResultThunk({ device, result }));
-        }
-
-        return result;
     };
 
 type ChangeLanguageThunkState = DeviceRootState;

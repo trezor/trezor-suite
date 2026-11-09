@@ -1,3 +1,4 @@
+import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -7,8 +8,7 @@ import { type ErrorCode } from '@trezor/connect-common/src/constants/errors';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import {
-    type ProcessEntropyCheckResultThunkDeps,
-    processEntropyCheckResultThunk,
+    type ResetDeviceWithEntropyCheckThunkDeps,
     resetDeviceWithEntropyCheckThunk,
 } from './entropyCheckThunks';
 
@@ -63,22 +63,25 @@ const mockResetDevice = ({
     });
 };
 
-const resetDevice = async ({ isEntropyCheckEnabled = true } = {}) => {
-    const extra: ProcessEntropyCheckResultThunkDeps = {
+const resetDevice = async ({
+    isEntropyCheckEnabled = true,
+    simulatedEntropyCheckFail,
+}: {
+    isEntropyCheckEnabled?: boolean;
+    simulatedEntropyCheckFail?: DeviceRootState['device']['simulatedEntropyCheckFail'];
+} = {}) => {
+    const extra: ResetDeviceWithEntropyCheckThunkDeps = {
         services: { reportSecurityCheck: jest.fn() },
     };
-    const getState = () => ({});
+    const state: DeviceRootState = { device: { ...deviceInitialState, simulatedEntropyCheckFail } };
+    const getState = () => state;
     const { actions, dispatch } = createMockDispatch({ getState, extra });
 
     const result = await dispatch(
-        resetDeviceWithEntropyCheckThunk({
-            device,
-            params: { entropy_check: isEntropyCheckEnabled },
-        }),
+        resetDeviceWithEntropyCheckThunk({ device, params: {}, isEntropyCheckEnabled }),
     ).unwrap();
-    await dispatch(processEntropyCheckResultThunk({ device, result }));
 
-    return { actions, extra };
+    return { actions, extra, result };
 };
 
 const passedEntropyCheckAction = persistentDeviceDataActions.setEntropyCheckResult({
@@ -156,6 +159,48 @@ describe('wallet creation entropy check', () => {
         const { actions } = await resetDevice({ isEntropyCheckEnabled: false });
 
         expect(actions).not.toContainEqual(clearXPubHashesAction);
+    });
+
+    it('passes the entropy check setting to Connect', async () => {
+        mockResetDevice({ result: successResult, eventDevice: null });
+        await resetDevice({ isEntropyCheckEnabled: false });
+
+        expect(TrezorConnect.resetDevice).toHaveBeenCalledWith({ entropy_check: false });
+    });
+
+    it('does not handle a failure when the entropy check is disabled', async () => {
+        mockResetDevice({
+            result: createErrorResult('Failure_EntropyCheck', 'Invalid entropy'),
+            eventDevice: null,
+        });
+        const { actions, extra } = await resetDevice({ isEntropyCheckEnabled: false });
+
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: notificationsActions.addToast.type }),
+        );
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({
+                type: persistentDeviceDataActions.setEntropyCheckResult.type,
+            }),
+        );
+        expect(jest.mocked(extra.services.reportSecurityCheck)).not.toHaveBeenCalled();
+    });
+
+    it('handles and returns a simulated failure instead of the result', async () => {
+        const simulatedFailResult = createErrorResult('Failure_EntropyCheck', 'Simulated');
+        if (simulatedFailResult.success) throw new Error('Expected an error result');
+        mockResetDevice({ result: successResult });
+        const { actions, result } = await resetDevice({
+            simulatedEntropyCheckFail: simulatedFailResult,
+        });
+
+        expect(result).toEqual(simulatedFailResult);
+        expect(actions).toContainEqual(
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: device.id,
+                success: false,
+            }),
+        );
     });
 
     it('persists a failed entropy check', async () => {
