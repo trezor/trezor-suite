@@ -4,9 +4,8 @@
 import fs from 'fs';
 import util from 'util';
 import path from 'path';
-import semver from 'semver';
 
-import { getNpmRemoteGreatestVersion } from './helpers';
+import { isNpmVersionPublished } from './helpers';
 
 const readFile = util.promisify(fs.readFile);
 
@@ -27,10 +26,8 @@ const checkNonReleasedDependencies = async (packageName: string) => {
         // devDependencies // We should ignore devDependencies.
     } = packageJSON;
 
-    const remoteGreatestVersion = await getNpmRemoteGreatestVersion(`@trezor/${packageName}`);
-
-    // If local version is greatest than the greatest one in NPM we add it to the release.
-    if (semver.gt(localVersion, remoteGreatestVersion as string)) {
+    // The greatest version in NPM belongs to Connect 10, so this line cannot be compared with it.
+    if (!(await isNpmVersionPublished(`@trezor/${packageName}`, localVersion))) {
         const index = nonReleaseDependencies.indexOf(packageName);
         if (index > -1) {
             nonReleaseDependencies.splice(index, 1);

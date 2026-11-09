@@ -25,6 +25,16 @@ export const gettingNpmDistributionTags = async (packageName: string) => {
     return data['dist-tags'];
 };
 
+export const isNpmVersionPublished = async (moduleName: string, version: string) => {
+    const response = await fetch(`https://registry.npmjs.org/${moduleName}`);
+    if (!response.ok) {
+        throw new Error(`Not possible to get versions of ${moduleName}: ${response.status}`);
+    }
+    const { versions } = (await response.json()) as { versions: Record<string, unknown> };
+
+    return version in versions;
+};
+
 export const getNpmRemoteGreatestVersion = async (moduleName: string) => {
     try {
         const distributionTags = await gettingNpmDistributionTags(moduleName);

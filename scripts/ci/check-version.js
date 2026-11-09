@@ -9,13 +9,13 @@ const args = process.argv.slice(2);
 
 if (args.length < 2)
     throw new Error(
-        'Version check script requires 2 parameters: package name and dist tag (beta | latest)',
+        'Version check script requires 2 parameters: package name and dist tag (beta | latest | v9)',
     );
 
 const [packageName, distTag] = args;
 
-if (!['latest', 'beta'].includes(distTag)) {
-    throw new Error('distTag (3rd parameter) must be either "beta" or "latest"');
+if (!['latest', 'beta', 'v9'].includes(distTag)) {
+    throw new Error('distTag (3rd parameter) must be one of "beta", "latest" or "v9"');
 }
 
 const ROOT = path.join(__dirname, '..', '..');
