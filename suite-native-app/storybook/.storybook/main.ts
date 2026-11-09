@@ -41,6 +41,10 @@ const main: StorybookConfig = {
                         'node_modules',
                         'react-native-web/dist/modules/AssetRegistry',
                     ),
+                    // react-native-svg web build imports @react-native/assets-registry, which
+                    // React Native 0.88 no longer ships; react-native-web provides the same registry
+                    '@react-native/assets-registry/registry':
+                        require.resolve('react-native-web/dist/modules/AssetRegistry'),
                     // @formatjs packages export ./polyfill.js but imports use ./polyfill (no extension)
                     // Vite enforces strict exports resolution so we alias to the full paths
                     '@formatjs/intl-getcanonicallocales/polyfill':
