@@ -24,7 +24,7 @@ import {
     type SolanaNativeDelegationProductDeps,
     createSolanaNativeDelegationProduct,
 } from './native/createSolanaNativeDelegationProduct';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './native/solanaNativeDelegationProductDescriptor';
+import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './native/solanaNativeDelegationProductMessageSystemFeatures';
 import { everstakeProvider } from '../../providers/everstake';
 
 // The oracle is the P0.1 characterization suites in wallet-core

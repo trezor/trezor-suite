@@ -14,7 +14,7 @@ import {
     type SolanaNativeDelegationProductDeps,
     createSolanaNativeDelegationProduct,
 } from './products/solana/native/createSolanaNativeDelegationProduct';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductDescriptor';
+import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductMessageSystemFeatures';
 import { everstakeProvider } from './providers/everstake';
 
 describe('createStakingProductsCompositionRoot', () => {
