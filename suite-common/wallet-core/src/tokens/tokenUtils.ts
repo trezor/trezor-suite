@@ -1,4 +1,8 @@
-import { type TokenDefinition, isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import {
+    type TokenDefinition,
+    isTokenDefinitionKnown,
+    normalizeTokenContract,
+} from '@suite-common/token-definitions';
 import { type TokenSymbol } from '@suite-common/tokens';
 import {
     type NetworkSymbol,
@@ -49,13 +53,15 @@ export const getTokens = <T extends TokenInfo = TokenInfo>({
     const unverifiedWithBalance: T[] = [];
     const unverifiedWithoutBalance: T[] = [];
 
-    const hiddenTokens = new Set(tokenDefinitions?.hide);
-    const shownTokens = new Set(tokenDefinitions?.show);
+    const normalizeContract = (contract: string) => normalizeTokenContract(symbol, contract);
+    const hiddenTokens = new Set(tokenDefinitions?.hide.map(normalizeContract));
+    const shownTokens = new Set(tokenDefinitions?.show.map(normalizeContract));
 
     filteredTokens.forEach(token => {
         const isKnown = isTokenDefinitionKnown(tokenDefinitions?.data, symbol, token.contract);
-        const isHidden = hiddenTokens.has(token.contract);
-        const isShown = shownTokens.has(token.contract);
+        const contract = normalizeContract(token.contract);
+        const isHidden = hiddenTokens.has(contract);
+        const isShown = shownTokens.has(contract);
 
         const query = searchQuery ? searchQuery.trim().toLowerCase() : '';
 

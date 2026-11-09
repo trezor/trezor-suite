@@ -7,6 +7,7 @@ import {
 import { tokenDefinitionsActions } from './tokenDefinitionsActions';
 import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';
 import { type TokenDefinitionsState, TokenManagementAction } from './tokenDefinitionsTypes';
+import { normalizeTokenContract } from './tokenDefinitionsUtils';
 
 export const tokenDefinitionsInitialState: Partial<TokenDefinitionsState> = {};
 
@@ -94,20 +95,14 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
                 const definitions = state[symbol];
 
                 if (definitions) {
-                    let hide = definitions[type]?.hide ?? [];
-                    let show = definitions[type]?.show ?? [];
+                    const contract = normalizeTokenContract(symbol, contractAddress);
+                    const isOtherContract = (address: string) =>
+                        normalizeTokenContract(symbol, address) !== contract;
+                    const hide = (definitions[type]?.hide ?? []).filter(isOtherContract);
+                    const show = (definitions[type]?.show ?? []).filter(isOtherContract);
 
-                    if (status === TokenManagementAction.HIDE) {
-                        if (!hide.includes(contractAddress) && !show.includes(contractAddress)) {
-                            hide = [...hide, contractAddress];
-                        }
-                        show = show.filter(address => address !== contractAddress);
-                    } else if (status === TokenManagementAction.SHOW) {
-                        if (!show.includes(contractAddress) && !hide.includes(contractAddress)) {
-                            show = [...show, contractAddress];
-                        }
-                        hide = hide.filter(address => address !== contractAddress);
-                    }
+                    const visibilityList = status === TokenManagementAction.HIDE ? hide : show;
+                    visibilityList.push(contractAddress);
 
                     definitions[type] = {
                         error: false,
