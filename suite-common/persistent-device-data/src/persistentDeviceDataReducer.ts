@@ -137,15 +137,27 @@ export const preparePersistentDeviceDataReducer = createReducerWithExtraDeps<
                 // expected to exist; device must have been connected or changed for this action to happen
                 if (data === undefined) return;
 
-                // Keep the xpub hashes if the new result has none: resetDevice may still fail after the check
-                // passed and reported them, and the hashes are needed for the discovery entropy check.
-                // device_id changes on wipe, so these can't be hashes of a previous wallet.
+                // Keep the xpubHashes if the new result has none. This is just in case – if resetDevice fails after emitting entropy check success, it's not a Failure_EntropyCheck error.
+                // Hashes not belonging to the current seed are dropped by clearEntropyCheckXPubHashes.
                 const xpubHashes =
                     entropyCheckResult.xpubHashes ?? data.lastEntropyCheckResult?.xpubHashes;
                 data.lastEntropyCheckResult =
                     xpubHashes === undefined
                         ? entropyCheckResult
                         : { ...entropyCheckResult, xpubHashes };
+            },
+        )
+        .addCase(
+            persistentDeviceDataActions.clearEntropyCheckXPubHashes,
+            (state: PersistentDeviceDataState, { payload: { deviceId } }) => {
+                const entropyCheckResult = state.devices.find(
+                    persistentDeviceData => persistentDeviceData.device_id === deviceId,
+                )?.lastEntropyCheckResult;
+                if (entropyCheckResult === undefined) return;
+
+                // The result itself is kept: a failed wallet creation check is about the device, not the seed.
+                delete entropyCheckResult.xpubHashes;
+                delete entropyCheckResult.discoveryCheckFailedPaths;
             },
         )
         .addCase(

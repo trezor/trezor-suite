@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/persistent-device-data"
+        },
+        {
             "path": "../../suite-common/test-utils"
         },
         { "path": "../analytics" },

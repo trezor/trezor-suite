@@ -110,7 +110,10 @@ export const selectIsDiscoveryEntropyCheckEnabledAndFailed = (
 ) => {
     const device = selectSelectedDevice(state);
     const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(state);
-    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.entropyCheckDiscovery);
+    // Discovery check relies on the wallet creation check, so it's disabled by both flags.
+    const isDisabledByMessageSystem =
+        selectIsFeatureDisabled(state, Feature.entropyCheckDiscovery) ||
+        selectIsFeatureDisabled(state, Feature.entropyCheck);
     const isDiscoveryEntropyCheckFailed = selectIsDiscoveryEntropyCheckFailed(state, device?.id);
 
     return isEntropyCheckEnabled && !isDisabledByMessageSystem && isDiscoveryEntropyCheckFailed;

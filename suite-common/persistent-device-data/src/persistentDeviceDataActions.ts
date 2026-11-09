@@ -26,6 +26,15 @@ const setEntropyCheckResult = createAction(
     (payload: SetEntropyCheckResultParams) => ({ payload }),
 );
 
+/**
+ * Drops the xpub hashes of the wallet creation entropy check (and the discovery results based on them),
+ * because the device got a seed which they don't belong to, e.g. by recovery.
+ */
+const clearEntropyCheckXPubHashes = createAction(
+    `${PERSISTENT_DEVICE_DATA_MODULE_PREFIX}/clearEntropyCheckXPubHashes`,
+    (payload: { deviceId: AcquiredDevice['id'] }) => ({ payload }),
+);
+
 type SetDiscoveryEntropyCheckResultParams = {
     deviceId: AcquiredDevice['id'];
     success: boolean;
@@ -64,6 +73,7 @@ export const persistentDeviceDataActions = {
     forgetDevicePersistentData,
     clearDevicePersistentData,
     setEntropyCheckResult,
+    clearEntropyCheckXPubHashes,
     setDiscoveryEntropyCheckResult,
     setDelegatedIdentityKey,
     setDeviceAuthenticityResult,

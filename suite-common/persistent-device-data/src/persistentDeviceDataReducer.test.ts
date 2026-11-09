@@ -267,6 +267,39 @@ describe('persistentDeviceDataReducer', () => {
         });
     });
 
+    it('clears xpub hashes and discovery entropy check failed paths on clearEntropyCheckXPubHashes', () => {
+        const state = reduceMultipleActions(
+            deviceActions.connectDevice({ device: usbDevice }),
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: true,
+                xpubHashes: { "m/84'/0'/0'": 'hash-of-the-xpub' },
+            }),
+            persistentDeviceDataActions.setDiscoveryEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+                path: "m/84'/0'/0'",
+            }),
+            persistentDeviceDataActions.clearEntropyCheckXPubHashes({ deviceId: 'device-id-1' }),
+            // the cleared hashes are not restored by a later result without hashes
+            persistentDeviceDataActions.setEntropyCheckResult({
+                deviceId: 'device-id-1',
+                success: false,
+            }),
+        );
+
+        expect(state.devices[0]?.lastEntropyCheckResult).toEqual({ success: false });
+    });
+
+    it('ignores clearEntropyCheckXPubHashes without stored entropy check result', () => {
+        const state = reduceMultipleActions(
+            deviceActions.connectDevice({ device: usbDevice }),
+            persistentDeviceDataActions.clearEntropyCheckXPubHashes({ deviceId: 'device-id-1' }),
+        );
+
+        expect(state.devices[0]?.lastEntropyCheckResult).toBeUndefined();
+    });
+
     it('ignores setDiscoveryEntropyCheckResult without stored entropy check result', () => {
         const state = reduceMultipleActions(
             deviceActions.connectDevice({ device: usbDevice }),
