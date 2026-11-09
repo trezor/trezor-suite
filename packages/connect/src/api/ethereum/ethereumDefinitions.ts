@@ -1,17 +1,37 @@
 import fetch from 'cross-fetch';
 
+import { VersionArray } from '@trezor/device-utils';
 import { MessagesSchema, decodeMessage, parseConfigure } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
 import { Assert, Static, Type } from '@trezor/schema-utils';
+import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { DataManager } from '../../data/DataManager';
 import { ethereumNetworkInfoBase } from '../../data/coinInfo';
 import { EthereumNetworkInfoDefinitionValues } from '../../types';
 
+// Format version of the signed definitions. The payloads are identical, but Trezor One firmware
+// 1.14.2 and newer rejects everything other than v2. Core firmware keeps accepting v1.
+export type DefinitionsVersion = 1 | 2;
+
+const TREZOR_ONE_DEFINITIONS_V2_MIN_FIRMWARE = '1.14.2';
+
+const DEFINITIONS_BASE_URLS: Record<DefinitionsVersion, string> = {
+    1: 'https://data.trezor.io/firmware/eth-definitions',
+    2: 'https://data.trezor.io/firmware/definitions/v2/eth',
+};
+
+export const getDefinitionsVersion = (firmwareVersion?: VersionArray): DefinitionsVersion =>
+    firmwareVersion?.[0] === 1 &&
+    isNewerOrEqual(firmwareVersion, TREZOR_ONE_DEFINITIONS_V2_MIN_FIRMWARE)
+        ? 2
+        : 1;
+
 interface GetEthereumDefinitions {
     chainId?: number;
     slip44?: number;
     contractAddress?: string;
+    version?: DefinitionsVersion;
 }
 
 /**
@@ -23,15 +43,17 @@ export const getEthereumDefinitions = async ({
     chainId,
     slip44,
     contractAddress,
+    version = 1,
 }: GetEthereumDefinitions) => {
     const definitions: MessagesSchema.EthereumDefinitions = {};
+    const baseUrl = DEFINITIONS_BASE_URLS[version];
 
     if (!chainId && !slip44) {
         throw new Error('argument chainId or slip44 is required');
     }
 
     try {
-        const networkDefinitionUrl = `https://data.trezor.io/firmware/eth-definitions/${
+        const networkDefinitionUrl = `${baseUrl}/${
             chainId ? 'chain-id' : 'slip44'
         }/${chainId ?? slip44}/network.dat`;
         const networkDefinition = await fetch(networkDefinitionUrl);
@@ -48,7 +70,7 @@ export const getEthereumDefinitions = async ({
         if (contractAddress) {
             // Contract address has to be in lowercase in order to be found in eth-definitions.
             const lowerCaseContractAddress = contractAddress.toLowerCase();
-            const tokenDefinitionUrl = `https://data.trezor.io/firmware/eth-definitions/${
+            const tokenDefinitionUrl = `${baseUrl}/${
                 chainId ? 'chain-id' : 'slip44'
             }/${chainId ?? slip44}/token-${lowerCaseContractAddress}.dat`;
             const tokenDefinition = await fetch(tokenDefinitionUrl);
@@ -65,6 +87,29 @@ export const getEthereumDefinitions = async ({
     }
 
     return definitions;
+};
+
+interface GetDefinitionsForFirmware extends Omit<GetEthereumDefinitions, 'version'> {
+    firmwareVersion?: VersionArray;
+    definitions?: MessagesSchema.EthereumDefinitions;
+}
+
+/**
+ * Definitions are downloaded before the device is known, in the v1 format which is enough to
+ * decode their content. Returns the definitions in the format accepted by the device firmware.
+ */
+export const getDefinitionsForFirmware = ({
+    firmwareVersion,
+    definitions,
+    ...request
+}: GetDefinitionsForFirmware) => {
+    const version = getDefinitionsVersion(firmwareVersion);
+
+    if (!definitions || version === 1) {
+        return Promise.resolve(definitions);
+    }
+
+    return getEthereumDefinitions({ ...request, version });
 };
 
 /**
