@@ -1,4 +1,6 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useState } from 'react';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { ContinueOnTrezorScreenContent, useDeviceAuthenticityCheck } from '@suite-native/device';
 import {
@@ -19,6 +21,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const DeviceAuthenticityScreen = ({ navigation }: { navigation: NavigationProp }) => {
+    const [isDeviceAuthenticityCheckStarted, setIsDeviceAuthenticityCheckStarted] = useState(false);
     const { checkDeviceAuthenticity } = useDeviceAuthenticityCheck();
     useInterceptNativeNavigation();
 
@@ -31,16 +34,21 @@ export const DeviceAuthenticityScreen = ({ navigation }: { navigation: Navigatio
         });
     }, [navigation]);
 
-    const startCheckDeviceAuthenticity = useCallback(() => {
-        checkDeviceAuthenticity({ handleSuccess, handleFailure });
+    const startCheckDeviceAuthenticity = useCallback(async () => {
+        await checkDeviceAuthenticity({ handleSuccess, handleFailure });
+        setIsDeviceAuthenticityCheckStarted(false);
     }, [checkDeviceAuthenticity, handleSuccess, handleFailure]);
 
-    useEffect(() => {
-        startCheckDeviceAuthenticity();
-
-        // Start the check automatically on first render only
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            if (!isDeviceAuthenticityCheckStarted) {
+                setIsDeviceAuthenticityCheckStarted(true);
+                startCheckDeviceAuthenticity();
+            }
+            // Note that checkDeviceAuthenticity is an unstable memo (invalidates with DEVICE.CHANGED),
+            // but isDeviceAuthenticityCheckStarted takes care that the check is not fired repeatedly.
+        }, [startCheckDeviceAuthenticity, isDeviceAuthenticityCheckStarted]),
+    );
 
     return (
         <DeviceOnboardingScreenWithExitButton
