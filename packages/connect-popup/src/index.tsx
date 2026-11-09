@@ -263,7 +263,10 @@ const handleMessageInIframeMode = (
 
     // catch first message from iframe
     if (data.type === POPUP.HANDSHAKE) {
-        handshake(data, event.origin);
+        // These channels only reach connect.trezor.io, so `event.origin` says nothing about the
+        // requester: it is empty for MessagePort and Connect's own for BroadcastChannel. The iframe
+        // has validated the requester's origin and passes it in the settings.
+        handshake(data, data.payload?.settings.origin ?? event.origin);
 
         return;
     }
