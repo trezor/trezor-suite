@@ -14,6 +14,13 @@ const ethereumChainId = 1;
 
 const approvalAmount = '60';
 const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
+// The toast shows the approved amount compactly, and a stablecoin reads money-like.
+const compactApprovalAmount = '60.00';
+const approvalFees = {
+    gasLimit: '120000',
+    maxFeePerGas: '2.67674454',
+    maxPriorityFeePerGas: '1.375641927',
+};
 
 test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
     test.use({
@@ -69,9 +76,44 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 await tradingPage.quotes.waitForSync();
             });
 
-            await test.step('Continue to the approval step', async () => {
+            await test.step('Continue to the approval steps with approve first and swap locked', async () => {
                 await tradingPage.swapBestOfferButton.click();
-                await expect(tradingPage.approvalSteps.approveStep).toBeVisible();
+                await expect(tradingPage.approvalSteps.continueButton).toHaveTranslation(
+                    'TR_CONTINUE',
+                );
+                await expect(tradingPage.approvalSteps.approvalRequiredBadge).toHaveTranslation(
+                    'TR_APPROVAL_REQUIRED',
+                );
+                await expect(
+                    tradingPage.approvalSteps.approvalStepLabel('approve'),
+                ).toHaveTranslation('TR_STEP_OF_TOTAL', { values: { index: 1, total: 2 } });
+                await expect(tradingPage.approvalSteps.approvalStepLabel('swap')).toHaveTranslation(
+                    'TR_STEP_OF_TOTAL',
+                    { values: { index: 2, total: 2 } },
+                );
+                await expect(tradingPage.approvalSteps.approvalStep('revoke')).toHaveCount(0);
+                await expect(tradingPage.approvalSteps.approvalStep('increase')).toHaveCount(0);
+                await expect(tradingPage.approvalSteps.limitButton).toHaveText(
+                    `${approvalAmount} USDC`,
+                );
+            });
+
+            await test.step('Switch the approval limit to unlimited and back to the swap amount', async () => {
+                await tradingPage.approvalSteps.selectLimit('unlimited');
+                await expect(tradingPage.approvalSteps.limitButton).toHaveTranslation(
+                    'TR_APPROVAL_VALUE_INFINITE',
+                );
+                await tradingPage.approvalSteps.selectLimit('minimal');
+                await expect(tradingPage.approvalSteps.limitButton).toHaveText(
+                    `${approvalAmount} USDC`,
+                );
+            });
+
+            await test.step('Set custom approval fees in the network fee modal', async () => {
+                await tradingPage.fees.setEthereumCustomFeesInNetworkFeeModal(
+                    approvalFees,
+                    tradingPage.approvalSteps.feeButton,
+                );
                 await tradingPage.approvalSteps.continueButton.click();
             });
 
@@ -135,18 +177,21 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 await device.pressYes();
             });
 
-            await test.step('Review the device fee and sign', async () => {
-                await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
-                    positiveEthereumAmountPattern,
-                );
-                const dexMaximumFee = await devicePrompt
-                    .cryptoAmountWithSymbolOf('fee')
-                    .innerText();
+            await test.step('Review the custom approval fee on device and sign', async () => {
+                const { ethereumMaximumFee, errorMessageMaxCalculation } =
+                    tradingPage.fees.calculateEthereumMaxFee(approvalFees);
+                await expect(
+                    devicePrompt.cryptoAmountWithSymbolOf('fee'),
+                    errorMessageMaxCalculation,
+                ).toHaveText(`${ethereumMaximumFee} ETH`);
 
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Token approval' },
-                        body: [['Maximum fee'], device.wrapText(dexMaximumFee, { isAmount: true })],
+                        body: [
+                            ['Maximum fee'],
+                            device.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
+                        ],
                         actions: { right_button: 'Hold to sign' },
                     },
                     T3T1: {

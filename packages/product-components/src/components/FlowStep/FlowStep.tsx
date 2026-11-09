@@ -24,6 +24,8 @@ export const FlowStep = ({
     children,
     'data-testid': dataTest,
 }: FlowStepProps) => {
+    const labelTestId = dataTest && `${dataTest}/label`;
+
     if (state === 'done') {
         return (
             <Card type="flat" paddingType="small" data-testid={dataTest} data-state={state}>
@@ -47,6 +49,7 @@ export const FlowStep = ({
                             case="small-caps"
                             intent="neutral"
                             priority="secondary"
+                            data-testid={labelTestId}
                         >
                             {label}
                         </Text>
@@ -64,7 +67,12 @@ export const FlowStep = ({
         <Card type="raised" data-testid={dataTest} data-state={state}>
             <Column gap={16}>
                 <Column gap={4}>
-                    <Text typographyStyle="body-sm-strong" case="small-caps" intent="brand">
+                    <Text
+                        typographyStyle="body-sm-strong"
+                        case="small-caps"
+                        intent="brand"
+                        data-testid={labelTestId}
+                    >
                         {label}
                     </Text>
                     <Text typographyStyle="headline-sm">{title}</Text>
