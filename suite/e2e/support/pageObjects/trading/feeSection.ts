@@ -217,8 +217,8 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
     }
 
     @step()
-    async openNetworkFeeModal() {
-        await this.networkFeeRow.click();
+    async openNetworkFeeModal(trigger: Locator = this.networkFeeRow) {
+        await trigger.click();
         await expect(this.networkFeeModalConfirmButton).toBeVisible();
     }
 
@@ -246,12 +246,15 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
     }
 
     @step()
-    async setEthereumCustomFeesInNetworkFeeModal(input: {
-        gasLimit: string;
-        maxFeePerGas: string;
-        maxPriorityFeePerGas: string;
-    }) {
-        await this.openNetworkFeeModal();
+    async setEthereumCustomFeesInNetworkFeeModal(
+        input: {
+            gasLimit: string;
+            maxFeePerGas: string;
+            maxPriorityFeePerGas: string;
+        },
+        trigger: Locator = this.networkFeeRow,
+    ) {
+        await this.openNetworkFeeModal(trigger);
         await this.switchModeButton('custom').click();
         await this.fillEthereumCustomFees(input);
         await this.confirmNetworkFeeModal();
