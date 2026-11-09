@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     type AccountsRootState,
     type StakeRootState,
+    getAccountCryptoBalanceWithStaking,
     selectAccountHasStaking,
     selectFormattedAccountType,
     selectIsCardanoStakedWithFiveBinaries,
@@ -85,20 +86,24 @@ const AccountsListItemComponent = ({
     const shouldShowTokenBadge = hasAnyKnownTokens && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
     const shouldShowZeroApyBadge = isStakedWithFiveBinaries && !isNativeCoinOnly;
-    const fiatBalanceValue =
-        shouldShowTokenBadge && fiatBalance !== undefined ? (
-            <BaseCurrencyAmountFormatter
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                value={fiatBalance}
-            />
-        ) : (
-            <CryptoToFiatAmountFormatter
-                value={account.formattedBalance}
-                isBalance={true}
-                symbol={account.symbol}
-            />
-        );
+    const fiatBalanceValue = shouldShowTokenBadge ? (
+        <BaseCurrencyAmountFormatter
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            symbol={account.symbol}
+            value={fiatBalance}
+        />
+    ) : (
+        <CryptoToFiatAmountFormatter
+            value={
+                shouldShowStakingBadge
+                    ? getAccountCryptoBalanceWithStaking(account)
+                    : account.formattedBalance
+            }
+            isBalance={true}
+            symbol={account.symbol}
+        />
+    );
     const isFailed = isAccountFailed(account);
     const CryptoAmountFormatter = shouldShowExactAmount
         ? ExactCryptoAmountFormatter
@@ -126,13 +131,11 @@ const AccountsListItemComponent = ({
                 />
             }
             title={title}
-            titleBadge={
-                !isNativeCoinOnly && formattedAccountType ? (
-                    <Badge label={formattedAccountType} size="small" />
-                ) : undefined
-            }
             badges={
                 <>
+                    {!isNativeCoinOnly && !!formattedAccountType && (
+                        <Badge label={formattedAccountType} size="small" />
+                    )}
                     {shouldShowZeroApyBadge ? (
                         <ZeroApyBadge />
                     ) : (
@@ -152,8 +155,9 @@ const AccountsListItemComponent = ({
                 )
             }
             secondaryValue={
-                isFailed ? undefined : (
+                isFailed || shouldShowTokenBadge || shouldShowStakingBadge ? undefined : (
                     <CryptoAmountFormatter
+                        testID="@accountList/item/native-balance"
                         value={account.formattedBalance}
                         symbol={account.symbol}
                         numberOfLines={1}

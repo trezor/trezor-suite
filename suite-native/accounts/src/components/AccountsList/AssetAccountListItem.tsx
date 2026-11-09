@@ -93,7 +93,7 @@ export const AssetAccountListItem = ({
         <AccountsListItemBase
             icon={<TokenIcon networkSymbol={account.symbol} />}
             title={<AccountLabel account={account} />}
-            titleBadge={
+            badges={
                 formattedAccountType ? (
                     <Badge label={formattedAccountType} size="small" />
                 ) : undefined
