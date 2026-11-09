@@ -9,9 +9,7 @@ import {
     suiteRoutes,
 } from '@suite/router';
 import { useServices } from '@trezor/dependency-injection';
-
-import { useSelector } from 'src/hooks/suite';
-import { TradingRouteGuard } from 'src/views/wallet/trading/common/TradingRouteGuard';
+import { TradingRouteGuard, useSelector } from '@trezor/suite';
 
 type AppRouterProps = {
     components: Record<PageName, ComponentType>;

@@ -5,12 +5,11 @@
 import 'core-js/actual';
 
 import { useDebugLanguageShortcut } from '@suite/debug';
+import { AppRouter, Main } from '@suite-app/app';
 import {
-    AppRouter,
     BioAuthGuard,
     ConnectedIntlProvider,
     FindBar,
-    Main,
     Metadata,
     Preloader,
     ToasterProvider,
