@@ -18,6 +18,7 @@ const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
 
 export type EnsureSuiteSyncOwnerDeps = {
     createSuiteSyncOwner: CreateSuiteSyncOwner;
+    // @ts-expect-error Evolu methods were removed from Connect 9 and Suite is not released from this branch.
     trezorConnect: Pick<typeof TrezorConnect, 'evoluGetNode'>;
 };
 
@@ -53,6 +54,7 @@ export const createEnsureSuiteSyncOwnerKeys =
             return proofOfDelegatedIdentity;
         }
 
+        // @ts-expect-error Evolu methods were removed from Connect 9 and Suite is not released from this branch.
         const result = await deps.trezorConnect.evoluGetNode({
             device: {
                 path: device.path,

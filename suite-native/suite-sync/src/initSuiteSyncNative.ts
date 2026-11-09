@@ -28,6 +28,7 @@ export const initSuiteSyncNative = (deps: InitSuiteSyncNativeDeps): SuiteSync =>
         createSuiteStorage: createEvoluStorage,
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         secureStorage: deps.secureStorage,
+        // @ts-expect-error Evolu methods were removed from Connect 9 and Suite is not released from this branch.
         trezorConnect: deps.trezorConnect,
     });
 };
