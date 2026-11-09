@@ -30,6 +30,7 @@ import {
     runAdditionalDiscoveryThunk,
     runDiscoveryThunk,
 } from './discoveryThunks';
+import { accountsActions } from '../accounts/accountsActions';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
 import {
     type WalletSettingsRootState,
@@ -157,7 +158,7 @@ describe('applyDeviceStatesThunk', () => {
     );
 });
 
-const existingWalletState: StaticSessionId = 'standard@device-id:1';
+const existingWalletState: StaticSessionId = 'standard@deviceid:1';
 const existingWallet = mockSuiteDevice({
     path: devicePath,
     instance: 1,
@@ -200,7 +201,7 @@ describe('runDiscoveryThunk duplicates', () => {
         // The device returns the state of the wallet which is already in the list.
         jest.mocked(TrezorConnect.getDeviceState).mockResolvedValue({
             success: true,
-            payload: { state: { staticSessionId: 'standard@device-id:0' } },
+            payload: { state: { staticSessionId: 'standard@deviceid:0' } },
         });
         const state = createState(discovery);
         const { actions, dispatch } = createMockDispatch({
@@ -316,6 +317,68 @@ describe('runAdditionalDiscoveryThunk', () => {
     });
 });
 
+describe('runAdditionalDiscoveryThunk failed accounts', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('keeps the error code of an account that failed to load', async () => {
+        const state = createState({ status: 'progress', total: 2, progress: 1 }, existingWallet);
+        let onBundleProgress: ((event: unknown) => void) | undefined;
+        jest.spyOn(TrezorConnect, 'on').mockImplementation(((
+            event: string,
+            listener: (payload: unknown) => void,
+        ) => {
+            if (event === UI_EVENTS.BUNDLE_PROGRESS) onBundleProgress = listener;
+        }) as typeof TrezorConnect.on);
+        jest.spyOn(TrezorConnect, 'off').mockImplementation(jest.fn());
+        jest.mocked(TrezorConnect.getDeviceState).mockResolvedValue({
+            success: true,
+            payload: { state: { staticSessionId: existingWalletState } },
+        });
+        jest.spyOn(TrezorConnect, 'discoverAccounts').mockImplementation(() => {
+            onBundleProgress?.({
+                progress: 2,
+                total: 2,
+                response: {
+                    index: 0,
+                    symbol: 'btc',
+                    type: 'normal',
+                    path: "m/84'/0'/0'",
+                    failed: true,
+                    error: 'All backends are down',
+                    code: 'blockchain_link/connect',
+                },
+            });
+
+            return Promise.resolve({
+                success: true,
+                payload: { empty: 0, nonempty: 0, failed: 1 },
+            });
+        });
+        const { actions, dispatch } = createMockDispatch({
+            getState: () => state,
+            extra: createExtra(),
+        });
+
+        await dispatch(
+            runAdditionalDiscoveryThunk({ staticSessionId: existingWalletState, trigger: 'retry' }),
+        );
+
+        expect(actions).toContainEqual(
+            expect.objectContaining({
+                type: accountsActions.createAccount.type,
+                payload: expect.objectContaining({
+                    account: expect.objectContaining({
+                        failed: true,
+                        errorCode: 'blockchain_link/connect',
+                    }),
+                }),
+            }),
+        );
+    });
+});
+
 describe('endUnfinishedDiscoveryThunk', () => {
     const disconnected: Extract<DiscoveryStatus, { status: 'failed' }> = {
         status: 'failed',
@@ -328,7 +391,10 @@ describe('endUnfinishedDiscoveryThunk', () => {
             EndUnfinishedDiscoveryThunkState,
             EndUnfinishedDiscoveryThunkDeps
         >({
-            getState: () => ({ wallet: { discovery: { [devicePath]: discovery } } }),
+            getState: () => ({
+                wallet: { discovery: { [devicePath]: discovery }, accounts: [] },
+                device: { devices: [], buttonRequestsByPath: {} },
+            }),
             extra: { services: { analytics: mockAnalytics<AnalyticsSharedEvents>() } },
         });
 

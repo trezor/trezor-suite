@@ -1,5 +1,6 @@
 import { type DiscoveryOutcome, type DiscoveryStatus } from '@suite-common/wallet-types';
 import { isDirectRpcBackendType } from '@suite-common/wallet-utils';
+import { isBlockchainLinkErrorCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 import { ERRORS } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
@@ -58,8 +59,12 @@ const REPORTABLE_ERROR_CODES: ReadonlySet<string> = new Set([
  * Analytics may only receive codes from the finite sets of Trezor Connect and firmware failure codes.
  * Anything else, such as the code of an arbitrary thrown error, could carry account or device data.
  */
-export const getReportableErrorCode = (code: string | undefined): string =>
-    code !== undefined && REPORTABLE_ERROR_CODES.has(code) ? code : UNKNOWN_ERROR_CODE;
+export const getReportableErrorCode = (code: string | undefined): string => {
+    if (code === undefined) return UNKNOWN_ERROR_CODE;
+    if (isBlockchainLinkErrorCode(code)) return 'Backend_Error';
+
+    return REPORTABLE_ERROR_CODES.has(code) ? code : UNKNOWN_ERROR_CODE;
+};
 
 export const getErrorCode = (error: unknown): string =>
     typeof error === 'object' && error !== null && 'code' in error && typeof error.code === 'string'

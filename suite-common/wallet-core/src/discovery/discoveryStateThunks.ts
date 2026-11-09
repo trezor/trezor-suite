@@ -1,5 +1,7 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { type DeviceRootState } from '@suite-common/device';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
+import { isAccountFailed } from '@suite-common/wallet-utils';
 import { type DeviceUniquePath } from '@trezor/connect';
 import { type WithServices, createOwnedAction, createThunk } from '@trezor/redux-utils';
 
@@ -7,6 +9,8 @@ import { DISCOVERY_MODULE_PREFIX } from './discoveryActions';
 import { selectDiscoveryByDevicePath } from './discoverySelectors';
 import { type DiscoveryRootState } from './discoveryTypes';
 import { getDiscoveryOutcome, getReportableErrorCode, hasDiscoveryEnded } from './discoveryUtils';
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import { selectDeviceAccounts } from '../accounts/accountsSelectors';
 
 // Private on purpose: a discovery may only change through updateDiscoveryThunk and deleteDiscoveryThunk,
 // which report the outcome of the run. Reducers and middlewares get the matchers.
@@ -33,13 +37,19 @@ export { deleteDiscoveryMatcher, updateDiscoveryMatcher };
 
 const DEVICE_CANCELLATION_ERROR_CODES = ['Failure_ActionCancelled', 'Failure_PinCancelled'];
 
+const selectFailedDeviceAccount = (state: DeviceRootState & AccountsRootState) => {
+    const failedAccounts = selectDeviceAccounts(state).filter(isAccountFailed);
+
+    return failedAccounts.find(account => account.errorCode !== undefined) ?? failedAccounts[0];
+};
+
 type UpdateDiscoveryThunkParams = {
     status: DiscoveryStatus;
     path: DeviceUniquePath;
     isSilent?: boolean;
 };
 
-export type UpdateDiscoveryThunkState = DiscoveryRootState;
+export type UpdateDiscoveryThunkState = DiscoveryRootState & DeviceRootState & AccountsRootState;
 
 export type UpdateDiscoveryThunkDeps = WithServices<AnalyticsDep>;
 
@@ -61,21 +71,25 @@ export const updateDiscoveryThunk = createThunk<
             return;
         }
 
+        const failedAccount =
+            outcome === 'complete' ? selectFailedDeviceAccount(getState()) : undefined;
+        const failure = status.status === 'failed' ? status : failedAccount;
+        const reportedOutcome = failure === undefined ? outcome : 'failed';
+
         // Discovery keeps a run cancelled on the device as failed, so that it can be retried.
         // `Method_Cancel` stays a failure: it also comes from other features cancelling every Connect call.
         const isCancelledFailure =
-            status.status === 'failed' &&
-            status.errorCode !== undefined &&
-            DEVICE_CANCELLATION_ERROR_CODES.includes(status.errorCode);
+            failure?.errorCode !== undefined &&
+            DEVICE_CANCELLATION_ERROR_CODES.includes(failure.errorCode);
         const errorCode =
-            status.status === 'failed' && !isCancelledFailure
-                ? getReportableErrorCode(status.errorCode)
+            failure !== undefined && !isCancelledFailure
+                ? getReportableErrorCode(failure.errorCode)
                 : undefined;
 
         extra.services.analytics.report({
             type: events.accountsDiscoveryResultEvent.name,
             payload: {
-                outcome: isCancelledFailure ? 'cancelled' : outcome,
+                outcome: isCancelledFailure ? 'cancelled' : reportedOutcome,
                 trigger,
                 ...(errorCode !== undefined && { errorCode }),
             },

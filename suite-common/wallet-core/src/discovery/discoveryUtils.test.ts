@@ -72,6 +72,10 @@ describe(getErrorCode.name, () => {
 });
 
 describe(getReportableErrorCode.name, () => {
+    it('reports a blockchain-link error as a backend error', () => {
+        expect(getReportableErrorCode('blockchain_link/connect')).toBe('Backend_Error');
+    });
+
     it.each([
         'Device_Disconnected',
         'Backend_Error',

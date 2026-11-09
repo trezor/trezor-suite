@@ -1,4 +1,11 @@
-import { CustomError } from './errors';
+import { CustomError, isBlockchainLinkErrorCode } from './errors';
+
+describe(isBlockchainLinkErrorCode.name, () => {
+    it('recognizes the code of a blockchain-link error', () => {
+        expect(isBlockchainLinkErrorCode('blockchain_link/connect')).toBe(true);
+        expect(isBlockchainLinkErrorCode('Device_Disconnected')).toBe(false);
+    });
+});
 
 describe('Custom errors', () => {
     it('Error with predefined code and predefined message', () => {
