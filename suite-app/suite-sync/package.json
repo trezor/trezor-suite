@@ -1,0 +1,35 @@
+{
+    "name": "@suite-app/suite-sync",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@evolu/common": "8.10.0",
+        "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch",
+        "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/delegated-identity-key-types": "workspace:*",
+        "@suite-common/platform-encryption": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/suite-sync-evolu": "workspace:*",
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
+        "@suite-common/toast-notifications": "workspace:*",
+        "@suite/analytics": "workspace:*",
+        "@suite/suite-sync": "workspace:*",
+        "@suite/tor": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
+    }
+}

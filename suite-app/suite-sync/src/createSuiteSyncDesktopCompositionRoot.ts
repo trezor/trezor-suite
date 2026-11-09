@@ -1,6 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { suiteSyncErrorHandler } from '@suite/suite-sync';
 import { selectIsTorEnabled } from '@suite/tor';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
@@ -15,7 +16,6 @@ import { toGetter } from '@trezor/dependency-injection';
 import { type FetchDep } from '@trezor/type-utils';
 
 import { createEvoluDeps } from './evolu/createEvoluDeps';
-import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
 import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 
 type SuiteSyncDesktopCompositionRootDeps = {

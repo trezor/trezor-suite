@@ -11207,6 +11207,7 @@ __metadata:
   resolution: "@suite-app/app@workspace:suite-app/app"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-app/suite-sync": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/bip329": "workspace:*"
@@ -11456,6 +11457,31 @@ __metadata:
     react-redux: "npm:9.3.0"
     storybook: "npm:^10.6.2"
     styled-components: "npm:^6.5.3"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/suite-sync@workspace:*, @suite-app/suite-sync@workspace:suite-app/suite-sync":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/suite-sync@workspace:suite-app/suite-sync"
+  dependencies:
+    "@evolu/common": "npm:8.10.0"
+    "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch"
+    "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/delegated-identity-key-types": "workspace:*"
+    "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/suite-sync-evolu": "workspace:*"
+    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite/analytics": "workspace:*"
+    "@suite/suite-sync": "workspace:*"
+    "@suite/tor": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -17651,22 +17677,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
-    "@evolu/common": "npm:8.10.0"
-    "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch"
     "@hookform/resolvers": "npm:^5.4.0"
     "@reduxjs/toolkit": "npm:2.13.0"
-    "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/persistent-device-data": "workspace:*"
-    "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
-    "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
-    "@suite/analytics": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/intl": "workspace:*"
