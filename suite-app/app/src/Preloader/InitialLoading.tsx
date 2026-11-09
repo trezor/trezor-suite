@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Loading } from 'src/components/suite/Loading';
+import { Loading } from '@trezor/suite';
 
 const StyledLoading = styled(Loading)`
     height: 100%;

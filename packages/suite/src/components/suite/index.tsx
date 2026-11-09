@@ -33,7 +33,6 @@ import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { CountdownTimer } from './CountdownTimer';
 import { CoinBalance } from './CoinBalance';
-import { Preloader } from './Preloader/Preloader';
 import { TrafficLightDraggableWindowHeader } from '@suite/macos';
 import { PinMatrix } from './PinMatrix/PinMatrix';
 import { StakingFeature } from './StakingFeature';
@@ -70,7 +69,6 @@ export {
     AmountUnitSwitchWrapper,
     CountdownTimer,
     CoinBalance,
-    Preloader,
     TrafficLightDraggableWindowHeader,
     PinMatrix,
     StakingFeature,

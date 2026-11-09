@@ -56,7 +56,33 @@ export { desktopHandshake } from './src/actions/suite/suiteActions';
 
 export { FIND_HIGHLIGHT_SELECTOR } from './src/components/suite/FindBar/consts';
 export { MARK_HIGHLIGHT_PULSE_SELECTOR } from './src/components/suite/FindBar/consts';
-export { Preloader } from './src/components/suite/Preloader/Preloader';
+export * as analyticsActions from './src/actions/suite/analyticsActions';
+export { initThunk } from './src/actions/suite/initAction';
+export { resetSuiteAppThunk } from './src/actions/suite/suiteThunks';
+export { Loading } from './src/components/suite/Loading';
+export { PrerequisitesGuide } from './src/components/suite/PrerequisitesGuide/PrerequisitesGuide';
+export { DeviceCompromisedScreen } from './src/components/suite/SecurityCheck/DeviceCompromisedScreen';
+export {
+    InteractiveDeviceChecksFlow,
+    useInteractiveDeviceChecksFlowState,
+} from './src/components/suite/SecurityCheck/InteractiveDeviceChecksFlow';
+export { useDeviceCompromisedNotification } from './src/components/suite/SecurityCheck/useDeviceCompromisedNotification';
+export { SuiteLayout } from './src/components/suite/layouts/SuiteLayout/SuiteLayout';
+export { WelcomeLayout } from './src/components/suite/layouts/WelcomeLayout/WelcomeLayout';
+export { WelcomeLayoutWithoutModalSwitcher } from './src/components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
+export { useGuideDesktopMenu } from './src/hooks/guide/useGuideDesktopMenu';
+export { useGuideKeyboard } from './src/hooks/guide/useGuideKeyboard';
+export { useAppShortcuts } from './src/hooks/suite/useAppShortcuts';
+export { useWindowVisibility } from './src/hooks/suite/useWindowVisibility';
+export {
+    selectActiveTransports,
+    selectIsTransportInitialized,
+    selectPrerequisite,
+    selectSuiteLifecycle,
+} from './src/selectors/suite/suiteSelectors';
+export { Onboarding } from './src/views/onboarding';
+export { AnalyticsConsentScreen } from './src/views/start/AnalyticsConsentScreen';
+export { ErrorPage } from './src/views/suite/ErrorPage';
 export { ToasterProvider } from './src/components/suite/notifications/Toaster/ToasterProvider';
 export { TrafficLightDraggableWindowHeader } from '@suite/macos';
 export { BioAuthGuard } from './src/components/suite/BioAuthGuard/BioAuthGuard';

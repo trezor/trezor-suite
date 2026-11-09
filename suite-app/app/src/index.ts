@@ -12,6 +12,7 @@ export { rootReducer } from './store';
 export { createHydrateReduxStore, type HydrateReduxStoreDep } from './createHydrateReduxStore';
 export { AppRouter } from './AppRouter';
 export { Main } from './Main';
+export { Preloader } from './Preloader/Preloader';
 
 export { AppsEmbeddingPage } from './pages/AppsEmbeddingPage';
 export { AssetDetailPage } from './pages/AssetDetailPage';

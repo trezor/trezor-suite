@@ -13,7 +13,8 @@
             "types": "./libDev/mocks/index.d.ts",
             "default": "./mocks/index.ts"
         },
-        "./webpack/*": "./webpack/*.ts"
+        "./webpack/*": "./webpack/*.ts",
+        "./jest.sourceConfig": "./jest.sourceConfig.js"
     },
     "scripts": {
         "depcheck": "yarn g:depcheck",

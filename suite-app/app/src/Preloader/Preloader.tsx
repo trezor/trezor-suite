@@ -19,31 +19,33 @@ import { selectActiveKillswitchMessage } from '@suite-common/message-system';
 import { Card } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import * as analyticsActions from 'src/actions/suite/analyticsActions';
-import { initThunk } from 'src/actions/suite/initAction';
 import {
+    AnalyticsConsentScreen,
+    DeviceCompromisedScreen,
+    ErrorPage,
     InteractiveDeviceChecksFlow,
+    Onboarding,
+    PrerequisitesGuide,
+    SuiteLayout,
+    WelcomeLayout,
+    WelcomeLayoutWithoutModalSwitcher,
+    analyticsActions,
+    initThunk,
+    selectPrerequisite,
+    selectSuiteLifecycle,
+    useAppShortcuts,
+    useDeviceCompromisedNotification,
+    useGuideDesktopMenu,
+    useGuideKeyboard,
     useInteractiveDeviceChecksFlowState,
-} from 'src/components/suite/SecurityCheck/InteractiveDeviceChecksFlow';
-import { WelcomeLayoutWithoutModalSwitcher } from 'src/components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
-import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
-import { useAppShortcuts, useSelector } from 'src/hooks/suite';
-import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
-import { selectPrerequisite, selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
-import { Onboarding } from 'src/views/onboarding';
-import { AnalyticsConsentScreen } from 'src/views/start/AnalyticsConsentScreen';
-import { ErrorPage } from 'src/views/suite/ErrorPage';
+    useSelector,
+    useWindowVisibility,
+} from '@trezor/suite';
 
 import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
 import { useWaitForTransport } from './useWaitForTransport';
-import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
-import { DeviceCompromisedScreen } from '../SecurityCheck/DeviceCompromisedScreen';
-import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
-import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
-import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
     switch (app) {
@@ -57,7 +59,7 @@ const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
 // Preloader is a top level wrapper used in _app.tsx.
 // Decides which content should be displayed basing on route and prerequisites.
 // Memoised so that a re-render above it (Main) does not cascade through the whole app.
-export const Preloader = memo(function Preloader({ children }: PropsWithChildren) {
+export const Preloader = memo(({ children }: PropsWithChildren) => {
     const lifecycle = useSelector(selectSuiteLifecycle);
     const isRouterLoaded = useSelector(selectRouterLoaded);
     const routerApp = useSelector(selectRouterApp);
@@ -185,3 +187,5 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     // everything is set.
     return <SuiteLayout>{children}</SuiteLayout>;
 });
+
+Preloader.displayName = 'Preloader';

@@ -116,9 +116,22 @@
         "styled-components": "^6.5.3"
     },
     "devDependencies": {
+        "@suite-common/test-utils": "workspace:*",
+        "@testing-library/react": "^16.3.3",
+        "@trezor/type-utils": "workspace:*",
         "@types/file-saver": "^2.0.6",
         "@types/invity-api": "^1.1.23",
         "@types/react": "19.3.0",
         "@types/redux-logger": "^3.0.13"
+    },
+    "nx": {
+        "targets": {
+            "test:unit": {
+                "dependsOn": [
+                    "@suite-common/message-system:build:lib",
+                    "@suite/app-assets:guide-pull-content"
+                ]
+            }
+        }
     }
 }

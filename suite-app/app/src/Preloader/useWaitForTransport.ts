@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectDevicesCount } from '@suite-common/device';
-
-import {
-    selectActiveTransports,
-    selectIsTransportInitialized,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectActiveTransports, selectIsTransportInitialized } from '@trezor/suite';
 
 const INITIAL_DEVICES_TIMEOUT_MS = 10_000;
 
