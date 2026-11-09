@@ -1,6 +1,8 @@
 import { execFileSync } from 'node:child_process';
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+
+import { readJson } from '@trezor/node-utils';
 
 import { error, log } from '../logger';
 import { getErrorText } from './common';
@@ -24,7 +26,7 @@ function writeSummary(root: string, summary: SlackFixSummary): void {
 function readCostUsd(): number | null {
     const path = process.env.LLM_TOKEN_USAGE_FILE ?? '/tmp/llm-token-usage.json';
     try {
-        const usage = JSON.parse(readFileSync(path, 'utf-8'));
+        const usage = readJson<{ total_cost_usd?: unknown }>(path);
 
         return typeof usage.total_cost_usd === 'number' ? usage.total_cost_usd : null;
     } catch {
@@ -158,7 +160,7 @@ function publishPR(): void {
         return;
     }
 
-    const fixResult = FixResultSchema.parse(JSON.parse(readFileSync(resultFile, 'utf-8')));
+    const fixResult = FixResultSchema.parse(readJson(resultFile));
     const summary: SlackFixSummary = {
         ...fixResult,
         prUrl: null,
