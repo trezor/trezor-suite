@@ -15,6 +15,7 @@ import {
 } from '@trezor/components';
 import { InfoIcon, XIcon } from '@trezor/icons';
 import { TRON_NOTE_MAX_BYTES } from '@trezor/network-tron/constants';
+import { countBytesInString } from '@trezor/utils';
 
 import { useSendFormContext } from '#src/hooks/wallet';
 
@@ -43,7 +44,7 @@ export const TronNote = ({ close }: TronNoteProps) => {
     const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
     const value = watch(inputName);
-    const byteSize = Buffer.from(value || '', 'utf8').length;
+    const byteSize = countBytesInString(value || '');
     const isTooLong = byteSize > TRON_NOTE_MAX_BYTES;
     const error = isTooLong ? translationString('TR_TRON_NOTE_TOO_LONG') : undefined;
 
