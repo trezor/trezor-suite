@@ -44,7 +44,7 @@ export const AllowanceStepLimitRows = ({
                         amount={limitAmount}
                         decimals={token.decimals}
                         contractAddress={token.contractAddress}
-                        typographyStyle="body-sm-strong"
+                        typographyStyle="body-sm"
                     />
                     <Icon as={ArrowRightIcon} size={16} />0 {token.symbol}
                 </Row>
@@ -74,7 +74,7 @@ export const AllowanceStepLimitRows = ({
                         symbol={token.symbol}
                         decimals={token.decimals}
                         contractAddress={token.contractAddress}
-                        typographyStyle="body-sm-strong"
+                        typographyStyle="body-sm"
                     />
                 </AllowanceStepRow>
             )}
@@ -99,7 +99,7 @@ export const AllowanceStepLimitRows = ({
                         symbol={token.symbol}
                         decimals={token.decimals}
                         contractAddress={token.contractAddress}
-                        typographyStyle="body-sm-strong"
+                        typographyStyle="body-sm"
                     />
                 )}
             </AllowanceStepRow>

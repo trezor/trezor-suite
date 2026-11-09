@@ -27,6 +27,7 @@ export type UseAllowanceTransactionParams = {
     onSent: (txid: string) => void;
     onSendFailed?: () => void;
     onCancel?: () => void;
+    shouldShowApprovalToast?: boolean;
 };
 
 export type AllowanceComposeError = Pick<ExtendedMessageDescriptor, 'id' | 'values'>;
@@ -51,6 +52,7 @@ export const useAllowanceTransaction = ({
     onSent,
     onSendFailed,
     onCancel,
+    shouldShowApprovalToast,
 }: UseAllowanceTransactionParams) => {
     const [limitType, setLimitType] = useState<AllowanceLimitType>(DEFAULT_LIMIT_TYPE);
     const [isSending, setIsSending] = useState(false);
@@ -85,6 +87,7 @@ export const useAllowanceTransaction = ({
     const { send } = useAllowanceSend({
         account,
         methods,
+        shouldShowApprovalToast,
     });
     const selectedComposedLevel = composedLevels?.[selectedFee];
     const composedLevelsError = useMemo((): AllowanceComposeError | undefined => {

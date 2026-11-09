@@ -108,6 +108,7 @@ export const TradingExchangeApprovalStepCard = ({
         account,
         tokenContractAddress,
         spender,
+        shouldShowApprovalToast: false,
         onSelectLimitType: nextLimitType =>
             reportAction(LIMIT_TYPE_ANALYTICS_ACTION[nextLimitType]),
         onConfirm: () => reportAction('continue'),

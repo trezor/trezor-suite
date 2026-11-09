@@ -482,7 +482,11 @@ export type PushSendFormTransactionThunkDeps = {
 
 export const pushSendFormTransactionThunk = createThunk<
     Ok<{ txid: string }>,
-    { selectedAccount: Account; isMevProtectionEnabled: boolean },
+    {
+        selectedAccount: Account;
+        isMevProtectionEnabled: boolean;
+        shouldShowApprovalToast?: boolean;
+    },
     {
         rejectValue: PushTransactionError;
         state: PushSendFormTransactionThunkState;
@@ -491,7 +495,7 @@ export const pushSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormTransactionThunk`,
     async (
-        { selectedAccount, isMevProtectionEnabled },
+        { selectedAccount, isMevProtectionEnabled, shouldShowApprovalToast = true },
         { dispatch, getState, extra, rejectWithValue, fulfillWithValue },
     ) => {
         const {
@@ -552,30 +556,32 @@ export const pushSendFormTransactionThunk = createThunk<
             const { txid } = pushTxResponse.payload;
 
             if (evmApprovalData && token) {
-                const amountString = evmApprovalData.amount.toString();
-                const isInfiniteApproval = isAllowanceUnlimited({
-                    amount: amountString,
-                    decimals: token.decimals,
-                    isSubunit: true,
-                });
-                const amount = subunitsToUnits({
-                    value: asAmountSubunit(new BigNumber(amountString)),
-                    decimals: token.decimals,
-                }).toString();
+                if (shouldShowApprovalToast) {
+                    const amountString = evmApprovalData.amount.toString();
+                    const isInfiniteApproval = isAllowanceUnlimited({
+                        amount: amountString,
+                        decimals: token.decimals,
+                        isSubunit: true,
+                    });
+                    const amount = subunitsToUnits({
+                        value: asAmountSubunit(new BigNumber(amountString)),
+                        decimals: token.decimals,
+                    }).toString();
 
-                dispatch(
-                    notificationsActions.addToast({
-                        type: evmApprovalData.amount === 0n ? 'tx-revoked' : 'tx-approved',
-                        isInfiniteApproval,
-                        amount,
-                        token,
-                        device,
-                        descriptor: selectedAccount.descriptor,
-                        symbol: selectedAccount.symbol,
-                        txid,
-                        style: { maxWidth: 'auto' },
-                    }),
-                );
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: evmApprovalData.amount === 0n ? 'tx-revoked' : 'tx-approved',
+                            isInfiniteApproval,
+                            amount,
+                            token,
+                            device,
+                            descriptor: selectedAccount.descriptor,
+                            symbol: selectedAccount.symbol,
+                            txid,
+                            style: { maxWidth: 'auto' },
+                        }),
+                    );
+                }
             } else if (isExchangeTradingForm(precomposedForm?.trading)) {
                 dispatch(
                     notificationsActions.addToast({

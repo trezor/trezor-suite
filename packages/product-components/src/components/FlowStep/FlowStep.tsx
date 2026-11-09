@@ -39,9 +39,9 @@ export const FlowStep = ({
 
     if (state === 'upcoming') {
         return (
-            <Card type="flat" paddingType="small" data-testid={dataTest} data-state={state}>
+            <Card type="flat" paddingType="tiny" data-testid={dataTest} data-state={state}>
                 <Row justifyContent="space-between" alignItems="center" gap={12}>
-                    <Column gap={4}>
+                    <Column>
                         <Text
                             typographyStyle="body-sm-strong"
                             case="small-caps"

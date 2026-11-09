@@ -96,7 +96,7 @@ const precomposedTransaction: PrecomposedTransactionFinal = {
 };
 const analytics = mockDesktopAnalytics();
 
-const send = async () => {
+const send = async ({ shouldShowApprovalToast }: { shouldShowApprovalToast?: boolean } = {}) => {
     const getState = mock<() => SignAndPushSendFormTransactionThunkState>();
     const extra: SignAndPushSendFormTransactionThunkDeps = {
         actions: { onModalCancel: closeModal },
@@ -115,6 +115,7 @@ const send = async () => {
         selectedAccount: account,
         formState,
         precomposedTransaction,
+        shouldShowApprovalToast,
     })(dispatch, getState, extra).unwrap();
 
     return actions;
@@ -211,6 +212,14 @@ describe('Send device confirmation and Earn allowance cancellation', () => {
         expect(cancelEvents()).toEqual([]);
         expect(mockOpenReview).not.toHaveBeenCalled();
         expect(confirmedEvents()).toEqual([]);
+    });
+
+    it('forwards the approval toast opt-out to the push thunk', async () => {
+        mockOpenReview.mockImplementation(() => () => Promise.resolve(true));
+        await send({ shouldShowApprovalToast: false });
+        expect(mockPushTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({ shouldShowApprovalToast: false }),
+        );
     });
 
     it.each(

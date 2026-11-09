@@ -135,15 +135,11 @@ export const AllowanceStepCard = ({
                         data-testid="@approval-step/txid"
                     >
                         {txid ? (
-                            <TextButton
-                                onClick={onTxidClick}
-                                size="small"
-                                intent="brand"
-                                isUnderlined
-                            >
+                            <TextButton onClick={onTxidClick} size="small" intent="brand">
                                 <Address
                                     isTruncated
                                     isChunked={false}
+                                    isUnderlined
                                     value={txid}
                                     data-testid="@approval-step/txid-value"
                                 />
@@ -156,6 +152,7 @@ export const AllowanceStepCard = ({
             </Column>
             <Column gap={8} alignItems="center">
                 <Button
+                    size="large"
                     width="100%"
                     isDisabled={isPending || isContinueDisabled}
                     isLoading={isPending || isContinueLoading}
@@ -165,7 +162,7 @@ export const AllowanceStepCard = ({
                     <Translation id={isPending ? textIds.pending : 'TR_CONTINUE'} />
                 </Button>
                 {isPending && (
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    <Text typographyStyle="body-sm" intent="neutral">
                         <Translation id="TR_APPROVAL_STEP_PENDING_HINT" />
                     </Text>
                 )}

@@ -251,6 +251,7 @@ type SignAndPushSendFormTransactionThunkParams = {
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     selectedAccount?: Account;
     paymentRequests?: PROTO.PaymentRequest[];
+    shouldShowApprovalToast?: boolean;
 };
 
 export type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
@@ -278,7 +279,13 @@ export const signAndPushSendFormTransactionThunk = createThunk<
 >(
     `${MODULE_PREFIX}/signSendFormTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount, paymentRequests },
+        {
+            formState,
+            precomposedTransaction,
+            selectedAccount,
+            paymentRequests,
+            shouldShowApprovalToast,
+        },
         { dispatch, getState, extra },
     ) => {
         const device = selectSelectedDevice(getState());
@@ -386,6 +393,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
             pushSendFormTransactionThunk({
                 selectedAccount,
                 isMevProtectionEnabled,
+                shouldShowApprovalToast,
             }),
         );
 
