@@ -8,6 +8,7 @@ import { requireForbiddenDeps } from './forbidden-deps/requireForbiddenDeps';
 import { requirePackageJsonScripts } from './package-json/requirePackageJsonScripts';
 import { requirePublishConfig } from './package-json/requirePublishConfig';
 import { requireConnectPublicDependencies } from './public-package-dependencies/requireConnectPublicDependencies';
+import { requireConnectWorkflowPaths } from './public-package-dependencies/requireConnectWorkflowPaths';
 import { requireTestColocation } from './test-colocation/requireTestColocation';
 import { requireTypeDeclarationSize } from './type-declarations/requireTypeDeclarationSize';
 
@@ -15,6 +16,7 @@ export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
     requireAgentsSkills,
     requireUnifiedDependencyVersions,
     requireConnectPublicDependencies,
+    requireConnectWorkflowPaths,
     requireDocsSummary,
     requireEasignoreMobileClosure,
     requireFirmwareReleaseVersionMonotonicity,
