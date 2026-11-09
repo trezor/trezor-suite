@@ -59,7 +59,7 @@ describe('getEthereumDefinitions', () => {
             const signedOrUnsigned = definitionsChannel === 'signed' ? 'signed' : 'unsigned';
 
             expect(getFetchedUrls()).toEqual([
-                `https://dev.firmware.sldev.cz/definitions/${signedOrUnsigned}/v${version}/eth/slip44/60/network.dat`,
+                `https://dev.firmware.sldev.cz/${signedOrUnsigned}/v${version}/definitions/eth/slip44/60/network.dat`,
             ]);
         },
     );

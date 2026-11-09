@@ -24,7 +24,7 @@ export const getProductionDefinitionsUrl = (version: DefinitionsVersion) =>
         : `https://data.trezor.io/firmware/definitions/v${version}`;
 
 export const getDevelopmentDefinitionsUrl = (version: DefinitionsVersion, signed = false) =>
-    `https://dev.firmware.sldev.cz/definitions/${signed ? 'signed' : 'unsigned'}/v${version}`;
+    `https://dev.firmware.sldev.cz/${signed ? 'signed' : 'unsigned'}/v${version}/definitions`;
 
 export const getEthereumDefinitionsBaseUrl = (
     version: DefinitionsVersion,
