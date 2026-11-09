@@ -1,6 +1,6 @@
 ---
 name: tagging
-description: Test tagging and Playwright project selection for Suite E2E tests: device model, platform and execution scope tags. Use when writing or editing tests to control where they run.
+description: 'Test tagging and Playwright project selection for Suite E2E tests: device model, platform and execution scope tags. Use when writing or editing tests to control where they run.'
 ---
 
 # Test Tagging and Playwright Project Selection

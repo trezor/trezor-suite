@@ -1,6 +1,6 @@
 ---
 name: agentic-test-creation
-description: Discovery-first workflow for writing a new Playwright e2e test from a user story, feature description or bug report. Use before writing any new Suite E2E test.
+description: 'Discovery-first workflow for writing a new Playwright e2e test from a user story, feature description or bug report. Use before writing any new Suite E2E test.'
 ---
 
 # Agentic E2E Test Creation Workflow
