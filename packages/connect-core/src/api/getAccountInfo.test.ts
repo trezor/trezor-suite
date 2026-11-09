@@ -78,9 +78,9 @@ describe(GetAccountInfo.name, () => {
 });
 
 describe('GetAccountInfo device use', () => {
-    // `willUseDevice` is assigned per batch with a path, so the last of them decides for the whole
-    // bundle.
-    it('does not use the device when the last batch with a path has a descriptor', () => {
+    // The device has to be acquired for the path-only batch whatever its position in the bundle;
+    // without `useDevice` that batch resolves to `null` with a "Device not found" error.
+    it('uses the device when an earlier batch has a path without a descriptor', () => {
         const method = createMethodWith({
             bundle: [
                 { coin: 'btc', path: "m/84'/0'/0'" },
@@ -94,7 +94,7 @@ describe('GetAccountInfo device use', () => {
         });
 
         // `useUi` is derived from `useDevice`, so it follows.
-        expect(method.useDevice).toBe(false);
-        expect(method.useDeviceState).toBe(false);
+        expect(method.useDevice).toBe(true);
+        expect(method.useDeviceState).toBe(true);
     });
 });
