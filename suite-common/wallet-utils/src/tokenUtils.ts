@@ -141,7 +141,7 @@ const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set
     'TRC20',
 ]);
 
-export const shouldUppercaseTokenSymbol = (token: Pick<TokenInfo, 'standard'>) =>
+export const shouldUppercaseTokenSymbol = (token: Partial<Pick<TokenInfo, 'standard'>>) =>
     token.standard ? !PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS.has(token.standard) : true;
 
 export const isErc4626 = (token?: TokenInfo | null) =>

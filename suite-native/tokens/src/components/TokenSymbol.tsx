@@ -22,8 +22,8 @@ export const TokenSymbol = ({
 }: TokenSymbolProps) => {
     const token = useTokenMetadata(networkSymbol, contractAddress);
     const symbol =
-        token?.standard && shouldUppercaseTokenSymbol({ standard: token.standard })
-            ? (token.symbol ?? '').toUpperCase()
+        token?.symbol && shouldUppercaseTokenSymbol(token)
+            ? token.symbol.toUpperCase()
             : (token?.symbol ?? '');
     const displaySymbol =
         isTruncated && symbol.length > MAX_SYMBOL_LENGTH
