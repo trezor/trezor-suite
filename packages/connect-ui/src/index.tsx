@@ -3,19 +3,14 @@ import { JSX, ReactNode, useCallback, useEffect, useMemo, useState } from 'react
 import styled from 'styled-components';
 
 import { CoreRequestMessage, POPUP, UI } from '@trezor/connect';
-import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { OriginBoundState, storage } from '@trezor/connect-common';
-import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 // views
 
 import { BottomRightFloatingBar } from './components/BottomRightFloatingBar';
 import { InfoPanel } from './components/InfoPanel';
 import { Loader } from './components/Loader';
-import {
-    SuspiciousOriginNotification,
-    UseSuiteDesktopNotification,
-} from './components/Notification';
+import { SuspiciousOriginNotification } from './components/Notification';
 import { ErrorBoundary } from './support/ErrorBoundary';
 import { GlobalStyle } from './support/GlobalStyle';
 import { IntlWrapper } from './support/IntlWrapper';
@@ -98,9 +93,6 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         };
     }, [state?.settings?.origin]);
 
-    const suiteDesktopIsSupported =
-        !!state.settings?.npmVersion && isNewerOrEqual(state.settings?.npmVersion, '9.6.0');
-
     const [Component, Notifications] = useMemo(() => {
         let component: ReactNode | null;
 
@@ -129,11 +121,6 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
 
         // notifications
         const notifications: { [key: string]: JSX.Element } = {};
-        if (suiteDesktopIsSupported) {
-            notifications['use-suite-desktop'] = (
-                <UseSuiteDesktopNotification key="use-suite-desktop" />
-            );
-        }
         messages.forEach(message => {
             if (message?.type === 'phishing-domain') {
                 notifications[message.type] = <SuspiciousOriginNotification key={message.type} />;
@@ -143,7 +130,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
         });
 
         return [component, notifications];
-    }, [messages, postMessage, suiteDesktopIsSupported]);
+    }, [messages, postMessage]);
 
     useEffect(() => {
         if (Component) {
@@ -163,9 +150,6 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                             origin={state?.settings?.origin}
                             hostLabel={state?.settings?.hostLabel}
                             topSlot={Object.values(Notifications)}
-                            showNpmPackageOutdated={
-                                isConnectOutdated(state?.settings) === 'warning'
-                            }
                         />
 
                         {Component && (

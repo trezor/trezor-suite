@@ -10,8 +10,12 @@ import {
     PopupInit,
     createUiResponse,
 } from '@trezor/connect';
+import { getCallerAppName } from '@trezor/connect/src/utils/versionCheck';
 import { ConnectUI, State, getDefaultState } from '@trezor/connect-ui';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
+import { openDeeplinkWithWebFallback } from '@trezor/connect-ui/src/utils/openDeeplinkWithWebFallback';
+import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
+import { isNewerOrEqual, tryParse } from '@trezor/utils/src/versionUtils';
 
 import { StyleSheetWrapper } from './react/StylesSheetWrapper';
 
@@ -21,7 +25,47 @@ export const views: HTMLElement = document.getElementById('views')!;
 
 let state: State = getDefaultState();
 
-export const setState = (newState: Partial<State>) => (state = { ...state, ...newState });
+const SUITE_DESKTOP_MIN_NPM_VERSION = '9.6.0';
+
+const windowFocusedRef = {
+    get current() {
+        return document.hasFocus();
+    },
+};
+
+const updateDeprecationBanner = () => {
+    const appName = getCallerAppName(state.settings);
+    const appNameElement = document.getElementById('deprecation-banner-app-name');
+
+    if (appName && appNameElement) {
+        appNameElement.textContent = appName;
+    }
+
+    const suiteButton = document.getElementById('deprecation-banner-suite');
+
+    if (suiteButton) {
+        // npmVersion comes from the caller, isNewerOrEqual would throw on a malformed value.
+        const npmVersion = tryParse(state.settings?.npmVersion ?? '');
+        // connect-web switches to Suite desktop only in these core modes.
+        const canSwitchToSuite = [undefined, 'auto', 'suite-desktop'].includes(
+            state.settings?.coreMode,
+        );
+
+        suiteButton.hidden =
+            !canSwitchToSuite ||
+            !npmVersion ||
+            !isNewerOrEqual(npmVersion, SUITE_DESKTOP_MIN_NPM_VERSION);
+        suiteButton.onclick = () =>
+            openDeeplinkWithWebFallback(windowFocusedRef, SUITE_BRIDGE_DEEPLINK, SUITE_URL);
+    }
+};
+
+export const setState = (newState: Partial<State>) => {
+    state = { ...state, ...newState };
+    updateDeprecationBanner();
+
+    return state;
+};
 export const getState = () => state;
 
 export const createTooltip = (text: string) => {

@@ -23,6 +23,33 @@
         <link media="all" rel="stylesheet" href="./fonts/fonts.css" />
     </head>
     <body>
+        <div class="deprecation-banner" role="status">
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+            >
+                <path
+                    d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"
+                />
+                <path d="M12 9v4" />
+                <path d="M12 17h.01" />
+            </svg>
+            <p>
+                <strong
+                    ><span id="deprecation-banner-app-name">This application</span> is using Trezor
+                    Connect version 9, which is deprecated.</strong
+                >
+                Please reach out to the developers of this app about updating to Connect version 10.
+            </p>
+            <button id="deprecation-banner-suite" type="button" hidden>
+                Try Trezor Suite desktop
+            </button>
+        </div>
         <main>
             <!--
                 give react slot min-width of left panel (InfoPanel) which is not
