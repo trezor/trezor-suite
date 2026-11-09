@@ -16,6 +16,7 @@ import { getFirmwareRange } from '../../common/paramsValidator';
 import {
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
+    getDefinitionsForFirmware,
     getEthereumDefinitions,
 } from '../ethereumDefinitions';
 
@@ -132,6 +133,15 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
+
+            if (batch.encoded_network) {
+                const definitions = await getDefinitionsForFirmware({
+                    firmwareVersion: this.device.getVersion(),
+                    definitions: { encoded_network: batch.encoded_network },
+                    slip44: getSlip44ByPath(batch.address_n),
+                });
+                batch.encoded_network = definitions?.encoded_network;
+            }
 
             // silently get address and compare with requested address
             // or display as default inside popup

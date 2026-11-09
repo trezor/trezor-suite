@@ -13,7 +13,7 @@ import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { hexToText, messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
-import { getEthereumDefinitions } from '../ethereumDefinitions';
+import { getDefinitionsForFirmware, getEthereumDefinitions } from '../ethereumDefinitions';
 
 type Params = PROTO.EthereumSignMessage & {
     network?: EthereumNetworkInfo;
@@ -71,9 +71,14 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
     async run() {
         const cmd = this.device.getCommands();
         const { address_n, message } = this.params;
+        const definitions = await getDefinitionsForFirmware({
+            firmwareVersion: this.device.getVersion(),
+            definitions: this.params.definitions,
+            slip44: getSlip44ByPath(address_n),
+        });
 
         const response = await cmd.typedCall('EthereumSignMessage', 'EthereumMessageSignature', {
-            encoded_network: this.params.definitions?.encoded_network,
+            encoded_network: definitions?.encoded_network,
             address_n,
             message,
         });

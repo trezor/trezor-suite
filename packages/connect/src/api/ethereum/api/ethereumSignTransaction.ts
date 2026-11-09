@@ -19,6 +19,7 @@ import { getFirmwareRange } from '../../common/paramsValidator';
 import {
     decodeEthereumDefinition,
     ethereumNetworkInfoFromDefinition,
+    getDefinitionsForFirmware,
     getEthereumDefinitions,
 } from '../ethereumDefinitions';
 import * as helper from '../ethereumSignTx';
@@ -111,6 +112,16 @@ export default class EthereumSignTransaction extends AbstractMethod<
         }
     }
 
+    private getDefinitionsRequest() {
+        const { path, tx } = this.params;
+
+        return {
+            chainId: tx.chainId,
+            slip44: getSlip44ByPath(path),
+            contractAddress: tx.data && tx.to != null ? tx.to : undefined,
+        };
+    }
+
     async initAsync(): Promise<void> {
         // eth && token => yes
         // evm && token => yes
@@ -119,13 +130,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         if (this.params.tx.chainId === 1 && !this.params.tx.data) {
             return;
         }
-        const slip44 = getSlip44ByPath(this.params.path);
-        const definitions = await getEthereumDefinitions({
-            chainId: this.params.tx.chainId,
-            slip44,
-            contractAddress:
-                this.params.tx.data && this.params.tx.to != null ? this.params.tx.to : undefined,
-        });
+        const definitions = await getEthereumDefinitions(this.getDefinitionsRequest());
         this.params.definitions = definitions;
 
         const decoded = decodeEthereumDefinition(definitions);
@@ -222,7 +227,12 @@ export default class EthereumSignTransaction extends AbstractMethod<
     }
 
     async run() {
-        const { type, tx, definitions, chunkify } = this.params;
+        const { type, tx, chunkify } = this.params;
+        const definitions = await getDefinitionsForFirmware({
+            ...this.getDefinitionsRequest(),
+            firmwareVersion: this.device.getVersion(),
+            definitions: this.params.definitions,
+        });
 
         const isLegacy = type === 'legacy';
 
