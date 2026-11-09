@@ -1,3 +1,9 @@
+import type {
+    BundledParams,
+    GetAccountInfo as GetAccountInfoParams,
+    Params,
+} from '@trezor/connect-common';
+
 import { default as GetAccountInfo } from './getAccountInfo';
 import { initBlockchain } from '../backend/BlockchainLink';
 
@@ -25,6 +31,10 @@ const createMethod = (stellarContractTokens?: string[]) =>
             ...(stellarContractTokens ? { stellarContractTokens } : {}),
         },
     });
+
+const createMethodWith = (
+    params: Params<GetAccountInfoParams> | BundledParams<GetAccountInfoParams>,
+) => new GetAccountInfo({ payload: { method: 'getAccountInfo', ...params } });
 
 describe(GetAccountInfo.name, () => {
     // Without `allowEmpty` an account watching nothing failed validation and never refreshed.
@@ -64,5 +74,27 @@ describe(GetAccountInfo.name, () => {
             expect.objectContaining({ descriptor: TAPROOT_DESCRIPTOR_CANONICAL }),
         );
         expect(account).toMatchObject({ descriptor: TAPROOT_DESCRIPTOR_WITH_H });
+    });
+});
+
+describe('GetAccountInfo device use', () => {
+    // `willUseDevice` is assigned per batch with a path, so the last of them decides for the whole
+    // bundle.
+    it('does not use the device when the last batch with a path has a descriptor', () => {
+        const method = createMethodWith({
+            bundle: [
+                { coin: 'btc', path: "m/84'/0'/0'" },
+                {
+                    coin: 'btc',
+                    path: "m/84'/0'/1'",
+                    descriptor:
+                        'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
+                },
+            ],
+        });
+
+        // `useUi` is derived from `useDevice`, so it follows.
+        expect(method.useDevice).toBe(false);
+        expect(method.useDeviceState).toBe(false);
     });
 });
