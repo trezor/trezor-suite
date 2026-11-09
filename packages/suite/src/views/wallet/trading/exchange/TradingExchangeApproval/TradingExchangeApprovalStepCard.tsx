@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
-import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { openModal } from '@suite/modal';
+import { getExchangeApprovalType, tradingExchangeActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -17,6 +18,7 @@ import {
 import { formatNetworkAmount, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Spinner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { useAsyncClickHandler } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { BaseCurrencyValue } from '#src/components/suite';
@@ -38,17 +40,6 @@ const LIMIT_TYPE_ANALYTICS_ACTION = {
     minimal: 'limit-exact',
     unlimited: 'limit-unlimited',
 } as const satisfies Record<AllowanceLimitType, 'limit-exact' | 'limit-unlimited'>;
-
-const getSentApprovalType = (
-    variant: AllowanceStepVariant,
-    quote: ExchangeTrade,
-): DexApprovalType | undefined => {
-    if (variant === 'revoke') {
-        return 'ZERO';
-    }
-
-    return quote.approvalType === 'ZERO' ? 'MINIMAL' : quote.approvalType;
-};
 
 type TradingExchangeApprovalStepCardProps = {
     variant: AllowanceStepVariant;
@@ -77,7 +68,8 @@ export const TradingExchangeApprovalStepCard = ({
 }: TradingExchangeApprovalStepCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
-    const { confirmPendingApproval } = useExchangeApproval({ account });
+    const { confirmApproval, confirmPendingApproval } = useExchangeApproval({ account });
+    const { handleClick, disabled: isPreparingApproval } = useAsyncClickHandler();
     const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
     const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
 
@@ -121,13 +113,17 @@ export const TradingExchangeApprovalStepCard = ({
         onSelectLimitType: (nextLimitType, selectedFee) =>
             reportAction(LIMIT_TYPE_ANALYTICS_ACTION[nextLimitType], selectedFee),
         onConfirm: (_limitType, selectedFee) => reportAction('continue', selectedFee),
-        onSent: txid =>
+        onSent: txid => {
+            dispatch(tradingExchangeActions.setApprovalFlowStepTxid({ step: variant, txid }));
             confirmPendingApproval({
                 trade: quote,
                 txid,
-                approvalType: getSentApprovalType(variant, quote),
-            }),
+                approvalType: getExchangeApprovalType(variant, limitType),
+            });
+        },
     });
+
+    const approvalType = getExchangeApprovalType(variant, limitType);
 
     if (!token?.symbol) {
         return null;
@@ -144,6 +140,30 @@ export const TradingExchangeApprovalStepCard = ({
             ? (quote.preapprovedStringAmount ?? '0')
             : subunitsToUnits({ value: inputAmount, decimals: token.decimals }).toString();
     const txid = quote.approvalSendTxHash ?? pendingApprovalTxid;
+
+    const prepareApprovalAndSend = async () => {
+        if (!quote.receiveAddress) {
+            return;
+        }
+
+        const response = await confirmApproval({
+            trade: {
+                ...quote,
+                status: 'APPROVAL_REQ',
+                approvalType,
+                approvalSendTxHash: undefined,
+            },
+            receiveAddress: quote.receiveAddress,
+        }).catch(error => {
+            console.error('Failed to prepare approval:', error);
+
+            return undefined;
+        });
+
+        if (response?.status === 'APPROVAL_REQ') {
+            await confirmAndSend();
+        }
+    };
 
     const onSelectLimitType = (nextLimitType: AllowanceLimitType) => {
         selectLimitType(nextLimitType);
@@ -202,8 +222,12 @@ export const TradingExchangeApprovalStepCard = ({
                 txid={txid}
                 onTxidClick={onTxidClick}
                 isContinueDisabled={!device?.connected || !canSubmit}
-                isContinueLoading={isComposing || isSending}
-                onContinue={confirmAndSend}
+                isContinueLoading={isComposing || isSending || isPreparingApproval}
+                onContinue={
+                    variant === 'revoke'
+                        ? confirmAndSend
+                        : () => handleClick(prepareApprovalAndSend)
+                }
                 data-testid={`@approval-step/${variant}`}
             />
             {isLimitModalOpen && (
