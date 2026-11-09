@@ -147,6 +147,11 @@ export const messages = {
             feedback: {
                 title: 'How do you like the new asset table?',
             },
+            emptyState: {
+                title: "You don't hold any assets",
+                subtitle:
+                    'Your balance is now 0. Receive crypto from another wallet or buy some to fill it up again.',
+            },
         },
         graphIgnoredNetworks:
             "{networksString} and all related tokens are included in your portfolio balance, but aren't currently supported in the graph.",
@@ -203,6 +208,7 @@ export const messages = {
         buttons: {
             receive: 'Receive',
             send: 'Send',
+            buy: 'Buy',
             referral: 'Earn $20 per referral',
         },
         firmwareUpdateAlert: {

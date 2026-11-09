@@ -86,6 +86,9 @@
         },
         { "path": "../../suite-native/toasts" },
         {
+            "path": "../../suite-native/trading-state"
+        },
+        {
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/device-utils" },

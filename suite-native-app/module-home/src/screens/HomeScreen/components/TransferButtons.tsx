@@ -5,10 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { selectHasDeviceAnySendAvailableAccount } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, HStack } from '@suite-native/atoms';
-import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
-    ReceiveStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
@@ -17,33 +15,18 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 
 import { selectAreTransferButtonsVisible } from '../homescreenSelectors';
+import { useReceiveNavigation } from '../useReceiveNavigation';
 
 const ReceiveButton = () => {
-    const { analytics } = useServices(injectNativeAnalytics);
-    const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
-    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
-    );
+    const { isReceiveAvailable, navigateToReceive } = useReceiveNavigation();
 
-    const showReceiveButton = !hasFirmwareAuthenticityCheckHardFailed;
-
-    const handleReceive = () => {
-        analytics.report({
-            type: events.receiveFlowEnteredEvent.name,
-            payload: { location: 'dashboard' },
-        });
-        navigation.navigate(RootStackRoutes.ReceiveStack, {
-            screen: ReceiveStackRoutes.ReceiveCrossroads,
-        });
-    };
-
-    if (!showReceiveButton) return null;
+    if (!isReceiveAvailable) return null;
 
     return (
         <Button
             flex={1}
             testID="@home/portfolio/receive-button"
-            onPress={handleReceive}
+            onPress={navigateToReceive}
             iconLeft="arrowDown"
         >
             <Translation id="moduleHome.buttons.receive" />
