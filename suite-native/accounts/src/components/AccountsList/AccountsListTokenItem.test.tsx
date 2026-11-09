@@ -15,8 +15,6 @@ const mockToken: TokenInfoBranded = {
     balance: '23.910287',
 };
 
-const mockAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth'), tokens: [mockToken] });
-
 jest.mock('@suite-native/icons', () => ({
     TokenIcon: () => null,
 }));
@@ -29,23 +27,28 @@ jest.mock('@suite-native/formatters', () => ({
 describe('AccountsListTokenItem', () => {
     const renderAccountsListTokenItem = ({
         showFiatValue,
+        token = mockToken,
     }: {
         showFiatValue?: boolean;
-    } = {}) =>
-        renderWithStoreProvider(
+        token?: TokenInfoBranded;
+    } = {}) => {
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('eth'), tokens: [token] });
+
+        return renderWithStoreProvider(
             <AccountsListTokenItem
-                token={mockToken}
-                account={mockAccount}
+                token={token}
+                account={account}
                 showFiatValue={showFiatValue}
                 onSelectAccount={jest.fn()}
             />,
             {
                 preloadedState: {
-                    wallet: { accounts: [mockAccount] },
+                    wallet: { accounts: [account] },
                     discreetMode: { isActive: false },
                 },
             },
         );
+    };
 
     it('renders 6-decimal token balance with compact balance formatting next to fiat value', async () => {
         const { getByText, queryByText } = await renderAccountsListTokenItem();
@@ -61,5 +64,13 @@ describe('AccountsListTokenItem', () => {
 
         expect(getByText('23.91 USDC')).toBeOnTheScreen();
         expect(queryByText('23.910287 USDC')).toBeNull();
+    });
+
+    it('labels a token without a name or symbol as unknown', async () => {
+        const { getByText } = await renderAccountsListTokenItem({
+            token: { ...mockToken, name: undefined, symbol: toTokenSymbol('') },
+        });
+
+        expect(getByText('Unknown token')).toBeOnTheScreen();
     });
 });
