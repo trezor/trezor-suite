@@ -42,6 +42,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/price-chart": "workspace:*",
         "@suite-native/toasts": "workspace:*",
+        "@suite-native/tokens": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",

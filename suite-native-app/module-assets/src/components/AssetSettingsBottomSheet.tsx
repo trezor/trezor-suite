@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BottomSheetModal, type BottomSheetModalRef, VStack } from '@suite-native/atoms';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
+import { TokenSymbol } from '@suite-native/tokens';
 
 import { AssetSettingsAccountsAction } from './AssetSettingsAccountsAction';
 import { AssetSettingsDivider } from './AssetSettingsDivider';
@@ -31,10 +32,24 @@ export const AssetSettingsBottomSheet = ({
     const tokenInfo = useSelector((state: AssetsRootState) =>
         selectAssetTokenInfo(state, networkSymbol, tokenContract),
     );
-    const assetDisplaySymbol = getDisplaySymbol(tokenInfo?.symbol ?? networkSymbol, tokenContract);
 
     return (
-        <BottomSheetModal ref={ref} title={assetDisplaySymbol} isCloseDisplayed>
+        <BottomSheetModal
+            ref={ref}
+            title={
+                tokenContract ? (
+                    <TokenSymbol
+                        isTruncated
+                        networkSymbol={networkSymbol}
+                        contractAddress={tokenContract}
+                        variant="headline-sm"
+                    />
+                ) : (
+                    getNetworkDisplaySymbol(networkSymbol)
+                )
+            }
+            isCloseDisplayed
+        >
             <VStack spacing="sp24" paddingBottom="sp16">
                 <VStack spacing="sp6">
                     <AssetSettingsNetworkSection networkSymbol={networkSymbol} />
