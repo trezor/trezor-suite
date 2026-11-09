@@ -49,7 +49,7 @@ export const EarnAmountCard = ({ accountKey, label, cryptoAmount }: EarnAmountCa
             <AccountsListItemBase
                 icon={<TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} />}
                 title={label ?? <AccountLabel account={account} />}
-                titleBadge={<AccountTypeBadge accountKey={accountKey} />}
+                badges={<AccountTypeBadge accountKey={accountKey} />}
                 mainValue={
                     <CompactCryptoAmountFormatter
                         value={amount}

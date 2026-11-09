@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactElement, type ReactNode } from 'react';
 
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { Icon, type IconName, type IconSize, TokenIcon, icons } from '@suite-native/icons';
@@ -27,7 +27,7 @@ export type BadgeProps = {
     label: ReactNode;
     intent?: BadgeIntent;
     size?: BadgeSize;
-    icon?: IconType;
+    icon?: IconType | ReactElement;
 } & BoxProps;
 
 type BadgeStyle = {
@@ -101,7 +101,7 @@ export const Badge = ({
 
     const getBadgeIcon = (iconInput: IconType) =>
         iconInput in icons ? (
-            <Icon name={icon as IconName} color={textColor} size={iconSize} />
+            <Icon name={iconInput as IconName} color={textColor} size={iconSize} />
         ) : (
             getCryptoIcon(iconInput)
         );
@@ -118,7 +118,7 @@ export const Badge = ({
             spacing={utils.spacings.sp4}
             {...boxProps}
         >
-            {icon && getBadgeIcon(icon)}
+            {icon && (typeof icon === 'string' ? getBadgeIcon(icon) : icon)}
             <Text color={textColor} variant={textVariant} numberOfLines={1} ellipsizeMode="tail">
                 {label}
             </Text>
