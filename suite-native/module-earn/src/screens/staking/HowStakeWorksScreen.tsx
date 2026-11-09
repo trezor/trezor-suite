@@ -80,14 +80,17 @@ export const HowStakeWorksScreen = () => {
     }, [isFocused, shouldSkipToEarnForm, resolvedAccountKey, navigation]);
 
     const { analytics } = useServices(injectNativeAnalytics);
-    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
-        type: events.stakingStakeEvent.name,
-        payload: {
-            action: 'cancel',
-            step: 'stake-in-a-nutshell-modal',
-            networkSymbol: symbol,
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics(
+        {
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'cancel',
+                step: 'stake-in-a-nutshell-modal',
+                networkSymbol: symbol,
+            },
         },
-    });
+        !route.params.isInfoOnly,
+    );
 
     const handleContinue = () => {
         if (route.params.isInfoOnly) {

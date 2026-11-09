@@ -41,6 +41,8 @@ import {
     navigateByAccountState,
     navigateByYieldAccountState,
     useStablecoinYieldFirmwareUpdateAlert,
+    useStakingNavigateAnalytics,
+    useYieldEntryNavigationAnalytics,
 } from '@suite-native/module-earn';
 import {
     AccountDetailStackRoutes,
@@ -102,6 +104,8 @@ export const accountTypeTranslationKeys: Record<
 const LIMIT = 10; // Maximum number of manually added accounts per non-EVM network type.
 
 export const useAddCoinAccount = (networksSearchQuery?: string) => {
+    const reportYieldEntryNavigation = useYieldEntryNavigationAnalytics();
+    const reportStakingNavigate = useStakingNavigateAnalytics();
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const { dispatch } = useServices(injectDispatch);
@@ -195,20 +199,28 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             case 'staking': {
                 const hasNavigated = navigateByAccountState(account, navigation.navigate);
 
+                if (hasNavigated) reportStakingNavigate(account, 'enable-network-sheet');
+
                 if (!hasNavigated) {
                     resetToEarnTab();
                 }
                 break;
             }
-            case 'yield':
-                navigateByYieldAccountState(
+            case 'yield': {
+                const destination = navigateByYieldAccountState(
                     account,
                     earnFlowParams,
                     navigation.navigate,
                     isFirmwareSupported,
                     showFirmwareUpdateAlert,
                 );
+                reportYieldEntryNavigation({
+                    destination,
+                    item: { networkSymbol: account.symbol, yieldId: earnFlowParams.yieldId },
+                    from: 'enable-network-sheet',
+                });
                 break;
+            }
         }
     };
 

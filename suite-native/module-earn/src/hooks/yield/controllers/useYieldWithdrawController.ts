@@ -91,7 +91,7 @@ export const useYieldWithdrawController = () => {
         payload: {
             action: 'cancel',
             from: 'withdraw-form',
-            to: 'withdraw-form',
+            to: 'earn-dashboard',
             networkSymbol: account?.symbol,
             vaultId: vault?.id,
         },

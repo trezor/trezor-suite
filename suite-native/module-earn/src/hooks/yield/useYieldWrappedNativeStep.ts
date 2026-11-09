@@ -6,7 +6,7 @@ import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type ComposeYieldWrapErrorReason,
     type WrappedNativeFlowType,
-    type YieldFlowType,
+    type YieldPositionFlowType,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -15,6 +15,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useShowYieldTransactionFailureAlert } from './useShowYieldTransactionFailureAlert';
+import { useYieldFormExitAnalytics } from './useYieldFlowAnalytics';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 import { useYieldSession } from './useYieldSession';
@@ -30,7 +31,7 @@ type UseYieldWrappedNativeStepParams = {
     availableBalance: string;
     decimals: number;
     flowKey: string | null;
-    flowType: YieldFlowType;
+    flowType: YieldPositionFlowType;
     isDisabled: boolean;
     isWrappedNativeVault: boolean;
     onNavigateToReview: () => void;
@@ -92,6 +93,12 @@ export const useYieldWrappedNativeStep = ({
         vaultId: vault?.id,
     });
     const isStepPending = !!pendingTransaction;
+    useYieldFormExitAnalytics({
+        flowType,
+        networkSymbol: account?.symbol,
+        vaultId: vault?.id,
+        isEnabled: !!account && !!flowKey,
+    });
     const isAmountReady = isValid && !!amountValue;
     const isFeeSectionDisplayed = isAmountReady && !isStepPending;
 

@@ -21,6 +21,7 @@ type Attributes = {
         | 'wrap-form'
         | 'unwrap-form'
         | 'choose-account-sheet'
+        | 'enable-network-sheet'
         | 'account-detail'
         | 'vault-detail'
         | 'insufficient-balance-screen'
@@ -36,6 +37,7 @@ type Attributes = {
         | 'deposit-legal-modal'
         | 'claim-select-account-modal'
         | 'choose-account-sheet'
+        | 'enable-network-sheet'
         | 'account-detail'
         | 'vault-detail'
         | 'insufficient-balance-screen'
@@ -54,6 +56,10 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
             version: '26.11.0',
             notes: 'Aligned exit handling and tracked skipped onboarding; info-only education does not emit funnel navigation.',
         },
+        {
+            version: '26.11.0',
+            notes: 'Mobile account and network activation entries identify their origin. Entry sheets report opening and cancellation once; selecting an account or continuing network activation does not report cancellation. Claim account selection uses the same steps as desktop. Approval and in-flow wrap/unwrap exits belong to their parent form, including when a transaction is pending. Returning from revoke to approval stays within the deposit flow.',
+        },
     ],
 
     attributes: {
@@ -64,7 +70,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         from: {
             description:
-                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen and `deposit-legal-modal` = consents screen (named after their desktop counterparts); `choose-account-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only as an origin, `account-defi-tokens` and `claim-select-account-modal` are desktop-only; `account-tokens` = yield badge on the account Tokens tab or the token row actions there, `account-defi-tokens` also covers the yield badge and token row actions on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box, `asset-detail-banner` = ETH or token yield banner on the Home asset detail (desktop-only)',
+                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen, `deposit-legal-modal` = consents screen and `claim-select-account-modal` = claim account sheet (named after their desktop counterparts); `choose-account-sheet`, `enable-network-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only as an origin, `account-defi-tokens` is desktop-only; `account-tokens` = yield badge on the account Tokens tab or the token row actions there, `account-defi-tokens` also covers the yield badge and token row actions on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box, `asset-detail-banner` = ETH or token yield banner on the Home asset detail (desktop-only)',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -83,11 +89,15 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
                     version: '26.11.0',
                     notes: 'added `asset-detail-banner` value (desktop)',
                 },
+                {
+                    version: '26.11.0',
+                    notes: 'Added enable-network-sheet on mobile; claim-select-account-modal is now shared with mobile.',
+                },
             ],
         },
         to: {
             description:
-                'Navigation destination, including automatic onboarding skips. Wrap/unwrap exits use `account-detail`.',
+                'Navigation destination, including automatic onboarding skips. Mobile network activation uses enable-network-sheet; dismissing an entry sheet returns to earn-dashboard. Deposit, withdrawal and claim exits return to earn-dashboard on both platforms. Standalone wrap/unwrap exits use `account-detail`.',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -105,6 +115,10 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
                 {
                     version: '26.8.1',
                     notes: '`wrap-form` / `unwrap-form` reported from mobile as well',
+                },
+                {
+                    version: '26.11.0',
+                    notes: 'Added enable-network-sheet on mobile; claim-select-account-modal is now shared with mobile.',
                 },
             ],
         },

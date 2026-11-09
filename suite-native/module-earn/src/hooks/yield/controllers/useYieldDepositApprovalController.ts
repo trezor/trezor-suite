@@ -26,7 +26,7 @@ import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalyt
 import { useYieldDepositApprovalSubmit } from '../useYieldDepositApprovalSubmit';
 import { useYieldDepositForm } from '../useYieldDepositForm';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
-import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
+import { useYieldFlowAnalytics, useYieldFormExitAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
@@ -143,6 +143,13 @@ export const useYieldDepositApprovalController = () => {
         reserve: gasReserve,
         isWrapStep: false,
         isWrappedNativeVault: yieldFlowData.isWrappedNativeVault,
+    });
+
+    useYieldFormExitAnalytics({
+        flowType: 'deposit',
+        networkSymbol: account?.symbol,
+        vaultId: yieldFlowData.vault?.id,
+        isEnabled: yieldFlowData.resolutionStatus === 'resolved',
     });
 
     const isApprovalSessionReady = session?.step === 'approve';
