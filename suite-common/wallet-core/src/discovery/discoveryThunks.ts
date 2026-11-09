@@ -239,7 +239,9 @@ const transformProgressEventData = (
             !response.empty ||
             !response.last || // empty account is visible if not the last one
             (response.type === 'normal' && response.index === 0), // first normal account is always visible on web & desktop
-        ...(!response.failed ? { failed: undefined } : { failed: true, error: response.error }),
+        ...(!response.failed
+            ? { failed: undefined }
+            : { failed: true, error: response.error, errorCode: response.code }),
     };
 
     const discoveryPayload: DiscoveryStatus = {

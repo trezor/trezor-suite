@@ -2,26 +2,41 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type Account } from '@suite-common/wallet-types';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { type DeviceUniquePath } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { discoveryActions } from './discoveryActions';
 import { prepareDiscoveryReducer } from './discoveryReducer';
-import { deleteDiscoveryThunk, updateDiscoveryThunk } from './discoveryStateThunks';
+import {
+    type UpdateDiscoveryThunkState,
+    deleteDiscoveryThunk,
+    updateDiscoveryThunk,
+} from './discoveryStateThunks';
 import { type DiscoveryRootState } from './discoveryTypes';
 
 const discoveryReducer = prepareDiscoveryReducer(undefined);
+const emptyDeviceState = { devices: [], buttonRequestsByPath: {} };
 
 type InitStoreArgs = {
     preloadedState?: DiscoveryRootState;
 };
 
 const initStore = ({ preloadedState }: InitStoreArgs = {}) =>
-    createTestCompositionRoot<WithServices<AnalyticsDep>, DiscoveryRootState>({
+    createTestCompositionRoot<WithServices<AnalyticsDep>, UpdateDiscoveryThunkState>({
         services: () => ({ analytics: mockAnalytics<AnalyticsSharedEvents>() }),
-        reducer: { wallet: combineReducers({ discovery: discoveryReducer }) },
-        preloadedState,
+        reducer: {
+            device: (state = emptyDeviceState) => state,
+            wallet: combineReducers({
+                discovery: discoveryReducer,
+                accounts: (state: Account[] = []) => state,
+            }),
+        },
+        preloadedState: preloadedState && {
+            device: emptyDeviceState,
+            wallet: { ...preloadedState.wallet, accounts: [] },
+        },
     }).services.store;
 
 const TEST_DEVICE_PATH = 'device-id:1' as DeviceUniquePath;
