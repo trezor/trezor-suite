@@ -38,6 +38,10 @@ jest.mock('./PortfolioAssetsHeader', () => ({
     PortfolioAssetsHeader: () => null,
 }));
 
+jest.mock('./PortfolioAssetsEmptyState', () => ({
+    PortfolioAssetsEmptyState: () => <Text testID="@home/portfolio-assets/empty-state" />,
+}));
+
 jest.mock('@suite-native/assets', () => ({
     ...jest.requireActual('@suite-native/assets'),
     WalletAssetListItem: ({ assetKey }: MockWalletAssetListItemProps) => <Text>{assetKey}</Text>,
@@ -52,6 +56,7 @@ const BTC_NETWORK_HEADER = '@home/portfolio-assets/network/btc';
 const SMALL_BALANCES_SWITCH = '@home/portfolio-assets/view-options/small-balances';
 const HIDDEN_TOKENS_OPTION = '@home/portfolio-assets/view-options/hidden-tokens';
 const NEW_BANNER = '@home/portfolio-assets/new-banner';
+const EMPTY_STATE = '@home/portfolio-assets/empty-state';
 const FEEDBACK = '@home/portfolio-assets/feedback';
 const LOADING_SKELETON = '@home/portfolio-assets/loading-skeleton';
 const SHOW_MORE = '@home/portfolio-assets/show-more';
@@ -178,14 +183,34 @@ const renderPortfolioAssetsContent = async (params: CreateStoreParams) =>
     });
 
 describe('PortfolioAssetsContent', () => {
-    it('hides the assets section header when there are no assets', async () => {
+    it('shows the empty state under the assets section header when there are no assets', async () => {
         await renderPortfolioAssetsContent({ ethAssetCount: 0 });
 
-        expect(screen.queryByText(getTranslation('moduleHome.assets.title'))).toBeNull();
-        expect(screen.queryByTestId('@home/portfolio-assets/view-options-button')).toBeNull();
-        expect(screen.queryByTestId('@home/portfolio-assets/show-more')).toBeNull();
+        expect(screen.getByTestId(EMPTY_STATE)).toBeTruthy();
+        expect(screen.getByText(getTranslation('moduleHome.assets.title'))).toBeTruthy();
         expect(screen.queryByTestId(NEW_BANNER)).toBeNull();
+        expect(screen.getByText(REFERRAL_BUTTON)).toBeTruthy();
+        expect(screen.queryByTestId('@home/portfolio-assets/show-more')).toBeNull();
         expect(screen.queryByTestId(FEEDBACK)).toBeNull();
+    });
+
+    it('hides the empty state and the new banner while discovery runs', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 0, isDiscoveryRunning: true });
+
+        expect(screen.queryByTestId(EMPTY_STATE)).toBeNull();
+        expect(screen.queryByTestId(NEW_BANNER)).toBeNull();
+        expect(screen.getByTestId(LOADING_SKELETON)).toBeTruthy();
+    });
+
+    it('shows the empty state when all assets are hidden small balances', async () => {
+        await renderPortfolioAssetsContent({
+            ethAssetCount: 1,
+            ethUsdRate: 0.01,
+            areSmallBalancesShown: false,
+        });
+
+        expect(screen.queryAllByText(ASSET_ROW)).toHaveLength(0);
+        expect(screen.getByTestId(EMPTY_STATE)).toBeTruthy();
     });
 
     it('shows the new banner and the feedback card around a list that does not fold', async () => {
@@ -491,9 +516,9 @@ describe('PortfolioAssetsContent', () => {
         await renderPortfolioAssetsContent({ ethAssetCount: 0, unrecognizedTokenCount: 2 });
 
         expect(screen.queryAllByText(ASSET_ROW)).toHaveLength(0);
+        expect(screen.getByTestId(EMPTY_STATE)).toBeTruthy();
         expect(screen.getByTestId('@home/portfolio-assets/view-options-button')).toBeTruthy();
         expect(within(screen.getByTestId(HIDDEN_TOKENS_OPTION)).getByText('2')).toBeTruthy();
-        expect(screen.queryByTestId(NEW_BANNER)).toBeNull();
     });
 
     it('shows a spinner instead of the hidden token count while discovery runs', async () => {

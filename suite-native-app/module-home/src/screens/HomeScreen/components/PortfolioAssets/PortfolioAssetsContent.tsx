@@ -22,6 +22,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { PortfolioAssetListSeparator } from './PortfolioAssetListSeparator';
 import { PortfolioAssetNetworkHeader } from './PortfolioAssetNetworkHeader';
+import { PortfolioAssetsEmptyState } from './PortfolioAssetsEmptyState';
 import { PortfolioAssetsListFooter } from './PortfolioAssetsListFooter';
 import { PortfolioAssetsListHeader } from './PortfolioAssetsListHeader';
 import { PortfolioAssetsViewOptionsSheet } from './PortfolioAssetsViewOptionsSheet';
@@ -75,6 +76,8 @@ export const PortfolioAssetsContent = () => {
     };
 
     const isLoadingSkeletonVisible = isAssetListLoading && (!isFoldable || isListExpanded);
+    const isListEmpty = entries.length === 0;
+    const isEmptyStateVisible = isListEmpty && !isAssetListLoading;
 
     const renderEntry = ({ item, index }: RenderEntryParams) => (
         <WalletAssetCardSegment
@@ -112,11 +115,17 @@ export const PortfolioAssetsContent = () => {
                 // Switching the grouping inserts network headers above the rows; anchoring on a row
                 // would scroll away from them.
                 maintainVisibleContentPosition={{ disabled: true }}
-                ListHeaderComponent={<PortfolioAssetsListHeader onViewOptionsPress={openModal} />}
+                ListHeaderComponent={
+                    <PortfolioAssetsListHeader
+                        isNewBannerVisible={!isListEmpty}
+                        onViewOptionsPress={openModal}
+                    />
+                }
+                ListEmptyComponent={isEmptyStateVisible ? <PortfolioAssetsEmptyState /> : null}
                 ListFooterComponent={
                     <PortfolioAssetsListFooter
                         isListExpanded={isListExpanded}
-                        isListEmpty={entries.length === 0}
+                        isListEmpty={isListEmpty}
                         isFoldable={isFoldable}
                         isLoadingSkeletonVisible={isLoadingSkeletonVisible}
                         onShowMorePress={toggleIsListExpanded}
