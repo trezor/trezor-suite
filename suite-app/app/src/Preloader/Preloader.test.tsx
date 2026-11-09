@@ -34,13 +34,16 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
+import { type SuiteState } from '@trezor/suite';
+import {
+    type MockSuiteState,
+    findByTestId,
+    mockInitialAppState,
+    renderWithProviders,
+} from '@trezor/suite/mocks';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { findByTestId, renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { Preloader } from './Preloader';
-import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 

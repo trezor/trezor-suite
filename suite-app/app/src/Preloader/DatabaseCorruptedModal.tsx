@@ -5,8 +5,7 @@ import { H3, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { DatabaseIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
+import { resetSuiteAppThunk } from '@trezor/suite';
 
 export const DatabaseCorruptedModal = () => {
     const { dispatch } = useServices(injectDispatch);
