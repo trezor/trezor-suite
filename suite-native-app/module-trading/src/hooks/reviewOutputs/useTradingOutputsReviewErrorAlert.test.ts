@@ -82,6 +82,17 @@ describe('useTradingOutputsReviewErrorAlert', () => {
             { type: 'sign-tx-error', code: 'device-not-connected' },
             'moduleTrading.tradingReviewOutputs.errorAlert.deviceNotConnectedDescription',
         ],
+        [
+            {
+                type: 'sign-tx-error',
+                code: 'push-transaction-failed',
+                cause: {
+                    source: 'send-form',
+                    error: { error: 'push-transaction-failed', message: 'Backend error' },
+                },
+            },
+            'moduleTrading.tradingReviewOutputs.errorAlert.pushTransactionDescription',
+        ],
     ])('should describe %o without its cause message', async (tradingError, descriptionId) => {
         const { result } = await renderUseTradingOutputsReviewErrorAlert();
 

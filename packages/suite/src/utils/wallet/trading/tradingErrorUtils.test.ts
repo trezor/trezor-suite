@@ -5,6 +5,8 @@ import { getTradingErrorTranslation } from './tradingErrorUtils';
 describe(getTradingErrorTranslation.name, () => {
     it.each<[TradingErrorCode, string]>([
         ['cannot-send-transaction', 'TR_TRADING_CANNOT_SEND_TRANSACTION'],
+        ['sign-transaction-failed', 'TR_TRADING_SIGN_TRANSACTION_FAILED'],
+        ['push-transaction-failed', 'TR_TRADING_PUSH_TRANSACTION_FAILED'],
         ['cannot-create-transaction', 'TR_TRADING_CANNOT_CREATE_TRANSACTION'],
         ['missing-composed-data', 'TR_TRADING_MISSING_COMPOSED_DATA'],
         ['missing-fee-level', 'TR_TRADING_MISSING_FEE_LEVEL'],

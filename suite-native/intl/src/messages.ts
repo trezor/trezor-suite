@@ -4375,6 +4375,9 @@ export const messages = {
             errorAlert: {
                 title: 'Transaction failed',
                 prepareTransactionDescription: "We couldn't prepare the transaction. Try again.",
+                signTransactionDescription: "Your Trezor couldn't sign the transaction. Try again.",
+                pushTransactionDescription:
+                    "The transaction couldn't be sent to the network. Try again.",
                 quoteExpiredDescription: 'The quote expired. Go back and get a new quote.',
                 providerNoResponseDescription: "The trading provider didn't respond. Try again.",
                 paymentRequestDescription: "Payment request couldn't be created. Try again.",

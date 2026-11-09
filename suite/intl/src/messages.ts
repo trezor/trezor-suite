@@ -549,6 +549,14 @@ export const messages = defineMessages({
         defaultMessage: 'Unable to send transaction, missing data',
         id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
     },
+    TR_TRADING_SIGN_TRANSACTION_FAILED: {
+        defaultMessage: "Your Trezor couldn't sign the transaction",
+        id: 'TR_TRADING_SIGN_TRANSACTION_FAILED',
+    },
+    TR_TRADING_PUSH_TRANSACTION_FAILED: {
+        defaultMessage: "The transaction couldn't be sent to the network",
+        id: 'TR_TRADING_PUSH_TRANSACTION_FAILED',
+    },
     TR_TRADING_INCORRECT_SERIALIZED_DATA: {
         defaultMessage: "Unable to send transaction—the serialized data isn't valid.",
         id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA',

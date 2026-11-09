@@ -7,6 +7,13 @@ describe('typeGuards', () => {
             expect(isTradingError({ type: 'error', code: 'cannot-send-transaction' })).toBe(true);
         });
 
+        it.each(['sign-transaction-failed', 'push-transaction-failed'])(
+            'returns true for a trading error with the %s code',
+            code => {
+                expect(isTradingError({ type: 'sign-tx-error', code })).toBe(true);
+            },
+        );
+
         it('returns true for a trading error with a cause', () => {
             expect(
                 isTradingError({
