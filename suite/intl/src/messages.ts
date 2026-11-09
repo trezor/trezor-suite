@@ -11479,6 +11479,10 @@ export const messages = defineMessages({
         defaultMessage:
             'Your Cardano is no longer earning rewards. Switch to our partner Everstake to earn up to {apy}% APY. Your ADA and past rewards are safe.',
     },
+    TR_STAKING_DIFFERENT_PROVIDER: {
+        id: 'TR_STAKING_DIFFERENT_PROVIDER',
+        defaultMessage: 'Staked with a different provider',
+    },
     TR_STAKING_REWARDS_REDUCED: {
         id: 'TR_STAKING_REWARDS_REDUCED',
         defaultMessage: 'No rewards',

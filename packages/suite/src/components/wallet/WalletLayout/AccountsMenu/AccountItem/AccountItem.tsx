@@ -1,100 +1,60 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 
-import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
-import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from '#src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { CollapsedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { type Account, type AccountItemType } from '#src/types/wallet';
+import { type Account } from '#src/types/wallet';
 
 import { AccountItemContent } from './AccountRow/AccountItemContent/AccountItemContent';
 import { AccountRow } from './AccountRow/AccountRow';
 
-function getRoute(type: AccountItemType) {
-    switch (type) {
-        case 'coin':
-            return 'wallet-index';
-        case 'staking':
-            return 'wallet-staking';
-        case 'tokens':
-            return 'wallet-tokens';
-        default:
-            return exhaustive(type);
-    }
-}
-
-export interface AccountItemProps {
+type AccountItemProps = {
     account: Account;
-    // NOTE: disables the default item click behavior
-    forceOnlyItemClick?: boolean;
-    type: AccountItemType;
     isSelected: boolean;
-    formattedBalance: string;
     customFiatValue?: BaseCurrencyAmount;
-    tokens?: Account['tokens'];
-    dataTestKey?: string;
-    isFiatLoading?: boolean;
-    onClick?: (account: Account, type: AccountItemType) => void;
-}
+    tokenCount: number;
+    hasStaking: boolean;
+    dataTestKey: string;
+    isFiatLoading: boolean;
+};
 
 export const AccountItem = memo(
     ({
         account,
-        forceOnlyItemClick,
-        type,
         isSelected,
-        formattedBalance,
         customFiatValue,
         dataTestKey,
         isFiatLoading,
-        onClick,
+        tokenCount,
+        hasStaking,
     }: AccountItemProps) => {
-        const { analytics } = useServices(injectDesktopAnalytics);
         const { accountType, index, symbol } = account;
+        const [isFocused, setIsFocused] = useState(false);
 
         const goToWithAnalytics = useGoToWithAnalytics(account);
 
         const handleHeaderClick = () => {
-            onClick?.(account, type);
-
-            // NOTE: disable default behavior useful eg in global send modal - when picking account
-            // from which to send
-            if (forceOnlyItemClick) {
-                return;
-            }
-
             goToWithAnalytics({
-                routeName: getRoute(type),
+                routeName: 'wallet-index',
                 params: {
                     symbol,
                     accountIndex: index,
                     accountType,
                 },
             });
-
-            if (type === 'staking') {
-                analytics.report({
-                    type: events.stakingNavigateEvent.name,
-                    payload: {
-                        action: 'navigate',
-                        from: 'sidebar',
-                        networkSymbol: symbol,
-                    },
-                });
-            }
         };
 
         const commonProps = {
-            isFiatLoading: Boolean(isFiatLoading),
-            formattedBalance,
+            isFiatLoading,
             dataTestKey,
-            type,
+            tokenCount,
+            hasStaking,
             account,
             customFiatValue,
+            isFocused,
         };
 
         return (
@@ -104,6 +64,7 @@ export const AccountItem = memo(
                         {...commonProps}
                         isSelected={isSelected}
                         handleHeaderClick={handleHeaderClick}
+                        onFocusChange={setIsFocused}
                     />
                 </ExpandedSidebarOnly>
                 <CollapsedSidebarOnly>
@@ -113,7 +74,7 @@ export const AccountItem = memo(
                             cursor="pointer"
                             content={
                                 <Box padding={4}>
-                                    <AccountItemContent {...commonProps} showAccountTypeBadge />
+                                    <AccountItemContent {...commonProps} />
                                 </Box>
                             }
                             placement="right"
@@ -122,6 +83,7 @@ export const AccountItem = memo(
                                 {...commonProps}
                                 isSelected={isSelected}
                                 handleHeaderClick={handleHeaderClick}
+                                onFocusChange={setIsFocused}
                                 isCollapsed
                             />
                         </Tooltip>
