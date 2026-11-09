@@ -32,7 +32,7 @@ jobs:
       - run: ./packages/connect/e2e/test-yarn-install.sh latest
 
   test-protobuf:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.repository == 'trezor/trezor-suite'
     timeout-minutes: 60
     steps:
