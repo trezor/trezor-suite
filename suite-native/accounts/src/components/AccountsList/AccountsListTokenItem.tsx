@@ -54,14 +54,7 @@ export const AccountsListTokenItem = ({
                     showNetworkIcon
                 />
             }
-            title={
-                <TokenName
-                    networkSymbol={account.symbol}
-                    contractAddress={token.contract}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                />
-            }
+            title={<TokenName networkSymbol={account.symbol} contractAddress={token.contract} />}
             badges={badges}
             mainValue={
                 showFiatValue && (
