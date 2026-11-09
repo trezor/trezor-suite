@@ -41,7 +41,29 @@ const createWorkspaceAliases = () => {
             replacement: resolve(packageDir, '../../suite', dirent.name),
         }));
 
-    return [...suiteCommonAliases, ...trezorPackagesAliases, ...suiteAliases];
+    // Without an alias a workspace package is reached through node_modules, which Vite pre-bundles
+    // as a dependency in a separate pass. That pass gets its own copy of every module it imports, so
+    // a React context created in @trezor/dependency-injection would exist twice and the provider
+    // and its consumers would not see each other.
+    const suiteAppAliases = readdirSync(resolve(packageDir, '..'), { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => ({
+            find: `@suite-app/${dirent.name}`,
+            replacement: resolve(packageDir, '..', dirent.name),
+        }));
+
+    return [
+        // The `./pages/*` export of @suite-app/app points into `src`, which a plain prefix alias
+        // would miss, so it is matched before the package alias.
+        {
+            find: /^@suite-app\/app\/pages\/(.*)$/,
+            replacement: `${resolve(packageDir, '../app/src/pages')}/$1`,
+        },
+        ...suiteCommonAliases,
+        ...trezorPackagesAliases,
+        ...suiteAliases,
+        ...suiteAppAliases,
+    ];
 };
 
 export const sharedAliases = [
