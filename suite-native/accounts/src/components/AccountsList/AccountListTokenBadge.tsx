@@ -4,7 +4,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { type NativeAccountsRootState, selectActiveAndDefiTokensCount } from '../../selectors';
+import { type NativeAccountsRootState, selectAccountVisibleTokensCount } from '../../selectors';
 
 type AccountListTokenBadgeProps = {
     accountKey: AccountKey;
@@ -12,7 +12,7 @@ type AccountListTokenBadgeProps = {
 
 export const AccountListTokenBadge = ({ accountKey }: AccountListTokenBadgeProps) => {
     const numberOfTokens = useSelector((state: NativeAccountsRootState) =>
-        selectActiveAndDefiTokensCount(state, accountKey),
+        selectAccountVisibleTokensCount(state, accountKey),
     );
 
     return (

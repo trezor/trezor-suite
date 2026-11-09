@@ -238,7 +238,7 @@ export const messages = {
         },
     },
     accountList: {
-        numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
+        numberOfTokens: '+{numberOfTokens, plural, one{1 token} other{# tokens}}',
         staking: 'Staking',
         stakingDisabled: 'Staking is currently unavailable.',
         rewardsReduced: 'No rewards',
