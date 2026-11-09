@@ -1,113 +1,30 @@
 import {
     type GetPositionParams,
     type StakingAccount,
-    type StakingAmount,
-    type StakingOperation,
     type StakingPosition,
-    type StakingPositionBalances,
     type StakingPositionDetails,
     type StakingPositionPendingTransaction,
-    type StakingPositionTarget,
     type StakingPositionWarning,
     type StakingProductDescriptor,
     type StakingProvider,
-    type StakingTransaction,
-    isPendingStakingTransaction,
 } from '@suite-common/earn-staking-common';
-import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
+    getCardanoDelegationPendingTransactions,
+    getCardanoDelegationPositionBalances,
+    getCardanoDelegationPositionOperations,
+    getCardanoDelegationPositionTargets,
+    getParsedCardanoAccountBalance,
+    getParsedCardanoStakingInfo,
     isCardanoStakeKeyRegistered,
-    parseCardanoAccountBalance,
-    parseCardanoStakingInfo,
-} from './cardanoStakingInfo';
+} from './utils';
 import { getStakingPositionStatus } from '../../utils/getStakingPositionStatus';
 import {
     ZERO_STAKING_AMOUNT,
     isPositiveStakingAmount,
     toStakingAmount,
 } from '../../utils/stakingAmounts';
-
-type IsOperationAvailableParams = {
-    operation: StakingOperation;
-    rewards: StakingAmount;
-    isWithdrawalBlocked: boolean;
-    hasPendingTransaction: boolean;
-};
-
-const isOperationAvailable = ({
-    operation,
-    rewards,
-    isWithdrawalBlocked,
-    hasPendingTransaction,
-}: IsOperationAvailableParams): boolean => {
-    switch (operation) {
-        case 'stake':
-            // The delegation already covers the whole balance.
-            return false;
-        case 'unstake':
-            // Deregistration withdraws the rewards in the same transaction.
-            return !isWithdrawalBlocked && !hasPendingTransaction;
-        case 'claim':
-            return (
-                isPositiveStakingAmount(rewards) && !isWithdrawalBlocked && !hasPendingTransaction
-            );
-        case 'vote':
-            return true;
-        case 'withdraw':
-        case 'redelegate':
-            return false;
-        default:
-            return exhaustive(operation);
-    }
-};
-
-type GetPoolTargetsParams = {
-    poolId: string | null;
-    staked: StakingAmount;
-    provider: StakingProvider;
-};
-
-const getPoolTargets = ({
-    poolId,
-    staked,
-    provider,
-}: GetPoolTargetsParams): StakingPositionTarget[] => {
-    if (poolId === null || !isPositiveStakingAmount(staked)) return [];
-
-    return [
-        {
-            address: poolId,
-            providerId: provider.id,
-            ...(provider.status === 'external' ? {} : { name: provider.name }),
-            amount: staked,
-        },
-    ];
-};
-
-type CardanoStakingSubtype = NonNullable<
-    NonNullable<StakingTransaction['cardanoSpecific']>['subtype']
->;
-
-const OPERATIONS_BY_CARDANO_SUBTYPE: Record<CardanoStakingSubtype, StakingOperation> = {
-    stake_registration: 'stake',
-    stake_delegation: 'stake',
-    stake_deregistration: 'unstake',
-    withdrawal: 'claim',
-    governance_delegation: 'vote',
-};
-
-const getPendingCardanoStakingTransactions = (
-    transactions: readonly StakingTransaction[],
-): StakingPositionPendingTransaction[] =>
-    transactions.filter(isPendingStakingTransaction).flatMap(({ txid, cardanoSpecific }) => {
-        const subtype = cardanoSpecific?.subtype;
-
-        return subtype === undefined
-            ? []
-            : [{ txid, operation: OPERATIONS_BY_CARDANO_SUBTYPE[subtype] }];
-    });
 
 type GetPendingFirstStakePositionParams = {
     descriptor: StakingProductDescriptor;
@@ -122,7 +39,7 @@ const getPendingFirstStakePosition = ({
     account,
     pendingTransactions,
 }: GetPendingFirstStakePositionParams): StakingPosition | null => {
-    const balance = parseCardanoAccountBalance(account);
+    const balance = getParsedCardanoAccountBalance(account);
 
     if (balance === null || !pendingTransactions.some(({ operation }) => operation === 'stake')) {
         return null;
@@ -164,39 +81,38 @@ export const getCardanoDelegationProductPosition = ({
     ownsPool,
     ownsPendingFirstStake,
 }: GetCardanoDelegationProductPositionParams): StakingPosition | null => {
-    const pendingTransactions = getPendingCardanoStakingTransactions(transactions);
+    const pendingTransactions = getCardanoDelegationPendingTransactions({ transactions });
 
     if (!isCardanoStakeKeyRegistered(account)) {
-        return ownsPendingFirstStake
-            ? getPendingFirstStakePosition({ descriptor, account, pendingTransactions })
-            : null;
+        if (!ownsPendingFirstStake) {
+            return null;
+        }
+
+        return getPendingFirstStakePosition({ descriptor, account, pendingTransactions });
     }
 
-    const stakingInfo = parseCardanoStakingInfo(account);
+    const stakingInfo = getParsedCardanoStakingInfo({ account });
 
-    if (stakingInfo === null || !ownsPool(stakingInfo.poolId)) return null;
+    if (stakingInfo === null || !ownsPool(stakingInfo.poolId)) {
+        return null;
+    }
 
     const { balance, poolId, rewards, drep } = stakingInfo;
     // The account balance already holds the reward balance, so the two must not overlap.
     const staked = toStakingAmount(BigNumber.max(new BigNumber(balance).minus(rewards), 0));
     const isWithdrawalBlocked = isPositiveStakingAmount(rewards) && drep === null;
 
-    const balances: StakingPositionBalances = {
-        staked,
-        pending: ZERO_STAKING_AMOUNT,
-        unstaking: ZERO_STAKING_AMOUNT,
-        withdrawable: ZERO_STAKING_AMOUNT,
-        rewards,
-    };
+    const balances = getCardanoDelegationPositionBalances({ staked, rewards });
+    const status = getStakingPositionStatus({ balances });
 
-    const operations = descriptor.operations.filter(operation =>
-        isOperationAvailable({
-            operation,
-            rewards,
-            isWithdrawalBlocked,
-            hasPendingTransaction: pendingTransactions.length > 0,
-        }),
-    );
+    const operations = getCardanoDelegationPositionOperations({
+        operations: descriptor.operations,
+        rewards,
+        isWithdrawalBlocked,
+        pendingTransactions,
+    });
+
+    const targets = getCardanoDelegationPositionTargets({ poolId, staked, provider });
 
     const warnings: StakingPositionWarning[] = [
         ...(provider.status === 'retired'
@@ -209,11 +125,11 @@ export const getCardanoDelegationProductPosition = ({
 
     return {
         productId: descriptor.id,
-        status: getStakingPositionStatus({ balances }),
+        status,
         lockup: 'liquid',
         balances,
         unlocks: [],
-        targets: getPoolTargets({ poolId, staked, provider }),
+        targets,
         operations,
         pendingTransactions,
         warnings,

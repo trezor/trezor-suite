@@ -9,8 +9,7 @@ import {
     stakingProductInfoSchema,
 } from '@suite-common/earn-staking-common';
 
-// Copied from wallet-constants; unstaking is immediate on chain, the legacy period is kept.
-export const CARDANO_EPOCH_DAYS = 5;
+import { CARDANO_EPOCH_DAYS } from './constants';
 
 export const CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO = stakingProductInfoSchema.parse({
     rate: null,
