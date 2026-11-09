@@ -1,5 +1,8 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID, PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
-import { type NativeDeviceRootState } from '@suite-native/device';
+import {
+    type NativeDeviceRootState,
+    minimalFirmwareVersionSupportedByApp,
+} from '@suite-native/device';
 import { createStoreFromPreloadedState } from '@suite-native/test-utils-store';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -279,19 +282,29 @@ describe('selectHomeScreenState', () => {
         const buildInitializedDeviceState = (
             internalModel: DeviceModelInternal,
             persistentDeviceData: Record<string, unknown>[] = [],
-        ) =>
-            buildState({
+        ) => {
+            const [major_version, minor_version, patch_version] =
+                minimalFirmwareVersionSupportedByApp[internalModel];
+
+            return buildState({
                 device: {
                     selectedDevice: {
                         id: 'device_id',
                         connected: true,
-                        features: { initialized: true, internal_model: internalModel },
+                        features: {
+                            initialized: true,
+                            internal_model: internalModel,
+                            major_version,
+                            minor_version,
+                            patch_version,
+                        },
                         state: {},
                     },
                     devices: [{ id: 'device_id' }],
                 },
                 persistentDeviceData: { devices: persistentDeviceData },
             });
+        };
 
         it('should return deviceChecksRequired when initialized device has not passed the manual check', () => {
             const state = buildInitializedDeviceState(DeviceModelInternal.T2T1);

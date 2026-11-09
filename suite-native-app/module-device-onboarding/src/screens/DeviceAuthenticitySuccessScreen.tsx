@@ -7,10 +7,10 @@ import {
     type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     type StackProps,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
-import { useExitDeviceOnboardingForInitializedDevice } from '../hooks/useExitDeviceOnboardingForInitializedDevice';
 
 export const DeviceAuthenticitySuccessScreen = ({
     navigation,
@@ -19,14 +19,13 @@ export const DeviceAuthenticitySuccessScreen = ({
     DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess
 >) => {
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
-    const { exitDeviceOnboardingForInitializedDevice } =
-        useExitDeviceOnboardingForInitializedDevice();
+    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const deviceName = useSelector(selectDeviceName);
 
     const handleContinueButtonPress = () => {
         if (isDeviceInitialized) {
-            exitDeviceOnboardingForInitializedDevice();
+            navigateToInitialScreen();
         } else {
             navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
         }
