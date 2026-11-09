@@ -3,21 +3,11 @@ import {
     getStakingProductId,
     stakingProductDescriptorSchema,
 } from '@suite-common/earn-staking-common';
-import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { EVERSTAKE_POOLED_PRODUCT_LIMITS } from './everstakePooledProductLimits';
+import { EVERSTAKE_ETHEREUM_MESSAGE_SYSTEM_FEATURES } from './everstakePooledProductMessageSystemFeatures';
 import { everstakeProvider } from '../../providers/everstake';
-
-// The message system has no Hoodi keys, so only mainnet operations can be switched off remotely.
-const MESSAGE_SYSTEM_FEATURES_BY_SYMBOL: Partial<
-    Record<NetworkSymbol, StakingProductDescriptor['messageSystemFeatures']>
-> = {
-    [asNetworkSymbol('eth')]: {
-        stake: 'eth.staking.stake',
-        unstake: 'eth.staking.unstake',
-        withdraw: 'eth.staking.claim',
-    },
-};
 
 export const createEverstakePooledProductDescriptor = (
     networkSymbol: NetworkSymbol,
@@ -42,7 +32,9 @@ export const createEverstakePooledProductDescriptor = (
             desktop: { access: 'manage' },
             mobile: { access: 'manage' },
         },
-        messageSystemFeatures: MESSAGE_SYSTEM_FEATURES_BY_SYMBOL[networkSymbol] ?? {},
+        messageSystemFeatures:
+            // Hoodi has no message system gating
+            networkSymbol === 'eth' ? EVERSTAKE_ETHEREUM_MESSAGE_SYSTEM_FEATURES : {},
         isCountedInAccountTotals: true,
     });
 };
