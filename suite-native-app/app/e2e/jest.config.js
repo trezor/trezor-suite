@@ -26,6 +26,8 @@ const baseReporters = [
             suiteName: projectName,
             outputDirectory: './reports',
             outputName: `${projectName}-junit-report.xml`,
+            // Include suites that failed during initialization, before any tests could run.
+            reportTestSuiteErrors: 'true',
         },
     ],
     [
