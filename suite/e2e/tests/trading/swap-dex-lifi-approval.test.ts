@@ -223,6 +223,28 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 await expect(tradingPage.transactionDetailModalTxid).toHaveText(
                     tradingMock.lastBroadcastTxid,
                 );
+                await page.modalCloseButton.click();
+            });
+
+            await test.step('Returning to the form resumes the pending approval instead of a new one', async () => {
+                await tradingPage.backButton.click();
+                await tradingPage.quotes.chooseDifferentOfferIfAvailable(dexProvider);
+                await tradingPage.swapBestOfferButton.click();
+
+                await expect(tradingPage.approvalSteps.continueButton).toHaveTranslation(
+                    'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
+                );
+                await expect(tradingPage.approvalSteps.continueButton).toBeDisabled();
+                await expect(tradingPage.approvalSteps.transactionId).toHaveAttribute(
+                    'id',
+                    tradingMock.lastBroadcastTxid,
+                );
+            });
+
+            await test.step('Reloading the approval steps returns to the form', async () => {
+                await page.reload();
+                await expect(tradingPage.inputs.cryptoAmount).toBeVisible({ timeout: 30_000 });
+                await expect(tradingPage.approvalSteps.section).toBeHidden();
             });
         },
     );
