@@ -7,13 +7,18 @@
     "main": "src/index",
     "exports": {
         ".": "./src/index.ts",
-        "./pages/*": "./src/pages/*.tsx"
+        "./pages/*": "./src/pages/*.tsx",
+        "./webpack": "./webpack/index.ts",
+        "./webpack/env": "./webpack/env.ts",
+        "./webpack/reactCompiler": "./webpack/reactCompiler.ts",
+        "./webpack/browserPolyfills": "./webpack/browserPolyfills.ts"
     },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest"
+        "test:unit": "yarn g:jest",
+        "react-compiler:check": "yarn g:tsx ./webpack/checkReactCompilerFrozenReads.ts"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
@@ -116,13 +121,34 @@
         "styled-components": "^6.5.3"
     },
     "devDependencies": {
+        "@babel/core": "7.29.7",
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.6.3",
+        "@sentry/webpack-plugin": "^5.4.1",
         "@suite-common/test-utils": "workspace:*",
         "@testing-library/react": "^16.3.3",
+        "@trezor/bundler-security": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@types/file-saver": "^2.0.6",
         "@types/invity-api": "^1.1.23",
         "@types/react": "19.3.0",
-        "@types/redux-logger": "^3.0.13"
+        "@types/redux-logger": "^3.0.13",
+        "@types/webpack-bundle-analyzer": "^4.7.0",
+        "@types/webpack-plugin-serve": "^1.4.7",
+        "babel-loader": "^10.1.1",
+        "babel-plugin-react-compiler": "^1.0.0",
+        "babel-plugin-styled-components": "^2.3.0",
+        "buffer": "^6.0.3",
+        "core-js": "^3.50.0",
+        "crypto-browserify": "3.12.1",
+        "dotenv": "18.0.6",
+        "minimizer-webpack-plugin": "5.13.0",
+        "raw-loader": "^4.0.2",
+        "react-refresh": "^0.19.0",
+        "stream-browserify": "^3.0.0",
+        "vm-browserify": "^1.1.2",
+        "webpack": "5.111.1",
+        "webpack-bundle-analyzer": "^5.4.0",
+        "webpack-plugin-serve": "^1.6.0"
     },
     "nx": {
         "targets": {

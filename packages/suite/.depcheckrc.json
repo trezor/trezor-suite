@@ -6,11 +6,6 @@
         "stylelint-config-standard",
         "postcss-styled-syntax",
         "typescript-styled-plugin",
-        "babel-loader",
-        "babel-plugin-react-compiler",
-        "babel-plugin-styled-components",
-        "buffer",
-        "lodash-es",
-        "raw-loader"
+        "lodash-es"
     ]
 }

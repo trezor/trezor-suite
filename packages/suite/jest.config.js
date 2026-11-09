@@ -31,7 +31,6 @@ const swcConfig = {
 module.exports = {
     roots: [
         '<rootDir>/src',
-        '<rootDir>/webpack',
         '<rootDir>/__mocks__',
         '<rootDir>/../../suite-common/test-utils/__mocks__',
     ],

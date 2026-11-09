@@ -1393,7 +1393,7 @@ export const classifyCompilerOptOut = (
 };
 
 /** Repo-root-relative, so the gate and the update command agree on one location. */
-export const OPT_OUT_SNAPSHOT_FILE = 'packages/suite/webpack/react-compiler-bail-snapshot.txt';
+export const OPT_OUT_SNAPSHOT_FILE = 'suite-app/app/webpack/react-compiler-bail-snapshot.txt';
 
 /** `<path>\t<status>\t<reasons>`, ASCII-sorted. No line numbers — they churn without meaning. */
 export const formatOptOutSnapshot = (optOuts: readonly CompilerOptOut[]): string =>

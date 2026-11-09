@@ -77,7 +77,7 @@ names from manifests, not paths.
 - `suite-native-app/` (`@suite-native-app/*`): Mobile application assembly, including the Expo/React
   Native `app` entry point; may compose native features, shared logic and reusable libraries.
 - `packages/suite`: Remaining app-layer exception to the `packages/` convention. It contains the
-  web/desktop React app shared by both application roots, and `packages/suite/webpack` holds the
+  web/desktop React app shared by both application roots. `suite-app/app/webpack` holds the
   Webpack pieces they share; each application owns its own `webpack.config.ts`. Existing app
   composition depends on `@suite/*` and `@suite-common/*`; this is not permission to introduce
   app dependencies into reusable libraries.

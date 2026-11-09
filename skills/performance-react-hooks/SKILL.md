@@ -11,13 +11,13 @@ the dev-utils rerender-count toggle on mobile, the React DevTools Profiler on we
 compiler on either platform — `packages/suite` and `suite-native` both transform with `@swc/jest`, which
 executes no babel plugin and does not enable `jsc.transform.reactCompiler` — so a render-count assertion
 in a unit test says nothing about production anywhere. On web, A/B a profile by emptying
-`REACT_COMPILER_PATHS` ([`reactCompiler.ts`](../../packages/suite/webpack/reactCompiler.ts)) on the same
+`REACT_COMPILER_PATHS` ([`reactCompiler.ts`](../../suite-app/app/webpack/reactCompiler.ts)) on the same
 working tree; a branch-vs-`develop` comparison measures every unrelated change too.
 
 ## Check whether the file you are touching is compiled before adding or removing a memo
 
 On web and desktop, auto-memoization is enabled directory by directory and the list grows wave by wave.
-[`REACT_COMPILER_PATHS`](../../packages/suite/webpack/reactCompiler.ts) is the source of truth; read it
+[`REACT_COMPILER_PATHS`](../../suite-app/app/webpack/reactCompiler.ts) is the source of truth; read it
 when in doubt and treat the list below as a summary that can lag it by a commit.
 
 - **Mobile (`suite-native`) is compiled whole-app.** `experiments.reactCompiler: true` in
@@ -43,7 +43,7 @@ when in doubt and treat the list below as a summary that can lag it by a commit.
   can see the frozen-read failure mode under "Compiled paths" below. `yarn react-compiler:check` is the
   gate that does:
   it compiles every enabled tree and fails on a render-time `react-hook-form` read
-  ([`reactCompilerFrozenReads.ts`](../../packages/suite/webpack/reactCompilerFrozenReads.ts), run by
+  ([`reactCompilerFrozenReads.ts`](../../suite-app/app/webpack/reactCompilerFrozenReads.ts), run by
   the `other-checks` CI job). Run it locally before pushing anything that changes any React code.
 
 ## What makes the compiler bail, and what to do instead
@@ -51,7 +51,7 @@ when in doubt and treat the list below as a summary that can lag it by a commit.
 The compiler compiles components and hooks only, closures declared inside them included, so the
 universal fix is to move the offending code out: into a module-level function, a thunk, an event
 handler or an effect. The current list is
-[`react-compiler-bail-snapshot.txt`](../../packages/suite/webpack/react-compiler-bail-snapshot.txt):
+[`react-compiler-bail-snapshot.txt`](../../suite-app/app/webpack/react-compiler-bail-snapshot.txt):
 `bail` is the whole file, `partial` some of its functions, `opt-out` a deliberate `'use no memo'`.
 The bail-outs are tracked under [#32578](https://github.com/trezor/trezor-suite/issues/32578).
 Ordered by how many files each hit in the 2026-10 snapshot:

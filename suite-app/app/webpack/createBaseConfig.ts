@@ -8,8 +8,9 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 // Get Suite App version from the Suite package.json
 import { WebpackSecurityCheckPlugin } from '@trezor/bundler-security';
+// eslint-disable-next-line local-rules/no-package-deep-imports -- the Suite version lives in its manifest
+import { suiteVersion } from '@trezor/suite/package.json';
 
-import { suiteVersion } from '../package.json';
 import {
     isAnalyzing,
     isCodesignBuild,
@@ -124,7 +125,7 @@ export const createBaseConfig = ({
             extensions: ['.ts', '.tsx', '.js', '.jsx'],
             modules: ['node_modules'],
             alias: {
-                src: path.resolve(__dirname, '../../suite/src/'),
+                src: path.resolve(__dirname, '../../../packages/suite/src/'),
                 // recharts deep-imports 29 lodash functions from the CJS build, which cannot be
                 // tree-shaken or scope-hoisted. lodash-es is the same 4.18.1 code as ESM with
                 // `sideEffects: false`, so the same imports shrink by ~30%. Prefix alias: `lodash/get`

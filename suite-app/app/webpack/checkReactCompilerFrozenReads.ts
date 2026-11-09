@@ -37,6 +37,7 @@ const readSnapshot = () => {
  */
 (() => {
     const logLabel = 'React Compiler frozen form reads checked in';
+    // eslint-disable-next-line no-console -- build tooling reports progress on the console
     console.time(logLabel);
 
     const isUpdatingSnapshot = process.argv.includes('--update-snapshot');
@@ -48,11 +49,13 @@ const readSnapshot = () => {
 
     if (isUpdatingSnapshot) {
         writeFileSync(snapshotPath, `${snapshot}\n`, 'utf-8');
+        // eslint-disable-next-line no-console -- build tooling reports progress on the console
         console.log(`Wrote ${report.optOuts.length} line(s) to ${OPT_OUT_SNAPSHOT_FILE}.`);
     } else {
         failures.push(...evaluateOptOutSnapshot(readSnapshot(), snapshot));
     }
 
+    // eslint-disable-next-line no-console -- build tooling reports progress on the console
     console.log(
         `Compiled ${report.compiled} of ${report.files} file(s) under ` +
             `${REACT_COMPILER_PATHS.join(', ') || '<no wave enabled>'} and examined ` +
@@ -90,5 +93,6 @@ const readSnapshot = () => {
         process.exit(1);
     }
 
+    // eslint-disable-next-line no-console -- build tooling reports progress on the console
     console.timeEnd(logLabel);
 })();

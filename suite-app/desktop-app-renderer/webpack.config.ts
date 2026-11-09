@@ -6,12 +6,18 @@ import path from 'path';
 import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 
+// eslint-disable-next-line local-rules/no-package-deep-imports -- build-only entry, kept out of the runtime index
+import {
+    NixosInterpreterPlugin,
+    ShellSpawnPlugin,
+    createBaseConfig,
+    createDevConfig,
+    isCodesignBuild,
+    isDev,
+    isTestBuild,
+    launchElectron,
+} from '@suite-app/app/webpack';
 import { FLAGS } from '@suite-common/suite-config';
-import { createBaseConfig } from '@trezor/suite/webpack/createBaseConfig';
-import { createDevConfig } from '@trezor/suite/webpack/createDevConfig';
-import { isCodesignBuild, isDev, isTestBuild, launchElectron } from '@trezor/suite/webpack/env';
-import { NixosInterpreterPlugin } from '@trezor/suite/webpack/nixosInterpreterPlugin';
-import ShellSpawnPlugin from '@trezor/suite/webpack/shellSpawnPlugin';
 
 const electronArgsIndex = process.argv.indexOf('./webpack.config.ts') + 1;
 const electronArgs = process.argv.slice(electronArgsIndex);

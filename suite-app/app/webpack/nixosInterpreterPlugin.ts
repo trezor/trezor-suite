@@ -47,11 +47,13 @@ export class NixosInterpreterPlugin {
     apply(compiler: webpack.Compiler) {
         compiler.hooks.afterEmit.tap(this.name, () => {
             if (!this.initialRun && process.env.NODE_ENV !== 'production' && process.env.NIX_CC) {
+                // eslint-disable-next-line no-console -- build tooling reports progress on the console
                 console.log(`${this.name} patching: ${this.options.files.join(',')}`);
                 this.initialRun = true;
                 const interpreter = this.getInterpreter();
                 this.options.files.forEach(file => this.setInterpreter(interpreter, file));
             } else {
+                // eslint-disable-next-line no-console -- build tooling reports progress on the console
                 console.log(`${this.name} not used`);
             }
         });

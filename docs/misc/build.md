@@ -4,7 +4,7 @@ Each application owns its Webpack configuration. `@suite-app/web-app` and `@suit
 each have a `webpack.config.ts` composing the shared pieces with their own targets, entry points and
 assets.
 
-The shared pieces live in `packages/suite/webpack`, next to the application code both applications
+The shared pieces live in `suite-app/app/webpack`, next to the application code both applications
 bundle:
 
 - `createBaseConfig.ts`: common compilation, polyfills, chunking, source maps and the security

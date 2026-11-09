@@ -6,10 +6,8 @@ import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 
 import { routes } from '@suite/router-config';
+import { assetPrefix, createBaseConfig, createDevConfig, isDev } from '@suite-app/app/webpack';
 import { FLAGS } from '@suite-common/suite-config';
-import { createBaseConfig } from '@trezor/suite/webpack/createBaseConfig';
-import { createDevConfig } from '@trezor/suite/webpack/createDevConfig';
-import { assetPrefix, isDev } from '@trezor/suite/webpack/env';
 
 const baseDir = __dirname;
 const repoRoot = path.join(baseDir, '..', '..');
