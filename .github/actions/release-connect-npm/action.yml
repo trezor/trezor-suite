@@ -8,6 +8,7 @@ inputs:
     options:
       - beta
       - latest
+      - v9
   packageName:
     description: "The name of the package to be deployed. Select from the predefined list of packages."
     required: true
@@ -40,10 +41,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: recursive
-
     - name: Extract branch name
       shell: bash
       run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT

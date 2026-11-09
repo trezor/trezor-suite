@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   extract-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.set-version.outputs.version }}
     steps:
@@ -30,7 +30,7 @@ jobs:
         run: echo "version=$(node ./scripts/ci/get-connect-version.js)" >> $GITHUB_OUTPUT
 
   sanity-check-version-match:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [extract-version]
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +42,7 @@ jobs:
           extracted_version: "${{ needs.extract-version.outputs.version }}"
 
   identify-release-packages:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [extract-version, sanity-check-version-match]
     outputs:
       packagesNeedRelease: ${{ steps.set-packages-need-release.outputs.packagesNeedRelease }}
@@ -88,7 +88,7 @@ jobs:
     name: Deploy NPM ${{ needs.identify-release-packages.outputs.deploymentType }} ${{ matrix.package }}
     needs: [extract-version, sanity-check-version-match, identify-release-packages]
     environment: production-connect
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -97,7 +97,8 @@ jobs:
       - uses: actions/checkout@v4
         if: matrix.package != 'no-packages-to-release'
         with:
-          ref: develop
+          ref: ${{ github.sha }}
+          submodules: recursive
 
       - name: Set deployment type
         if: matrix.package != 'no-packages-to-release'
@@ -106,7 +107,8 @@ jobs:
           if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
             echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
           else
-            echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
+            # `latest` belongs to Connect 10.
+            echo "DEPLOYMENT_TYPE=v9" >> $GITHUB_ENV
           fi
 
       - name: Deploy to NPM ${{ matrix.package }}
@@ -121,7 +123,7 @@ jobs:
     # We only deploy connect NPM once dependencies have been deployed successfully.
     needs: [identify-release-packages, deploy-npm-connect-dependencies]
     environment: production-connect
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -129,7 +131,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: ${{ github.sha }}
+          submodules: recursive
 
       - name: Set deployment type
         id: set_deployment_type
@@ -137,7 +140,8 @@ jobs:
           if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
             echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
           else
-            echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
+            # `latest` belongs to Connect 10.
+            echo "DEPLOYMENT_TYPE=v9" >> $GITHUB_ENV
           fi
 
       - name: Deploy to NPM ${{ matrix.package }}
