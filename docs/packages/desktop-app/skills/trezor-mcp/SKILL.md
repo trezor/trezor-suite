@@ -1,6 +1,6 @@
 ---
 name: trezor-mcp
-description: Trigger on any mention of Trezor wallet interaction, crypto addresses, sending crypto, checking balances, signing messages, or hardware wallet operations via MCP. Also trigger when users mention configuring or troubleshooting the Trezor MCP server connection.
+description: 'Use when performing wallet operations via the Trezor Suite MCP server, or configuring or troubleshooting its connection. Excludes general crypto questions and Suite code changes.'
 ---
 
 # Trezor Suite MCP Server
