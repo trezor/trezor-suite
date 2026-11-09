@@ -12,7 +12,7 @@ const normalizedStories = [
     files: "**/stories/**/*.stories.?(ts|tsx|js|jsx)",
     importPathMatcher: /^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)stories(?:\/(?!\.)(?:(?:(?!(?:^|\/)\.).)*?)\/|\/|$)(?!\.)(?=.)[^/]*?\.stories\.(?:ts|tsx|js|jsx)?)$/,
     req: require.context(
-      '../..',
+      '../../../suite-native',
       true,
       /^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)stories(?:\/(?!\.)(?:(?:(?!(?:^|\/)\.).)*?)\/|\/|$)(?!\.)(?=.)[^/]*?\.stories\.(?:ts|tsx|js|jsx)?)$/
     ),

@@ -7,7 +7,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 const require = createRequire(import.meta.url);
 
 const main: StorybookConfig = {
-    stories: ['../../**/stories/**/*.stories.?(ts|tsx|js|jsx)'],
+    stories: ['../../../suite-native/**/stories/**/*.stories.?(ts|tsx|js|jsx)'],
     staticDirs: [
         '../../../suite-common/icons/iconFontsMobile',
         '../../../packages/theme/fonts',
