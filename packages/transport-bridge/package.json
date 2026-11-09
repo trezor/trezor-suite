@@ -47,5 +47,12 @@
         "styled-components": "^6.5.3",
         "usb": "^3.2.1",
         "usb-legacy": "npm:usb@2.19.1"
+    },
+    "nx": {
+        "targets": {
+            "build:lib": {
+                "dependsOn": []
+            }
+        }
     }
 }

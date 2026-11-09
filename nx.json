@@ -14,7 +14,7 @@
     },
     "targetDefaults": {
         "build:lib": {
-            "dependsOn": [],
+            "dependsOn": ["^type-check"],
             "inputs": [
                 "^production",
                 "default",
