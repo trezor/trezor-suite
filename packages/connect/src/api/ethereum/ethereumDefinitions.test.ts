@@ -121,7 +121,8 @@ describe('ethereum definitions', () => {
             [[1, 14, 1], 1],
             [[1, 14, 2], 2],
             [[1, 15, 0], 2],
-            [[2, 13, 0], 1],
+            [[2, 12, 5], 1],
+            [[2, 13, 0], 2],
             [undefined, 1],
         ] as const)('firmware %s uses definitions v%s', (firmwareVersion, expected) => {
             expect(getDefinitionsVersion(firmwareVersion as VersionArray | undefined)).toBe(
@@ -154,13 +155,16 @@ describe('ethereum definitions', () => {
     });
 
     describe.each(methods)('$name', ({ createMethod: create, getSentDefinition }) => {
-        it('sends v2 definition to Trezor One firmware 1.14.2', async () => {
-            const { typedCall, getAddress } = await runWithFirmware(create(), [1, 14, 2]);
+        it.each([[[1, 14, 2]], [[2, 13, 0]]] as VersionArray[][])(
+            'sends v2 definition to firmware %s',
+            async firmwareVersion => {
+                const { typedCall, getAddress } = await runWithFirmware(create(), firmwareVersion);
 
-            expect(getSentDefinition(typedCall, getAddress)).toBe(definitionV2);
-        });
+                expect(getSentDefinition(typedCall, getAddress)).toBe(definitionV2);
+            },
+        );
 
-        it.each([[[1, 14, 1]], [[2, 13, 0]]] as VersionArray[][])(
+        it.each([[[1, 14, 1]], [[2, 12, 5]]] as VersionArray[][])(
             'keeps v1 definition for firmware %s',
             async firmwareVersion => {
                 const { typedCall, getAddress } = await runWithFirmware(create(), firmwareVersion);

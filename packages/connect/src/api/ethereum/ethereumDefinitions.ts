@@ -11,21 +11,21 @@ import { ethereumNetworkInfoBase } from '../../data/coinInfo';
 import { EthereumNetworkInfoDefinitionValues } from '../../types';
 
 // Format version of the signed definitions. The payloads are identical, but Trezor One firmware
-// 1.14.2 and newer rejects everything other than v2. Core firmware keeps accepting v1.
+// 1.14.2 and newer rejects everything other than v2. Core firmware accepts v2 since 2.13.0.
 export type DefinitionsVersion = 1 | 2;
 
-const TREZOR_ONE_DEFINITIONS_V2_MIN_FIRMWARE = '1.14.2';
+const DEFINITIONS_V2_MIN_FIRMWARE = ['1.14.2', '2.13.0'];
 
 const DEFINITIONS_BASE_URLS: Record<DefinitionsVersion, string> = {
     1: 'https://data.trezor.io/firmware/eth-definitions',
     2: 'https://data.trezor.io/firmware/definitions/v2/eth',
 };
 
-export const getDefinitionsVersion = (firmwareVersion?: VersionArray): DefinitionsVersion =>
-    firmwareVersion?.[0] === 1 &&
-    isNewerOrEqual(firmwareVersion, TREZOR_ONE_DEFINITIONS_V2_MIN_FIRMWARE)
-        ? 2
-        : 1;
+export const getDefinitionsVersion = (firmwareVersion?: VersionArray): DefinitionsVersion => {
+    const minFirmware = firmwareVersion && DEFINITIONS_V2_MIN_FIRMWARE[firmwareVersion[0] - 1];
+
+    return minFirmware && isNewerOrEqual(firmwareVersion, minFirmware) ? 2 : 1;
+};
 
 interface GetEthereumDefinitions {
     chainId?: number;
