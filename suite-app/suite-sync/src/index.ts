@@ -1,0 +1,1 @@
+export { createSuiteSyncDesktopCompositionRoot } from './createSuiteSyncDesktopCompositionRoot';

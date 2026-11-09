@@ -11,7 +11,7 @@ import { selectLabelingDataForAccount } from '@suite/metadata';
 import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migration';
 import { type HistoryDep, createSuiteRouterHistory } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
-import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
+import { createSuiteSyncDesktopCompositionRoot } from '@suite-app/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
     type ConnectInitSettings,
