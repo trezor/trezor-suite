@@ -40,6 +40,7 @@ const NotificationBody = styled.div`
     font-weight: 300;
     font-size: 14px;
     color: #eb8a00;
+    overflow-wrap: anywhere;
 `;
 
 const NotificationCta = styled.div`
@@ -116,6 +117,20 @@ const Notification = ({ header, body, cta, variant }: NotificationProps) => {
         </NotificationBox>
     );
 };
+
+type ConnectDeprecatedNotificationProps = {
+    appName?: string;
+};
+
+export const ConnectDeprecatedNotification = ({
+    appName = 'this application',
+}: ConnectDeprecatedNotificationProps) => (
+    <Notification
+        variant="warning"
+        header="Trezor Connect 9 is deprecated"
+        body={`You are using Trezor Connect version 9. This version is deprecated. The authors of ${appName} should update to version 10 as soon as possible.`}
+    />
+);
 
 export const UseSuiteDesktopNotification = () => {
     const windowFocused = useWindowFocus();

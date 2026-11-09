@@ -3,7 +3,7 @@ import { JSX, ReactNode, useCallback, useEffect, useMemo, useState } from 'react
 import styled from 'styled-components';
 
 import { CoreRequestMessage, POPUP, UI } from '@trezor/connect';
-import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
+import { getCallerAppName, isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { OriginBoundState, storage } from '@trezor/connect-common';
 import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
@@ -13,6 +13,7 @@ import { BottomRightFloatingBar } from './components/BottomRightFloatingBar';
 import { InfoPanel } from './components/InfoPanel';
 import { Loader } from './components/Loader';
 import {
+    ConnectDeprecatedNotification,
     SuspiciousOriginNotification,
     UseSuiteDesktopNotification,
 } from './components/Notification';
@@ -101,6 +102,8 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
     const suiteDesktopIsSupported =
         !!state.settings?.npmVersion && isNewerOrEqual(state.settings?.npmVersion, '9.6.0');
 
+    const callerAppName = getCallerAppName(state.settings);
+
     const [Component, Notifications] = useMemo(() => {
         let component: ReactNode | null;
 
@@ -129,11 +132,6 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
 
         // notifications
         const notifications: { [key: string]: JSX.Element } = {};
-        if (suiteDesktopIsSupported) {
-            notifications['use-suite-desktop'] = (
-                <UseSuiteDesktopNotification key="use-suite-desktop" />
-            );
-        }
         messages.forEach(message => {
             if (message?.type === 'phishing-domain') {
                 notifications[message.type] = <SuspiciousOriginNotification key={message.type} />;
@@ -141,9 +139,17 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
 
             return notifications;
         });
+        notifications['connect-deprecated'] = (
+            <ConnectDeprecatedNotification key="connect-deprecated" appName={callerAppName} />
+        );
+        if (suiteDesktopIsSupported) {
+            notifications['use-suite-desktop'] = (
+                <UseSuiteDesktopNotification key="use-suite-desktop" />
+            );
+        }
 
         return [component, notifications];
-    }, [messages, postMessage, suiteDesktopIsSupported]);
+    }, [callerAppName, messages, postMessage, suiteDesktopIsSupported]);
 
     useEffect(() => {
         if (Component) {
