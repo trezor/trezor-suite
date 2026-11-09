@@ -4,7 +4,6 @@ import { promisify } from 'node:util';
 
 import type { WorkspacePackage } from '@trezor/requirements';
 
-import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import {
     comment,
     commit,
@@ -14,7 +13,11 @@ import {
     gettingNpmDistributionTags,
 } from './helpers';
 import { isPackageOnNpmRegistry } from './npm-registry.js';
-import { collectPublishClosure, toReleaseScriptName } from './publish-closure';
+import {
+    CONNECT_PUBLISH_ROOTS,
+    collectPublishClosure,
+    toReleaseScriptName,
+} from './publish-closure';
 import { updateConnectChangelog } from './update-connect-changelog';
 
 const readFile = promisify(fs.readFile);

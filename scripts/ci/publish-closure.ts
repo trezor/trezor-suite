@@ -10,7 +10,7 @@ import { getTrezorPackageRelativePath } from './trezor-package-path';
 const { CONNECT_PUBLISH_ROOTS, collectProdWorkspaceClosure, collectWorkspacePackages } =
     createRequire(import.meta.url)('@trezor/requirements') as typeof Requirements;
 
-// Re-exported so that connect-publish-roots.ts does not need a second `createRequire`.
+// Re-exported so that the connect release scripts do not each need their own `createRequire`.
 export { CONNECT_PUBLISH_ROOTS };
 
 export const collectPublishClosure = (

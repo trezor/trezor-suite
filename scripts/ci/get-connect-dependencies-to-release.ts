@@ -6,9 +6,12 @@ import semver from 'semver';
 
 import type { WorkspacePackage } from '@trezor/requirements';
 
-import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import { getNpmRemoteGreatestVersion } from './helpers';
-import { collectPublishClosure, toReleaseScriptName } from './publish-closure';
+import {
+    CONNECT_PUBLISH_ROOTS,
+    collectPublishClosure,
+    toReleaseScriptName,
+} from './publish-closure';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
