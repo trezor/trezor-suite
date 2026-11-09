@@ -164,7 +164,7 @@ export default class DiscoverAccounts extends AbstractMethod<
     }
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms(
-            'read_account_info',
+            'internal',
             this.params.coins.map(c => c.coinInfo),
         );
     }
