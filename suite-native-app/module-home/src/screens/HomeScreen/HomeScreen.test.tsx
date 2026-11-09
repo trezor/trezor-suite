@@ -8,9 +8,13 @@ import {
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { HomeScreen } from './HomeScreen';
+import { type HomeScreenState } from './homescreenTypes';
 
 const mockPortfolioAssetsContent = jest.fn(() => null);
 const mockLegacyPortfolioContent = jest.fn(() => null);
+const mockPortfolioAssetsNoNetworksConfigured = jest.fn(() => null);
+const mockNoNetworksConfigured = jest.fn(() => null);
+const mockSelectHomeScreenState = jest.fn((): HomeScreenState => 'portfolioContent');
 
 type MockScreenProps = {
     children: ReactNode;
@@ -45,7 +49,19 @@ jest.mock('./components/EmptyPortfolioCrossroads', () => ({
 }));
 
 jest.mock('./components/NoNetworksConfigured', () => ({
-    NoNetworksConfigured: () => null,
+    NoNetworksConfigured: () => {
+        mockNoNetworksConfigured();
+
+        return null;
+    },
+}));
+
+jest.mock('./components/PortfolioAssets/PortfolioAssetsNoNetworksConfigured', () => ({
+    PortfolioAssetsNoNetworksConfigured: () => {
+        mockPortfolioAssetsNoNetworksConfigured();
+
+        return null;
+    },
 }));
 
 jest.mock('./components/PortfolioAssets/PortfolioAssetsContent', () => ({
@@ -65,7 +81,7 @@ jest.mock('./components/PortfolioContent', () => ({
 }));
 
 jest.mock('./homescreenSelectors', () => ({
-    selectHomeScreenState: () => 'portfolioContent',
+    selectHomeScreenState: () => mockSelectHomeScreenState(),
 }));
 
 jest.mock('./useHomeRefreshControl', () => ({
@@ -102,6 +118,7 @@ const createMessageSystemState = (activeVariant: 'A' | 'B'): MessageSystemState 
 describe('HomeScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockSelectHomeScreenState.mockReturnValue('portfolioContent');
     });
 
     it.each([
@@ -121,6 +138,34 @@ describe('HomeScreen', () => {
             await renderWithStoreProvider(<HomeScreen />, {
                 preloadedState: {
                     analytics: { instanceId: `home-screen-variant-${variant}-test` },
+                    messageSystem: createMessageSystemState(variant),
+                },
+            });
+
+            expect(expectedContent).toHaveBeenCalled();
+            expect(hiddenContent).not.toHaveBeenCalled();
+        },
+    );
+
+    it.each([
+        {
+            variant: 'A' as const,
+            expectedContent: mockNoNetworksConfigured,
+            hiddenContent: mockPortfolioAssetsNoNetworksConfigured,
+        },
+        {
+            variant: 'B' as const,
+            expectedContent: mockPortfolioAssetsNoNetworksConfigured,
+            hiddenContent: mockNoNetworksConfigured,
+        },
+    ])(
+        'renders the correct no networks content for experiment variant $variant',
+        async ({ variant, expectedContent, hiddenContent }) => {
+            mockSelectHomeScreenState.mockReturnValue('noNetworkConfigured');
+
+            await renderWithStoreProvider(<HomeScreen />, {
+                preloadedState: {
+                    analytics: { instanceId: `home-screen-no-networks-${variant}-test` },
                     messageSystem: createMessageSystemState(variant),
                 },
             });
