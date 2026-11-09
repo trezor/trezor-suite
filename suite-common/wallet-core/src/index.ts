@@ -12,6 +12,7 @@ export { useSelector as useAccountsSelector } from './accounts/hooks/useSelector
 export * from './allowance/allowanceConstants';
 export * from './allowance/composeAllowanceTransactionThunk';
 export * from './allowance/fetchAllowance';
+export * from './allowance/getAllowanceTransactionStatus';
 export * from './allowance/useAllowanceTxTracking';
 export * from './blockchain/blockchainActions';
 export * from './blockchain/blockchainMiddleware';
