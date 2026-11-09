@@ -1,6 +1,6 @@
 ---
 name: retries
-description: Await and retry strategy for Suite E2E tests: Playwright auto-waiting, expect polling, Redux waits, flakiness prevention. Use every time a test is flaky due to timing.
+description: 'Await and retry strategy for Suite E2E tests: Playwright auto-waiting, expect polling, Redux waits, flakiness prevention. Use every time a test is flaky due to timing.'
 ---
 
 # Await & Retry Strategy
