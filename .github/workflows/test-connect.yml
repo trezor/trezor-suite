@@ -19,6 +19,7 @@ on:
       - "networks/solana/network-solana/**"
       - "networks/solana/network-solana-types/**"
       - "networks/stellar/network-stellar/**"
+      - "networks/stellar/network-stellar-types/**"
       - "networks/tron/network-tron/**"
       - "packages/blockchain-link/**"
       - "packages/blockchain-link-types/**"
