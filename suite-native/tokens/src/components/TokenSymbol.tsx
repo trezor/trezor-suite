@@ -3,6 +3,7 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';
 import { type NetworkSymbol } from '@trezor/network-module-types';
+import { extractUrlsFromText } from '@trezor/utils';
 
 import { TokenUrlBlur } from './TokenUrlBlur';
 
@@ -25,8 +26,10 @@ export const TokenSymbol = ({
         token?.symbol && shouldUppercaseTokenSymbol(token)
             ? token.symbol.toUpperCase()
             : (token?.symbol ?? '');
+    // Truncating a URL can break its detection and leave the rest of it unmasked.
+    const isTruncatable = extractUrlsFromText(symbol).urls.length === 0;
     const displaySymbol =
-        isTruncated && symbol.length > MAX_SYMBOL_LENGTH
+        isTruncated && isTruncatable && symbol.length > MAX_SYMBOL_LENGTH
             ? `${symbol.slice(0, MAX_SYMBOL_LENGTH)}...`
             : symbol;
 
