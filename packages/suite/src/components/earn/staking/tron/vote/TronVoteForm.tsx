@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Column, Row, Text } from '@trezor/components';
 
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 import { TronVoteAllocationSection } from './TronVoteAllocationSection';
 import { TronVoteRemainingVotes } from './TronVoteRemainingVotes';

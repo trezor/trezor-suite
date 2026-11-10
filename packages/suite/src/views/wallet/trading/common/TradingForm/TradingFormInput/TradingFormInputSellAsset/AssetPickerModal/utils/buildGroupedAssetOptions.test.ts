@@ -13,9 +13,9 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { createAccountOption, createTokenOption } from 'src/components/suite/asset-picker/utils';
-import { getAssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { createAccountOption, createTokenOption } from '#src/components/suite/asset-picker/utils';
+import { getAssetGroupKey } from '#src/components/suite/asset-picker/utils/assetGroupKey';
+import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { buildGroupedAssetOptions } from './buildGroupedAssetOptions';
 

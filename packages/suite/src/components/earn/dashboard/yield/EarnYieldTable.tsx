@@ -23,10 +23,10 @@ import { Button, Card, Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { useSelector } from 'src/hooks/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
+import { DashboardSection } from '#src/components/dashboard';
+import { useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
 
 import { EarnYieldClaimRewardsBanner } from './EarnYieldClaimRewardsBanner';
 import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountModal';

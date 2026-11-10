@@ -7,7 +7,7 @@ import { type CryptoId, type ExchangeProviderInfo, type ExchangeTrade } from 'in
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingOffersModalExchange } from './TradingOffersModalExchange';
 import {

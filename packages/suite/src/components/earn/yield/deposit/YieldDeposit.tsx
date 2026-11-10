@@ -6,7 +6,7 @@ import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
-import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
+import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
 
 import { YieldDepositForm } from './YieldDepositForm';
 import { useYieldDeposit } from './useYieldDeposit';

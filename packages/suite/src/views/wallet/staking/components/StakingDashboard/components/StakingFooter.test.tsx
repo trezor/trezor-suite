@@ -7,8 +7,8 @@ import { messages } from '@suite/intl';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkType } from '@suite-common/wallet-config';
 
-import { useGuideOpenNode } from 'src/hooks/guide';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { useGuideOpenNode } from '#src/hooks/guide';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { StakingFooter } from './StakingFooter';
 import {
@@ -16,7 +16,7 @@ import {
     mockInitialAppState,
 } from '../../../../../../../mocks/mockInitialAppState';
 
-jest.mock('src/hooks/guide', () => ({
+jest.mock('#src/hooks/guide', () => ({
     useGuideOpenNode: jest.fn(),
 }));
 

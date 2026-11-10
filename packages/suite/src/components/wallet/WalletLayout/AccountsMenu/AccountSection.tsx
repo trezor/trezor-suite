@@ -4,7 +4,7 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Row } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { AccountItem } from './AccountItem/AccountItem';
 import { AccountItemsGroup } from './AccountItemsGroup';

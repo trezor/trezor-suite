@@ -9,8 +9,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import { type UpdateGraphDataThunkState } from 'src/actions/wallet/graphActions';
-import * as graphActions from 'src/actions/wallet/graphActions';
+import { type UpdateGraphDataThunkState } from '#src/actions/wallet/graphActions';
+import * as graphActions from '#src/actions/wallet/graphActions';
 
 type GraphMiddlewareState = AccountsRootState & UpdateGraphDataThunkState;
 

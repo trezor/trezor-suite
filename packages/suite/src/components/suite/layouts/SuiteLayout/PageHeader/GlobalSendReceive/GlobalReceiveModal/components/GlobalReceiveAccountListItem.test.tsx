@@ -16,7 +16,7 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { GlobalReceiveAccountListItem } from './GlobalReceiveAccountListItem';
 import {

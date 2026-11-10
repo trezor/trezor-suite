@@ -24,7 +24,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingTransactionsList } from './TradingTransactionsList';
 import {

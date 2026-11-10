@@ -4,7 +4,7 @@ import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import {
     type DiscoveryOverallStatusState,
     selectDiscoveryOverallStatus,
-} from 'src/utils/wallet/selectDiscoveryOverallStatus';
+} from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
 type OnboardingFeedbackBannerState = FlagsRootState & DiscoveryOverallStatusState;
 

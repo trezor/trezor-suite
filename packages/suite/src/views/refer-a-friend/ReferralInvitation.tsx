@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { Box, Button, Card, Column, Flex, H3, Link, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 import { ReferralCard } from './ReferralCard';
 

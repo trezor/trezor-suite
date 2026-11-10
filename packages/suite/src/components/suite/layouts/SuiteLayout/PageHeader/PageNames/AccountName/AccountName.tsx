@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { selectRouteName } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 
-import { HEADER_HEIGHT } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
-import { useOptionalAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
+import { HEADER_HEIGHT } from '#src/constants/suite/layout';
+import { useSelector } from '#src/hooks/suite';
+import { useOptionalAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 
 import { AccountDetails } from './AccountDetails';
 

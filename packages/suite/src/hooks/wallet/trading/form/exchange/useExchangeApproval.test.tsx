@@ -17,7 +17,7 @@ const mockConfirmApproval = jest.fn((_payload: unknown) => () => ({
     unwrap: () => Promise.resolve(RESULT_TRADE),
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
     useTradingExchangeTradeRequest: () => ({ getTradeRequestParams: mockGetTradeRequestParams }),
 }));
 

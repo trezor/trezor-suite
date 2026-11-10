@@ -2,8 +2,8 @@ import { Translation } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+import { useSelector } from '#src/hooks/suite';
+import { useReceiveAddressModalControls } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingReceiveAccountNonSuiteButton = () => {
     const modalControls = useReceiveAddressModalControls();

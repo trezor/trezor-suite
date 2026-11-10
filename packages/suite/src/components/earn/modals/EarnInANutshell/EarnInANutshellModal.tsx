@@ -21,8 +21,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useSelector } from 'src/hooks/suite';
+import { earnFlowToEventTypeMap } from '#src/constants/suite/staking';
+import { useSelector } from '#src/hooks/suite';
 
 import { StakingEarnInANutshellModal } from './StakingEarnInANutshellModal';
 import { UpdateEarnInANutshellModal } from './UpdateEarnInANutshellModal';

@@ -3,7 +3,7 @@ import { type EarnTransactionStage } from '@suite-common/toast-notifications';
 import { type EarnTransactionToastType } from '@suite-common/wallet-core';
 import { PiggyBankIcon } from '@trezor/icons';
 
-import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
+import type { NotificationRendererProps } from '#src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 
 import { TransactionRenderer } from './TransactionRenderer';
 

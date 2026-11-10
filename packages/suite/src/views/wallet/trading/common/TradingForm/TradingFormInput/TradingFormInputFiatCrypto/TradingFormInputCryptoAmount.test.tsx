@@ -19,9 +19,9 @@ import {
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
-import { BTC_ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/accounts';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { BTC_ACCOUNT } from '#src/actions/wallet/trading/__fixtures__/tradingCommonActions/accounts';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
+import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
 
 import { TradingFormInputCryptoAmount } from './TradingFormInputCryptoAmount';
 import {
@@ -32,15 +32,15 @@ import {
 const mockUseTradingFormContext = jest.fn();
 let mockQuoteCryptoAmount = '0.03615612';
 
-jest.mock('src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
+jest.mock('#src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
     useTradingFormContext: () => mockUseTradingFormContext(),
 }));
 
-jest.mock('src/views/wallet/trading/common/hooks/useTradingSelectedQuote', () => ({
+jest.mock('#src/views/wallet/trading/common/hooks/useTradingSelectedQuote', () => ({
     useTradingSelectedQuote: (): Partial<BuyTrade> => ({ receiveStringAmount: '0.03615612' }),
 }));
 
-jest.mock('src/views/wallet/trading/common/hooks/useTradingQuoteAmounts', () => ({
+jest.mock('#src/views/wallet/trading/common/hooks/useTradingQuoteAmounts', () => ({
     useTradingQuoteAmounts: (): TradingGetCryptoQuoteAmountProps => ({
         amountInCrypto: false,
         sendAmount: '100',

@@ -2,8 +2,8 @@ import { Form } from '@suite/form';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { Card, Column } from '@trezor/components';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
+import { Fees } from '#src/components/wallet/Fees/Fees';
+import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
 
 import { CardanoStakeWarningBanner } from './CardanoStakeWarningBanner';
 import { ConfirmStakeModal } from './ConfirmStakeModal';

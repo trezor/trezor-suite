@@ -7,7 +7,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { ArrowsClockwiseIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { TroubleshootingTips } from '#src/components/suite/troubleshooting/TroubleshootingTips';
 
 export const DeviceUpdateRequired = () => {
     const { dispatch } = useServices(injectDispatch);

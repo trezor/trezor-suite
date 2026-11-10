@@ -10,10 +10,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { LockKeyIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { changePinThunk } from 'src/actions/settings/deviceSettingsActions';
-import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
-import { PinMatrix } from 'src/components/suite';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { changePinThunk } from '#src/actions/settings/deviceSettingsActions';
+import { SkipStepConfirmation } from '#src/components/onboarding/SkipStepConfirmation';
+import { PinMatrix } from '#src/components/suite';
+import { useOnboarding, useSelector } from '#src/hooks/suite';
 
 export const PinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);

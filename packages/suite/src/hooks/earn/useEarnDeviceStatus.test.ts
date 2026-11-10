@@ -10,7 +10,7 @@ let mockDevice = mockSuiteDevice({ connected: true, available: true });
 let mockModal: object = { context: MODAL_CONTEXT_NONE };
 
 jest.mock('@suite/device', () => ({ useDevice: () => ({ device: mockDevice }) }));
-jest.mock('src/hooks/suite', () => ({
+jest.mock('#src/hooks/suite', () => ({
     useSelector: (selector: (state: object) => unknown) => selector({ modal: mockModal }),
 }));
 

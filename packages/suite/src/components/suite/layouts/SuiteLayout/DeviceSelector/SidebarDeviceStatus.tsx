@@ -2,9 +2,9 @@ import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-import { type TrezorDevice } from 'src/types/suite';
+import { useSelector } from '#src/hooks/suite';
+import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
+import { type TrezorDevice } from '#src/types/suite';
 
 import { DeviceStatus } from './DeviceStatus';
 

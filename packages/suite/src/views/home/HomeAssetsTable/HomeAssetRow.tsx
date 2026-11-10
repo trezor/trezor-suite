@@ -14,8 +14,8 @@ import { Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { PriceTicker, TrendTicker } from '#src/components/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { HomeAssetApyBadge } from './HomeAssetApyBadge';
 import { HomeAssetBalance } from './HomeAssetBalance';

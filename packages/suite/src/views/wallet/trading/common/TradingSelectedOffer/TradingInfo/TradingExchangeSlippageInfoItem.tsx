@@ -8,7 +8,7 @@ import { formatSlippagePercent } from '@suite-common/trading';
 import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
 import { PencilSimpleIcon } from '@trezor/icons';
 
-import { TradingOfferExchangeSlippageModal } from 'src/views/wallet/trading/exchange/TradingOfferExchangeSlippageModal/TradingOfferExchangeSlippageModal';
+import { TradingOfferExchangeSlippageModal } from '#src/views/wallet/trading/exchange/TradingOfferExchangeSlippageModal/TradingOfferExchangeSlippageModal';
 
 type TradingExchangeSlippageInfoItemProps = {
     isEditable?: boolean;

@@ -26,9 +26,9 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { selectIsFeeRefetchBlockedByModal } from 'src/components/wallet/Fees/feeSelectors';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { selectIsFeeRefetchBlockedByModal } from '#src/components/wallet/Fees/feeSelectors';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 
 export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
     const { dispatch } = useServices(injectDispatch);

@@ -30,7 +30,7 @@ import {
 } from '@trezor/urls';
 import { isArrayMember, safeParseUrl } from '@trezor/utils';
 
-import type { SendFormState } from 'src/reducers/suite/protocolReducer';
+import type { SendFormState } from '#src/reducers/suite/protocolReducer';
 
 import { PROTOCOL } from './constants';
 

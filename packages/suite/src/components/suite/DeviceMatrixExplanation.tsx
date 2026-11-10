@@ -6,7 +6,7 @@ import { Icon, type IconComponent, type IconProps, Image, variables } from '@tre
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { typography } from '@trezor/theme';
 
-import { useGuide } from 'src/hooks/guide';
+import { useGuide } from '#src/hooks/guide';
 
 const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     display: flex;

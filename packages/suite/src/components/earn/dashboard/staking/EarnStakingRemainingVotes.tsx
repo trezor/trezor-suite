@@ -3,7 +3,7 @@ import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Icon, Paragraph, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 type EarnStakingRemainingVotesProps = {
     apr: number | null;

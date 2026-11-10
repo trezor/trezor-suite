@@ -18,7 +18,7 @@ import {
 } from '@suite-common/device';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import { type TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from '#src/types/suite';
 
 type RedirectMiddlewareState = GotoThunkState & DeviceRootState;
 

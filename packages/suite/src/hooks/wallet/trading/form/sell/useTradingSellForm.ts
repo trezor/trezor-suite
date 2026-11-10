@@ -20,13 +20,13 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
-import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
-import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
-import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
+import { useSelector } from '#src/hooks/suite';
+import { useSolanaSubscribeBlocks } from '#src/hooks/wallet/form/useSolanaSubscribeBlocks';
+import { useTradingAmountUnitSync } from '#src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
+import { useTradingComposeTransaction } from '#src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
+import { useServerEnvironment } from '#src/hooks/wallet/trading/useServerEnviroment';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { type TradingSellFormContextProps } from '#src/types/trading/tradingForm';
 
 import { useSellFormInputs } from './useSellFormInputs';
 import { useSellQuotes } from './useSellQuotes';

@@ -38,10 +38,10 @@ import {
     type Url,
 } from '@trezor/urls';
 
-import { Hologram } from 'src/components/onboarding/Hologram';
-import { useLayoutSize, useOnboarding } from 'src/hooks/suite';
-import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { Hologram } from '#src/components/onboarding/Hologram';
+import { useLayoutSize, useOnboarding } from '#src/hooks/suite';
+import { selectIsOnboardingActive } from '#src/reducers/onboarding/onboardingReducer';
+import { ContentFlex, useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 import { SecurityCheckButton } from './components/SecurityCheckButton';
 import { SecurityCheckFail } from './components/SecurityCheckFail';

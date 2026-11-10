@@ -14,8 +14,8 @@ import { type AmountUnit } from '@suite-common/wallet-utils';
 import { BlurUrls, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { Sign } from 'src/components/suite/Sign';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { Sign } from '#src/components/suite/Sign';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 
 const MAX_TOKEN_DISPLAYED_DECIMALS = 18;
 

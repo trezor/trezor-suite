@@ -31,8 +31,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
+import { useSelector } from '#src/hooks/suite';
+import { selectSuiteLifecycle } from '#src/selectors/suite/suiteSelectors';
 
 // `connectionId` is undefined for MCP calls, so no connect-ws cancel can match them.
 type TrackedPopupCall = { connectionId?: string };

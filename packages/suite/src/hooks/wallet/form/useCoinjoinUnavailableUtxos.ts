@@ -11,7 +11,7 @@ import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { type AccountUtxo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 interface UseCoinjoinUnavailableUtxosProps {
     account: Account;

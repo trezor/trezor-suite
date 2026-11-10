@@ -7,12 +7,12 @@ import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { TokenIcon } from '@trezor/product-components';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
-import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { AssetDetailLink } from 'src/components/suite/AssetDetailLink/AssetDetailLink';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
+import { DashboardSection } from '#src/components/dashboard';
+import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
+import { PriceTicker, TrendTicker } from '#src/components/suite';
+import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';
+import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { type Account } from '#src/types/wallet';
 
 import { TradeBoxActionButton } from './TradeBoxActionButton';
 import { WrapNativeTokenButton } from './WrapNativeTokenButton';

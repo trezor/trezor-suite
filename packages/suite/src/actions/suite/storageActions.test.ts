@@ -48,18 +48,18 @@ import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
-import { prepareSuiteSyncQuotaManagerReducer } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import { SETTINGS } from 'src/config/suite';
+import { storageLoad } from '#src/actions/suite/storageLifecycleActions';
+import { prepareSuiteSyncQuotaManagerReducer } from '#src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
+import { SETTINGS } from '#src/config/suite';
 import {
     type StorageMiddlewareState,
     prepareStorageMiddleware,
-} from 'src/middlewares/wallet/storageMiddleware';
-import suiteReducer, { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import graphReducer from 'src/reducers/wallet/graphReducer';
-import { type Db, type DbDep } from 'src/storage/createDb';
-import { type PreloadStore, createPreloadStore } from 'src/support/suite/createPreloadStore';
-import { type AcquiredDevice } from 'src/types/suite';
+} from '#src/middlewares/wallet/storageMiddleware';
+import suiteReducer, { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
+import graphReducer from '#src/reducers/wallet/graphReducer';
+import { type Db, type DbDep } from '#src/storage/createDb';
+import { type PreloadStore, createPreloadStore } from '#src/support/suite/createPreloadStore';
+import { type AcquiredDevice } from '#src/types/suite';
 
 import * as storageActions from './storageActions';
 import {

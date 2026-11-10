@@ -6,7 +6,7 @@ import {
     type DetailHeaderMessages,
     type TradingDetailProgress,
     processingHeaderMessages,
-} from 'src/views/wallet/trading/common/TradingDetail/utils';
+} from '#src/views/wallet/trading/common/TradingDetail/utils';
 
 const sellPreSendStatuses: SellTradeStatus[] = [
     'REQUESTING',

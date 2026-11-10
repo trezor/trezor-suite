@@ -39,10 +39,10 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     submitYieldDepositThunk,
     submitYieldWithdrawThunk,
-} from 'src/actions/wallet/stablecoin-yield';
-import { submitUnwrapNativeTokenThunk } from 'src/actions/wallet/unwrapNativeTokenThunks';
-import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenThunks';
-import { useSelector } from 'src/hooks/suite';
+} from '#src/actions/wallet/stablecoin-yield';
+import { submitUnwrapNativeTokenThunk } from '#src/actions/wallet/unwrapNativeTokenThunks';
+import { submitWrapNativeTokenThunk } from '#src/actions/wallet/wrapNativeTokenThunks';
+import { useSelector } from '#src/hooks/suite';
 
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {

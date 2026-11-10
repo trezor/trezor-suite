@@ -21,17 +21,17 @@ import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useSelector } from '#src/hooks/suite';
+import { useSelectedTradingAsset } from '#src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,
     type TradingSellExchangeFormProps,
-} from 'src/types/trading/tradingForm';
-import { isTradingExchangeOrSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
-import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
+} from '#src/types/trading/tradingForm';
+import { isTradingExchangeOrSellContext } from '#src/utils/wallet/trading/tradingTypingUtils';
+import { useTradingQuoteAmounts } from '#src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
+import { useTradingSelectedQuote } from '#src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';

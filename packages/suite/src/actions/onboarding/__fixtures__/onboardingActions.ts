@@ -2,9 +2,11 @@ import { type DeviceReducerState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import * as STEP from 'src/constants/onboarding/steps';
-import onboardingReducer, { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
+import * as onboardingActions from '#src/actions/onboarding/onboardingActions';
+import * as STEP from '#src/constants/onboarding/steps';
+import onboardingReducer, {
+    type OnboardingState,
+} from '#src/reducers/onboarding/onboardingReducer';
 
 type OnboardingAction = ReturnType<
     | typeof onboardingActions.goToNextStepThunk

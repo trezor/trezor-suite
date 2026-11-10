@@ -8,9 +8,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { TrezorBodyIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { rerunRecoveryThunk } from 'src/actions/onboarding/onboardingActions';
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { useSelector } from 'src/hooks/suite';
+import { rerunRecoveryThunk } from '#src/actions/onboarding/onboardingActions';
+import { TroubleshootingTips } from '#src/components/suite/troubleshooting/TroubleshootingTips';
+import { useSelector } from '#src/hooks/suite';
 
 export const DeviceRecoveryMode = () => {
     const recoveryStatus = useSelector(selectRecoveryStatus);

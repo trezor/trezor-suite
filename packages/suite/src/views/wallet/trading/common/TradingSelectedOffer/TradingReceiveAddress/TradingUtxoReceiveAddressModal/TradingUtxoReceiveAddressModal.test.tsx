@@ -15,7 +15,7 @@ import { type Address } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingUtxoReceiveAddressModal } from './TradingUtxoReceiveAddressModal';
 import {
@@ -42,7 +42,7 @@ jest.mock('../useTradingReceiveAddressValues', () => ({
 }));
 
 jest.mock(
-    'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls',
+    '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls',
     () => ({
         useReceiveAddressModalControls: () => ({
             activeModal: 'utxoAddressModal',

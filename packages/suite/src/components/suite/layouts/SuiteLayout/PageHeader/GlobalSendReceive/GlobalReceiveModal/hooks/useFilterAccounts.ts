@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { accountSearchFn } from '@suite-common/wallet-utils';
 
-import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
+import { globalSendReceiveFiltersSelectors } from '#src/slices/wallet/globalSendReceiveFilters';
 
 import { type AccountOption } from './useAccountsOptions';
 

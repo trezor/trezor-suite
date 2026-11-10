@@ -27,7 +27,7 @@ import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { type StorageLoadAction } from 'src/actions/suite/storageLifecycleActions';
+import { type StorageLoadAction } from '#src/actions/suite/storageLifecycleActions';
 
 import type { BioAuthState } from '../reducers/bioAuth';
 import { type TrezorDevice } from '../types/suite';

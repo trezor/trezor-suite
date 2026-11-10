@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { Column, motionAnimation } from '@trezor/components';
 
-import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+import type { ForegroundAppProps, TrezorDevice } from '#src/types/suite';
 
 import { DeviceHeader } from './DeviceItem/DeviceHeader';
 import { NeedsAttentionBanner } from './NeedsAttentionBanner';

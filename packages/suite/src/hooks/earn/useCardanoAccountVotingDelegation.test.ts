@@ -13,7 +13,7 @@ import {
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getIndexOrThrow } from '@trezor/utils';
 
-import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderHookWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import {
     useCardanoAccountVotingDelegation,

@@ -5,8 +5,8 @@ import { Banner, Button, Text } from '@trezor/components';
 import { HourglassIcon, RepeatIcon } from '@trezor/icons';
 import { useClickCooldown } from '@trezor/react-utils';
 
-import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { TxValidityCountdownBadge } from 'src/components/suite/TxValidityCountdownBadge';
+import { CountdownTimer } from '#src/components/suite/CountdownTimer';
+import { TxValidityCountdownBadge } from '#src/components/suite/TxValidityCountdownBadge';
 
 type TransactionReviewOutputTimerProps = {
     deadline: number;

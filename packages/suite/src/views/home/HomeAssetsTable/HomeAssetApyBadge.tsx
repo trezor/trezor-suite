@@ -3,8 +3,8 @@ import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 
-import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
-import { useStakingRate } from 'src/hooks/earn/useStakingRate';
+import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
+import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 
 type HomeAssetApyBadgeProps = {
     symbol: NetworkSymbol;

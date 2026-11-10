@@ -10,9 +10,9 @@ import { isDesktop } from '@trezor/env-utils';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { Metadata } from 'src/components/suite';
-import { useLayout, useSelector } from 'src/hooks/suite';
-import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
+import { Metadata } from '#src/components/suite';
+import { useLayout, useSelector } from '#src/hooks/suite';
+import { AutoStart } from '#src/views/settings/SettingsGeneral/AutoStart';
 
 import { ErrorPage } from '../ErrorPage';
 

@@ -8,8 +8,8 @@ import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Card, Column } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type DiscoveryStatusType } from 'src/types/wallet';
+import { useSelector } from '#src/hooks/suite';
+import { type DiscoveryStatusType } from '#src/types/wallet';
 
 import { type HomeAssetEmptyStateKind } from './homeAssetEmptyStateKind';
 import { EmptyWallet } from '../dashboard/PortfolioCard/EmptyWallet';

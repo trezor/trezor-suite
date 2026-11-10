@@ -9,7 +9,7 @@ import { CaretLeftIcon, CaretRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 const Wrapper = styled.div<{ $hasPages?: boolean }>`
     display: flex;

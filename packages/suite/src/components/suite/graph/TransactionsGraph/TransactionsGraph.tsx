@@ -5,9 +5,9 @@ import styled, { useTheme } from 'styled-components';
 
 import { typography, zIndices } from '@trezor/theme';
 
-import { GraphSkeleton } from 'src/components/suite/graph/GraphSkeleton';
-import type { TransactionsGraphProps } from 'src/components/suite/graph/types';
-import { calcFakeGraphDataForTimestamps, calcXDomain, calcYDomain } from 'src/utils/wallet/graph';
+import { GraphSkeleton } from '#src/components/suite/graph/GraphSkeleton';
+import type { TransactionsGraphProps } from '#src/components/suite/graph/types';
+import { calcFakeGraphDataForTimestamps, calcXDomain, calcYDomain } from '#src/utils/wallet/graph';
 
 import { GraphBar } from './GraphBar';
 import { GraphResponsiveContainer } from './GraphResponsiveContainer';

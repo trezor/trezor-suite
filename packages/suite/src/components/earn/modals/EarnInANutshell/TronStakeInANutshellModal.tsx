@@ -11,7 +11,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 import { EarnInANutshellHighlights } from './components/EarnInANutshellHighlights';
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';

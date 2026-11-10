@@ -28,8 +28,8 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-jest.mock('src/actions/wallet/send/sendFormThunks', () => ({
-    ...jest.requireActual('src/actions/wallet/send/sendFormThunks'),
+jest.mock('#src/actions/wallet/send/sendFormThunks', () => ({
+    ...jest.requireActual('#src/actions/wallet/send/sendFormThunks'),
     signAndPushSendFormTransactionThunk: jest.fn(() => (dispatch: (action: unknown) => void) => {
         dispatch(
             notificationsActions.addToast({
@@ -57,11 +57,11 @@ jest.mock('@suite/intl', () => ({
     useTranslation: () => ({ translationString: (id: string) => id }),
 }));
 
-jest.mock('src/hooks/wallet/useBitcoinAmountUnit', () => ({
+jest.mock('#src/hooks/wallet/useBitcoinAmountUnit', () => ({
     useBitcoinAmountUnit: () => ({ isBtcSatsAmountUnit: false }),
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
     useTradingAssetDecimals: () => ({ getAssetDecimals: () => 18 }),
 }));
 
@@ -75,7 +75,7 @@ jest.mock('@suite/settings', () => ({
     selectHasExperimentalFeature: () => () => false,
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
     useTradingExchangeTradeRequest: () => ({
         getTradeRequestParams: () =>
             Promise.resolve({
@@ -89,7 +89,7 @@ jest.mock('src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest',
 
 const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
-jest.mock('src/hooks/wallet/trading/form/useTradingFormAccount', () => ({
+jest.mock('#src/hooks/wallet/trading/form/useTradingFormAccount', () => ({
     useTradingFormAccount: () => ({
         tradingAccountKey: ACCOUNT.key,
         account: ACCOUNT,

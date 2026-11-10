@@ -9,10 +9,10 @@ import { Badge, CardList, Column, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { CoinBalance, HiddenPlaceholder } from '#src/components/suite';
+import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling';
+import { useSelector } from '#src/hooks/suite';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 
 interface ReceiveAccountItemProps {
     account: Account;

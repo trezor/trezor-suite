@@ -7,7 +7,7 @@ import {
 } from '@suite-common/connect-popup';
 import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '#src/storage/definitions';
 
 import migration from './26.11.0.1';
 

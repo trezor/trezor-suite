@@ -2,8 +2,8 @@ import { Translation } from '@suite/intl';
 import { Grid } from '@trezor/components';
 import { RecoverySeedFilledIcon, TrezorModelOneFilledIcon } from '@trezor/icons';
 
-import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { OnboardingOption } from '#src/components/onboarding/OnboardingOption';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 type SelectRecoveryTypeProps = {
     onSelect: (type: 'standard' | 'advanced') => void;

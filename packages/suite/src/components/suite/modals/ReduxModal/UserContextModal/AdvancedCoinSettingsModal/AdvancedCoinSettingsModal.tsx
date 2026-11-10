@@ -21,10 +21,10 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useBackendsForm } from 'src/hooks/settings/backends';
-import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
-import { useGapLimitForm } from 'src/hooks/settings/useGapLimitForm';
-import { useSelector } from 'src/hooks/suite';
+import { useBackendsForm } from '#src/hooks/settings/backends';
+import { useExplorerForm } from '#src/hooks/settings/useExplorerForm';
+import { useGapLimitForm } from '#src/hooks/settings/useGapLimitForm';
+import { useSelector } from '#src/hooks/suite';
 
 import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';

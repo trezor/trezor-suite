@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Paragraph } from '@trezor/components';
 
-import { Loading } from 'src/components/suite';
+import { Loading } from '#src/components/suite';
 
 import { ThemeProvider } from '../ThemeProvider';
 

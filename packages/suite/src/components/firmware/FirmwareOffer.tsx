@@ -12,8 +12,8 @@ import { type FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { ArrowRightIcon } from '@trezor/icons';
 
-import { MarkdownWithComponents } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { MarkdownWithComponents } from '#src/components/suite';
+import { useSelector } from '#src/hooks/suite';
 
 type FirmwareOfferProps = {
     isCustomFirmware?: boolean;

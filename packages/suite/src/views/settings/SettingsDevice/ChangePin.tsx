@@ -5,7 +5,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { changePinThunk } from 'src/actions/settings/deviceSettingsActions';
+import { changePinThunk } from '#src/actions/settings/deviceSettingsActions';
 
 interface ChangePinProps {
     isDeviceLocked: boolean;

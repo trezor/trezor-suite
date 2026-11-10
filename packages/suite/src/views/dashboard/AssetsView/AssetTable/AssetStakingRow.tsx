@@ -3,7 +3,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Icon, Table, Text } from '@trezor/components';
 import { PiggyBankFilledIcon } from '@trezor/icons';
 
-import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
+import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from '#src/components/suite';
 
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 

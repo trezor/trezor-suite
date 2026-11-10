@@ -6,14 +6,14 @@ import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { Card, Column, Grid, IconCircle, Row, Text } from '@trezor/components';
 import { PiggyBankIcon } from '@trezor/icons';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/components/suite';
-import { Pagination } from 'src/components/wallet';
-import { TransactionTargetLayout } from 'src/components/wallet/TransactionItem/TransactionTargetLayout';
-import { type UsePagination } from 'src/hooks/general/usePagination';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { type Account } from 'src/types/wallet';
-import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
+import { DashboardSection } from '#src/components/dashboard';
+import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from '#src/components/suite';
+import { Pagination } from '#src/components/wallet';
+import { TransactionTargetLayout } from '#src/components/wallet/TransactionItem/TransactionTargetLayout';
+import { type UsePagination } from '#src/hooks/general/usePagination';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { type Account } from '#src/types/wallet';
+import SkeletonTransactionItem from '#src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 
 import { RewardsEmpty } from './RewardsEmpty';
 

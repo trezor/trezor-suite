@@ -21,9 +21,9 @@ import {
 } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
-import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
-import { WrapTxAmount } from 'src/components/suite/WrapTxAmount';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { UnstakingTxAmount } from '#src/components/suite/UnstakingTxAmount';
+import { WrapTxAmount } from '#src/components/suite/WrapTxAmount';
+import { type WalletAccountTransaction } from '#src/types/wallet';
 
 type TransactionHeaderProps = {
     transaction: WalletAccountTransaction;

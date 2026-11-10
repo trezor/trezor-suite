@@ -9,7 +9,7 @@ import {
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';

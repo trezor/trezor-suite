@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { Flex } from '@trezor/components';
 
-import { useLayoutSize } from 'src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite';
 
 import { Resource } from './Resource';
 

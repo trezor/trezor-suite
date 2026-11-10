@@ -4,7 +4,7 @@ import { getBaseFeePerGasFromLevels, isEip1559 } from '@suite-common/wallet-util
 import { Icon, Row, Text } from '@trezor/components';
 import { GasPumpIcon, ReceiptIcon } from '@trezor/icons';
 
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
+import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
 
 import { useFeesContext } from '../../context/FeesContext';
 

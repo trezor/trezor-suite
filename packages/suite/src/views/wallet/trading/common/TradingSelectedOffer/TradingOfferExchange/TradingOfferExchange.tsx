@@ -32,12 +32,12 @@ import { ArrowsClockwiseIcon } from '@trezor/icons';
 import { useAsyncClickHandler, useIsPastDeadline } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { TxValidityCountdownBadge } from 'src/components/suite/TxValidityCountdownBadge';
-import { TRADING_DEX_SOURCE_ORIGIN } from 'src/constants/wallet/trading/txSimulation';
-import { useTradingExchangeConfirmFees } from 'src/hooks/wallet/trading/useTradingExchangeConfirmFees';
-import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
-import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
-import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
+import { TxValidityCountdownBadge } from '#src/components/suite/TxValidityCountdownBadge';
+import { TRADING_DEX_SOURCE_ORIGIN } from '#src/constants/wallet/trading/txSimulation';
+import { useTradingExchangeConfirmFees } from '#src/hooks/wallet/trading/useTradingExchangeConfirmFees';
+import { useTradingExchangeTradeActions } from '#src/hooks/wallet/trading/useTradingExchangeTradeActions';
+import { type TradingExchangeProvidersInfoProps } from '#src/types/trading/trading';
+import { tradingGetAmountLabels } from '#src/utils/wallet/trading/tradingUtils';
 
 import { TradingOfferExchangeDetails } from './TradingOfferExchangeDetails';
 import { TradingOfferExchangeIssueBanner } from './TradingOfferExchangeIssueBanner';

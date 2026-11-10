@@ -9,7 +9,7 @@ import {
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { initThunk } from 'src/actions/suite/analyticsActions';
+import { initThunk } from '#src/actions/suite/analyticsActions';
 
 const desktopAnalytics = mockDesktopAnalytics();
 

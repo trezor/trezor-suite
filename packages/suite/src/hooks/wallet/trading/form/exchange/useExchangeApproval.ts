@@ -13,7 +13,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
+import { useTradingExchangeTradeRequest } from '#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
 
 type UseExchangeApprovalProps = {
     account: Account | undefined;

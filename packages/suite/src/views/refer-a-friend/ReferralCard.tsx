@@ -8,7 +8,7 @@ import { Box, Column, Icon, SvgImage, Text, Tooltip } from '@trezor/components';
 import { TrezorLogoIcon } from '@trezor/icons';
 import { breakpoints, palette } from '@trezor/theme';
 
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 const TiltArea = styled.div`
     flex: 0 1 365px;

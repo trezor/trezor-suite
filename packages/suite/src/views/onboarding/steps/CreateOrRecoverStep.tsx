@@ -3,9 +3,9 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import { Grid } from '@trezor/components';
 import { PlusCircleIcon, TrezorBackupIcon, WalletIcon } from '@trezor/icons';
 
-import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
-import * as STEP from 'src/constants/onboarding/steps';
-import { useLayoutSize, useOnboarding } from 'src/hooks/suite';
+import { OnboardingOption } from '#src/components/onboarding/OnboardingOption';
+import * as STEP from '#src/constants/onboarding/steps';
+import { useLayoutSize, useOnboarding } from '#src/hooks/suite';
 
 export const CreateOrRecoverStep = () => {
     const { goToNextStep, addPath, updateAnalytics } = useOnboarding();

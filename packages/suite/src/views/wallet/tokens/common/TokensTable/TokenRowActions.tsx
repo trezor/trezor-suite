@@ -76,12 +76,12 @@ import {
 } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
-import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
-import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
-import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
+import { setSendFormPrefill, setTransactionHistoryPrefill } from '#src/actions/suite/suiteActions';
+import { getEarnRouteParams } from '#src/components/earn/utils/getEarnRouteParams';
+import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemWrappedNative } from '#src/hooks/suite/useMessageSystemWrappedNative';
+import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
 import type { TokensTableType } from './types';
 

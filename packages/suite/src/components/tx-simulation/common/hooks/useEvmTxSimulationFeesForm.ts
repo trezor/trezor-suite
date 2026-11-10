@@ -18,9 +18,9 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
-import { type FeesFormValues, useFees } from 'src/hooks/wallet/form/useFees';
+import { useSelector } from '#src/hooks/suite';
+import { useComposedLevelsPlaceholder } from '#src/hooks/wallet/form/useComposedLevelsPlaceholder';
+import { type FeesFormValues, useFees } from '#src/hooks/wallet/form/useFees';
 
 interface UseTxFeesFormProps {
     accountBalance: string;

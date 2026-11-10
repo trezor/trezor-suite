@@ -12,10 +12,10 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { TRON_FLOW_BY_ROUTE } from 'src/constants/suite/staking';
-import { useSelector } from 'src/hooks/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout';
+import { TRON_FLOW_BY_ROUTE } from '#src/constants/suite/staking';
+import { useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 type TronStakePageHeaderProps = {
     account?: Account;

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
-import { Metadata } from 'src/components/suite/Metadata';
-import { LayoutPayloadContext } from 'src/support/suite/LayoutContext';
+import { Metadata } from '#src/components/suite/Metadata';
+import { LayoutPayloadContext } from '#src/support/suite/LayoutContext';
 
 export const LayoutMetadata = () => {
     const { title } = useContext(LayoutPayloadContext);

@@ -19,11 +19,11 @@ import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useSelector } from 'src/hooks/suite';
-import { useFees } from 'src/hooks/wallet/form/useFees';
+import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
+import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
+import { Fees } from '#src/components/wallet/Fees/Fees';
+import { useSelector } from '#src/hooks/suite';
+import { useFees } from '#src/hooks/wallet/form/useFees';
 
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
 

@@ -14,9 +14,9 @@ import {
     updateAnalytics,
     updateBackupMedium,
     updateBackupType,
-} from 'src/actions/onboarding/onboardingActions';
-import * as STEP from 'src/constants/onboarding/steps';
-import type { AnyPath, AnyStepId, BackupMedium } from 'src/types/onboarding';
+} from '#src/actions/onboarding/onboardingActions';
+import * as STEP from '#src/constants/onboarding/steps';
+import type { AnyPath, AnyStepId, BackupMedium } from '#src/types/onboarding';
 
 export interface OnboardingRootState {
     onboarding: OnboardingState;

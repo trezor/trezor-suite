@@ -8,7 +8,7 @@ import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AssetDetailBalance } from './AssetDetailBalance';
 import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';

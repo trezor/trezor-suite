@@ -6,7 +6,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { useFreshRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { selectDeviceTradesToWatchByAccount } from 'src/selectors/wallet/tradesToWatchSelectors';
+import { selectDeviceTradesToWatchByAccount } from '#src/selectors/wallet/tradesToWatchSelectors';
 
 export const TRADING_TRANSACTIONS_REFRESH_INTERVAL_MS = 30_000;
 

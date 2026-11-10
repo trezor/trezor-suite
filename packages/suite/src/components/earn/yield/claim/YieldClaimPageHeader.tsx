@@ -5,9 +5,9 @@ import { IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout';
+import { BasicName } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
 

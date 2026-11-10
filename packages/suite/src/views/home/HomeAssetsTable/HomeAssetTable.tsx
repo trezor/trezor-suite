@@ -22,7 +22,7 @@ import { Card, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from '#src/hooks/suite';
 
 import { AssetRowsSkeleton } from './AssetRowsSkeleton';
 import { HomeAssetExpandRow } from './HomeAssetExpandRow';

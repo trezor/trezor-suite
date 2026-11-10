@@ -7,8 +7,8 @@ import {
 import { type TokenTransfer } from '@trezor/connect';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { FormattedNftAmount } from '#src/components/suite/FormattedNftAmount';
 
 type AmountComponentProps = {
     transfer: TokenTransfer;

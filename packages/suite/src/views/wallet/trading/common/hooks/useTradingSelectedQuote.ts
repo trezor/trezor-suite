@@ -11,7 +11,7 @@ import {
     selectTradingSelectedQuoteByFormValues,
 } from '@suite-common/trading';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 type TradingSelectedQuoteFormFields = {
     provider?: string;

@@ -12,7 +12,7 @@ import {
 import { Card, Column, Skeleton, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from '#src/hooks/suite';
 
 import { EarnTotalBalance } from './EarnTotalBalance';
 

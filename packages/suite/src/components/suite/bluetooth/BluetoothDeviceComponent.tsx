@@ -3,7 +3,7 @@ import { selectFlags } from '@suite/flags';
 import { Column, Image, type ImageKey, InfoSegments, Row, Text } from '@trezor/components';
 import { type DeviceModelInternal, models } from '@trezor/device-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { BluetoothDebugInfo } from './BluetoothDebugInfo';
 

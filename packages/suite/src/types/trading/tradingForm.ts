@@ -40,15 +40,15 @@ import {
 } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
 
-import { type useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
+import { type useTradingReceiveAddress } from '#src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import {
     type TradingGetCryptoQuoteAmountProps,
     type TradingGetProvidersInfoProps,
     type TradingTradeSellExchangeType,
-} from 'src/types/trading/trading';
-import type { Account } from 'src/types/wallet';
-import { type SendContextValues } from 'src/types/wallet/sendForm';
-import { type AmountLimitProps, type CryptoAmountLimitProps } from 'src/utils/suite/validation';
+} from '#src/types/trading/trading';
+import type { Account } from '#src/types/wallet';
+import { type SendContextValues } from '#src/types/wallet/sendForm';
+import { type AmountLimitProps, type CryptoAmountLimitProps } from '#src/utils/suite/validation';
 
 export interface TradingBuyFormDefaultValuesProps {
     defaultValues: TradingBuyFormProps;

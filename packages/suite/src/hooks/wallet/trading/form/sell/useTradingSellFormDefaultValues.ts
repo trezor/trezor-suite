@@ -17,9 +17,9 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type Output } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
-import { type TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
+import { useSelector } from '#src/hooks/suite';
+import { type TradingSellFormDefaultValuesProps } from '#src/types/trading/tradingForm';
+import { resolveAddressAndToken } from '#src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from '../common/useTradingDefaultSellAsset';
 

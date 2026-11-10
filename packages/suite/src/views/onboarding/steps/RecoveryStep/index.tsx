@@ -19,9 +19,9 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
-import { goToNextStepThunk, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
-import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
-import { useSelector } from 'src/hooks/suite';
+import { goToNextStepThunk, updateAnalytics } from '#src/actions/onboarding/onboardingActions';
+import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from '#src/components/recovery';
+import { useSelector } from '#src/hooks/suite';
 
 import RecoveryStepBox from './RecoveryStepBox';
 

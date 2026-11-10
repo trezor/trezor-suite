@@ -26,9 +26,9 @@ import {
 import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
-import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
-import { type AccountSearchState } from 'src/reducers/wallet/accountSearchReducer';
-import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
+import { accountSearchActions } from '#src/reducers/wallet/accountSearchReducer';
+import { type AccountSearchState } from '#src/reducers/wallet/accountSearchReducer';
+import { getSelectedAccount } from '#src/utils/wallet/accountUtils';
 
 type SelectedAccountState = DeviceRootState &
     DiscoveryRootState &

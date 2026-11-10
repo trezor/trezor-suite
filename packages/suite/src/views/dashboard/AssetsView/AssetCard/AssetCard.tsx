@@ -41,8 +41,8 @@ import {
     CoinBalance,
     PriceTicker,
     TrendTicker,
-} from 'src/components/suite';
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
+} from '#src/components/suite';
+import { FiatHeader } from '#src/components/wallet/FiatHeader';
 
 import { AssetActionButton } from '../AssetActionButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';

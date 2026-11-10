@@ -10,8 +10,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AnonymityStatus } from 'src/constants/suite/coinjoin';
-import { useAnonymityStatus } from 'src/hooks/suite';
+import { AnonymityStatus } from '#src/constants/suite/coinjoin';
+import { useAnonymityStatus } from '#src/hooks/suite';
 
 import { SetupSlider } from './SetupSlider/SetupSlider';
 import {

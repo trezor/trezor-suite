@@ -4,7 +4,7 @@ import { type GeolocationRootState, selectCountryCode } from '@suite-common/geol
 import { type WalletSettingsRootState, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
-import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
 
 import { selectActiveTransports } from './suiteSelectors';
 

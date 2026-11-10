@@ -10,7 +10,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
 import {
     ImageValidationError,
     convertImage,
@@ -19,7 +19,7 @@ import {
     imagePathToHex,
     isHomescreenSupportedOnDevice,
     validateImage,
-} from 'src/utils/suite/homescreen';
+} from '#src/utils/suite/homescreen';
 
 import { ChangeHomescreenButtons } from './Homescreen/ChangeHomescreenButtons';
 import { HomescreenSettingsTitle } from './Homescreen/HomescreenSettingsTitle';

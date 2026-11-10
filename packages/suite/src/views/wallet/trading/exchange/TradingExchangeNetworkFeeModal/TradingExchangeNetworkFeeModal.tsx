@@ -10,9 +10,9 @@ import {
     type GeneralPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 
-import { useFeesContextValue } from 'src/components/wallet/Fees/context/useFeesContextValue';
-import { useCompose } from 'src/hooks/wallet/form/useCompose';
-import { useFees } from 'src/hooks/wallet/form/useFees';
+import { useFeesContextValue } from '#src/components/wallet/Fees/context/useFeesContextValue';
+import { useCompose } from '#src/hooks/wallet/form/useCompose';
+import { useFees } from '#src/hooks/wallet/form/useFees';
 
 import { TradingExchangeNetworkFeeModalLayout } from './TradingExchangeNetworkFeeModalLayout';
 

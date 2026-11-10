@@ -1,7 +1,7 @@
 import { type Target } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from '#src/types/wallet';
 
 import { TransactionTarget } from './TransactionTarget';
 

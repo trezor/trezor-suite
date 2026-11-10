@@ -11,7 +11,7 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { type BlurUrlsProps } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AssetDetailName } from './AssetDetailName';
 import {

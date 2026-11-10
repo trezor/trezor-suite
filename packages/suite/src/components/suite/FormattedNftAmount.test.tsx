@@ -10,7 +10,7 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenTransfer } from '@trezor/connect';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';

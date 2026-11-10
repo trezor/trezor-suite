@@ -4,7 +4,7 @@ import { useTranslation } from '@suite/intl';
 import { Icon, Input } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
-import { useAccountSearch } from 'src/hooks/suite';
+import { useAccountSearch } from '#src/hooks/suite';
 
 export const AccountSearchBox = () => {
     const inputRef = useRef<HTMLInputElement | null>(null);

@@ -8,9 +8,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     requestBioAuthChangeThunk,
     requestBioAuthValidationThunk,
-} from 'src/actions/suite/bioAuthThunks';
-import { useSelector } from 'src/hooks/suite';
-import { selectBioAuth } from 'src/reducers/bioAuth';
+} from '#src/actions/suite/bioAuthThunks';
+import { useSelector } from '#src/hooks/suite';
+import { selectBioAuth } from '#src/reducers/bioAuth';
 
 export const useBioAuthDesktopApi = () => {
     const {

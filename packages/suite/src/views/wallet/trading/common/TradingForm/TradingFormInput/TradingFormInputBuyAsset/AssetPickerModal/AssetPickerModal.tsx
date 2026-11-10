@@ -5,9 +5,9 @@ import { type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column } from '@trezor/components';
 
-import { AssetRowAsset, AssetsModal } from 'src/components/suite/asset-picker/components';
-import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
-import { useSearchFilter } from 'src/components/suite/asset-picker/hooks';
+import { AssetRowAsset, AssetsModal } from '#src/components/suite/asset-picker/components';
+import { ASSET_ROW_HEIGHT } from '#src/components/suite/asset-picker/constants';
+import { useSearchFilter } from '#src/components/suite/asset-picker/hooks';
 
 import {
     type TradingAssetListItem,

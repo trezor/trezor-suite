@@ -21,16 +21,16 @@ import {
 import { useFetchFees } from '@suite-common/wallet-core';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 
-import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
-import { TradingFormInputBaseCurrencyAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
-import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
-import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
-import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
+import { useIsFeeRefetchDisabled } from '#src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useSelectedTradingAsset } from '#src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { TradingBalance } from '#src/views/wallet/trading/common/TradingBalance';
+import { TradingFormInputBaseCurrencyAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
+import { TradingFormInputCryptoAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
+import { useTradingQuoteAmounts } from '#src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
+import { useTradingSelectedQuote } from '#src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingExchangeAssetsSwitchButton } from './TradingExchangeAssetsSwitchButton/TradingExchangeAssetsSwitchButton';
 import { TradingFormCard } from './TradingFormCard';

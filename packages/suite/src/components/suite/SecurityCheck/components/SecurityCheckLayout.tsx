@@ -9,8 +9,8 @@ import {
 } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
-import { ContentFlex } from 'src/support/suite/ContentFlex';
+import { useSelector } from '#src/hooks/suite';
+import { ContentFlex } from '#src/support/suite/ContentFlex';
 
 type SecurityCheckLayoutProps = {
     isFailed?: boolean;

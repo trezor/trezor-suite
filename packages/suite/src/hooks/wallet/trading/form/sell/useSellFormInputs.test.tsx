@@ -11,16 +11,16 @@ import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mo
 import { useSellFormInputs } from './useSellFormInputs';
 import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 
-jest.mock('src/hooks/wallet/useBitcoinAmountUnit', () => ({
+jest.mock('#src/hooks/wallet/useBitcoinAmountUnit', () => ({
     useBitcoinAmountUnit: () => ({ isBtcSatsAmountUnit: false }),
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
     useTradingAssetDecimals: () => ({ getAssetDecimals: () => 8 }),
 }));
 
 const mockFiatRatesUpdater = jest.fn(() => Promise.resolve({ rate: 50000 }));
-jest.mock('src/hooks/wallet/trading/form/common/useTradingFiatValues', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingFiatValues', () => ({
     useTradingFiatValues: () => ({
         fiatRate: { rate: 50000 },
         fiatRatesUpdater: mockFiatRatesUpdater,

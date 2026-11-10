@@ -29,7 +29,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 import { noopCreateLogger } from '@trezor/logger';
 
-import { type ShowXpubThunkState } from 'src/actions/wallet/publicKeyActions';
+import { type ShowXpubThunkState } from '#src/actions/wallet/publicKeyActions';
 
 import fixtures from './__fixtures__/publicKeyActions';
 

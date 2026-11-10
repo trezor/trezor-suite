@@ -3,8 +3,8 @@ import { DEVICE } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
-import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
+import type { NotificationRendererProps } from '#src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
+import type { NotificationViewProps } from '#src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type ActionRendererProps = NotificationViewProps & NotificationRendererProps;
 

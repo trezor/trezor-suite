@@ -5,8 +5,8 @@ import type { TradingType } from '@suite-common/trading';
 import {
     type TradingTradeInfoMapProps,
     type TradingTradeMapProps,
-} from 'src/types/trading/trading';
-import type { Account } from 'src/types/wallet';
+} from '#src/types/trading/trading';
+import type { Account } from '#src/types/wallet';
 
 export type TradingDetailContextValues<T extends TradingType> = {
     account: Account | undefined;

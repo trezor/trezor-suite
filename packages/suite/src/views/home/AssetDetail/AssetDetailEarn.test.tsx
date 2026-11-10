@@ -9,7 +9,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AssetDetailEarn } from './AssetDetailEarn';
 import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';

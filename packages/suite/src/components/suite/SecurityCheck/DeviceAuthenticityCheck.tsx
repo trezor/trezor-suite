@@ -15,7 +15,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useLayoutSize } from 'src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite';
 
 import { SecurityCheckFail } from './components/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton, RetryButton } from './components/ctas';

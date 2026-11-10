@@ -5,7 +5,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '#src/storage/definitions';
 
 import migration from './26.6.0.1';
 

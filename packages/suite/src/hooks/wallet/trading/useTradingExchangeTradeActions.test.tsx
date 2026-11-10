@@ -24,16 +24,16 @@ jest.mock('@suite/intl', () => ({
     useTranslation: () => ({ translationString: (id: string) => id }),
 }));
 
-jest.mock('src/hooks/wallet/useBitcoinAmountUnit', () => ({
+jest.mock('#src/hooks/wallet/useBitcoinAmountUnit', () => ({
     useBitcoinAmountUnit: () => ({ isBtcSatsAmountUnit: false }),
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
     useTradingAssetDecimals: () => ({ getAssetDecimals: () => 8 }),
 }));
 
 const mockUseTradingFormAccount = jest.fn();
-jest.mock('src/hooks/wallet/trading/form/useTradingFormAccount', () => ({
+jest.mock('#src/hooks/wallet/trading/form/useTradingFormAccount', () => ({
     useTradingFormAccount: () => mockUseTradingFormAccount(),
 }));
 
@@ -47,7 +47,7 @@ jest.mock('@suite/settings', () => ({
     selectHasExperimentalFeature: () => () => false,
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
     useTradingExchangeTradeRequest: () => ({
         getTradeRequestParams: () =>
             Promise.resolve({

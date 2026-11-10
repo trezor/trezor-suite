@@ -20,8 +20,8 @@ import {
 import { asGetter } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type GoToNextStepThunkState } from 'src/actions/onboarding/onboardingActions';
-import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
+import { type GoToNextStepThunkState } from '#src/actions/onboarding/onboardingActions';
+import onboardingReducer from '#src/reducers/onboarding/onboardingReducer';
 
 import { type OnboardingActionsFixture, fixtures } from './__fixtures__/onboardingActions';
 

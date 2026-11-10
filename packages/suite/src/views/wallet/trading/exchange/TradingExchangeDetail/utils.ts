@@ -2,7 +2,7 @@ import { type ExchangeTradeStatus } from 'invity-api';
 
 import { isFinalStatus } from '@suite-common/trading';
 
-import { type TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/utils';
+import { type TradingDetailProgress } from '#src/views/wallet/trading/common/TradingDetail/utils';
 
 export type ExchangeDetailStatusStep =
     'sending' | 'converting' | 'kyc' | 'success' | 'error' | undefined;

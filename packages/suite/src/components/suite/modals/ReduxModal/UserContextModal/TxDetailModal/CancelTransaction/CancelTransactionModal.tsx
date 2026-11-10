@@ -19,9 +19,9 @@ import { Banner, Column, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { CancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
-import { useEthereumCancelTxCompose } from 'src/hooks/wallet/useEthereumCancelTxCompose';
+import { useSelector } from '#src/hooks/suite';
+import { CancelTxContext } from '#src/hooks/wallet/useCancelTxContext';
+import { useEthereumCancelTxCompose } from '#src/hooks/wallet/useEthereumCancelTxCompose';
 
 import { CancelTransaction } from './CancelTransaction';
 import { CancelTransactionButton } from './CancelTransactionButton';

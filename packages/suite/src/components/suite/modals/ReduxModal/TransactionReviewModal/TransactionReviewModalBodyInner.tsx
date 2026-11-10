@@ -34,8 +34,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { getTransactionReviewModalActionTranslation } from 'src/utils/suite/transactionReview';
+import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
+import { getTransactionReviewModalActionTranslation } from '#src/utils/suite/transactionReview';
 
 import { TransactionReviewModalBottomContent } from './TransactionReviewOutputList/TransactionReviewModalBottomContent';
 import { TransactionReviewModalConfirmOnDevice } from './TransactionReviewOutputList/TransactionReviewModalConfirmOnDevice';

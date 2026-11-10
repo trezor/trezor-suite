@@ -7,7 +7,7 @@ import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { TroubleshootingTips } from '#src/components/suite/troubleshooting/TroubleshootingTips';
 
 export const DeviceTrezorHostProtocolPair = () => {
     const { isLocked, device } = useDevice();

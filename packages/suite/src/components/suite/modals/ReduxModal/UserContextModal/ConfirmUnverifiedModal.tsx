@@ -12,9 +12,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { ShieldWarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
-import { type ShowXpubThunkState } from 'src/actions/wallet/publicKeyActions';
-import { useSelector } from 'src/hooks/suite';
+import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
+import { type ShowXpubThunkState } from '#src/actions/wallet/publicKeyActions';
+import { useSelector } from '#src/hooks/suite';
 
 interface ConfirmUnverifiedModalProps {
     action: {

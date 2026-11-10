@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { ItemClickableContainer } from 'src/components/suite/asset-picker/components/AssetRow/ItemClickableContainer';
+import { ItemClickableContainer } from '#src/components/suite/asset-picker/components/AssetRow/ItemClickableContainer';
 
 import { GlobalReceiveAccountAssetAmount } from './GlobalReceiveAccountAssetAmount';
 import { GlobalReceiveAccountTotalAmount } from './GlobalReceiveAccountTotalAmount';

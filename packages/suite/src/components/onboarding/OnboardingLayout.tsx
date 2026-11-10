@@ -15,12 +15,12 @@ import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { GuideButton, GuideRouter } from 'src/components/guide';
-import { OnboardingProgressBar } from 'src/components/onboarding/OnboardingProgressBar';
-import { SuiteBanners } from 'src/components/suite/banners';
-import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
-import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
-import { useFilteredModal } from 'src/hooks/suite';
+import { GuideButton, GuideRouter } from '#src/components/guide';
+import { OnboardingProgressBar } from '#src/components/onboarding/OnboardingProgressBar';
+import { SuiteBanners } from '#src/components/suite/banners';
+import { ReduxModal } from '#src/components/suite/modals/ReduxModal/ReduxModal';
+import { MAX_ONBOARDING_WIDTH } from '#src/constants/suite/layout';
+import { useFilteredModal } from '#src/hooks/suite';
 
 import {
     OnboardingCancelButtonContext,

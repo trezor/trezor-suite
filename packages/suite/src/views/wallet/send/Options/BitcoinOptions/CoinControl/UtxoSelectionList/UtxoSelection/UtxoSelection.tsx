@@ -29,12 +29,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@trezor/icons';
 import { injectDispatch, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
+import { TransactionTimestamp, UtxoAnonymity } from '#src/components/wallet';
+import { useSelector } from '#src/hooks/suite';
+import { useSendFormContext } from '#src/hooks/wallet';
+import { useCoinjoinUnavailableUtxos } from '#src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
+import { type WalletAccountTransaction } from '#src/types/wallet';
 
 type ResolveUtxoSpendableProps = {
     utxo: AccountUtxo;

@@ -6,9 +6,9 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Column, Divider, Text } from '@trezor/components';
 
-import { type Account } from 'src/types/wallet';
-import { TradingDetailProviderStatusLink } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderStatusLink';
-import { TradingDetailTransactionIdRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
+import { type Account } from '#src/types/wallet';
+import { TradingDetailProviderStatusLink } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailProviderStatusLink';
+import { TradingDetailTransactionIdRow } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
 
 type TradingDetailTerminalDetailsProps = {
     provider?: TradingProviderInfo;

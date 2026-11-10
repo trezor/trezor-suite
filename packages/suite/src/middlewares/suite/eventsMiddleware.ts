@@ -19,7 +19,7 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import { reportSecurityCheck } from 'src/utils/suite/sentry';
+import { reportSecurityCheck } from '#src/utils/suite/sentry';
 
 type EventsMiddlewareState = RouterRootState & DeviceRootState & NotificationsRootState;
 

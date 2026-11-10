@@ -5,7 +5,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
 import { NetworkIcon } from '@trezor/product-components';
 
-import { useAccountSearch } from 'src/hooks/suite';
+import { useAccountSearch } from '#src/hooks/suite';
 
 import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 

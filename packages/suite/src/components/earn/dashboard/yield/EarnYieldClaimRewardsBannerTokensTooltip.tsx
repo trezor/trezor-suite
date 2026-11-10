@@ -9,7 +9,7 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid, Row, Text, Tooltip } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
 
-import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { FormattedCryptoAmount, HiddenPlaceholder } from '#src/components/suite';
 
 import { type TokenRewards } from './hooks/useYieldClaimRewardsData';
 

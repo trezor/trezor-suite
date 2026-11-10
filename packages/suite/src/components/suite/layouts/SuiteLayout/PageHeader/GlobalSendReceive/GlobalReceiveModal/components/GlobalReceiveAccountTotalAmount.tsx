@@ -6,7 +6,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
-import { HiddenPlaceholder } from 'src/components/suite';
+import { HiddenPlaceholder } from '#src/components/suite';
 
 type GlobalReceiveAccountTotalAmountProps = {
     account: Account;

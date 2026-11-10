@@ -17,7 +17,7 @@ import { ERRORS } from '@trezor/connect-common';
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, GearIcon, TorBrowserIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { ActionRenderer } from './ActionRenderer';
 import { AutoEjectRenderer } from './AutoEjectRenderer';

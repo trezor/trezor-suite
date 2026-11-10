@@ -2,8 +2,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { GRAPH } from 'src/actions/wallet/constants';
-import { type AccountHistoryWithBalance, type AccountIdentifier } from 'src/types/wallet/graph';
+import { GRAPH } from '#src/actions/wallet/constants';
+import { type AccountHistoryWithBalance, type AccountIdentifier } from '#src/types/wallet/graph';
 
 import graphReducer from './graphReducer';
 

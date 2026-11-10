@@ -10,7 +10,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
 
 type UseAllowanceSendParams = {
     account: Account;

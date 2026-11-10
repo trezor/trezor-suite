@@ -8,8 +8,8 @@ import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Skeleton } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useSelector } from 'src/hooks/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { useSelector } from '#src/hooks/suite';
 
 import { NoRatesTooltip } from './NoRatesTooltip';
 import { TrendBadge, calculatePercentageDifference } from './TrendBadge';

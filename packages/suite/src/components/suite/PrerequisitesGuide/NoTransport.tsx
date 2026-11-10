@@ -1,16 +1,16 @@
 import { selectIsDebugModeActive } from '@suite/debug';
 import { isDesktop } from '@trezor/env-utils';
 
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { type TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTipsItem';
+import { TroubleshootingTips } from '#src/components/suite/troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from '#src/components/suite/troubleshooting/TroubleshootingTipsItem';
 import {
     TROUBLESHOOTING_ENABLE_IN_DEBUG,
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
-} from 'src/components/suite/troubleshooting/tips';
-import { useSelector } from 'src/hooks/suite';
-import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
+} from '#src/components/suite/troubleshooting/tips';
+import { useSelector } from '#src/hooks/suite';
+import { useBridgeDesktopApi } from '#src/hooks/suite/useBridgeDesktopApi';
 
 const tipItems: TroubleshootingTipsItem[] = [
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,

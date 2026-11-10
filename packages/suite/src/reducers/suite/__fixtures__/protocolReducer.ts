@@ -1,7 +1,7 @@
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 
-import { PROTOCOL } from 'src/actions/suite/constants';
-import { initialState } from 'src/reducers/suite/protocolReducer';
+import { PROTOCOL } from '#src/actions/suite/constants';
+import { initialState } from '#src/reducers/suite/protocolReducer';
 
 const protocol = {
     address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',

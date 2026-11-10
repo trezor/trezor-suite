@@ -5,7 +5,7 @@ import { screen } from '@testing-library/react';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { HomeBalanceCard } from './HomeBalanceCard';
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';

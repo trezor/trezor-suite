@@ -15,7 +15,7 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderHookWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { useTradingHistoryExport } from './useTradingHistoryExport';
 import {

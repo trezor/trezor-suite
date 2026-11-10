@@ -9,7 +9,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingOfferExchangeIssueBanner } from './TradingOfferExchangeIssueBanner';
 import {

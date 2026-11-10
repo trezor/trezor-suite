@@ -1,7 +1,7 @@
 import { type Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 
-import { CoinBalance } from 'src/components/suite';
+import { CoinBalance } from '#src/components/suite';
 
 import { BalancePlaceholder } from './BalancePlaceholder';
 

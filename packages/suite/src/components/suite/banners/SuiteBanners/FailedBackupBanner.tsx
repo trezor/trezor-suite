@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
-import { WipeDeviceModal } from 'src/views/settings/SettingsDevice/WipeDevice/WipeDeviceModal';
+import { WipeDeviceModal } from '#src/views/settings/SettingsDevice/WipeDevice/WipeDeviceModal';
 
 export const FailedBackup = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
