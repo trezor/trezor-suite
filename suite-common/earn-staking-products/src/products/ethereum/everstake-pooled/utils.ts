@@ -91,15 +91,15 @@ export const isStakingOperationPending = ({
 }: IsStakingOperationPendingParams) =>
     pendingTransactions.some(transaction => transaction.operation === operation);
 
-type GetEverstakePositionStatusParams = {
+type GetPositionStatusParams = {
     balances: StakingPositionBalances;
     isStakePending: boolean;
 };
 
-export const getEverstakePositionStatus = ({
+export const getPositionStatus = ({
     balances,
     isStakePending,
-}: GetEverstakePositionStatusParams): StakingPosition['status'] => {
+}: GetPositionStatusParams): StakingPosition['status'] => {
     const positionStatus = getStakingPositionStatus({ balances });
 
     if (positionStatus === 'inactive' && isStakePending) {
@@ -109,15 +109,15 @@ export const getEverstakePositionStatus = ({
     return positionStatus;
 };
 
-type GetEverstakePooledProductOperationsParams = {
+type GetPositionOperationsParams = {
     balances: StakingPositionBalances;
     pendingTransactions: StakingPositionPendingTransaction[];
 };
 
-export const getEverstakePositionOperations = ({
+export const getPositionOperations = ({
     balances,
     pendingTransactions,
-}: GetEverstakePooledProductOperationsParams): StakingOperation[] => {
+}: GetPositionOperationsParams): StakingOperation[] => {
     const operations: StakingOperation[] = ['stake'];
 
     if (isPositiveStakingAmount(balances.staked) && pendingTransactions.length === 0) {
@@ -134,17 +134,17 @@ export const getEverstakePositionOperations = ({
     return operations;
 };
 
-type GetEverstakePositionTargetsParams = {
+type GetPositionTargetsParams = {
     pool?: EverstakePool;
     poolAddress: string;
     balances: StakingPositionBalances;
 };
 
-export const getEverstakePositionTargets = ({
+export const getPositionTargets = ({
     pool,
     poolAddress,
     balances,
-}: GetEverstakePositionTargetsParams): StakingPositionTarget[] => {
+}: GetPositionTargetsParams): StakingPositionTarget[] => {
     if (pool === undefined) {
         return [];
     }
@@ -163,13 +163,13 @@ export const getEverstakePositionTargets = ({
     return [target];
 };
 
-type GetEverstakePositionUnlocksParams = {
+type GetPositionUnlocksParams = {
     balances: StakingPositionBalances;
 };
 
-export const getEverstakePositionUnlocks = ({
+export const getPositionUnlocks = ({
     balances,
-}: GetEverstakePositionUnlocksParams): StakingPositionUnlock[] => {
+}: GetPositionUnlocksParams): StakingPositionUnlock[] => {
     if (!isPositiveStakingAmount(balances.unstaking)) {
         return [];
     }

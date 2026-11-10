@@ -6,7 +6,7 @@ import {
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { getCardanoNativeDelegationProductAmountBounds } from './amountBounds';
+import { getCardanoEverstakeNativeProductAmountBounds } from './amountBounds';
 
 const ADA = '000000';
 
@@ -23,7 +23,7 @@ const position = mockStakingPosition({
     operations: ['unstake', 'claim', 'vote'],
 });
 
-describe('getCardanoNativeDelegationProductAmountBounds', () => {
+describe('getCardanoEverstakeNativeProductAmountBounds', () => {
     // The seven balances and maximums of the P0.1 getMaxStakeAmount snapshot, in lovelace.
     it.each([
         { balance: '0', max: '0' },
@@ -35,7 +35,7 @@ describe('getCardanoNativeDelegationProductAmountBounds', () => {
         { balance: `20000000${ADA}`, max: `20000000${ADA}` },
     ])('bounds a stake from a balance of $balance lovelace', ({ balance, max }) => {
         expect(
-            getCardanoNativeDelegationProductAmountBounds({
+            getCardanoEverstakeNativeProductAmountBounds({
                 account: mockStakingAccount({ symbol: asNetworkSymbol('ada'), balance }),
                 position: null,
                 operation: 'stake',
@@ -46,7 +46,7 @@ describe('getCardanoNativeDelegationProductAmountBounds', () => {
 
     it('caps a stake at the product maximum', () => {
         expect(
-            getCardanoNativeDelegationProductAmountBounds({
+            getCardanoEverstakeNativeProductAmountBounds({
                 account: mockStakingAccount({
                     symbol: asNetworkSymbol('ada'),
                     balance: `80000000${ADA}`,
@@ -64,7 +64,7 @@ describe('getCardanoNativeDelegationProductAmountBounds', () => {
         { operation: 'vote', amount: '0' },
     ] as const)('bounds a $operation by the stake key', ({ operation, amount }) => {
         expect(
-            getCardanoNativeDelegationProductAmountBounds({
+            getCardanoEverstakeNativeProductAmountBounds({
                 account,
                 position,
                 operation,
@@ -75,7 +75,7 @@ describe('getCardanoNativeDelegationProductAmountBounds', () => {
 
     it.each(['withdraw', 'redelegate'] as const)('does not support %s', operation => {
         expect(() =>
-            getCardanoNativeDelegationProductAmountBounds({
+            getCardanoEverstakeNativeProductAmountBounds({
                 account,
                 position,
                 operation,

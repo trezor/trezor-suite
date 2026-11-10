@@ -9,29 +9,29 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 import { externalProvider } from '../../../providers/external';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 import { SOLANA_EXTERNAL_PRODUCT_INFO } from '../info';
-import { getSolanaDelegationProductPosition } from '../position';
-import { getSolanaExternalDelegationProductAmountBounds } from './amountBounds';
-import { createSolanaExternalDelegationProductDescriptor } from './descriptor';
+import { getSolanaProductPosition } from '../position';
+import { getSolanaExternalProductAmountBounds } from './amountBounds';
+import { createSolanaExternalProductDescriptor } from './descriptor';
 
-export type CreateSolanaExternalDelegationProductParams = {
+export type CreateSolanaExternalProductParams = {
     networkSymbol: NetworkSymbol;
     managedProviders: readonly StakingProvider[];
 };
 
-export const createSolanaExternalDelegationProduct = ({
+export const createSolanaExternalProduct = ({
     networkSymbol,
     managedProviders,
-}: CreateSolanaExternalDelegationProductParams): StakingProductAdapter => {
+}: CreateSolanaExternalProductParams): StakingProductAdapter => {
     const managedVoteAccounts = managedProviders.flatMap(
         provider => provider.identities[networkSymbol] ?? [],
     );
 
-    const descriptor = createSolanaExternalDelegationProductDescriptor(networkSymbol);
+    const descriptor = createSolanaExternalProductDescriptor(networkSymbol);
 
     const fetchProductInfo = () => Promise.resolve(SOLANA_EXTERNAL_PRODUCT_INFO);
 
     const getPosition = (params: GetPositionParams) =>
-        getSolanaDelegationProductPosition({
+        getSolanaProductPosition({
             ...params,
             descriptor,
             provider: externalProvider,
@@ -40,7 +40,7 @@ export const createSolanaExternalDelegationProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getSolanaExternalDelegationProductAmountBounds(params);
+        getSolanaExternalProductAmountBounds(params);
 
     const operations = createUnimplementedStakingOperations();
 

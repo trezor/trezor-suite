@@ -9,12 +9,12 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
-import { createSolanaExternalDelegationProduct } from './products/solana/external/product';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/messageSystemFeatures';
+import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/solana/everstake-native/messageSystemFeatures';
 import {
-    type SolanaNativeDelegationProductDeps,
-    createSolanaNativeDelegationProduct,
-} from './products/solana/native/product';
+    type SolanaEverstakeNativeProductDeps,
+    createSolanaEverstakeNativeProduct,
+} from './products/solana/everstake-native/product';
+import { createSolanaExternalProduct } from './products/solana/external/product';
 import { everstakeProvider } from './providers/everstake';
 
 describe('createStakingProductsCompositionRoot', () => {
@@ -44,18 +44,19 @@ describe('createStakingProductsCompositionRoot', () => {
 
 const stats: EthOrSolStats = { symbol: 'sol', apy: 6.24 };
 
-type CreateSolanaProductsDeps = SolanaNativeDelegationProductDeps;
+type CreateSolanaProductsDeps = SolanaEverstakeNativeProductDeps;
 
 const createProducts = (symbol: string) => [
-    createSolanaNativeDelegationProduct({
+    createSolanaEverstakeNativeProduct({
         networkSymbol: asNetworkSymbol(symbol),
         provider: everstakeProvider,
-        messageSystemFeatures: symbol === 'sol' ? EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES : {},
+        messageSystemFeatures:
+            symbol === 'sol' ? SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES : {},
         ...createMockDeps<CreateSolanaProductsDeps>({
             getStakingStats: () => Promise.resolve(stats),
         }),
     }),
-    createSolanaExternalDelegationProduct({
+    createSolanaExternalProduct({
         networkSymbol: asNetworkSymbol(symbol),
         managedProviders: [everstakeProvider],
     }),

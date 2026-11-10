@@ -3,13 +3,13 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createTronCuratedProductDescriptor } from './descriptor';
 import { TRON_CURATED_PRODUCT_LIMITS } from './limits';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 
 describe('createTronCuratedProductDescriptor', () => {
     it('builds the trx:trx:curated:native product', () => {
         const descriptor = createTronCuratedProductDescriptor({
             networkSymbol: asNetworkSymbol('trx'),
-            messageSystemFeatures: TRON_CURATED_MESSAGE_SYSTEM_FEATURES,
+            messageSystemFeatures: TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES,
         });
 
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);

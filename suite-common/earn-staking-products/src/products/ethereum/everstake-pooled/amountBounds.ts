@@ -6,11 +6,11 @@ import {
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { EVERSTAKE_POOLED_PRODUCT_LIMITS } from './limits';
+import { ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS } from './limits';
 import { getMaxStakeAmount } from '../../../utils/getMaxStakeAmount';
 import { NO_STAKING_AMOUNT_BOUNDS, SMALLEST_STAKING_AMOUNT } from '../../../utils/stakingAmounts';
 
-export const getEverstakePooledProductAmountBounds = ({
+export const getEthereumEverstakePooledProductAmountBounds = ({
     account,
     position,
     operation,
@@ -18,8 +18,8 @@ export const getEverstakePooledProductAmountBounds = ({
     switch (operation) {
         case 'stake':
             return {
-                min: EVERSTAKE_POOLED_PRODUCT_LIMITS.minStakeAmount,
-                max: getMaxStakeAmount(account.balance, EVERSTAKE_POOLED_PRODUCT_LIMITS),
+                min: ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS.minStakeAmount,
+                max: getMaxStakeAmount(account.balance, ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS),
             };
         case 'unstake':
             return position?.operations.includes('unstake')

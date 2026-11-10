@@ -7,18 +7,18 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { NO_STAKING_AMOUNT_BOUNDS, ZERO_STAKING_AMOUNT } from '../../utils/stakingAmounts';
 
-export type CardanoStakeKeyOperation = Extract<StakingOperation, 'unstake' | 'claim' | 'vote'>;
+export type CardanoOperation = Extract<StakingOperation, 'unstake' | 'claim' | 'vote'>;
 
-export type GetCardanoStakeKeyAmountBoundsParams = {
+export type GetCardanoAmountBoundsParams = {
     position: StakingPosition | null;
-    operation: CardanoStakeKeyOperation;
+    operation: CardanoOperation;
 };
 
 // Deregistration and reward withdrawal take everything at once, and a DRep vote takes no amount.
-export const getCardanoStakeKeyAmountBounds = ({
+export const getCardanoAmountBounds = ({
     position,
     operation,
-}: GetCardanoStakeKeyAmountBoundsParams): StakingAmountBounds => {
+}: GetCardanoAmountBoundsParams): StakingAmountBounds => {
     if (!position?.operations.includes(operation)) return NO_STAKING_AMOUNT_BOUNDS;
 
     switch (operation) {

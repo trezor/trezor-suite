@@ -69,13 +69,13 @@ export const getParsedCardanoStakingInfo = ({
     };
 };
 
-type GetCardanoDelegationPendingTransactionsParams = {
+type GetCardanoPendingTransactionsParams = {
     transactions: readonly StakingTransaction[];
 };
 
-export const getCardanoDelegationPendingTransactions = ({
+export const getCardanoPendingTransactions = ({
     transactions,
-}: GetCardanoDelegationPendingTransactionsParams): StakingPositionPendingTransaction[] => {
+}: GetCardanoPendingTransactionsParams): StakingPositionPendingTransaction[] => {
     const pendingStakingTransactions = transactions.filter(isPendingStakingTransaction);
 
     return pendingStakingTransactions.flatMap(({ txid, cardanoSpecific }) => {
@@ -89,19 +89,19 @@ export const getCardanoDelegationPendingTransactions = ({
     });
 };
 
-type IsCardanoDelegationPositionOperationAvailableParams = {
+type IsPositionOperationAvailableParams = {
     operation: StakingOperation;
     rewards: StakingAmount;
     isWithdrawalBlocked: boolean;
     hasPendingTransaction: boolean;
 };
 
-const isCardanoDelegationPositionOperationAvailable = ({
+const isPositionOperationAvailable = ({
     operation,
     rewards,
     isWithdrawalBlocked,
     hasPendingTransaction,
-}: IsCardanoDelegationPositionOperationAvailableParams): boolean => {
+}: IsPositionOperationAvailableParams): boolean => {
     switch (operation) {
         case 'stake':
             // The delegation already covers the whole balance.
@@ -123,21 +123,21 @@ const isCardanoDelegationPositionOperationAvailable = ({
     }
 };
 
-type GetCardanoDelegationPositionOperationsParams = {
+type GetPositionOperationsParams = {
     operations: readonly StakingOperation[];
     rewards: StakingAmount;
     isWithdrawalBlocked: boolean;
     pendingTransactions: StakingPositionPendingTransaction[];
 };
 
-export const getCardanoDelegationPositionOperations = ({
+export const getPositionOperations = ({
     operations,
     rewards,
     isWithdrawalBlocked,
     pendingTransactions,
-}: GetCardanoDelegationPositionOperationsParams): StakingOperation[] =>
+}: GetPositionOperationsParams): StakingOperation[] =>
     operations.filter(operation =>
-        isCardanoDelegationPositionOperationAvailable({
+        isPositionOperationAvailable({
             operation,
             rewards,
             isWithdrawalBlocked,
@@ -145,17 +145,17 @@ export const getCardanoDelegationPositionOperations = ({
         }),
     );
 
-type GetCardanoDelegationPositionTargetsParams = {
+type GetPositionTargetsParams = {
     poolId: string | null;
     staked: StakingAmount;
     provider: StakingProvider;
 };
 
-export const getCardanoDelegationPositionTargets = ({
+export const getPositionTargets = ({
     poolId,
     staked,
     provider,
-}: GetCardanoDelegationPositionTargetsParams): StakingPositionTarget[] => {
+}: GetPositionTargetsParams): StakingPositionTarget[] => {
     if (poolId === null || !isPositiveStakingAmount(staked)) {
         return [];
     }
@@ -170,15 +170,15 @@ export const getCardanoDelegationPositionTargets = ({
     return [target];
 };
 
-type GetCardanoDelegationPositionBalancesParams = {
+type GetPositionBalancesParams = {
     staked: StakingAmount;
     rewards: StakingAmount;
 };
 
-export const getCardanoDelegationPositionBalances = ({
+export const getPositionBalances = ({
     staked,
     rewards,
-}: GetCardanoDelegationPositionBalancesParams): StakingPositionBalances => ({
+}: GetPositionBalancesParams): StakingPositionBalances => ({
     staked,
     pending: ZERO_STAKING_AMOUNT,
     unstaking: ZERO_STAKING_AMOUNT,

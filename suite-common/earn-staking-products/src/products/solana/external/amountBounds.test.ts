@@ -7,7 +7,7 @@ import {
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { getSolanaExternalDelegationProductAmountBounds } from './amountBounds';
+import { getSolanaExternalProductAmountBounds } from './amountBounds';
 
 const SOL = '000000000';
 
@@ -23,10 +23,10 @@ const position = mockStakingPosition({
     },
 });
 
-describe('getSolanaExternalDelegationProductAmountBounds', () => {
+describe('getSolanaExternalProductAmountBounds', () => {
     it.each(STAKING_OPERATIONS)('does not support %s', operation => {
         expect(() =>
-            getSolanaExternalDelegationProductAmountBounds({
+            getSolanaExternalProductAmountBounds({
                 account,
                 position,
                 operation,

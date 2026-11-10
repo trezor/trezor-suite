@@ -12,8 +12,8 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createEverstakePooledProductDescriptor } from './descriptor';
-import { getEverstakePooledProductPosition } from './position';
+import { createEthereumEverstakePooledProductDescriptor } from './descriptor';
+import { getEthereumEverstakePooledProductPosition } from './position';
 import { everstakeProvider } from '../../../providers/everstake';
 
 const ETHER = '000000000000000000';
@@ -23,8 +23,8 @@ type EthereumParsedData = NonNullable<StakingTransaction['ethereumSpecific']>['p
 const ETH_POOL_ADDRESS = '0xD523794C879D9eC028960a231F866758e405bE34';
 const THOD_POOL_ADDRESS = '0x7967AcFc9EB46cA2d20076B61B05e224F2d0B8b3';
 
-const eth = createEverstakePooledProductDescriptor(asNetworkSymbol('eth'));
-const thod = createEverstakePooledProductDescriptor(asNetworkSymbol('thod'));
+const eth = createEthereumEverstakePooledProductDescriptor(asNetworkSymbol('eth'));
+const thod = createEthereumEverstakePooledProductDescriptor(asNetworkSymbol('thod'));
 
 const amount = (value: string) => stakingAmountSchema.parse(value);
 
@@ -68,7 +68,7 @@ const stakingTransaction = (methodId: string, blockHeight: number | undefined) =
     });
 
 const readPosition = (scenario: EthereumStakingScenario) =>
-    getEverstakePooledProductPosition({
+    getEthereumEverstakePooledProductPosition({
         productId: eth.id,
         poolAddress: ETH_POOL_ADDRESS,
         account: mockEthereumStakingAccount(scenario),
@@ -76,7 +76,7 @@ const readPosition = (scenario: EthereumStakingScenario) =>
         transactions: [],
     });
 
-describe('getEverstakePooledProductPosition', () => {
+describe('getEthereumEverstakePooledProductPosition', () => {
     it.each<{ scenario: EthereumStakingScenario; expected: StakingPosition | null }>([
         { scenario: 'none', expected: null },
         { scenario: 'otherPool', expected: null },
@@ -164,7 +164,7 @@ describe('getEverstakePooledProductPosition', () => {
     });
 
     it('derives the Hoodi position under the Hoodi product', () => {
-        const position = getEverstakePooledProductPosition({
+        const position = getEthereumEverstakePooledProductPosition({
             productId: thod.id,
             poolAddress: THOD_POOL_ADDRESS,
             account: mockEthereumStakingAccount('active', { symbol: asNetworkSymbol('thod') }),
@@ -180,7 +180,7 @@ describe('getEverstakePooledProductPosition', () => {
     });
 
     it('derives an activating position for a first stake that is still pending', () => {
-        const position = getEverstakePooledProductPosition({
+        const position = getEthereumEverstakePooledProductPosition({
             productId: eth.id,
             poolAddress: ETH_POOL_ADDRESS,
             account: mockEthereumStakingAccount('none'),
@@ -204,7 +204,7 @@ describe('getEverstakePooledProductPosition', () => {
 
             expect(pool).toBeDefined();
             expect(
-                getEverstakePooledProductPosition({
+                getEthereumEverstakePooledProductPosition({
                     productId: eth.id,
                     poolAddress: ETH_POOL_ADDRESS,
                     account: {
@@ -220,7 +220,7 @@ describe('getEverstakePooledProductPosition', () => {
 
     it('has no position without a pool once the first stake is mined', () => {
         expect(
-            getEverstakePooledProductPosition({
+            getEthereumEverstakePooledProductPosition({
                 productId: eth.id,
                 poolAddress: ETH_POOL_ADDRESS,
                 account: mockEthereumStakingAccount('none'),
@@ -234,7 +234,7 @@ describe('getEverstakePooledProductPosition', () => {
     });
 
     it('lists the pending stake, unstake and withdraw transactions and nothing else', () => {
-        const position = getEverstakePooledProductPosition({
+        const position = getEthereumEverstakePooledProductPosition({
             productId: eth.id,
             poolAddress: ETH_POOL_ADDRESS,
             account: mockEthereumStakingAccount('active'),
@@ -272,7 +272,7 @@ describe('getEverstakePooledProductPosition', () => {
         });
 
         expect(
-            getEverstakePooledProductPosition({
+            getEthereumEverstakePooledProductPosition({
                 productId: eth.id,
                 poolAddress: ETH_POOL_ADDRESS,
                 account: mockEthereumStakingAccount('active'),
@@ -284,7 +284,7 @@ describe('getEverstakePooledProductPosition', () => {
 
     it('has no position without a pool when only an unstake or withdraw is pending', () => {
         expect(
-            getEverstakePooledProductPosition({
+            getEthereumEverstakePooledProductPosition({
                 productId: eth.id,
                 poolAddress: ETH_POOL_ADDRESS,
                 account: mockEthereumStakingAccount('none'),
@@ -300,7 +300,7 @@ describe('getEverstakePooledProductPosition', () => {
     it.each(['0x3a29dbae', '0x76ec871c', '0x33986ffa'])(
         'withholds unstake while the Everstake transaction %s is pending',
         methodId => {
-            const position = getEverstakePooledProductPosition({
+            const position = getEthereumEverstakePooledProductPosition({
                 productId: eth.id,
                 poolAddress: ETH_POOL_ADDRESS,
                 account: mockEthereumStakingAccount('active'),
@@ -314,7 +314,7 @@ describe('getEverstakePooledProductPosition', () => {
 
     it('withholds withdraw only while a withdraw is pending', () => {
         const readOperations = (methodId: string) =>
-            getEverstakePooledProductPosition({
+            getEthereumEverstakePooledProductPosition({
                 productId: eth.id,
                 poolAddress: ETH_POOL_ADDRESS,
                 account: mockEthereumStakingAccount('claimable'),

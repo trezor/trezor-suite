@@ -16,7 +16,7 @@ import {
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createTronCuratedProductDescriptor } from './descriptor';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 import { getTronCuratedProductPosition } from './position';
 import { getTronRepresentatives } from './utils';
 import { luganodesProvider } from '../../../providers/luganodes';
@@ -33,7 +33,7 @@ type TronStakingInfo = NonNullable<
 const networkSymbol = asNetworkSymbol('trx');
 const descriptor = createTronCuratedProductDescriptor({
     networkSymbol,
-    messageSystemFeatures: TRON_CURATED_MESSAGE_SYSTEM_FEATURES,
+    messageSystemFeatures: TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES,
 });
 const representatives = getTronRepresentatives({
     networkSymbol,

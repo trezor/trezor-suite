@@ -17,28 +17,28 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createSolanaExternalDelegationProductDescriptor } from './external/descriptor';
+import { createSolanaEverstakeNativeProductDescriptor } from './everstake-native/descriptor';
+import { createSolanaExternalProductDescriptor } from './external/descriptor';
 import { SOLANA_EXTERNAL_PRODUCT_INFO } from './info';
-import { createSolanaNativeDelegationProductDescriptor } from './native/descriptor';
-import { getSolanaDelegationProductPosition } from './position';
+import { getSolanaProductPosition } from './position';
 import { everstakeProvider } from '../../providers/everstake';
 import { externalProvider } from '../../providers/external';
 
 const SOL = '000000000';
 
-const everstake = createSolanaNativeDelegationProductDescriptor({
+const everstake = createSolanaEverstakeNativeProductDescriptor({
     networkSymbol: asNetworkSymbol('sol'),
     provider: everstakeProvider,
     messageSystemFeatures: {},
 });
-const external = createSolanaExternalDelegationProductDescriptor(asNetworkSymbol('sol'));
+const external = createSolanaExternalProductDescriptor(asNetworkSymbol('sol'));
 
 const productInfo = mockStakingProductInfo({ rate: 6.24, targets: [] });
 
 type TestPositionParams = Pick<GetPositionParams, 'account'> & Partial<GetPositionParams>;
 
 const getEverstakePosition = (params: TestPositionParams) =>
-    getSolanaDelegationProductPosition({
+    getSolanaProductPosition({
         productInfo,
         transactions: [],
         ...params,
@@ -48,7 +48,7 @@ const getEverstakePosition = (params: TestPositionParams) =>
     });
 
 const getExternalPosition = (params: TestPositionParams) =>
-    getSolanaDelegationProductPosition({
+    getSolanaProductPosition({
         productInfo: SOLANA_EXTERNAL_PRODUCT_INFO,
         transactions: [],
         ...params,
@@ -75,7 +75,7 @@ const pendingStakeOperation = (txid: string, type: 'stake' | 'unstake' | 'claim'
         solanaSpecific: { status: 'pending', stakeOperation: { type, amount: `1${SOL}` } },
     });
 
-describe('getSolanaDelegationProductPosition', () => {
+describe('getSolanaProductPosition', () => {
     it('derives the Everstake position of an active stake', () => {
         expect(getEverstakePosition({ account: mockSolanaStakingAccount('active') })).toEqual({
             productId: 'sol:sol:everstake:native',

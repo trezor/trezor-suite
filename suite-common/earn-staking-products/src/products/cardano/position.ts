@@ -11,12 +11,12 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import {
-    getCardanoDelegationPendingTransactions,
-    getCardanoDelegationPositionBalances,
-    getCardanoDelegationPositionOperations,
-    getCardanoDelegationPositionTargets,
+    getCardanoPendingTransactions,
     getParsedCardanoAccountBalance,
     getParsedCardanoStakingInfo,
+    getPositionBalances,
+    getPositionOperations,
+    getPositionTargets,
     isCardanoStakeKeyRegistered,
 } from './utils';
 import { getStakingPositionStatus } from '../../utils/getStakingPositionStatus';
@@ -66,22 +66,22 @@ const getPendingFirstStakePosition = ({
     };
 };
 
-export type GetCardanoDelegationProductPositionParams = GetPositionParams & {
+export type GetCardanoProductPositionParams = GetPositionParams & {
     descriptor: StakingProductDescriptor;
     provider: StakingProvider;
     ownsPool: (poolId: string | null) => boolean;
     ownsPendingFirstStake: boolean;
 };
 
-export const getCardanoDelegationProductPosition = ({
+export const getCardanoProductPosition = ({
     descriptor,
     provider,
     account,
     transactions,
     ownsPool,
     ownsPendingFirstStake,
-}: GetCardanoDelegationProductPositionParams): StakingPosition | null => {
-    const pendingTransactions = getCardanoDelegationPendingTransactions({ transactions });
+}: GetCardanoProductPositionParams): StakingPosition | null => {
+    const pendingTransactions = getCardanoPendingTransactions({ transactions });
 
     if (!isCardanoStakeKeyRegistered(account)) {
         if (!ownsPendingFirstStake) {
@@ -102,17 +102,17 @@ export const getCardanoDelegationProductPosition = ({
     const staked = toStakingAmount(BigNumber.max(new BigNumber(balance).minus(rewards), 0));
     const isWithdrawalBlocked = isPositiveStakingAmount(rewards) && drep === null;
 
-    const balances = getCardanoDelegationPositionBalances({ staked, rewards });
+    const balances = getPositionBalances({ staked, rewards });
     const status = getStakingPositionStatus({ balances });
 
-    const operations = getCardanoDelegationPositionOperations({
+    const operations = getPositionOperations({
         operations: descriptor.operations,
         rewards,
         isWithdrawalBlocked,
         pendingTransactions,
     });
 
-    const targets = getCardanoDelegationPositionTargets({ poolId, staked, provider });
+    const targets = getPositionTargets({ poolId, staked, provider });
 
     const warnings: StakingPositionWarning[] = [
         ...(provider.status === 'retired'

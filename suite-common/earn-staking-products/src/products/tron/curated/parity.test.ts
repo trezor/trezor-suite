@@ -18,7 +18,7 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 import { type TronCuratedProductDeps, createTronCuratedProduct } from './product';
 import { luganodesProvider } from '../../../providers/luganodes';
 import { p2pProvider } from '../../../providers/p2p';
@@ -49,7 +49,7 @@ const trxStats: TrxStats = [
 const product = createTronCuratedProduct({
     networkSymbol: asNetworkSymbol('trx'),
     providers: [luganodesProvider, p2pProvider],
-    messageSystemFeatures: TRON_CURATED_MESSAGE_SYSTEM_FEATURES,
+    messageSystemFeatures: TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES,
     ...createMockDeps<TronCuratedProductDeps>({
         getTronStakingStats: () => Promise.resolve(trxStats),
     }),

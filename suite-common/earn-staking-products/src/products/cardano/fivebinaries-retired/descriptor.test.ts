@@ -1,16 +1,16 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createCardanoRetiredDelegationProductDescriptor } from './descriptor';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
-import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { createCardanoFivebinariesRetiredProductDescriptor } from './descriptor';
 
-describe('createCardanoRetiredDelegationProductDescriptor', () => {
+describe('createCardanoFivebinariesRetiredProductDescriptor', () => {
     it('builds the ada:ada:fivebinaries:native product without staking', () => {
-        const descriptor = createCardanoRetiredDelegationProductDescriptor({
+        const descriptor = createCardanoFivebinariesRetiredProductDescriptor({
             networkSymbol: asNetworkSymbol('ada'),
             provider: fivebinariesProvider,
-            messageSystemFeatures: CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
+            messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
         });
 
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);

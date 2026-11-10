@@ -12,20 +12,23 @@ import { mockEthereumStakingAccount } from '@suite-common/wallet-types/mocks';
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { type EverstakePooledProductDeps, createEverstakePooledProduct } from './product';
+import {
+    type EthereumEverstakePooledProductDeps,
+    createEthereumEverstakePooledProduct,
+} from './product';
 
 const stats: EthOrSolStats = { symbol: 'eth', apy: 3.08, nextRewardPayout: 432_000 };
 const queue: EthValidatorsQueue = { addingDelay: 86_400, activationTime: 259_200 };
 
 const createDeps = () =>
-    createMockDeps<EverstakePooledProductDeps>({
+    createMockDeps<EthereumEverstakePooledProductDeps>({
         getStakingStats: () => Promise.resolve(stats),
         getEthereumValidatorsQueue: () => Promise.resolve(queue),
     });
 
-describe('createEverstakePooledProduct', () => {
+describe('createEthereumEverstakePooledProduct', () => {
     it.each(['eth', 'thod'])('describes the %s product', symbol => {
-        const product = createEverstakePooledProduct({
+        const product = createEthereumEverstakePooledProduct({
             networkSymbol: asNetworkSymbol(symbol),
             ...createDeps(),
         });
@@ -35,7 +38,7 @@ describe('createEverstakePooledProduct', () => {
 
     it('refuses a network without an Everstake pool contract', () => {
         expect(() =>
-            createEverstakePooledProduct({
+            createEthereumEverstakePooledProduct({
                 networkSymbol: asNetworkSymbol('sol'),
                 ...createDeps(),
             }),
@@ -44,7 +47,7 @@ describe('createEverstakePooledProduct', () => {
 
     it('fetches the product info through the injected client', async () => {
         const deps = createDeps();
-        const product = createEverstakePooledProduct({
+        const product = createEthereumEverstakePooledProduct({
             networkSymbol: asNetworkSymbol('eth'),
             ...deps,
         });
@@ -58,7 +61,7 @@ describe('createEverstakePooledProduct', () => {
     });
 
     it('derives the position of an account with an Everstake pool', () => {
-        const product = createEverstakePooledProduct({
+        const product = createEthereumEverstakePooledProduct({
             networkSymbol: asNetworkSymbol('eth'),
             ...createDeps(),
         });
@@ -84,7 +87,7 @@ describe('createEverstakePooledProduct', () => {
     });
 
     it('bounds a stake by the product limits', () => {
-        const product = createEverstakePooledProduct({
+        const product = createEthereumEverstakePooledProduct({
             networkSymbol: asNetworkSymbol('eth'),
             ...createDeps(),
         });
@@ -100,7 +103,7 @@ describe('createEverstakePooledProduct', () => {
     });
 
     it('has no operations yet', async () => {
-        const product = createEverstakePooledProduct({
+        const product = createEthereumEverstakePooledProduct({
             networkSymbol: asNetworkSymbol('eth'),
             ...createDeps(),
         });

@@ -25,16 +25,16 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
-import { createCardanoExternalDelegationProduct } from './external/product';
 import {
-    CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
-    EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES,
+    type CardanoEverstakeNativeProductDeps,
+    createCardanoEverstakeNativeProduct,
+} from './everstake-native/product';
+import { createCardanoExternalProduct } from './external/product';
+import { createCardanoFivebinariesRetiredProduct } from './fivebinaries-retired/product';
+import {
+    CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
+    CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
 } from './messageSystemFeatures';
-import {
-    type CardanoNativeDelegationProductDeps,
-    createCardanoNativeDelegationProduct,
-} from './native/product';
-import { createCardanoRetiredDelegationProduct } from './retired/product';
 import { everstakeProvider } from '../../providers/everstake';
 import { fivebinariesProvider } from '../../providers/fivebinaries';
 
@@ -57,23 +57,23 @@ const CARDANO_PRODUCT_KEYS = ['everstake', 'fiveBinaries', 'external'] as const;
 type CardanoProductKey = (typeof CARDANO_PRODUCT_KEYS)[number];
 
 const products: Record<CardanoProductKey, StakingProductAdapter> = {
-    everstake: createCardanoNativeDelegationProduct({
+    everstake: createCardanoEverstakeNativeProduct({
         networkSymbol: asNetworkSymbol('ada'),
         provider: everstakeProvider,
-        messageSystemFeatures: EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES,
-        ...createMockDeps<CardanoNativeDelegationProductDeps>({
+        messageSystemFeatures: CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
+        ...createMockDeps<CardanoEverstakeNativeProductDeps>({
             getCardanoPools: () => Promise.resolve(adaPools),
         }),
     }),
-    fiveBinaries: createCardanoRetiredDelegationProduct({
+    fiveBinaries: createCardanoFivebinariesRetiredProduct({
         networkSymbol: asNetworkSymbol('ada'),
         provider: fivebinariesProvider,
-        messageSystemFeatures: CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
+        messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
     }),
-    external: createCardanoExternalDelegationProduct({
+    external: createCardanoExternalProduct({
         networkSymbol: asNetworkSymbol('ada'),
         managedProviders: [everstakeProvider, fivebinariesProvider],
-        messageSystemFeatures: CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
+        messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
     }),
 };
 

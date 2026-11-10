@@ -6,11 +6,11 @@ import {
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
 import { getMaxStakeAmount } from '../../../utils/getMaxStakeAmount';
-import { getCardanoStakeKeyAmountBounds } from '../amountBounds';
+import { getCardanoAmountBounds } from '../amountBounds';
+import { CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS } from './limits';
 
-export const getCardanoNativeDelegationProductAmountBounds = ({
+export const getCardanoEverstakeNativeProductAmountBounds = ({
     account,
     position,
     operation,
@@ -18,13 +18,13 @@ export const getCardanoNativeDelegationProductAmountBounds = ({
     switch (operation) {
         case 'stake':
             return {
-                min: CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS.minStakeAmount,
-                max: getMaxStakeAmount(account.balance, CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS),
+                min: CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS.minStakeAmount,
+                max: getMaxStakeAmount(account.balance, CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS),
             };
         case 'unstake':
         case 'claim':
         case 'vote':
-            return getCardanoStakeKeyAmountBounds({ position, operation });
+            return getCardanoAmountBounds({ position, operation });
         case 'withdraw':
         case 'redelegate':
             throw new StakingAdapterError(STAKING_OPERATION_ERROR_CODES.notSupported);

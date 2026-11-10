@@ -7,38 +7,38 @@ import type {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { getCardanoExternalDelegationProductAmountBounds } from './amountBounds';
-import { createCardanoExternalDelegationProductDescriptor } from './descriptor';
 import { externalProvider } from '../../../providers/external';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
-import { CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO } from '../info';
-import { getCardanoDelegationProductPosition } from '../position';
+import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../info';
+import { getCardanoProductPosition } from '../position';
+import { getCardanoExternalProductAmountBounds } from './amountBounds';
+import { createCardanoExternalProductDescriptor } from './descriptor';
 
-export type CreateCardanoExternalDelegationProductParams = {
+export type CreateCardanoExternalProductParams = {
     networkSymbol: NetworkSymbol;
     managedProviders: readonly StakingProvider[];
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createCardanoExternalDelegationProduct = ({
+export const createCardanoExternalProduct = ({
     networkSymbol,
     managedProviders,
     messageSystemFeatures,
-}: CreateCardanoExternalDelegationProductParams): StakingProductAdapter => {
+}: CreateCardanoExternalProductParams): StakingProductAdapter => {
     const managedPoolIds = managedProviders.flatMap(
         provider => provider.identities[networkSymbol] ?? [],
     );
 
-    const descriptor = createCardanoExternalDelegationProductDescriptor({
+    const descriptor = createCardanoExternalProductDescriptor({
         networkSymbol,
         messageSystemFeatures,
     });
 
-    const fetchProductInfo = () => Promise.resolve(CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO);
+    const fetchProductInfo = () => Promise.resolve(CARDANO_UNMANAGED_PRODUCT_INFO);
 
     // A registered stake key without a pool is not delegated to any managed provider either.
     const getPosition = (params: GetPositionParams) =>
-        getCardanoDelegationProductPosition({
+        getCardanoProductPosition({
             ...params,
             descriptor,
             provider: externalProvider,
@@ -47,7 +47,7 @@ export const createCardanoExternalDelegationProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getCardanoExternalDelegationProductAmountBounds(params);
+        getCardanoExternalProductAmountBounds(params);
 
     const operations = createUnimplementedStakingOperations();
 

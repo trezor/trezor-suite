@@ -15,33 +15,33 @@ import {
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import {
-    type CardanoNativeDelegationProductDeps,
-    createCardanoNativeDelegationProduct,
-} from './product';
 import { everstakeProvider } from '../../../providers/everstake';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
 import { luganodesProvider } from '../../../providers/luganodes';
-import { EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import {
+    type CardanoEverstakeNativeProductDeps,
+    createCardanoEverstakeNativeProduct,
+} from './product';
 
 const adaPools: AdaPools = {
     pools: [{ apy: 2.06, saturation: 62.64, id: MOCK_CARDANO_EVERSTAKE_POOL }],
 };
 
 const createDeps = () =>
-    createMockDeps<CardanoNativeDelegationProductDeps>({
+    createMockDeps<CardanoEverstakeNativeProductDeps>({
         getCardanoPools: () => Promise.resolve(adaPools),
     });
 
 const createEverstakeProduct = (deps = createDeps()) =>
-    createCardanoNativeDelegationProduct({
+    createCardanoEverstakeNativeProduct({
         networkSymbol: asNetworkSymbol('ada'),
         provider: everstakeProvider,
-        messageSystemFeatures: EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES,
+        messageSystemFeatures: CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
         ...deps,
     });
 
-describe('createCardanoNativeDelegationProduct', () => {
+describe('createCardanoEverstakeNativeProduct', () => {
     it('builds the Everstake product', () => {
         expect(createEverstakeProduct().descriptor.id).toBe('ada:ada:everstake:native');
     });
@@ -51,7 +51,7 @@ describe('createCardanoNativeDelegationProduct', () => {
         { name: 'a provider that is not active', provider: fivebinariesProvider },
     ])('refuses $name', ({ provider }) => {
         expect(() =>
-            createCardanoNativeDelegationProduct({
+            createCardanoEverstakeNativeProduct({
                 networkSymbol: asNetworkSymbol('ada'),
                 provider,
                 messageSystemFeatures: {},

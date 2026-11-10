@@ -4,7 +4,7 @@ import {
     type StakingProductAdapter,
 } from '@suite-common/earn-staking-common';
 
-export const getSolanaExternalDelegationProductAmountBounds: StakingProductAdapter['getAmountBounds'] =
+export const getSolanaExternalProductAmountBounds: StakingProductAdapter['getAmountBounds'] =
     () => {
         throw new StakingAdapterError(STAKING_OPERATION_ERROR_CODES.notSupported);
     };

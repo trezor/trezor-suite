@@ -6,19 +6,19 @@ import {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
+import { CARDANO_FIVEBINARIES_RETIRED_PRODUCT_LIMITS } from './limits';
 
-export type CreateCardanoNativeDelegationProductDescriptorParams = {
+export type CreateCardanoFivebinariesRetiredProductDescriptorParams = {
     networkSymbol: NetworkSymbol;
     provider: StakingProvider;
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createCardanoNativeDelegationProductDescriptor = ({
+export const createCardanoFivebinariesRetiredProductDescriptor = ({
     networkSymbol,
     provider,
     messageSystemFeatures,
-}: CreateCardanoNativeDelegationProductDescriptorParams): StakingProductDescriptor => {
+}: CreateCardanoFivebinariesRetiredProductDescriptorParams): StakingProductDescriptor => {
     const product = {
         networkSymbol,
         asset: { kind: 'native' },
@@ -29,12 +29,12 @@ export const createCardanoNativeDelegationProductDescriptor = ({
     return stakingProductDescriptorSchema.parse({
         id: getStakingProductId(product),
         ...product,
-        operations: ['stake', 'unstake', 'claim', 'vote'],
+        operations: ['unstake', 'claim', 'vote'],
         exclusivity: 'account',
         rateKind: 'apy',
-        limits: CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS,
+        limits: CARDANO_FIVEBINARIES_RETIRED_PRODUCT_LIMITS,
         options: [],
-        consentKey: `staking:${provider.id}`,
+        consentKey: null,
         platforms: {
             desktop: { access: 'manage' },
             mobile: { access: 'read-only' },

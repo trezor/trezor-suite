@@ -14,19 +14,19 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createCardanoExternalDelegationProduct } from './product';
 import { everstakeProvider } from '../../../providers/everstake';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
-import { CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO } from '../info';
-import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../info';
+import { CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { createCardanoExternalProduct } from './product';
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('ada') });
 
 const createExternalProduct = (managedProviders = [everstakeProvider, fivebinariesProvider]) =>
-    createCardanoExternalDelegationProduct({
+    createCardanoExternalProduct({
         networkSymbol: asNetworkSymbol('ada'),
         managedProviders,
-        messageSystemFeatures: CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
+        messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
     });
 
 const getStakedBalance = (product: StakingProductAdapter, scenario: CardanoStakingScenario) =>
@@ -36,14 +36,14 @@ const getStakedBalance = (product: StakingProductAdapter, scenario: CardanoStaki
         transactions: [],
     })?.balances.staked ?? null;
 
-describe('createCardanoExternalDelegationProduct', () => {
+describe('createCardanoExternalProduct', () => {
     it('builds the external product', () => {
         expect(createExternalProduct().descriptor.id).toBe('ada:ada:external:native');
     });
 
     it('answers its product info without a request', async () => {
         await expect(createExternalProduct().fetchProductInfo({})).resolves.toBe(
-            CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO,
+            CARDANO_UNMANAGED_PRODUCT_INFO,
         );
     });
 

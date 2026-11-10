@@ -5,11 +5,11 @@ import {
 } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
-import { EVERSTAKE_POOLED_PRODUCT_LIMITS } from './limits';
-import { EVERSTAKE_ETHEREUM_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS } from './limits';
+import { ETHEREUM_EVERSTAKE_POOLED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 import { everstakeProvider } from '../../../providers/everstake';
 
-export const createEverstakePooledProductDescriptor = (
+export const createEthereumEverstakePooledProductDescriptor = (
     networkSymbol: NetworkSymbol,
 ): StakingProductDescriptor => {
     const product = {
@@ -25,7 +25,7 @@ export const createEverstakePooledProductDescriptor = (
         operations: ['stake', 'unstake', 'withdraw'],
         exclusivity: 'none',
         rateKind: 'apy',
-        limits: EVERSTAKE_POOLED_PRODUCT_LIMITS,
+        limits: ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS,
         options: [{ key: 'instant', kind: 'boolean' }],
         consentKey: 'staking:everstake',
         platforms: {
@@ -34,7 +34,9 @@ export const createEverstakePooledProductDescriptor = (
         },
         messageSystemFeatures:
             // Hoodi has no message system gating
-            networkSymbol === 'eth' ? EVERSTAKE_ETHEREUM_MESSAGE_SYSTEM_FEATURES : {},
+            networkSymbol === 'eth'
+                ? ETHEREUM_EVERSTAKE_POOLED_PRODUCT_MESSAGE_SYSTEM_FEATURES
+                : {},
         isCountedInAccountTotals: true,
     });
 };

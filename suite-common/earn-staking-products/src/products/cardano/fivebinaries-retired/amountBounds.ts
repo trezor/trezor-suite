@@ -6,9 +6,9 @@ import {
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getCardanoStakeKeyAmountBounds } from '../amountBounds';
+import { getCardanoAmountBounds } from '../amountBounds';
 
-export const getCardanoRetiredDelegationProductAmountBounds = ({
+export const getCardanoFivebinariesRetiredProductAmountBounds = ({
     position,
     operation,
 }: GetAmountBoundsParams): StakingAmountBounds => {
@@ -16,7 +16,7 @@ export const getCardanoRetiredDelegationProductAmountBounds = ({
         case 'unstake':
         case 'claim':
         case 'vote':
-            return getCardanoStakeKeyAmountBounds({ position, operation });
+            return getCardanoAmountBounds({ position, operation });
         case 'stake':
         case 'withdraw':
         case 'redelegate':

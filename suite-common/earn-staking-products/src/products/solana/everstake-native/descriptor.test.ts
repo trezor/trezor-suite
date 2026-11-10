@@ -1,9 +1,9 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createSolanaNativeDelegationProductDescriptor } from './descriptor';
-import { SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { createSolanaEverstakeNativeProductDescriptor } from './descriptor';
+import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS } from './limits';
+import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 import { everstakeProvider } from '../../../providers/everstake';
 
 describe('createSolanaNativeDelegationDescriptor', () => {
@@ -11,7 +11,7 @@ describe('createSolanaNativeDelegationDescriptor', () => {
         { symbol: 'sol', id: 'sol:sol:everstake:native' },
         { symbol: 'dsol', id: 'dsol:dsol:everstake:native' },
     ])('builds the $id product', ({ symbol, id }) => {
-        const descriptor = createSolanaNativeDelegationProductDescriptor({
+        const descriptor = createSolanaEverstakeNativeProductDescriptor({
             networkSymbol: asNetworkSymbol(symbol),
             provider: everstakeProvider,
             messageSystemFeatures: {},
@@ -27,7 +27,7 @@ describe('createSolanaNativeDelegationDescriptor', () => {
             operations: ['stake', 'unstake', 'withdraw'],
             exclusivity: 'none',
             rateKind: 'apy',
-            limits: SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS,
+            limits: SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS,
             options: [],
             consentKey: 'staking:everstake',
             platforms: {
@@ -40,7 +40,7 @@ describe('createSolanaNativeDelegationDescriptor', () => {
     });
 
     it('keeps the legacy limits in lamports', () => {
-        expect(SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS).toEqual({
+        expect(SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS).toEqual({
             minStakeAmount: '1000000000',
             maxStakeAmount: '10000000000000000',
             minWithdrawalAmount: '20000000',
@@ -52,10 +52,10 @@ describe('createSolanaNativeDelegationDescriptor', () => {
 
     it('takes the message-system keys it is given', () => {
         expect(
-            createSolanaNativeDelegationProductDescriptor({
+            createSolanaEverstakeNativeProductDescriptor({
                 networkSymbol: asNetworkSymbol('sol'),
                 provider: everstakeProvider,
-                messageSystemFeatures: EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES,
+                messageSystemFeatures: SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
             }).messageSystemFeatures,
         ).toEqual({
             stake: 'sol.staking.stake',
