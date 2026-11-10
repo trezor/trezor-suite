@@ -9,6 +9,7 @@
     ],
     "references": [
         { "path": "../app" },
+        { "path": "../module-sign-verify" },
         {
             "path": "../../suite-common/react-query"
         },

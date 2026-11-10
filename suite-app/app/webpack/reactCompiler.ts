@@ -41,6 +41,7 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
     // Wave 1b, one revertible entry per sub-wave, lowest bailout rate first.
     'packages/suite/src/views',
     'suite-app/app/src/pages',
+    'suite-app/module-sign-verify',
     'packages/suite/src/components',
     'packages/suite/src/hooks',
 ];

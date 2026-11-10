@@ -59,6 +59,11 @@ const createWorkspaceAliases = () => {
             find: /^@suite-app\/app\/pages\/(.*)$/,
             replacement: `${resolve(packageDir, '../app/src/pages')}/$1`,
         },
+        // The same applies to the `./pages/*` export of each @suite-app/module-* package.
+        {
+            find: /^@suite-app\/(module-[\w-]+)\/pages\/(.*)$/,
+            replacement: `${resolve(packageDir, '..')}/$1/src/pages/$2`,
+        },
         ...suiteCommonAliases,
         ...trezorPackagesAliases,
         ...suiteAliases,
