@@ -36,7 +36,7 @@ import { type OnboardingState } from '#src/reducers/onboarding/onboardingState';
 import { type GuideState } from '#src/reducers/suite/guideState';
 import { type ProtocolState } from '#src/reducers/suite/protocolState';
 import { suiteInitialState } from '#src/reducers/suite/suiteReducer';
-import { createWalletReducer } from '#src/reducers/wallet';
+import { createWalletReducer } from '#src/reducers/wallet/walletReducer';
 import { type GlobalSendReceiveFiltersState } from '#src/slices/wallet/globalSendReceiveFilters';
 
 import { mockExtraDependenciesForReducers } from './mockExtraDependenciesForReducers';
