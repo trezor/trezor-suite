@@ -17,6 +17,11 @@ import { ActivateAssetsModal } from './ActivateAssetsModal';
 import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
 import { AddAccountModal } from './AddAccountModal/AddAccountModal';
 import { QrScannerModal } from './QrScannerModal/QrScannerModal';
+import {
+    loadApplicationLogModal,
+    loadBackgroundGalleryModal,
+    loadSafetyChecksModal,
+} from './modalChunkLoaders';
 
 const MetadataProviderModal = lazy(() =>
     import(/* webpackChunkName: "modals-user" */ '@suite/metadata').then(m => ({
@@ -127,9 +132,7 @@ const AdvancedCoinSettingsModal = lazy(() =>
     })),
 );
 const ApplicationLogModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './ApplicationLogModal').then(m => ({
-        default: m.ApplicationLogModal,
-    })),
+    loadApplicationLogModal().then(m => ({ default: m.ApplicationLogModal })),
 );
 const AutoStartBeforeQuitModal = lazy(() =>
     import(/* webpackChunkName: "modals-user" */ './AutoStartBeforeQuitModal').then(m => ({
@@ -137,9 +140,7 @@ const AutoStartBeforeQuitModal = lazy(() =>
     })),
 );
 const BackgroundGalleryModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './BackgroundGalleryModal').then(m => ({
-        default: m.BackgroundGalleryModal,
-    })),
+    loadBackgroundGalleryModal().then(m => ({ default: m.BackgroundGalleryModal })),
 );
 const CancelCoinjoinModal = lazy(() =>
     import(/* webpackChunkName: "modals-coinjoin" */ './CancelCoinjoinModal').then(m => ({
@@ -223,9 +224,7 @@ const PinMismatchModal = lazy(() =>
     })),
 );
 const SafetyChecksModal = lazy(() =>
-    import(/* webpackChunkName: "modals-user" */ './SafetyChecksModal').then(m => ({
-        default: m.SafetyChecksModal,
-    })),
+    loadSafetyChecksModal().then(m => ({ default: m.SafetyChecksModal })),
 );
 const StakeChangeDelegateModal = lazy(() =>
     import(

@@ -1,18 +1,17 @@
 import { Translation } from '@suite/intl';
-import { openModal } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
-import { injectDispatch } from '@trezor/redux-utils';
+
+import { useModalLoader } from '#src/hooks/suite/useModalLoader';
 
 interface SafetyChecksProps {
     isDeviceLocked: boolean;
 }
 
 export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { open, isLoading } = useModalLoader();
 
-    const handleClick = () => dispatch(openModal({ type: 'safety-checks' }));
+    const handleClick = () => open({ type: 'safety-checks' });
 
     return (
         <Anchor anchorId={SettingsAnchor.SafetyChecks}>
@@ -27,6 +26,7 @@ export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
                         <SectionItem.Button
                             intent="brand"
                             onClick={handleClick}
+                            isLoading={isLoading}
                             data-testid="@settings/device/safety-checks-button"
                             isDisabled={isDeviceLocked}
                             tooltip={{
