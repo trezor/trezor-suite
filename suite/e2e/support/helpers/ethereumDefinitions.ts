@@ -3,7 +3,7 @@ import {
     getEthereumDefinitionsBaseUrl,
 } from '@trezor/connect-common';
 import { ProtobufManager } from '@trezor/protobuf';
-import * as definitionsProto from '@trezor/protobuf/src/definitions/messages-definitions_pb';
+import definitionsProto from '@trezor/protobuf/src/definitions/messages-definitions_dict';
 import { trzd } from '@trezor/protocol';
 import type { VersionArray } from '@trezor/utils';
 

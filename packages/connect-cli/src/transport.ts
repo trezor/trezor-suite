@@ -1,6 +1,6 @@
 import { type ConnectSettingsTransport, type UiRequestThpPairing } from '@trezor/connect';
 import { protobufManager } from '@trezor/protobuf';
-import * as debugProto from '@trezor/protobuf/src/definitions/messages-debug_pb';
+import debugProto from '@trezor/protobuf/src/definitions/messages-debug_dict';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BluetoothTransport, TrezorBluetooth } from '@trezor/transport-bluetooth';
 import { BridgeTransport } from '@trezor/transport-common';

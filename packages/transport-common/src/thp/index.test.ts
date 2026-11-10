@@ -1,12 +1,13 @@
 import { protobufManager } from '@trezor/protobuf';
-import * as thpProto from '@trezor/protobuf/src/definitions/messages-thp_pb';
+import thpProto from '@trezor/protobuf/src/definitions/messages-thp_dict';
+import optionsProto from '@trezor/protobuf/src/definitions/options_dict';
 import { thp as protocolThp, v2 } from '@trezor/protocol';
 
 import { ATTEMPTS_LIMIT, THP_ACK_DEADLINE, THP_ACK_TIMEOUT } from './receiveExpectedMessage';
 
 import { parseThpMessage, receiveThpMessage, sendThpMessage } from './index';
 
-protobufManager.load([thpProto]);
+protobufManager.load([optionsProto, thpProto]);
 
 type ApiReadOptions = { signal?: AbortSignal };
 
