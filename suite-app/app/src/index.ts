@@ -13,5 +13,3 @@ export { createHydrateReduxStore, type HydrateReduxStoreDep } from './createHydr
 export { AppRouter } from './AppRouter';
 export { Main } from './Main';
 export { Preloader } from './Preloader/Preloader';
-
-export { AppsEmbeddingPage } from './pages/AppsEmbeddingPage';

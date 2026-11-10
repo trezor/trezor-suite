@@ -120,7 +120,7 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     ),
     'apps-embedding-index': lazy(() =>
         import(
-            /* webpackChunkName: "apps-embedding" */ '@suite-app/app/pages/AppsEmbeddingPage'
+            /* webpackChunkName: "apps-embedding" */ '@suite-app/module-apps-embedding/pages/AppsEmbeddingPage'
         ).then(({ AppsEmbeddingPage }) => ({ default: AppsEmbeddingPage })),
     ),
     'suite-connect-popup': lazy(() =>

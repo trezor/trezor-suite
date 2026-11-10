@@ -11391,6 +11391,7 @@ __metadata:
     "@suite-app/app": "workspace:*"
     "@suite-app/module-account-detail": "workspace:*"
     "@suite-app/module-activity-center": "workspace:*"
+    "@suite-app/module-apps-embedding": "workspace:*"
     "@suite-app/module-assets": "workspace:*"
     "@suite-app/module-coinjoin": "workspace:*"
     "@suite-app/module-connect-popup": "workspace:*"
@@ -11490,6 +11491,18 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-apps-embedding@workspace:*, @suite-app/module-apps-embedding@workspace:suite-app/module-apps-embedding":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-apps-embedding@workspace:suite-app/module-apps-embedding"
+  dependencies:
+    "@suite/apps-embedding-demo": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
@@ -11786,6 +11799,7 @@ __metadata:
     "@suite-app/app": "workspace:*"
     "@suite-app/module-account-detail": "workspace:*"
     "@suite-app/module-activity-center": "workspace:*"
+    "@suite-app/module-apps-embedding": "workspace:*"
     "@suite-app/module-assets": "workspace:*"
     "@suite-app/module-coinjoin": "workspace:*"
     "@suite-app/module-connect-popup": "workspace:*"

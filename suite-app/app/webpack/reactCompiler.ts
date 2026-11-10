@@ -40,9 +40,9 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
     'suite-common',
     // Wave 1b, one revertible entry per sub-wave, lowest bailout rate first.
     'packages/suite/src/views',
-    'suite-app/app/src/pages',
     'suite-app/module-account-detail',
     'suite-app/module-activity-center',
+    'suite-app/module-apps-embedding',
     'suite-app/module-assets',
     'suite-app/module-coinjoin',
     'suite-app/module-connect-popup',

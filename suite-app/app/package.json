@@ -7,7 +7,6 @@
     "main": "src/index",
     "exports": {
         ".": "./src/index.ts",
-        "./pages/*": "./src/pages/*.tsx",
         "./webpack": "./webpack/index.ts",
         "./webpack/env": "./webpack/env.ts",
         "./webpack/reactCompiler": "./webpack/reactCompiler.ts",
