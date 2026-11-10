@@ -7,6 +7,7 @@ import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
+import { ModalSkeleton } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -52,7 +53,7 @@ export const TurnOnSuiteSyncModals = ({
         // This component has several render sites, so each lazy modal carries its own boundary.
         case 'suite-sync-off':
             return (
-                <Suspense fallback={null}>
+                <Suspense fallback={<ModalSkeleton />}>
                     <SuiteSyncTurnOnModal
                         onClose={onClose}
                         onSuccess={onSuccess}
@@ -63,7 +64,7 @@ export const TurnOnSuiteSyncModals = ({
 
         case 'firmware-upgrade-needed':
             return (
-                <Suspense fallback={null}>
+                <Suspense fallback={<ModalSkeleton />}>
                     <FirmwareUpgradeNeededModal
                         onClose={onClose}
                         featureName={translationString('TR_LABELING_SECURE_SYNC')}
