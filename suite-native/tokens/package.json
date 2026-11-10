@@ -25,7 +25,11 @@
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils-store": "workspace:*"
     }
 }
