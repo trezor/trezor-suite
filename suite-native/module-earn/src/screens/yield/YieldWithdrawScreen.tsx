@@ -220,6 +220,7 @@ export const YieldWithdrawScreen = () => {
                                                 value={depositedRow.amount}
                                                 networkSymbol={account.symbol}
                                                 tokenContract={depositedRow.tokenContract}
+                                                discreetMode="auto"
                                                 variant="body-sm"
                                                 color="contentSecondary"
                                                 numberOfLines={1}
