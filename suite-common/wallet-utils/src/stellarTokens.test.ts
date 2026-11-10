@@ -79,6 +79,57 @@ describe(getStellarInactiveTokens.name, () => {
         ]);
     });
 
+    it('offers an allow-listed asset the advanced definitions are missing', async () => {
+        const account = mockWalletAccount({ symbol: xlmSymbol, tokens: undefined });
+
+        mockedGetTokenMetadata.mockResolvedValue({
+            'AQUA-GB456': { name: 'Aqua', symbol: 'AQUA', home_domain: 'aqua.network', rating: 2 },
+        });
+
+        await expect(
+            getStellarInactiveTokens(account, [
+                'USDC-GA123',
+                'AQUA-GB456',
+                'CD2KTWZ3S7BDDNPHJMUYYUDY5B7J4JL4GXVITLMUEPSE5BNTESUOM4LQ',
+            ]),
+        ).resolves.toEqual([
+            expect.objectContaining({ contract: 'AQUA-GB456', rating: 2 }),
+            {
+                type: 'STELLAR-CLASSIC',
+                standard: 'STELLAR-CLASSIC',
+                contract: 'USDC-GA123',
+                name: undefined,
+                symbol: 'USDC',
+                decimals: 7,
+                homeDomain: undefined,
+                rating: undefined,
+            },
+        ]);
+    });
+
+    it('leaves out an allow-listed asset the account already holds', async () => {
+        const account = mockWalletAccount({
+            symbol: xlmSymbol,
+            tokens: [{ contract: 'USDC-GA123' }] as never,
+        });
+
+        mockedGetTokenMetadata.mockResolvedValue({});
+
+        await expect(getStellarInactiveTokens(account, ['USDC-GA123'])).resolves.toEqual([]);
+    });
+
+    it('offers an asset once when the definitions spell its code differently', async () => {
+        const account = mockWalletAccount({ symbol: xlmSymbol, tokens: undefined });
+
+        mockedGetTokenMetadata.mockResolvedValue({
+            'usdc-GA123': { name: 'USD Coin', symbol: 'usdc', home_domain: 'centre.io', rating: 5 },
+        });
+
+        await expect(getStellarInactiveTokens(account, ['USDC-GA123'])).resolves.toEqual([
+            expect.objectContaining({ contract: 'USDC-GA123', name: 'USD Coin', rating: 5 }),
+        ]);
+    });
+
     it('sorts tokens by rating in descending order and keeps unrated tokens last', async () => {
         const account = mockWalletAccount({ symbol: xlmSymbol });
 
