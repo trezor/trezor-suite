@@ -1,9 +1,9 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createSolanaNativeDelegationProductDescriptor } from './solanaNativeDelegationProductDescriptor';
-import { SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS } from './solanaNativeDelegationProductLimits';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './solanaNativeDelegationProductMessageSystemFeatures';
+import { createSolanaNativeDelegationProductDescriptor } from './descriptor';
+import { SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
+import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 import { everstakeProvider } from '../../../providers/everstake';
 
 describe('createSolanaNativeDelegationDescriptor', () => {

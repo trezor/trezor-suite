@@ -7,7 +7,7 @@ import {
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { getSolanaExternalDelegationProductAmountBounds } from './solanaExternalDelegationProductAmountBounds';
+import { getSolanaExternalDelegationProductAmountBounds } from './amountBounds';
 
 const SOL = '000000000';
 

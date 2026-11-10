@@ -19,12 +19,12 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
-import { createSolanaExternalDelegationProduct } from './external/createSolanaExternalDelegationProduct';
+import { createSolanaExternalDelegationProduct } from './external/product';
+import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './native/messageSystemFeatures';
 import {
     type SolanaNativeDelegationProductDeps,
     createSolanaNativeDelegationProduct,
-} from './native/createSolanaNativeDelegationProduct';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './native/solanaNativeDelegationProductMessageSystemFeatures';
+} from './native/product';
 import { everstakeProvider } from '../../providers/everstake';
 
 // The oracle is the P0.1 characterization suites in wallet-core

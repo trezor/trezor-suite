@@ -1,7 +1,7 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createSolanaExternalDelegationProductDescriptor } from './solanaExternalDelegationProductDescriptor';
+import { createSolanaExternalDelegationProductDescriptor } from './descriptor';
 
 describe('createSolanaExternalDelegationDescriptor', () => {
     it.each([
