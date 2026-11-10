@@ -337,7 +337,7 @@ export { FirmwareUpdate } from './src/views/firmware/FirmwareUpdate';
 export { Recovery } from './src/views/recovery/Recovery';
 export { BridgeUnavailable } from './src/views/suite/bridge';
 export { BridgeDeprecated } from './src/views/suite/bridge-deprecated/BridgeDeprecated';
-export { BridgeRequested } from './src/views/suite/bridge-requested';
+export { BridgeRequested } from './src/views/suite/bridge-requested/BridgeRequested';
 export { UdevRules } from './src/views/suite/udev';
 export { Version } from './src/views/suite/version';
 export {
