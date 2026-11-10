@@ -20,7 +20,7 @@ import { CreateOrRecoverStep } from '#src/views/onboarding/steps/CreateOrRecover
 import { DeviceAuthenticityStep } from '#src/views/onboarding/steps/DeviceAuthenticityStep';
 import { DeviceTutorialStep } from '#src/views/onboarding/steps/DeviceTutorialStep';
 import { FinalStep } from '#src/views/onboarding/steps/FinalStep';
-import { FirmwareStep } from '#src/views/onboarding/steps/FirmwareStep';
+import { FirmwareStep } from '#src/views/onboarding/steps/FirmwareStep/FirmwareStep';
 import { PinStep } from '#src/views/onboarding/steps/PinStep';
 import { RecoveryStep } from '#src/views/onboarding/steps/RecoveryStep';
 import { SecurityStep } from '#src/views/onboarding/steps/SecurityStep';
