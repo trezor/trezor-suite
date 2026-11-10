@@ -10,6 +10,7 @@
         { "path": "../module-activity-center" },
         { "path": "../module-assets" },
         { "path": "../module-coinjoin" },
+        { "path": "../module-connect-popup" },
         { "path": "../module-earn" },
         { "path": "../module-home" },
         { "path": "../module-receive" },

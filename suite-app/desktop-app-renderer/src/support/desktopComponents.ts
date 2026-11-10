@@ -1,16 +1,12 @@
 import { type ComponentType } from 'react';
 
 import { type PageName } from '@suite/router';
-import {
-    AppsEmbeddingPage,
-    ConnectPopupPage,
-    PasswordManagerPage,
-    ReferAFriendPage,
-} from '@suite-app/app';
+import { AppsEmbeddingPage, PasswordManagerPage, ReferAFriendPage } from '@suite-app/app';
 import { NftsPage, TokensPage, WalletDetailsPage } from '@suite-app/module-account-detail';
 import { NotificationPage } from '@suite-app/module-activity-center';
 import { AssetDetailPage } from '@suite-app/module-assets';
 import { WalletAnonymizePage, WalletCoinjoinPage } from '@suite-app/module-coinjoin';
+import { ConnectPopupPage } from '@suite-app/module-connect-popup';
 import {
     EarnClaimPage,
     EarnDepositPage,
