@@ -7,8 +7,7 @@
                 "tags": ["styled", "css", "sty"]
             }
         ],
-        "outDir": "./libDev",
-        "paths": { "src/*": ["./src/*"] }
+        "outDir": "./libDev"
     },
     "include": [".", "e2e", "**/*.json"],
     "references": [
