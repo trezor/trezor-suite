@@ -6,7 +6,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { PageHeader } from '#src/components/suite/layouts/SuiteLayout';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
 import { BasicName } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useLayout, useSelector } from '#src/hooks/suite';
 import { TradingTransactionsExportButton } from '#src/views/wallet/trading/common/TradingTransactions/TradingTransactionsExportButton';
