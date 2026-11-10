@@ -3,15 +3,14 @@ import { Pressable } from 'react-native';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenName } from '@suite-native/tokens';
+import { TokenIcon, TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TokenInfoCardProps = {
     networkSymbol: NetworkSymbol;
     tokenContract: TokenAddress;
-    tokenName: string;
     issuerDomain: string;
     iconContractAddress: TokenAddress | undefined;
     onPress: () => void;
@@ -26,7 +25,6 @@ const tokenCardStyle = prepareNativeStyle(utils => ({
 export const TokenInfoCard = ({
     networkSymbol,
     tokenContract,
-    tokenName,
     issuerDomain,
     iconContractAddress,
     onPress,
@@ -51,7 +49,6 @@ export const TokenInfoCard = ({
                                 <TokenIcon
                                     networkSymbol={asNetworkSymbol('xlm')}
                                     contractAddress={iconContractAddress}
-                                    tokenSymbol={tokenName}
                                     size="extraSmall"
                                 />
                                 <TokenName

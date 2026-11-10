@@ -8,8 +8,12 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
-import { TokenName, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import {
+    TokenIcon,
+    TokenName,
+    type TokensRootState,
+    selectAccountTokenSymbol,
+} from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 
@@ -50,7 +54,6 @@ export const AccountsListTokenItem = ({
                 <TokenIcon
                     networkSymbol={account.symbol}
                     contractAddress={token.contract}
-                    tokenSymbol={token.symbol || token.name}
                     showNetworkIcon
                 />
             }

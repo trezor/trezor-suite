@@ -26,6 +26,7 @@
         "@suite-native/link": "workspace:*",
         "@suite-native/markdown": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/tokens": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/redux-utils": "workspace:*",

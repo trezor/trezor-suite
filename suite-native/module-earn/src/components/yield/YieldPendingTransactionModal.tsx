@@ -30,8 +30,9 @@ import {
     ExactCryptoAmountFormatter,
     TransactionIdFormatter,
 } from '@suite-native/formatters';
-import { Icon, NetworkIcon, TokenIcon } from '@suite-native/icons';
+import { Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldPendingTransactionModalBackdrop } from './YieldPendingTransactionModalBackdrop';
@@ -228,7 +229,6 @@ export const YieldPendingTransactionModal = ({
                                 <TokenIcon
                                     networkSymbol={accountSymbol}
                                     contractAddress={vaultTokenContract}
-                                    tokenSymbol={vaultName}
                                     size="extraSmall"
                                     wrappedTokenIcon="network"
                                 />
@@ -256,7 +256,6 @@ export const YieldPendingTransactionModal = ({
                                     <TokenIcon
                                         networkSymbol={accountSymbol}
                                         contractAddress={amountTokenContract}
-                                        tokenSymbol={amountTokenSymbol}
                                         size="extraSmall"
                                     />
                                     <Text

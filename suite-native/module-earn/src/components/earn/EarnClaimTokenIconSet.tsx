@@ -1,6 +1,6 @@
 import { type YieldClaimToken } from '@suite-common/wallet-core';
 import { Box, Text } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const MAX_ICONS_WITHOUT_OVERFLOW = 3;
@@ -42,7 +42,6 @@ export const EarnClaimTokenIconSet = ({ tokens }: EarnClaimTokenIconSetProps) =>
                     <TokenIcon
                         networkSymbol={token.networkSymbol}
                         contractAddress={token.contractAddress}
-                        tokenSymbol={token.symbol}
                         size={ICON_SIZE}
                     />
                 </Box>

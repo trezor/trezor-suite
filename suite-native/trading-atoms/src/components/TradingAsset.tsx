@@ -3,8 +3,7 @@ import { type ReactNode } from 'react';
 import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
-import { TokenName, TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
@@ -84,7 +83,6 @@ export const TradingAsset = (props: TradingAssetProps) => {
                 <TokenIcon
                     networkSymbol={props.networkSymbol}
                     contractAddress={props.contractAddress}
-                    tokenSymbol={symbol || name}
                     showNetworkIcon
                     size={iconSize}
                 />

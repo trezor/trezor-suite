@@ -24,14 +24,13 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import {
     AssetsStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const rowStyle = prepareNativeStyle(utils => ({
@@ -100,7 +99,6 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
             <TokenIcon
                 networkSymbol={symbol}
                 contractAddress={contractAddress}
-                tokenSymbol={tokenSymbol ?? symbol}
                 size="medium"
                 showNetworkIcon
             />

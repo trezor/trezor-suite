@@ -67,8 +67,6 @@ export const DeactivationFeeScreen = () => {
         handleFeeLevelChange,
         handleCustomFeeSet,
         tokenInfo,
-        assetCode,
-        tokenName,
         issuerDomain,
         issuerAddress,
         iconContractAddress,
@@ -111,7 +109,6 @@ export const DeactivationFeeScreen = () => {
                         <TokenInfoCard
                             networkSymbol={account.symbol}
                             tokenContract={tokenContract}
-                            tokenName={tokenName}
                             issuerDomain={issuerDomain}
                             iconContractAddress={iconContractAddress}
                             onPress={openTokenDetail}
@@ -168,8 +165,6 @@ export const DeactivationFeeScreen = () => {
                     bottomSheetRef={tokenDetailRef}
                     networkSymbol={account.symbol}
                     tokenContract={tokenContract}
-                    tokenName={tokenName}
-                    assetCode={assetCode}
                     issuerDomain={issuerDomain}
                     issuerAddress={issuerAddress}
                     iconContractAddress={iconContractAddress}

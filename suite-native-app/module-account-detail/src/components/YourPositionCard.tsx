@@ -9,8 +9,8 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { YieldBadge } from '@suite-native/module-earn';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
@@ -63,7 +63,6 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                     <TokenIcon
                         networkSymbol={symbol}
                         contractAddress={token?.contract}
-                        tokenSymbol={token?.symbol || token?.name}
                         showNetworkIcon
                         size="medium"
                     />

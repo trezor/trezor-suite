@@ -55,7 +55,6 @@ export const YieldDepositApprovalLimitBottomSheet = ({
                     }
                     symbol={accountSymbol}
                     contractAddress={tokenContract}
-                    tokenSymbol={tokenSymbol}
                     isChecked={selectedApprovalLimitType === 'minimal'}
                     onChange={() => handleSelect('minimal')}
                 />
@@ -70,7 +69,6 @@ export const YieldDepositApprovalLimitBottomSheet = ({
                     }
                     symbol={accountSymbol}
                     contractAddress={tokenContract}
-                    tokenSymbol={tokenSymbol}
                     isChecked={selectedApprovalLimitType === 'unlimited'}
                     onChange={() => handleSelect('unlimited')}
                 >

@@ -21,6 +21,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
+        { "path": "../icons" },
         {
             "path": "../../packages/blockchain-link"
         },

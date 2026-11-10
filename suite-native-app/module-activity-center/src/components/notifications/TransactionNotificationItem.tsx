@@ -17,9 +17,10 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Icon, type IconName, TokenIcon } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { getTxNotificationFields } from './utils';
@@ -119,7 +120,6 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                             <TokenIcon
                                 networkSymbol={symbol}
                                 contractAddress={token?.contract}
-                                tokenSymbol={token?.symbol || token?.name}
                                 size="tiny"
                             />
                             {token?.symbol === undefined ? (
