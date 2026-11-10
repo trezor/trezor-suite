@@ -5,6 +5,7 @@ import {
     getContractAddressForNetworkSymbol,
     getErc4626Contracts,
     isTokenTransferMatchesSearch,
+    shouldUppercaseTokenSymbol,
     sortTokensByName,
 } from './tokenUtils';
 
@@ -92,5 +93,18 @@ describe('sortTokensByName', () => {
             'Aave',
             'chainlink',
         ]);
+    });
+});
+
+describe('shouldUppercaseTokenSymbol', () => {
+    it.each(['STELLAR-CLASSIC', 'STELLAR-CONTRACT'] as const)(
+        'preserves the case-sensitive %s asset code',
+        standard => {
+            expect(shouldUppercaseTokenSymbol({ standard })).toBe(false);
+        },
+    );
+
+    it('uppercases a symbol without a standard', () => {
+        expect(shouldUppercaseTokenSymbol({})).toBe(true);
     });
 });
