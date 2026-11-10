@@ -19,21 +19,12 @@ describe('ExchangeInfo', () => {
         props: Partial<ExchangeInfoProps> = {},
         tradingAccountKey: AccountKey = btc1NormalAccount.key,
     ) =>
-        renderWithTradingProvider(<ExchangeInfo isTxnError={false} {...props} />, {
+        renderWithTradingProvider(<ExchangeInfo {...props} />, {
             tradeType: 'exchange',
             overrides: {
                 wallet: { trading: { exchange: { tradingAccountKey } } },
             },
         });
-
-    it('should render nothing when isTxnError', async () => {
-        const { toJSON } = await renderExchangeInfo({
-            quote: mercuryoFixedWorstQuote,
-            isTxnError: true,
-        });
-
-        expect(toJSON()).toBeNull();
-    });
 
     it('should render nothing when there is no quote', async () => {
         const { toJSON } = await renderExchangeInfo({});

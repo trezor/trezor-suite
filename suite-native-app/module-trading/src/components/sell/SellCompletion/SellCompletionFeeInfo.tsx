@@ -3,25 +3,18 @@ import { useSelector } from 'react-redux';
 import type { SellFiatTrade } from 'invity-api';
 
 import { Box } from '@suite-native/atoms';
-import {
-    selectSellSelectedSendAccount,
-    selectTradingProviderConfirmationStatus,
-} from '@suite-native/trading-state';
+import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
 import { TradeFeeInfoRow } from '../../general/TradeInfo/TradeFeeInfoRow';
 
 export type SellCompletionFeeInfoProps = {
     quote?: SellFiatTrade;
-    isTxnError: boolean;
 };
 
-export const SellCompletionFeeInfo = ({ quote, isTxnError }: SellCompletionFeeInfoProps) => {
+export const SellCompletionFeeInfo = ({ quote }: SellCompletionFeeInfoProps) => {
     const fromAccount = useSelector(selectSellSelectedSendAccount);
-    const providerConfirmationStatus = useSelector(selectTradingProviderConfirmationStatus);
 
-    const isTradeConfirmedOnProviderSide = providerConfirmationStatus === 'confirmation_success';
-
-    if (!fromAccount || !quote?.cryptoCurrency || isTxnError || !isTradeConfirmedOnProviderSide) {
+    if (!fromAccount || !quote?.cryptoCurrency) {
         return null;
     }
 

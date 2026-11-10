@@ -1,7 +1,6 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
-import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { SellCompletionFeeInfo, type SellCompletionFeeInfoProps } from './SellCompletionFeeInfo';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
@@ -16,28 +15,17 @@ describe('SellCompletionFeeInfo', () => {
     const renderSellCompletionFeeInfo = (
         props: Partial<SellCompletionFeeInfoProps> = {},
         tradingAccountKey: AccountKey = eth1NormalAccount.key,
-        providerConfirmationStatus: ProviderConfirmationStatus = 'confirmation_success',
     ) =>
-        renderWithTradingProvider(<SellCompletionFeeInfo isTxnError={false} {...props} />, {
+        renderWithTradingProvider(<SellCompletionFeeInfo {...props} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {
                     trading: {
                         sell: { tradingAccountKey },
-                        providerConfirmationStatus,
                     },
                 },
             },
         });
-
-    it('should render nothing when isTxnError', async () => {
-        const { toJSON } = await renderSellCompletionFeeInfo({
-            quote: banxaCreditCardSellQuote,
-            isTxnError: true,
-        });
-
-        expect(toJSON()).toBeNull();
-    });
 
     it('should render nothing when there is no quote', async () => {
         const { toJSON } = await renderSellCompletionFeeInfo({});
@@ -59,16 +47,6 @@ describe('SellCompletionFeeInfo', () => {
         const { toJSON } = await renderSellCompletionFeeInfo(
             { quote: banxaCreditCardSellQuote },
             mockAccountKey({ descriptor: 'unknownAccountKey' }),
-        );
-
-        expect(toJSON()).toBeNull();
-    });
-
-    it('should render nothing when providerConfirmationStatus is not in "confirmation_success" state', async () => {
-        const { toJSON } = await renderSellCompletionFeeInfo(
-            { quote: banxaCreditCardSellQuote },
-            eth1NormalAccount.key,
-            'window_closed_with_success',
         );
 
         expect(toJSON()).toBeNull();

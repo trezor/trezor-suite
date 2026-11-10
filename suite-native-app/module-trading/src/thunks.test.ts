@@ -104,11 +104,11 @@ jest.mock('@suite-common/wallet-core', () => {
                 },
             }),
         composeSendFormTransactionFeeLevelsThunk: (params: unknown) => () => {
-            mockComposeSendFormTransactionFeeLevelsThunk(params);
+            const feeLevels = mockComposeSendFormTransactionFeeLevelsThunk(params) ?? {};
 
             return Promise.resolve({
                 type: '@common/wallet-core/send/composeSendFormTransactionFeeLevelsThunk/fulfilled',
-                payload: {},
+                payload: feeLevels,
                 meta: {
                     requestId: 'test-request-id',
                     requestStatus: 'fulfilled' as const,
@@ -372,6 +372,55 @@ describe('thunks', () => {
                     },
                 }),
             );
+        });
+
+        it('should store the form draft when the selected fee level cannot be composed', async () => {
+            mockComposeSendFormTransactionFeeLevelsThunk.mockReturnValueOnce({
+                normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                low: mockPrecomposedLevels.normal,
+            });
+            const formDraftKey = getFormDraftKey('trading-exchange', '');
+            const store = createTradingTestStore({
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: {
+                            exchange: {
+                                tradingAccountKey: eth1NormalAccount.key,
+                                selectedQuote: invityDexQuote,
+                            },
+                        },
+                    },
+                },
+            });
+            const ethAccount = store
+                .getState()
+                .wallet.accounts.find((account: Account) => account.key === eth1NormalAccount.key);
+
+            // Blockchain state is only read by the mocked compose thunk.
+            const thunkStore = store as unknown as ReduxStoreWithThunk<
+                ComposeTradingTransactionThunkState,
+                Record<never, never>
+            >;
+
+            const result = await thunkStore.dispatch(
+                composeTradingTransactionThunk({
+                    tradeType: 'exchange',
+                    account: ethAccount!,
+                    network: getNetwork(ethAccount!.symbol),
+                    feeInfo,
+                    selectedFeeLevel: 'normal',
+                    feeLimit: '52000',
+                }),
+            );
+
+            expect(result.type).toContain('fulfilled');
+
+            const draft = store.getState().wallet.formDrafts[formDraftKey];
+            expect(draft?.selectedFee).toBe('normal');
+            expect(draft?.feeLimit).toBe('52000');
+            expect(draft?.outputs[0]?.amount).toBe(invityDexQuote.sendStringAmount);
+            expect(draft?.outputs[0]?.token).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
         });
     });
 });
