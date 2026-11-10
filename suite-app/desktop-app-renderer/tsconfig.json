@@ -9,6 +9,7 @@
     ],
     "references": [
         { "path": "../app" },
+        { "path": "../module-account-detail" },
         { "path": "../module-assets" },
         { "path": "../module-earn" },
         { "path": "../module-home" },

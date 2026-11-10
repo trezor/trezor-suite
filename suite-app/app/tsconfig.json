@@ -89,9 +89,6 @@
             "path": "../../suite-common/wallet-core"
         },
         {
-            "path": "../../suite-common/wallet-utils"
-        },
-        {
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../../suite/account" },
@@ -125,7 +122,6 @@
             "path": "../../suite/metadata-migration"
         },
         { "path": "../../suite/modal" },
-        { "path": "../../suite/receive" },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/regions" },
         { "path": "../../suite/router" },

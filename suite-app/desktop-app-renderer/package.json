@@ -17,6 +17,7 @@
     "dependencies": {
         "@sentry/electron": "^7.20.1",
         "@suite-app/app": "workspace:*",
+        "@suite-app/module-account-detail": "workspace:*",
         "@suite-app/module-assets": "workspace:*",
         "@suite-app/module-earn": "workspace:*",
         "@suite-app/module-home": "workspace:*",

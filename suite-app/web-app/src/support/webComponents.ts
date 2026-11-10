@@ -146,9 +146,9 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ),
     ),
     'wallet-details': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/WalletDetailsPage').then(
-            ({ WalletDetailsPage }) => ({ default: WalletDetailsPage }),
-        ),
+        import(
+            /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/WalletDetailsPage'
+        ).then(({ WalletDetailsPage }) => ({ default: WalletDetailsPage })),
     ),
     // Debug only: trading form embed preview
     'wallet-trade': lazy(() =>
@@ -157,16 +157,16 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ).then(({ WalletTradePage }) => ({ default: WalletTradePage })),
     ),
     'wallet-tokens': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/TokensPage').then(
-            ({ TokensPage }) => ({ default: TokensPage }),
-        ),
+        import(
+            /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/TokensPage'
+        ).then(({ TokensPage }) => ({ default: TokensPage })),
     ),
     'wallet-nfts': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/NftsPage').then(
-            ({ NftsPage }) => ({
-                default: NftsPage,
-            }),
-        ),
+        import(
+            /* webpackChunkName: "wallet" */ '@suite-app/module-account-detail/pages/NftsPage'
+        ).then(({ NftsPage }) => ({
+            default: NftsPage,
+        })),
     ),
     'wallet-send': lazy(() =>
         import(/* webpackChunkName: "wallet" */ '@suite-app/module-send/pages/WalletSendPage').then(
