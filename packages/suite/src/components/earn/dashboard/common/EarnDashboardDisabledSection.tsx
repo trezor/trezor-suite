@@ -2,7 +2,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, isEarnYieldRowAnchor, selectRouterAnchor, useAnchor } from '@suite/router';
 import { Banner } from '@trezor/components';
 
-import { DashboardSection } from '#src/components/dashboard';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { useSelector } from '#src/hooks/suite';
 import {
     type EarnDashboardType,
