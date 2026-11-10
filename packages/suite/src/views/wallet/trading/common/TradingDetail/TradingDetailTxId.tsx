@@ -1,12 +1,8 @@
 import { Address } from '@suite/address';
 import { useExternalLink } from '@suite/external-links';
 import { openModal } from '@suite/modal';
-import { getTxExplorerUrl } from '@suite-common/wallet-config';
-import {
-    selectAccountByKey,
-    selectExplorer,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+import { selectTradingTxAccountKey, selectTradingTxExplorerUrl } from '@suite-common/trading';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Icon, Link, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -34,20 +30,22 @@ export const TradingDetailTxId = ({
 }: TradingDetailTxIdProps) => {
     const { dispatch } = useServices(injectDispatch);
 
-    const payoutAccount = useSelector(state =>
-        receiveAccountKey && selectTransactionByAccountKeyAndTxid(state, receiveAccountKey, value)
-            ? selectAccountByKey(state, receiveAccountKey)
-            : null,
-    );
-    const isInSendAccount = useSelector(
-        state => !!selectTransactionByAccountKeyAndTxid(state, account.key, value),
-    );
-    const txAccount = payoutAccount ?? (isInSendAccount ? account : null);
+    const txAccount = useSelector(state => {
+        const txAccountKey = selectTradingTxAccountKey(
+            state,
+            value,
+            account.key,
+            receiveAccountKey,
+        );
 
-    const explorer = useSelector(state => selectExplorer(state, account.symbol));
+        return txAccountKey ? selectAccountByKey(state, txAccountKey) : null;
+    });
+    const txExplorerUrl = useSelector(state =>
+        selectTradingTxExplorerUrl(state, value, account.key),
+    );
     // The transaction detail reads the transaction from the store, so it opens only for a
     // transaction an account has loaded. Anything else goes to the explorer of its network.
-    const explorerUrl = useExternalLink(txAccount ? undefined : getTxExplorerUrl(explorer, value));
+    const explorerUrl = useExternalLink(txAccount ? undefined : txExplorerUrl);
 
     const openTransactionDetail = txAccount
         ? () =>
