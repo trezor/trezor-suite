@@ -27,6 +27,7 @@
         "@suite-app/module-home": "workspace:*",
         "@suite-app/module-password-manager": "workspace:*",
         "@suite-app/module-receive": "workspace:*",
+        "@suite-app/module-refer-a-friend": "workspace:*",
         "@suite-app/module-send": "workspace:*",
         "@suite-app/module-settings": "workspace:*",
         "@suite-app/module-sign-verify": "workspace:*",

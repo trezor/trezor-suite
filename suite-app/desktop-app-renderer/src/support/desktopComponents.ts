@@ -1,7 +1,7 @@
 import { type ComponentType } from 'react';
 
 import { type PageName } from '@suite/router';
-import { AppsEmbeddingPage, ReferAFriendPage } from '@suite-app/app';
+import { AppsEmbeddingPage } from '@suite-app/app';
 import { NftsPage, TokensPage, WalletDetailsPage } from '@suite-app/module-account-detail';
 import { NotificationPage } from '@suite-app/module-activity-center';
 import { AssetDetailPage } from '@suite-app/module-assets';
@@ -25,6 +25,7 @@ import {
 import { DashboardPage, HiddenTokensPage } from '@suite-app/module-home';
 import { PasswordManagerPage } from '@suite-app/module-password-manager';
 import { ReceivePage } from '@suite-app/module-receive';
+import { ReferAFriendPage } from '@suite-app/module-refer-a-friend';
 import { WalletSendPage } from '@suite-app/module-send';
 import {
     DesktopSettingsGeneralPage,

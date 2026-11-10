@@ -5,7 +5,7 @@ import { type PageName } from '@suite/router';
 export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>> = {
     'suite-refer-a-friend': lazy(() =>
         import(
-            /* webpackChunkName: "refer-a-friend" */ '@suite-app/app/pages/ReferAFriendPage'
+            /* webpackChunkName: "refer-a-friend" */ '@suite-app/module-refer-a-friend/pages/ReferAFriendPage'
         ).then(({ ReferAFriendPage }) => ({ default: ReferAFriendPage })),
     ),
     'suite-index': lazy(() =>
