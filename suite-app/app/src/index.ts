@@ -19,7 +19,6 @@ export { ConnectPopupPage } from './pages/ConnectPopupPage';
 export { NftsPage } from './pages/NftsPage';
 export { NotificationPage } from './pages/NotificationPage';
 export { PasswordManagerPage } from './pages/PasswordManagerPage';
-export { ReceivePage } from './pages/ReceivePage';
 export { ReferAFriendPage } from './pages/ReferAFriendPage';
 export { TokensPage } from './pages/TokensPage';
 export { TransactionsPage } from './pages/TransactionsPage';

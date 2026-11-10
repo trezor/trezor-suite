@@ -7,7 +7,6 @@ import {
     NftsPage,
     NotificationPage,
     PasswordManagerPage,
-    ReceivePage,
     ReferAFriendPage,
     TokensPage,
     TransactionsPage,
@@ -32,6 +31,7 @@ import {
     WalletStakingPage,
 } from '@suite-app/module-earn';
 import { DashboardPage, HiddenTokensPage } from '@suite-app/module-home';
+import { ReceivePage } from '@suite-app/module-receive';
 import { WalletSendPage } from '@suite-app/module-send';
 import {
     DesktopSettingsGeneralPage,
