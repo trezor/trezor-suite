@@ -1,0 +1,44 @@
+{
+    "name": "@suite-app/module-trading",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "exports": {
+        ".": "./src/index.ts",
+        "./pages/*": "./src/pages/*.tsx"
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/trading": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite/account": "workspace:*",
+        "@suite/authenticity-checks": "workspace:*",
+        "@suite/debug": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@suite/message-system": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/icons": "workspace:*",
+        "@trezor/product-components": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/suite": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "react": "19.3.0",
+        "react-redux": "9.3.0",
+        "styled-components": "^6.5.3"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*",
+        "@types/invity-api": "^1.1.23"
+    }
+}

@@ -30,6 +30,15 @@ import {
     SettingsDebugPage,
     SettingsDevicePage,
     TokensPage,
+    TransactionsPage,
+    WalletAnonymizePage,
+    WalletCoinjoinPage,
+    WalletDetailsPage,
+    WalletSendPage,
+    WalletStakingPage,
+} from '@suite-app/app';
+import { SignVerifyPage } from '@suite-app/module-sign-verify';
+import {
     TradingBuyConfirmPage,
     TradingBuyDetailPage,
     TradingBuyFormPage,
@@ -43,15 +52,8 @@ import {
     TradingSellDetailPage,
     TradingSellFormPage,
     TradingTransactionsPage,
-    TransactionsPage,
-    WalletAnonymizePage,
-    WalletCoinjoinPage,
-    WalletDetailsPage,
-    WalletSendPage,
-    WalletStakingPage,
     WalletTradePage,
-} from '@suite-app/app';
-import { SignVerifyPage } from '@suite-app/module-sign-verify';
+} from '@suite-app/module-trading';
 
 /*
  Note 1: Currently, this list contains the same components as webComponents.ts, but there could be Desktop-specific

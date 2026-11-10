@@ -19,6 +19,7 @@
         "@sentry/browser": "10.75.2",
         "@suite-app/app": "workspace:*",
         "@suite-app/module-sign-verify": "workspace:*",
+        "@suite-app/module-trading": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",

@@ -11249,7 +11249,6 @@ __metadata:
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite/account": "workspace:*"
@@ -11304,7 +11303,6 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/file-saver": "npm:^2.0.6"
-    "@types/invity-api": "npm:^1.1.23"
     "@types/react": "npm:19.3.0"
     "@types/redux-logger": "npm:^3.0.13"
     "@types/webpack-bundle-analyzer": "npm:^4.7.0"
@@ -11403,6 +11401,7 @@ __metadata:
     "@sentry/electron": "npm:^7.20.1"
     "@suite-app/app": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
+    "@suite-app/module-trading": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -11471,6 +11470,36 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-app/module-trading@workspace:*, @suite-app/module-trading@workspace:suite-app/module-trading":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-trading@workspace:suite-app/module-trading"
+  dependencies:
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/account": "workspace:*"
+    "@suite/authenticity-checks": "workspace:*"
+    "@suite/debug": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/message-system": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@types/invity-api": "npm:^1.1.23"
+    react: "npm:19.3.0"
+    react-redux: "npm:9.3.0"
+    styled-components: "npm:^6.5.3"
+  languageName: unknown
+  linkType: soft
+
 "@suite-app/storybook@workspace:suite-app/storybook":
   version: 0.0.0-use.local
   resolution: "@suite-app/storybook@workspace:suite-app/storybook"
@@ -11535,6 +11564,7 @@ __metadata:
     "@sentry/browser": "npm:10.75.2"
     "@suite-app/app": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
+    "@suite-app/module-trading": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
