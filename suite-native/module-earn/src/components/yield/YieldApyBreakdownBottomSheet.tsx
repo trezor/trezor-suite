@@ -51,7 +51,7 @@ const isAprReward = (reward: RewardDtoV2): boolean => {
     const ratePercent = getApyPercent(reward.rate);
 
     return (
-        getRateTranslationId(reward.yieldSource) === 'earn.apyAbbr' &&
+        getRateTranslationId(reward.yieldSource) === 'earn.aprAbbr' &&
         ratePercent !== null &&
         ratePercent > 0
     );
