@@ -30,7 +30,7 @@ import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
 
 import { YieldClaimFeeWarning } from './YieldClaimFeeWarning';
 import { YieldRewardsList } from './YieldRewardsList';
-import { useMerklRewards } from './hooks';
+import { useMerklRewards } from './hooks/useMerklRewards';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteClaim } from '../common/YieldFlowCompleteClaim';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
