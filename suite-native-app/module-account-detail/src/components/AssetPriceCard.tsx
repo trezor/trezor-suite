@@ -8,9 +8,13 @@ import { isErc4626 } from '@suite-common/wallet-utils';
 import { AssetPriceChange } from '@suite-native/assets';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    TokenIcon,
+    TokenName,
+    type TokensRootState,
+    selectAccountTokenInfo,
+} from '@suite-native/tokens';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -58,8 +62,6 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
     if (!networkSymbol) return null;
     if (!isLoading && currentValue === null) return null;
 
-    const tokenName = token?.name ?? token?.symbol ?? getNetworkDisplaySymbol(networkSymbol);
-
     const priceContract = isErc4626Token ? underlyingAssetContract : tokenContract;
     const isCoinPrice = !priceContract || isWrappedNativeToken(networkSymbol, priceContract);
     const isUnderlyingAssetResolving = isErc4626Token && underlyingAssetContract === null;
@@ -77,16 +79,24 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                             <TokenIcon
                                 networkSymbol={networkSymbol}
                                 contractAddress={tokenContract}
-                                tokenSymbol={token?.symbol || token?.name}
                                 showNetworkIcon
                                 size="medium"
                             />
                         </Box>
 
                         <Box style={applyStyle(cardContentStyle)}>
-                            <Text variant="body-sm-strong" color="contentPrimary">
-                                {tokenName}
-                            </Text>
+                            {token ? (
+                                <TokenName
+                                    networkSymbol={networkSymbol}
+                                    contractAddress={token.contract}
+                                    variant="body-sm-strong"
+                                    color="contentPrimary"
+                                />
+                            ) : (
+                                <Text variant="body-sm-strong" color="contentPrimary">
+                                    {getNetworkDisplaySymbol(networkSymbol)}
+                                </Text>
+                            )}
 
                             <Text variant="body-sm" color="contentSecondary">
                                 {getNetworkDisplaySymbolName(networkSymbol)}
