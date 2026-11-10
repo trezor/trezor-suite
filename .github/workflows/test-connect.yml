@@ -24,7 +24,6 @@ on:
       - "packages/transport-common/**"
       - "packages/transport-web/**"
       - "packages/utxo-lib/**"
-      - "docker/**"
       - "submodules/trezor-common/**"
       - ".github/workflows/test-connect.yml"
       - ".github/workflows/template-connect-test-params.yml"
