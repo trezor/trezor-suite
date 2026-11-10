@@ -1,4 +1,4 @@
-import type { ProtocolState } from '#src/reducers/suite/protocolReducer';
+import type { ProtocolState } from '#src/reducers/suite/protocolState';
 
 type ProtocolRootState = {
     protocol: ProtocolState;

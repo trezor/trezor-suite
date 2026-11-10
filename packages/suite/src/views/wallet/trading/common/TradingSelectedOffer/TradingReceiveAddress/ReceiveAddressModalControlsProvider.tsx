@@ -1,32 +1,12 @@
-import { type ReactNode, createContext, useContext, useState } from 'react';
-
-import { throwError } from '@trezor/utils';
+import { type ReactNode } from 'react';
 
 import { TradingReceiveAccountModal } from './TradingReceiveAccountModal/TradingReceiveAccountModal';
 import { TradingReceiveAddressModal } from './TradingReceiveAddressModal';
 import { TradingUtxoReceiveAddressModal } from './TradingUtxoReceiveAddressModal/TradingUtxoReceiveAddressModal';
-
-type ReceiveAddressModal = 'accountModal' | 'customAddressModal' | 'utxoAddressModal';
-
-const useReceiveAddressModal = () => {
-    const [activeModal, setActiveModal] = useState<ReceiveAddressModal>();
-
-    const open = (id: ReceiveAddressModal) => {
-        setActiveModal(id);
-    };
-
-    const close = () => {
-        setActiveModal(undefined);
-    };
-
-    return { activeModal, open, close };
-};
-
-type ReceiveAddressModalControlsContextType = ReturnType<typeof useReceiveAddressModal>;
-
-const ReceiveAddressModalControlsContext = createContext<
-    ReceiveAddressModalControlsContextType | undefined
->(undefined);
+import {
+    ReceiveAddressModalControlsContext,
+    useReceiveAddressModal,
+} from './useReceiveAddressModalControls';
 
 type ReceiveAddressModalControlsProviderProps = { children: ReactNode };
 
@@ -47,9 +27,3 @@ export const ReceiveAddressModalControlsProvider = ({
         </ReceiveAddressModalControlsContext.Provider>
     );
 };
-
-export const useReceiveAddressModalControls = () =>
-    useContext(ReceiveAddressModalControlsContext) ??
-    throwError(
-        'useReceiveAddressModalControls must be used within a ReceiveAddressModalControlsProvider',
-    );

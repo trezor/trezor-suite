@@ -1,13 +1,10 @@
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 
-import { type SendContextValues } from '#src/types/wallet/sendForm';
-
-export type HandleAmountChangeParams = {
-    outputId: number;
-    value: string;
-};
-
-export type HandleFiatChangeParams = HandleAmountChangeParams & { token?: TokenInfo };
+import {
+    type HandleAmountChangeParams,
+    type HandleFiatChangeParams,
+    type SendContextValues,
+} from '#src/types/wallet/sendForm';
 
 type UseSendFormChangeHandlersParams = {
     calculateCryptoAmountFromBaseCurrencyAmount: (

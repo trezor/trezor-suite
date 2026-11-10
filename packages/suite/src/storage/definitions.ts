@@ -42,7 +42,7 @@ import { type StaticSessionId } from '@trezor/connect';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 
 import type { BioAuthState } from '#src/reducers/bioAuth/bioAuthReducer';
-import type { SuiteState } from '#src/reducers/suite/suiteReducer';
+import type { EvmSettings } from '#src/reducers/suite/evmSettings';
 
 import { type GraphData } from '../types/wallet/graph';
 
@@ -105,8 +105,8 @@ export interface SuiteDBSchema extends DBSchema {
         value: {
             settings: SuiteSettingsState;
             flags: FlagsState;
-            evmSettings: SuiteState['evmSettings'];
-            seenDisconnectNotificationForDeviceIds: SuiteState['seenDisconnectNotificationForDeviceIds'];
+            evmSettings: EvmSettings;
+            seenDisconnectNotificationForDeviceIds: string[];
         };
     };
     historicRates: {

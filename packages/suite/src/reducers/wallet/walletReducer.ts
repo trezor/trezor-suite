@@ -54,9 +54,11 @@ import {
     type WalletSettings,
 } from '@suite-common/wallet-types';
 
+import { type GraphState } from '#src/types/wallet/graph';
+
 import accountSearchReducer, { type AccountSearchState } from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
-import graphReducer, { type GraphState } from './graphReducer';
+import graphReducer from './graphReducer';
 
 export type WalletState = {
     fiat: FiatRatesState;
