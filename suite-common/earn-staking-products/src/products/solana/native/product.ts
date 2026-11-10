@@ -9,13 +9,10 @@ import type {
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
-import { getSolanaDelegationProductPosition } from '../getSolanaDelegationProductPosition';
-import {
-    type SolanaDelegationProductInfoDeps,
-    fetchSolanaDelegationProductInfo,
-} from '../solanaDelegationProductInfo';
-import { getSolanaNativeDelegationProductAmountBounds } from './solanaNativeDelegationProductAmountBounds';
-import { createSolanaNativeDelegationProductDescriptor } from './solanaNativeDelegationProductDescriptor';
+import { type SolanaDelegationProductInfoDeps, fetchSolanaDelegationProductInfo } from '../info';
+import { getSolanaDelegationProductPosition } from '../position';
+import { getSolanaNativeDelegationProductAmountBounds } from './amountBounds';
+import { createSolanaNativeDelegationProductDescriptor } from './descriptor';
 
 export type SolanaNativeDelegationProductDeps = SolanaDelegationProductInfoDeps;
 

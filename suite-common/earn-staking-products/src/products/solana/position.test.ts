@@ -17,10 +17,10 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createSolanaExternalDelegationProductDescriptor } from './external/solanaExternalDelegationProductDescriptor';
-import { getSolanaDelegationProductPosition } from './getSolanaDelegationProductPosition';
-import { createSolanaNativeDelegationProductDescriptor } from './native/solanaNativeDelegationProductDescriptor';
-import { SOLANA_EXTERNAL_PRODUCT_INFO } from './solanaDelegationProductInfo';
+import { createSolanaExternalDelegationProductDescriptor } from './external/descriptor';
+import { SOLANA_EXTERNAL_PRODUCT_INFO } from './info';
+import { createSolanaNativeDelegationProductDescriptor } from './native/descriptor';
+import { getSolanaDelegationProductPosition } from './position';
 import { everstakeProvider } from '../../providers/everstake';
 import { externalProvider } from '../../providers/external';
 

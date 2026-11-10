@@ -6,7 +6,7 @@ import {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS } from './solanaNativeDelegationProductLimits';
+import { SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
 
 export type CreateSolanaNativeDelegationProductDescriptorParams = {
     networkSymbol: NetworkSymbol;

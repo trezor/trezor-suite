@@ -9,12 +9,12 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
-import { createSolanaExternalDelegationProduct } from './products/solana/external/createSolanaExternalDelegationProduct';
+import { createSolanaExternalDelegationProduct } from './products/solana/external/product';
+import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/messageSystemFeatures';
 import {
     type SolanaNativeDelegationProductDeps,
     createSolanaNativeDelegationProduct,
-} from './products/solana/native/createSolanaNativeDelegationProduct';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductMessageSystemFeatures';
+} from './products/solana/native/product';
 import { everstakeProvider } from './providers/everstake';
 
 describe('createStakingProductsCompositionRoot', () => {

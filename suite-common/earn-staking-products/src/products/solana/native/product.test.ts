@@ -18,7 +18,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 import {
     type SolanaNativeDelegationProductDeps,
     createSolanaNativeDelegationProduct,
-} from './createSolanaNativeDelegationProduct';
+} from './product';
 import { everstakeProvider } from '../../../providers/everstake';
 import { externalProvider } from '../../../providers/external';
 import { luganodesProvider } from '../../../providers/luganodes';

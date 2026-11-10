@@ -20,12 +20,12 @@ export {
 export {
     createSolanaExternalDelegationProduct,
     type CreateSolanaExternalDelegationProductParams,
-} from './products/solana/external/createSolanaExternalDelegationProduct';
+} from './products/solana/external/product';
 export {
     createSolanaNativeDelegationProduct,
     type CreateSolanaNativeDelegationProductParams,
     type SolanaNativeDelegationProductDeps,
-} from './products/solana/native/createSolanaNativeDelegationProduct';
+} from './products/solana/native/product';
 export {
     createTronCuratedProduct,
     type CreateTronCuratedProductParams,

@@ -11,8 +11,8 @@ import { mockSolanaStakingAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { everstakeProvider } from '../../../providers/everstake';
-import { SOLANA_EXTERNAL_PRODUCT_INFO } from '../solanaDelegationProductInfo';
-import { createSolanaExternalDelegationProduct } from './createSolanaExternalDelegationProduct';
+import { SOLANA_EXTERNAL_PRODUCT_INFO } from '../info';
+import { createSolanaExternalDelegationProduct } from './product';
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('sol') });
 
