@@ -103,7 +103,7 @@ const createMessageSystemState = (activeVariant: 'A' | 'B'): MessageSystemState 
             {
                 conditions: [],
                 experiment: {
-                    id: ExperimentId.assetFirstHomeTable,
+                    id: ExperimentId.assetFirstHomeTableMobile,
                     groups: [
                         { variant: 'A', percentage: activeVariant === 'A' ? 100 : 0 },
                         { variant: 'B', percentage: activeVariant === 'B' ? 100 : 0 },
@@ -112,7 +112,7 @@ const createMessageSystemState = (activeVariant: 'A' | 'B'): MessageSystemState 
             },
         ],
     },
-    validExperiments: [ExperimentId.assetFirstHomeTable],
+    validExperiments: [ExperimentId.assetFirstHomeTableMobile],
 });
 
 describe('HomeScreen', () => {

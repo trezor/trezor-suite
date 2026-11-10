@@ -119,7 +119,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
     const isAssetsFirstEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
     const { translate } = useTranslate();

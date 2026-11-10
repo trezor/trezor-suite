@@ -228,6 +228,7 @@ export type ContextDomain = FunctionContextReturnValues;
 
 export enum ExperimentId {
     assetFirstHomeTable = 'da21537c-d393-4292-9908-cba1eabdb651',
+    assetFirstHomeTableMobile = 'd0dca9bc-578f-47c9-97a9-fc83d2b27713',
     tradingFeedbackForm = '092db279-98dc-418e-bbfa-ef70716fb211',
     tradingFiatValues = 'b73df44d-37ed-4b66-aba1-5c4164493bae',
 }

@@ -68,7 +68,7 @@ const HomeScreenContent = ({
 export const HomeScreen = () => {
     const { showSystemUnpairingAlert } = useBluetoothAlerts();
     const isAssetsFirstHomeScreenEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
     const portfolioGraphRef = useRef<PortfolioGraphRef>(null);

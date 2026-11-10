@@ -125,7 +125,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
 
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
     const isAssetsFirstEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
 

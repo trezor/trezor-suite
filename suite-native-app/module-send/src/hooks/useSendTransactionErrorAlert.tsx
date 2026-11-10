@@ -38,7 +38,7 @@ export const useSendTransactionErrorAlert = ({
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const isAssetsFirstEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
 
