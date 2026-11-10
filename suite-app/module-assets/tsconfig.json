@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "include": [".", "**/*.json"],
+    "references": [
+        { "path": "../../suite-common/assets" },
+        { "path": "../../suite/intl" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/requirements" }
+    ]
+}

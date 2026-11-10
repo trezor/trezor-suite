@@ -30,9 +30,9 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ).then(({ HiddenTokensPage }) => ({ default: HiddenTokensPage })),
     ),
     'suite-asset': lazy(() =>
-        import(/* webpackChunkName: "dashboard" */ '@suite-app/app/pages/AssetDetailPage').then(
-            ({ AssetDetailPage }) => ({ default: AssetDetailPage }),
-        ),
+        import(
+            /* webpackChunkName: "dashboard" */ '@suite-app/module-assets/pages/AssetDetailPage'
+        ).then(({ AssetDetailPage }) => ({ default: AssetDetailPage })),
     ),
     'suite-earn': lazy(() =>
         import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnPage').then(
