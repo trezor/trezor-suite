@@ -20,34 +20,6 @@ env:
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
-  # ── Desktop ────────────────────────────────────────────────────────────────
-
-  build-app:
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/build-suite-desktop-e2e.yml
-
-  run-e2e-suite-desktop-tests:
-    if: github.repository == 'trezor/trezor-suite'
-    needs:
-      - build-app
-    strategy:
-      fail-fast: false
-      matrix:
-        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    uses: ./.github/workflows/template-suite-run-e2e.yml
-    with:
-      target: "desktop"
-      pw-config: "./playwright-config/playwright-desktop-nightly.config.ts"
-      test-group: ${{ matrix.TEST_GROUP }}
-      fail-fast: "false"
-      currents-project-id: "4ytF0E"
-      currents-ci-build-id: "nightly-desktop-run-${{ github.run_id }}-${{ github.run_attempt }}"
-      download-artifact-name: "desktop-app-build-e2e"
-    secrets:
-      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
-      e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
-
   # ── Web ────────────────────────────────────────────────────────────────────
 
   build-web:
@@ -125,7 +97,7 @@ jobs:
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
 
   build-and-publish-coverage-map:
-    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' && github.ref == 'refs/heads/develop' && needs.run-e2e-suite-web-tests.result != 'skipped' }}
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' && needs.run-e2e-suite-web-tests.result != 'skipped' }}
     needs: [run-e2e-suite-web-tests]
     runs-on: ubuntu-latest
     permissions:
@@ -140,12 +112,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
-        with:
-          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
-          aws-region: "eu-central-1"
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
@@ -178,19 +144,11 @@ jobs:
             --input coverage-map \
             --output coverage-map/index.json
 
-      - name: Upload coverage map to S3
-        run: |
-          aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/index.json --body packages/e2e-utils/coverage-map/index.json --content-type application/json --cache-control "no-cache, max-age=0"
+      - name: Upload coverage map index (tmp verification, no S3 publish)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: coverage-map-index
+          path: packages/e2e-utils/coverage-map/index.json
+          if-no-files-found: error
+          retention-days: 7
 
-  notify-coverage-map-failure:
-    if: ${{ !cancelled() && needs.build-and-publish-coverage-map.result == 'failure' }}
-    needs: [build-and-publish-coverage-map]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Notify coverage map failure to Slack
-        env:
-          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
-        run: |
-          jq -n --arg text "Nightly e2e coverage map build failed: <$GITHUB_RUN_URL|Github run>" '{text: $text}' \
-            | curl -X POST -H 'Content-type: application/json' --data @- "$SLACK_WEBHOOK_URL"
