@@ -3,11 +3,9 @@ import {
     MODAL_CONTEXT_DEVICE_CONFIRMATION,
     MODAL_CONTEXT_USER,
 } from '@suite/modal';
+import { DeviceConfirmationModal, DeviceContextModal, type ReduxModalProps } from '@trezor/suite';
 
-import { DeviceConfirmationModal } from './DeviceConfirmationModal/DeviceConfirmationModal';
-import { DeviceContextModal } from './DeviceContextModal/DeviceContextModal';
-import type { ReduxModalProps } from './ReduxModalProps';
-import { UserContextModal } from './UserContextModal/UserContextModal';
+import { UserContextModal } from './UserContextModal';
 
 /** Modals initiated by redux state.modal */
 export const ReduxModal = (modal: ReduxModalProps) => {

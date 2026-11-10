@@ -3,6 +3,8 @@
     "compilerOptions": { "outDir": "./libDev" },
     "include": ["."],
     "references": [
+        { "path": "../app-modal" },
+        { "path": "../module-onboarding" },
         { "path": "../suite-sync" },
         {
             "path": "../../suite-common/analytics-redux"

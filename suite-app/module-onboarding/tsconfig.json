@@ -1,0 +1,30 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "include": [".", "**/*.json"],
+    "references": [
+        { "path": "../app-modal" },
+        {
+            "path": "../../suite-common/analytics"
+        },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/thp" },
+        { "path": "../../suite/analytics" },
+        { "path": "../../suite/debug" },
+        { "path": "../../suite/intl" },
+        { "path": "../../suite/macos" },
+        { "path": "../../suite/modal" },
+        { "path": "../../suite/router" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
+    ]
+}

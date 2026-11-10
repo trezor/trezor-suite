@@ -8,26 +8,25 @@ import { Translation } from '@suite/intl';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
+import { ReduxModal } from '@suite-app/app-modal';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-import { TREZOR_SUPPORT_URL } from '@trezor/urls';
-
-import { GuideButton, GuideRouter } from '#src/components/guide';
-import { OnboardingProgressBar } from '#src/components/onboarding/OnboardingProgressBar';
-import { SuiteBanners } from '#src/components/suite/banners';
-import { ReduxModal } from '#src/components/suite/modals/ReduxModal/ReduxModal';
-import { MAX_ONBOARDING_WIDTH } from '#src/constants/suite/layout';
-import { useFilteredModal } from '#src/hooks/suite';
-
 import {
+    ConnectionGlobalModalManager,
+    GuideButton,
+    GuideRouter,
+    MAX_ONBOARDING_WIDTH,
     OnboardingCancelButtonContext,
+    OnboardingProgressBar,
+    SmallDeviceItem,
+    SuiteBanners,
+    useFilteredModal,
     useOnboardingCancelButtonContext,
-} from './OnboardingCancelButtonContext';
-import { SmallDeviceItem } from '../../views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
-import { ConnectionGlobalModalManager } from '../connection/ConnectionGlobalModalManager';
+} from '@trezor/suite';
+import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 const OnboardingSpacer = styled.div`
     height: ${TRAFFIC_LIGHT_DEFAULT_OFFSET}px;

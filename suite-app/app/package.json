@@ -21,6 +21,8 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
+        "@suite-app/app-modal": "workspace:*",
+        "@suite-app/module-onboarding": "workspace:*",
         "@suite-app/suite-sync": "workspace:*",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/bip329": "workspace:*",
