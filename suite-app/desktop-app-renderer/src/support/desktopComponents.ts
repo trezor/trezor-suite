@@ -7,11 +7,10 @@ import {
     NotificationPage,
     PasswordManagerPage,
     ReferAFriendPage,
-    WalletAnonymizePage,
-    WalletCoinjoinPage,
 } from '@suite-app/app';
 import { NftsPage, TokensPage, WalletDetailsPage } from '@suite-app/module-account-detail';
 import { AssetDetailPage } from '@suite-app/module-assets';
+import { WalletAnonymizePage, WalletCoinjoinPage } from '@suite-app/module-coinjoin';
 import {
     EarnClaimPage,
     EarnDepositPage,

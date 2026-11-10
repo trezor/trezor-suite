@@ -19,6 +19,7 @@
         "@suite-app/app": "workspace:*",
         "@suite-app/module-account-detail": "workspace:*",
         "@suite-app/module-assets": "workspace:*",
+        "@suite-app/module-coinjoin": "workspace:*",
         "@suite-app/module-earn": "workspace:*",
         "@suite-app/module-home": "workspace:*",
         "@suite-app/module-receive": "workspace:*",

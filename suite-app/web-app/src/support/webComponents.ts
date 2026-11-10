@@ -184,14 +184,14 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ).then(({ SignVerifyPage }) => ({ default: SignVerifyPage })),
     ),
     'wallet-anonymize': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/WalletAnonymizePage').then(
-            ({ WalletAnonymizePage }) => ({ default: WalletAnonymizePage }),
-        ),
+        import(
+            /* webpackChunkName: "wallet" */ '@suite-app/module-coinjoin/pages/WalletAnonymizePage'
+        ).then(({ WalletAnonymizePage }) => ({ default: WalletAnonymizePage })),
     ),
     'wallet-coinjoin': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/WalletCoinjoinPage').then(
-            ({ WalletCoinjoinPage }) => ({ default: WalletCoinjoinPage }),
-        ),
+        import(
+            /* webpackChunkName: "wallet" */ '@suite-app/module-coinjoin/pages/WalletCoinjoinPage'
+        ).then(({ WalletCoinjoinPage }) => ({ default: WalletCoinjoinPage })),
     ),
 
     // trading

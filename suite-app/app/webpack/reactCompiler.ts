@@ -43,6 +43,7 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
     'suite-app/app/src/pages',
     'suite-app/module-account-detail',
     'suite-app/module-assets',
+    'suite-app/module-coinjoin',
     'suite-app/module-earn',
     'suite-app/module-home',
     'suite-app/module-receive',
