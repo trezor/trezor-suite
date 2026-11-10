@@ -20,6 +20,7 @@ import {
     connectPopupVerifyAddressThunk,
 } from './connectPopupThunks';
 import {
+    CALL_SOURCE_WALLETCONNECT,
     CALL_SOURCE_WEB,
     type ConnectCallSource,
     type ConnectPopupCall,
@@ -78,6 +79,12 @@ const createCallStore = (activeCall?: ConnectPopupCall) =>
         }),
         preloadedState: { connectPopup: { activeCall, permissions: [] }, device: deviceState },
     }).services.store;
+
+const flush = async () => {
+    for (let i = 0; i < 20; i++) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+    }
+};
 
 const waitFor = async (condition: () => boolean) => {
     for (let i = 0; i < 20 && !condition(); i++) {
@@ -184,6 +191,51 @@ describe('connectPopupCancelThunk', () => {
             const deviceCallId = getDeviceCallId();
             expect(deviceCallId).toEqual(expect.any(String));
             expect(cancelSpy).toHaveBeenCalledWith({ reason: undefined, callId: deviceCallId });
+        });
+
+        it('ends a call that is starting for a cancel that names no call', async () => {
+            // The call before it lingers in Redux as `finished` until the modal teardown clears it,
+            // so the cancel has to reach the starting call, which is in neither Redux nor Core yet.
+            // A WalletConnect call asks for no consent, so no permission deferred can end it.
+            const store = createCallStore({
+                state: 'finished',
+                method: 'getAddress',
+                payload: {},
+                methodInfo: { methodTitle: '', permissionTypes: [], useUi: true },
+                source,
+                callId: 'previous-id',
+            });
+            const deferred = createPopupCallDeferred();
+            store.dispatch(
+                connectPopupCallThunk({
+                    method: 'getAddress',
+                    payload: { path: "m/84'/0'/0'/0/0" },
+                    source: { ...source, type: CALL_SOURCE_WALLETCONNECT },
+                    responseId: deferred.id,
+                }),
+            );
+
+            store.dispatch(connectPopupCancelThunk({}));
+            const response = await deferred.promise;
+            await flush();
+
+            expect(response).toEqual(
+                expect.objectContaining({
+                    success: false,
+                    error: expect.objectContaining({ code: 'Method_Interrupted' }),
+                }),
+            );
+            // The device was never asked, and the cancel named the starting call, not the one that
+            // had already finished.
+            expect(getDeviceCallId()).toBeUndefined();
+            expect(cancelSpy).toHaveBeenCalledWith({
+                reason: undefined,
+                callId: expect.any(String),
+            });
+            expect(cancelSpy).not.toHaveBeenCalledWith({
+                reason: undefined,
+                callId: 'previous-id',
+            });
         });
     });
 

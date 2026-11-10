@@ -18,7 +18,7 @@ import { type Err, type Ok } from '@trezor/type-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { getPermissionDeferred } from '../connectPopupPromiseManager';
+import { getPermissionDeferred, isStartedPopupCallAborted } from '../connectPopupPromiseManager';
 import { selectConnectAppPermissions } from '../connectPopupReducer';
 import {
     CALL_SOURCE_DEEPLINK,
@@ -67,6 +67,7 @@ export type PopupFlowAnswer = Awaited<CallMethodAnyResponse>;
 export type MaybePromise<T> = T | Promise<T>;
 
 export type PopupFlow = {
+    readonly callId: string;
     run(): Promise<PopupFlowAnswer>;
     cleanup(): void;
 };
@@ -80,7 +81,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     protected readonly method: M;
     protected readonly payload: PopupFlowPayload<M>;
     protected readonly source: ConnectCallSource;
-    protected readonly callId: string;
+    readonly callId: string;
     protected readonly responseId: string | undefined;
     protected readonly dispatch: Dispatch;
     protected readonly getState: () => any;
@@ -152,6 +153,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
 
         this.dispatch(connectPopupActions.setCallDevicePath(device.path));
 
+        this.throwIfAborted();
         const response = await TrezorConnect.call({
             device,
             ...payload,
@@ -174,6 +176,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     /** Resolves to the successful response, a failure is thrown. */
     async run() {
         const methodInfo = await this.getMethodInfo();
+        this.throwIfAborted();
         this.assertCallAllowed(methodInfo);
         const consentPermissions = this.initiateCall(methodInfo);
 
@@ -194,6 +197,13 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         }
 
         return response;
+    }
+
+    // A cancel that arrived before the device was asked ends the call here. A call that needs no
+    // consent (remembered app, WalletConnect) has no permission deferred for the cancel to reject,
+    // so without this check it would run on to the device.
+    private throwIfAborted() {
+        if (isStartedPopupCallAborted(this.callId)) throw TypedError('Method_Cancel');
     }
 
     // Applies to every flow, however it describes its call.
