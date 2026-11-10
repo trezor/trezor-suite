@@ -17,9 +17,10 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { bioAuthActions } from '#src/actions/suite/bioAuthActions';
 import { toggleViewThunk as toggleGuideView } from '#src/actions/suite/guideActions';
-import { useSelector } from '#src/hooks/suite';
 import { selectIsBioAuthEnabled } from '#src/reducers/bioAuth';
 import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
+
+import { useSelector } from './useSelector';
 
 type ListedAccount = ReturnType<typeof selectAllAccountsToList>[number];
 

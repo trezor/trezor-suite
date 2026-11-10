@@ -8,18 +8,16 @@ import { CommandIcon, LifebuoyIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { setView } from '#src/actions/suite/guideActions';
-import {
-    GuideCategories,
-    GuideContent,
-    GuideHeader,
-    GuideSearch,
-    GuideSectionHeadline,
-    GuideViewWrapper,
-} from '#src/components/guide';
 import { useSelector } from '#src/hooks/suite';
 import { selectGuideIndexNode } from '#src/selectors/suite/guideSelectors';
 
+import { GuideCategories } from './GuideCategories';
+import { GuideContent } from './GuideContent';
+import { GuideHeader } from './GuideHeader';
 import { GuideItem } from './GuideItem';
+import { GuideSearch } from './GuideSearch';
+import { GuideSectionHeadline } from './GuideSectionHeadline';
+import { GuideViewWrapper } from './GuideViewWrapper';
 
 export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);

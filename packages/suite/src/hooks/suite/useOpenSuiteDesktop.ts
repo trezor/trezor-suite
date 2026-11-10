@@ -5,11 +5,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
-import { useSelector } from '#src/hooks/suite';
 import {
     selectActiveTransports,
     selectHasTransportOfType,
 } from '#src/selectors/suite/suiteSelectors';
+
+import { useSelector } from './useSelector';
 
 export const useOpenSuiteDesktop = () => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));

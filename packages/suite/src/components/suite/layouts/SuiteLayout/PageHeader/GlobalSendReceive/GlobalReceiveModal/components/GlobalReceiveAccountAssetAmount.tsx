@@ -4,7 +4,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { findToken } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 type GlobalReceiveAccountAssetAmountProps = {
     account: Account;

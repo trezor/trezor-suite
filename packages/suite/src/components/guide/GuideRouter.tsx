@@ -12,19 +12,18 @@ import { zIndices } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { setWidth as setGuideWidth } from '#src/actions/suite/guideActions';
-import {
-    Feedback,
-    Guide,
-    GuideArticle,
-    GuideCategory,
-    GuideShortcuts,
-    SupportFeedbackSelection,
-} from '#src/components/guide';
 import { MIN_CONTENT_WIDTH } from '#src/constants/suite/layout';
 import { GUIDE_ANIMATION_DURATION_MS, useGuide } from '#src/hooks/guide';
 import { useSelector } from '#src/hooks/suite';
 import { selectGuideView, selectGuideWidth } from '#src/selectors/suite/guideSelectors';
 import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
+
+import { Feedback } from './Feedback';
+import { Guide } from './Guide';
+import { GuideArticle } from './GuideArticle';
+import { GuideCategory } from './GuideCategory';
+import { GuideShortcuts } from './GuideShortcuts';
+import { SupportFeedbackSelection } from './SupportFeedbackSelection';
 
 const getGuideContent = (activeView: ActiveView) => {
     switch (activeView) {

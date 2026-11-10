@@ -13,7 +13,8 @@ import { isAscii } from '@trezor/utils';
 
 import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from '#src/constants/suite/device';
-import { useSelector } from '#src/hooks/suite';
+
+import { useSelector } from './useSelector';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({

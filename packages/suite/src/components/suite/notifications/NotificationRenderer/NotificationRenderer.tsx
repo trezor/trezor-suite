@@ -1,13 +1,8 @@
-import { type ComponentType, type JSX } from 'react';
+import { type JSX } from 'react';
 
 import { type ErrorCode } from 'invity-api';
 
-import {
-    type ExtendedMessageDescriptor,
-    Translation,
-    type TranslationKey,
-    useTranslation,
-} from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
 import { TRADING_ERROR_MESSAGE } from '@suite/trading';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
@@ -24,18 +19,10 @@ import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
 import { EarnTransactionRenderer } from './EarnTransactionRenderer';
 import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
+import { type NotificationRendererProps } from './NotificationRendererProps';
 import { TransactionRenderer } from './TransactionRenderer';
 import { WrapInfoRenderer } from './WrapInfoRenderer';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
-
-type LocalizedNotificationEntry = NotificationEntry<TranslationKey>;
-
-export type NotificationRendererProps<
-    T extends LocalizedNotificationEntry['type'] = LocalizedNotificationEntry['type'],
-> = {
-    render: ComponentType<{ onCancel?: () => void } & NotificationViewProps>;
-    notification: Extract<LocalizedNotificationEntry, { type: T }>;
-};
 
 type RenderConfig = {
     variant: NotificationViewProps['variant'];

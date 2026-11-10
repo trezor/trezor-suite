@@ -3,10 +3,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { openNode } from '#src/actions/suite/guideActions';
-import { useGuide } from '#src/hooks/guide';
 import { useSelector } from '#src/hooks/suite';
 import { selectGuideIndexNode } from '#src/selectors/suite/guideSelectors';
 import { getNodeById } from '#src/utils/suite/guide';
+
+import { useGuide } from './useGuide';
 
 export const useGuideOpenNode = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);

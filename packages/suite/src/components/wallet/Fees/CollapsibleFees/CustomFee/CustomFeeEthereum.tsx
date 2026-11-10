@@ -9,7 +9,7 @@ import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { InputError } from '#src/components/wallet';
+import { InputError } from '#src/components/wallet/InputError';
 import { useSelector } from '#src/hooks/suite';
 import { validateDecimals } from '#src/utils/suite/validation';
 

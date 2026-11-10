@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { KEYBOARD_CODE } from '@trezor/components';
 
-import { useGuide } from '#src/hooks/guide';
+import { useGuide } from './useGuide';
 
 export const useGuideKeyboard = () => {
     const { openGuide, closeGuide, isGuideOpen, isModalOpen } = useGuide();

@@ -5,9 +5,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import * as graphActions from '#src/actions/wallet/graphActions';
-import { useSelector } from '#src/hooks/suite';
 import { selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';
 import { type GraphRange } from '#src/types/wallet/graph';
+
+import { useSelector } from './useSelector';
 
 export const useGraph = () => {
     const { dispatch } = useServices(injectDispatch);

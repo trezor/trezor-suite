@@ -8,8 +8,9 @@ import {
     selectRouterApp,
 } from '@suite/router';
 
-import { useSelector } from '#src/hooks/suite';
 import type { ForegroundAppRoute } from '#src/types/suite';
+
+import { useSelector } from './useSelector';
 
 const HAS_PRIORITY_OVER_REDUX_MODAL: Record<ForegroundAppRoute['app'], boolean> = {
     // Firmware, FirmwareCustom, Bridge, Udev, Version, Create New Multi-share Backup - always beats redux modals

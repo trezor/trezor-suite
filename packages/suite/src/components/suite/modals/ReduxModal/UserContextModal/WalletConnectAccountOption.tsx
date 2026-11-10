@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { selectAccountTokens, selectBaseCurrency } from '@suite-common/wallet-core';
@@ -10,7 +11,7 @@ import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { CoinBalance, HiddenPlaceholder } from '#src/components/suite';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
 import { useSelector } from '#src/hooks/suite';
 import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 

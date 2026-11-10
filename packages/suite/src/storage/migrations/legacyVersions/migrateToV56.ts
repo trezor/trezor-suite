@@ -12,7 +12,7 @@ import {
 import { type OnUpgradeFunc } from '@trezor/suite-storage';
 
 import { type SuiteDBSchema } from '#src/storage/definitions';
-import { type DBWalletAccountTransactionCompatible } from '#src/storage/migrations';
+import { type DBWalletAccountTransactionCompatible } from '#src/storage/migrations/index';
 
 import { updateAll } from '../utils';
 
