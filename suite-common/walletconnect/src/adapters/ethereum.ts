@@ -32,12 +32,14 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 import { isAscii, isHex, throwError } from '@trezor/utils';
 
-import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
+import { UNRECOGNIZED_CHAIN_ERROR_CODE, WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
     type WalletConnectNamespace,
+    type WalletConnectRequestError,
+    type WalletConnectSession,
 } from '../walletConnectTypes';
 
 const methods = [
@@ -57,6 +59,16 @@ const TRANSACTION_QUANTITY_FIELDS = [
     'maxPriorityFeePerGas',
 ] as const;
 
+export const isEthereumChainApproved = (
+    session: WalletConnectSession,
+    hexChainId: string,
+): boolean => {
+    const chainId = Number.parseInt(hexChainId, 16);
+    if (Number.isNaN(chainId)) return false;
+
+    return session.namespaces.eip155?.chains?.includes(`eip155:${chainId}`) ?? false;
+};
+
 export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     WalletConnectStateRootState &
     MevProtectionRootState &
@@ -66,223 +78,242 @@ export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCa
 export type EthereumRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
 const ethereumRequestThunk = createThunk<
-    string | undefined,
+    string | null | undefined,
     {
         event: WalletKitTypes.SessionRequest;
     },
-    { state: EthereumRequestThunkState; extra: EthereumRequestThunkDeps }
->(`${WALLETCONNECT_MODULE}/ethereumRequest`, async ({ event }, { dispatch, getState }) => {
-    const device = selectSelectedDevice(getState());
-    const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
-    const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
-
-    const getAccount = (address: string, chainId?: number) =>
-        selectAccounts(getState()).find(
-            a =>
-                a.descriptor.toLowerCase() === address.toLowerCase() &&
-                a.networkType === 'ethereum' &&
-                (!chainId || getNetwork(a.symbol).chainId === chainId),
-        ) || throwError('Account not found');
-
-    const session = selectSessionByTopic(getState(), event.topic);
-    if (!session) {
-        throw new Error('WalletConnect Session not found');
+    {
+        state: EthereumRequestThunkState;
+        extra: EthereumRequestThunkDeps;
+        rejectValue: WalletConnectRequestError;
     }
-    const popupCallCommonParams = {
-        source: {
-            type: 'walletconnect' as const,
-            origin: event.verifyContext.verified.origin,
-            manifest: {
-                appName: session.peer.metadata.name,
-                appIcon: session.peer.metadata.icons?.[0],
+>(
+    `${WALLETCONNECT_MODULE}/ethereumRequest`,
+    async ({ event }, { dispatch, getState, rejectWithValue }) => {
+        const device = selectSelectedDevice(getState());
+        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
+        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
+
+        const getAccount = (address: string, chainId?: number) =>
+            selectAccounts(getState()).find(
+                a =>
+                    a.descriptor.toLowerCase() === address.toLowerCase() &&
+                    a.networkType === 'ethereum' &&
+                    (!chainId || getNetwork(a.symbol).chainId === chainId),
+            ) || throwError('Account not found');
+
+        const session = selectSessionByTopic(getState(), event.topic);
+        if (!session) {
+            throw new Error('WalletConnect Session not found');
+        }
+        const popupCallCommonParams = {
+            source: {
+                type: 'walletconnect' as const,
+                origin: event.verifyContext.verified.origin,
+                manifest: {
+                    appName: session.peer.metadata.name,
+                    appIcon: session.peer.metadata.icons?.[0],
+                },
             },
-        },
-    };
+        };
 
-    switch (event.params.request.method) {
-        case 'personal_sign': {
-            const [message, address] = event.params.request.params;
-            const account = getAccount(address);
-            const messageDecoded = message.startsWith('0x')
-                ? Buffer.from(message.slice(2), 'hex').toString('utf8')
-                : message;
-            const messageHex = isHex(message, { prefix: 'optional', allowEmpty: false })
-                ? sanitizeHex(message)
-                : Buffer.from(message, 'utf8').toString('hex');
-            const isReadable = isAscii(messageDecoded);
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    ...popupCallCommonParams,
-                    method: 'ethereumSignMessage',
-                    payload: {
-                        path: account.path,
-                        message: isReadable ? messageDecoded : messageHex,
-                        hex: !isReadable,
-                    },
-                }),
-            );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-            if (!response.success) {
-                console.error('personal_sign error', response);
-                throw new Error('personal_sign error');
-            }
-            const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
-
-            return sanitizeHex(typedPayload.signature);
-        }
-        case 'eth_signTypedData_v4': {
-            const [address, data] = event.params.request.params;
-            const account = getAccount(address);
-            const parsedData = JSON.parse(data);
-
-            // EIP-712 hashes for T1B1 are computed by @trezor/connect internally
-            // since Connect 10 — pass `data` directly for all device models.
-            const payload: EthereumSignTypedData<EthereumSignTypedDataTypes> = {
-                path: account.path,
-                data: parsedData,
-                metamask_v4_compat: true,
-            };
-
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    ...popupCallCommonParams,
-                    method: 'ethereumSignTypedData',
-                    payload,
-                }),
-            );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-            if (!response.success) {
-                console.error('eth_signTypedData_v4 error', response);
-                throw new Error('eth_signTypedData_v4 error');
-            }
-            const typedPayload = response.payload as CallMethodResponse<'ethereumSignTypedData'>;
-
-            return sanitizeHex(typedPayload.signature);
-        }
-        case 'eth_sendTransaction': {
-            const chainId = Number(event.params.chainId.replace('eip155:', ''));
-            const transaction = event.params.request.params[0];
-            const account = getAccount(transaction.from, chainId);
-            if (account.networkType !== 'ethereum') {
-                throw new Error('Account is not Ethereum');
-            }
-            for (const field of TRANSACTION_QUANTITY_FIELDS) {
-                const value = transaction[field];
-                if (value && !isHex(value, { allowEmpty: false })) {
-                    throw new Error(`eth_sendTransaction invalid ${field}`);
-                }
-            }
-            if (!transaction.value) {
-                transaction.value = '0x0';
-            }
-
-            const isFeeRateMissing =
-                !transaction.gasPrice &&
-                (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas);
-
-            if (isFeeRateMissing || !transaction.gas) {
-                const feeLevels = await TrezorConnect.blockchainEstimateFee({
-                    coin: asCoinSymbol(account.symbol),
-                    identity: getAccountIdentity(account),
-                    request: {
-                        blocks: [2],
-                        specific: {
-                            from: account.descriptor,
-                            to: transaction.to,
-                            data: transaction.data,
-                            value: transaction.value,
+        switch (event.params.request.method) {
+            case 'personal_sign': {
+                const [message, address] = event.params.request.params;
+                const account = getAccount(address);
+                const messageDecoded = message.startsWith('0x')
+                    ? Buffer.from(message.slice(2), 'hex').toString('utf8')
+                    : message;
+                const messageHex = isHex(message, { prefix: 'optional', allowEmpty: false })
+                    ? sanitizeHex(message)
+                    : Buffer.from(message, 'utf8').toString('hex');
+                const isReadable = isAscii(messageDecoded);
+                dispatch(
+                    trezorConnectPopupActions.connectPopupCallThunk({
+                        ...popupCallCommonParams,
+                        method: 'ethereumSignMessage',
+                        payload: {
+                            path: account.path,
+                            message: isReadable ? messageDecoded : messageHex,
+                            hex: !isReadable,
                         },
-                    },
-                });
-
-                if (!feeLevels.success && isFeeRateMissing) {
-                    throw new Error('eth_sendTransaction cannot estimate fee');
+                    }),
+                );
+                const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+                if (!response.success) {
+                    console.error('personal_sign error', response);
+                    throw new Error('personal_sign error');
                 }
+                const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
 
-                const feeLevel = feeLevels.success ? feeLevels.payload.levels[0] : undefined;
+                return sanitizeHex(typedPayload.signature);
+            }
+            case 'eth_signTypedData_v4': {
+                const [address, data] = event.params.request.params;
+                const account = getAccount(address);
+                const parsedData = JSON.parse(data);
 
-                if (isFeeRateMissing) {
-                    // Fee levels are decimal strings in wei. Connect reads all values as hex.
-                    const toHex = (value?: string) =>
-                        value ? fromIntegerString(value).toHex() : undefined;
-                    const eip1559Fee = feeLevel?.eip1559?.medium;
-                    // Both values are optional. Use the legacy gas price if one of them is missing.
-                    if (eip1559Fee?.maxFeePerGas && eip1559Fee.maxPriorityFeePerGas) {
-                        transaction.maxFeePerGas = toHex(eip1559Fee.maxFeePerGas);
-                        transaction.maxPriorityFeePerGas = toHex(eip1559Fee.maxPriorityFeePerGas);
-                    } else {
-                        transaction.gasPrice = toHex(feeLevel?.feePerUnit);
-                        if (!transaction.gasPrice) {
-                            throw new Error('eth_sendTransaction cannot estimate fee');
-                        }
+                // EIP-712 hashes for T1B1 are computed by @trezor/connect internally
+                // since Connect 10 — pass `data` directly for all device models.
+                const payload: EthereumSignTypedData<EthereumSignTypedDataTypes> = {
+                    path: account.path,
+                    data: parsedData,
+                    metamask_v4_compat: true,
+                };
+
+                dispatch(
+                    trezorConnectPopupActions.connectPopupCallThunk({
+                        ...popupCallCommonParams,
+                        method: 'ethereumSignTypedData',
+                        payload,
+                    }),
+                );
+                const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+                if (!response.success) {
+                    console.error('eth_signTypedData_v4 error', response);
+                    throw new Error('eth_signTypedData_v4 error');
+                }
+                const typedPayload =
+                    response.payload as CallMethodResponse<'ethereumSignTypedData'>;
+
+                return sanitizeHex(typedPayload.signature);
+            }
+            case 'eth_sendTransaction': {
+                const chainId = Number(event.params.chainId.replace('eip155:', ''));
+                const transaction = event.params.request.params[0];
+                const account = getAccount(transaction.from, chainId);
+                if (account.networkType !== 'ethereum') {
+                    throw new Error('Account is not Ethereum');
+                }
+                for (const field of TRANSACTION_QUANTITY_FIELDS) {
+                    const value = transaction[field];
+                    if (value && !isHex(value, { allowEmpty: false })) {
+                        throw new Error(`eth_sendTransaction invalid ${field}`);
                     }
                 }
-
-                if (!transaction.gas) {
-                    transaction.gas = fromIntegerString(
-                        getGasLimitWithBuffer(feeLevel?.feeLimit),
-                    ).toHex();
+                if (!transaction.value) {
+                    transaction.value = '0x0';
                 }
-            }
-            const { nonce } = await dispatch(
-                ethereumGetCurrentNonceThunk({
-                    selectedAccount: account,
-                    fetchConfirmedNonce: true,
-                }),
-            ).unwrap();
-            const nonceHex = sanitizeHex(parseInt(nonce).toString(16));
-            const payload = {
-                path: account.path,
-                transaction: {
-                    ...transaction,
-                    data: sanitizeHex(transaction.data || ''),
-                    gasLimit: transaction.gas,
-                    nonce: nonceHex,
-                    chainId,
-                },
-                device,
-            };
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    ...popupCallCommonParams,
-                    method: 'ethereumSignTransaction',
-                    payload,
-                }),
-            );
-            const signResponse = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-            if (!signResponse.success) {
-                console.error('eth_sendTransaction error', signResponse);
-                throw new Error('eth_sendTransaction error');
-            }
-            const typedSignPayload =
-                signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
 
-            const txData = getMevProtectedTxData(
-                account.symbol,
-                typedSignPayload.serializedTx,
-                isMevProtectionEnabled && isMevProtectionFeatureEnabled,
-            );
+                const isFeeRateMissing =
+                    !transaction.gasPrice &&
+                    (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas);
 
-            const pushResponse = await TrezorConnect.pushTransaction({
-                tx: txData,
-                coin: asCoinSymbol(account.symbol),
-                identity: getAccountIdentity(account),
-            });
-            if (!pushResponse.success) {
-                console.error('eth_sendTransaction push error', pushResponse);
-                throw new Error('eth_sendTransaction push error');
+                if (isFeeRateMissing || !transaction.gas) {
+                    const feeLevels = await TrezorConnect.blockchainEstimateFee({
+                        coin: asCoinSymbol(account.symbol),
+                        identity: getAccountIdentity(account),
+                        request: {
+                            blocks: [2],
+                            specific: {
+                                from: account.descriptor,
+                                to: transaction.to,
+                                data: transaction.data,
+                                value: transaction.value,
+                            },
+                        },
+                    });
+
+                    if (!feeLevels.success && isFeeRateMissing) {
+                        throw new Error('eth_sendTransaction cannot estimate fee');
+                    }
+
+                    const feeLevel = feeLevels.success ? feeLevels.payload.levels[0] : undefined;
+
+                    if (isFeeRateMissing) {
+                        // Fee levels are decimal strings in wei. Connect reads all values as hex.
+                        const toHex = (value?: string) =>
+                            value ? fromIntegerString(value).toHex() : undefined;
+                        const eip1559Fee = feeLevel?.eip1559?.medium;
+                        // Both values are optional. Use the legacy gas price if one of them is missing.
+                        if (eip1559Fee?.maxFeePerGas && eip1559Fee.maxPriorityFeePerGas) {
+                            transaction.maxFeePerGas = toHex(eip1559Fee.maxFeePerGas);
+                            transaction.maxPriorityFeePerGas = toHex(
+                                eip1559Fee.maxPriorityFeePerGas,
+                            );
+                        } else {
+                            transaction.gasPrice = toHex(feeLevel?.feePerUnit);
+                            if (!transaction.gasPrice) {
+                                throw new Error('eth_sendTransaction cannot estimate fee');
+                            }
+                        }
+                    }
+
+                    if (!transaction.gas) {
+                        transaction.gas = fromIntegerString(
+                            getGasLimitWithBuffer(feeLevel?.feeLimit),
+                        ).toHex();
+                    }
+                }
+                const { nonce } = await dispatch(
+                    ethereumGetCurrentNonceThunk({
+                        selectedAccount: account,
+                        fetchConfirmedNonce: true,
+                    }),
+                ).unwrap();
+                const nonceHex = sanitizeHex(parseInt(nonce).toString(16));
+                const payload = {
+                    path: account.path,
+                    transaction: {
+                        ...transaction,
+                        data: sanitizeHex(transaction.data || ''),
+                        gasLimit: transaction.gas,
+                        nonce: nonceHex,
+                        chainId,
+                    },
+                    device,
+                };
+                dispatch(
+                    trezorConnectPopupActions.connectPopupCallThunk({
+                        ...popupCallCommonParams,
+                        method: 'ethereumSignTransaction',
+                        payload,
+                    }),
+                );
+                const signResponse =
+                    await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+                if (!signResponse.success) {
+                    console.error('eth_sendTransaction error', signResponse);
+                    throw new Error('eth_sendTransaction error');
+                }
+                const typedSignPayload =
+                    signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
+
+                const txData = getMevProtectedTxData(
+                    account.symbol,
+                    typedSignPayload.serializedTx,
+                    isMevProtectionEnabled && isMevProtectionFeatureEnabled,
+                );
+
+                const pushResponse = await TrezorConnect.pushTransaction({
+                    tx: txData,
+                    coin: asCoinSymbol(account.symbol),
+                    identity: getAccountIdentity(account),
+                });
+                if (!pushResponse.success) {
+                    console.error('eth_sendTransaction push error', pushResponse);
+                    throw new Error('eth_sendTransaction push error');
+                }
+
+                return pushResponse.payload.txid;
             }
+            case 'wallet_switchEthereumChain': {
+                // Suite has no concept of switching chains. WalletConnect providers switch between
+                // approved chains locally and send this request for other chains. Confirming such a
+                // chain leaves the dApp on it with no accounts, so reject chains outside the session.
+                const [{ chainId }] = event.params.request.params;
+                if (!isEthereumChainApproved(session, chainId)) {
+                    return rejectWithValue({
+                        code: UNRECOGNIZED_CHAIN_ERROR_CODE,
+                        message: `Unrecognized chain ID "${chainId}"`,
+                    });
+                }
 
-            return pushResponse.payload.txid;
+                return null;
+            }
         }
-        case 'wallet_switchEthereumChain': {
-            // Dummy method, since Suite has no concept of switching chains
-            const [chainId] = event.params.request.params;
-
-            return chainId;
-        }
-    }
-});
+    },
+);
 
 export const getChainId = (network: Network) => [`eip155:${network.chainId}`];
 
