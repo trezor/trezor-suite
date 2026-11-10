@@ -62,8 +62,6 @@ export enum EventType {
     RemoveToken = 'remove-token',
     // eslint-disable-next-line local-rules/analytics-event-name
     RouterLocationChange = 'router/location-change',
-    // eslint-disable-next-line local-rules/analytics-event-name
-    SelectWalletType = 'select-wallet-type',
     SendConfirmedOnDevice = 'send/confirmed-on-device',
     SendDetailOpened = 'send/detail-opened',
     SendEnsResolution = 'send/ens-resolution',
@@ -133,4 +131,6 @@ export enum EventType {
     TransactionTimeoutRetry = 'transaction/timeout-retry',
     // eslint-disable-next-line local-rules/analytics-event-name
     TransportType = 'transport-type',
+    // eslint-disable-next-line local-rules/analytics-event-name
+    WalletCreate = 'wallet/create',
 }

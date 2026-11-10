@@ -72,8 +72,8 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await element.first().click();
 
                 const selectWalletEvent = analytics.findAnalyticsEventByType<
-                    ExtractByEventType<(typeof events.selectWalletTypeEvent)['name']>
-                >(events.selectWalletTypeEvent.name);
+                    ExtractByEventType<(typeof events.walletCreateEvent)['name']>
+                >(events.walletCreateEvent.name);
                 expect(selectWalletEvent.type).toEqual('hidden');
             });
 
