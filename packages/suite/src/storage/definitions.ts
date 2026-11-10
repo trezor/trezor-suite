@@ -39,7 +39,7 @@ import type {
 import { type StaticSessionId } from '@trezor/connect';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 
-import type { BioAuthState } from '#src/reducers/bioAuth';
+import type { BioAuthState } from '#src/reducers/bioAuth/bioAuthReducer';
 import type { EvmSettings } from '#src/reducers/suite/evmSettings';
 import type { Account, WalletAccountTransaction } from '#src/types/wallet';
 
