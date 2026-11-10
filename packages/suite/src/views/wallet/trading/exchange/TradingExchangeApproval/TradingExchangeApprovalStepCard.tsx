@@ -21,7 +21,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { BaseCurrencyValue } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { AllowanceLimitModal } from '#src/components/wallet/Allowance/AllowanceLimitModal';
 import { AllowanceStepCard } from '#src/components/wallet/Allowance/AllowanceStepCard';
 import { type AllowanceStepToken } from '#src/components/wallet/Allowance/AllowanceStepToken';

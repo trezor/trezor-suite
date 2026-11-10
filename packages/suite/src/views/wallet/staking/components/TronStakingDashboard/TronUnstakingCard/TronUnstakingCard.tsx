@@ -16,7 +16,8 @@ import {
     Text,
 } from '@trezor/components';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite';
 
 import { TronUnstakingRow } from './TronUnstakingRow';

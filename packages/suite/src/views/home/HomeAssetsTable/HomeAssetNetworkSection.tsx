@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import {
     selectDisplayedWalletAssetKeysOfNetwork,
     selectNetworkFiatValue,
@@ -11,7 +12,6 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Table, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from '#src/components/suite';
 import { useSelector } from '#src/hooks/suite';
 
 import { HomeAssetRow } from './HomeAssetRow';

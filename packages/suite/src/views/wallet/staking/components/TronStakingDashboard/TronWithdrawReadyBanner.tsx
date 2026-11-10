@@ -8,7 +8,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from '#src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 interface TronWithdrawReadyBannerProps {

@@ -7,7 +7,8 @@ import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components
 import { InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from '#src/components/suite';
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { FiatHeader } from '#src/components/wallet/FiatHeader';
 import { useSelector } from '#src/hooks/suite';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';

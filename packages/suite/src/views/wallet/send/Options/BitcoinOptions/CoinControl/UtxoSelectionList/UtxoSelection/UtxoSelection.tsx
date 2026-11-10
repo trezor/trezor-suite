@@ -30,7 +30,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@trezor/icons';
 import { injectDispatch, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { TransactionTimestamp } from '#src/components/wallet/TransactionTimestamp';
 import { UtxoAnonymity } from '#src/components/wallet/UtxoAnonymity';
 import { useSelector } from '#src/hooks/suite';

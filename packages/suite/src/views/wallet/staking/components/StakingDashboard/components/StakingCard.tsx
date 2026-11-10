@@ -33,7 +33,8 @@ import { CheckIcon, InfoIcon, LockIcon, PlusCircleIcon, SpinnerGapIcon } from '@
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useLayoutSize, useSelector } from '#src/hooks/suite';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 

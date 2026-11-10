@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { BlurWrapper, Column, Text } from '@trezor/components';
 
-import { HiddenPlaceholder } from '#src/components/suite';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 type TransactionTargetLayoutProps = {

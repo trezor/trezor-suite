@@ -15,7 +15,7 @@ import { useAsyncClickHandler } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { type AllowanceStepToken } from '#src/components/wallet/Allowance/AllowanceStepToken';
 import { useAllowanceTransaction } from '#src/components/wallet/Allowance/hooks/useAllowanceTransaction';
 import { TradingExchangeApprovalFeeModal } from '#src/views/wallet/trading/exchange/TradingExchangeApproval/TradingExchangeApprovalFeeModal';

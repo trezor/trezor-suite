@@ -5,7 +5,8 @@ import { type FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-c
 import { Column, LoadingContent, Skeleton, Text } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 import { useFeesContext } from '../context/FeesContext';
 import { type TransactionMaxFee } from './hooks/useTransactionMaxFee';
