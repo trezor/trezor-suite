@@ -44,7 +44,9 @@ const decodeAddress = (address: xdr.ScAddress): StellarScValue => {
         return {
             type: 'address',
             value: Address.fromScAddress(address).toString(),
-            isContract: address.type === 'scAddressTypeContract',
+            isContract:
+                address.type === 'scAddressTypeContract' ||
+                address.type === 'scAddressTypeMuxedContract',
         };
     } catch {
         // Claimable-balance and liquidity-pool addresses have no string form in stellar-sdk 17.
