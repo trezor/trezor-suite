@@ -36,9 +36,13 @@ const onboardingMiddleware =
         const isOnboardingActive = selectIsOnboardingActive(api.getState());
 
         // Having just installed FW, we can mark the device as known, so that Manual Device Check is not seen again.
-        // In case of fresh/factory-reset device, it would be duplicate.
-        const deviceId = firmware.cachedDevice?.id;
+        // A device without FW has no id, so the check confirmed before the installation couldn't be persisted then.
+        // `firmware.cachedDevice` is unusable: it's a snapshot from before the installation, so its id is outdated
+        // and its path changes with the reconnection during the installation. The selected device is used instead,
+        // relying on the UI not allowing to select a different device while the installation is underway.
+        // The logic is duplicated in suite-native/device/src/middlewares/deviceMiddleware.ts for mobile.
         if (isFwInstallationDone) {
+            const deviceId = selectSelectedDevice(api.getState())?.id;
             api.dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
         }
 

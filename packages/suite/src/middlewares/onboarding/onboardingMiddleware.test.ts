@@ -4,7 +4,12 @@ import { type RouterRootState, routerAppChanged, routerReducer } from '@suite/ro
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { type AnalyticsState, analyticsInitialState } from '@suite-common/analytics-redux';
 import { type DeviceRootState, deviceActions, deviceInitialState } from '@suite-common/device';
-import { type FirmwareRootState, firmwareInitialState } from '@suite-common/firmware';
+import {
+    type FirmwareRootState,
+    firmwareActions,
+    firmwareInitialState,
+} from '@suite-common/firmware';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type DeviceUniquePath } from '@trezor/connect';
@@ -133,6 +138,43 @@ describe('onboardingMiddleware', () => {
             expect(await dispatchButtonRequest(OTHER_DEVICE_PATH)).toEqual([
                 deviceActions.addButtonRequest.type,
             ]);
+        });
+    });
+
+    describe('firmwareActions.setStatus.type', () => {
+        const DEVICE_ID = 'device-id';
+        // `firmware.cachedDevice` is a snapshot from before the installation, so its id is outdated.
+        // For firmware update it would be defined, but for fresh device it's null.
+        const OUTDATED_DEVICE_ID = null;
+
+        const dispatchFirmwareStatus = async (status: 'started' | 'done') => {
+            const device = mockSuiteDevice({ id: DEVICE_ID });
+            const state = getInitialState(undefined, undefined, undefined, {
+                devices: [device],
+                selectedDevice: device,
+            });
+            const store = initStore({
+                ...state,
+                firmware: {
+                    ...firmwareInitialState,
+                    cachedDevice: mockSuiteDevice({ id: OUTDATED_DEVICE_ID }),
+                },
+            });
+            await store.dispatch(firmwareActions.setStatus(status));
+
+            return store
+                .getActions()
+                .filter(persistentDeviceDataActions.setManualDeviceCheckSuccess.match);
+        };
+
+        it('persists the Manual Device Check success for the selected device after the firmware installation is done', async () => {
+            expect(await dispatchFirmwareStatus('done')).toEqual([
+                persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId: DEVICE_ID }),
+            ]);
+        });
+
+        it('does not persist the Manual Device Check success before the firmware installation is done', async () => {
+            expect(await dispatchFirmwareStatus('started')).toEqual([]);
         });
     });
 });
