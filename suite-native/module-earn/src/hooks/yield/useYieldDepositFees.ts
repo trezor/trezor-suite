@@ -113,6 +113,8 @@ export const useYieldDepositFees = ({
         hasFeeEstimationError: fees.hasFeeEstimationError,
         isComposingFeeLevels: fees.isFeePreparing,
         isDepositFeeReady: fees.isFeeReady,
+        isCustomFeeReplaced: fees.isCustomFeeReplaced,
+        onFeeConfirmed: fees.onFeeConfirmed,
         isFeeUnavailable: fees.isFeeUnavailable,
         isPreparingDepositFee: fees.isFeePreparing,
         preparedAction,

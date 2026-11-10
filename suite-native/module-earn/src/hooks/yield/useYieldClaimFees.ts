@@ -130,6 +130,8 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         formDraftKey: fees.formDraftKey,
         getCustomFeeLevel: fees.getCustomFeeLevel,
         hasFeeEstimationError: fees.hasFeeEstimationError,
+        isCustomFeeReplaced: fees.isCustomFeeReplaced,
+        onFeeConfirmed: fees.onFeeConfirmed,
         isFeeUnavailable: fees.isFeeUnavailable,
         isComposingFeeLevels: fees.isFeePreparing,
         preparedAction,
