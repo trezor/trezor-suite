@@ -58,7 +58,7 @@ export const useHandleOnDeviceTransactionReview = ({
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const isAssetsFirstEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
     const networkSymbol = useSelector((state: AccountsRootState) =>

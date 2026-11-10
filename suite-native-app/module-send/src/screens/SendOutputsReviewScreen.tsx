@@ -50,7 +50,7 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
         selectAccountByKey(state, accountKey),
     );
     const isAssetsFirstEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
 

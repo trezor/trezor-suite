@@ -26,7 +26,7 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
     const isAssetsFirstEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
     const isScreenReady = useIsAccountsScreenReady();

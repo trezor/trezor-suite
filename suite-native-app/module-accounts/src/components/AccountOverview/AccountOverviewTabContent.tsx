@@ -118,7 +118,7 @@ export const AccountOverviewTabContent = ({
         selectAccountNetworkSymbol(state, accountKey),
     );
     const isAssetDetailFeatureEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
 
