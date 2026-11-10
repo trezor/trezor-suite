@@ -276,7 +276,7 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     // password-manager
     'password-manager-index': lazy(() =>
         import(
-            /* webpackChunkName: "password-manager" */ '@suite-app/app/pages/PasswordManagerPage'
+            /* webpackChunkName: "password-manager" */ '@suite-app/module-password-manager/pages/PasswordManagerPage'
         ).then(({ PasswordManagerPage }) => ({
             default: PasswordManagerPage,
         })),

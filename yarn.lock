@@ -11397,6 +11397,7 @@ __metadata:
     "@suite-app/module-connect-popup": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-home": "workspace:*"
+    "@suite-app/module-password-manager": "workspace:*"
     "@suite-app/module-receive": "workspace:*"
     "@suite-app/module-send": "workspace:*"
     "@suite-app/module-settings": "workspace:*"
@@ -11561,6 +11562,17 @@ __metadata:
     "@suite/intl": "workspace:*"
     "@suite/message-system": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-password-manager@workspace:*, @suite-app/module-password-manager@workspace:suite-app/module-password-manager":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-password-manager@workspace:suite-app/module-password-manager"
+  dependencies:
+    "@suite/intl": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     react: "npm:19.3.0"
@@ -11763,6 +11775,7 @@ __metadata:
     "@suite-app/module-connect-popup": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-home": "workspace:*"
+    "@suite-app/module-password-manager": "workspace:*"
     "@suite-app/module-receive": "workspace:*"
     "@suite-app/module-send": "workspace:*"
     "@suite-app/module-settings": "workspace:*"

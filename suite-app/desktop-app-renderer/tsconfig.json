@@ -16,6 +16,7 @@
         { "path": "../module-connect-popup" },
         { "path": "../module-earn" },
         { "path": "../module-home" },
+        { "path": "../module-password-manager" },
         { "path": "../module-receive" },
         { "path": "../module-send" },
         { "path": "../module-settings" },
