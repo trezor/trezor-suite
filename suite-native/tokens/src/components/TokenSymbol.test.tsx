@@ -8,7 +8,7 @@ import { TokenSymbol } from './TokenSymbol';
 const networkSymbol = asNetworkSymbol('eth');
 const contractAddress = toTokenAddress('0x' + '1'.repeat(40));
 
-const renderTokenSymbol = (symbol: string) =>
+const renderTokenSymbol = (symbol?: string) =>
     renderWithStoreProvider(
         <TokenMetadataProvider
             sources={[{ networkSymbol, tokens: [{ contract: contractAddress, symbol }] }]}
@@ -33,5 +33,11 @@ describe('TokenSymbol', () => {
         const { getByText } = await renderTokenSymbol('LONGTOKENSYMBOL');
 
         expect(getByText('LONGTOKENS...')).toBeOnTheScreen();
+    });
+
+    it('labels a token without a symbol as unknown', async () => {
+        const { getByText } = await renderTokenSymbol();
+
+        expect(getByText('Unknown token')).toBeOnTheScreen();
     });
 });
