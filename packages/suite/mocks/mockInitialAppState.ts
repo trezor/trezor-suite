@@ -31,7 +31,7 @@ import { type NotificationsState } from '@suite-common/toast-notifications';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type WalletConnectState } from '@suite-common/walletconnect';
 
-import { type DesktopState } from '#src/reducers/desktop';
+import { type DesktopState } from '#src/reducers/desktop/desktopReducer';
 import { type OnboardingState } from '#src/reducers/onboarding/onboardingState';
 import { type GuideState } from '#src/reducers/suite/guideState';
 import { type ProtocolState } from '#src/reducers/suite/protocolState';

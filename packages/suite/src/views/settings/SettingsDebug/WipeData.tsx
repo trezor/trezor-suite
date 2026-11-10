@@ -8,7 +8,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { selectDesktopUserDataDirectory } from '#src/reducers/desktop';
+import { selectDesktopUserDataDirectory } from '#src/reducers/desktop/desktopReducer';
 
 const UserDataLink = styled.span`
     cursor: pointer;
