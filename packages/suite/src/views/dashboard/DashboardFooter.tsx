@@ -10,7 +10,7 @@ import { QrCode } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
 
-import { useGuide } from '#src/hooks/guide';
+import { useGuide } from '#src/hooks/guide/useGuide';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { ReferralButton } from './ReferralButton';

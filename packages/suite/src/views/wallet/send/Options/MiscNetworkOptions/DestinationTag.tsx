@@ -10,7 +10,7 @@ import { RIPPLE_DESTINATION_TAG_MAX_DIGITS } from '@trezor/network-ripple/consta
 import { STELLAR_TEXT_MEMO_MAX_BYTES } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
-import { useGuideOpenNode } from '#src/hooks/guide';
+import { useGuideOpenNode } from '#src/hooks/guide/useGuideOpenNode';
 import { useSendFormContext } from '#src/hooks/wallet';
 
 export const DESTINATION_TAG_GUIDE_PATH =
