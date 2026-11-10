@@ -476,21 +476,18 @@ export const selectTradeApiInstallSalt = (state: TradingRootState) =>
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.trading.trades);
 
-export const selectTradingTxNetworkSymbol = createMemoizedSelector(
-    [selectTradingTrades, (_state: TradingRootState, txid: string) => txid],
-    (trades, txid) => {
-        const trade = trades.find(
-            (t): t is TradingTransactionExchange =>
-                t.tradeType === 'exchange' && t.data.receiveTxHash === txid,
-        );
+export const selectTradingTxPayoutTrade = (state: TradingRootState, txid: string) => {
+    const trade = selectTradingTrades(state).find(
+        (candidate): candidate is TradingTransactionExchange =>
+            candidate.tradeType === 'exchange' && candidate.data.receiveTxHash === txid,
+    );
 
-        if (!trade || trade.data.isDex || trade.sendTxid === txid) {
-            return undefined;
-        }
+    if (!trade || trade.data.isDex || trade.sendTxid === txid) {
+        return undefined;
+    }
 
-        return cryptoIdToNetworkSymbol(trade.data.receive);
-    },
-);
+    return trade;
+};
 
 export type TradingTxRootState = TradingRootStateWithAccounts &
     TransactionsRootState &
@@ -512,9 +509,10 @@ export const selectTradingTxExplorerUrl = (
     txid: string,
     sendAccountKey: AccountKey | undefined,
 ) => {
-    const networkSymbol =
-        selectTradingTxNetworkSymbol(state, txid) ??
-        (sendAccountKey ? selectAccountByKey(state, sendAccountKey)?.symbol : undefined);
+    const payoutTrade = selectTradingTxPayoutTrade(state, txid);
+    const networkSymbol = payoutTrade
+        ? cryptoIdToNetworkSymbol(payoutTrade.data.receive)
+        : sendAccountKey && selectAccountByKey(state, sendAccountKey)?.symbol;
 
     return getTxExplorerUrl(selectExplorer(state, networkSymbol), txid);
 };

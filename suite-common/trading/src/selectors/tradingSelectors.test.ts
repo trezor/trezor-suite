@@ -126,7 +126,7 @@ import {
     selectTradingTrades,
     selectTradingTxAccountKey,
     selectTradingTxExplorerUrl,
-    selectTradingTxNetworkSymbol,
+    selectTradingTxPayoutTrade,
     selectValidTradingBuyQuotes,
     selectValidTradingSellQuotes,
 } from './tradingSelectors';
@@ -787,7 +787,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe('selectTradingTxNetworkSymbol', () => {
+    describe('selectTradingTxPayoutTrade', () => {
         const sendTxid = 'sendTxid';
         const payoutTxid = 'payoutTxid';
         const crossChainSwap: TradingTransactionExchange = {
@@ -806,34 +806,34 @@ describe('tradingSelectors', () => {
             wallet: { trading: { ...initialState, trades: [trade] } },
         });
 
-        it('places a provider payout on the receive network', () => {
-            expect(selectTradingTxNetworkSymbol(buildState(crossChainSwap), payoutTxid)).toBe(
-                'eth',
+        it('finds the swap whose provider payout the transaction is', () => {
+            expect(selectTradingTxPayoutTrade(buildState(crossChainSwap), payoutTxid)).toBe(
+                crossChainSwap,
             );
         });
 
-        it('leaves the send transaction on the send network', () => {
+        it('does not treat the send transaction as a payout', () => {
             const sendTxState = buildState({
                 ...crossChainSwap,
                 data: { ...crossChainSwap.data, receiveTxHash: sendTxid },
             });
 
-            expect(selectTradingTxNetworkSymbol(sendTxState, sendTxid)).toBeUndefined();
+            expect(selectTradingTxPayoutTrade(sendTxState, sendTxid)).toBeUndefined();
         });
 
-        it('leaves a DEX swap hash on the send network', () => {
+        it('does not treat a DEX swap hash as a payout', () => {
             const dexState = buildState({
                 ...crossChainSwap,
                 sendTxid: undefined,
                 data: { ...crossChainSwap.data, isDex: true },
             });
 
-            expect(selectTradingTxNetworkSymbol(dexState, payoutTxid)).toBeUndefined();
+            expect(selectTradingTxPayoutTrade(dexState, payoutTxid)).toBeUndefined();
         });
 
-        it('has no network for a transaction no swap references', () => {
+        it('has no swap for a transaction no swap references', () => {
             expect(
-                selectTradingTxNetworkSymbol(buildState(crossChainSwap), 'unknownTxid'),
+                selectTradingTxPayoutTrade(buildState(crossChainSwap), 'unknownTxid'),
             ).toBeUndefined();
         });
     });
@@ -930,6 +930,35 @@ describe('tradingSelectors', () => {
                 expect(
                     selectTradingTxExplorerUrl(txLocationState, 'otherTxid', sendAccount.key),
                 ).toBe(getTxExplorerUrl(explorerInitialState.btc.default, 'otherTxid'));
+            });
+
+            it('has no link for a payout on a network Suite does not know', () => {
+                const unknownNetworkState: TradingTxRootState = {
+                    ...txLocationState,
+                    wallet: {
+                        ...txLocationState.wallet,
+                        trading: {
+                            ...initialState,
+                            trades: [
+                                {
+                                    ...crossChainSwap,
+                                    data: {
+                                        ...crossChainSwap.data,
+                                        receive: 'unknown-network' as CryptoId,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                };
+
+                expect(
+                    selectTradingTxExplorerUrl(
+                        unknownNetworkState,
+                        notLoadedPayoutTxid,
+                        sendAccount.key,
+                    ),
+                ).toBeUndefined();
             });
 
             it('has no link without a payout network or a send account', () => {

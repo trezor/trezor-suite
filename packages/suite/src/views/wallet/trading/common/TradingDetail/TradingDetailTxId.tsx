@@ -60,6 +60,18 @@ export const TradingDetailTxId = ({
               )
         : undefined;
 
+    if (!explorerUrl && !openTransactionDetail) {
+        return (
+            <Address
+                isTruncated
+                isChunked={false}
+                isCopyAllowed
+                value={value}
+                data-testid="@trading/transaction/detail/txid"
+            />
+        );
+    }
+
     return (
         <Link href={explorerUrl} onClick={openTransactionDetail}>
             <Row gap={4}>
