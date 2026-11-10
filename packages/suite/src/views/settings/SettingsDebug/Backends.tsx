@@ -12,7 +12,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
 import { StatusLight } from '#src/components/suite/StatusLight';
-import { useBackendReconnection } from '#src/hooks/settings/backends';
+import { useBackendReconnection } from '#src/hooks/settings/backends/useBackendReconnection';
 import { useSelector } from '#src/hooks/suite';
 
 const CoinSection = styled.div`
