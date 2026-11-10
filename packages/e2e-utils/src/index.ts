@@ -1,5 +1,6 @@
 export * from './currentsApi';
 export { BackendWebsocketServerMock } from './mocks/backendServer';
+export type { BackendType } from './mocks/backendServer';
 export { SolanaRpcServerMock, PASSTHROUGH } from './mocks/solanaRpcServerMock';
 export type { SolanaRpcHandler } from './mocks/solanaRpcServerMock';
 export { BlockbookProxyMock } from './mocks/blockbookProxyMock';

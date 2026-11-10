@@ -6,6 +6,7 @@ import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 
 import { routes } from '@suite/router-config';
+// eslint-disable-next-line local-rules/no-package-deep-imports -- build-only entry, kept out of the runtime index
 import { assetPrefix, createBaseConfig, createDevConfig, isDev } from '@suite-app/app/webpack';
 import { FLAGS } from '@suite-common/suite-config';
 

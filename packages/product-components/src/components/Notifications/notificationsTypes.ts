@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: move the notification types out of @suite-common
 import type {
     NotificationEntry,
     TransactionNotificationType as ToastTransactionNotificationType,

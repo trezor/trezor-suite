@@ -15,6 +15,7 @@ import {
     useController,
 } from 'react-hook-form';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: move Locale out of @suite-common
 import { type Locale } from '@suite-common/locale';
 import { Input, type InputProps } from '@trezor/components';
 import { BigNumber, getLocaleSeparators, localizeNumber } from '@trezor/utils';

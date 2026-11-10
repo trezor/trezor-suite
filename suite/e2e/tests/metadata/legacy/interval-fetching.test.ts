@@ -1,4 +1,4 @@
-// Hack: direct import to prevent some nasty import cascade resulting in error while importing icons
+// eslint-disable-next-line local-rules/no-package-deep-imports -- the package entry point causes an import cascade that fails while importing icons
 import * as METADATA_LABELING from '@suite/metadata/src/metadataLabelingConstants';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
