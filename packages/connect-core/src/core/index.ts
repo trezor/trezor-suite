@@ -813,6 +813,7 @@ export class Core extends EventEmitter {
             case UI_RESPONSE.RECEIVE_PASSPHRASE:
             case UI_RESPONSE.RECEIVE_THP_PAIRING_TAG:
             case UI_RESPONSE.RECEIVE_WORD:
+            case UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO:
                 this.uiPromises.resolve(message);
                 break;
             case UI_RESPONSE.RECEIVE_FIRMWARE: {

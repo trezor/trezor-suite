@@ -1,6 +1,9 @@
 import type { ThpPairingMethod } from '@trezor/protocol';
+import type { Err, Ok } from '@trezor/type-utils';
 
 import { type UI_REQUEST } from './ui-request';
+import type { SerializedError } from '../constants/errors';
+import type { AccountInfo } from '../types/account';
 import type { LocalFirmwares } from '../types/settings';
 
 /*
@@ -14,6 +17,7 @@ export const UI_RESPONSE = {
     RECEIVE_PASSPHRASE: 'ui-receive_passphrase',
     RECEIVE_THP_PAIRING_TAG: 'ui-receive_thp_pairing_tag',
     RECEIVE_WORD: 'ui-receive_word',
+    RECEIVE_DISCOVERY_ACCOUNT_INFO: 'ui-receive_discovery_account_info',
 } as const;
 
 export interface UiResponseConfirmation {
@@ -61,12 +65,20 @@ export interface UiResponseThpPairingTag {
     requestId?: string;
 }
 
+export interface UiResponseDiscoveryAccountInfo {
+    type: typeof UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO;
+    /** Response of the getAccountInfo call asked for by `UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO`. */
+    payload: Ok<AccountInfo> | Err<SerializedError>;
+    requestId: string;
+}
+
 export type UiResponseEvent =
     | UiResponseConfirmation
     | UiResponsePin
     | UiResponseWord
     | UiResponsePassphrase
     | UiResponseThpPairingTag
-    | UiResponseFirmwares;
+    | UiResponseFirmwares
+    | UiResponseDiscoveryAccountInfo;
 
 export type UiResponseMessage = UiResponseEvent & { event: typeof UI_REQUEST; requestId?: string };
