@@ -15,6 +15,8 @@ import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/tradin
 import { type TradingRootState } from '@suite-native/trading-state';
 
 import { TradingExchangeRevokeScreen } from './TradingExchangeRevokeScreen';
+import { REVOKE_CONTINUE_BUTTON_TEST_ID } from '../components/exchange/Approval/ApprovalButton';
+import { type useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
 
 type State = TradingRootState;
@@ -49,13 +51,13 @@ jest.mock('../hooks/exchange/Approval/useApprovalFlow', () => ({
     }),
 }));
 
+let mockEvmApprovalFees: Pick<
+    ReturnType<typeof useEvmApprovalFees>,
+    'fee' | 'isLoading' | 'error' | 'isFeeUnavailable'
+>;
+
 jest.mock('../hooks/exchange/Approval/useEvmApprovalFees', () => ({
-    useEvmApprovalFees: () => ({
-        fee: '100000',
-        isLoading: false,
-        error: null,
-        composeFees: jest.fn(),
-    }),
+    useEvmApprovalFees: () => ({ ...mockEvmApprovalFees, composeFees: jest.fn() }),
 }));
 
 jest.mock('@react-navigation/native', () => ({
@@ -112,6 +114,12 @@ describe('TradingExchangeRevokeScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockEvmApprovalFees = {
+            fee: '100000',
+            isLoading: false,
+            error: null,
+            isFeeUnavailable: false,
+        };
 
         store = createTradingTestStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
@@ -152,6 +160,20 @@ describe('TradingExchangeRevokeScreen', () => {
         const { getByText } = await renderScreen();
 
         expect(getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
+    });
+
+    it('should disable the continue button without a loader when the fee is unavailable', async () => {
+        mockEvmApprovalFees = {
+            fee: undefined,
+            isLoading: false,
+            error: null,
+            isFeeUnavailable: true,
+        };
+
+        const { getByText, queryByTestId } = await renderScreen();
+
+        expect(getByText(getTranslation('generic.buttons.continue'))).toBeDisabled();
+        expect(queryByTestId(`${REVOKE_CONTINUE_BUTTON_TEST_ID}/loading`)).toBeNull();
     });
 
     it('should render alert when no quote is provided', async () => {

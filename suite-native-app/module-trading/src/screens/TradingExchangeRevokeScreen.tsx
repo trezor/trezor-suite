@@ -51,6 +51,7 @@ export const TradingExchangeRevokeScreen = ({
         fee,
         isLoading: isComposingFees,
         error: feeError,
+        isFeeUnavailable,
     } = useEvmApprovalFees({
         approvalTypeOverride: 'ZERO',
     });
@@ -151,7 +152,7 @@ export const TradingExchangeRevokeScreen = ({
             footer={
                 <ApprovalButton
                     isReady={isRevokeReady}
-                    isDisabled={!!error}
+                    isDisabled={!!error || isFeeUnavailable}
                     flowType={shouldIncreaseLimit ? 'revoke-and-approve' : 'revoke'}
                 />
             }

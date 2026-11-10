@@ -26,6 +26,7 @@ import {
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
+import { FEE_SELECTOR_ROW_TEST_ID } from '@suite-native/transaction-management';
 
 import {
     TradingExchangePreviewScreen,
@@ -575,7 +576,7 @@ describe('TradingExchangePreviewScreen', () => {
             const { result } = await renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.queryByText('Transaction error occurred')).toBeNull();
-            expect(result.getByTestId('@transactionManagement/fee-selector-row')).toBeOnTheScreen();
+            expect(result.getByTestId(FEE_SELECTOR_ROW_TEST_ID)).toBeOnTheScreen();
             expect(
                 within(
                     result.getByTestId('@transactionManagement/fee-unavailable-alert'),

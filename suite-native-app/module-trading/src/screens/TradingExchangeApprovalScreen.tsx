@@ -53,7 +53,12 @@ export const TradingExchangeApprovalScreen = ({
         selectTradingCoinSymbolByCryptoId(state, quote?.send),
     );
 
-    const { fee, isLoading: isComposingFees, error: feeError } = useEvmApprovalFees();
+    const {
+        fee,
+        isLoading: isComposingFees,
+        error: feeError,
+        isFeeUnavailable,
+    } = useEvmApprovalFees();
 
     const isLoading = isConfirming || isComposingFees;
     const error = confirmError || feeError;
@@ -154,7 +159,11 @@ export const TradingExchangeApprovalScreen = ({
                 />
             }
             footer={
-                <ApprovalButton isReady={isApprovalReady} isDisabled={!!error} flowType="approve" />
+                <ApprovalButton
+                    isReady={isApprovalReady}
+                    isDisabled={!!error || isFeeUnavailable}
+                    flowType="approve"
+                />
             }
         >
             <VStack spacing="sp12">

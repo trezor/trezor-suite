@@ -88,6 +88,7 @@ const mockTokenInfo = {
 } as TokenInfoBranded;
 
 const mockComposeSendFormTransactionFeeLevelsThunk = jest.fn();
+const mockComposeAllowanceTransactionThunk = jest.fn();
 
 jest.mock('@suite-common/wallet-core', () => {
     const actual = jest.requireActual('@suite-common/wallet-core');
@@ -97,7 +98,7 @@ jest.mock('@suite-common/wallet-core', () => {
         composeAllowanceTransactionThunk: () => () =>
             Promise.resolve({
                 type: '@common/wallet-core/approval/composeAllowanceTransactionThunk/fulfilled',
-                payload: mockPrecomposedLevels,
+                payload: mockComposeAllowanceTransactionThunk() ?? mockPrecomposedLevels,
                 meta: {
                     requestId: 'test-request-id',
                     requestStatus: 'fulfilled' as const,
@@ -286,6 +287,53 @@ describe('thunks', () => {
             expect(draft?.feePerUnit).toBe('20');
             expect(draft?.feeLimit).toBe('52000');
             expect(draft?.outputs[0]?.address).toBe('0xabc');
+        });
+
+        it('should store the form draft and drop the stale fee when the selected fee level cannot be composed', async () => {
+            mockComposeAllowanceTransactionThunk.mockReturnValueOnce({
+                normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT' },
+                low: mockPrecomposedLevels.normal,
+            });
+            const formDraftKey = getFormDraftKey('trading-exchange', '');
+            const localStore = createTradingTestStore({
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: {
+                            exchange: { tradingAccountKey: eth1NormalAccount.key },
+                            composedTransactionInfo: {
+                                selectedFee: 'low',
+                                composed: { fee: '21000', feePerByte: '10' },
+                            },
+                        },
+                    },
+                    device: {
+                        selectedDevice: {
+                            state: { staticSessionId: 'device1@test:123' },
+                            features: { major_version: 2, minor_version: 6, patch_version: 0 },
+                        },
+                    },
+                },
+            });
+            const ethAccount = localStore
+                .getState()
+                .wallet.accounts.find((account: Account) => account.key === eth1NormalAccount.key);
+
+            const result = await localStore.dispatch(
+                composeEvmApprovalFeeLevelsThunk({
+                    quote: dexQuoteWithApprovalData,
+                    account: ethAccount!,
+                    feeInfo,
+                }),
+            );
+
+            expect(result.type).toContain('fulfilled');
+
+            const draft = localStore.getState().wallet.formDrafts[formDraftKey];
+            expect(draft?.selectedFee).toBe('normal');
+            expect(draft?.transactionData).toEqual(expect.any(String));
+            expect(draft?.outputs[0]?.token).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+            expect(localStore.getState().wallet.trading.composedTransactionInfo).toEqual({});
         });
 
         it('should add default payment output with token when exchange form draft has no outputs', async () => {
