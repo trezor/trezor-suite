@@ -13,7 +13,8 @@ import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
 import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';
 import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
 import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TradeBoxActionButton } from './TradeBoxActionButton';
 import { WrapNativeTokenButton } from './WrapNativeTokenButton';

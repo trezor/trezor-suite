@@ -5,7 +5,7 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetDetailsProps = {
     networkSymbol: NetworkSymbol;

@@ -8,7 +8,7 @@ import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezo
 import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
 
 import { AppNavigationTooltip } from '#src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 

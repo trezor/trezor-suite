@@ -9,7 +9,7 @@ import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { InputError } from '#src/components/wallet/InputError';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { FEE_LIMIT } from './constants';
 import { useFeesContext } from '../../context/FeesContext';

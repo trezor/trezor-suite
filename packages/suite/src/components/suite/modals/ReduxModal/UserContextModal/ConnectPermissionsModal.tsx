@@ -18,7 +18,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { ConnectAppIcon } from '#src/components/suite/ConnectAppIcon';
 import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
 import { ConnectProcessLabel } from '#src/components/suite/ConnectProcessLabel';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { GroupedPermissionsList } from '#src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
 export const ConnectPermissionsModal = () => {

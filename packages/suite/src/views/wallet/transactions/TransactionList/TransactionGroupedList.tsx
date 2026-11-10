@@ -10,7 +10,7 @@ import {
 
 import { CoinjoinBatchItem } from '#src/components/wallet/TransactionItem/CoinjoinBatchItem';
 import { TransactionItem } from '#src/components/wallet/TransactionItem/TransactionItem';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
 import { findTransactionAccount } from './findTransactionAccount';

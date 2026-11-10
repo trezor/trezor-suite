@@ -46,7 +46,7 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { setTransactionHistoryPrefill } from '#src/actions/suite/suiteActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';

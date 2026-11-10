@@ -53,7 +53,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from '#src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from '#src/components/suite/ConnectProcessLabel';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ConnectAppName } from './ConnectAppName';
 

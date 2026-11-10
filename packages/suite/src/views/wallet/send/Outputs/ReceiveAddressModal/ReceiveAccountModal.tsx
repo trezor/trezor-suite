@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Badge, Column, Modal, Row, Select } from '@trezor/components';
 
 import { WalletLabeling } from '#src/components/suite/labeling/WalletLabeling';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ReceiveAccountModalAccountsList } from './ReceiveAccountModalAccountsList';
 

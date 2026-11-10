@@ -21,7 +21,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { NoRatesTooltip } from '#src/components/suite/Ticker/NoRatesTooltip';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { FiatAmountHeadline } from '#src/views/home/HomeBalance/FiatAmountHeadline';
 
 import { AssetDetailPriceChange } from './AssetDetailPriceChange';

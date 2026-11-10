@@ -12,7 +12,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typedObjectEntries, typedObjectValues } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type FlagEntry = [keyof FlagsState, FlagsState[keyof FlagsState]];
 type BooleanFlagEntry = [BooleanFlagKey, boolean];

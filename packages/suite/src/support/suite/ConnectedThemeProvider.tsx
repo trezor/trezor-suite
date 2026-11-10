@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { selectTheme } from '@suite/settings';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ThemeProvider } from './ThemeProvider';
 

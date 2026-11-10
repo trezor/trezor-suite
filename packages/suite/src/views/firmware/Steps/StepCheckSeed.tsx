@@ -13,7 +13,7 @@ import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { PrerequisitesGuide } from '#src/components/suite/PrerequisitesGuide/PrerequisitesGuide';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type StepCheckSeedProps = {
     deviceWillBeWiped: boolean;

@@ -13,7 +13,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface UnhideTokenModalProps {
     address: string;

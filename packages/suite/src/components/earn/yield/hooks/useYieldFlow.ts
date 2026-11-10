@@ -40,7 +40,7 @@ import { submitYieldDepositThunk } from '#src/actions/wallet/stablecoin-yield/su
 import { submitYieldWithdrawThunk } from '#src/actions/wallet/stablecoin-yield/submitYieldWithdrawThunk';
 import { submitUnwrapNativeTokenThunk } from '#src/actions/wallet/unwrapNativeTokenThunks';
 import { submitWrapNativeTokenThunk } from '#src/actions/wallet/wrapNativeTokenThunks';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {

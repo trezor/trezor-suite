@@ -6,7 +6,7 @@ import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common
 import { Banner } from '@trezor/components';
 
 import { useBackendReconnection } from '#src/hooks/settings/backends/useBackendReconnection';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectIsSuiteOnline } from '#src/selectors/suite/suiteSelectors';
 
 type DisconnectedNotificationProps = {

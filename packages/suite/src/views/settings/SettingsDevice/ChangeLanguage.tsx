@@ -10,7 +10,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { changeLanguageThunk } from '#src/actions/settings/deviceSettingsActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface ChangeLanguageProps {
     isDeviceLocked: boolean;

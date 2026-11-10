@@ -6,7 +6,7 @@ import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
 import { LoadingContent } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TronFeeContent } from './TronFeeContent';
 import { useFeesContext } from '../../context/FeesContext';

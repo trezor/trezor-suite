@@ -6,7 +6,8 @@ import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { Column, InfoItem, type StepListItemState } from '@trezor/components';
 
-import { useConnectedDateFnsLocale, useSelector } from '#src/hooks/suite';
+import { useConnectedDateFnsLocale } from '#src/hooks/suite/useConnectedDateFnsLocale';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { TradingDetailStep } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 import { TradingDetailTransactionIdRow } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
 import { TradingDetailTxId } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';

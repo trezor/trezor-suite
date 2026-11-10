@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { CardList, Column, Modal, Row } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { DiscoveryWarning } from '#src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
 import { TradingReceiveAddressEmpty } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';

@@ -13,7 +13,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { submitRequestFormThunk } from '#src/actions/wallet/trading/tradingCommonActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { createQuoteLink } from '#src/utils/wallet/trading/exchangeUtils';
 
 export const useTradingExchangeTradeRequest = (account: Account | undefined) => {

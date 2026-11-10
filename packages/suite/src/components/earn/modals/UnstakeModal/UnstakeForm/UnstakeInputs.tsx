@@ -10,7 +10,7 @@ import { type WithdrawalFormState } from '#src/components/earn/forms/StakeFormCo
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useWithdrawalFormContext } from '#src/hooks/earn/useWithdrawalForm';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { FIAT_INPUT, OUTPUT_AMOUNT } from '#src/types/earn/earnFormFields';
 import {
     validateCryptoLimits,

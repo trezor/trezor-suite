@@ -13,7 +13,7 @@ import { InfoIcon } from '@trezor/icons';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const AnalyticsLogging = () => {
     const customAnalyticsUrl = useSelector(selectCustomAnalyticsUrl);

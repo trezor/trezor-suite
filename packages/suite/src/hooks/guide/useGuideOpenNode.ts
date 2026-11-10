@@ -3,7 +3,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { openNode } from '#src/actions/suite/guideActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectGuideIndexNode } from '#src/selectors/suite/guideSelectors';
 import { getNodeById } from '#src/utils/suite/guide';
 

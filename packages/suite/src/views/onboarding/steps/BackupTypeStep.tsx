@@ -11,7 +11,8 @@ import { Badge, Column, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { WalletIcon } from '@trezor/icons';
 
-import { useOnboarding, useSelector } from '#src/hooks/suite';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { SelectBackupType } from './SelectBackupType/SelectBackupType';
 import { isShamirBackupType } from './utils';

@@ -24,7 +24,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingFormInputCountry } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';

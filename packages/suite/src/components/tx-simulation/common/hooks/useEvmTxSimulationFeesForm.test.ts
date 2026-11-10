@@ -4,7 +4,7 @@ import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 
 import { useEvmTxSimulationFeesForm } from './useEvmTxSimulationFeesForm';
 
-jest.mock('#src/hooks/suite', () => ({ useSelector: () => undefined }));
+jest.mock('#src/hooks/suite/useSelector', () => ({ useSelector: () => undefined }));
 jest.mock('#src/hooks/wallet/form/useFees', () => ({
     useFees: () => ({ changeFeeLevel: jest.fn() }),
 }));

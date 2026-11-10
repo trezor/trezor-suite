@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@t
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { AccountExceptionLayout } from '#src/components/wallet/AccountExceptionLayout';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AccountExceptionAction = { key: string } & ButtonProps;
 

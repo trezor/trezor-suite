@@ -5,7 +5,8 @@ import { getFeeUnits } from '@suite-common/wallet-utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
-import { useConnectedDateFnsLocale, useSelector } from '#src/hooks/suite';
+import { useConnectedDateFnsLocale } from '#src/hooks/suite/useConnectedDateFnsLocale';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';

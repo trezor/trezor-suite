@@ -24,9 +24,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { claimMerklRewardsThunk } from '#src/actions/wallet/stablecoin-yield/claimMerklRewardsThunk';
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
-import { useSelector } from '#src/hooks/suite';
 import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { YieldClaimFeeWarning } from './YieldClaimFeeWarning';
 import { YieldRewardsList } from './YieldRewardsList';

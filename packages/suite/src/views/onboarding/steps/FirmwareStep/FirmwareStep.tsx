@@ -18,7 +18,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { FirmwareInstallationProgressCheck } from '#src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
 import { ThpPairingStep } from '#src/components/onboarding/ThpPairingStep/ThpPairingStep';
-import { useOnboarding } from '#src/hooks/suite';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
 
 import { FirmwareInitialStep } from './FirmwareInitialStep';
 import { FirmwareInstallationStep } from './FirmwareInstallationStep';

@@ -12,7 +12,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT, FIAT_INPUT } from '#src/types/earn/earnFormFields';
 import { validateStakingMax } from '#src/utils/suite/staking';
 import {

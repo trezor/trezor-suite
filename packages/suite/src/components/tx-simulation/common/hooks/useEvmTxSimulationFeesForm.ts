@@ -18,7 +18,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useComposedLevelsPlaceholder } from '#src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { type FeesFormValues, useFees } from '#src/hooks/wallet/form/useFees';
 

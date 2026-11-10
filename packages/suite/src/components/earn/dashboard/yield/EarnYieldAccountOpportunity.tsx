@@ -21,10 +21,10 @@ import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
 import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EarnYieldActionButtons } from './EarnYieldActionButtons';
 import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';

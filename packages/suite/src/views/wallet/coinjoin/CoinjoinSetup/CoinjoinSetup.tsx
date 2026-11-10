@@ -8,7 +8,7 @@ import { Banner, Card, Radio, motionAnimation, motionEasing } from '@trezor/comp
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AnonymityLevelSetup } from './AnonymityLevelSetup';
 import { MaxMiningFeeSetup } from './MaxMiningFeeSetup';

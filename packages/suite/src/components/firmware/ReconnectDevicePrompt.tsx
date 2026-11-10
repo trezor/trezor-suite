@@ -17,7 +17,7 @@ import { usePreviousDefined } from '@trezor/react-utils';
 
 import { DeviceConfirmImage } from '#src/components/suite/DeviceConfirmImage';
 import { WebUsbButton } from '#src/components/suite/WebUsbButton';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from '#src/selectors/suite/suiteSelectors';
 
 type RebootDeviceGraphicsProps = {

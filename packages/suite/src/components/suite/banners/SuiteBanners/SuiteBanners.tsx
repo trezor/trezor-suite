@@ -23,8 +23,8 @@ import { isWeb } from '@trezor/env-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { MAX_CONTENT_WIDTH } from '#src/constants/suite/layout';
-import { useSelector } from '#src/hooks/suite';
 import { useLocalNetworkAccessPermission } from '#src/hooks/suite/useLocalNetworkAccessPermission';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectIsSuiteOnline, selectSuiteTransport } from '#src/selectors/suite/suiteSelectors';
 
 import { BridgeDeprecated, useLegacyBridgeDetection } from './BridgeDeprecatedBanner';

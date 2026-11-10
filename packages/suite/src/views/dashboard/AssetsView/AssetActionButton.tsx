@@ -9,7 +9,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useAccountSearch, useSelector } from '#src/hooks/suite';
+import { useAccountSearch } from '#src/hooks/suite/useAccountSearch';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetActionButtonRoute = Extract<Route['name'], 'wallet-staking' | 'wallet-trading-buy'>;
 

@@ -14,7 +14,7 @@ import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { DeviceStatus } from '#src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { SuiteBanners } from './banners/SuiteBanners/SuiteBanners';
 

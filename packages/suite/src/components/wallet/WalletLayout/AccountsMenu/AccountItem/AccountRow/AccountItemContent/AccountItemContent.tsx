@@ -5,7 +5,7 @@ import { Column, Icon, Row, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { CoinBalance } from '#src/components/suite/CoinBalance';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AccountItemBadges } from './AccountItemBadges';
 import { BalancePlaceholder, FiatBalancePlaceholder } from './BalancePlaceholder';

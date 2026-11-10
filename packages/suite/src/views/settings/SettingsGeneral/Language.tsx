@@ -13,7 +13,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { CROWDIN_URL } from '@trezor/urls';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getOsLocale } from '#src/utils/suite/l10n';
 
 const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>

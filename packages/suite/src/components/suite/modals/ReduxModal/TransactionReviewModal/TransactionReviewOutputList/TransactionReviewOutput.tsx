@@ -36,7 +36,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { TransactionReviewOutputAssets } from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import {
     type OutputElementLine,

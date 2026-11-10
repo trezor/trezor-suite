@@ -15,7 +15,7 @@ import { Banner } from '@trezor/components';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface SolanaStakingLimitBannerProps {
     account: Account;

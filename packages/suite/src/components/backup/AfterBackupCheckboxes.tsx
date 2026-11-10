@@ -5,7 +5,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { CheckItem } from '#src/components/suite/CheckItem';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const AfterBackupCheckboxes = () => {
     const backup = useSelector(selectBackup);

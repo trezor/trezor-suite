@@ -16,8 +16,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { earnFlowToEventTypeMap } from '#src/constants/suite/staking';
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
 import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
-import { useSelector } from '#src/hooks/suite';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT, FIAT_INPUT } from '#src/types/earn/earnFormFields';
 
 type StakeButtonProps = {

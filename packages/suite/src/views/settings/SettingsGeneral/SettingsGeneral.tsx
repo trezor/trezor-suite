@@ -29,7 +29,7 @@ import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from '#src/components/settings/SettingsLayout';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 import { AddressDisplay } from './AddressDisplay';

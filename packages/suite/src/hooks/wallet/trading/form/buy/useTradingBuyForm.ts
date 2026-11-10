@@ -23,7 +23,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingAmountUnitSync } from '#src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
 import { useServerEnvironment } from '#src/hooks/wallet/trading/useServerEnviroment';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';

@@ -14,7 +14,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { setWidth as setGuideWidth } from '#src/actions/suite/guideActions';
 import { MIN_CONTENT_WIDTH } from '#src/constants/suite/layout';
 import { GUIDE_ANIMATION_DURATION_MS, useGuide } from '#src/hooks/guide/useGuide';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectGuideView, selectGuideWidth } from '#src/selectors/suite/guideSelectors';
 import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
 

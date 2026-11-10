@@ -15,7 +15,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { YieldProviderConsentBanners } from './components/YieldProviderConsentBanners';

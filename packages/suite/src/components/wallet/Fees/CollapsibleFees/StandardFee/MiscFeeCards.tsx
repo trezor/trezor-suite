@@ -4,7 +4,7 @@ import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';

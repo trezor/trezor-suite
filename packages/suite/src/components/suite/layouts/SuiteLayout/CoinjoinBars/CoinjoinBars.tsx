@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { selectCoinjoinAccounts } from '@suite/coinjoin';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 

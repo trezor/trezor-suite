@@ -24,7 +24,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useBackendsForm } from '#src/hooks/settings/backends/useBackendsForm';
 import { useExplorerForm } from '#src/hooks/settings/useExplorerForm';
 import { useGapLimitForm } from '#src/hooks/settings/useGapLimitForm';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';

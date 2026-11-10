@@ -35,7 +35,7 @@ import { NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from '#src/components/suite/ConnectAppIcon';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { ConnectAppName } from '#src/views/settings/SettingsConnectedApps/ConnectAppName';
 
 import { WalletConnectAccountOption } from './WalletConnectAccountOption';

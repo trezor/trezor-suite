@@ -8,7 +8,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getEarnOpportunityKey, selectIsEarnOnboardingConfirmed } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { StakingProviderConsentBanners } from './components/StakingProviderConsentBanners';

@@ -8,7 +8,8 @@ import { Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 import { PinMatrix } from '#src/components/suite/PinMatrix/PinMatrix';
-import { useOnboarding, useSelector } from '#src/hooks/suite';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const ShowPinMatrixStep = () => {
     const [pin, setPin] = useState('');

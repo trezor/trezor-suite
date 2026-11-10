@@ -8,7 +8,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
 import { Metadata } from '#src/components/suite/Metadata';
-import { useLayout } from '#src/hooks/suite';
+import { useLayout } from '#src/hooks/suite/useLayout';
 
 /**
  * modal that should show users basic information how to uninstall old standalone bridge

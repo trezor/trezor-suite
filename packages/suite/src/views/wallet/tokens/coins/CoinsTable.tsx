@@ -7,8 +7,8 @@ import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626, isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
 
-import { useSelector } from '#src/hooks/suite';
 import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import {
     enhanceTokensWithRates,
     getTokens,

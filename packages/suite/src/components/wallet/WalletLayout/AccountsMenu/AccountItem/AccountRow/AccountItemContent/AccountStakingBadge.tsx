@@ -10,7 +10,7 @@ import { TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { PiggyBankIcon, WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AccountItemBadge } from './AccountItemBadge';
 

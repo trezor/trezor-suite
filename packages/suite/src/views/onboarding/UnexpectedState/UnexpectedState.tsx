@@ -4,7 +4,8 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 
 import { ThpPairingStep } from '#src/components/onboarding/ThpPairingStep/ThpPairingStep';
-import { useOnboarding, useSelector } from '#src/hooks/suite';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectPrerequisite } from '#src/selectors/suite/suiteSelectors';
 
 import { DeviceDifferentStep } from './DeviceDifferentStep';

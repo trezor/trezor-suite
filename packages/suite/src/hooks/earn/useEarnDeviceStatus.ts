@@ -3,7 +3,7 @@ import { selectDeviceContextWindowType } from '@suite/modal';
 import { getEarnDeviceStatus } from '@suite-common/analytics';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const useEarnDeviceStatus = () => {
     const { device } = useDevice();

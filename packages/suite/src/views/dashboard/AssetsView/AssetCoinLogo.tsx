@@ -10,7 +10,7 @@ import { localizePercentage } from '@suite-common/wallet-utils';
 import { Row, Skeleton, Tooltip } from '@trezor/components';
 import { AssetShareIndicator } from '@trezor/product-components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetCoinLogoProps = {
     symbol: NetworkSymbol;

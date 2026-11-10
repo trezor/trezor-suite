@@ -22,7 +22,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
 import { Fees } from '#src/components/wallet/Fees/Fees';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useFees } from '#src/hooks/wallet/form/useFees';
 
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';

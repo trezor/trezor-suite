@@ -15,7 +15,8 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type BaseItemProps, VirtualizedList } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useAccountSearch, useSelector } from '#src/hooks/suite';
+import { useAccountSearch } from '#src/hooks/suite/useAccountSearch';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
 import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 

@@ -9,7 +9,7 @@ import { areTokenFiatRatesLoading, getAccountFiatBalance } from '@suite-common/w
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Row } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AccountItem } from './AccountItem/AccountItem';
 

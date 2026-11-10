@@ -27,8 +27,8 @@ import {
 } from '#src/components/earn/modals/shared/VotingDelegations/VotingPreferenceCard';
 import { Fees } from '#src/components/wallet/Fees/Fees';
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
-import { useSelector } from '#src/hooks/suite';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import {
     ChangeDelegateFormContext,
     useChangeDelegateForm,

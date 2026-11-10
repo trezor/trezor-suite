@@ -6,7 +6,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { TransactionList } from '#src/views/wallet/transactions/TransactionList/TransactionList';
 
 type TransactionsProps = {

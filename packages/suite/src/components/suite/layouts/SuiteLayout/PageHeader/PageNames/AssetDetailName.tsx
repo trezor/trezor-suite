@@ -11,7 +11,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectRoutedAssetKey } from '#src/views/home/AssetDetail/selectRoutedAssetKey';
 
 const AssetDetailBackButton = () => {

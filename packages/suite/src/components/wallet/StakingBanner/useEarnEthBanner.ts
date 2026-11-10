@@ -13,8 +13,8 @@ import { getApyPercent, isApyAvailable } from '@suite-common/wallet-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useStakingRate } from '#src/hooks/earn/useStakingRate';
-import { useSelector } from '#src/hooks/suite';
 import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const emptyVaults: YieldDtoV2[] = [];
 
