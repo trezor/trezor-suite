@@ -23,6 +23,7 @@ import {
     suiteSettingsInitialState,
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import { TorStatus } from '@suite/tor';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
@@ -35,6 +36,7 @@ import {
 import { connectPopupInitialState } from '@suite-common/connect-popup';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
+import { geolocationInitialState } from '@suite-common/geolocation';
 import {
     fetchConfigThunk,
     initMessageSystemThunk,
@@ -90,6 +92,11 @@ import { createWalletReducer } from 'src/reducers/wallet';
 
 import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
 
+jest.mock('@suite/regions', () => ({
+    ...jest.requireActual('@suite/regions'),
+    initPresenceDetectionThunk: () => () => Promise.resolve(),
+}));
+
 const walletReducers = createWalletReducer(mockExtraDependenciesForReducers);
 
 const deviceReducer = prepareDeviceReducer({
@@ -141,6 +148,8 @@ const getInitialState = (): InitThunkState => ({
     device: deviceReducer(undefined, EMPTY_ACTION),
     metadata: metadataReducer(undefined, EMPTY_ACTION),
     firmware: firmwareInitialState,
+    tor: { torStatus: TorStatus.Disabled, torBootstrap: null },
+    geolocation: geolocationInitialState,
 });
 
 type Fixture = {

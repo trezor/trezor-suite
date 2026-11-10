@@ -1,6 +1,7 @@
 import type { MiddlewareAPI } from 'redux';
 
 import { metadataMiddleware } from '@suite/metadata';
+import { regionsMiddleware } from '@suite/regions';
 import { routerMiddleware } from '@suite/router';
 import { tradingMiddleware } from '@suite/trading';
 import { logsMiddleware } from '@suite-common/logger';
@@ -37,5 +38,6 @@ export const getSuiteMiddleware = (
     protocol,
     routerMiddleware(getExtra),
     tradingMiddleware(getExtra),
+    regionsMiddleware(getExtra),
     sentry,
 ];

@@ -46,6 +46,7 @@ import {
     type InitAnalyticsThunkState,
     initAnalyticsThunk,
 } from '@suite-native/analytics-redux';
+import { initPresenceDetectionThunk } from '@suite-native/regions';
 import {
     type SettingsSliceRootState,
     selectEarnStakingWorkerBaseUrl,
@@ -133,6 +134,7 @@ export const applicationInitThunk = createThunk<
 
     dispatch(initAnalyticsThunk());
     dispatch(initMessageSystemThunk());
+    dispatch(initPresenceDetectionThunk());
 
     // Select latest remembered device or Portfolio Tracker device.
     dispatch(initDevicesThunk());

@@ -15,8 +15,12 @@
         "test:unit:watch": "yarn g:jest:native --watch"
     },
     "dependencies": {
+        "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/regions": "workspace:*",
-        "@suite-native/intl": "workspace:*"
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "react-native": "0.88.1"
     }
 }

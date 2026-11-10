@@ -76,6 +76,31 @@ Resulting values (rounded; `estimatePresence.test.ts` covers every cell):
 **The cell values and IP weights are an approved product and legal decision.** Do not change them in a code review or
 to make a test pass. A change needs the same sign-off as the original values.
 
+## IP country signal
+
+`fetchCountryCodeThunk` calls `services.trezor.io/get-country/` with a 10 s timeout. A successful fetch sets
+`countryCode`, which trading, message-system targeting and feedback also read. Every fetch, successful or not, records
+`countryCodeFetch: { status, timestamp }`. A failure keeps the previous `countryCode`.
+
+`selectPresenceIpCountry` returns `countryCode` only when the last record is `success`. Otherwise the IP is missing:
+on the first fetch, after a failure, and after an invalidation. A refetch in flight keeps the previous record.
+
+`invalidateCountryCodeFetch` clears the record and increases `countryCodeFetchGeneration`. A fetch keeps the
+generation it started with, and its result is dropped if the generation changed. Desktop invalidates on every Tor
+status change, because a request sent through Tor returns `T1` or the exit node's country.
+
+Refresh scheduling lives in the regions packages (`refreshPresenceIpCountryThunk` in `@suite-common/regions`, platform
+`initPresenceDetectionThunk`):
+
+- It runs only while the `regions.presenceRestriction` feature flag is on.
+- It refetches when the last record is at least `PRESENCE_IP_REFRESH_INTERVAL_MS` (30 min) old by wall clock. A
+  timestamp in the future also counts as stale.
+- The check runs at app start, every `PRESENCE_CHECK_INTERVAL_MS` (60 s) and when the app returns to the foreground.
+  Timers alone stop during sleep and in the background.
+- Desktop fetches only while Tor is `Disabled`, and refetches right after Tor turns off.
+
+The `geolocation` slice is not persisted, and its values must not reach logs, Sentry or analytics.
+
 ## Time zone table
 
 `src/presence/timezoneCountries.ts` maps IANA zone names to countries. It is a static file taken from IANA tzdata (the

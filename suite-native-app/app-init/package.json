@@ -20,6 +20,7 @@
         "@suite-common/walletconnect": "workspace:*",
         "@suite-native-app/state": "workspace:*",
         "@suite-native/analytics-redux": "workspace:*",
+        "@suite-native/regions": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@trezor/redux-utils": "workspace:*"
     }

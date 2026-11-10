@@ -4,6 +4,7 @@ import { type ThunkDispatch } from 'redux-thunk';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type FlagsRootState, selectFlags, setFlag } from '@suite/flags';
 import { type MetadataRootState, metadataLabelingActions } from '@suite/metadata';
+import { type InitPresenceDetectionThunkState, initPresenceDetectionThunk } from '@suite/regions';
 import {
     type GotoThunkDeps,
     type GotoThunkState,
@@ -73,6 +74,7 @@ export type InitThunkState = ConnectInitThunkState &
     MessageSystemRootState &
     MetadataRootState &
     PeriodicFetchFiatRatesThunkState &
+    InitPresenceDetectionThunkState &
     SuiteRootState &
     SuiteSettingsRootState &
     UpdateMissingTxFiatRatesThunkState &
@@ -133,6 +135,7 @@ export const initThunk =
         // 3. fetch message system config
         await prepareCachedEnvData();
         await dispatch(initMessageSystemThunk());
+        void dispatch(initPresenceDetectionThunk());
 
         // 4. turn on auto updates if needed
         if (isDesktop() && enableAutoupdateOnNextRun) {
