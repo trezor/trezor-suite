@@ -1,7 +1,5 @@
 import {
-    type AnyDesc,
     type DescEnum,
-    type DescExtension,
     type DescField,
     type DescFile,
     type DescMessage,
@@ -16,11 +14,6 @@ import { file_google_protobuf_descriptor } from '@bufbuild/protobuf/wkt';
 
 import type { MessageResponse } from './definitions';
 import type { ProtobufDict } from './definitions/dict';
-
-type ProtobufModule = Record<string, AnyDesc> | ProtobufDict;
-
-const isProtobufDict = (mod: ProtobufModule): mod is ProtobufDict =>
-    typeof mod.fileContent === 'string';
 
 const patchLongValue = (value: unknown) => {
     if (typeof value === 'number') {
@@ -166,7 +159,6 @@ const transformSchemaFields = (
 
 export const ProtobufManager = () => {
     const messages: Record<string, DescMessage | undefined> = {};
-    const extensions: Record<string, DescExtension | undefined> = {};
     const enums: Record<string, DescEnum | undefined> = {};
     const files: Record<string, DescFile | undefined> = {};
     const wireMessageIds: Record<string, number | undefined> = {};
@@ -207,137 +199,58 @@ export const ProtobufManager = () => {
         });
     };
 
-    const loadPbModule = (definitions: Record<string, AnyDesc>) => {
-        Object.keys(definitions).forEach(key => {
-            // @ts-expect-error noUncheckedIndexedAccess: def is guaranteed to exist (iterating own keys)
-            const def: AnyDesc = definitions[key];
-            if (def.kind === 'file') {
-                files[key] = def;
-            } else if (def.kind) {
-                if (def.kind === 'message') {
-                    messages[key] = def;
-                } else if (def.kind === 'extension') {
-                    extensions[key] = def;
-                } else if (def.kind === 'enum') {
-                    enums[def.name] = def;
-                }
-            }
-        });
-    };
-
-    const load = (modules: ProtobufModule | ProtobufModule[]) => {
+    const load = (modules: ProtobufDict | ProtobufDict[]) => {
         const batch = Array.isArray(modules) ? modules : [modules];
-        const loadedModules = new Set<ProtobufModule>();
 
-        const loadModule = (mod: ProtobufModule) => {
-            if (loadedModules.has(mod)) {
+        const loadModule = (mod: ProtobufDict) => {
+            if (files[mod.fileName]) {
                 return;
             }
-            loadedModules.add(mod);
 
-            if (isProtobufDict(mod)) {
-                loadDict(mod, depName => {
-                    const depFile = batch.find(m => m.fileName === depName);
-                    if (depFile) {
-                        loadModule(depFile);
-                    }
-                });
-            } else {
-                loadPbModule(mod);
-            }
+            loadDict(mod, depName => {
+                const depFile = batch.find(m => m.fileName === depName);
+                if (depFile) {
+                    loadModule(depFile);
+                }
+            });
         };
 
         batch.forEach(loadModule);
     };
 
-    // (wire_type) is a custom option this is why it is to be found in '$unknown' options
-    // as { no: option_id, data: Uint8Array }
-    const getWireTypeOverride = (schema: AnyDesc) => {
-        const unknownOptions = schema.proto.options?.['$unknown'] ?? [];
-        if (unknownOptions.length === 0) {
-            return;
-        }
-
-        const wireTypeExtension = extensions['wire_type'];
-        const wireTypeOption = unknownOptions.find(o => o.no === wireTypeExtension?.number);
-
-        return wireTypeOption ? wireTypeOption.data[0] : undefined;
-    };
-
     const findEnum = (enumName: string) => enums[enumName];
 
     const findSchema = (nameOrId: number | string) => {
-        const messageTypeEnum = findEnum('MessageType');
-        const thpMessageTypeEnum = findEnum('ThpMessageType');
-
         if (typeof nameOrId === 'string') {
-            const schemaKey = `${nameOrId}Schema`;
-            const schema = messages[schemaKey] || messages[nameOrId];
+            const schema = messages[nameOrId];
 
             if (!schema) {
                 throw new Error(`Schema ${nameOrId} not found`);
             }
 
-            // Try to find message type enum value
-            // -1 is expected for ThpMessageType and other non-standard messages
-            let messageType = -1;
-            if (thpMessageTypeEnum) {
-                const thpEnum = thpMessageTypeEnum.values.find(
-                    k => k.name === 'ThpMessageType_' + schema.name,
-                );
-                if (thpEnum) {
-                    messageType = thpEnum.number;
-                }
-            }
-
-            if (messageType === -1 && messageTypeEnum) {
-                const mtEnum = messageTypeEnum.values.find(
-                    k => k.name === 'MessageType_' + schema.name,
-                );
-                if (mtEnum) {
-                    messageType = mtEnum.number;
-                }
-            }
-
-            if (messageType === -1) {
-                messageType = wireMessageIds[nameOrId] ?? -1;
-            }
+            const messageType = wireMessageIds[nameOrId] ?? -1;
 
             return {
                 schema,
-                messageType: getWireTypeOverride(schema) || messageType,
+                messageType,
                 messageName: nameOrId,
             };
         }
 
-        // Lookup by numeric ID
-        let matchedMessageType = messageTypeEnum?.value[nameOrId];
-        if (!matchedMessageType && thpMessageTypeEnum) {
-            matchedMessageType = thpMessageTypeEnum.value[nameOrId];
-        }
-
-        const messageName = matchedMessageType
-            ? matchedMessageType.name.replace('ThpMessageType_', '').replace('MessageType_', '')
-            : wireMessageNames[nameOrId];
-
+        const messageName = wireMessageNames[nameOrId];
         if (!messageName) {
-            throw new Error(
-                `MessageType with ID ${nameOrId} not found. Check MessageType and ThpMessageType enums.`,
-            );
+            throw new Error(`MessageType with ID ${nameOrId} not found.`);
         }
 
-        const schemaKey = messageName + 'Schema';
-        const schema = messages[schemaKey] || messages[messageName];
+        const schema = messages[messageName];
 
         if (!schema) {
-            throw new Error(
-                `Schema "${messageName}" (from ID ${nameOrId}) not found. Available: ${Object.keys(messages).length}`,
-            );
+            throw new Error(`Schema "${messageName}" (from ID ${nameOrId}) not found.`);
         }
 
         return {
             schema,
-            messageType: getWireTypeOverride(schema) || nameOrId,
+            messageType: nameOrId,
             messageName,
         };
     };
