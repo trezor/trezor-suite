@@ -11,13 +11,14 @@ import { type TokenMetadataSource } from './TokenMetadataContext';
 import { TokenMetadataProvider } from './TokenMetadataProvider';
 import { useTokenMetadataSources } from './useTokenMetadataSources';
 
+const parentToken = { contract: toTokenAddress('token'), symbol: 'PARENT' };
 const parentSource: TokenMetadataSource = {
     networkSymbol: asNetworkSymbol('eth'),
-    tokens: [{ contract: toTokenAddress('token'), symbol: 'PARENT' }],
+    tokens: [parentToken],
 };
 const localSource: TokenMetadataSource = {
     ...parentSource,
-    tokens: [{ ...parentSource.tokens[0], symbol: 'LOCAL' }],
+    tokens: [{ ...parentToken, symbol: 'LOCAL' }],
 };
 
 const MetadataWrapper = ({ children }: PropsWithChildren) => (
