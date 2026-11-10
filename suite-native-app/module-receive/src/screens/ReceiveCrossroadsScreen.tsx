@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { events as commonEvents } from '@suite-common/analytics';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { type GlobalReceiveAssetListItem } from '@suite-common/receive';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { selectAccounts } from '@suite-common/wallet-core';
 import {
     AccountsList,
     AddAccountButton,
@@ -23,6 +25,7 @@ import {
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { accountsToTokenMetadataSources } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 import { useDebounce } from '@trezor/react-utils';
@@ -41,6 +44,7 @@ export const ReceiveCrossroadsScreen = () => {
     const { navigateToReceiveScreen, navigateToReceiveAddressScreen } = useReceiveNavigation();
     const { translate } = useTranslate();
     const debounce = useDebounce();
+    const accounts = useSelector(selectAccounts);
 
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
@@ -59,10 +63,11 @@ export const ReceiveCrossroadsScreen = () => {
         [],
     );
 
-    const { items, loadMoreOtherAssets, resetOtherAssetsLimit } = useReceiveAssetListItems({
-        searchValue,
-        filteredNetworks,
-    });
+    const { items, metadataSources, loadMoreOtherAssets, resetOtherAssetsLimit } =
+        useReceiveAssetListItems({
+            searchValue,
+            filteredNetworks,
+        });
 
     const handleSearchChange = (value: string) => {
         debounce(() => {
@@ -127,7 +132,7 @@ export const ReceiveCrossroadsScreen = () => {
         return <ReceiveBlockedDeviceCompromisedScreen />;
     }
 
-    return (
+    const content = (
         <Screen
             header={
                 <ScreenHeader
@@ -193,5 +198,13 @@ export const ReceiveCrossroadsScreen = () => {
                 />
             )}
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[...metadataSources, ...accountsToTokenMetadataSources(accounts)]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

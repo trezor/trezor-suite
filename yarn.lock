@@ -13984,6 +13984,7 @@ __metadata:
     "@suite-common/networks": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/token": "workspace:*"
     "@suite-common/tokens": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
