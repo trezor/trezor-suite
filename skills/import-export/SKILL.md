@@ -19,3 +19,15 @@ description: Named export conventions and barrel file usage rules for the Trezor
 Use them in packages to define public interface.
 
 Do not use them inside a module to export from directory. If you feel it shall be separated, create a new package. They can introduce accidental circular dependencies and may hurt tree-shaking.
+
+Never import your own or an ancestor directory's barrel (for example `#src/hooks/suite` from inside `src/hooks/suite/`). The barrel imports the importing file back, which creates a circular dependency. Import from the defining module instead.
+
+## Imports within a package
+
+Import modules of the same package relatively, or through the package's `#src/*` [subpath import](https://nodejs.org/api/packages.html#subpath-imports) where its `package.json` declares one (`@trezor/suite`):
+
+```tsx
+import { useSelector } from '#src/hooks/suite';
+```
+
+`#src` resolves only inside the declaring package, so it never reaches into another package. Do not add `#src` to `suite-native` packages (Metro) or published packages; use relative imports there. Do not add new import aliases through tsconfig `paths` or bundler aliases.
