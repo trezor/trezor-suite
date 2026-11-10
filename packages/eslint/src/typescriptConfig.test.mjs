@@ -137,6 +137,37 @@ test('applies when a native package loads the shared config from its own directo
     assert.equal(errors.length, 1);
 });
 
+test('keeps app scopes private when a package loads the shared config from its own directory', async () => {
+    const errors = await lintRestrictedImports({
+        code: "import { foo } from '@suite-app/web-app';",
+        filename: `${repositoryRoot}packages/example/src/index.ts`,
+        instance: createEslint(`${repositoryRoot}packages/example`),
+    });
+    assert.equal(errors.length, 1);
+    assert.match(errors[0].message, /private to the suite apps/);
+});
+
+test('allows app scopes when the Suite app package loads the shared config from its own directory', async () => {
+    assert.deepEqual(
+        await lintRestrictedImports({
+            code: "import { foo } from '@suite-common/wallet-core';",
+            filename: `${repositoryRoot}packages/suite/src/index.ts`,
+            instance: createEslint(`${repositoryRoot}packages/suite`),
+        }),
+        [],
+    );
+});
+
+test('restricts a network package that loads the shared config from its own directory', async () => {
+    const errors = await lintRestrictedImports({
+        code: "import { foo } from '@suite-app/web-app';",
+        filename: `${repositoryRoot}networks/bitcoin/network-bitcoin/src/index.ts`,
+        instance: createEslint(`${repositoryRoot}networks/bitcoin/network-bitcoin`),
+    });
+    assert.equal(errors.length, 1);
+    assert.match(errors[0].message, /Network packages may only depend on @trezor/);
+});
+
 test('does not restrict components outside Suite Native', async () => {
     assert.deepEqual(
         await lintRestrictedImports({
