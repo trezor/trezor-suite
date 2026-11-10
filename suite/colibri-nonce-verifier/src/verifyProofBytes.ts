@@ -61,16 +61,25 @@ export const driveRuntime = async (
     return fail('VERIFICATION_FAILED', 'runtime did not converge');
 };
 
-export type VerifiedProofFacts = {
-    nonce: bigint;
+// One proofable read: the RPC method and arguments sent to the prover and verified by Colibri, the
+// account the proof must be bound to, and how to read the verified JSON result.
+export type ProvenRead<T> = {
+    method: string;
+    argsJson: string;
+    address: string;
+    parseResult: (result: unknown) => StepResult<T>;
+};
+
+export type VerifiedReadFacts<T> = {
+    value: T;
     header: AuthenticatedHeader;
     consensus: ConsensusEvidence;
 };
 
-export type VerifyProofBytesParams = {
+export type VerifyProvenReadParams<T> = {
     runtime: C4Runtime;
     proof: Uint8Array;
-    address: string;
+    read: ProvenRead<T>;
     checkpointRoot: string;
     router: RequestRouter;
     // Lower bound for the block timestamp of a "latest" proof; 0n disables the check (re-verifying
@@ -80,24 +89,23 @@ export type VerifyProofBytesParams = {
 };
 
 /**
- * Verifies proof bytes for `eth_getTransactionCount(address, "latest")` under the trusted
- * checkpoint and reads the nonce plus the header and consensus facts out of those same bytes.
- * Used by the live verifier and by the offline re-verification of an exported record.
+ * Verifies proof bytes for one account-bound read under the trusted checkpoint and reads the
+ * result plus the header and consensus facts out of those same bytes.
  */
-export const verifyProofBytes = async ({
+export const verifyProvenRead = async <T>({
     runtime,
     proof,
-    address,
+    read,
     checkpointRoot,
     router,
     minLatestBlockTs,
     signal,
-}: VerifyProofBytesParams): Promise<StepResult<VerifiedProofFacts>> => {
-    let nonce: bigint;
+}: VerifyProvenReadParams<T>): Promise<StepResult<VerifiedReadFacts<T>>> => {
+    let value: T;
     const context = runtime.createVerifyCtx(
         proof,
-        NONCE_RPC_METHOD,
-        nonceRequestArgs(address),
+        read.method,
+        read.argsJson,
         CHAIN_ID,
         checkpointRoot,
         null,
@@ -113,22 +121,63 @@ export const verifyProofBytes = async ({
             signal,
         );
         if (!result.success) return result;
-        const parsed = parseHexQuantity(result.value);
-        if (!parsed.success) return fail('VERIFICATION_FAILED', parsed.error);
-        nonce = parsed.value;
+        const parsed = read.parseResult(result.value);
+        if (!parsed.success) return parsed;
+        value = parsed.value;
     } finally {
         runtime.freeVerifyCtx(context);
     }
 
     // Both parses read the exact bytes that just verified; see extractAuthenticatedHeader.
     const decoded = runtime.decodeProof(proof);
-    const header = extractAuthenticatedHeader(decoded, address);
+    const header = extractAuthenticatedHeader(decoded, read.address);
     if (!header.success) return fail(header.code, header.detail);
     const consensus = extractConsensusEvidence(decoded);
     if (!consensus.success) return fail('METADATA_UNAVAILABLE', consensus.detail);
 
     return {
         success: true,
-        value: { nonce, header: header.header, consensus: consensus.consensus },
+        value: { value, header: header.header, consensus: consensus.consensus },
     };
+};
+
+const parseNonceResult = (result: unknown): StepResult<bigint> => {
+    const parsed = parseHexQuantity(result);
+
+    return parsed.success
+        ? { success: true, value: parsed.value }
+        : fail('VERIFICATION_FAILED', parsed.error);
+};
+
+export const createNonceRead = (address: string): ProvenRead<bigint> => ({
+    method: NONCE_RPC_METHOD,
+    argsJson: nonceRequestArgs(address),
+    address,
+    parseResult: parseNonceResult,
+});
+
+export type VerifiedProofFacts = {
+    nonce: bigint;
+    header: AuthenticatedHeader;
+    consensus: ConsensusEvidence;
+};
+
+export type VerifyProofBytesParams = Omit<VerifyProvenReadParams<bigint>, 'read'> & {
+    address: string;
+};
+
+/**
+ * Verifies proof bytes for `eth_getTransactionCount(address, "latest")` under the trusted
+ * checkpoint and reads the nonce plus the header and consensus facts out of those same bytes.
+ * Used by the live verifier and by the offline re-verification of an exported record.
+ */
+export const verifyProofBytes = async ({
+    address,
+    ...params
+}: VerifyProofBytesParams): Promise<StepResult<VerifiedProofFacts>> => {
+    const facts = await verifyProvenRead({ ...params, read: createNonceRead(address) });
+    if (!facts.success) return facts;
+    const { value: nonce, header, consensus } = facts.value;
+
+    return { success: true, value: { nonce, header, consensus } };
 };

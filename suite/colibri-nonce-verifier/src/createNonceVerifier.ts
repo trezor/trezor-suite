@@ -2,13 +2,20 @@ import type { C4Runtime } from '@corpus-core/colibri-stateless';
 import { sha256 } from '@noble/hashes/sha2.js';
 
 import type {
+    NonceFailure,
     NonceVerifierInfo,
-    VerifiedNonce,
+    VerifiedBlock,
     VerifiedNonceEvidence,
     VerifiedNonceRequest,
     VerifiedNonceResult,
+    VerifierIdentity,
 } from '@suite/desktop-app-api';
 
+import {
+    type VerifiedAccountStateResult,
+    type VerifiedAccountStateValue,
+    createAccountStateRead,
+} from './accountState';
 import {
     COLIBRI_REVISION,
     type ColibriRuntimeHandle,
@@ -19,7 +26,11 @@ import {
 import { createNonceFailure } from './errors';
 import { checkFreshness, getExpiresAtMs, getMinLatestBlockTimestamp } from './freshness';
 import { bytesToHex, hexToBytes, toDecimalString } from './quantity';
-import { parseVerifiedNonceRequest } from './request';
+import {
+    type VerifiedAccountStateRequest,
+    parseVerifiedAccountStateRequest,
+    parseVerifiedNonceRequest,
+} from './request';
 import {
     type AbortReason,
     DEFAULT_REQUEST_LIMITS,
@@ -33,13 +44,13 @@ import { type TrustManifest, validateTrustManifest } from './trustManifest';
 import {
     CHAIN_ID,
     type Failure,
-    NONCE_RPC_METHOD,
+    type ProvenRead,
     type StepResult,
-    type VerifiedProofFacts,
+    type VerifiedReadFacts,
+    createNonceRead,
     driveRuntime,
     fail,
-    nonceRequestArgs,
-    verifyProofBytes,
+    verifyProvenRead,
 } from './verifyProofBytes';
 
 export const JOB_TIMEOUT_MS = 60_000;
@@ -77,11 +88,16 @@ export type NonceVerifierConfig = {
 export type NonceVerifier = {
     getInfo: () => Promise<NonceVerifierInfo>;
     verify: (request: VerifiedNonceRequest, signal?: AbortSignal) => Promise<VerifiedNonceResult>;
+    // Code hash and storage words of one account, proven by a single `eth_getProof`.
+    verifyAccountState: (
+        request: VerifiedAccountStateRequest,
+        signal?: AbortSignal,
+    ) => Promise<VerifiedAccountStateResult>;
 };
 
 type BuildEvidenceParams = {
     proof: Uint8Array;
-    facts: VerifiedProofFacts;
+    facts: VerifiedReadFacts<unknown>;
     manifest: TrustManifest;
     router: RequestRouter;
     durationMs: number;
@@ -180,7 +196,7 @@ export const createNonceVerifier = (
 
     const acquireProof = async (
         runtime: C4Runtime,
-        argsJson: string,
+        read: ProvenRead<unknown>,
         router: RequestRouter,
         minLatestBlockTs: bigint,
         signal: AbortSignal,
@@ -189,8 +205,8 @@ export const createNonceVerifier = (
         // omit the header proof; a full clProof is required for the metadata binding below.
         runtime.resetCaches();
         const context = runtime.createRpcCtx(
-            NONCE_RPC_METHOD,
-            argsJson,
+            read.method,
+            read.argsJson,
             CHAIN_ID,
             0,
             VERIFY_FLAG_PROOF_ONLY,
@@ -217,10 +233,21 @@ export const createNonceVerifier = (
         }
     };
 
-    const runJob = async (
-        request: VerifiedNonceRequest,
+    type ProvenFacts<T> = {
+        value: T;
+        block: VerifiedBlock;
+        verifiedAtMs: number;
+        expiresAtMs: number;
+        verifier: VerifierIdentity;
+        evidence: VerifiedNonceEvidence;
+    };
+
+    // Acquires and verifies one read: trust anchor, runtime, prover round-trip, verification
+    // against the checkpoint, header binding and freshness. Shared by every proven read.
+    const runProofJob = async <T>(
+        read: ProvenRead<T>,
         controller: AbortController,
-    ): Promise<VerifiedNonceResult> => {
+    ): Promise<StepResult<ProvenFacts<T>>> => {
         const { signal } = controller;
         const startedMonotonicMs = deps.clock.monotonicMs();
         const startedWallMs = deps.clock.nowMs();
@@ -229,25 +256,19 @@ export const createNonceVerifier = (
             JOB_TIMEOUT_MS,
         );
         const isColdStart = !hasSyncState(config.storage, CHAIN_ID);
-        const address = request.address.toLowerCase();
-        const argsJson = nonceRequestArgs(address);
         const elapsedMs = () => Math.round(deps.clock.monotonicMs() - startedMonotonicMs);
 
-        const finish = (
-            outcome: StepResult<VerifiedNonce>,
-            router: RequestRouter | null,
-        ): VerifiedNonceResult => {
+        const finish = <R>(outcome: StepResult<R>, router: RequestRouter | null): StepResult<R> => {
             clearTimeout(deadline);
             const stats = router?.getStats() ?? { requestCount: 0, bytesReceived: 0 };
-            const summary = `${isColdStart ? 'cold' : 'warm'} ${elapsedMs()}ms ${stats.requestCount} requests ${stats.bytesReceived} bytes`;
+            const summary = `${read.method} ${isColdStart ? 'cold' : 'warm'} ${elapsedMs()}ms ${stats.requestCount} requests ${stats.bytesReceived} bytes`;
             if (outcome.success) {
                 deps.logger.info(`verified ${summary}`);
-
-                return outcome.value;
+            } else {
+                deps.logger.warn(`${outcome.failure.code} (${outcome.failure.detail}) ${summary}`);
             }
-            deps.logger.warn(`${outcome.failure.code} (${outcome.failure.detail}) ${summary}`);
 
-            return createNonceFailure(request.requestId, outcome.failure.code);
+            return outcome;
         };
 
         const manifest = getManifest();
@@ -260,7 +281,7 @@ export const createNonceVerifier = (
         const { runtime, revision } = loaded.value;
 
         if (
-            runtime.getMethodType(CHAIN_ID, NONCE_RPC_METHOD, argsJson, 0) !== METHOD_TYPE_PROOFABLE
+            runtime.getMethodType(CHAIN_ID, read.method, read.argsJson, 0) !== METHOD_TYPE_PROOFABLE
         ) {
             return finish(fail('VERIFICATION_FAILED', 'method not proofable'), null);
         }
@@ -274,14 +295,14 @@ export const createNonceVerifier = (
             { endpoints: manifest.value.endpoints, limits, signal },
         );
 
-        const attempt = async (): Promise<StepResult<VerifiedNonce>> => {
+        const attempt = async (): Promise<StepResult<ProvenFacts<T>>> => {
             const minLatestBlockTs = getMinLatestBlockTimestamp(deps.clock.nowMs());
-            const proof = await acquireProof(runtime, argsJson, router, minLatestBlockTs, signal);
+            const proof = await acquireProof(runtime, read, router, minLatestBlockTs, signal);
             if (!proof.success) return proof;
-            const facts = await verifyProofBytes({
+            const facts = await verifyProvenRead({
                 runtime,
                 proof: proof.value,
-                address,
+                read,
                 checkpointRoot: manifest.value.checkpoint.root,
                 router,
                 minLatestBlockTs,
@@ -304,11 +325,7 @@ export const createNonceVerifier = (
             return {
                 success: true,
                 value: {
-                    status: 'verified',
-                    requestId: request.requestId,
-                    chainId: '1',
-                    address,
-                    nonce: toDecimalString(facts.value.nonce),
+                    value: facts.value.value,
                     block: {
                         hash: header.blockHash,
                         number: toDecimalString(header.blockNumber),
@@ -351,17 +368,26 @@ export const createNonceVerifier = (
         return finish(outcome, router);
     };
 
-    const verify: NonceVerifier['verify'] = (request, externalSignal) => {
-        const parsed = parseVerifiedNonceRequest(request);
-        if (!parsed.ok) return Promise.resolve(createNonceFailure(parsed.requestId, parsed.code));
+    type EnqueueJobParams<R> = {
+        requestId: string;
+        externalSignal: AbortSignal | undefined;
+        run: (controller: AbortController) => Promise<R>;
+    };
 
+    // One Colibri runtime with global state inside it: every proven read waits for the previous
+    // one, whatever its kind.
+    const enqueueJob = <R>({
+        requestId,
+        externalSignal,
+        run,
+    }: EnqueueJobParams<R>): Promise<R | NonceFailure> => {
         const controller = new AbortController();
         const onExternalAbort = () => controller.abort({ code: 'CANCELLED' } satisfies AbortReason);
         if (externalSignal?.aborted) onExternalAbort();
         externalSignal?.addEventListener('abort', onExternalAbort, { once: true });
 
         const job = queue.then(() =>
-            runJob(parsed.request, controller).finally(() =>
+            run(controller).finally(() =>
                 externalSignal?.removeEventListener('abort', onExternalAbort),
             ),
         );
@@ -372,9 +398,65 @@ export const createNonceVerifier = (
                 `unexpected verifier error: ${error instanceof Error ? error.message : 'unknown'}`,
             );
 
-            return createNonceFailure(parsed.request.requestId, 'VERIFICATION_FAILED');
+            return createNonceFailure(requestId, 'VERIFICATION_FAILED');
         });
     };
 
-    return { getInfo, verify };
+    const verify: NonceVerifier['verify'] = (request, externalSignal) => {
+        const parsed = parseVerifiedNonceRequest(request);
+        if (!parsed.ok) return Promise.resolve(createNonceFailure(parsed.requestId, parsed.code));
+        const { requestId } = parsed.request;
+        const address = parsed.request.address.toLowerCase();
+
+        return enqueueJob({
+            requestId,
+            externalSignal,
+            run: async (controller): Promise<VerifiedNonceResult> => {
+                const outcome = await runProofJob(createNonceRead(address), controller);
+                if (!outcome.success) return createNonceFailure(requestId, outcome.failure.code);
+                const { value: nonce, ...facts } = outcome.value;
+
+                return {
+                    status: 'verified',
+                    requestId,
+                    chainId: '1',
+                    address,
+                    nonce: toDecimalString(nonce),
+                    ...facts,
+                };
+            },
+        });
+    };
+
+    const verifyAccountState: NonceVerifier['verifyAccountState'] = (request, externalSignal) => {
+        const parsed = parseVerifiedAccountStateRequest(request);
+        if (!parsed.ok) return Promise.resolve(createNonceFailure(parsed.requestId, parsed.code));
+        const { requestId, storageKeys } = parsed.request;
+        const address = parsed.request.address.toLowerCase();
+
+        return enqueueJob({
+            requestId,
+            externalSignal,
+            run: async (controller): Promise<VerifiedAccountStateResult> => {
+                const outcome = await runProofJob<VerifiedAccountStateValue>(
+                    createAccountStateRead({ address, storageKeys }),
+                    controller,
+                );
+                if (!outcome.success) return createNonceFailure(requestId, outcome.failure.code);
+                const { value: state, ...facts } = outcome.value;
+
+                return {
+                    status: 'verified',
+                    requestId,
+                    chainId: '1',
+                    address,
+                    codeHash: state.codeHash,
+                    storage: state.storage,
+                    ...facts,
+                };
+            },
+        });
+    };
+
+    return { getInfo, verify, verifyAccountState };
 };

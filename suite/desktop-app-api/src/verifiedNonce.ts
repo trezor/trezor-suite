@@ -50,27 +50,31 @@ export type VerifiedNonceEvidence = {
 };
 
 // Quantities travel as unsigned decimal strings so nothing rounds through a JS number.
+export type VerifiedBlock = {
+    hash: string;
+    number: string;
+    timestampSeconds: string;
+    // "latest" is a request policy: the block is authenticated and recent, not finalized.
+    status: 'authenticated-recent';
+};
+
+export type VerifierIdentity = {
+    location: 'desktop';
+    runtime: 'native';
+    revision: string;
+    trustPolicyId: string;
+};
+
 export type VerifiedNonce = {
     status: 'verified';
     requestId: string;
     chainId: VerifiedNonceChainId;
     address: string;
     nonce: string;
-    block: {
-        hash: string;
-        number: string;
-        timestampSeconds: string;
-        // "latest" is a request policy: the block is authenticated and recent, not finalized.
-        status: 'authenticated-recent';
-    };
+    block: VerifiedBlock;
     verifiedAtMs: number;
     expiresAtMs: number;
-    verifier: {
-        location: 'desktop';
-        runtime: 'native';
-        revision: string;
-        trustPolicyId: string;
-    };
+    verifier: VerifierIdentity;
     evidence: VerifiedNonceEvidence;
 };
 

@@ -8,7 +8,38 @@ export {
     type NonceVerifierLogger,
 } from './createNonceVerifier';
 export { NONCE_RPC_METHOD } from './verifyProofBytes';
-export { type ParsedVerifiedNonceRequest, parseVerifiedNonceRequest } from './request';
+export {
+    type ParsedVerifiedAccountStateRequest,
+    type ParsedVerifiedNonceRequest,
+    type VerifiedAccountStateRequest,
+    parseVerifiedAccountStateRequest,
+    parseVerifiedNonceRequest,
+} from './request';
+export {
+    ACCOUNT_STATE_RPC_METHOD,
+    MAX_STORAGE_KEYS,
+    type VerifiedAccountState,
+    type VerifiedAccountStateResult,
+    type VerifiedStorageWord,
+} from './accountState';
+export {
+    type ResolvedSafeImplementation,
+    type SafeImplementation,
+    type SafeImplementationFailure,
+    type SafeImplementationFailureCode,
+    type SafeImplementationResolver,
+    type SafeImplementationResolverDeps,
+    type SafeImplementationResult,
+    createSafeImplementationResolver,
+    getSafeImplementation,
+} from './createSafeImplementationResolver';
+export {
+    SAFE_PROXY_CODE_HASHES,
+    SAFE_SINGLETONS,
+    SAFE_SINGLETON_STORAGE_SLOT,
+    type SafeSingleton,
+    SafeProxyVersion,
+} from './safeDeployments';
 export {
     type ColibriRuntimeKind,
     COLIBRI_REVISION,

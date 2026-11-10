@@ -117,6 +117,54 @@ an implausible clock, request validation, cancellation and job serialization.
 
 Not covered offline: a non-existent account (no recorded non-inclusion proof is available).
 
+## Safe implementation resolution (clear signing, in progress)
+
+Goal: clear-sign calls to a Safe{Wallet} account (`execTransaction`, owner management, ...) with the
+ERC-7730 descriptors in `ethereum/clear-signing-erc7730-registry` `registry/safe/`. Those descriptors
+are bound to the Safe **singleton** addresses, while a transaction goes to the user's **proxy**, so
+the host has to learn which singleton the proxy runs, without trusting the RPC that tells it.
+
+Why not just `eth_getCode`: every Safe proxy carries the same ~170-byte runtime code, which answers
+`masterCopy()` from storage slot 0 and delegatecalls everything else to the low 20 bytes of slot 0.
+The code identifies the account as a Safe proxy; slot 0 names the implementation. Both come from one
+`eth_getProof(proxy, [slot 0], "latest")`, verified like the nonce (same checkpoint, header binding,
+60 s freshness, evidence block), so they describe the same authenticated block and no code is
+downloaded.
+
+| Step                                                      | Where                                                             |
+| --------------------------------------------------------- | ----------------------------------------------------------------- |
+| Account code hash and slot 0 under the authenticated root | `verifyAccountState` (`createNonceVerifier`) → Colibri C core     |
+| Result answers exactly the requested account and keys     | `parseAccountStateResult` (Colibri does not check the keys)       |
+| Code hash is a canonical Safe proxy (1.1.1–1.5.0)         | `getSafeImplementation` + `SAFE_PROXY_CODE_HASHES`                |
+| Slot 0 is a clean address of a registry-covered singleton | `getSafeImplementation` + `SAFE_SINGLETONS`                       |
+| Definitions are looked up under the singleton address     | `createSafeImplementationResolver` → `definitionsContractAddress` |
+
+`src/safeDeployments.ts` holds the reference data. Singleton addresses are the chain-1 deployments of
+the `calldata-Safe*-<version>.json` descriptors (registry revision `3bebbd05`), which match
+`safe-global/safe-deployments`. Proxy code hashes are keccak256 of the `deployedBytecode` in the
+published build artifacts (`@gnosis.pm/safe-contracts` 1.1.1 / 1.3.0, `@safe-global/safe-contracts`
+1.4.1, `@safe-global/safe-smart-account` 1.5.0). The singleton and factory code hashes of those
+same builds match `safe-deployments` exactly, and each proxy runtime is embedded in its factory.
+Proxies older than 1.1.1 and singletons the registry does not describe (1.1.1 and older, forks)
+fail closed.
+
+The claim is about the authenticated block: a pending `changeMasterCopy`/migration can still change
+the singleton before the user's transaction executes. Offline coverage: the `eth_getProof` fixture
+(`eth_getProof1`, a non-Safe contract) exercises the verified read through the native addon. The
+Safe mapping is unit-tested on synthetic verified state, because no recorded Safe proof is
+available offline.
+
+Not done yet:
+
+- IPC: a desktop module/channel for the resolver (the controller is still nonce-specific).
+- Connect: `getEthereumDefinitions` fetches the display format for `token_address` from the
+  device's `EthereumDefinitionRequest`, which is the proxy. It needs the resolved singleton address
+  for Safe calls instead.
+- Firmware: `EthereumDisplayFormatInfo.address` is signed as the singleton. Whether the device
+  accepts it for a transaction whose `to` is the proxy, and on what host assertion, is a protocol
+  decision outside this package.
+- A live run against a real Safe (`test:live` only covers the nonce).
+
 ## Platform support
 
 Prebuilds exist for darwin-arm64, darwin-x64, linux-x64, linux-arm64 and win32-x64. The linux-arm64
@@ -164,3 +212,6 @@ in-app same-block RPC comparison from the spec (the record makes it a one-line m
   when the native addon is used, so the Node runtime cannot initialise inside a CommonJS VM such as
   jest's without a `localStorage`/Cache shim; a `require` would do there.
 - The linux-arm64 prebuild is not self-contained (see above); linux-x64 is.
+- `eth_getProof` verification does not bind the proven storage keys to the requested ones: a proof
+  for slots 1 and 2 verifies against a request for slot 0 (or for slot 1 only) and returns the
+  proven slots. `parseAccountStateResult` refuses such a result; the account-state scenarios pin it.

@@ -34,6 +34,43 @@ export const mockBalanceFixture = {
     address: '0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5',
 } as const;
 
+// `eth_getProof` of a mainnet contract for storage slots 1 and 2 (`eth_getProof1` in Colibri's
+// test data). Not a Safe: it exercises the verified account-state read, and the code hash and slot 1
+// (which holds an address) make it a realistic "looks like a proxy, is not a Safe" case.
+export const mockAccountStateFixture = {
+    directory: path.join(MOCK_FIXTURES_DIRECTORY, 'eth_getProof1'),
+    address: '0xB685760EBD368a891F27ae547391F4E2A289895b',
+    storageKeys: [
+        '0x0000000000000000000000000000000000000000000000000000000000000001',
+        '0x0000000000000000000000000000000000000000000000000000000000000002',
+    ],
+    codeHash: '0x7866a7d1a43118298bc65ebbc45ecfc0423df8ffab4c9e49decf80dd0f6867a4',
+    storage: [
+        {
+            key: '0x0000000000000000000000000000000000000000000000000000000000000001',
+            value: '0x000000000000000000000000a377aa6822603cc52e4e9ed6eaa045c46ef6b3e2',
+        },
+        {
+            key: '0x0000000000000000000000000000000000000000000000000000000000000002',
+            value: '0x4272696467657273312e31000000000000000000000000000000000000000016',
+        },
+    ],
+    proofSha256: '443d44b63d645ee3dd5d67350abf3727c39c055b4ce17b9a8077a1b0a8ac5fcf',
+    block: {
+        hash: '0xe4caba9da447946d659bb81626d006d835b6d68750faac0c11584b2d9a2533d2',
+        number: '22217844',
+        timestampSeconds: 1744038839,
+        parentHash: '0x5f344d4259575a9f8b8a6b4e770a6f6e03e286486a90bd9e8c8b3d5d483b1f5c',
+        stateRoot: '0x6faa4488decf19dc3ad96ab2ca1299bd0a542ff37ab5e31aecaa0219740c912e',
+    },
+    checkpoint: {
+        root: '0x69d93fb3b7370556d960de8c8d86a48adf7c4bfdced8e940dff3f149eb47dcfd',
+        epoch: 356865,
+        slot: 11419680,
+        timestampSeconds: 1743860183,
+    },
+} as const;
+
 export const MOCK_ENDPOINTS = {
     prover: ['https://prover.test'],
     beaconApi: ['https://beacon.test'],
@@ -88,6 +125,13 @@ export const createMockWarmStorage = (): ColibriStorage =>
         states_1: readMockFixture(mockNonceFixture.directory, 'states_1'),
         sync_1_1392: readMockFixture(mockNonceFixture.directory, 'sync_1_1392'),
         sync_1_1393: readMockFixture(mockNonceFixture.directory, 'sync_1_1393'),
+    });
+
+export const createMockAccountStateWarmStorage = (): ColibriStorage =>
+    createMemoryStorage({
+        states_1: readMockFixture(mockAccountStateFixture.directory, 'states_1'),
+        sync_1_1375: readMockFixture(mockAccountStateFixture.directory, 'sync_1_1375'),
+        sync_1_1395: readMockFixture(mockAccountStateFixture.directory, 'sync_1_1395'),
     });
 
 export type MockClock = NonceVerifierClock & {

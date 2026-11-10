@@ -1,4 +1,5 @@
 import { type ColibriRuntimeKind } from './colibriRuntime';
+import { mockAccountStateScenarios } from '../mocks/mockAccountStateScenarios';
 import { mockVerifierScenarios } from '../mocks/mockVerifierScenarios';
 
 // CI and developer machines with a matching prebuild exercise the native addon. Jest's module VM
@@ -10,6 +11,18 @@ const RUNTIME_KINDS: ColibriRuntimeKind[] =
 describe('createNonceVerifier', () => {
     // A cold bootstrap replays ~450 KB of consensus data; give the native run headroom over jest's 5 s.
     it.each(mockVerifierScenarios.map(scenario => [scenario.name, scenario] as const))(
+        '%s',
+        async (_name, scenario) => {
+            await scenario.run(RUNTIME_KINDS);
+        },
+        30_000,
+    );
+});
+
+// Same process and runtime as the nonce scenarios above, which must run first (see the signature
+// tamper scenario in mockVerifierScenarios).
+describe('createNonceVerifier verifyAccountState', () => {
+    it.each(mockAccountStateScenarios.map(scenario => [scenario.name, scenario] as const))(
         '%s',
         async (_name, scenario) => {
             await scenario.run(RUNTIME_KINDS);

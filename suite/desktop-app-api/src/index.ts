@@ -24,6 +24,8 @@ export type {
     VerifiedNonceChainId,
     VerifiedNonceRequest,
     VerifiedNonce,
+    VerifiedBlock,
+    VerifierIdentity,
     VerifiedNonceEvidence,
     NonceFailure,
     NonceFailureCode,
