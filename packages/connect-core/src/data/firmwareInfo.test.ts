@@ -15,6 +15,7 @@ import {
 import {
     calculateShouldOfferReleaseFixture,
     getFirmwareReleaseConfigInfoFixture,
+    getFirmwareStatusFixture,
     selectFirmwareReleaseFixtures,
 } from './firmwareInfo.fixture';
 import * as firmwareReleaseStore from './firmwareReleaseStore';
@@ -79,6 +80,16 @@ describe('data/firmwareInfo', () => {
             const configInfo = getFirmwareReleaseConfigInfo(features, FirmwareType.Universal);
             expect(configInfo).toMatchObject(result);
         });
+
+        describe.each([FirmwareType.Universal, FirmwareType.BitcoinOnly])(
+            'getFirmwareStatus with bundled %s releases',
+            type => {
+                it.each(getFirmwareStatusFixture)('$desc', ({ features, result }) => {
+                    const configInfo = getFirmwareReleaseConfigInfo(features, type);
+                    expect(getFirmwareStatus(features, configInfo)).toBe(result);
+                });
+            },
+        );
     });
 
     describe('getFirmwareLocation', () => {

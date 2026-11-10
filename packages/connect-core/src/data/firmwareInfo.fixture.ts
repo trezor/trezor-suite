@@ -328,6 +328,24 @@ export const selectFirmwareReleaseFixtures: SelectFirmwareReleaseFixture[] = [
     },
 ];
 
+const mockFeaturesT3T1 = (major_version: 2, minor_version: number, patch_version: number) => ({
+    ...mockFeatures('normal', major_version, minor_version, patch_version),
+    internal_model: DeviceModelInternal.T3T1,
+});
+
+export const getFirmwareStatusFixture = [
+    {
+        desc: 'T3T1 below 2.8.0 is required to update, as it does not support device authenticity check',
+        features: mockFeaturesT3T1(2, 7, 2),
+        result: 'required',
+    },
+    {
+        desc: 'T3T1 2.8.0 is not required to update',
+        features: mockFeaturesT3T1(2, 8, 0),
+        result: 'outdated',
+    },
+];
+
 const latestT1FirmwareVersion = Object.values(firmwareAssets.t1b1?.universal ?? {}).sort((a, b) =>
     versionUtils.isNewer(b.version, a.version) ? 1 : -1,
 )?.[0]?.version;
