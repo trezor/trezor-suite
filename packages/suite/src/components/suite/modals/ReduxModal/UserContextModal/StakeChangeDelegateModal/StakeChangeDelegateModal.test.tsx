@@ -24,6 +24,9 @@ const mockVotingPreferenceCard = jest.fn();
 const mockAccount = mockWalletAccount({ symbol: asNetworkSymbol('ada') });
 let mockDevice = { connected: true, available: true };
 
+type ModalProps = PropsWithChildren<{ bottomContent: ReactNode }>;
+type ModalButtonProps = { onClick: () => void; isDisabled: boolean };
+
 jest.mock('@suite/device', () => ({
     ...jest.requireActual('@suite/device'),
     useDevice: () => ({ device: mockDevice }),
@@ -41,14 +44,14 @@ jest.mock('@trezor/components', () => {
         Tooltip: Container,
         Banner: () => null,
         Modal: Object.assign(
-            ({ bottomContent, children }: PropsWithChildren<{ bottomContent: ReactNode }>) => (
+            ({ bottomContent, children }: ModalProps) => (
                 <>
                     {children}
                     {bottomContent}
                 </>
             ),
             {
-                Button: ({ onClick, isDisabled }: { onClick: () => void; isDisabled: boolean }) => (
+                Button: ({ onClick, isDisabled }: ModalButtonProps) => (
                     <button onClick={onClick} disabled={isDisabled}>
                         Submit
                     </button>

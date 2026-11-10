@@ -96,9 +96,9 @@ const precomposedTransaction: PrecomposedTransactionFinal = {
 };
 const analytics = mockDesktopAnalytics();
 
-const signAndPush = async ({
-    shouldShowApprovalToast,
-}: { shouldShowApprovalToast?: boolean } = {}) => {
+type SignAndPushParams = { shouldShowApprovalToast?: boolean };
+
+const signAndPush = async ({ shouldShowApprovalToast }: SignAndPushParams = {}) => {
     const getState = mock<() => SignAndPushSendFormTransactionThunkState>();
     const extra: SignAndPushSendFormTransactionThunkDeps = {
         actions: { onModalCancel: closeModal },

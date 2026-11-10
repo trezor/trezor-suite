@@ -389,15 +389,17 @@ describe('selectYieldClaimAccounts', () => {
     });
 });
 
+type CreateRewardParams = {
+    claimable: string;
+    fiatClaimable: string | null;
+    tokenAddress?: string;
+};
+
 const createReward = ({
     claimable,
     fiatClaimable,
     tokenAddress = REWARD_TOKEN_CONTRACT,
-}: {
-    claimable: string;
-    fiatClaimable: string | null;
-    tokenAddress?: string;
-}): ChainRewardsWithFiat['rewards'][number] => ({
+}: CreateRewardParams): ChainRewardsWithFiat['rewards'][number] => ({
     root: '0xroot',
     amount: claimable,
     claimed: '0',

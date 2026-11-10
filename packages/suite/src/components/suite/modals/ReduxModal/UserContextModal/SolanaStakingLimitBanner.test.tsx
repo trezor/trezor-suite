@@ -10,6 +10,9 @@ import { SolanaStakingLimitBanner } from './SolanaStakingLimitBanner';
 
 const claimMock = jest.fn();
 
+type TranslationProps = { id: string; values: Record<string, unknown> };
+type BannerProps = { description: ReactNode };
+
 jest.mock('@trezor/network-solana/runtime', () => ({
     __esModule: true,
     default: () =>
@@ -23,13 +26,10 @@ jest.mock('#src/hooks/suite', () => ({
     useSelector: () => 'https://solana.example',
 }));
 jest.mock('@suite/intl', () => ({
-    Translation: ({ id, values }: { id: string; values: Record<string, unknown> }) =>
-        `${id} ${JSON.stringify(values)}`,
+    Translation: ({ id, values }: TranslationProps) => `${id} ${JSON.stringify(values)}`,
 }));
 jest.mock('@trezor/components', () => ({
-    Banner: ({ description }: { description: ReactNode }) => (
-        <div data-testid="banner">{description}</div>
-    ),
+    Banner: ({ description }: BannerProps) => <div data-testid="banner">{description}</div>,
 }));
 
 // Each account is claimed whole, so the amounts do not matter for the limit.
