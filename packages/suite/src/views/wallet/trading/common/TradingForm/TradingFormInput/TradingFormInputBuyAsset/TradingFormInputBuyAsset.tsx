@@ -4,7 +4,7 @@ import { type CryptoId } from 'invity-api';
 
 import { type TranslationKey } from '@suite/intl';
 
-import { useModal } from '#src/components/suite/asset-picker/hooks';
+import { useModal } from '#src/components/suite/asset-picker/hooks/useModal';
 
 import {
     AssetOptionsProvider,

@@ -2,7 +2,7 @@ import { type ReactNode, memo, useRef } from 'react';
 
 import { AssetsList } from '#src/components/suite/asset-picker/components/AssetsList/AssetsList';
 import { AssetsListEmpty } from '#src/components/suite/asset-picker/components/AssetsListEmpty/AssetsListEmpty';
-import { useListScrollReset } from '#src/components/suite/asset-picker/hooks';
+import { useListScrollReset } from '#src/components/suite/asset-picker/hooks/useListScrollReset';
 
 const LIST_HEIGHT = 530;
 
