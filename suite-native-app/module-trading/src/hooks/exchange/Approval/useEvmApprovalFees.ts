@@ -31,6 +31,7 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
     const { translate } = useTranslate();
     const [isComposing, setIsComposing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isFeeUnavailable, setIsFeeUnavailable] = useState(false);
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
@@ -61,7 +62,7 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
     }, [selectedFeeLevel, feeLimit, feePerUnit, maxFeePerGas, maxPriorityFeePerGas]);
 
     const fee = composedTransactionInfo?.composed?.fee;
-    const isLoading = isComposing || (fee === undefined && !error);
+    const isLoading = isComposing || (fee === undefined && !error && !isFeeUnavailable);
 
     const composeFees = useCallback(async () => {
         if (!quote?.dexTx?.data || !account || !feeInfo) {
@@ -70,8 +71,9 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
 
         setIsComposing(true);
         setError(null);
+        setIsFeeUnavailable(false);
         try {
-            await dispatch(
+            const feeLevels = await dispatch(
                 composeEvmApprovalFeeLevelsThunk({
                     quote,
                     account,
@@ -81,6 +83,8 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
                     approvalTypeOverride,
                 }),
             ).unwrap();
+
+            setIsFeeUnavailable(feeLevels[selectedFeeLevel]?.type === 'error');
         } catch (composeError) {
             console.error('Failed to compose allowance fees:', composeError);
             setError(translate('moduleTrading.composeAllowanceError'));
@@ -117,6 +121,7 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
         fee,
         error,
         isLoading,
+        isFeeUnavailable,
         composeFees,
     };
 };

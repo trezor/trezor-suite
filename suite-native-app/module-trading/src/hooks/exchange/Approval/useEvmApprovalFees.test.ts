@@ -4,11 +4,12 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { tradingActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, type FeesRootState } from '@suite-common/wallet-core';
+import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { getTranslation } from '@suite-native/intl';
 import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
-import { invityDexQuote } from '@suite-native/trading-fixtures';
+import { createPrecomposedTxFinal, invityDexQuote } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
 import { mergeDeepObject } from '@trezor/utils';
 
@@ -54,6 +55,16 @@ describe('useEvmApprovalFees', () => {
             data: '0x095ea7b3000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee570000000000000000000000000000000000000000000000000000000005f5e100',
             value: '0x0',
         },
+    };
+
+    const feeLevelsWithUnaffordableNormal: PrecomposedLevels = {
+        normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT' },
+        low: createPrecomposedTxFinal({
+            fee: '1000',
+            feePerByte: '10',
+            totalSpent: '1000',
+            bytes: 0,
+        }),
     };
 
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
@@ -155,6 +166,51 @@ describe('useEvmApprovalFees', () => {
         });
 
         expect(result.current.isLoading).toBe(false);
+    });
+
+    it('should stop loading and report an unavailable fee when the selected fee level cannot be composed', async () => {
+        mockComposeEvmApprovalFeeLevelsThunk.mockImplementation(() => ({
+            type: 'composeEvmApprovalFeeLevelsThunk',
+            unwrap: jest.fn().mockResolvedValue(feeLevelsWithUnaffordableNormal),
+        }));
+
+        const store = createStore({ wallet: { fees: ethFeeInfoPreload } });
+
+        const { result } = await renderUseEvmApprovalFees(store);
+
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false);
+        });
+
+        expect(result.current.isFeeUnavailable).toBe(true);
+        expect(result.current.fee).toBeUndefined();
+        expect(result.current.error).toBeNull();
+    });
+
+    it('should not report an unavailable fee when only another fee level cannot be composed', async () => {
+        mockComposeEvmApprovalFeeLevelsThunk.mockImplementation(() => ({
+            type: 'composeEvmApprovalFeeLevelsThunk',
+            unwrap: jest.fn().mockResolvedValue(feeLevelsWithUnaffordableNormal),
+        }));
+
+        const store = createStore({
+            wallet: {
+                fees: ethFeeInfoPreload,
+                formDrafts: {
+                    [exchangeFormDraftKey]: { selectedFee: 'low' },
+                },
+            },
+        });
+
+        const { result } = await renderUseEvmApprovalFees(store);
+
+        await waitFor(() => {
+            expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalledWith(
+                expect.objectContaining({ selectedFeeLevel: 'low' }),
+            );
+        });
+
+        expect(result.current.isFeeUnavailable).toBe(false);
     });
 
     it('should accept approvalTypeOverride parameter', async () => {

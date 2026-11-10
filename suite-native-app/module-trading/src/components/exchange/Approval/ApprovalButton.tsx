@@ -24,12 +24,15 @@ export type ApprovalButtonProps = {
     flowType: Exclude<ExchangeFlowType, 'swap'>;
 };
 
+export const APPROVAL_CONTINUE_BUTTON_TEST_ID = '@trading/exchange-approval/continue-button';
+export const REVOKE_CONTINUE_BUTTON_TEST_ID = '@trading/exchange-revoke/continue-button';
+
 const getApprovalButtonTestID = (flowType: ApprovalButtonProps['flowType']) => {
     if (flowType === 'approve') {
-        return '@trading/exchange-approval/continue-button';
+        return APPROVAL_CONTINUE_BUTTON_TEST_ID;
     }
 
-    return '@trading/exchange-revoke/continue-button';
+    return REVOKE_CONTINUE_BUTTON_TEST_ID;
 };
 
 export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButtonProps) => {
@@ -72,7 +75,7 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
                 <Button
                     onPress={handleContinue}
                     isDisabled={isDisabled}
-                    isLoading={!isReady}
+                    isLoading={!isReady && !isDisabled}
                     testID={getApprovalButtonTestID(flowType)}
                 >
                     <Translation id="generic.buttons.continue" />

@@ -337,6 +337,26 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk<
                 const feeLevels = response.payload;
                 dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
 
+                const formDraftKey = getFormDraftKeyByTradeType('exchange');
+                const existingDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) ?? {};
+                // Preserve swap form fields (especially outputs[0].token). A full replace would drop
+                // outputs; composeSendFormTransactionFeeLevelsThunk then cannot resolve the ERC-20
+                // contract for approval fee composition and custom gas shows insufficient balance.
+                const outputs =
+                    existingDraft.outputs?.[0]?.token != null
+                        ? existingDraft.outputs
+                        : [
+                              {
+                                  type: 'payment' as const,
+                                  address: '',
+                                  amount: '0',
+                                  fiat: '',
+                                  currency: { label: '', value: '' },
+                                  label: '',
+                                  token: contractAddress,
+                              },
+                          ];
+
                 const selectedLevel = feeLevels[selectedFeeLevel];
                 if (selectedLevel && isFinalPrecomposedTransaction(selectedLevel)) {
                     const composed = selectedLevel;
@@ -356,26 +376,6 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk<
                         }),
                     );
 
-                    const formDraftKey = getFormDraftKeyByTradeType('exchange');
-                    const existingDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) ?? {};
-                    // Preserve swap form fields (especially outputs[0].token). A full replace would drop
-                    // outputs; composeSendFormTransactionFeeLevelsThunk then cannot resolve the ERC-20
-                    // contract for approval fee composition and custom gas shows insufficient balance.
-                    const outputs =
-                        existingDraft.outputs?.[0]?.token != null
-                            ? existingDraft.outputs
-                            : [
-                                  {
-                                      type: 'payment' as const,
-                                      address: '',
-                                      amount: '0',
-                                      fiat: '',
-                                      currency: { label: '', value: '' },
-                                      label: '',
-                                      token: contractAddress,
-                                  },
-                              ];
-
                     dispatch(
                         formDraftActions.storeDraft({
                             key: formDraftKey,
@@ -387,6 +387,24 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk<
                                 maxFeePerGas: composed.maxFeePerGas ?? '',
                                 maxPriorityFeePerGas: composed.maxPriorityFeePerGas ?? '',
                                 estimatedFeeLimit: composed.estimatedFeeLimit,
+                                transactionData: data,
+                                outputs,
+                            },
+                        }),
+                    );
+                } else {
+                    // The fee of a previously selected level must not pass for the fee of this
+                    // one, which the approval cannot be signed with.
+                    dispatch(tradingCommonActions.saveComposedTransactionInfo({}));
+
+                    // FeeSelector updates and recomposes from the draft, so it stays available
+                    // for trying another fee.
+                    dispatch(
+                        formDraftActions.storeDraft({
+                            key: formDraftKey,
+                            formDraft: {
+                                ...existingDraft,
+                                selectedFee: selectedFeeLevel,
                                 transactionData: data,
                                 outputs,
                             },

@@ -8,6 +8,7 @@ import {
     getSellTrade,
 } from '@suite-native/trading-fixtures';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
+import { FEE_SELECTOR_ROW_TEST_ID } from '@suite-native/transaction-management';
 
 import { BANK_ACCOUNT_ITEM_TEST_ID } from './BankAccount/SellBankAccountItem';
 import { SellCompletionView, type SellCompletionViewProps } from './SellCompletionView';
@@ -16,8 +17,6 @@ import {
     type TradingTestPreloadedState,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
-
-const FEE_SELECTOR_ROW_TEST_ID = '@transactionManagement/fee-selector-row';
 
 describe('SellCompletionView', () => {
     const getSellTradeWithBankAccounts = () => ({

@@ -11,7 +11,11 @@ import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-sto
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
 
-import { ApprovalButton, type ApprovalButtonProps } from './ApprovalButton';
+import {
+    APPROVAL_CONTINUE_BUTTON_TEST_ID,
+    ApprovalButton,
+    type ApprovalButtonProps,
+} from './ApprovalButton';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState;
@@ -68,6 +72,24 @@ describe('ApprovalButton', () => {
         const button = getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue'));
         expect(button).toBeOnTheScreen();
         expect(button).toBeDisabled();
+    });
+
+    it('should show the loader while not ready', async () => {
+        const { getByTestId } = await renderApprovalButton({ isReady: false });
+
+        expect(getByTestId(`${APPROVAL_CONTINUE_BUTTON_TEST_ID}/loading`)).toBeOnTheScreen();
+    });
+
+    it('should render disabled button without the loader when disabled', async () => {
+        const { getByText, queryByTestId } = await renderApprovalButton({
+            isReady: false,
+            isDisabled: true,
+        });
+
+        expect(
+            getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        ).toBeDisabled();
+        expect(queryByTestId(`${APPROVAL_CONTINUE_BUTTON_TEST_ID}/loading`)).toBeNull();
     });
 
     it('should navigate to TradingExchangeTransactionReview on press', async () => {
