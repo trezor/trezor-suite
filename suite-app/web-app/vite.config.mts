@@ -511,9 +511,7 @@ export default defineConfig({
             '@trezor/transport',
             // packages/suite is app source, not a dependency. A dep pre-bundle is built by a
             // separate rolldown pass that runs none of the plugins above, so anything reached
-            // through the bare specifier would be served untransformed. Nothing in the app graph
-            // imports it that way today — it reaches packages/suite through the `src` alias — so
-            // this only saves the dev server from building a pre-bundle nobody consumes.
+            // through the bare specifier would be served untransformed.
             '@trezor/suite',
         ],
     },
