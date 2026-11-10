@@ -1,12 +1,10 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { openModal } from '@suite/modal';
 import { Button, ButtonGroup, Tooltip } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
 import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { injectDispatch } from '@trezor/redux-utils';
 
 import { getHomescreens } from '#src/constants/suite/homescreens';
+import { useModalLoader } from '#src/hooks/suite/useModalLoader';
 
 type ChangeHomescreenButtonsParams = {
     deviceModelInternal: DeviceModelInternal;
@@ -21,9 +19,9 @@ export const ChangeHomescreenButtons = ({
     isSupportedHomescreen,
     onImageUploadClick,
 }: ChangeHomescreenButtonsParams) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { open, isLoading } = useModalLoader();
     const { device } = useDevice();
-    const openGallery = () => dispatch(openModal({ type: 'device-background-gallery' }));
+    const openGallery = () => open({ type: 'device-background-gallery' });
 
     const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
     const hasGallery = getHomescreens(isBitcoinOnlyFirmware)[deviceModelInternal].length > 0;
@@ -49,6 +47,7 @@ export const ChangeHomescreenButtons = ({
                 >
                     <Button
                         onClick={openGallery}
+                        isLoading={isLoading}
                         data-testid="@settings/device/homescreen-gallery"
                         key="@settings/device/homescreen-gallery"
                     >
