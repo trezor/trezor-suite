@@ -31,6 +31,7 @@ const mockBottomSheetRef = { current: null };
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => mockNavigation,
+    useIsFocused: () => true,
 }));
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
