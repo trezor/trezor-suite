@@ -182,9 +182,11 @@ import t3t1_universal_t3t1_2_8_7_universal from '../files/firmware/t3t1/universa
 import t3t1_universal_t3t1_2_8_9_universal from '../files/firmware/t3t1/universal/t3t1-2.8.9-universal.json';
 import t3t1_universal_t3t1_2_9_1_universal from '../files/firmware/t3t1/universal/t3t1-2.9.1-universal.json';
 import t3w1_bitcoinonly_t3w1_2_12_0_bitcoinonly from '../files/firmware/t3w1/bitcoinonly/t3w1-2.12.0-bitcoinonly.json';
+import t3w1_bitcoinonly_t3w1_2_12_1_bitcoinonly from '../files/firmware/t3w1/bitcoinonly/t3w1-2.12.1-bitcoinonly.json';
 import t3w1_bitcoinonly_t3w1_2_13_0_bitcoinonly from '../files/firmware/t3w1/bitcoinonly/t3w1-2.13.0-bitcoinonly.json';
 import t3w1_bitcoinonly_t3w1_2_9_3_bitcoinonly from '../files/firmware/t3w1/bitcoinonly/t3w1-2.9.3-bitcoinonly.json';
 import t3w1_universal_t3w1_2_12_0_universal from '../files/firmware/t3w1/universal/t3w1-2.12.0-universal.json';
+import t3w1_universal_t3w1_2_12_1_universal from '../files/firmware/t3w1/universal/t3w1-2.12.1-universal.json';
 import t3w1_universal_t3w1_2_13_0_universal from '../files/firmware/t3w1/universal/t3w1-2.13.0-universal.json';
 import t3w1_universal_t3w1_2_9_3_universal from '../files/firmware/t3w1/universal/t3w1-2.9.3-universal.json';
 
@@ -431,11 +433,13 @@ const generatedFirmwareAssets: GeneratedFirmwareAssetsMap = {
         bitcoinonly: {
             't3w1-2.9.3-bitcoinonly': t3w1_bitcoinonly_t3w1_2_9_3_bitcoinonly,
             't3w1-2.12.0-bitcoinonly': t3w1_bitcoinonly_t3w1_2_12_0_bitcoinonly,
+            't3w1-2.12.1-bitcoinonly': t3w1_bitcoinonly_t3w1_2_12_1_bitcoinonly,
             't3w1-2.13.0-bitcoinonly': t3w1_bitcoinonly_t3w1_2_13_0_bitcoinonly,
         },
         universal: {
             't3w1-2.9.3-universal': t3w1_universal_t3w1_2_9_3_universal,
             't3w1-2.12.0-universal': t3w1_universal_t3w1_2_12_0_universal,
+            't3w1-2.12.1-universal': t3w1_universal_t3w1_2_12_1_universal,
             't3w1-2.13.0-universal': t3w1_universal_t3w1_2_13_0_universal,
         },
     },
