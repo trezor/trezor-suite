@@ -424,6 +424,6 @@ export { DeviceTutorialStep } from './src/views/onboarding/steps/DeviceTutorialS
 export { FinalStep } from './src/views/onboarding/steps/FinalStep';
 export { FirmwareStep } from './src/views/onboarding/steps/FirmwareStep/FirmwareStep';
 export { PinStep } from './src/views/onboarding/steps/PinStep';
-export { RecoveryStep } from './src/views/onboarding/steps/RecoveryStep';
+export { RecoveryStep } from './src/views/onboarding/steps/RecoveryStep/RecoveryStep';
 export { SecurityStep } from './src/views/onboarding/steps/SecurityStep';
 export * as onboardingSteps from './src/constants/onboarding/steps';
