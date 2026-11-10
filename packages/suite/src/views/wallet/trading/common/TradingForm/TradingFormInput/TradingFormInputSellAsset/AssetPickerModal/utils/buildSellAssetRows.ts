@@ -10,7 +10,10 @@ import {
     type AccountWithOptionalLabel,
     type AssetRowOption,
 } from '#src/components/suite/asset-picker/types';
-import { createAccountOption, createTokenOption } from '#src/components/suite/asset-picker/utils';
+import {
+    createAccountOption,
+    createTokenOption,
+} from '#src/components/suite/asset-picker/utils/assetOptions';
 import {
     enhanceTokensWithRates,
     getTokens,

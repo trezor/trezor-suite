@@ -8,8 +8,7 @@ import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { getAssetPickerItemHeight } from './assetPickerItemHeights';
 import { type AssetGroupOption, type AssetGroupsOption, type AssetRowOption } from '../types';
-
-import { createAccountOption, createHiddenTokensOption, createTokenOption } from './index';
+import { createAccountOption, createHiddenTokensOption, createTokenOption } from './assetOptions';
 
 const account: Account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),

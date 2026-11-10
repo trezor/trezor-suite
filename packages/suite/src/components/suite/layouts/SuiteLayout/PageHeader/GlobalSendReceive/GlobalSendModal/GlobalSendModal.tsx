@@ -26,7 +26,7 @@ import {
     useInsertGroupLabelsAndSpaces,
 } from '#src/components/suite/asset-picker/hooks';
 import { type AssetPickerListItem } from '#src/components/suite/asset-picker/types';
-import { createTokenOption } from '#src/components/suite/asset-picker/utils';
+import { createTokenOption } from '#src/components/suite/asset-picker/utils/assetOptions';
 import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/utils/assetPickerItemHeights';
 import { globalSendReceiveFiltersSelectors } from '#src/slices/wallet/globalSendReceiveFilters';
 
