@@ -98,6 +98,7 @@ export const EarnCryptoAmountInput = ({
                             networkSymbol={symbol}
                             contractAddress={tokenContract}
                             color={isDisabled ? 'contentSecondary' : 'contentPrimary'}
+                            isTruncated
                         />
                     ) : (
                         formatter.format(symbol)
