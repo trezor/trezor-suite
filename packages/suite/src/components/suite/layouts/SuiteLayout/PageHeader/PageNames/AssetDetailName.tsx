@@ -1,6 +1,6 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk, selectSettingsBackRoute } from '@suite/router';
-import { TokenIcon, TokenName } from '@suite/token';
+import { AssetIcon, TokenName } from '@suite/token';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetName,
@@ -10,7 +10,6 @@ import { useFormatters } from '@suite-common/formatters';
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
-import { TokenIcon as NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite';
@@ -50,16 +49,12 @@ export const AssetDetailName = () => {
             <AssetDetailBackButton />
             {symbol !== undefined && (
                 <Row gap={12} minWidth={0}>
-                    {contractAddress ? (
-                        <TokenIcon
-                            symbol={symbol}
-                            contractAddress={contractAddress}
-                            size={32}
-                            showNetworkIcon
-                        />
-                    ) : (
-                        <NetworkIcon symbol={symbol} size={32} showNetworkIcon />
-                    )}
+                    <AssetIcon
+                        symbol={symbol}
+                        contractAddress={contractAddress}
+                        size={32}
+                        showNetworkIcon
+                    />
                     <Column alignItems="flex-start" minWidth={0}>
                         <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
                             {contractAddress ? (

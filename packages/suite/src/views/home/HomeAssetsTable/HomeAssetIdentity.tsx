@@ -1,12 +1,11 @@
 import { type ReactNode } from 'react';
 
-import { TokenIcon, TokenSymbol } from '@suite/token';
+import { AssetIcon, TokenSymbol } from '@suite/token';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Row, TOOLTIP_DELAY_LONG, Text, TruncateWithTooltip } from '@trezor/components';
-import { TokenIcon as NetworkIcon } from '@trezor/product-components';
 
 import { useSelector } from '#src/hooks/suite';
 
@@ -34,17 +33,13 @@ export const HomeAssetIdentity = ({
 
     return (
         <Row gap={12} minWidth={0}>
-            {contractAddress ? (
-                <TokenIcon
-                    symbol={symbol}
-                    contractAddress={contractAddress}
-                    size={32}
-                    showNetworkIcon
-                    shouldTryToFetch={isIconFetchable}
-                />
-            ) : (
-                <NetworkIcon symbol={symbol} size={32} showNetworkIcon />
-            )}
+            <AssetIcon
+                symbol={symbol}
+                contractAddress={contractAddress}
+                size={32}
+                showNetworkIcon
+                shouldTryToFetch={isIconFetchable}
+            />
             <Column alignItems="flex-start" gap={HOME_ASSET_LINE_GAP} flex="1" minWidth={0}>
                 <Row gap={8} maxWidth="100%">
                     <Text
