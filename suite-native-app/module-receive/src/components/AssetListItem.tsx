@@ -1,11 +1,12 @@
 import React from 'react';
 
 import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
+    CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
@@ -102,14 +103,23 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                     )
                 }
                 secondaryValue={
-                    balance && (
-                        <CompactTokenAmountFormatter
-                            value={asDecimalTokenAmount(balance.cryptoAmount)}
-                            tokenSymbol={toTokenSymbol(asset.symbol)}
+                    balance &&
+                    (asset.isNativeToken ? (
+                        <CompactCryptoAmountFormatter
+                            value={balance.cryptoAmount}
+                            symbol={asset.networkSymbol}
                             numberOfLines={1}
                             adjustsFontSizeToFit
                         />
-                    )
+                    ) : (
+                        <CompactTokenAmountFormatter
+                            networkSymbol={asset.networkSymbol}
+                            contractAddress={toTokenAddress(asset.contractAddress)}
+                            value={asDecimalTokenAmount(balance.cryptoAmount)}
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                        />
+                    ))
                 }
                 isFirst={isFirst}
                 isLast={isLast}

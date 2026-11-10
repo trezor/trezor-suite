@@ -7,6 +7,7 @@ import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-sto
 import { getWalletState, mercuryoFixedBestQuote } from '@suite-native/trading-fixtures';
 
 import { LimitInfoRow } from './LimitInfoRow';
+import { TradingMetadataProvider } from '../../general/TradingMetadataProvider';
 
 type LimitInfoRowProps = React.ComponentProps<typeof LimitInfoRow>;
 
@@ -38,6 +39,7 @@ describe('LimitInfoRow', () => {
         return renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
             preloadedState,
             services: { networks: mockNetworksServices() },
+            wrapper: TradingMetadataProvider,
         });
     };
 

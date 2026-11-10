@@ -163,7 +163,6 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
             maxAmount: isWrap
                 ? getWrappableNativeBalance(account.formattedBalance, gasReserve.recommended)
                 : undefined,
-            tokenDecimals: isWrap ? undefined : wrappedNative.decimals,
             onCurrencyChange: reportCurrencyToggle,
             onMaxPress: flow.reportMaxSelected,
         },

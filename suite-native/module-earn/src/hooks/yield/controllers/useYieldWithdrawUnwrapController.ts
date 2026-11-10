@@ -206,7 +206,6 @@ export const useYieldWithdrawUnwrapController = () => {
             defaultAmount: withdrawnAmount,
             onCurrencyChange: reportCurrencyToggle,
             onMaxPress: reportMaxSelected,
-            tokenDecimals: resolvedToken.decimals,
         },
         receivingCard: {
             isVisible: step.isAmountReady,

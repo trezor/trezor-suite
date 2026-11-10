@@ -1,4 +1,4 @@
-import type { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
@@ -7,14 +7,20 @@ import {
     TradingCoinAmountFormatter,
     type TradingCoinAmountFormatterProps,
 } from './TradingCoinAmountFormatter';
+import { TradingMetadataProvider } from './TradingMetadataProvider';
 
 describe('TradingCoinAmountFormatter', () => {
     const renderTradingCoinAmountFormatter = (
         props: Partial<TradingCoinAmountFormatterProps> = {},
     ) =>
-        renderWithStoreProvider(<TradingCoinAmountFormatter {...props} />, {
-            preloadedState: { wallet: getWalletState() },
-        });
+        renderWithStoreProvider(
+            <TradingMetadataProvider>
+                <TradingCoinAmountFormatter {...props} />
+            </TradingMetadataProvider>,
+            {
+                preloadedState: { wallet: getWalletState() },
+            },
+        );
 
     it('should render formatted value for network', async () => {
         const { getByText } = await renderTradingCoinAmountFormatter({

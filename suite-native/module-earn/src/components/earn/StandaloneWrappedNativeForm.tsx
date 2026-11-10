@@ -44,7 +44,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         nativeSymbol,
         pendingModal,
         simulationSheet,
-        spentSymbol,
         spentTokenContract,
         submit,
         wrappedTokenContract,
@@ -91,8 +90,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                             onMaxPress={amountInput.onMaxPress}
                             symbol={account.symbol}
                             tokenContract={spentTokenContract}
-                            tokenDecimals={amountInput.tokenDecimals}
-                            tokenSymbol={spentSymbol}
                         />
                     </Form>
 
@@ -153,7 +150,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id={messages.amountLabel} />}
                 amountTokenContract={spentTokenContract}
-                amountTokenSymbol={spentSymbol}
                 title={<Translation id={messages.pendingTransactionTitle} />}
             />
         </Screen>

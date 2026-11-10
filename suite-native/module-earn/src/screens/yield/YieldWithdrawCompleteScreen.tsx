@@ -112,14 +112,10 @@ export const YieldWithdrawCompleteScreen = () => {
             receivedAmount: {
                 value: output.amount,
                 tokenContract: output.token.contractAddress,
-                tokenDecimals: output.token.decimals,
-                tokenSymbol: output.token.symbol,
             },
             withdrawalAmount: {
                 value: input.amount,
                 tokenContract: input.token.contractAddress,
-                tokenDecimals: input.token.decimals,
-                tokenSymbol: input.token.symbol,
             },
         });
     }, [account, flowType, receiptToken, resolutionStatus, session, token, vault]);

@@ -44,7 +44,7 @@ export const YieldDepositScreen = () => {
         tokenContract,
         yieldFlowData,
     } = controller;
-    const { account, apy, token, tokenSymbol } = yieldFlowData;
+    const { account, apy, token } = yieldFlowData;
 
     const content = (
         <Screen
@@ -105,9 +105,7 @@ export const YieldDepositScreen = () => {
                             isApprovedAmountUnlimited={approvedAmountCard.isUnlimited}
                             networkSymbol={account.symbol}
                             onActionPress={stepCard.onEditApprovalStep}
-                            tokenDecimals={token.decimals}
                             tokenContract={tokenContract}
-                            tokenSymbol={tokenSymbol}
                         />
                     </Box>
 
@@ -122,8 +120,6 @@ export const YieldDepositScreen = () => {
                                 onMaxPress={amountInput.onMaxPress}
                                 symbol={account.symbol}
                                 tokenContract={getYieldTokenContract(token)}
-                                tokenDecimals={token.decimals}
-                                tokenSymbol={tokenSymbol}
                             />
                         </Form>
                     </Box>
@@ -167,7 +163,6 @@ export const YieldDepositScreen = () => {
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />}
                 amountTokenContract={tokenContract}
-                amountTokenSymbol={tokenSymbol}
                 title={<Translation id="earn.yieldDepositFlowScreen.depositPendingTitle" />}
                 vaultName={yieldFlowData.vaultTokenName}
                 vaultTokenContract={tokenContract}

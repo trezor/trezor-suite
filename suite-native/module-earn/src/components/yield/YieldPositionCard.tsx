@@ -99,9 +99,9 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
                     />
                 ) : (
                     <CompactTokenAmountFormatter
+                        networkSymbol={item.networkSymbol}
+                        contractAddress={item.tokenContractAddress}
                         value={asDecimalTokenAmount(item.tokenBalance)}
-                        tokenSymbol={item.tokenSymbol}
-                        tokenDecimals={item.token?.decimals}
                         numberOfLines={1}
                         adjustsFontSizeToFit
                         variant="body-md"

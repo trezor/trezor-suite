@@ -1,4 +1,4 @@
-import { type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { CompactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
@@ -12,9 +12,7 @@ type YieldDepositApprovedAmountCardProps = {
     isApprovedAmountUnlimited: boolean;
     networkSymbol: NetworkSymbol;
     onActionPress?: () => void;
-    tokenDecimals?: number;
     tokenContract: string;
-    tokenSymbol: TokenSymbol;
 };
 
 export const YieldDepositApprovedAmountCard = ({
@@ -23,9 +21,7 @@ export const YieldDepositApprovedAmountCard = ({
     isApprovedAmountUnlimited,
     networkSymbol,
     onActionPress,
-    tokenDecimals,
     tokenContract,
-    tokenSymbol,
 }: YieldDepositApprovedAmountCardProps) => (
     <Card>
         <HStack alignItems="center" justifyContent="space-between">
@@ -45,9 +41,9 @@ export const YieldDepositApprovedAmountCard = ({
                 ) : null}
                 {!isApprovedAmountUnlimited && approvedAmount ? (
                     <CompactTokenAmountFormatter
+                        networkSymbol={networkSymbol}
+                        contractAddress={toTokenAddress(tokenContract)}
                         value={asDecimalTokenAmount(approvedAmount)}
-                        tokenSymbol={toTokenSymbol(tokenSymbol)}
-                        tokenDecimals={tokenDecimals}
                         variant="body-sm-strong"
                         color="contentPrimary"
                         numberOfLines={1}

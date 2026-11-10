@@ -1,6 +1,6 @@
 import { type ReactNode, useState } from 'react';
 
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ActiveView,
@@ -12,7 +12,11 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { CompactTokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
+import {
+    CompactCryptoAmountFormatter,
+    CompactTokenAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -34,8 +38,6 @@ type YieldAmountInputCardProps = {
     onMaxPress: () => void;
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
-    tokenDecimals?: number;
-    tokenSymbol: TokenSymbol;
 };
 
 export const YieldAmountInputCard = ({
@@ -48,8 +50,6 @@ export const YieldAmountInputCard = ({
     onMaxPress,
     symbol,
     tokenContract,
-    tokenDecimals,
-    tokenSymbol,
 }: YieldAmountInputCardProps) => {
     const { setValue } = useFormContext<YieldDepositFormValues>();
     const [isMaxSelected, setIsMaxSelected] = useState(false);
@@ -111,8 +111,6 @@ export const YieldAmountInputCard = ({
                         <EarnCryptoAmountInput
                             symbol={symbol}
                             tokenContract={tokenContract}
-                            tokenDecimals={tokenDecimals}
-                            displaySymbol={tokenSymbol}
                             accessibilityLabel="amount to deposit input"
                             inputRef={inputRef}
                             isDisabled={isMaxSelected || isDisabled}
@@ -123,7 +121,6 @@ export const YieldAmountInputCard = ({
                         <EarnFiatAmountInput
                             symbol={symbol}
                             tokenContract={tokenContract}
-                            tokenDecimals={tokenDecimals}
                             accessibilityLabel="fiat amount to deposit input"
                             inputRef={inputRef}
                             isDisabled={isMaxSelected || isDisabled}
@@ -139,13 +136,22 @@ export const YieldAmountInputCard = ({
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation id="earn.yieldDepositFlowScreen.balance" />
                         </Text>
-                        <CompactTokenAmountFormatter
-                            value={asDecimalTokenAmount(balance)}
-                            tokenSymbol={tokenSymbol}
-                            tokenDecimals={tokenDecimals}
-                            variant="body-sm"
-                            color="contentSecondary"
-                        />
+                        {tokenContract ? (
+                            <CompactTokenAmountFormatter
+                                networkSymbol={symbol}
+                                contractAddress={tokenContract}
+                                value={asDecimalTokenAmount(balance)}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
+                        ) : (
+                            <CompactCryptoAmountFormatter
+                                symbol={symbol}
+                                value={asDecimalTokenAmount(balance)}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
+                        )}
                     </HStack>
                 )}
             </VStack>

@@ -53,10 +53,11 @@ const TokenAmountTooltipFormatter = ({
     if (getNetworkType(symbol) === 'ethereum') {
         return (
             <ExactTokenAmountFormatter
+                networkSymbol={symbol}
+                contractAddress={tokenAddress}
                 color="contentPrimary"
                 variant="body-xs"
                 value={asDecimalTokenAmount(value)}
-                tokenSymbol={token.symbol}
             />
         );
     }

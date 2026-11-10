@@ -1,12 +1,13 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { type ActiveView, BaseAmountInputs, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
+    CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
     useCryptoFiatConverters,
@@ -32,8 +33,6 @@ type WrappedNativeTokenAmountInputCardProps = {
     onMaxPress?: () => void;
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
-    tokenDecimals?: number;
-    tokenSymbol: TokenSymbol;
 };
 
 export const WrappedNativeTokenAmountInputCard = ({
@@ -46,8 +45,6 @@ export const WrappedNativeTokenAmountInputCard = ({
     onMaxPress,
     symbol,
     tokenContract,
-    tokenDecimals,
-    tokenSymbol,
 }: WrappedNativeTokenAmountInputCardProps) => {
     const { setValue, trigger } = useFormContext<YieldDepositFormValues>();
     const [isMaxSelected, setIsMaxSelected] = useState(false);
@@ -126,8 +123,6 @@ export const WrappedNativeTokenAmountInputCard = ({
                         <EarnCryptoAmountInput
                             symbol={symbol}
                             tokenContract={tokenContract}
-                            tokenDecimals={tokenDecimals}
-                            displaySymbol={tokenSymbol}
                             accessibilityLabel="amount input"
                             inputRef={inputRef}
                             isDisabled={isDisabled || isMaxSelected || isInputInactive}
@@ -138,7 +133,6 @@ export const WrappedNativeTokenAmountInputCard = ({
                         <EarnFiatAmountInput
                             symbol={symbol}
                             tokenContract={tokenContract}
-                            tokenDecimals={tokenDecimals}
                             accessibilityLabel="fiat amount input"
                             inputRef={inputRef}
                             isDisabled={isDisabled || isMaxSelected || isInputInactive}
@@ -153,13 +147,22 @@ export const WrappedNativeTokenAmountInputCard = ({
                     <Text variant="body-sm" color="contentSecondary">
                         <Translation id="earn.yieldDepositFlowScreen.balance" />
                     </Text>
-                    <CompactTokenAmountFormatter
-                        value={asDecimalTokenAmount(balance)}
-                        tokenSymbol={tokenSymbol}
-                        tokenDecimals={tokenDecimals}
-                        variant="body-sm"
-                        color="contentSecondary"
-                    />
+                    {tokenContract ? (
+                        <CompactTokenAmountFormatter
+                            networkSymbol={symbol}
+                            contractAddress={tokenContract}
+                            value={asDecimalTokenAmount(balance)}
+                            variant="body-sm"
+                            color="contentSecondary"
+                        />
+                    ) : (
+                        <CompactCryptoAmountFormatter
+                            symbol={symbol}
+                            value={balance}
+                            variant="body-sm"
+                            color="contentSecondary"
+                        />
+                    )}
                 </HStack>
             </VStack>
         </Card>

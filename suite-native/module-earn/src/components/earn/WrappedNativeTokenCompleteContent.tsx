@@ -69,14 +69,10 @@ export const WrappedNativeTokenCompleteContent = ({
             receivedAmount: {
                 value: amount,
                 tokenContract: flowType === 'wrap' ? wrappedNative.address : undefined,
-                tokenDecimals: flowType === 'wrap' ? wrappedNative.decimals : undefined,
-                tokenSymbol: flowType === 'wrap' ? wrappedNative.symbol : undefined,
             },
             sentAmount: {
                 value: amount,
                 tokenContract: flowType === 'wrap' ? undefined : wrappedNative.address,
-                tokenDecimals: flowType === 'wrap' ? undefined : wrappedNative.decimals,
-                tokenSymbol: flowType === 'wrap' ? undefined : wrappedNative.symbol,
             },
         });
     }, [account, amount, flowType, wrappedNative]);

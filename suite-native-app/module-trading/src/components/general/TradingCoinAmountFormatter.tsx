@@ -1,11 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import type { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
-import type { TokenSymbol } from '@suite-common/tokens';
-import { type TradingRootState, selectTradingCoinSymbolByCryptoId } from '@suite-common/trading';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
-import type { TextProps } from '@suite-native/atoms';
+import {
+    type TradingRootState,
+    cryptoIdToNetworkAndContractAddress,
+    selectTradingCoinSymbolByCryptoId,
+} from '@suite-common/trading';
+import { type TextProps } from '@suite-native/atoms';
 import {
     ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
@@ -26,16 +28,17 @@ export const TradingCoinAmountFormatter = ({
         selectTradingCoinSymbolByCryptoId(state, cryptoId),
     );
 
-    if (!coinSymbol) {
+    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
+
+    if (!coinSymbol || !network) {
         return null;
     }
 
-    if (isNetworkSymbol(coinSymbol)) {
+    if (!contractAddress) {
         return (
             <ExactCryptoAmountFormatter
                 value={amount ?? '0'}
-                symbol={coinSymbol}
-                isBalance={false}
+                symbol={network.symbol}
                 // Trading amounts must remain readable so the user can evaluate the trade.
                 discreetMode="disabled"
                 {...textProps}
@@ -45,8 +48,9 @@ export const TradingCoinAmountFormatter = ({
 
     return (
         <ExactTokenAmountFormatter
+            networkSymbol={network.symbol}
+            contractAddress={contractAddress}
             value={asDecimalTokenAmount(amount ?? '0')}
-            tokenSymbol={coinSymbol as TokenSymbol}
             // Trading amounts must remain readable so the user can evaluate the trade.
             discreetMode="disabled"
             {...textProps}

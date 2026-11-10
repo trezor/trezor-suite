@@ -319,7 +319,6 @@ export const useYieldDepositRevokeScreen = () => {
         revokePendingTransaction && pendingModalProps
             ? {
                   amount: allowanceAmount ?? revokePendingTransaction.amount,
-                  amountTokenSymbol: isApprovedAmountUnlimited ? undefined : tokenSymbol,
                   fee: pendingModalProps.fee,
                   isExploreDisabled: pendingModalProps.isExploreDisabled,
                   onExplorePress: pendingModalProps.onExplorePress,
@@ -341,7 +340,6 @@ export const useYieldDepositRevokeScreen = () => {
         pendingModal,
         providerName,
         shouldShowLowLimitWarning,
-        tokenDecimals: token.decimals,
         tokenContract: route.params.tokenContract,
         tokenSymbol,
         vaultTokenName,

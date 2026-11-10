@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
@@ -28,6 +30,9 @@ export const useTradingTransactionReviewOutputs = ({
     flowType,
     contentBuilder,
 }: UseTradingTransactionReviewOutputsProps) => {
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
     const getOutputTitle = useCallback(
         (output: TransactionReviewStatefulOutput) => {
             switch (output.type) {
@@ -216,12 +221,14 @@ export const useTradingTransactionReviewOutputs = ({
                             );
                         }
 
-                        if (!output.token) {
+                        if (!output.token || !networkSymbol) {
                             return <Text variant="body-sm">{output.value}</Text>;
                         }
 
                         return (
                             <ExactTokenAmountFormatter
+                                networkSymbol={networkSymbol}
+                                contractAddress={toTokenAddress(output.token.contract)}
                                 variant="body-sm"
                                 color="contentPrimary"
                                 textAlign="right"
@@ -229,8 +236,6 @@ export const useTradingTransactionReviewOutputs = ({
                                     output.value,
                                     output.token.decimals,
                                 )}
-                                tokenSymbol={output.token.symbol as TokenSymbol}
-                                maxDisplayedDecimals={output.token.decimals}
                                 // The user must be able to verify token amounts before signing the trade.
                                 discreetMode="disabled"
                             />
@@ -315,7 +320,7 @@ export const useTradingTransactionReviewOutputs = ({
                     return undefined;
             }
         },
-        [flowType, accountKey, tokenContract, contentBuilder],
+        [flowType, accountKey, tokenContract, contentBuilder, networkSymbol],
     );
 
     return { getOutputTitle, getOutputValue };

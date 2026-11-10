@@ -11,7 +11,8 @@ import { type BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
@@ -32,7 +33,7 @@ import {
 } from '@suite-native/formatters';
 import { Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { TokenIcon } from '@suite-native/tokens';
+import { TokenIcon, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldPendingTransactionModalBackdrop } from './YieldPendingTransactionModalBackdrop';
@@ -46,7 +47,7 @@ type YieldPendingTransactionModalProps = {
     amount?: ReactNode;
     amountLabel?: ReactNode;
     amountTokenContract?: TokenAddress;
-    amountTokenSymbol?: TokenSymbol;
+    withAmountSymbol?: boolean;
     fee?: string;
     isExploreDisabled?: boolean;
     onDismiss?: () => void;
@@ -99,7 +100,7 @@ export const YieldPendingTransactionModal = ({
     amount,
     amountLabel,
     amountTokenContract,
-    amountTokenSymbol,
+    withAmountSymbol = true,
     fee,
     isExploreDisabled,
     onDismiss,
@@ -112,7 +113,9 @@ export const YieldPendingTransactionModal = ({
     vaultTokenContract,
 }: YieldPendingTransactionModalProps) => {
     const { applyStyle } = useNativeStyles();
-    const { DateFormatter, TimeFormatter } = useFormatters();
+    const { DateFormatter, TimeFormatter, DisplaySymbolFormatter } = useFormatters();
+    // The modal renders in a portal outside the flow's metadata provider.
+    const metadataSources = useTokenMetadataSources();
     const { translate } = useTranslate();
     const copyToClipboard = useCopyToClipboard();
     const animatedIndex = useSharedValue<number>(modalSnap.expandedIndex);
@@ -247,7 +250,7 @@ export const YieldPendingTransactionModal = ({
 
                     {amount && amountLabel && (
                         <YieldPendingTransactionModalRow label={amountLabel}>
-                            {amountTokenSymbol ? (
+                            {withAmountSymbol ? (
                                 <HStack
                                     spacing="sp4"
                                     alignItems="center"
@@ -265,7 +268,19 @@ export const YieldPendingTransactionModal = ({
                                         ellipsizeMode="tail"
                                         style={applyStyle(valueStyle)}
                                     >
-                                        {amount} {amountTokenSymbol}
+                                        {amount}{' '}
+                                        {amountTokenContract ? (
+                                            <TokenMetadataProvider sources={metadataSources}>
+                                                <TokenSymbol
+                                                    networkSymbol={accountSymbol}
+                                                    contractAddress={amountTokenContract}
+                                                    variant="body-sm"
+                                                    color="contentPrimary"
+                                                />
+                                            </TokenMetadataProvider>
+                                        ) : (
+                                            DisplaySymbolFormatter.format(accountSymbol)
+                                        )}
                                     </Text>
                                 </HStack>
                             ) : (

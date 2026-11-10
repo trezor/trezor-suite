@@ -439,7 +439,7 @@ export const useYieldWithdrawController = () => {
     const resolvedVault = yieldFlowData.vault;
     const underlyingTokenSymbol = toTokenSymbol(yieldFlowData.flowData.token.symbol);
     const vaultTokenSymbol = toTokenSymbol(yieldFlowData.flowData.receiptToken.symbol);
-    const activeUnitSymbol = toTokenSymbol(activeInputToken.symbol);
+
     const activeUnitTokenContract = activeInputToken.contractAddress
         ? toTokenAddress(activeInputToken.contractAddress)
         : undefined;
@@ -482,8 +482,6 @@ export const useYieldWithdrawController = () => {
             ? {
                   amount: maxAmount,
                   tokenContract: activeUnitTokenContract,
-                  tokenDecimals: activeInputToken.decimals,
-                  tokenSymbol: activeUnitSymbol,
                   approximateAmount: assetAmount || (depositedAmount ?? ''),
               }
             : null,
@@ -519,7 +517,6 @@ export const useYieldWithdrawController = () => {
                   isExploreDisabled: !explorerUrl,
                   onExplorePress: openInBlockchain,
                   amountTokenContract: activeUnitTokenContract,
-                  amountTokenSymbol: activeUnitSymbol,
                   vaultTokenContract,
               }
             : null,

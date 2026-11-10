@@ -16,6 +16,7 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/token": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/activity-center": "workspace:*",
