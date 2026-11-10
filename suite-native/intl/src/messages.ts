@@ -952,7 +952,7 @@ export const messages = {
             },
             success: {
                 title: 'Device authenticity check passed',
-                subtitle: 'Your Trezor is genuine & safe to use.',
+                subtitle: 'Your {deviceName} is genuine & safe to use.',
             },
             toast: {
                 canceled: 'Device authenticity check canceled',
@@ -1836,7 +1836,7 @@ export const messages = {
         },
         deviceAuthenticitySuccessScreen: {
             title: 'Your Trezor is genuine',
-            subtitle: 'Your Trezor is now verified and safe to use.',
+            subtitle: 'Your {deviceName} is now verified and safe to use.',
         },
         deviceTutorialScreen: {
             title: 'Continue with a short tutorial on your Trezor',
