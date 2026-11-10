@@ -12,9 +12,9 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createEverstakePooledProductDescriptor } from './everstakePooledProductDescriptor';
-import { getEverstakePooledProductPosition } from './getEverstakePooledProductPosition';
-import { everstakeProvider } from '../../providers/everstake';
+import { createEverstakePooledProductDescriptor } from './descriptor';
+import { getEverstakePooledProductPosition } from './position';
+import { everstakeProvider } from '../../../providers/everstake';
 
 const ETHER = '000000000000000000';
 

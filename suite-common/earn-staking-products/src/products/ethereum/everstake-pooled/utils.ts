@@ -12,14 +12,14 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { EVERSTAKE_OPERATIONS_BY_METHOD_ID } from './constants';
-import { type EverstakePool, everstakePoolSchema } from './everstakePooledProductSchemas';
-import { everstakeProvider } from '../../providers/everstake';
-import { getStakingPositionStatus } from '../../utils/getStakingPositionStatus';
+import { type EverstakePool, everstakePoolSchema } from './types';
+import { everstakeProvider } from '../../../providers/everstake';
+import { getStakingPositionStatus } from '../../../utils/getStakingPositionStatus';
 import {
     ZERO_STAKING_AMOUNT,
     isPositiveStakingAmount,
     toStakingAmount,
-} from '../../utils/stakingAmounts';
+} from '../../../utils/stakingAmounts';
 
 export const findEverstakePoolByAccount = (account: StakingAccount): EverstakePool | undefined => {
     const pool = account.misc?.stakingPools?.find(({ name }) =>

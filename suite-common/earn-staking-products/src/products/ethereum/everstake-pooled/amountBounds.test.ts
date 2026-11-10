@@ -5,7 +5,7 @@ import {
 } from '@suite-common/earn-staking-common';
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 
-import { getEverstakePooledProductAmountBounds } from './everstakePooledProductAmountBounds';
+import { getEverstakePooledProductAmountBounds } from './amountBounds';
 
 const ETHER = '000000000000000000';
 

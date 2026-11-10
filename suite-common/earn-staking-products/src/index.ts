@@ -16,7 +16,7 @@ export {
     createEverstakePooledProduct,
     type CreateEverstakePooledProductParams,
     type EverstakePooledProductDeps,
-} from './products/ethereum/createEverstakePooledProduct';
+} from './products/ethereum/everstake-pooled/product';
 export {
     createSolanaExternalDelegationProduct,
     type CreateSolanaExternalDelegationProductParams,

@@ -6,15 +6,12 @@ import type {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { createUnimplementedStakingOperations } from '../unimplementedStakingOperations';
+import { getEverstakePooledProductAmountBounds } from './amountBounds';
 import { EVERSTAKE_POOLED_PRODUCT_POOL_ADDRESSES } from './constants';
-import { getEverstakePooledProductAmountBounds } from './everstakePooledProductAmountBounds';
-import { createEverstakePooledProductDescriptor } from './everstakePooledProductDescriptor';
-import {
-    type EverstakePooledProductInfoDeps,
-    fetchEverstakePooledProductInfo,
-} from './everstakePooledProductInfo';
-import { getEverstakePooledProductPosition } from './getEverstakePooledProductPosition';
+import { createEverstakePooledProductDescriptor } from './descriptor';
+import { type EverstakePooledProductInfoDeps, fetchEverstakePooledProductInfo } from './info';
+import { getEverstakePooledProductPosition } from './position';
+import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 
 export type EverstakePooledProductDeps = EverstakePooledProductInfoDeps;
 

@@ -6,9 +6,9 @@ import {
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { EVERSTAKE_POOLED_PRODUCT_LIMITS } from './everstakePooledProductLimits';
-import { getMaxStakeAmount } from '../../utils/getMaxStakeAmount';
-import { NO_STAKING_AMOUNT_BOUNDS, SMALLEST_STAKING_AMOUNT } from '../../utils/stakingAmounts';
+import { EVERSTAKE_POOLED_PRODUCT_LIMITS } from './limits';
+import { getMaxStakeAmount } from '../../../utils/getMaxStakeAmount';
+import { NO_STAKING_AMOUNT_BOUNDS, SMALLEST_STAKING_AMOUNT } from '../../../utils/stakingAmounts';
 
 export const getEverstakePooledProductAmountBounds = ({
     account,
