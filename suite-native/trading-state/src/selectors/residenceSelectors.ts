@@ -1,3 +1,4 @@
+import { type GeolocationRootState } from '@suite-common/geolocation';
 import {
     Feature,
     type MessageSystemRootState,
@@ -64,11 +65,14 @@ export const selectIsTradingCountrySet = (state: TradingResidenceRootState) => {
 };
 
 export const selectIsTradingResidenceSelectionAvailable = (
-    state: MessageSystemRootState & LocaleSliceRootState,
+    state: MessageSystemRootState & LocaleSliceRootState & GeolocationRootState,
 ) => selectIsTradingResidenceWhitelistRequired(state) && !selectIsRegionRestricted(state);
 
 export const selectShouldDisplayTradingResidenceOnboarding = (
-    state: TradingResidenceRootState & MessageSystemRootState & LocaleSliceRootState,
+    state: TradingResidenceRootState &
+        MessageSystemRootState &
+        LocaleSliceRootState &
+        GeolocationRootState,
 ) => {
     const isResidenceSelectionAvailable = selectIsTradingResidenceSelectionAvailable(state);
     const wasOnboardingVisited = selectWasTradingResidenceOnboardingVisited(state);

@@ -1,6 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { type DeviceRootState } from '@suite-common/device';
+import { type GeolocationRootState } from '@suite-common/geolocation';
 import {
     Feature,
     type MessageSystemRootState,
@@ -148,7 +149,11 @@ export const selectIsTradingSlip24Enabled = (
 };
 
 export const selectIsTradingEnabled = (
-    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState & LocaleSliceRootState,
+    state: MessageSystemRootState &
+        FeatureFlagsRootState &
+        TradingRootState &
+        LocaleSliceRootState &
+        GeolocationRootState,
 ) => {
     if (selectIsRegionRestricted(state) || !selectIsTradingEnabledForCountry(state)) {
         return false;

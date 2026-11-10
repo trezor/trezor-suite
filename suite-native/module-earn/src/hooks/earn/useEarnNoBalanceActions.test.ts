@@ -1,4 +1,5 @@
 import { deviceInitialState } from '@suite-common/device';
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import { Feature } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -21,6 +22,7 @@ const renderNoBalanceActions = (isRegionRestricted: boolean) =>
                 { [Feature.regions.presenceRestriction]: isRegionRestricted },
                 { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
             ),
+            geolocation: mockGeolocationStateInCountry('US'),
             wallet: { trading: { residence: { wasOnboardingVisited: false } } },
         },
     });

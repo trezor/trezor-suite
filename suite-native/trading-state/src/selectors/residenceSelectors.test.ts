@@ -1,3 +1,5 @@
+import { type GeolocationRootState } from '@suite-common/geolocation';
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import {
     Feature,
     type MessageSystemRootState,
@@ -57,7 +59,10 @@ describe('residenceSelectors', () => {
         ),
     });
 
-    const localeRootState: LocaleSliceRootState = { locale: localeInitialState };
+    const localeRootState: LocaleSliceRootState & GeolocationRootState = {
+        locale: localeInitialState,
+        geolocation: mockGeolocationStateInCountry('US'),
+    };
 
     const getRootResidenceCheckState = (
         isResidenceWhitelistRequired = false,

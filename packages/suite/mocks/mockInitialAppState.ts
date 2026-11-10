@@ -17,7 +17,7 @@ import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { type ConnectPopupState } from '@suite-common/connect-popup';
 import { stakingInitialState } from '@suite-common/earn-staking';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
-import { type GeolocationState } from '@suite-common/geolocation';
+import { geolocationInitialState } from '@suite-common/geolocation';
 import { type LogsSliceState } from '@suite-common/logger';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
@@ -128,9 +128,7 @@ export const mockInitialAppState = {
     backup: {} as BackupState, // Todo: maybe one day, fix types
     desktop: null as DesktopState,
     tokenDefinitions: {} as Partial<TokenDefinitionsState>,
-    geolocation: {
-        countryCode: null,
-    } as GeolocationState,
+    geolocation: geolocationInitialState,
     logs: {
         logEntries: [],
     } as LogsSliceState,

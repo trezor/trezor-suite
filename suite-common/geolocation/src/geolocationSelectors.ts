@@ -9,5 +9,8 @@ export const selectCountryCode = (state: GeolocationRootState) => state.geolocat
 export const selectCountryCodeFetch = (state: GeolocationRootState) =>
     state.geolocation.countryCodeFetch;
 
+export const selectDevicePresenceSignals = (state: GeolocationRootState) =>
+    state.geolocation.deviceSignals;
+
 export const selectPresenceIpCountry = (state: GeolocationRootState) =>
     state.geolocation.countryCodeFetch?.status === 'success' ? state.geolocation.countryCode : null;

@@ -1,6 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import { type MessageSystemState } from '@suite-common/message-system';
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
@@ -179,6 +180,7 @@ const getPreloadedState = ({
 
     return {
         featureFlags: featureFlagsInitialState,
+        geolocation: mockGeolocationStateInCountry('US'),
         locale: localeInitialState,
         messageSystem: {
             config: {

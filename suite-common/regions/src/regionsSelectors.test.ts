@@ -1,41 +1,113 @@
-import { type CountryCode } from '@suite-common/geolocation';
+import {
+    type GeolocationState,
+    type PresenceSignals,
+    estimatePresence,
+    geolocationInitialState,
+} from '@suite-common/geolocation';
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import { Feature } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 
-import { selectIsRegionRestrictedByCountry } from './regionsSelectors';
+import { selectIsRegionRestricted, selectIsRegionRestrictedBySignals } from './regionsSelectors';
+
+jest.mock('@suite-common/geolocation', () => ({
+    ...jest.requireActual('@suite-common/geolocation'),
+    estimatePresence: jest.fn(jest.requireActual('@suite-common/geolocation').estimatePresence),
+}));
 
 const domain = Feature.regions.presenceRestriction;
 
-describe(selectIsRegionRestrictedByCountry.name, () => {
+const createState = (flag: boolean | undefined, payload?: Record<string, unknown>) => ({
+    messageSystem: mockMessageSystemStateWithFeatureFlags(
+        flag === undefined ? {} : { [domain]: flag },
+        { [domain]: payload },
+    ),
+});
+
+describe(selectIsRegionRestrictedBySignals.name, () => {
+    const signalsIn = (ipCountry: string | null, region: string | null): PresenceSignals => ({
+        ipCountry,
+        timeZone: 'Australia/Sydney',
+        primaryRegion: region,
+        secondaryRegions: [],
+    });
+
+    const strongAu = signalsIn('AU', 'AU');
+
+    beforeEach(() => {
+        jest.mocked(estimatePresence).mockClear();
+    });
+
     it.each([
-        ['not restricted: no regions entry', undefined, undefined, 'AU', false],
-        ['not restricted: flag off', false, { countries: ['AU'] }, 'AU', false],
-        ['not restricted: flag on without payload', true, undefined, 'AU', false],
-        ['not restricted: flag on with empty countries', true, { countries: [] }, 'AU', false],
+        ['no regions entry', undefined, undefined],
+        ['flag off', false, { countries: ['AU'] }],
+        ['flag on without payload', true, undefined],
+        ['flag on with empty countries', true, { countries: [] }],
+        ['flag on with only invalid countries', true, { countries: ['ZZ', 1] }],
+    ] as const satisfies [string, boolean | undefined, Record<string, unknown> | undefined][])(
+        'is not restricted without a usable config: %s',
+        (_description, flag, payload) => {
+            expect(selectIsRegionRestrictedBySignals(createState(flag, payload), strongAu)).toBe(
+                false,
+            );
+            expect(estimatePresence).not.toHaveBeenCalled();
+        },
+    );
+
+    it.each([
+        ['strong presence in a listed country', strongAu, undefined, true],
+        ['weak presence above the default threshold', signalsIn('CZ', 'AU'), undefined, true],
+        ['weak presence below a configured threshold', signalsIn('CZ', 'AU'), { weak: 0.6 }, false],
         [
-            'not restricted: flag on with only invalid countries',
+            'weak presence with an invalid configured threshold',
+            signalsIn('CZ', 'AU'),
+            { weak: 1.1 },
             true,
-            { countries: ['ZZ', 1] },
-            'AU',
+        ],
+        ['weak presence below the default threshold', signalsIn('DE', 'DE'), undefined, false],
+        [
+            'no presence evidence',
+            { ipCountry: null, timeZone: null, primaryRegion: null, secondaryRegions: [] },
+            undefined,
             false,
         ],
-        ['not restricted: unknown user country', true, { countries: ['AU'] }, null, false],
-        ['not restricted: user country not listed', true, { countries: ['AU'] }, 'CZ', false],
-        ['restricted: user country listed', true, { countries: ['CZ', 'AU'] }, 'AU', true],
-    ] as const satisfies [
-        string,
-        boolean | undefined,
-        Record<string, unknown> | undefined,
-        CountryCode | null,
-        boolean,
-    ][])('%s', (_description, flag, payload, country, expected) => {
-        const state = {
-            messageSystem: mockMessageSystemStateWithFeatureFlags(
-                flag === undefined ? {} : { [domain]: flag },
-                { [domain]: payload },
-            ),
-        };
+    ] as const satisfies [string, PresenceSignals, Record<string, unknown> | undefined, boolean][])(
+        '%s',
+        (_description, signals, thresholds, expected) => {
+            const state = createState(true, { countries: ['AU'], thresholds });
 
-        expect(selectIsRegionRestrictedByCountry(state, country)).toBe(expected);
-    });
+            expect(selectIsRegionRestrictedBySignals(state, signals)).toBe(expected);
+        },
+    );
+});
+
+describe(selectIsRegionRestricted.name, () => {
+    it.each([
+        ['restricted: present in a listed country', mockGeolocationStateInCountry('AU'), true],
+        [
+            'restricted: IP in a listed country outweighs device signals',
+            {
+                ...geolocationInitialState,
+                countryCode: 'AU',
+                countryCodeFetch: { status: 'success', timestamp: 0 },
+                deviceSignals: {
+                    timeZone: 'Europe/Prague',
+                    primaryRegion: 'CZ',
+                    secondaryRegions: [],
+                },
+            },
+            true,
+        ],
+        ['not restricted: no signals', geolocationInitialState, false],
+    ] as const satisfies [string, GeolocationState, boolean][])(
+        '%s',
+        (_description, geolocation, expected) => {
+            const state = {
+                ...createState(true, { countries: ['AU'] }),
+                geolocation,
+            };
+
+            expect(selectIsRegionRestricted(state)).toBe(expected);
+        },
+    );
 });

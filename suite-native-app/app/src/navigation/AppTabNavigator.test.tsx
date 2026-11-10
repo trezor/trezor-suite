@@ -1,4 +1,5 @@
 import { deviceInitialState } from '@suite-common/device';
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import { Feature, messageSystemInitialState } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -86,6 +87,7 @@ describe('AppTabNavigator', () => {
                 { [Feature.regions.presenceRestriction]: true },
                 { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
             ),
+            geolocation: mockGeolocationStateInCountry('US'),
         });
 
         expect(queryByText(getTranslation('navigation.tabs.trade'))).toBe(null);

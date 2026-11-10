@@ -17,6 +17,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
         "@suite-common/device": "workspace:*",
+        "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
