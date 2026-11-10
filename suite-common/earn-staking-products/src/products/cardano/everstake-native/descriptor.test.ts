@@ -1,17 +1,17 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createCardanoNativeDelegationProductDescriptor } from './descriptor';
-import { CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
 import { everstakeProvider } from '../../../providers/everstake';
-import { EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { createCardanoEverstakeNativeProductDescriptor } from './descriptor';
+import { CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS } from './limits';
 
-describe('createCardanoNativeDelegationProductDescriptor', () => {
+describe('createCardanoEverstakeNativeProductDescriptor', () => {
     it('builds the ada:ada:everstake:native product', () => {
-        const descriptor = createCardanoNativeDelegationProductDescriptor({
+        const descriptor = createCardanoEverstakeNativeProductDescriptor({
             networkSymbol: asNetworkSymbol('ada'),
             provider: everstakeProvider,
-            messageSystemFeatures: EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES,
+            messageSystemFeatures: CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
         });
 
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
@@ -24,7 +24,7 @@ describe('createCardanoNativeDelegationProductDescriptor', () => {
             operations: ['stake', 'unstake', 'claim', 'vote'],
             exclusivity: 'account',
             rateKind: 'apy',
-            limits: CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS,
+            limits: CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS,
             options: [],
             consentKey: 'staking:everstake',
             platforms: {
@@ -42,7 +42,7 @@ describe('createCardanoNativeDelegationProductDescriptor', () => {
     });
 
     it('keeps the legacy limits in lovelace', () => {
-        expect(CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS).toEqual({
+        expect(CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS).toEqual({
             minStakeAmount: '0',
             maxStakeAmount: '72000000000000',
             minWithdrawalAmount: '0',

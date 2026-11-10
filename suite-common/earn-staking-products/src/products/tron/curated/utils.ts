@@ -162,7 +162,7 @@ export const getParsedTronStakingInfo = ({
     };
 };
 
-type IsTronCuratedPositionOperationAvailableParams = {
+type IsPositionOperationAvailableParams = {
     operation: StakingOperation;
     balances: StakingPositionBalances;
     frozen: StakingAmount;
@@ -170,13 +170,13 @@ type IsTronCuratedPositionOperationAvailableParams = {
     nowMs: number;
 };
 
-const isTronCuratedPositionOperationAvailable = ({
+const isPositionOperationAvailable = ({
     operation,
     balances,
     frozen,
     rewardClaimAvailableAt,
     nowMs,
-}: IsTronCuratedPositionOperationAvailableParams): boolean => {
+}: IsPositionOperationAvailableParams): boolean => {
     switch (operation) {
         case 'stake':
             return true;
@@ -198,17 +198,17 @@ const isTronCuratedPositionOperationAvailable = ({
     }
 };
 
-type GetTronCuratedPositionBalancesParams = {
+type GetPositionBalancesParams = {
     stakingInfo: ParsedTronStakingInfo;
     pendingBatches: ParsedTronUnstakingBatch[];
     expiredBatches: ParsedTronUnstakingBatch[];
 };
 
-export const getTronCuratedPositionBalances = ({
+export const getPositionBalances = ({
     stakingInfo,
     pendingBatches,
     expiredBatches,
-}: GetTronCuratedPositionBalancesParams): StakingPositionBalances => {
+}: GetPositionBalancesParams): StakingPositionBalances => {
     const { staked } = stakingInfo;
     const rewards = stakingInfo.unclaimedReward;
 
@@ -220,21 +220,21 @@ export const getTronCuratedPositionBalances = ({
     return { staked, pending, unstaking, withdrawable, rewards };
 };
 
-type GetTronCuratedPositionOperationsParams = {
+type GetPositionOperationsParams = {
     operations: readonly StakingOperation[];
     balances: StakingPositionBalances;
     stakingInfo: ParsedTronStakingInfo;
     nowMs: number;
 };
 
-export const getTronCuratedPositionOperations = ({
+export const getPositionOperations = ({
     operations,
     balances,
     stakingInfo,
     nowMs,
-}: GetTronCuratedPositionOperationsParams): StakingOperation[] =>
+}: GetPositionOperationsParams): StakingOperation[] =>
     operations.filter(operation =>
-        isTronCuratedPositionOperationAvailable({
+        isPositionOperationAvailable({
             operation,
             balances,
             frozen: stakingInfo.frozen,
@@ -243,13 +243,13 @@ export const getTronCuratedPositionOperations = ({
         }),
     );
 
-type GetTronCuratedPendingTransactionsParams = {
+type GetTronPendingTransactionsParams = {
     transactions: readonly StakingTransaction[];
 };
 
-export const getTronCuratedPendingTransactions = ({
+export const getTronPendingTransactions = ({
     transactions,
-}: GetTronCuratedPendingTransactionsParams): StakingPositionPendingTransaction[] => {
+}: GetTronPendingTransactionsParams): StakingPositionPendingTransaction[] => {
     const pendingStakingTransactions = transactions.filter(isPendingStakingTransaction);
 
     return pendingStakingTransactions.flatMap(({ txid, tronSpecific }) => {
@@ -263,15 +263,15 @@ export const getTronCuratedPendingTransactions = ({
     });
 };
 
-type GetVoteTargetsParams = {
+type GetPositionTargetsParams = {
     votes: readonly ParsedTronVote[];
     representatives: readonly TronRepresentative[];
 };
 
-export const getTronCuratedPositionTargets = ({
+export const getPositionTargets = ({
     votes,
     representatives,
-}: GetVoteTargetsParams): StakingPositionTarget[] =>
+}: GetPositionTargetsParams): StakingPositionTarget[] =>
     votes
         .filter(({ amount }) => isPositiveStakingAmount(amount))
         .map(({ address, amount }) => {
@@ -287,11 +287,11 @@ export const getTronCuratedPositionTargets = ({
             };
         });
 
-type GetTronCuratedPositionUnlocksParams = {
+type GetPositionUnlocksParams = {
     pendingBatches: ParsedTronUnstakingBatch[];
 };
 
-export const getTronCuratedPositionUnlocks = ({
+export const getPositionUnlocks = ({
     pendingBatches,
-}: GetTronCuratedPositionUnlocksParams): StakingPositionUnlock[] =>
+}: GetPositionUnlocksParams): StakingPositionUnlock[] =>
     pendingBatches.map(({ amount, availableAt }) => ({ amount, availableAt }));

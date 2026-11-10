@@ -7,29 +7,29 @@ import {
 } from '@suite-common/earn-staking-common';
 
 import {
-    getSolanaDelegationPendingTransactions,
-    getSolanaDelegationPositionBalances,
-    getSolanaDelegationPositionOperations,
-    getSolanaDelegationPositionTargets,
-    getSolanaDelegationPositionUnlocks,
+    getPositionBalances,
+    getPositionOperations,
+    getPositionTargets,
+    getPositionUnlocks,
+    getSolanaPendingTransactions,
     parseSolanaStakeAccounts,
 } from './utils';
 import { getStakingPositionStatus } from '../../utils/getStakingPositionStatus';
 
-export type GetSolanaDelegationProductPositionParams = GetPositionParams & {
+export type GetSolanaProductPositionParams = GetPositionParams & {
     descriptor: StakingProductDescriptor;
     provider: StakingProvider;
     ownsVoteAccount: (voteAccount: string | null) => boolean;
 };
 
-export const getSolanaDelegationProductPosition = ({
+export const getSolanaProductPosition = ({
     descriptor,
     provider,
     account,
     productInfo,
     transactions,
     ownsVoteAccount,
-}: GetSolanaDelegationProductPositionParams): StakingPosition | null => {
+}: GetSolanaProductPositionParams): StakingPosition | null => {
     const stakeAccounts = parseSolanaStakeAccounts(account).filter(({ voteAccount }) =>
         ownsVoteAccount(voteAccount),
     );
@@ -41,22 +41,20 @@ export const getSolanaDelegationProductPosition = ({
     const rate = productInfo?.rate;
     const epoch = account.misc?.solEpoch ?? null;
 
-    const balances = getSolanaDelegationPositionBalances({ stakeAccounts, rate, epoch });
+    const balances = getPositionBalances({ stakeAccounts, rate, epoch });
     const status = getStakingPositionStatus({ balances });
 
-    const unlocks = getSolanaDelegationPositionUnlocks({ balances });
-    const targets = getSolanaDelegationPositionTargets({ stakeAccounts, provider });
+    const unlocks = getPositionUnlocks({ balances });
+    const targets = getPositionTargets({ stakeAccounts, provider });
 
-    const operations = getSolanaDelegationPositionOperations({
+    const operations = getPositionOperations({
         operations: descriptor.operations,
         balances,
     });
 
     // Only a product Suite operates on owns the stake operations Suite broadcasts.
     const pendingTransactions =
-        descriptor.operations.length === 0
-            ? []
-            : getSolanaDelegationPendingTransactions({ transactions });
+        descriptor.operations.length === 0 ? [] : getSolanaPendingTransactions({ transactions });
 
     const details: StakingPositionDetails = {
         kind: 'solana-stake-accounts',

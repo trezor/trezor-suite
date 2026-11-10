@@ -8,11 +8,11 @@ import {
 import { type TronRepresentative } from './types';
 import {
     getParsedTronStakingInfo,
-    getTronCuratedPendingTransactions,
-    getTronCuratedPositionBalances,
-    getTronCuratedPositionOperations,
-    getTronCuratedPositionTargets,
-    getTronCuratedPositionUnlocks,
+    getPositionBalances,
+    getPositionOperations,
+    getPositionTargets,
+    getPositionUnlocks,
+    getTronPendingTransactions,
 } from './utils';
 import { getStakingPositionStatus } from '../../../utils/getStakingPositionStatus';
 import { isPositiveStakingAmount } from '../../../utils/stakingAmounts';
@@ -48,7 +48,7 @@ export const getTronCuratedProductPosition = ({
         ({ availableAt }) => availableAt <= nowMs,
     );
 
-    const balances = getTronCuratedPositionBalances({
+    const balances = getPositionBalances({
         stakingInfo,
         pendingBatches,
         expiredBatches,
@@ -60,17 +60,17 @@ export const getTronCuratedProductPosition = ({
         return null;
     }
 
-    const operations = getTronCuratedPositionOperations({
+    const operations = getPositionOperations({
         operations: descriptor.operations,
         balances,
         stakingInfo,
         nowMs,
     });
 
-    const targets = getTronCuratedPositionTargets({ votes: stakingInfo.votes, representatives });
-    const unlocks = getTronCuratedPositionUnlocks({ pendingBatches });
+    const targets = getPositionTargets({ votes: stakingInfo.votes, representatives });
+    const unlocks = getPositionUnlocks({ pendingBatches });
 
-    const pendingTransactions = getTronCuratedPendingTransactions({ transactions });
+    const pendingTransactions = getTronPendingTransactions({ transactions });
 
     const { rewardClaimAvailableAt } = stakingInfo;
 

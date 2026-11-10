@@ -19,11 +19,11 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createCardanoExternalDelegationProductDescriptor } from './external/descriptor';
-import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
-import { createCardanoNativeDelegationProductDescriptor } from './native/descriptor';
-import { getCardanoDelegationProductPosition } from './position';
-import { createCardanoRetiredDelegationProductDescriptor } from './retired/descriptor';
+import { createCardanoEverstakeNativeProductDescriptor } from './everstake-native/descriptor';
+import { createCardanoExternalProductDescriptor } from './external/descriptor';
+import { createCardanoFivebinariesRetiredProductDescriptor } from './fivebinaries-retired/descriptor';
+import { CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { getCardanoProductPosition } from './position';
 import { everstakeProvider } from '../../providers/everstake';
 import { externalProvider } from '../../providers/external';
 import { fivebinariesProvider } from '../../providers/fivebinaries';
@@ -35,25 +35,25 @@ const everstakePools = everstakeProvider.identities[networkSymbol] ?? [];
 const fiveBinariesPools = fivebinariesProvider.identities[networkSymbol] ?? [];
 const managedPools = [...everstakePools, ...fiveBinariesPools];
 
-const everstake = createCardanoNativeDelegationProductDescriptor({
+const everstake = createCardanoEverstakeNativeProductDescriptor({
     networkSymbol,
     provider: everstakeProvider,
     messageSystemFeatures: {},
 });
-const fiveBinaries = createCardanoRetiredDelegationProductDescriptor({
+const fiveBinaries = createCardanoFivebinariesRetiredProductDescriptor({
     networkSymbol,
     provider: fivebinariesProvider,
-    messageSystemFeatures: CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
+    messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
 });
-const external = createCardanoExternalDelegationProductDescriptor({
+const external = createCardanoExternalProductDescriptor({
     networkSymbol,
-    messageSystemFeatures: CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
+    messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
 });
 
 type TestPositionParams = Pick<GetPositionParams, 'account'> & Partial<GetPositionParams>;
 
 const getEverstakePosition = (params: TestPositionParams) =>
-    getCardanoDelegationProductPosition({
+    getCardanoProductPosition({
         productInfo: null,
         transactions: [],
         ...params,
@@ -64,7 +64,7 @@ const getEverstakePosition = (params: TestPositionParams) =>
     });
 
 const getFiveBinariesPosition = (params: TestPositionParams) =>
-    getCardanoDelegationProductPosition({
+    getCardanoProductPosition({
         productInfo: null,
         transactions: [],
         ...params,
@@ -75,7 +75,7 @@ const getFiveBinariesPosition = (params: TestPositionParams) =>
     });
 
 const getExternalPosition = (params: TestPositionParams) =>
-    getCardanoDelegationProductPosition({
+    getCardanoProductPosition({
         productInfo: null,
         transactions: [],
         ...params,
@@ -116,7 +116,7 @@ const registeredWithoutPool = mockStakingAccount({
     },
 });
 
-describe('getCardanoDelegationProductPosition', () => {
+describe('getCardanoProductPosition', () => {
     it('derives the Everstake position of a delegated stake key', () => {
         const position = getEverstakePosition({ account: mockCardanoStakingAccount('everstake') });
 

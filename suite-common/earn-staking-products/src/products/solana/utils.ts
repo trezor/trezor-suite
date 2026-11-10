@@ -80,15 +80,12 @@ export const parseSolanaStakeAccounts = (
 
 type SolanaStakeBalance = Exclude<keyof StakingPositionBalances, 'rewards'>;
 
-type GetSolanaStakeBalanceParams = {
+type GetStakeBalanceParams = {
     stakeAccount: ParsedSolanaStakeAccount;
     epoch: number | null;
 };
 
-const getSolanaStakeBalance = ({
-    stakeAccount,
-    epoch,
-}: GetSolanaStakeBalanceParams): SolanaStakeBalance => {
+const getStakeBalance = ({ stakeAccount, epoch }: GetStakeBalanceParams): SolanaStakeBalance => {
     const { status, activationEpoch } = stakeAccount;
 
     switch (status) {
@@ -113,23 +110,21 @@ const getSolanaStakeBalance = ({
     }
 };
 
-type GetSolanaDelegationPositionBalancesParams = {
+type GetPositionBalancesParams = {
     stakeAccounts: ParsedSolanaStakeAccount[];
     rate: number | null | undefined;
     epoch: number | null;
 };
 
-export const getSolanaDelegationPositionBalances = ({
+export const getPositionBalances = ({
     stakeAccounts,
     rate,
     epoch,
-}: GetSolanaDelegationPositionBalancesParams): StakingPositionBalances => {
+}: GetPositionBalancesParams): StakingPositionBalances => {
     const getStake = (...balances: SolanaStakeBalance[]) =>
         sumStakingAmounts(
             stakeAccounts
-                .filter(stakeAccount =>
-                    balances.includes(getSolanaStakeBalance({ stakeAccount, epoch })),
-                )
+                .filter(stakeAccount => balances.includes(getStakeBalance({ stakeAccount, epoch })))
                 .map(({ stake }) => stake),
         );
 
@@ -150,15 +145,15 @@ export const getSolanaDelegationPositionBalances = ({
     return { staked, pending, unstaking, withdrawable, rewards };
 };
 
-type IsSolanaDelegationPositionOperationAvailableParams = {
+type IsPositionOperationAvailableParams = {
     operation: StakingOperation;
     balances: StakingPositionBalances;
 };
 
-const isSolanaDelegationPositionOperationAvailable = ({
+const isPositionOperationAvailable = ({
     operation,
     balances,
-}: IsSolanaDelegationPositionOperationAvailableParams): boolean => {
+}: IsPositionOperationAvailableParams): boolean => {
     switch (operation) {
         case 'stake':
             return true;
@@ -175,26 +170,24 @@ const isSolanaDelegationPositionOperationAvailable = ({
     }
 };
 
-type GetSolanaDelegationPositionOperationsParams = {
+type GetPositionOperationsParams = {
     operations: readonly StakingOperation[];
     balances: StakingPositionBalances;
 };
 
-export const getSolanaDelegationPositionOperations = ({
+export const getPositionOperations = ({
     operations,
     balances,
-}: GetSolanaDelegationPositionOperationsParams): StakingOperation[] =>
-    operations.filter(operation =>
-        isSolanaDelegationPositionOperationAvailable({ operation, balances }),
-    );
+}: GetPositionOperationsParams): StakingOperation[] =>
+    operations.filter(operation => isPositionOperationAvailable({ operation, balances }));
 
-type GetSolanaDelegationPositionUnlocksParams = {
+type GetPositionUnlocksParams = {
     balances: StakingPositionBalances;
 };
 
-export const getSolanaDelegationPositionUnlocks = ({
+export const getPositionUnlocks = ({
     balances,
-}: GetSolanaDelegationPositionUnlocksParams): StakingPositionUnlock[] => {
+}: GetPositionUnlocksParams): StakingPositionUnlock[] => {
     if (!isPositiveStakingAmount(balances.unstaking)) {
         return [];
     }
@@ -207,15 +200,15 @@ export const getSolanaDelegationPositionUnlocks = ({
     return [unlock];
 };
 
-type GetSolanaDelegationPositionTargetsParams = {
+type GetPositionTargetsParams = {
     stakeAccounts: readonly ParsedSolanaStakeAccount[];
     provider: StakingProvider;
 };
 
-export const getSolanaDelegationPositionTargets = ({
+export const getPositionTargets = ({
     stakeAccounts,
     provider,
-}: GetSolanaDelegationPositionTargetsParams): StakingPositionTarget[] => {
+}: GetPositionTargetsParams): StakingPositionTarget[] => {
     const activeStakesByVoteAccount = new Map<string, ParsedSolanaStakeAccount['stake'][]>();
 
     stakeAccounts.forEach(({ status, stake, voteAccount }) => {
@@ -235,13 +228,13 @@ export const getSolanaDelegationPositionTargets = ({
     })).filter(({ amount }) => isPositiveStakingAmount(amount));
 };
 
-type GetSolanaDelegationPendingTransactionsParams = {
+type GetSolanaPendingTransactionsParams = {
     transactions: readonly StakingTransaction[];
 };
 
-export const getSolanaDelegationPendingTransactions = ({
+export const getSolanaPendingTransactions = ({
     transactions,
-}: GetSolanaDelegationPendingTransactionsParams) => {
+}: GetSolanaPendingTransactionsParams) => {
     const pendingStakingTransactions = transactions.filter(isPendingStakingTransaction);
 
     return pendingStakingTransactions.flatMap(({ txid, solanaSpecific }) => {

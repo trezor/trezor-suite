@@ -5,18 +5,18 @@ import {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { CARDANO_EXTERNAL_DELEGATION_PRODUCT_LIMITS } from './limits';
+import { CARDANO_EXTERNAL_PRODUCT_LIMITS } from './limits';
 import { externalProvider } from '../../../providers/external';
 
-export type CreateCardanoExternalDelegationProductDescriptorParams = {
+export type CreateCardanoExternalProductDescriptorParams = {
     networkSymbol: NetworkSymbol;
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createCardanoExternalDelegationProductDescriptor = ({
+export const createCardanoExternalProductDescriptor = ({
     networkSymbol,
     messageSystemFeatures,
-}: CreateCardanoExternalDelegationProductDescriptorParams): StakingProductDescriptor => {
+}: CreateCardanoExternalProductDescriptorParams): StakingProductDescriptor => {
     const product = {
         networkSymbol,
         asset: { kind: 'native' },
@@ -30,7 +30,7 @@ export const createCardanoExternalDelegationProductDescriptor = ({
         operations: ['unstake', 'claim', 'vote'],
         exclusivity: 'account',
         rateKind: 'apy',
-        limits: CARDANO_EXTERNAL_DELEGATION_PRODUCT_LIMITS,
+        limits: CARDANO_EXTERNAL_PRODUCT_LIMITS,
         options: [],
         consentKey: null,
         platforms: {

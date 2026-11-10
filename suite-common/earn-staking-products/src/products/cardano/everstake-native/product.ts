@@ -9,42 +9,42 @@ import type {
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
-import { type CardanoDelegationProductInfoDeps, fetchCardanoDelegationProductInfo } from '../info';
-import { getCardanoDelegationProductPosition } from '../position';
-import { getCardanoNativeDelegationProductAmountBounds } from './amountBounds';
-import { createCardanoNativeDelegationProductDescriptor } from './descriptor';
+import { type CardanoProductInfoDeps, fetchCardanoProductInfo } from '../info';
+import { getCardanoProductPosition } from '../position';
+import { getCardanoEverstakeNativeProductAmountBounds } from './amountBounds';
+import { createCardanoEverstakeNativeProductDescriptor } from './descriptor';
 
-export type CardanoNativeDelegationProductDeps = CardanoDelegationProductInfoDeps;
+export type CardanoEverstakeNativeProductDeps = CardanoProductInfoDeps;
 
-export type CreateCardanoNativeDelegationProductParams = CardanoNativeDelegationProductDeps & {
+export type CreateCardanoEverstakeNativeProductParams = CardanoEverstakeNativeProductDeps & {
     networkSymbol: NetworkSymbol;
     provider: StakingProvider;
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createCardanoNativeDelegationProduct = ({
+export const createCardanoEverstakeNativeProduct = ({
     networkSymbol,
     provider,
     messageSystemFeatures,
     ...deps
-}: CreateCardanoNativeDelegationProductParams): StakingProductAdapter => {
+}: CreateCardanoEverstakeNativeProductParams): StakingProductAdapter => {
     const poolIds = provider.status === 'active' ? (provider.identities[networkSymbol] ?? []) : [];
 
     if (poolIds.length === 0) {
         throw new Error(`${provider.id} has no ${networkSymbol} pool`);
     }
 
-    const descriptor = createCardanoNativeDelegationProductDescriptor({
+    const descriptor = createCardanoEverstakeNativeProductDescriptor({
         networkSymbol,
         provider,
         messageSystemFeatures,
     });
 
     const fetchProductInfo = (params: FetchProductInfoParams) =>
-        fetchCardanoDelegationProductInfo(deps, { ...params, provider, poolIds });
+        fetchCardanoProductInfo(deps, { ...params, provider, poolIds });
 
     const getPosition = (params: GetPositionParams) =>
-        getCardanoDelegationProductPosition({
+        getCardanoProductPosition({
             ...params,
             descriptor,
             provider,
@@ -53,7 +53,7 @@ export const createCardanoNativeDelegationProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getCardanoNativeDelegationProductAmountBounds(params);
+        getCardanoEverstakeNativeProductAmountBounds(params);
 
     const operations = createUnimplementedStakingOperations();
 

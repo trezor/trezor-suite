@@ -1,6 +1,6 @@
 import { stakingProductLimitsSchema } from '@suite-common/earn-staking-common';
 
-export const CARDANO_RETIRED_DELEGATION_PRODUCT_LIMITS = stakingProductLimitsSchema.parse({
+export const CARDANO_FIVEBINARIES_RETIRED_PRODUCT_LIMITS = stakingProductLimitsSchema.parse({
     minStakeAmount: '0',
     maxStakeAmount: '0',
     minWithdrawalAmount: '0',

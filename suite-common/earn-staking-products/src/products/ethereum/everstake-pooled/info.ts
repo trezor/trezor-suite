@@ -22,13 +22,13 @@ const getNextRewardAt = (nextRewardPayout: number): number => {
     return Math.round(nextRewardAt / HOUR_MS) * HOUR_MS;
 };
 
-export type EverstakePooledProductInfoDeps = {
+export type EthereumEverstakePooledProductInfoDeps = {
     getStakingStats: typeof getStakingStats;
     getEthereumValidatorsQueue: typeof getEthereumValidatorsQueue;
 };
 
-export const fetchEverstakePooledProductInfo = async (
-    deps: EverstakePooledProductInfoDeps,
+export const fetchEthereumEverstakePooledProductInfo = async (
+    deps: EthereumEverstakePooledProductInfoDeps,
     { abortSignal }: FetchProductInfoParams,
 ): Promise<StakingProductInfo> => {
     // The staking API knows mainnet only, so Hoodi reads the same numbers.

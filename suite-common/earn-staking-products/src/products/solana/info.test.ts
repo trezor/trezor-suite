@@ -4,20 +4,20 @@ import { createMockDeps } from '@trezor/dependency-injection';
 
 import {
     SOLANA_EXTERNAL_PRODUCT_INFO,
-    type SolanaDelegationProductInfoDeps,
-    fetchSolanaDelegationProductInfo,
+    type SolanaProductInfoDeps,
+    fetchSolanaProductInfo,
 } from './info';
 
 const solStats: EthOrSolStats = { symbol: 'sol', apy: 6.24 };
 
 const createDeps = (stats: EthOrSolStats = solStats) =>
-    createMockDeps<SolanaDelegationProductInfoDeps>({
+    createMockDeps<SolanaProductInfoDeps>({
         getStakingStats: () => Promise.resolve(stats),
     });
 
-describe('fetchSolanaDelegationProductInfo', () => {
+describe('fetchSolanaProductInfo', () => {
     it('maps the chain APY and one-epoch periods onto the product info', async () => {
-        await expect(fetchSolanaDelegationProductInfo(createDeps(), {})).resolves.toEqual({
+        await expect(fetchSolanaProductInfo(createDeps(), {})).resolves.toEqual({
             rate: 6.24,
             entryPeriodDays: 1,
             exitPeriodDays: 1,
@@ -30,7 +30,7 @@ describe('fetchSolanaDelegationProductInfo', () => {
         const deps = createDeps();
         const abortSignal = new AbortController().signal;
 
-        await fetchSolanaDelegationProductInfo(deps, { abortSignal });
+        await fetchSolanaProductInfo(deps, { abortSignal });
 
         expect(deps.getStakingStats).toHaveBeenCalledWith({
             routeParams: { networkSymbol: 'sol' },
@@ -39,16 +39,16 @@ describe('fetchSolanaDelegationProductInfo', () => {
     });
 
     it('rejects when the stats request fails', async () => {
-        const deps = createMockDeps<SolanaDelegationProductInfoDeps>({
+        const deps = createMockDeps<SolanaProductInfoDeps>({
             getStakingStats: () => Promise.reject(new Error('Request failed')),
         });
 
-        await expect(fetchSolanaDelegationProductInfo(deps, {})).rejects.toThrow('Request failed');
+        await expect(fetchSolanaProductInfo(deps, {})).rejects.toThrow('Request failed');
     });
 
     it('rejects a negative APY instead of caching it', async () => {
         await expect(
-            fetchSolanaDelegationProductInfo(createDeps({ symbol: 'sol', apy: -0.5 }), {}),
+            fetchSolanaProductInfo(createDeps({ symbol: 'sol', apy: -0.5 }), {}),
         ).rejects.toThrow();
     });
 });

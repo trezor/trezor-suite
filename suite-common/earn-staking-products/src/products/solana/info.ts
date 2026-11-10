@@ -15,12 +15,12 @@ export const SOLANA_EXTERNAL_PRODUCT_INFO = stakingProductInfoSchema.parse({
     targets: [],
 });
 
-export type SolanaDelegationProductInfoDeps = {
+export type SolanaProductInfoDeps = {
     getStakingStats: typeof getStakingStats;
 };
 
-export const fetchSolanaDelegationProductInfo = async (
-    deps: SolanaDelegationProductInfoDeps,
+export const fetchSolanaProductInfo = async (
+    deps: SolanaProductInfoDeps,
     { abortSignal }: FetchProductInfoParams,
 ): Promise<StakingProductInfo> => {
     // The staking API knows the mainnet chain APY only, so devnet reads the same number.

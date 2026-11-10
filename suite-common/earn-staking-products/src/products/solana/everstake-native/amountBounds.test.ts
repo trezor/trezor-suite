@@ -6,7 +6,7 @@ import {
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { getSolanaNativeDelegationProductAmountBounds } from './amountBounds';
+import { getSolanaEverstakeNativeProductAmountBounds } from './amountBounds';
 
 const SOL = '000000000';
 
@@ -23,7 +23,7 @@ const position = mockStakingPosition({
     operations: ['stake', 'unstake', 'withdraw'],
 });
 
-describe('getSolanaNativeDelegationProductAmountBounds', () => {
+describe('getSolanaEverstakeNativeProductAmountBounds', () => {
     // The seven balances and maximums of the P0.1 getMaxStakeAmount snapshot, in lamports.
     it.each([
         { balance: '0', max: '0' },
@@ -35,7 +35,7 @@ describe('getSolanaNativeDelegationProductAmountBounds', () => {
         { balance: `20000000${SOL}`, max: `10000000${SOL}` },
     ])('bounds a stake from a balance of $balance lamports', ({ balance, max }) => {
         expect(
-            getSolanaNativeDelegationProductAmountBounds({
+            getSolanaEverstakeNativeProductAmountBounds({
                 account: mockStakingAccount({ symbol: asNetworkSymbol('sol'), balance }),
                 position: null,
                 operation: 'stake',
@@ -46,7 +46,7 @@ describe('getSolanaNativeDelegationProductAmountBounds', () => {
 
     it('lets an unstake take anything from one lamport up to the staked balance', () => {
         expect(
-            getSolanaNativeDelegationProductAmountBounds({
+            getSolanaEverstakeNativeProductAmountBounds({
                 account,
                 position,
                 operation: 'unstake',
@@ -57,7 +57,7 @@ describe('getSolanaNativeDelegationProductAmountBounds', () => {
 
     it('withdraws exactly the withdrawable balance', () => {
         expect(
-            getSolanaNativeDelegationProductAmountBounds({
+            getSolanaEverstakeNativeProductAmountBounds({
                 account,
                 position,
                 operation: 'withdraw',
@@ -70,7 +70,7 @@ describe('getSolanaNativeDelegationProductAmountBounds', () => {
         'has no valid amount to %s without a position',
         operation => {
             expect(
-                getSolanaNativeDelegationProductAmountBounds({
+                getSolanaEverstakeNativeProductAmountBounds({
                     account,
                     position: null,
                     operation,
@@ -84,7 +84,7 @@ describe('getSolanaNativeDelegationProductAmountBounds', () => {
         'has no valid amount to %s while the position does not offer it',
         operation => {
             expect(
-                getSolanaNativeDelegationProductAmountBounds({
+                getSolanaEverstakeNativeProductAmountBounds({
                     account,
                     position: { ...position, operations: ['stake'] },
                     operation,
@@ -96,7 +96,7 @@ describe('getSolanaNativeDelegationProductAmountBounds', () => {
 
     it.each(['claim', 'vote', 'redelegate'] as const)('does not support %s', operation => {
         expect(() =>
-            getSolanaNativeDelegationProductAmountBounds({
+            getSolanaEverstakeNativeProductAmountBounds({
                 account,
                 position,
                 operation,

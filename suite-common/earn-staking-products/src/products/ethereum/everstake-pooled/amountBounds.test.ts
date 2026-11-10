@@ -5,7 +5,7 @@ import {
 } from '@suite-common/earn-staking-common';
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 
-import { getEverstakePooledProductAmountBounds } from './amountBounds';
+import { getEthereumEverstakePooledProductAmountBounds } from './amountBounds';
 
 const ETHER = '000000000000000000';
 
@@ -20,7 +20,7 @@ const position = mockStakingPosition({
     operations: ['stake', 'unstake', 'withdraw'],
 });
 
-describe('getEverstakePooledProductAmountBounds', () => {
+describe('getEthereumEverstakePooledProductAmountBounds', () => {
     // The seven balances and maximums of the P0.1 getMaxStakeAmount snapshot, in wei.
     it.each([
         { balance: '0', max: '0' },
@@ -32,7 +32,7 @@ describe('getEverstakePooledProductAmountBounds', () => {
         { balance: `20000000${ETHER}`, max: `1000000${ETHER}` },
     ])('bounds a stake from a balance of $balance wei', ({ balance, max }) => {
         expect(
-            getEverstakePooledProductAmountBounds({
+            getEthereumEverstakePooledProductAmountBounds({
                 account: mockStakingAccount({ balance }),
                 position: null,
                 operation: 'stake',
@@ -43,7 +43,7 @@ describe('getEverstakePooledProductAmountBounds', () => {
 
     it('has no valid stake amount when the balance leaves less than the minimum', () => {
         expect(
-            getEverstakePooledProductAmountBounds({
+            getEthereumEverstakePooledProductAmountBounds({
                 account: mockStakingAccount({ balance: '12000000000000000' }),
                 position: null,
                 operation: 'stake',
@@ -54,7 +54,7 @@ describe('getEverstakePooledProductAmountBounds', () => {
 
     it('lets an unstake take anything from one wei up to the staked balance', () => {
         expect(
-            getEverstakePooledProductAmountBounds({
+            getEthereumEverstakePooledProductAmountBounds({
                 account: mockStakingAccount(),
                 position,
                 operation: 'unstake',
@@ -65,7 +65,7 @@ describe('getEverstakePooledProductAmountBounds', () => {
 
     it('withdraws exactly the withdrawable balance', () => {
         expect(
-            getEverstakePooledProductAmountBounds({
+            getEthereumEverstakePooledProductAmountBounds({
                 account: mockStakingAccount(),
                 position,
                 operation: 'withdraw',
@@ -78,7 +78,7 @@ describe('getEverstakePooledProductAmountBounds', () => {
         const account = mockStakingAccount();
 
         expect(
-            getEverstakePooledProductAmountBounds({
+            getEthereumEverstakePooledProductAmountBounds({
                 account,
                 position: null,
                 operation: 'unstake',
@@ -86,7 +86,7 @@ describe('getEverstakePooledProductAmountBounds', () => {
             }),
         ).toEqual({ min: '1', max: '0' });
         expect(
-            getEverstakePooledProductAmountBounds({
+            getEthereumEverstakePooledProductAmountBounds({
                 account,
                 position: null,
                 operation: 'withdraw',
@@ -99,7 +99,7 @@ describe('getEverstakePooledProductAmountBounds', () => {
         'has no valid amount to %s while the position does not offer it',
         operation => {
             expect(
-                getEverstakePooledProductAmountBounds({
+                getEthereumEverstakePooledProductAmountBounds({
                     account: mockStakingAccount(),
                     position: { ...position, operations: ['stake'] },
                     operation,
@@ -111,7 +111,7 @@ describe('getEverstakePooledProductAmountBounds', () => {
 
     it.each(['claim', 'vote', 'redelegate'] as const)('does not support %s', operation => {
         expect(() =>
-            getEverstakePooledProductAmountBounds({
+            getEthereumEverstakePooledProductAmountBounds({
                 account: mockStakingAccount(),
                 position,
                 operation,

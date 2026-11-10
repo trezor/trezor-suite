@@ -19,12 +19,12 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
-import { createSolanaExternalDelegationProduct } from './external/product';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './native/messageSystemFeatures';
+import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './everstake-native/messageSystemFeatures';
 import {
-    type SolanaNativeDelegationProductDeps,
-    createSolanaNativeDelegationProduct,
-} from './native/product';
+    type SolanaEverstakeNativeProductDeps,
+    createSolanaEverstakeNativeProduct,
+} from './everstake-native/product';
+import { createSolanaExternalProduct } from './external/product';
 import { everstakeProvider } from '../../providers/everstake';
 
 // The oracle is the P0.1 characterization suites in wallet-core
@@ -40,19 +40,20 @@ type SolanaProducts = {
     external: StakingProductAdapter;
 };
 
-type CreateSolanaProductsDeps = SolanaNativeDelegationProductDeps;
+type CreateSolanaProductsDeps = SolanaEverstakeNativeProductDeps;
 
 const createProducts = (symbol: string): SolanaProducts => {
     const [everstake, external] = [
-        createSolanaNativeDelegationProduct({
+        createSolanaEverstakeNativeProduct({
             networkSymbol: asNetworkSymbol(symbol),
             provider: everstakeProvider,
-            messageSystemFeatures: symbol === 'sol' ? EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES : {},
+            messageSystemFeatures:
+                symbol === 'sol' ? SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES : {},
             ...createMockDeps<CreateSolanaProductsDeps>({
                 getStakingStats: () => Promise.resolve(stats),
             }),
         }),
-        createSolanaExternalDelegationProduct({
+        createSolanaExternalProduct({
             networkSymbol: asNetworkSymbol(symbol),
             managedProviders: [everstakeProvider],
         }),

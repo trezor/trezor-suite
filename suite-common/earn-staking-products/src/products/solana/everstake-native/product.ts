@@ -9,25 +9,25 @@ import type {
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
-import { type SolanaDelegationProductInfoDeps, fetchSolanaDelegationProductInfo } from '../info';
-import { getSolanaDelegationProductPosition } from '../position';
-import { getSolanaNativeDelegationProductAmountBounds } from './amountBounds';
-import { createSolanaNativeDelegationProductDescriptor } from './descriptor';
+import { type SolanaProductInfoDeps, fetchSolanaProductInfo } from '../info';
+import { getSolanaProductPosition } from '../position';
+import { getSolanaEverstakeNativeProductAmountBounds } from './amountBounds';
+import { createSolanaEverstakeNativeProductDescriptor } from './descriptor';
 
-export type SolanaNativeDelegationProductDeps = SolanaDelegationProductInfoDeps;
+export type SolanaEverstakeNativeProductDeps = SolanaProductInfoDeps;
 
-export type CreateSolanaNativeDelegationProductParams = SolanaNativeDelegationProductDeps & {
+export type CreateSolanaEverstakeNativeProductParams = SolanaEverstakeNativeProductDeps & {
     networkSymbol: NetworkSymbol;
     provider: StakingProvider;
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createSolanaNativeDelegationProduct = ({
+export const createSolanaEverstakeNativeProduct = ({
     networkSymbol,
     provider,
     messageSystemFeatures,
     ...deps
-}: CreateSolanaNativeDelegationProductParams): StakingProductAdapter => {
+}: CreateSolanaEverstakeNativeProductParams): StakingProductAdapter => {
     const voteAccounts =
         provider.status === 'active' ? (provider.identities[networkSymbol] ?? []) : [];
 
@@ -35,17 +35,17 @@ export const createSolanaNativeDelegationProduct = ({
         throw new Error(`${provider.id} has no ${networkSymbol} vote account`);
     }
 
-    const descriptor = createSolanaNativeDelegationProductDescriptor({
+    const descriptor = createSolanaEverstakeNativeProductDescriptor({
         networkSymbol,
         provider,
         messageSystemFeatures,
     });
 
     const fetchProductInfo = (params: FetchProductInfoParams) =>
-        fetchSolanaDelegationProductInfo(deps, params);
+        fetchSolanaProductInfo(deps, params);
 
     const getPosition = (params: GetPositionParams) =>
-        getSolanaDelegationProductPosition({
+        getSolanaProductPosition({
             ...params,
             descriptor,
             provider,
@@ -54,7 +54,7 @@ export const createSolanaNativeDelegationProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getSolanaNativeDelegationProductAmountBounds(params);
+        getSolanaEverstakeNativeProductAmountBounds(params);
 
     const operations = createUnimplementedStakingOperations();
 

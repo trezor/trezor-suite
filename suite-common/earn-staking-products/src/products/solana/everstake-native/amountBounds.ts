@@ -6,11 +6,11 @@ import {
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
+import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS } from './limits';
 import { getMaxStakeAmount } from '../../../utils/getMaxStakeAmount';
 import { NO_STAKING_AMOUNT_BOUNDS, SMALLEST_STAKING_AMOUNT } from '../../../utils/stakingAmounts';
 
-export const getSolanaNativeDelegationProductAmountBounds = ({
+export const getSolanaEverstakeNativeProductAmountBounds = ({
     account,
     position,
     operation,
@@ -18,8 +18,8 @@ export const getSolanaNativeDelegationProductAmountBounds = ({
     switch (operation) {
         case 'stake':
             return {
-                min: SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS.minStakeAmount,
-                max: getMaxStakeAmount(account.balance, SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS),
+                min: SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS.minStakeAmount,
+                max: getMaxStakeAmount(account.balance, SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS),
             };
         case 'unstake':
             return position?.operations.includes('unstake')

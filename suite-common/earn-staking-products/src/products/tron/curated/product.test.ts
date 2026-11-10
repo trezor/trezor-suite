@@ -16,7 +16,7 @@ import {
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 import { type TronCuratedProductDeps, createTronCuratedProduct } from './product';
 import { everstakeProvider } from '../../../providers/everstake';
 import { luganodesProvider } from '../../../providers/luganodes';
@@ -40,7 +40,7 @@ const createCuratedProduct = (deps = createDeps()) =>
     createTronCuratedProduct({
         networkSymbol: asNetworkSymbol('trx'),
         providers: [luganodesProvider, p2pProvider],
-        messageSystemFeatures: TRON_CURATED_MESSAGE_SYSTEM_FEATURES,
+        messageSystemFeatures: TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES,
         ...deps,
     });
 

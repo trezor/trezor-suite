@@ -1,31 +1,31 @@
 export { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
 export {
-    createCardanoExternalDelegationProduct,
-    type CreateCardanoExternalDelegationProductParams,
+    createCardanoEverstakeNativeProduct,
+    type CardanoEverstakeNativeProductDeps,
+    type CreateCardanoEverstakeNativeProductParams,
+} from './products/cardano/everstake-native/product';
+export {
+    createCardanoExternalProduct,
+    type CreateCardanoExternalProductParams,
 } from './products/cardano/external/product';
 export {
-    createCardanoNativeDelegationProduct,
-    type CardanoNativeDelegationProductDeps,
-    type CreateCardanoNativeDelegationProductParams,
-} from './products/cardano/native/product';
+    createCardanoFivebinariesRetiredProduct,
+    type CreateCardanoFivebinariesRetiredProductParams,
+} from './products/cardano/fivebinaries-retired/product';
 export {
-    createCardanoRetiredDelegationProduct,
-    type CreateCardanoRetiredDelegationProductParams,
-} from './products/cardano/retired/product';
-export {
-    createEverstakePooledProduct,
-    type CreateEverstakePooledProductParams,
-    type EverstakePooledProductDeps,
+    createEthereumEverstakePooledProduct,
+    type CreateEthereumEverstakePooledProductParams,
+    type EthereumEverstakePooledProductDeps,
 } from './products/ethereum/everstake-pooled/product';
 export {
-    createSolanaExternalDelegationProduct,
-    type CreateSolanaExternalDelegationProductParams,
-} from './products/solana/external/product';
+    createSolanaEverstakeNativeProduct,
+    type CreateSolanaEverstakeNativeProductParams,
+    type SolanaEverstakeNativeProductDeps,
+} from './products/solana/everstake-native/product';
 export {
-    createSolanaNativeDelegationProduct,
-    type CreateSolanaNativeDelegationProductParams,
-    type SolanaNativeDelegationProductDeps,
-} from './products/solana/native/product';
+    createSolanaExternalProduct,
+    type CreateSolanaExternalProductParams,
+} from './products/solana/external/product';
 export {
     createTronCuratedProduct,
     type CreateTronCuratedProductParams,

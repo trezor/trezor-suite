@@ -16,8 +16,8 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import {
-    type SolanaNativeDelegationProductDeps,
-    createSolanaNativeDelegationProduct,
+    type SolanaEverstakeNativeProductDeps,
+    createSolanaEverstakeNativeProduct,
 } from './product';
 import { everstakeProvider } from '../../../providers/everstake';
 import { externalProvider } from '../../../providers/external';
@@ -26,19 +26,19 @@ import { luganodesProvider } from '../../../providers/luganodes';
 const stats: EthOrSolStats = { symbol: 'sol', apy: 6.24 };
 
 const createDeps = () =>
-    createMockDeps<SolanaNativeDelegationProductDeps>({
+    createMockDeps<SolanaEverstakeNativeProductDeps>({
         getStakingStats: () => Promise.resolve(stats),
     });
 
 const createEverstakeProduct = (symbol = 'sol', deps = createDeps()) =>
-    createSolanaNativeDelegationProduct({
+    createSolanaEverstakeNativeProduct({
         networkSymbol: asNetworkSymbol(symbol),
         provider: everstakeProvider,
         messageSystemFeatures: {},
         ...deps,
     });
 
-describe('createSolanaNativeDelegationProduct', () => {
+describe('createSolanaEverstakeNativeProduct', () => {
     it.each(['sol', 'dsol'])('builds the Everstake product for %s', symbol => {
         expect(createEverstakeProduct(symbol).descriptor.id).toBe(
             `${symbol}:${symbol}:everstake:native`,
@@ -50,7 +50,7 @@ describe('createSolanaNativeDelegationProduct', () => {
         { name: 'a provider that is not active', provider: externalProvider },
     ])('refuses $name', ({ provider }) => {
         expect(() =>
-            createSolanaNativeDelegationProduct({
+            createSolanaEverstakeNativeProduct({
                 networkSymbol: asNetworkSymbol('sol'),
                 provider,
                 messageSystemFeatures: {},

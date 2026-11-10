@@ -10,29 +10,29 @@ import {
 import { mockCardanoStakingAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createCardanoRetiredDelegationProduct } from './product';
 import { everstakeProvider } from '../../../providers/everstake';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
-import { CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO } from '../info';
-import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../info';
+import { CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { createCardanoFivebinariesRetiredProduct } from './product';
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('ada') });
 
 const createFiveBinariesProduct = () =>
-    createCardanoRetiredDelegationProduct({
+    createCardanoFivebinariesRetiredProduct({
         networkSymbol: asNetworkSymbol('ada'),
         provider: fivebinariesProvider,
-        messageSystemFeatures: CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
+        messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
     });
 
-describe('createCardanoRetiredDelegationProduct', () => {
+describe('createCardanoFivebinariesRetiredProduct', () => {
     it('builds the FiveBinaries product', () => {
         expect(createFiveBinariesProduct().descriptor.id).toBe('ada:ada:fivebinaries:native');
     });
 
     it('refuses a provider that is not retired', () => {
         expect(() =>
-            createCardanoRetiredDelegationProduct({
+            createCardanoFivebinariesRetiredProduct({
                 networkSymbol: asNetworkSymbol('ada'),
                 provider: everstakeProvider,
                 messageSystemFeatures: {},
@@ -42,7 +42,7 @@ describe('createCardanoRetiredDelegationProduct', () => {
 
     it('answers its product info without a request', async () => {
         await expect(createFiveBinariesProduct().fetchProductInfo({})).resolves.toBe(
-            CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO,
+            CARDANO_UNMANAGED_PRODUCT_INFO,
         );
     });
 

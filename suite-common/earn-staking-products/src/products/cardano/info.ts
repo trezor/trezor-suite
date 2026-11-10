@@ -11,7 +11,7 @@ import {
 
 import { CARDANO_EPOCH_DAYS } from './constants';
 
-export const CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO = stakingProductInfoSchema.parse({
+export const CARDANO_UNMANAGED_PRODUCT_INFO = stakingProductInfoSchema.parse({
     rate: null,
     entryPeriodDays: null,
     exitPeriodDays: CARDANO_EPOCH_DAYS,
@@ -19,18 +19,18 @@ export const CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO = stakingProductInfoSchem
     targets: [],
 });
 
-export type CardanoDelegationProductInfoDeps = {
+export type CardanoProductInfoDeps = {
     getCardanoPools: typeof getCardanoPools;
 };
 
-export type FetchCardanoDelegationProductInfoParams = FetchProductInfoParams & {
+export type FetchCardanoProductInfoParams = FetchProductInfoParams & {
     provider: StakingProvider;
     poolIds: readonly string[];
 };
 
-export const fetchCardanoDelegationProductInfo = async (
-    deps: CardanoDelegationProductInfoDeps,
-    { abortSignal, provider, poolIds }: FetchCardanoDelegationProductInfoParams,
+export const fetchCardanoProductInfo = async (
+    deps: CardanoProductInfoDeps,
+    { abortSignal, provider, poolIds }: FetchCardanoProductInfoParams,
 ): Promise<StakingProductInfo> => {
     // The endpoint returns ten pools by default, most saturated first, which would cut off the
     // least saturated pool Suite promotes.

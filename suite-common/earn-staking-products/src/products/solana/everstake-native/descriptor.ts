@@ -6,19 +6,19 @@ import {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
+import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS } from './limits';
 
-export type CreateSolanaNativeDelegationProductDescriptorParams = {
+export type CreateSolanaEverstakeNativeProductDescriptorParams = {
     networkSymbol: NetworkSymbol;
     provider: StakingProvider;
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createSolanaNativeDelegationProductDescriptor = ({
+export const createSolanaEverstakeNativeProductDescriptor = ({
     networkSymbol,
     provider,
     messageSystemFeatures,
-}: CreateSolanaNativeDelegationProductDescriptorParams): StakingProductDescriptor => {
+}: CreateSolanaEverstakeNativeProductDescriptorParams): StakingProductDescriptor => {
     const product = {
         networkSymbol,
         asset: { kind: 'native' },
@@ -32,7 +32,7 @@ export const createSolanaNativeDelegationProductDescriptor = ({
         operations: ['stake', 'unstake', 'withdraw'],
         exclusivity: 'none',
         rateKind: 'apy',
-        limits: SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS,
+        limits: SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS,
         options: [],
         consentKey: `staking:${provider.id}`,
         platforms: {

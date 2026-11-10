@@ -8,24 +8,24 @@ import {
     findEverstakePoolByAccount,
     getEverstakePendingTransactions,
     getEverstakePoolBalances,
-    getEverstakePositionOperations,
-    getEverstakePositionStatus,
-    getEverstakePositionTargets,
-    getEverstakePositionUnlocks,
+    getPositionOperations,
+    getPositionStatus,
+    getPositionTargets,
+    getPositionUnlocks,
     isStakingOperationPending,
 } from './utils';
 
-export type GetEverstakePooledPositionParams = GetPositionParams & {
+export type GetEthereumEverstakePooledPositionParams = GetPositionParams & {
     productId: StakingProductId;
     poolAddress: string;
 };
 
-export const getEverstakePooledProductPosition = ({
+export const getEthereumEverstakePooledProductPosition = ({
     productId,
     poolAddress,
     account,
     transactions,
-}: GetEverstakePooledPositionParams): StakingPosition | null => {
+}: GetEthereumEverstakePooledPositionParams): StakingPosition | null => {
     const pool = findEverstakePoolByAccount(account);
     const pendingTransactions = getEverstakePendingTransactions(transactions);
 
@@ -36,11 +36,11 @@ export const getEverstakePooledProductPosition = ({
     }
 
     const balances = getEverstakePoolBalances({ pool });
-    const status = getEverstakePositionStatus({ balances, isStakePending });
+    const status = getPositionStatus({ balances, isStakePending });
 
-    const operations = getEverstakePositionOperations({ balances, pendingTransactions });
-    const unlocks = getEverstakePositionUnlocks({ balances });
-    const targets = getEverstakePositionTargets({ pool, poolAddress, balances });
+    const operations = getPositionOperations({ balances, pendingTransactions });
+    const unlocks = getPositionUnlocks({ balances });
+    const targets = getPositionTargets({ pool, poolAddress, balances });
 
     return {
         productId,

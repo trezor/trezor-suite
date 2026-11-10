@@ -9,9 +9,9 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import {
-    CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO,
-    type CardanoDelegationProductInfoDeps,
-    fetchCardanoDelegationProductInfo,
+    CARDANO_UNMANAGED_PRODUCT_INFO,
+    type CardanoProductInfoDeps,
+    fetchCardanoProductInfo,
 } from './info';
 import { everstakeProvider } from '../../providers/everstake';
 
@@ -25,18 +25,18 @@ const adaPools: AdaPools = {
 };
 
 const createDeps = (pools: AdaPools = adaPools) =>
-    createMockDeps<CardanoDelegationProductInfoDeps>({
+    createMockDeps<CardanoProductInfoDeps>({
         getCardanoPools: () => Promise.resolve(pools),
     });
 
-const fetchEverstakeInfo = (deps: CardanoDelegationProductInfoDeps, abortSignal?: AbortSignal) =>
-    fetchCardanoDelegationProductInfo(deps, {
+const fetchEverstakeInfo = (deps: CardanoProductInfoDeps, abortSignal?: AbortSignal) =>
+    fetchCardanoProductInfo(deps, {
         abortSignal,
         provider: everstakeProvider,
         poolIds: everstakePools,
     });
 
-describe('fetchCardanoDelegationProductInfo', () => {
+describe('fetchCardanoProductInfo', () => {
     it('lists the provider pools and promotes the least saturated one', async () => {
         await expect(fetchEverstakeInfo(createDeps())).resolves.toEqual({
             rate: 2.06,
@@ -142,7 +142,7 @@ describe('fetchCardanoDelegationProductInfo', () => {
     });
 
     it('rejects when the pools request fails', async () => {
-        const deps = createMockDeps<CardanoDelegationProductInfoDeps>({
+        const deps = createMockDeps<CardanoProductInfoDeps>({
             getCardanoPools: () => Promise.reject(new Error('Request failed')),
         });
 
@@ -150,9 +150,9 @@ describe('fetchCardanoDelegationProductInfo', () => {
     });
 });
 
-describe('CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO', () => {
+describe('CARDANO_UNMANAGED_PRODUCT_INFO', () => {
     it('knows only the exit period', () => {
-        expect(stakingProductInfoSchema.parse(CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO)).toEqual({
+        expect(stakingProductInfoSchema.parse(CARDANO_UNMANAGED_PRODUCT_INFO)).toEqual({
             rate: null,
             entryPeriodDays: null,
             exitPeriodDays: 5,

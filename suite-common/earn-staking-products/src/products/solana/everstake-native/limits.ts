@@ -3,7 +3,7 @@
 import { stakingProductLimitsSchema } from '@suite-common/earn-staking-common';
 
 // packages own every staking value; the originals stay until the legacy cleanup.
-export const SOLANA_NATIVE_DELEGATION_PRODUCT_LIMITS = stakingProductLimitsSchema.parse({
+export const SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS = stakingProductLimitsSchema.parse({
     minStakeAmount: '1000000000',
     maxStakeAmount: '10000000000000000',
     minWithdrawalAmount: '20000000',

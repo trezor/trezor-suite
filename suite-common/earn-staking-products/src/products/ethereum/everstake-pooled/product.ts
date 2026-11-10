@@ -6,39 +6,46 @@ import type {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { getEverstakePooledProductAmountBounds } from './amountBounds';
-import { EVERSTAKE_POOLED_PRODUCT_POOL_ADDRESSES } from './constants';
-import { createEverstakePooledProductDescriptor } from './descriptor';
-import { type EverstakePooledProductInfoDeps, fetchEverstakePooledProductInfo } from './info';
-import { getEverstakePooledProductPosition } from './position';
+import { getEthereumEverstakePooledProductAmountBounds } from './amountBounds';
+import { ETHEREUM_EVERSTAKE_POOLED_PRODUCT_POOL_ADDRESSES } from './constants';
+import { createEthereumEverstakePooledProductDescriptor } from './descriptor';
+import {
+    type EthereumEverstakePooledProductInfoDeps,
+    fetchEthereumEverstakePooledProductInfo,
+} from './info';
+import { getEthereumEverstakePooledProductPosition } from './position';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 
-export type EverstakePooledProductDeps = EverstakePooledProductInfoDeps;
+export type EthereumEverstakePooledProductDeps = EthereumEverstakePooledProductInfoDeps;
 
-export type CreateEverstakePooledProductParams = EverstakePooledProductDeps & {
+export type CreateEthereumEverstakePooledProductParams = EthereumEverstakePooledProductDeps & {
     networkSymbol: NetworkSymbol;
 };
 
-export const createEverstakePooledProduct = ({
+export const createEthereumEverstakePooledProduct = ({
     networkSymbol,
     ...deps
-}: CreateEverstakePooledProductParams): StakingProductAdapter => {
-    const descriptor = createEverstakePooledProductDescriptor(networkSymbol);
+}: CreateEthereumEverstakePooledProductParams): StakingProductAdapter => {
+    const descriptor = createEthereumEverstakePooledProductDescriptor(networkSymbol);
 
-    const poolAddress = EVERSTAKE_POOLED_PRODUCT_POOL_ADDRESSES[networkSymbol];
+    const poolAddress = ETHEREUM_EVERSTAKE_POOLED_PRODUCT_POOL_ADDRESSES[networkSymbol];
 
     if (poolAddress === undefined) {
         throw new Error(`Everstake has no pool contract on ${networkSymbol}`);
     }
 
     const fetchProductInfo = (params: FetchProductInfoParams) =>
-        fetchEverstakePooledProductInfo(deps, params);
+        fetchEthereumEverstakePooledProductInfo(deps, params);
 
     const getPosition = (params: GetPositionParams) =>
-        getEverstakePooledProductPosition({ productId: descriptor.id, poolAddress, ...params });
+        getEthereumEverstakePooledProductPosition({
+            productId: descriptor.id,
+            poolAddress,
+            ...params,
+        });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getEverstakePooledProductAmountBounds(params);
+        getEthereumEverstakePooledProductAmountBounds(params);
 
     const operations = createUnimplementedStakingOperations();
 
