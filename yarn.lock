@@ -11202,6 +11202,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@suite-app/app-modal@workspace:*, @suite-app/app-modal@workspace:suite-app/app-modal":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/app-modal@workspace:suite-app/app-modal"
+  dependencies:
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/metadata": "workspace:*"
+    "@suite/modal": "workspace:*"
+    "@suite/tor": "workspace:*"
+    "@suite/tor-desktop": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-app/app@workspace:*, @suite-app/app@workspace:suite-app/app":
   version: 0.0.0-use.local
   resolution: "@suite-app/app@workspace:suite-app/app"
@@ -11210,6 +11229,8 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.3"
     "@reduxjs/toolkit": "npm:2.13.0"
     "@sentry/webpack-plugin": "npm:^5.4.1"
+    "@suite-app/app-modal": "workspace:*"
+    "@suite-app/module-onboarding": "workspace:*"
     "@suite-app/suite-sync": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/bip329": "workspace:*"
@@ -11578,6 +11599,35 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-onboarding@workspace:*, @suite-app/module-onboarding@workspace:suite-app/module-onboarding":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-onboarding@workspace:suite-app/module-onboarding"
+  dependencies:
+    "@suite-app/app-modal": "workspace:*"
+    "@suite-common/analytics": "workspace:*"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/thp": "workspace:*"
+    "@suite/analytics": "workspace:*"
+    "@suite/debug": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/macos": "workspace:*"
+    "@suite/modal": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    react: "npm:19.3.0"
+    react-redux: "npm:9.3.0"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 

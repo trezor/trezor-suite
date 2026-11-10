@@ -11,59 +11,57 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { UI_EVENTS } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { exhaustive } from '@trezor/type-utils';
-
 import {
+    ActivateAssetsModal,
+    AddAccountModal,
+    AddTokenModal,
+    AdvancedCoinSettingsModal,
+    ApplicationLogModal,
+    AutoStartBeforeQuitModal,
+    BackgroundGalleryModal,
+    CancelCoinjoinModal,
+    CoinjoinSuccessModal,
+    ConfirmUnverifiedProceedModal,
+    ConfirmUnverifiedXpubModal,
+    ConfirmXpubModal,
+    ConnectAddressConfirmation,
+    ConnectErrorModal,
+    ConnectLoadingModal,
+    ConnectPermissionsModal,
+    ConnectPopupTxSimulationModal,
+    ConnectSelectAccount,
+    CopyAddressModal,
+    CriticalCoinjoinPhaseModal,
+    DeviceAuthenticityOptOutModal,
     EarnClaimModal,
     EarnInANutshellModal,
     EarnProviderConsentModal,
+    EarnYieldTxSimulationModal,
+    FirmwareRevisionOptOutModal,
+    ImportTransactionModal,
+    MoreRoundsNeededModal,
+    PinInvalidModal,
+    PinMismatchModal,
+    QrScannerModal,
+    type ReduxModalProps,
+    SafetyChecksModal,
+    StakeChangeDelegateModal,
     StakeModal,
+    TorLoadingModal,
+    TransactionReviewModal,
+    TronStakeConsentModal,
     TronStakeInANutshellModal,
     TronVoteConsentModal,
+    TxDetailModal,
+    UnecoCoinjoinModal,
+    UnhideTokenModal,
     UnstakeModal,
-} from '#src/components/earn';
-import { TronStakeConsentModal } from '#src/components/earn/staking/tron/TronStakeConsentModal';
-import { ConnectPopupTxSimulationModal } from '#src/components/tx-simulation/connect-popup';
-import { EarnYieldTxSimulationModal } from '#src/components/tx-simulation/earn-stablecoin';
-import { useSelector } from '#src/hooks/suite';
-
-import { ConfirmXpubModal } from '../ConfirmXpubModal';
-import { CopyAddressModal } from '../CopyAddressModal';
-import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
-import type { ReduxModalProps } from '../ReduxModalProps';
-import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
-import { UnhideTokenModal } from '../UnhideTokenModal';
-import { ActivateAssetsModal } from './ActivateAssetsModal';
-import { AddAccountModal } from './AddAccountModal/AddAccountModal';
-import { AddTokenModal } from './AddTokenModal';
-import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
-import { ApplicationLogModal } from './ApplicationLogModal';
-import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
-import { BackgroundGalleryModal } from './BackgroundGalleryModal';
-import { CancelCoinjoinModal } from './CancelCoinjoinModal';
-import { CoinjoinSuccessModal } from './CoinjoinSuccessModal';
-import { ConfirmUnverifiedProceedModal } from './ConfirmUnverifiedProceedModal';
-import { ConfirmUnverifiedXpubModal } from './ConfirmUnverifiedXpubModal';
-import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
-import { ConnectErrorModal } from './ConnectErrorModal';
-import { ConnectLoadingModal } from './ConnectLoadingModal';
-import { ConnectPermissionsModal } from './ConnectPermissionsModal';
-import { ConnectSelectAccount } from './ConnectSelectAccount/ConnectSelectAccount';
-import { CriticalCoinjoinPhaseModal } from './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal';
-import { DeviceAuthenticityOptOutModal } from './DeviceAuthenticityOptOutModal';
-import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
-import { ImportTransactionModal } from './ImportTransactionModal/ImportTransactionModal';
-import { MoreRoundsNeededModal } from './MoreRoundsNeededModal';
-import { PinMismatchModal } from './PinMismatchModal';
-import { QrScannerModal } from './QrScannerModal/QrScannerModal';
-import { SafetyChecksModal } from './SafetyChecksModal';
-import { StakeChangeDelegateModal } from './StakeChangeDelegateModal/StakeChangeDelegateModal';
-import { TorLoadingModal } from './TorLoadingModal';
-import { TxDetailModal } from './TxDetailModal/TxDetailModal';
-import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
-import { WalletConnectProposalModal } from './WalletConnectProposalModal';
-import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
-import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
+    WalletConnectProposalModal,
+    WalletConnectSwitchAccountModal,
+    WipeDeviceSuccessModal,
+    useSelector,
+} from '@trezor/suite';
+import { exhaustive } from '@trezor/type-utils';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {

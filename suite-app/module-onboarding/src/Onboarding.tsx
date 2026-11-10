@@ -7,22 +7,25 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
+import {
+    BackupTypeStep,
+    CreateOrRecoverStep,
+    DeviceAuthenticityStep,
+    DeviceTutorialStep,
+    FinalStep,
+    FirmwareStep,
+    PinStep,
+    RecoveryStep,
+    SecurityStep,
+    UnexpectedState,
+    getOnboardingStepIndex,
+    onboardingSteps,
+    useOnboarding,
+    useSelector,
+} from '@trezor/suite';
 import { exhaustive } from '@trezor/type-utils';
 
-import { OnboardingLayout } from '#src/components/onboarding/OnboardingLayout';
-import { getOnboardingStepIndex } from '#src/config/onboarding/steps';
-import * as STEP from '#src/constants/onboarding/steps';
-import { useOnboarding, useSelector } from '#src/hooks/suite';
-import { UnexpectedState } from '#src/views/onboarding/UnexpectedState';
-import { BackupTypeStep } from '#src/views/onboarding/steps/BackupTypeStep';
-import { CreateOrRecoverStep } from '#src/views/onboarding/steps/CreateOrRecoverStep';
-import { DeviceAuthenticityStep } from '#src/views/onboarding/steps/DeviceAuthenticityStep';
-import { DeviceTutorialStep } from '#src/views/onboarding/steps/DeviceTutorialStep';
-import { FinalStep } from '#src/views/onboarding/steps/FinalStep';
-import { FirmwareStep } from '#src/views/onboarding/steps/FirmwareStep';
-import { PinStep } from '#src/views/onboarding/steps/PinStep';
-import { RecoveryStep } from '#src/views/onboarding/steps/RecoveryStep';
-import { SecurityStep } from '#src/views/onboarding/steps/SecurityStep';
+import { OnboardingLayout } from './OnboardingLayout';
 
 export const Onboarding = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -35,7 +38,10 @@ export const Onboarding = () => {
     // We cant include THP modals in the onboarding flow, so in this specific edge
     // we redirect user to the dashboard where onboarding starts over and picks up where it ended.
     useEffect(() => {
-        if (activeStepId !== STEP.ID_FIRMWARE_STEP && thpStep === 'ConfirmOnlyConnection') {
+        if (
+            activeStepId !== onboardingSteps.ID_FIRMWARE_STEP &&
+            thpStep === 'ConfirmOnlyConnection'
+        ) {
             dispatch(gotoThunk({ routeName: 'suite-index' }));
         }
     }, [device, thpStep, activeStepId, dispatch]);
@@ -55,31 +61,31 @@ export const Onboarding = () => {
 
     const StepComponent = useMemo(() => {
         switch (activeStepId) {
-            case STEP.ID_FIRMWARE_STEP:
+            case onboardingSteps.ID_FIRMWARE_STEP:
                 // Firmware installation
                 return FirmwareStep;
-            case STEP.ID_AUTHENTICATE_DEVICE_STEP:
+            case onboardingSteps.ID_AUTHENTICATE_DEVICE_STEP:
                 // Device authenticity check
                 return DeviceAuthenticityStep;
-            case STEP.ID_TUTORIAL_STEP:
+            case onboardingSteps.ID_TUTORIAL_STEP:
                 // Device tutorial
                 return DeviceTutorialStep;
-            case STEP.ID_CREATE_OR_RECOVER:
+            case onboardingSteps.ID_CREATE_OR_RECOVER:
                 // Selection between a new seed or seed recovery
                 return CreateOrRecoverStep;
-            case STEP.ID_BACKUP_TYPE_STEP:
+            case onboardingSteps.ID_BACKUP_TYPE_STEP:
                 // Selecting a backup type
                 return BackupTypeStep;
-            case STEP.ID_RECOVERY_STEP:
+            case onboardingSteps.ID_RECOVERY_STEP:
                 // b) Seed recovery
                 return RecoveryStep;
-            case STEP.ID_SECURITY_STEP:
+            case onboardingSteps.ID_SECURITY_STEP:
                 // Wallet creation + backup (resetDevice with skip_backup: false)
                 return SecurityStep;
-            case STEP.ID_SET_PIN_STEP:
+            case onboardingSteps.ID_SET_PIN_STEP:
                 // Pin setup
                 return PinStep;
-            case STEP.ID_FINAL_STEP:
+            case onboardingSteps.ID_FINAL_STEP:
                 // Onboarding success
                 return FinalStep;
             default:
