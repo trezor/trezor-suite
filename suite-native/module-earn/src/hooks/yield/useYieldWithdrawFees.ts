@@ -92,6 +92,8 @@ export const useYieldWithdrawFees = ({
         formDraftKey,
         hasFeeEstimationError: fees.hasFeeEstimationError,
         isComposingWithdrawFee: fees.isFeePreparing,
+        isCustomFeeReplaced: fees.isCustomFeeReplaced,
+        onFeeConfirmed: fees.onFeeConfirmed,
         isFeeUnavailable: fees.isFeeUnavailable,
         isWithdrawFeeReady: fees.isFeeReady,
         preparedAction: fees.preparedTx

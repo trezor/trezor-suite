@@ -314,6 +314,7 @@ describe('buildPreparedTxFeeDraftState', () => {
         });
 
         expect(result?.formDraft.selectedFee).toBe('custom');
+        expect(result?.isCustomFeeReplaced).toBe(false);
         expect(result?.feeLevels.custom).toMatchObject({
             type: 'final',
             fee: '240000000000000',
@@ -322,5 +323,36 @@ describe('buildPreparedTxFeeDraftState', () => {
             maxFeePerGas: '8',
             maxPriorityFeePerGas: '2',
         });
+    });
+
+    it('replaces a custom fee whose gas limit is below the new estimate and says so', () => {
+        const result = buildPreparedTxFeeDraftState({
+            amount: '1.25',
+            currentFormDraft: buildFormDraft({
+                selectedFee: 'custom',
+                feePerUnit: '7',
+                feeLimit: '30000',
+                maxFeePerGas: '8',
+                maxPriorityFeePerGas: '2',
+            }),
+            feeInfo: eip1559FeeInfo,
+            gasLimit: '45000',
+            symbol: 'eth' as NetworkSymbol,
+            token: {
+                contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                decimals: 6,
+                symbol: 'USDC',
+            },
+            unsignedTransaction: JSON.stringify({
+                ...baseUnsignedTransaction,
+                type: 2,
+                maxFeePerGas: '0x3b9aca00',
+                maxPriorityFeePerGas: '0x1dcd6500',
+            }),
+        });
+
+        expect(result?.formDraft.selectedFee).toBe('normal');
+        expect(result?.isCustomFeeReplaced).toBe(true);
+        expect(result?.feeLevels.custom).toBeUndefined();
     });
 });

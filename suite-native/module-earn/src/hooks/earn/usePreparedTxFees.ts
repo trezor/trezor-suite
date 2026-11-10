@@ -124,6 +124,7 @@ export const usePreparedTxFees = <
         null,
     );
     const [isPreparingFee, setIsPreparingFee] = useState(false);
+    const [isCustomFeeReplaced, setIsCustomFeeReplaced] = useState(false);
     const {
         feeEstimationRetryKey,
         hasFeeEstimationError,
@@ -289,6 +290,12 @@ export const usePreparedTxFees = <
             return;
         }
 
+        if (feeDraftState.isCustomFeeReplaced) {
+            setIsCustomFeeReplaced(true);
+        } else if (feeDraftState.formDraft.selectedFee !== 'normal') {
+            setIsCustomFeeReplaced(false);
+        }
+
         if (
             feeLevelsRef.current !== storedFeeLevelsRef.current ||
             !deepEqual(storedFeeLevelsRef.current, feeDraftState.feeLevels)
@@ -372,6 +379,7 @@ export const usePreparedTxFees = <
     useEffect(
         () => () => {
             requestIdRef.current += 1;
+            setIsCustomFeeReplaced(false);
             clearFeeLevels();
 
             if (formDraftKey) {
@@ -404,6 +412,8 @@ export const usePreparedTxFees = <
         },
         [availableBalance, canCompose, currentBaseActionContext, feeInfo, isCurrentFeePreparing],
     );
+
+    const onFeeConfirmed = useCallback(() => setIsCustomFeeReplaced(false), []);
 
     const hasFeeDraftEstimationError = canCompose && !!feeInfo && hasMissingFeeDraft;
 
@@ -439,6 +449,8 @@ export const usePreparedTxFees = <
         formDraft: hasInvalidContext ? undefined : formDraft,
         formDraftKey,
         hasFeeEstimationError: hasFeeError,
+        isCustomFeeReplaced,
+        onFeeConfirmed,
         isFeePreparing: isCurrentFeePreparing,
         isFeeReady,
         isFeeUnavailable,
