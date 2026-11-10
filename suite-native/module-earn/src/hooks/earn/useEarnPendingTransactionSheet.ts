@@ -15,14 +15,21 @@ export const useEarnPendingTransactionSheet = ({
     isPending,
     pendingTxid,
 }: UseEarnPendingTransactionSheetParams) => {
-    const { bottomSheetRef: pendingBottomSheetRef, openModal: openPendingBottomSheet } =
-        useBottomSheetModal();
+    const {
+        bottomSheetRef: pendingBottomSheetRef,
+        openModal: openPendingBottomSheet,
+        closeModal: closePendingBottomSheet,
+    } = useBottomSheetModal();
 
     useEffect(() => {
-        if (isPending) {
-            openPendingBottomSheet();
+        if (!isPending) {
+            closePendingBottomSheet();
+
+            return;
         }
-    }, [isPending, openPendingBottomSheet]);
+
+        openPendingBottomSheet();
+    }, [closePendingBottomSheet, isPending, openPendingBottomSheet]);
 
     const { explorerUrl, openInBlockchain } = useTransactionDetails({
         accountKey,

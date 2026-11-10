@@ -2914,6 +2914,11 @@ export const messages = {
         max: 'Max',
         feeEstimationFailed:
             "The network fee couldn't be estimated, so the transaction can't be prepared. Try again later.",
+        transactionNotConfirmedAlert: {
+            title: "We can't find your transaction",
+            description:
+                'It may have been dropped or may still be pending. Check your recent transactions before you try again.',
+        },
         stakingOperatedByProviders: 'Staking is operated by independent providers',
         portfolioTracker: {
             alert: {
