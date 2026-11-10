@@ -12,6 +12,7 @@ import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
 import { AssetSettingsAction } from './AssetSettingsAction';
+import { AssetSettingsDivider } from './AssetSettingsDivider';
 
 type AssetSettingsExplorerActionProps = {
     networkSymbol: NetworkSymbol;
@@ -40,11 +41,14 @@ export const AssetSettingsExplorerAction = ({
     };
 
     return (
-        <AssetSettingsAction
-            iconName="arrowUpRight"
-            label={<Translation id="moduleAssets.assetDetailScreen.settings.viewInExplorer" />}
-            onPress={handleOpenExplorer}
-            testID="@asset-detail/settings/explorer-button"
-        />
+        <>
+            <AssetSettingsDivider />
+            <AssetSettingsAction
+                iconName="arrowUpRight"
+                label={<Translation id="moduleAssets.assetDetailScreen.settings.viewInExplorer" />}
+                onPress={handleOpenExplorer}
+                testID="@asset-detail/settings/explorer-button"
+            />
+        </>
     );
 };

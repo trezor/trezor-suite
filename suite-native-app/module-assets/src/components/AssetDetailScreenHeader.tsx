@@ -14,6 +14,7 @@ import {
 
 import { useOpenAssetDetailAccounts } from './AssetDetailAccountsBottomSheetProvider';
 import { AssetDetailScreenHeaderContent } from './AssetDetailScreenHeaderContent';
+import { AssetDetailSignAndVerifyBottomSheet } from './AssetDetailSignAndVerifyBottomSheet';
 import { AssetSettingsBottomSheet } from './AssetSettingsBottomSheet';
 
 export const AssetDetailScreenHeader = () => {
@@ -23,6 +24,11 @@ export const AssetDetailScreenHeader = () => {
         selectAssetTokenInfo(state, networkSymbol, tokenContract),
     );
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const {
+        bottomSheetRef: signAndVerifyBottomSheetRef,
+        openModal: openSignAndVerifyModal,
+        closeModal: closeSignAndVerifyModal,
+    } = useBottomSheetModal();
     const openAccountsModal = useOpenAssetDetailAccounts();
     const { translate } = useTranslate();
     const assetDisplaySymbol = getDisplaySymbol(
@@ -54,7 +60,12 @@ export const AssetDetailScreenHeader = () => {
             <AssetSettingsBottomSheet
                 ref={bottomSheetRef}
                 onOpenAccounts={openAccountsModal}
+                onOpenSignAndVerifyAccounts={openSignAndVerifyModal}
                 onClose={closeModal}
+            />
+            <AssetDetailSignAndVerifyBottomSheet
+                ref={signAndVerifyBottomSheetRef}
+                onClose={closeSignAndVerifyModal}
             />
         </>
     );
