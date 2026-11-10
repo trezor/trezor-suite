@@ -7,7 +7,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Banner, InfoItem, Text, Tooltip } from '@trezor/components';
 
-import { FormattedCryptoAmount } from '#src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSendFormContext } from '#src/hooks/wallet';
 
 export const CardanoMinAmountInfo = () => {

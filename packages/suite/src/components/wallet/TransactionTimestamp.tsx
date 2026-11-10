@@ -1,4 +1,4 @@
-import { FormattedDate } from '#src/components/suite';
+import { FormattedDate } from '#src/components/suite/FormattedDate';
 import { type WalletAccountTransaction } from '#src/types/wallet';
 
 type TransactionTimestampProps = {

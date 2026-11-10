@@ -1,9 +1,11 @@
 import { type ReactNode } from 'react';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Card, Column, H4, Row, Skeleton, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount, HiddenPlaceholder, Sign } from '#src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { Sign } from '#src/components/suite/Sign';
 import { type Account } from '#src/types/wallet';
 
 type InfoCardProps = {

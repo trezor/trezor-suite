@@ -7,7 +7,7 @@ import { ShuffleIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from '#src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { TransactionTimestamp } from '#src/components/wallet/TransactionTimestamp';
 import { type WalletAccountTransaction } from '#src/types/wallet/index';
 

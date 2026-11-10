@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
-import { RedactNumericalValue } from '@suite/discreet-mode';
+import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
@@ -46,7 +46,6 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { setTransactionHistoryPrefill } from '#src/actions/suite/suiteActions';
-import { HiddenPlaceholder } from '#src/components/suite';
 import { useSelector } from '#src/hooks/suite';
 import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 

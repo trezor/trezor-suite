@@ -1,6 +1,7 @@
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -12,7 +13,7 @@ import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
-import { GraphRangeSelector, HiddenPlaceholder } from '#src/components/suite';
+import { GraphRangeSelector } from '#src/components/suite/graph/GraphRangeSelector';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from '#src/hooks/suite';
 import { selectGraph, selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';

@@ -9,8 +9,9 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
-import { PriceTicker, TrendTicker } from '#src/components/suite';
 import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';
+import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
+import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { useLayoutSize, useSelector } from '#src/hooks/suite';
 import { type Account } from '#src/types/wallet';
 

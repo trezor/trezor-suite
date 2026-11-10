@@ -35,13 +35,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    AmountUnitSwitchWrapper,
-    BaseCurrencyValue,
-    CoinBalance,
-    PriceTicker,
-    TrendTicker,
-} from '#src/components/suite';
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
+import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
+import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { TokenIconSetWrapper } from '#src/components/wallet/TokenIconSetWrapper';
 
 import { AssetActionButton } from '../AssetActionButton';

@@ -31,7 +31,9 @@ import { TagFilledIcon } from '@trezor/icons';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { Sign } from '#src/components/suite/Sign';
 import { AccountLabelForOwnAddress } from '#src/components/suite/labeling/AccountLabelForOwnAddress';
 import { useSelector } from '#src/hooks/suite';
 import { type WalletAccountTransaction } from '#src/types/wallet';

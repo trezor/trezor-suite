@@ -2,13 +2,13 @@ import { memo } from 'react';
 
 import styled from 'styled-components';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useCurrencyAmountParts } from '@suite-common/formatters';
 import { Row, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from '#src/components/suite';
 import { useSelector } from '#src/hooks/suite';
 
 const TabularNumbers = styled.span`

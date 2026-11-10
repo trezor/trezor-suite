@@ -3,6 +3,7 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
@@ -15,7 +16,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
-import { HiddenPlaceholder } from '#src/components/suite';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from '#src/hooks/suite';
 import { selectGraph } from '#src/reducers/wallet/graphReducer';

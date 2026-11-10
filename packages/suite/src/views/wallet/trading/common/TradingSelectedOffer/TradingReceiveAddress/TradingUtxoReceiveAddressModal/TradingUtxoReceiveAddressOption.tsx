@@ -8,7 +8,7 @@ import { type Address as BlockchainLinkAddress } from '@trezor/blockchain-link-t
 import { Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { CoinBalance } from '#src/components/suite';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
 import { useSelector } from '#src/hooks/suite';
 import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 import { TradingReceiveOptionRow } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';

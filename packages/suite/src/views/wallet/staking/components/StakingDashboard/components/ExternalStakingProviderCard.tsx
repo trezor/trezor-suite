@@ -6,7 +6,7 @@ import { PuzzlePieceIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
-import { BaseCurrencyValue } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 
 type ExternalStakingProviderCardProps = {
     symbol: NetworkSymbol;

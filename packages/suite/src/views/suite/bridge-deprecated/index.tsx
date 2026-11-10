@@ -7,7 +7,7 @@ import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
-import { Metadata } from '#src/components/suite';
+import { Metadata } from '#src/components/suite/Metadata';
 import { useLayout } from '#src/hooks/suite';
 
 /**
