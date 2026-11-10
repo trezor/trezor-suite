@@ -22,7 +22,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { PageHeader } from '#src/components/suite/layouts/SuiteLayout';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
