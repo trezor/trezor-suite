@@ -90,6 +90,7 @@ export const useComposeEarnFees = ({
         draft: formDraft,
         formDraftKey,
         saveDraft,
+        removeDraft,
     } = useFormDraft<FormState>(formDraftPrefix, accountKey);
     const [isComposingFeeLevels, setIsComposingFeeLevels] = useState(true);
     const requestIdRef = useRef(0);
@@ -240,6 +241,10 @@ export const useComposeEarnFees = ({
             setHasFeeEstimationError,
         ],
     );
+
+    useEffect(() => {
+        removeDraft();
+    }, [removeDraft]);
 
     useEffect(() => {
         const requestId = requestIdRef.current + 1;
