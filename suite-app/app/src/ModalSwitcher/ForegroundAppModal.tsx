@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 
 import { closeModalAppThunk } from '@suite/router';
+import { ModalSkeleton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type ForegroundAppRoute, getForegroundApp } from '@trezor/suite';
@@ -24,7 +25,7 @@ export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps)
 
     return (
         ForegroundApp && (
-            <Suspense fallback={null}>
+            <Suspense fallback={<ModalSkeleton />}>
                 <ForegroundApp cancelable={cancelable} onCancel={onCancel} />
             </Suspense>
         )
