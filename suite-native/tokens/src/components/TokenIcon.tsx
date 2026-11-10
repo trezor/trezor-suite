@@ -18,7 +18,7 @@ export const TokenIcon = ({ networkSymbol, contractAddress, ...props }: TokenIco
             {...props}
             networkSymbol={networkSymbol}
             contractAddress={contractAddress}
-            tokenSymbol={token?.symbol ?? token?.name}
+            tokenSymbol={token?.symbol || token?.name}
         />
     );
 };
