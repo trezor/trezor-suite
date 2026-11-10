@@ -9,23 +9,12 @@ import { getAttemptArtifacts } from './detoxArtifacts';
 import type { Action } from './quarantine';
 import { getTitlePath, isQuarantined } from './quarantine';
 import type { TestAttempts } from './testAttempts';
-
-type JUnitProperty = { $: { name: string; value: string } };
-type JUnitProperties = { property?: JUnitProperty[] };
-
-type JUnitTestCase = {
-    $: { name: string };
-    failure?: string[];
-    error?: unknown[];
-    skipped?: unknown[];
-    properties?: JUnitProperties[];
-};
-
-type JUnitTestSuite = {
-    $?: { name?: string; failures?: string; errors?: string; skipped?: string };
-    testcase?: JUnitTestCase[];
-    properties?: JUnitProperties[];
-};
+import { normalizeJUnitSuiteErrors } from '../support/reporter/normalizeJUnitSuiteErrors';
+import type {
+    JUnitProperties,
+    JUnitProperty,
+    JUnitTestSuite,
+} from '../support/reporter/normalizeJUnitSuiteErrors';
 
 /** Remove skipped testcases from a suite that don't match the grep regex. */
 const filterSuiteByGrep = (suite: any, regex: RegExp): void => {
@@ -196,14 +185,19 @@ const recomputeAggregates = (testsuites: any): void => {
     if (!testsuites.$) return;
 
     const totals = testsuites.testsuite.reduce(
-        (acc: { failures: number; errors: number; skipped: number }, suite: any) => ({
+        (
+            acc: { tests: number; failures: number; errors: number; skipped: number },
+            suite: any,
+        ) => ({
+            tests: acc.tests + parseInt(suite.$?.tests ?? '0', 10),
             failures: acc.failures + parseInt(suite.$?.failures ?? '0', 10),
             errors: acc.errors + parseInt(suite.$?.errors ?? '0', 10),
             skipped: acc.skipped + parseInt(suite.$?.skipped ?? '0', 10),
         }),
-        { failures: 0, errors: 0, skipped: 0 },
+        { tests: 0, failures: 0, errors: 0, skipped: 0 },
     );
 
+    testsuites.$.tests = String(totals.tests);
     testsuites.$.failures = String(totals.failures);
     testsuites.$.errors = String(totals.errors);
     testsuites.$.skipped = String(totals.skipped);
@@ -230,6 +224,7 @@ type ProcessJUnitReportParams = {
 
 /**
  * Process the JUnit XML report for a project.
+ * - Converts suite errors to failures understood by Currents and removes their synthetic duplicates.
  * - Filters out skipped tests that don't match grep.
  * - Reshapes the failures into one <failure> per attempt so Currents shows each attempt separately.
  * - Attaches the Detox artifacts of every attempt as Currents artifact properties.
@@ -279,6 +274,8 @@ export const processJUnitReport = async ({
 
         result.testsuites.testsuite.forEach((suite: any) => {
             if (!suite.testcase) return;
+
+            normalizeJUnitSuiteErrors(suite);
 
             if (regex) {
                 filterSuiteByGrep(suite, regex);
