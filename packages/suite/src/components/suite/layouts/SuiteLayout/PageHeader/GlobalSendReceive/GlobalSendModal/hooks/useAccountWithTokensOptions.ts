@@ -24,7 +24,7 @@ import {
     createAccountOption,
     createHiddenTokensOption,
     createTokenOption,
-} from '#src/components/suite/asset-picker/utils';
+} from '#src/components/suite/asset-picker/utils/assetOptions';
 import {
     enhanceTokensWithRates,
     getTokens,

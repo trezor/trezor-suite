@@ -9,7 +9,7 @@ import {
     createAccountOption,
     createHiddenTokensOption,
     createTokenOption,
-} from '#src/components/suite/asset-picker/utils';
+} from '#src/components/suite/asset-picker/utils/assetOptions';
 import { useSelector } from '#src/hooks/suite';
 import { type Account } from '#src/types/wallet';
 import {
