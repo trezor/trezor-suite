@@ -21,7 +21,7 @@ import { useExpandableGroups } from '#src/components/suite/asset-picker/hooks/us
 import { useFilterAccountsWithTokens } from '#src/components/suite/asset-picker/hooks/useFilterAccountsWithTokens';
 import { useListScrollReset } from '#src/components/suite/asset-picker/hooks/useListScrollReset';
 import { type AssetPickerListItem } from '#src/components/suite/asset-picker/types';
-import { createTokenOption } from '#src/components/suite/asset-picker/utils';
+import { createTokenOption } from '#src/components/suite/asset-picker/utils/assetOptions';
 import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/utils/assetPickerItemHeights';
 import { useSendFormContext } from '#src/hooks/wallet';
 import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
