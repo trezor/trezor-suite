@@ -9,6 +9,7 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetExplorerUrl,
     selectWalletAssetHiddenReason,
+    selectWalletAssetSignVerifyAccounts,
     selectWalletAssetSymbol,
     selectWalletAssetTokenInfo,
 } from '@suite-common/assets';
@@ -51,7 +52,6 @@ import { AssetDetailSignVerifyModal } from 'src/views/home/AssetDetail/AssetDeta
 
 import { AssetDetailMenuAddressField } from './AssetDetailMenuAddressField';
 import { AssetDetailMenuNetworkRow } from './AssetDetailMenuNetworkRow';
-import { selectWalletAssetSignVerifyAccounts } from './assetDetailMenuSelectors';
 import { getAssetAddressFields } from './getAssetAddressFields';
 
 type AssetDetailMenuProps = {
