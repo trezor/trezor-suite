@@ -11394,6 +11394,7 @@ __metadata:
     "@sentry/electron": "npm:^7.20.1"
     "@suite-app/app": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
+    "@suite-app/module-home": "workspace:*"
     "@suite-app/module-settings": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
     "@suite-app/module-trading": "workspace:*"
@@ -11465,6 +11466,20 @@ __metadata:
     "@trezor/icons": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-home@workspace:*, @suite-app/module-home@workspace:suite-app/module-home":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-home@workspace:suite-app/module-home"
+  dependencies:
+    "@suite-common/message-system": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/message-system": "workspace:*"
+    "@trezor/components": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     react: "npm:19.3.0"
@@ -11620,6 +11635,7 @@ __metadata:
     "@sentry/browser": "npm:10.75.2"
     "@suite-app/app": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
+    "@suite-app/module-home": "workspace:*"
     "@suite-app/module-settings": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
     "@suite-app/module-trading": "workspace:*"

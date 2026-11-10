@@ -10,6 +10,7 @@
     "references": [
         { "path": "../app" },
         { "path": "../module-earn" },
+        { "path": "../module-home" },
         { "path": "../module-settings" },
         { "path": "../module-sign-verify" },
         { "path": "../module-trading" },

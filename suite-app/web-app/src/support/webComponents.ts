@@ -9,9 +9,9 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ).then(({ ReferAFriendPage }) => ({ default: ReferAFriendPage })),
     ),
     'suite-index': lazy(() =>
-        import(/* webpackChunkName: "dashboard" */ '@suite-app/app/pages/DashboardPage').then(
-            ({ DashboardPage }) => ({ default: DashboardPage }),
-        ),
+        import(
+            /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/DashboardPage'
+        ).then(({ DashboardPage }) => ({ default: DashboardPage })),
     ),
     /*
      Compatibility fallback after removing the `suite-start` as a fullscreen app.
@@ -20,14 +20,14 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     */
     // TODO add a redirect option to routeConfig instead of duplication.
     'suite-start': lazy(() =>
-        import(/* webpackChunkName: "dashboard" */ '@suite-app/app/pages/DashboardPage').then(
-            ({ DashboardPage }) => ({ default: DashboardPage }),
-        ),
+        import(
+            /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/DashboardPage'
+        ).then(({ DashboardPage }) => ({ default: DashboardPage })),
     ),
     'suite-hidden-tokens': lazy(() =>
-        import(/* webpackChunkName: "dashboard" */ '@suite-app/app/pages/HiddenTokensPage').then(
-            ({ HiddenTokensPage }) => ({ default: HiddenTokensPage }),
-        ),
+        import(
+            /* webpackChunkName: "dashboard" */ '@suite-app/module-home/pages/HiddenTokensPage'
+        ).then(({ HiddenTokensPage }) => ({ default: HiddenTokensPage })),
     ),
     'suite-asset': lazy(() =>
         import(/* webpackChunkName: "dashboard" */ '@suite-app/app/pages/AssetDetailPage').then(

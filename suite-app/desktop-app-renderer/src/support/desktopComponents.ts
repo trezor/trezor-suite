@@ -5,8 +5,6 @@ import {
     AppsEmbeddingPage,
     AssetDetailPage,
     ConnectPopupPage,
-    DashboardPage,
-    HiddenTokensPage,
     NftsPage,
     NotificationPage,
     PasswordManagerPage,
@@ -34,6 +32,7 @@ import {
     EarnWrapPage,
     WalletStakingPage,
 } from '@suite-app/module-earn';
+import { DashboardPage, HiddenTokensPage } from '@suite-app/module-home';
 import {
     DesktopSettingsGeneralPage,
     SettingsCoinsPage,
