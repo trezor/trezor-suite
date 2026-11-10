@@ -11,7 +11,7 @@ import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { PreBackupCheckboxes } from '#src/components/backup';
+import { PreBackupCheckboxes } from '#src/components/backup/PreBackupCheckboxes';
 import { useSelector } from '#src/hooks/suite';
 
 import { BackupStepDescription } from './BackupStepDescription';
