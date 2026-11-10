@@ -1,4 +1,4 @@
-import { StrKey, xdr } from '@stellar/stellar-sdk';
+import { StrKey, scValToNative, xdr } from '@stellar/stellar-sdk';
 
 import type { StellarTrustline } from '../../types/account';
 
@@ -96,6 +96,19 @@ export const decodeTrustlineEntry = (data: xdr.LedgerEntryData): StellarTrustlin
     }
 
     return undefined;
+};
+
+/**
+ * `scValToNative` for values read from the network, `undefined` when they cannot be converted.
+ * The SDK throws on a map whose keys collide once converted, such as `u32 1` and `symbol "1"`,
+ * and any contract can store or emit one.
+ */
+export const tryScValToNative = (value: xdr.ScVal): unknown => {
+    try {
+        return scValToNative(value);
+    } catch {
+        return undefined;
+    }
 };
 
 export const decodeLedgerHeader = (headerXdr: string): DecodedLedgerHeader => {
