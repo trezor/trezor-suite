@@ -73,7 +73,7 @@ describe('TradingTradeableAssetScreen', () => {
                 tradingType === 'buy' ? mockBuyFilteredData : mockExchangeFilteredData,
             );
 
-            const { getByLabelText, getByText } = await renderWithTradingProvider(
+            const { getByRole, getByText } = await renderWithTradingProvider(
                 <TradingTradeableAssetScreen
                     navigation={navigation}
                     route={createRoute(tradingType)}
@@ -86,7 +86,10 @@ describe('TradingTradeableAssetScreen', () => {
             );
 
             const assetElement =
-                tradingType === 'buy' ? getByText(assetSymbol) : getByLabelText(assetSymbol);
+                tradingType === 'buy'
+                    ? getByText(assetSymbol)
+                    : // The masked token symbol carries the same accessibility label as the row.
+                      getByRole('button', { name: assetSymbol });
             await fireEvent.press(assetElement);
 
             expect(mockUseTradingTradeableAssetsFilteredData).toHaveBeenCalledWith(

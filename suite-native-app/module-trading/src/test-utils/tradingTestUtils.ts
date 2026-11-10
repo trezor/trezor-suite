@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react';
+import { type ReactElement, createElement } from 'react';
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
@@ -69,6 +69,8 @@ import {
 } from '@suite-native/transaction-management';
 import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
+
+import { TradingMetadataProvider } from '../components/general/TradingMetadataProvider';
 
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
 
@@ -201,11 +203,19 @@ export const renderWithTradingProvider = <TServices extends object>(
         overrides,
         tradeType,
         services,
+        wrapper: Wrapper,
         ...options
     }: TradingProviderOptions & Omit<RenderOptionsExtended<TServices>, 'preloadedState'> = {},
 ) =>
     renderWithStoreProvider(element, {
         ...options,
+        // A wrapper keeps the provider in place when tests rerender the element.
+        wrapper: ({ children }) =>
+            createElement(
+                TradingMetadataProvider,
+                null,
+                Wrapper ? createElement(Wrapper, null, children) : children,
+            ),
         services: {
             ...services,
             store: services?.store ?? createTradingTestStore({ overrides, tradeType }),

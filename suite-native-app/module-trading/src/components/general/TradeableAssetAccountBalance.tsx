@@ -14,6 +14,8 @@ import { Translation } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
+import { TradeableAssetSymbol } from './TradeableAssetSymbol';
+
 export type TradeableAssetAccountBalanceProps = {
     account?: Account;
     asset?: TradeableAsset;
@@ -104,7 +106,12 @@ export const TradeableAssetAccountBalance = ({
                 <AssetBalance account={account} asset={asset} testID={balanceTestID} />
             ) : (
                 <Text variant="body-sm" color="contentSecondary" testID={noBalanceTestID}>
-                    - {asset.symbol}
+                    -{' '}
+                    <TradeableAssetSymbol
+                        asset={asset}
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
                 </Text>
             )}
         </HStack>

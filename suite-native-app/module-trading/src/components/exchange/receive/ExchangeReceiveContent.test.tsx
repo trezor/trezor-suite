@@ -18,6 +18,7 @@ import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
 } from '../../../test-utils/tradingTestUtils';
+import { TradingMetadataProvider } from '../../general/TradingMetadataProvider';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -61,7 +62,11 @@ describe('ExchangeReceiveContent', () => {
                 ...services,
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },
             },
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            wrapper: ({ children }) => (
+                <TradingMetadataProvider>
+                    <Form form={form}>{children}</Form>
+                </TradingMetadataProvider>
+            ),
         });
 
     beforeEach(async () => {

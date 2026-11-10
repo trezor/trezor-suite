@@ -4,7 +4,7 @@ import { IconByCryptoId } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
+import { TradeableAssetSymbol } from './TradeableAssetSymbol';
 
 export type TradeableAssetButtonProps = Omit<ButtonProps, 'children' | 'style'> & {
     selectedAsset: TradeableAsset | undefined;
@@ -35,8 +35,8 @@ const SelectedTradeableAssetLabel = ({
                 size="extraSmall"
                 withNetwork
             />
-            <NetworkSymbolExtendedFormatter
-                symbol={symbol}
+            <TradeableAssetSymbol
+                asset={selectedAsset}
                 variant="body-sm-strong"
                 color="contentPrimary"
                 testID={symbolTestID}
