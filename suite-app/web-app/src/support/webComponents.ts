@@ -141,7 +141,7 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ),
     ),
     'wallet-receive': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/ReceivePage').then(
+        import(/* webpackChunkName: "wallet" */ '@suite-app/module-receive/pages/ReceivePage').then(
             ({ ReceivePage }) => ({ default: ReceivePage }),
         ),
     ),

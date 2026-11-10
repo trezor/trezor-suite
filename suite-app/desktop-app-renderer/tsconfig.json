@@ -12,6 +12,7 @@
         { "path": "../module-assets" },
         { "path": "../module-earn" },
         { "path": "../module-home" },
+        { "path": "../module-receive" },
         { "path": "../module-send" },
         { "path": "../module-settings" },
         { "path": "../module-sign-verify" },
