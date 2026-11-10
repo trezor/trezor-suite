@@ -5,7 +5,6 @@ import {
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
-import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import {
     TradeStatusProviderLink,
     type TradeStatusStep,
@@ -13,10 +12,10 @@ import {
 } from '@suite-native/trading-atoms';
 import { type TradingRootState } from '@suite-native/trading-state';
 
+import { useOpenTradeTransaction } from './useOpenTradeTransaction';
 import { getSellTradeProgress, getStepState, getTradeStatusUrl } from '../utils/tradeStatusUtils';
 
 export const useSellTradeStatusSteps = (trade: TradingTransactionSell) => {
-    const navigateToTransactionDetail = useNavigateToTransactionDetail();
     const provider = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, trade.data.exchange ?? '', trade.tradeType),
     );
@@ -24,14 +23,10 @@ export const useSellTradeStatusSteps = (trade: TradingTransactionSell) => {
     const providerName = provider?.companyName ?? trade.data.exchange ?? '';
     const statusUrl = getTradeStatusUrl(trade) ?? '';
 
-    const handleTxIdPress = () => {
-        if (trade.data.txid && trade.sendAccountKey) {
-            navigateToTransactionDetail({
-                txid: trade.data.txid,
-                accountKey: trade.sendAccountKey,
-            });
-        }
-    };
+    const handleTxIdPress = useOpenTradeTransaction({
+        txid: trade.data.txid,
+        sendAccountKey: trade.sendAccountKey,
+    });
 
     if (progressId === undefined) {
         return undefined;
