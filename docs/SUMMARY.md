@@ -16,6 +16,8 @@
 - [Architecture decision records](./adr/README.md)
     - [ADR template](./adr/TEMPLATE.md)
     - [Separate application composition from reusable building blocks](./adr/001-separate-app-and-lego-code.md)
+- [Research](./research/index.md)
+    - [Desktop renderer over localhost for WebAuthn](./research/desktop-renderer-over-localhost-webauthn.md)
 - [Analytics](./analytics/index.md)
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)
