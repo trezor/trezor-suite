@@ -18,7 +18,7 @@ import { ETHEREUM_NONCE_MAX_DIGITS } from '@trezor/network-ethereum/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 type EthereumNonceProps = {
     // The auto-resolved next available nonce (confirmed nonce advanced past contiguous pending txs).

@@ -8,7 +8,7 @@ import {
 import { Banner, InfoItem, Text, Tooltip } from '@trezor/components';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 export const CardanoMinAmountInfo = () => {
     // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled

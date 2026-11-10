@@ -34,8 +34,8 @@ import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmou
 import { TransactionTimestamp } from '#src/components/wallet/TransactionTimestamp';
 import { UtxoAnonymity } from '#src/components/wallet/UtxoAnonymity';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { useSendFormContext } from '#src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from '#src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import { type WalletAccountTransaction } from '#src/types/wallet';
 
 type ResolveUtxoSpendableProps = {
