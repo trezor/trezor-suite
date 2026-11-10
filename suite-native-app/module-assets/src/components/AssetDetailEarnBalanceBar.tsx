@@ -5,7 +5,11 @@ import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, HStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type EarnBalanceType, earnBalanceColors } from './earnBalance';
+import {
+    type EarnBalanceType,
+    type UnstakedEarnBalanceType,
+    earnBalanceColors,
+} from './earnBalance';
 
 const balanceBarSegmentStyle = prepareNativeStyle<{ type: EarnBalanceType }>((utils, { type }) => ({
     height: utils.spacings.sp6,
@@ -15,9 +19,13 @@ const balanceBarSegmentStyle = prepareNativeStyle<{ type: EarnBalanceType }>((ut
 
 type AssetDetailEarnBalanceBarProps = {
     assetKey: WalletAssetKey | undefined;
+    unstakedType: UnstakedEarnBalanceType;
 };
 
-export const AssetDetailEarnBalanceBar = ({ assetKey }: AssetDetailEarnBalanceBarProps) => {
+export const AssetDetailEarnBalanceBar = ({
+    assetKey,
+    unstakedType,
+}: AssetDetailEarnBalanceBarProps) => {
     const stakingRatio = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetStakingRatio(state, assetKey),
     );
@@ -29,13 +37,13 @@ export const AssetDetailEarnBalanceBar = ({ assetKey }: AssetDetailEarnBalanceBa
             {availableRatio > 0 && (
                 <Box
                     flex={availableRatio}
-                    style={applyStyle(balanceBarSegmentStyle, { type: 'available' })}
+                    style={applyStyle(balanceBarSegmentStyle, { type: unstakedType })}
                 />
             )}
             {stakingRatio !== undefined && (
                 <Box
                     flex={stakingRatio}
-                    style={applyStyle(balanceBarSegmentStyle, { type: 'staking' })}
+                    style={applyStyle(balanceBarSegmentStyle, { type: 'staked' })}
                 />
             )}
         </HStack>
