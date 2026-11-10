@@ -4,7 +4,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { useYieldClaimFeeWarning } from './hooks';
+import { useYieldClaimFeeWarning } from './hooks/useYieldClaimFeeWarning';
 
 type YieldClaimFeeWarningProps = {
     accountRewards: YieldAccountRewards | undefined;
