@@ -66,7 +66,7 @@ export { receiveShareAddressEvent } from './receiveShareAddressEvent';
 export { receiveStartVerificationEvent } from './receiveStartVerificationEvent';
 export { removeTokenEvent } from './removeTokenEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';
-export { selectWalletTypeEvent } from './selectWalletTypeEvent';
+export { createWalletTypeEvent } from './createWalletTypeEvent';
 export { sendConfirmedOnDeviceEvent } from './sendConfirmedOnDeviceEvent';
 export { sendDetailOpenedEvent } from './sendDetailOpenedEvent';
 export { sendEnsResolutionEvent } from './sendEnsResolutionEvent';

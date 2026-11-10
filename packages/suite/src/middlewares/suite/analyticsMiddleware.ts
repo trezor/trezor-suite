@@ -94,7 +94,7 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
 
         if (applyDeviceStatesThunk.fulfilled.match(action)) {
             analytics.report({
-                type: events.selectWalletTypeEvent.name,
+                type: events.createWalletTypeEvent.name,
                 payload: {
                     type: action.payload.device.useEmptyPassphrase ? 'standard' : 'hidden',
                 },

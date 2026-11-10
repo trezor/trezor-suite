@@ -62,7 +62,7 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     RouterLocationChange = 'router/location-change',
     // eslint-disable-next-line local-rules/analytics-event-name
-    SelectWalletType = 'select-wallet-type',
+    CreateWalletType = 'create-wallet-type',
     SendConfirmedOnDevice = 'send/confirmed-on-device',
     SendDetailOpened = 'send/detail-opened',
     SendEnsResolution = 'send/ens-resolution',
