@@ -87,11 +87,24 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.clickSwapBestOfferWithRetry();
             });
 
-            await test.step('Open modal and verify recipient on prompt and device', async () => {
-                const { exchange, sendAddress } = await tradingResponses.swap.trade();
+            await test.step('Open the review modal', async () => {
+                const { exchange } = await tradingResponses.swap.trade();
                 providerName = await tradingResponses.swap.companyName(exchange);
 
+                await page.clock.install();
                 await tradingPage.confirmation.openConfirmAndSendModal();
+            });
+
+            // Recurring bug: https://github.com/trezor/trezor-suite/issues/25963
+            // Recurring bug: https://github.com/trezor/trezor-suite/issues/27555
+            await test.step('Retry signing after the transaction validity expires', async () => {
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await page.clock.fastForward('01:00');
+                await devicePrompt.txExpiredTryAgainButton.click();
+            });
+
+            await test.step('Verify recipient on prompt and device', async () => {
+                const { sendAddress } = await tradingResponses.swap.trade();
 
                 await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
                 await expect(devicePrompt.outputValueOf('address')).toHaveText(
@@ -133,7 +146,6 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Send crypto to provider (broadcast blocked by mock)', async () => {
                 await tradingMock.setStatus('SENDING');
-                await page.clock.install();
                 await devicePrompt.sendButton.click();
 
                 const { sendStringAmount } = await tradingResponses.swap.trade();
