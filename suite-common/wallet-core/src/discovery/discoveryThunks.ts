@@ -39,6 +39,7 @@ import TrezorConnect, {
     type DeviceUniquePath,
     type StaticSessionId,
     UI_EVENTS,
+    UI_REQUESTS,
     UI_RESPONSE,
     type UiEventBundleProgress,
     type UiEventDiscoveryEntropyCheck,
@@ -47,6 +48,7 @@ import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/
 import type { Bip43Path } from '@trezor/crypto-utils';
 import { type SuiteCompatibleThunk, type WithServices, createThunk } from '@trezor/redux-utils';
 
+import { createAccountInfoRequestListener } from './accountInfoRequestListener';
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import {
@@ -597,6 +599,16 @@ export const runDiscoveryThunk = createThunk<
                 );
             };
 
+            const discoveryCallId = callId ?? crypto.randomUUID();
+            const onAccountInfoRequest = createAccountInfoRequestListener({
+                callId: discoveryCallId,
+                deviceState: deviceState.staticSessionId,
+                getState,
+            });
+
+            TrezorConnect.on(UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO, onAccountInfoRequest);
+            // TODO: All of these should preferrably be bound to specific callId,
+            // otherwise they may listen to another discoverAccounts call instance (which shouldn't happen anyway).
             TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
             TrezorConnect.on(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
 
@@ -619,11 +631,12 @@ export const runDiscoveryThunk = createThunk<
                 },
                 coins: accountsParam,
                 entropyCheckResult,
-                callId,
+                callId: discoveryCallId,
             });
 
             TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
             TrezorConnect.off(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
+            TrezorConnect.off(UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO, onAccountInfoRequest);
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
                 return;
@@ -902,8 +915,16 @@ export const runAdditionalDiscoveryThunk = createThunk<
             dispatch(processDiscoveryEntropyCheckThunk({ device, success, path }));
         };
 
+        const callId = crypto.randomUUID();
+        const onAccountInfoRequest = createAccountInfoRequestListener({
+            callId,
+            deviceState: staticSessionId,
+            getState,
+        });
+
         TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
         TrezorConnect.on(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
+        TrezorConnect.on(UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO, onAccountInfoRequest);
 
         // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
         const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
@@ -920,10 +941,12 @@ export const runAdditionalDiscoveryThunk = createThunk<
             },
             coins: accountsParam,
             entropyCheckResult,
+            callId,
         });
 
         TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
         TrezorConnect.off(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
+        TrezorConnect.off(UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO, onAccountInfoRequest);
 
         dispatch(
             updateDiscoveryThunk({
