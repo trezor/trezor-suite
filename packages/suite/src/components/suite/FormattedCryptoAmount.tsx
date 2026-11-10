@@ -2,9 +2,12 @@ import { useMemo } from 'react';
 
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import { TokenSymbol } from '@suite/token';
 import { isSignValuePositive, useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
+    type NetworkSymbol,
     type NetworkSymbolExtended,
     getDisplaySymbol,
     getNetworkOptional,
@@ -23,6 +26,11 @@ export interface FormattedCryptoAmountProps {
     value?: string | number | AmountUnit; // Todo: remove `string | number`, its for Back Compatibility only
     symbol?: NetworkSymbolExtended;
     contractAddress?: string | null;
+    /**
+     * The token's network. With `contractAddress` it renders the symbol from token metadata, masked
+     * only for unrecognized tokens; without it a token symbol is always masked.
+     */
+    networkSymbol?: NetworkSymbol;
     /** Compact formatting, for a balance shown next to its fiat value. */
     isCompact?: boolean;
     tokenDecimals?: number;
@@ -44,6 +52,7 @@ export const FormattedCryptoAmount = ({
     value, // expects a value in full units (BTC not sats)
     symbol,
     contractAddress, // include contractAddress whenever the symbol is an token
+    networkSymbol,
     isCompact = false,
     tokenDecimals,
     showApproximation = false,
@@ -78,7 +87,7 @@ export const FormattedCryptoAmount = ({
     const {
         features: networkFeatures,
         testnet: isTestnet,
-        symbol: networkSymbol,
+        symbol: amountNetworkSymbol,
         decimals: networkDecimals,
     } = (isToken ? undefined : getNetworkOptional(lowerCaseSymbol)) ?? {};
 
@@ -88,12 +97,12 @@ export const FormattedCryptoAmount = ({
 
     const isSatoshis = areSatsSupported && areSatsDisplayed;
 
-    if (isSatoshis && networkSymbol) {
+    if (isSatoshis && amountNetworkSymbol) {
         formattedSymbol = isTestnet ? `sat ${formattedSymbol}` : 'sat';
     }
 
     const formatterContext = {
-        symbol: networkSymbol,
+        symbol: amountNetworkSymbol,
         smallestUnitsOverride: isSatoshis,
         withSymbol: false,
         isEllipsisAppended: !isCompact,
@@ -116,6 +125,19 @@ export const FormattedCryptoAmount = ({
         })}`;
     }
 
+    const tokenContract = isToken && contractAddress ? toTokenAddress(contractAddress) : null;
+    const symbolContent =
+        tokenContract && networkSymbol ? (
+            <TokenSymbol networkSymbol={networkSymbol} tokenContract={tokenContract} />
+        ) : (
+            formattedSymbol && (
+                <BlurUrls
+                    tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
+                    text={formattedSymbol}
+                />
+            )
+        );
+
     // output as a string, mostly for compatibility with graphs
     if (isRawString) {
         const displayedSignValue = signValue ? `${isSignValuePositive(signValue) ? '+' : '-'}` : '';
@@ -128,7 +150,7 @@ export const FormattedCryptoAmount = ({
                 ) : (
                     <RedactNumericalValue value={formattedValue} />
                 )}{' '}
-                {formattedSymbol}
+                {symbolContent}
             </>
         );
     }
@@ -145,21 +167,13 @@ export const FormattedCryptoAmount = ({
                 {!!signValue && <Sign value={signValue} grayscale={signGrayscale} />}
                 <Text isTabular={isTabular}>{renderedValue}</Text>
             </span>
-            {formattedSymbol && (
+            {symbolContent && (
                 <>
                     {' '}
                     {isSymbolSecondary ? (
-                        <Text intent="neutral" priority="secondary">
-                            <BlurUrls
-                                tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
-                                text={formattedSymbol}
-                            />
-                        </Text>
+                        <Text intent="neutral" priority="secondary">{symbolContent}</Text>
                     ) : (
-                        <BlurUrls
-                            tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
-                            text={formattedSymbol}
-                        />
+                        symbolContent
                     )}
                 </>
             )}

@@ -3,7 +3,6 @@ import { Form } from '@suite/form';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { TokenSymbol } from '@suite/token';
 import { toTokenAddress } from '@suite-common/tokens';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, type AllowanceLimitType } from '@suite-common/wallet-types';
 import { Banner, CardList, Column, Modal } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
@@ -89,7 +88,6 @@ export const ApproveModal = ({
     // when the signing fails, so the user can retry or cancel.
     if (!token?.symbol || isSending) return null;
 
-    const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
     const symbolLabel = (
         <TokenSymbol
             networkSymbol={account.symbol}
@@ -150,7 +148,7 @@ export const ApproveModal = ({
                                 label="TR_APPROVAL_CURRENT_LIMIT"
                                 networkSymbol={account.symbol}
                                 contractAddress={token.contract}
-                                symbol={displaySymbol}
+                                symbol={token.symbol}
                                 decimals={token.decimals}
                                 amount={currentLimit}
                             />

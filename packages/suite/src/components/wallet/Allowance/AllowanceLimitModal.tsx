@@ -1,8 +1,9 @@
 import { Translation, type TranslationKey } from '@suite/intl';
+import { TokenIcon, TokenSymbol } from '@suite/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type AllowanceLimitType } from '@suite-common/wallet-types';
 import { Badge, Card, Column, Modal, Paragraph, Row, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { type AllowanceStepToken } from './AllowanceStepToken';
 
@@ -33,7 +34,11 @@ export const AllowanceLimitModal = ({
     onSelect,
     onClose,
 }: AllowanceLimitModalProps) => {
-    const translationValues = { value: amount, send: token.symbol };
+    const tokenContract = toTokenAddress(token.contractAddress);
+    const symbolLabel = (
+        <TokenSymbol networkSymbol={token.networkSymbol} tokenContract={tokenContract} />
+    );
+    const translationValues = { value: amount, send: symbolLabel };
 
     return (
         <Modal
@@ -56,9 +61,8 @@ export const AllowanceLimitModal = ({
                             <Row gap={8}>
                                 <TokenIcon
                                     symbol={token.networkSymbol}
-                                    contractAddress={token.contractAddress}
+                                    contractAddress={tokenContract}
                                     size={20}
-                                    placeholder={token.symbol}
                                 />
                                 <Text typographyStyle="body-md-strong">
                                     <Translation
@@ -78,7 +82,7 @@ export const AllowanceLimitModal = ({
                                 <Badge intent="warning" size="small" iconLeft={WarningIcon}>
                                     <Translation
                                         id="TR_APPROVAL_VALUE_INFINITE_WARNING"
-                                        values={{ send: token.symbol }}
+                                        values={{ send: symbolLabel }}
                                     />
                                 </Badge>
                             )}

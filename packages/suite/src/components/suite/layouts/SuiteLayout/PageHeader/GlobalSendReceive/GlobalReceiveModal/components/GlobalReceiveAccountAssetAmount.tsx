@@ -38,6 +38,7 @@ export const GlobalReceiveAccountAssetAmount = ({
                     value={amount}
                     symbol={token?.symbol ?? asset.displaySymbol}
                     contractAddress={tokenAddress}
+                    networkSymbol={account.symbol}
                     tokenDecimals={token?.decimals}
                     isCompact
                 />

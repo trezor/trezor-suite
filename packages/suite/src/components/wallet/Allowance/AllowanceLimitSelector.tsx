@@ -1,9 +1,9 @@
 import { useRef } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { TokenSymbol } from '@suite/token';
+import { TokenIcon, TokenName, TokenSymbol } from '@suite/token';
 import { toTokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AllowanceLimitType } from '@suite-common/wallet-types';
 import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
@@ -19,7 +19,6 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretDownIcon, WarningIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
 import type { AllowanceProvider } from './AllowanceProviderInfo';
@@ -74,17 +73,11 @@ export const AllowanceLimitSelector = ({
     hasPreapprovedAmount,
 }: AllowanceLimitSelectorProps) => {
     const popoverRef = useRef<PopoverRef>(null);
-    const displaySymbol = token.symbol
-        ? getDisplaySymbol(token.symbol, token.contract)
-        : token.name;
+    const tokenContract = toTokenAddress(token.contract);
     const symbolLabel = token.symbol ? (
-        <TokenSymbol
-            networkSymbol={networkSymbol}
-            tokenContract={toTokenAddress(token.contract)}
-            isTruncated
-        />
+        <TokenSymbol networkSymbol={networkSymbol} tokenContract={tokenContract} isTruncated />
     ) : (
-        token.name
+        <TokenName networkSymbol={networkSymbol} tokenContract={tokenContract} />
     );
 
     const providerKind: ProviderKind = provider.kind ?? 'provider';
@@ -131,12 +124,7 @@ export const AllowanceLimitSelector = ({
         >
             <Column gap={4} flex="1" alignItems="flex-start">
                 <Row gap={8}>
-                    <TokenIcon
-                        symbol={networkSymbol}
-                        contractAddress={token.contract}
-                        size={20}
-                        placeholder={displaySymbol}
-                    />
+                    <TokenIcon symbol={networkSymbol} contractAddress={tokenContract} size={20} />
                     <Text typographyStyle="body-sm-strong">
                         <Translation id={LIMIT_TYPE_LABEL_ID[type]} values={translationValues} />
                     </Text>
@@ -160,9 +148,8 @@ export const AllowanceLimitSelector = ({
                     <Row gap={8}>
                         <TokenIcon
                             symbol={networkSymbol}
-                            contractAddress={token.contract}
+                            contractAddress={tokenContract}
                             size={20}
-                            placeholder={displaySymbol}
                         />
                         <Text
                             typographyStyle="body-sm-strong"

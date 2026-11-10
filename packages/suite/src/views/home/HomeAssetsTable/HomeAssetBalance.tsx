@@ -53,6 +53,7 @@ export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalancePr
                         value={amount}
                         symbol={tokenSymbol ?? symbol}
                         contractAddress={contractAddress}
+                        networkSymbol={symbol}
                         tokenDecimals={tokenDecimals}
                         isCompact
                     />
