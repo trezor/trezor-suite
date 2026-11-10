@@ -1,11 +1,12 @@
+import { type Account } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
+
 import {
     calculateRewards,
     getNetworkAdjustedStakingBalance,
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
-} from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
-import { BigNumber } from '@trezor/utils';
+} from './stakingUtils';
 
 export const getPotentialStakingRewards = (
     accounts: readonly Account[],

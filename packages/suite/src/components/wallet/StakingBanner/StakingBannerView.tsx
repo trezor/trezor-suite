@@ -4,13 +4,13 @@ import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getPotentialStakingRewards } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
 import { useFormatApy } from 'src/hooks/earn/useFormatApy';
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 
-import { getPotentialStakingRewards } from './getPotentialStakingRewards';
 import { type StakingBannerAccounts } from './useStakingBanner';
 
 type StakingBannerViewProps = {
