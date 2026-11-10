@@ -35,7 +35,7 @@ import { useDiscovery } from '#src/hooks/suite/useDiscovery';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTotalFiatBalance } from '#src/hooks/wallet/useTotalFiatBalance';
 import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
-import { isNetworkWithGraphFeature } from '#src/utils/wallet/graph';
+import { isNetworkWithGraphFeature } from '#src/utils/wallet/graph/utils';
 import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { DashboardGraph } from './DashboardGraph';

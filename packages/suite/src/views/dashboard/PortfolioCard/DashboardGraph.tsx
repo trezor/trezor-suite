@@ -21,7 +21,8 @@ import { TransactionsGraphLoader } from '#src/components/suite/graph/Transaction
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectGraph } from '#src/reducers/wallet/graphReducer';
 import { type AggregatedDashboardHistory } from '#src/types/wallet/graph';
-import { getMinMaxValueFromData, prepareGraphDataAsync } from '#src/utils/wallet/graph';
+import { getMinMaxValueFromData } from '#src/utils/wallet/graph/utils';
+import { prepareGraphDataAsync } from '#src/utils/wallet/graph/utilsWorker';
 
 const Wrapper = styled.div`
     display: flex;
