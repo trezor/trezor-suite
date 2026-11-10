@@ -4,42 +4,7 @@ packages/suite/src/actions/onboarding/onboardingActions.ts > packages/suite/src/
 packages/suite/src/actions/suite/guideActions.ts > packages/suite/src/reducers/suite/guideReducer.ts
 packages/suite/src/actions/suite/protocolActions.ts > packages/suite/src/reducers/suite/protocolReducer.ts
 packages/suite/src/actions/suite/storageLifecycleActions.ts > packages/suite/src/storage/StorageLoadPayload.ts > packages/suite/src/storage/loadStoragePayload.ts > packages/suite/src/storage/createDb.ts
-packages/suite/src/components/guide/GuideRouter.tsx > packages/suite/src/components/guide/index.tsx
-packages/suite/src/components/guide/index.tsx > packages/suite/src/components/guide/Feedback.tsx
-packages/suite/src/components/guide/index.tsx > packages/suite/src/components/guide/Guide.tsx
-packages/suite/src/components/guide/index.tsx > packages/suite/src/components/guide/GuideArticle.tsx
-packages/suite/src/components/guide/index.tsx > packages/suite/src/components/guide/GuideCategory.tsx
-packages/suite/src/components/guide/index.tsx > packages/suite/src/components/guide/GuideSearch.tsx
-packages/suite/src/components/guide/index.tsx > packages/suite/src/components/guide/GuideShortcuts.tsx
-packages/suite/src/components/guide/index.tsx > packages/suite/src/components/guide/SupportFeedbackSelection.tsx
-packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/FormattedNftAmount.tsx
-packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/notifications/index.ts > packages/suite/src/components/suite/notifications/NotificationRenderer/NotificationRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/AutoEjectRenderer.tsx
-packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/notifications/index.ts > packages/suite/src/components/suite/notifications/NotificationRenderer/NotificationRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/CoinProtocolRenderer.tsx
-packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/notifications/index.ts > packages/suite/src/components/suite/notifications/NotificationRenderer/NotificationRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/CoinProtocolRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/ConditionalActionRenderer.tsx
 packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus.tsx
-packages/suite/src/components/suite/notifications/NotificationRenderer/NotificationRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/ActionRenderer.tsx
-packages/suite/src/components/suite/notifications/NotificationRenderer/NotificationRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/EarnTransactionRenderer.tsx
-packages/suite/src/components/suite/notifications/NotificationRenderer/NotificationRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/EarnTransactionRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/TransactionRenderer.tsx
-packages/suite/src/components/suite/notifications/NotificationRenderer/NotificationRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/ExchangeInfoRenderer.tsx
-packages/suite/src/components/suite/notifications/NotificationRenderer/NotificationRenderer.tsx > packages/suite/src/components/suite/notifications/NotificationRenderer/WrapInfoRenderer.tsx
-packages/suite/src/components/wallet/index.tsx > packages/suite/src/components/wallet/WalletLayout/WalletLayout.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/AccountException.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/AccountNotEnabled.tsx
-packages/suite/src/components/wallet/index.tsx > packages/suite/src/components/wallet/WalletLayout/WalletLayout.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/AccountException.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/AccountNotExists.tsx
-packages/suite/src/components/wallet/index.tsx > packages/suite/src/components/wallet/WalletLayout/WalletLayout.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/AccountException.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/AccountNotLoaded.tsx
-packages/suite/src/components/wallet/index.tsx > packages/suite/src/components/wallet/WalletLayout/WalletLayout.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/AccountException.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/DiscoveryEmpty.tsx
-packages/suite/src/components/wallet/index.tsx > packages/suite/src/components/wallet/WalletLayout/WalletLayout.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/AccountException.tsx > packages/suite/src/components/wallet/WalletLayout/AccountException/DiscoveryFailed.tsx
-packages/suite/src/components/wallet/index.tsx > packages/suite/src/components/wallet/WalletLayout/WalletLayout.tsx > packages/suite/src/components/wallet/WalletLayout/CoinjoinAccountDiscovery/CoinjoinAccountDiscovery.tsx
-packages/suite/src/hooks/guide/index.ts > packages/suite/src/hooks/guide/useGuideKeyboard.ts
-packages/suite/src/hooks/guide/index.ts > packages/suite/src/hooks/guide/useGuideOpenNode.ts
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/useAccountSearch.tsx
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/useAnonymityStatus.ts
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/useAppShortcuts.tsx
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/useDiscovery.ts
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/useDisplayMode.ts
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/useFilteredModal.ts
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/useFormattersConfig.ts
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/useGraph.ts
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/useLayoutSize.ts
-packages/suite/src/hooks/suite/index.ts > packages/suite/src/hooks/suite/usePreferredModal.ts
 packages/suite/src/reducers/suite/suiteReducer.ts > packages/suite/src/actions/suite/storageLifecycleActions.ts > packages/suite/src/storage/StorageLoadPayload.ts > packages/suite/src/storage/loadStoragePayload.ts > packages/suite/src/storage/createDb.ts > packages/suite/src/storage/definitions.ts
 packages/suite/src/reducers/wallet/graphReducer.ts > packages/suite/src/actions/wallet/graphActions.ts
 packages/suite/src/reducers/wallet/graphReducer.ts > packages/suite/src/actions/wallet/graphActions.ts > packages/suite/src/utils/wallet/graph/index.ts > packages/suite/src/utils/wallet/graph/utils.ts

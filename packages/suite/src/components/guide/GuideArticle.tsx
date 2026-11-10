@@ -6,11 +6,15 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { openNode, setView } from '#src/actions/suite/guideActions';
-import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from '#src/components/guide';
 import { useGuideLoadArticle } from '#src/hooks/guide';
 import { useSelector } from '#src/hooks/suite';
 import { selectGuideCurrentNode, selectGuideIndexNode } from '#src/selectors/suite/guideSelectors';
 import { findAncestorNodes, getNodeTitle } from '#src/utils/suite/guide';
+
+import { GuideContent } from './GuideContent';
+import { GuideHeader } from './GuideHeader';
+import { GuideMarkdown } from './GuideMarkdown';
+import { GuideViewWrapper } from './GuideViewWrapper';
 
 const ArticleWrapper = styled.div`
     padding-bottom: 32px;

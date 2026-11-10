@@ -6,16 +6,15 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { setView } from '#src/actions/suite/guideActions';
-import {
-    GuideCategories,
-    GuideContent,
-    GuideHeader,
-    GuideNode,
-    GuideViewWrapper,
-} from '#src/components/guide';
 import { useSelector } from '#src/hooks/suite';
 import { selectGuideCurrentNode } from '#src/selectors/suite/guideSelectors';
 import { getNodeTitle } from '#src/utils/suite/guide';
+
+import { GuideCategories } from './GuideCategories';
+import { GuideContent } from './GuideContent';
+import { GuideHeader } from './GuideHeader';
+import { GuideNode } from './GuideNode';
+import { GuideViewWrapper } from './GuideViewWrapper';
 
 const Section = styled.div`
     margin-bottom: 20px;

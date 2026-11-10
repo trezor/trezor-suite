@@ -4,7 +4,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AccountExceptionLayout } from '#src/components/wallet';
+import { AccountExceptionLayout } from '#src/components/wallet/AccountExceptionLayout';
 import { useDiscovery } from '#src/hooks/suite';
 
 /**

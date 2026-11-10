@@ -8,8 +8,9 @@ import { Box, CardList, Icon, Input, Paragraph, Spinner } from '@trezor/componen
 import { MagnifyingGlassIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
-import { GuideNode } from '#src/components/guide';
 import { MIN_QUERY_LENGTH, useGuideSearch } from '#src/hooks/guide';
+
+import { GuideNode } from './GuideNode';
 
 const PreviewContent = styled.div`
     white-space: nowrap;

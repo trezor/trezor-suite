@@ -9,8 +9,9 @@ import {
     requestBioAuthChangeThunk,
     requestBioAuthValidationThunk,
 } from '#src/actions/suite/bioAuthThunks';
-import { useSelector } from '#src/hooks/suite';
 import { selectBioAuth } from '#src/reducers/bioAuth';
+
+import { useSelector } from './useSelector';
 
 export const useBioAuthDesktopApi = () => {
     const {

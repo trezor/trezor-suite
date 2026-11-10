@@ -4,7 +4,7 @@ import {
     useMessageSystemEarnDashboard as useMessageSystemEarnDashboardCore,
 } from '@suite-common/message-system';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from './useSelector';
 
 export type { EarnDashboardType };
 
