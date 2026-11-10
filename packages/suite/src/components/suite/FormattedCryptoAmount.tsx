@@ -175,7 +175,9 @@ export const FormattedCryptoAmount = ({
                 <>
                     {' '}
                     {isSymbolSecondary ? (
-                        <Text intent="neutral" priority="secondary">{symbolContent}</Text>
+                        <Text intent="neutral" priority="secondary">
+                            {symbolContent}
+                        </Text>
                     ) : (
                         symbolContent
                     )}
