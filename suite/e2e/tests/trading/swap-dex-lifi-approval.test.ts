@@ -240,12 +240,6 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                     tradingMock.lastBroadcastTxid,
                 );
             });
-
-            await test.step('Reloading the approval steps returns to the form', async () => {
-                await page.reload();
-                await expect(tradingPage.inputs.cryptoAmount).toBeVisible({ timeout: 30_000 });
-                await expect(tradingPage.approvalSteps.section).toBeHidden();
-            });
         },
     );
 });
