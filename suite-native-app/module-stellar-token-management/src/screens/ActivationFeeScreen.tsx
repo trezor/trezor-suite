@@ -75,8 +75,6 @@ export const ActivationFeeScreen = () => {
         handleFeeLevelChange,
         handleCustomFeeSet,
         tokenInfo,
-        assetCode,
-        tokenName,
         issuerDomain,
         issuerAddress,
         iconContractAddress,
@@ -119,7 +117,6 @@ export const ActivationFeeScreen = () => {
                         <TokenInfoCard
                             networkSymbol={account.symbol}
                             tokenContract={tokenContract}
-                            tokenName={tokenName}
                             issuerDomain={issuerDomain}
                             iconContractAddress={iconContractAddress}
                             onPress={openTokenDetail}
@@ -202,8 +199,6 @@ export const ActivationFeeScreen = () => {
                     bottomSheetRef={tokenDetailRef}
                     networkSymbol={account.symbol}
                     tokenContract={tokenContract}
-                    tokenName={tokenName}
-                    assetCode={assetCode}
                     issuerDomain={issuerDomain}
                     issuerAddress={issuerAddress}
                     iconContractAddress={iconContractAddress}

@@ -1,8 +1,9 @@
 import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldFormattedAmount } from './YieldFormattedAmount';
@@ -46,7 +47,6 @@ export const YieldDepositRevokeLimitValue = ({
             <TokenIcon
                 networkSymbol={networkSymbol}
                 contractAddress={tokenContract}
-                tokenSymbol={tokenSymbol}
                 size="extraSmall"
             />
             {isApprovedAmountUnlimited ? (

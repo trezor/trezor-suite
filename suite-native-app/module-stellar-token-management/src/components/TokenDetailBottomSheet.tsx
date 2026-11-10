@@ -6,16 +6,13 @@ import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/to
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenName, TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
 
 type TokenDetailBottomSheetProps = {
     bottomSheetRef: RefObject<BottomSheetModalMethods | null>;
     networkSymbol: NetworkSymbol;
     tokenContract: TokenAddress;
-    tokenName: string;
-    assetCode: string;
     issuerDomain: string;
     issuerAddress: string;
     iconContractAddress: TokenAddress | undefined;
@@ -26,8 +23,6 @@ export const TokenDetailBottomSheet = ({
     bottomSheetRef,
     networkSymbol,
     tokenContract,
-    tokenName,
-    assetCode,
     issuerDomain,
     issuerAddress,
     iconContractAddress,
@@ -44,7 +39,6 @@ export const TokenDetailBottomSheet = ({
                         <TokenIcon
                             networkSymbol={asNetworkSymbol('xlm')}
                             contractAddress={iconContractAddress}
-                            tokenSymbol={assetCode || tokenName}
                             size="large"
                         />
                         <VStack>

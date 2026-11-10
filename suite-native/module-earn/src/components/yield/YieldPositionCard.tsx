@@ -17,8 +17,8 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
@@ -75,7 +75,6 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
                 <TokenIcon
                     networkSymbol={item.networkSymbol}
                     contractAddress={item.tokenContractAddress}
-                    tokenSymbol={item.tokenSymbol}
                     size="small"
                     showNetworkIcon
                     wrappedTokenIcon="network"

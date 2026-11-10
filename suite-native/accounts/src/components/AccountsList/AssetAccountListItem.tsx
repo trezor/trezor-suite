@@ -16,7 +16,8 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 
 import { type NativeAccountsRootState, selectAccountHasAnyKnownTokens } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
@@ -91,7 +92,7 @@ export const AssetAccountListItem = ({
 
     return (
         <AccountsListItemBase
-            icon={<TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} />}
+            icon={<TokenIcon networkSymbol={account.symbol} />}
             title={<AccountLabel account={account} />}
             titleBadge={
                 formattedAccountType ? (

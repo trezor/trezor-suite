@@ -27,6 +27,7 @@
         {
             "path": "../../suite-native/navigation"
         },
+        { "path": "../../suite-native/tokens" },
         {
             "path": "../../packages/dependency-injection"
         },

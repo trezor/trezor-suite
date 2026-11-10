@@ -9,7 +9,7 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type PositionedAssetListItem = GlobalReceiveAssetListItem & {
@@ -61,7 +61,6 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                     <TokenIcon
                         networkSymbol={asset.networkSymbol}
                         contractAddress={asset.contractAddress ?? undefined}
-                        tokenSymbol={asset.coingeckoId}
                         showNetworkIcon
                         size="medium"
                     />

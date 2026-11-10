@@ -44,7 +44,6 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -55,6 +54,7 @@ import {
 import { isDevUtilsEnabledAtom } from '@suite-native/storage';
 import {
     type TokensRootState as NativeTokensRootState,
+    TokenIcon,
     selectAccountTokenInfo,
     selectIsUnrecognizedToken,
 } from '@suite-native/tokens';
@@ -260,11 +260,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                                 }
                             >
                                 <HStack alignItems="center" spacing="sp8">
-                                    <TokenIcon
-                                        tokenSymbol={symbol}
-                                        networkSymbol={symbol}
-                                        size="tiny"
-                                    />
+                                    <TokenIcon networkSymbol={symbol} size="tiny" />
                                     <Text variant="body-sm">{networkName}</Text>
                                 </HStack>
                             </DetailRow>

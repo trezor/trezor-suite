@@ -1,8 +1,8 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Blur, Box, PressableOpacity, Text } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import {
+    TokenIcon,
     TokenName,
     type TypedTokenTransfer,
     type WalletAccountTransaction,
@@ -61,7 +61,6 @@ export const TransactionDetailListItem = ({
                         <TokenIcon
                             networkSymbol={transaction.symbol}
                             contractAddress={tokenTransfer?.contract}
-                            tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
                         />
                     </Box>
                     <Box style={applyStyle(CoinNameContainerStyle)}>

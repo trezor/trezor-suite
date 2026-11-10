@@ -7,7 +7,7 @@ import {
     ExactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
@@ -51,7 +51,6 @@ export const YieldClaimRewardRow = ({
                 <TokenIcon
                     networkSymbol={networkSymbol}
                     contractAddress={tokenContractAddress}
-                    tokenSymbol={tokenSymbol}
                     size={20}
                 />
                 <Box flexShrink={1}>

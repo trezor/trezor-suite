@@ -12,7 +12,7 @@ import {
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
@@ -43,13 +43,7 @@ export const TokenInfoCard = ({ symbol, balance, contract }: TokenInfoCardProps)
                     variant="body-xs"
                 />
             }
-            icon={
-                <TokenIcon
-                    networkSymbol={symbol}
-                    contractAddress={contract}
-                    tokenSymbol={token.symbol}
-                />
-            }
+            icon={<TokenIcon networkSymbol={symbol} contractAddress={contract} />}
         >
             <TokenToFiatAmountFormatter
                 symbol={symbol}

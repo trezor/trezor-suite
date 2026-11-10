@@ -2,9 +2,8 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
-import { TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon, TokenSymbol } from '@suite-native/tokens';
 
 type AssetDetailScreenHeaderContentProps = {
     assetDisplaySymbol: string;
@@ -21,7 +20,6 @@ export const AssetDetailScreenHeaderContent = ({
             <TokenIcon
                 networkSymbol={networkSymbol}
                 contractAddress={tokenContract}
-                tokenSymbol={assetDisplaySymbol}
                 showNetworkIcon
                 size="small"
             />
