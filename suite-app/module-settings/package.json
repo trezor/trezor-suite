@@ -1,0 +1,57 @@
+{
+    "name": "@suite-app/module-settings",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "exports": {
+        ".": "./src/index.ts",
+        "./pages/*": "./src/pages/*.tsx"
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@suite-common/device-authenticity": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite/analytics": "workspace:*",
+        "@suite/apps-embedding-demo": "workspace:*",
+        "@suite/backup": "workspace:*",
+        "@suite/coinjoin": "workspace:*",
+        "@suite/device": "workspace:*",
+        "@suite/flags": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@suite/message-system": "workspace:*",
+        "@suite/modal": "workspace:*",
+        "@suite/recovery": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@suite/settings": "workspace:*",
+        "@suite/suite-sync": "workspace:*",
+        "@suite/tor-desktop": "workspace:*",
+        "@suite/tor-web": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/icons": "workspace:*",
+        "@trezor/product-components": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/suite": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "framer-motion": "^14.0.0",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
+    }
+}

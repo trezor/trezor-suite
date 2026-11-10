@@ -20,9 +20,6 @@
         },
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/device-authenticity"
-        },
-        {
             "path": "../../suite-common/discreet-mode"
         },
         {
@@ -68,9 +65,6 @@
         },
         {
             "path": "../../suite-common/suite-sync-quota-manager"
-        },
-        {
-            "path": "../../suite-common/suite-sync-storage"
         },
         {
             "path": "../../suite-common/suite-sync-types"
@@ -139,15 +133,12 @@
         { "path": "../../suite/settings" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/tor" },
-        { "path": "../../suite/tor-desktop" },
-        { "path": "../../suite/tor-web" },
         { "path": "../../suite/trading" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"
         },
-        { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/logger" },
