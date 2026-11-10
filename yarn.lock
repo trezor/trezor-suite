@@ -11294,7 +11294,6 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/logger": "workspace:*"
-    "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/suite": "workspace:*"
@@ -11400,6 +11399,7 @@ __metadata:
   dependencies:
     "@sentry/electron": "npm:^7.20.1"
     "@suite-app/app": "workspace:*"
+    "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
     "@suite-app/module-trading": "workspace:*"
     "@suite-common/flags": "workspace:*"
@@ -11455,6 +11455,24 @@ __metadata:
     openpgp: "npm:^6.3.2"
     usb: "npm:^3.2.1"
     usb-legacy: "npm:usb@2.19.1"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-earn@workspace:*, @suite-app/module-earn@workspace:suite-app/module-earn":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-earn@workspace:suite-app/module-earn"
+  dependencies:
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/account": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/network-ethereum-suite-common": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    react: "npm:19.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11563,6 +11581,7 @@ __metadata:
     "@rolldown/plugin-babel": "npm:^0.2.1"
     "@sentry/browser": "npm:10.75.2"
     "@suite-app/app": "workspace:*"
+    "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
     "@suite-app/module-trading": "workspace:*"
     "@suite-common/flags": "workspace:*"

@@ -17,6 +17,7 @@
     "dependencies": {
         "@sentry/electron": "^7.20.1",
         "@suite-app/app": "workspace:*",
+        "@suite-app/module-earn": "workspace:*",
         "@suite-app/module-sign-verify": "workspace:*",
         "@suite-app/module-trading": "workspace:*",
         "@suite-common/react-query": "workspace:*",

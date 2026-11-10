@@ -102,7 +102,6 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/logger": "workspace:*",
-        "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/suite": "workspace:*",
