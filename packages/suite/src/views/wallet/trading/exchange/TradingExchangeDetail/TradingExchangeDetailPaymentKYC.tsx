@@ -1,11 +1,10 @@
 import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { Button, IconCircle } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { type Account } from '#src/types/wallet';
 import { TradingDetailTerminalDetails } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
 import { TradingDetailTerminalState } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalState';
 import { getTradingProviderName } from '#src/views/wallet/trading/common/TradingDetail/utils';

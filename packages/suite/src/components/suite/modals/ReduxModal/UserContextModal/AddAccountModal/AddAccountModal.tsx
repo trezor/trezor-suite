@@ -22,6 +22,7 @@ import {
     selectAccounts,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
 import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -35,7 +36,6 @@ import { useAvailableNetworkSymbols } from '#src/components/wallet/WalletLayout/
 import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
 import { useAccountSearch } from '#src/hooks/suite';
 import { type TrezorDevice } from '#src/types/suite';
-import { type Account } from '#src/types/wallet';
 import { NoNetworkSearchResults } from '#src/views/settings/SettingsCoins/NoNetworkSearchResults';
 import { useNetworkSettingsSearch } from '#src/views/settings/SettingsCoins/useNetworkSettingsSearch';
 

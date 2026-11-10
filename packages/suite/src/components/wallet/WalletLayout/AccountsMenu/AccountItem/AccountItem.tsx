@@ -1,12 +1,11 @@
 import { memo, useState } from 'react';
 
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 
 import { useGoToWithAnalytics } from '#src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { CollapsedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { type Account } from '#src/types/wallet';
 
 import { AccountItemContent } from './AccountRow/AccountItemContent/AccountItemContent';
 import { AccountRow } from './AccountRow/AccountRow';

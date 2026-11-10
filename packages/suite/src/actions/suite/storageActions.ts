@@ -73,6 +73,7 @@ import {
     selectWalletSettings,
 } from '@suite-common/wallet-core';
 import type {
+    Account,
     AccountKey,
     FormDraftKeyPrefix,
     FormState,
@@ -99,7 +100,6 @@ import {
 } from '#src/selectors/suite/suiteSelectors';
 import { type DbDep } from '#src/storage/createDb';
 import type { TrezorDevice } from '#src/types/suite';
-import type { Account } from '#src/types/wallet';
 import { type GraphData } from '#src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from '#src/utils/suite/storage';
 import { deviceGraphDataFilterFn } from '#src/utils/wallet/graph';

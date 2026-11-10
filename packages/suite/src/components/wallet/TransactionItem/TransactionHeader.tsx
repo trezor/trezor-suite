@@ -7,7 +7,7 @@ import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type StakeType } from '@suite-common/wallet-types';
+import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getNativeWrapTxKind,
     getTxHeaderSymbol,
@@ -23,7 +23,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { UnstakingTxAmount } from '#src/components/suite/UnstakingTxAmount';
 import { WrapTxAmount } from '#src/components/suite/WrapTxAmount';
-import { type WalletAccountTransaction } from '#src/types/wallet';
 
 type TransactionHeaderProps = {
     transaction: WalletAccountTransaction;

@@ -5,11 +5,10 @@ import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
 } from '@suite-common/wallet-core';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { getSynchronize } from '@trezor/utils';
-
-import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 const getPaging = (network: Account['networkType'], txFetched: number, txTotal: number) => {
     const perPage = getTxsPerPage(network);

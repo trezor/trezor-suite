@@ -2,9 +2,8 @@ import { type ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
+import { type Account } from '@suite-common/wallet-types';
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
-
-import { type Account } from '#src/types/wallet';
 
 export const createQuoteLink = async (
     { desktopApi }: DesktopApiDep<'getHttpReceiverAddress'>,
