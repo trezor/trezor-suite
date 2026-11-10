@@ -25,7 +25,15 @@ export const TronStakingUnstakeRow = ({
 }: TronStakingUnstakeRowProps) => {
     const secondsLeft = Math.max(expireTime - nowSeconds, 0);
     const days = Math.floor(secondsLeft / SECONDS_PER_DAY);
-    const hours = Math.max(Math.floor((secondsLeft % SECONDS_PER_DAY) / SECONDS_PER_HOUR), 1);
+    const hoursOfDay = Math.floor((secondsLeft % SECONDS_PER_DAY) / SECONDS_PER_HOUR);
+    const hours = days > 0 ? hoursOfDay : Math.max(hoursOfDay, 1);
+
+    const getTranslationId = () => {
+        if (days === 0) return 'earn.tron.unstakingCard.readyInHours';
+        if (hours === 0) return 'earn.tron.unstakingCard.readyInDays';
+
+        return 'earn.tron.unstakingCard.readyInDaysAndHours';
+    };
 
     return (
         <HStack
@@ -37,14 +45,7 @@ export const TronStakingUnstakeRow = ({
             testID={`@staking/tron-unstaking-card/row-${index}`}
         >
             <Text variant="body-sm" color="contentSecondary">
-                <Translation
-                    id={
-                        days > 0
-                            ? 'earn.tron.unstakingCard.readyInDaysAndHours'
-                            : 'earn.tron.unstakingCard.readyInHours'
-                    }
-                    values={{ days, hours }}
-                />
+                <Translation id={getTranslationId()} values={{ days, hours }} />
             </Text>
             <VStack spacing="sp2" alignItems="flex-end">
                 <ExactCryptoAmountFormatter

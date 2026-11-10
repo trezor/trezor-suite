@@ -3867,6 +3867,7 @@ export const messages = {
                 title: 'Unstaking',
                 readyInDaysAndHours:
                     'In ~{days, plural, one {# day} other {# days}} {hours, plural, one {# hour} other {# hours}}',
+                readyInDays: 'In ~{days, plural, one {# day} other {# days}}',
                 readyInHours: 'In ~{hours, plural, one {# hour} other {# hours}}',
             },
         },
