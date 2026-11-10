@@ -128,7 +128,7 @@
   </g>
   <rect x="855" y="1008" width="3" height="69" rx="1.5" fill="#8b75b5" />
   <circle cx="877" cy="1018" r="3" fill="#8b75b5" />
-  <text x="891" y="1023" class="pkg">@suite-app/sign-verify-page</text>
+  <text x="891" y="1023" class="pkg">@suite-app/module-sign-verify</text>
   <text x="879" y="1049" class="detail">Injected abstraction · no implementation imports</text>
   <rect x="879" y="1060" width="126" height="20" rx="5" fill="#8b75b5" fill-opacity=".12" />
   <text x="942" y="1074" text-anchor="middle" fill="#8b75b5" font-size="9" font-weight="700" letter-spacing="1.1">ABSTRACT API ONLY</text>

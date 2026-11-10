@@ -31,7 +31,7 @@ For sign-verify, **dependency inversion** means that the page and the network im
 
 ![Sign-verify page and Bitcoin implementation importing the same independent API contract](./001/sign-verify-dependency-inversion.svg)
 
-The composition root registers the concrete network modules and injects the module repository into the application. At runtime, `SignVerifyPage` in `@suite-app/sign-verify-page` obtains the selected module's implementation through that repository. Its dependency on network functionality is expressed through the contract: it has no static import or type dependency on `@trezor/network-bitcoin-suite` or another concrete network implementation.
+The composition root registers the concrete network modules and injects the module repository into the application. At runtime, `SignVerifyPage` in `@suite-app/module-sign-verify` obtains the selected module's implementation through that repository. Its dependency on network functionality is expressed through the contract: it has no static import or type dependency on `@trezor/network-bitcoin-suite` or another concrete network implementation.
 
 ## Decision
 
@@ -45,6 +45,13 @@ Separate code into folders according to its role in application composition:
 Think of **wiring versus reusable parts**. App code decides which parts an application uses and connects them: which screens appear in navigation, which network modules are registered, or which storage implementation a service uses. Lego code implements those parts, with explicit dependencies, without deciding how the application is assembled.
 
 Ask: **could another feature, network module, or application use this code by supplying its dependencies, without importing this application's assembly?** If yes, it belongs in lego. If it chooses implementations or connects features for this application, it belongs in app code. Reusable does not mean platform-independent, stateless, or limited to small utilities; a native component or a complete business feature can be a lego.
+
+### App modules
+
+App code is grouped into one module package per **section of the app**: `@suite-native-app/module-<section>` on native and `@suite-app/module-<section>` on desktop and web, such as `module-send` or `module-sign-verify`. A module more or less corresponds to one section, usually one page, but it can hold several pages of the same section, such as buy, sell and exchange in `module-trading`.
+
+- **A module contains the section's wiring:** its pages, screens and navigation, and the section-specific code that assembles them from lego.
+- **Only app assembly imports a module:** `@suite-native-app/app`, or `@suite-app/app` and the application roots. Modules do not import each other; code two sections share belongs in lego.
 
 ### Reading the dependency graph
 
@@ -111,7 +118,7 @@ Illustrative layout after the migration, showing a few packages from each layer:
 │   └── sign-verify/                    # Optional reusable UI for network modules
 │                                       # (when two networks share some UI)
 ├── suite-app/                          # Desktop/web assembly (@suite-app/*)
-│   ├── sign-verify-page/               # Page wiring through module contracts
+│   ├── module-sign-verify/             # Sign-verify section wiring through module contracts
 │   ├── networks/                       # Registers concrete network modules
 │   ├── web-app/                        # Composition root
 │   ├── desktop-app-renderer/           # Desktop React composition root
@@ -132,7 +139,7 @@ and registers concrete network modules; reusable packages do not import app asse
 
 1. **Keep the current structure (status quo).** Application assembly and reusable code remain mixed, making safe imports depend on developer knowledge. Cycle detection catches completed cycles, but does not prevent inappropriate dependencies from accumulating beforehand.
 2. **Enforce boundaries in the existing layout and rename later.** Tags, package allowlists and additional dependency checks could enforce the architecture, but require extra configuration while responsibilities remain less visible in directories and imports. Structural cleanup could be postponed indefinitely.
-3. **Extend and enforce the native `module-*` convention.** Application packages such as `app`, `state` and `suite-sync` do not naturally fit that prefix. This approach offers weaker structural visibility for a similar amount of migration work.
+3. **Extend and enforce the native `module-*` convention for all app packages.** Application packages such as `app`, `state` and `suite-sync` do not naturally fit that prefix, so the prefix is used only for app sections, as described in [App modules](#app-modules). This approach offers weaker structural visibility for a similar amount of migration work.
 4. **Extract reusable code into temporary `*-lego` scopes, then rename everything.** This introduces repeated moves and renames, and makes the final layout depend on completing the entire extraction. An opportunistic migration could leave these temporary scopes in place indefinitely.
 
 ## Consequences
