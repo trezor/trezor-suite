@@ -6,7 +6,7 @@ import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { Card, Column, Grid, IconCircle, Row, Text } from '@trezor/components';
 import { PiggyBankIcon } from '@trezor/icons';
 
-import { DashboardSection } from '#src/components/dashboard';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from '#src/components/suite';
 import { Pagination } from '#src/components/wallet';
 import { TransactionTargetLayout } from '#src/components/wallet/TransactionItem/TransactionTargetLayout';

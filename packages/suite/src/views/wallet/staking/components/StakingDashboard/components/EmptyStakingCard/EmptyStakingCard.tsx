@@ -6,7 +6,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, Grid, H3, Paragraph, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
-import { DashboardSection } from '#src/components/dashboard';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { useLayoutSize, useSelector } from '#src/hooks/suite';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
