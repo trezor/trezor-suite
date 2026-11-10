@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 
-import { LayoutPayloadContext } from 'src/support/suite/LayoutContext';
+import { LayoutPayloadContext } from '#src/support/suite/LayoutContext';
 
 import { ContentContainer } from '../ContentContainer';
 import { LayoutFooterSlot, LayoutHeaderSlot } from './LayoutSlots';

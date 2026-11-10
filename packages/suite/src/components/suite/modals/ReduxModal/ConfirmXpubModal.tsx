@@ -4,8 +4,8 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { convertTaprootXpub } from '@trezor/utils';
 
-import { showXpubThunk } from 'src/actions/wallet/publicKeyActions';
-import { useSelector } from 'src/hooks/suite';
+import { showXpubThunk } from '#src/actions/wallet/publicKeyActions';
+import { useSelector } from '#src/hooks/suite';
 
 import {
     ConfirmValueModal,

@@ -4,8 +4,8 @@ import { Card, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { CheckItem } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { CheckItem } from '#src/components/suite';
+import { useSelector } from '#src/hooks/suite';
 
 export const PreBackupCheckboxes = () => {
     const backup = useSelector(selectBackup);

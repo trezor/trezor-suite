@@ -8,12 +8,12 @@ import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type ComposeActionContext, type StakeFormState } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { composeTransaction } from 'src/actions/wallet/stakeActions';
+import { composeTransaction } from '#src/actions/wallet/stakeActions';
 
 import { useStakeCompose } from './useStakeCompose';
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
-jest.mock('src/actions/wallet/stakeActions', () => ({
+jest.mock('#src/actions/wallet/stakeActions', () => ({
     composeTransaction: jest.fn(),
 }));
 

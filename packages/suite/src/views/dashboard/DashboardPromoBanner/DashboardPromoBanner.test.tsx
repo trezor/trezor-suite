@@ -15,7 +15,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { DashboardPromoBanner } from './DashboardPromoBanner';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';

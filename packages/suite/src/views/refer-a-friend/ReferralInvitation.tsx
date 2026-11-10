@@ -3,7 +3,7 @@ import { Box, Button, Card, Column, Flex, H3, Link, Paragraph } from '@trezor/co
 import { breakpoints } from '@trezor/theme';
 import { DATA_PRIVACY_URL, TREZOR_TOS_REFER_A_FRIEND_URL, TREZOR_TOS_URL } from '@trezor/urls';
 
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 import { ReferralCard } from './ReferralCard';
 

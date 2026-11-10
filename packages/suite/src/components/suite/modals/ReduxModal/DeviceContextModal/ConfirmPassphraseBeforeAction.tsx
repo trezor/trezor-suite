@@ -13,8 +13,8 @@ import {
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '@trezor/connect';
 
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
+import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { PassphraseInputCard } from './PassphraseInputCard';
 

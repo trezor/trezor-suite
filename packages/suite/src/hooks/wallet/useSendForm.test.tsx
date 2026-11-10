@@ -50,7 +50,7 @@ import { type PROTO } from '@trezor/connect';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
+import { type ProtocolState } from '#src/reducers/suite/protocolReducer';
 import {
     type UserAction,
     actionSequence,
@@ -58,8 +58,8 @@ import {
     renderHookWithProviders,
     renderWithProviders,
     waitForLoader,
-} from 'src/support/test-utils/hooksHelper';
-import { type SendContextValues } from 'src/types/wallet/sendForm';
+} from '#src/support/test-utils/hooksHelper';
+import { type SendContextValues } from '#src/types/wallet/sendForm';
 
 import * as fixtures from './__fixtures__/useSendForm';
 import { useSendForm, useSendFormContext } from './useSendForm';

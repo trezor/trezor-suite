@@ -17,9 +17,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
-import { useSelector } from 'src/hooks/suite';
-import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
+import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
+import { useSelector } from '#src/hooks/suite';
+import { CRYPTO_INPUT } from '#src/types/earn/earnFormFields';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';

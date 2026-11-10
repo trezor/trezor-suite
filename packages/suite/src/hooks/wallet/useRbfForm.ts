@@ -31,8 +31,8 @@ import {
 import { type AccountUtxo, type FeeLevel } from '@trezor/connect';
 import { BigNumber, throwError } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useCoinjoinRegisteredUtxos } from 'src/hooks/wallet/form/useCoinjoinRegisteredUtxos';
+import { useSelector } from '#src/hooks/suite';
+import { useCoinjoinRegisteredUtxos } from '#src/hooks/wallet/form/useCoinjoinRegisteredUtxos';
 
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';

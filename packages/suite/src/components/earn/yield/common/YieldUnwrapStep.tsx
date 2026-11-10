@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { Button, Column, Row } from '@trezor/components';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 import {
     YieldAmountCard,

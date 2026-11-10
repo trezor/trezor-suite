@@ -8,8 +8,8 @@ import { sortByBlockHeightThenTime } from '@suite-common/wallet-core';
 import {
     type SelectAccountLabelsForSearchState,
     selectAccountsLabelsForSearch,
-} from 'src/selectors/suite/selectAccountLabelsForSearch';
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
+} from '#src/selectors/suite/selectAccountLabelsForSearch';
+import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 import { findTransactionAccount } from './findTransactionAccount';
 

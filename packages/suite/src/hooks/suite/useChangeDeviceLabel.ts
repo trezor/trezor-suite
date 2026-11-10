@@ -11,9 +11,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { isAscii } from '@trezor/utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
-import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { useSelector } from 'src/hooks/suite';
+import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
+import { MAX_LABEL_LENGTH } from '#src/constants/suite/device';
+import { useSelector } from '#src/hooks/suite';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({

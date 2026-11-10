@@ -7,8 +7,8 @@ import {
     createAccountOption,
     createHiddenTokensOption,
     createTokenOption,
-} from 'src/components/suite/asset-picker/utils';
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
+} from '#src/components/suite/asset-picker/utils';
+import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { type AccountWithOptionalLabel, type AccountWithTokensOption } from '../types';
 import { filterAccountsWithTokens } from './useFilterAccountsWithTokens';

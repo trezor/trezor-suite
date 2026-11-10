@@ -8,10 +8,10 @@ import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type Account } from 'src/types/wallet';
-import { TradingDetailTerminalDetails } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
-import { TradingDetailTerminalState } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalState';
-import { getTradingProviderName } from 'src/views/wallet/trading/common/TradingDetail/utils';
+import { type Account } from '#src/types/wallet';
+import { TradingDetailTerminalDetails } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
+import { TradingDetailTerminalState } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalState';
+import { getTradingProviderName } from '#src/views/wallet/trading/common/TradingDetail/utils';
 
 type TradingExchangeDetailPaymentReturnedProps = {
     trade: ExchangeTrade;

@@ -10,11 +10,11 @@ import { Grid } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedDate, HiddenPlaceholder } from 'src/components/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { type Account } from 'src/types/wallet';
-import { type AggregatedAccountHistory, type GraphRange } from 'src/types/wallet/graph';
-import { type FiatValueMap, sumFiatValueMap } from 'src/utils/wallet/graph';
+import { FormattedDate, HiddenPlaceholder } from '#src/components/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { type Account } from '#src/types/wallet';
+import { type AggregatedAccountHistory, type GraphRange } from '#src/types/wallet/graph';
+import { type FiatValueMap, sumFiatValueMap } from '#src/utils/wallet/graph';
 
 import { InfoCard } from './InfoCard';
 

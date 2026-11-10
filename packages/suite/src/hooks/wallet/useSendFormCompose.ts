@@ -29,7 +29,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { isChanged } from '@trezor/utils';
 
-import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
+import { type SendContextValues, type UseSendFormState } from '#src/types/wallet/sendForm';
 
 import { useSolanaSubscribeBlocks } from './form/useSolanaSubscribeBlocks';
 

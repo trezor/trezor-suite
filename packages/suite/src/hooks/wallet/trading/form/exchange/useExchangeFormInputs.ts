@@ -17,19 +17,19 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingCryptoAssetChange } from 'src/hooks/wallet/trading/form/common/useTradingCryptoAssetChange';
-import { useTradingFiatCryptoAmount } from 'src/hooks/wallet/trading/form/common/useTradingFiatCryptoAmount';
-import { useTradingSendAssetBalance } from 'src/hooks/wallet/trading/form/common/useTradingSendAssetBalance';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingCryptoAssetChange } from '#src/hooks/wallet/trading/form/common/useTradingCryptoAssetChange';
+import { useTradingFiatCryptoAmount } from '#src/hooks/wallet/trading/form/common/useTradingFiatCryptoAmount';
+import { useTradingSendAssetBalance } from '#src/hooks/wallet/trading/form/common/useTradingSendAssetBalance';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 import {
     type TradingUseFormActionsProps,
     type TradingUseFormActionsReturnProps,
-} from 'src/types/trading/tradingForm';
+} from '#src/types/trading/tradingForm';
 import {
     calcMaxTokenAmount,
     calcRatioAmount,
-} from 'src/utils/wallet/trading/sellExchangeAmountUtils';
+} from '#src/utils/wallet/trading/sellExchangeAmountUtils';
 
 type UseExchangeFormInputsProps = TradingUseFormActionsProps<TradingExchangeFormProps>;
 

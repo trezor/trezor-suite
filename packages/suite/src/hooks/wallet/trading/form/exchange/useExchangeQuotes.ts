@@ -28,12 +28,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDidUpdate } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 import {
     getExchangeActiveAmount,
     getExchangeActiveAmountField,
     isExchangeQuotesFetchAllowed,
-} from 'src/utils/wallet/trading/exchangeQuotesRequestUtils';
+} from '#src/utils/wallet/trading/exchangeQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
 

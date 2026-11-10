@@ -6,7 +6,7 @@ import {
     UNKNOWN_PROCESS,
 } from '@suite-common/connect-popup/src/connectPopupTypes';
 
-import { ThemeProvider } from 'src/support/suite/ThemeProvider';
+import { ThemeProvider } from '#src/support/suite/ThemeProvider';
 
 import { ConnectProcessLabel } from './ConnectProcessLabel';
 

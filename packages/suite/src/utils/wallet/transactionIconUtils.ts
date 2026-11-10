@@ -14,7 +14,7 @@ import {
     XIcon,
 } from '@trezor/icons';
 
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from '#src/types/wallet';
 
 export const getTransactionIcon = (
     transaction: WalletAccountTransaction,

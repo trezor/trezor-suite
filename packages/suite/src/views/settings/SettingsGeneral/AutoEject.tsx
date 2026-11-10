@@ -10,8 +10,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
-import { useSelector } from 'src/hooks/suite';
+import { setAutoEjectEnabledThunk } from '#src/actions/suite/autoEjectThunks';
+import { useSelector } from '#src/hooks/suite';
 
 type AutoEjectConfirmationModalProps = {
     onCancel: () => void;

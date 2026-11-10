@@ -12,7 +12,7 @@ import {
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TradingTradeType, initialState as tradingInitialState } from '@suite-common/trading';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingQuoteAmount } from './TradingQuoteAmount';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';

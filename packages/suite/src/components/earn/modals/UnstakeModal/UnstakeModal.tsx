@@ -6,8 +6,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { WithdrawalFormContext, useWithdrawalForm } from 'src/hooks/earn/useWithdrawalForm';
-import { useLayoutSize } from 'src/hooks/suite';
+import { WithdrawalFormContext, useWithdrawalForm } from '#src/hooks/earn/useWithdrawalForm';
+import { useLayoutSize } from '#src/hooks/suite';
 
 import { UnstakeButton } from './UnstakeForm/UnstakeButton';
 import { UnstakeForm } from './UnstakeForm/UnstakeForm';

@@ -21,16 +21,16 @@ import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
+import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
 import {
     BaseCurrencyValue,
     FormattedCryptoAmount,
     PriceTicker,
     TrendTicker,
-} from 'src/components/suite';
-import { AssetDetailLink } from 'src/components/suite/AssetDetailLink/AssetDetailLink';
-import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useSelector } from 'src/hooks/suite';
+} from '#src/components/suite';
+import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';
+import { StellarManageTokenModal } from '#src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
+import { useSelector } from '#src/hooks/suite';
 
 import { TokenRowActions } from './TokenRowActions';
 import { useTokenYieldBadge } from './hooks/useTokenYieldBadge';

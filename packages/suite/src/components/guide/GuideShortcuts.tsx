@@ -15,9 +15,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setView } from 'src/actions/suite/guideActions';
-import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
-import { useSelector } from 'src/hooks/suite';
+import { setView } from '#src/actions/suite/guideActions';
+import { GuideContent, GuideHeader, GuideViewWrapper } from '#src/components/guide';
+import { useSelector } from '#src/hooks/suite';
 
 type ShortcutKeys = ShortcutBadgeProps['shortcut'];
 type TranslationId = Parameters<typeof Translation>[0]['id'];

@@ -7,7 +7,7 @@ import { LoadingContent } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { TronFeeContent } from './TronFeeContent';
 import { useFeesContext } from '../../context/FeesContext';

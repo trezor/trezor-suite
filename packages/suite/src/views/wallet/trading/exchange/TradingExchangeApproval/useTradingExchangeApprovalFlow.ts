@@ -17,8 +17,8 @@ import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
-import { useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
+import { selectExchangeQuoteThunk } from '#src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
+import { useExchangeApproval } from '#src/hooks/wallet/trading/form/exchange/useExchangeApproval';
 
 import { useResumedApproval } from './useResumedApproval';
 

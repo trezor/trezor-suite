@@ -8,8 +8,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { useFreshRef } from '@trezor/react-utils';
 
-import { type AssetRowOption } from 'src/components/suite/asset-picker/types';
-import { useSelector } from 'src/hooks/suite';
+import { type AssetRowOption } from '#src/components/suite/asset-picker/types';
+import { useSelector } from '#src/hooks/suite';
 
 import { buildSellAssetRows } from '../utils/buildSellAssetRows';
 

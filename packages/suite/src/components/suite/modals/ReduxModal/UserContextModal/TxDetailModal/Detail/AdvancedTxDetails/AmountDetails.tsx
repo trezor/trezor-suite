@@ -22,12 +22,12 @@ import {
 import { Table, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FormattedDate } from 'src/components/suite/FormattedDate';
-import { AmountComponent } from 'src/components/wallet/AmountComponent';
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { FormattedDate } from '#src/components/suite/FormattedDate';
+import { AmountComponent } from '#src/components/wallet/AmountComponent';
+import { useSelector } from '#src/hooks/suite';
+import { type WalletAccountTransaction } from '#src/types/wallet';
 
 import { HistoricRateChange } from './HistoricRateChange';
 

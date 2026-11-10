@@ -12,7 +12,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 export const PowerMonitorManager = () => {
     const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);

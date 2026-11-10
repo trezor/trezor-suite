@@ -16,7 +16,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { resolveAfter } from '@trezor/utils';
 
-import { type Account } from 'src/types/wallet';
+import { type Account } from '#src/types/wallet';
 
 import { AddButton } from './AddButton';
 

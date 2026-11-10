@@ -11,7 +11,7 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { DeviceCompromisedContent } from './DeviceCompromisedContent';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';

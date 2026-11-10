@@ -3,7 +3,7 @@ import { selectVisibleNonEmptyDeviceAccountsByNetworkSymbol } from '@suite-commo
 import { Column, Note, Skeleton } from '@trezor/components';
 import { WalletIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 type AssetCoinNameProps = {
     network: Network;

@@ -6,7 +6,7 @@ import { type BackupType } from '@suite-common/suite-types';
 import { Badge, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from '#src/hooks/suite';
 
 import { DefaultTag } from './DefaultTag';
 import { OptionWithContent } from './OptionWithContent';

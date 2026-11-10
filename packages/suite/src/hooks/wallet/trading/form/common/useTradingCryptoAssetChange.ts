@@ -23,9 +23,9 @@ import {
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
-import { type AmountLimitProps } from 'src/utils/suite/validation';
-import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
+import { type TradingSellExchangeFormProps } from '#src/types/trading/tradingForm';
+import { type AmountLimitProps } from '#src/utils/suite/validation';
+import { resolveAddressAndToken } from '#src/utils/wallet/trading/tradingUtils';
 
 import { useTradingAssetDecimals } from './useTradingAssetDecimals';
 

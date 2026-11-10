@@ -2,7 +2,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 type YieldTokenValueToken = {
     symbol: string;

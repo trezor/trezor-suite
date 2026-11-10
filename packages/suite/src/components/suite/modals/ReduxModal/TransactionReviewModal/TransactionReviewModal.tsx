@@ -19,14 +19,14 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     removeSendFormDraftThunk,
     signAndPushSendFormTransactionThunk,
-} from 'src/actions/wallet/send/sendFormThunks';
-import { cancelSignYieldTxThunk } from 'src/actions/wallet/stablecoin-yield';
+} from '#src/actions/wallet/send/sendFormThunks';
+import { cancelSignYieldTxThunk } from '#src/actions/wallet/stablecoin-yield';
 import {
     cancelSignTxThunk as cancelSignStakingTx,
     signTransactionThunk,
-} from 'src/actions/wallet/stakeActions';
-import { cancelSignTronFreezeTxThunk } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
-import { useSelector } from 'src/hooks/suite';
+} from '#src/actions/wallet/stakeActions';
+import { cancelSignTronFreezeTxThunk } from '#src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
+import { useSelector } from '#src/hooks/suite';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';

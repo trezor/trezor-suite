@@ -14,8 +14,8 @@ import { Button, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedDate } from 'src/components/suite';
-import { type Account } from 'src/types/wallet';
+import { FormattedDate } from '#src/components/suite';
+import { type Account } from '#src/types/wallet';
 
 import SkeletonTransactionItem from './SkeletonTransactionItem';
 import { selectStoredTransactionCounts } from './selectStoredTransactionCounts';

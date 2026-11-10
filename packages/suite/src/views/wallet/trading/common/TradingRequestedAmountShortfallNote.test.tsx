@@ -6,7 +6,7 @@ import { type BuyTrade, type BuyTradeQuoteRequest, type Coins, type CryptoId } f
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingRequestedAmountShortfallNote } from './TradingRequestedAmountShortfallNote';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';

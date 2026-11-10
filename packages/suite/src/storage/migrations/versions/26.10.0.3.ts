@@ -1,6 +1,6 @@
 import { createMigration } from '@suite/idb-migration-utils';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '#src/storage/definitions';
 
 // `tokenManagement` is created by the legacy version 46 migration. An upgrade that failed before the
 // abort fix committed the new version anyway, so databases exist whose version claims the store is

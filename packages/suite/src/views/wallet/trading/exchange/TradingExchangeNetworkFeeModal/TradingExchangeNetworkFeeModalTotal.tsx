@@ -1,10 +1,10 @@
 import { Card, Row } from '@trezor/components';
 
-import { CollapsibleFeesHeader } from 'src/components/wallet/Fees/CollapsibleFees/CollapsibleFeesHeader';
-import { MaximumFee } from 'src/components/wallet/Fees/CollapsibleFees/MaximumFee';
-import { TronFee } from 'src/components/wallet/Fees/CollapsibleFees/TronFee/TronFee';
-import { type useTransactionMaxFee } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useTransactionMaxFee';
-import { useFeesContext } from 'src/components/wallet/Fees/context/FeesContext';
+import { CollapsibleFeesHeader } from '#src/components/wallet/Fees/CollapsibleFees/CollapsibleFeesHeader';
+import { MaximumFee } from '#src/components/wallet/Fees/CollapsibleFees/MaximumFee';
+import { TronFee } from '#src/components/wallet/Fees/CollapsibleFees/TronFee/TronFee';
+import { type useTransactionMaxFee } from '#src/components/wallet/Fees/CollapsibleFees/hooks/useTransactionMaxFee';
+import { useFeesContext } from '#src/components/wallet/Fees/context/FeesContext';
 
 export type TradingExchangeNetworkFeeModalTotalProps = {
     txMaxFee: ReturnType<typeof useTransactionMaxFee>;

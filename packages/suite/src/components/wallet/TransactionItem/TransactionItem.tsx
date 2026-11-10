@@ -28,9 +28,9 @@ import { GaugeIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { OutlineHighlight } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { SUBPAGE_NAV_HEIGHT } from '#src/constants/suite/layout';
+import { useSelector } from '#src/hooks/suite';
+import { type WalletAccountTransaction } from '#src/types/wallet';
 
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';
 import { TransactionAccountBadge } from './TransactionAccountBadge';

@@ -19,7 +19,7 @@ import { selectDeviceDefaultBackupType } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import { Banner, Text } from '@trezor/components';
 
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from '#src/hooks/suite';
 
 import { FloatingSelections } from './FloatingSelections';
 import { OptionText, SelectedOption } from './OptionWithContent';

@@ -5,8 +5,8 @@ import { useTradingUtils } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
+import { FormattedCryptoAmount } from '#src/components/suite';
+import { TradingCoinLogo } from '#src/views/wallet/trading/common/TradingCoinLogo';
 
 const LogoWrapper = styled.div`
     line-height: 0;

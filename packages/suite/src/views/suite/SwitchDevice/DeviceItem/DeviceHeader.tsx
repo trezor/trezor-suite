@@ -5,8 +5,8 @@ import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { IconButton, Row, TOOLTIP_DELAY_LONG } from '@trezor/components';
 import { CaretLeftIcon, XIcon } from '@trezor/icons';
 
-import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
-import { type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
+import { DeviceStatus } from '#src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
+import { type ForegroundAppProps, type TrezorDevice } from '#src/types/suite';
 
 type DeviceHeaderProps = {
     device: TrezorDevice;

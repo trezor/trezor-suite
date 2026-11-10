@@ -16,8 +16,8 @@ import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { IconButton, Row } from '@trezor/components';
 import { ArrowsDownUpIcon } from '@trezor/icons';
 
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 
 import { TradingExchangeSwitchInactiveNetworkModal } from './TradingExchangeSwitchInactiveNetworkModal';
 import { getPayAmountInFormUnit } from '../tradingFormInputsUtils';

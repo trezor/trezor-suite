@@ -15,7 +15,7 @@ import {
     TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
 } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';

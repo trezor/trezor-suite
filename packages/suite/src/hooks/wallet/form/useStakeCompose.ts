@@ -15,8 +15,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { composeTransaction } from 'src/actions/wallet/stakeActions';
-import { type StakeContextValues } from 'src/components/earn/forms/StakeFormContext';
+import { composeTransaction } from '#src/actions/wallet/stakeActions';
+import { type StakeContextValues } from '#src/components/earn/forms/StakeFormContext';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 

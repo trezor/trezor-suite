@@ -20,8 +20,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
-import { AssetsModal } from 'src/components/suite/asset-picker/components';
-import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
+import { AssetsModal } from '#src/components/suite/asset-picker/components';
+import { globalSendReceiveFiltersActions } from '#src/slices/wallet/globalSendReceiveFilters';
 
 import { AssetSearchWithNetworkFilter } from '../../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';

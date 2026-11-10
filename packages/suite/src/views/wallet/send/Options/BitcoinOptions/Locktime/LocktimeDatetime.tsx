@@ -7,7 +7,7 @@ import { getCurrentUTCDatetime, parseUTCdatetime } from '@suite-common/suite-uti
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { Input, Row, Text } from '@trezor/components';
 
-import { useSendFormContext } from 'src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet';
 
 export const inputName = 'bitcoinLocktimeDatetime';
 

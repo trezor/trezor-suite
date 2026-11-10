@@ -8,12 +8,12 @@ import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626, sortTokensByName } from '@suite-common/wallet-utils';
 import { Banner, Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 import {
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
-} from 'src/utils/wallet/tokenUtils';
+} from '#src/utils/wallet/tokenUtils';
 
 import { NoTokens } from '../common/NoTokens';
 import { TokensTable } from '../common/TokensTable/TokensTable';

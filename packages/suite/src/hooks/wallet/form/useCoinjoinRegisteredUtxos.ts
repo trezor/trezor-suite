@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { type AccountUtxo } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 interface UseCoinjoinRegisteredUtxosProps {
     account: Account;

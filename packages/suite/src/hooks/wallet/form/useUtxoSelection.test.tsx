@@ -20,7 +20,7 @@ import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { type AccountUtxo, type PROTO } from '@trezor/connect';
 import { mock } from '@trezor/dependency-injection';
 
-import { type SendContextValues } from 'src/types/wallet/sendForm';
+import { type SendContextValues } from '#src/types/wallet/sendForm';
 
 import { useUtxoSelection } from './useUtxoSelection';
 

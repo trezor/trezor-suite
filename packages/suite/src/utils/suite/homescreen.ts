@@ -1,8 +1,8 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { splitStringEveryNCharacters } from '@trezor/utils';
 
-import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
-import { type TrezorDevice } from 'src/types/suite/index';
+import { HAS_MONOCHROME_SCREEN } from '#src/constants/suite/device';
+import { type TrezorDevice } from '#src/types/suite/index';
 
 // TODO: this is already part of features (since certain version) so I suggest forbidding screen changes
 // prior to that version and removing this definition from here

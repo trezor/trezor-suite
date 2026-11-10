@@ -20,9 +20,9 @@ import {
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { openNode } from 'src/actions/suite/guideActions';
-import { useSelector } from 'src/hooks/suite';
-import { getNodeTitle } from 'src/utils/suite/guide';
+import { openNode } from '#src/actions/suite/guideActions';
+import { useSelector } from '#src/hooks/suite';
+import { getNodeTitle } from '#src/utils/suite/guide';
 
 import { GuideItem } from './GuideItem';
 

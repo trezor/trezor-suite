@@ -4,7 +4,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList } from '@trezor/components';
 
-import { AssetsModal } from 'src/components/suite/asset-picker/components';
+import { AssetsModal } from '#src/components/suite/asset-picker/components';
 
 import { AssetDetailAccountIdentity } from './AssetDetailAccountIdentity';
 import { ASSET_DETAIL_MODAL_MAX_HEIGHT } from './constants';

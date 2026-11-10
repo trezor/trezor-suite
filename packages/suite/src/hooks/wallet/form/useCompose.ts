@@ -20,8 +20,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { type SendContextValues } from 'src/types/wallet/sendForm';
+import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
+import { type SendContextValues } from '#src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 

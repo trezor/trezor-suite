@@ -12,19 +12,19 @@ import {
     AssetRowToken,
     AssetsModal,
     ExpandableAssetRowGroup,
-} from 'src/components/suite/asset-picker/components';
-import { useExpandableGroups, useSearchFilter } from 'src/components/suite/asset-picker/hooks';
+} from '#src/components/suite/asset-picker/components';
+import { useExpandableGroups, useSearchFilter } from '#src/components/suite/asset-picker/hooks';
 import {
     type AccountWithOptionalLabel,
     type AssetGroupOption,
     type AssetPickerListItem,
     type AssetRowOption,
-} from 'src/components/suite/asset-picker/types';
+} from '#src/components/suite/asset-picker/types';
 import {
     type AssetGroupKey,
     getAssetGroupKey,
-} from 'src/components/suite/asset-picker/utils/assetGroupKey';
-import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
+} from '#src/components/suite/asset-picker/utils/assetGroupKey';
+import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/utils/assetPickerItemHeights';
 
 import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
 import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';

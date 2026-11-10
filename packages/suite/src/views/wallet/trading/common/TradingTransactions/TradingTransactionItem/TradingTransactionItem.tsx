@@ -1,7 +1,7 @@
 import { Card, Icon, Row, Text } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
 
-import { FormattedDate } from 'src/components/suite';
+import { FormattedDate } from '#src/components/suite';
 
 import { TradingTransactionSideAmount } from './TradingTransactionSideAmount';
 import { TradingTransactionStatusIcon } from './TradingTransactionStatusIcon';

@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
 import { Column } from '@trezor/components';
 
-import type { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
-import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
+import type { TradingSelectedOfferInfoProps } from '#src/types/trading/tradingForm';
+import { tradingGetAmountLabels } from '#src/utils/wallet/trading/tradingUtils';
 
 import { TradingFiatAmountInfoItem } from './TradingInfo/TradingFiatAmountInfoItem';
 import { TradingInfoItem } from './TradingInfo/TradingInfoItem';

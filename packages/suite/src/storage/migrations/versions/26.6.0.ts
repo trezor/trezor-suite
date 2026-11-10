@@ -1,6 +1,6 @@
 import { createMigration } from '@suite/idb-migration-utils';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '#src/storage/definitions';
 
 // Remove desktop trading form drafts (trading-buy/*, trading-sell/, trading-exchange/)
 export default createMigration<SuiteDBSchema>('26.6.0', async (_, tx) => {

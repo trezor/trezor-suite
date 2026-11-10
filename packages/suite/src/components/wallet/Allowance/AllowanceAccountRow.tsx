@@ -3,7 +3,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { CardList, Row, Text } from '@trezor/components';
 import { NetworkIcon } from '@trezor/product-components';
 
-import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
+import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling';
 
 type AllowanceAccountRowProps = {
     account: Account;

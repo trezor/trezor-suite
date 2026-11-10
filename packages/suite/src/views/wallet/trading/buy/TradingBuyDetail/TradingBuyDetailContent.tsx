@@ -4,17 +4,17 @@ import { useTranslation } from '@suite/intl';
 import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
-import { useTradingDetailMissingTradeRedirect } from 'src/hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { TradingDetailLayout } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
-import { TradingDetailProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
-import { TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingDetailContext } from '#src/hooks/wallet/trading/useTradingDetail';
+import { useTradingDetailMissingTradeRedirect } from '#src/hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
+import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
+import { TradingDetailLayout } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
+import { TradingDetailProcessingStep } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
+import { TradingDetailProgress } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
 import {
     getTradingDetailStepState,
     getTradingProviderName,
-} from 'src/views/wallet/trading/common/TradingDetail/utils';
+} from '#src/views/wallet/trading/common/TradingDetail/utils';
 
 import { TradingBuyDetailPaymentBanner } from './TradingBuyDetailPaymentBanner';
 import { TradingBuyDetailPaymentFailed } from './TradingBuyDetailPaymentFailed';

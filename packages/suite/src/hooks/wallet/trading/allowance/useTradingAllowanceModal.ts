@@ -14,10 +14,10 @@ import {
 import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 
-import { type AllowanceProvider } from 'src/components/wallet/Allowance/AllowanceProviderInfo';
-import { useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
-import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
-import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
+import { type AllowanceProvider } from '#src/components/wallet/Allowance/AllowanceProviderInfo';
+import { useExchangeApproval } from '#src/hooks/wallet/trading/form/exchange/useExchangeApproval';
+import { useModalLastValidParams } from '#src/hooks/wallet/trading/form/useModalLastValidParams';
+import { type GetTradingExchangeCryptoInfo } from '#src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 
 type TradeApprovalAction = EventInstance<typeof events.tradeApprovalEvent>['payload']['action'];
 

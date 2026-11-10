@@ -32,15 +32,15 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
-import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
-import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
-import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
-import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/exchange/useTradingExchangeFormDefaultValues';
-import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
-import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { type TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
+import { useSolanaSubscribeBlocks } from '#src/hooks/wallet/form/useSolanaSubscribeBlocks';
+import { useTradingAmountUnitSync } from '#src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
+import { useTradingComposeTransaction } from '#src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
+import { useTradingFiatValues } from '#src/hooks/wallet/trading/form/common/useTradingFiatValues';
+import { useTradingExchangeFormDefaultValues } from '#src/hooks/wallet/trading/form/exchange/useTradingExchangeFormDefaultValues';
+import { useServerEnvironment } from '#src/hooks/wallet/trading/useServerEnviroment';
+import { useTradingExchangeTradeActions } from '#src/hooks/wallet/trading/useTradingExchangeTradeActions';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { type TradingExchangeFormContextProps } from '#src/types/trading/tradingForm';
 
 import { useExchangeApproval } from './useExchangeApproval';
 import { useExchangeDexQuote } from './useExchangeDexQuote';

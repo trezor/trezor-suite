@@ -5,9 +5,9 @@ import { selectBlockchainState } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 
-import { useBackendReconnection } from 'src/hooks/settings/backends';
-import { useSelector } from 'src/hooks/suite';
-import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
+import { useBackendReconnection } from '#src/hooks/settings/backends';
+import { useSelector } from '#src/hooks/suite';
+import { selectIsSuiteOnline } from '#src/selectors/suite/suiteSelectors';
 
 type DisconnectedNotificationProps = {
     symbol: NetworkSymbol;

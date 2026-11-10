@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { openXpubModal, showXpubThunk } from 'src/actions/wallet/publicKeyActions';
+import { openXpubModal, showXpubThunk } from '#src/actions/wallet/publicKeyActions';
 
 import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 

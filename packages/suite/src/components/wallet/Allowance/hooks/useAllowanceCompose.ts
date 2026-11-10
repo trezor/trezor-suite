@@ -27,7 +27,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef, useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useFees } from 'src/hooks/wallet/form/useFees';
+import { useFees } from '#src/hooks/wallet/form/useFees';
 
 type UseAllowanceComposeParams = {
     account: Account;

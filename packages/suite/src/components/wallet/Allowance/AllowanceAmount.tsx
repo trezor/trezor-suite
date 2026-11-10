@@ -3,7 +3,7 @@ import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Spinner, Text } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 type AllowanceAmountProps = {
     amount: string;

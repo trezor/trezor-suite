@@ -7,8 +7,8 @@ import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useSelector } from 'src/hooks/suite';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
+import { useSelector } from '#src/hooks/suite';
 
 export const CardanoOutdatedStakingBanner = () => {
     const { dispatch } = useServices(injectDispatch);

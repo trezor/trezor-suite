@@ -6,9 +6,9 @@ import {
 } from '@suite-common/wallet-core';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
-import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
-import { createAccountOption, createTokenOption } from 'src/components/suite/asset-picker/utils';
-import { enhanceTokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type AccountWithTokensOption } from '#src/components/suite/asset-picker/types';
+import { createAccountOption, createTokenOption } from '#src/components/suite/asset-picker/utils';
+import { enhanceTokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { type GlobalSendTarget } from '../types';
 

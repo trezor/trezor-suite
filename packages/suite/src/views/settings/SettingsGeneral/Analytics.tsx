@@ -8,7 +8,7 @@ import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 const PositionedSwitch = styled.div`
     align-self: center;

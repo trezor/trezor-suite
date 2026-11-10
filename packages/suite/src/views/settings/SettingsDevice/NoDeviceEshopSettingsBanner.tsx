@@ -29,7 +29,7 @@ import {
 import { breakpoints, palette } from '@trezor/theme';
 import { ESHOP_STORE_URL, withGetTrezorCtaUtm } from '@trezor/urls';
 
-import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { ContentFlex, useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 const HeroContainer = styled.div`
     display: flex;

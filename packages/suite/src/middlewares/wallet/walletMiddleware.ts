@@ -24,12 +24,12 @@ import {
 } from '@suite-common/wallet-core';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import { updateWindowVisibility } from 'src/actions/suite/windowActions';
-import { type SyncSelectedAccountThunkState } from 'src/actions/wallet/selectedAccountActions';
-import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
-import { type ConvertDraftsThunkState } from 'src/actions/wallet/trading/tradingCommonActions';
-import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import { type WindowRootState, selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
+import { updateWindowVisibility } from '#src/actions/suite/windowActions';
+import { type SyncSelectedAccountThunkState } from '#src/actions/wallet/selectedAccountActions';
+import * as selectedAccountActions from '#src/actions/wallet/selectedAccountActions';
+import { type ConvertDraftsThunkState } from '#src/actions/wallet/trading/tradingCommonActions';
+import * as tradingCommonActions from '#src/actions/wallet/trading/tradingCommonActions';
+import { type WindowRootState, selectIsWindowVisible } from '#src/reducers/suite/windowReducer';
 
 type WalletMiddlewareState = SyncSelectedAccountThunkState &
     SyncAccountsWithBlockchainThunkState &

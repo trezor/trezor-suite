@@ -7,9 +7,9 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
-import { usePreferredModal, useSelector } from 'src/hooks/suite';
-import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
+import { ThpGlobalModalManager } from '#src/components/connection/thp/ThpGlobalModalManager';
+import { usePreferredModal, useSelector } from '#src/hooks/suite';
+import { SwitchDevice } from '#src/views/suite/SwitchDevice/SwitchDevice';
 
 export const SwitchDeviceLayer = () => {
     const modal = usePreferredModal();

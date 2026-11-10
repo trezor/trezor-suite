@@ -87,16 +87,16 @@ import {
     createMiddlewareWithExtraDeps,
 } from '@trezor/redux-utils';
 
-import * as storageActions from 'src/actions/suite/storageActions';
+import * as storageActions from '#src/actions/suite/storageActions';
 import {
     closeEvmExplanationBanner,
     confirmEvmExplanationModal,
-} from 'src/actions/suite/suiteActions';
-import { accountGraphFail, accountGraphSuccess } from 'src/actions/wallet/graphActions';
-import { type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { selectGraph } from 'src/reducers/wallet/graphReducer';
-import { type GraphState } from 'src/reducers/wallet/graphReducer';
-import { type DbDep } from 'src/storage/createDb';
+} from '#src/actions/suite/suiteActions';
+import { accountGraphFail, accountGraphSuccess } from '#src/actions/wallet/graphActions';
+import { type SuiteState } from '#src/reducers/suite/suiteReducer';
+import { selectGraph } from '#src/reducers/wallet/graphReducer';
+import { type GraphState } from '#src/reducers/wallet/graphReducer';
+import { type DbDep } from '#src/storage/createDb';
 
 type StorageMiddlewareDeps = WithServices<DbDep>;
 

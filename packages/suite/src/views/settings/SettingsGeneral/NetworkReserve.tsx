@@ -11,7 +11,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 export const NetworkReserve = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);

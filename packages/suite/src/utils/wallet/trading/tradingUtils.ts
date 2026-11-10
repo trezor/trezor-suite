@@ -15,12 +15,12 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type TrezorDevice } from 'src/types/suite';
+import { type TrezorDevice } from '#src/types/suite';
 import {
     type TradingGetAmountLabelsProps,
     type TradingGetAmountLabelsReturnProps,
-} from 'src/types/trading/trading';
-import { type Account } from 'src/types/wallet';
+} from '#src/types/trading/trading';
+import { type Account } from '#src/types/wallet';
 
 export const translationKeys: Record<
     TradingType,

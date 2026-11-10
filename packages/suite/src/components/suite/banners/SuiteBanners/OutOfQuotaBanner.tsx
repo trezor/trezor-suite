@@ -11,7 +11,7 @@ import { InfoIcon, XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 export const OutOfQuotaBanner = () => {
     const { dispatch } = useServices(injectDispatch);

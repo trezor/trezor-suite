@@ -3,7 +3,7 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { filterInconclusiveAuthenticityChecks } from '@suite-common/firmware-authenticity';
 import { type DeviceWithEmptyPath } from '@suite-common/suite-types';
 
-import { type AcquiredDevice } from 'src/types/suite';
+import { type AcquiredDevice } from '#src/types/suite';
 
 /**
  * Strip fields from Device

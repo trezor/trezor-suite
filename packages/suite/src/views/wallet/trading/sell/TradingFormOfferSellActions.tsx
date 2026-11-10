@@ -10,12 +10,12 @@ import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { selectSellQuoteThunk } from 'src/actions/wallet/trading/sell/selectSellQuoteThunk';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
-import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC';
-import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
+import { selectSellQuoteThunk } from '#src/actions/wallet/trading/sell/selectSellQuoteThunk';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { getTradingFirstOutput } from '#src/utils/wallet/trading/tradingUtils';
+import { TradingFormOfferConfirmButton } from '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { TradingFormOfferOTC } from '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC';
+import { useTradingFormOfferCommon } from '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
 
 export const TradingFormOfferSellActions = () => {
     // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled

@@ -4,8 +4,8 @@ import {
     useAccountsWithTokenDisplayNames,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
-} from 'src/components/suite/asset-picker/hooks';
-import { type AssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
+} from '#src/components/suite/asset-picker/hooks';
+import { type AssetGroupKey } from '#src/components/suite/asset-picker/utils/assetGroupKey';
 
 import { useGroupedAssetOptions } from './useGroupedAssetOptions';
 import { useSellAssetRows } from './useSellAssetRows';

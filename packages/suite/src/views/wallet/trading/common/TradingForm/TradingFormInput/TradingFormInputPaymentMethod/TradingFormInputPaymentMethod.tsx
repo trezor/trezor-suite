@@ -14,11 +14,11 @@ import {
 import { GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { FakeSelect } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingTradeBuySellType } from 'src/types/trading/trading';
-import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
+import { FakeSelect } from '#src/components/suite';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { type TradingTradeBuySellType } from '#src/types/trading/trading';
+import { type TradingFormInputDefaultProps } from '#src/types/trading/tradingForm';
 
 import { PaymentMethodModal } from './PaymentMethodModal';
 

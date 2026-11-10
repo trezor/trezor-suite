@@ -3,7 +3,7 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceName } from '@suite-common/device';
 import { CheckIcon } from '@trezor/icons';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from '#src/hooks/suite';
 
 export const FinalStep = () => {
     const { goToSuite } = useOnboarding();

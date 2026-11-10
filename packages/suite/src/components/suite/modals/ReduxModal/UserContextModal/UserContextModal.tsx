@@ -21,11 +21,11 @@ import {
     TronStakeInANutshellModal,
     TronVoteConsentModal,
     UnstakeModal,
-} from 'src/components/earn';
-import { TronStakeConsentModal } from 'src/components/earn/staking/tron/TronStakeConsentModal';
-import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
-import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
-import { useSelector } from 'src/hooks/suite';
+} from '#src/components/earn';
+import { TronStakeConsentModal } from '#src/components/earn/staking/tron/TronStakeConsentModal';
+import { ConnectPopupTxSimulationModal } from '#src/components/tx-simulation/connect-popup';
+import { EarnYieldTxSimulationModal } from '#src/components/tx-simulation/earn-stablecoin';
+import { useSelector } from '#src/hooks/suite';
 
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';

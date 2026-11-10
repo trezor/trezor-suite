@@ -14,7 +14,7 @@ import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingFormOfferOTC } from './TradingFormOfferOTC';
 import {
@@ -24,7 +24,7 @@ import {
 
 const mockUseTradingFormContext = jest.fn();
 
-jest.mock('src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
+jest.mock('#src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
     useTradingFormContext: () => mockUseTradingFormContext(),
 }));
 

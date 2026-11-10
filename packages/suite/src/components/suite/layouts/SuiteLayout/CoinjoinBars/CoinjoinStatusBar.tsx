@@ -12,11 +12,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
-import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
+import { CountdownTimer } from '#src/components/suite/CountdownTimer';
+import { WalletLabeling } from '#src/components/suite/labeling/WalletLabeling';
+import { ROUND_PHASE_MESSAGES } from '#src/constants/suite/coinjoin';
+import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from '#src/constants/suite/layout';
+import { useSelector } from '#src/hooks/suite';
 
 const SPACING = 6;
 

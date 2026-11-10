@@ -1,6 +1,6 @@
 import { type UnavailableCapability } from '@trezor/connect';
 
-import { type Account } from 'src/types/wallet';
+import { type Account } from '#src/types/wallet';
 
 import { verifyAvailability } from './verifyAvailability';
 

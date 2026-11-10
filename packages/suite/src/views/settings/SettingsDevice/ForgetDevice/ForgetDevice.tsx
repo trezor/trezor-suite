@@ -6,7 +6,7 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { SectionItem } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { ForgetDeviceModal } from './ForgetDeviceModal';
 

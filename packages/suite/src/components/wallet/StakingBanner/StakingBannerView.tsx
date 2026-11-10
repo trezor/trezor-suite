@@ -8,8 +8,8 @@ import { getPotentialStakingRewards } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useStakingRate } from 'src/hooks/earn/useStakingRate';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
+import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 
 import { type StakingBannerAccounts } from './useStakingBanner';
 

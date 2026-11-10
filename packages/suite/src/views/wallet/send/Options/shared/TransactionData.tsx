@@ -5,7 +5,7 @@ import { isHexValid } from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
-import { useSendFormContext } from 'src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet';
 
 const inputHexName = 'transactionData';
 const inputAmountName = 'outputs.0.amount';

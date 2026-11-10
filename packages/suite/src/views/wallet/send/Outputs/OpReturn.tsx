@@ -6,9 +6,9 @@ import { isHexValid } from '@suite-common/wallet-utils';
 import { Column, Flex, IconButton, Row, Text, Textarea, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
-import { OpenGuideFromTooltip } from 'src/components/guide';
-import { useLayoutSize } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
+import { OpenGuideFromTooltip } from '#src/components/guide';
+import { useLayoutSize } from '#src/hooks/suite';
+import { useSendFormContext } from '#src/hooks/wallet';
 
 type OpReturnProps = { outputId: number };
 

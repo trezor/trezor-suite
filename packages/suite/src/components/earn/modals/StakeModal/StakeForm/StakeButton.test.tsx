@@ -34,7 +34,7 @@ jest.mock('@trezor/components', () => ({
         ),
     },
 }));
-jest.mock('src/hooks/suite', () => ({
+jest.mock('#src/hooks/suite', () => ({
     useSelector: (selector: (state: object) => unknown) =>
         selector({ modal: { context: MODAL_CONTEXT_NONE } }),
 }));
@@ -44,10 +44,10 @@ jest.mock('@suite-common/wallet-core', () => ({
     selectAreFeesLoading: () => false,
     selectVotingDelegationOption: () => ({ type: 'abstain' }),
 }));
-jest.mock('src/hooks/suite/useMessageSystemStaking', () => ({
+jest.mock('#src/hooks/suite/useMessageSystemStaking', () => ({
     useMessageSystemStaking: () => ({ isStakingDisabled: false }),
 }));
-jest.mock('src/hooks/earn/useStakeForm', () => ({
+jest.mock('#src/hooks/earn/useStakeForm', () => ({
     useStakeFormContext: () => ({
         account: mockWalletAccount({ symbol: asNetworkSymbol('eth') }),
         network: getNetwork(asNetworkSymbol('eth')),

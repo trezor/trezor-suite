@@ -54,14 +54,14 @@ import {
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
-import { InputError } from 'src/components/wallet';
-import { type InputErrorProps } from 'src/components/wallet/InputError';
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { useReportEnsResolutionToAnalytics } from 'src/hooks/wallet/useReportEnsResolutionToAnalytics';
-import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
-import { captureSentryMessage } from 'src/utils/suite/sentry';
+import { AccountLabelForOwnAddress } from '#src/components/suite/labeling/AccountLabelForOwnAddress';
+import { InputError } from '#src/components/wallet';
+import { type InputErrorProps } from '#src/components/wallet/InputError';
+import { useSelector } from '#src/hooks/suite';
+import { useSendFormContext } from '#src/hooks/wallet';
+import { useReportEnsResolutionToAnalytics } from '#src/hooks/wallet/useReportEnsResolutionToAnalytics';
+import { selectIsSuiteOnline } from '#src/selectors/suite/suiteSelectors';
+import { captureSentryMessage } from '#src/utils/suite/sentry';
 
 import { DevAddressBook } from './DevAddressBook';
 

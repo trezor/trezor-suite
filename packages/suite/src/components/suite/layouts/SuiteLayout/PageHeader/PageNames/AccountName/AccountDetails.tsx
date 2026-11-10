@@ -11,10 +11,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { AmountUnitSwitchWrapper } from 'src/components/suite/AmountUnitSwitchWrapper';
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 const DetailsContainer = styled(motion.div)`
     -webkit-app-region: no-drag;

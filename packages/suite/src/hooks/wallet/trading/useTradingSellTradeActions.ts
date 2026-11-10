@@ -23,14 +23,14 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';
-import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useSelector } from 'src/hooks/suite';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { buildSellReturnUrl } from 'src/utils/wallet/trading/buildSellReturnUrl';
+import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
+import { requestSellTradeThunk } from '#src/actions/wallet/trading/sell/requestSellTradeThunk';
+import { submitRequestFormThunk } from '#src/actions/wallet/trading/tradingCommonActions';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingFormAccount } from '#src/hooks/wallet/trading/form/useTradingFormAccount';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { buildSellReturnUrl } from '#src/utils/wallet/trading/buildSellReturnUrl';
 
 export const useTradingSellTradeActions = () => {
     const { desktopApi, analytics, dispatch } = useServices(

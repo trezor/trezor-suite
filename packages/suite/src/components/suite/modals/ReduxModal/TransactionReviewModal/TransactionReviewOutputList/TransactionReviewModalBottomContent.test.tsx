@@ -16,7 +16,7 @@ import { mock } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 import { createDeferred } from '@trezor/utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TransactionReviewModalBottomContent } from './TransactionReviewModalBottomContent';
 import {

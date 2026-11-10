@@ -4,7 +4,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { Column, Divider, H2, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
-import { ContentFlex } from 'src/support/suite/ContentFlex';
+import { ContentFlex } from '#src/support/suite/ContentFlex';
 
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { SecurityChecklist } from './SecurityChecklist';

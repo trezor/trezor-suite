@@ -3,7 +3,7 @@ import { produce } from 'immer';
 
 import type { Protocol } from '@trezor/network-module-suite-common-types';
 
-import { fillSendForm, resetProtocol, saveCoinProtocol } from 'src/actions/suite/protocolActions';
+import { fillSendForm, resetProtocol, saveCoinProtocol } from '#src/actions/suite/protocolActions';
 
 export interface SendFormState {
     scheme: Protocol;

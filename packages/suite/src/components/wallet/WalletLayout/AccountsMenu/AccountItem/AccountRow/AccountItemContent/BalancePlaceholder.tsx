@@ -3,7 +3,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Row, Skeleton } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 export function BalancePlaceholder() {
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);

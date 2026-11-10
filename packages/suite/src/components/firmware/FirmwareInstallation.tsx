@@ -6,11 +6,11 @@ import TrezorConnect from '@trezor/connect';
 import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
 import { BluetoothIcon, TrezorDevicesFilledIcon } from '@trezor/icons';
 
-import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
-import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
-import { RotatingPhrases } from 'src/components/firmware/RotatingPhrases';
-import { useSelector } from 'src/hooks/suite';
-import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
+import { FirmwareOffer } from '#src/components/firmware/FirmwareOffer';
+import { ReconnectDevicePrompt } from '#src/components/firmware/ReconnectDevicePrompt';
+import { RotatingPhrases } from '#src/components/firmware/RotatingPhrases';
+import { useSelector } from '#src/hooks/suite';
+import { selectHasTransportOfType } from '#src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationProps = {
     // If true, information about new version is not shown, because we don't know anything about it

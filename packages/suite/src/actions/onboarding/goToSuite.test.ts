@@ -20,8 +20,11 @@ import {
 import { asGetter } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type GoToSuiteThunkState, goToSuiteThunk } from 'src/actions/onboarding/onboardingActions';
-import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
+import {
+    type GoToSuiteThunkState,
+    goToSuiteThunk,
+} from '#src/actions/onboarding/onboardingActions';
+import onboardingReducer from '#src/reducers/onboarding/onboardingReducer';
 
 const device = mockSuiteDevice();
 

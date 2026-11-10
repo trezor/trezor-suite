@@ -4,8 +4,8 @@ import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { AssetDetails } from '../AssetDetails';
 import { ItemClickableContainer } from '../ItemClickableContainer';

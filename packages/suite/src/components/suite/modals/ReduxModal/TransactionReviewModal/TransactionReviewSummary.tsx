@@ -17,10 +17,10 @@ import { BroadcastIcon, ClockIcon, ComputerTowerIcon, InfoIcon, ReceiptIcon } fr
 import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
+import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
+import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
+import { useConnectedDateFnsLocale, useSelector } from '#src/hooks/suite';
+import { type Account } from '#src/types/wallet';
 
 import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
 import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';

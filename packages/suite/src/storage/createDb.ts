@@ -5,7 +5,7 @@ import { type ReloadAppDep } from '@suite-common/suite-types';
 import { type DispatchDep } from '@trezor/redux-utils';
 import SuiteDB, { type OnUpgradeFunc } from '@trezor/suite-storage';
 
-import { storageError } from 'src/actions/suite/storageLifecycleActions';
+import { storageError } from '#src/actions/suite/storageLifecycleActions';
 
 import type { SuiteDBSchema } from './definitions';
 import { runLegacyMigrations } from './migrations';

@@ -1,7 +1,7 @@
 import { IconCircle } from '@trezor/components';
 
-import { type WalletAccountTransaction } from 'src/types/wallet';
-import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
+import { type WalletAccountTransaction } from '#src/types/wallet';
+import { getTransactionIcon } from '#src/utils/wallet/transactionIconUtils';
 
 type TransactionTypeIconProps = {
     transaction: WalletAccountTransaction;

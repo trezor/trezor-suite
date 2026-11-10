@@ -8,7 +8,7 @@ import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/component
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 type UnpairBluetoothDeviceFromOsModalProps = {
     onFinish?: () => void;

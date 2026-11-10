@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { type Account } from '@suite-common/wallet-types';
 
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 export type AssetGroupSpaceSize = 'md' | 'lg';
 export type AccountWithOptionalLabel = Account & { label?: string | null };

@@ -23,9 +23,9 @@ import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import type { ForegroundAppProps } from 'src/types/suite';
+import { Loading, PinMatrix, WordInputAdvanced } from '#src/components/suite';
+import { useSelector } from '#src/hooks/suite';
+import type { ForegroundAppProps } from '#src/types/suite';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
 import { InitialStep } from './steps/InitialStep';

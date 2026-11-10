@@ -10,7 +10,7 @@ import { isZero } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { CheckIcon, PauseIcon, ShuffleIcon, XIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { CryptoAmountWithHeader } from './CryptoAmountWithHeader';
 

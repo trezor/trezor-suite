@@ -20,8 +20,8 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
+import { useSelector } from '#src/hooks/suite';
+import { useSendFormContext } from '#src/hooks/wallet';
 
 const Container = styled.div`
     display: flex;

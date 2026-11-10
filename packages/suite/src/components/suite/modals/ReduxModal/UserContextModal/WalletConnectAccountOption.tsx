@@ -10,9 +10,9 @@ import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { CoinBalance, HiddenPlaceholder } from '#src/components/suite';
+import { useSelector } from '#src/hooks/suite';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 
 type WalletConnectAccountOptionProps = {
     account: Account;

@@ -3,8 +3,8 @@ import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 interface AccountAmountProps {
     account: Account;

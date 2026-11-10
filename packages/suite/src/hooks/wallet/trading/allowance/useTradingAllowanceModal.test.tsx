@@ -12,7 +12,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 
-import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
+import { type GetTradingExchangeCryptoInfo } from '#src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 
 import { useTradingAllowanceModal } from './useTradingAllowanceModal';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
@@ -21,7 +21,7 @@ const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
 const mockConfirmApproval = mock((_params: unknown) => Promise.resolve(undefined));
 
-jest.mock('src/hooks/wallet/trading/form/exchange/useExchangeApproval', () => ({
+jest.mock('#src/hooks/wallet/trading/form/exchange/useExchangeApproval', () => ({
     useExchangeApproval: () => ({
         confirmApproval: mockConfirmApproval,
     }),

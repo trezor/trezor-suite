@@ -5,7 +5,7 @@ import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { reportToSentryThunk } from 'src/utils/suite/sentry';
+import { reportToSentryThunk } from '#src/utils/suite/sentry';
 
 export interface TxSimulationErrorBoundaryProps {
     children: ReactNode;

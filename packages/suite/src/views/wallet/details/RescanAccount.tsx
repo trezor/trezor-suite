@@ -4,7 +4,7 @@ import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import type { Account } from 'src/types/wallet';
+import type { Account } from '#src/types/wallet';
 
 type RescanAccountProps = {
     account: Extract<Account, { backendType: 'coinjoin' }>;

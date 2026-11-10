@@ -41,8 +41,8 @@ import {
     CoinBalance,
     PriceTicker,
     TrendTicker,
-} from 'src/components/suite';
-import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
+} from '#src/components/suite';
+import { TokenIconSetWrapper } from '#src/components/wallet/TokenIconSetWrapper';
 
 import { AssetActionButton } from '../AssetActionButton';
 import { AssetCoinLogo } from '../AssetCoinLogo';

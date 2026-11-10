@@ -9,12 +9,12 @@ import {
 } from '@suite-common/trading';
 import { Card, Column } from '@trezor/components';
 
-import { useTradingDetailStatusAnalytics } from 'src/hooks/wallet/trading/useTradingDetailStatusAnalytics';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { type TradingDetailStatusStep } from 'src/types/trading/tradingDetail';
-import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
-import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
-import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
+import { useTradingDetailStatusAnalytics } from '#src/hooks/wallet/trading/useTradingDetailStatusAnalytics';
+import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
+import { type TradingDetailStatusStep } from '#src/types/trading/tradingDetail';
+import { AfterTradeExperiment } from '#src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
+import { TradingDetailSupportBanner } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
+import { TradingWrapper } from '#src/views/wallet/trading/common/TradingWrapper';
 
 const Wrapper = styled.div`
     ${TradingWrapper}

@@ -16,11 +16,11 @@ import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState
 const btcSymbol = toNetworkSymbolNonTestnet('btc');
 const ethSymbol = toNetworkSymbolNonTestnet('eth');
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
     useTradingAssetDecimals: () => ({ getAssetDecimals: () => 8 }),
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingFiatValues', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingFiatValues', () => ({
     useTradingFiatValues: () => ({ fiatRate: { rate: 50000 }, fiatRatesUpdater: jest.fn() }),
 }));
 

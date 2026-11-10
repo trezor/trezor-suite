@@ -5,18 +5,18 @@ import { type TradingSellType, selectTradingComposedTransactionInfo } from '@sui
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Paragraph } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
-import { useTradingDetailMissingTradeRedirect } from 'src/hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { TradingDetailLayout } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
-import { TradingDetailProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
-import { TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
-import { TradingDetailSendingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSendingStep';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingDetailContext } from '#src/hooks/wallet/trading/useTradingDetail';
+import { useTradingDetailMissingTradeRedirect } from '#src/hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
+import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
+import { TradingDetailLayout } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
+import { TradingDetailProcessingStep } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
+import { TradingDetailProgress } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
+import { TradingDetailSendingStep } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailSendingStep';
 import {
     getTradingDetailStepState,
     getTradingProviderName,
-} from 'src/views/wallet/trading/common/TradingDetail/utils';
+} from '#src/views/wallet/trading/common/TradingDetail/utils';
 
 import { TradingSellDetailPaymentFailed } from './TradingSellDetailPaymentFailed';
 import { TradingSellDetailPaymentSuccessful } from './TradingSellDetailPaymentSuccessful';

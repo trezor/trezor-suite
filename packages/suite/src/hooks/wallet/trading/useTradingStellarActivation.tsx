@@ -5,8 +5,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
-import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { StellarManageTokenModal } from '#src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
+import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 import { useTradingStellarActivateToken } from './useTradingStellarActivateToken';
 

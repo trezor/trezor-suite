@@ -14,10 +14,10 @@ import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
-import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
-import { useDiscovery } from 'src/hooks/suite';
-import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
+import { useModal } from '#src/components/suite/asset-picker/hooks/useModal';
+import { AddAccountModal } from '#src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
+import { useDiscovery } from '#src/hooks/suite';
+import { globalSendReceiveFiltersSelectors } from '#src/slices/wallet/globalSendReceiveFilters';
 
 import { GlobalReceiveAccountStep } from './steps/GlobalReceiveAccountStep';
 import { GlobalReceiveNetworkSetupStep } from './steps/GlobalReceiveNetworkSetupStep';

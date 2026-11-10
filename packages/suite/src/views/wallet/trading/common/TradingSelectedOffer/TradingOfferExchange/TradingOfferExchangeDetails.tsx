@@ -16,11 +16,11 @@ import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
-import { useSelector } from 'src/hooks/suite';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
-import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
+import { BannerPoints } from '#src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { type TradingExchangeProvidersInfoProps } from '#src/types/trading/trading';
+import { formatCryptoAmountAsAmount } from '#src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
 import { TradingUtilsProviderKyc } from '../../TradingUtils/TradingUtilsProviderKyc';
 import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
