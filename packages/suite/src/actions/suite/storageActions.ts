@@ -104,7 +104,7 @@ import { type GraphData } from '#src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from '#src/utils/suite/storage';
 import { deviceGraphDataFilterFn } from '#src/utils/wallet/graph';
 
-import { STORAGE } from './constants';
+import * as STORAGE from './constants/storageConstants';
 
 type SaveExplorerParams = {
     symbol: NetworkSymbol;
