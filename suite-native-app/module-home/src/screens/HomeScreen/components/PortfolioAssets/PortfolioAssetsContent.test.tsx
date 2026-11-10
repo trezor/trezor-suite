@@ -57,6 +57,7 @@ const SMALL_BALANCES_SWITCH = '@home/portfolio-assets/view-options/small-balance
 const HIDDEN_TOKENS_OPTION = '@home/portfolio-assets/view-options/hidden-tokens';
 const NEW_BANNER = '@home/portfolio-assets/new-banner';
 const EMPTY_STATE = '@home/portfolio-assets/empty-state';
+const SMALL_BALANCES_EMPTY_STATE = '@home/portfolio-assets/small-balances-empty-state';
 const FEEDBACK = '@home/portfolio-assets/feedback';
 const LOADING_SKELETON = '@home/portfolio-assets/loading-skeleton';
 const SHOW_MORE = '@home/portfolio-assets/show-more';
@@ -202,7 +203,14 @@ describe('PortfolioAssetsContent', () => {
         expect(screen.getByTestId(LOADING_SKELETON)).toBeTruthy();
     });
 
-    it('shows the empty state when all assets are hidden small balances', async () => {
+    it('shows the default empty state when small balances are hidden but there are none', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 0, areSmallBalancesShown: false });
+
+        expect(screen.getByTestId(EMPTY_STATE)).toBeTruthy();
+        expect(screen.queryByTestId(SMALL_BALANCES_EMPTY_STATE)).toBeNull();
+    });
+
+    it('offers to show small balances when they are all the wallet holds', async () => {
         await renderPortfolioAssetsContent({
             ethAssetCount: 1,
             ethUsdRate: 0.01,
@@ -210,7 +218,14 @@ describe('PortfolioAssetsContent', () => {
         });
 
         expect(screen.queryAllByText(ASSET_ROW)).toHaveLength(0);
-        expect(screen.getByTestId(EMPTY_STATE)).toBeTruthy();
+        expect(screen.getByTestId(SMALL_BALANCES_EMPTY_STATE)).toBeTruthy();
+        expect(screen.queryByTestId(EMPTY_STATE)).toBeNull();
+        expect(screen.queryByTestId(FEEDBACK)).toBeNull();
+
+        fireEvent.press(screen.getByTestId(`${SMALL_BALANCES_EMPTY_STATE}/show-button`));
+
+        await waitFor(() => expect(screen.getAllByText(ASSET_ROW)).toHaveLength(1));
+        expect(screen.queryByTestId(SMALL_BALANCES_EMPTY_STATE)).toBeNull();
     });
 
     it('shows the new banner and the feedback card around a list that does not fold', async () => {

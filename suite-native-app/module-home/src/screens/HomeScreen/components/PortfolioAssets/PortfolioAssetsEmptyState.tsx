@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Button, CenteredTitleHeader, HStack, VStack } from '@suite-native/atoms';
+import { Button, CenteredTitleHeader, HStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -12,6 +12,7 @@ import {
 } from '@suite-native/navigation';
 import { selectIsTradingBuyEnabled, selectIsTradingEnabled } from '@suite-native/trading-state';
 
+import { PortfolioAssetsEmptyStateContainer } from './PortfolioAssetsEmptyStateContainer';
 import { AssetsGetSvg } from '../../../../assets/AssetsGetSvg';
 import { useReceiveNavigation } from '../../useReceiveNavigation';
 
@@ -33,13 +34,7 @@ export const PortfolioAssetsEmptyState = () => {
     const isBuyVisible = isTradingEnabled && isTradingBuyEnabled;
 
     return (
-        <VStack
-            spacing="sp20"
-            alignItems="center"
-            paddingHorizontal="sp24"
-            paddingVertical="sp24"
-            testID="@home/portfolio-assets/empty-state"
-        >
+        <PortfolioAssetsEmptyStateContainer testID="@home/portfolio-assets/empty-state">
             <AssetsGetSvg width={ILLUSTRATION_SIZE} height={ILLUSTRATION_SIZE} />
             <CenteredTitleHeader
                 title={<Translation id="moduleHome.assets.emptyState.title" />}
@@ -49,7 +44,7 @@ export const PortfolioAssetsEmptyState = () => {
             <HStack spacing="sp12">
                 {isReceiveAvailable && (
                     <Button
-                        size="small"
+                        size="medium"
                         iconLeft="arrowDown"
                         onPress={navigateToReceive}
                         testID="@home/portfolio-assets/empty-state/receive-button"
@@ -59,7 +54,7 @@ export const PortfolioAssetsEmptyState = () => {
                 )}
                 {isBuyVisible && (
                     <Button
-                        size="small"
+                        size="medium"
                         priority="secondary"
                         iconLeft="plus"
                         onPress={navigateToBuy}
@@ -69,6 +64,6 @@ export const PortfolioAssetsEmptyState = () => {
                     </Button>
                 )}
             </HStack>
-        </VStack>
+        </PortfolioAssetsEmptyStateContainer>
     );
 };
