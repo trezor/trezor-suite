@@ -68,6 +68,8 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
+        with:
+          disable-hardened-mode: "true"
       - name: Type Check
         run: yarn type-check --output-style=stream
       - name: Check Type Declaration Sizes
@@ -84,6 +86,8 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
+        with:
+          disable-hardened-mode: "true"
       - name: ESlint Cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
@@ -148,6 +152,8 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
+        with:
+          disable-hardened-mode: "true"
       - name: Check Files for Correct Formatting
         run: yarn format:verify
       - name: Verify Requirements
@@ -174,6 +180,8 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
+        with:
+          disable-hardened-mode: "true"
       - name: Check for new Circular Imports
         # safedep/pmg covers also the `npx` running inside the shell script
         run: ./scripts/circular-dependencies/check-circular-dependencies.sh
@@ -201,6 +209,8 @@ jobs:
       - name: "Minimal yarn install"
         if: needs.changed-scopes.outputs.default == 'true'
         uses: ./.github/actions/minimal-yarn-install
+        with:
+          disable-hardened-mode: "true"
       - name: Unit Tests
         if: needs.changed-scopes.outputs.default == 'true'
         run: yarn test:unit:${{ matrix.test-task }} --output-style=stream -- --silent
@@ -216,6 +226,8 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
+        with:
+          disable-hardened-mode: "true"
       - name: Build Libs
         run: yarn build:libs:verify --output-style=stream
 
@@ -230,6 +242,8 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
+        with:
+          disable-hardened-mode: "true"
       - name: Verify Requirements
         run: yarn requirements:verify
       - name: Check Files for Correct Formatting
@@ -305,6 +319,8 @@ jobs:
       - name: "Minimal yarn install"
         if: steps.changes.outputs.releases-json == 'true'
         uses: ./.github/actions/minimal-yarn-install
+        with:
+          disable-hardened-mode: "true"
 
       - name: Check releases.json revisions
         if: steps.changes.outputs.releases-json == 'true'

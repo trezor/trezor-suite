@@ -55,22 +55,13 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           lfs: true
-      - name: Install node and yarn
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+      - name: Install dependencies
+        uses: ./.github/actions/minimal-yarn-install
         with:
-          node-version-file: ".nvmrc"
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-      - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
-        continue-on-error: true
-        with:
-          version: v0.32.0
-          config-file: .github/pmg-config.yml
-      - name: Install deps and build libs
-        # not installing @suite-app/desktop-app and @suite-app/desktop-app-main, because this is only the renderer process
+          # not installing @suite-app/desktop-app and @suite-app/desktop-app-main, because this is only the renderer process
+          focus: "trezor-suite @suite-app/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system"
+      - name: Build libs
         run: |
-          yarn workspaces focus trezor-suite @suite-app/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib

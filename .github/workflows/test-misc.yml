@@ -37,21 +37,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
-      - name: Setup node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
-      - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
-        continue-on-error: true
-        with:
-          version: v0.32.0
-          config-file: .github/pmg-config.yml
-      - run: yarn install --immutable
+      - name: Install dependencies
+        uses: ./.github/actions/minimal-yarn-install
       - name: Check for Circular Imports
         # safedep/pmg covers also the `npx` running inside the shell script
         run: ./scripts/circular-dependencies/check-circular-dependencies.sh
@@ -65,21 +52,8 @@ jobs:
         with:
           lfs: true
 
-      - name: Setup node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
-      - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
-        continue-on-error: true
-        with:
-          version: v0.32.0
-          config-file: .github/pmg-config.yml
-      - run: yarn install --immutable
+      - name: Install dependencies
+        uses: ./.github/actions/minimal-yarn-install
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
         run: yarn test:unit:all --exclude='@suite-native/*,@suite-native-app/*' -- --silent
@@ -97,21 +71,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
-      - name: Setup node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
-      - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
-        continue-on-error: true
-        with:
-          version: v0.32.0
-          config-file: .github/pmg-config.yml
-      - run: yarn install --immutable
+      - name: Install dependencies
+        uses: ./.github/actions/minimal-yarn-install
       - name: Fuzz Tests - Transport sessions lock
         run: yarn workspace @trezor/transport-common test:fuzz
 
@@ -138,21 +99,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
-      - name: Setup node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
-      - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
-        continue-on-error: true
-        with:
-          version: v0.32.0
-          config-file: .github/pmg-config.yml
-      - run: yarn install --immutable
+      - name: Install dependencies
+        uses: ./.github/actions/minimal-yarn-install
       - run: yarn generate-package @trezor/meow-package
       - run: rm -rf packages/meow-package
 
@@ -162,19 +110,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-      - name: Setup node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
-      - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
-        continue-on-error: true
-        with:
-          version: v0.32.0
-          config-file: .github/pmg-config.yml
-      - run: yarn install --immutable
+      - name: Install dependencies
+        uses: ./.github/actions/minimal-yarn-install
       - run: yarn tsx ./packages/components/scripts/test-img-paths-exist.ts
