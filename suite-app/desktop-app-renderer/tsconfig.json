@@ -10,6 +10,7 @@
     "references": [
         { "path": "../app" },
         { "path": "../module-sign-verify" },
+        { "path": "../module-trading" },
         {
             "path": "../../suite-common/react-query"
         },

@@ -152,9 +152,9 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     ),
     // Debug only: trading form embed preview
     'wallet-trade': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/WalletTradePage').then(
-            ({ WalletTradePage }) => ({ default: WalletTradePage }),
-        ),
+        import(
+            /* webpackChunkName: "wallet" */ '@suite-app/module-trading/pages/WalletTradePage'
+        ).then(({ WalletTradePage }) => ({ default: WalletTradePage })),
     ),
     'wallet-tokens': lazy(() =>
         import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/TokensPage').then(
@@ -196,78 +196,78 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
 
     // trading
     'wallet-trading-buy': lazy(() =>
-        import(/* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingBuyFormPage').then(
-            ({ TradingBuyFormPage }) => ({ default: TradingBuyFormPage }),
-        ),
+        import(
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingBuyFormPage'
+        ).then(({ TradingBuyFormPage }) => ({ default: TradingBuyFormPage })),
     ),
     'wallet-trading-buy-detail': lazy(() =>
-        import(/* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingBuyDetailPage').then(
-            ({ TradingBuyDetailPage }) => ({ default: TradingBuyDetailPage }),
-        ),
+        import(
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingBuyDetailPage'
+        ).then(({ TradingBuyDetailPage }) => ({ default: TradingBuyDetailPage })),
     ),
     'wallet-trading-buy-confirm': lazy(() =>
-        import(/* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingBuyConfirmPage').then(
-            ({ TradingBuyConfirmPage }) => ({ default: TradingBuyConfirmPage }),
-        ),
+        import(
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingBuyConfirmPage'
+        ).then(({ TradingBuyConfirmPage }) => ({ default: TradingBuyConfirmPage })),
     ),
     'wallet-trading-sell': lazy(() =>
-        import(/* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingSellFormPage').then(
-            ({ TradingSellFormPage }) => ({ default: TradingSellFormPage }),
-        ),
+        import(
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingSellFormPage'
+        ).then(({ TradingSellFormPage }) => ({ default: TradingSellFormPage })),
     ),
     'wallet-trading-sell-detail': lazy(() =>
-        import(/* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingSellDetailPage').then(
-            ({ TradingSellDetailPage }) => ({ default: TradingSellDetailPage }),
-        ),
+        import(
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingSellDetailPage'
+        ).then(({ TradingSellDetailPage }) => ({ default: TradingSellDetailPage })),
     ),
     'wallet-trading-sell-confirm': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingSellConfirmPage'
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingSellConfirmPage'
         ).then(({ TradingSellConfirmPage }) => ({ default: TradingSellConfirmPage })),
     ),
     'wallet-trading-exchange': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingExchangeFormPage'
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeFormPage'
         ).then(({ TradingExchangeFormPage }) => ({
             default: TradingExchangeFormPage,
         })),
     ),
     'wallet-trading-exchange-detail': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingExchangeDetailPage'
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeDetailPage'
         ).then(({ TradingExchangeDetailPage }) => ({
             default: TradingExchangeDetailPage,
         })),
     ),
     'wallet-trading-exchange-confirm': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingExchangeConfirmPage'
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeConfirmPage'
         ).then(({ TradingExchangeConfirmPage }) => ({
             default: TradingExchangeConfirmPage,
         })),
     ),
     'wallet-trading-exchange-approval': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingExchangeApprovalPage'
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingExchangeApprovalPage'
         ).then(({ TradingExchangeApprovalPage }) => ({
             default: TradingExchangeApprovalPage,
         })),
     ),
     'wallet-trading-concierge': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingConciergeDetailPage'
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingConciergeDetailPage'
         ).then(({ TradingConciergeDetailPage }) => ({
             default: TradingConciergeDetailPage,
         })),
     ),
     'wallet-trading-redirect': lazy(() =>
-        import(/* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingRedirectPage').then(
-            ({ TradingRedirectPage }) => ({ default: TradingRedirectPage }),
-        ),
+        import(
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingRedirectPage'
+        ).then(({ TradingRedirectPage }) => ({ default: TradingRedirectPage })),
     ),
     'wallet-trading-transactions': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ '@suite-app/app/pages/TradingTransactionsPage'
+            /* webpackChunkName: "trading" */ '@suite-app/module-trading/pages/TradingTransactionsPage'
         ).then(({ TradingTransactionsPage }) => ({
             default: TradingTransactionsPage,
         })),
