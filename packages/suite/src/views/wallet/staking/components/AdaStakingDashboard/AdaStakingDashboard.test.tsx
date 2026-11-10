@@ -21,7 +21,7 @@ jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     fetchAllTransactionsForAccountThunk: () => ({ type: 'test/fetchAllTransactionsForAccount' }),
 }));
-jest.mock('#src/components/dashboard', () => ({
+jest.mock('#src/components/dashboard/DashboardSection', () => ({
     DashboardSection: ({ children }: PropsWithChildren) => children,
 }));
 jest.mock('../StakingDashboard/StakingDashboard', () => ({

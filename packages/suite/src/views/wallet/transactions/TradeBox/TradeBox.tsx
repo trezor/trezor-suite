@@ -7,7 +7,7 @@ import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { TokenIcon } from '@trezor/product-components';
 
-import { DashboardSection } from '#src/components/dashboard';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
 import { PriceTicker, TrendTicker } from '#src/components/suite';
 import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';

@@ -28,7 +28,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
-import { DashboardSection } from '#src/components/dashboard';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { GraphRangeSelector, GraphSkeleton } from '#src/components/suite';
 import { useDiscovery, useSelector } from '#src/hooks/suite';
 import { useTotalFiatBalance } from '#src/hooks/wallet/useTotalFiatBalance';
