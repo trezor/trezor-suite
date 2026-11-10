@@ -12,7 +12,7 @@ import {
     aggregatedGraphSuccess,
     setSelectedRange,
 } from '#src/actions/wallet/graphActions';
-import { SETTINGS } from '#src/config/suite';
+import SETTINGS from '#src/config/suite/settings';
 import { type Account } from '#src/types/wallet';
 import { type GraphRootState, type GraphState } from '#src/types/wallet/graph';
 

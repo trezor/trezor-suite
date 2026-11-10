@@ -50,7 +50,7 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { storageLoad } from '#src/actions/suite/storageLifecycleActions';
 import { prepareSuiteSyncQuotaManagerReducer } from '#src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import { SETTINGS } from '#src/config/suite';
+import SETTINGS from '#src/config/suite/settings';
 import {
     type StorageMiddlewareState,
     prepareStorageMiddleware,
