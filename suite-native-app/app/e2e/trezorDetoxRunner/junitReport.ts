@@ -10,11 +10,23 @@ import type { Action } from './quarantine';
 import { getTitlePath, isQuarantined } from './quarantine';
 import type { TestAttempts } from './testAttempts';
 import { normalizeJUnitSuiteErrors } from '../support/reporter/normalizeJUnitSuiteErrors';
-import type {
-    JUnitProperties,
-    JUnitProperty,
-    JUnitTestSuite,
-} from '../support/reporter/normalizeJUnitSuiteErrors';
+
+type JUnitProperty = { $: { name: string; value: string } };
+type JUnitProperties = { property?: JUnitProperty[] };
+
+type JUnitTestCase = {
+    $: { name: string };
+    failure?: string[];
+    error?: unknown[];
+    skipped?: unknown[];
+    properties?: JUnitProperties[];
+};
+
+type JUnitTestSuite = {
+    $?: { name?: string; failures?: string; errors?: string; skipped?: string };
+    testcase?: JUnitTestCase[];
+    properties?: JUnitProperties[];
+};
 
 /** Remove skipped testcases from a suite that don't match the grep regex. */
 const filterSuiteByGrep = (suite: any, regex: RegExp): void => {
@@ -185,19 +197,14 @@ const recomputeAggregates = (testsuites: any): void => {
     if (!testsuites.$) return;
 
     const totals = testsuites.testsuite.reduce(
-        (
-            acc: { tests: number; failures: number; errors: number; skipped: number },
-            suite: any,
-        ) => ({
-            tests: acc.tests + parseInt(suite.$?.tests ?? '0', 10),
+        (acc: { failures: number; errors: number; skipped: number }, suite: any) => ({
             failures: acc.failures + parseInt(suite.$?.failures ?? '0', 10),
             errors: acc.errors + parseInt(suite.$?.errors ?? '0', 10),
             skipped: acc.skipped + parseInt(suite.$?.skipped ?? '0', 10),
         }),
-        { tests: 0, failures: 0, errors: 0, skipped: 0 },
+        { failures: 0, errors: 0, skipped: 0 },
     );
 
-    testsuites.$.tests = String(totals.tests);
     testsuites.$.failures = String(totals.failures);
     testsuites.$.errors = String(totals.errors);
     testsuites.$.skipped = String(totals.skipped);
