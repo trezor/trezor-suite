@@ -58,6 +58,7 @@ export const AssetAccountListItem = ({
             symbol={account.symbol}
             contract={contractAddress}
             value={cryptoBalance}
+            isBalance
             numberOfLines={1}
             adjustsFontSizeToFit
         />
