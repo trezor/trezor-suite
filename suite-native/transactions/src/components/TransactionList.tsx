@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
@@ -43,6 +44,7 @@ import { arrayPartition } from '@trezor/utils';
 
 import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
 import { useRefreshAccounts } from '../hooks/useRefreshAccounts';
+import { transactionsToTokenMetadataSources } from '../transactionsToTokenMetadataSources';
 import { getNextRequestedTransactionCount, getOlderHistoryPage } from '../utils';
 import { OlderHistoryStatus } from './OlderHistoryStatus';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -414,59 +416,61 @@ export const TransactionList = ({
     );
 
     return (
-        <Box flex={1}>
-            {scrollDivider}
-            <FlashList<TransactionListItem>
-                data={data}
-                renderItem={renderItem}
-                contentContainerStyle={applyStyle(sectionListContainerStyle)}
-                ListEmptyComponent={
-                    <TransactionListEmptyState
-                        isLoading={isHistoryUnscanned}
-                        isDeferred={shouldDeferEmptyState}
-                        // The list is empty here, so a reachable older window is what sets this apart
-                        // from an account (or token) without any transactions.
-                        isRecentWindowEmpty={olderHistoryFrom !== undefined}
-                        renderEmptyComponent={renderListEmptyComponent}
-                    />
-                }
-                ListHeaderComponent={listHeaderComponent}
-                ListFooterComponent={
-                    <TransactionsListFooter
-                        hasMoreTransactions={
-                            hasMoreTransactions ||
-                            olderHistoryFrom !== undefined ||
-                            hasInitialScanFailed
-                        }
-                        isOlderHistory={olderHistoryFrom !== undefined}
-                        // The skeleton stands in for the loader until the first scan is done.
-                        isLoading={
-                            !isHistoryUnscanned &&
-                            (isLoadingTransactions || shouldAutoFillTransactions)
-                        }
-                        onButtonPress={handleOnLoadMorePress}
-                    >
-                        {(olderHistoryFrom !== undefined || hasInitialScanFailed) && (
-                            <OlderHistoryStatus
-                                historyCoveredSince={historyCoveredSince}
-                                hasLoadingFailed={hasLoadingOlderFailed || hasInitialScanFailed}
-                            />
-                        )}
-                    </TransactionsListFooter>
-                }
-                ListFooterComponentStyle={applyStyle(listFooterStyle, {
-                    insetBottom: isBottomInsetApplicable ? bottom : 0,
-                })}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isRefreshing}
-                        onRefresh={refreshAccountsAndLatestTransactions}
-                        colors={[colors.elementFillBrandBold]}
-                    />
-                }
-                refreshing={isRefreshing}
-                onScroll={handleScroll}
-            />
-        </Box>
+        <TokenMetadataProvider sources={transactionsToTokenMetadataSources(transactions)}>
+            <Box flex={1}>
+                {scrollDivider}
+                <FlashList<TransactionListItem>
+                    data={data}
+                    renderItem={renderItem}
+                    contentContainerStyle={applyStyle(sectionListContainerStyle)}
+                    ListEmptyComponent={
+                        <TransactionListEmptyState
+                            isLoading={isHistoryUnscanned}
+                            isDeferred={shouldDeferEmptyState}
+                            // The list is empty here, so a reachable older window is what sets this apart
+                            // from an account (or token) without any transactions.
+                            isRecentWindowEmpty={olderHistoryFrom !== undefined}
+                            renderEmptyComponent={renderListEmptyComponent}
+                        />
+                    }
+                    ListHeaderComponent={listHeaderComponent}
+                    ListFooterComponent={
+                        <TransactionsListFooter
+                            hasMoreTransactions={
+                                hasMoreTransactions ||
+                                olderHistoryFrom !== undefined ||
+                                hasInitialScanFailed
+                            }
+                            isOlderHistory={olderHistoryFrom !== undefined}
+                            // The skeleton stands in for the loader until the first scan is done.
+                            isLoading={
+                                !isHistoryUnscanned &&
+                                (isLoadingTransactions || shouldAutoFillTransactions)
+                            }
+                            onButtonPress={handleOnLoadMorePress}
+                        >
+                            {(olderHistoryFrom !== undefined || hasInitialScanFailed) && (
+                                <OlderHistoryStatus
+                                    historyCoveredSince={historyCoveredSince}
+                                    hasLoadingFailed={hasLoadingOlderFailed || hasInitialScanFailed}
+                                />
+                            )}
+                        </TransactionsListFooter>
+                    }
+                    ListFooterComponentStyle={applyStyle(listFooterStyle, {
+                        insetBottom: isBottomInsetApplicable ? bottom : 0,
+                    })}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefreshing}
+                            onRefresh={refreshAccountsAndLatestTransactions}
+                            colors={[colors.elementFillBrandBold]}
+                        />
+                    }
+                    refreshing={isRefreshing}
+                    onScroll={handleScroll}
+                />
+            </Box>
+        </TokenMetadataProvider>
     );
 };

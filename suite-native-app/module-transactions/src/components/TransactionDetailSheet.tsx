@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/token';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,
@@ -72,6 +73,7 @@ export const TransactionDetailSheet = ({
     sheetName,
     sheetControls,
 }: TransactionDetailSheetProps) => {
+    const tokenMetadataSources = useTokenMetadataSources();
     const { analytics } = useServices(injectNativeAnalytics);
     const internal = useBottomSheetModal();
     const { bottomSheetRef, openModal, closeModal } = sheetControls ?? internal;
@@ -99,14 +101,17 @@ export const TransactionDetailSheet = ({
                 }
                 isCloseDisplayed
             >
-                <Box paddingTop="sp24">
-                    {children}
-                    <Box paddingHorizontal="sp8" marginTop="sp24">
-                        <Button onPress={closeModal}>
-                            <Translation id="generic.buttons.close" />
-                        </Button>
+                {/* The sheet renders in a portal outside the screen's metadata provider. */}
+                <TokenMetadataProvider sources={tokenMetadataSources}>
+                    <Box paddingTop="sp24">
+                        {children}
+                        <Box paddingHorizontal="sp8" marginTop="sp24">
+                            <Button onPress={closeModal}>
+                                <Translation id="generic.buttons.close" />
+                            </Button>
+                        </Box>
                     </Box>
-                </Box>
+                </TokenMetadataProvider>
             </BottomSheetModal>
         </Box>
     );
