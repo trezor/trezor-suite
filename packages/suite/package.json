@@ -16,6 +16,17 @@
         "./jest.sourceConfig": "./jest.sourceConfig.js",
         "./package.json": "./package.json"
     },
+    "imports": {
+        "#src/*": {
+            "types": [
+                "./src/*/index.tsx",
+                "./src/*/index.ts",
+                "./src/*.tsx",
+                "./src/*.ts"
+            ],
+            "default": "./src/*"
+        }
+    },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint": "yarn lint:styles && yarn lint:js",
