@@ -23,9 +23,15 @@ interface EarnPromoBannerProps {
     symbol: NetworkSymbol;
     title: ReactNode;
     description: ReactNode;
+    onExplore?: () => void;
 }
 
-export const EarnPromoBanner = ({ symbol, title, description }: EarnPromoBannerProps) => {
+export const EarnPromoBanner = ({
+    symbol,
+    title,
+    description,
+    onExplore,
+}: EarnPromoBannerProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { dispatch } = useServices(injectDispatch);
 
@@ -43,7 +49,7 @@ export const EarnPromoBanner = ({ symbol, title, description }: EarnPromoBannerP
     return (
         <BannerFull iconName="piggyBank" title={title} description={description} intent="brand">
             <HStack marginTop="sp8">
-                <Button intent="brand" size="small" onPress={onExploreClick}>
+                <Button intent="brand" size="small" onPress={onExplore ?? onExploreClick}>
                     <Translation id="earn.promoStakeBanner.exploreButton" />
                 </Button>
 

@@ -9,9 +9,10 @@ import { EarnPromoBanner } from './EarnPromoBanner';
 
 interface EthEarnPromoBannerProps {
     account: Account;
+    onExplore?: () => void;
 }
 
-export const EthEarnPromoBanner = ({ account }: EthEarnPromoBannerProps) => {
+export const EthEarnPromoBanner = ({ account, onExplore }: EthEarnPromoBannerProps) => {
     const nativeYieldVault = useNativeYieldVault({ account });
     const stakingRate = useStakingRate({ symbol: account.symbol, accountKey: account.key });
 
@@ -38,6 +39,7 @@ export const EthEarnPromoBanner = ({ account }: EthEarnPromoBannerProps) => {
                     values={{ symbol: displaySymbol }}
                 />
             }
+            onExplore={onExplore}
         />
     );
 };

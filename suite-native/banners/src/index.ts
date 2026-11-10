@@ -8,6 +8,7 @@ export * from './components/NoDevicePromoBanner';
 export * from './components/PromoBannerCarousel';
 export * from './components/PromoBanners';
 export * from './components/TrezorSafe7PromoBanner';
+export * from './components/EarnPromoBanner';
 export * from './components/EthEarnPromoBanner';
 export * from './components/SolEarnPromoBanner';
 export * from './imageSources';

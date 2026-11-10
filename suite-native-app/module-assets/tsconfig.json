@@ -8,6 +8,9 @@
         { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-stablecoin"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/receive" },
@@ -37,6 +40,7 @@
         },
         { "path": "../../suite-native/assets" },
         { "path": "../../suite-native/atoms" },
+        { "path": "../../suite-native/banners" },
         {
             "path": "../../suite-native/clipboard"
         },
@@ -48,6 +52,9 @@
         { "path": "../../suite-native/icons" },
         { "path": "../../suite-native/intl" },
         { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/module-earn"
+        },
         {
             "path": "../../suite-native/navigation"
         },
@@ -64,6 +71,9 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/type-utils" },
+        {
+            "path": "../../suite-common/message-system"
+        },
         {
             "path": "../../suite-native/test-utils-store"
         },
