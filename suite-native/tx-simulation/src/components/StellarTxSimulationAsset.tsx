@@ -1,7 +1,7 @@
 import { type StellarAssetDiff, getStellarAssetDiffLabel } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { HStack, VStack } from '@suite-native/atoms';
+import { BlurUrls, HStack, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -40,10 +40,15 @@ export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimula
                                 <Translation
                                     id="moduleConnectPopup.simulation.sendingAsset"
                                     values={{
-                                        amount: getStellarAssetDiffLabel(
-                                            assetDiff,
-                                            sent,
-                                            network.symbol,
+                                        amount: (
+                                            <BlurUrls
+                                                text={getStellarAssetDiffLabel(
+                                                    assetDiff,
+                                                    sent,
+                                                    network.symbol,
+                                                )}
+                                                color="contentCritical"
+                                            />
                                         ),
                                     }}
                                 />
@@ -65,10 +70,15 @@ export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimula
                                 <Translation
                                     id="moduleConnectPopup.simulation.receivingAsset"
                                     values={{
-                                        amount: getStellarAssetDiffLabel(
-                                            assetDiff,
-                                            received,
-                                            network.symbol,
+                                        amount: (
+                                            <BlurUrls
+                                                text={getStellarAssetDiffLabel(
+                                                    assetDiff,
+                                                    received,
+                                                    network.symbol,
+                                                )}
+                                                color="contentBrand"
+                                            />
                                         ),
                                     }}
                                 />

@@ -1,5 +1,7 @@
 import { type EvmAssetDiff } from '@suite-common/tx-simulation';
 
+import { TxSimulationMaskedText } from '../../../common/components/TxSimulationMaskedText';
+
 interface TxSimulationSummaryProps {
     amount: EvmAssetDiff['in'][number];
     assetDiff?: EvmAssetDiff;
@@ -7,12 +9,12 @@ interface TxSimulationSummaryProps {
 
 export function TxSimulationSummary({ amount, assetDiff }: TxSimulationSummaryProps) {
     if (amount.summary) {
-        return amount.summary;
+        return <TxSimulationMaskedText text={amount.summary} />;
     }
 
     // Native asset summary
     if (assetDiff?.asset_type === 'NATIVE' && 'value' in amount) {
-        return `${amount.value} ${assetDiff.asset.symbol}`;
+        return <TxSimulationMaskedText text={`${amount.value} ${assetDiff.asset.symbol}`} />;
     }
 
     // Token asset summary

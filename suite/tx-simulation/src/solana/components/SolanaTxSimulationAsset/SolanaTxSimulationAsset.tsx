@@ -5,6 +5,7 @@ import { Row } from '@trezor/components';
 
 import { SolanaTxSimulationAssetLogo } from './SolanaTxSimulationAssetLogo';
 import { TxSimulationAssetRow } from '../../../common';
+import { TxSimulationMaskedText } from '../../../common/components/TxSimulationMaskedText';
 
 interface SolanaTxSimulationAssetProps {
     assetDiff: SolanaAssetDiff;
@@ -32,7 +33,11 @@ export function SolanaTxSimulationAsset({ assetDiff, network }: SolanaTxSimulati
                     <Translation
                         id="TR_SIMULATION_SENDING_ASSET"
                         values={{
-                            amount: getSolanaAssetDiffLabel(assetDiff, sent, network.symbol),
+                            amount: (
+                                <TxSimulationMaskedText
+                                    text={getSolanaAssetDiffLabel(assetDiff, sent, network.symbol)}
+                                />
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>
@@ -50,7 +55,15 @@ export function SolanaTxSimulationAsset({ assetDiff, network }: SolanaTxSimulati
                     <Translation
                         id="TR_SIMULATION_RECEIVING_ASSET"
                         values={{
-                            amount: getSolanaAssetDiffLabel(assetDiff, received, network.symbol),
+                            amount: (
+                                <TxSimulationMaskedText
+                                    text={getSolanaAssetDiffLabel(
+                                        assetDiff,
+                                        received,
+                                        network.symbol,
+                                    )}
+                                />
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>

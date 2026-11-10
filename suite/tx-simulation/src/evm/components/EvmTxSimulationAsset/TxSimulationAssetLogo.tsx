@@ -32,7 +32,9 @@ export function TxSimulationAssetLogo({
                 symbol={network.symbol}
                 contractAddress={asset.address}
                 size={size}
-                placeholder={asset.name ?? asset.symbol}
+                // The tooltip and image alt would show the whole name unmasked.
+                placeholder={(asset.name ?? asset.symbol)?.charAt(0)}
+                placeholderWithTooltip={false}
                 // Temp. solution until we extend token defs with Vault tokens
                 customLogoUrl={asset.logo_url}
             />

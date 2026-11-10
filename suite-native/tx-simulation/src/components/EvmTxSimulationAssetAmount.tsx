@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Box, Text, type TextProps } from '@suite-native/atoms';
+import { BlurUrls, Box, Text, type TextProps } from '@suite-native/atoms';
 
 type EvmTxSimulationAssetAmountProps = {
     fiatAmount?: BaseCurrencyAmount;
@@ -22,7 +22,12 @@ export const EvmTxSimulationAssetAmount = ({
     return (
         <>
             <Box flex={1}>
-                <Text color={summaryColor}>{summary}</Text>
+                {/* Simulated assets have no metadata to vouch for them, so URLs are masked. */}
+                {typeof summary === 'string' ? (
+                    <BlurUrls text={summary} color={summaryColor} />
+                ) : (
+                    <Text color={summaryColor}>{summary}</Text>
+                )}
             </Box>
             {!!fiatAmount && (
                 <Text color="contentSecondary">

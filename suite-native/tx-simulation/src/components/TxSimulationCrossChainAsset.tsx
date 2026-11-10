@@ -1,6 +1,6 @@
 import { type CrossChainAssetDiff, getNetworkByBlockaidChain } from '@suite-common/tx-simulation';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { HStack, VStack } from '@suite-native/atoms';
+import { BlurUrls, HStack, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -37,9 +37,15 @@ export const TxSimulationCrossChainAsset = ({ assetDiff }: TxSimulationCrossChai
                         <Translation
                             id="moduleConnectPopup.simulation.crossChainAsset"
                             values={{
-                                amount:
-                                    transfer.summary ??
-                                    `${transfer.value ?? transfer.raw_value} ${asset.symbol ?? ''}`.trim(),
+                                amount: (
+                                    <BlurUrls
+                                        text={
+                                            transfer.summary ??
+                                            `${transfer.value ?? transfer.raw_value} ${asset.symbol ?? ''}`.trim()
+                                        }
+                                        color={summaryColor}
+                                    />
+                                ),
                                 chain: network?.name ?? chain,
                             }}
                         />
