@@ -20,8 +20,7 @@ export const TokenSymbol = ({
 }: TokenSymbolProps) => {
     const { translate } = useTranslate();
     const token = useTokenMetadata(networkSymbol, contractAddress);
-    const text =
-        getTokenDisplaySymbol(token, { isTruncated }) ?? translate('generic.unknownToken');
+    const text = getTokenDisplaySymbol(token, { isTruncated }) ?? translate('generic.unknownToken');
 
     return (
         <TokenUrlBlur

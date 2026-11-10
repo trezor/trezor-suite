@@ -112,7 +112,9 @@ export const RevokeModal = ({
                 width={480}
                 heading={<Translation id={heading} values={{ displaySymbol: symbolLabel }} />}
                 description={
-                    !showRevokeBanner && <Translation id={description} values={{ displaySymbol: symbolLabel }} />
+                    !showRevokeBanner && (
+                        <Translation id={description} values={{ displaySymbol: symbolLabel }} />
+                    )
                 }
                 bottomContent={
                     <>

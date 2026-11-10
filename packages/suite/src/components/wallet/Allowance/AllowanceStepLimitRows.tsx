@@ -46,8 +46,7 @@ export const AllowanceStepLimitRows = ({
                         networkSymbol={token.networkSymbol}
                         typographyStyle="body-sm"
                     />
-                    <Icon as={ArrowRightIcon} size={16} />
-                    0{' '}
+                    <Icon as={ArrowRightIcon} size={16} />0{' '}
                     <TokenSymbol networkSymbol={token.networkSymbol} tokenContract={tokenContract} />
                 </Row>
             </AllowanceStepRow>

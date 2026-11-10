@@ -126,16 +126,14 @@ export const FormattedCryptoAmount = ({
     }
 
     const tokenContract = isToken && contractAddress ? toTokenAddress(contractAddress) : null;
+    const maskedSymbol = formattedSymbol ? (
+        <BlurUrls tooltipContent={<Translation id="TR_URL_IN_TOKEN" />} text={formattedSymbol} />
+    ) : null;
     const symbolContent =
         tokenContract && networkSymbol ? (
             <TokenSymbol networkSymbol={networkSymbol} tokenContract={tokenContract} />
         ) : (
-            formattedSymbol && (
-                <BlurUrls
-                    tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
-                    text={formattedSymbol}
-                />
-            )
+            maskedSymbol
         );
 
     // output as a string, mostly for compatibility with graphs

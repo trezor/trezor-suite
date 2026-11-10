@@ -108,7 +108,9 @@ export const ApproveModal = ({
                 intent="brand"
                 width={480}
                 heading={<Translation id={heading} values={{ displaySymbol: symbolLabel }} />}
-                description={<Translation id={description} values={{ displaySymbol: symbolLabel }} />}
+                description={
+                    <Translation id={description} values={{ displaySymbol: symbolLabel }} />
+                }
                 bottomContent={
                     <>
                         <Modal.Button
