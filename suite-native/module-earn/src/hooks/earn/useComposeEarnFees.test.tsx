@@ -11,6 +11,7 @@ import {
     type PrecomposedLevels,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Button, Text } from '@suite-native/atoms';
 import { Form, useFormContext } from '@suite-native/forms';
@@ -410,6 +411,28 @@ describe('useComposeEarnFees recovery', () => {
         await settleDebounce();
         expect(result.current.isFeeReady).toBe(true);
         expect(analytics.report).not.toHaveBeenCalled();
+    });
+
+    it('starts from the default fee instead of a Custom fee left by an earlier flow', async () => {
+        const store = createTestStore();
+        store.dispatch(
+            formDraftActions.storeDraft({
+                key: getFormDraftKey('stake', ACCOUNT.key),
+                formDraft: { ...FORM_STATE, selectedFee: 'custom', feePerUnit: '1' },
+            }),
+        );
+        const { result } = await renderHookWithStoreProvider(useComposeEarnFees, {
+            services: { store, analytics: mockNativeAnalytics() },
+            initialProps: {
+                accountKey: ACCOUNT.key,
+                formState: FORM_STATE,
+                formDraftPrefix: 'stake',
+            },
+        });
+        await settleDebounce();
+        expect(result.current.formDraft?.selectedFee).toBe(FORM_STATE.selectedFee);
+        expect(result.current.formDraft?.feePerUnit).toBe(FEE_LEVELS.normal.feePerByte);
+        expect(result.current.isFeeReady).toBe(true);
     });
 
     it('preserves a newer Standard selection when an older composition completes', async () => {
