@@ -1,78 +1,30 @@
 import { type ReactNode, memo, useRef } from 'react';
 
-import styled from 'styled-components';
-
 import { Modal } from '@trezor/components';
+import {
+    AboveTabletOnly,
+    AddPassphraseWalletFlow,
+    AnchorHighlightHandler,
+    AppScrollArea,
+    Body,
+    CoinjoinBars,
+    Columns,
+    DiscoveryProgress,
+    GuideButton,
+    GuideRouter,
+    LayoutMetadata,
+    LayoutPayloadProvider,
+    MainContent,
+    PageWrapper,
+    PowerMonitorManager,
+    ScrollProvider,
+    Sidebar,
+    SuiteBanners,
+    SwitchDeviceLayer,
+    Wrapper,
+} from '@trezor/suite';
 
-import { GuideButton, GuideRouter } from 'src/components/guide';
-import { SuiteBanners } from 'src/components/suite/banners';
-import { DiscoveryProgress } from 'src/components/wallet';
-
-import { AddPassphraseWalletFlow } from './AddPassphraseWalletFlow';
-import { AnchorHighlightHandler } from './AnchorHighlightHandler';
-import { AppScrollArea } from './AppScrollArea';
-import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
-import { LayoutPayloadProvider } from './LayoutPayloadProvider';
-import { AboveTabletOnly } from './LayoutSizeOnly';
-import { LayoutMetadata } from './LayoutSlots';
-import { PowerMonitorManager } from './PowerMonitor/PowerMonitor';
-import { ScrollProvider } from './ScrollProvider';
-import { Sidebar } from './Sidebar/Sidebar';
-import { SwitchDeviceLayer } from './SwitchDeviceLayer';
-import { useResponsiveContextOnChange } from './useResponsiveContextOnChange';
-import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
-
-export const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    overflow: auto;
-`;
-
-export const PageWrapper = styled.div`
-    position: relative;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    height: 100dvh;
-    overflow-x: hidden;
-`;
-
-export const Body = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: hidden;
-`;
-
-// AppScrollArea and MenuSecondary creates own scrollbars independently
-export const Columns = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex: 1 0 100%;
-    overflow: auto;
-    padding: 0;
-`;
-
-export const MainContentContainer = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    overflow-x: hidden;
-`;
-
-type MainContentProps = {
-    children: ReactNode;
-};
-
-export const MainContent = ({ children }: MainContentProps) => {
-    const ref = useRef<HTMLDivElement>(null);
-
-    useResponsiveContextOnChange(ref);
-
-    return <MainContentContainer ref={ref}>{children}</MainContentContainer>;
-};
+import { ModalSwitcher } from '../ModalSwitcher/ModalSwitcher';
 
 interface SuiteLayoutProps {
     children: ReactNode;

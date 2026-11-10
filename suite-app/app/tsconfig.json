@@ -128,6 +128,7 @@
         { "path": "../../suite/flags" },
         { "path": "../../suite/intl" },
         { "path": "../../suite/locks" },
+        { "path": "../../suite/macos" },
         { "path": "../../suite/message-system" },
         { "path": "../../suite/metadata" },
         {

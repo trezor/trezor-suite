@@ -13,7 +13,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
-import { DeviceCompromisedScreen } from './DeviceCompromisedScreen';
+import { DeviceCompromisedContent } from './DeviceCompromisedContent';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
@@ -186,7 +186,7 @@ const deviceCompromisedFixtures: Array<{
     },
 ];
 
-describe(`${DeviceCompromisedScreen.name} component`, () => {
+describe(`${DeviceCompromisedContent.name} component`, () => {
     deviceCompromisedFixtures.forEach(({ description, device, persistentDeviceData, result }) => {
         it(description, () => {
             const { services } = createTestCompositionRoot<
@@ -198,7 +198,7 @@ describe(`${DeviceCompromisedScreen.name} component`, () => {
             });
             const { getByText, unmount } = renderWithProviders(
                 { ...services, networks: { networkIcon } },
-                <DeviceCompromisedScreen />,
+                <DeviceCompromisedContent />,
             );
             expect(getByText(result)).not.toBeNull();
             unmount();

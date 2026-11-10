@@ -11267,6 +11267,7 @@ __metadata:
     "@suite/flags": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/locks": "workspace:*"
+    "@suite/macos": "workspace:*"
     "@suite/message-system": "workspace:*"
     "@suite/metadata": "workspace:*"
     "@suite/metadata-migration": "workspace:*"

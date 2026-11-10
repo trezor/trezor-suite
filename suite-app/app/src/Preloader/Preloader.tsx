@@ -20,15 +20,10 @@ import { Card } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
-    AnalyticsConsentScreen,
-    DeviceCompromisedScreen,
     ErrorPage,
     InteractiveDeviceChecksFlow,
     Onboarding,
     PrerequisitesGuide,
-    SuiteLayout,
-    WelcomeLayout,
-    WelcomeLayoutWithoutModalSwitcher,
     analyticsActions,
     initThunk,
     selectPrerequisite,
@@ -42,10 +37,15 @@ import {
     useWindowVisibility,
 } from '@trezor/suite';
 
+import { AnalyticsConsentScreen } from './AnalyticsConsentScreen';
 import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
+import { DeviceCompromisedScreen } from './DeviceCompromisedScreen';
 import { InitialLoading } from './InitialLoading';
 import { useWaitForTransport } from './useWaitForTransport';
+import { SuiteLayout } from '../layouts/SuiteLayout';
+import { WelcomeLayout } from '../layouts/WelcomeLayout';
+import { WelcomeLayoutWithoutModalSwitcher } from '../layouts/WelcomeLayoutWithoutModalSwitcher';
 
 const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
     switch (app) {

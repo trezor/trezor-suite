@@ -15,7 +15,7 @@ import {
     MainContent,
     PageWrapper,
     Wrapper,
-} from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
+} from 'src/components/suite/layouts/SuiteLayout/LayoutStructure';
 import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
 
 const Container = styled.div`

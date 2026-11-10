@@ -5,16 +5,16 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { TrafficLightOffset } from '@suite/macos';
 import { Column, Modal, Row, variables } from '@trezor/components';
-
-import { GuideButton, GuideRouter } from 'src/components/guide';
-// importing directly, otherwise unit tests fail, seems to be a styled-components issue
-import { SuiteBanners } from 'src/components/suite/banners';
-
-import { ContentContainer } from '../ContentContainer';
-import { PageHeader } from '../SuiteLayout';
-import { BasicName } from '../SuiteLayout/PageHeader/PageNames/BasicName';
-import { Sidebar } from '../SuiteLayout/Sidebar/Sidebar';
-import { MainContent } from '../SuiteLayout/SuiteLayout';
+import {
+    BasicName,
+    ContentContainer,
+    GuideButton,
+    GuideRouter,
+    MainContent,
+    PageHeader,
+    Sidebar,
+    SuiteBanners,
+} from '@trezor/suite';
 
 const Content = styled.div<{ $verticalCenter?: boolean }>`
     display: flex;
