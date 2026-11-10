@@ -19,6 +19,7 @@ import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
 } from '../../../test-utils/tradingTestUtils';
+import { TradingMetadataProvider } from '../../general/TradingMetadataProvider';
 
 jest.mock('../../../hooks/general/useAmountInputDecimals', () => ({
     useAmountInputDecimals: () => 8,
@@ -51,7 +52,11 @@ describe('ExchangeSendContent', () => {
 
     const renderExchangeSendContent = () =>
         renderWithStoreProvider(<ExchangeSendContent />, {
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            wrapper: ({ children }) => (
+                <TradingMetadataProvider>
+                    <Form form={form}>{children}</Form>
+                </TradingMetadataProvider>
+            ),
             preloadedState,
             services: {
                 ...services,

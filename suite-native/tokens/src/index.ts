@@ -4,3 +4,4 @@ export * from './tokensSelectors';
 export * from './__fixtures__/transactions';
 export { TokenName } from './components/TokenName';
 export { TokenSymbol } from './components/TokenSymbol';
+export { accountsToTokenMetadataSources } from './accountsToTokenMetadataSources';

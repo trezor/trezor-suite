@@ -14,7 +14,6 @@ import {
     TransactionListGroupTitle,
     TransactionListItem,
     TransactionsListFooter,
-    transactionsToTokenMetadataSources,
 } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -85,6 +84,7 @@ export const AssetTransactionList = ({
     const { scrollDivider, handleScroll } = useScrollDivider();
     const {
         items,
+        tokenMetadataSources,
         hasMoreTransactions,
         needsOlderHistoryScan,
         historyCoveredSince,
@@ -98,11 +98,7 @@ export const AssetTransactionList = ({
     } = useAssetTransactions({ networkSymbol, tokenContract });
 
     return (
-        <TokenMetadataProvider
-            sources={transactionsToTokenMetadataSources(
-                items.flatMap(item => (typeof item === 'string' ? [] : [item.transaction])),
-            )}
-        >
+        <TokenMetadataProvider sources={tokenMetadataSources}>
             <Box flex={1}>
                 {scrollDivider}
                 <FlashList<AssetTransactionListItem>

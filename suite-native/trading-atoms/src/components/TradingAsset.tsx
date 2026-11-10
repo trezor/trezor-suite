@@ -1,8 +1,10 @@
 import { type ReactNode } from 'react';
 
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
+import { TokenName, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
@@ -56,7 +58,23 @@ export const TradingAsset = (props: TradingAssetProps) => {
         assetType,
     } = props;
 
-    const primaryText = primaryLabel === 'name' ? name : symbol;
+    // Token labels resolve from metadata so that URLs in unrecognized tokens are masked.
+    const token =
+        props.assetType === 'crypto' && props.contractAddress
+            ? {
+                  networkSymbol: props.networkSymbol,
+                  contractAddress: toTokenAddress(props.contractAddress),
+              }
+            : undefined;
+    const getPrimaryText = () => {
+        if (!token) return primaryLabel === 'name' ? name : symbol;
+
+        return primaryLabel === 'name' ? (
+            <TokenName {...token} variant={primaryTextVariant} />
+        ) : (
+            <TokenSymbol {...token} variant={primaryTextVariant} isTruncated />
+        );
+    };
     const shouldShowSymbolOnSecondaryLine = primaryLabel === 'name';
     const shouldShowSecondaryLine = shouldShowSymbolOnSecondaryLine || assetType === 'crypto';
 
@@ -80,7 +98,7 @@ export const TradingAsset = (props: TradingAssetProps) => {
                     testID={testID ? `${testID}/primary-label` : undefined}
                     variant={primaryTextVariant}
                 >
-                    {primaryText}
+                    {getPrimaryText()}
                 </Text>
                 {shouldShowSecondaryLine && (
                     <HStack alignItems="center" justifyContent="flex-start" spacing="sp4">
@@ -91,7 +109,16 @@ export const TradingAsset = (props: TradingAssetProps) => {
                                 testID={testID ? `${testID}/secondary-symbol` : undefined}
                                 variant="body-sm"
                             >
-                                {symbol}
+                                {token ? (
+                                    <TokenSymbol
+                                        {...token}
+                                        variant="body-sm"
+                                        color="contentSecondary"
+                                        isTruncated
+                                    />
+                                ) : (
+                                    symbol
+                                )}
                             </Text>
                         )}
                         {props.assetType === 'crypto' &&

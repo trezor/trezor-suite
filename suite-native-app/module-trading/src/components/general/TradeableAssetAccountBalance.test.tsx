@@ -1,3 +1,6 @@
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -15,6 +18,18 @@ import {
     type TradeableAssetAccountBalanceProps,
 } from './TradeableAssetAccountBalance';
 
+const tokenMetadataSources = [
+    {
+        networkSymbol: asNetworkSymbol('eth'),
+        tokens: [
+            {
+                contract: toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
+                symbol: 'USDC',
+            },
+        ],
+    },
+];
+
 describe('TradeableAssetAccountBalance', () => {
     const renderTradeableAssetAccountBalance = (
         props: Partial<TradeableAssetAccountBalanceProps> = {},
@@ -27,7 +42,14 @@ describe('TradeableAssetAccountBalance', () => {
                 testID="TEST_ID"
                 {...props}
             />,
-            { preloadedState },
+            {
+                preloadedState,
+                wrapper: ({ children }) => (
+                    <TokenMetadataProvider sources={tokenMetadataSources}>
+                        {children}
+                    </TokenMetadataProvider>
+                ),
+            },
         );
 
     it('should render nothing without asset selected', async () => {

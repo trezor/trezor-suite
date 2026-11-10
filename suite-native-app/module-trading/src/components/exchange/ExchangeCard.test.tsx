@@ -17,6 +17,7 @@ import { PROTO } from '@trezor/connect';
 import { ExchangeCard } from './ExchangeCard';
 import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
+import { TradingMetadataProvider } from '../general/TradingMetadataProvider';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -60,7 +61,11 @@ describe('ExchangeCard', () => {
                 ...services,
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },
             },
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            wrapper: ({ children }) => (
+                <TradingMetadataProvider>
+                    <Form form={form}>{children}</Form>
+                </TradingMetadataProvider>
+            ),
         });
 
     beforeEach(async () => {
@@ -145,7 +150,11 @@ describe('ExchangeCard', () => {
                     ...services,
                     networks: { networkIcon: mockNetworkIcon(), ...services.networks },
                 },
-                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+                wrapper: ({ children }) => (
+                    <TradingMetadataProvider>
+                        <Form form={form}>{children}</Form>
+                    </TradingMetadataProvider>
+                ),
             },
         );
 

@@ -1,3 +1,4 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { Card } from '@suite-native/atoms';
 
 import { TradingHistoryDetailAssetRow } from './TradingHistoryDetailAssetRow';
@@ -10,6 +11,7 @@ import { TradingHistoryDetailRateRow } from './TradingHistoryDetailRateRow';
 import { TradingHistoryDetailSlippageRow } from './TradingHistoryDetailSlippageRow';
 import { TradingHistoryDetailTradeIdRow } from './TradingHistoryDetailTradeIdRow';
 import { useTradingHistoryDetailInfo } from '../../hooks/useTradingHistoryDetailInfo';
+import { tradingHistoryAssetsToTokenMetadataSources } from '../../utils/tradingHistoryAssetsToTokenMetadataSources';
 
 const TEST_ID = '@trading/history/detail/info';
 
@@ -36,7 +38,7 @@ export const TradingHistoryDetailInfo = ({ orderId }: TradingHistoryDetailInfoPr
         swapSlippage,
     } = info;
 
-    return (
+    const content = (
         <Card noPadding testID={TEST_ID}>
             {!!payAsset && <TradingHistoryDetailAssetRow asset={payAsset} isFirst side="pay" />}
             {!!getAsset && <TradingHistoryDetailAssetRow asset={getAsset} side="get" />}
@@ -61,5 +63,13 @@ export const TradingHistoryDetailInfo = ({ orderId }: TradingHistoryDetailInfoPr
             )}
             <TradingHistoryDetailPlacedAtRow placedAt={placedAt} />
         </Card>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={tradingHistoryAssetsToTokenMetadataSources([payAsset, getAsset])}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

@@ -7,6 +7,7 @@ import {
 } from '@suite-native/navigation';
 
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
+import { TradingMetadataProvider } from '../components/general/TradingMetadataProvider';
 import { TradingRestrictedGuard } from '../components/general/TradingRestrictedGuard';
 import { TradingBuyPreviewScreen } from '../screens/TradingBuyPreviewScreen';
 import { TradingConfirmingScreen } from '../screens/TradingConfirmingScreen';
@@ -26,7 +27,7 @@ import { TradingTradeableAssetScreen } from '../screens/TradingTradeableAssetScr
 
 const TradingStack = createNativeStackNavigator<TradingStackParamList>();
 
-export const TradingStackNavigator = () => (
+const TradingStackScreens = () => (
     <TradingStack.Navigator
         screenOptions={stackNavigationOptionsConfig}
         screenLayout={({ children }) => <TradingRestrictedGuard>{children}</TradingRestrictedGuard>}
@@ -116,4 +117,10 @@ export const TradingStackNavigator = () => (
             />
         </TradingStack.Group>
     </TradingStack.Navigator>
+);
+
+export const TradingStackNavigator = () => (
+    <TradingMetadataProvider>
+        <TradingStackScreens />
+    </TradingMetadataProvider>
 );

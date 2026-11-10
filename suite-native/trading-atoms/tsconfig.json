@@ -24,6 +24,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../tokens" },
         { "path": "../trading-types" },
         {
             "path": "../../packages/styles-native"
@@ -39,6 +40,7 @@
         {
             "path": "../../suite-common/suite-sync"
         },
+        { "path": "../../suite-common/token" },
         {
             "path": "../../suite-common/wallet-core"
         },

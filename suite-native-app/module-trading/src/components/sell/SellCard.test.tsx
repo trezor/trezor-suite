@@ -16,6 +16,7 @@ import { type SellFormType } from '@suite-native/trading-types';
 import { SellCard } from './SellCard';
 import { useSellForm } from '../../hooks/sell/useSellForm';
 import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
+import { TradingMetadataProvider } from '../general/TradingMetadataProvider';
 
 jest.mock('../../hooks/general/useAmountInputDecimals', () => ({
     useAmountInputDecimals: () => 6,
@@ -50,7 +51,11 @@ describe('SellCard', () => {
         });
 
         return renderWithStoreProvider(<SellCard isAmountInputActive={isAmountInputActive} />, {
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            wrapper: ({ children }) => (
+                <TradingMetadataProvider>
+                    <Form form={form}>{children}</Form>
+                </TradingMetadataProvider>
+            ),
             preloadedState: cardPreloadedState,
             services: {
                 ...services,

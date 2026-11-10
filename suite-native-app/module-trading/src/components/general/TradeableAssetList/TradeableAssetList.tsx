@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type TradeableAssetBalances } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, EdgeFades, VStack } from '@suite-native/atoms';
@@ -11,6 +12,7 @@ import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeableAssetListItem } from './TradeableAssetListItem';
+import { tradeableAssetsToTokenMetadataSources } from '../../../utils/general/tradeableAssetsToTokenMetadataSources';
 import { TradingAssetListEmptyComponent } from '../TradingAssetListEmptyComponent';
 import { TradingAssetListHeader } from '../TradingAssetListHeader';
 
@@ -54,7 +56,7 @@ export const TradeableAssetList = ({
         flashListRef.current?.scrollToOffset({ offset: 0, animated: false });
     }, [scrollResetKey]);
 
-    return (
+    const content = (
         <VStack flex={1} spacing="sp10" testID={testID}>
             <TradingAssetListHeader
                 onFilterChange={onFilterChange}
@@ -98,5 +100,11 @@ export const TradeableAssetList = ({
                 <EdgeFades direction="vertical" startSize={utils.spacings.sp16} endSize={bottom} />
             </Box>
         </VStack>
+    );
+
+    return (
+        <TokenMetadataProvider sources={tradeableAssetsToTokenMetadataSources(assets)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

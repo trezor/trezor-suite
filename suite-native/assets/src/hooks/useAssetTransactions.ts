@@ -10,6 +10,7 @@ import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config'
 import { type TokensRootState } from '@suite-native/tokens';
 import {
     getNextRequestedTransactionCount,
+    transactionsToTokenMetadataSources,
     useFetchMissingTransactionFiatRates,
     useRefreshAccounts,
 } from '@suite-native/transactions';
@@ -76,6 +77,10 @@ export const useAssetTransactions = ({
         perPage,
     });
 
+    const tokenMetadataSources = transactionsToTokenMetadataSources(
+        items.flatMap(item => (typeof item === 'string' ? [] : [item.transaction])),
+    );
+
     useFocusEffect(
         useCallback(
             function fetchMissingPages() {
@@ -113,6 +118,7 @@ export const useAssetTransactions = ({
 
     return {
         items,
+        tokenMetadataSources,
         hasMoreTransactions,
         needsOlderHistoryScan,
         historyCoveredSince,
