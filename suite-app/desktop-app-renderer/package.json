@@ -25,6 +25,7 @@
         "@suite-app/module-settings": "workspace:*",
         "@suite-app/module-sign-verify": "workspace:*",
         "@suite-app/module-trading": "workspace:*",
+        "@suite-app/module-transactions": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/debug": "workspace:*",

@@ -26,6 +26,7 @@
         "@suite-app/module-settings": "workspace:*",
         "@suite-app/module-sign-verify": "workspace:*",
         "@suite-app/module-trading": "workspace:*",
+        "@suite-app/module-transactions": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",

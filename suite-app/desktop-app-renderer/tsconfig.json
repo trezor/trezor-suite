@@ -17,6 +17,7 @@
         { "path": "../module-settings" },
         { "path": "../module-sign-verify" },
         { "path": "../module-trading" },
+        { "path": "../module-transactions" },
         {
             "path": "../../suite-common/react-query"
         },

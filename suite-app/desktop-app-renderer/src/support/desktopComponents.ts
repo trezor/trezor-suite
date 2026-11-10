@@ -9,7 +9,6 @@ import {
     PasswordManagerPage,
     ReferAFriendPage,
     TokensPage,
-    TransactionsPage,
     WalletAnonymizePage,
     WalletCoinjoinPage,
     WalletDetailsPage,
@@ -57,6 +56,7 @@ import {
     TradingTransactionsPage,
     WalletTradePage,
 } from '@suite-app/module-trading';
+import { TransactionsPage } from '@suite-app/module-transactions';
 
 /*
  Note 1: Currently, this list contains the same components as webComponents.ts, but there could be Desktop-specific
