@@ -2,24 +2,38 @@ name: "Install Node and Yarn Dependencies without build"
 description: >
   Installs Node.js and its dependencies without building most of the dependencies, which is significantly faster.
   Only those whitelisted in the root package.json are built. It's not recommended to use these actions for building production versions, as they can produce some unwanted behavior. However, it's sufficient for running validation checks, tests, etc.
+inputs:
+  focus:
+    description: "Arguments for `yarn workspaces focus`. Empty installs every workspace with `yarn --immutable`."
+    required: false
+    default: ""
+  disable-hardened-mode:
+    description: "Append `enableHardenedMode: false` to .yarnrc.yml before installing."
+    required: false
+    default: "false"
+  safedep:
+    description: "Install SafeDep PMG so that it wraps the Yarn install."
+    required: false
+    default: "true"
 runs:
   using: "composite"
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
       with:
         node-version-file: ".nvmrc"
 
     - name: Restore develop Yarn cache
       uses: ./.github/actions/restore-yarn-cache
 
-    # We don't need to run in hardened mode because it's enough to run hardened install only in "Setup and Cache Dependencies" step
-    - name: Modify .yarnrc.yml to disable hardened mode
+    - name: Disable Yarn hardened mode
+      if: inputs.disable-hardened-mode == 'true'
       shell: bash
       run: |
         echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
     - name: Install SafeDep PMG
+      if: inputs.safedep == 'true'
       uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
       continue-on-error: true
       with:
@@ -28,4 +42,11 @@ runs:
 
     - name: Install dependencies using Yarn
       shell: bash
-      run: yarn --immutable
+      env:
+        FOCUS: ${{ inputs.focus }}
+      run: |
+        if [ -n "$FOCUS" ]; then
+          yarn workspaces focus $FOCUS
+        else
+          yarn --immutable
+        fi

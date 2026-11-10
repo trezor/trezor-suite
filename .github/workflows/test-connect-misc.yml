@@ -77,22 +77,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
-      - name: Setup node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
-      - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
-        continue-on-error: true
-        with:
-          version: v0.32.0
-          config-file: .github/pmg-config.yml
       - name: Install dependencies
-        run: yarn install
+        uses: ./.github/actions/minimal-yarn-install
 
       - name: Pack packages
         run: yarn tsx ./scripts/ci/pack-packages.ts
@@ -119,47 +105,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
-      - name: Setup node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
-      - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
-        continue-on-error: true
-        with:
-          version: v0.32.0
-          config-file: .github/pmg-config.yml
       - name: Install dependencies
-        run: yarn install
-
-      # @trezor/connect (the Node entry point, which pulls in the engine and
-      # @trezor/transport) and its thin wrappers
-      # (connect-web / connect-mobile / connect-webextension) are the packages
-      # 3rd parties install. A copyleft license (GPL/AGPL/SSPL/...) anywhere in
-      # their production closure would impose obligations on every downstream
-      # consumer, so it must never be pulled in.
-      #
-      # Note: `usb` (reached through @trezor/transport) is MIT on npm but
-      # vendors libusb (LGPL-2.1) as bundled C sources, which license-checker
-      # reads no license field for and therefore cannot report.
-      #
-      # We start the scan at the hoisted package directory under the root
-      # node_modules (not packages/<pkg>): in a Yarn workspace the package's
-      # production dependencies are hoisted to the root node_modules, so that is
-      # the only start point from which license-checker resolves and walks the
-      # full transitive closure. Starting at packages/<pkg> would only see the
-      # package itself. Internal @trezor/ packages are filtered from the report
-      # (they ship under the repo's own non-copyleft reference-source license),
-      # but the scan still walks through them into their third-party
-      # dependencies. Only the @trezor/ scope appears in these closures — the
-      # lower package layers cannot import from @suite*, so no other first-party
-      # scope needs filtering. Note --excludePackagesStartingWith takes a single
-      # prefix; a comma-separated list is silently treated as one literal prefix
-      # and matches nothing.
+        uses: ./.github/actions/minimal-yarn-install
       - name: Check public closure licenses (no copyleft)
         run: |
           # license-checker is run via `yarn dlx` (version-pinned) rather than a
