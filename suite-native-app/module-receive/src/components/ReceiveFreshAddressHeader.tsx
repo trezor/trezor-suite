@@ -13,7 +13,7 @@ import {
     ScreenHeader,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { TokenSymbol, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenSymbol, type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 import { ReceiveAddressListButton } from './ReceiveAddressListButton';
 
@@ -33,8 +33,9 @@ export const ReceiveFreshAddressHeader = ({
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, accountKey, tokenContract),
+    // Case-insensitive lookup; the stored contract is what the token metadata is keyed by.
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
     if (accountKey === undefined) {
@@ -65,12 +66,12 @@ export const ReceiveFreshAddressHeader = ({
                             deviceStaticSessionId={deviceStaticSessionId}
                             showAccountTypeBadge
                         />
-                        {tokenSymbol && tokenContract && (
+                        {token?.symbol && (
                             <HStack alignItems="center" spacing={0} flexShrink={1}>
                                 <Text variant="body-md-strong">{' - '}</Text>
                                 <TokenSymbol
                                     networkSymbol={networkSymbol}
-                                    contractAddress={tokenContract}
+                                    contractAddress={token.contract}
                                     variant="body-md-strong"
                                 />
                             </HStack>

@@ -85,7 +85,7 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                                     networkSymbol={asset.networkSymbol}
                                     contractAddress={toTokenAddress(asset.contractAddress)}
                                     variant="body-sm"
-                                    color="contentSecondary"
+                                    priority="secondary"
                                 />
                             )}
                         </Text>
