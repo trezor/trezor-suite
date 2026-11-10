@@ -141,7 +141,7 @@ describe('FeeOption', () => {
                 expect(getByText(amount)).toBeOnTheScreen();
                 expect(
                     getByText(
-                        `Insufficient ${symbol.toUpperCase()} to cover the current transaction fee.`,
+                        `Insufficient ${symbol.toUpperCase()} to cover the current transaction fee`,
                     ),
                 ).toBeOnTheScreen();
                 expect(queryByText('Unavailable')).toBeNull();
