@@ -16,6 +16,7 @@
 - [Architecture decision records](./adr/README.md)
     - [ADR template](./adr/TEMPLATE.md)
     - [Separate application composition from reusable building blocks](./adr/001-separate-app-and-lego-code.md)
+    - [Group application code into one module per app section](./adr/004-group-app-code-into-section-modules.md)
 - [Analytics](./analytics/index.md)
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)

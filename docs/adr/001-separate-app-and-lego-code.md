@@ -1,5 +1,7 @@
 # Separate application composition from reusable building blocks
 
+Supplemented by [ADR-004: Group application code into one module per app section](./004-group-app-code-into-section-modules.md).
+
 ## Context
 
 Network modules need reusable UI and services from packages such as `@suite/intl` and `@trezor/product-components`.
