@@ -8,7 +8,7 @@ import {
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
-} from '#src/components/suite/troubleshooting/tips';
+} from '#src/components/suite/troubleshooting/tips/troubleshootingTipItems';
 import { useSelector } from '#src/hooks/suite';
 import { useBridgeDesktopApi } from '#src/hooks/suite/useBridgeDesktopApi';
 
