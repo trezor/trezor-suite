@@ -19,6 +19,7 @@
         "@sentry/browser": "10.75.2",
         "@suite-app/app": "workspace:*",
         "@suite-app/module-account-detail": "workspace:*",
+        "@suite-app/module-activity-center": "workspace:*",
         "@suite-app/module-assets": "workspace:*",
         "@suite-app/module-coinjoin": "workspace:*",
         "@suite-app/module-earn": "workspace:*",
