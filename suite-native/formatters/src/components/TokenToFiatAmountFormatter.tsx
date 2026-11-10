@@ -18,7 +18,14 @@ import { SignValueFormatter } from './SignValueFormatter';
 type TokenToFiatAmountFormatterProps = {
     symbol: NetworkSymbol;
     contract: TokenAddress;
-    /** The value is in whole token units, as in account balances, instead of base units. */
+    /**
+     * The value is in whole token units, as in account balances, instead of base units.
+     *
+     * @deprecated A boolean switch does not say which unit a value is in, so every caller has to
+     * know it and branch on it. The unit scale belongs in the value's type: branded types such as
+     * `DecimalTokenAmount` for whole units and a counterpart for base units, converted once at
+     * the data boundary. Unify token amounts on those types and accept only one of them here.
+     */
     isBalance?: boolean;
     discreetMode?: DiscreetMode;
     signValue?: SignValue;
