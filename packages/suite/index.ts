@@ -422,7 +422,7 @@ export { CreateOrRecoverStep } from './src/views/onboarding/steps/CreateOrRecove
 export { DeviceAuthenticityStep } from './src/views/onboarding/steps/DeviceAuthenticityStep';
 export { DeviceTutorialStep } from './src/views/onboarding/steps/DeviceTutorialStep';
 export { FinalStep } from './src/views/onboarding/steps/FinalStep';
-export { FirmwareStep } from './src/views/onboarding/steps/FirmwareStep';
+export { FirmwareStep } from './src/views/onboarding/steps/FirmwareStep/FirmwareStep';
 export { PinStep } from './src/views/onboarding/steps/PinStep';
 export { RecoveryStep } from './src/views/onboarding/steps/RecoveryStep';
 export { SecurityStep } from './src/views/onboarding/steps/SecurityStep';
