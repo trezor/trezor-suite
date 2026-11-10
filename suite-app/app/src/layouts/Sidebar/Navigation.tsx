@@ -17,8 +17,7 @@ import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { AppWindowIcon, BellIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
+import { useResponsiveContext } from '@trezor/suite';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
 

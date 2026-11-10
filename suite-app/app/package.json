@@ -83,6 +83,7 @@
         "@suite/modal": "workspace:*",
         "@suite/receive": "workspace:*",
         "@suite/recovery": "workspace:*",
+        "@suite/regions": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/settings": "workspace:*",
         "@suite/sign-verify": "workspace:*",
@@ -118,6 +119,7 @@
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
+        "@testing-library/jest-dom": "7.0.1",
         "@testing-library/react": "^16.3.3",
         "@trezor/type-utils": "workspace:*",
         "@types/file-saver": "^2.0.6",

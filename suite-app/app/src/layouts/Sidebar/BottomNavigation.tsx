@@ -13,9 +13,7 @@ import { Column, Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { GearSixIcon, GiftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-import { selectIsReferralAvailable } from 'src/views/refer-a-friend/referralSelectors';
+import { selectIsReferralAvailable, useResponsiveContext } from '@trezor/suite';
 
 import { NavigationItem } from './NavigationItem';
 

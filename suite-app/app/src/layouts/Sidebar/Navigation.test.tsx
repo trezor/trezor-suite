@@ -1,4 +1,5 @@
 import '@suite-common/test-utils/globalOverrides';
+import '@testing-library/jest-dom';
 
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { act, fireEvent, screen, within } from '@testing-library/react';
@@ -27,17 +28,16 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransactionNotification } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WithServices } from '@trezor/redux-utils';
-
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { SIDEBAR_MIN_WIDTH } from '@trezor/suite';
+import {
+    type MockSuiteState,
+    mockExtraDependenciesForReducers,
+    mockInitialAppState,
+    renderWithProviders,
+} from '@trezor/suite/mocks';
 
 import { BottomNavigation } from './BottomNavigation';
 import { Navigation } from './Navigation';
-import { SIDEBAR_MIN_WIDTH } from './consts';
-import { mockExtraDependenciesForReducers } from '../../../../../../mocks/mockExtraDependenciesForReducers';
-import {
-    type MockSuiteState,
-    mockInitialAppState,
-} from '../../../../../../mocks/mockInitialAppState';
 
 type TranslationMockProps = { id: string };
 
@@ -46,19 +46,11 @@ jest.mock('@suite/intl', () => ({
     Translation: ({ id }: TranslationMockProps) => <span>{id}</span>,
 }));
 
-jest.mock('src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu', () => ({
+jest.mock('@trezor/suite', () => ({
+    ...jest.requireActual('@trezor/suite'),
     AccountsMenu: () => <div data-testid="accounts-menu" />,
-}));
-
-jest.mock('../DeviceSelector/DeviceSelector', () => ({
     DeviceSelector: () => <div />,
-}));
-
-jest.mock('./SidebarBanners', () => ({
     SidebarBanners: () => <div />,
-}));
-
-jest.mock('./QuickActions/QuickActions', () => ({
     QuickActions: () => <div data-testid="quick-actions" />,
 }));
 
