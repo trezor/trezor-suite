@@ -17,8 +17,6 @@ export { Preloader } from './Preloader/Preloader';
 export { AppsEmbeddingPage } from './pages/AppsEmbeddingPage';
 export { AssetDetailPage } from './pages/AssetDetailPage';
 export { ConnectPopupPage } from './pages/ConnectPopupPage';
-export { DashboardPage } from './pages/DashboardPage';
-export { HiddenTokensPage } from './pages/HiddenTokensPage';
 export { NftsPage } from './pages/NftsPage';
 export { NotificationPage } from './pages/NotificationPage';
 export { PasswordManagerPage } from './pages/PasswordManagerPage';
