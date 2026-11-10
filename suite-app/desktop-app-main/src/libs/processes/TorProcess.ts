@@ -1,5 +1,8 @@
-import { TOR_CONTROLLER_STATUS, TorController } from '@trezor/request-manager';
-import { type TorConnectionOptions } from '@trezor/request-manager/src/types';
+import {
+    TOR_CONTROLLER_STATUS,
+    type TorConnectionOptions,
+    TorController,
+} from '@trezor/request-manager';
 
 import { BaseProcess, type Status } from './BaseProcess';
 import type { ILogger } from '../logger';

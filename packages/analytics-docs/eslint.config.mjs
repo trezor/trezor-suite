@@ -3,7 +3,7 @@ import { eslint } from '@trezor/eslint';
 export default [
     ...eslint,
     {
-        files: ['scripts/buildData.ts'],
+        // The package documents the Suite analytics events, so it reads them from @suite-common/analytics.
         rules: {
             '@typescript-eslint/no-restricted-imports': [
                 'error',

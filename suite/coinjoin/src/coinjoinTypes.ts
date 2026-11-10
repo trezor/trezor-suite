@@ -8,6 +8,7 @@ import {
     type CoinjoinStatusEvent,
     type RegisterAccountParams,
 } from '@trezor/coinjoin';
+// eslint-disable-next-line local-rules/no-package-deep-imports -- the package entry point would bundle the whole coinjoin library
 import {
     EndRoundState,
     type RoundPhase,
