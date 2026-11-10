@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type AccountsRootState,
     createTargets,
@@ -23,6 +24,7 @@ import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
     InstantStakeBanner,
     getUnstakeTxAmount,
+    transactionsToTokenMetadataSources,
     useFetchMissingTransactionFiatRates,
 } from '@suite-native/transactions';
 import { useServices } from '@trezor/dependency-injection';
@@ -83,48 +85,50 @@ export const TransactionDetailScreen = ({
     const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
 
     return (
-        <Screen
-            header={
-                <ScreenHeader
-                    closeActionType={closeActionType}
-                    customContent={
-                        <HStack spacing="sp8" alignItems="center" justifyContent="center">
-                            <TransactionDetailTitle
-                                transaction={transaction}
-                                isPending={isPending}
-                                tokenTransfer={tokenTransfer}
-                            />
-                        </HStack>
-                    }
-                />
-            }
-        >
-            <VStack spacing="sp24">
+        <TokenMetadataProvider sources={transactionsToTokenMetadataSources([transaction])}>
+            <Screen
+                header={
+                    <ScreenHeader
+                        closeActionType={closeActionType}
+                        customContent={
+                            <HStack spacing="sp8" alignItems="center" justifyContent="center">
+                                <TransactionDetailTitle
+                                    transaction={transaction}
+                                    isPending={isPending}
+                                    tokenTransfer={tokenTransfer}
+                                />
+                            </HStack>
+                        }
+                    />
+                }
+            >
                 <VStack spacing="sp24">
-                    <TransactionDetailHeader
-                        transaction={transaction}
-                        tokenTransfer={tokenTransfer}
-                        allOutputs={allOutputs}
-                    />
-                    {isUnstakeTransaction && (
-                        <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
-                    )}
-                    <TransactionDetailData
-                        transaction={transaction}
-                        accountKey={accountKey}
-                        tokenTransfer={tokenTransfer}
-                    />
+                    <VStack spacing="sp24">
+                        <TransactionDetailHeader
+                            transaction={transaction}
+                            tokenTransfer={tokenTransfer}
+                            allOutputs={allOutputs}
+                        />
+                        {isUnstakeTransaction && (
+                            <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
+                        )}
+                        <TransactionDetailData
+                            transaction={transaction}
+                            accountKey={accountKey}
+                            tokenTransfer={tokenTransfer}
+                        />
+                    </VStack>
+                    <CancelEvmTransactionButton accountKey={accountKey} transaction={transaction} />
+                    <Button
+                        iconRight="arrowUpRight"
+                        onPress={handleOpenBlockchain}
+                        intent="neutral"
+                        priority="secondary"
+                    >
+                        <Translation id="transactions.detail.exploreButton" />
+                    </Button>
                 </VStack>
-                <CancelEvmTransactionButton accountKey={accountKey} transaction={transaction} />
-                <Button
-                    iconRight="arrowUpRight"
-                    onPress={handleOpenBlockchain}
-                    intent="neutral"
-                    priority="secondary"
-                >
-                    <Translation id="transactions.detail.exploreButton" />
-                </Button>
-            </VStack>
-        </Screen>
+            </Screen>
+        </TokenMetadataProvider>
     );
 };

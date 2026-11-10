@@ -9,6 +9,7 @@
         {
             "path": "../../suite-common/react-query"
         },
+        { "path": "../../suite-common/token" },
         {
             "path": "../../suite-common/token-definitions"
         },

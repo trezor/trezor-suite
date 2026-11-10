@@ -20,3 +20,4 @@ export * from './components/TransactionTarget';
 export * from './selectors';
 export type * from './types';
 export * from './utils';
+export { transactionsToTokenMetadataSources } from './transactionsToTokenMetadataSources';

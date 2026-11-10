@@ -3,6 +3,7 @@ import { RefreshControl } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, useScrollDivider } from '@suite-native/atoms';
@@ -13,6 +14,7 @@ import {
     TransactionListGroupTitle,
     TransactionListItem,
     TransactionsListFooter,
+    transactionsToTokenMetadataSources,
 } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -96,49 +98,55 @@ export const AssetTransactionList = ({
     } = useAssetTransactions({ networkSymbol, tokenContract });
 
     return (
-        <Box flex={1}>
-            {scrollDivider}
-            <FlashList<AssetTransactionListItem>
-                data={items}
-                renderItem={renderItem}
-                getItemType={getItemType}
-                contentContainerStyle={applyStyle(listContainerStyle)}
-                ListEmptyComponent={
-                    <TransactionListEmptyState
-                        isLoading={isInitialLoading}
-                        isDeferred={isEmptyStateDeferred}
-                        isRecentWindowEmpty={needsOlderHistoryScan}
-                    />
-                }
-                ListHeaderComponent={listHeaderComponent}
-                ListFooterComponent={
-                    isInitialLoading ? null : (
-                        <TransactionsListFooter
-                            hasMoreTransactions={hasMoreTransactions}
-                            isOlderHistory={needsOlderHistoryScan}
-                            isLoading={isLoadingMore}
-                            onButtonPress={loadMore}
-                        >
-                            {(needsOlderHistoryScan || hasLoadingFailed) && (
-                                <OlderHistoryStatus
-                                    historyCoveredSince={historyCoveredSince}
-                                    hasLoadingFailed={hasLoadingFailed}
-                                />
-                            )}
-                        </TransactionsListFooter>
-                    )
-                }
-                ListFooterComponentStyle={applyStyle(listFooterStyle)}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isRefreshing}
-                        onRefresh={refresh}
-                        colors={[colors.elementFillBrandBold]}
-                    />
-                }
-                refreshing={isRefreshing}
-                onScroll={handleScroll}
-            />
-        </Box>
+        <TokenMetadataProvider
+            sources={transactionsToTokenMetadataSources(
+                items.flatMap(item => (typeof item === 'string' ? [] : [item.transaction])),
+            )}
+        >
+            <Box flex={1}>
+                {scrollDivider}
+                <FlashList<AssetTransactionListItem>
+                    data={items}
+                    renderItem={renderItem}
+                    getItemType={getItemType}
+                    contentContainerStyle={applyStyle(listContainerStyle)}
+                    ListEmptyComponent={
+                        <TransactionListEmptyState
+                            isLoading={isInitialLoading}
+                            isDeferred={isEmptyStateDeferred}
+                            isRecentWindowEmpty={needsOlderHistoryScan}
+                        />
+                    }
+                    ListHeaderComponent={listHeaderComponent}
+                    ListFooterComponent={
+                        isInitialLoading ? null : (
+                            <TransactionsListFooter
+                                hasMoreTransactions={hasMoreTransactions}
+                                isOlderHistory={needsOlderHistoryScan}
+                                isLoading={isLoadingMore}
+                                onButtonPress={loadMore}
+                            >
+                                {(needsOlderHistoryScan || hasLoadingFailed) && (
+                                    <OlderHistoryStatus
+                                        historyCoveredSince={historyCoveredSince}
+                                        hasLoadingFailed={hasLoadingFailed}
+                                    />
+                                )}
+                            </TransactionsListFooter>
+                        )
+                    }
+                    ListFooterComponentStyle={applyStyle(listFooterStyle)}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefreshing}
+                            onRefresh={refresh}
+                            colors={[colors.elementFillBrandBold]}
+                        />
+                    }
+                    refreshing={isRefreshing}
+                    onScroll={handleScroll}
+                />
+            </Box>
+        </TokenMetadataProvider>
     );
 };
