@@ -16,7 +16,7 @@ export const isDesktopProject = (target: PlaywrightTarget) => target === Playwri
 export const isWebProject = (target: PlaywrightTarget) => target === PlaywrightTarget.Web;
 
 export const getUrl = (testInfo: TestInfo, target: PlaywrightTarget) => {
-    const electronApiURL = 'file:///';
+    const electronApiURL = 'http://localhost:21345/';
     const apiURL = isDesktopProject(target) ? electronApiURL : testInfo.project.use.baseURL;
     if (!apiURL) {
         throw new Error('apiURL is not defined');

@@ -21,6 +21,9 @@ export const localhostDomains = ['localhost', '127.0.0.1'];
 
 export const electronOrigin = 'https://electron.trezor.io';
 
+export const rendererServerPort = 21345;
+export const rendererOrigin = `http://localhost:${rendererServerPort}`;
+
 export const allowedDomains = [
     ...localhostDomains,
     'trezor.io',

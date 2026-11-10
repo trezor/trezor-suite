@@ -27,6 +27,7 @@ type HandshakeAndHangDetectDeps = {
     mainWindow: BrowserWindow;
     logger: ILogger;
     statePatch?: Record<string, any>;
+    rendererUrl?: string;
 };
 
 /**
@@ -36,6 +37,7 @@ export const handshakeAndHangDetect = ({
     mainWindow,
     statePatch,
     logger,
+    rendererUrl,
 }: HandshakeAndHangDetectDeps) => {
     const handshakeHandler = () => Promise.resolve({});
     let timeout: TimerId;
@@ -67,7 +69,7 @@ export const handshakeAndHangDetect = ({
 
             return Promise.resolve({ statePatch });
         });
-        loadIndex({ mainWindow, logger });
+        loadIndex({ mainWindow, logger, rendererUrl });
     });
     const cleanup = () => {
         ipcMain.removeHandler('handshake/client');

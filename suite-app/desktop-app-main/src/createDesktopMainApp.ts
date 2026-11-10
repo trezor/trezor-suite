@@ -1,9 +1,13 @@
-import { app } from 'electron';
+import { captureMessage } from '@sentry/electron/main';
+import { app, session } from 'electron';
+import path from 'path';
 
 import type { HandshakeClient } from '@suite/desktop-app-api';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { isMacOs } from '@trezor/env-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
+import { rendererServerPort } from './config';
 import { handshakeAndHangDetect } from './handshake-and-hang-detect';
 import { ipcMain } from './ipcMain';
 import { processStatePatch, restartApp } from './libs/app-utils';
@@ -19,6 +23,7 @@ import type { ILogger } from './libs/logger';
 import { type MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
 import { isValidProtocol } from './libs/protocol';
+import { RENDERER_TOKEN_COOKIE, createRendererServer } from './libs/renderer-server';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
 import { Store } from './libs/store';
@@ -106,6 +111,16 @@ export const createDesktopMainApp =
 
         await app.whenReady();
 
+        const rendererToken = deps.randomBytes(32).toString('hex');
+        const rendererServer = isDevEnv
+            ? undefined
+            : createRendererServer({
+                  rootDir: path.join(app.getAppPath(), 'build'),
+                  port: rendererServerPort,
+                  token: rendererToken,
+                  logger: deps.logger,
+              });
+
         // Load bridge module first, it is required in both UI and daemon mode
         const interceptor = createElectronSessionInterceptor();
         const { loadModules: loadBackgroundModules, quitModules: quitBackgroundModules } =
@@ -164,6 +179,27 @@ export const createDesktopMainApp =
         }
 
         // UI is opening
+        let rendererUrl: string | undefined;
+        if (rendererServer) {
+            const startResult = await rendererServer.start();
+            if (startResult.success) {
+                rendererUrl = `${startResult.payload}/`;
+                await session.defaultSession.cookies.set({
+                    url: rendererUrl,
+                    name: RENDERER_TOKEN_COOKIE,
+                    value: rendererToken,
+                    httpOnly: true,
+                    sameSite: 'strict',
+                });
+            } else {
+                deps.logger.error(
+                    'renderer-server',
+                    `${startResult.error}, loading the renderer from file:// instead`,
+                );
+                captureMessage(`renderer-server failed to start: ${startResult.error}`, 'warning');
+            }
+        }
+
         const buildInfo = getBuildInfo();
         deps.logger.info('build', buildInfo);
 
@@ -320,7 +356,12 @@ export const createDesktopMainApp =
             deps.logger.info('modules', 'Quitting all modules');
             await Promise.race([
                 // await quitting all registered modules
-                Promise.allSettled([quitModules(), quitTorModule(), quitBackgroundModules()]),
+                Promise.allSettled([
+                    quitModules(),
+                    quitTorModule(),
+                    quitBackgroundModules(),
+                    rendererServer?.stop(),
+                ]),
                 // or timeout after 5s
                 resolveAfter(5000),
             ]);
@@ -355,7 +396,7 @@ export const createDesktopMainApp =
                         // Main Suite window was closed, no point in loading index.
                         if (!isMainWindowUsable(mainWindow)) return;
 
-                        loadIndex({ mainWindow, logger: deps.logger });
+                        loadIndex({ mainWindow, logger: deps.logger, rendererUrl });
                     }, 1000);
                 },
             );
@@ -364,6 +405,7 @@ export const createDesktopMainApp =
                 mainWindow,
                 statePatch,
                 logger: deps.logger,
+                rendererUrl,
             });
             deps.mainWindowProxy.once('destroy', cleanup);
             const handshakeResult = await handshake;
