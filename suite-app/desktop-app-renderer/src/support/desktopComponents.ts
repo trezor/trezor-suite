@@ -4,15 +4,13 @@ import { type PageName } from '@suite/router';
 import {
     AppsEmbeddingPage,
     ConnectPopupPage,
-    NftsPage,
     NotificationPage,
     PasswordManagerPage,
     ReferAFriendPage,
-    TokensPage,
     WalletAnonymizePage,
     WalletCoinjoinPage,
-    WalletDetailsPage,
 } from '@suite-app/app';
+import { NftsPage, TokensPage, WalletDetailsPage } from '@suite-app/module-account-detail';
 import { AssetDetailPage } from '@suite-app/module-assets';
 import {
     EarnClaimPage,

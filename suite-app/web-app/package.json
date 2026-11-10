@@ -18,6 +18,7 @@
     "dependencies": {
         "@sentry/browser": "10.75.2",
         "@suite-app/app": "workspace:*",
+        "@suite-app/module-account-detail": "workspace:*",
         "@suite-app/module-assets": "workspace:*",
         "@suite-app/module-earn": "workspace:*",
         "@suite-app/module-home": "workspace:*",
