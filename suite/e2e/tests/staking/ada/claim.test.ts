@@ -105,6 +105,15 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 );
             });
 
+            // Recurring bug: https://github.com/trezor/trezor-suite/issues/31983
+            await test.step('Change delegation composes a fee for the new vote', async () => {
+                await stakingSection.changeDelegateButton.click();
+                await stakingSection.votingPreferenceOption('abstain').click();
+                await expect(feeSection.maxFeeWithSymbol).toBeVisible();
+                await expect(stakingSection.continueButton).toBeEnabled();
+                await page.modalCloseButton.click();
+            });
+
             await test.step('Verify warning on too small reward claim', async () => {
                 await stakingSection.claimRewardsButton.click();
                 await expect(page.modalHeader).toHaveTranslation('TR_EARN_CLAIM_REWARDS');
