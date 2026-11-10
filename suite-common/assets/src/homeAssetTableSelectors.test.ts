@@ -29,6 +29,7 @@ import {
     selectWalletAssetFiatValue,
     selectWalletAssetHiddenReason,
     selectWalletAssetHoldings,
+    selectWalletAssetSignVerifyAccounts,
     selectWalletAssetStakingAmount,
     selectWalletAssetStakingRatio,
     selectWalletAssetSymbol,
@@ -534,6 +535,34 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetHoldings(stateWithTwoHolders, tokenKey)).toHaveLength(
             selectWalletAssetAccountCount(stateWithTwoHolders, tokenKey),
         );
+    });
+
+    it('lists the accounts of the asset network that can sign and verify messages', () => {
+        const tokenKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+        const solanaKey = getWalletAssetKey({ deviceState: ALICE, symbol: DSOL });
+        const stateWithSigners = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [{ contract: USDC_ON_ETH, balance: '1', symbol: 'USDC' }],
+                }),
+                mockAccount({ symbol: ETH, index: 1 }),
+                mockAccount({ symbol: BTC }),
+                mockAccount({ symbol: DSOL }),
+            ],
+            enabledNetworks: [BTC, ETH, DSOL],
+        });
+
+        expect(
+            selectWalletAssetSignVerifyAccounts(stateWithSigners, tokenKey).map(
+                ({ index }) => index,
+            ),
+        ).toEqual([0, 1]);
+        expect(selectWalletAssetSignVerifyAccounts(stateWithSigners, solanaKey)).toEqual([]);
     });
 
     it('separates available from staked, pending, and withdrawing balances', () => {

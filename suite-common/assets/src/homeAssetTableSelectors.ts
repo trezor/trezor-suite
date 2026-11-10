@@ -37,6 +37,7 @@ import {
 import {
     getAccountTotalStakingBalance,
     getFiatRateKey,
+    hasNetworkFeatures,
     isPositiveBalance,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -640,6 +641,16 @@ export const selectWalletAssetHoldings = createMemoizedSelector(
                 assetAccount =>
                     assetAccount.assetKey === assetKey &&
                     isPositiveBalance(assetAccount.cryptoBalance),
+            ),
+        ),
+);
+
+export const selectWalletAssetSignVerifyAccounts = createMemoizedSelector(
+    [selectVisibleDeviceAccounts, selectWalletAssetSymbol],
+    (accounts, symbol) =>
+        returnStableArrayIfEmpty(
+            accounts.filter(
+                account => account.symbol === symbol && hasNetworkFeatures(account, 'sign-verify'),
             ),
         ),
 );
