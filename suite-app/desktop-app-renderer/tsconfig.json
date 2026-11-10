@@ -11,6 +11,7 @@
         { "path": "../app" },
         { "path": "../module-account-detail" },
         { "path": "../module-activity-center" },
+        { "path": "../module-apps-embedding" },
         { "path": "../module-assets" },
         { "path": "../module-coinjoin" },
         { "path": "../module-connect-popup" },

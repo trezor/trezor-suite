@@ -20,6 +20,7 @@
         "@suite-app/app": "workspace:*",
         "@suite-app/module-account-detail": "workspace:*",
         "@suite-app/module-activity-center": "workspace:*",
+        "@suite-app/module-apps-embedding": "workspace:*",
         "@suite-app/module-assets": "workspace:*",
         "@suite-app/module-coinjoin": "workspace:*",
         "@suite-app/module-connect-popup": "workspace:*",
