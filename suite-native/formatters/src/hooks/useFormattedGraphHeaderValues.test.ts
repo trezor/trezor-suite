@@ -38,8 +38,8 @@ const setNewStoreMockup = (preloadedState: PreloadedStatePartial<State>) => {
 };
 
 describe(useFormattedGraphHeaderValues.name, () => {
-    const renderUseFormattedGraphHeaderValues = (value?: string) =>
-        renderHookWithStoreProvider(() => useFormattedGraphHeaderValues(value), {
+    const renderUseFormattedGraphHeaderValues = (value?: string, isExact?: boolean) =>
+        renderHookWithStoreProvider(() => useFormattedGraphHeaderValues(value, isExact), {
             services: { store },
         });
 
@@ -113,6 +113,20 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: 'CZK',
             wholeNumber: '0',
             decimalNumber: '.99',
+            isCurrencySymbolFirst: true,
+        });
+    });
+
+    it('keeps every decimal of an exact amount', async () => {
+        setNewStoreMockup({
+            locale: { appLocaleCode: 'en-US' },
+            wallet: { settings: { localCurrency: 'usd' } },
+        });
+        const { result } = await renderUseFormattedGraphHeaderValues('0.0000123456', true);
+        expect(result.current).toEqual({
+            currencySymbol: '$',
+            wholeNumber: '0',
+            decimalNumber: '.0000123456',
             isCurrencySymbolFirst: true,
         });
     });

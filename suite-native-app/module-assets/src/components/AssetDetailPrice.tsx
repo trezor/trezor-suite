@@ -22,7 +22,7 @@ export const AssetDetailPrice = ({ networkSymbol, tokenContract }: AssetDetailPr
                 <Translation id="moduleAssets.assetDetailScreen.priceSection.title" />
             </Text>
             <VStack spacing="sp16">
-                <BaseCurrencyAmountHeaderFormatter value={price} />
+                <BaseCurrencyAmountHeaderFormatter value={price} isExact />
                 {sevenDayPercentageChange !== null && (
                     <AssetPriceChange
                         valueChange={sevenDayValueChange}
