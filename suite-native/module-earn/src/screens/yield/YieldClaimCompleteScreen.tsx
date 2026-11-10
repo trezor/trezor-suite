@@ -5,7 +5,6 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { events } from '@suite-common/analytics';
 import { TokenMetadataProvider } from '@suite-common/token';
-import { toTokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type YieldRootState,
@@ -27,6 +26,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { getYieldClaimCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
+import { yieldCompleteRewardsToTokenMetadataSources } from '../../utils/yield/yieldCompleteRewardsToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaimComplete>;
 type NavigationProps = StackNavigationProps<
@@ -95,12 +95,7 @@ export const YieldClaimCompleteScreen = () => {
 
     return (
         <TokenMetadataProvider
-            sources={session.result.completedRewards.map(reward => ({
-                networkSymbol: reward.token.networkSymbol,
-                tokens: reward.token.contractAddress
-                    ? [{ ...reward.token, contract: toTokenAddress(reward.token.contractAddress) }]
-                    : [],
-            }))}
+            sources={yieldCompleteRewardsToTokenMetadataSources(session.result.completedRewards)}
         >
             {content}
         </TokenMetadataProvider>

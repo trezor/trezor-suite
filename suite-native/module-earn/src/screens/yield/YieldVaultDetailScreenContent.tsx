@@ -44,6 +44,7 @@ import { ApyDottedUnderline } from '../../components/earn/ApyDottedUnderline';
 import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../../hooks/yield/useStablecoinYieldFirmwareUpdateAlert';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
+import { yieldVaultDetailToTokenMetadataSources } from '../../utils/yield/yieldVaultDetailToTokenMetadataSources';
 
 const stakedSectionStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
@@ -427,23 +428,11 @@ export const YieldVaultDetailScreenContent = ({
 
     return (
         <TokenMetadataProvider
-            sources={[
-                {
-                    networkSymbol: account.symbol,
-                    tokens: [
-                        yieldToken,
-                        ...(vault?.token.address
-                            ? [
-                                  {
-                                      contract: toTokenAddress(vault.token.address),
-                                      symbol: vault.token.symbol,
-                                      decimals: vault.token.decimals,
-                                  },
-                              ]
-                            : []),
-                    ],
-                },
-            ]}
+            sources={yieldVaultDetailToTokenMetadataSources({
+                networkSymbol: account.symbol,
+                yieldToken,
+                vault,
+            })}
         >
             {content}
         </TokenMetadataProvider>

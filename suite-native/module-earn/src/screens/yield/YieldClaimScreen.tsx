@@ -7,7 +7,6 @@ import { events } from '@suite-common/analytics';
 import { getClaimFeeWarning } from '@suite-common/earn-stablecoin';
 import { Context } from '@suite-common/message-system';
 import { TokenMetadataProvider } from '@suite-common/token';
-import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -51,6 +50,7 @@ import { useYieldClaimRewards } from '../../hooks/yield/useYieldClaimRewards';
 import { useYieldPendingTransaction } from '../../hooks/yield/useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../../hooks/yield/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../../hooks/yield/useYieldSession';
+import { yieldAccountRewardsToTokenMetadataSources } from '../../utils/yield/yieldAccountRewardsToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaim>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaim>;
@@ -383,18 +383,7 @@ export const YieldClaimScreen = () => {
     );
 
     return (
-        <TokenMetadataProvider
-            sources={[
-                {
-                    networkSymbol: account.symbol,
-                    tokens:
-                        accountRewards?.rewards.map(reward => ({
-                            ...reward.token,
-                            contract: toTokenAddress(reward.token.address),
-                        })) ?? [],
-                },
-            ]}
-        >
+        <TokenMetadataProvider sources={yieldAccountRewardsToTokenMetadataSources(accountRewards)}>
             {content}
         </TokenMetadataProvider>
     );

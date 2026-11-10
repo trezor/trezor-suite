@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { TokenMetadataProvider } from '@suite-common/token';
-import { toTokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -19,6 +18,7 @@ import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnCompleteScreenContent } from './EarnCompleteScreenContent';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
+import { wrappedNativeToTokenMetadataSources } from '../../utils/earn/wrappedNativeToTokenMetadataSources';
 import { getWrappedNativeCompleteRows } from '../yield/YieldCompleteScreenPresets';
 
 type WrappedNativeTokenCompleteContentProps = {
@@ -105,18 +105,7 @@ export const WrappedNativeTokenCompleteContent = ({
 
     return (
         <TokenMetadataProvider
-            sources={[
-                {
-                    networkSymbol: account.symbol,
-                    tokens: [
-                        {
-                            contract: toTokenAddress(wrappedNative.address),
-                            symbol: wrappedNative.symbol,
-                            decimals: wrappedNative.decimals,
-                        },
-                    ],
-                },
-            ]}
+            sources={wrappedNativeToTokenMetadataSources(account.symbol, wrappedNative)}
         >
             {content}
         </TokenMetadataProvider>
