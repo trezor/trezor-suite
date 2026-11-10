@@ -65,6 +65,8 @@ export class WalletPage {
     readonly transactionDetailTokenAmount = (contractAddress: string): Locator =>
         this.page.getByTestId(`@modal/tx-details/token-amount/${contractAddress}-with-symbol`);
     readonly pendingTransactionHeading: Locator;
+    readonly pendingTransactionBumpFeeButton: Locator;
+    readonly replaceTransactionButton: Locator;
     readonly sendForm: Locator;
     readonly sendFormHeader: Locator;
     readonly totalSent: Locator;
@@ -140,6 +142,10 @@ export class WalletPage {
         this.pendingTransactionHeading = this.page
             .getByTestId('@wallet/accounts/transaction-list/pending/group/0')
             .getByTestId('@transaction-item/0/heading');
+        this.pendingTransactionBumpFeeButton = this.page
+            .getByTestId('@wallet/accounts/transaction-list/pending/group/0')
+            .getByTestId('@transaction-item/bump-fee-button');
+        this.replaceTransactionButton = this.page.getByTestId('@send/replace-tx-button');
         this.sendForm = this.page.getByTestId('@wallet/send/outputs-and-options');
         this.sendFormHeader = this.page.getByTestId('@wallet/send-header');
         this.totalSent = this.page.getByTestId('@wallet/send/total-sent');
