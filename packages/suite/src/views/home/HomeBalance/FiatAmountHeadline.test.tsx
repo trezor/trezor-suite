@@ -10,11 +10,20 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { FiatAmountHeadline } from './FiatAmountHeadline';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
-const renderHeadline = (language: MockSuiteState['suiteSettings']['language']) => {
+type RenderParams = {
+    language: MockSuiteState['suiteSettings']['language'];
+    localCurrency: MockSuiteState['wallet']['settings']['localCurrency'];
+};
+
+const renderHeadline = ({ language, localCurrency }: RenderParams) => {
     const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             suiteSettings: { ...mockInitialAppState.suiteSettings, language },
+            wallet: {
+                ...mockInitialAppState.wallet,
+                settings: { ...mockInitialAppState.wallet.settings, localCurrency },
+            },
         },
     });
 
@@ -23,15 +32,23 @@ const renderHeadline = (language: MockSuiteState['suiteSettings']['language']) =
         <FiatAmountHeadline fiatValue={new BigNumber('1234.5')} data-testid="@headline" />,
     );
 
-    return screen.getByTestId('@headline');
+    return screen.getByTestId('@headline').textContent;
 };
 
 describe(FiatAmountHeadline.name, () => {
     it('writes the symbol right before the amount where the locale does', () => {
-        expect(renderHeadline('en-US').textContent).toBe('$1,234.50');
+        expect(renderHeadline({ language: 'en-US', localCurrency: 'usd' })).toBe('$1,234.50');
     });
 
-    it('keeps the space the locale puts between the amount and its symbol', () => {
-        expect(renderHeadline('cs-CZ').textContent).toBe('1 234,50 US$');
+    it('keeps the space the locale puts between the amount and the symbol after it', () => {
+        expect(renderHeadline({ language: 'cs-CZ', localCurrency: 'usd' })).toBe(
+            '1\u00a0234,50\u00a0US$',
+        );
+    });
+
+    it('keeps the space the locale puts between a leading currency code and the amount', () => {
+        expect(renderHeadline({ language: 'en-US', localCurrency: 'czk' })).toBe(
+            'CZK\u00a01,234.50',
+        );
     });
 });

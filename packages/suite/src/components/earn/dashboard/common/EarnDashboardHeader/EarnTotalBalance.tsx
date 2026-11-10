@@ -41,8 +41,9 @@ export const EarnTotalBalance = memo(
         }
 
         // The space goes inside the symbol's text: on its own between the row's items it would collapse.
+        // The symbol is set tabular like the digits so the whole headline shares one tracking.
         const symbol = (
-            <Text typographyStyle="headline-lg" color="contentTertiary">
+            <Text typographyStyle="headline-lg" color="contentTertiary" isTabular>
                 {isCurrencySymbolFirst
                     ? `${currencySymbol}${currencySymbolSeparator}`
                     : `${currencySymbolSeparator}${currencySymbol}`}

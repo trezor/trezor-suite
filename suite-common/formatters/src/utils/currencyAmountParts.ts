@@ -47,42 +47,39 @@ type CurrencySymbolParams = {
     isSatsValue: boolean;
 };
 
+type CurrencySymbolParts = Pick<
+    CurrencyAmountParts,
+    'currencySymbol' | 'currencySymbolSeparator' | 'isCurrencySymbolFirst'
+>;
+
 // Same reason as above: a dummy 0 says how the locale writes the currency without formatToParts.
 // What is left once the 0 is taken away is the symbol, which side of the 0 it sits on, and the
 // whitespace the locale puts between them, if any.
-const formatCurrencyZero = ({
+const getCurrencySymbolParts = ({
     locale,
     currency,
-}: Pick<CurrencySymbolParams, 'locale' | 'currency'>) =>
-    new Intl.NumberFormat(locale, {
+    isSatsValue,
+}: CurrencySymbolParams): CurrencySymbolParts => {
+    if (isSatsValue) {
+        return {
+            currencySymbol: 'sat',
+            currencySymbolSeparator: NON_BREAKING_SPACE,
+            isCurrencySymbolFirst: false,
+        };
+    }
+
+    const formatted = new Intl.NumberFormat(locale, {
         style: 'currency',
         currencyDisplay: 'symbol',
         currency,
         maximumFractionDigits: 0,
     }).format(0);
 
-const isCurrencySymbolFirstInLocale = (params: CurrencySymbolParams) => {
-    if (params.isSatsValue) {
-        return false;
-    }
-
-    return formatCurrencyZero(params).indexOf('0') > 0;
-};
-
-const getFormattedCurrencySymbol = (params: CurrencySymbolParams) => {
-    if (params.isSatsValue) {
-        return 'sat';
-    }
-
-    return formatCurrencyZero(params).replace(/[\s0]+/g, '');
-};
-
-const getCurrencySymbolSeparator = (params: CurrencySymbolParams) => {
-    if (params.isSatsValue) {
-        return NON_BREAKING_SPACE;
-    }
-
-    return formatCurrencyZero(params).match(/\s+/)?.[0] ?? '';
+    return {
+        currencySymbol: formatted.replace(/[\s0]+/g, ''),
+        currencySymbolSeparator: formatted.match(/\s+/)?.[0] ?? '',
+        isCurrencySymbolFirst: formatted.indexOf('0') > 0,
+    };
 };
 
 export type CurrencyAmountParts = {
@@ -133,8 +130,7 @@ export const getCurrencyAmountParts = ({
     const [integerPart = '0', decimalPart = '0'] = splitAmount({ value, isSatsValue, isExact });
 
     return {
-        currencySymbol: getFormattedCurrencySymbol({ locale, currency, isSatsValue }),
-        currencySymbolSeparator: getCurrencySymbolSeparator({ locale, currency, isSatsValue }),
+        ...getCurrencySymbolParts({ locale, currency, isSatsValue }),
         wholeNumber: getFormattedWholeNumber({ value: integerPart, locale }),
         decimalNumber: getFormattedDecimalNumber({
             value: decimalPart,
@@ -142,6 +138,5 @@ export const getCurrencyAmountParts = ({
             isSatsValue,
             isExact,
         }),
-        isCurrencySymbolFirst: isCurrencySymbolFirstInLocale({ locale, currency, isSatsValue }),
     };
 };
