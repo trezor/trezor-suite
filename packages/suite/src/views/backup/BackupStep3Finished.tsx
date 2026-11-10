@@ -5,7 +5,7 @@ import { Modal, Paragraph } from '@trezor/components';
 import { useOnboarding } from '#src/hooks/suite';
 
 import { BackupStepDescription } from './BackupStepDescription';
-import { AfterBackupCheckboxes } from '../../components/backup';
+import { AfterBackupCheckboxes } from '../../components/backup/AfterBackupCheckboxes';
 
 type BackupStep3FinishedProps = {
     onCancel: () => void;
