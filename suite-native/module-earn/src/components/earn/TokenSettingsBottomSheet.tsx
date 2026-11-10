@@ -232,10 +232,12 @@ export const TokenSettingsBottomSheet = forwardRef(
             <BottomSheetModal
                 ref={ref}
                 title={
-                    tokenContract ? (
+                    // The sheet renders outside the screen's metadata provider, so the label
+                    // resolves from the account store by the token's stored contract.
+                    token ? (
                         <TokenName
                             networkSymbol={account.symbol}
-                            contractAddress={tokenContract}
+                            contractAddress={token.contract}
                             variant="headline-sm"
                         />
                     ) : (
