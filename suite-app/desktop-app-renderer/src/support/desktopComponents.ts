@@ -29,7 +29,6 @@ import {
     SettingsConnectedAppsPage,
     SettingsDebugPage,
     SettingsDevicePage,
-    SignVerifyPage,
     TokensPage,
     TradingBuyConfirmPage,
     TradingBuyDetailPage,
@@ -52,6 +51,7 @@ import {
     WalletStakingPage,
     WalletTradePage,
 } from '@suite-app/app';
+import { SignVerifyPage } from '@suite-app/module-sign-verify';
 
 /*
  Note 1: Currently, this list contains the same components as webComponents.ts, but there could be Desktop-specific

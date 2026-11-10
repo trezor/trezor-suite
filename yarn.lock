@@ -11280,7 +11280,6 @@ __metadata:
     "@suite/regions": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/settings": "workspace:*"
-    "@suite/sign-verify": "workspace:*"
     "@suite/suite-sync": "workspace:*"
     "@suite/tor": "workspace:*"
     "@suite/tor-desktop": "workspace:*"
@@ -11404,6 +11403,7 @@ __metadata:
   dependencies:
     "@sentry/electron": "npm:^7.20.1"
     "@suite-app/app": "workspace:*"
+    "@suite-app/module-sign-verify": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -11457,6 +11457,18 @@ __metadata:
     openpgp: "npm:^6.3.2"
     usb: "npm:^3.2.1"
     usb-legacy: "npm:usb@2.19.1"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-sign-verify@workspace:*, @suite-app/module-sign-verify@workspace:suite-app/module-sign-verify":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-sign-verify@workspace:suite-app/module-sign-verify"
+  dependencies:
+    "@suite/account": "workspace:*"
+    "@suite/sign-verify": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    react: "npm:19.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11522,6 +11534,7 @@ __metadata:
     "@rolldown/plugin-babel": "npm:^0.2.1"
     "@sentry/browser": "npm:10.75.2"
     "@suite-app/app": "workspace:*"
+    "@suite-app/module-sign-verify": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
