@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 
 import { type NetworksRootState } from '@suite-common/networks';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
@@ -26,7 +26,6 @@ type AccountsListProps = {
     searchValue?: string;
     isSendFlow?: boolean;
     tokenContract?: TokenAddress;
-    tokenSymbol?: TokenSymbol;
     networkFilter?: NetworkSymbol[];
     ListHeaderComponent?: ReactElement;
     ListEmptyComponent?: ReactElement;
@@ -50,7 +49,6 @@ export const AccountsList = ({
     searchValue = '',
     isSendFlow = false,
     tokenContract,
-    tokenSymbol,
     networkFilter = DEFAULT_NETWORK_FILTER,
     ListHeaderComponent,
     ListEmptyComponent,
@@ -78,11 +76,10 @@ export const AccountsList = ({
                 {...item}
                 hasBottomSpacing={item.isLast}
                 tokenContract={tokenContract}
-                tokenSymbol={tokenSymbol}
                 onSelectAccount={onSelectAccount}
             />
         ),
-        [onSelectAccount, tokenContract, tokenSymbol],
+        [onSelectAccount, tokenContract],
     );
 
     return (

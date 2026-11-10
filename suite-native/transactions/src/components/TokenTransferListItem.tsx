@@ -1,8 +1,6 @@
 import { type ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
-import { toTokenSymbol } from '@suite-common/tokens';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
@@ -68,7 +66,6 @@ export const TokenTransferListItemValues = ({
                     symbol={transaction.symbol}
                     value={tokenTransfer.amount}
                     contract={tokenTransfer.contract}
-                    decimals={tokenTransfer.decimals}
                     signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                     numberOfLines={1}
                     ellipsizeMode="tail"
@@ -78,15 +75,10 @@ export const TokenTransferListItemValues = ({
                 />
             )}
             <CompactTokenAmountFormatter
+                isSymbolTruncated
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                tokenSymbol={
-                    tokenTransfer.symbol
-                        ? toTokenSymbol(
-                              getDisplaySymbol(tokenTransfer.symbol, tokenTransfer.contract),
-                          )
-                        : null
-                }
-                tokenDecimals={tokenTransfer.decimals}
+                networkSymbol={transaction.symbol}
+                contractAddress={tokenTransfer.contract}
                 signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                 numberOfLines={1}
                 ellipsizeMode="tail"

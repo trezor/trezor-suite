@@ -113,14 +113,10 @@ export const YieldDepositCompleteScreen = () => {
             receivedAmount: {
                 value: session.result.completedReceiptAmount,
                 tokenContract: flowData.receiptToken.contractAddress,
-                tokenDecimals: flowData.receiptToken.decimals,
-                tokenSymbol: flowData.receiptToken.symbol,
             },
             sentAmount: {
                 value: session.result.completedAmount,
                 tokenContract: hasWrappedInput ? undefined : flowData.token.contractAddress,
-                tokenDecimals: hasWrappedInput ? undefined : flowData.token.decimals,
-                tokenSymbol: hasWrappedInput ? undefined : flowData.token.symbol,
             },
         });
     }, [openApyBreakdownBottomSheet, account, apy, flowData, resolutionStatus, session]);

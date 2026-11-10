@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
+import { useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
@@ -18,7 +19,6 @@ type TokenToFiatAmountFormatterProps = {
     symbol: NetworkSymbol;
     contract: TokenAddress;
     discreetMode?: DiscreetMode;
-    decimals?: number;
     signValue?: SignValue;
     historicRate?: number;
     useHistoricRate?: boolean;
@@ -30,7 +30,6 @@ export const TokenToFiatAmountFormatter = ({
     value,
     contract,
     discreetMode = 'auto',
-    decimals = 0,
     signValue,
     ellipsizeMode,
     numberOfLines,
@@ -39,11 +38,12 @@ export const TokenToFiatAmountFormatter = ({
     ...rest
 }: TokenToFiatAmountFormatterProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
+    const token = useTokenMetadata(symbol, contract);
     const fiatValue = useFiatFromCryptoValue({
         cryptoValue: String(value),
         symbol,
         tokenAddress: contract,
-        tokenDecimals: decimals,
+        tokenDecimals: token?.decimals ?? 0,
         historicRate,
         useHistoricRate,
     });

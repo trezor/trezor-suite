@@ -4,7 +4,6 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 import { type DiscreetMode, type FormatterProps } from '../types';
 import { CryptoToFiatAmountFormatter } from './CryptoToFiatAmountFormatter';
@@ -16,35 +15,28 @@ type CoinToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         tokenContract?: TokenAddress;
         isBalance?: boolean;
         discreetMode?: DiscreetMode;
-        decimals?: number;
     };
 
 export const CoinToFiatAmountFormatter = ({
     value,
     accountKey,
     tokenContract,
-    decimals,
     ...restProps
 }: CoinToFiatAmountFormatterProps) => {
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const tokenInfo = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
-
     if (!symbol) {
         return null;
     }
 
-    if (tokenInfo && value) {
+    if (tokenContract && value) {
         return (
             <TokenToFiatAmountFormatter
                 value={value}
-                contract={tokenInfo.contract}
+                contract={tokenContract}
                 symbol={symbol}
-                decimals={decimals ?? tokenInfo.decimals}
                 {...restProps}
             />
         );

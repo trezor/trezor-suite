@@ -9,6 +9,7 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
+        { "path": "../../suite-common/token" },
         { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-core"

@@ -27,32 +27,30 @@ export type MyAssetListItemProps = {
 export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
-    const { symbol, name, balance, fiatBalance, tokenSymbol, contract, isEnabled, decimals } =
-        asset;
+    const { symbol, name, balance, fiatBalance, tokenSymbol, contract, isEnabled } = asset;
 
     const hasFiatBalance = fiatBalance !== null;
 
-    const cryptoBalanceValue =
-        tokenSymbol != null ? (
-            <CompactTokenAmountFormatter
-                value={asDecimalTokenAmount(balance)}
-                tokenSymbol={tokenSymbol}
-                tokenDecimals={decimals}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                color="contentSecondary"
-                variant="body-sm"
-            />
-        ) : (
-            <CompactCryptoAmountFormatter
-                value={balance}
-                symbol={symbol}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                color="contentSecondary"
-                variant="body-sm"
-            />
-        );
+    const cryptoBalanceValue = contract ? (
+        <CompactTokenAmountFormatter
+            networkSymbol={symbol}
+            contractAddress={contract}
+            value={asDecimalTokenAmount(balance)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            color="contentSecondary"
+            variant="body-sm"
+        />
+    ) : (
+        <CompactCryptoAmountFormatter
+            value={balance}
+            symbol={symbol}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            color="contentSecondary"
+            variant="body-sm"
+        />
+    );
 
     return (
         <AnimatedPressable

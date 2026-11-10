@@ -9,6 +9,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { TokenSymbol } from '@suite-native/tokens';
 
 import { YieldDepositApprovalLimitCard } from './YieldDepositApprovalLimitCard';
 
@@ -19,7 +20,6 @@ type YieldDepositApprovalLimitBottomSheetProps = {
     ref: BottomSheetModalRef;
     selectedApprovalLimitType: AllowanceLimitType;
     tokenContract: TokenAddress;
-    tokenSymbol: string;
 };
 
 export const YieldDepositApprovalLimitBottomSheet = ({
@@ -29,7 +29,6 @@ export const YieldDepositApprovalLimitBottomSheet = ({
     ref,
     selectedApprovalLimitType,
     tokenContract,
-    tokenSymbol,
 }: YieldDepositApprovalLimitBottomSheetProps) => {
     const handleSelect = (approvalLimitType: AllowanceLimitType) => {
         onApprovalLimitSelect(approvalLimitType);
@@ -76,7 +75,14 @@ export const YieldDepositApprovalLimitBottomSheet = ({
                         title={
                             <Translation
                                 id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.alert"
-                                values={{ tokenSymbol }}
+                                values={{
+                                    tokenSymbol: (
+                                        <TokenSymbol
+                                            networkSymbol={accountSymbol}
+                                            contractAddress={tokenContract}
+                                        />
+                                    ),
+                                }}
                             />
                         }
                         intent="warning"

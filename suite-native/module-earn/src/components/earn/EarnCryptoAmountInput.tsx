@@ -3,6 +3,7 @@ import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import { useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
@@ -22,8 +23,6 @@ import { isAmountInputValueValid } from '../../utils/yield/yieldFiatAmountUtils'
 type EarnCryptoAmountInputProps = {
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
-    tokenDecimals?: number;
-    displaySymbol?: string;
     accessibilityLabel?: string;
     inputRef?: RefObject<InputType | null>;
     isDisabled?: boolean;
@@ -33,14 +32,13 @@ type EarnCryptoAmountInputProps = {
 export const EarnCryptoAmountInput = ({
     symbol,
     tokenContract,
-    tokenDecimals,
-    displaySymbol,
     accessibilityLabel = 'amount to stake input',
     inputRef,
     isDisabled = false,
     onPress,
 }: EarnCryptoAmountInputProps) => {
     const { setValue, trigger } = useFormContext<EarnFormValues>();
+    const token = useTokenMetadata(symbol, tokenContract);
     const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
     const { DisplaySymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
@@ -60,7 +58,7 @@ export const EarnCryptoAmountInput = ({
     const handleChangeValue = (newValue: string) => {
         const transformedValue = cryptoAmountTransformer(newValue);
 
-        const decimals = tokenDecimals ?? getNetwork(symbol).decimals;
+        const decimals = token?.decimals ?? getNetwork(symbol).decimals;
         if (!isAmountInputValueValid({ value: transformedValue, decimals })) {
             return;
         }
@@ -102,7 +100,7 @@ export const EarnCryptoAmountInput = ({
                             color={isDisabled ? 'contentSecondary' : 'contentPrimary'}
                         />
                     ) : (
-                        (displaySymbol ?? formatter.format(symbol))
+                        formatter.format(symbol)
                     )}
                 </Text>
             }

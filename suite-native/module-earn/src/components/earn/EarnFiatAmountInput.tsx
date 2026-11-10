@@ -2,6 +2,7 @@ import { type RefObject } from 'react';
 import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
@@ -20,7 +21,6 @@ import { isAmountInputValueValid } from '../../utils/yield/yieldFiatAmountUtils'
 type EarnFiatAmountInputProps = {
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
-    tokenDecimals?: number;
     accessibilityLabel?: string;
     inputRef?: RefObject<InputType | null>;
     isDisabled?: boolean;
@@ -30,15 +30,15 @@ type EarnFiatAmountInputProps = {
 export const EarnFiatAmountInput = ({
     symbol,
     tokenContract,
-    tokenDecimals,
     accessibilityLabel = 'fiat amount to stake input',
     inputRef,
     isDisabled = false,
     onPress,
 }: EarnFiatAmountInputProps) => {
     const { setValue } = useFormContext<EarnFormValues>();
+    const token = useTokenMetadata(symbol, tokenContract);
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
-    const decimals = tokenDecimals ?? getNetwork(symbol).decimals;
+    const decimals = token?.decimals ?? getNetwork(symbol).decimals;
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });

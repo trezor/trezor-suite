@@ -6,7 +6,7 @@ import {
     type TransactionNotification,
     type TransactionNotificationType,
 } from '@suite-common/toast-notifications';
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
@@ -131,9 +131,9 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                                 />
                             ) : (
                                 <CompactTokenAmountFormatter
+                                    networkSymbol={symbol}
+                                    contractAddress={toTokenAddress(token.contract)}
                                     value={asDecimalTokenAmount(amount)}
-                                    tokenSymbol={toTokenSymbol(token.symbol)}
-                                    tokenDecimals={token.decimals}
                                     variant="body-xs"
                                     color={contentColor}
                                 />

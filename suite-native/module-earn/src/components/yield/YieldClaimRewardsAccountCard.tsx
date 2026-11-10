@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -116,9 +116,10 @@ export const YieldClaimRewardsAccountCard = ({
                 <VStack spacing="sp1">
                     {item.summary.tokens.map(token => (
                         <CompactTokenAmountFormatter
+                            networkSymbol={item.summary.networkSymbol}
+                            contractAddress={toTokenAddress(token.contractAddress)}
                             key={`${token.symbol}:${token.contractAddress}`}
                             value={asDecimalTokenAmount(token.claimableAmount)}
-                            tokenSymbol={toTokenSymbol(token.symbol)}
                             numberOfLines={2}
                             variant="body-xs"
                             color="contentSecondary"

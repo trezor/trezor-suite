@@ -1,4 +1,4 @@
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TextProps } from '@suite-native/atoms';
 import {
@@ -10,8 +10,6 @@ import {
 export type YieldFormattedAmountValue = {
     value: string;
     tokenContract?: string | null;
-    tokenDecimals?: number;
-    tokenSymbol?: string | null;
 };
 
 type YieldFormattedAmountProps = YieldFormattedAmountValue & {
@@ -30,17 +28,15 @@ type YieldFormattedAmountProps = YieldFormattedAmountValue & {
 export const YieldFormattedAmount = ({
     networkSymbol,
     tokenContract,
-    tokenDecimals,
-    tokenSymbol,
     value,
     ...textProps
 }: YieldFormattedAmountProps) => {
     if (tokenContract) {
         return (
             <CompactTokenAmountFormatter
+                networkSymbol={networkSymbol}
+                contractAddress={toTokenAddress(tokenContract)}
                 value={asDecimalTokenAmount(value)}
-                tokenDecimals={tokenDecimals}
-                tokenSymbol={tokenSymbol ? toTokenSymbol(tokenSymbol) : null}
                 // Keep transaction amounts and allowance limits readable during yield actions.
                 discreetMode="disabled"
                 {...textProps}

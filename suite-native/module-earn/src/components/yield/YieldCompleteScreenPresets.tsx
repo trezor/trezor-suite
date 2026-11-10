@@ -168,8 +168,6 @@ export const getYieldClaimCompleteRows = (
                         fiatAmount={getYieldClaimRewardFiatAmount(reward.fiatValue)}
                         networkSymbol={reward.token.networkSymbol}
                         tokenContractAddress={reward.token.contractAddress ?? undefined}
-                        tokenDecimals={reward.token.decimals}
-                        tokenSymbol={reward.token.symbol}
                     />
                 ))}
             </VStack>

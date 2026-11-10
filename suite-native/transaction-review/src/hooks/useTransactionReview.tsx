@@ -2,6 +2,7 @@ import { type ReactNode, createContext, useContext, useState } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
@@ -17,6 +18,8 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type TxKeyPath } from '@suite-native/intl';
+
+import { transactionReviewOutputsToTokenMetadataSources } from '../transactionReviewOutputsToTokenMetadataSources';
 
 interface TransactionReviewRenderSummaryItemProps {
     onLayout: (event: LayoutChangeEvent) => void;
@@ -188,7 +191,14 @@ export const TransactionReviewProvider = ({
 
     return (
         <TransactionReviewContext.Provider value={context}>
-            {children}
+            <TokenMetadataProvider
+                sources={transactionReviewOutputsToTokenMetadataSources(
+                    account?.symbol,
+                    reviewOutputs,
+                )}
+            >
+                {children}
+            </TokenMetadataProvider>
         </TransactionReviewContext.Provider>
     );
 };

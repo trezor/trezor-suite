@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { useSelector } from 'react-redux';
 
 import { type TokenInfoBranded } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
@@ -8,12 +7,7 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import {
-    TokenIcon,
-    TokenName,
-    type TokensRootState,
-    selectAccountTokenSymbol,
-} from '@suite-native/tokens';
+import { TokenIcon, TokenName } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 
@@ -39,13 +33,11 @@ export const AccountsListTokenItem = ({
     isLast,
     showFiatValue = true,
 }: AccountListTokenItemProps) => {
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, account.key, token.contract),
-    );
     const balance = token.balance ?? '0';
 
     return (
         <AccountsListItemBase
+            title={<TokenName networkSymbol={account.symbol} contractAddress={token.contract} />}
             hasBackground={hasBackground}
             isFirst={isFirst}
             isLast={isLast}
@@ -57,7 +49,6 @@ export const AccountsListTokenItem = ({
                     showNetworkIcon
                 />
             }
-            title={<TokenName networkSymbol={account.symbol} contractAddress={token.contract} />}
             badges={badges}
             mainValue={
                 showFiatValue && (
@@ -71,8 +62,8 @@ export const AccountsListTokenItem = ({
             secondaryValue={
                 <CompactTokenAmountFormatter
                     value={asDecimalTokenAmount(balance)}
-                    tokenSymbol={tokenSymbol}
-                    tokenDecimals={token.decimals}
+                    networkSymbol={account.symbol}
+                    contractAddress={token.contract}
                     numberOfLines={1}
                     adjustsFontSizeToFit
                     ellipsizeMode="tail"

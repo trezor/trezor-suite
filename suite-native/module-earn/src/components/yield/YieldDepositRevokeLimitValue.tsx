@@ -1,9 +1,9 @@
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenIcon, TokenSymbol as TokenSymbolComponent } from '@suite-native/tokens';
+import { TokenIcon, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldFormattedAmount } from './YieldFormattedAmount';
@@ -22,18 +22,14 @@ type YieldDepositRevokeLimitValueProps = {
     approvedAmount: string | null;
     isApprovedAmountUnlimited: boolean;
     networkSymbol: Account['symbol'];
-    tokenDecimals?: number;
     tokenContract: TokenAddress;
-    tokenSymbol: TokenSymbol;
 };
 
 export const YieldDepositRevokeLimitValue = ({
     approvedAmount,
     isApprovedAmountUnlimited,
     networkSymbol,
-    tokenDecimals,
     tokenContract,
-    tokenSymbol,
 }: YieldDepositRevokeLimitValueProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -59,7 +55,7 @@ export const YieldDepositRevokeLimitValue = ({
                 >
                     <>
                         <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />{' '}
-                        <TokenSymbolComponent
+                        <TokenSymbol
                             networkSymbol={networkSymbol}
                             contractAddress={tokenContract}
                             variant="body-sm-strong"
@@ -73,8 +69,6 @@ export const YieldDepositRevokeLimitValue = ({
                     value={approvedAmount}
                     networkSymbol={networkSymbol}
                     tokenContract={tokenContract}
-                    tokenDecimals={tokenDecimals}
-                    tokenSymbol={tokenSymbol}
                     variant="body-sm-strong"
                     color="contentPrimary"
                     numberOfLines={1}
@@ -87,8 +81,6 @@ export const YieldDepositRevokeLimitValue = ({
                 value="0"
                 networkSymbol={networkSymbol}
                 tokenContract={tokenContract}
-                tokenDecimals={tokenDecimals}
-                tokenSymbol={tokenSymbol}
                 variant="body-sm-strong"
                 color="contentPrimary"
             />

@@ -29,7 +29,6 @@ export const YieldDepositRevokeScreen = () => {
         pendingModal,
         providerName,
         shouldShowLowLimitWarning,
-        tokenDecimals,
         tokenContract,
         tokenSymbol,
         vaultTokenName,
@@ -95,9 +94,7 @@ export const YieldDepositRevokeScreen = () => {
                         approvedAmount={approvedAmount}
                         isApprovedAmountUnlimited={isApprovedAmountUnlimited}
                         providerName={providerName}
-                        tokenDecimals={tokenDecimals}
                         tokenContract={tokenContract}
-                        tokenSymbol={tokenSymbol}
                     />
 
                     {feeSection && (
@@ -118,7 +115,7 @@ export const YieldDepositRevokeScreen = () => {
                     amount={pendingModalAmount}
                     amountLabel={<Translation id="earn.yieldDepositFlowScreen.approvedAmount" />}
                     amountTokenContract={tokenContract}
-                    amountTokenSymbol={pendingModal.amountTokenSymbol}
+                    withAmountSymbol={!isApprovedAmountUnlimited}
                     fee={pendingModal.fee}
                     isExploreDisabled={pendingModal.isExploreDisabled}
                     onExplorePress={pendingModal.onExplorePress}

@@ -1,9 +1,10 @@
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
+    ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
@@ -23,8 +24,6 @@ type YieldClaimRewardRowProps = {
     isFiatLoading?: boolean;
     networkSymbol: NetworkSymbol;
     tokenContractAddress?: string;
-    tokenDecimals: number;
-    tokenSymbol: string;
 };
 
 export const getYieldClaimRewardFiatAmount = (
@@ -38,8 +37,6 @@ export const YieldClaimRewardRow = ({
     isFiatLoading = false,
     networkSymbol,
     tokenContractAddress,
-    tokenDecimals,
-    tokenSymbol,
 }: YieldClaimRewardRowProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -54,14 +51,24 @@ export const YieldClaimRewardRow = ({
                     size={20}
                 />
                 <Box flexShrink={1}>
-                    <ExactTokenAmountFormatter
-                        value={asDecimalTokenAmount(amount)}
-                        tokenSymbol={toTokenSymbol(tokenSymbol)}
-                        maxDisplayedDecimals={tokenDecimals}
-                        variant="body-sm-strong"
-                        color="contentPrimary"
-                        numberOfLines={2}
-                    />
+                    {tokenContractAddress ? (
+                        <ExactTokenAmountFormatter
+                            networkSymbol={networkSymbol}
+                            contractAddress={toTokenAddress(tokenContractAddress)}
+                            value={asDecimalTokenAmount(amount)}
+                            variant="body-sm-strong"
+                            color="contentPrimary"
+                            numberOfLines={2}
+                        />
+                    ) : (
+                        <ExactCryptoAmountFormatter
+                            symbol={networkSymbol}
+                            value={asDecimalTokenAmount(amount)}
+                            variant="body-sm-strong"
+                            color="contentPrimary"
+                            numberOfLines={2}
+                        />
+                    )}
                 </Box>
             </HStack>
             {isFiatAmountVisible && (

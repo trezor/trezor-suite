@@ -9,6 +9,7 @@ import { type TradingRootState } from '@suite-native/trading-state';
 
 import { LimitPicker } from './LimitPicker';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+import { TradingMetadataProvider } from '../../general/TradingMetadataProvider';
 
 type State = TradingRootState;
 
@@ -35,6 +36,7 @@ describe('LimitPicker', () => {
                     store,
                     networks: mockNetworksServices(),
                 },
+                wrapper: TradingMetadataProvider,
             },
         );
 

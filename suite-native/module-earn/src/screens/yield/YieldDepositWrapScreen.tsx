@@ -38,12 +38,10 @@ export const YieldDepositWrapScreen = () => {
         isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible,
         isInteractionBlocked,
-        nativeSymbol,
         pendingModal,
         receivingCard,
         simulationSheet,
         tokenContract,
-        wrappedTokenSymbol,
         yieldFlowData,
     } = controller;
     const { account } = yieldFlowData;
@@ -66,7 +64,7 @@ export const YieldDepositWrapScreen = () => {
                     isSubmitLoading={footer.isSubmitLoading}
                     onSkip={footer.onSkip}
                     onSubmit={footer.onSubmit}
-                    spentSymbol={nativeSymbol}
+                    networkSymbol={account.symbol}
                 />
             }
         >
@@ -102,7 +100,6 @@ export const YieldDepositWrapScreen = () => {
                                 onCurrencyChange={amountInput.onCurrencyChange}
                                 onMaxPress={amountInput.onMaxPress}
                                 symbol={account.symbol}
-                                tokenSymbol={nativeSymbol}
                             />
                         </Box>
 
@@ -112,8 +109,6 @@ export const YieldDepositWrapScreen = () => {
                                     amount={receivingCard.amount}
                                     networkSymbol={account.symbol}
                                     tokenContract={receivingCard.tokenContract}
-                                    tokenDecimals={receivingCard.tokenDecimals}
-                                    tokenSymbol={wrappedTokenSymbol}
                                 />
                             </Box>
                         )}
@@ -159,7 +154,6 @@ export const YieldDepositWrapScreen = () => {
                 accountLabel={accountLabel}
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
-                amountTokenSymbol={nativeSymbol}
                 title={<Translation id="earn.wrapNativeToken.pendingTransactionTitle" />}
                 vaultName={yieldFlowData.vaultTokenName}
                 vaultTokenContract={tokenContract}

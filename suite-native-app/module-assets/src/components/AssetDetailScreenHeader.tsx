@@ -1,16 +1,6 @@
-import { useSelector } from 'react-redux';
-
-import { type RouteProp, useRoute } from '@react-navigation/native';
-
-import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import {
-    type AssetsStackParamList,
-    type AssetsStackRoutes,
-    ScreenHeader,
-} from '@suite-native/navigation';
+import { ScreenHeader } from '@suite-native/navigation';
 
 import { useOpenAssetDetailAccounts } from './AssetDetailAccountsBottomSheetProvider';
 import { AssetDetailScreenHeaderContent } from './AssetDetailScreenHeaderContent';
@@ -18,11 +8,6 @@ import { AssetDetailSignAndVerifyBottomSheet } from './AssetDetailSignAndVerifyB
 import { AssetSettingsBottomSheet } from './AssetSettingsBottomSheet';
 
 export const AssetDetailScreenHeader = () => {
-    const { networkSymbol, tokenContract } =
-        useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetTokenInfo = useSelector((state: AssetsRootState) =>
-        selectAssetTokenInfo(state, networkSymbol, tokenContract),
-    );
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const {
         bottomSheetRef: signAndVerifyBottomSheetRef,
@@ -31,17 +16,11 @@ export const AssetDetailScreenHeader = () => {
     } = useBottomSheetModal();
     const openAccountsModal = useOpenAssetDetailAccounts();
     const { translate } = useTranslate();
-    const assetDisplaySymbol = getDisplaySymbol(
-        assetTokenInfo?.symbol ?? networkSymbol,
-        tokenContract,
-    );
 
     return (
         <>
             <ScreenHeader
-                customContent={
-                    <AssetDetailScreenHeaderContent assetDisplaySymbol={assetDisplaySymbol} />
-                }
+                customContent={<AssetDetailScreenHeaderContent />}
                 rightIcon={
                     <IconButton
                         iconName="dotsThree"

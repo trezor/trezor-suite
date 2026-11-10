@@ -91,9 +91,9 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
                     ) : (
                         <>
                             <CompactTokenAmountFormatter
+                                networkSymbol={account.symbol}
+                                contractAddress={balanceData.tokenContractAddress}
                                 value={asDecimalTokenAmount(balanceData.value)}
-                                tokenSymbol={balanceData.tokenSymbol}
-                                tokenDecimals={balanceData.tokenDecimals}
                                 variant="body-md"
                                 color="contentPrimary"
                                 numberOfLines={1}

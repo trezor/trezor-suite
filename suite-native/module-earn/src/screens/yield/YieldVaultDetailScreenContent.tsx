@@ -25,6 +25,7 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import {
+    CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
@@ -71,7 +72,7 @@ export const YieldVaultDetailScreenContent = ({
     const navigation = useNavigation<NavigationProps>();
     const { analytics } = useServices(injectNativeAnalytics);
 
-    const { CryptoAmountFormatter, PercentageFormatter } = useFormatters();
+    const { PercentageFormatter } = useFormatters();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
 
@@ -266,8 +267,8 @@ export const YieldVaultDetailScreenContent = ({
                             <DiscreetTextTrigger>
                                 <CompactTokenAmountFormatter
                                     value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
-                                    tokenSymbol={yieldToken.symbol}
-                                    tokenDecimals={yieldToken.decimals}
+                                    networkSymbol={account.symbol}
+                                    contractAddress={yieldToken.contract}
                                     color="contentPrimary"
                                     variant="headline-sm"
                                 />
@@ -289,35 +290,48 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.yearlyRewards" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(yearlyRewards)}
-                                tokenSymbol={
-                                    wrappedNativeSymbol
-                                        ? toTokenSymbol(wrappedNativeSymbol)
-                                        : depositedPosition.tokenSymbol
-                                }
-                                tokenDecimals={depositedPosition.decimals}
-                                color="contentPrimary"
-                                variant="headline-sm"
-                            />
+                            {wrappedNativeSymbol ? (
+                                <CompactCryptoAmountFormatter
+                                    value={asDecimalTokenAmount(yearlyRewards)}
+                                    symbol={account.symbol}
+                                    color="contentPrimary"
+                                    variant="headline-sm"
+                                />
+                            ) : (
+                                <CompactTokenAmountFormatter
+                                    value={asDecimalTokenAmount(yearlyRewards)}
+                                    networkSymbol={account.symbol}
+                                    contractAddress={depositedPosition.contractAddress}
+                                    color="contentPrimary"
+                                    variant="headline-sm"
+                                />
+                            )}
 
                             <Discreet>
                                 <Text variant="body-md" color="contentSecondary">
                                     <Translation
                                         id="earn.yearlyRewardsDeposited"
                                         values={{
-                                            amountWithSymbol: (
-                                                <CryptoAmountFormatter
-                                                    value={depositedPosition.balance}
-                                                    symbol={
-                                                        wrappedNativeSymbol
-                                                            ? toTokenSymbol(wrappedNativeSymbol)
-                                                            : depositedPosition.tokenSymbol
+                                            amountWithSymbol: wrappedNativeSymbol ? (
+                                                <CompactCryptoAmountFormatter
+                                                    value={asDecimalTokenAmount(
+                                                        depositedPosition.balance,
+                                                    )}
+                                                    symbol={account.symbol}
+                                                    variant="body-md"
+                                                    color="contentSecondary"
+                                                />
+                                            ) : (
+                                                <CompactTokenAmountFormatter
+                                                    value={asDecimalTokenAmount(
+                                                        depositedPosition.balance,
+                                                    )}
+                                                    networkSymbol={account.symbol}
+                                                    contractAddress={
+                                                        depositedPosition.contractAddress
                                                     }
-                                                    withSymbol
-                                                    isBalance
-                                                    formatStyle="compact-balance"
-                                                    tokenDecimals={depositedPosition.decimals}
+                                                    variant="body-md"
+                                                    color="contentSecondary"
                                                 />
                                             ),
                                         }}
@@ -333,35 +347,48 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.potentialRewards" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(potentialRewards.potentialRewards)}
-                                tokenSymbol={
-                                    wrappedNativeSymbol
-                                        ? toTokenSymbol(wrappedNativeSymbol)
-                                        : depositedPosition.tokenSymbol
-                                }
-                                tokenDecimals={depositedPosition.decimals}
-                                color="contentBrand"
-                                variant="headline-sm"
-                            />
+                            {wrappedNativeSymbol ? (
+                                <CompactCryptoAmountFormatter
+                                    value={asDecimalTokenAmount(potentialRewards.potentialRewards)}
+                                    symbol={account.symbol}
+                                    color="contentBrand"
+                                    variant="headline-sm"
+                                />
+                            ) : (
+                                <CompactTokenAmountFormatter
+                                    value={asDecimalTokenAmount(potentialRewards.potentialRewards)}
+                                    networkSymbol={account.symbol}
+                                    contractAddress={depositedPosition.contractAddress}
+                                    color="contentBrand"
+                                    variant="headline-sm"
+                                />
+                            )}
 
                             <Discreet>
                                 <Text variant="body-md" color="contentSecondary">
                                     <Translation
                                         id="earn.potentialRewardsIfYouAdd"
                                         values={{
-                                            amountWithSymbol: (
-                                                <CryptoAmountFormatter
-                                                    value={potentialRewards.additionalDepositAmount}
-                                                    symbol={
-                                                        wrappedNativeSymbol
-                                                            ? toTokenSymbol(wrappedNativeSymbol)
-                                                            : depositedPosition.tokenSymbol
+                                            amountWithSymbol: wrappedNativeSymbol ? (
+                                                <CompactCryptoAmountFormatter
+                                                    value={asDecimalTokenAmount(
+                                                        potentialRewards.additionalDepositAmount,
+                                                    )}
+                                                    symbol={account.symbol}
+                                                    variant="body-md"
+                                                    color="contentSecondary"
+                                                />
+                                            ) : (
+                                                <CompactTokenAmountFormatter
+                                                    value={asDecimalTokenAmount(
+                                                        potentialRewards.additionalDepositAmount,
+                                                    )}
+                                                    networkSymbol={account.symbol}
+                                                    contractAddress={
+                                                        depositedPosition.contractAddress
                                                     }
-                                                    withSymbol
-                                                    isBalance
-                                                    formatStyle="compact-balance"
-                                                    tokenDecimals={depositedPosition.decimals}
+                                                    variant="body-md"
+                                                    color="contentSecondary"
                                                 />
                                             ),
                                         }}

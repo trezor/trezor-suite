@@ -14,7 +14,7 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, toTokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -147,10 +147,8 @@ export const TokenSettingsBottomSheet = forwardRef(
 
         if (!account || !symbol) return null;
 
-        const displaySymbol = getDisplaySymbol(account.symbol);
-
         const tokenBalance = token?.balance ?? '0';
-        const tokenSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
+        const displaySymbol = getDisplaySymbol(account.symbol);
         const networkName = getNetwork(symbol).name;
 
         const isHidden = hiddenTokens.some(
@@ -289,8 +287,9 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     <VStack spacing={0} alignItems="flex-end">
                                         {tokenContract ? (
                                             <ExactTokenAmountFormatter
+                                                networkSymbol={symbol}
+                                                contractAddress={tokenContract}
                                                 value={asDecimalTokenAmount(tokenBalance)}
-                                                tokenSymbol={tokenSymbol}
                                                 variant="body-sm"
                                                 color="contentPrimary"
                                                 numberOfLines={1}

@@ -1,9 +1,11 @@
 import { type TransactionNotification } from '@suite-common/toast-notifications';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TransactionNotificationItem } from './TransactionNotificationItem';
+import { notificationsToTokenMetadataSources } from '../../utils/notificationsToTokenMetadataSources';
 
 type SectionProps = {
     titleId:
@@ -49,7 +51,7 @@ type Props = {
 export const NotificationList = ({ unseenNotifications, seenNotifications }: Props) => {
     const { applyStyle } = useNativeStyles();
 
-    return (
+    const content = (
         <Card style={applyStyle(cardStyle)}>
             <VStack spacing="sp12">
                 <NotificationSection
@@ -64,5 +66,16 @@ export const NotificationList = ({ unseenNotifications, seenNotifications }: Pro
                 />
             </VStack>
         </Card>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={notificationsToTokenMetadataSources([
+                ...unseenNotifications,
+                ...seenNotifications,
+            ])}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };
