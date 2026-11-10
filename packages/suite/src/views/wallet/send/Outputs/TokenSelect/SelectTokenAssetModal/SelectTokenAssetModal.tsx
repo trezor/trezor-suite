@@ -10,15 +10,13 @@ import { useServices } from '@trezor/dependency-injection';
 import { SearchAsset } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    AssetGroupsCard,
-    AssetRowAccountWithBalance,
-    AssetRowToken,
-    AssetsList,
-    AssetsListEmpty,
-    AssetsModal,
-    ExpandableAssetRowGroup,
-} from '#src/components/suite/asset-picker/components';
+import { AssetGroupsCard } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupsCard';
+import { AssetRowAccountWithBalance } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAccount/AssetRowAccountWithBalance';
+import { AssetRowToken } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowToken/AssetRowToken';
+import { ExpandableAssetRowGroup } from '#src/components/suite/asset-picker/components/AssetRow/ExpandableAssetRowGroup/ExpandableAssetRowGroup';
+import { AssetsList } from '#src/components/suite/asset-picker/components/AssetsList/AssetsList';
+import { AssetsListEmpty } from '#src/components/suite/asset-picker/components/AssetsListEmpty/AssetsListEmpty';
+import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
 import {
     useExpandableGroups,
     useFilterAccountsWithTokens,
