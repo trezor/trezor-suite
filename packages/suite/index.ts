@@ -333,7 +333,7 @@ export { Backup } from './src/views/backup/Backup';
 export { FirmwareCustom } from './src/views/firmware/FirmwareCustom';
 export { FirmwareUpdate } from './src/views/firmware/FirmwareUpdate';
 export { Recovery } from './src/views/recovery/Recovery';
-export { BridgeUnavailable } from './src/views/suite/bridge';
+export { BridgeUnavailable } from './src/views/suite/bridge/BridgeUnavailable';
 export { BridgeDeprecated } from './src/views/suite/bridge-deprecated/BridgeDeprecated';
 export { BridgeRequested } from './src/views/suite/bridge-requested';
 export { UdevRules } from './src/views/suite/udev';
