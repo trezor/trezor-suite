@@ -1,8 +1,8 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createCardanoExternalDelegationProductDescriptor } from './cardanoExternalDelegationProductDescriptor';
-import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from '../cardanoMessageSystemFeatures';
+import { createCardanoExternalDelegationProductDescriptor } from './descriptor';
+import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
 
 describe('createCardanoExternalDelegationProductDescriptor', () => {
     it('builds the ada:ada:external:native product without staking', () => {

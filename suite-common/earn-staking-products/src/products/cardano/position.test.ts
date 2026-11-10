@@ -19,11 +19,11 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from './cardanoMessageSystemFeatures';
-import { createCardanoExternalDelegationProductDescriptor } from './external/cardanoExternalDelegationProductDescriptor';
-import { getCardanoDelegationProductPosition } from './getCardanoDelegationProductPosition';
-import { createCardanoNativeDelegationProductDescriptor } from './native/cardanoNativeDelegationProductDescriptor';
-import { createCardanoRetiredDelegationProductDescriptor } from './retired/cardanoRetiredDelegationProductDescriptor';
+import { createCardanoExternalDelegationProductDescriptor } from './external/descriptor';
+import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { createCardanoNativeDelegationProductDescriptor } from './native/descriptor';
+import { getCardanoDelegationProductPosition } from './position';
+import { createCardanoRetiredDelegationProductDescriptor } from './retired/descriptor';
 import { everstakeProvider } from '../../providers/everstake';
 import { externalProvider } from '../../providers/external';
 import { fivebinariesProvider } from '../../providers/fivebinaries';

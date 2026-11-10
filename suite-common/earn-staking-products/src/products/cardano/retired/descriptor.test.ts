@@ -1,9 +1,9 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createCardanoRetiredDelegationProductDescriptor } from './cardanoRetiredDelegationProductDescriptor';
+import { createCardanoRetiredDelegationProductDescriptor } from './descriptor';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
-import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from '../cardanoMessageSystemFeatures';
+import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
 
 describe('createCardanoRetiredDelegationProductDescriptor', () => {
     it('builds the ada:ada:fivebinaries:native product without staking', () => {

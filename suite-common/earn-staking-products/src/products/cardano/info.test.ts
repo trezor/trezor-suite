@@ -12,7 +12,7 @@ import {
     CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO,
     type CardanoDelegationProductInfoDeps,
     fetchCardanoDelegationProductInfo,
-} from './cardanoDelegationProductInfo';
+} from './info';
 import { everstakeProvider } from '../../providers/everstake';
 
 const everstakePools = everstakeProvider.identities[asNetworkSymbol('ada')] ?? [];

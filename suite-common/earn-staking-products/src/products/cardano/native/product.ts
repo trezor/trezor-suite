@@ -8,14 +8,11 @@ import type {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { getCardanoNativeDelegationProductAmountBounds } from './cardanoNativeDelegationProductAmountBounds';
-import { createCardanoNativeDelegationProductDescriptor } from './cardanoNativeDelegationProductDescriptor';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
-import {
-    type CardanoDelegationProductInfoDeps,
-    fetchCardanoDelegationProductInfo,
-} from '../cardanoDelegationProductInfo';
-import { getCardanoDelegationProductPosition } from '../getCardanoDelegationProductPosition';
+import { type CardanoDelegationProductInfoDeps, fetchCardanoDelegationProductInfo } from '../info';
+import { getCardanoDelegationProductPosition } from '../position';
+import { getCardanoNativeDelegationProductAmountBounds } from './amountBounds';
+import { createCardanoNativeDelegationProductDescriptor } from './descriptor';
 
 export type CardanoNativeDelegationProductDeps = CardanoDelegationProductInfoDeps;
 

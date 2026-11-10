@@ -6,7 +6,7 @@ import {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS } from './cardanoNativeDelegationProductLimits';
+import { CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
 
 export type CreateCardanoNativeDelegationProductDescriptorParams = {
     networkSymbol: NetworkSymbol;
