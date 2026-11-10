@@ -4,7 +4,7 @@ import { type DeviceReducerState, deviceActions, deviceInitialState } from '@sui
 import { type LockDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { type CallMethodAnyResponse } from '@trezor/connect';
 import { mock, mockNotExpected } from '@trezor/dependency-injection';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
@@ -127,6 +127,31 @@ describe('connectPopupCancelThunk', () => {
         store.dispatch(connectPopupCancelThunk({}));
 
         expect(cancelSpy).toHaveBeenCalledWith({ reason: undefined, callId: 'active-id' });
+    });
+
+    it('does not answer the call that started after the one it names', async () => {
+        // The stored call has finished and has been answered; the call that started after it is a
+        // different call, which this cancel does not name and which keeps running.
+        const store = createStore({
+            state: 'finished',
+            method: 'getAddress',
+            payload: {},
+            methodInfo: { methodTitle: '', permissionTypes: [], useUi: true },
+            source,
+            callId: 'previous-id',
+        });
+        const startedAfter = createPopupCallDeferred();
+        let isStartedAfterAnswered = false;
+        startedAfter.promise.then(() => {
+            isStartedAfterAnswered = true;
+        });
+
+        store.dispatch(connectPopupCancelThunk({ callId: 'queued-id' }));
+        await flush();
+
+        expect(isStartedAfterAnswered).toBe(false);
+        expect(cancelSpy).toHaveBeenCalledWith({ reason: undefined, callId: 'queued-id' });
+        startedAfter.resolve({ success: true, payload: {} } as Awaited<CallMethodAnyResponse>);
     });
 
     it('does not cancel other calls when neither the cancel nor the active call has a callId', () => {
