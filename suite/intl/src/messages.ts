@@ -13133,6 +13133,10 @@ export const messages = defineMessages({
         id: 'TR_URL_IN_TOKEN',
         defaultMessage: "Never visit URLs in token names or symbols; they're usually scams.",
     },
+    TR_UNKNOWN_TOKEN: {
+        id: 'TR_UNKNOWN_TOKEN',
+        defaultMessage: 'Unknown token',
+    },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE',
         defaultMessage: 'This Passphrase wallet is empty',

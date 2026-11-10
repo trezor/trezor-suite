@@ -15,8 +15,10 @@
     "dependencies": {
         "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.0"
     },

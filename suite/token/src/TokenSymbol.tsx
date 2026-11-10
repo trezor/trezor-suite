@@ -1,20 +1,9 @@
-import { useTokenMetadata } from '@suite-common/token';
+import { Translation } from '@suite/intl';
+import { getTokenDisplaySymbol, useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { extractUrlsFromText } from '@trezor/utils';
 
 import { TokenUrlBlur } from './TokenUrlBlur';
-
-const MAX_SYMBOL_LENGTH = 10;
-
-const getDisplaySymbol = (symbol: string, isTruncated: boolean) => {
-    // Truncating a URL can break its detection and leave the rest of it unmasked.
-    const isTruncatable = extractUrlsFromText(symbol).urls.length === 0;
-
-    return isTruncated && isTruncatable && symbol.length > MAX_SYMBOL_LENGTH
-        ? `${symbol.slice(0, MAX_SYMBOL_LENGTH)}...`
-        : symbol;
-};
 
 type TokenSymbolProps = {
     networkSymbol: NetworkSymbol;
@@ -28,7 +17,9 @@ export const TokenSymbol = ({
     isTruncated = false,
 }: TokenSymbolProps) => {
     const token = useTokenMetadata(networkSymbol, tokenContract);
-    const displaySymbol = getDisplaySymbol(token?.symbol ?? '', isTruncated);
+    const displaySymbol = getTokenDisplaySymbol(token, { isTruncated });
+
+    if (displaySymbol === null) return <Translation id="TR_UNKNOWN_TOKEN" />;
 
     return (
         <TokenUrlBlur
