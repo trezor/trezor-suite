@@ -7,7 +7,7 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { type Account } from '#src/types/wallet';
 
-import { AccountItemContent } from './AccountItemContent';
+import { AccountItemContent } from './AccountItemContent/AccountItemContent';
 
 const Container = styled.button<{ $isActive?: boolean; $isCollapsed?: boolean }>`
     display: flex;
