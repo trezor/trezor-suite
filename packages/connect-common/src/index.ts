@@ -15,6 +15,7 @@ export {
     parseVersion,
     corsValidator,
 } from './data/connectSettings';
+export { sanitizeName } from './data/sanitizeName';
 export * from './utils/debug';
 export * from './utils/definitionsUtils';
 export * from './utils/refTransactions';
