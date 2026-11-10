@@ -18,10 +18,10 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
-import { type TronCuratedProductDeps, createTronCuratedProduct } from './createTronCuratedProduct';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './tronCuratedProductMessageSystemFeatures';
-import { luganodesProvider } from '../../providers/luganodes';
-import { p2pProvider } from '../../providers/p2p';
+import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { type TronCuratedProductDeps, createTronCuratedProduct } from './product';
+import { luganodesProvider } from '../../../providers/luganodes';
+import { p2pProvider } from '../../../providers/p2p';
 
 // The oracle is the four P0.1 suites that read Tron: in wallet-core
 // src/staking/stakingSelectors.characterization.test.ts,

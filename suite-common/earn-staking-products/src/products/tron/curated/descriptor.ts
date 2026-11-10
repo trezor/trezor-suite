@@ -5,8 +5,8 @@ import {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { TRON_CURATED_PRODUCT_LIMITS } from './tronCuratedProductLimits';
-import { curatedProvider } from '../../providers/curated';
+import { TRON_CURATED_PRODUCT_LIMITS } from './limits';
+import { curatedProvider } from '../../../providers/curated';
 
 export type CreateTronCuratedProductDescriptorParams = {
     networkSymbol: NetworkSymbol;

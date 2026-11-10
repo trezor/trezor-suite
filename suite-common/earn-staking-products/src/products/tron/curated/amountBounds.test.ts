@@ -7,7 +7,7 @@ import {
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { getTronCuratedProductAmountBounds } from './tronCuratedProductAmountBounds';
+import { getTronCuratedProductAmountBounds } from './amountBounds';
 
 const TRX = '000000';
 

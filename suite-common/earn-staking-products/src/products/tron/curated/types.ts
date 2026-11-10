@@ -1,8 +1,11 @@
+import z from 'zod';
+
 import {
     type StakingAmount,
     type StakingProvider,
     type TronResourceAmounts,
 } from '@suite-common/earn-staking-common';
+import { tronAddressToBytes } from '@trezor/network-tron/utils';
 
 import { type TRON_RESOURCES } from './constants';
 
@@ -35,3 +38,15 @@ export type ParsedTronStakingInfo = {
     unclaimedReward: StakingAmount;
     rewardClaimAvailableAt: number | null;
 };
+
+export const tronStakingListsSchema = z.object({
+    unstakingBatches: z.array(z.unknown()),
+    votes: z.array(z.unknown()),
+});
+
+export const tronUnstakingBatchSchema = z.object({ amount: z.string(), expireTime: z.number() });
+
+export const tronVoteSchema = z.object({
+    address: z.string().refine(address => tronAddressToBytes(address) !== null),
+    voteCount: z.string(),
+});

@@ -15,12 +15,12 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { getTronCuratedProductPosition } from './getTronCuratedProductPosition';
-import { createTronCuratedProductDescriptor } from './tronCuratedProductDescriptor';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './tronCuratedProductMessageSystemFeatures';
+import { createTronCuratedProductDescriptor } from './descriptor';
+import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { getTronCuratedProductPosition } from './position';
 import { getTronRepresentatives } from './utils';
-import { luganodesProvider } from '../../providers/luganodes';
-import { p2pProvider } from '../../providers/p2p';
+import { luganodesProvider } from '../../../providers/luganodes';
+import { p2pProvider } from '../../../providers/p2p';
 
 const TRX = '000000';
 const NOW_MS = MOCK_STAKING_NOW_SECONDS * 1000;
