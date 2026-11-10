@@ -3,7 +3,7 @@ import { type ThunkDispatch } from 'redux-thunk';
 
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 
-import { type GuideState } from '#src/reducers/suite/guideReducer';
+import { type GuideState } from '#src/reducers/suite/guideState';
 import { selectGuideView, selectIsGuideOpen } from '#src/selectors/suite/guideSelectors';
 
 import { GUIDE } from './constants';

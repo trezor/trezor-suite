@@ -50,7 +50,7 @@ import { type PROTO } from '@trezor/connect';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type ProtocolState } from '#src/reducers/suite/protocolReducer';
+import { type ProtocolState } from '#src/reducers/suite/protocolState';
 import {
     type UserAction,
     actionSequence,

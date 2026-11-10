@@ -17,7 +17,7 @@ import { type DeviceUniquePath } from '@trezor/connect';
 import * as onboardingActions from '#src/actions/onboarding/onboardingActions';
 import onboardingMiddleware from '#src/middlewares/onboarding/onboardingMiddleware';
 import onboardingReducer from '#src/reducers/onboarding/index';
-import { type OnboardingRootState } from '#src/reducers/onboarding/onboardingReducer';
+import { type OnboardingRootState } from '#src/reducers/onboarding/onboardingState';
 import suiteReducer, { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
 
 const middlewares = [onboardingMiddleware];

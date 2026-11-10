@@ -1,7 +1,7 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import * as indexNodeJSON from '@suite/app-assets/files/guide/index.json';
-import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
+import type { GuideCategory } from '@suite-common/suite-types';
 import { variables } from '@trezor/components';
 
 import {
@@ -14,13 +14,7 @@ import {
     unsetNode,
 } from '#src/actions/suite/guideActions';
 
-export interface GuideState {
-    open: boolean;
-    view: ActiveView;
-    indexNode: GuideCategory | null;
-    currentNode: GuideNode | null;
-    width: number;
-}
+import { type GuideState } from './guideState';
 
 const indexNode = indexNodeJSON as GuideCategory;
 

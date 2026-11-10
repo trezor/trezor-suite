@@ -1,9 +1,8 @@
 export { type WalletState, createWalletReducer } from './src/reducers/wallet';
-export { default as guideReducer, type GuideState } from './src/reducers/suite/guideReducer';
-export {
-    default as protocolReducer,
-    type ProtocolState,
-} from './src/reducers/suite/protocolReducer';
+export { default as guideReducer } from './src/reducers/suite/guideReducer';
+export { type GuideState } from './src/reducers/suite/guideState';
+export { default as protocolReducer } from './src/reducers/suite/protocolReducer';
+export { type ProtocolState } from './src/reducers/suite/protocolState';
 export { default as suiteReducer, type SuiteState } from './src/reducers/suite/suiteReducer';
 export { default as windowReducer, type WindowState } from './src/reducers/suite/windowReducer';
 export { default as buttonRequestMiddleware } from './src/middlewares/suite/buttonRequestMiddleware';
@@ -30,7 +29,7 @@ export { default as onboardingMiddleware } from './src/middlewares/onboarding/on
 export { prepareSuiteSyncQuotaManagerReducer } from './src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 export { toastMiddleware } from './src/middlewares/suite/toastMiddleware';
 export { default as onboardingReducers } from './src/reducers/onboarding/onboardingReducer';
-export { type OnboardingState } from './src/reducers/onboarding/onboardingReducer';
+export { type OnboardingState } from './src/reducers/onboarding/onboardingState';
 export {
     type GlobalSendReceiveFiltersState,
     globalSendReceiveFiltersReducer,
@@ -42,7 +41,8 @@ export {
     ResponsiveContextProvider,
     useResponsiveContext,
 } from './src/support/suite/ResponsiveContext';
-export { createDb, type DbDep } from './src/storage/createDb';
+export { createDb } from './src/storage/createDb';
+export { type DbDep } from './src/storage/Db';
 export { selectIsWindowVisible } from './src/reducers/suite/windowReducer';
 export { reportSecurityCheck } from './src/utils/suite/sentry';
 export { markDeviceAsRecentlyConnectedThunk } from './src/actions/wallet/markDeviceAsRecentlyConnectedThunk';

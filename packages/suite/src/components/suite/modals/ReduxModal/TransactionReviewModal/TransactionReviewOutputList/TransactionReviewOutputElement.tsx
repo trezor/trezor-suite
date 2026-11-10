@@ -16,7 +16,10 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { TransactionReviewOutputStatus } from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
+import {
+    type TransactionReviewOutputState,
+    TransactionReviewOutputStatus,
+} from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
 import { type Account } from '#src/types/wallet';
 
 const DataWrapper = styled.p<{ $isExpanded: boolean; $fadeColor: Color }>`
@@ -173,7 +176,7 @@ export type TransactionReviewOutputElementProps = {
     title: ReactNode;
     lines: OutputElementLine[];
     account: Pick<Account, 'networkType' | 'symbol' | 'tokens'>;
-    state: 'active' | 'confirmed' | 'unconfirmed';
+    state: TransactionReviewOutputState;
     fiatVisible?: boolean;
 };
 

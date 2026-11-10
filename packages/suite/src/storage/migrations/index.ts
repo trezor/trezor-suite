@@ -28,16 +28,12 @@ import { migrateToV56 } from '#src/storage/migrations/legacyVersions/migrateToV5
 import { migrationOfBnbNetwork } from '#src/storage/migrations/networks/bnb';
 import type { BlockbookUrl, CustomBackend } from '#src/types/wallet/backend';
 
+import { type DBWalletAccountTransactionCompatible } from './DBWalletAccountTransactionCompatible';
 import { updateAll } from './utils';
-import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
+import type { SuiteDBSchema } from '../definitions';
 
 type WalletWithBackends = {
     backends?: Record<NetworkSymbol, Omit<CustomBackend, 'coin'>>;
-};
-
-export type DBWalletAccountTransactionCompatible = {
-    order: DBWalletAccountTransaction['order'];
-    tx: DBWalletAccountTransaction['tx'] & { totalSpent: string };
 };
 
 export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
