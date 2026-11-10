@@ -12456,6 +12456,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12750,6 +12751,7 @@ __metadata:
   dependencies:
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -13395,6 +13397,7 @@ __metadata:
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native-app/state": "workspace:*"
     "@suite-native/analytics-redux": "workspace:*"
+    "@suite-native/regions": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
   languageName: unknown
@@ -16285,9 +16288,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/regions@workspace:suite-native/regions"
   dependencies:
+    "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/regions": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18008,10 +18014,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/regions@workspace:suite/regions"
   dependencies:
+    "@suite-common/geolocation": "workspace:*"
     "@suite-common/locale": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/regions": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite/settings": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

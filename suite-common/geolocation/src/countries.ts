@@ -540,6 +540,9 @@ export const countries: CountryCatalogue = {
 export const isKnownCountryCode = (code: string): code is CountryCode =>
     Object.hasOwn(countries, code);
 
+export const isCountryCode = (code: string): code is CountryCode =>
+    isKnownCountryCode(code) || code === 'XX' || code === 'T1';
+
 export const usSubdivisions = [
     { code: 'AK', name: 'Alaska' },
     { code: 'AL', name: 'Alabama' },

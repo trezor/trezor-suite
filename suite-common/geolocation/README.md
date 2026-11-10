@@ -90,6 +90,30 @@ Resulting values (rounded; `estimatePresence.test.ts` covers every combination):
 **The table values and IP likelihood ratios are an approved decision.** Do not change them in a code review or
 to make a test pass. A change needs the same sign-off as the original values.
 
+## IP country signal
+
+`fetchCountryCodeThunk` calls `services.trezor.io/get-country/` with a 10 s timeout. A successful fetch sets
+`countryCode`, which trading, message-system targeting and feedback also read. Every fetch, successful or not, records
+`countryCodeFetch: { status, timestamp }`. A failure keeps the previous `countryCode`. Concurrent calls (presence refresh,
+trading) share one request.
+
+`selectPresenceIpCountry` returns `countryCode` only when the last record is `success`. Otherwise the IP is missing:
+on the first fetch and after a failure. A refetch in flight keeps the previous record.
+
+Refresh scheduling lives in the regions packages (`refreshPresenceIpCountryThunk` and the interval constants in
+`@suite-common/regions`, platform `initPresenceDetectionThunk`):
+
+- It runs for every user, whether the `regions.presenceRestriction` flag is on or not. The flag may be targeted by
+  country, and that targeting needs `countryCode` first.
+- It refetches when the last record is at least `PRESENCE_IP_REFRESH_INTERVAL_MS` (1 h) old by wall clock, or
+  `PRESENCE_IP_RETRY_INTERVAL_MS` (5 min) after a failed fetch. A timestamp in the future also counts as stale.
+- The check runs at app start and every `PRESENCE_CHECK_INTERVAL_MS` (60 s). After sleep or backgrounding, the next tick
+  picks it up within a minute.
+- With the Suite Tor toggle on, the request goes through Tor and the endpoint returns `T1`, which counts as a missing
+  IP. After Tor is turned off, the IP stays missing until the next refresh.
+
+The `geolocation` slice is not persisted, and its values must not reach logs, Sentry or analytics.
+
 ## Time zone table
 
 `src/presence/timeZoneCountries.ts` maps IANA zone names to countries; read it through `getTimeZoneCountry`. It is a
