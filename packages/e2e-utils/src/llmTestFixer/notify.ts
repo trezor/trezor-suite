@@ -16,6 +16,7 @@ const RESULT_ICON: Record<SlackFixSummary['result'], string> = {
     partial: '⚠️',
     fail: '❌',
     not_duplicated: '🔵',
+    covered_by_open_pr: '🔁',
 };
 
 function formatCost(usd: number): string {
@@ -128,6 +129,8 @@ function buildMessage(
 
             if (result === 'not_duplicated') {
                 lines.push(`    ${task.id} · preflight passed — not flaky · ${costPart}`);
+            } else if (result === 'covered_by_open_pr') {
+                lines.push(`    ${task.id} · already fixed in an open PR · ${costPart}`);
             } else {
                 const prPart = prUrl ? `<${prUrl}|PR link>` : 'no PR';
                 lines.push(`    ${task.id} · ${prPart} · ${iterStr} · ${countStr} · ${costPart}`);
