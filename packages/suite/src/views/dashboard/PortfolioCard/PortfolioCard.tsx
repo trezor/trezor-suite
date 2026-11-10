@@ -29,7 +29,8 @@ import { breakpoints } from '@trezor/theme';
 
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
-import { GraphRangeSelector, GraphSkeleton } from '#src/components/suite';
+import { GraphRangeSelector } from '#src/components/suite/graph/GraphRangeSelector';
+import { GraphSkeleton } from '#src/components/suite/graph/GraphSkeleton';
 import { useDiscovery, useSelector } from '#src/hooks/suite';
 import { useTotalFiatBalance } from '#src/hooks/wallet/useTotalFiatBalance';
 import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';

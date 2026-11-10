@@ -1,9 +1,8 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
-
-import { HiddenPlaceholder } from '#src/components/suite';
 
 interface TradingFiatAmountProps {
     amount?: BaseCurrencyAmount;

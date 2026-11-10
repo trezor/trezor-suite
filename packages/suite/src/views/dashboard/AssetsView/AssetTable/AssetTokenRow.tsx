@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
 import { Table } from '@trezor/components';
 
-import { BaseCurrencyValue } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 

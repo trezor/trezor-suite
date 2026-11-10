@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { AssetIcon, AssetName, AssetSymbol } from '@suite/assets';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
@@ -21,7 +22,8 @@ import { CaretDownIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill } from '#src/actions/suite/suiteActions';
-import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite';
 import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import { selectSendFormPrefill } from '#src/selectors/suite/suiteSelectors';

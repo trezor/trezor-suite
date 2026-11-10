@@ -5,7 +5,8 @@ import { type TronFeeBreakdown } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 type TronFeeContentProps = {
     tx: GeneralPrecomposedTransaction | undefined;

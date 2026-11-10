@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { InfoItem, Text } from '@trezor/components';
 
-import { FormattedCryptoAmount } from '#src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 type TradingExchangeMinimumReceivedInfoItemProps = {
     cryptoId: CryptoId | undefined;

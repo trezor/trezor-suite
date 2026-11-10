@@ -4,7 +4,7 @@ import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-type
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { CoinBalance } from '#src/components/suite';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
 import { useSelector } from '#src/hooks/suite';
 
 import { AccountItemBadges } from './AccountItemBadges';

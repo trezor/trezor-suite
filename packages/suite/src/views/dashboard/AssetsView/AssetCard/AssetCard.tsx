@@ -36,12 +36,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    AmountUnitSwitchWrapper,
-    CoinBalance,
-    PriceTicker,
-    TrendTicker,
-} from '#src/components/suite';
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
+import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
+import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { FiatHeader } from '#src/components/wallet/FiatHeader';
 
 import { AssetActionButton } from '../AssetActionButton';

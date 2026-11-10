@@ -1,8 +1,7 @@
 import { memo } from 'react';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { type BigNumber } from '@trezor/utils';
-
-import { HiddenPlaceholder } from '#src/components/suite';
 
 import { FiatAmountHeadline } from './FiatAmountHeadline';
 

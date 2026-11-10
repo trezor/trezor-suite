@@ -19,7 +19,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { CountdownTimer } from '#src/components/suite/CountdownTimer';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 

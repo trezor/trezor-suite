@@ -4,7 +4,7 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
-import { Sign } from '#src/components/suite';
+import { Sign } from '#src/components/suite/Sign';
 
 const MIN_EXACT_DECIMALS = 2;
 

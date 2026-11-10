@@ -1,3 +1,4 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
@@ -12,7 +13,7 @@ import { valuablesBaseCurrencyCodes } from '@trezor/blockchain-link-types';
 import { Skeleton, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { isArrayMember } from '@trezor/utils';
 
-import { BaseCurrencyValue, HiddenPlaceholder } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { useSelector } from '#src/hooks/suite';
 
 type BaseCurrencyProps = {

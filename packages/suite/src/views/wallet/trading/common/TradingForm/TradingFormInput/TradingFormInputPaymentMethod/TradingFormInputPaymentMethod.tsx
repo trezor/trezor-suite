@@ -14,7 +14,7 @@ import {
 import { GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { FakeSelect } from '#src/components/suite';
+import { FakeSelect } from '#src/components/suite/FakeSelect';
 import { useSelector } from '#src/hooks/suite';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingTradeBuySellType } from '#src/types/trading/trading';

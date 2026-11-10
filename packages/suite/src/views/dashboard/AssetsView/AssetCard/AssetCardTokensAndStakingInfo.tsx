@@ -1,10 +1,12 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { PiggyBankFilledIcon } from '@trezor/icons';
 
-import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from '#src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
 import { TokenIconSetWrapper } from '#src/components/wallet/TokenIconSetWrapper';
 
 type AssetCardTokensAndStakingInfoProps = {

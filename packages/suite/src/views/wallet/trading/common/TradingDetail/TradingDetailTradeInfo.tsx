@@ -10,7 +10,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { CopyIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedDate } from '#src/components/suite';
+import { FormattedDate } from '#src/components/suite/FormattedDate';
 import { TradingProviderInfo as TradingProviderInfoRow } from '#src/views/wallet/trading/common/TradingProviderInfo';
 
 type TradingDetailTradeInfoProps = {
