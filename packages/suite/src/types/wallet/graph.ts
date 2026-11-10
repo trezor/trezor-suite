@@ -51,3 +51,16 @@ export interface AggregatedAccountHistory extends CommonAggregatedHistory {
     sent: string;
     received: string;
 }
+
+export interface GraphState {
+    data: GraphData[];
+    error: null | AccountIdentifier[];
+    isLoading: boolean;
+    selectedRange: GraphRange;
+}
+
+export type GraphRootState = {
+    wallet: {
+        graph: GraphState;
+    };
+};

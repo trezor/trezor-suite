@@ -4,7 +4,7 @@ import {
     storageError,
     storageLoad,
 } from '#src/actions/suite/storageLifecycleActions';
-import { type DbDep } from '#src/storage/createDb';
+import { type DbDep } from '#src/storage/Db';
 import { loadStoragePayload } from '#src/storage/loadStoragePayload';
 
 type PreloadStoreDeps = DbDep;

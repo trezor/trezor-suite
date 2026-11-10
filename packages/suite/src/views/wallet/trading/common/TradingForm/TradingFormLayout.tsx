@@ -18,7 +18,7 @@ import { TradingFormOfferExchangeActions } from '#src/views/wallet/trading/excha
 import { TradingFormOfferSellActions } from '#src/views/wallet/trading/sell/TradingFormOfferSellActions';
 
 import { TradingFormOfferWarnings } from './TradingFormOffer/components/TradingFormOffersWarnings';
-import { ReceiveAddressModalControlsProvider } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+import { ReceiveAddressModalControlsProvider } from '../TradingSelectedOffer/TradingReceiveAddress/ReceiveAddressModalControlsProvider';
 
 type TradingFormLayoutProps = {
     children: ReactNode;
