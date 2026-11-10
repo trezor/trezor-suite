@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Callout, Card, Cards, Steps, Tabs } from 'nextra/components';
 import styled from 'styled-components';
 
-import { Button, CollapsibleBox, Card as TrezorCard, variables } from '@trezor/components';
+import { Box, Button, CollapsibleBox, Card as TrezorCard, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { BetaOnly } from '../components/BetaOnly';
@@ -83,11 +83,13 @@ export const ExampleHeading = styled.h3`
 
 # Integrate Trezor devices with your project
 
-<Callout type="warning">
-    Trezor Connect 9 is deprecated and its support ends on December 31, 2026. Please migrate to
-    Trezor Connect 10, see the [migration
-    guide](https://connect.trezor.io/10/guides/migrating-to-connect-10).
-</Callout>
+<Box margin={{ bottom: spacings.xl }}>
+    <Callout type="warning">
+        Trezor Connect 9 is deprecated and its support ends on December 31, 2026. Please migrate to
+        Trezor Connect 10, see the [migration
+        guide](https://connect.trezor.io/10/guides/migrating-to-connect-10).
+    </Callout>
+</Box>
 
 <SectionCard>
     ### Explore Trezor Connect SDKs
