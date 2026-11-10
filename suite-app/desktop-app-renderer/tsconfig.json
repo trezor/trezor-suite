@@ -11,6 +11,7 @@
         { "path": "../app" },
         { "path": "../module-account-detail" },
         { "path": "../module-assets" },
+        { "path": "../module-coinjoin" },
         { "path": "../module-earn" },
         { "path": "../module-home" },
         { "path": "../module-receive" },

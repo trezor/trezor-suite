@@ -19,5 +19,3 @@ export { ConnectPopupPage } from './pages/ConnectPopupPage';
 export { NotificationPage } from './pages/NotificationPage';
 export { PasswordManagerPage } from './pages/PasswordManagerPage';
 export { ReferAFriendPage } from './pages/ReferAFriendPage';
-export { WalletAnonymizePage } from './pages/WalletAnonymizePage';
-export { WalletCoinjoinPage } from './pages/WalletCoinjoinPage';

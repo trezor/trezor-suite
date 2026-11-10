@@ -11392,6 +11392,7 @@ __metadata:
     "@suite-app/app": "workspace:*"
     "@suite-app/module-account-detail": "workspace:*"
     "@suite-app/module-assets": "workspace:*"
+    "@suite-app/module-coinjoin": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-home": "workspace:*"
     "@suite-app/module-receive": "workspace:*"
@@ -11488,6 +11489,21 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-coinjoin@workspace:*, @suite-app/module-coinjoin@workspace:suite-app/module-coinjoin":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-coinjoin@workspace:suite-app/module-coinjoin"
+  dependencies:
+    "@suite/account": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    react: "npm:19.3.0"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -11714,6 +11730,7 @@ __metadata:
     "@suite-app/app": "workspace:*"
     "@suite-app/module-account-detail": "workspace:*"
     "@suite-app/module-assets": "workspace:*"
+    "@suite-app/module-coinjoin": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-home": "workspace:*"
     "@suite-app/module-receive": "workspace:*"
