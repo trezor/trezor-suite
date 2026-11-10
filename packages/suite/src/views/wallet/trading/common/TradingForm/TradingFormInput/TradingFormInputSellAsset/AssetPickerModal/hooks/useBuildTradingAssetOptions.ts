@@ -1,10 +1,8 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import {
-    useAccountsWithTokenDisplayNames,
-    useFilterAccountsWithTokens,
-    useInsertGroupLabelsAndSpaces,
-} from '#src/components/suite/asset-picker/hooks';
+import { useAccountsWithTokenDisplayNames } from '#src/components/suite/asset-picker/hooks/useAccountsWithTokenDisplayNames';
+import { useFilterAccountsWithTokens } from '#src/components/suite/asset-picker/hooks/useFilterAccountsWithTokens';
+import { useInsertGroupLabelsAndSpaces } from '#src/components/suite/asset-picker/hooks/useInsertGroupLabelsAndSpaces';
 import { type AssetGroupKey } from '#src/components/suite/asset-picker/utils/assetGroupKey';
 
 import { useGroupedAssetOptions } from './useGroupedAssetOptions';
