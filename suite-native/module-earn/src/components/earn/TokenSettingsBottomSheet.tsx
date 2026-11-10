@@ -55,6 +55,7 @@ import { isDevUtilsEnabledAtom } from '@suite-native/storage';
 import {
     type TokensRootState as NativeTokensRootState,
     TokenIcon,
+    TokenName,
     selectAccountTokenInfo,
     selectIsUnrecognizedToken,
 } from '@suite-native/tokens';
@@ -230,7 +231,21 @@ export const TokenSettingsBottomSheet = forwardRef(
         };
 
         return (
-            <BottomSheetModal ref={ref} title={token?.name ?? displaySymbol} isCloseDisplayed>
+            <BottomSheetModal
+                ref={ref}
+                title={
+                    tokenContract ? (
+                        <TokenName
+                            networkSymbol={account.symbol}
+                            contractAddress={tokenContract}
+                            variant="headline-sm"
+                        />
+                    ) : (
+                        displaySymbol
+                    )
+                }
+                isCloseDisplayed
+            >
                 <VStack spacing="sp16" paddingBottom="sp16">
                     <Card style={applyStyle(cardStyle)}>
                         <VStack>
