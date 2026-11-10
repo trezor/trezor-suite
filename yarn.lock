@@ -11400,6 +11400,7 @@ __metadata:
     "@suite-app/module-settings": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
     "@suite-app/module-trading": "workspace:*"
+    "@suite-app/module-transactions": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -11613,6 +11614,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-app/module-transactions@workspace:*, @suite-app/module-transactions@workspace:suite-app/module-transactions":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-transactions@workspace:suite-app/module-transactions"
+  dependencies:
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/account": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-app/storybook@workspace:suite-app/storybook":
   version: 0.0.0-use.local
   resolution: "@suite-app/storybook@workspace:suite-app/storybook"
@@ -11684,6 +11699,7 @@ __metadata:
     "@suite-app/module-settings": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
     "@suite-app/module-trading": "workspace:*"
+    "@suite-app/module-transactions": "workspace:*"
     "@suite-common/flags": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
