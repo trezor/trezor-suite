@@ -339,7 +339,7 @@ export { BridgeUnavailable } from './src/views/suite/bridge/BridgeUnavailable';
 export { BridgeDeprecated } from './src/views/suite/bridge-deprecated/BridgeDeprecated';
 export { BridgeRequested } from './src/views/suite/bridge-requested/BridgeRequested';
 export { UdevRules } from './src/views/suite/udev/UdevRules';
-export { Version } from './src/views/suite/version';
+export { Version } from './src/views/suite/version/Version';
 export {
     Body,
     Columns,
