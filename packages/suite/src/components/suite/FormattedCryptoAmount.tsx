@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import { useShouldRedactNumbers } from '@suite-common/discreet-mode';
 import { isSignValuePositive, useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
 import {
@@ -57,6 +58,7 @@ export const FormattedCryptoAmount = ({
     'data-testid': dataTest,
 }: FormattedCryptoAmountProps) => {
     const { CryptoAmountFormatter } = useFormatters();
+    const shouldRedactNumbers = useShouldRedactNumbers({ strict: false });
 
     const { areSatsDisplayed } = useBitcoinAmountUnit();
 
@@ -116,6 +118,13 @@ export const FormattedCryptoAmount = ({
         })}`;
     }
 
+    const shouldMaskAmount = !disableHiddenPlaceholder || shouldRedactNumbers;
+    const renderedValue = shouldMaskAmount ? (
+        <RedactNumericalValue value={formattedValue} />
+    ) : (
+        formattedValue
+    );
+
     // output as a string, mostly for compatibility with graphs
     if (isRawString) {
         const displayedSignValue = signValue ? `${isSignValuePositive(signValue) ? '+' : '-'}` : '';
@@ -123,21 +132,10 @@ export const FormattedCryptoAmount = ({
         return (
             <>
                 {displayedSignValue}
-                {disableHiddenPlaceholder ? (
-                    formattedValue
-                ) : (
-                    <RedactNumericalValue value={formattedValue} />
-                )}{' '}
-                {formattedSymbol}
+                {renderedValue} {formattedSymbol}
             </>
         );
     }
-
-    const renderedValue = disableHiddenPlaceholder ? (
-        formattedValue
-    ) : (
-        <RedactNumericalValue value={formattedValue} />
-    );
 
     const content = (
         <span data-testid={`${dataTest}-with-symbol`}>
