@@ -16,10 +16,12 @@ type AdapterStatus = ReturnType<typeof selectAdapterStatus>;
 const mockDispatch = mock<Dispatch>();
 let mockAdapterStatus: AdapterStatus = 'enabled';
 
+type ButtonProps = { onClick: () => void };
+
 jest.mock('@suite/intl', () => ({ Translation: () => null }));
 jest.mock('@trezor/components', () => ({
     Column: ({ children }: PropsWithChildren) => children,
-    Button: ({ onClick }: { onClick: () => void }) => <button onClick={onClick}>Connect</button>,
+    Button: ({ onClick }: ButtonProps) => <button onClick={onClick}>Connect</button>,
 }));
 jest.mock('./DeviceItem/DeviceItem', () => ({ DeviceItem: () => null }));
 jest.mock('./SwitchDeviceModal', () => ({ SwitchDeviceModal: () => null }));

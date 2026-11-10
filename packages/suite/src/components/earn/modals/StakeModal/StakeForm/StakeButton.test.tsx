@@ -19,6 +19,8 @@ const mockDispatch = mock<Dispatch>();
 const mockSubmit = jest.fn();
 let mockDevice = { connected: true, available: true };
 
+type ModalButtonProps = { onClick: () => void; isDisabled: boolean };
+
 jest.mock('@suite/device', () => ({
     ...jest.requireActual('@suite/device'),
     useDevice: () => ({ device: mockDevice, isLocked: () => false }),
@@ -27,7 +29,7 @@ jest.mock('@suite/intl', () => ({ Translation: () => null }));
 jest.mock('@trezor/components', () => ({
     Tooltip: ({ children }: PropsWithChildren) => children,
     Modal: {
-        Button: ({ onClick, isDisabled }: { onClick: () => void; isDisabled: boolean }) => (
+        Button: ({ onClick, isDisabled }: ModalButtonProps) => (
             <button onClick={onClick} disabled={isDisabled}>
                 Submit
             </button>

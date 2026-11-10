@@ -28,13 +28,15 @@ const cardanoAccount = mockWalletAccount(
     networkSpecificDefaultCardano,
 );
 
+type CreateRewardParams = {
+    claimable: string;
+    fiatClaimable: string | null;
+};
+
 const createReward = ({
     claimable,
     fiatClaimable,
-}: {
-    claimable: string;
-    fiatClaimable: string | null;
-}): ChainRewardsWithFiat['rewards'][number] => ({
+}: CreateRewardParams): ChainRewardsWithFiat['rewards'][number] => ({
     root: '0xroot',
     amount: claimable,
     claimed: '0',
@@ -56,15 +58,17 @@ const createReward = ({
     },
 });
 
+type CreateChainRewardsParams = {
+    account: Account;
+    rewards: ChainRewardsWithFiat['rewards'];
+    address?: string;
+};
+
 const createChainRewards = ({
     account,
     rewards,
     address = account.descriptor,
-}: {
-    account: Account;
-    rewards: ChainRewardsWithFiat['rewards'];
-    address?: string;
-}): ChainRewardsWithFiat => ({
+}: CreateChainRewardsParams): ChainRewardsWithFiat => ({
     chainId: 1,
     address,
     totalClaimable: rewards

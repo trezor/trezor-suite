@@ -6,6 +6,8 @@ import type { ILogger } from '../logger';
 
 export type TorProcessStatus = Status;
 
+type TorProcessParams = { options: TorConnectionOptions; logger: ILogger };
+
 export class TorProcess extends BaseProcess {
     torController: TorController;
     port: number;
@@ -13,7 +15,7 @@ export class TorProcess extends BaseProcess {
     torHost: string;
     torDataDir: string;
 
-    constructor({ options, logger }: { options: TorConnectionOptions; logger: ILogger }) {
+    constructor({ options, logger }: TorProcessParams) {
         super({
             resourceName: 'tor',
             processName: 'tor',

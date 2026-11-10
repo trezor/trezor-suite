@@ -27,7 +27,9 @@ const account = mockWalletAccount({
     formattedBalance: '1',
 });
 
-const compose = ({ amount, isMax }: { amount: string; isMax: boolean }) => {
+type ComposeParams = { amount: string; isMax: boolean };
+
+const compose = ({ amount, isMax }: ComposeParams) => {
     const defaults = getStakeFormsDefaultValues({
         address: POOL_ADDRESS,
         stakeType: 'stake',

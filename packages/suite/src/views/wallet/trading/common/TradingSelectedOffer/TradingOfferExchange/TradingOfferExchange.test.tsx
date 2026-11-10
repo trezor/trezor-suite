@@ -75,8 +75,10 @@ jest.mock('#src/hooks/wallet/trading/useTradingExchangeConfirmFees', () => ({
     }),
 }));
 
+type TradingOfferExchangeDetailsProps = { networkFeeEdit?: object };
+
 jest.mock('./TradingOfferExchangeDetails', () => ({
-    TradingOfferExchangeDetails: ({ networkFeeEdit }: { networkFeeEdit?: object }) => (
+    TradingOfferExchangeDetails: ({ networkFeeEdit }: TradingOfferExchangeDetailsProps) => (
         <div data-testid="network-fee">{networkFeeEdit ? 'editable' : 'fixed'}</div>
     ),
 }));

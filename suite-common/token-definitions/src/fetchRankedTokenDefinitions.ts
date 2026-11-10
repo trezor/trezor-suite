@@ -22,10 +22,12 @@ const isRankedToken = (token: unknown): token is RankedTokenStructure[number] =>
     Number.isFinite(token.marketCap) &&
     token.marketCap >= 0;
 
+type FetchRankedTokenDefinitionsParams = { signal?: AbortSignal };
+
 /** Fetches the wallet-independent catalogue in its published market-cap order. */
 export const fetchRankedTokenDefinitions = async ({
     signal,
-}: { signal?: AbortSignal } = {}): Promise<RankedTokenStructure> => {
+}: FetchRankedTokenDefinitionsParams = {}): Promise<RankedTokenStructure> => {
     const environment = isCodesignBuild() ? 'stable' : 'develop';
     const response = await fetch(
         `${TOKEN_DEFINITIONS_PREFIX_URL}/${environment}/ranked.coin.${TOKEN_DEFINITIONS_SUFFIX_URL}`,
