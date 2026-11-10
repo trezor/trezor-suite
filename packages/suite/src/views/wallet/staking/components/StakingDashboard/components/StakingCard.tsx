@@ -460,6 +460,7 @@ export const StakingCard = ({
                                 iconLeft={isVotingDisabled ? InfoIcon : undefined}
                                 intent={isDrepDelegationRequired ? 'brand' : 'neutral'}
                                 priority={isDrepDelegationRequired ? 'primary' : 'secondary'}
+                                data-testid="@account/staking/change-delegate-button"
                             >
                                 <Translation id="TR_STAKE_CHANGE_DELEGATE" />
                             </Button>
