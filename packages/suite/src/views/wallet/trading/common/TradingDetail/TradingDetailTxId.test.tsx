@@ -1,11 +1,13 @@
 import '@suite-common/test-utils/globalOverrides';
 
 import userEvent from '@testing-library/user-event';
+import { type CryptoId } from 'invity-api';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { openModal } from '@suite/modal';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TradingTransactionExchange } from '@suite-common/trading';
 import { asNetworkSymbol, getTxExplorerUrl } from '@suite-common/wallet-config';
 import { explorerInitialState, transactionsInitialState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -32,6 +34,21 @@ const receiveAccount = mockWalletAccount({
 const payoutTxid = 'payoutTxid';
 const sendTxid = 'sendTxid';
 const notLoadedTxid = 'notLoadedTxid';
+const notLoadedPayoutTxid = 'notLoadedPayoutTxid';
+
+const crossChainSwap: TradingTransactionExchange = {
+    tradeType: 'exchange',
+    key: 'crossChainSwap',
+    date: '2026-01-01T00:00:00.000Z',
+    sendAccountKey: sendAccount.key,
+    receiveAccountKey: receiveAccount.key,
+    sendTxid,
+    data: {
+        send: 'bitcoin' as CryptoId,
+        receive: 'ethereum' as CryptoId,
+        receiveTxHash: notLoadedPayoutTxid,
+    },
+};
 
 const getInitialState = (): MockSuiteState => ({
     ...mockInitialAppState,
@@ -39,6 +56,7 @@ const getInitialState = (): MockSuiteState => ({
         ...mockInitialAppState.wallet,
         accounts: [sendAccount, receiveAccount],
         explorer: explorerInitialState,
+        trading: { ...mockInitialAppState.wallet.trading, trades: [crossChainSwap] },
         transactions: {
             ...transactionsInitialState,
             transactions: {
@@ -125,5 +143,17 @@ describe('TradingDetailTxId', () => {
         await userEvent.click(link);
 
         expect(getActions()).toEqual([]);
+    });
+
+    it('links a swap payout no account has loaded to the explorer of the receive network', () => {
+        const { link } = renderTxId(notLoadedPayoutTxid);
+
+        expect(link).toHaveAttribute(
+            'href',
+            getTxExplorerUrl(
+                explorerInitialState[receiveAccount.symbol].default,
+                notLoadedPayoutTxid,
+            ),
+        );
     });
 });
