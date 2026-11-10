@@ -88,7 +88,9 @@ describe('runPassphraseWalletAddingDiscoveryThunk', () => {
     });
 
     it('closes the PIN modal once a locked device asks for the passphrase', async () => {
-        jest.mocked(TrezorConnect.getDeviceState).mockImplementation(({ callId }) => {
+        jest.mocked(TrezorConnect.getDeviceState).mockImplementation(params => {
+            const callId = params?.callId;
+
             emitUiRequest({
                 ...createUiRequestMessage(
                     UI_REQUESTS.REQUEST_PIN,
