@@ -105,7 +105,8 @@ describe('WalletAssetListItem', () => {
             services,
         });
 
-        expect(screen.getByText(/^50(\.00)?$/)).toBeTruthy();
+        // A token without a ticker still shows a unit: the unknown-token label.
+        expect(screen.getByText(/^50(\.00)? Unknown token$/)).toBeTruthy();
         expect(screen.queryByText(/POL$/)).toBeNull();
     });
 
