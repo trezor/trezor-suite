@@ -299,6 +299,39 @@ describe(readSep41Tokens.name, () => {
         ]);
     });
 
+    it('keeps the rest of the ledger read when one contract stores metadata it cannot decode', async () => {
+        const DECODABLE = 'CDJ5HU6T2PJ5HU6T2PJ5HU6T2PJ5HU6T2PJ5HU6T2PJ5HU6T2PJ5HGEQ';
+        const UNDECODABLE = 'CDKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJJM5';
+        // The keys `u32 1` and `symbol "1"` decode to the same property, which the SDK rejects.
+        const collidingKeys = xdr.ScVal.scvMap([
+            new xdr.ScMapEntry({ key: xdr.ScVal.scvU32(1), val: xdr.ScVal.scvU32(1) }),
+            new xdr.ScMapEntry({ key: xdr.ScVal.scvSymbol('1'), val: xdr.ScVal.scvU32(2) }),
+        ]);
+        getLedgerEntries.mockResolvedValue({
+            latestLedger: 1,
+            entries: [
+                instanceEntry(DECODABLE, metadataScVal(18, 'DEJ', 'deJTRSY')),
+                balanceEntry(DECODABLE, bareBalance(42n)),
+                instanceEntry(UNDECODABLE, collidingKeys),
+                balanceEntry(UNDECODABLE, bareBalance(5n)),
+            ],
+        });
+        respondToSimulations({ balance: bareBalance(5n) });
+
+        const { tokens } = await readSep41Tokens(server, HOLDER, [DECODABLE, UNDECODABLE]);
+
+        expect(tokens).toEqual([
+            { contract: DECODABLE, balance: '42', decimals: 18, symbol: 'DEJ', name: 'deJTRSY' },
+            {
+                contract: UNDECODABLE,
+                balance: '5',
+                decimals: undefined,
+                symbol: undefined,
+                name: undefined,
+            },
+        ]);
+    });
+
     it('falls back for every contract when the batch fails', async () => {
         getLedgerEntries.mockRejectedValue(new Error('rpc is down'));
         respondToSimulations({
