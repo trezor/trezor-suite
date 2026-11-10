@@ -12,7 +12,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { ServicesProvider, mock } from '@trezor/dependency-injection';
 import { type Dispatch, type DispatchDep } from '@trezor/redux-utils';
 
-import { type VotingPreferenceOption } from '#src/components/earn';
+import { type VotingPreferenceOption } from '#src/components/earn/modals/shared/VotingDelegations/VotingPreferenceCard';
 
 import { StakeChangeDelegateModalLoaded } from './StakeChangeDelegateModal';
 
@@ -80,7 +80,7 @@ jest.mock('#src/hooks/wallet/useChangeDelegateForm', () => ({
         signTx: mockSignTx,
     }),
 }));
-jest.mock('#src/components/earn', () => ({
+jest.mock('#src/components/earn/modals/shared/VotingDelegations/VotingPreferenceCard', () => ({
     BASE_VOTING_PREFERENCE_OPTIONS: [
         { type: 'abstain', label: 'TR_STAKING_VOTE_ABSTAIN' },
         { type: 'everstake', label: 'TR_STAKING_VOTE_LET_EVERSTAKE_VOTE' },
