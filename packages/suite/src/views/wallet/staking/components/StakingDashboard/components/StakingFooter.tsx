@@ -6,7 +6,7 @@ import { Button, Text } from '@trezor/components';
 
 import { PoweredByBadge } from '#src/components/earn/providers/PoweredByBadge';
 import { getStakingGuideLink } from '#src/components/earn/utils/getStakingGuideLink';
-import { useGuideOpenNode } from '#src/hooks/guide';
+import { useGuideOpenNode } from '#src/hooks/guide/useGuideOpenNode';
 
 const Wrapper = styled.div`
     display: flex;
