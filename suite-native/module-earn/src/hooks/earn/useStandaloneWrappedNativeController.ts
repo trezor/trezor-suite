@@ -28,6 +28,7 @@ import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
 import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from './useWrappedNativeTokenForm';
+import { wrappedNativeToTokenMetadataSources } from '../../utils/earn/wrappedNativeToTokenMetadataSources';
 import { useYieldCurrencyToggleAnalytics } from '../yield/useYieldCurrencyToggleAnalytics';
 import { useYieldDepositGasReserve } from '../yield/useYieldDepositGasReserve';
 
@@ -148,11 +149,7 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         nativeSymbol,
         wrappedTokenSymbol: wrappedNative.symbol,
         wrappedTokenContract: toTokenAddress(wrappedNative.address),
-        wrappedTokenMetadata: {
-            contract: toTokenAddress(wrappedNative.address),
-            symbol: wrappedNative.symbol,
-            decimals: wrappedNative.decimals,
-        },
+        metadataSources: wrappedNativeToTokenMetadataSources(account.symbol, wrappedNative),
         spentSymbol,
         spentTokenContract,
         isInteractionBlocked: isFlowPending,

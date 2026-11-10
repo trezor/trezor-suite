@@ -24,6 +24,7 @@ import { Translation } from '@suite-native/intl';
 import { YieldClaimRewardsSummaryCard } from './YieldClaimRewardsSummaryCard';
 import { YieldPositionsBottomSheet } from './YieldPositionsBottomSheet';
 import { YieldPositionsIcons } from './YieldPositionsIcons';
+import { yieldPositionsToTokenMetadataSources } from '../../utils/yield/yieldPositionsToTokenMetadataSources';
 
 export const YieldPositionsCard = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
@@ -90,18 +91,7 @@ export const YieldPositionsCard = () => {
     );
 
     return (
-        <TokenMetadataProvider
-            sources={positions.map(item => ({
-                networkSymbol: item.networkSymbol,
-                tokens: [
-                    {
-                        contract: item.tokenContractAddress,
-                        symbol: item.tokenSymbol,
-                        decimals: item.token?.decimals,
-                    },
-                ],
-            }))}
-        >
+        <TokenMetadataProvider sources={yieldPositionsToTokenMetadataSources(positions)}>
             {content}
         </TokenMetadataProvider>
     );

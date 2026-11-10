@@ -40,6 +40,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible,
         isInteractionBlocked,
+        metadataSources,
         nativeSymbol,
         pendingModal,
         simulationSheet,
@@ -47,7 +48,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         spentTokenContract,
         submit,
         wrappedTokenContract,
-        wrappedTokenMetadata,
         wrappedTokenSymbol,
     } = controller;
 
@@ -160,10 +160,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
     );
 
     return (
-        <TokenMetadataProvider
-            sources={[{ networkSymbol: account.symbol, tokens: [wrappedTokenMetadata] }]}
-        >
-            {content}
-        </TokenMetadataProvider>
+        <TokenMetadataProvider sources={metadataSources}>{content}</TokenMetadataProvider>
     );
 };
