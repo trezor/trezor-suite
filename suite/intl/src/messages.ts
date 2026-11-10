@@ -11571,10 +11571,19 @@ export const messages = defineMessages({
         id: 'TR_STAKING_BANNER_DETAIL_TITLE',
         defaultMessage: 'Earn ~{apy}% APY by staking your {displaySymbol}',
     },
+    TR_STAKING_BANNER_DETAIL_TITLE_APR: {
+        id: 'TR_STAKING_BANNER_DETAIL_TITLE_APR',
+        defaultMessage: 'Earn ~{apr}% APR by staking your {displaySymbol}',
+    },
     TR_STAKING_BANNER_DETAIL_TEXT: {
         id: 'TR_STAKING_BANNER_DETAIL_TEXT',
         defaultMessage:
             'Stake your balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY.',
+    },
+    TR_STAKING_BANNER_DETAIL_TEXT_APR: {
+        id: 'TR_STAKING_BANNER_DETAIL_TEXT_APR',
+        defaultMessage:
+            'Stake your balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APR.',
     },
     TR_EARN_APY_WITH_EVERSTAKE: {
         id: 'TR_EARN_APY_WITH_EVERSTAKE',

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
 import { getPotentialStakingRewards } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
@@ -26,6 +26,9 @@ export const StakingBannerView = ({ accounts, onExplore, onClose }: StakingBanne
     const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
 
     const displaySymbol = getDisplaySymbol(account.symbol);
+    // Tron pays its rate as an APR, as its Earn modal says.
+    const isAprRate = getNetworkType(account.symbol) === 'tron';
+    const formattedRate = formatApyValue(rate);
 
     const rewards = useMemo(() => getPotentialStakingRewards(accounts, rate), [accounts, rate]);
     const potentialRewards = CryptoAmountFormatter.format(rewards.toFixed(), {
@@ -41,15 +44,26 @@ export const StakingBannerView = ({ accounts, onExplore, onClose }: StakingBanne
             icon={PiggyBankIcon}
             intent="brand"
             title={
-                <Translation
-                    id="TR_STAKING_BANNER_DETAIL_TITLE"
-                    values={{ apy: formatApyValue(rate), displaySymbol }}
-                />
+                isAprRate ? (
+                    <Translation
+                        id="TR_STAKING_BANNER_DETAIL_TITLE_APR"
+                        values={{ apr: formattedRate, displaySymbol }}
+                    />
+                ) : (
+                    <Translation
+                        id="TR_STAKING_BANNER_DETAIL_TITLE"
+                        values={{ apy: formattedRate, displaySymbol }}
+                    />
+                )
             }
             description={
                 rewards.gt(0) ? (
                     <Translation
-                        id="TR_STAKING_BANNER_DETAIL_TEXT"
+                        id={
+                            isAprRate
+                                ? 'TR_STAKING_BANNER_DETAIL_TEXT_APR'
+                                : 'TR_STAKING_BANNER_DETAIL_TEXT'
+                        }
                         values={{
                             potentialRewards: (
                                 <HiddenPlaceholder>
