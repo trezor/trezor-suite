@@ -13,7 +13,8 @@ import {
     AssetsModal,
     ExpandableAssetRowGroup,
 } from '#src/components/suite/asset-picker/components';
-import { useExpandableGroups, useSearchFilter } from '#src/components/suite/asset-picker/hooks';
+import { useExpandableGroups } from '#src/components/suite/asset-picker/hooks/useExpandableGroups';
+import { useSearchFilter } from '#src/components/suite/asset-picker/hooks/useSearchFilter';
 import {
     type AccountWithOptionalLabel,
     type AssetGroupOption,
