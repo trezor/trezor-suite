@@ -139,6 +139,9 @@ const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set
     'BEP1155',
     'TRC10',
     'TRC20',
+    // Stellar asset codes are case-sensitive, e.g. `yUSDC` and `YUSDC` are different assets.
+    'STELLAR-CLASSIC',
+    'STELLAR-CONTRACT',
 ]);
 
 export const shouldUppercaseTokenSymbol = (token: Partial<Pick<TokenInfo, 'standard'>>) =>
