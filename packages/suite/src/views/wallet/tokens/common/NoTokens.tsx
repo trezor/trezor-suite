@@ -2,7 +2,7 @@ import { type JSX } from 'react';
 
 import { CoinsIcon, PictureFrameIcon } from '@trezor/icons';
 
-import { AccountExceptionLayout } from '#src/components/wallet';
+import { AccountExceptionLayout } from '#src/components/wallet/AccountExceptionLayout';
 
 interface NoTokensProps {
     title: JSX.Element | string;

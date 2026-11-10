@@ -11,7 +11,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
-import { Pagination } from '#src/components/wallet';
+import { Pagination } from '#src/components/wallet/Pagination';
 import { useSelector } from '#src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 

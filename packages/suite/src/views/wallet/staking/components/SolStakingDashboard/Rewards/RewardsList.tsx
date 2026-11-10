@@ -8,7 +8,7 @@ import { PiggyBankIcon } from '@trezor/icons';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from '#src/components/suite';
-import { Pagination } from '#src/components/wallet';
+import { Pagination } from '#src/components/wallet/Pagination';
 import { TransactionTargetLayout } from '#src/components/wallet/TransactionItem/TransactionTargetLayout';
 import { type UsePagination } from '#src/hooks/general/usePagination';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';

@@ -55,7 +55,7 @@ import {
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { AccountLabelForOwnAddress } from '#src/components/suite/labeling/AccountLabelForOwnAddress';
-import { InputError } from '#src/components/wallet';
+import { InputError } from '#src/components/wallet/InputError';
 import { type InputErrorProps } from '#src/components/wallet/InputError';
 import { useSelector } from '#src/hooks/suite';
 import { useSendFormContext } from '#src/hooks/wallet';

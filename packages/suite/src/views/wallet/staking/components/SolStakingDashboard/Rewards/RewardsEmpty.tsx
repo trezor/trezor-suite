@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { ArrowLineDownIcon } from '@trezor/icons';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
-import { AccountExceptionLayout } from '#src/components/wallet';
+import { AccountExceptionLayout } from '#src/components/wallet/AccountExceptionLayout';
 
 export const RewardsEmpty = () => (
     <AccountExceptionLayout
