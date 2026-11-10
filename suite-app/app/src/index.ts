@@ -15,5 +15,4 @@ export { Main } from './Main';
 export { Preloader } from './Preloader/Preloader';
 
 export { AppsEmbeddingPage } from './pages/AppsEmbeddingPage';
-export { PasswordManagerPage } from './pages/PasswordManagerPage';
 export { ReferAFriendPage } from './pages/ReferAFriendPage';
