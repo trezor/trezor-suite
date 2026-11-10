@@ -156,7 +156,10 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         setShowReserveBanner,
         shouldSuppressComposeErrors: hasEip712SignDataType(selectedQuote),
         isComposeErrorPending:
-            !!formQuote && requiresTokenApproval(formQuote) && !!receiveAddress && !selectedQuote,
+            !!formQuote &&
+            requiresTokenApproval(formQuote) &&
+            !!tradingReceiveAddress.receiveAddress &&
+            !selectedQuote,
     });
 
     const isFormLoadingBase = isInitialDataLoading || formState.isSubmitting || isLoading;
