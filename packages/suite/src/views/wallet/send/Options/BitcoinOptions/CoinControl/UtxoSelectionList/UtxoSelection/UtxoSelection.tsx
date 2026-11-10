@@ -31,7 +31,8 @@ import { injectDispatch, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { TransactionTimestamp, UtxoAnonymity } from '#src/components/wallet';
+import { TransactionTimestamp } from '#src/components/wallet/TransactionTimestamp';
+import { UtxoAnonymity } from '#src/components/wallet/UtxoAnonymity';
 import { useSelector } from '#src/hooks/suite';
 import { useSendFormContext } from '#src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from '#src/hooks/wallet/form/useCoinjoinUnavailableUtxos';

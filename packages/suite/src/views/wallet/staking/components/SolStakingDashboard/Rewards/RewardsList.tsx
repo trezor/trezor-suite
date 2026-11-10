@@ -10,7 +10,7 @@ import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { FormattedDate } from '#src/components/suite/FormattedDate';
-import { Pagination } from '#src/components/wallet';
+import { Pagination } from '#src/components/wallet/Pagination';
 import { TransactionTargetLayout } from '#src/components/wallet/TransactionItem/TransactionTargetLayout';
 import { type UsePagination } from '#src/hooks/general/usePagination';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
