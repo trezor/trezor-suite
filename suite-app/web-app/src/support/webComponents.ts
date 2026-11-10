@@ -130,7 +130,7 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     ),
     'notifications-index': lazy(() =>
         import(
-            /* webpackChunkName: "notifications" */ '@suite-app/app/pages/NotificationPage'
+            /* webpackChunkName: "notifications" */ '@suite-app/module-activity-center/pages/NotificationPage'
         ).then(({ NotificationPage }) => ({ default: NotificationPage })),
     ),
 

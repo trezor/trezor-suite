@@ -11391,6 +11391,7 @@ __metadata:
     "@sentry/electron": "npm:^7.20.1"
     "@suite-app/app": "workspace:*"
     "@suite-app/module-account-detail": "workspace:*"
+    "@suite-app/module-activity-center": "workspace:*"
     "@suite-app/module-assets": "workspace:*"
     "@suite-app/module-coinjoin": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
@@ -11475,6 +11476,21 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/urls": "workspace:*"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-activity-center@workspace:*, @suite-app/module-activity-center@workspace:suite-app/module-activity-center":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-activity-center@workspace:suite-app/module-activity-center"
+  dependencies:
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite/debug": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
     react: "npm:19.3.0"
   languageName: unknown
   linkType: soft
@@ -11729,6 +11745,7 @@ __metadata:
     "@sentry/browser": "npm:10.75.2"
     "@suite-app/app": "workspace:*"
     "@suite-app/module-account-detail": "workspace:*"
+    "@suite-app/module-activity-center": "workspace:*"
     "@suite-app/module-assets": "workspace:*"
     "@suite-app/module-coinjoin": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
