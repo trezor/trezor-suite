@@ -328,20 +328,35 @@ export const selectFirmwareReleaseFixtures: SelectFirmwareReleaseFixture[] = [
     },
 ];
 
-const mockFeaturesT3T1 = (major_version: 2, minor_version: number, patch_version: number) => ({
+const mockFeaturesOfModel = (
+    internal_model: DeviceModelInternal,
+    major_version: 2,
+    minor_version: number,
+    patch_version: number,
+) => ({
     ...mockFeatures('normal', major_version, minor_version, patch_version),
-    internal_model: DeviceModelInternal.T3T1,
+    internal_model,
 });
 
 export const getFirmwareStatusFixture = [
     {
         desc: 'T3T1 below 2.8.0 is required to update, as it does not support device authenticity check',
-        features: mockFeaturesT3T1(2, 7, 2),
+        features: mockFeaturesOfModel(DeviceModelInternal.T3T1, 2, 7, 2),
         result: 'required',
     },
     {
         desc: 'T3T1 2.8.0 is not required to update',
-        features: mockFeaturesT3T1(2, 8, 0),
+        features: mockFeaturesOfModel(DeviceModelInternal.T3T1, 2, 8, 0),
+        result: 'outdated',
+    },
+    {
+        desc: 'T3W1 below 2.12.1 is required to update, as it does not support MCU device authenticity check',
+        features: mockFeaturesOfModel(DeviceModelInternal.T3W1, 2, 12, 0),
+        result: 'required',
+    },
+    {
+        desc: 'T3W1 2.12.1 is not required to update',
+        features: mockFeaturesOfModel(DeviceModelInternal.T3W1, 2, 12, 1),
         result: 'outdated',
     },
 ];
