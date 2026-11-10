@@ -2,3 +2,4 @@ export { StellarManageTokenStackNavigator } from './navigation/StellarManageToke
 export { composeStellarTrustlineFeesThunk } from './thunks';
 export { useInactiveStellarTokens } from './hooks/useInactiveStellarTokens';
 export { InactiveTokenListItem } from './components/InactiveTokenListItem';
+export { stellarTokensToTokenMetadataSources } from './utils/stellarTokensToTokenMetadataSources';

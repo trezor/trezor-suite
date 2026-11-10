@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/token" },
         {
             "path": "../../suite-common/token-definitions"
         },
@@ -31,6 +32,7 @@
         {
             "path": "../../suite-native/navigation"
         },
+        { "path": "../../suite-native/tokens" },
         {
             "path": "../../suite-native/transaction-management"
         },

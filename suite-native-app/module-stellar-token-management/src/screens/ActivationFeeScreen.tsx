@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { TokenMetadataProvider } from '@suite-common/token';
 import { activateStellarTokenThunk } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
@@ -27,6 +28,7 @@ import { FeeOptionsSection } from '../components/FeeOptionsSection';
 import { TokenDetailBottomSheet } from '../components/TokenDetailBottomSheet';
 import { TokenInfoCard } from '../components/TokenInfoCard';
 import { useStellarFeeScreen } from '../hooks/useStellarFeeScreen';
+import { stellarTokensToTokenMetadataSources } from '../utils/stellarTokensToTokenMetadataSources';
 
 type RouteProps = StackProps<
     StellarManageTokenStackParamList,
@@ -72,6 +74,7 @@ export const ActivationFeeScreen = () => {
         formDraft,
         handleFeeLevelChange,
         handleCustomFeeSet,
+        tokenInfo,
         assetCode,
         tokenName,
         issuerDomain,
@@ -93,7 +96,7 @@ export const ActivationFeeScreen = () => {
 
     if (account?.networkType !== 'stellar') return null;
 
-    return (
+    const content = (
         <Form form={form}>
             <ConfirmOnTrezorWrapper
                 isManualControlEnabled
@@ -114,6 +117,8 @@ export const ActivationFeeScreen = () => {
                 >
                     <VStack spacing="sp16">
                         <TokenInfoCard
+                            networkSymbol={account.symbol}
+                            tokenContract={tokenContract}
                             tokenName={tokenName}
                             issuerDomain={issuerDomain}
                             iconContractAddress={iconContractAddress}
@@ -195,6 +200,8 @@ export const ActivationFeeScreen = () => {
 
                 <TokenDetailBottomSheet
                     bottomSheetRef={tokenDetailRef}
+                    networkSymbol={account.symbol}
+                    tokenContract={tokenContract}
                     tokenName={tokenName}
                     assetCode={assetCode}
                     issuerDomain={issuerDomain}
@@ -204,5 +211,16 @@ export const ActivationFeeScreen = () => {
                 />
             </ConfirmOnTrezorWrapper>
         </Form>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={stellarTokensToTokenMetadataSources(
+                account.symbol,
+                tokenInfo ? [tokenInfo] : [],
+            )}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

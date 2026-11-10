@@ -1,10 +1,13 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { toTokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type StellarTokenInfo } from '@suite-common/wallet-types';
-import { Box, PressableOpacity, Text } from '@suite-native/atoms';
+import { Box, PressableOpacity } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
+import { TokenName, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type InactiveTokenListItemProps = {
+    networkSymbol: NetworkSymbol;
     token: StellarTokenInfo;
     onPress: () => void;
 };
@@ -26,8 +29,13 @@ const iconContainerStyle = prepareNativeStyle(utils => ({
     marginRight: utils.spacings.sp12,
 }));
 
-export const InactiveTokenListItem = ({ token, onPress }: InactiveTokenListItemProps) => {
+export const InactiveTokenListItem = ({
+    networkSymbol,
+    token,
+    onPress,
+}: InactiveTokenListItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const tokenContract = toTokenAddress(token.contract);
 
     return (
         <PressableOpacity onPress={onPress}>
@@ -41,10 +49,17 @@ export const InactiveTokenListItem = ({ token, onPress }: InactiveTokenListItemP
                     />
                 </Box>
                 <Box flex={1}>
-                    <Text variant="body-md">{token.name || token.symbol}</Text>
-                    <Text variant="body-sm" color="contentSecondary">
-                        {token.symbol}
-                    </Text>
+                    <TokenName
+                        networkSymbol={networkSymbol}
+                        contractAddress={tokenContract}
+                        variant="body-md"
+                    />
+                    <TokenSymbol
+                        networkSymbol={networkSymbol}
+                        contractAddress={tokenContract}
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
                 </Box>
             </Box>
         </PressableOpacity>
