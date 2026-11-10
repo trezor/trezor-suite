@@ -7,7 +7,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { DataAnalytics } from '@trezor/product-components';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 
-import { WelcomeLayoutWithoutModalSwitcher } from '../../components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
+import { WelcomeLayoutWithoutModalSwitcher } from '../layouts/WelcomeLayoutWithoutModalSwitcher';
 
 export const AnalyticsConsentScreen = () => {
     const { analytics } = useServices(injectDesktopAnalytics);

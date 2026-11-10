@@ -5,15 +5,16 @@ import {
 } from '@suite/suite-sync';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
-import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
-import { useSelector } from 'src/hooks/suite';
-import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
+import {
+    ConnectionGlobalModalManager,
+    ReduxModal,
+    ThpGlobalModalManager,
+    WipedBleDeviceNeedsManualOsRemovalModalManager,
+    usePreferredModal,
+    useSelector,
+} from '@trezor/suite';
 
 import { ForegroundAppModal } from './ForegroundAppModal';
-import { WipedBleDeviceNeedsManualOsRemovalModalManager } from '../../bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
-import { ReduxModal } from '../ReduxModal/ReduxModal';
 
 type ModalParams = ReturnType<typeof usePreferredModal>;
 

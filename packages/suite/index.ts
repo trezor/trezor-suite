@@ -61,15 +61,11 @@ export { initThunk } from './src/actions/suite/initAction';
 export { resetSuiteAppThunk } from './src/actions/suite/suiteThunks';
 export { Loading } from './src/components/suite/Loading';
 export { PrerequisitesGuide } from './src/components/suite/PrerequisitesGuide/PrerequisitesGuide';
-export { DeviceCompromisedScreen } from './src/components/suite/SecurityCheck/DeviceCompromisedScreen';
 export {
     InteractiveDeviceChecksFlow,
     useInteractiveDeviceChecksFlowState,
 } from './src/components/suite/SecurityCheck/InteractiveDeviceChecksFlow';
 export { useDeviceCompromisedNotification } from './src/components/suite/SecurityCheck/useDeviceCompromisedNotification';
-export { SuiteLayout } from './src/components/suite/layouts/SuiteLayout/SuiteLayout';
-export { WelcomeLayout } from './src/components/suite/layouts/WelcomeLayout/WelcomeLayout';
-export { WelcomeLayoutWithoutModalSwitcher } from './src/components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
 export { useGuideDesktopMenu } from './src/hooks/guide/useGuideDesktopMenu';
 export { useGuideKeyboard } from './src/hooks/guide/useGuideKeyboard';
 export { useAppShortcuts } from './src/hooks/suite/useAppShortcuts';
@@ -81,7 +77,6 @@ export {
     selectSuiteLifecycle,
 } from './src/selectors/suite/suiteSelectors';
 export { Onboarding } from './src/views/onboarding';
-export { AnalyticsConsentScreen } from './src/views/start/AnalyticsConsentScreen';
 export { ErrorPage } from './src/views/suite/ErrorPage';
 export { ToasterProvider } from './src/components/suite/notifications/Toaster/ToasterProvider';
 export { TrafficLightDraggableWindowHeader } from '@suite/macos';
@@ -312,3 +307,42 @@ export { TransactionSummary } from './src/views/wallet/transactions/components/T
 export { TronResources } from './src/views/wallet/transactions/components/TronResources/TronResources';
 export { CardanoNewProviderCard } from './src/views/wallet/staking/components/AdaStakingDashboard/CardanoNewProviderCard';
 export { SendForm } from './src/views/wallet/send/SendForm';
+export { AboveTabletOnly } from './src/components/suite/layouts/SuiteLayout/LayoutSizeOnly';
+export { AddPassphraseWalletFlow } from './src/components/suite/layouts/SuiteLayout/AddPassphraseWalletFlow';
+export { AnchorHighlightHandler } from './src/components/suite/layouts/SuiteLayout/AnchorHighlightHandler';
+export { AppScrollArea } from './src/components/suite/layouts/SuiteLayout/AppScrollArea';
+export { CoinjoinBars } from './src/components/suite/layouts/SuiteLayout/CoinjoinBars/CoinjoinBars';
+export { LayoutMetadata } from './src/components/suite/layouts/SuiteLayout/LayoutSlots';
+export { LayoutPayloadProvider } from './src/components/suite/layouts/SuiteLayout/LayoutPayloadProvider';
+export { PowerMonitorManager } from './src/components/suite/layouts/SuiteLayout/PowerMonitor/PowerMonitor';
+export { ScrollProvider } from './src/components/suite/layouts/SuiteLayout/ScrollProvider';
+export { Sidebar } from './src/components/suite/layouts/SuiteLayout/Sidebar/Sidebar';
+export { SwitchDeviceLayer } from './src/components/suite/layouts/SuiteLayout/SwitchDeviceLayer';
+export { DiscoveryProgress } from './src/components/wallet/DiscoveryProgress';
+export { GuideButton } from './src/components/guide/GuideButton';
+export { GuideRouter } from './src/components/guide/GuideRouter';
+export { SuiteBanners } from './src/components/suite/banners/SuiteBanners/SuiteBanners';
+export { ContentContainer } from './src/components/suite/layouts/ContentContainer';
+export { DeviceCompromisedContent } from './src/components/suite/SecurityCheck/DeviceCompromisedContent';
+export { ConnectionGlobalModalManager } from './src/components/connection/ConnectionGlobalModalManager';
+export { ThpGlobalModalManager } from './src/components/connection/thp/ThpGlobalModalManager';
+export { WipedBleDeviceNeedsManualOsRemovalModalManager } from './src/components/suite/bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
+export { ReduxModal } from './src/components/suite/modals/ReduxModal/ReduxModal';
+export { MultiShareBackupModal } from './src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
+export { Backup } from './src/views/backup/Backup';
+export { FirmwareCustom } from './src/views/firmware/FirmwareCustom';
+export { FirmwareUpdate } from './src/views/firmware/FirmwareUpdate';
+export { Recovery } from './src/views/recovery';
+export { BridgeUnavailable } from './src/views/suite/bridge';
+export { BridgeDeprecated } from './src/views/suite/bridge-deprecated';
+export { BridgeRequested } from './src/views/suite/bridge-requested';
+export { UdevRules } from './src/views/suite/udev';
+export { Version } from './src/views/suite/version';
+export {
+    Body,
+    Columns,
+    MainContent,
+    PageWrapper,
+    Wrapper,
+} from './src/components/suite/layouts/SuiteLayout/LayoutStructure';
+export { type ForegroundAppRoute } from './src/types/suite';

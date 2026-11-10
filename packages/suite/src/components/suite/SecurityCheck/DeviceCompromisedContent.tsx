@@ -13,7 +13,6 @@ import {
     selectWasFwHashCheckOtherErrorLastTime,
 } from '@suite-common/device';
 import type { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
-import { Card } from '@trezor/components';
 import type { FirmwareHashCheckError } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
@@ -27,7 +26,6 @@ import {
     FwAuthenticityCheckSupportButton,
     FwAuthenticityChecksCtas,
 } from './components/ctas';
-import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const hashCheckSubtitleMap: Record<
     // map only for active cases, and except 'other-error' because it has complex handling
@@ -38,7 +36,7 @@ const hashCheckSubtitleMap: Record<
     'takes-too-long': 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TAKES_TOO_LONG_TEXT',
 };
 
-const DeviceCompromisedContent = () => {
+export const DeviceCompromisedContent = () => {
     const device = useSelector(state => selectSelectedDevice(state));
     const isFirmwareAuthenticityCheckDismissed = useSelector(state =>
         selectIsFirmwareAuthenticityCheckDismissed(state, device?.id),
@@ -150,17 +148,3 @@ const DeviceCompromisedContent = () => {
     // should not happen, but default props will be used with no problem
     return <SecurityCheckFail ctaSection={<FwAuthenticityChecksCtas />} />;
 };
-
-/**
- * Screen displayed when one of the non-interactive security checks has failed, i.e. checks that
- * run automatically, without prompting the user, as part of certain flows.
- * In the happy-case scenario, these checks have no visible UX at all.
- * The interactive checks, meanwhile, are handled by `InteractiveDeviceChecksFlow`.
- */
-export const DeviceCompromisedScreen = () => (
-    <WelcomeLayout showAccounts={false}>
-        <Card data-testid="@device-compromised" paddingType="large">
-            <DeviceCompromisedContent />
-        </Card>
-    </WelcomeLayout>
-);

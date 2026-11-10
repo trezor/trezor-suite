@@ -4,19 +4,19 @@ import { CreateWalletBackupModal } from '@suite/backup';
 import { closeModalAppThunk } from '@suite/router';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import type { ForegroundAppRoute } from 'src/types/suite';
-import { Backup } from 'src/views/backup/Backup';
-import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
-import { FirmwareUpdate } from 'src/views/firmware/FirmwareUpdate';
-import { Recovery } from 'src/views/recovery';
-import { BridgeUnavailable } from 'src/views/suite/bridge';
-import { BridgeDeprecated } from 'src/views/suite/bridge-deprecated';
-import { BridgeRequested } from 'src/views/suite/bridge-requested';
-import { UdevRules } from 'src/views/suite/udev';
-import { Version } from 'src/views/suite/version';
-
-import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
+import {
+    Backup,
+    BridgeDeprecated,
+    BridgeRequested,
+    BridgeUnavailable,
+    FirmwareCustom,
+    FirmwareUpdate,
+    type ForegroundAppRoute,
+    MultiShareBackupModal,
+    Recovery,
+    UdevRules,
+    Version,
+} from '@trezor/suite';
 
 // would not work if defined directly in the switch
 const FirmwareType = () => <FirmwareUpdate />;
