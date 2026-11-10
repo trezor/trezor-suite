@@ -44,6 +44,7 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
     'suite-app/module-assets',
     'suite-app/module-earn',
     'suite-app/module-home',
+    'suite-app/module-send',
     'suite-app/module-settings',
     'suite-app/module-sign-verify',
     'suite-app/module-trading',

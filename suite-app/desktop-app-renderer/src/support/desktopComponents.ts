@@ -14,7 +14,6 @@ import {
     WalletAnonymizePage,
     WalletCoinjoinPage,
     WalletDetailsPage,
-    WalletSendPage,
 } from '@suite-app/app';
 import { AssetDetailPage } from '@suite-app/module-assets';
 import {
@@ -33,6 +32,7 @@ import {
     WalletStakingPage,
 } from '@suite-app/module-earn';
 import { DashboardPage, HiddenTokensPage } from '@suite-app/module-home';
+import { WalletSendPage } from '@suite-app/module-send';
 import {
     DesktopSettingsGeneralPage,
     SettingsCoinsPage,
