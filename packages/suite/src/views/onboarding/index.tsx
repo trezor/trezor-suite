@@ -14,7 +14,7 @@ import { getOnboardingStepIndex } from '#src/config/onboarding/steps';
 import * as STEP from '#src/constants/onboarding/steps';
 import { useOnboarding } from '#src/hooks/suite/useOnboarding';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { UnexpectedState } from '#src/views/onboarding/UnexpectedState';
+import { UnexpectedState } from '#src/views/onboarding/UnexpectedState/UnexpectedState';
 import { BackupTypeStep } from '#src/views/onboarding/steps/BackupTypeStep';
 import { CreateOrRecoverStep } from '#src/views/onboarding/steps/CreateOrRecoverStep';
 import { DeviceAuthenticityStep } from '#src/views/onboarding/steps/DeviceAuthenticityStep';
