@@ -79,7 +79,7 @@ export {
     selectPrerequisite,
     selectSuiteLifecycle,
 } from './src/selectors/suite/suiteSelectors';
-export { Onboarding } from './src/views/onboarding';
+export { Onboarding } from './src/views/onboarding/Onboarding';
 export { ErrorPage } from './src/views/suite/ErrorPage';
 export { ToasterProvider } from './src/components/suite/notifications/Toaster/ToasterProvider';
 export { TrafficLightDraggableWindowHeader } from '@suite/macos';
