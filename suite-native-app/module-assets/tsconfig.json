@@ -41,6 +41,7 @@
             "path": "../../suite-native/clipboard"
         },
         { "path": "../../suite-native/device" },
+        { "path": "../../suite-native/earn" },
         {
             "path": "../../suite-native/formatters"
         },

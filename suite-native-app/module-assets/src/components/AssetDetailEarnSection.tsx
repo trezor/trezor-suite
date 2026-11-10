@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { CommonActions, type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import {
     type HomeAssetTableState,
@@ -8,30 +8,17 @@ import {
     selectWalletAssetKey,
     selectWalletAssetStakingAmount,
 } from '@suite-common/assets';
-import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { Divider, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
-    type AssetsStackParamList,
-    type AssetsStackRoutes,
-    EarnStackRoutes,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
-import { useServices } from '@trezor/dependency-injection';
+import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 
 import { AssetDetailEarnBalanceBar } from './AssetDetailEarnBalanceBar';
 import { AssetDetailEarnBalanceRow } from './AssetDetailEarnBalanceRow';
-import { AssetDetailEarnBanner } from './AssetDetailEarnBanner';
+import { AssetDetailEarnStakingRate } from './AssetDetailEarnStakingRate';
 import { AssetDetailSectionHeader } from './AssetDetailSectionHeader';
-import {
-    type AssetDetailEarnState,
-    selectShouldShowWalletAssetEarnSection,
-} from '../assetDetailEarnSelectors';
-
-type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>;
+import { useNavigateToEarn } from './useNavigateToEarn';
+import { selectShouldShowWalletAssetEarnSection } from '../assetDetailEarnSelectors';
 
 export const AssetDetailEarnSection = () => {
     const { networkSymbol, tokenContract } =
@@ -45,43 +32,18 @@ export const AssetDetailEarnSection = () => {
     const stakingAmount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetStakingAmount(state, assetKey),
     );
-    const isEarnAvailable = useSelector((state: AssetDetailEarnState) =>
+    const isEarnAvailable = useSelector((state: HomeAssetTableState) =>
         selectShouldShowWalletAssetEarnSection(state, assetKey),
     );
-    const navigation = useNavigation<NavigationProps>();
-    const { analytics } = useServices(injectNativeAnalytics);
+    const navigateToEarn = useNavigateToEarn();
 
     if (availableAmount === undefined || stakingAmount === undefined || !isEarnAvailable) {
         return null;
     }
 
-    const handlePress = () => {
-        analytics.report({
-            type: events.navigateFlowEvent.name,
-            payload: {
-                action: 'navigate',
-                type: 'earn',
-                from: 'asset-detail',
-                networkSymbol,
-            },
-        });
-        // Reset to a single AppTabs route instead of stacking another navigator or presenting Earn
-        // with a back transition.
-        navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: RootStackRoutes.AppTabs,
-                        params: {
-                            screen: AppTabsRoutes.EarnStack,
-                            params: { screen: EarnStackRoutes.Earn },
-                        },
-                    },
-                ],
-            }),
-        );
-    };
+    // A Cardano delegation leaves the whole balance spendable, so the rest is unstaked, not the
+    // only part available.
+    const unstakedType = getNetworkType(networkSymbol) === 'cardano' ? 'unstaked' : 'available';
 
     return (
         <>
@@ -92,14 +54,17 @@ export const AssetDetailEarnSection = () => {
                     linkLabel={
                         <Translation id="moduleAssets.assetDetailScreen.earnSection.viewAll" />
                     }
-                    onPress={handlePress}
+                    onPress={navigateToEarn}
                     testID="@assets/asset-detail/earn-view-all-button"
                 />
 
-                <AssetDetailEarnBalanceBar assetKey={assetKey} />
-                <AssetDetailEarnBalanceRow amount={availableAmount} type="available" />
-                <AssetDetailEarnBalanceRow amount={stakingAmount} type="staking" />
-                <AssetDetailEarnBanner assetKey={assetKey} onPress={handlePress} />
+                <AssetDetailEarnBalanceBar assetKey={assetKey} unstakedType={unstakedType} />
+                <AssetDetailEarnBalanceRow amount={availableAmount} type={unstakedType} />
+                <AssetDetailEarnBalanceRow
+                    amount={stakingAmount}
+                    type="staked"
+                    amountLabel={<AssetDetailEarnStakingRate />}
+                />
             </VStack>
         </>
     );

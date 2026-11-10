@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
@@ -22,9 +24,14 @@ const balanceIndicatorStyle = prepareNativeStyle<{ type: EarnBalanceType }>((uti
 type AssetDetailEarnBalanceRowProps = {
     amount: string;
     type: EarnBalanceType;
+    amountLabel?: ReactNode;
 };
 
-export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalanceRowProps) => {
+export const AssetDetailEarnBalanceRow = ({
+    amount,
+    type,
+    amountLabel,
+}: AssetDetailEarnBalanceRowProps) => {
     const { networkSymbol } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
     const { applyStyle } = useNativeStyles();
@@ -38,16 +45,19 @@ export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalan
                 </Text>
             </HStack>
 
-            <Box flexShrink={1}>
-                <CryptoToFiatAmountFormatter
-                    value={amount}
-                    symbol={networkSymbol}
-                    isBalance
-                    variant="body-sm-strong"
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                />
-            </Box>
+            <HStack alignItems="center" spacing="sp12" flexShrink={1}>
+                {amountLabel}
+                <Box flexShrink={1}>
+                    <CryptoToFiatAmountFormatter
+                        value={amount}
+                        symbol={networkSymbol}
+                        isBalance
+                        variant="body-sm-strong"
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                    />
+                </Box>
+            </HStack>
         </HStack>
     );
 };

@@ -2467,11 +2467,8 @@ export const messages = {
                 title: 'Earn',
                 viewAll: 'View all',
                 available: 'Available',
-                staking: 'Staking',
-                banner: {
-                    title: 'Earn available',
-                    description: 'Earn up to {apy}% on your {symbol}.',
-                },
+                unstaked: 'Unstaked',
+                staked: 'Staked',
             },
             hiddenBanner: {
                 suspiciousTitle: 'Flagged as suspicious',
