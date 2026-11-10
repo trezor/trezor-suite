@@ -14,9 +14,9 @@ Connect 10 moves the Connect core out of the self-hosted iframe + popup and into
 
 The guide follows the order of an actual upgrade: install Connect 10, fix your `init()` call, fix your method calls, then verify. The first three are required; [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) and the [other improvements](#other-improvements-worth-adopting) are optional but recommended. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite); for the release-by-release list, see the [changelog](/changelog).
 
-<Callout type="info">
-    **v9 keeps working.** There is no cliff edge — v9 stays supported, so you can move your
-    production integrations to Connect 10 whenever it suits you.
+<Callout type="warning">
+    **Connect 9 support ends on December 31, 2026.** Connect 9 is deprecated, so move your
+    production integrations to Connect 10 before that date.
 </Callout>
 
 ## Installing Connect 10
@@ -51,7 +51,7 @@ If the user's Suite desktop is too old for a method, it answers `Method_Unsuppor
 
 - [ ] Call `TrezorConnect.init()` before any other method. `TrezorConnect.manifest()` is removed, so pass the manifest to `init()`. Connect 10 does not initialize itself on the first method call.
 
-- [ ] Migrate to ESM: `import TrezorConnect from '@trezor/connect'`. If you cannot migrate off CJS, use a dynamic `import()`, or stay on v9.
+- [ ] Migrate to ESM: `import TrezorConnect from '@trezor/connect'`. If you cannot migrate off CJS, use a dynamic `import()`.
 
 - [ ] Leave `coreMode` at its default `'auto'` unless you have a specific reason to pin it to `'suite-desktop'` or `'suite-web'`.
 
