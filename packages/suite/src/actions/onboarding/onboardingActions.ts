@@ -73,7 +73,7 @@ const getAllStepsInPath = (getState: () => GetAllStepsInPathState) => {
     return allSteps.filter(step => isStepUsed(step, isStepUsedProps));
 };
 
-type GoToPreviousStepThunkState = DeviceRootState & OnboardingRootState & SuiteSettingsRootState;
+type GoToPreviousStepThunkState = GetAllStepsInPathState;
 
 const goToPreviousStepThunk =
     (stepId?: AnyStepId) =>
@@ -269,9 +269,7 @@ const beginOnboardingTutorialThunk =
         dispatch(goToNextStepThunk());
     };
 
-type ResolveNextAfterSkippedThunkState = DeviceRootState &
-    OnboardingRootState &
-    SuiteSettingsRootState;
+type ResolveNextAfterSkippedThunkState = GetAllStepsInPathState;
 
 const resolveNextAfterSkippedThunk =
     (skippedToStepId: AnyStepId) =>
