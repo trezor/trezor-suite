@@ -1,8 +1,7 @@
-import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
 
 import { areTypeAwareRulesConfigured, isTypeInformationNeeded } from './ruleSets.mjs';
-import { allRoots } from './workspaceRoots.mjs';
+import { allRoots, repoRoot } from './workspaceRoots.mjs';
 
 // Deny importing from build artifact directories — consumers should resolve
 // through the package root, not from `lib/` or `libDev/`.
@@ -160,8 +159,7 @@ export const typescriptConfig = [
         },
     },
     {
-        // An absolute base also applies when a native package has its own ESLint config.
-        basePath: fileURLToPath(new URL('../../../', import.meta.url)),
+        basePath: repoRoot,
         files: [allRoots.suiteNative, allRoots.suiteNativeApp].map(
             root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
         ),
@@ -206,6 +204,7 @@ export const typescriptConfig = [
         },
     },
     {
+        basePath: repoRoot,
         files: [`${allRoots.networks}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         rules: {
             '@typescript-eslint/no-restricted-imports': [
@@ -234,6 +233,7 @@ export const typescriptConfig = [
     },
     {
         // Suite application roots can compose shared services.
+        basePath: repoRoot,
         files: [`${allRoots.packages}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         ignores: [`${allRoots.packages}/suite*/**/*`],
         rules: {
