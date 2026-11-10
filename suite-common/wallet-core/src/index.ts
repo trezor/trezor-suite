@@ -96,6 +96,7 @@ export * from './staking/ethereum/ethereumStakingSignUtils';
 export * from './staking/ethereum/ethereumStakingUtils';
 export type * from './staking/ethereum/types';
 export * from './staking/hooks/useStakingEntryPeriodEstimateInDays';
+export * from './staking/shared/getPotentialStakingRewards';
 export * from './staking/shared/stakingConstants';
 export * from './staking/shared/stakingFormUtils';
 export * from './staking/shared/stakingSelectors';
