@@ -11,7 +11,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { TokenSymbol } from '@suite-native/tokens';
+import { TokenSymbol, type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
 type ReceiveDestinationTagInfoProps = {
@@ -23,6 +23,10 @@ export const ReceiveDestinationTagInfo = ({
     tokenContract,
     accountKey,
 }: ReceiveDestinationTagInfoProps) => {
+    // Tokens the account does not hold have no metadata here, so they fall back to the network symbol.
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
+    );
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -54,11 +58,13 @@ export const ReceiveDestinationTagInfo = ({
                                 textPressedColor="contentSecondary"
                             />
                         ),
-                        coinSymbol: tokenContract ? (
+                        coinSymbol: token?.symbol ? (
+                            // Nested Text does not inherit the banner title's typography.
                             <TokenSymbol
                                 networkSymbol={accountSymbol}
-                                contractAddress={tokenContract}
-                                variant="body-xs"
+                                contractAddress={token.contract}
+                                variant="body-sm"
+                                color="contentInfo"
                             />
                         ) : (
                             getNetworkDisplaySymbol(accountSymbol)
