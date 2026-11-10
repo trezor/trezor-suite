@@ -4,12 +4,11 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { type Route, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
+import { type Account } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
-
-import { type Account } from '#src/types/wallet';
 
 // All action buttons share a fixed minimum so the row reads as a uniform group.
 const ACTION_BUTTON_MIN_WIDTH = 76;

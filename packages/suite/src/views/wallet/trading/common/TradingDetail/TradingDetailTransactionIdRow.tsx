@@ -1,8 +1,7 @@
 import { Translation } from '@suite/intl';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { InfoItem } from '@trezor/components';
 
-import { type Account } from '#src/types/wallet';
 import { TradingDetailTxId } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';
 
 type TradingDetailTransactionIdRowProps = {

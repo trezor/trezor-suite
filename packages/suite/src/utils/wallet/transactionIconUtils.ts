@@ -1,4 +1,5 @@
 import { isStakingTransaction } from '@suite-common/wallet-core';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isSwapTransaction } from '@suite-common/wallet-utils';
 import { type IconComponent } from '@trezor/components';
 import {
@@ -13,8 +14,6 @@ import {
     ShuffleIcon,
     XIcon,
 } from '@trezor/icons';
-
-import { type WalletAccountTransaction } from '#src/types/wallet';
 
 export const getTransactionIcon = (
     transaction: WalletAccountTransaction,

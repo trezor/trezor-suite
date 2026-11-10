@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon } from '@trezor/icons';
@@ -16,7 +17,6 @@ import { GraphRangeSelector, HiddenPlaceholder } from '#src/components/suite';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from '#src/hooks/suite';
 import { selectGraph, selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';
-import { type Account } from '#src/types/wallet';
 import {
     aggregateBalanceHistory,
     getGraphDataForInterval,

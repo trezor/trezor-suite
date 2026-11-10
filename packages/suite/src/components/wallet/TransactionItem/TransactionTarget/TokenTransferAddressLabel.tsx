@@ -1,10 +1,10 @@
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { type ArrayElement, exhaustive } from '@trezor/type-utils';
 
 import { AccountLabelForOwnAddress } from '#src/components/suite/labeling/AccountLabelForOwnAddress';
-import { type WalletAccountTransaction } from '#src/types/wallet';
 
 type TokenTransfer = ArrayElement<WalletAccountTransaction['tokens']>;
 

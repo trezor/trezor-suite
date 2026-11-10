@@ -1,6 +1,5 @@
+import { type Account } from '@suite-common/wallet-types';
 import { type UnavailableCapability } from '@trezor/connect';
-
-import { type Account } from '#src/types/wallet';
 
 import { verifyAvailability } from './verifyAvailability';
 

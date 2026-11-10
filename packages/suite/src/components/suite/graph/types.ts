@@ -1,6 +1,5 @@
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
-import { type Account } from '#src/types/wallet';
 import {
     type AggregatedAccountHistory,
     type AggregatedDashboardHistory,
