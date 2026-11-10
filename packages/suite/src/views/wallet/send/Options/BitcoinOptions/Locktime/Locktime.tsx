@@ -6,7 +6,7 @@ import { datetimeToLocktime } from '@suite-common/wallet-utils';
 import { Card, Column, IconButton, Row, Select, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
-import { OpenGuideFromTooltip } from '#src/components/guide';
+import { OpenGuideFromTooltip } from '#src/components/guide/OpenGuideFromTooltip';
 import { useSelector } from '#src/hooks/suite';
 import { useSendFormContext } from '#src/hooks/wallet';
 
