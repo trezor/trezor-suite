@@ -74,6 +74,7 @@ const sessionAuthenticateThunk = createThunk<
             iss,
         });
 
+        const deferred = trezorConnectPopupActions.createPopupCallDeferred();
         dispatch(
             trezorConnectPopupActions.connectPopupCallThunk({
                 source: {
@@ -89,9 +90,10 @@ const sessionAuthenticateThunk = createThunk<
                     path: ethAccount.path,
                     message,
                 },
+                responseId: deferred.id,
             }),
         );
-        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+        const response = await deferred.promise;
         if (!response.success) {
             throw new Error('Sign message error');
         }

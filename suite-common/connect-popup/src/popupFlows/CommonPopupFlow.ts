@@ -45,6 +45,9 @@ export type PopupFlowParams<M extends CallMethodKeys> = {
     method: M;
     payload: PopupFlowPayload<M>;
     source: ConnectCallSource;
+    // Id of the deferred that receives the response (see createPopupCallDeferred). A retried call
+    // keeps the id of the call it retries.
+    responseId?: string;
     // Token of the call being retried, taken from the stored call the restart spreads. A retry or a
     // device switch keeps it, so a cancel still names the call it is meant to end.
     callId?: string;
@@ -78,11 +81,12 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     protected readonly payload: PopupFlowPayload<M>;
     protected readonly source: ConnectCallSource;
     protected readonly callId: string;
+    protected readonly responseId: string | undefined;
     protected readonly dispatch: Dispatch;
     protected readonly getState: () => any;
 
     constructor(
-        { method, payload, source, callId }: PopupFlowParams<M>,
+        { method, payload, source, callId, responseId }: PopupFlowParams<M>,
         { dispatch, getState }: PopupFlowThunkApi,
     ) {
         this.method = method;
@@ -93,6 +97,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         // so that its cancel ends only this call. Deeplink payloads are arbitrary JSON, hence `?.`.
         this.callId =
             (payload as { callId?: string } | null)?.callId ?? callId ?? crypto.randomUUID();
+        this.responseId = responseId;
         this.dispatch = dispatch;
         this.getState = getState;
     }
@@ -229,6 +234,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
                 payload,
                 source,
                 callId: this.callId,
+                responseId: this.responseId,
             }),
         );
 
