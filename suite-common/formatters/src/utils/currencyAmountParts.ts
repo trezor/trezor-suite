@@ -2,6 +2,7 @@ import { BigNumber } from '@trezor/utils';
 
 const MAX_DECIMALS_LENGTH = 2;
 const SATOSHIS_IN_BITCOIN = 100_000_000;
+const NON_BREAKING_SPACE = '\u00a0';
 
 type WholeNumberParams = {
     value: string;
@@ -46,44 +47,48 @@ type CurrencySymbolParams = {
     isSatsValue: boolean;
 };
 
-const isCurrencySymbolFirstInLocale = ({ locale, currency, isSatsValue }: CurrencySymbolParams) => {
-    if (isSatsValue) {
-        return false;
-    }
-
-    // Same reason as above: a dummy 0 says where the locale puts the symbol without formatToParts.
-    const formatted = new Intl.NumberFormat(locale, {
+// Same reason as above: a dummy 0 says how the locale writes the currency without formatToParts.
+// What is left once the 0 is taken away is the symbol, which side of the 0 it sits on, and the
+// whitespace the locale puts between them, if any.
+const formatCurrencyZero = ({
+    locale,
+    currency,
+}: Pick<CurrencySymbolParams, 'locale' | 'currency'>) =>
+    new Intl.NumberFormat(locale, {
         style: 'currency',
         currencyDisplay: 'symbol',
         currency,
         maximumFractionDigits: 0,
     }).format(0);
 
-    return formatted.indexOf('0') > 0;
+const isCurrencySymbolFirstInLocale = (params: CurrencySymbolParams) => {
+    if (params.isSatsValue) {
+        return false;
+    }
+
+    return formatCurrencyZero(params).indexOf('0') > 0;
 };
 
-const getFormattedCurrencySymbol = ({ locale, currency, isSatsValue }: CurrencySymbolParams) => {
-    if (isSatsValue) {
+const getFormattedCurrencySymbol = (params: CurrencySymbolParams) => {
+    if (params.isSatsValue) {
         return 'sat';
     }
 
-    const formatter = new Intl.NumberFormat(locale, {
-        style: 'currency',
-        currencyDisplay: 'symbol',
-        currency,
-        maximumFractionDigits: 0,
-    });
+    return formatCurrencyZero(params).replace(/[\s0]+/g, '');
+};
 
-    // we can not use formatter.formatToParts because it is not supported on iOS
-    // for this reason we need to use a regex on a dummy 0 value to get the currency symbol
-    const formattedValue = formatter.format(0);
-    const regex = /[\s0]+/g;
+const getCurrencySymbolSeparator = (params: CurrencySymbolParams) => {
+    if (params.isSatsValue) {
+        return NON_BREAKING_SPACE;
+    }
 
-    return formattedValue.replace(regex, '');
+    return formatCurrencyZero(params).match(/\s+/)?.[0] ?? '';
 };
 
 export type CurrencyAmountParts = {
     currencySymbol: string;
+    /** The whitespace the locale puts between the amount and the symbol — `1 234 Kč`, against `$1`. */
+    currencySymbolSeparator: string;
     wholeNumber: string;
     decimalNumber: string;
     /** Whether the locale writes the symbol before the amount — `$1.00`, against `1,00 €`. */
@@ -129,6 +134,7 @@ export const getCurrencyAmountParts = ({
 
     return {
         currencySymbol: getFormattedCurrencySymbol({ locale, currency, isSatsValue }),
+        currencySymbolSeparator: getCurrencySymbolSeparator({ locale, currency, isSatsValue }),
         wholeNumber: getFormattedWholeNumber({ value: integerPart, locale }),
         decimalNumber: getFormattedDecimalNumber({
             value: decimalPart,

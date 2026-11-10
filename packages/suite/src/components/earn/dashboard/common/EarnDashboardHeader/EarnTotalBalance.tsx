@@ -1,7 +1,5 @@
 import { memo } from 'react';
 
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useCurrencyAmountParts } from '@suite-common/formatters';
@@ -10,10 +8,6 @@ import { type BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from '#src/components/suite';
 import { useSelector } from '#src/hooks/suite';
-
-const TabularNumbers = styled.span`
-    font-variant-numeric: tabular-nums;
-`;
 
 type EarnTotalBalanceProps = {
     fiatValue: BigNumber | undefined;
@@ -27,8 +21,13 @@ export const EarnTotalBalance = memo(
     ({ fiatValue, isIncomplete = false, isExact, dataTestId }: EarnTotalBalanceProps) => {
         const locale = useSelector(selectLanguage);
 
-        const { currencySymbol, wholeNumber, decimalNumber, isCurrencySymbolFirst } =
-            useCurrencyAmountParts({ value: fiatValue?.toFixed(), locale, isExact });
+        const {
+            currencySymbol,
+            currencySymbolSeparator,
+            wholeNumber,
+            decimalNumber,
+            isCurrencySymbolFirst,
+        } = useCurrencyAmountParts({ value: fiatValue?.toFixed(), locale, isExact });
 
         // Nothing the wallet holds can be priced; a total of zero would say the wallet is empty.
         if (fiatValue === undefined) {
@@ -41,9 +40,12 @@ export const EarnTotalBalance = memo(
             );
         }
 
+        // The space goes inside the symbol's text: on its own between the row's items it would collapse.
         const symbol = (
             <Text typographyStyle="headline-lg" color="contentTertiary">
-                {currencySymbol}
+                {isCurrencySymbolFirst
+                    ? `${currencySymbol}${currencySymbolSeparator}`
+                    : `${currencySymbolSeparator}${currencySymbol}`}
             </Text>
         );
 
@@ -62,13 +64,14 @@ export const EarnTotalBalance = memo(
 
                     {isCurrencySymbolFirst && symbol}
 
-                    <Text typographyStyle="headline-lg">
-                        <TabularNumbers>{wholeNumber}</TabularNumbers>
+                    {/* Tabular digits drop the headline's negative tracking, which ran adjacent zeros into each other. */}
+                    <Text typographyStyle="headline-lg" isTabular>
+                        {wholeNumber}
                     </Text>
 
                     {decimalNumber !== '' && (
-                        <Text typographyStyle="headline-lg" color="contentTertiary">
-                            <TabularNumbers>{decimalNumber}</TabularNumbers>
+                        <Text typographyStyle="headline-lg" color="contentTertiary" isTabular>
+                            {decimalNumber}
                         </Text>
                     )}
 
