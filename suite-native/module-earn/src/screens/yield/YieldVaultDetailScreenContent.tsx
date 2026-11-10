@@ -276,6 +276,7 @@ export const YieldVaultDetailScreenContent = ({
 
                             <TokenToFiatAmountFormatter
                                 value={yieldToken.balance ?? '0'}
+                                isBalance
                                 symbol={account?.symbol}
                                 contract={yieldToken.contract}
                                 variant="body-md"

@@ -314,6 +314,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                                                     <TokenToFiatAmountFormatter
                                                         symbol={symbol}
                                                         value={tokenBalance}
+                                                        isBalance
                                                         contract={tokenContract}
                                                         variant="body-sm"
                                                         color="contentSecondary"

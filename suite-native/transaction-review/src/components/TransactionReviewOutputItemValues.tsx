@@ -26,7 +26,7 @@ const TransactionReviewOutputItemCryptoAmount = ({
     value,
 }: TransactionReviewOutputItemCryptoAmountProps) => {
     const token = useTokenMetadata(symbol, tokenContract);
-    if (tokenContract) {
+    if (tokenContract && value !== '') {
         return (
             <ExactTokenAmountFormatter
                 networkSymbol={symbol}

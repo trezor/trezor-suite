@@ -107,6 +107,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                 <Box style={applyStyle(valuesContainerStyle)}>
                     <TokenToFiatAmountFormatter
                         value={token.balance ?? '0'}
+                        isBalance
                         contract={contract}
                         symbol={symbol}
                     />

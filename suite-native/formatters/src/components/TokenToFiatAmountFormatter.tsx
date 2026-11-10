@@ -18,6 +18,8 @@ import { SignValueFormatter } from './SignValueFormatter';
 type TokenToFiatAmountFormatterProps = {
     symbol: NetworkSymbol;
     contract: TokenAddress;
+    /** The value is in whole token units, as in account balances, instead of base units. */
+    isBalance?: boolean;
     discreetMode?: DiscreetMode;
     signValue?: SignValue;
     historicRate?: number;
@@ -29,6 +31,7 @@ export const TokenToFiatAmountFormatter = ({
     symbol,
     value,
     contract,
+    isBalance = false,
     discreetMode = 'auto',
     signValue,
     ellipsizeMode,
@@ -43,7 +46,7 @@ export const TokenToFiatAmountFormatter = ({
         cryptoValue: String(value),
         symbol,
         tokenAddress: contract,
-        tokenDecimals: token?.decimals ?? 0,
+        tokenDecimals: isBalance ? 0 : (token?.decimals ?? 0),
         historicRate,
         useHistoricRate,
     });

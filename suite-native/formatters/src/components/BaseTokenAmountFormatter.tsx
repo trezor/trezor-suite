@@ -51,18 +51,15 @@ export const BaseTokenAmountFormatter = ({
                 formatStyle={formatStyle}
                 tokenDecimals={token?.decimals}
             />
-            {token?.symbol && (
-                <>
-                    &nbsp;
-                    <TokenSymbol
-                        isTruncated={isSymbolTruncated}
-                        networkSymbol={networkSymbol}
-                        contractAddress={contractAddress}
-                        variant={variant}
-                        color={color}
-                    />
-                </>
-            )}
+            &nbsp;
+            {/* A token without a symbol still shows a unit, the unknown-token label. */}
+            <TokenSymbol
+                isTruncated={isSymbolTruncated}
+                networkSymbol={networkSymbol}
+                contractAddress={contractAddress}
+                variant={variant}
+                color={color}
+            />
         </>
     );
 

@@ -67,10 +67,11 @@ describe('AccountsListTokenItem', () => {
     });
 
     it('labels a token without a name or symbol as unknown', async () => {
-        const { getByText } = await renderAccountsListTokenItem({
+        const { getAllByText } = await renderAccountsListTokenItem({
             token: { ...mockToken, name: undefined, symbol: toTokenSymbol('') },
         });
 
-        expect(getByText('Unknown token')).toBeOnTheScreen();
+        // Both the title and the unit of the balance fall back to the unknown-token label.
+        expect(getAllByText('Unknown token')).toHaveLength(2);
     });
 });

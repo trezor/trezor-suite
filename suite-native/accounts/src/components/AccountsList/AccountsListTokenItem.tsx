@@ -55,6 +55,7 @@ export const AccountsListTokenItem = ({
                     <TokenToFiatAmountFormatter
                         symbol={account.symbol}
                         value={balance}
+                        isBalance
                         contract={token.contract}
                     />
                 )

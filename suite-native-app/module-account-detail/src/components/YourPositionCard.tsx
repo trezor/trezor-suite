@@ -109,6 +109,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                             <TokenToFiatAmountFormatter
                                 symbol={symbol}
                                 value={balance}
+                                isBalance
                                 contract={token.contract}
                                 numberOfLines={1}
                                 adjustsFontSizeToFit

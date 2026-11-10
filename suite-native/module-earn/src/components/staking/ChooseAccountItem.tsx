@@ -101,6 +101,7 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
                             />
                             <TokenToFiatAmountFormatter
                                 value={balanceData.value}
+                                isBalance
                                 symbol={account.symbol}
                                 contract={balanceData.tokenContractAddress}
                                 variant="body-sm"

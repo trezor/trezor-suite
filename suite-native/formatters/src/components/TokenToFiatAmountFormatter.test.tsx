@@ -1,3 +1,4 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
@@ -22,6 +23,26 @@ const renderFormatter = (preloadedState: ReturnType<typeof createPreloadedState>
     renderWithStoreProvider(
         <TokenToFiatAmountFormatter symbol={ETH} contract={USDC_CONTRACT} value="720" />,
         { preloadedState },
+    );
+
+const usdcMetadataSources = [
+    {
+        networkSymbol: ETH,
+        tokens: [{ contract: USDC_CONTRACT, symbol: 'USDC', decimals: 6 }],
+    },
+];
+
+const renderWithUsdcMetadata = (props: { value: string; isBalance?: boolean }) =>
+    renderWithStoreProvider(
+        <TokenMetadataProvider sources={usdcMetadataSources}>
+            <TokenToFiatAmountFormatter symbol={ETH} contract={USDC_CONTRACT} {...props} />
+        </TokenMetadataProvider>,
+        {
+            preloadedState: createPreloadedState({
+                knownContracts: [USDC_CONTRACT],
+                rates: { [`eth-${USDC_CONTRACT}-usd`]: { rate: 1 } },
+            }),
+        },
     );
 
 describe('TokenToFiatAmountFormatter', () => {
@@ -55,5 +76,17 @@ describe('TokenToFiatAmountFormatter', () => {
         await renderFormatter(createPreloadedState({ knownContracts: [], rates: {} }));
 
         expect(screen.toJSON()).toBeNull();
+    });
+
+    it('converts a value in base units with the token decimals', async () => {
+        await renderWithUsdcMetadata({ value: '720000000' });
+
+        expect(screen.getByText('$720.00')).toBeTruthy();
+    });
+
+    it('keeps a balance in whole token units', async () => {
+        await renderWithUsdcMetadata({ value: '720', isBalance: true });
+
+        expect(screen.getByText('$720.00')).toBeTruthy();
     });
 });
