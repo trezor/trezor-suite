@@ -1,3 +1,4 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { getNetwork } from '@suite-common/wallet-config';
 import { BannerFull, Box, Text, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -14,6 +15,7 @@ import { YieldWithdrawStepCard } from '../../components/yield/YieldWithdrawStepC
 import { YieldWrappedNativeReceivingCard } from '../../components/yield/YieldWrappedNativeReceivingCard';
 import { YieldWrappedNativeStepFooter } from '../../components/yield/YieldWrappedNativeStepFooter';
 import { useYieldWithdrawUnwrapController } from '../../hooks/yield/controllers/useYieldWithdrawUnwrapController';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldWithdrawUnwrapScreen = () => {
     const controller = useYieldWithdrawUnwrapController();
@@ -43,7 +45,7 @@ export const YieldWithdrawUnwrapScreen = () => {
     } = controller;
     const { account } = yieldFlowData;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -166,5 +168,11 @@ export const YieldWithdrawUnwrapScreen = () => {
                 sheet={simulationSheet}
             />
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

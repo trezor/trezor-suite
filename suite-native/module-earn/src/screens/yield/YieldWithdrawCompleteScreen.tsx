@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type YieldRootState,
     getYieldWithdrawCompletedValues,
@@ -24,6 +25,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawComplete>;
 type NavigationProps = StackNavigationProps<
@@ -126,7 +128,7 @@ export const YieldWithdrawCompleteScreen = () => {
         return null;
     }
 
-    return (
+    const content = (
         <EarnCompleteScreenContent
             type="withdraw"
             vaultId={vault.id}
@@ -136,5 +138,11 @@ export const YieldWithdrawCompleteScreen = () => {
             title={<Translation id="earn.yieldWithdrawCompleteScreen.title" />}
             subtitle={<Translation id="earn.yieldWithdrawCompleteScreen.subtitle" />}
         />
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

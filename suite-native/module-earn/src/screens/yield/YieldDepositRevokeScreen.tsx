@@ -1,3 +1,4 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerInline, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
@@ -6,6 +7,7 @@ import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldDepositRevokeDetailsCard } from '../../components/yield/YieldDepositRevokeDetailsCard';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { useYieldDepositRevokeScreen } from '../../hooks/yield/useYieldDepositRevokeScreen';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldDepositRevokeScreen = () => {
     const revokeScreen = useYieldDepositRevokeScreen();
@@ -39,7 +41,7 @@ export const YieldDepositRevokeScreen = () => {
         pendingModal?.amount
     );
 
-    return (
+    const content = (
         <Screen
             header={
                 <DynamicScreenHeader
@@ -128,5 +130,13 @@ export const YieldDepositRevokeScreen = () => {
                 />
             )}
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={yieldFlowDataToTokenMetadataSources(revokeScreen.yieldFlowData)}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };
