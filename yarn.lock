@@ -11395,6 +11395,7 @@ __metadata:
     "@suite-app/module-assets": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-home": "workspace:*"
+    "@suite-app/module-send": "workspace:*"
     "@suite-app/module-settings": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
     "@suite-app/module-trading": "workspace:*"
@@ -11493,6 +11494,18 @@ __metadata:
     "@suite/intl": "workspace:*"
     "@suite/message-system": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-send@workspace:*, @suite-app/module-send@workspace:suite-app/module-send":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-send@workspace:suite-app/module-send"
+  dependencies:
+    "@suite/account": "workspace:*"
+    "@suite/router": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     react: "npm:19.3.0"
@@ -11650,6 +11663,7 @@ __metadata:
     "@suite-app/module-assets": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-home": "workspace:*"
+    "@suite-app/module-send": "workspace:*"
     "@suite-app/module-settings": "workspace:*"
     "@suite-app/module-sign-verify": "workspace:*"
     "@suite-app/module-trading": "workspace:*"

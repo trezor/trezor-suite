@@ -26,4 +26,3 @@ export { TransactionsPage } from './pages/TransactionsPage';
 export { WalletAnonymizePage } from './pages/WalletAnonymizePage';
 export { WalletCoinjoinPage } from './pages/WalletCoinjoinPage';
 export { WalletDetailsPage } from './pages/WalletDetailsPage';
-export { WalletSendPage } from './pages/WalletSendPage';

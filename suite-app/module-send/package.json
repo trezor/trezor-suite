@@ -1,0 +1,26 @@
+{
+    "name": "@suite-app/module-send",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "exports": {
+        ".": "./src/index.ts",
+        "./pages/*": "./src/pages/*.tsx"
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@suite/account": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@trezor/suite": "workspace:*",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
+    }
+}

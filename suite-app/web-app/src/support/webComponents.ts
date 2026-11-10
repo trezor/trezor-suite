@@ -169,7 +169,7 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ),
     ),
     'wallet-send': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/WalletSendPage').then(
+        import(/* webpackChunkName: "wallet" */ '@suite-app/module-send/pages/WalletSendPage').then(
             ({ WalletSendPage }) => ({ default: WalletSendPage }),
         ),
     ),
