@@ -128,7 +128,24 @@ export type ScanProgressInfo =
           activity: 'fetch' | 'scan';
           progress?: { current: number; total: number; iteration: number };
       }
-    | { stage: 'mempool'; progress: { current: number; total: number; iteration: number } };
+    | { stage: 'mempool'; progress: { current: number; total: number; iteration: number } }
+    // A block or transaction fetch for the discovery loader. Carries no height or txid, only which
+    // of the four Tor identities requests it and whether it touched the account.
+    | {
+          stage: 'block' | 'mempool';
+          activity: 'fetch-item';
+          identity: FetchIdentityIndex;
+          progress?: undefined;
+      }
+    | {
+          stage: 'block' | 'mempool';
+          activity: 'fetch-item-done';
+          identity: FetchIdentityIndex;
+          relevant: boolean;
+          progress?: undefined;
+      };
+
+export type FetchIdentityIndex = 0 | 1 | 2 | 3;
 
 export type OnProgressInfo = (info: ScanProgressInfo) => void;
 

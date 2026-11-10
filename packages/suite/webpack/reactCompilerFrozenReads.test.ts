@@ -664,8 +664,8 @@ export const Nearby = ({ allDevices }) => {
     });
 
     it('says nothing about an impure read no cached closure captures', () => {
-        // `RotatingFacts.tsx` does exactly this on purpose: a suppressed `Math.random()` seeding
-        // `useState`. This channel is `impure ∩ frozen`, not a second `react-hooks/purity`.
+        // A suppressed `Math.random()` seeding `useState` is impure on purpose. This channel is
+        // `impure ∩ frozen`, not a second `react-hooks/purity`.
         const { frozenCaptures } = analyse(`import { useState } from 'react';
 
 export const RotatingFacts = ({ facts }) => {

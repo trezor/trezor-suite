@@ -5,7 +5,13 @@ import {
     deriveAddresses as deriveNewAddresses,
 } from '@trezor/utxo-lib';
 
-import type { PrederivedAddress, VinVout } from '../types/backend';
+import type { FetchIdentityIndex, PrederivedAddress, VinVout } from '../types/backend';
+
+// Block and transaction fetches are spread over four Tor identities, each an isolated circuit.
+export const getBlockIdentityIndex = (height: number) => (height & 0x3) as FetchIdentityIndex;
+
+export const getTxIdentityIndex = (txid: string) =>
+    (txid.charCodeAt(txid.length - 1) & 0x3) as FetchIdentityIndex;
 
 export const isTxConfirmed = ({ blockHeight = -1 }: { blockHeight?: number }) => blockHeight > 0;
 

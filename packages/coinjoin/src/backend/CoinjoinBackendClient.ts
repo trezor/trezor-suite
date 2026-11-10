@@ -11,7 +11,7 @@ import {
 import { FILTERS_REQUEST_TIMEOUT, HTTP_REQUEST_GAP, HTTP_REQUEST_TIMEOUT } from '../constants';
 import type { CoinjoinBackendSettings } from '../types';
 import { CoinjoinWebsocketController } from './CoinjoinWebsocketController';
-import { identifyWsError } from './backendUtils';
+import { getBlockIdentityIndex, getTxIdentityIndex, identifyWsError } from './backendUtils';
 import type {
     BlockFilterResponse,
     BlockbookBlock,
@@ -55,7 +55,7 @@ export class CoinjoinBackendClient implements CoinjoinBackendClientShape {
     }
 
     fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
-        const identity = this.identitiesBlockbook[height & 0x3]; // Works only when identities.length === 4
+        const identity = this.identitiesBlockbook[getBlockIdentityIndex(height)]; // Works only when identities.length === 4
         const pageSize = 1000;
 
         return this.getBlockbookApi(
@@ -80,8 +80,7 @@ export class CoinjoinBackendClient implements CoinjoinBackendClientShape {
     }
 
     fetchTransaction(txid: string, options?: RequestOptions) {
-        const lastCharCode = txid.charCodeAt(txid.length - 1);
-        const identity = this.identitiesBlockbook[lastCharCode & 0x3]; // Works only when identities.length === 4
+        const identity = this.identitiesBlockbook[getTxIdentityIndex(txid)]; // Works only when identities.length === 4
 
         return this.getBlockbookApi(api => api.getTransaction(txid), { identity, ...options });
     }
