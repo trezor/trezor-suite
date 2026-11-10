@@ -12,10 +12,7 @@ import { mockEthereumStakingAccount } from '@suite-common/wallet-types/mocks';
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import {
-    type EverstakePooledProductDeps,
-    createEverstakePooledProduct,
-} from './createEverstakePooledProduct';
+import { type EverstakePooledProductDeps, createEverstakePooledProduct } from './product';
 
 const stats: EthOrSolStats = { symbol: 'eth', apy: 3.08, nextRewardPayout: 432_000 };
 const queue: EthValidatorsQueue = { addingDelay: 86_400, activationTime: 259_200 };

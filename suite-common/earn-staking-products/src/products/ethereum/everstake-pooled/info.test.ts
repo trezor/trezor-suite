@@ -1,10 +1,7 @@
 import type { EthOrSolStats, EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { createMockDeps } from '@trezor/dependency-injection';
 
-import {
-    type EverstakePooledProductInfoDeps,
-    fetchEverstakePooledProductInfo,
-} from './everstakePooledProductInfo';
+import { type EverstakePooledProductInfoDeps, fetchEverstakePooledProductInfo } from './info';
 
 const SECONDS_IN_DAY = 24 * 60 * 60;
 const NOW = 1_800_000_000_000;

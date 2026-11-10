@@ -1,8 +1,8 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createEverstakePooledProductDescriptor } from './everstakePooledProductDescriptor';
-import { EVERSTAKE_POOLED_PRODUCT_LIMITS } from './everstakePooledProductLimits';
+import { createEverstakePooledProductDescriptor } from './descriptor';
+import { EVERSTAKE_POOLED_PRODUCT_LIMITS } from './limits';
 
 describe('createEverstakePooledProductDescriptor', () => {
     it.each([

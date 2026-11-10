@@ -17,10 +17,7 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
-import {
-    type EverstakePooledProductDeps,
-    createEverstakePooledProduct,
-} from './createEverstakePooledProduct';
+import { type EverstakePooledProductDeps, createEverstakePooledProduct } from './product';
 
 // The oracle is the P0.1 characterization suite in wallet-core
 // (src/staking/stakingSelectors.characterization.test.ts and the ethereum details suite next to

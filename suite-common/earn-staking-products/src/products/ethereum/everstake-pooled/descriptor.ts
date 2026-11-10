@@ -5,9 +5,9 @@ import {
 } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
-import { EVERSTAKE_POOLED_PRODUCT_LIMITS } from './everstakePooledProductLimits';
-import { EVERSTAKE_ETHEREUM_MESSAGE_SYSTEM_FEATURES } from './everstakePooledProductMessageSystemFeatures';
-import { everstakeProvider } from '../../providers/everstake';
+import { EVERSTAKE_POOLED_PRODUCT_LIMITS } from './limits';
+import { EVERSTAKE_ETHEREUM_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { everstakeProvider } from '../../../providers/everstake';
 
 export const createEverstakePooledProductDescriptor = (
     networkSymbol: NetworkSymbol,
