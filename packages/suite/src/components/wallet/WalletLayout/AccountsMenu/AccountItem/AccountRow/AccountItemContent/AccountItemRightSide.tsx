@@ -3,7 +3,7 @@ import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-type
 import { Icon, Text } from '@trezor/components';
 import { CheckIcon, WarningIcon } from '@trezor/icons';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { BaseCurrency } from './BaseCurrency';
 

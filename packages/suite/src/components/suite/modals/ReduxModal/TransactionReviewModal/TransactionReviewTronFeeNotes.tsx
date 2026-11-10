@@ -1,11 +1,10 @@
 import { useTranslation } from '@suite/intl';
-import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type Account, type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
 import { Note } from '@trezor/components';
 import { ReceiptIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { type Account } from '#src/types/wallet';
 
 type TransactionReviewTronFeeNotesProps = {
     tx: GeneralPrecomposedTransactionFinal;

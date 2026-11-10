@@ -7,7 +7,12 @@ import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type Account, type FormState, type PrecomposedLevels } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type FormState,
+    type PrecomposedLevels,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type AccountUtxo, type PROTO } from '@trezor/connect';
 import { mock } from '@trezor/dependency-injection';
@@ -17,7 +22,6 @@ import { type WithServices } from '@trezor/redux-utils';
 import { useUtxoSelection } from '#src/hooks/wallet/form/useUtxoSelection';
 import { SendContext } from '#src/hooks/wallet/useSendForm';
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
-import { type WalletAccountTransaction } from '#src/types/wallet';
 import { type SendContextValues } from '#src/types/wallet/sendForm';
 
 import { UtxoSelectionList } from './UtxoSelectionList';

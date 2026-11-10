@@ -5,7 +5,7 @@ import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Banner, Column, H3 } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 

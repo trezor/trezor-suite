@@ -5,7 +5,8 @@ import { PlusCircleIcon, TrezorBackupIcon, WalletIcon } from '@trezor/icons';
 
 import { OnboardingOption } from '#src/components/onboarding/OnboardingOption';
 import * as STEP from '#src/constants/onboarding/steps';
-import { useLayoutSize, useOnboarding } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
 
 export const CreateOrRecoverStep = () => {
     const { goToNextStep, addPath, updateAnalytics } = useOnboarding();

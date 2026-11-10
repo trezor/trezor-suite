@@ -6,7 +6,7 @@ import { Tabs } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from '#src/constants/suite/layout';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
 

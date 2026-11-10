@@ -7,7 +7,7 @@ import { Banner, Card, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type StakeRegistrationDepositCardProps = {
     account: Account;

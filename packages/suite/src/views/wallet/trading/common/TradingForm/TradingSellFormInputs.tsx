@@ -19,7 +19,7 @@ import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useIsFeeRefetchDisabled } from '#src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSelectedTradingAsset } from '#src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -33,7 +33,7 @@ import { TradingFormInputPaymentMethod } from '#src/views/wallet/trading/common/
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
-import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
+import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInputBalance';
 import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 import {
     TradingFormInputSellAsset,

@@ -10,7 +10,7 @@ import { HashIcon, LightbulbIcon, PasswordIcon, WarningIcon } from '@trezor/icon
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { getNonAsciiChars } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 

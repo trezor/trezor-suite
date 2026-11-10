@@ -5,7 +5,7 @@ import {
     selectHistoricFiatRates,
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
-import { type Timestamp } from '@suite-common/wallet-types';
+import { type Timestamp, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatCardanoDeposit,
@@ -26,8 +26,7 @@ import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { FormattedDate } from '#src/components/suite/FormattedDate';
 import { AmountComponent } from '#src/components/wallet/AmountComponent';
-import { useSelector } from '#src/hooks/suite';
-import { type WalletAccountTransaction } from '#src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { HistoricRateChange } from './HistoricRateChange';
 

@@ -5,7 +5,7 @@ import { type ExchangeTrade } from 'invity-api';
 import { Translation } from '@suite/intl';
 import { Button, Column, Row, Switch } from '@trezor/components';
 
-import { useGuideOpenNode } from '#src/hooks/guide';
+import { useGuideOpenNode } from '#src/hooks/guide/useGuideOpenNode';
 import { DESTINATION_TAG_GUIDE_PATH } from '#src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
 interface TradingExtraFieldProps {

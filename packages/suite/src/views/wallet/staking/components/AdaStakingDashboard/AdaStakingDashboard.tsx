@@ -15,8 +15,8 @@ import { Column, Flex } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { DashboardSection } from '#src/components/dashboard';
-import { useSelector } from '#src/hooks/suite';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { CardanoNewProviderCard } from './CardanoNewProviderCard';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';

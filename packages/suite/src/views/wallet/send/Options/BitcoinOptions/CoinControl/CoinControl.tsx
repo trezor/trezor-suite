@@ -23,11 +23,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedCryptoAmount } from '#src/components/suite';
-import { Pagination } from '#src/components/wallet';
-import { useSelector } from '#src/hooks/suite';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { Pagination } from '#src/components/wallet/Pagination';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import { selectAccountLabelsForSearch } from '#src/selectors/suite/selectAccountLabelsForSearch';
 
 import { UtxoSearch } from './UtxoSearch';

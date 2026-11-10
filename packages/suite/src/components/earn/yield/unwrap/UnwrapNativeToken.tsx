@@ -23,8 +23,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { submitUnwrapNativeTokenThunk } from '#src/actions/wallet/unwrapNativeTokenThunks';
-import { useSelector } from '#src/hooks/suite';
 import { useMessageSystemWrappedNative } from '#src/hooks/suite/useMessageSystemWrappedNative';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';

@@ -6,8 +6,8 @@ import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useModal } from '#src/components/suite/asset-picker/hooks';
-import { useSelector } from '#src/hooks/suite';
+import { useModal } from '#src/components/suite/asset-picker/hooks/useModal';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const useTradingAssetPickerModal = () => {
     const { dispatch } = useServices(injectDispatch);

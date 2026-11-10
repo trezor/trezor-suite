@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 
+import type { Account } from '@suite-common/wallet-types';
 import type { AccountAddress } from '@trezor/connect';
-
-import type { Account } from '#src/types/wallet';
 
 export const useAccountAddressDictionary = (account: Account | undefined) => {
     const { addresses, descriptor, networkType, path } = account ?? {};

@@ -3,10 +3,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { close, open } from '#src/actions/suite/guideActions';
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectIsGuideOpen } from '#src/selectors/suite/guideSelectors';
 
-import { usePreferredModal } from '../suite';
+import { usePreferredModal } from '../suite/usePreferredModal';
 
 export const GUIDE_ANIMATION_DURATION_MS = 300;
 

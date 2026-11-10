@@ -27,7 +27,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { BluetoothIcon, CableUsbCIcon, QuestionIcon } from '@trezor/icons';
 import { getLargeModelImagePath } from '@trezor/product-components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';

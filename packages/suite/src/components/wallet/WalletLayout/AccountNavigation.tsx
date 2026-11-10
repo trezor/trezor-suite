@@ -2,6 +2,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouterParams } from '@suite/router';
+import { type WalletParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -9,10 +10,12 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type NavigationItem, SubpageNavigation } from '#src/components/suite/layouts/SuiteLayout';
 import { useGoToWithAnalytics } from '#src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
-import { useSelector } from '#src/hooks/suite';
-import { type WalletParams } from '#src/types/wallet';
+import {
+    type NavigationItem,
+    SubpageNavigation,
+} from '#src/components/suite/layouts/SuiteLayout/SubpageNavigation';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AccountNavigationProps = {
     account?: Account;

@@ -12,8 +12,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { PrerequisitesGuide } from '#src/components/suite';
-import { useSelector } from '#src/hooks/suite';
+import { PrerequisitesGuide } from '#src/components/suite/PrerequisitesGuide/PrerequisitesGuide';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type StepCheckSeedProps = {
     deviceWillBeWiped: boolean;

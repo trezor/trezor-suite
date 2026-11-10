@@ -17,7 +17,7 @@ import {
 import { buildCurrencyOptions, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingAllFormProps } from '#src/types/trading/tradingForm';
 import {

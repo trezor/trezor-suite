@@ -5,7 +5,7 @@ import { RepeatIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { AccountExceptionLayout } from '#src/components/wallet/AccountExceptionLayout';
-import { useDiscovery } from '#src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
 
 /**
  * Handler for discovery "hard" error (other than bundle-error)

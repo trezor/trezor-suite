@@ -15,7 +15,7 @@ import {
 import { type Account, type DiscoveryStatus } from '@suite-common/wallet-types';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
-import { type DiscoveryStatusType } from '../../types/wallet';
+import { type DiscoveryStatusType } from '../../types/wallet/wallet';
 
 export type DiscoveryOverallStatusState = NetworksRootState &
     DeviceRootState &

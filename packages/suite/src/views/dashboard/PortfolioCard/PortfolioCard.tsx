@@ -28,12 +28,14 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
-import { DashboardSection } from '#src/components/dashboard';
-import { GraphRangeSelector, GraphSkeleton } from '#src/components/suite';
-import { useDiscovery, useSelector } from '#src/hooks/suite';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
+import { GraphRangeSelector } from '#src/components/suite/graph/GraphRangeSelector';
+import { GraphSkeleton } from '#src/components/suite/graph/GraphSkeleton';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTotalFiatBalance } from '#src/hooks/wallet/useTotalFiatBalance';
 import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
-import { isNetworkWithGraphFeature } from '#src/utils/wallet/graph';
+import { isNetworkWithGraphFeature } from '#src/utils/wallet/graph/utils';
 import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { DashboardGraph } from './DashboardGraph';

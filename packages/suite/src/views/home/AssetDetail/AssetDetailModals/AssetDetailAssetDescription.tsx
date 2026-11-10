@@ -7,7 +7,7 @@ import {
 import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetDetailAssetDescriptionProps = {
     assetKey: WalletAssetKey;

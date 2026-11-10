@@ -29,19 +29,20 @@ import type { TradingTransaction } from '@suite-common/trading';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type PhishingState } from '@suite-common/wallet-core';
 import type {
+    Account,
     AccountKey,
     BackendSettings,
     EarnOpportunityKey,
     FormState,
     RatesByTimestamps,
+    WalletAccountTransaction,
     WalletSettings,
 } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 
-import type { BioAuthState } from '#src/reducers/bioAuth';
-import type { SuiteState } from '#src/reducers/suite/suiteReducer';
-import type { Account, WalletAccountTransaction } from '#src/types/wallet';
+import type { BioAuthState } from '#src/reducers/bioAuth/bioAuthReducer';
+import type { EvmSettings } from '#src/reducers/suite/evmSettings';
 
 import { type GraphData } from '../types/wallet/graph';
 
@@ -104,8 +105,8 @@ export interface SuiteDBSchema extends DBSchema {
         value: {
             settings: SuiteSettingsState;
             flags: FlagsState;
-            evmSettings: SuiteState['evmSettings'];
-            seenDisconnectNotificationForDeviceIds: SuiteState['seenDisconnectNotificationForDeviceIds'];
+            evmSettings: EvmSettings;
+            seenDisconnectNotificationForDeviceIds: string[];
         };
     };
     historicRates: {

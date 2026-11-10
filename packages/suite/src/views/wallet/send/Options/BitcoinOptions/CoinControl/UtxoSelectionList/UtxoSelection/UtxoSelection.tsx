@@ -11,6 +11,7 @@ import { openModal } from '@suite/modal';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
     Checkbox,
@@ -29,12 +30,13 @@ import { useServices } from '@trezor/dependency-injection';
 import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@trezor/icons';
 import { injectDispatch, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
-import { TransactionTimestamp, UtxoAnonymity } from '#src/components/wallet';
-import { useSelector } from '#src/hooks/suite';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { TransactionTimestamp } from '#src/components/wallet/TransactionTimestamp';
+import { UtxoAnonymity } from '#src/components/wallet/UtxoAnonymity';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useCoinjoinUnavailableUtxos } from '#src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
-import { type WalletAccountTransaction } from '#src/types/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 type ResolveUtxoSpendableProps = {
     utxo: AccountUtxo;

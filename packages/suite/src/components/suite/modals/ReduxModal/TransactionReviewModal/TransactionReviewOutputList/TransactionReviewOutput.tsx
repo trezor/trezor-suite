@@ -14,6 +14,7 @@ import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
+    type Account,
     type EvmTransactionPurpose,
     type StakeType,
     type TransactionReviewOutput as TransactionReviewOutputType,
@@ -35,8 +36,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { TransactionReviewOutputAssets } from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
-import { useSelector } from '#src/hooks/suite';
-import type { Account } from '#src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import {
     type OutputElementLine,

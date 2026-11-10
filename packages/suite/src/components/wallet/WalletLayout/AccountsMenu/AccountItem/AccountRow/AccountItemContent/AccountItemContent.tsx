@@ -4,8 +4,8 @@ import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-type
 import { Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
-import { type AccountItemType } from '#src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { type AccountItemType } from '#src/types/wallet/wallet';
 
 import { AccountItemBottomLine } from './AccountItemBottomLine';
 import { AccountItemLabel } from './AccountItemLabel';

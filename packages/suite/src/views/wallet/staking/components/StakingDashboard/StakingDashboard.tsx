@@ -1,7 +1,7 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 
-import { WalletLayout } from '#src/components/wallet';
+import { WalletLayout } from '#src/components/wallet/WalletLayout/WalletLayout';
 
 import { StakingFooter } from './components/StakingFooter';
 

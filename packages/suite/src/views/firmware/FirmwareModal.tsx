@@ -15,7 +15,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { ConnectionGlobalModalManager } from '#src/components/connection/ConnectionGlobalModalManager';
 import { FirmwareInstallationProgressCheck } from '#src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { StepCheckSeed } from './Steps/StepCheckSeed';
 import { StepDone } from './Steps/StepDone';

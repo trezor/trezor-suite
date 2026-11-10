@@ -8,7 +8,7 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type UseAccountsTransactionsParams = {
     accountKeys: readonly AccountKey[];

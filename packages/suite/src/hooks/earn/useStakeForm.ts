@@ -29,7 +29,7 @@ import { isChanged, throwError } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '#src/types/earn/earnFormFields';
 import type { AmountLimitProps } from '#src/utils/suite/validation';
 

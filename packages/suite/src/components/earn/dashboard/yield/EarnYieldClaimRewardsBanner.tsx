@@ -10,12 +10,12 @@ import { Banner, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { HandCoinsIcon, InfoIcon } from '@trezor/icons';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EarnYieldClaimRewardsBannerAccountsTooltip } from './EarnYieldClaimRewardsBannerAccountsTooltip';
 import { EarnYieldClaimRewardsBannerTokensTooltip } from './EarnYieldClaimRewardsBannerTokensTooltip';
 import { useYieldClaimRewardsData } from './hooks/useYieldClaimRewardsData';
-import { type useMerklRewards } from '../../yield/claim/hooks';
+import { type useMerklRewards } from '../../yield/claim/hooks/useMerklRewards';
 
 const Summary = styled.span`
     color: ${({ theme }) => theme.contentSecondary};

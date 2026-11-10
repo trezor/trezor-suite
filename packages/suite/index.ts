@@ -1,9 +1,8 @@
-export { type WalletState, createWalletReducer } from './src/reducers/wallet';
-export { default as guideReducer, type GuideState } from './src/reducers/suite/guideReducer';
-export {
-    default as protocolReducer,
-    type ProtocolState,
-} from './src/reducers/suite/protocolReducer';
+export { type WalletState, createWalletReducer } from './src/reducers/wallet/walletReducer';
+export { default as guideReducer } from './src/reducers/suite/guideReducer';
+export { type GuideState } from './src/reducers/suite/guideState';
+export { default as protocolReducer } from './src/reducers/suite/protocolReducer';
+export { type ProtocolState } from './src/reducers/suite/protocolState';
 export { default as suiteReducer, type SuiteState } from './src/reducers/suite/suiteReducer';
 export { default as windowReducer, type WindowState } from './src/reducers/suite/windowReducer';
 export { default as buttonRequestMiddleware } from './src/middlewares/suite/buttonRequestMiddleware';
@@ -30,19 +29,20 @@ export { default as onboardingMiddleware } from './src/middlewares/onboarding/on
 export { prepareSuiteSyncQuotaManagerReducer } from './src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 export { toastMiddleware } from './src/middlewares/suite/toastMiddleware';
 export { default as onboardingReducers } from './src/reducers/onboarding/onboardingReducer';
-export { type OnboardingState } from './src/reducers/onboarding/onboardingReducer';
+export { type OnboardingState } from './src/reducers/onboarding/onboardingState';
 export {
     type GlobalSendReceiveFiltersState,
     globalSendReceiveFiltersReducer,
 } from './src/slices/wallet/globalSendReceiveFilters';
-export { type BioAuthState, prepareBioAuthReducer } from './src/reducers/bioAuth';
-export { type DesktopState, desktopReducer } from './src/reducers/desktop';
+export { type BioAuthState, prepareBioAuthReducer } from './src/reducers/bioAuth/bioAuthReducer';
+export { type DesktopState, desktopReducer } from './src/reducers/desktop/desktopReducer';
 export { ConnectedThemeProvider } from './src/support/suite/ConnectedThemeProvider';
 export {
     ResponsiveContextProvider,
     useResponsiveContext,
 } from './src/support/suite/ResponsiveContext';
-export { createDb, type DbDep } from './src/storage/createDb';
+export { createDb } from './src/storage/createDb';
+export { type DbDep } from './src/storage/Db';
 export { selectIsWindowVisible } from './src/reducers/suite/windowReducer';
 export { reportSecurityCheck } from './src/utils/suite/sentry';
 export { markDeviceAsRecentlyConnectedThunk } from './src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
@@ -79,7 +79,7 @@ export {
     selectPrerequisite,
     selectSuiteLifecycle,
 } from './src/selectors/suite/suiteSelectors';
-export { Onboarding } from './src/views/onboarding';
+export { Onboarding } from './src/views/onboarding/Onboarding';
 export { ErrorPage } from './src/views/suite/ErrorPage';
 export { ToasterProvider } from './src/components/suite/notifications/Toaster/ToasterProvider';
 export { TrafficLightDraggableWindowHeader } from '@suite/macos';
@@ -334,12 +334,12 @@ export { MultiShareBackupModal } from './src/components/suite/modals/ReduxModal/
 export { Backup } from './src/views/backup/Backup';
 export { FirmwareCustom } from './src/views/firmware/FirmwareCustom';
 export { FirmwareUpdate } from './src/views/firmware/FirmwareUpdate';
-export { Recovery } from './src/views/recovery';
-export { BridgeUnavailable } from './src/views/suite/bridge';
-export { BridgeDeprecated } from './src/views/suite/bridge-deprecated';
-export { BridgeRequested } from './src/views/suite/bridge-requested';
-export { UdevRules } from './src/views/suite/udev';
-export { Version } from './src/views/suite/version';
+export { Recovery } from './src/views/recovery/Recovery';
+export { BridgeUnavailable } from './src/views/suite/bridge/BridgeUnavailable';
+export { BridgeDeprecated } from './src/views/suite/bridge-deprecated/BridgeDeprecated';
+export { BridgeRequested } from './src/views/suite/bridge-requested/BridgeRequested';
+export { UdevRules } from './src/views/suite/udev/UdevRules';
+export { Version } from './src/views/suite/version/Version';
 export {
     Body,
     Columns,

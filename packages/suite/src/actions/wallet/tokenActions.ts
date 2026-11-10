@@ -2,10 +2,9 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import * as accountUtils from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
-
-import { type Account } from '#src/types/wallet';
 
 export const addToken =
     (account: Account, tokenInfo: TokenInfo[], options?: { showSuccessToast?: boolean }) =>

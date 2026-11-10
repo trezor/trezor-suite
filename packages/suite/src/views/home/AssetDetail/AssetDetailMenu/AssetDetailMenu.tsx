@@ -44,7 +44,7 @@ import {
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 import { UnhideAssetModal } from '#src/views/dashboard/HiddenTokens/UnhideAssetModal';
 import { AssetDetailAccountsModal } from '#src/views/home/AssetDetail/AssetDetailModals/AssetDetailAccountsModal';

@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { Banner, Card, Column, Paragraph } from '@trezor/components';
 import { QuestionIcon } from '@trezor/icons';
 
-import { WordInput } from '#src/components/suite';
+import { WordInput } from '#src/components/suite/WordInput';
 
 export const WordInputStep = () => (
     <Card>

@@ -3,7 +3,7 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Row, Text } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ConnectAppIcon } from './ConnectAppIcon';
 

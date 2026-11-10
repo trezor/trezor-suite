@@ -6,8 +6,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { openNode, setView } from '#src/actions/suite/guideActions';
-import { useGuideLoadArticle } from '#src/hooks/guide';
-import { useSelector } from '#src/hooks/suite';
+import { useGuideLoadArticle } from '#src/hooks/guide/useGuideLoadArticle';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectGuideCurrentNode, selectGuideIndexNode } from '#src/selectors/suite/guideSelectors';
 import { findAncestorNodes, getNodeTitle } from '#src/utils/suite/guide';
 

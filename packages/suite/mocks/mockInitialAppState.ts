@@ -31,12 +31,12 @@ import { type NotificationsState } from '@suite-common/toast-notifications';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type WalletConnectState } from '@suite-common/walletconnect';
 
-import { type DesktopState } from '#src/reducers/desktop';
-import { type OnboardingState } from '#src/reducers/onboarding/onboardingReducer';
-import { type GuideState } from '#src/reducers/suite/guideReducer';
-import { type ProtocolState } from '#src/reducers/suite/protocolReducer';
+import { type DesktopState } from '#src/reducers/desktop/desktopReducer';
+import { type OnboardingState } from '#src/reducers/onboarding/onboardingState';
+import { type GuideState } from '#src/reducers/suite/guideState';
+import { type ProtocolState } from '#src/reducers/suite/protocolState';
 import { suiteInitialState } from '#src/reducers/suite/suiteReducer';
-import { createWalletReducer } from '#src/reducers/wallet';
+import { createWalletReducer } from '#src/reducers/wallet/walletReducer';
 import { type GlobalSendReceiveFiltersState } from '#src/slices/wallet/globalSendReceiveFilters';
 
 import { mockExtraDependenciesForReducers } from './mockExtraDependenciesForReducers';

@@ -7,7 +7,7 @@ import { type Address } from '@trezor/blockchain-link-types';
 import { Column, Modal } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { TradingReceiveAddressEmpty } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 

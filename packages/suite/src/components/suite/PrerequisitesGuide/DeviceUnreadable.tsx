@@ -8,8 +8,8 @@ import {
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_UDEV,
     TROUBLESHOOTING_TIP_UNREADABLE_HID,
-} from '#src/components/suite/troubleshooting/tips';
-import { useSelector } from '#src/hooks/suite';
+} from '#src/components/suite/troubleshooting/tips/troubleshootingTipItems';
+import { useSelector } from '#src/hooks/suite/useSelector';
 /**
  * Device was detected but @trezor/connect was not able to communicate with it. Reasons could be:
  * - initial read from device (GetFeatures) failed because of some de-synchronization or clash with another application

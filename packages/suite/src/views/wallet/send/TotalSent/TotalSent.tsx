@@ -11,9 +11,9 @@ import {
 } from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem, Skeleton } from '@trezor/components';
 
-import { FormattedCryptoAmount } from '#src/components/suite';
-import { useSelector } from '#src/hooks/suite';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 import { CardanoSentTokenInfo } from './CardanoSentTokenInfo';
 import { ReviewButton } from './ReviewButton';

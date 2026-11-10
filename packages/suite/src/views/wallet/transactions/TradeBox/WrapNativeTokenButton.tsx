@@ -9,6 +9,7 @@ import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {
@@ -18,10 +19,9 @@ import {
 } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
 import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemWrappedNative } from '#src/hooks/suite/useMessageSystemWrappedNative';
-import { type Account } from '#src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type WrapNativeTokenButtonProps = {
     account: Account;

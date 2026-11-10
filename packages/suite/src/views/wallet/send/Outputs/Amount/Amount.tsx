@@ -23,10 +23,11 @@ import { ArrowsDownUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from '#src/components/suite';
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import {
     validateDecimals,
     validateInteger,

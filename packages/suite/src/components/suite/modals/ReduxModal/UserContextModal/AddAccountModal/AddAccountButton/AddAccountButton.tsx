@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type Network, type NetworkAccount } from '@suite-common/wallet-config';
-
-import { type Account } from '#src/types/wallet';
+import { type Account } from '@suite-common/wallet-types';
 
 import { AddButton } from './AddButton';
 import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';

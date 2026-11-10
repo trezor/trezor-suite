@@ -1,7 +1,8 @@
 import { selectEarnPositionsCount, useYieldOpportunities } from '@suite-common/wallet-core';
 import { Grid } from '@trezor/components';
 
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EarnBalanceBreakdown } from './EarnBalanceBreakdown';
 import { EarnBalanceCard } from './EarnBalanceCard';

@@ -8,7 +8,7 @@ import { Box, CardList, Icon, Input, Paragraph, Spinner } from '@trezor/componen
 import { MagnifyingGlassIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
-import { MIN_QUERY_LENGTH, useGuideSearch } from '#src/hooks/guide';
+import { MIN_QUERY_LENGTH, useGuideSearch } from '#src/hooks/guide/useGuideSearch';
 
 import { GuideNode } from './GuideNode';
 

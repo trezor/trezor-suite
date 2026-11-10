@@ -1,5 +1,6 @@
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     type GroupedTransactionsByDate,
     getTransactionWithLowestNonce,
@@ -8,8 +9,7 @@ import {
 
 import { CoinjoinBatchItem } from '#src/components/wallet/TransactionItem/CoinjoinBatchItem';
 import { TransactionItem } from '#src/components/wallet/TransactionItem/TransactionItem';
-import { useSelector } from '#src/hooks/suite';
-import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
 import { findTransactionAccount } from './findTransactionAccount';

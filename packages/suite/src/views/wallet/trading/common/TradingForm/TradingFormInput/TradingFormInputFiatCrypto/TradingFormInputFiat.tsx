@@ -21,7 +21,7 @@ import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSelectedTradingAsset } from '#src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import {

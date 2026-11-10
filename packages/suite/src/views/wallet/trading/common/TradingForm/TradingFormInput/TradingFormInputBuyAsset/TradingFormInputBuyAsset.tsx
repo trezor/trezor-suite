@@ -4,14 +4,14 @@ import { type CryptoId } from 'invity-api';
 
 import { type TranslationKey } from '@suite/intl';
 
-import { useModal } from '#src/components/suite/asset-picker/hooks';
+import { useModal } from '#src/components/suite/asset-picker/hooks/useModal';
 
+import { AssetOptionsProvider } from '../TradingFormInputAssetPicker/AssetOptionsContext';
+import { AssetPickerModal, type AssetPickerModalProps } from './AssetPickerModal/AssetPickerModal';
 import {
-    AssetOptionsProvider,
     AssetPickerInput,
     type AssetPickerInputProps,
-} from '../TradingFormInputAssetPicker';
-import { AssetPickerModal, type AssetPickerModalProps } from './AssetPickerModal/AssetPickerModal';
+} from '../TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInput';
 
 export type TradingFormInputBuyAssetProps = {
     inputPlaceholder?: AssetPickerInputProps['placeholder'];

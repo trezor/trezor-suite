@@ -14,8 +14,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
 import { useWithdrawalFormContext } from '#src/hooks/earn/useWithdrawalForm';
-import { useSelector } from '#src/hooks/suite';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT, FIAT_INPUT } from '#src/types/earn/earnFormFields';
 
 export const UnstakeButton = () => {

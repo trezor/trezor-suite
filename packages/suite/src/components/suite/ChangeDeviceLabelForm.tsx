@@ -7,7 +7,7 @@ import { selectDeviceName, selectSelectedDeviceLabelOrName } from '@suite-common
 import { Button, Input, Tooltip } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const Container = styled.form<{ $isVertical?: boolean }>`
     display: flex;

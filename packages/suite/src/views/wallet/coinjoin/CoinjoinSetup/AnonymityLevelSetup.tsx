@@ -11,7 +11,7 @@ import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icon
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { AnonymityStatus } from '#src/constants/suite/coinjoin';
-import { useAnonymityStatus } from '#src/hooks/suite';
+import { useAnonymityStatus } from '#src/hooks/suite/useAnonymityStatus';
 
 import { SetupSlider } from './SetupSlider/SetupSlider';
 import {

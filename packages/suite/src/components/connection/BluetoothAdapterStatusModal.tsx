@@ -7,7 +7,7 @@ import { type BluetoothAdapterStatus } from '@suite-common/bluetooth/src/types';
 import { Banner, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type BluetoothAdapterStatusModalProps = {
     onCancel: () => void;

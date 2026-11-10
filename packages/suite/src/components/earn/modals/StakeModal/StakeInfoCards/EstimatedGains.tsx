@@ -12,7 +12,7 @@ import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT } from '#src/types/earn/earnFormFields';
 
 export const EstimatedGains = () => {
