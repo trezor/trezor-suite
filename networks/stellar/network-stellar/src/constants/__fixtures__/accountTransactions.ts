@@ -6,6 +6,9 @@ const USD_ISSUER = 'GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY';
 const CATCOIN_ISSUER = 'GDJVFDG5OCW5PYWHB64MGTHGFF57DRRJEDUEFDEL2SLNIOONHYJWHA3Z';
 
 const ROUTER_CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
+// ROUTER_CONTRACT muxed with the id 7 (CAP-84).
+const MUXED_ROUTER_CONTRACT =
+    'WAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRUAAAAAAAAAAAA56WQ';
 const TOKEN_CONTRACT = 'CDWFVPEN2TZ4KL6QJBKMSI6PUF5IBJCH5VAZHIPQIL7VOF7ZBH6IXL75';
 
 // `swap_chained` on ROUTER_CONTRACT authorizing a nested `TOKEN_CONTRACT.transfer`.
@@ -495,6 +498,22 @@ export const fixtures: { transformTransaction: Fixture[] } = {
             expectedOutput: output({
                 type: 'sent',
                 tokens: [token({ type: 'sent', from: DESCRIPTOR, to: COUNTERPARTY })],
+            }),
+        },
+        {
+            description: 'Stellar Asset Contract transfer to a muxed contract names the contract',
+            input: {
+                descriptor: DESCRIPTOR,
+                operations: [
+                    invokeHostFunction([
+                        balanceChange({ from: DESCRIPTOR, to: MUXED_ROUTER_CONTRACT }),
+                    ]),
+                ],
+                tx: transaction(),
+            },
+            expectedOutput: output({
+                type: 'sent',
+                tokens: [token({ type: 'sent', from: DESCRIPTOR, to: ROUTER_CONTRACT })],
             }),
         },
         {

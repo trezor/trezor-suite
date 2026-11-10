@@ -8,6 +8,7 @@ import {
     Operation,
     SorobanDataBuilder,
     TransactionBuilder,
+    encodeMuxedContractAddress,
     nativeToScVal,
     xdr,
 } from '@stellar/stellar-sdk';
@@ -125,6 +126,27 @@ describe(decodeSorobanInvocation.name, () => {
                     { kind: 'text', value: '20000000' },
                 ],
             },
+        ]);
+    });
+
+    it('labels a muxed contract (`W…`) argument as a contract', () => {
+        const muxedRouter = encodeMuxedContractAddress(ROUTER, '7');
+        const envelope = buildEnvelope(
+            Operation.invokeHostFunction({
+                func: xdr.HostFunction.hostFunctionTypeInvokeContract(
+                    invokeContractArgs({
+                        contract: USDC_SAC,
+                        functionName: 'transfer',
+                        args: [new Address(SOURCE).toScVal(), new Address(muxedRouter).toScVal()],
+                    }),
+                ),
+                auth: [],
+            }),
+        );
+
+        expect(decodeSorobanInvocation(envelope)?.args).toEqual([
+            { kind: 'account', value: SOURCE },
+            { kind: 'contract', value: muxedRouter },
         ]);
     });
 
