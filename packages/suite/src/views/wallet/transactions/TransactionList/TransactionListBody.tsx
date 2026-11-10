@@ -1,9 +1,8 @@
 import { type ReactNode, useMemo } from 'react';
 
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-
-import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';

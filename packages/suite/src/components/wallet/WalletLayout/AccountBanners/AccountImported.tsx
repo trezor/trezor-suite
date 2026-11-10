@@ -1,7 +1,6 @@
 import { Translation } from '@suite/intl';
+import type { Account } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
-
-import type { Account } from '#src/types/wallet/index';
 
 type AccountImportedProps = {
     account: Account | undefined;

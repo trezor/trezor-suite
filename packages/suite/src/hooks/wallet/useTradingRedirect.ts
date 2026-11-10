@@ -16,12 +16,12 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type Account } from '#src/types/wallet';
 
 interface BuyOfferRedirectParams {
     symbol: Account['symbol'];

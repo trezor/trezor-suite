@@ -2,6 +2,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouterParams } from '@suite/router';
+import { type WalletParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -15,7 +16,6 @@ import {
     SubpageNavigation,
 } from '#src/components/suite/layouts/SuiteLayout/SubpageNavigation';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type WalletParams } from '#src/types/wallet';
 
 type AccountNavigationProps = {
     account?: Account;

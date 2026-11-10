@@ -74,6 +74,7 @@ import {
     selectWalletSettings,
 } from '@suite-common/wallet-core';
 import type {
+    Account,
     AccountKey,
     FormDraftKeyPrefix,
     FormState,
@@ -98,7 +99,6 @@ import {
     selectSeenDisconnectNotificationForDeviceIds,
 } from '#src/selectors/suite/suiteSelectors';
 import { type DbDep } from '#src/storage/Db';
-import type { Account } from '#src/types/wallet';
 import { type GraphData, type GraphState } from '#src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from '#src/utils/suite/storage';
 import { deviceGraphDataFilterFn } from '#src/utils/wallet/graph';

@@ -4,12 +4,12 @@ import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
+import type { Account } from '@suite-common/wallet-types';
 import { Card, Column, Divider } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import type { TradingExchangeProvidersInfoProps } from '#src/types/trading/trading';
-import type { Account } from '#src/types/wallet';
 import { TradingDetailAssetRow } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailAssetRow';
 import { TradingDetailSidebarSection } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailSidebarSection';
 import { TradingDetailTradeInfo } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTradeInfo';

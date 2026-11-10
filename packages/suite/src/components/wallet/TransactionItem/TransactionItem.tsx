@@ -13,7 +13,7 @@ import {
     useDisplayBaseCurrency,
     useEvmNonceInfo,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getPendingEvmNonceStatus,
@@ -30,7 +30,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { SUBPAGE_NAV_HEIGHT } from '#src/constants/suite/layout';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type WalletAccountTransaction } from '#src/types/wallet';
 
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';
 import { TransactionAccountBadge } from './TransactionAccountBadge';

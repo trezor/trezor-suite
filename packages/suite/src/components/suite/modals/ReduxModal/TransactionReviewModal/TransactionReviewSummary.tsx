@@ -6,6 +6,7 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo, selectSendFormDrafts } from '@suite-common/wallet-core';
 import {
+    type Account,
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
     type SendFormDraftKey,
@@ -21,7 +22,6 @@ import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
 import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
 import { useConnectedDateFnsLocale } from '#src/hooks/suite/useConnectedDateFnsLocale';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type Account } from '#src/types/wallet';
 
 import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
 import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';

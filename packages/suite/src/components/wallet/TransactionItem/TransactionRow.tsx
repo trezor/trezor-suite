@@ -1,7 +1,7 @@
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { type SignOperator } from '@suite-common/suite-types';
 import { selectBaseCurrency, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
-import { type Timestamp } from '@suite-common/wallet-types';
+import { type Timestamp, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     formatCardanoDeposit,
     formatCardanoWithdrawal,
@@ -15,7 +15,6 @@ import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { Sign } from '#src/components/suite/Sign';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type WalletAccountTransaction } from '#src/types/wallet';
 
 import { TransactionTargetLayout } from './TransactionTargetLayout';
 

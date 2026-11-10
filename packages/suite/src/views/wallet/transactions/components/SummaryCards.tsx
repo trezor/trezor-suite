@@ -6,6 +6,7 @@ import { DISCREET_PLACEHOLDER, useShouldRedactNumbers } from '@suite-common/disc
 import { useFormatters } from '@suite-common/formatters';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -13,7 +14,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { FormattedDate } from '#src/components/suite/FormattedDate';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
-import { type Account } from '#src/types/wallet';
 import { type AggregatedAccountHistory, type GraphRange } from '#src/types/wallet/graph';
 import { type FiatValueMap, sumFiatValueMap } from '#src/utils/wallet/graph';
 

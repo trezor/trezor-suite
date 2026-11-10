@@ -7,6 +7,7 @@ import type { DeviceRootState } from '@suite-common/device';
 import { injectGetNamedAddressSupport } from '@suite-common/networks';
 import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
+    Account,
     FormState,
     GeneralPrecomposedTransactionFinal,
     StakeFormState,
@@ -23,7 +24,6 @@ import { Column, H4 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import type { Account } from '#src/types/wallet';
 
 import { TransactionReviewOutput } from './TransactionReviewOutput';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';

@@ -4,7 +4,11 @@ import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/tok
 import { type TokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { type Timestamp } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type Timestamp,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     getErc4626Contracts,
     getFiatRateKey,
@@ -17,7 +21,6 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Column } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 import { DayHeader } from './DayHeader';
 

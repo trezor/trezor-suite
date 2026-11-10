@@ -8,6 +8,7 @@ import {
     selectIsMevProtectionEnabled,
     sendFormActions,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -16,7 +17,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { OpenGuideFromTooltip } from '#src/components/guide/OpenGuideFromTooltip';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type Account } from '#src/types/wallet';
 
 const INPUT_NAME = 'rawTx';
 

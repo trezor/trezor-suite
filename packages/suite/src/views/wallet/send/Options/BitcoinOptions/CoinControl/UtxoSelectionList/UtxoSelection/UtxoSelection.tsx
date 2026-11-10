@@ -11,6 +11,7 @@ import { openModal } from '@suite/modal';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
     Checkbox,
@@ -36,7 +37,6 @@ import { UtxoAnonymity } from '#src/components/wallet/UtxoAnonymity';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useCoinjoinUnavailableUtxos } from '#src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
-import { type WalletAccountTransaction } from '#src/types/wallet';
 
 type ResolveUtxoSpendableProps = {
     utxo: AccountUtxo;

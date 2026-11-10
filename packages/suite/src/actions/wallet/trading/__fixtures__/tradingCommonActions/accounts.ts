@@ -1,8 +1,7 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-
-import { type Account } from '#src/types/wallet';
 
 export const BTC_ACCOUNT: Account = {
     networkType: 'bitcoin',

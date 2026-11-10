@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
@@ -9,7 +9,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { useGoToWithAnalytics } from '#src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { CollapsedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { type Account, type AccountItemType } from '#src/types/wallet';
+import { type AccountItemType } from '#src/types/wallet/wallet';
 
 import { AccountItemContent } from './AccountRow/AccountItemContent/AccountItemContent';
 import { AccountRow } from './AccountRow/AccountRow';

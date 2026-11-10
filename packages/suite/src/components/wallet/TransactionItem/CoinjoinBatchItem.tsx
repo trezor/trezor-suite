@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -9,7 +10,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { TransactionTimestamp } from '#src/components/wallet/TransactionTimestamp';
-import { type WalletAccountTransaction } from '#src/types/wallet/index';
 
 import { TransactionLayout } from './TransactionLayout';
 import { TransactionTargetLayout } from './TransactionTargetLayout';
