@@ -1,8 +1,8 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { closeTokenYieldBanner, selectIsTokenYieldBannerClosed } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { TokenSymbol } from '@suite/token';
 import { gotoThunk } from '@suite/router';
+import { TokenSymbol } from '@suite/token';
 import { events as sharedEvents } from '@suite-common/analytics';
 import {
     selectWalletAssetContractAddress,

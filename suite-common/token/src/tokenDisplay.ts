@@ -7,6 +7,10 @@ const MAX_DISPLAYED_SYMBOL_LENGTH = 10;
 
 type DisplayedToken = Pick<TokenMetadata, 'name' | 'symbol' | 'standard'>;
 
+type GetTokenDisplaySymbolOptions = {
+    isTruncated?: boolean;
+};
+
 /** Shortens a long symbol for display; a URL stays whole so it is still detected and masked. */
 export const truncateTokenSymbol = (symbol: string) => {
     const hasUrl = extractUrlsFromText(symbol).urls.length > 0;
@@ -19,7 +23,7 @@ export const truncateTokenSymbol = (symbol: string) => {
 /** The symbol a token is displayed with, or `null` when it has none. */
 export const getTokenDisplaySymbol = (
     token: DisplayedToken | null | undefined,
-    { isTruncated = false }: { isTruncated?: boolean } = {},
+    { isTruncated = false }: GetTokenDisplaySymbolOptions = {},
 ): string | null => {
     if (!token?.symbol) return null;
 
