@@ -31,7 +31,7 @@
   <rect x="210" y="315" width="540" height="90" rx="14" fill="#ffffff" stroke="#6484b4" stroke-opacity=".65" />
   <rect x="210" y="333" width="3" height="54" rx="1.5" fill="#6484b4" />
   <circle cx="232" cy="343" r="3" fill="#6484b4" />
-  <text x="246" y="348" class="pkg">@suite-app/sign-verify-page</text>
+  <text x="246" y="348" class="pkg">@suite-app/module-sign-verify</text>
   <text x="234" y="374" class="detail">Uses the contract without importing Bitcoin</text>
   <rect x="850" y="315" width="540" height="90" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
   <rect x="850" y="333" width="3" height="54" rx="1.5" fill="#b89446" />
