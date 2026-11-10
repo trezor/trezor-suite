@@ -4,6 +4,7 @@ import { createElectronDesktopApi } from '@suite/desktop-app-api-electron';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import {
     createHydrateReduxStore,
+    createPreloadStore,
     createReduxStore,
     createSuiteServicesCompositionRoot,
     extraDependencies,
@@ -11,7 +12,7 @@ import {
 } from '@suite-app/app';
 import TrezorConnect from '@trezor/connect-electron';
 import { toGetter } from '@trezor/dependency-injection';
-import { createDb, createPreloadStore } from '@trezor/suite';
+import { createDb } from '@trezor/suite';
 
 import { type DesktopApp, createDesktopApp } from './createDesktopApp';
 

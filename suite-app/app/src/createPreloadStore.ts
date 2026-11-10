@@ -1,11 +1,11 @@
 import {
+    type DbDep,
     type StorageAction,
+    loadStoragePayload,
     storageCorrupted,
     storageError,
     storageLoad,
-} from 'src/actions/suite/storageLifecycleActions';
-import { type DbDep } from 'src/storage/createDb';
-import { loadStoragePayload } from 'src/storage/loadStoragePayload';
+} from '@trezor/suite';
 
 type PreloadStoreDeps = DbDep;
 

@@ -45,10 +45,12 @@ export { reportSecurityCheck } from './src/utils/suite/sentry';
 export { markDeviceAsRecentlyConnectedThunk } from './src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 export { storageLoadReducers } from './src/support/storageLoadReducers';
 export {
-    createPreloadStore,
-    type PreloadStoreAction,
-    type PreloadStoreDep,
-} from './src/support/suite/createPreloadStore';
+    type StorageAction,
+    storageCorrupted,
+    storageError,
+    storageLoad,
+} from './src/actions/suite/storageLifecycleActions';
+export { loadStoragePayload } from './src/storage/loadStoragePayload';
 export { type DashboardBannerType } from './src/views/dashboard/DashboardPromoBanner/dashboardBannerTypes';
 
 export * as storageConstants from './src/actions/suite/constants/storageConstants';

@@ -4,6 +4,7 @@ import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-web
 import {
     createConnectLoggerFactory,
     createHydrateReduxStore,
+    createPreloadStore,
     createReduxStore,
     createSuiteServicesCompositionRoot,
     extraDependencies,
@@ -13,7 +14,7 @@ import TrezorConnect from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
 import type { CreateLogger } from '@trezor/logger';
-import { createDb, createPreloadStore } from '@trezor/suite';
+import { createDb } from '@trezor/suite';
 import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 

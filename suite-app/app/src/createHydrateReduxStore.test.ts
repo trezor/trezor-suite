@@ -1,8 +1,8 @@
 import { createMockDeps, mock } from '@trezor/dependency-injection';
-import { type PreloadStoreAction } from '@trezor/suite';
 import { createDeferred } from '@trezor/utils';
 
 import { type HydrateReduxStoreDeps, createHydrateReduxStore } from './createHydrateReduxStore';
+import { type PreloadStoreAction } from './createPreloadStore';
 
 describe(createHydrateReduxStore.name, () => {
     it('waits for preloading and the state patch before replacing the reducer', async () => {

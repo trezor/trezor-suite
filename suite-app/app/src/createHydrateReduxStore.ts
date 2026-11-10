@@ -1,9 +1,9 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { isCodesignBuild } from '@trezor/env-utils';
-import { type PreloadStoreAction, type PreloadStoreDep } from '@trezor/suite';
 import { mergeDeepObject } from '@trezor/utils';
 
+import { type PreloadStoreAction, type PreloadStoreDep } from './createPreloadStore';
 import { type AppState, type SuiteRootReducer } from './store';
 
 export type HydrateReduxStoreDeps = PreloadStoreDep & {

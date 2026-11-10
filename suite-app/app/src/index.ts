@@ -10,6 +10,7 @@ export { type SuiteServices } from './suiteServices';
 
 export { rootReducer } from './store';
 export { createHydrateReduxStore, type HydrateReduxStoreDep } from './createHydrateReduxStore';
+export { createPreloadStore } from './createPreloadStore';
 export { AppRouter } from './AppRouter';
 export { Main } from './Main';
 
