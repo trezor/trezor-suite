@@ -19,6 +19,7 @@ test.describe(
     'Live - Trading - Swap coin to token',
     { tag: ['@skipOnPR', '@specificFirmware', '@T3W1', '@webOnly'] },
     () => {
+        test.describe.configure({ retries: 0 });
         test.setTimeout(tenMinutes);
         test.use({
             deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
