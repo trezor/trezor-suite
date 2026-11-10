@@ -15,4 +15,3 @@ export { Main } from './Main';
 export { Preloader } from './Preloader/Preloader';
 
 export { AppsEmbeddingPage } from './pages/AppsEmbeddingPage';
-export { ReferAFriendPage } from './pages/ReferAFriendPage';

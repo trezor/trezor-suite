@@ -50,6 +50,7 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
     'suite-app/module-home',
     'suite-app/module-password-manager',
     'suite-app/module-receive',
+    'suite-app/module-refer-a-friend',
     'suite-app/module-send',
     'suite-app/module-settings',
     'suite-app/module-sign-verify',
