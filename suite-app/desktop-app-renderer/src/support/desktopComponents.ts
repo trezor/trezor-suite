@@ -6,17 +6,12 @@ import {
     AssetDetailPage,
     ConnectPopupPage,
     DashboardPage,
-    DesktopSettingsGeneralPage,
     HiddenTokensPage,
     NftsPage,
     NotificationPage,
     PasswordManagerPage,
     ReceivePage,
     ReferAFriendPage,
-    SettingsCoinsPage,
-    SettingsConnectedAppsPage,
-    SettingsDebugPage,
-    SettingsDevicePage,
     TokensPage,
     TransactionsPage,
     WalletAnonymizePage,
@@ -39,6 +34,13 @@ import {
     EarnWrapPage,
     WalletStakingPage,
 } from '@suite-app/module-earn';
+import {
+    DesktopSettingsGeneralPage,
+    SettingsCoinsPage,
+    SettingsConnectedAppsPage,
+    SettingsDebugPage,
+    SettingsDevicePage,
+} from '@suite-app/module-settings';
 import { SignVerifyPage } from '@suite-app/module-sign-verify';
 import {
     TradingBuyConfirmPage,

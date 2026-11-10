@@ -285,27 +285,27 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     // settings
     'settings-index': lazy(() =>
         import(
-            /* webpackChunkName: "settings" */ '@suite-app/app/pages/WebSettingsGeneralPage'
+            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/WebSettingsGeneralPage'
         ).then(({ WebSettingsGeneralPage }) => ({ default: WebSettingsGeneralPage })),
     ),
     'settings-coins': lazy(() =>
-        import(/* webpackChunkName: "settings" */ '@suite-app/app/pages/SettingsCoinsPage').then(
-            ({ SettingsCoinsPage }) => ({ default: SettingsCoinsPage }),
-        ),
+        import(
+            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsCoinsPage'
+        ).then(({ SettingsCoinsPage }) => ({ default: SettingsCoinsPage })),
     ),
     'settings-debug': lazy(() =>
-        import(/* webpackChunkName: "settings" */ '@suite-app/app/pages/SettingsDebugPage').then(
-            ({ SettingsDebugPage }) => ({ default: SettingsDebugPage }),
-        ),
+        import(
+            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsDebugPage'
+        ).then(({ SettingsDebugPage }) => ({ default: SettingsDebugPage })),
     ),
     'settings-device': lazy(() =>
-        import(/* webpackChunkName: "settings" */ '@suite-app/app/pages/SettingsDevicePage').then(
-            ({ SettingsDevicePage }) => ({ default: SettingsDevicePage }),
-        ),
+        import(
+            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsDevicePage'
+        ).then(({ SettingsDevicePage }) => ({ default: SettingsDevicePage })),
     ),
     'settings-connected-apps': lazy(() =>
         import(
-            /* webpackChunkName: "settings" */ '@suite-app/app/pages/SettingsConnectedAppsPage'
+            /* webpackChunkName: "settings" */ '@suite-app/module-settings/pages/SettingsConnectedAppsPage'
         ).then(({ SettingsConnectedAppsPage }) => ({
             default: SettingsConnectedAppsPage,
         })),
