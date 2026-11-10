@@ -12,24 +12,23 @@ import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
 import { TrezorLogo } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
-import { zIndices } from '@trezor/theme';
-
-import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
-import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-
-import { BottomNavigation } from './BottomNavigation';
-import { Navigation } from './Navigation';
-import { QuickActions } from './QuickActions/QuickActions';
-import { SidebarBanners } from './SidebarBanners';
 import {
+    AccountsMenu,
+    DeviceSelector,
+    MIN_CONTENT_WIDTH,
+    QuickActions,
     SIDEBAR_AUTO_COLLAPSE_BREAKPOINT,
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MAX_WIDTH,
     SIDEBAR_MIN_WIDTH,
-} from './consts';
-import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
+    SidebarBanners,
+    useResponsiveContext,
+    useSelector,
+} from '@trezor/suite';
+import { zIndices } from '@trezor/theme';
+
+import { BottomNavigation } from './BottomNavigation';
+import { Navigation } from './Navigation';
 
 const Container = styled.nav`
     display: flex;

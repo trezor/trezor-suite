@@ -17,12 +17,11 @@ import {
     TOOLTIP_DELAY_LONG,
     TOOLTIP_DELAY_SHORT,
     Tooltip,
+    commonFocusStyles,
 } from '@trezor/components';
-import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
+import { useResponsiveContext } from '@trezor/suite';
 
 const Container = styled.button<{ $isActive?: boolean }>`
     flex: 1;

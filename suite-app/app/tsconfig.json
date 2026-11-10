@@ -137,6 +137,7 @@
         { "path": "../../suite/modal" },
         { "path": "../../suite/receive" },
         { "path": "../../suite/recovery" },
+        { "path": "../../suite/regions" },
         { "path": "../../suite/router" },
         { "path": "../../suite/settings" },
         { "path": "../../suite/sign-verify" },

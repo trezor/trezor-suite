@@ -38,7 +38,10 @@ export {
 export { type BioAuthState, prepareBioAuthReducer } from './src/reducers/bioAuth';
 export { type DesktopState, desktopReducer } from './src/reducers/desktop';
 export { ConnectedThemeProvider } from './src/support/suite/ConnectedThemeProvider';
-export { ResponsiveContextProvider } from './src/support/suite/ResponsiveContext';
+export {
+    ResponsiveContextProvider,
+    useResponsiveContext,
+} from './src/support/suite/ResponsiveContext';
 export { createDb, type DbDep } from './src/storage/createDb';
 export { selectIsWindowVisible } from './src/reducers/suite/windowReducer';
 export { reportSecurityCheck } from './src/utils/suite/sentry';
@@ -316,7 +319,6 @@ export { LayoutMetadata } from './src/components/suite/layouts/SuiteLayout/Layou
 export { LayoutPayloadProvider } from './src/components/suite/layouts/SuiteLayout/LayoutPayloadProvider';
 export { PowerMonitorManager } from './src/components/suite/layouts/SuiteLayout/PowerMonitor/PowerMonitor';
 export { ScrollProvider } from './src/components/suite/layouts/SuiteLayout/ScrollProvider';
-export { Sidebar } from './src/components/suite/layouts/SuiteLayout/Sidebar/Sidebar';
 export { SwitchDeviceLayer } from './src/components/suite/layouts/SuiteLayout/SwitchDeviceLayer';
 export { DiscoveryProgress } from './src/components/wallet/DiscoveryProgress';
 export { GuideButton } from './src/components/guide/GuideButton';
@@ -346,3 +348,14 @@ export {
     Wrapper,
 } from './src/components/suite/layouts/SuiteLayout/LayoutStructure';
 export { type ForegroundAppRoute } from './src/types/suite';
+export { AccountsMenu } from './src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
+export { MIN_CONTENT_WIDTH } from './src/constants/suite/layout';
+export { DeviceSelector } from './src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceSelector';
+export { QuickActions } from './src/components/suite/layouts/SuiteLayout/Sidebar/QuickActions/QuickActions';
+export { SidebarBanners } from './src/components/suite/layouts/SuiteLayout/Sidebar/SidebarBanners';
+export {
+    SIDEBAR_AUTO_COLLAPSE_BREAKPOINT,
+    SIDEBAR_COLLAPSED_WIDTH,
+    SIDEBAR_MAX_WIDTH,
+    SIDEBAR_MIN_WIDTH,
+} from './src/components/suite/layouts/SuiteLayout/Sidebar/consts';

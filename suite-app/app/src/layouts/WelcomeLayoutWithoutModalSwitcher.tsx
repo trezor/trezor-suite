@@ -12,9 +12,10 @@ import {
     GuideRouter,
     MainContent,
     PageHeader,
-    Sidebar,
     SuiteBanners,
 } from '@trezor/suite';
+
+import { Sidebar } from './Sidebar/Sidebar';
 
 const Content = styled.div<{ $verticalCenter?: boolean }>`
     display: flex;

@@ -18,12 +18,12 @@ import {
     PageWrapper,
     PowerMonitorManager,
     ScrollProvider,
-    Sidebar,
     SuiteBanners,
     SwitchDeviceLayer,
     Wrapper,
 } from '@trezor/suite';
 
+import { Sidebar } from './Sidebar/Sidebar';
 import { ModalSwitcher } from '../ModalSwitcher/ModalSwitcher';
 
 interface SuiteLayoutProps {
