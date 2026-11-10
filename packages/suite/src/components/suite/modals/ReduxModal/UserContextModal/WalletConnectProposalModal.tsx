@@ -90,7 +90,8 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
         selectableAccounts[0] || null,
     );
     const [ignoreWarning, setIgnoreWarning] = useState(false);
-    const dappScanQuery = useDappScan(pendingProposal?.params.proposer.metadata.url);
+    // Scan where the proposal came from, not the url the proposer declared for itself.
+    const dappScanQuery = useDappScan(pendingProposal?.origin);
 
     const handleAccept = () => {
         dispatch(
