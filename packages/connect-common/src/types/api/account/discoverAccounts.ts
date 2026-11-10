@@ -1,4 +1,3 @@
-import type { BlockchainLinkParams } from '@trezor/blockchain-link';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { GetAccountInfo } from './getAccountInfo';
@@ -80,15 +79,8 @@ type DistributivePick<T, K extends keyof T> = T extends T ? Pick<T, K> : never;
 
 export type AccountTypeKey = DistributivePick<AccountTypeItem, 'symbol' | 'type'>;
 
-export type AdditionalParams = Pick<
-    BlockchainLinkParams<'getAccountInfo'>,
-    'details' | 'pageSize' | 'protocols' | 'gap'
-> & {
-    identity?: string;
-};
-
 type CoinParam<T extends AccountTypeKey['symbol'] = AccountTypeKey['symbol']> = T extends T
-    ? AdditionalParams & {
+    ? {
           symbol: T;
           known?: { type: Extract<AccountTypeKey, { symbol: T }>['type']; skip?: number }[];
           knownOnly?: boolean;
@@ -118,6 +110,12 @@ export type DiscoveryAccountInfoParams = Pick<GetAccountInfo, 'coin' | 'details'
     descriptor: string;
 };
 
+/**
+ * Discovers the accounts on the device. Every account it reads is asked for in a
+ * `UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO` request, which the caller answers with
+ * `UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO` and the response of the getAccountInfo call.
+ * Used by Trezor Suite only.
+ */
 export declare function discoverAccounts(
     params: Params<DiscoverAccountsParams>,
 ): Response<DiscoverAccountsResult>;

@@ -4,42 +4,41 @@ import {
     ACCOUNT_TYPES,
     type AccountTypeItem,
     type AccountTypeKey,
-    type AdditionalParams,
     CARDANO_DERIVATIONS,
     type CoinInfo,
     type DiscoverAccountsProgress,
+    type DiscoveryAccountInfoParams,
+    ERRORS,
     type EntropyCheckResult,
     type FirmwareRange,
-    PAGING,
     type PermissionRequest,
     UI_EVENTS,
+    UI_REQUESTS,
+    UI_RESPONSE,
     createUiEventMessage,
+    createUiRequestMessage,
 } from '@trezor/connect-common';
-import { arrayPartition, getSynchronize, toCanonicalDescriptor, versionUtils } from '@trezor/utils';
+import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
-import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';
-import { isUtxoBased } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import { checkXPubWithHashes } from './firmware/calculateXPubHash';
-
-const { CARDANO_TXS_PER_PAGE, DEFAULT_TXS_PER_PAGE, SOLANA_TXS_PER_PAGE } = PAGING;
 
 const ACCOUNT_LIMIT = 10;
 
 // A plain RPC node cannot list tokens or transactions the way blockbook does, so discovery on one
 // only asks whether the address is used (balance and nonce); Suite fetches the rest once it has
 // taken the account on. Everywhere else the full first page comes back in the same request.
-const getDiscoveryDetails = (coinInfo: CoinInfo): AdditionalParams['details'] =>
+const getDiscoveryDetails = (coinInfo: CoinInfo): DiscoveryAccountInfoParams['details'] =>
     coinInfo.blockchainLink?.type === 'evm-rpc' ? 'basic' : 'txs';
 
 type CardanoDerivation = (typeof CARDANO_DERIVATIONS)[keyof typeof CARDANO_DERIVATIONS];
 
-type Request = AdditionalParams & {
+type Request = {
     account: AccountTypeItem;
     derivation?: CardanoDerivation;
     firmwareRange: FirmwareRange;
@@ -79,17 +78,6 @@ const isSingleAccountType = (account: AccountTypeItem) => !account.path.includes
 // TODO use substituteBip43Path from wallet-utils somehow
 const substituteBip43Path = (path: string, index: number) => path.replace('i', String(index));
 
-export const getTxsPerPage = (account: AccountTypeItem) => {
-    switch (account.symbol) {
-        case 'ada':
-            return CARDANO_TXS_PER_PAGE;
-        case 'sol':
-            return SOLANA_TXS_PER_PAGE;
-        default:
-            return DEFAULT_TXS_PER_PAGE;
-    }
-};
-
 export default class DiscoverAccounts extends AbstractMethod<
     'discoverAccounts',
     DiscoverAccountsLocalParams
@@ -112,19 +100,12 @@ export default class DiscoverAccounts extends AbstractMethod<
                 { name: 'symbol', type: 'string', required: true },
                 { name: 'known', type: 'array', allowEmpty: true },
                 { name: 'knownOnly', type: 'boolean' },
-                { name: 'identity', type: 'string' },
-                { name: 'details', type: 'string' },
-                { name: 'pageSize', type: 'number' },
-                { name: 'protocols', type: 'array' },
             ]);
 
-            const { symbol, known: knownAccs, knownOnly, ...rest } = coin;
+            const { symbol, known: knownAccs, knownOnly } = coin;
 
             // validate coin info
             const coinInfo = getCoinInfoOrThrow(symbol);
-
-            // validate backend
-            assertBackendSupported(coinInfo);
 
             const firmwareRange = getFirmwareRange([payload.method], [coinInfo]);
 
@@ -146,13 +127,10 @@ export default class DiscoverAccounts extends AbstractMethod<
                 .map(account => [account, knownAccs?.find(t => t.type === account.type)] as const) // Pair all coin accounts with possibly known account types
                 .filter(([_, known]) => (known ? typeof known.skip === 'number' : !knownOnly)) // Include passed known accounts with skip param (the other ones are known completely) and unpassed accounts if knownOnly wasn't requested
                 .map(([account, known]) => ({
-                    pageSize: getTxsPerPage(account),
-                    details: getDiscoveryDetails(coinInfo),
                     coinInfo,
                     firmwareRange,
                     skip: known?.skip ?? 0, // Use the possibly passed skip param or fall back to zero
                     account,
-                    ...rest,
                     offset: shouldSkipFirstAccountIndex(account, coinInfo) ? 1 : 0,
                     derivation: isCardano(account) ? CARDANO_DERIVATIONS[account.type] : undefined,
                 }));
@@ -198,7 +176,8 @@ export default class DiscoverAccounts extends AbstractMethod<
         );
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
+    async run(context: MethodContext) {
+        const { sendCoreMessage } = context;
         const [unsupported, supported] = this.filterUnsupportedAccounts(this.params.coins);
 
         unsupported.forEach(
@@ -222,7 +201,7 @@ export default class DiscoverAccounts extends AbstractMethod<
         accounts.forEach(({ account, skip }) => this.updateProgress(account, skip));
 
         const counts = await Promise.all(
-            accounts.map(account => this.discoverAccount(account, sendCoreMessage)),
+            accounts.map(account => this.discoverAccount(account, context)),
         );
         const empty = counts.reduce((sum, acc) => sum + acc.empty, 0);
         const nonempty = counts.reduce((sum, acc) => sum + acc.nonempty, 0);
@@ -366,10 +345,9 @@ export default class DiscoverAccounts extends AbstractMethod<
 
     private async discoverAccount(
         request: Request,
-        sendCoreMessage: MethodContext['sendCoreMessage'],
+        { sendCoreMessage, createUiPromise }: MethodContext,
     ): Promise<{ empty: number; nonempty: number; error?: string }> {
-        const { details, identity, pageSize, gap, protocols, coinInfo, derivation, offset, skip } =
-            request;
+        const { coinInfo, derivation, offset, skip } = request;
         const { path: bip43, ...accountKey } = request.account;
         const singleAccount = isSingleAccountType(request.account);
 
@@ -381,34 +359,32 @@ export default class DiscoverAccounts extends AbstractMethod<
         }
 
         const backendType = coinInfo.blockchainLink?.type;
-        const utxoRequired = isUtxoBased(coinInfo) && details && details !== 'basic';
+        const details = getDiscoveryDetails(coinInfo);
         let index = skip;
 
         const sendProgress = (response: DiscoverAccountsProgress) =>
             this.sendProgress(response, sendCoreMessage);
 
-        let blockchain;
-        try {
-            blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
-        } catch (err) {
-            const path = substituteBip43Path(bip43, offset + index);
-            this.updateProgress(accountKey, index + 1, true);
-            const error = err.message;
-            sendProgress({ ...accountKey, index, failed: true, error, path, backendType });
+        // The caller reads the account from the backend and answers with the getAccountInfo response.
+        const getAccountInfo = async (descriptor: string, level = details) => {
+            const uiPromise = createUiPromise(
+                UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO,
+                this.getDevice(),
+            );
+            sendCoreMessage(
+                createUiRequestMessage(
+                    UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO,
+                    { coin: request.account.symbol, descriptor, details: level },
+                    { requestId: uiPromise.requestId },
+                ),
+            );
+            const { payload: response } = await uiPromise.promise;
+            if (!response.success) {
+                throw new ERRORS.TrezorError(response.error.code, response.error.message);
+            }
 
-            return { empty: 0, nonempty: 0, error };
-        }
-
-        const getAccountInfo = (descriptor: string, level = details) =>
-            blockchain.getAccountInfo({
-                // Blockbook rejects taproot descriptors that use `h` for hardened parts, so the
-                // backend always receives the canonical form.
-                descriptor: toCanonicalDescriptor(descriptor),
-                details: level,
-                pageSize,
-                protocols,
-                gap,
-            });
+            return response.payload;
+        };
 
         let empty = 0;
 
@@ -443,19 +419,11 @@ export default class DiscoverAccounts extends AbstractMethod<
                             .then(nextAccount => nextAccount.empty)
                             .catch(() => true)));
 
-                // eslint-disable-next-line no-nested-ternary
-                const utxo = !utxoRequired
-                    ? undefined
-                    : info.empty
-                      ? []
-                      : await blockchain.getAccountUtxo(toCanonicalDescriptor(descriptor));
-
                 this.updateProgress(accountKey, index + 1, last);
                 sendProgress({
                     ...info,
                     descriptor,
                     ...descRest,
-                    utxo,
                     ...accountKey,
                     index,
                     backendType,
