@@ -412,9 +412,7 @@ export const updateCardanoProtocolParametersThunk = createThunk<
     },
 );
 
-type OnBlockchainNotificationThunkState = DeviceRootState &
-    SyncAccountsWithBlockchainThunkState &
-    WalletSettingsRootState;
+type OnBlockchainNotificationThunkState = DeviceRootState & SyncAccountsWithBlockchainThunkState;
 
 type OnBlockchainNotificationThunkDeps = WithServices<
     AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
