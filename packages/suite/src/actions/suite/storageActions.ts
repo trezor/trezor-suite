@@ -102,7 +102,7 @@ import type { TrezorDevice } from '#src/types/suite';
 import type { Account } from '#src/types/wallet';
 import { type GraphData } from '#src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from '#src/utils/suite/storage';
-import { deviceGraphDataFilterFn } from '#src/utils/wallet/graph';
+import { deviceGraphDataFilterFn } from '#src/utils/wallet/graph/utils';
 
 import { STORAGE } from './constants';
 

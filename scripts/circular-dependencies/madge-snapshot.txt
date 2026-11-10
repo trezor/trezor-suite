@@ -7,8 +7,7 @@ packages/suite/src/actions/suite/storageLifecycleActions.ts > packages/suite/src
 packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus.tsx
 packages/suite/src/reducers/suite/suiteReducer.ts > packages/suite/src/actions/suite/storageLifecycleActions.ts > packages/suite/src/storage/StorageLoadPayload.ts > packages/suite/src/storage/loadStoragePayload.ts > packages/suite/src/storage/createDb.ts > packages/suite/src/storage/definitions.ts
 packages/suite/src/reducers/wallet/graphReducer.ts > packages/suite/src/actions/wallet/graphActions.ts
-packages/suite/src/reducers/wallet/graphReducer.ts > packages/suite/src/actions/wallet/graphActions.ts > packages/suite/src/utils/wallet/graph/index.ts > packages/suite/src/utils/wallet/graph/utils.ts
-packages/suite/src/reducers/wallet/graphReducer.ts > packages/suite/src/actions/wallet/graphActions.ts > packages/suite/src/utils/wallet/graph/index.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
+packages/suite/src/reducers/wallet/graphReducer.ts > packages/suite/src/actions/wallet/graphActions.ts > packages/suite/src/utils/wallet/graph/utils.ts
 packages/suite/src/storage/migrations/runLegacyMigrations.ts > packages/suite/src/storage/migrations/legacyVersions/migrateToV56.ts
 packages/suite/src/types/suite/index.ts > packages/suite/src/utils/suite/prerequisites.ts
 packages/suite/src/types/wallet/sendForm.ts > packages/suite/src/hooks/wallet/useSendFormChangeHandlers.ts
