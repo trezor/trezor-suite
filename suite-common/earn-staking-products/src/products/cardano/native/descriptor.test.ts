@@ -1,10 +1,10 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createCardanoNativeDelegationProductDescriptor } from './cardanoNativeDelegationProductDescriptor';
-import { CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS } from './cardanoNativeDelegationProductLimits';
+import { createCardanoNativeDelegationProductDescriptor } from './descriptor';
+import { CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
 import { everstakeProvider } from '../../../providers/everstake';
-import { EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES } from '../cardanoMessageSystemFeatures';
+import { EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
 
 describe('createCardanoNativeDelegationProductDescriptor', () => {
     it('builds the ada:ada:everstake:native product', () => {

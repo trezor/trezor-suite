@@ -14,11 +14,11 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createCardanoExternalDelegationProduct } from './createCardanoExternalDelegationProduct';
+import { createCardanoExternalDelegationProduct } from './product';
 import { everstakeProvider } from '../../../providers/everstake';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
-import { CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO } from '../cardanoDelegationProductInfo';
-import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from '../cardanoMessageSystemFeatures';
+import { CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO } from '../info';
+import { CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('ada') });
 

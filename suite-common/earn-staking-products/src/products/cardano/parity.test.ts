@@ -25,16 +25,16 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
+import { createCardanoExternalDelegationProduct } from './external/product';
 import {
     CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
     EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES,
-} from './cardanoMessageSystemFeatures';
-import { createCardanoExternalDelegationProduct } from './external/createCardanoExternalDelegationProduct';
+} from './messageSystemFeatures';
 import {
     type CardanoNativeDelegationProductDeps,
     createCardanoNativeDelegationProduct,
-} from './native/createCardanoNativeDelegationProduct';
-import { createCardanoRetiredDelegationProduct } from './retired/createCardanoRetiredDelegationProduct';
+} from './native/product';
+import { createCardanoRetiredDelegationProduct } from './retired/product';
 import { everstakeProvider } from '../../providers/everstake';
 import { fivebinariesProvider } from '../../providers/fivebinaries';
 

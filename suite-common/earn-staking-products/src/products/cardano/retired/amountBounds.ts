@@ -6,7 +6,7 @@ import {
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getCardanoStakeKeyAmountBounds } from '../cardanoStakeKeyAmountBounds';
+import { getCardanoStakeKeyAmountBounds } from '../amountBounds';
 
 export const getCardanoRetiredDelegationProductAmountBounds = ({
     position,

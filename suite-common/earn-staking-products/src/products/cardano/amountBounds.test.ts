@@ -1,7 +1,7 @@
 import { stakingAmountSchema } from '@suite-common/earn-staking-common';
 import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 
-import { getCardanoStakeKeyAmountBounds } from './cardanoStakeKeyAmountBounds';
+import { getCardanoStakeKeyAmountBounds } from './amountBounds';
 
 const ADA = '000000';
 

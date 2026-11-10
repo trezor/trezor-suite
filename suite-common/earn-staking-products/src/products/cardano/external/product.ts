@@ -7,12 +7,12 @@ import type {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { getCardanoExternalDelegationProductAmountBounds } from './cardanoExternalDelegationProductAmountBounds';
-import { createCardanoExternalDelegationProductDescriptor } from './cardanoExternalDelegationProductDescriptor';
+import { getCardanoExternalDelegationProductAmountBounds } from './amountBounds';
+import { createCardanoExternalDelegationProductDescriptor } from './descriptor';
 import { externalProvider } from '../../../providers/external';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
-import { CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO } from '../cardanoDelegationProductInfo';
-import { getCardanoDelegationProductPosition } from '../getCardanoDelegationProductPosition';
+import { CARDANO_UNMANAGED_DELEGATION_PRODUCT_INFO } from '../info';
+import { getCardanoDelegationProductPosition } from '../position';
 
 export type CreateCardanoExternalDelegationProductParams = {
     networkSymbol: NetworkSymbol;

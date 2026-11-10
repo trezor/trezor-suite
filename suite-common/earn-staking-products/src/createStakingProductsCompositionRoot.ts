@@ -7,13 +7,13 @@ import {
 import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
+import { createCardanoExternalDelegationProduct } from './products/cardano/external/product';
 import {
     CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
     EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES,
-} from './products/cardano/cardanoMessageSystemFeatures';
-import { createCardanoExternalDelegationProduct } from './products/cardano/external/createCardanoExternalDelegationProduct';
-import { createCardanoNativeDelegationProduct } from './products/cardano/native/createCardanoNativeDelegationProduct';
-import { createCardanoRetiredDelegationProduct } from './products/cardano/retired/createCardanoRetiredDelegationProduct';
+} from './products/cardano/messageSystemFeatures';
+import { createCardanoNativeDelegationProduct } from './products/cardano/native/product';
+import { createCardanoRetiredDelegationProduct } from './products/cardano/retired/product';
 import { createEverstakePooledProduct } from './products/ethereum/everstake-pooled/product';
 import { createSolanaExternalDelegationProduct } from './products/solana/external/product';
 import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/messageSystemFeatures';

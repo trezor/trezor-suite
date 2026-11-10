@@ -18,11 +18,11 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 import {
     type CardanoNativeDelegationProductDeps,
     createCardanoNativeDelegationProduct,
-} from './createCardanoNativeDelegationProduct';
+} from './product';
 import { everstakeProvider } from '../../../providers/everstake';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
 import { luganodesProvider } from '../../../providers/luganodes';
-import { EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES } from '../cardanoMessageSystemFeatures';
+import { EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
 
 const adaPools: AdaPools = {
     pools: [{ apy: 2.06, saturation: 62.64, id: MOCK_CARDANO_EVERSTAKE_POOL }],

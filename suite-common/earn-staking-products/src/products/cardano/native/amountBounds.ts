@@ -6,9 +6,9 @@ import {
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS } from './cardanoNativeDelegationProductLimits';
+import { CARDANO_NATIVE_DELEGATION_PRODUCT_LIMITS } from './limits';
 import { getMaxStakeAmount } from '../../../utils/getMaxStakeAmount';
-import { getCardanoStakeKeyAmountBounds } from '../cardanoStakeKeyAmountBounds';
+import { getCardanoStakeKeyAmountBounds } from '../amountBounds';
 
 export const getCardanoNativeDelegationProductAmountBounds = ({
     account,

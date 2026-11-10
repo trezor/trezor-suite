@@ -6,7 +6,7 @@ import {
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { getCardanoNativeDelegationProductAmountBounds } from './cardanoNativeDelegationProductAmountBounds';
+import { getCardanoNativeDelegationProductAmountBounds } from './amountBounds';
 
 const ADA = '000000';
 
