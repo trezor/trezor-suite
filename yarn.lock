@@ -13859,6 +13859,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/performance-metrics": "workspace:*"
+    "@suite-native/refer-a-friend": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
@@ -15895,6 +15896,17 @@ __metadata:
     react-native: "npm:0.88.1"
     react-native-gesture-handler: "npm:~3.3.0"
     react-native-reanimated: "npm:4.7.1"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/refer-a-friend@workspace:*, @suite-native/refer-a-friend@workspace:suite-native/refer-a-friend":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/refer-a-friend@workspace:suite-native/refer-a-friend"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    react: "npm:19.3.0"
+    react-native: "npm:0.88.1"
+    react-native-svg: "npm:15.16.0"
   languageName: unknown
   linkType: soft
 

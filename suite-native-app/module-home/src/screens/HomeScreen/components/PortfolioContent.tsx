@@ -4,6 +4,7 @@ import { LinearTransition } from 'react-native-reanimated';
 import { Assets } from '@suite-native/assets';
 import { AnimatedVStack, VStack } from '@suite-native/atoms';
 import { PromoBanners } from '@suite-native/banners';
+import { ReferAFriendCard, ReferAFriendContent } from '@suite-native/refer-a-friend';
 
 import { HomescreenAlerts } from './HomescreenAlerts';
 import { PortfolioGraph, type PortfolioGraphRef } from './PortfolioGraph';
@@ -21,6 +22,8 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => (
                     <PromoBanners />
                     <Assets />
                 </VStack>
+                <ReferAFriendCard />
+                <ReferAFriendContent />
                 <ReferralButton />
             </VStack>
         </AnimatedVStack>

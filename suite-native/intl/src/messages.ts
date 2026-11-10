@@ -5307,4 +5307,82 @@ export const messages = {
             failed: 'Verification failed',
         },
     },
+    referAFriend: {
+        card: {
+            title: 'Invite friends, earn rewards',
+            subtitle: {
+                disconnected: 'Connect your Trezor to see your rewards.',
+                connected: 'Get {rewardAmount} for each friend you invite.',
+            },
+            button: 'Refer-A-Friend',
+        },
+        voucher: {
+            youGet: {
+                label: 'You get',
+                voucher: '{rewardAmount} voucher',
+            },
+            theyGet: {
+                label: 'They get',
+                discount: '{friendDiscountPercentage}% off',
+                description:
+                    'Your friends get {friendDiscountPercentage}% off their orders of {minimumOrderAmount} or more.',
+            },
+        },
+        terms: 'By joining you agree to the <privacyPolicy>Privacy Policy</privacyPolicy>, the <programTerms>Refer-A-Friend Program Terms & Conditions</programTerms>, and the <generalTerms>General Terms of Use</generalTerms>.',
+        howItWorks: {
+            title: 'How it works',
+            getLink: {
+                title: 'Get your link',
+                description: 'Join the program and receive your unique referral link.',
+            },
+            inviteFriends: {
+                title: 'Invite your friends',
+                description: 'Share your link in a message, an email, or a post.',
+            },
+            spendOnEshop: {
+                title: 'Spend on the Trezor Shop',
+                description: 'Earn {rewardAmount} vouchers to spend on Trezor products.',
+            },
+        },
+        faq: {
+            title: 'Frequently asked questions',
+            whatIsRaf: {
+                question: 'What is the Refer-A-Friend program?',
+                answer: 'The Refer-A-Friend program lets you earn {rewardAmount} vouchers by inviting friends to purchase products on the Trezor Shop. When your friend places an order of {minimumOrderAmount} or more using your referral link, they get {friendDiscountPercentage}% off and you can find a {rewardAmount} reward here in Suite. You can refer up to {annualReferralLimit} friends per year, earning up to {annualRewardLimit} in rewards.',
+            },
+            howToJoin: {
+                question: 'How do I join?',
+                answer: 'Simply accept the terms and conditions above and click "Join Program." You\'ll immediately receive your unique referral link that you can share with friends.',
+            },
+            limits: {
+                question: 'Is there a limit to how many friends I can refer?',
+                answer: 'You can make up to {annualReferralLimit} referrals and earn up to {annualRewardLimit} in Trezor Shop vouchers within a 12-month period. Every order placed using your link counts, even if it’s later canceled or returned. Once you reach either limit, your friends won’t get {friendDiscountPercentage}% off and you won’t earn rewards until the date shown on this page.',
+            },
+            howToUse: {
+                question: 'How can I use my {rewardAmount} reward?',
+                answer: 'Rewards are emailed as voucher codes redeemable at checkout on trezor.io. Add items to your cart, paste the voucher code, and the discount applies automatically. You can use multiple voucher codes on a single order.',
+            },
+            otherPromotions: {
+                question:
+                    'Can my friend combine the {friendDiscountPercentage}% with other promotions?',
+                answer: 'No. The {friendDiscountPercentage}% discount your friend receives from this program cannot be combined with other promotions or discount codes.',
+            },
+            notWorking: {
+                question: "My reward isn't working - what should I do?",
+                answer: "Check for typos and enter the code exactly as received. Ensure you haven't exceeded the {annualReferralLimit}-referral limit. If using multiple codes, make sure they're all {rewardAmount} rewards from this program. If the issue persists, contact Trezor Support.",
+            },
+            oldRaf: {
+                question: 'I was in the old Refer-A-Friend program - what should I do?',
+                answer: 'Join again here to get a new referral link. Vouchers from the old program still work at checkout until 4 January 2028.',
+            },
+            multipleDevices: {
+                question: 'I have more than one Trezor. How does Refer-A-Friend work?',
+                answer: 'Your referral link and rewards belong to your wallet, not to the Trezor device. Trezors that hold the same wallet show the same link and rewards. A Trezor with a different wallet has its own link and rewards, and you join with that Trezor connected. If you recover your wallet on a new Trezor, your link and rewards stay with you. Trezor will never ask for your wallet backup to join the program or to get your rewards.',
+            },
+            howToLeave: {
+                question: 'How do I leave the program?',
+                answer: 'If you would like to leave the Refer-A-Friend program <leaveProgram>click here</leaveProgram>.',
+            },
+        },
+    },
 };
