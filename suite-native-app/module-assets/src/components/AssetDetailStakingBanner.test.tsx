@@ -64,12 +64,14 @@ type RenderStakingBannerParams = {
     accounts: Account[];
     stakingRate?: number;
     closedEarnBannerSymbols?: NetworkSymbol[];
+    isDiscreetMode?: boolean;
 };
 
 const renderStakingBanner = async ({
     accounts,
     stakingRate,
     closedEarnBannerSymbols = [],
+    isDiscreetMode = false,
 }: RenderStakingBannerParams) => {
     const [account] = accounts;
 
@@ -81,6 +83,7 @@ const renderStakingBanner = async ({
     mockUseStakingRate.mockReturnValue({ rate: stakingRate ?? null });
 
     const store = createStoreFromPreloadedState({
+        discreetMode: { isActive: isDiscreetMode },
         device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
         wallet: {
             accounts,
@@ -123,6 +126,23 @@ describe('AssetDetailStakingBanner', () => {
                 getTranslation(
                     'moduleAssets.assetDetailScreen.stakingBanner.descriptionWithRewards',
                     { potentialRewards: '0.5', symbol: 'SOL' },
+                ),
+            ),
+        ).toBeTruthy();
+    });
+
+    it('redacts the yearly rewards in discreet mode', async () => {
+        await renderStakingBanner({
+            accounts: [mockAccount(SOL)],
+            stakingRate: 5,
+            isDiscreetMode: true,
+        });
+
+        expect(
+            screen.getByText(
+                getTranslation(
+                    'moduleAssets.assetDetailScreen.stakingBanner.descriptionWithRewards',
+                    { potentialRewards: '###', symbol: 'SOL' },
                 ),
             ),
         ).toBeTruthy();

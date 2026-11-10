@@ -13491,6 +13491,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/earn-stablecoin": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
