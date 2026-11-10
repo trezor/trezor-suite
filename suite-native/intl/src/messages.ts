@@ -2470,6 +2470,15 @@ export const messages = {
                 unstaked: 'Unstaked',
                 staked: 'Staked',
             },
+            stakingBanner: {
+                title: 'Earn ~{apy}% APY by staking your {symbol}',
+                titleApr: 'Earn ~{apr}% APR by staking your {symbol}',
+                descriptionWithRewards:
+                    'Stake your balance and earn ~{potentialRewards} {symbol} yearly at the current APY.',
+                descriptionWithRewardsApr:
+                    'Stake your balance and earn ~{potentialRewards} {symbol} yearly at the current APR.',
+                description: 'Make your {symbol} work for you. Start staking to earn rewards.',
+            },
             hiddenBanner: {
                 suspiciousTitle: 'Flagged as suspicious',
                 suspiciousDescription:

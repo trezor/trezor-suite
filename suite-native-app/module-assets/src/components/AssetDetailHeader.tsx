@@ -4,6 +4,7 @@ import { AssetDetailBalanceSection } from './AssetDetailBalanceSection';
 import { AssetDetailEarnSection } from './AssetDetailEarnSection';
 import { AssetDetailHiddenBanner } from './AssetDetailHiddenBanner';
 import { AssetDetailPriceSection } from './AssetDetailPriceSection';
+import { AssetDetailStakingBanner } from './AssetDetailStakingBanner';
 
 export const AssetDetailHeader = () => (
     <VStack spacing="sp20">
@@ -11,5 +12,6 @@ export const AssetDetailHeader = () => (
         <AssetDetailPriceSection />
         <AssetDetailBalanceSection />
         <AssetDetailEarnSection />
+        <AssetDetailStakingBanner />
     </VStack>
 );
