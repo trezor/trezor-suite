@@ -9,6 +9,7 @@ import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 
 type BaseCurrencyAmountHeaderFormatterProps = FormatterProps<BaseCurrencyAmountValue | null> & {
     variant?: NativeTypographyStyle;
+    isExact?: boolean;
 };
 
 type BaseCurrencyAmountContentProps = FormattedBaseCurrencyAmount & {
@@ -50,13 +51,14 @@ const BaseCurrencyAmountContent = ({
 export const BaseCurrencyAmountHeaderFormatter = ({
     value,
     variant = 'headline-md',
+    isExact,
 }: BaseCurrencyAmountHeaderFormatterProps) => {
     if (value === null) {
         return <EmptyAmountSkeleton variant={variant} />;
     }
 
     return (
-        <BaseCurrencyAmount value={value}>
+        <BaseCurrencyAmount value={value} isExact={isExact}>
             {formattedAmount => (
                 <BaseCurrencyAmountContent {...formattedAmount} variant={variant} />
             )}

@@ -8,14 +8,15 @@ import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation, selectLocale } from '@suite-native/intl';
 
 const PERCENTAGE_DECIMAL_PLACES = 2;
+const MIN_VALUE_CHANGE_DECIMAL_PLACES = 2;
 
 const roundPercentageChangeForDisplay = (percentageChange: number) =>
     Number(percentageChange.toFixed(PERCENTAGE_DECIMAL_PLACES + 2));
 
-const getChangeColor = (percentageChange: number): NonNullable<TextProps['color']> => {
-    if (percentageChange === 0) return 'contentSecondary';
+const getChangeColor = (change: number): NonNullable<TextProps['color']> => {
+    if (change === 0) return 'contentSecondary';
 
-    return percentageChange > 0 ? 'contentBrand' : 'contentCritical';
+    return change > 0 ? 'contentBrand' : 'contentCritical';
 };
 
 type AssetPriceChangeProps = {
@@ -33,7 +34,15 @@ export const AssetPriceChange = ({ valueChange, percentageChange }: AssetPriceCh
         numDecimals: PERCENTAGE_DECIMAL_PLACES,
     });
     const absoluteValueChange = valueChange ? asBaseCurrencyAmount(valueChange.abs()) : valueChange;
+    // Cents would round the change of a low-priced asset down to zero.
+    const valueChangeDecimalPlaces = Math.max(
+        MIN_VALUE_CHANGE_DECIMAL_PLACES,
+        absoluteValueChange?.decimalPlaces() ?? 0,
+    );
     const textColor = getChangeColor(displayedPercentageChange);
+    // The percentage can round to zero while the amount, shown with every decimal, does not.
+    const valueChangeSign = valueChange?.comparedTo(0) ?? 0;
+    const valueChangeColor = getChangeColor(valueChangeSign);
 
     return (
         <HStack spacing="sp12">
@@ -43,15 +52,16 @@ export const AssetPriceChange = ({ valueChange, percentageChange }: AssetPriceCh
 
             {absoluteValueChange !== null && absoluteValueChange !== undefined && (
                 <HStack spacing={0}>
-                    {displayedPercentageChange !== 0 && (
-                        <Text variant="body-sm" color={textColor}>
-                            <SignValueFormatter value={displayedPercentageChange} />
+                    {valueChangeSign !== 0 && (
+                        <Text variant="body-sm" color={valueChangeColor}>
+                            <SignValueFormatter value={valueChangeSign} />
                         </Text>
                     )}
                     <BaseCurrencyAmountFormatter
                         value={absoluteValueChange}
+                        maximumFractionDigits={valueChangeDecimalPlaces}
                         variant="body-sm"
-                        color={textColor}
+                        color={valueChangeColor}
                         // This is a public market-price change, not a wallet balance.
                         discreetMode="disabled"
                     />
