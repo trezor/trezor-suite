@@ -1,13 +1,16 @@
 import { Pressable } from 'react-native';
 
 import { type TokenAddress } from '@suite-common/tokens';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TokenInfoCardProps = {
+    networkSymbol: NetworkSymbol;
+    tokenContract: TokenAddress;
     tokenName: string;
     issuerDomain: string;
     iconContractAddress: TokenAddress | undefined;
@@ -21,6 +24,8 @@ const tokenCardStyle = prepareNativeStyle(utils => ({
 }));
 
 export const TokenInfoCard = ({
+    networkSymbol,
+    tokenContract,
     tokenName,
     issuerDomain,
     iconContractAddress,
@@ -49,7 +54,11 @@ export const TokenInfoCard = ({
                                     tokenSymbol={tokenName}
                                     size="extraSmall"
                                 />
-                                <Text variant="body-md">{tokenName}</Text>
+                                <TokenName
+                                    networkSymbol={networkSymbol}
+                                    contractAddress={tokenContract}
+                                    variant="body-md"
+                                />
                             </HStack>
                             <Text variant="body-md">{issuerDomain}</Text>
                         </VStack>

@@ -22,9 +22,11 @@ export type TokenMetadataByNetwork = ReadonlyMap<
 >;
 
 type TokenMetadataContextValue = {
+    sources: readonly TokenMetadataSource[];
     tokensByNetwork: TokenMetadataByNetwork;
 };
 
 export const TokenMetadataContext = createContext<TokenMetadataContextValue>({
+    sources: [],
     tokensByNetwork: new Map(),
 });
