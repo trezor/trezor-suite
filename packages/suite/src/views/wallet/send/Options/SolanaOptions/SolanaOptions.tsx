@@ -1,4 +1,4 @@
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 import { SolanaMemo } from './SolanaMemo';
 

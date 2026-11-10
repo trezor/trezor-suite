@@ -25,8 +25,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite';
 import { useLayoutSize, useSelector } from '#src/hooks/suite';
-import { useSendFormContext } from '#src/hooks/wallet';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import {
     validateDecimals,
     validateInteger,

@@ -27,7 +27,7 @@ import {
 import { type AssetPickerListItem } from '#src/components/suite/asset-picker/types';
 import { createTokenOption } from '#src/components/suite/asset-picker/utils/assetOptions';
 import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/utils/assetPickerItemHeights';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { useBuildTokenOptions } from './hooks/useBuildTokenOptions';

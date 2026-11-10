@@ -17,7 +17,7 @@ import { InfoIcon, XIcon } from '@trezor/icons';
 import { TRON_NOTE_MAX_BYTES } from '@trezor/network-tron/constants';
 import { countBytesInString } from '@trezor/utils';
 
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 const inputName = 'destinationTag';
 

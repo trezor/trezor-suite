@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { type Account } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
 
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 import { ReceiveAddressModal } from './ReceiveAddressModal/ReceiveAddressModal';
 
