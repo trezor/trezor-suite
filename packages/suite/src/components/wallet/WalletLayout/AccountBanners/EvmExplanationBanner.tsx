@@ -4,13 +4,12 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { closeEvmExplanationBanner } from 'src/actions/suite/suiteActions';
-import { useSelector } from 'src/hooks/suite';
-import { selectEvmSettings } from 'src/selectors/suite/suiteSelectors';
-import { type Account } from 'src/types/wallet';
-
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';
+import { closeEvmExplanationBanner } from '../../../../actions/suite/suiteActions';
+import { useSelector } from '../../../../hooks/suite';
+import { selectEvmSettings } from '../../../../selectors/suite/suiteSelectors';
+import { type Account } from '../../../../types/wallet';
 
 interface EvmExplanationBannerProps {
     account?: Account;

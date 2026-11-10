@@ -25,8 +25,7 @@ import {
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-
+import { useSelector } from '../../../../../hooks/suite';
 import {
     type YieldAccountOpportunity,
     type YieldInactiveVaultOpportunity,

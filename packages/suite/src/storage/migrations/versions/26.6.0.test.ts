@@ -2,9 +2,8 @@ import { type IDBPDatabase, openDB } from 'idb';
 
 import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
-
 import migration from './26.6.0';
+import { type SuiteDBSchema } from '../../definitions';
 
 const DB_NAME = 'suite-idb-test-26.6.0';
 const INITIAL_VERSION = 1;

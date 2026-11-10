@@ -17,11 +17,11 @@ import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { CircuitryIcon } from '@trezor/icons';
 import { unique } from '@trezor/utils';
 
-import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
-import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
-import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
-import { PrerequisitesGuide } from 'src/components/suite';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { FirmwareLowBatteryModal } from '../../../../components/firmware/FirmwareLowBatteryModal';
+import { FirmwareOffer } from '../../../../components/firmware/FirmwareOffer';
+import { SkipStepConfirmation } from '../../../../components/onboarding/SkipStepConfirmation';
+import { PrerequisitesGuide } from '../../../../components/suite';
+import { useOnboarding, useSelector } from '../../../../hooks/suite';
 
 const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip

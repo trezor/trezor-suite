@@ -36,7 +36,7 @@ Use when creating/deleting object stores — no data transformation needed:
 
 ```ts
 import { createMigration } from '@suite/idb-migration-utils';
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '../../definitions';
 
 export default createMigration<SuiteDBSchema>('26.5.0', db => {
     db.createObjectStore('newStore');
@@ -53,7 +53,7 @@ Use `updateAll` from `../utils` to iterate and transform all records in a store.
 
 ```ts
 import { createMigration } from '@suite/idb-migration-utils';
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '../../definitions';
 import { updateAll } from '../utils';
 
 export default createMigration<SuiteDBSchema>('26.5.0', async (_, tx) => {

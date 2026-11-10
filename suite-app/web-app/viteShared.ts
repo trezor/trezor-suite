@@ -55,10 +55,6 @@ export const sharedAliases = [
         replacement: 'lodash-es',
     },
     {
-        find: 'src',
-        replacement: resolve(packageDir, '../../packages/suite/src'),
-    },
-    {
         find: 'crypto',
         replacement: require.resolve('crypto-browserify'),
     },

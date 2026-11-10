@@ -17,10 +17,10 @@ import { CheckCircleIcon, CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../hooks/suite';
+import { ConnectCallSource } from '../../../ConnectCallSource';
+import { ConnectModalBackdrop } from '../../../ConnectModalBackdrop';
+import { WalletLabeling } from '../../../labeling/WalletLabeling';
 
 export const ConnectAddressConfirmation = () => {
     const { device } = useDevice();

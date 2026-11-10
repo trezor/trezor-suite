@@ -15,11 +15,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { Error } from 'src/components/suite/Error';
-import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useSelector } from 'src/hooks/suite';
-
 import { Tile, type TileProps } from './Tile';
+import { Error } from '../../../../components/suite/Error';
+import { useCoinjoinSessionBlockers } from '../../../../hooks/coinjoin/useCoinjoinSessionBlockers';
+import { useSelector } from '../../../../hooks/suite';
 
 const TopFeeRow = styled.div`
     display: flex;

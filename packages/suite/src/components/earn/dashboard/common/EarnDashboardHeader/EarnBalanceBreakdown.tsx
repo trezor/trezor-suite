@@ -12,10 +12,9 @@ import { Card, Column, SegmentedBar, Text } from '@trezor/components';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 import { EarnBalanceBreakdownRow } from './EarnBalanceBreakdownRow';
+import { useSelector } from '../../../../../hooks/suite';
+import { HiddenPlaceholder } from '../../../../suite';
 
 const STAKING_COLOR = 'contentBrand' satisfies Color;
 const YIELD_COLOR = 'elementFillBrandBold' satisfies Color;

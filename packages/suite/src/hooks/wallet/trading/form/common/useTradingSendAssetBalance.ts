@@ -13,11 +13,10 @@ import {
 } from '@suite-common/wallet-types';
 import { isErc4626, isZero } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
-import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
-
 import { useTradingAssetDecimals } from './useTradingAssetDecimals';
+import { useTradingFiatValues } from './useTradingFiatValues';
+import { getFeeInUnits } from '../../../../../utils/wallet/trading/tradingUtils';
+import { useSelector } from '../../../../suite';
 
 interface UseTradingSendAssetBalanceProps {
     account: Account | undefined;

@@ -5,14 +5,14 @@ import { useServices } from '@trezor/dependency-injection';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { Metadata } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
+import { Metadata } from '../../../components/suite';
+import { useSelector } from '../../../hooks/suite';
+import { useOpenSuiteDesktop } from '../../../hooks/suite/useOpenSuiteDesktop';
 import {
     selectHasActiveTransport,
     selectHasTransportOfType,
     selectTransportOfType,
-} from 'src/selectors/suite/suiteSelectors';
+} from '../../../selectors/suite/suiteSelectors';
 
 // it actually changes to "Install suite desktop"
 export const BridgeUnavailable = () => {

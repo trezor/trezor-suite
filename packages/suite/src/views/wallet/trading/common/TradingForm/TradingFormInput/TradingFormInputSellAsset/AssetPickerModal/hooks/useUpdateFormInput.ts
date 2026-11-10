@@ -8,7 +8,7 @@ import {
 import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type TokensWithRates } from '../../../../../../../../../utils/wallet/tokenUtils';
 
 export interface UseUpdateFormInputProps {
     closeModal: () => void;

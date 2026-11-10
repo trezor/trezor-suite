@@ -18,9 +18,8 @@ import {
 } from '@trezor/icons';
 import { type Dispatch, injectDispatch } from '@trezor/redux-utils';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-
 import { type EmptyStakingCardData } from './useEmptyStakingCardData';
+import { useFormatApy } from '../../../../../../../hooks/earn/useFormatApy';
 
 type NetworkVariant = 'default' | 'cardano' | 'tron';
 

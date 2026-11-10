@@ -2,9 +2,8 @@ import { type ReactNode } from 'react';
 
 import { selectTheme } from '@suite/settings';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { ThemeProvider } from './ThemeProvider';
+import { useSelector } from '../../hooks/suite';
 
 interface ConnectedThemeProviderProps {
     children: ReactNode;

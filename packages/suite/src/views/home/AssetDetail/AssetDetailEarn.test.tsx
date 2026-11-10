@@ -9,11 +9,10 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { AssetDetailEarn } from './AssetDetailEarn';
 import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../support/test-utils/hooksHelper';
 
 const ONE_ETH_IN_WEI = '1000000000000000000';
 

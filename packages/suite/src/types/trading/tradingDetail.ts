@@ -2,11 +2,8 @@ import { type tradeStatusEvent } from '@suite/analytics';
 import { type EventInstance } from '@suite-common/analytics';
 import type { TradingType } from '@suite-common/trading';
 
-import {
-    type TradingTradeInfoMapProps,
-    type TradingTradeMapProps,
-} from 'src/types/trading/trading';
-import type { Account } from 'src/types/wallet';
+import { type TradingTradeInfoMapProps, type TradingTradeMapProps } from './trading';
+import type { Account } from '../wallet';
 
 export type TradingDetailContextValues<T extends TradingType> = {
     account: Account | undefined;

@@ -5,13 +5,12 @@ import { motion } from 'framer-motion';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { Card, Column, motionEasing, useHeightAnimationOnChange } from '@trezor/components';
 
-import { useSendFormContext } from 'src/hooks/wallet';
-
 import { Address } from './Address';
 import { Amount } from './Amount/Amount';
 import { CardanoMinAmountInfo } from './CardanoMinAmountInfo';
 import { OpReturn } from './OpReturn';
 import { TokenSelect } from './TokenSelect/TokenSelect';
+import { useSendFormContext } from '../../../../hooks/wallet';
 import { DestinationTag } from '../Options/MiscNetworkOptions/DestinationTag';
 
 interface OutputsProps {

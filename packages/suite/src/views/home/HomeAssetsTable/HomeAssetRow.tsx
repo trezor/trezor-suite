@@ -14,13 +14,12 @@ import { Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 import { HomeAssetApyBadge } from './HomeAssetApyBadge';
 import { HomeAssetBalance } from './HomeAssetBalance';
 import { HomeAssetIdentity } from './HomeAssetIdentity';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
+import { PriceTicker, TrendTicker } from '../../../components/suite';
+import { useSelector } from '../../../hooks/suite';
 
 type HomeAssetRowProps = {
     assetKey: WalletAssetKey;

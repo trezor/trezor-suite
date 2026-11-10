@@ -4,8 +4,8 @@ import { Column, Paragraph } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
-import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
-import { deviceModelInformation } from 'src/utils/suite/homescreen';
+import { HAS_MONOCHROME_SCREEN } from '../../../../constants/suite/device';
+import { deviceModelInformation } from '../../../../utils/suite/homescreen';
 
 type HomescreenSettingsTitle = {
     deviceModelInternal: DeviceModelInternal;

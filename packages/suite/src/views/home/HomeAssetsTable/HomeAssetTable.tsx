@@ -22,8 +22,6 @@ import { Card, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
-
 import { AssetRowsSkeleton } from './AssetRowsSkeleton';
 import { HomeAssetExpandRow } from './HomeAssetExpandRow';
 import { HomeAssetNetworkSection } from './HomeAssetNetworkSection';
@@ -33,6 +31,7 @@ import { HomeAssetSmallBalancesHiddenRow } from './HomeAssetSmallBalancesHiddenR
 import { HomeAssetTableEmptyState } from './HomeAssetTableEmptyState';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_COL_WIDTHS } from './homeAssetTableLayout';
+import { useDiscovery, useSelector } from '../../../hooks/suite';
 
 const NO_NETWORKS: readonly NetworkSymbol[] = [];
 

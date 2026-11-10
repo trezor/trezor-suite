@@ -7,8 +7,8 @@ import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Column, Flag, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from 'src/components/suite';
-import { type TradingPayGetLabelType } from 'src/types/trading/trading';
+import { HiddenPlaceholder } from '../../../../../components/suite';
+import { type TradingPayGetLabelType } from '../../../../../types/trading/trading';
 
 type TradingDetailFiatRowProps = {
     label: TradingPayGetLabelType;

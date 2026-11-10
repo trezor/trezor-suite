@@ -9,6 +9,7 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
+import { globalSendReceiveFiltersSelectors } from '../../../../../../../slices/wallet/globalSendReceiveFilters';
 import {
     AssetGroupLabel,
     AssetGroupSpace,
@@ -19,17 +20,15 @@ import {
     AssetsListEmpty,
     AssetsModal,
     ExpandableAssetRowGroup,
-} from 'src/components/suite/asset-picker/components';
+} from '../../../../../asset-picker/components';
 import {
     useExpandableGroups,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
-} from 'src/components/suite/asset-picker/hooks';
-import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
-import { createTokenOption } from 'src/components/suite/asset-picker/utils';
-import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
-import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
-
+} from '../../../../../asset-picker/hooks';
+import { type AssetPickerListItem } from '../../../../../asset-picker/types';
+import { createTokenOption } from '../../../../../asset-picker/utils';
+import { getAssetPickerItemHeight } from '../../../../../asset-picker/utils/assetPickerItemHeights';
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { type GlobalSendTarget } from '../types';
 import { useAccountWithTokensOptions } from './hooks/useAccountWithTokensOptions';

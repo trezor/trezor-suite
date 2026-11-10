@@ -8,10 +8,9 @@ import {
 import { ExperimentId, ExperimentWrapper } from '@suite-common/message-system';
 import { type TradingType } from '@suite-common/trading';
 
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-
 import { TradingDetailFeedback } from './TradingDetailFeedback';
 import { TradingDetailSurvey } from './TradingDetailSurvey';
+import { type TradingGetCryptoQuoteAmountProps } from '../../../../../types/trading/trading';
 
 interface AfterTradeExperimentProps {
     status: ExchangeTradeStatus | SellTradeStatus | BuyTradeStatus | undefined;

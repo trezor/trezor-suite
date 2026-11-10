@@ -27,9 +27,9 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_BIP329_URL } from '@trezor/urls';
 
-import { exportMetadataToBip329FileThunk } from 'src/actions/labels/exportMetadataToBip329File';
-import { useSelector } from 'src/hooks/suite';
-import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { exportMetadataToBip329FileThunk } from '../../../actions/labels/exportMetadataToBip329File';
+import { useSelector } from '../../../hooks/suite';
+import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 type Bip329LabelsProps = {
     account: Account;

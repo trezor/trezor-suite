@@ -3,7 +3,7 @@ import { type NetworkSymbol, selectNetworkConfig } from '@suite-common/networks'
 import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from '../../../../../../../hooks/suite/useSelector';
 
 type ConnectionInfoProps = {
     symbol: NetworkSymbol;

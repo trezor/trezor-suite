@@ -6,7 +6,7 @@ import { selectIsDeviceApiTypeBluetooth, selectIsDeviceConnected } from '@suite-
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from './useSelector';
 
 export const useFirmwareUpgradeModal = () => {
     const { dispatch } = useServices(injectDispatch);

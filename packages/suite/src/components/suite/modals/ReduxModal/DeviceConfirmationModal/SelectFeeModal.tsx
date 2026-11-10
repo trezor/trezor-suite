@@ -14,12 +14,11 @@ import type { ComposeOutput, UiRequestSelectFee } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useSelector } from 'src/hooks/suite';
-import { useFees } from 'src/hooks/wallet/form/useFees';
-
+import { useSelector } from '../../../../../hooks/suite';
+import { useFees } from '../../../../../hooks/wallet/form/useFees';
+import { Fees } from '../../../../wallet/Fees/Fees';
+import { ConnectCallSource } from '../../../ConnectCallSource';
+import { ConnectModalBackdrop } from '../../../ConnectModalBackdrop';
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
 
 interface OutputsSummaryProps {

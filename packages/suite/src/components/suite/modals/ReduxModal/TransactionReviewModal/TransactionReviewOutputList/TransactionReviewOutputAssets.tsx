@@ -18,9 +18,9 @@ import { Card, Column, Divider, Flag, H4, InfoItem, Row, Text } from '@trezor/co
 import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
-import { useSelector } from 'src/hooks/suite';
+import { TransactionReviewOutputStatus } from './TransactionReviewOutputStatus';
+import { useSelector } from '../../../../../../hooks/suite';
+import { BaseCurrencyValue } from '../../../../BaseCurrencyValue';
 
 export type TransactionReviewOutputAssetsProps = {
     title: ReactNode;

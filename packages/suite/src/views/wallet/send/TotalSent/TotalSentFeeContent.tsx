@@ -11,8 +11,8 @@ import {
 import { Column, Text } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { BaseCurrencyValue, FormattedCryptoAmount } from '../../../../components/suite';
+import { useFiatFromCryptoValue } from '../../../../hooks/suite/useFiatFromCryptoValue';
 
 type TotalSentFeeContentProps = {
     transactionInfo: GeneralPrecomposedTransaction;

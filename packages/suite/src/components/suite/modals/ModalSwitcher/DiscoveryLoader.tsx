@@ -2,9 +2,9 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Column, H3, Spinner } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
+import { useSelector } from '../../../../hooks/suite';
+import { CardWithDevice } from '../../../../views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '../../../../views/suite/SwitchDevice/SwitchDeviceModal';
 
 export const DiscoveryLoader = () => {
     const device = useSelector(selectSelectedDevice);

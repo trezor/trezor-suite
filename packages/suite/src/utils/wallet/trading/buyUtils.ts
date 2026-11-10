@@ -3,7 +3,7 @@ import { type BuyTrade, type BuyTradeQuoteRequest, type BuyTradeStatus } from 'i
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 
-import { type Account } from 'src/types/wallet';
+import { type Account } from '../../../types/wallet';
 
 export const createQuoteLink = async (
     { desktopApi }: DesktopApiDep<'getHttpReceiverAddress'>,

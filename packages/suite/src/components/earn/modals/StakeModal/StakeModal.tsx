@@ -7,13 +7,12 @@ import { type Account } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { StakeFormContext, useStakeForm } from 'src/hooks/earn/useStakeForm';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-
 import { StakeButton } from './StakeForm/StakeButton';
 import { StakeForm } from './StakeForm/StakeForm';
 import { StakeInfoCards } from './StakeInfoCards/StakeInfoCards';
+import { earnFlowToEventTypeMap } from '../../../../constants/suite/staking';
+import { StakeFormContext, useStakeForm } from '../../../../hooks/earn/useStakeForm';
+import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 
 type StakeModalProps = {
     onCancel?: () => void;

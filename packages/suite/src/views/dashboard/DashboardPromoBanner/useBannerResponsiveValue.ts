@@ -1,6 +1,6 @@
 import { breakpoints } from '@trezor/theme';
 
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 type BannerResponsiveValues<T> = {
     default: T;

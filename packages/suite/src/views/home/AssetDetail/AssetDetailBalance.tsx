@@ -17,10 +17,9 @@ import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Card, Column, Row, Skeleton, Text, TextButton } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 import { AssetDetailAccountsModal } from './AssetDetailModals/AssetDetailAccountsModal';
+import { FormattedCryptoAmount } from '../../../components/suite';
+import { useSelector } from '../../../hooks/suite';
 
 const HEADER_GAP = 24;
 const AMOUNT_GAP = 4;

@@ -9,14 +9,13 @@ import { Banner, Button, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
-import { validateDecimals, validateMin } from 'src/utils/suite/validation';
-
+import { getStakedBalance } from './unstakeUtils';
+import { useSelector } from '../../../../../hooks/suite';
+import { validateDecimals, validateMin } from '../../../../../utils/suite/validation';
+import { BaseCurrencyValue } from '../../../../suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '../../../../suite/FormattedCryptoAmount';
 import { TronCurrencySwitchButton } from '../TronCurrencySwitchButton';
 import { useTronStakeContext } from '../TronStakeContext';
-import { getStakedBalance } from './unstakeUtils';
 
 export const TronUnstakeAmount = () => {
     const locale = useSelector(selectLanguage);

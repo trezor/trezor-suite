@@ -9,13 +9,12 @@ import { Column, Image, Modal, Text } from '@trezor/components';
 import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
-import type { ForegroundAppProps } from 'src/types/suite';
-
 import { BackupStep1Initial } from './BackupStep1Initial';
 import { BackupStep2InProgress } from './BackupStep2InProgress';
 import { BackupStep3Finished } from './BackupStep3Finished';
 import { BackupStepError } from './BackupStepError';
+import { useSelector } from '../../hooks/suite';
+import type { ForegroundAppProps } from '../../types/suite';
 
 const getEdgeCaseModalHeading = (unfinishedBackup?: boolean) => {
     if (unfinishedBackup) {

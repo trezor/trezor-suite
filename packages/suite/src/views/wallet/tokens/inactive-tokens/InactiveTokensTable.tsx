@@ -12,9 +12,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { Loading } from 'src/components/suite';
-import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-
+import { Loading } from '../../../../components/suite';
+import { StellarManageTokenModal } from '../../../../components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { NoTokens } from '../common/NoTokens';
 import { NoSearchResultsWrapped } from '../common/TokensTable/TokensTable';
 

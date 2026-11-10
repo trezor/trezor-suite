@@ -2,11 +2,10 @@ import { getIsDeviceAuthenticityCheckSupportedAndEnabled } from '@suite-common/d
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { ID_AUTHENTICATE_DEVICE_STEP, ID_SET_PIN_STEP } from 'src/constants/onboarding/steps';
-import { type AnyPath, type AnyStepId, type Step, type StepCategory } from 'src/types/onboarding';
-import { type TrezorDevice } from 'src/types/suite';
-
 import { stepCategories } from '../../config/onboarding/steps';
+import { ID_AUTHENTICATE_DEVICE_STEP, ID_SET_PIN_STEP } from '../../constants/onboarding/steps';
+import { type AnyPath, type AnyStepId, type Step, type StepCategory } from '../../types/onboarding';
+import { type TrezorDevice } from '../../types/suite';
 
 export const parseStepId = (stepId: AnyStepId) => {
     const activeStepCategory =

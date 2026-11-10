@@ -8,7 +8,7 @@ import { type FractionButtonProps } from '@trezor/components';
 import { typographyStylesBase } from '@trezor/theme';
 import { BigNumber, clamp } from '@trezor/utils';
 
-import { type TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
+import { type TradingUseFormActionsReturnProps } from '../../../../../types/trading/tradingForm';
 
 export const TRADING_AMOUNT_PLACEHOLDER = '0.0';
 

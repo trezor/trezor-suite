@@ -6,7 +6,7 @@ import { Banner } from '@trezor/components';
 import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../hooks/suite';
 
 type ConnectDevicePromoProps = {
     title: JSX.Element | string;

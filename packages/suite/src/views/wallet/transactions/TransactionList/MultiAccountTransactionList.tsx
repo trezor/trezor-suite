@@ -27,16 +27,15 @@ import { Button, Card, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { Pagination } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
-
 import { LoadOlderHistory } from './LoadOlderHistory';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { TransactionListBody } from './TransactionListBody';
 import { findTransactionAccount } from './findTransactionAccount';
 import { useAccountsTransactions } from './useAccountsTransactions';
 import { useTransactionSearch } from './useTransactionSearch';
+import { DashboardSection } from '../../../../components/dashboard';
+import { Pagination } from '../../../../components/wallet';
+import { useSelector } from '../../../../hooks/suite';
 
 const NO_TXIDS: string[] = [];
 

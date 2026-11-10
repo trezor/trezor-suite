@@ -1,12 +1,11 @@
 import { type ActionCreatorWithPayload, createAction } from '@reduxjs/toolkit';
 
+import { STORAGE } from './constants';
 import {
     type StorageCorruptedPayload,
     type StorageErrorPayload,
     type StorageLoadPayload,
-} from 'src/storage/StorageLoadPayload';
-
-import { STORAGE } from './constants';
+} from '../../storage/StorageLoadPayload';
 
 export const storageLoad: ActionCreatorWithPayload<StorageLoadPayload, typeof STORAGE.LOAD> =
     createAction<StorageLoadPayload, typeof STORAGE.LOAD>(STORAGE.LOAD);

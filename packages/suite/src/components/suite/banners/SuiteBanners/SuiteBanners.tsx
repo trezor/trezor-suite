@@ -22,11 +22,6 @@ import {
 import { isWeb } from '@trezor/env-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
-import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
-import { selectIsSuiteOnline, selectSuiteTransport } from 'src/selectors/suite/suiteSelectors';
-
 import { BridgeDeprecated, useLegacyBridgeDetection } from './BridgeDeprecatedBanner';
 import { CardanoOutdatedStakingBanner } from './CardanoOutdatedStakingBanner';
 import { FailedBackup } from './FailedBackupBanner';
@@ -35,6 +30,13 @@ import { LocalNetworkAccessPermission } from './LocalNetworkAccessPermission';
 import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
+import { MAX_CONTENT_WIDTH } from '../../../../constants/suite/layout';
+import { useSelector } from '../../../../hooks/suite';
+import { useLocalNetworkAccessPermission } from '../../../../hooks/suite/useLocalNetworkAccessPermission';
+import {
+    selectIsSuiteOnline,
+    selectSuiteTransport,
+} from '../../../../selectors/suite/suiteSelectors';
 
 const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;

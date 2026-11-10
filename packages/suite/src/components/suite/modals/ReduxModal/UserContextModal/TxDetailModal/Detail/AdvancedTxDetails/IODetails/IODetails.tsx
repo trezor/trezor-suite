@@ -3,11 +3,10 @@ import { selectAccountNetworkType, selectIsPhishingTransaction } from '@suite-co
 import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { CollapsibleIOSection } from './CollapsibleIOSection';
 import { IOGroup } from './IOGroup';
 import { TokenSpecificBalanceDetailsRow } from './TokenSpecificBalanceDetailsRow';
+import { useSelector } from '../../../../../../../../../hooks/suite';
 
 type IODetailsProps = {
     tx: WalletAccountTransaction;

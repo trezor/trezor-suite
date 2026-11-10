@@ -15,8 +15,8 @@ import {
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { useSelector } from 'src/hooks/suite';
+import { ConnectAppIcon } from '../../../components/suite/ConnectAppIcon';
+import { useSelector } from '../../../hooks/suite';
 
 export const WalletConnectList = () => {
     const { dispatch } = useServices(injectDispatch);

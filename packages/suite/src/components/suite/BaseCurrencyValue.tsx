@@ -13,9 +13,9 @@ import { type RateTypeWithoutHistoric, asBaseCurrencyAmount } from '@suite-commo
 import { Skeleton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import type { UseFiatFromCryptoValueParams } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '../../hooks/suite';
+import type { UseFiatFromCryptoValueParams } from '../../hooks/suite/useFiatFromCryptoValue';
+import { useFiatFromCryptoValue } from '../../hooks/suite/useFiatFromCryptoValue';
 
 // Do NOT use any prop from <HiddenPlaceholderProps>, its here just to fix types
 const SameWidthNums = styled.span<HiddenPlaceholderProps>`

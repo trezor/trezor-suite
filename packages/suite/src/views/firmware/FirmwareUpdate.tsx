@@ -2,10 +2,9 @@ import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { FirmwareType } from '@trezor/connect';
 
-import { FirmwareInitial } from 'src/components/firmware/FirmwareInitial';
-import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
-
 import { FirmwareModal } from './FirmwareModal';
+import { FirmwareInitial } from '../../components/firmware/FirmwareInitial';
+import { FirmwareLowBatteryModal } from '../../components/firmware/FirmwareLowBatteryModal';
 
 export const FirmwareUpdate = () => {
     const {

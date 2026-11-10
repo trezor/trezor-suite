@@ -15,12 +15,11 @@ import {
     TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
 } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';
 import { MultiShareBackupStep5 } from './MultiShareBackupStep5';
 import { type Steps, steps } from './steps';
+import { useSelector } from '../../../../../../hooks/suite';
 
 type MultiShareBackupModalProps = {
     onCancel: () => void;

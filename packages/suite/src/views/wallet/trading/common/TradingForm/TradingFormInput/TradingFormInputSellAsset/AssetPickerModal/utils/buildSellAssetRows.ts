@@ -9,13 +9,16 @@ import { BigNumber } from '@trezor/utils';
 import {
     type AccountWithOptionalLabel,
     type AssetRowOption,
-} from 'src/components/suite/asset-picker/types';
-import { createAccountOption, createTokenOption } from 'src/components/suite/asset-picker/utils';
+} from '../../../../../../../../../components/suite/asset-picker/types';
+import {
+    createAccountOption,
+    createTokenOption,
+} from '../../../../../../../../../components/suite/asset-picker/utils';
 import {
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
-} from 'src/utils/wallet/tokenUtils';
+} from '../../../../../../../../../utils/wallet/tokenUtils';
 
 export type BuildSellAssetRowsProps = {
     accounts: readonly AccountWithOptionalLabel[];

@@ -8,13 +8,12 @@ import { Column, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
-import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
-
+import { CoinBalance, HiddenPlaceholder } from '../../../../../../../components/suite';
+import { AccountLabeling } from '../../../../../../../components/suite/labeling/AccountLabeling';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { useFiatFromCryptoValue } from '../../../../../../../hooks/suite/useFiatFromCryptoValue';
+import { TradingReceiveOptionRow } from '../TradingReceiveOptionRow';
+import { useReceiveAddressModalControls } from '../useReceiveAddressModalControls';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
 type TradingReceiveAccountSuiteOptionProps = {

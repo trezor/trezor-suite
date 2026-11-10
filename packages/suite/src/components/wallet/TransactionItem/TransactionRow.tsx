@@ -11,11 +11,10 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
-
 import { TransactionTargetLayout } from './TransactionTargetLayout';
+import { useSelector } from '../../../hooks/suite';
+import { type WalletAccountTransaction } from '../../../types/wallet';
+import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from '../../suite';
 
 type CustomRowProps = {
     amount: string;

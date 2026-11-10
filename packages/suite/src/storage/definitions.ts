@@ -39,10 +39,9 @@ import type {
 import { type StaticSessionId } from '@trezor/connect';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 
-import type { BioAuthState } from 'src/reducers/bioAuth';
-import type { SuiteState } from 'src/reducers/suite/suiteReducer';
-import type { Account, WalletAccountTransaction } from 'src/types/wallet';
-
+import type { BioAuthState } from '../reducers/bioAuth';
+import type { SuiteState } from '../reducers/suite/suiteReducer';
+import type { Account, WalletAccountTransaction } from '../types/wallet';
 import { type GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {

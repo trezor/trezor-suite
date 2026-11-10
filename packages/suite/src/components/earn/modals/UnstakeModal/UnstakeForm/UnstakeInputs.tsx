@@ -6,12 +6,9 @@ import { AMOUNT_MAX_LENGTH, getStakingDataForNetwork } from '@suite-common/walle
 import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 
-import { type WithdrawalFormState } from 'src/components/earn/forms/StakeFormContext';
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
-import { useSelector } from 'src/hooks/suite';
-import { FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
+import { useWithdrawalFormContext } from '../../../../../hooks/earn/useWithdrawalForm';
+import { useSelector } from '../../../../../hooks/suite';
+import { FIAT_INPUT, OUTPUT_AMOUNT } from '../../../../../types/earn/earnFormFields';
 import {
     validateCryptoLimits,
     validateDecimals,
@@ -19,7 +16,10 @@ import {
     validateMin,
     validateSolanaUnstakeAmount,
     validateSolanaUnstakeFiatAmount,
-} from 'src/utils/suite/validation';
+} from '../../../../../utils/suite/validation';
+import { BaseCurrencyValue } from '../../../../suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '../../../../suite/FormattedCryptoAmount';
+import { type WithdrawalFormState } from '../../../forms/StakeFormContext';
 
 export const UnstakeInputs = () => {
     // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled

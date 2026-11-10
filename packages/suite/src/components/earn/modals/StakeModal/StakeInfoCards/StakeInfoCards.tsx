@@ -4,9 +4,8 @@ import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { EstimatedGains } from './EstimatedGains';
+import { useSelector } from '../../../../../hooks/suite';
 import { EarnStakingInfo } from '../../EarnInANutshell/components/EarnStakingInfo';
 
 type StakeInfoCardsProps = {

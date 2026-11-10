@@ -24,10 +24,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { TronStakeInfoRow } from 'src/components/earn/staking/tron/TronStakeInfoRow';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
 import { TronVoteAllocationRow } from './TronVoteAllocationRow';
+import { TronStakeInfoRow } from '../../../../../../components/earn/staking/tron/TronStakeInfoRow';
+import { useMessageSystemStaking } from '../../../../../../hooks/suite/useMessageSystemStaking';
 
 interface TronVoteAllocationModalProps {
     account: Account;

@@ -6,7 +6,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../hooks/suite';
 
 type UseOpenAssetDetailParams = {
     symbol: NetworkSymbol;

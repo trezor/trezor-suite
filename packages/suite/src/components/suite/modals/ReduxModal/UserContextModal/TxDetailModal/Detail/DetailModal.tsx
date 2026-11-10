@@ -12,8 +12,7 @@ import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 import { GaugeIcon, XIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
-
+import { useSelector } from '../../../../../../../hooks/suite';
 import { TxDetailModalBase } from '../TxDetailModalBase';
 import { AdvancedTxDetails, type TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 

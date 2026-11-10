@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { accountSearchFn } from '@suite-common/wallet-utils';
 
-import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
-
 import { type AccountOption } from './useAccountsOptions';
+import { globalSendReceiveFiltersSelectors } from '../../../../../../../../slices/wallet/globalSendReceiveFilters';
 
 export function useFilterAccounts(accounts: AccountOption[]) {
     const search = useSelector(globalSendReceiveFiltersSelectors.selectSearch);

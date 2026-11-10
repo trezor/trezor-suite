@@ -4,9 +4,8 @@ import { type UserContextModalType } from '@suite/modal';
 import { composeStablecoinYieldTxSimulationAction } from '@suite-common/earn-stablecoin';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { EarnYieldTxSimulationModalInner } from './EarnYieldTxSimulationModalInner';
+import { useSelector } from '../../../hooks/suite';
 
 type EarnYieldTxSimulationModalProps = Pick<
     UserContextModalType<'earn-yield-tx-simulation'>,

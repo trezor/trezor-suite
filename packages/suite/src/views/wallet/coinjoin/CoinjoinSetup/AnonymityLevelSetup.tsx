@@ -10,9 +10,6 @@ import { useServices } from '@trezor/dependency-injection';
 import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AnonymityStatus } from 'src/constants/suite/coinjoin';
-import { useAnonymityStatus } from 'src/hooks/suite';
-
 import { SetupSlider } from './SetupSlider/SetupSlider';
 import {
     GRADIENT_SLIDER_GREEN_END,
@@ -21,6 +18,8 @@ import {
     GRADIENT_SLIDER_YELLOW_END,
     GRADIENT_SLIDER_YELLOW_START,
 } from './consts';
+import { AnonymityStatus } from '../../../../constants/suite/coinjoin';
+import { useAnonymityStatus } from '../../../../hooks/suite';
 
 const Label = styled.span`
     display: flex;

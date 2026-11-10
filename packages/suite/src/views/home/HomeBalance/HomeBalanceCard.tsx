@@ -2,10 +2,9 @@ import { Translation } from '@suite/intl';
 import { selectHomeAssetTotals } from '@suite-common/assets';
 import { Card, Column, Skeleton, Text } from '@trezor/components';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
-
 import { HomeBalanceChange } from './HomeBalanceChange';
 import { HomeTotalBalance } from './HomeTotalBalance';
+import { useDiscovery, useSelector } from '../../../hooks/suite';
 
 export const HomeBalanceCard = () => {
     const { isDiscoveryRunning } = useDiscovery();

@@ -7,11 +7,6 @@ import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-t
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { resetProtocol } from 'src/actions/suite/protocolActions';
-import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
-
 import { GlobalReceiveModal } from './GlobalReceiveModal/GlobalReceiveModal';
 import { GlobalSendModal } from './GlobalSendModal/GlobalSendModal';
 import { GlobalSendReceiveButtons } from './GlobalSendReceiveButtons';
@@ -19,6 +14,10 @@ import { GlobalSendReceiveAssetDescription } from './components/GlobalSendReceiv
 import { useGlobalSendReceiveAnalytics } from './hooks/useGlobalSendReceiveAnalytics';
 import { useStartSendReceiveWithAnalytics } from './hooks/useStartSendReceiveWithAnalytics';
 import { type GlobalSendTarget } from './types';
+import { resetProtocol } from '../../../../../../actions/suite/protocolActions';
+import { globalSendReceiveFiltersActions } from '../../../../../../slices/wallet/globalSendReceiveFilters';
+import { selectDiscoveryOverallStatus } from '../../../../../../utils/wallet/selectDiscoveryOverallStatus';
+import { AppNavigationTooltip } from '../../../../AppNavigation/AppNavigationTooltip';
 
 type GlobalSendReceiveViewProps = {
     activeModal: GlobalSendReceiveType;

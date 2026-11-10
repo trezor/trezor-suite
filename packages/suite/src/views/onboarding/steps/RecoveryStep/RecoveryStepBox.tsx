@@ -7,8 +7,8 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBackupIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { goToPreviousStepThunk } from 'src/actions/onboarding/onboardingActions';
-import { useSelector } from 'src/hooks/suite';
+import { goToPreviousStepThunk } from '../../../../actions/onboarding/onboardingActions';
+import { useSelector } from '../../../../hooks/suite';
 
 const RecoveryStepBox = (props: OnboardingCardProps) => {
     const recoveryStatus = useSelector(selectRecoveryStatus);

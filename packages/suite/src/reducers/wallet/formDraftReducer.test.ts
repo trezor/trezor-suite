@@ -1,8 +1,7 @@
 import { formDraftActions } from '@suite-common/wallet-core';
 
-import { STORAGE } from 'src/actions/suite/constants';
-
 import formDraftReducer from './formDraftReducer';
+import { STORAGE } from '../../actions/suite/constants';
 
 describe('formDraftReducer', () => {
     const formStateMock = { field1: 'value1', field2: 'value2' };

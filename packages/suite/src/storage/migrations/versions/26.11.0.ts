@@ -1,6 +1,6 @@
 import { createMigration } from '@suite/idb-migration-utils';
 
-import type { SuiteDBSchema } from 'src/storage/definitions';
+import type { SuiteDBSchema } from '../../definitions';
 
 /*
  Backfill successful `manualCheckResult` to all `persistentDeviceData` entries – if it's previously known devices,

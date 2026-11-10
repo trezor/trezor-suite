@@ -55,15 +55,14 @@ import { typography } from '@trezor/theme';
 import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useLayoutSize } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
-
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { type AssetData } from './AssetData';
 import { AssetTable } from './AssetTable/AssetTable';
+import { DashboardSection } from '../../../components/dashboard';
+import { useNetworkSupport } from '../../../hooks/settings/useNetworkSupport';
+import { useDiscovery, useLayoutSize } from '../../../hooks/suite';
+import { type Account } from '../../../types/wallet';
+import { selectDiscoveryOverallStatus } from '../../../utils/wallet/selectDiscoveryOverallStatus';
 
 const InfoMessage = styled.div`
     padding: 16px 24px;

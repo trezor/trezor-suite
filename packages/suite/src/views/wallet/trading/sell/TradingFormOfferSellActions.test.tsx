@@ -11,29 +11,27 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { TradingFormOfferSellActions } from './TradingFormOfferSellActions';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../support/test-utils/hooksHelper';
 
 const mockUseTradingFormContext = jest.fn();
 const mockUseTradingFormOfferCommon = jest.fn();
 
-jest.mock('src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
+jest.mock('../../../../hooks/wallet/trading/form/useTradingCommonForm', () => ({
     useTradingFormContext: () => mockUseTradingFormContext(),
 }));
 
-jest.mock(
-    'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon',
-    () => ({ useTradingFormOfferCommon: () => mockUseTradingFormOfferCommon() }),
-);
+jest.mock('../common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon', () => ({
+    useTradingFormOfferCommon: () => mockUseTradingFormOfferCommon(),
+}));
 
 type TradingFormOfferConfirmButtonProps = {
     testId: string;
 };
 
 jest.mock(
-    'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton',
+    '../common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton',
     () => ({
         TradingFormOfferConfirmButton: ({ testId }: TradingFormOfferConfirmButtonProps) => (
             <button data-testid={testId} />
@@ -41,14 +39,13 @@ jest.mock(
     }),
 );
 
-jest.mock('src/views/wallet/trading/common/TradingKYCWarning', () => ({
+jest.mock('../common/TradingKYCWarning', () => ({
     TradingKYCWarning: () => null,
 }));
 
-jest.mock(
-    'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC',
-    () => ({ TradingFormOfferOTC: () => null }),
-);
+jest.mock('../common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC', () => ({
+    TradingFormOfferOTC: () => null,
+}));
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 

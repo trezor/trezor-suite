@@ -13,15 +13,14 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
-import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
-import { useSelector } from 'src/hooks/suite';
-
 import { StepCheckSeed } from './Steps/StepCheckSeed';
 import { StepDone } from './Steps/StepDone';
 import { StepError } from './Steps/StepError';
 import { StepInitial } from './Steps/StepInitial';
 import { StepStarted } from './Steps/StepStarted';
+import { ConnectionGlobalModalManager } from '../../components/connection/ConnectionGlobalModalManager';
+import { FirmwareInstallationProgressCheck } from '../../components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
+import { useSelector } from '../../hooks/suite';
 
 type FirmwareModalProps = {
     children: ReactNode;

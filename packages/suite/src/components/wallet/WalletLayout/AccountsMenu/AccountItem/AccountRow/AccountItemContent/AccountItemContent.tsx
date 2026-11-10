@@ -4,13 +4,12 @@ import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-type
 import { Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type AccountItemType } from 'src/types/wallet';
-
 import { AccountItemBottomLine } from './AccountItemBottomLine';
 import { AccountItemLabel } from './AccountItemLabel';
 import { AccountItemRightSide } from './AccountItemRightSide';
 import { FiatBalancePlaceholder } from './BalancePlaceholder';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { type AccountItemType } from '../../../../../../../types/wallet';
 
 type AccountItemContentProps = {
     customFiatValue?: BaseCurrencyAmount;

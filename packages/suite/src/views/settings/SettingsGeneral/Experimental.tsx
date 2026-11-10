@@ -15,8 +15,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
-import { useSelector } from 'src/hooks/suite';
+import { EXPERIMENTAL_FEATURES } from '../../../constants/suite/experimental';
+import { useSelector } from '../../../hooks/suite';
 
 const experimentalFeatures = typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
     feature => !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.(),

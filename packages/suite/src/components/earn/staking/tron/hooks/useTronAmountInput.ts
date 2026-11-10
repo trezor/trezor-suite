@@ -11,9 +11,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { type TronStakeFormValues } from './useTronStakeForm';
+import { useSelector } from '../../../../../hooks/suite';
 
 type UseTronAmountInputProps = {
     account: Account;

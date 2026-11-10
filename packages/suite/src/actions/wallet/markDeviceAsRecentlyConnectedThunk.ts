@@ -6,9 +6,8 @@ import {
 import { type Device } from '@trezor/connect';
 import { createThunk } from '@trezor/redux-utils';
 
-import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
-
+import { type SuiteRootState } from '../../reducers/suite/suiteReducer';
+import { selectRecentlyConnectedDevice } from '../../selectors/suite/suiteSelectors';
 import { setRecentlyConnectedDevicePath } from '../suite/suiteActions';
 
 // duration to visually indicate the device as recently connected

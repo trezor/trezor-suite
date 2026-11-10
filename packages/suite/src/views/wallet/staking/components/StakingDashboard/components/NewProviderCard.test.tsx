@@ -8,13 +8,12 @@ import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-confi
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { NewProviderCard } from './NewProviderCard';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../../support/test-utils/hooksHelper';
 
 const renderCard = (poolId: string | null) => {
     const account: Account = {

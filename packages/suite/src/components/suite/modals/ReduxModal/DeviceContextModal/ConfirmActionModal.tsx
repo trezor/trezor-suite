@@ -8,8 +8,8 @@ import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
+import { ConnectModalBackdrop } from '../../../ConnectModalBackdrop';
+import { DeviceConfirmImage } from '../../../DeviceConfirmImage';
 
 interface ConfirmActionProps {
     cancelable?: boolean;

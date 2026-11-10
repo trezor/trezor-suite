@@ -7,14 +7,13 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { ConfirmActionModal } from './ConfirmActionModal';
 import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';
 import { ConfirmPassphraseBeforeAction } from './ConfirmPassphraseBeforeAction';
 import { PassphraseOnDeviceModal } from './PassphraseOnDeviceModal';
 import { PinModal } from './PinModal';
 import { SignMessageModal } from './SignMessageModal';
+import { useSelector } from '../../../../../hooks/suite';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import type { ReduxModalProps } from '../ReduxModalProps';
 import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';

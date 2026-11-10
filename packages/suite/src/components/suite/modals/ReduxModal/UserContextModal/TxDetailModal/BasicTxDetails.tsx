@@ -44,12 +44,12 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { type WalletAccountTransaction } from 'src/types/wallet';
-import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
+import { useLayoutSize } from '../../../../../../hooks/suite/useLayoutSize';
+import { type WalletAccountTransaction } from '../../../../../../types/wallet';
+import { getTransactionIcon } from '../../../../../../utils/wallet/transactionIconUtils';
+import { FeeRate } from '../../../../../wallet/Fees/FeeRate';
+import { TransactionHeader } from '../../../../../wallet/TransactionItem/TransactionHeader';
+import { FormattedDateWithBullet } from '../../../../FormattedDateWithBullet';
 
 const IconWrapper = styled.div`
     display: flex;

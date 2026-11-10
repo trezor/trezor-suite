@@ -6,9 +6,9 @@ import { type WrapTransactionAsset } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
 import { ExchangeInfoNotification } from '@trezor/product-components';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
-import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
+import type { NotificationRendererProps } from './NotificationRenderer';
+import { FormattedCryptoAmount } from '../../FormattedCryptoAmount';
+import type { NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type WrapInfoRendererProps = Omit<NotificationViewProps, 'messageValues'> &
     (NotificationRendererProps<'tx-wrap'> | NotificationRendererProps<'tx-unwrap'>);

@@ -1,8 +1,7 @@
 import { Modal } from '@trezor/components';
 
-import { Loading } from 'src/components/suite';
-
 import { BackupStepDescription } from './BackupStepDescription';
+import { Loading } from '../../components/suite';
 
 type BackupStep2InProgressProps = { onCancel: () => void };
 

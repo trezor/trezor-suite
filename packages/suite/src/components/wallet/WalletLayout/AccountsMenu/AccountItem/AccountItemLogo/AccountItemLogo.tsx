@@ -3,8 +3,8 @@ import { PiggyBankFilledIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
-import { type Account, type AccountItemType } from 'src/types/wallet';
+import { type Account, type AccountItemType } from '../../../../../../types/wallet';
+import { TokenIconSetWrapper } from '../../../../TokenIconSetWrapper';
 
 type AccountItemLogoProps = {
     type: AccountItemType;

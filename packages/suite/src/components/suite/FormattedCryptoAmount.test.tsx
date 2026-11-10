@@ -6,10 +6,9 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../support/test-utils/hooksHelper';
 
 const bitcoin = asNetworkSymbol('btc');
 

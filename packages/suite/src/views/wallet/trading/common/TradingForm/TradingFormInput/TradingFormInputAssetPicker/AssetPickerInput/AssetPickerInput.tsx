@@ -15,9 +15,8 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { AssetPickerInputContent } from './AssetPickerInputContent';
+import { useSelector } from '../../../../../../../../hooks/suite';
 
 type TradingFormValues = TradingExchangeFormProps | TradingBuyFormProps | TradingSellFormProps;
 

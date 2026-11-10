@@ -5,9 +5,8 @@ import {
     type ModalBackdropProps,
 } from '@trezor/components/src/components/Modal/ModalBackdrop';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { ConnectAppBar } from './ConnectAppBar';
+import { useSelector } from '../../hooks/suite';
 
 interface ConnectModalBackdropProps extends ModalBackdropProps {
     canSwitchDevice?: boolean;

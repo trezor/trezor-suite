@@ -14,17 +14,16 @@ import { mock } from '@trezor/dependency-injection';
 import { ShieldCheckIcon } from '@trezor/icons';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { useUtxoSelection } from 'src/hooks/wallet/form/useUtxoSelection';
-import { SendContext } from 'src/hooks/wallet/useSendForm';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-import { type WalletAccountTransaction } from 'src/types/wallet';
-import { type SendContextValues } from 'src/types/wallet/sendForm';
-
 import { UtxoSelectionList } from './UtxoSelectionList';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../../mocks/mockInitialAppState';
+import { useUtxoSelection } from '../../../../../../../hooks/wallet/form/useUtxoSelection';
+import { SendContext } from '../../../../../../../hooks/wallet/useSendForm';
+import { renderWithProviders } from '../../../../../../../support/test-utils/hooksHelper';
+import { type WalletAccountTransaction } from '../../../../../../../types/wallet';
+import { type SendContextValues } from '../../../../../../../types/wallet/sendForm';
 
 // The editable address label of every row measures itself with an observer jsdom lacks.
 global.ResizeObserver = class MockedResizeObserver {

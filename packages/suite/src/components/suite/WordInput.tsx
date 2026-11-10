@@ -8,7 +8,7 @@ import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { bip39EnglishWordlist } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../hooks/suite';
 
 const options = bip39EnglishWordlist.map(item => ({ label: item, value: item }));
 

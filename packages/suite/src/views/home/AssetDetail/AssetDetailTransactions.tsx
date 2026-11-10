@@ -9,9 +9,9 @@ import {
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
-import { MultiAccountTransactionList } from 'src/views/wallet/transactions/TransactionList/MultiAccountTransactionList';
+import { useSelector } from '../../../hooks/suite';
+import { type WalletAccountTransaction } from '../../../types/wallet';
+import { MultiAccountTransactionList } from '../../wallet/transactions/TransactionList/MultiAccountTransactionList';
 
 type AssetDetailTransactionsProps = {
     assetKey: WalletAssetKey;

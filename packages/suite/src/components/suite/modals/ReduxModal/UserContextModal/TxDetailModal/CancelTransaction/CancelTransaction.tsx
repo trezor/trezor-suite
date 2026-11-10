@@ -3,15 +3,14 @@ import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Divider, InfoItem, Row, Skeleton, Text } from '@trezor/components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useSelector } from 'src/hooks/suite';
-import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
-
 import { CancelTransactionCard } from './CancelTransactionCard';
 import { CancelTransactionSkeletonRow } from './CancelTransactionSkeletonRow';
 import { useCancelTransactionData } from './useCancelTransactionData';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { useCancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
+import { FeeRate } from '../../../../../../wallet/Fees/FeeRate';
+import { BaseCurrencyValue } from '../../../../../BaseCurrencyValue';
+import { FormattedCryptoAmount } from '../../../../../FormattedCryptoAmount';
 
 type CancelTransactionProps = {
     tx: WalletAccountTransaction;

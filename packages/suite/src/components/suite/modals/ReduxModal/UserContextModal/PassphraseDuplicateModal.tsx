@@ -10,9 +10,9 @@ import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type TrezorDevice } from 'src/types/suite';
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
+import { type TrezorDevice } from '../../../../../types/suite';
+import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;

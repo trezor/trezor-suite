@@ -5,7 +5,7 @@ import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth
 import { Code, Icon, InfoSegments, Text } from '@trezor/components';
 import { CellSignalFullIcon, FloppyDiskBackFilledIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../hooks/suite';
 
 type TimeAgoProps = { timestamp: number };
 

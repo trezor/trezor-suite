@@ -26,11 +26,10 @@ import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
 import { TronVoteAllocationModal } from './TronVoteAllocationModal/TronVoteAllocationModal';
+import { BaseCurrencyValue, FormattedCryptoAmount } from '../../../../../components/suite';
+import { useFormatApy } from '../../../../../hooks/earn/useFormatApy';
+import { useMessageSystemStaking } from '../../../../../hooks/suite/useMessageSystemStaking';
 
 interface TronStakedCardProps {
     account: Account;

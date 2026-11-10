@@ -9,7 +9,7 @@ import {
 import { type AmountUnit, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type useMerklRewards } from 'src/components/earn/yield/claim/hooks';
+import { type useMerklRewards } from '../../../yield/claim/hooks';
 
 interface UseYieldClaimRewardsDataProps {
     rewards: ReturnType<typeof useMerklRewards>['merklRewardsQuery'];

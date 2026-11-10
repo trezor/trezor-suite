@@ -25,8 +25,7 @@ import {
     getBuyActiveAmount,
     getBuyActiveAmountField,
     isBuyQuotesFetchAllowed,
-} from 'src/utils/wallet/trading/buyQuotesRequestUtils';
-
+} from '../../../../../utils/wallet/trading/buyQuotesRequestUtils';
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
 
 type UseBuyQuotesProps = {

@@ -5,14 +5,13 @@ import { Translation } from '@suite/intl';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorBodyIcon } from '@trezor/icons';
 
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { AcquireDeviceButton } from '../AcquireDeviceButton';
+import { TroubleshootingTips } from '../troubleshooting/TroubleshootingTips';
+import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTipsItem';
 import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
-} from 'src/components/suite/troubleshooting/tips';
-
-import { AcquireDeviceButton } from '../AcquireDeviceButton';
-import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTipsItem';
+} from '../troubleshooting/tips';
 
 export const DeviceUsedElsewhere = () => {
     const { device } = useDevice();

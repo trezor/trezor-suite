@@ -4,8 +4,8 @@ import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
 import { Note } from '@trezor/components';
 import { ReceiptIcon } from '@trezor/icons';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { type Account } from 'src/types/wallet';
+import { type Account } from '../../../../../types/wallet';
+import { FormattedCryptoAmount } from '../../../FormattedCryptoAmount';
 
 type TransactionReviewTronFeeNotesProps = {
     tx: GeneralPrecomposedTransactionFinal;

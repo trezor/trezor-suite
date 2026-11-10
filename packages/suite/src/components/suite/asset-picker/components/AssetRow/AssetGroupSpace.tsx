@@ -1,7 +1,7 @@
 import { Box } from '@trezor/components';
 
-import { ASSET_ROW_HEIGHTS_BY_SIZE } from 'src/components/suite/asset-picker/constants';
-import { type AssetGroupSpaceSize } from 'src/components/suite/asset-picker/types';
+import { ASSET_ROW_HEIGHTS_BY_SIZE } from '../../constants';
+import { type AssetGroupSpaceSize } from '../../types';
 
 export type AssetGroupSpaceProps = {
     size: AssetGroupSpaceSize;

@@ -7,11 +7,10 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-
 import { getPotentialStakingRewards } from './getPotentialStakingRewards';
 import { type StakingBannerAccounts } from './useStakingBanner';
+import { useFormatApy } from '../../../hooks/earn/useFormatApy';
+import { useStakingRate } from '../../../hooks/earn/useStakingRate';
 
 type StakingBannerViewProps = {
     accounts: StakingBannerAccounts;

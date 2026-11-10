@@ -13,13 +13,12 @@ jest.mock('@trezor/env-utils', () => ({
     isWeb: jest.fn(() => false),
 }));
 
-jest.mock('src/hooks/suite/useLocalNetworkAccessPermission', () => ({
+jest.mock('../../../../hooks/suite/useLocalNetworkAccessPermission', () => ({
     useLocalNetworkAccessPermission: jest.fn(() => ({ localNetworkAccessPermission: 'unknown' })),
 }));
 
-import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
-
 import { useLegacyBridgeDetection } from './BridgeDeprecatedBanner';
+import { useLocalNetworkAccessPermission } from '../../../../hooks/suite/useLocalNetworkAccessPermission';
 
 const mockIsWeb = isWeb as jest.MockedFunction<typeof isWeb>;
 const mockUseLna = useLocalNetworkAccessPermission as jest.MockedFunction<

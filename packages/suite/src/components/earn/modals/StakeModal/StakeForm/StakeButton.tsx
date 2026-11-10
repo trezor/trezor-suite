@@ -13,12 +13,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
-import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
+import { earnFlowToEventTypeMap } from '../../../../../constants/suite/staking';
+import { useEarnDeviceStatus } from '../../../../../hooks/earn/useEarnDeviceStatus';
+import { useStakeFormContext } from '../../../../../hooks/earn/useStakeForm';
+import { useSelector } from '../../../../../hooks/suite';
+import { useMessageSystemStaking } from '../../../../../hooks/suite/useMessageSystemStaking';
+import { CRYPTO_INPUT, FIAT_INPUT } from '../../../../../types/earn/earnFormFields';
 
 type StakeButtonProps = {
     flow: StakeModalFlow;

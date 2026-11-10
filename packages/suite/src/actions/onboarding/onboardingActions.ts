@@ -35,22 +35,22 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { ONBOARDING } from 'src/actions/onboarding/constants';
-import { stepCategories } from 'src/config/onboarding/steps';
-import * as STEP from 'src/constants/onboarding/steps';
-import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
+import { ONBOARDING } from './constants';
+import { stepCategories } from '../../config/onboarding/steps';
+import * as STEP from '../../constants/onboarding/steps';
+import { type OnboardingRootState } from '../../reducers/onboarding/onboardingReducer';
 import {
     selectOnboardingActiveStepId,
     selectOnboardingAnalytics,
     selectOnboardingPath,
-} from 'src/selectors/onboarding/onboardingSelectors';
-import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
+} from '../../selectors/onboarding/onboardingSelectors';
+import { type AnyPath, type AnyStepId, type BackupMedium } from '../../types/onboarding';
 import {
     findNextStep,
     findPrevStep,
     isStepUsed,
     resolveNextAvailableStep,
-} from 'src/utils/onboarding/steps';
+} from '../../utils/onboarding/steps';
 
 const goToStep = createAction<AnyStepId>(ONBOARDING.SET_STEP_ACTIVE);
 

@@ -14,7 +14,7 @@ import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 import {
     type TradingFormContextValues,
     type TradingFormMapProps,
-} from 'src/types/trading/tradingForm';
+} from '../../../types/trading/tradingForm';
 
 export const isTradingBuyContext = (
     context: TradingFormMapProps[keyof TradingFormMapProps],

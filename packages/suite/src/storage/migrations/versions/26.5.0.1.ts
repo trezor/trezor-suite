@@ -2,8 +2,7 @@ import { createMigration } from '@suite/idb-migration-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
-
+import { type SuiteDBSchema } from '../../definitions';
 import { updateAll } from '../utils';
 
 type OldSuiteSettingsType = { addressDisplayType?: AddressDisplayOptions };

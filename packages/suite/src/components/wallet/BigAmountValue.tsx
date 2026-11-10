@@ -5,7 +5,7 @@ import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/
 import { type Locale } from '@suite-common/locale';
 import { Row, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../hooks/suite';
 
 const WholeValue = styled.span`
     font-variant-numeric: tabular-nums;

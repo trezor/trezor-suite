@@ -7,10 +7,9 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { HomeAssetIdentity } from './HomeAssetIdentity';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../support/test-utils/hooksHelper';
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();

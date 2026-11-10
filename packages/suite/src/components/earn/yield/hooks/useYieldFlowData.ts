@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type TickerId } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../hooks/suite';
 
 export const useYieldFlowData = ({
     account,

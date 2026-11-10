@@ -6,10 +6,9 @@ import { type BuyTrade, type BuyTradeQuoteRequest, type Coins, type CryptoId } f
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { TradingRequestedAmountShortfallNote } from './TradingRequestedAmountShortfallNote';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../support/test-utils/hooksHelper';
 
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 

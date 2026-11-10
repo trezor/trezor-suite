@@ -4,9 +4,8 @@ import { type FormOptions } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 import { TRON_DATA_MAX_BYTES } from '@trezor/network-tron/constants';
 
-import { useSendFormContext } from 'src/hooks/wallet';
-
 import { TronNote } from './TronNote';
+import { useSendFormContext } from '../../../../../hooks/wallet';
 import { TransactionData } from '../shared/TransactionData';
 
 export const TronOptions = () => {

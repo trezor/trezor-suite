@@ -23,13 +23,12 @@ import {
 } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
-
 import { CancelTransactionModal } from './CancelTransaction/CancelTransactionModal';
 import { BumpFeeModal } from './ChangeFee/BumpFeeModal';
 import { type TabID } from './Detail/AdvancedTxDetails/AdvancedTxDetails';
 import { DetailModal } from './Detail/DetailModal';
+import { useSelector } from '../../../../../../hooks/suite';
+import { type Account, type WalletAccountTransaction } from '../../../../../../types/wallet';
 
 const hasRbfParams = (
     tx: WalletAccountTransaction,

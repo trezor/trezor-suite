@@ -11,13 +11,12 @@ import { CaretCircleDownIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { zIndices } from '@trezor/theme';
 
-import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
-import { openSwitchDeviceDialogThunk } from 'src/actions/wallet/addWalletThunk';
-import { useSelector } from 'src/hooks/suite';
-import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
+import { setRecentlyConnectedDevicePath } from '../../../../../actions/suite/suiteActions';
+import { openSwitchDeviceDialogThunk } from '../../../../../actions/wallet/addWalletThunk';
+import { useSelector } from '../../../../../hooks/suite';
+import { selectRecentlyConnectedDevice } from '../../../../../selectors/suite/suiteSelectors';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
 
 const CaretContainer = styled.div`

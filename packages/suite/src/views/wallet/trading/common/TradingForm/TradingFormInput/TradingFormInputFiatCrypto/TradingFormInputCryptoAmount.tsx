@@ -30,25 +30,24 @@ import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
+import { getCryptoInputRules } from './tradingFormInputFiatCryptoRules';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { useTradingAssetDecimals } from '../../../../../../../hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingFormContext } from '../../../../../../../hooks/wallet/trading/form/useTradingCommonForm';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,
     type TradingSellExchangeFormProps,
-} from 'src/types/trading/tradingForm';
+} from '../../../../../../../types/trading/tradingForm';
 import {
     isTradingBuyContext,
     isTradingExchangeOrSellContext,
     isTradingSellContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
-import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
-import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
-import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
-
-import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
-import { getCryptoInputRules } from './tradingFormInputFiatCryptoRules';
+} from '../../../../../../../utils/wallet/trading/tradingTypingUtils';
+import { getFeeInUnits } from '../../../../../../../utils/wallet/trading/tradingUtils';
+import { useTradingQuoteAmounts } from '../../../hooks/useTradingQuoteAmounts';
+import { useTradingSelectedQuote } from '../../../hooks/useTradingSelectedQuote';
 import {
     TRADING_AMOUNT_HEIGHT,
     TRADING_AMOUNT_PLACEHOLDER,

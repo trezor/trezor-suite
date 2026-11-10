@@ -17,8 +17,8 @@ import {
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
-import { type TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
+import { type TradingBuyFormDefaultValuesProps } from '../../../../../types/trading/tradingForm';
+import { useSelector } from '../../../../suite';
 
 export const useTradingBuyFormDefaultValues = (
     cryptoId: CryptoId | undefined,

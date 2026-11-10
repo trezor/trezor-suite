@@ -1,8 +1,7 @@
 import { Translation } from '@suite/intl';
 import { type TrxStats } from '@suite-common/earn-staking-api';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-
+import { useFormatApy } from '../../../../../hooks/earn/useFormatApy';
 import { getRepresentativeApr } from '../utils/voteUtils';
 
 interface TronRepresentativeAprProps {

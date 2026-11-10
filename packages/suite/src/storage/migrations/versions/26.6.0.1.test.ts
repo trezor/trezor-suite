@@ -5,9 +5,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
-
 import migration from './26.6.0.1';
+import { type SuiteDBSchema } from '../../definitions';
 
 const DB_NAME = 'suite-idb-test-26.6.0.1';
 const INITIAL_VERSION = 1;

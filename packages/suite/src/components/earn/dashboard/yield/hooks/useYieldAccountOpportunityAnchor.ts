@@ -2,8 +2,7 @@ import { useCallback } from 'react';
 
 import { useAnchor } from '@suite/router';
 
-import { getYieldOpportunityAnchor } from 'src/components/earn/utils/getYieldOpportunityAnchor';
-
+import { getYieldOpportunityAnchor } from '../../../utils/getYieldOpportunityAnchor';
 import type { YieldAccountOpportunity } from '../types';
 
 export function useYieldAccountOpportunityAnchor(opportunity: YieldAccountOpportunity) {

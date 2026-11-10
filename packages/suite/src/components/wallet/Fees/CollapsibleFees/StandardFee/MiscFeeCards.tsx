@@ -3,13 +3,12 @@ import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
-import { BaseCurrencyValue } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';
 import { feeLevelTranslationMap } from './constants';
 import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
+import { useSelector } from '../../../../../hooks/suite';
+import { BaseCurrencyValue } from '../../../../suite';
 import { useFeesContext } from '../../context/FeesContext';
 
 type MiscFeeCardsProps = {

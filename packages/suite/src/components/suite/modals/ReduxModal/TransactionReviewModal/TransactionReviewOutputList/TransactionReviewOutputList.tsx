@@ -22,13 +22,12 @@ import {
 import { Column, H4 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from 'src/hooks/suite';
-import type { Account } from 'src/types/wallet';
-
 import { TransactionReviewOutput } from './TransactionReviewOutput';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import { TransactionReviewVerifyAddress } from './TransactionReviewVerifyAddress';
 import { getTransactionReviewState } from './getTransactionReviewState';
+import { useSelector } from '../../../../../../hooks/suite';
+import type { Account } from '../../../../../../types/wallet';
 
 export type TransactionReviewOutputListProps = {
     account: Account;

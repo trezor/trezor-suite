@@ -33,17 +33,16 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, noop } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useCompose } from 'src/hooks/wallet/form/useCompose';
-import { useFees } from 'src/hooks/wallet/form/useFees';
 import {
     type TradingSellExchangeFormProps,
     type TradingUseComposeTransactionProps,
     type TradingUseComposeTransactionReturnProps,
     type TradingUseComposeTransactionStateProps,
-} from 'src/types/trading/tradingForm';
-import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
-
+} from '../../../../../types/trading/tradingForm';
+import { getComposeAddressPlaceholder } from '../../../../../utils/wallet/trading/tradingUtils';
+import { useSelector } from '../../../../suite';
+import { useCompose } from '../../../form/useCompose';
+import { useFees } from '../../../form/useFees';
 import { useBitcoinAmountUnit } from '../../../useBitcoinAmountUnit';
 
 type BitcoinSwapFromAddressInputKeyParams = {

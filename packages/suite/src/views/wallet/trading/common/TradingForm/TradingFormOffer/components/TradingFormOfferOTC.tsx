@@ -18,14 +18,14 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { useFiatFromCryptoValue } from '../../../../../../../hooks/suite/useFiatFromCryptoValue';
+import { useTradingFormContext } from '../../../../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from '../../../../../../../hooks/wallet/useBitcoinAmountUnit';
 import {
     isTradingBuyContext,
     isTradingSellContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
+} from '../../../../../../../utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
     // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled

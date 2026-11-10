@@ -7,7 +7,7 @@ import {
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 
-import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
+import { createQuoteLink } from './sellUtils';
 
 export type BuildSellReturnUrlParams = DesktopApiDep<'getHttpReceiverAddress'> & {
     quote: SellFiatTrade;

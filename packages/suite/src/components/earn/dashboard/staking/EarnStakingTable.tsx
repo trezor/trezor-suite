@@ -8,12 +8,11 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-
 import { EarnStakingAccountRow } from './EarnStakingAccountRow';
 import { EarnStakingActivateRow } from './EarnStakingActivateRow';
 import { useStakingTableData } from './hooks/useStakingTableData';
+import { useLayoutSize } from '../../../../hooks/suite/useLayoutSize';
+import { DashboardSection } from '../../../dashboard';
 import { EarnProviderInfoBadge } from '../../providers/EarnProviderInfoBadge';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 import { type StakingDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';

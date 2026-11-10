@@ -25,10 +25,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
 import { type useTronStakeForm } from './useTronStakeForm';
+import { useSelector } from '../../../../../hooks/suite';
+import { useMessageSystemStaking } from '../../../../../hooks/suite/useMessageSystemStaking';
 import { getVotingDelegationAnalyticsValue, parseVoteAllocations } from '../utils/voteUtils';
 
 interface UseTronStakeActionsProps {

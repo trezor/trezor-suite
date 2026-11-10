@@ -21,18 +21,17 @@ import { Banner, Card, Column, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from 'src/components/earn';
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { CurrentVotingPreference } from './CurrentVotingPreference';
+import { useEarnDeviceStatus } from '../../../../../../hooks/earn/useEarnDeviceStatus';
+import { useSelector } from '../../../../../../hooks/suite';
+import { useMessageSystemStaking } from '../../../../../../hooks/suite/useMessageSystemStaking';
 import {
     ChangeDelegateFormContext,
     useChangeDelegateForm,
-} from 'src/hooks/wallet/useChangeDelegateForm';
-import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
-
-import { CurrentVotingPreference } from './CurrentVotingPreference';
+} from '../../../../../../hooks/wallet/useChangeDelegateForm';
+import { CRYPTO_INPUT } from '../../../../../../types/earn/earnFormFields';
+import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from '../../../../../earn';
+import { Fees } from '../../../../../wallet/Fees/Fees';
 
 interface StakeChangeDelegateModalProps {
     onCancel?: () => void;

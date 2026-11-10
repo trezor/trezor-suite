@@ -7,8 +7,6 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { getIsDeviceConnectedViaBluetooth, getIsThpDevice } from '@suite-common/suite-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import {
     ConnectedCableForgetFlow,
     ImmediateForgetFlow,
@@ -16,6 +14,7 @@ import {
     ThpBtKnownForgetFlow,
     ThpCableConnectedForgetFlow,
 } from './ForgetDeviceFlows';
+import { useSelector } from '../../../../hooks/suite';
 
 /**
  * Resolved device state for the forget/unpair flow.

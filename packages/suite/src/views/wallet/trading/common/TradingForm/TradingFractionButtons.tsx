@@ -8,12 +8,11 @@ import { TRADING_FORM_AMOUNT_INPUT_SOURCE } from '@suite-common/trading';
 import { Row, TextButton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
-import { isTradingSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-
 import { TRADING_FORM_SECTION_COMPONENT } from './TradingFormSection';
 import { generateFractionButtons } from './tradingFormInputsUtils';
+import { useTradingFormContext } from '../../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { type TradingAllFormProps } from '../../../../../types/trading/tradingForm';
+import { isTradingSellContext } from '../../../../../utils/wallet/trading/tradingTypingUtils';
 
 const FractionButtonsContainer = styled.div`
     opacity: 0;

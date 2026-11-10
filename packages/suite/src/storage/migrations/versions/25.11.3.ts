@@ -1,7 +1,6 @@
 import { createMigration } from '@suite/idb-migration-utils';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
-
+import { type SuiteDBSchema } from '../../definitions';
 import { updateAll } from '../utils';
 
 export default createMigration<SuiteDBSchema>('25.11.3', async (_, tx) => {

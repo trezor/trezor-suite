@@ -1,12 +1,11 @@
 import { useSelector } from 'react-redux';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
-
-import { HiddenPlaceholder } from 'src/components/suite';
 
 type GlobalReceiveAccountTotalAmountProps = {
     account: Account;

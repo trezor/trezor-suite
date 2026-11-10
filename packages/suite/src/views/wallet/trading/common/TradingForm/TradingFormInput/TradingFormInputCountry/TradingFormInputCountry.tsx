@@ -8,15 +8,14 @@ import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
 import { Flag, GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { FakeSelect } from 'src/components/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingTradeBuySellType } from 'src/types/trading/trading';
+import { CountrySelectModal } from './CountrySelectModal';
+import { FakeSelect } from '../../../../../../../components/suite';
+import { useTradingFormContext } from '../../../../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { type TradingTradeBuySellType } from '../../../../../../../types/trading/trading';
 import {
     type TradingBuySellFormProps,
     type TradingFormInputDefaultProps,
-} from 'src/types/trading/tradingForm';
-
-import { CountrySelectModal } from './CountrySelectModal';
+} from '../../../../../../../types/trading/tradingForm';
 
 interface TradingFormInputCountryProps extends TradingFormInputDefaultProps {
     renderInput?: boolean;

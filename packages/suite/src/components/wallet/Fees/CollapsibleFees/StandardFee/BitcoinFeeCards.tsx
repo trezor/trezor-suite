@@ -3,15 +3,14 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
-
 import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';
 import { feeLevelTranslationMap } from './constants';
+import { useConnectedDateFnsLocale, useSelector } from '../../../../../hooks/suite';
 import { DustPreventionNotice } from '../../DustPreventionNotice';
 import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
+import { BaseCurrencyValue } from '../../../../suite/BaseCurrencyValue';
+import { FeeRate } from '../../FeeRate';
 import { useFeesContext } from '../../context/FeesContext';
 
 type BitcoinFeeCardsProps = {

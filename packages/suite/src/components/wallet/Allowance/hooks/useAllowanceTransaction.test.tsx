@@ -83,7 +83,7 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-jest.mock('src/actions/wallet/send/sendFormThunks', () => ({
+jest.mock('../../../../actions/wallet/send/sendFormThunks', () => ({
     signAndPushSendFormTransactionThunk: (params: unknown) => mockSignAndPush(params),
 }));
 

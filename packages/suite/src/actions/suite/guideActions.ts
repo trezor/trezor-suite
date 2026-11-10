@@ -3,10 +3,9 @@ import { type ThunkDispatch } from 'redux-thunk';
 
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 
-import { type GuideState } from 'src/reducers/suite/guideReducer';
-import { selectGuideView, selectIsGuideOpen } from 'src/selectors/suite/guideSelectors';
-
 import { GUIDE } from './constants';
+import { type GuideState } from '../../reducers/suite/guideReducer';
+import { selectGuideView, selectIsGuideOpen } from '../../selectors/suite/guideSelectors';
 
 export const open = createAction(GUIDE.OPEN);
 export const close = createAction(GUIDE.CLOSE);

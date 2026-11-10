@@ -20,9 +20,8 @@ import {
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
-
+import { type SendContextValues, type UseSendFormState } from '../../types/wallet/sendForm';
+import { useSelector } from '../suite';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
 export type GetCurrentRateParams = {

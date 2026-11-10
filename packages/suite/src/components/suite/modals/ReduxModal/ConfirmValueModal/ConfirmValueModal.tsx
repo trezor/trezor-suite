@@ -46,9 +46,9 @@ import {
 import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
 import { type OriginalReduxThunk, injectDispatch } from '@trezor/redux-utils';
 
-import { useGuideOpenNode } from 'src/hooks/guide';
-import { useSelector } from 'src/hooks/suite';
-import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
+import { useGuideOpenNode } from '../../../../../hooks/guide';
+import { useSelector } from '../../../../../hooks/suite';
+import { DESTINATION_TAG_GUIDE_PATH } from '../../../../../views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {
     account?: Account;

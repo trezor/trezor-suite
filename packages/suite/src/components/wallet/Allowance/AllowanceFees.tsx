@@ -3,8 +3,7 @@ import { type Account, type FeeInfo, type PrecomposedLevels } from '@suite-commo
 import { Banner, Card, Column } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { Fees, type FeesProps } from 'src/components/wallet/Fees/Fees';
-
+import { Fees, type FeesProps } from '../Fees/Fees';
 import { type AllowanceComposeError } from './hooks/useAllowanceTransaction';
 
 type AllowanceFeesProps = {

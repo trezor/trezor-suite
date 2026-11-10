@@ -5,9 +5,8 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-
 import { type EarnTokenBalance } from './types';
+import { FormattedCryptoAmount } from '../../../suite';
 
 type EarnAccountCellDetailsProps = {
     account?: Account;

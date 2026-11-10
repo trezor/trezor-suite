@@ -8,11 +8,10 @@ import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { AssetDetailBalance } from './AssetDetailBalance';
 import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../support/test-utils/hooksHelper';
 
 jest.mock('./AssetDetailModals/AssetDetailAccountsModal', () => ({
     AssetDetailAccountsModal: ({

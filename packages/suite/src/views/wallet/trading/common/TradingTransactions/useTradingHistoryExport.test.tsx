@@ -15,13 +15,12 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { useTradingHistoryExport } from './useTradingHistoryExport';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../mocks/mockInitialAppState';
+import { renderHookWithProviders } from '../../../../../support/test-utils/hooksHelper';
 
 jest.mock('@suite-common/suite-utils', () => ({
     ...jest.requireActual('@suite-common/suite-utils'),

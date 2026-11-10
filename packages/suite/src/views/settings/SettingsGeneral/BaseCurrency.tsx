@@ -15,7 +15,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../hooks/suite';
 
 export const BaseCurrency = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);

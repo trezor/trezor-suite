@@ -8,11 +8,10 @@ import {
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { RbfContext, useRbf } from 'src/hooks/wallet/useRbfForm';
-
 import { ChangeFee } from './ChangeFee';
 import { ReplaceTxButton } from './ReplaceTxButton';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { RbfContext, useRbf } from '../../../../../../../hooks/wallet/useRbfForm';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../ReplaceByFeeFailedOriginalTxConfirmed';
 import { TxDetailModalBase } from '../TxDetailModalBase';
 

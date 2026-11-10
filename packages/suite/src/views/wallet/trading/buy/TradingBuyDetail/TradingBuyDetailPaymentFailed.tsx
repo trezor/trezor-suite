@@ -7,8 +7,8 @@ import { Button, Illustration } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { TradingDetailTerminalDetails } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
-import { TradingDetailTerminalState } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalState';
+import { TradingDetailTerminalDetails } from '../../common/TradingDetail/TradingDetailTerminalDetails';
+import { TradingDetailTerminalState } from '../../common/TradingDetail/TradingDetailTerminalState';
 
 type TradingBuyDetailPaymentFailedProps = {
     trade: BuyTrade;

@@ -5,7 +5,7 @@ import { type TradingTransaction, type TradingType } from '@suite-common/trading
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { getTradingFormRoute } from 'src/views/wallet/trading/common/TradingLayout/tradingPageHeaderUtils';
+import { getTradingFormRoute } from '../../../views/wallet/trading/common/TradingLayout/tradingPageHeaderUtils';
 
 export const useTradingDetailMissingTradeRedirect = (
     tradeType: TradingType,

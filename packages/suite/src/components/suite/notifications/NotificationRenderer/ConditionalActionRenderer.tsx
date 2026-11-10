@@ -3,8 +3,7 @@ import { type ReactNode } from 'react';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { Paragraph } from '@trezor/components';
 
-import type { NotificationRendererProps } from 'src/components/suite';
-
+import type { NotificationRendererProps } from './NotificationRenderer';
 import { type NotificationAction } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type ConditionalActionRendererProps = NotificationRendererProps & {

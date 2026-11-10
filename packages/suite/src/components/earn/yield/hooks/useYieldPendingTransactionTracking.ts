@@ -20,7 +20,7 @@ import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../hooks/suite';
 
 type ResolutionEventType =
     | {

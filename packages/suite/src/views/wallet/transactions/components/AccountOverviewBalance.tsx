@@ -7,10 +7,10 @@ import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components
 import { InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useSelector } from 'src/hooks/suite';
-import { useAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
+import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from '../../../../components/suite';
+import { FiatHeader } from '../../../../components/wallet/FiatHeader';
+import { useSelector } from '../../../../hooks/suite';
+import { useAccountHeaderContext } from '../../../../support/suite/AccountHeaderProvider';
 
 type AccountOverviewBalanceSkeletonProps = {
     animate?: boolean;

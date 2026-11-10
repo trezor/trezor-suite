@@ -9,9 +9,8 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid, Row, Text, Tooltip } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
 
-import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-
 import { type TokenRewards } from './hooks/useYieldClaimRewardsData';
+import { FormattedCryptoAmount, HiddenPlaceholder } from '../../../suite';
 
 const TooltipLabel = styled.span`
     text-decoration: underline dotted ${({ theme }) => theme.contentSecondary};

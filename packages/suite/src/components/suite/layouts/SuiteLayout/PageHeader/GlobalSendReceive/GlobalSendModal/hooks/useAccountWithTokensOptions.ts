@@ -19,17 +19,17 @@ import { type StaticSessionId } from '@trezor/connect';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
-import {
-    createAccountOption,
-    createHiddenTokensOption,
-    createTokenOption,
-} from 'src/components/suite/asset-picker/utils';
 import {
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
-} from 'src/utils/wallet/tokenUtils';
+} from '../../../../../../../../utils/wallet/tokenUtils';
+import { type AccountWithTokensOption } from '../../../../../../asset-picker/types';
+import {
+    createAccountOption,
+    createHiddenTokensOption,
+    createTokenOption,
+} from '../../../../../../asset-picker/utils';
 
 export interface UseAccountWithTokensOptionsProps {
     networkSymbolFilter: NetworkSymbol | undefined;

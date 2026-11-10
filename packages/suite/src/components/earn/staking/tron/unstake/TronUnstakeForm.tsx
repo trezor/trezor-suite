@@ -6,8 +6,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Card, Column, Divider, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
+import { useMessageSystemStaking } from '../../../../../hooks/suite/useMessageSystemStaking';
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeFees } from '../TronStakeFees';
 import { TronStakePendingTransaction } from '../TronStakePendingTransaction';

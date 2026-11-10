@@ -17,8 +17,8 @@ import { ClockIcon, HandIcon } from '@trezor/icons';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useSelector } from 'src/hooks/suite';
+import { earnFlowToEventTypeMap } from '../../../../../constants/suite/staking';
+import { useSelector } from '../../../../../hooks/suite';
 
 const getStakeEnteringMessage = (networkType?: NetworkType) => {
     if (networkType === 'ethereum') return 'TR_STAKE_ENTERING_POOL_MAY_TAKE';

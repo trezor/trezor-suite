@@ -3,8 +3,8 @@ import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type ArrayElement, exhaustive } from '@trezor/type-utils';
 
-import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from '../../../../types/wallet';
+import { AccountLabelForOwnAddress } from '../../../suite/labeling/AccountLabelForOwnAddress';
 
 type TokenTransfer = ArrayElement<WalletAccountTransaction['tokens']>;
 

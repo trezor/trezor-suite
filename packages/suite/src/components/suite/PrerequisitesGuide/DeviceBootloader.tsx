@@ -4,9 +4,8 @@ import { Translation } from '@suite/intl';
 import { selectDeviceInternalModel } from '@suite-common/device';
 import { ArrowsClockwiseIcon, TrezorBodyIcon } from '@trezor/icons';
 
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
-
+import { getHowToGetFromBootloaderInstructionsMap } from '../../../utils/device/bootloader';
+import { TroubleshootingTips } from '../troubleshooting/TroubleshootingTips';
 import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTipsItem';
 import { UpdateGoToSettingsDescription } from '../troubleshooting/tips/UpdateGoToSettingsDescription';
 

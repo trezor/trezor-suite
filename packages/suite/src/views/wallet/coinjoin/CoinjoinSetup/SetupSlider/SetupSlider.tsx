@@ -5,9 +5,8 @@ import styled from 'styled-components';
 import { selectCurrentCoinjoinSession } from '@suite/coinjoin';
 import { Paragraph, Range, type RangeProps, Row } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { SliderInput, type SliderInputProps } from './SliderInput';
+import { useSelector } from '../../../../../hooks/suite';
 
 const StyledSliderInput = styled(SliderInput)<{ $width?: number }>`
     width: ${({ $width }) => $width && `${$width}px`};

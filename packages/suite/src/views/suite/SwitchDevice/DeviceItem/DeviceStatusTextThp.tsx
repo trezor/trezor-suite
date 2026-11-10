@@ -8,10 +8,9 @@ import { selectDevices } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { CheckIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceStatusTextVisible } from './DeviceStatusTextVisible';
+import { useSelector } from '../../../../hooks/suite';
 
 type DeviceStatusTextThpProps = {
     device: TrezorDevice;

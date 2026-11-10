@@ -18,20 +18,19 @@ import { Spinner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { BaseCurrencyValue } from 'src/components/suite';
-import { AllowanceLimitModal } from 'src/components/wallet/Allowance/AllowanceLimitModal';
-import { AllowanceStepCard } from 'src/components/wallet/Allowance/AllowanceStepCard';
-import { type AllowanceStepToken } from 'src/components/wallet/Allowance/AllowanceStepToken';
-import { useAllowanceTransaction } from 'src/components/wallet/Allowance/hooks/useAllowanceTransaction';
-import { useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
-import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-
 import { TradingExchangeApprovalFeeModal } from './TradingExchangeApprovalFeeModal';
 import {
     type AllowanceFeeValues,
     getAllowanceFeeValues,
     setAllowanceFeeValues,
 } from './allowanceFeeValues';
+import { BaseCurrencyValue } from '../../../../../components/suite';
+import { AllowanceLimitModal } from '../../../../../components/wallet/Allowance/AllowanceLimitModal';
+import { AllowanceStepCard } from '../../../../../components/wallet/Allowance/AllowanceStepCard';
+import { type AllowanceStepToken } from '../../../../../components/wallet/Allowance/AllowanceStepToken';
+import { useAllowanceTransaction } from '../../../../../components/wallet/Allowance/hooks/useAllowanceTransaction';
+import { useExchangeApproval } from '../../../../../hooks/wallet/trading/form/exchange/useExchangeApproval';
+import { type GetTradingExchangeCryptoInfo } from '../../../../../hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 
 const LIMIT_TYPE_ANALYTICS_ACTION = {
     minimal: 'limit-exact',

@@ -9,9 +9,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
-
 import { EarnYieldApyBreakdown } from './EarnYieldApyBreakdown';
+import { ApyValue } from '../../../../views/wallet/staking/components/ApyValue';
 
 const APY_TOOLTIP_REPORT_DELAY_MS = 1000;
 

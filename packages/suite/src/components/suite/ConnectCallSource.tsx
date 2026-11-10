@@ -3,9 +3,8 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Row, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { ConnectAppIcon } from './ConnectAppIcon';
+import { useSelector } from '../../hooks/suite';
 
 type ConnectCallSourceProps = {
     'data-testid'?: string;

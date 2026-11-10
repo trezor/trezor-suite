@@ -21,14 +21,13 @@ import {
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type TrezorDevice } from 'src/types/suite';
-
 import {
     type OutputElementLine,
     TransactionReviewOutputElement,
     type TransactionReviewOutputElementProps,
 } from './TransactionReviewOutputElement';
+import { useSelector } from '../../../../../../hooks/suite';
+import { type TrezorDevice } from '../../../../../../types/suite';
 
 interface GetLinesParams {
     device: TrezorDevice;

@@ -23,16 +23,15 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { Pagination } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
-
 import { UtxoSearch } from './UtxoSearch';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSortingSelect } from './UtxoSortingSelect';
+import { FormattedCryptoAmount } from '../../../../../../components/suite';
+import { Pagination } from '../../../../../../components/wallet';
+import { useSelector } from '../../../../../../hooks/suite';
+import { useSendFormContext } from '../../../../../../hooks/wallet';
+import { useBitcoinAmountUnit } from '../../../../../../hooks/wallet/useBitcoinAmountUnit';
+import { selectAccountLabelsForSearch } from '../../../../../../selectors/suite/selectAccountLabelsForSearch';
 
 type CoinControlProps = {
     close: () => void;

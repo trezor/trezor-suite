@@ -3,9 +3,9 @@ import { Checkbox } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
-import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
-import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
+import { useSelector } from '../../../hooks/suite';
+import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
+import { selectTransportOfType } from '../../../selectors/suite/suiteSelectors';
 
 export const TransportBackends = () => {
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));

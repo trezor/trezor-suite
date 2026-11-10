@@ -28,10 +28,6 @@ import { GaugeIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { OutlineHighlight } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
-
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';
 import { TransactionAccountBadge } from './TransactionAccountBadge';
 import { TransactionHeading } from './TransactionHeading';
@@ -40,6 +36,9 @@ import { CoinjoinRow, DepositRow, FeeRow, WithdrawalRow } from './TransactionRow
 import { TransactionTimestamp } from '../TransactionTimestamp';
 import { TransactionTargetsList } from './TransactionTarget/TransactionTargetsList';
 import { TransactionTypeIcon } from './TransactionTypeIcon';
+import { SUBPAGE_NAV_HEIGHT } from '../../../constants/suite/layout';
+import { useSelector } from '../../../hooks/suite';
+import { type WalletAccountTransaction } from '../../../types/wallet';
 
 const Wrapper = styled.div`
     /* height of secondary panel and a gap between transactions and graph */

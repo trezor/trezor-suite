@@ -16,8 +16,6 @@ import type { SkippedHashCheckError } from '@suite-common/firmware-authenticity'
 import { Card } from '@trezor/components';
 import type { FirmwareHashCheckError } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { SecurityCheckFail } from './components/SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './components/checklistItems';
 import {
@@ -27,6 +25,7 @@ import {
     FwAuthenticityCheckSupportButton,
     FwAuthenticityChecksCtas,
 } from './components/ctas';
+import { useSelector } from '../../../hooks/suite';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const hashCheckSubtitleMap: Record<

@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react';
 import { selectRouteName } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 
-import { HEADER_HEIGHT } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
-import { useOptionalAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
-
 import { AccountDetails } from './AccountDetails';
+import { HEADER_HEIGHT } from '../../../../../../../constants/suite/layout';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { useOptionalAccountHeaderContext } from '../../../../../../../support/suite/AccountHeaderProvider';
 
 interface AccountNameProps {
     selectedAccount: Account;

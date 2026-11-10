@@ -34,10 +34,9 @@ import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { useSelector } from 'src/hooks/suite';
-
 import { WalletConnectAccountOption } from './WalletConnectAccountOption';
+import { useSelector } from '../../../../../hooks/suite';
+import { ConnectAppIcon } from '../../../ConnectAppIcon';
 
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     display: flex;

@@ -1,7 +1,10 @@
 import type { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import type { AggregatedAccountHistory, AggregatedDashboardHistory } from 'src/types/wallet/graph';
+import type {
+    AggregatedAccountHistory,
+    AggregatedDashboardHistory,
+} from '../../../types/wallet/graph';
 
 export type FiatValueMap = { [K in BaseCurrencyCode]?: BaseCurrencyAmount | undefined };
 

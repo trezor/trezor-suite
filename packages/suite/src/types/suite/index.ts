@@ -9,7 +9,7 @@ export type {
     UnknownDevice,
     UnreadableDevice,
 } from '@suite-common/suite-types';
-export type { PrerequisiteType } from 'src/utils/suite/prerequisites';
+export type { PrerequisiteType } from '../../utils/suite/prerequisites';
 export type { Route };
 
 export type ForegroundAppRoute = Extract<

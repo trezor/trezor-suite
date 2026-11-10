@@ -4,7 +4,7 @@ import { IconCircle } from '@trezor/components';
 import { PlugsIcon, WalletConnectIcon } from '@trezor/icons';
 import { type SpacingValue } from '@trezor/theme';
 
-import { useProxyImage } from 'src/hooks/suite/useProxyImage';
+import { useProxyImage } from '../../hooks/suite/useProxyImage';
 
 const AppIconImage = styled.img<{ size: SpacingValue }>`
     width: ${({ size }) => size}px;

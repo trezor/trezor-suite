@@ -1,4 +1,4 @@
-import { type GuideState } from 'src/reducers/suite/guideReducer';
+import { type GuideState } from '../../reducers/suite/guideReducer';
 
 export type GuideRootState = {
     guide: GuideState;

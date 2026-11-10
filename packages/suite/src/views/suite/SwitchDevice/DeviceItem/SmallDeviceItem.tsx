@@ -4,10 +4,9 @@ import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Image, Row } from '@trezor/components';
 import { LinkBreakIcon, LinkIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceDetail } from './DeviceDetail';
+import { useSelector } from '../../../../hooks/suite';
 
 type SmallDeviceItemProps = {
     forceAlternativeDeviceLabel?: string;

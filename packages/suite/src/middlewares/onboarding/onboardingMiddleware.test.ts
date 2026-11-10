@@ -9,11 +9,11 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type DeviceUniquePath } from '@trezor/connect';
 
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import onboardingMiddleware from 'src/middlewares/onboarding/onboardingMiddleware';
-import onboardingReducer from 'src/reducers/onboarding/index';
-import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
-import suiteReducer, { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import onboardingMiddleware from './onboardingMiddleware';
+import * as onboardingActions from '../../actions/onboarding/onboardingActions';
+import onboardingReducer from '../../reducers/onboarding/index';
+import { type OnboardingRootState } from '../../reducers/onboarding/onboardingReducer';
+import suiteReducer, { type SuiteRootState } from '../../reducers/suite/suiteReducer';
 
 const middlewares = [onboardingMiddleware];
 
@@ -22,7 +22,7 @@ jest.mock('@trezor/suite-storage', () => ({
     default: () => {},
 }));
 
-jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
+jest.mock('../../actions/suite/storageActions', () => ({ __esModule: true }));
 
 type State = SuiteRootState &
     RouterRootState &

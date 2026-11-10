@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { H3, Paragraph } from '@trezor/components';
 
-import { type DetailHeaderMessages } from 'src/views/wallet/trading/common/TradingDetail/utils';
+import { type DetailHeaderMessages } from './utils';
 
 type TradingDetailHeaderProps = DetailHeaderMessages & {
     type: string;

@@ -9,10 +9,9 @@ import { Column, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
-
 import { NetworkCard } from './NetworkCard';
 import { getBackendStatus } from './getBackendStatus';
+import { useDiscovery, useSelector } from '../../../hooks/suite';
 
 export type NetworkListProps = {
     networks: Network[];

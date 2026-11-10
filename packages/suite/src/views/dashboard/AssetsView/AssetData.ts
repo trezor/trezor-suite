@@ -2,7 +2,7 @@ import { type Network } from '@suite-common/wallet-config';
 import { type AmountUnit } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 
-import { type Account } from 'src/types/wallet';
+import { type Account } from '../../../types/wallet';
 
 export type AssetData = {
     network: Network;

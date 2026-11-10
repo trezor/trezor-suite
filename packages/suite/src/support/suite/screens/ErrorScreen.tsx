@@ -1,5 +1,4 @@
-import { Error } from 'src/components/suite/Error';
-
+import { Error } from '../../../components/suite/Error';
 import { ThemeProvider } from '../ThemeProvider';
 
 type ErrorScreenProps = {

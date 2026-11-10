@@ -9,9 +9,9 @@ import { H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
-import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { useSelector } from 'src/hooks/suite';
-import type { TrezorDevice } from 'src/types/suite';
+import { useSelector } from '../../../../../hooks/suite';
+import type { TrezorDevice } from '../../../../../types/suite';
+import { DeviceConfirmImage } from '../../../DeviceConfirmImage';
 
 const ImageWrapper = styled.div`
     display: flex;

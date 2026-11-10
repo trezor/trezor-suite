@@ -24,17 +24,13 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
-import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
-import { TradingFormInputBaseCurrencyAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
-import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
-import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
-import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
-
 import { TradingFormCard } from './TradingFormCard';
+import { TradingFormInputCountry } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
+import { TradingFormInputCurrency } from './TradingFormInput/TradingFormInputCurrency';
+import { TradingFormInputBaseCurrencyAmount } from './TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
+import { TradingFormInputCryptoAmount } from './TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
+import { TradingFormInputFiat } from './TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
+import { TradingFormInputPaymentMethod } from './TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
@@ -42,6 +38,9 @@ import {
     type TradingFormInputBuyAssetProps,
 } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
 import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
+import { useSelector } from '../../../../../hooks/suite';
+import { useTradingFormContext } from '../../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from '../../../../../hooks/wallet/useBitcoinAmountUnit';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 
 export const TradingBuyFormInputs = () => {

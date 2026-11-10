@@ -14,11 +14,10 @@ import { Button, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedDate } from 'src/components/suite';
-import { type Account } from 'src/types/wallet';
-
 import SkeletonTransactionItem from './SkeletonTransactionItem';
 import { selectStoredTransactionCounts } from './selectStoredTransactionCounts';
+import { FormattedDate } from '../../../../components/suite';
+import { type Account } from '../../../../types/wallet';
 
 interface LoadOlderHistoryProps {
     accounts: readonly Account[];

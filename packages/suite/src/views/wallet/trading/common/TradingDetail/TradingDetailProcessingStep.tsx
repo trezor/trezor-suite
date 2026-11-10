@@ -8,10 +8,10 @@ import {
 } from '@suite-common/trading';
 import { Column, type StepListItemState } from '@trezor/components';
 
-import { translationKeys } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingDetailProviderStatusLink } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderStatusLink';
-import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
-import { getTradingProviderName } from 'src/views/wallet/trading/common/TradingDetail/utils';
+import { TradingDetailProviderStatusLink } from './TradingDetailProviderStatusLink';
+import { TradingDetailStep } from './TradingDetailStep';
+import { getTradingProviderName } from './utils';
+import { translationKeys } from '../../../../../utils/wallet/trading/tradingUtils';
 
 const getTitleId = (state: StepListItemState, isDex?: boolean): TranslationKey => {
     if (isDex) {

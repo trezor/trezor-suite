@@ -15,9 +15,9 @@ import { type AnonymitySet } from '@trezor/blockchain-link-types';
 import { Column, Icon, Link, Row, Text, Tooltip } from '@trezor/components';
 import { ChangeIcon, WalletIcon } from '@trezor/icons';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { UtxoAnonymity } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../../../../../hooks/suite';
+import { UtxoAnonymity } from '../../../../../../../../wallet';
+import { FormattedCryptoAmount } from '../../../../../../../FormattedCryptoAmount';
 
 const OP_RETURN_REGEX = /^OP_RETURN \(([^)]+)\)/;
 

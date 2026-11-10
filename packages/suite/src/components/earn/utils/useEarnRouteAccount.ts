@@ -3,8 +3,8 @@ import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
 import type { Account, WalletParams } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
-import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
+import { useSelector } from '../../../hooks/suite';
+import { getSelectedAccount } from '../../../utils/wallet/accountUtils';
 
 export type UseEarnRouteAccountResult = {
     account?: Account;

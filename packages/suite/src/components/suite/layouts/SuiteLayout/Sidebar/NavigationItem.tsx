@@ -22,7 +22,7 @@ import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
 const Container = styled.button<{ $isActive?: boolean }>`
     flex: 1;

@@ -17,13 +17,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
-import { useSelector } from 'src/hooks/suite';
-import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
-
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
+import { signTransactionThunk } from '../../actions/wallet/stakeActions';
 import { type ChangeDelegateContextValues } from '../../components/earn/forms/ChangeDelegateFormContext';
+import { CRYPTO_INPUT } from '../../types/earn/earnFormFields';
+import { useSelector } from '../suite';
 
 export const ChangeDelegateFormContext = createContext<ChangeDelegateContextValues | null>(null);
 ChangeDelegateFormContext.displayName = 'ChangeDelegateFormContext';

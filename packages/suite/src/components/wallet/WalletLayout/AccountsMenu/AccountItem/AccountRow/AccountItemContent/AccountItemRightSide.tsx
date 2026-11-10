@@ -3,9 +3,8 @@ import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-type
 import { Icon, Text } from '@trezor/components';
 import { CheckIcon, WarningIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { BaseCurrency } from './BaseCurrency';
+import { useSelector } from '../../../../../../../hooks/suite';
 
 const ICON_SIZE = 16;
 

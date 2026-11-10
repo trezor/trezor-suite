@@ -4,8 +4,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { PiggyBankFilledIcon } from '@trezor/icons';
 
-import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
+import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from '../../../../components/suite';
+import { TokenIconSetWrapper } from '../../../../components/wallet/TokenIconSetWrapper';
 
 type AssetCardTokensAndStakingInfoProps = {
     symbol: NetworkSymbol;

@@ -7,9 +7,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { confirmEvmExplanationModal } from 'src/actions/suite/suiteActions';
-import { useSelector } from 'src/hooks/suite';
-import { selectConfirmExplanationModalClosed } from 'src/selectors/suite/suiteSelectors';
+import { confirmEvmExplanationModal } from '../../../actions/suite/suiteActions';
+import { useSelector } from '../../../hooks/suite';
+import { selectConfirmExplanationModalClosed } from '../../../selectors/suite/suiteSelectors';
 
 export interface ConfirmNetworkExplanationModalProps {
     account: Account | undefined;

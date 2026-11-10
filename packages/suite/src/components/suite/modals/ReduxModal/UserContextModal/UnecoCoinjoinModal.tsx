@@ -9,8 +9,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { ArrowsInIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../hooks/suite';
+import { FormattedCryptoAmount } from '../../../FormattedCryptoAmount';
 
 export const UnecoCoinjoinModal = () => {
     const account = useSelector(selectSelectedAccount);

@@ -4,10 +4,9 @@ import { convertAmountSubunitsToUnits, isNftTokenTransfer } from '@suite-common/
 import { type TokenTransfer } from '@trezor/blockchain-link-types';
 import { Column, H4 } from '@trezor/components';
 
-import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
-
 import { type IODetailsType } from './IODetailsType';
 import { IOGroup } from './IOGroup';
+import { FormattedNftAmount } from '../../../../../../../FormattedNftAmount';
 
 type TokensByStandard = {
     [key: string]: TokenTransfer[];

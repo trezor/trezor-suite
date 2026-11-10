@@ -4,7 +4,7 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { useDidUpdate, usePreviousDefined } from '@trezor/react-utils';
 
-import { type useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
+import { type useExchangeApproval } from '../../../../../hooks/wallet/trading/form/exchange/useExchangeApproval';
 
 type UseResumedApprovalParams = {
     quote: ExchangeTrade | undefined;

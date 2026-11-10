@@ -9,14 +9,13 @@ import { explorerInitialState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { type IODetailsType } from './IODetailsType';
 import { IOGroup } from './IOGroup';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../../../../../support/test-utils/hooksHelper';
 
 const bitcoinAccount = mockWalletAccount({
     symbol: asNetworkSymbol('btc'),

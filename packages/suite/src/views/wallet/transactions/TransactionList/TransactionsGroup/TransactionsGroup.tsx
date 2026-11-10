@@ -16,10 +16,9 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
-
 import { DayHeader } from './DayHeader';
+import { useSelector } from '../../../../../hooks/suite';
+import { type Account, type WalletAccountTransaction } from '../../../../../types/wallet';
 
 type TransactionsGroupProps = {
     dateKey: string;

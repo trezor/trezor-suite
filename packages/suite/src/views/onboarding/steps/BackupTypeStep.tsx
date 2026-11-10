@@ -11,10 +11,9 @@ import { Badge, Column, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { WalletIcon } from '@trezor/icons';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
-
 import { SelectBackupType } from './SelectBackupType/SelectBackupType';
 import { isShamirBackupType } from './utils';
+import { useOnboarding, useSelector } from '../../../hooks/suite';
 
 const canChooseBackupType = (device: DeviceModelInternal) => device !== DeviceModelInternal.T1B1;
 

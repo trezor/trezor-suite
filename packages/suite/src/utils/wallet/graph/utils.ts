@@ -14,16 +14,15 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber, arrayToDictionary } from '@trezor/utils';
 
-import { type GraphState } from 'src/reducers/wallet/graphReducer';
+import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
+import { sumFiatValueMapInPlace } from './utilsShared';
+import { type GraphState } from '../../../reducers/wallet/graphReducer';
 import {
     type AccountHistoryWithBalance,
     type CommonAggregatedHistory,
     type GraphData,
     type GraphRange,
-} from 'src/types/wallet/graph';
-
-import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
-import { sumFiatValueMapInPlace } from './utilsShared';
+} from '../../../types/wallet/graph';
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: StaticSessionId | undefined) => {
     if (!deviceState) return false;

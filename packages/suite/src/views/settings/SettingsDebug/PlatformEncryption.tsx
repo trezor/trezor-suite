@@ -7,7 +7,7 @@ import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 import { type Branded } from '@trezor/type-utils';
 
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 type Value = string & Branded<'Value'>;
 const asValue = (value: string) => value as Value;

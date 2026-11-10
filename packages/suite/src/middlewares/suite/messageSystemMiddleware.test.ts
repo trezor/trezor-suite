@@ -21,10 +21,9 @@ import {
 } from '@suite-common/wallet-core';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
-
 import messageSystemMiddleware from './messageSystemMiddleware';
 import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
+import suiteReducer, { type SuiteState } from '../../reducers/suite/suiteReducer';
 
 const walletReducers = combineReducers({
     settings: prepareWalletSettingsReducer(mockExtraDependenciesForReducers),

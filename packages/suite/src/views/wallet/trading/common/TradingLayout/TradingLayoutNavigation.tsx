@@ -5,8 +5,8 @@ import { Box } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { getTradingFormRoute } from 'src/views/wallet/trading/common/TradingLayout/tradingPageHeaderUtils';
-import { TradingTypeTabs } from 'src/views/wallet/trading/common/TradingTypeTabs/TradingTypeTabs';
+import { getTradingFormRoute } from './tradingPageHeaderUtils';
+import { TradingTypeTabs } from '../TradingTypeTabs/TradingTypeTabs';
 
 type TradingLayoutNavigationProps = {
     route?: Route['name'];

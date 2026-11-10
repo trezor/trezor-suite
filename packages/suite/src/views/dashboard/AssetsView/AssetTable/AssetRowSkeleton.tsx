@@ -1,8 +1,7 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { Row, Skeleton, Table } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
+import { useSelector } from '../../../../hooks/suite';
 import { AssetCoinLogoSkeleton } from '../AssetCoinLogo';
 
 type AssetRowSkeletonProps = {

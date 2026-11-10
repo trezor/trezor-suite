@@ -3,10 +3,10 @@ import { Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/compone
 import { type DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
-import { type TrezorDevice } from 'src/types/suite';
-import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
-import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
+import { useSelector } from '../../../../../hooks/suite';
+import { type TrezorDevice } from '../../../../../types/suite';
+import { DeviceDetail } from '../../../../../views/suite/SwitchDevice/DeviceItem/DeviceDetail';
+import { DeviceStatusText } from '../../../../../views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 
 type DeviceStatusProps = {
     deviceModel: DeviceModelInternal;

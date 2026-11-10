@@ -16,11 +16,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useSelector } from 'src/hooks/suite';
-
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
+import { useNetworkSupport } from '../../../../../hooks/settings/useNetworkSupport';
+import { useDiscovery, useSelector } from '../../../../../hooks/suite';
+import { NetworkList } from '../../../NetworkList/NetworkList';
 
 export const bannerAnimationConfig = {
     initial: { opacity: 1, transform: 'scale(1)' },

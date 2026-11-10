@@ -1,6 +1,5 @@
-import { useSendFormContext } from 'src/hooks/wallet';
-
 import { SolanaMemo } from './SolanaMemo';
+import { useSendFormContext } from '../../../../../hooks/wallet';
 
 export const SolanaOptions = () => {
     // React Compiler: `getDefaultValue` reads the form imperatively, so a compiled render-time read

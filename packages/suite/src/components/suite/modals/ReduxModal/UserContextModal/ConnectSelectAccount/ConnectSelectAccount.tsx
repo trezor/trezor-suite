@@ -21,12 +21,11 @@ import { CheckCircleIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Pagination } from 'src/components/wallet/Pagination';
-import { useSelector } from 'src/hooks/suite';
-
 import { SelectAccountRow } from './SelectAccountRow';
+import { useSelector } from '../../../../../../hooks/suite';
+import { Pagination } from '../../../../../wallet/Pagination';
+import { ConnectCallSource } from '../../../../ConnectCallSource';
+import { ConnectModalBackdrop } from '../../../../ConnectModalBackdrop';
 
 // Labels for the network's built-in account types; custom tabs carry their own `customLabel`.
 const ACCOUNT_TYPE_LABELS: Partial<Record<AccountType, TranslationKey>> = {

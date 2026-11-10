@@ -7,7 +7,7 @@ import { Button, Column, InfoItem, Input, Row, Text } from '@trezor/components';
 import { ChangeIcon } from '@trezor/icons';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { type useExplorerForm } from 'src/hooks/settings/useExplorerForm';
+import { type useExplorerForm } from '../../../../../../hooks/settings/useExplorerForm';
 
 type InputRowProps = {
     value: { ref: RefCallBack; field: Omit<RefCallBack, 'ref'>; error?: string };

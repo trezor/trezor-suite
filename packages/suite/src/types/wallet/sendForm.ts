@@ -20,8 +20,8 @@ import { type AccountUtxo, type FeeLevel, type PROTO } from '@trezor/connect';
 import {
     type HandleAmountChangeParams,
     type HandleFiatChangeParams,
-} from 'src/hooks/wallet/useSendFormChangeHandlers';
-import { type GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
+} from '../../hooks/wallet/useSendFormChangeHandlers';
+import { type GetCurrentRateParams } from '../../hooks/wallet/useSendFormFields';
 
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {

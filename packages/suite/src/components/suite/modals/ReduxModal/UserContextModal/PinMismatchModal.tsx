@@ -4,7 +4,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { PasswordIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { changePinThunk } from 'src/actions/settings/deviceSettingsActions';
+import { changePinThunk } from '../../../../../actions/settings/deviceSettingsActions';
 
 export const PinMismatchModal = () => {
     const { dispatch } = useServices(injectDispatch);

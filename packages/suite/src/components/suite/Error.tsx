@@ -3,7 +3,7 @@ import { Button, Column, Divider, H2, Paragraph, Row } from '@trezor/components'
 import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon } from '@trezor/icons';
 
-import { injectDb } from 'src/storage/createDb';
+import { injectDb } from '../../storage/createDb';
 
 type ErrorProps = {
     error: string;

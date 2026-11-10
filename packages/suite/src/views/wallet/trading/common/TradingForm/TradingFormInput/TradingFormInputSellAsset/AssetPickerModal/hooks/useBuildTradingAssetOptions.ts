@@ -1,14 +1,13 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
+import { useGroupedAssetOptions } from './useGroupedAssetOptions';
+import { useSellAssetRows } from './useSellAssetRows';
 import {
     useAccountsWithTokenDisplayNames,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
-} from 'src/components/suite/asset-picker/hooks';
-import { type AssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
-
-import { useGroupedAssetOptions } from './useGroupedAssetOptions';
-import { useSellAssetRows } from './useSellAssetRows';
+} from '../../../../../../../../../components/suite/asset-picker/hooks';
+import { type AssetGroupKey } from '../../../../../../../../../components/suite/asset-picker/utils/assetGroupKey';
 
 export type UseBuildTradingAssetOptionsProps = {
     search: string;

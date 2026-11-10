@@ -24,16 +24,16 @@ jest.mock('@suite/intl', () => ({
     useTranslation: () => ({ translationString: (id: string) => id }),
 }));
 
-jest.mock('src/hooks/wallet/useBitcoinAmountUnit', () => ({
+jest.mock('../useBitcoinAmountUnit', () => ({
     useBitcoinAmountUnit: () => ({ isBtcSatsAmountUnit: false }),
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
+jest.mock('./form/common/useTradingAssetDecimals', () => ({
     useTradingAssetDecimals: () => ({ getAssetDecimals: () => 8 }),
 }));
 
 const mockUseTradingFormAccount = jest.fn();
-jest.mock('src/hooks/wallet/trading/form/useTradingFormAccount', () => ({
+jest.mock('./form/useTradingFormAccount', () => ({
     useTradingFormAccount: () => mockUseTradingFormAccount(),
 }));
 
@@ -50,14 +50,14 @@ jest.mock('@suite/settings', () => ({
 const mockBuildSellReturnUrl = jest.fn((..._args: unknown[]) =>
     Promise.resolve('https://return.url'),
 );
-jest.mock('src/utils/wallet/trading/buildSellReturnUrl', () => ({
+jest.mock('../../../utils/wallet/trading/buildSellReturnUrl', () => ({
     buildSellReturnUrl: (...args: unknown[]) => mockBuildSellReturnUrl(...args),
 }));
 
 const mockRequestSellTradeThunk = jest.fn((args: unknown) =>
     Object.assign(() => ({ unwrap: () => Promise.resolve({ isRedirecting: false }) }), { args }),
 );
-jest.mock('src/actions/wallet/trading/sell/requestSellTradeThunk', () => ({
+jest.mock('../../../actions/wallet/trading/sell/requestSellTradeThunk', () => ({
     requestSellTradeThunk: (args: unknown) => mockRequestSellTradeThunk(args),
 }));
 

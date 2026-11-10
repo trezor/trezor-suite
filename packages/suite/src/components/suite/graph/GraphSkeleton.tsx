@@ -1,7 +1,7 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { Column, Row, Skeleton } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../hooks/suite';
 
 const barProps = {
     width: 12,

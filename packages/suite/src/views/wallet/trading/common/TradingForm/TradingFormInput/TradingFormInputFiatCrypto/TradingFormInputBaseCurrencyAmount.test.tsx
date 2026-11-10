@@ -15,17 +15,16 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { intermediaryTheme } from '@trezor/components';
 import { PROTO } from '@trezor/connect';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { TradingFormInputBaseCurrencyAmount } from './TradingFormInputBaseCurrencyAmount';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../../../support/test-utils/hooksHelper';
 
 const mockUseTradingFormContext = jest.fn();
 
-jest.mock('src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
+jest.mock('../../../../../../../hooks/wallet/trading/form/useTradingCommonForm', () => ({
     useTradingFormContext: () => mockUseTradingFormContext(),
 }));
 

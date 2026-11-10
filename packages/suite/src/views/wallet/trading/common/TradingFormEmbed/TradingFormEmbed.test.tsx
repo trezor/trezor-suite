@@ -27,28 +27,27 @@ import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mo
 import { mock } from '@trezor/dependency-injection';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
-import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-import { TradingBuyFormWrapper } from 'src/views/wallet/trading/buy/TradingBuyFormWrapper';
-import { TradingExchangeFormWrapper } from 'src/views/wallet/trading/exchange/TradingExchangeFormWrapper';
-import { TradingSellFormWrapper } from 'src/views/wallet/trading/sell/TradingSellFormWrapper';
-
 import { TradingFormEmbed } from './TradingFormEmbed';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../mocks/mockInitialAppState';
+import { useMessageSystemTrading } from '../../../../../hooks/suite/useMessageSystemTrading';
+import { renderWithProviders } from '../../../../../support/test-utils/hooksHelper';
+import { TradingBuyFormWrapper } from '../../buy/TradingBuyFormWrapper';
+import { TradingExchangeFormWrapper } from '../../exchange/TradingExchangeFormWrapper';
+import { TradingSellFormWrapper } from '../../sell/TradingSellFormWrapper';
 
-jest.mock('src/hooks/suite/useMessageSystemTrading', () => ({
+jest.mock('../../../../../hooks/suite/useMessageSystemTrading', () => ({
     useMessageSystemTrading: jest.fn(),
 }));
-jest.mock('src/views/wallet/trading/buy/TradingBuyFormWrapper', () => ({
+jest.mock('../../buy/TradingBuyFormWrapper', () => ({
     TradingBuyFormWrapper: jest.fn(),
 }));
-jest.mock('src/views/wallet/trading/sell/TradingSellFormWrapper', () => ({
+jest.mock('../../sell/TradingSellFormWrapper', () => ({
     TradingSellFormWrapper: jest.fn(),
 }));
-jest.mock('src/views/wallet/trading/exchange/TradingExchangeFormWrapper', () => ({
+jest.mock('../../exchange/TradingExchangeFormWrapper', () => ({
     TradingExchangeFormWrapper: jest.fn(),
 }));
 

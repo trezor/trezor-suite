@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
-
 import { MultiAccountTransactionList } from './MultiAccountTransactionList';
+import { type Account, type WalletAccountTransaction } from '../../../../types/wallet';
 
 type SingleAccountTransactionListProps = {
     symbol: WalletAccountTransaction['symbol'];

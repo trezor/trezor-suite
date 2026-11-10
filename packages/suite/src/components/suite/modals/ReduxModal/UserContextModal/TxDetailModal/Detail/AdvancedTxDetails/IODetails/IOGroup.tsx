@@ -7,10 +7,9 @@ import { type WalletAccountTransaction, createAccountKey } from '@suite-common/w
 import { Column, Icon, InfoSegments, Row, Text } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { type IODetailsType } from './IODetailsType';
 import { type AddressOwnership, IOItem } from './IOItem';
+import { useSelector } from '../../../../../../../../../hooks/suite';
 
 export type IOGroupProps = {
     tx: WalletAccountTransaction;

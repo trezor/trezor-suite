@@ -3,12 +3,11 @@ import { type ReactNode, useMemo } from 'react';
 import { groupTransactionsByDate } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
-
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { TransactionGroupedList } from './TransactionGroupedList';
 import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
+import { type Account, type WalletAccountTransaction } from '../../../../types/wallet';
 
 type TransactionListBodyProps = {
     isLoading: boolean;

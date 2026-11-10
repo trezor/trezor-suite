@@ -12,9 +12,9 @@ import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { BaseCurrencyValue } from 'src/components/suite';
-import { type TradingPayGetLabelType } from 'src/types/trading/trading';
-import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { BaseCurrencyValue } from '../../../../../../components/suite';
+import { type TradingPayGetLabelType } from '../../../../../../types/trading/trading';
+import { TradingCryptoAmount } from '../../TradingCryptoAmount';
 
 type TradingInfoItemProps = {
     account?: Account;

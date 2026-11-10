@@ -2,11 +2,9 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { close, open } from 'src/actions/suite/guideActions';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectIsGuideOpen } from 'src/selectors/suite/guideSelectors';
-
-import { usePreferredModal } from '../suite';
+import { close, open } from '../../actions/suite/guideActions';
+import { selectIsGuideOpen } from '../../selectors/suite/guideSelectors';
+import { useLayoutSize, usePreferredModal, useSelector } from '../suite';
 
 export const GUIDE_ANIMATION_DURATION_MS = 300;
 

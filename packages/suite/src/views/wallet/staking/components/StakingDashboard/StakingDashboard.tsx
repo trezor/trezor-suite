@@ -1,9 +1,8 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 
-import { WalletLayout } from 'src/components/wallet';
-
 import { StakingFooter } from './components/StakingFooter';
+import { WalletLayout } from '../../../../../components/wallet';
 
 interface StakingDashboardProps {
     selectedAccount: SelectedAccountStatus;

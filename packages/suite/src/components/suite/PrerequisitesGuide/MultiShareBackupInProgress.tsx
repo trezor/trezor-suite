@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { RecoverySeedIcon } from '@trezor/icons';
 
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { TroubleshootingTips } from '../troubleshooting/TroubleshootingTips';
 
 export const MultiShareBackupInProgress = () => (
     <TroubleshootingTips

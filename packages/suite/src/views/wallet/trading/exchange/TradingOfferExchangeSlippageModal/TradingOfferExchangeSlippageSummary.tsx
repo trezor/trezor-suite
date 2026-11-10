@@ -14,10 +14,10 @@ import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
+import { FormattedCryptoAmount } from '../../../../../components/suite';
+import { useSelector } from '../../../../../hooks/suite';
+import { useTradingAssetDecimals } from '../../../../../hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { formatCryptoAmountAsAmount } from '../../common/formatCryptoAmountAsAmount';
 
 interface TradingOfferExchangeSlippageSummaryProps {
     selectedQuote: ExchangeTrade;

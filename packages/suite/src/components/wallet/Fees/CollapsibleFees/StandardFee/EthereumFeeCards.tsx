@@ -9,14 +9,13 @@ import { type FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Grid, Row, Text } from '@trezor/components';
 
-import { BaseCurrencyValue } from 'src/components/suite';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
-
 import { FeeCard, type FeeCardAppearance } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';
 import { feeLevelTranslationMap } from './constants';
+import { useConnectedDateFnsLocale, useSelector } from '../../../../../hooks/suite';
+import { FeeRate } from '../../FeeRate';
 import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
+import { BaseCurrencyValue } from '../../../../suite';
 import { useFeesContext } from '../../context/FeesContext';
 
 type EthereumFeeCardsProps = {

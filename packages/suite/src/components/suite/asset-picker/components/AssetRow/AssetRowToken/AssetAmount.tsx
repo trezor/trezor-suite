@@ -4,8 +4,8 @@ import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../../hooks/suite';
+import { FormattedCryptoAmount } from '../../../../FormattedCryptoAmount';
 
 export type AssetAmountProps = {
     symbol: string;

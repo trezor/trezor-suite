@@ -6,9 +6,8 @@ import { type FormState } from '@suite-common/wallet-types';
 import { Note } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { useFeesContext } from './context/FeesContext';
+import { useSelector } from '../../../hooks/suite';
 
 type DustPreventionNoticeProps = {
     chosenFeePerByte: string | undefined;

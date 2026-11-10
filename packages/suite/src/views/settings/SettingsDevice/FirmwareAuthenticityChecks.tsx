@@ -11,8 +11,8 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
-import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
-import { useSelector } from 'src/hooks/suite';
+import { toggleFirmwareAuthenticityChecks } from '../../../actions/suite/suiteActions';
+import { useSelector } from '../../../hooks/suite';
 
 export const FirmwareAuthenticityChecks = () => {
     const { dispatch } = useServices(injectDispatch);

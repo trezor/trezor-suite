@@ -13,7 +13,7 @@ import type {
     StellarContractCallData,
 } from '@trezor/network-stellar/types';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../../../../hooks/suite';
 
 const RowContent = styled.div`
     white-space: pre-wrap;

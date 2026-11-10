@@ -25,9 +25,9 @@ import { useAsyncClickHandler } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useExchangeApproval } from 'src/hooks/wallet/trading/form/exchange/useExchangeApproval';
-import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { TradingRevokeModal } from 'src/views/wallet/trading/common/TradingForm/TradingRevokeModal';
+import { TradingRevokeModal } from './TradingRevokeModal';
+import { useExchangeApproval } from '../../../../../hooks/wallet/trading/form/exchange/useExchangeApproval';
+import { type GetTradingExchangeCryptoInfo } from '../../../../../hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 
 type TradingFormApprovalProps = {
     isComposing: boolean;

@@ -15,13 +15,12 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type BaseItemProps, VirtualizedList } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useAccountSearch, useSelector } from 'src/hooks/suite';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
-
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
+import { useAccountSearch, useSelector } from '../../../../hooks/suite';
+import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
+import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
 
 const SECTION_GAP = 4;
 const OVERSCAN_SECTION_COUNT = 8;

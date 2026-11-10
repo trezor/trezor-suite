@@ -1,9 +1,9 @@
 import { Form } from '@suite/form';
 
-import { useTradingSellForm } from 'src/hooks/wallet/trading/form/sell/useTradingSellForm';
-import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';
-import { TradingSellFormInputs } from 'src/views/wallet/trading/common/TradingForm/TradingSellFormInputs';
+import { useTradingSellForm } from '../../../../hooks/wallet/trading/form/sell/useTradingSellForm';
+import { TradingFormContext } from '../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingFormLayout } from '../common/TradingForm/TradingFormLayout';
+import { TradingSellFormInputs } from '../common/TradingForm/TradingSellFormInputs';
 
 export const TradingSellFormWrapper = () => {
     const tradingSellContextValues = useTradingSellForm();

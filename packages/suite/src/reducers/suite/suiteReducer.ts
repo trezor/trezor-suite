@@ -10,7 +10,7 @@ import {
     storageCorrupted,
     storageError,
     storageLoad,
-} from 'src/actions/suite/storageLifecycleActions';
+} from '../../actions/suite/storageLifecycleActions';
 import {
     addDeviceIdToSeenDisconnectNotification,
     closeEvmExplanationBanner,
@@ -20,7 +20,7 @@ import {
     setSendFormPrefill,
     setSuiteError,
     setTransactionHistoryPrefill,
-} from 'src/actions/suite/suiteActions';
+} from '../../actions/suite/suiteActions';
 
 export type SuiteRootState = {
     suite: SuiteState;

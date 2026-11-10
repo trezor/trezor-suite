@@ -8,8 +8,8 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
-import { changeWipeCodeThunk } from 'src/actions/settings/deviceSettingsActions';
-import { useSelector } from 'src/hooks/suite';
+import { changeWipeCodeThunk } from '../../../actions/settings/deviceSettingsActions';
+import { useSelector } from '../../../hooks/suite';
 
 interface Props {
     isDeviceLocked: boolean;

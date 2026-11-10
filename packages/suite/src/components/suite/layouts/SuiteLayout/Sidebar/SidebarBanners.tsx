@@ -17,12 +17,11 @@ import {
 import { Box } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
-
 import {
     NoDeviceEshopSidebarBanner,
     selectShouldShowNoDeviceEshopSidebarBanner,
 } from './NoDeviceEshopSidebarBanner';
+import { useSelector } from '../../../../../hooks/suite';
 
 export const SidebarBanners = () => {
     const [isUpdateBannerVisible, setIsUpdateBannerVisible] = useState(true);

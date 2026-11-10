@@ -3,8 +3,8 @@ import { Translation } from '@suite/intl';
 import { RoundPhase } from '@trezor/coinjoin';
 import { Column, StepList, type StepListItemState, Text } from '@trezor/components';
 
-import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
+import { ROUND_PHASE_MESSAGES } from '../../../../../../constants/suite/coinjoin';
+import { CountdownTimer } from '../../../../CountdownTimer';
 
 type CoinjoinPhaseProgressProps = {
     roundPhase: RoundPhase;

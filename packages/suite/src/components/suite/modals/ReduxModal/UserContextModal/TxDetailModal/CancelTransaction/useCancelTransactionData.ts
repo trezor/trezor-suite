@@ -3,7 +3,7 @@ import { type Account, type WalletAccountTransaction } from '@suite-common/walle
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
+import { useCancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
 
 type CancelTxRow = {
     labelId: TranslationKey;

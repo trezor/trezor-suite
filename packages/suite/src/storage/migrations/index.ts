@@ -24,11 +24,10 @@ import { isDesktop } from '@trezor/env-utils';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import { BigNumber } from '@trezor/utils';
 
-import { migrateToV56 } from 'src/storage/migrations/legacyVersions/migrateToV56';
-import { migrationOfBnbNetwork } from 'src/storage/migrations/networks/bnb';
-import type { BlockbookUrl, CustomBackend } from 'src/types/wallet/backend';
-
+import { migrateToV56 } from './legacyVersions/migrateToV56';
+import { migrationOfBnbNetwork } from './networks/bnb';
 import { updateAll } from './utils';
+import type { BlockbookUrl, CustomBackend } from '../../types/wallet/backend';
 import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
 
 type WalletWithBackends = {

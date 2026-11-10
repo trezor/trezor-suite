@@ -16,13 +16,12 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { GlobalReceiveAccountListItem } from './GlobalReceiveAccountListItem';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../../../../support/test-utils/hooksHelper';
 
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 const ETH = asNetworkSymbol('eth');

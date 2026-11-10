@@ -5,17 +5,16 @@ import { closeModalAppThunk } from '@suite/router';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import type { ForegroundAppRoute } from 'src/types/suite';
-import { Backup } from 'src/views/backup/Backup';
-import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
-import { FirmwareUpdate } from 'src/views/firmware/FirmwareUpdate';
-import { Recovery } from 'src/views/recovery';
-import { BridgeUnavailable } from 'src/views/suite/bridge';
-import { BridgeDeprecated } from 'src/views/suite/bridge-deprecated';
-import { BridgeRequested } from 'src/views/suite/bridge-requested';
-import { UdevRules } from 'src/views/suite/udev';
-import { Version } from 'src/views/suite/version';
-
+import type { ForegroundAppRoute } from '../../../../types/suite';
+import { Backup } from '../../../../views/backup/Backup';
+import { FirmwareCustom } from '../../../../views/firmware/FirmwareCustom';
+import { FirmwareUpdate } from '../../../../views/firmware/FirmwareUpdate';
+import { Recovery } from '../../../../views/recovery';
+import { BridgeUnavailable } from '../../../../views/suite/bridge';
+import { BridgeDeprecated } from '../../../../views/suite/bridge-deprecated';
+import { BridgeRequested } from '../../../../views/suite/bridge-requested';
+import { UdevRules } from '../../../../views/suite/udev';
+import { Version } from '../../../../views/suite/version';
 import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 
 // would not work if defined directly in the switch

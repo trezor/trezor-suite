@@ -7,10 +7,9 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
-import { serializeDevice } from 'src/utils/suite/storage';
-
 import migration from './26.8.0.1';
+import { serializeDevice } from '../../../utils/suite/storage';
+import { type SuiteDBSchema } from '../../definitions';
 
 const btcSymbol = asNetworkSymbol('btc');
 

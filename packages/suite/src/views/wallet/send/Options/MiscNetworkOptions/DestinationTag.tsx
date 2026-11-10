@@ -10,8 +10,8 @@ import { RIPPLE_DESTINATION_TAG_MAX_DIGITS } from '@trezor/network-ripple/consta
 import { STELLAR_TEXT_MEMO_MAX_BYTES } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
-import { useGuideOpenNode } from 'src/hooks/guide';
-import { useSendFormContext } from 'src/hooks/wallet';
+import { useGuideOpenNode } from '../../../../../hooks/guide';
+import { useSendFormContext } from '../../../../../hooks/wallet';
 
 export const DESTINATION_TAG_GUIDE_PATH =
     '/3_send-and-receive/transactions-in-depth/destination-tags.md';

@@ -76,14 +76,16 @@ import {
 } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
-import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
-import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
-import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
-
 import type { TokensTableType } from './types';
+import {
+    setSendFormPrefill,
+    setTransactionHistoryPrefill,
+} from '../../../../../actions/suite/suiteActions';
+import { getEarnRouteParams } from '../../../../../components/earn/utils/getEarnRouteParams';
+import { useLayoutSize, useSelector } from '../../../../../hooks/suite';
+import { useFirmwareUpgradeModal } from '../../../../../hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemWrappedNative } from '../../../../../hooks/suite/useMessageSystemWrappedNative';
+import { getTokenAddressTranslationId } from '../../../../../utils/wallet/tokenUtils';
 
 interface TokenRowBasicActionsProps {
     type?: TokensTableType;

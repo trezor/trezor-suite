@@ -27,21 +27,20 @@ import { CaretDownIcon, CaretUpIcon, InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 
-import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
-import { DashboardSection } from 'src/components/dashboard';
-import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
-import { useDiscovery, useSelector } from 'src/hooks/suite';
-import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
-
 import { DashboardGraph } from './DashboardGraph';
 import { EmptyWallet } from './EmptyWallet';
 import { EmptyWalletSkeleton } from './EmptyWalletSkeleton';
 import { PortfolioCardException } from './PortfolioCardException';
 import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
+import { updateGraphDataThunk } from '../../../actions/wallet/graphActions';
+import { DashboardSection } from '../../../components/dashboard';
+import { GraphRangeSelector, GraphSkeleton } from '../../../components/suite';
+import { useDiscovery, useSelector } from '../../../hooks/suite';
+import { useTotalFiatBalance } from '../../../hooks/wallet/useTotalFiatBalance';
+import { useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
+import { isNetworkWithGraphFeature } from '../../../utils/wallet/graph';
+import { selectDiscoveryOverallStatus } from '../../../utils/wallet/selectDiscoveryOverallStatus';
 
 export const PortfolioCard = memo(() => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);

@@ -11,7 +11,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useDiscovery } from 'src/hooks/suite';
+import { useDiscovery } from '../../../../../../../../hooks/suite';
 
 type UseGlobalReceiveNetworkSetupParams = {
     selectedAsset: TradingAssetOption | undefined;

@@ -2,7 +2,7 @@ import { type Account, type DiscoveryStatus } from '@suite-common/wallet-types';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { type DiscoveryStatusType } from 'src/types/wallet';
+import { type DiscoveryStatusType } from '../../types/wallet';
 
 export type HomeAssetEmptyStateKind =
     | 'noNetworkEnabled'

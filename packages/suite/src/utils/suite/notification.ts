@@ -1,6 +1,6 @@
 import { CheckIcon, InfoIcon, WarningIcon } from '@trezor/icons';
 
-import { type ToastNotificationVariant } from 'src/types/suite';
+import { type ToastNotificationVariant } from '../../types/suite';
 
 export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     switch (variant) {

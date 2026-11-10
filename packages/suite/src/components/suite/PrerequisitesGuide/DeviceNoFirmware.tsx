@@ -10,7 +10,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { CpuIcon } from '@trezor/icons';
 import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { TroubleshootingTips } from '../troubleshooting/TroubleshootingTips';
 
 export const DeviceNoFirmware = () => {
     const { analytics, dispatch, getState } = useServices(

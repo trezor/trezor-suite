@@ -3,9 +3,12 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { type TransportInfo } from '@trezor/connect';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
-import { type SuiteRootState, type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { type PrerequisiteType, type TrezorDevice } from 'src/types/suite';
-import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
+import { type SuiteRootState, type SuiteState } from '../../reducers/suite/suiteReducer';
+import { type PrerequisiteType, type TrezorDevice } from '../../types/suite';
+import {
+    getPrerequisiteName,
+    isPrerequisiteGloballyExcluded,
+} from '../../utils/suite/prerequisites';
 
 export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
 export const selectSuiteLifecycle = (state: SuiteRootState) => state.suite.lifecycle;

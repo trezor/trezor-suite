@@ -12,7 +12,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Icon, InfoItem, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../../hooks/suite';
 
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;

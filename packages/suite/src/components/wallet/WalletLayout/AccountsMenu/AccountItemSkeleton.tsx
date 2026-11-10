@@ -1,8 +1,8 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { Column, Row, Skeleton } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
+import { useSelector } from '../../../../hooks/suite';
+import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 export const AccountItemSkeleton = () => {
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);

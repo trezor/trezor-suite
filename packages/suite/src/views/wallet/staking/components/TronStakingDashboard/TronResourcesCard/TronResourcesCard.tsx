@@ -10,8 +10,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { LightningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
+import { useMessageSystemStaking } from '../../../../../../hooks/suite/useMessageSystemStaking';
 import { TronResourceModal } from '../TronResourceModal';
 import { TronResourceRow } from './TronResourceRow';
 

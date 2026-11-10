@@ -2,8 +2,7 @@ import { createMigration } from '@suite/idb-migration-utils';
 import { LANGUAGES } from '@suite-common/locale';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
-
+import { type SuiteDBSchema } from '../../definitions';
 import { updateAll } from '../utils';
 
 export default createMigration<SuiteDBSchema>('25.8.0', async (db, tx) => {

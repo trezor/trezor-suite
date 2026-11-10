@@ -1,4 +1,4 @@
-import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
+import { type OnboardingRootState } from '../../reducers/onboarding/onboardingReducer';
 
 export const selectOnboarding = (state: OnboardingRootState) => state.onboarding;
 

@@ -4,11 +4,10 @@ import { Flag, Row } from '@trezor/components';
 import { selectShouldShowNetworkIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
-
 import { type TradingTransactionSide } from './tradingTransactionItemUtils';
+import { FormattedCryptoAmount, HiddenPlaceholder } from '../../../../../../components/suite';
+import { useSelector } from '../../../../../../hooks/suite';
+import { TradingCoinLogo } from '../../TradingCoinLogo';
 
 type TradingTransactionSideAmountProps = {
     side: TradingTransactionSide;

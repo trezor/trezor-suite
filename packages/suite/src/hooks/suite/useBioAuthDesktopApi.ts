@@ -5,12 +5,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useSelector } from './useSelector';
 import {
     requestBioAuthChangeThunk,
     requestBioAuthValidationThunk,
-} from 'src/actions/suite/bioAuthThunks';
-import { useSelector } from 'src/hooks/suite';
-import { selectBioAuth } from 'src/reducers/bioAuth';
+} from '../../actions/suite/bioAuthThunks';
+import { selectBioAuth } from '../../reducers/bioAuth';
 
 export const useBioAuthDesktopApi = () => {
     const {

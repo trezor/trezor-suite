@@ -1,5 +1,5 @@
-import { type AccountHistoryWithBalance } from 'src/types/wallet/graph';
-import { mergeAccountBalanceHistory } from 'src/utils/wallet/graph';
+import { mergeAccountBalanceHistory } from './utils';
+import { type AccountHistoryWithBalance } from '../../../types/wallet/graph';
 
 const point = (time: number, balance: string): AccountHistoryWithBalance => ({
     time,

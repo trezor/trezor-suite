@@ -5,13 +5,12 @@ import { useDebounce } from 'react-use';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { sortByBlockHeightThenTime } from '@suite-common/wallet-core';
 
+import { findTransactionAccount } from './findTransactionAccount';
 import {
     type SelectAccountLabelsForSearchState,
     selectAccountsLabelsForSearch,
-} from 'src/selectors/suite/selectAccountLabelsForSearch';
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
-
-import { findTransactionAccount } from './findTransactionAccount';
+} from '../../../../selectors/suite/selectAccountLabelsForSearch';
+import { type Account, type WalletAccountTransaction } from '../../../../types/wallet';
 
 const SEARCH_DEBOUNCE_MS = 200;
 

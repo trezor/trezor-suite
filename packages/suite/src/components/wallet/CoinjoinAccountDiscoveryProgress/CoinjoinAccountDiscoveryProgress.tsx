@@ -9,10 +9,9 @@ import { StarFourIcon } from '@trezor/icons';
 import { typography, typographyStylesBase } from '@trezor/theme';
 import { localizeNumber } from '@trezor/utils';
 
-import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
-import { useSelector } from 'src/hooks/suite';
-
 import { RotatingFacts } from './RotatingFacts';
+import { useCoinjoinAccountLoadingProgress } from '../../../hooks/coinjoin';
+import { useSelector } from '../../../hooks/suite';
 
 // Reserves the message line so the layout doesn't jump when the first progress message arrives.
 const Subheader = styled.div`

@@ -10,11 +10,10 @@ import {
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Column, Text } from '@trezor/components';
 
-import { TruncatedAmount } from 'src/components/earn/yield/common/TruncatedAmount';
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 import { HOME_ASSET_BALANCE_MAX_WIDTH, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
+import { TruncatedAmount } from '../../../components/earn/yield/common/TruncatedAmount';
+import { BaseCurrencyValue, FormattedCryptoAmount } from '../../../components/suite';
+import { useSelector } from '../../../hooks/suite';
 
 type HomeAssetBalanceProps = {
     assetKey: WalletAssetKey;

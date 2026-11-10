@@ -10,10 +10,9 @@ import { type NotificationEntry } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { PiggyBankIcon } from '@trezor/icons';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { NotificationRenderer } from './NotificationRenderer';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../support/test-utils/hooksHelper';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 const networkIcon = mockNetworkIcon();

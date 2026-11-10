@@ -9,14 +9,13 @@ import {
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from 'src/hooks/suite';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
-
 import { HomeAssetEmptyState } from './HomeAssetEmptyState';
 import { HomeAssetFeedback } from './HomeAssetFeedback';
 import { HomeAssetTable } from './HomeAssetsTable/HomeAssetTable';
 import { HomeBalanceCard } from './HomeBalance/HomeBalanceCard';
 import { getHomeAssetEmptyStateKind } from './homeAssetEmptyStateKind';
+import { useSelector } from '../../hooks/suite';
+import { selectDiscoveryOverallStatus } from '../../utils/wallet/selectDiscoveryOverallStatus';
 import { DashboardPromoBanner } from '../dashboard/DashboardPromoBanner/DashboardPromoBanner';
 
 export const HomeAssetDashboard = memo(() => {

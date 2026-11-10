@@ -15,11 +15,11 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
-import { useSelector } from 'src/hooks/suite';
-import { GroupedPermissionsList } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
+import { useSelector } from '../../../../../hooks/suite';
+import { GroupedPermissionsList } from '../../../../../views/settings/SettingsConnectedApps/ConnectPermissions';
+import { ConnectAppIcon } from '../../../ConnectAppIcon';
+import { ConnectModalBackdrop } from '../../../ConnectModalBackdrop';
+import { ConnectProcessLabel } from '../../../ConnectProcessLabel';
 
 export const ConnectPermissionsModal = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);

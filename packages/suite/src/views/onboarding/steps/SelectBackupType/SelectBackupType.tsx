@@ -19,11 +19,10 @@ import { selectDeviceDefaultBackupType } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import { Banner, Text } from '@trezor/components';
 
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-
 import { FloatingSelections } from './FloatingSelections';
 import { OptionText, SelectedOption } from './OptionWithContent';
 import { typesToLabelMap } from './typesToLabelMap';
+import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 import { isShamirBackupType } from '../utils';
 
 const SELECT_ELEMENT_HEIGHT = 84;

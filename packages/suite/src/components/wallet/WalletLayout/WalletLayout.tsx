@@ -6,14 +6,13 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column, Skeleton } from '@trezor/components';
 import { type PrimitiveType, exhaustive } from '@trezor/type-utils';
 
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useLayout } from 'src/hooks/suite';
-import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
-
 import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountException } from './AccountException/AccountException';
 import { AccountNavigation } from './AccountNavigation';
 import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
+import { useLayout } from '../../../hooks/suite';
+import { AccountHeaderProvider } from '../../../support/suite/AccountHeaderProvider';
+import { PageHeader } from '../../suite/layouts/SuiteLayout';
 
 type WalletPageHeaderProps = {
     balanceSectionRef: React.RefObject<HTMLDivElement | null>;

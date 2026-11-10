@@ -31,8 +31,8 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 import { arrayPartition } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
+import { useSelector } from '../../../hooks/suite';
+import { type GetTokensOutputType, getTokens } from '../../../utils/wallet/tokenUtils';
 
 type SubTabConfig = {
     isNft: boolean;

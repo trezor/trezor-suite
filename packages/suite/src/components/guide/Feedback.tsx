@@ -20,14 +20,12 @@ import { EmojiRatingSelector } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
-import { setView } from 'src/actions/suite/guideActions';
-import {
-    GuideContent,
-    GuideHeader,
-    GuideSectionHeadline,
-    GuideViewWrapper,
-} from 'src/components/guide';
-import { useSelector } from 'src/hooks/suite';
+import { GuideContent } from './GuideContent';
+import { GuideHeader } from './GuideHeader';
+import { GuideSectionHeadline } from './GuideSectionHeadline';
+import { GuideViewWrapper } from './GuideViewWrapper';
+import { setView } from '../../actions/suite/guideActions';
+import { useSelector } from '../../hooks/suite';
 
 const AnonymousDataList = styled.ul`
     margin-left: 20px;

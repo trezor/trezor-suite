@@ -5,10 +5,9 @@ import { screen } from '@testing-library/react';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { HomeBalanceCard } from './HomeBalanceCard';
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../support/test-utils/hooksHelper';
 import { ETH, getEthAssetState } from '../AssetDetail/assetDetailTestState';
 
 const getInitialState = (isDiscreetModeActive: boolean): MockSuiteState => ({

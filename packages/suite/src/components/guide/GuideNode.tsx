@@ -20,11 +20,10 @@ import {
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { openNode } from 'src/actions/suite/guideActions';
-import { useSelector } from 'src/hooks/suite';
-import { getNodeTitle } from 'src/utils/suite/guide';
-
 import { GuideItem } from './GuideItem';
+import { openNode } from '../../actions/suite/guideActions';
+import { useSelector } from '../../hooks/suite';
+import { getNodeTitle } from '../../utils/suite/guide';
 
 const CategoryImage = styled.img`
     width: 32px;

@@ -3,11 +3,10 @@ import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Column, Row, Text } from '@trezor/components';
 
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
 import { TronVoteAllocationSection } from './TronVoteAllocationSection';
 import { TronVoteRemainingVotes } from './TronVoteRemainingVotes';
 import { TronVoteSubmitButton } from './TronVoteSubmitButton';
+import { useMessageSystemStaking } from '../../../../../hooks/suite/useMessageSystemStaking';
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeFees } from '../TronStakeFees';
 import { TronStakePendingTransaction } from '../TronStakePendingTransaction';

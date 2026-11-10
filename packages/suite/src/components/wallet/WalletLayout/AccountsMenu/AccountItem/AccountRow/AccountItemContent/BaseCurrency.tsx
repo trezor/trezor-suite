@@ -12,8 +12,8 @@ import { valuablesBaseCurrencyCodes } from '@trezor/blockchain-link-types';
 import { Skeleton, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { isArrayMember } from '@trezor/utils';
 
-import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { BaseCurrencyValue, HiddenPlaceholder } from '../../../../../../suite';
 
 type BaseCurrencyProps = {
     isLoading?: boolean;

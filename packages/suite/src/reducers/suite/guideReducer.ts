@@ -12,7 +12,7 @@ import {
     setIndexNode,
     setWidth,
     unsetNode,
-} from 'src/actions/suite/guideActions';
+} from '../../actions/suite/guideActions';
 
 export interface GuideState {
     open: boolean;

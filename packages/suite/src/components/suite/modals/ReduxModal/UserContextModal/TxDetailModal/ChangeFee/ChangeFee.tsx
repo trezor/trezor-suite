@@ -7,12 +7,11 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
-
 import { RbfFees } from './RbfFees';
+import { useRbfContext } from '../../../../../../../hooks/wallet/useRbfForm';
+import { FeeRate } from '../../../../../../wallet/Fees/FeeRate';
+import { BaseCurrencyValue } from '../../../../../BaseCurrencyValue';
+import { FormattedCryptoAmount } from '../../../../../FormattedCryptoAmount';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';
 import { DecreasedOutputs } from '../AffectedTransactions/DecreasedOutputs';
 

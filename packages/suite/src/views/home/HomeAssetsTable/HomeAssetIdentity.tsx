@@ -8,9 +8,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Row, TOOLTIP_DELAY_LONG, Text, TruncateWithTooltip } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
+import { useSelector } from '../../../hooks/suite';
 
 type HomeAssetIdentityProps = {
     symbol: NetworkSymbol;

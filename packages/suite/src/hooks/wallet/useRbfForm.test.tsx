@@ -12,18 +12,17 @@ import { type ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
-import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
+import * as fixtures from './__fixtures__/useRbfForm';
+import { RbfContext, useRbf, useRbfContext } from './useRbfForm';
+import { type MockSuiteState } from '../../../mocks/mockInitialAppState';
+import { ChangeFee } from '../../components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
+import { ReplaceTxButton } from '../../components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
 import {
     actionSequence,
     findByTestId,
     renderWithProviders,
     waitForLoader,
-} from 'src/support/test-utils/hooksHelper';
-
-import * as fixtures from './__fixtures__/useRbfForm';
-import { RbfContext, useRbf, useRbfContext } from './useRbfForm';
-import { type MockSuiteState } from '../../../mocks/mockInitialAppState';
+} from '../../support/test-utils/hooksHelper';
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();

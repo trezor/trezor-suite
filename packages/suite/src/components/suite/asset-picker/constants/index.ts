@@ -1,6 +1,6 @@
 import { type SpacingValue } from '@trezor/theme';
 
-import type { AssetGroupSpaceSize } from 'src/components/suite/asset-picker/types';
+import type { AssetGroupSpaceSize } from '../types';
 
 export const ASSET_ROW_HEIGHT = 68;
 export const ASSET_ROW_GROUP_LABEL_HEIGHT = 24;

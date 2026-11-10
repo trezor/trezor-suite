@@ -11,7 +11,7 @@ import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
 
-import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
+import { FirmwareOffer } from './FirmwareOffer';
 
 type GetDescriptionProps = {
     required: boolean;

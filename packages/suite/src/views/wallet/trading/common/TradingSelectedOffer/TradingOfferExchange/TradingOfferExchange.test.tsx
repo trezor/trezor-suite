@@ -22,13 +22,12 @@ import {
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { TradingOfferExchange } from './TradingOfferExchange';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../../support/test-utils/hooksHelper';
 
 const networkIcon = mockNetworkIcon();
 
@@ -59,7 +58,7 @@ jest.mock('@suite-common/trading', () => ({
     getSimulatedReceiveAmount: jest.fn(),
 }));
 
-jest.mock('src/hooks/wallet/trading/useTradingExchangeTradeActions', () => ({
+jest.mock('../../../../../../hooks/wallet/trading/useTradingExchangeTradeActions', () => ({
     useTradingExchangeTradeActions: () => ({
         account: mockSendAccount,
         sendTransaction: mockSendTransaction,
@@ -67,7 +66,7 @@ jest.mock('src/hooks/wallet/trading/useTradingExchangeTradeActions', () => ({
     }),
 }));
 
-jest.mock('src/hooks/wallet/trading/useTradingExchangeConfirmFees', () => ({
+jest.mock('../../../../../../hooks/wallet/trading/useTradingExchangeConfirmFees', () => ({
     useTradingExchangeConfirmFees: () => ({
         feeInfo: {},
         composeFormState: {},

@@ -12,8 +12,7 @@ import { getApyPercent } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
+import { useSelector } from '../../../../../../hooks/suite';
 import type { TokensTableType } from '../types';
 
 type UseTokenYieldBadgeParams = {

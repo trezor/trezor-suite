@@ -3,10 +3,9 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';
+import { useSelector } from '../../../../hooks/suite';
 
 export const StellarLimitedHistoryBanner = () => {
     const { dispatch } = useServices(injectDispatch);

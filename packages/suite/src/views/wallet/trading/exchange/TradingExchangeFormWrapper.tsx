@@ -1,9 +1,9 @@
 import { Form } from '@suite/form';
 
-import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/exchange/useTradingExchangeForm';
-import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingExchangeFormInputs } from 'src/views/wallet/trading/common/TradingForm/TradingExchangeFormInputs';
-import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';
+import { useTradingExchangeForm } from '../../../../hooks/wallet/trading/form/exchange/useTradingExchangeForm';
+import { TradingFormContext } from '../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingExchangeFormInputs } from '../common/TradingForm/TradingExchangeFormInputs';
+import { TradingFormLayout } from '../common/TradingForm/TradingFormLayout';
 
 export const TradingExchangeFormWrapper = () => {
     const tradingExchangeContextValue = useTradingExchangeForm();

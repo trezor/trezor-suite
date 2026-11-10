@@ -5,14 +5,16 @@ import { type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column } from '@trezor/components';
 
-import { AssetRowAsset, AssetsModal } from 'src/components/suite/asset-picker/components';
-import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
-import { useSearchFilter } from 'src/components/suite/asset-picker/hooks';
-
 import {
     type TradingAssetListItem,
     useBuildTradingAssetOptions,
 } from './hooks/useBuildTradingAssetOptions';
+import {
+    AssetRowAsset,
+    AssetsModal,
+} from '../../../../../../../../components/suite/asset-picker/components';
+import { ASSET_ROW_HEIGHT } from '../../../../../../../../components/suite/asset-picker/constants';
+import { useSearchFilter } from '../../../../../../../../components/suite/asset-picker/hooks';
 import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
 
 const getItemHeight = () => ASSET_ROW_HEIGHT;

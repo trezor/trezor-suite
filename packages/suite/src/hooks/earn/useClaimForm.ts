@@ -13,12 +13,11 @@ import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
-import { useSelector } from 'src/hooks/suite';
-import { type ClaimContextValues, type ClaimFormState } from 'src/types/earn/claimForm';
-import { CRYPTO_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
-
 import { useCardanoStaking } from './useCardanoStaking';
+import { signTransactionThunk } from '../../actions/wallet/stakeActions';
+import { type ClaimContextValues, type ClaimFormState } from '../../types/earn/claimForm';
+import { CRYPTO_INPUT, OUTPUT_AMOUNT } from '../../types/earn/earnFormFields';
+import { useSelector } from '../suite';
 import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
 

@@ -13,6 +13,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
+import { useSelector } from '../../../../../hooks/suite';
 import {
     EarnClaimModal,
     EarnInANutshellModal,
@@ -21,12 +22,10 @@ import {
     TronStakeInANutshellModal,
     TronVoteConsentModal,
     UnstakeModal,
-} from 'src/components/earn';
-import { TronStakeConsentModal } from 'src/components/earn/staking/tron/TronStakeConsentModal';
-import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
-import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
-import { useSelector } from 'src/hooks/suite';
-
+} from '../../../../earn';
+import { TronStakeConsentModal } from '../../../../earn/staking/tron/TronStakeConsentModal';
+import { ConnectPopupTxSimulationModal } from '../../../../tx-simulation/connect-popup';
+import { EarnYieldTxSimulationModal } from '../../../../tx-simulation/earn-stablecoin';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';
 import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';

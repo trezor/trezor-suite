@@ -45,11 +45,10 @@ import {
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
-import { HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
-
+import { setTransactionHistoryPrefill } from '../../../../actions/suite/suiteActions';
+import { HiddenPlaceholder } from '../../../../components/suite';
+import { useSelector } from '../../../../hooks/suite';
+import { getTokenAddressTranslationId } from '../../../../utils/wallet/tokenUtils';
 import { DropdownRow } from '../../tokens/DropdownRow';
 
 type NftsRowProps = {

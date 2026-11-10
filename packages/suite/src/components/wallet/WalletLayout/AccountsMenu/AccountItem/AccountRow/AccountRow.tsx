@@ -4,9 +4,8 @@ import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Row } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 
-import { type Account, type AccountItemType } from 'src/types/wallet';
-
 import { AccountItemContent } from './AccountItemContent';
+import { type Account, type AccountItemType } from '../../../../../../types/wallet';
 import { AccountItemLogo } from '../AccountItemLogo/AccountItemLogo';
 
 const Container = styled.button<{ $isActive?: boolean; $isCollapsed?: boolean }>`

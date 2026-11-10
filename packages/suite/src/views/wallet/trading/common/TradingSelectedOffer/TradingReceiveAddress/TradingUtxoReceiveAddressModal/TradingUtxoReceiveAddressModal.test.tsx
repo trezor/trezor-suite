@@ -15,13 +15,12 @@ import { type Address } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { TradingUtxoReceiveAddressModal } from './TradingUtxoReceiveAddressModal';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../../../support/test-utils/hooksHelper';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
 global.ResizeObserver = class MockedResizeObserver {
@@ -41,16 +40,13 @@ jest.mock('../useTradingReceiveAddressValues', () => ({
     useTradingReceiveAddressValues: jest.fn(),
 }));
 
-jest.mock(
-    'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls',
-    () => ({
-        useReceiveAddressModalControls: () => ({
-            activeModal: 'utxoAddressModal',
-            open: jest.fn(),
-            close: jest.fn(),
-        }),
+jest.mock('../useReceiveAddressModalControls', () => ({
+    useReceiveAddressModalControls: () => ({
+        activeModal: 'utxoAddressModal',
+        open: jest.fn(),
+        close: jest.fn(),
     }),
-);
+}));
 
 const OPTION = '@trading/bitcoin-receive-address-modal/option';
 const SEARCH_INPUT = '@asset-picker/search/input';

@@ -27,14 +27,13 @@ import { isDesktop } from '@trezor/env-utils';
 import { BluetoothIcon, CableUsbCIcon, QuestionIcon } from '@trezor/icons';
 import { getLargeModelImagePath } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';
 import { BluetoothManualPairingModal } from './BluetoothManualPairingModal';
 import { CantSeeTrezorModal } from './CantSeeTrezorModal';
 import { CableConnectionAnimation } from './DeviceConnectionAnimation';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
+import { useSelector } from '../../hooks/suite';
 import { selectHasTransportOfType } from '../../selectors/suite/suiteSelectors';
 import { WebUsbButton } from '../suite/WebUsbButton';
 import { BluetoothDeviceList } from '../suite/bluetooth/BluetoothDeviceList';

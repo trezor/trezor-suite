@@ -6,8 +6,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { BaseCurrencyValue } from '../../../../../components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '../../../../../components/suite/FormattedCryptoAmount';
 
 const Container = styled.div`
     display: flex;

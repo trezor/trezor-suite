@@ -18,8 +18,8 @@ import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useSelector } from '../../../hooks/suite';
+import { useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 export const QuotaManagerSettings = () => {
     const { dispatch } = useServices(injectDispatch);

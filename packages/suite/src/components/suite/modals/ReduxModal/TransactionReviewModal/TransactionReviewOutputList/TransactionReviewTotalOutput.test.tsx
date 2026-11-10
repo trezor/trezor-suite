@@ -12,13 +12,12 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../../support/test-utils/hooksHelper';
 
 const device = mockSuiteDevice(undefined, {
     major_version: 2,

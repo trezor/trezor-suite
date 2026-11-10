@@ -12,11 +12,10 @@ import {
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-import { type Account } from 'src/types/wallet';
-
 import { AccountItem, type AccountItemProps } from './AccountItem/AccountItem';
+import { useSelector } from '../../../../hooks/suite';
+import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
+import { type Account } from '../../../../types/wallet';
 
 const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean }>`
     display: flex;

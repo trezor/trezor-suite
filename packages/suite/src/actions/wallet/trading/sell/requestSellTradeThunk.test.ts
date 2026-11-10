@@ -15,8 +15,8 @@ import {
 } from './requestSellTradeThunk';
 
 const mockCreateQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
-jest.mock('src/utils/wallet/trading/sellUtils', () => ({
-    ...jest.requireActual('src/utils/wallet/trading/sellUtils'),
+jest.mock('../../../../utils/wallet/trading/sellUtils', () => ({
+    ...jest.requireActual('../../../../utils/wallet/trading/sellUtils'),
     createQuoteLink: (...args: unknown[]) => mockCreateQuoteLink(...args),
 }));
 

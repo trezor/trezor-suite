@@ -1,7 +1,7 @@
 import { createMigration } from '@suite/idb-migration-utils';
 import { CALL_SOURCE_MCP } from '@suite-common/connect-popup';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '../../definitions';
 
 /*
  Drop Connect permissions that an earlier version remembered for an MCP client under the name it

@@ -4,7 +4,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../hooks/suite';
 
 export const HomeAssetSmallBalancesLabel = () => {
     const { BaseCurrencyAmountFormatter } = useFormatters();

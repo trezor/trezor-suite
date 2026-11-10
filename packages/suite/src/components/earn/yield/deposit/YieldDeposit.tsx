@@ -6,11 +6,10 @@ import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
-import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
-
 import { YieldDepositForm } from './YieldDepositForm';
 import { useYieldDeposit } from './useYieldDeposit';
 import { YieldDepositContext } from './useYieldDepositContext';
+import { useMessageSystemYield } from '../../../../hooks/suite/useMessageSystemYield';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 
 type YieldDepositProps = {

@@ -14,11 +14,6 @@ import { TrezorLogo } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { zIndices } from '@trezor/theme';
 
-import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
-import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-
 import { BottomNavigation } from './BottomNavigation';
 import { Navigation } from './Navigation';
 import { QuickActions } from './QuickActions/QuickActions';
@@ -29,6 +24,10 @@ import {
     SIDEBAR_MAX_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from './consts';
+import { MIN_CONTENT_WIDTH } from '../../../../../constants/suite/layout';
+import { useSelector } from '../../../../../hooks/suite';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
+import { AccountsMenu } from '../../../../wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 
 const Container = styled.nav`

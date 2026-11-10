@@ -6,9 +6,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { AccountDetails } from './AccountDetails';
+import { useSelector } from '../../../../../../../hooks/suite';
 
 interface AccountSubpageNameProps {
     selectedAccount: Account;

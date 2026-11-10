@@ -8,10 +8,10 @@ import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { typography } from '@trezor/theme';
 
-import { CountdownTimer } from 'src/components/suite';
-import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
-import { useSelector } from 'src/hooks/suite';
+import { CountdownTimer } from '../../../../../components/suite';
+import { SESSION_PHASE_MESSAGES } from '../../../../../constants/suite/coinjoin';
+import { useCoinjoinSessionPhase } from '../../../../../hooks/coinjoin';
+import { useSelector } from '../../../../../hooks/suite';
 
 const Cointainer = styled.div`
     height: 40px;

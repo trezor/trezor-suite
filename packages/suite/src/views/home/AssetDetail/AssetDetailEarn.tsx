@@ -18,12 +18,11 @@ import { ArrowRightIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type Color } from '@trezor/theme';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useSelector } from 'src/hooks/suite';
-
 import { AssetDetailEarnLegendSquare } from './AssetDetailEarnLegendSquare';
+import { BaseCurrencyValue } from '../../../components/suite/BaseCurrencyValue';
+import { useFormatApy } from '../../../hooks/earn/useFormatApy';
+import { useStakingRate } from '../../../hooks/earn/useStakingRate';
+import { useSelector } from '../../../hooks/suite';
 
 const AVAILABLE_COLOR = 'elementFillAccentVioletBold' satisfies Color;
 const UNSTAKED_COLOR = 'elementFillNeutralSoft' satisfies Color;

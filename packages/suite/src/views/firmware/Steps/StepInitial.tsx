@@ -6,9 +6,9 @@ import { type FirmwareStatus } from '@suite-common/suite-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { unique } from '@trezor/utils';
 
-import { updateAnalytics } from 'src/actions/onboarding/onboardingActions';
-import { PrerequisitesGuide } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { updateAnalytics } from '../../../actions/onboarding/onboardingActions';
+import { PrerequisitesGuide } from '../../../components/suite';
+import { useSelector } from '../../../hooks/suite';
 
 type StepInitialProps = {
     onClose: () => void;

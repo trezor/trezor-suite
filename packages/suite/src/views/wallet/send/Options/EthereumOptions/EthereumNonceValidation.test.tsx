@@ -9,14 +9,13 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { SendContext } from 'src/hooks/wallet/useSendForm';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { EthereumNonce } from './EthereumNonce';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../mocks/mockInitialAppState';
+import { SendContext } from '../../../../../hooks/wallet/useSendForm';
+import { renderWithProviders } from '../../../../../support/test-utils/hooksHelper';
 
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as any;
 

@@ -1,5 +1,5 @@
-import { FormattedDate } from 'src/components/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from '../../types/wallet';
+import { FormattedDate } from '../suite';
 
 type TransactionTimestampProps = {
     transaction: WalletAccountTransaction;

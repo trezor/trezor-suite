@@ -2,8 +2,7 @@ import { Translation } from '@suite/intl';
 import { type TradingProviderInfo, selectTradingProviderMetadata } from '@suite-common/trading';
 import { Column, Link, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
+import { useSelector } from '../../../../../hooks/suite';
 import { TradingFormFeesDisclaimer } from '../TradingFormFeesDisclaimer/TradingFormFeesDisclaimer';
 
 type TradingFooterProps = {

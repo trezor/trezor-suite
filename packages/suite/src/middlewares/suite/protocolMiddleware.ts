@@ -7,7 +7,7 @@ import {
     notificationsActions,
 } from '@suite-common/toast-notifications';
 
-import { saveCoinProtocol } from 'src/actions/suite/protocolActions';
+import { saveCoinProtocol } from '../../actions/suite/protocolActions';
 
 // close custom protocol notification of given type
 const closeNotifications = (

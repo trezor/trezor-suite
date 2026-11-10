@@ -12,10 +12,9 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { HomeAssetDashboard } from './HomeAssetDashboard';
 import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../support/test-utils/hooksHelper';
 
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 

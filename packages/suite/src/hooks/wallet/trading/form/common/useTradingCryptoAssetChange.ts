@@ -23,11 +23,10 @@ import {
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
-import { type AmountLimitProps } from 'src/utils/suite/validation';
-import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
-
 import { useTradingAssetDecimals } from './useTradingAssetDecimals';
+import { type TradingSellExchangeFormProps } from '../../../../../types/trading/tradingForm';
+import { type AmountLimitProps } from '../../../../../utils/suite/validation';
+import { resolveAddressAndToken } from '../../../../../utils/wallet/trading/tradingUtils';
 
 type UseTradingCryptoAssetChangeProps<T extends TradingSellExchangeFormProps> = {
     account: Account | undefined;

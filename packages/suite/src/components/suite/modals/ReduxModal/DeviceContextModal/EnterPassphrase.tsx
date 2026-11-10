@@ -10,11 +10,10 @@ import { HashIcon, LightbulbIcon, PasswordIcon, WarningIcon } from '@trezor/icon
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { getNonAsciiChars } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
-
 import { PassphraseInputCard } from './PassphraseInputCard';
+import { useSelector } from '../../../../../hooks/suite';
+import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
 
 type EnterPassphraseProps = {
     offerPassphraseOnDevice: boolean;

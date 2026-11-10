@@ -7,10 +7,9 @@ import { isWalletConnectSupportedNetwork } from '@suite-common/walletconnect';
 import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
 import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
 
-import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useSelector } from 'src/hooks/suite';
-
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
+import { useSelector } from '../../../../../hooks/suite';
+import { AppNavigationTooltip } from '../../../AppNavigation/AppNavigationTooltip';
 
 type ActionItem = {
     id: string;

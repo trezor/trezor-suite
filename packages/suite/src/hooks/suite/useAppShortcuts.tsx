@@ -15,11 +15,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
-import { toggleViewThunk as toggleGuideView } from 'src/actions/suite/guideActions';
-import { useSelector } from 'src/hooks/suite';
-import { selectIsBioAuthEnabled } from 'src/reducers/bioAuth';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+import { useSelector } from './useSelector';
+import { bioAuthActions } from '../../actions/suite/bioAuthActions';
+import { toggleViewThunk as toggleGuideView } from '../../actions/suite/guideActions';
+import { selectIsBioAuthEnabled } from '../../reducers/bioAuth';
+import { selectDiscoveryOverallStatus } from '../../utils/wallet/selectDiscoveryOverallStatus';
 
 type ListedAccount = ReturnType<typeof selectAllAccountsToList>[number];
 

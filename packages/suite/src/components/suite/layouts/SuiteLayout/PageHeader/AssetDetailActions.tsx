@@ -14,13 +14,12 @@ import { Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { AssetDetailMenu } from 'src/views/home/AssetDetail/AssetDetailMenu/AssetDetailMenu';
-import { selectRoutedAssetKey } from 'src/views/home/AssetDetail/selectRoutedAssetKey';
-
 import { AssetSendReceive } from './GlobalSendReceive/AssetSendReceive';
 import { TradeActions } from './TradeActions';
 import { selectRoutedAssetTradeAccountKeys } from './selectRoutedAssetTradeAccountKeys';
+import { useSelector } from '../../../../../hooks/suite';
+import { AssetDetailMenu } from '../../../../../views/home/AssetDetail/AssetDetailMenu/AssetDetailMenu';
+import { selectRoutedAssetKey } from '../../../../../views/home/AssetDetail/selectRoutedAssetKey';
 
 const getTradePrefill = (
     cryptoId: CryptoId | undefined,

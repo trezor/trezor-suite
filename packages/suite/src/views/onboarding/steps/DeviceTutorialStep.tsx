@@ -10,8 +10,8 @@ import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { beginOnboardingTutorialThunk } from 'src/actions/onboarding/onboardingActions';
-import { useSelector } from 'src/hooks/suite';
+import { beginOnboardingTutorialThunk } from '../../../actions/onboarding/onboardingActions';
+import { useSelector } from '../../../hooks/suite';
 
 export const DeviceTutorialStep = () => {
     const device = useSelector(selectSelectedDevice);

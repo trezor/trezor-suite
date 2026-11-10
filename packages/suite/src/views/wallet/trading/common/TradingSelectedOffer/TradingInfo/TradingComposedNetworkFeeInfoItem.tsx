@@ -5,12 +5,11 @@ import { type Account } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { getFeeTooltipTextId } from 'src/components/wallet/Fees/feeUtils';
-
 import {
     TradingNetworkFeeInfoItem,
     type TradingNetworkFeeInfoItemProps,
 } from './TradingNetworkFeeInfoItem';
+import { getFeeTooltipTextId } from '../../../../../../components/wallet/Fees/feeUtils';
 
 type TradingComposedNetworkFeeInfoItemProps = {
     account: Account;

@@ -5,8 +5,8 @@ import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { useSelector } from '../../../../../../../hooks/suite';
+import { useRbfContext } from '../../../../../../../hooks/wallet/useRbfForm';
 
 export const ReplaceTxButton = () => {
     const { device, isLocked } = useDevice();

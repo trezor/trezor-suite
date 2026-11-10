@@ -21,10 +21,9 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-
+import { useLayoutSize } from '../../../../hooks/suite/useLayoutSize';
+import { FormattedCryptoAmount } from '../../../suite/FormattedCryptoAmount';
+import { PageHeader } from '../../../suite/layouts/SuiteLayout';
 import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
 
 const HeaderLayout = styled.div`

@@ -3,9 +3,8 @@ import { selectFlags } from '@suite/flags';
 import { Column, Image, type ImageKey, InfoSegments, Row, Text } from '@trezor/components';
 import { type DeviceModelInternal, models } from '@trezor/device-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { BluetoothDebugInfo } from './BluetoothDebugInfo';
+import { useSelector } from '../../../hooks/suite';
 
 type BluetoothDeviceProps = {
     device: DesktopBluetoothDevice;

@@ -13,9 +13,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { type AllowanceProvider } from 'src/components/wallet/Allowance/AllowanceProviderInfo';
-import { ApproveModal } from 'src/components/wallet/Allowance/ApproveModal';
-import { RevokeModal } from 'src/components/wallet/Allowance/RevokeModal';
+import { type AllowanceProvider } from '../../../wallet/Allowance/AllowanceProviderInfo';
+import { ApproveModal } from '../../../wallet/Allowance/ApproveModal';
+import { RevokeModal } from '../../../wallet/Allowance/RevokeModal';
 
 export type YieldApproveModalProps = {
     amount: string;

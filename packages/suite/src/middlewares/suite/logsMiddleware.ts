@@ -12,8 +12,8 @@ import { addLog } from '@suite-common/logger';
 import { setAddressDisplayType } from '@suite-common/wallet-core';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import { saveCoinProtocol } from 'src/actions/suite/protocolActions';
-import { redactAnchor } from 'src/utils/suite/analytics';
+import { saveCoinProtocol } from '../../actions/suite/protocolActions';
+import { redactAnchor } from '../../utils/suite/analytics';
 
 const log =
     (api: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) =>

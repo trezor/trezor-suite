@@ -2,8 +2,8 @@ import { type ReactNode } from 'react';
 
 import type { TradingProviderInfo } from '@suite-common/trading';
 
-import { TradingFooter } from 'src/views/wallet/trading/common/TradingFooter/TradingFooter';
-import { useTradingPageHeader } from 'src/views/wallet/trading/common/TradingLayout/useTradingPageHeader';
+import { TradingFooter } from './TradingFooter/TradingFooter';
+import { useTradingPageHeader } from './TradingLayout/useTradingPageHeader';
 
 export interface TradingContainerProps {
     children: ReactNode;

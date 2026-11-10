@@ -11,9 +11,8 @@ import {
 } from '@suite-common/trading';
 import { Box, Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { TradingOffersModalGroup } from './TradingOffersModalGroup';
+import { useSelector } from '../../../../../hooks/suite';
 
 type TradingOffersModalSellProps = {
     onClose: () => void;

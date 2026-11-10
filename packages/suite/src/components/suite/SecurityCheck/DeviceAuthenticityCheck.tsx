@@ -15,10 +15,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useLayoutSize } from 'src/hooks/suite';
-
 import { SecurityCheckFail } from './components/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton, RetryButton } from './components/ctas';
+import { useLayoutSize } from '../../../hooks/suite';
 
 const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
     { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },

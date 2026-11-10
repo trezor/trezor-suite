@@ -16,23 +16,22 @@ import { type FormState, type PrecomposedTransactionFinal } from '@suite-common/
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    removeSendFormDraftThunk,
-    signAndPushSendFormTransactionThunk,
-} from 'src/actions/wallet/send/sendFormThunks';
-import { cancelSignYieldTxThunk } from 'src/actions/wallet/stablecoin-yield';
-import {
-    cancelSignTxThunk as cancelSignStakingTx,
-    signTransactionThunk,
-} from 'src/actions/wallet/stakeActions';
-import { cancelSignTronFreezeTxThunk } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
-import { useSelector } from 'src/hooks/suite';
-
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
 import { TransactionReviewModalSell } from './TransactionReviewModalSell';
 import { type TxInfoState } from './utils';
+import {
+    removeSendFormDraftThunk,
+    signAndPushSendFormTransactionThunk,
+} from '../../../../../actions/wallet/send/sendFormThunks';
+import { cancelSignYieldTxThunk } from '../../../../../actions/wallet/stablecoin-yield';
+import {
+    cancelSignTxThunk as cancelSignStakingTx,
+    signTransactionThunk,
+} from '../../../../../actions/wallet/stakeActions';
+import { cancelSignTronFreezeTxThunk } from '../../../../../actions/wallet/tron-stake/cancelSignTronFreezeTx';
+import { useSelector } from '../../../../../hooks/suite';
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop

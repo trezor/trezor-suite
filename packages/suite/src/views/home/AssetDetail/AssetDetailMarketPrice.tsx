@@ -20,10 +20,9 @@ import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { FiatAmountHeadline } from 'src/views/home/HomeBalance/FiatAmountHeadline';
-
 import { AssetDetailPriceChange } from './AssetDetailPriceChange';
+import { useSelector } from '../../../hooks/suite';
+import { FiatAmountHeadline } from '../HomeBalance/FiatAmountHeadline';
 
 type AssetDetailMarketPriceProps = {
     symbol: NetworkSymbol;

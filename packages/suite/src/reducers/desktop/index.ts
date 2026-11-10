@@ -2,7 +2,7 @@ import type { UnknownAction } from '@reduxjs/toolkit';
 
 import type { HandshakeElectron } from '@suite/desktop-app-api';
 
-import { desktopHandshake } from 'src/actions/suite/suiteActions';
+import { desktopHandshake } from '../../actions/suite/suiteActions';
 
 export type DesktopState = null | Pick<HandshakeElectron, 'paths' | 'urls'>;
 

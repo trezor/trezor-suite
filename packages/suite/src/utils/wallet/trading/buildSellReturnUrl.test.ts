@@ -9,8 +9,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type BuildSellReturnUrlParams, buildSellReturnUrl } from './buildSellReturnUrl';
 
 const mockCreateQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
-jest.mock('src/utils/wallet/trading/sellUtils', () => ({
-    ...jest.requireActual('src/utils/wallet/trading/sellUtils'),
+jest.mock('./sellUtils', () => ({
+    ...jest.requireActual('./sellUtils'),
     createQuoteLink: (...args: unknown[]) => mockCreateQuoteLink(...args),
 }));
 

@@ -5,7 +5,7 @@ import { type Transaction } from '@trezor/blockchain-link-types';
 import { Icon, InfoSegments, Row, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowUpIcon, ClockIcon } from '@trezor/icons';
 
-import { FormattedDate } from 'src/components/suite/FormattedDate';
+import { FormattedDate } from '../../../../../FormattedDate';
 
 type RowIcon = {
     txType: Transaction['type'];

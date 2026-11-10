@@ -32,14 +32,13 @@ import { useServices } from '@trezor/dependency-injection';
 import { AsteriskIcon, EjectIcon, XIcon } from '@trezor/icons';
 import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
-import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
-import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useSelector } from 'src/hooks/suite';
-import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
-import { type AcquiredDevice, type ForegroundAppProps } from 'src/types/suite';
-
 import { EjectConfirmation } from './EjectConfirmation';
+import { redirectAfterWalletSelectedThunk } from '../../../../actions/wallet/addWalletThunk';
+import { WalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
+import { FiatHeader } from '../../../../components/wallet/FiatHeader';
+import { useSelector } from '../../../../hooks/suite';
+import { useTotalFiatBalance } from '../../../../hooks/wallet/useTotalFiatBalance';
+import { type AcquiredDevice, type ForegroundAppProps } from '../../../../types/suite';
 
 type WalletInstanceProps = {
     instance: AcquiredDevice;

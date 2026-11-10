@@ -19,8 +19,8 @@ import { type TradingType } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { useSelector } from '../../../../../hooks/suite';
+import { type TradingGetCryptoQuoteAmountProps } from '../../../../../types/trading/trading';
 
 type TradingDetailFeedbackProps = {
     status: ExchangeTradeStatus | SellTradeStatus | BuyTradeStatus | undefined;

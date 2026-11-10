@@ -21,16 +21,15 @@ import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
-
 import { EarnYieldActionButtons } from './EarnYieldActionButtons';
 import { EarnYieldApyTooltip } from './EarnYieldApyTooltip';
 import { EarnYieldPotentialRewards } from './EarnYieldPotentialRewards';
 import { EarnYieldYearlyRewards } from './EarnYieldYearlyRewards';
 import { type YieldAccountOpportunity } from './types';
+import { useSelector } from '../../../../hooks/suite';
+import { useFirmwareUpgradeModal } from '../../../../hooks/suite/useFirmwareUpgradeModal';
+import { useLayoutSize } from '../../../../hooks/suite/useLayoutSize';
+import { useMessageSystemYield } from '../../../../hooks/suite/useMessageSystemYield';
 import { getEarnRouteParams } from '../../utils/getEarnRouteParams';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { useYieldAccountOpportunityAnchor } from './hooks/useYieldAccountOpportunityAnchor';

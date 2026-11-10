@@ -4,9 +4,8 @@ import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
 import { Banner, Column, H3 } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { getTokens } from 'src/utils/wallet/tokenUtils';
-
+import { useSelector } from '../../../../hooks/suite';
+import { getTokens } from '../../../../utils/wallet/tokenUtils';
 import { NoTokens } from '../common/NoTokens';
 import { NoSearchResultsWrapped, TokensTable } from '../common/TokensTable/TokensTable';
 

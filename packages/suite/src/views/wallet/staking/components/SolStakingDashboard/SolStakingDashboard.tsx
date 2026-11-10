@@ -17,10 +17,9 @@ import { Column, Flex, Grid } from '@trezor/components';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { usePagination } from 'src/hooks/general/usePagination';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-
+import { DashboardSection } from '../../../../../components/dashboard';
+import { usePagination } from '../../../../../hooks/general/usePagination';
+import { useLayoutSize, useSelector } from '../../../../../hooks/suite';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { RewardsList } from './Rewards/RewardsList';
 import { StakingRewardsWarning } from './StakingRewardsWarning';

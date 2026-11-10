@@ -15,10 +15,9 @@ import { type Account } from '@suite-common/wallet-types';
 import { StepList } from '@trezor/components';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useSelector } from 'src/hooks/suite';
-
 import { EarnInfoRow } from './EarnInfoRow';
+import { useFormatApy } from '../../../../../hooks/earn/useFormatApy';
+import { useSelector } from '../../../../../hooks/suite';
 
 interface EarnStakingInfoProps {
     account: Account;

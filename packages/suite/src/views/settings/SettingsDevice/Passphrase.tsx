@@ -11,7 +11,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from '../../../actions/settings/deviceSettingsActions';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;

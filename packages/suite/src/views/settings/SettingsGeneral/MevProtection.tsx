@@ -9,7 +9,7 @@ import { InfoIcon } from '@trezor/icons';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../hooks/suite';
 
 export const MevProtection = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);

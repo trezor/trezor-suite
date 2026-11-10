@@ -4,14 +4,13 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Column, useScrollShadow } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { ReduxAccountSearchProvider } from 'src/hooks/suite/useAccountSearch';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
-
 import { AccountsList } from './AccountsList';
 import { AccountsMenuHeader } from './AccountsMenuHeader';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
+import { useSelector } from '../../../../hooks/suite';
+import { ReduxAccountSearchProvider } from '../../../../hooks/suite/useAccountSearch';
+import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
+import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
 
 export const AccountsMenu = () => {
     const device = useSelector(selectSelectedDevice);

@@ -14,10 +14,10 @@ import {
 import { type ButtonPriority } from '@trezor/components/src/components/buttons/types';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
-import { useLayoutSize } from 'src/hooks/suite';
-import type { ToastNotificationVariant } from 'src/types/suite';
-import { getNotificationIcon } from 'src/utils/suite/notification';
+import { useLayoutSize } from '../../../../../../hooks/suite';
+import type { ToastNotificationVariant } from '../../../../../../types/suite';
+import { getNotificationIcon } from '../../../../../../utils/suite/notification';
+import { FormattedDateWithBullet } from '../../../../FormattedDateWithBullet';
 
 export interface NotificationAction {
     onClick: () => void;

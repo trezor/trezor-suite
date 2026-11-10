@@ -9,10 +9,9 @@ import { StopIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { CoinjoinProgressWheel } from './CoinjoinProgressWheel';
 import { CoinjoinStatusMessage } from './CoinjoinStatusMessage';
+import { useSelector } from '../../../../../hooks/suite';
 
 const Content = styled.div`
     height: 100%;

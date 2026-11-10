@@ -5,15 +5,14 @@ import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useAllowanceCompose } from 'src/components/wallet/Allowance/hooks/useAllowanceCompose';
-import { useFeesContextValue } from 'src/components/wallet/Fees/context/useFeesContextValue';
-import { TradingExchangeNetworkFeeModalLayout } from 'src/views/wallet/trading/exchange/TradingExchangeNetworkFeeModal/TradingExchangeNetworkFeeModalLayout';
-
 import {
     type AllowanceFeeValues,
     getAllowanceFeeValues,
     setAllowanceFeeValues,
 } from './allowanceFeeValues';
+import { useAllowanceCompose } from '../../../../../components/wallet/Allowance/hooks/useAllowanceCompose';
+import { useFeesContextValue } from '../../../../../components/wallet/Fees/context/useFeesContextValue';
+import { TradingExchangeNetworkFeeModalLayout } from '../TradingExchangeNetworkFeeModal/TradingExchangeNetworkFeeModalLayout';
 
 type TradingExchangeApprovalFeeModalProps = {
     account: Account;

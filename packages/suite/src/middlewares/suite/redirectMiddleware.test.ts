@@ -24,14 +24,14 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
-import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
+import redirectMiddleware from './redirectMiddleware';
+import { prepareSuiteMiddleware } from './suiteMiddleware';
 import suiteReducer, {
     type SuiteRootState,
     type SuiteState,
-} from 'src/reducers/suite/suiteReducer';
+} from '../../reducers/suite/suiteReducer';
 
-jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
+jest.mock('../../actions/suite/storageActions', () => ({ __esModule: true }));
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {
         setDeviceMetadata: mockActionType('setDeviceMetadata'),

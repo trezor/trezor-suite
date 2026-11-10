@@ -5,10 +5,9 @@ import { Translation } from '@suite/intl';
 import { Card, Column, GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
-
 import { useReceiveAddressModalControls } from './useReceiveAddressModalControls';
 import { useTradingReceiveAddressValues } from './useTradingReceiveAddressValues';
+import { AccountLabeling } from '../../../../../../components/suite/labeling/AccountLabeling';
 
 type TradingReceiveAddressEmptyProps = {
     title: ReactNode;

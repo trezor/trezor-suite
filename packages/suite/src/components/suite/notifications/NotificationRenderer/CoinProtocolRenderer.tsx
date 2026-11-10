@@ -18,12 +18,11 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
-import type { NotificationRendererProps } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
-
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
+import type { NotificationRendererProps } from './NotificationRenderer';
+import { fillSendForm, resetProtocol } from '../../../../actions/suite/protocolActions';
+import { useSelector } from '../../../../hooks/suite';
+import { globalSendReceiveFiltersActions } from '../../../../slices/wallet/globalSendReceiveFilters';
 
 const Row = styled.span`
     display: flex;

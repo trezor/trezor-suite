@@ -7,9 +7,8 @@ import {
 } from '@suite-common/connect-popup';
 import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
-
 import migration from './26.11.0.1';
+import { type SuiteDBSchema } from '../../definitions';
 
 const DB_NAME = 'suite-idb-test-26.11.0.1';
 const INITIAL_VERSION = 1;

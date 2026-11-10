@@ -2,8 +2,7 @@ import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { Banner, Column, Text } from '@trezor/components';
 
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
+import { useMessageSystemStaking } from '../../../../../hooks/suite/useMessageSystemStaking';
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeFees } from '../TronStakeFees';
 import { TronStakePendingTransaction } from '../TronStakePendingTransaction';

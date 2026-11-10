@@ -8,8 +8,6 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { SetupSlider } from './SetupSlider/SetupSlider';
 import {
     GRADIENT_SLIDER_GREEN_END,
@@ -18,6 +16,7 @@ import {
     GRADIENT_SLIDER_YELLOW_END,
     GRADIENT_SLIDER_YELLOW_START,
 } from './consts';
+import { useSelector } from '../../../../hooks/suite';
 
 const min = 1;
 const max = 500;

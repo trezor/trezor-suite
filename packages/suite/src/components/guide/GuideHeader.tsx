@@ -10,7 +10,7 @@ import { ArrowLeftIcon, XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { zIndices } from '@trezor/theme';
 
-import { close } from 'src/actions/suite/guideActions';
+import { close } from '../../actions/suite/guideActions';
 
 const HeaderWrapper = styled.div<{
     $noLabel?: boolean;

@@ -12,7 +12,7 @@ import {
 } from '@trezor/theme';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { updateBreakpoints } from 'src/actions/suite/windowActions';
+import { updateBreakpoints } from '../../actions/suite/windowActions';
 
 const Resize = () => {
     const { dispatch } = useServices(injectDispatch);

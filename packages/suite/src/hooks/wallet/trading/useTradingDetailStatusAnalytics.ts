@@ -5,7 +5,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { type TradingTransactionStatus, type TradingType } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
 
-import { type TradingDetailStatusStep } from 'src/types/trading/tradingDetail';
+import { type TradingDetailStatusStep } from '../../../types/trading/tradingDetail';
 
 type UseTradingDetailStatusAnalyticsProps = {
     tradeType: TradingType;

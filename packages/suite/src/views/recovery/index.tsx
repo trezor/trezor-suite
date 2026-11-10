@@ -23,16 +23,15 @@ import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import type { ForegroundAppProps } from 'src/types/suite';
-
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
 import { InitialStep } from './steps/InitialStep';
 import { RequestConfirmationStep } from './steps/RequestConfirmationStep';
 import { SelectRecoveryTypeStep } from './steps/SelectRecoveryTypeStep';
 import { SelectWordCountStep } from './steps/SelectWordCountStep';
 import { WordInputStep } from './steps/WordInputStep';
+import { Loading, PinMatrix, WordInputAdvanced } from '../../components/suite';
+import { useSelector } from '../../hooks/suite';
+import type { ForegroundAppProps } from '../../types/suite';
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const recovery = useSelector(selectRecovery);

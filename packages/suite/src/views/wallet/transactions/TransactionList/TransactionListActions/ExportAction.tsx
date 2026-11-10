@@ -12,8 +12,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { ChecksIcon, FileArrowDownIcon, InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
-import { type Account } from 'src/types/wallet';
+import { exportTransactionsThunk } from '../../../../../actions/wallet/exportTransactionsActions';
+import { type Account } from '../../../../../types/wallet';
 
 export interface ExportActionProps {
     account: Account;

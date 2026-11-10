@@ -3,7 +3,7 @@ import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type Account } from 'src/types/wallet';
+import { FIXTURE_ACCOUNT_OPTIONS } from './__fixtures__/tradingUtils';
 import {
     getBuyReceiveExtraFieldDescription,
     getComposeAddressPlaceholder,
@@ -11,9 +11,8 @@ import {
     tradingGetAccountLabel,
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
-} from 'src/utils/wallet/trading/tradingUtils';
-
-import { FIXTURE_ACCOUNT_OPTIONS } from './__fixtures__/tradingUtils';
+} from './tradingUtils';
+import { type Account } from '../../../types/wallet';
 
 describe('trading utils', () => {
     it('tradingGetAmountLabels', () => {

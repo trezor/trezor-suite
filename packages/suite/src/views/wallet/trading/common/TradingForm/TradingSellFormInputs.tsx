@@ -18,19 +18,13 @@ import { useFetchFees } from '@suite-common/wallet-core';
 import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useSelector } from 'src/hooks/suite';
-import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
-import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
-import { TradingFormInputBaseCurrencyAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
-import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
-import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
-import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
-
 import { TradingFormCard } from './TradingFormCard';
+import { TradingFormInputCountry } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
+import { TradingFormInputCurrency } from './TradingFormInput/TradingFormInputCurrency';
+import { TradingFormInputBaseCurrencyAmount } from './TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
+import { TradingFormInputCryptoAmount } from './TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
+import { TradingFormInputFiat } from './TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
+import { TradingFormInputPaymentMethod } from './TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
@@ -41,6 +35,11 @@ import {
 } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
+import { useIsFeeRefetchDisabled } from '../../../../../components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useSelector } from '../../../../../hooks/suite';
+import { useSelectedTradingAsset } from '../../../../../hooks/wallet/trading/form/common/useSelectedTradingAsset';
+import { useTradingAssetDecimals } from '../../../../../hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingFormContext } from '../../../../../hooks/wallet/trading/form/useTradingCommonForm';
 
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();

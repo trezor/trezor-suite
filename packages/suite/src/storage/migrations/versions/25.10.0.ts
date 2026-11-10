@@ -2,7 +2,7 @@ import { createMigration } from '@suite/idb-migration-utils';
 import { type PersistentDeviceData } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '../../definitions';
 
 type DeletedSecurityType =
     | {

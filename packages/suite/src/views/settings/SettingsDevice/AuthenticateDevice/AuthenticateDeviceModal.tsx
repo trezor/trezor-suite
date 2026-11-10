@@ -6,10 +6,9 @@ import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { AuthenticateDeviceFailStep } from './AuthenticateDeviceFailStep';
 import { AuthenticateDeviceInititalStep } from './AuthenticateDeviceInititalStep';
+import { useSelector } from '../../../../hooks/suite';
 
 type AuthenticateDeviceModalProps = {
     handleClose: () => void;

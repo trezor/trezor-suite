@@ -5,10 +5,9 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type Network, type NetworkAccount } from '@suite-common/wallet-config';
 
-import { type Account } from 'src/types/wallet';
-
 import { AddButton } from './AddButton';
 import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';
+import { type Account } from '../../../../../../../types/wallet';
 import { verifyAvailability } from '../verifyAvailability';
 
 interface AddAccountButtonProps {

@@ -19,13 +19,12 @@ import { Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useSelector } from 'src/hooks/suite';
-
 import {
     CoinjoinProgressContent,
     Container as ProgressContentContainer,
 } from './CoinjoinProgressContent';
+import { useCoinjoinSessionBlockers } from '../../../../../hooks/coinjoin/useCoinjoinSessionBlockers';
+import { useSelector } from '../../../../../hooks/suite';
 
 export const DELAYED_SPIN = keyframes`
     0% {

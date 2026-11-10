@@ -1,12 +1,11 @@
 import { type ExchangeTradeStatus } from 'invity-api';
 
-import { type TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/utils';
-
 import {
     type ExchangeDetailStatusStep,
     getExchangeDetailProgress,
     getExchangeDetailStatusStep,
 } from './utils';
+import { type TradingDetailProgress } from '../../common/TradingDetail/utils';
 
 describe('getExchangeDetailStatusStep', () => {
     it.each<[ExchangeTradeStatus, ExchangeDetailStatusStep]>([

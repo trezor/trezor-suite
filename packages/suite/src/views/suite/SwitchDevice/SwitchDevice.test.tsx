@@ -31,7 +31,7 @@ jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
     selectDevices: () => [],
 }));
-jest.mock('src/hooks/suite', () => ({
+jest.mock('../../../hooks/suite', () => ({
     useSelector: (selector: () => unknown) => selector(),
 }));
 

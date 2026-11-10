@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Column, Row, Text, Tooltip } from '@trezor/components';
 
-import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
+import { NetworkList } from '../../../../NetworkList/NetworkList';
 
 type SelectNetworkProps = {
     networks: Network[];

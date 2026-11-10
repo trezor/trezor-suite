@@ -9,10 +9,9 @@ import {
 import { GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { FakeSelect } from 'src/components/suite';
-import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
-
 import { CountrySubdivisionSelectModal } from './CountrySubdivisionSelectModal';
+import { FakeSelect } from '../../../../../../../components/suite';
+import { type TradingFormInputDefaultProps } from '../../../../../../../types/trading/tradingForm';
 
 interface TradingFormInputCountrySubdivisionProps extends TradingFormInputDefaultProps {
     renderInput?: boolean;

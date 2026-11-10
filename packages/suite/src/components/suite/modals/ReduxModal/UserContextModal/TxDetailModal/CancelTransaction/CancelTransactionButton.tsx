@@ -7,8 +7,8 @@ import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
+import { signAndPushSendFormTransactionThunk } from '../../../../../../../actions/wallet/send/sendFormThunks';
+import { useCancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
 
 type CancelTransactionButtonProps = {
     account: Account;

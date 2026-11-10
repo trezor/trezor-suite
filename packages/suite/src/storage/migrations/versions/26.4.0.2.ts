@@ -1,7 +1,7 @@
 import { createMigration } from '@suite/idb-migration-utils';
 import { type FeatureFeedbackState } from '@suite-common/feedback';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '../../definitions';
 
 export default createMigration<SuiteDBSchema>('26.4.0.2', async (db, tx) => {
     if (!db.objectStoreNames.contains('featureFeedback')) {

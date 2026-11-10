@@ -21,8 +21,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
-import { type DiscoveryStatusType } from 'src/types/wallet';
+import { applySettingsThunk } from '../../../actions/settings/deviceSettingsActions';
+import { type DiscoveryStatusType } from '../../../types/wallet';
 
 interface CTA {
     label?: TranslationKey;

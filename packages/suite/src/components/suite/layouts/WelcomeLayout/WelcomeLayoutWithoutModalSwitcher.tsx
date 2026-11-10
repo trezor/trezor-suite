@@ -6,10 +6,9 @@ import { Translation } from '@suite/intl';
 import { TrafficLightOffset } from '@suite/macos';
 import { Column, Modal, Row, variables } from '@trezor/components';
 
-import { GuideButton, GuideRouter } from 'src/components/guide';
+import { GuideButton, GuideRouter } from '../../../guide';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
-import { SuiteBanners } from 'src/components/suite/banners';
-
+import { SuiteBanners } from '../../banners';
 import { ContentContainer } from '../ContentContainer';
 import { PageHeader } from '../SuiteLayout';
 import { BasicName } from '../SuiteLayout/PageHeader/PageNames/BasicName';

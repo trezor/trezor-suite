@@ -13,13 +13,12 @@ import {
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getIndexOrThrow } from '@trezor/utils';
 
-import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import {
     useCardanoAccountVotingDelegation,
     useSeededCardanoVotingDelegation,
 } from './useCardanoAccountVotingDelegation';
 import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';
+import { renderHookWithProviders } from '../../support/test-utils/hooksHelper';
 
 const stakeReducer = prepareStakeReducer({});
 

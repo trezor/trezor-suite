@@ -8,12 +8,11 @@ import { type FeeInfo, type FormState } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 
-import { type useCompose } from 'src/hooks/wallet/form/useCompose';
-
 import {
     TradingExchangeNetworkFeeModal,
     type TradingExchangeNetworkFeeModalProps,
 } from './TradingExchangeNetworkFeeModal';
+import { type useCompose } from '../../../../../hooks/wallet/form/useCompose';
 
 const mockComposeRequest = mock<ReturnType<typeof useCompose>['composeRequest']>();
 
@@ -27,7 +26,7 @@ jest.mock('@trezor/components', () => {
         Modal: Object.assign(Container, { Button: () => null }),
     };
 });
-jest.mock('src/hooks/wallet/form/useCompose', () => ({
+jest.mock('../../../../../hooks/wallet/form/useCompose', () => ({
     useCompose: () => ({
         composedLevels: undefined,
         composeRequest: mockComposeRequest,
@@ -35,10 +34,10 @@ jest.mock('src/hooks/wallet/form/useCompose', () => ({
         isLoading: false,
     }),
 }));
-jest.mock('src/hooks/wallet/form/useFees', () => ({
+jest.mock('../../../../../hooks/wallet/form/useFees', () => ({
     useFees: () => ({ changeFeeLevel: jest.fn() }),
 }));
-jest.mock('src/components/wallet/Fees/CollapsibleFees/FeeLevels/FeeLevels', () => ({
+jest.mock('../../../../../components/wallet/Fees/CollapsibleFees/FeeLevels/FeeLevels', () => ({
     FeeLevels: () => null,
 }));
 jest.mock('./TradingExchangeNetworkFeeModalTotal', () => ({

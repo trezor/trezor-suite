@@ -4,10 +4,9 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
 import { Divider, Row, Text } from '@trezor/components';
 
-import { EarnYieldApyTooltip } from 'src/components/earn/dashboard/yield/EarnYieldApyTooltip';
-
 import { YieldFlowComplete } from './YieldFlowComplete';
 import { YieldFlowTransferRow } from './YieldFlowTransferRow';
+import { EarnYieldApyTooltip } from '../../dashboard/yield/EarnYieldApyTooltip';
 
 type YieldFlowCompleteDepositProps = {
     input: YieldFlowCompleteValue;

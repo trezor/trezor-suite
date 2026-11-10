@@ -14,8 +14,7 @@ import {
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from 'src/hooks/suite';
-
+import { useSelector } from '../../../../hooks/suite';
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
     getYieldCryptoInputValue,

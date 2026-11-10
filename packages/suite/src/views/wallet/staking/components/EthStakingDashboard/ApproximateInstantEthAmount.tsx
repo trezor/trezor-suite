@@ -1,7 +1,7 @@
 import { Row, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
+import { FormattedCryptoAmount } from '../../../../../components/suite';
 
 interface ApproximateInstantEthAmountProps {
     value: string | number;

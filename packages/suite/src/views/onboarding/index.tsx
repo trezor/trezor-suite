@@ -9,20 +9,20 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
-import { getOnboardingStepIndex } from 'src/config/onboarding/steps';
-import * as STEP from 'src/constants/onboarding/steps';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
-import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
-import { BackupTypeStep } from 'src/views/onboarding/steps/BackupTypeStep';
-import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';
-import { DeviceAuthenticityStep } from 'src/views/onboarding/steps/DeviceAuthenticityStep';
-import { DeviceTutorialStep } from 'src/views/onboarding/steps/DeviceTutorialStep';
-import { FinalStep } from 'src/views/onboarding/steps/FinalStep';
-import { FirmwareStep } from 'src/views/onboarding/steps/FirmwareStep';
-import { PinStep } from 'src/views/onboarding/steps/PinStep';
-import { RecoveryStep } from 'src/views/onboarding/steps/RecoveryStep';
-import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
+import { UnexpectedState } from './UnexpectedState';
+import { BackupTypeStep } from './steps/BackupTypeStep';
+import { CreateOrRecoverStep } from './steps/CreateOrRecoverStep';
+import { DeviceAuthenticityStep } from './steps/DeviceAuthenticityStep';
+import { DeviceTutorialStep } from './steps/DeviceTutorialStep';
+import { FinalStep } from './steps/FinalStep';
+import { FirmwareStep } from './steps/FirmwareStep';
+import { PinStep } from './steps/PinStep';
+import { RecoveryStep } from './steps/RecoveryStep';
+import { SecurityStep } from './steps/SecurityStep';
+import { OnboardingLayout } from '../../components/onboarding/OnboardingLayout';
+import { getOnboardingStepIndex } from '../../config/onboarding/steps';
+import * as STEP from '../../constants/onboarding/steps';
+import { useOnboarding, useSelector } from '../../hooks/suite';
 
 export const Onboarding = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);

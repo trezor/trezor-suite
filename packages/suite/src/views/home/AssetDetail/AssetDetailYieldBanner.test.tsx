@@ -14,10 +14,9 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { type StaticSessionId } from '@trezor/device-utils';
 import { getWrappedNativeToken } from '@trezor/network-ethereum/constants';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { AssetDetailYieldBanner } from './AssetDetailYieldBanner';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../support/test-utils/hooksHelper';
 
 jest.mock('@suite-common/earn-stablecoin-api', () => ({
     ...jest.requireActual('@suite-common/earn-stablecoin-api'),

@@ -3,9 +3,9 @@ import {
     storageCorrupted,
     storageError,
     storageLoad,
-} from 'src/actions/suite/storageLifecycleActions';
-import { type DbDep } from 'src/storage/createDb';
-import { loadStoragePayload } from 'src/storage/loadStoragePayload';
+} from '../../actions/suite/storageLifecycleActions';
+import { type DbDep } from '../../storage/createDb';
+import { loadStoragePayload } from '../../storage/loadStoragePayload';
 
 type PreloadStoreDeps = DbDep;
 

@@ -6,9 +6,9 @@ import { Banner, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
+import { useSelector } from '../../../../../hooks/suite';
+import { useTradingFormContext } from '../../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingSelectedQuote } from '../hooks/useTradingSelectedQuote';
 
 interface TradingUtilsTorWarningProps {
     tradingType: TradingType;

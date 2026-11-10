@@ -1,10 +1,9 @@
 import { Translation } from '@suite/intl';
 import { selectScanStatus } from '@suite-common/bluetooth';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { BluetoothDeviceList } from './BluetoothDeviceList';
 import { BluetoothTips } from './BluetoothTips';
+import { useSelector } from '../../../hooks/suite';
 import { useConnectionGlobalModalContext } from '../../connection/context/ConnectionGlobalModalContext';
 
 export const BluetoothScanningList = () => {

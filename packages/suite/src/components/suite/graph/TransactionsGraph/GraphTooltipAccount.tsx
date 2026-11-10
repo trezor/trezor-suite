@@ -6,10 +6,9 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import type { CryptoGraphProps } from 'src/components/suite/graph/types';
-import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
-
+import { type CommonAggregatedHistory, type GraphRange } from '../../../../types/wallet/graph';
+import { FormattedCryptoAmount } from '../../FormattedCryptoAmount';
+import type { CryptoGraphProps } from '../types';
 import { GraphTooltipBase } from './GraphTooltipBase';
 
 const formatAmount = (

@@ -7,8 +7,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useDiscovery } from 'src/hooks/suite';
-import { type TrezorDevice } from 'src/types/suite';
+import { useDiscovery } from '../../../../hooks/suite';
+import { type TrezorDevice } from '../../../../types/suite';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     if (device && !device.connected) {

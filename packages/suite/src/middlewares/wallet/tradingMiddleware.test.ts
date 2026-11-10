@@ -34,11 +34,10 @@ import {
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
-import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
-import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
-
 import { tradingMiddlewareFixtures } from './__fixtures__/tradingMiddleware';
+import { tradingMiddleware } from './tradingMiddleware';
+import { ACCOUNT } from '../../actions/wallet/trading/__fixtures__/tradingCommonActions/store';
+import suiteReducer, { type SuiteState } from '../../reducers/suite/suiteReducer';
 
 jest.spyOn(tradeApi, 'setApiKey').mockImplementation(() => {});
 

@@ -11,9 +11,9 @@ import { SectionItem, TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
-import { StatusLight } from 'src/components/suite';
-import { useBackendReconnection } from 'src/hooks/settings/backends';
-import { useSelector } from 'src/hooks/suite';
+import { StatusLight } from '../../../components/suite';
+import { useBackendReconnection } from '../../../hooks/settings/backends';
+import { useSelector } from '../../../hooks/suite';
 
 const CoinSection = styled.div`
     display: flex;

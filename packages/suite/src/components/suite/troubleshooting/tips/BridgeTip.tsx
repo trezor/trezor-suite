@@ -1,7 +1,7 @@
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 
-import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
+import { useOpenSuiteDesktop } from '../../../../hooks/suite/useOpenSuiteDesktop';
 
 export const SuiteDesktopTip = () => {
     const handleClick = useOpenSuiteDesktop();

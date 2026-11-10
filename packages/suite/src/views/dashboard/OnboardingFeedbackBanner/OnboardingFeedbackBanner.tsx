@@ -23,10 +23,9 @@ import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-
 import { selectShouldShowOnboardingFeedbackBanner } from './onboardingFeedbackBannerSelectors';
+import { useLayoutSize, useSelector } from '../../../hooks/suite';
+import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 import { bannerAnimationConfig } from '../banner-animations';
 
 type TitleProps = { isVerticalLayout: boolean };

@@ -4,7 +4,7 @@ import {
     type LayoutContextPayload,
     LayoutPayloadContext,
     LayoutSetterContext,
-} from 'src/support/suite/LayoutContext';
+} from '../../../../support/suite/LayoutContext';
 
 type LayoutPayloadProviderProps = {
     children: ReactNode;

@@ -6,13 +6,12 @@ import { datetimeToLocktime } from '@suite-common/wallet-utils';
 import { Card, Column, IconButton, Row, Select, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
-import { OpenGuideFromTooltip } from 'src/components/guide';
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-
 import { LocktimeBlockHeight, inputName as blockHeightInputName } from './LocktimeBlockHeight';
 import { LocktimeDatetime, inputName as datetimeInputName } from './LocktimeDatetime';
 import { canLocktimeTxBeBroadcast } from './canLocktimeTxBeBroadcast';
+import { OpenGuideFromTooltip } from '../../../../../../components/guide';
+import { useSelector } from '../../../../../../hooks/suite';
+import { useSendFormContext } from '../../../../../../hooks/wallet';
 
 const LOCKTIME_OPTIONS = [
     {

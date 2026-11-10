@@ -7,10 +7,9 @@ import {
     notificationsActions,
 } from '@suite-common/toast-notifications';
 
-import { PROTOCOL } from 'src/actions/suite/constants';
-import protocolReducer, { type ProtocolState } from 'src/reducers/suite/protocolReducer';
-
 import protocolMiddleware from './protocolMiddleware';
+import { PROTOCOL } from '../../actions/suite/constants';
+import protocolReducer, { type ProtocolState } from '../../reducers/suite/protocolReducer';
 
 const middlewares = [protocolMiddleware];
 

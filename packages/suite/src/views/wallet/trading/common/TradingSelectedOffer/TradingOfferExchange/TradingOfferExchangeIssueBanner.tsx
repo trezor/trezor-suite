@@ -6,7 +6,7 @@ import { type ExchangeIssue } from '@suite-common/trading';
 import { Banner, List } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../../hooks/suite';
 
 type TradingOfferExchangeIssueContent = {
     title: ReactNode;

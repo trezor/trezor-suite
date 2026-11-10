@@ -31,13 +31,12 @@ import { TagFilledIcon } from '@trezor/icons';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
-import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
-
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
+import { useSelector } from '../../../../hooks/suite';
+import { type WalletAccountTransaction } from '../../../../types/wallet';
+import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from '../../../suite';
+import { AccountLabelForOwnAddress } from '../../../suite/labeling/AccountLabelForOwnAddress';
 import { AmountComponent } from '../../AmountComponent';
 import { TransactionTargetLayout } from '../TransactionTargetLayout';
 

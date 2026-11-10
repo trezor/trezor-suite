@@ -5,8 +5,6 @@ import { selectHiddenWalletAssetKeys } from '@suite-common/assets';
 import { type HiddenTokenReason, type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, Card, Column, Divider, Row, Text, VirtualizedList } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
 import {
     HIDDEN_TOKEN_BALANCE_WIDTH,
     HIDDEN_TOKEN_PRICE_WIDTH,
@@ -15,6 +13,7 @@ import {
     HiddenTokenRow,
 } from './HiddenTokenRow';
 import { UnhideAssetModal } from './UnhideAssetModal';
+import { useSelector } from '../../../hooks/suite';
 
 const LIST_MAX_ROW_COUNT = 9;
 

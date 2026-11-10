@@ -12,7 +12,7 @@ import { changeNetworks } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { createMiddleware } from '@trezor/redux-utils';
 
-import { selectMessageSystemValidationParams } from 'src/selectors/suite/selectMessageSystemValidationParams';
+import { selectMessageSystemValidationParams } from '../../selectors/suite/selectMessageSystemValidationParams';
 
 // actions which can affect message system messages
 const actions: string[] = [

@@ -5,10 +5,10 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, IconCircle } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { type Account } from 'src/types/wallet';
-import { TradingDetailTerminalDetails } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalDetails';
-import { TradingDetailTerminalState } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTerminalState';
-import { getTradingProviderName } from 'src/views/wallet/trading/common/TradingDetail/utils';
+import { type Account } from '../../../../../types/wallet';
+import { TradingDetailTerminalDetails } from '../../common/TradingDetail/TradingDetailTerminalDetails';
+import { TradingDetailTerminalState } from '../../common/TradingDetail/TradingDetailTerminalState';
+import { getTradingProviderName } from '../../common/TradingDetail/utils';
 
 type TradingExchangeDetailPaymentKYCProps = {
     trade: ExchangeTrade;

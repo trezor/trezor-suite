@@ -36,8 +36,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
-import { handleProtocolRequestThunk } from 'src/actions/suite/protocolActions';
-import { desktopHandshake, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
+import { handleProtocolRequestThunk } from '../../actions/suite/protocolActions';
+import { desktopHandshake, setRecentlyDisconnectedDevice } from '../../actions/suite/suiteActions';
 
 type SuiteMiddlewareState = AccountsRootState &
     DeviceRootState &

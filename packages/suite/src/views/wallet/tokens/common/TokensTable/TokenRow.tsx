@@ -21,20 +21,19 @@ import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
+import { TokenRowActions } from './TokenRowActions';
+import { useTokenYieldBadge } from './hooks/useTokenYieldBadge';
+import type { TokensTableType } from './types';
+import { YieldBadge } from '../../../../../components/earn/YieldBadge/YieldBadge';
 import {
     BaseCurrencyValue,
     FormattedCryptoAmount,
     PriceTicker,
     TrendTicker,
-} from 'src/components/suite';
-import { AssetDetailLink } from 'src/components/suite/AssetDetailLink/AssetDetailLink';
-import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useSelector } from 'src/hooks/suite';
-
-import { TokenRowActions } from './TokenRowActions';
-import { useTokenYieldBadge } from './hooks/useTokenYieldBadge';
-import type { TokensTableType } from './types';
+} from '../../../../../components/suite';
+import { AssetDetailLink } from '../../../../../components/suite/AssetDetailLink/AssetDetailLink';
+import { StellarManageTokenModal } from '../../../../../components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
+import { useSelector } from '../../../../../hooks/suite';
 
 type TokenRowProps = {
     type?: TokensTableType;

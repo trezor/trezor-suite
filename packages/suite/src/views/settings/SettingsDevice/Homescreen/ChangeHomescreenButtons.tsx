@@ -6,7 +6,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { getHomescreens } from 'src/constants/suite/homescreens';
+import { getHomescreens } from '../../../../constants/suite/homescreens';
 
 type ChangeHomescreenButtonsParams = {
     deviceModelInternal: DeviceModelInternal;

@@ -10,7 +10,7 @@ import {
 import { Card, Column, H2, Paragraph } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../hooks/suite';
 
 const safeValidateTradingSurvey = (data: unknown): TradingSurveyPayload | null => {
     try {

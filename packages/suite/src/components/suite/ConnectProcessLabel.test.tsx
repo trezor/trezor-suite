@@ -6,9 +6,8 @@ import {
     UNKNOWN_PROCESS,
 } from '@suite-common/connect-popup/src/connectPopupTypes';
 
-import { ThemeProvider } from 'src/support/suite/ThemeProvider';
-
 import { ConnectProcessLabel } from './ConnectProcessLabel';
+import { ThemeProvider } from '../../support/suite/ThemeProvider';
 
 type TranslationProps = { id: string };
 

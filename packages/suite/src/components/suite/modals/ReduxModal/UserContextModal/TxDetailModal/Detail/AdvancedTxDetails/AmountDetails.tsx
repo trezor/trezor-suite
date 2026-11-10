@@ -22,14 +22,13 @@ import {
 import { Table, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FormattedDate } from 'src/components/suite/FormattedDate';
-import { AmountComponent } from 'src/components/wallet/AmountComponent';
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
-
 import { HistoricRateChange } from './HistoricRateChange';
+import { useSelector } from '../../../../../../../../hooks/suite';
+import { type WalletAccountTransaction } from '../../../../../../../../types/wallet';
+import { AmountComponent } from '../../../../../../../wallet/AmountComponent';
+import { BaseCurrencyValue } from '../../../../../../BaseCurrencyValue';
+import { FormattedCryptoAmount } from '../../../../../../FormattedCryptoAmount';
+import { FormattedDate } from '../../../../../../FormattedDate';
 
 type AmountDetailsProps = {
     tx: WalletAccountTransaction;

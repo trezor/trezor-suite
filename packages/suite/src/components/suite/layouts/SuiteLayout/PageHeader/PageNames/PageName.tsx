@@ -9,14 +9,13 @@ import {
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
 import { AssetDetailName } from './AssetDetailName';
 import { BasicName } from './BasicName';
 import { HiddenTokensName } from './HiddenTokensName';
 import { SettingsName } from './SettingsName';
+import { useSelector } from '../../../../../../hooks/suite';
 
 export const PageName = () => {
     const isHomeTableActive = useIsExperimentVariantActive({

@@ -6,15 +6,14 @@ import { type ExcludedUtxos, type FormState, type UtxoSorting } from '@suite-com
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
+import { useCoinjoinRegisteredUtxos } from './useCoinjoinRegisteredUtxos';
 import {
     type SendContextValues,
     type UseSendFormState,
     type UtxoSelectionContext,
-} from 'src/types/wallet/sendForm';
-import { sortUtxos } from 'src/utils/wallet/utxoSortingUtils';
-
-import { useCoinjoinRegisteredUtxos } from './useCoinjoinRegisteredUtxos';
+} from '../../../types/wallet/sendForm';
+import { sortUtxos } from '../../../utils/wallet/utxoSortingUtils';
+import { useSelector } from '../../suite';
 
 interface UtxoSelectionContextProps
     extends UseFormReturn<FormState>, Pick<UseSendFormState, 'account' | 'composedLevels'> {

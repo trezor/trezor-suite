@@ -8,12 +8,11 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Column } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown/BalancePrivacyBreakdown';
 import { CoinjoinBalanceError, type CoinjoinBalanceErrorProps } from './CoinjoinBalanceError';
 import { CoinjoinStatusWheel } from './CoinjoinStatusWheel/CoinjoinStatusWheel';
+import { useSelector } from '../../../../hooks/suite';
+import { useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 
 export const Container = styled.div<{ $isStacked: boolean }>`
     display: flex;

@@ -29,22 +29,21 @@ import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { NetworkSettingsSearchInput } from 'src/components/suite/NetworkList/NetworkSettingsSearchInput';
-import { AddAccountBannerAboutNetworks } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
-import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useAccountSearch } from 'src/hooks/suite';
-import { type TrezorDevice } from 'src/types/suite';
-import { type Account } from 'src/types/wallet';
-import { NoNetworkSearchResults } from 'src/views/settings/SettingsCoins/NoNetworkSearchResults';
-import { useNetworkSettingsSearch } from 'src/views/settings/SettingsCoins/useNetworkSettingsSearch';
-
 import { AccountTypeSelect } from './AccountTypeSelect/AccountTypeSelect';
+import { AddAccountBannerAboutNetworks } from './AddAccountBannerAboutNetworks';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';
 import { SelectNetwork } from './SelectNetwork';
 import { getSortedNetworks, getVisibleAccountCounts } from './addAccountModalUtils';
 import { useNetworkActivationQueue } from './useNetworkActivationQueue';
 import { verifyAvailability } from './verifyAvailability';
+import { useNetworkSupport } from '../../../../../../hooks/settings/useNetworkSupport';
+import { useAccountSearch } from '../../../../../../hooks/suite';
+import { type TrezorDevice } from '../../../../../../types/suite';
+import { type Account } from '../../../../../../types/wallet';
+import { NoNetworkSearchResults } from '../../../../../../views/settings/SettingsCoins/NoNetworkSearchResults';
+import { useNetworkSettingsSearch } from '../../../../../../views/settings/SettingsCoins/useNetworkSettingsSearch';
+import { useAvailableNetworkSymbols } from '../../../../../wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
+import { NetworkSettingsSearchInput } from '../../../../NetworkList/NetworkSettingsSearchInput';
 import { AdvancedCoinSettingsModal } from '../AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
 type AddAccountProps = {

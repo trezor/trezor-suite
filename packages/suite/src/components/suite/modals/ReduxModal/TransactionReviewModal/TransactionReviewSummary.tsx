@@ -17,13 +17,12 @@ import { BroadcastIcon, ClockIcon, ComputerTowerIcon, InfoIcon, ReceiptIcon } fr
 import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
-
 import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
 import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';
+import { useConnectedDateFnsLocale, useSelector } from '../../../../../hooks/suite';
+import { type Account } from '../../../../../types/wallet';
+import { FeeRate } from '../../../../wallet/Fees/FeeRate';
+import { ConnectCallSource } from '../../../ConnectCallSource';
 
 const getEstimatedTime = (
     networkType: NetworkType,

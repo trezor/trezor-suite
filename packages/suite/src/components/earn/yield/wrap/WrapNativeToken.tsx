@@ -26,10 +26,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenThunks';
-import { selectIsFeeRefetchBlockedByModal } from 'src/components/wallet/Fees/feeSelectors';
-import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
-
+import { submitWrapNativeTokenThunk } from '../../../../actions/wallet/wrapNativeTokenThunks';
+import { useMessageSystemWrappedNative } from '../../../../hooks/suite/useMessageSystemWrappedNative';
+import { selectIsFeeRefetchBlockedByModal } from '../../../wallet/Fees/feeSelectors';
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';

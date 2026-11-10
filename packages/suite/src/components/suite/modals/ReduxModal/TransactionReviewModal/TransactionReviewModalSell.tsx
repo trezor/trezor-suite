@@ -3,11 +3,10 @@ import { type FormState } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
-
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { type TransactionReviewModalProps } from './TransactionReviewModalProps';
 import { type TxInfoState } from './utils';
+import { useTradingSellTradeActions } from '../../../../../hooks/wallet/trading/useTradingSellTradeActions';
 
 type TransactionReviewModalSellProps = {
     txInfoState: TxInfoState;

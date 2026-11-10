@@ -7,14 +7,13 @@ import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626, isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
+import { useSelector } from '../../../../hooks/suite';
+import { useMessageSystemYield } from '../../../../hooks/suite/useMessageSystemYield';
 import {
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
-} from 'src/utils/wallet/tokenUtils';
-
+} from '../../../../utils/wallet/tokenUtils';
 import { NoTokens } from '../common/NoTokens';
 import { TokensTable } from '../common/TokensTable/TokensTable';
 

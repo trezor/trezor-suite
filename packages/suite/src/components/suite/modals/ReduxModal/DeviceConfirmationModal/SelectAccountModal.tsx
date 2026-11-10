@@ -12,9 +12,9 @@ import { CaretRightIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../hooks/suite';
+import { ConnectCallSource } from '../../../ConnectCallSource';
+import { ConnectModalBackdrop } from '../../../ConnectModalBackdrop';
 
 interface SelectAccountModalProps {
     data: UiRequestSelectAccount['payload'];

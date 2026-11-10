@@ -11,10 +11,9 @@ import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { PreBackupCheckboxes } from 'src/components/backup';
-import { useSelector } from 'src/hooks/suite';
-
 import { BackupStepDescription } from './BackupStepDescription';
+import { PreBackupCheckboxes } from '../../components/backup';
+import { useSelector } from '../../hooks/suite';
 
 const canStart = (userConfirmed: ConfirmKey[], isDeviceLocked: boolean) =>
     (['has-enough-time', 'is-in-private', 'understands-what-seed-is'] as const).every(e =>

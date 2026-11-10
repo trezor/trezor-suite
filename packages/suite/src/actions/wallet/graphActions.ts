@@ -13,20 +13,6 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 
-import { type GraphState } from 'src/reducers/wallet/graphReducer';
-import { type Account } from 'src/types/wallet';
-import {
-    type AccountHistoryWithBalance,
-    type GraphData,
-    type GraphRange,
-} from 'src/types/wallet/graph';
-import {
-    enhanceBlockchainAccountHistory,
-    ensureHistoryRates,
-    isNetworkWithGraphFeature,
-    mergeAccountBalanceHistory,
-} from 'src/utils/wallet/graph';
-
 import {
     ACCOUNT_GRAPH_FAIL,
     ACCOUNT_GRAPH_START,
@@ -35,6 +21,19 @@ import {
     AGGREGATED_GRAPH_SUCCESS,
     SET_SELECTED_RANGE,
 } from './constants/graphConstants';
+import { type GraphState } from '../../reducers/wallet/graphReducer';
+import { type Account } from '../../types/wallet';
+import {
+    type AccountHistoryWithBalance,
+    type GraphData,
+    type GraphRange,
+} from '../../types/wallet/graph';
+import {
+    enhanceBlockchainAccountHistory,
+    ensureHistoryRates,
+    isNetworkWithGraphFeature,
+    mergeAccountBalanceHistory,
+} from '../../utils/wallet/graph';
 
 const DAY_IN_SECONDS = 3600 * 24;
 

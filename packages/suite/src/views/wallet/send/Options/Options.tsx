@@ -1,10 +1,9 @@
-import { useSendFormContext } from 'src/hooks/wallet';
-
 import { BitcoinOptions } from './BitcoinOptions/BitcoinOptions';
 import { CardanoOptions } from './CardanoOptions';
 import { EthereumOptions } from './EthereumOptions/EthereumOptions';
 import { SolanaOptions } from './SolanaOptions/SolanaOptions';
 import { TronOptions } from './TronOptions/TronOptions';
+import { useSendFormContext } from '../../../../hooks/wallet';
 
 export const Options = () => {
     const {

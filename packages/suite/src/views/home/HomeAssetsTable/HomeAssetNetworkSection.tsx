@@ -11,11 +11,10 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Table, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 import { HomeAssetRow } from './HomeAssetRow';
 import { HOME_ASSET_CELL_PADDING } from './homeAssetTableLayout';
+import { HiddenPlaceholder } from '../../../components/suite';
+import { useSelector } from '../../../hooks/suite';
 
 type HomeAssetNetworkSectionProps = {
     symbol: NetworkSymbol;

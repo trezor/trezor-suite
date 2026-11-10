@@ -10,7 +10,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { SectionItem } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../hooks/suite';
 
 const CoordinatorVersionContainer = styled.div`
     display: flex;

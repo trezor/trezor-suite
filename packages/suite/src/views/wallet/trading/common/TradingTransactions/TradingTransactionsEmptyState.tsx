@@ -7,7 +7,7 @@ import { Button, Column, H2, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { getBackRoute } from 'src/views/wallet/trading/common/TradingLayout/tradingPageHeaderUtils';
+import { getBackRoute } from '../TradingLayout/tradingPageHeaderUtils';
 
 export const TradingTransactionsEmptyState = () => {
     const { dispatch } = useServices(injectDispatch);

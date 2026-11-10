@@ -1,3 +1,3 @@
-import { CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
+import { CoinjoinAccountDiscoveryProgress } from '../../CoinjoinAccountDiscoveryProgress/CoinjoinAccountDiscoveryProgress';
 
 export const CoinjoinAccountDiscovery = () => <CoinjoinAccountDiscoveryProgress />;

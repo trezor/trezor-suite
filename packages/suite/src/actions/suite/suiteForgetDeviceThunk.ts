@@ -7,10 +7,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import * as storageActions from 'src/actions/suite/storageActions';
-import { type DbDep } from 'src/storage/createDb';
-
 import { SUITE_FORGET_DEVICE } from './constants/suiteConstants';
+import * as storageActions from './storageActions';
+import { type DbDep } from '../../storage/createDb';
 
 export type ForgetDeviceThunkParams = {
     isOsUnpairingFinished?: boolean;

@@ -5,7 +5,7 @@ import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../hooks/suite';
 // Only the newest transactions can still move the graph, the ones behind them are already part of
 // the graph data cached in the store. Watching a longer window would only churn the cache key.
 const WATCHED_TRANSACTIONS_COUNT = 3;

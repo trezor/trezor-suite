@@ -7,14 +7,13 @@ import { Row } from '@trezor/components';
 import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
 
-import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
-import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
-import { useSelector } from 'src/hooks/suite';
-import { type WalletParams } from 'src/types/wallet';
-
+import { HeaderActionButton } from './HeaderActionButton';
 import { HeaderDropdown } from './HeaderDropdown';
+import { TradeActions } from './TradeActions';
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
+import { useSelector } from '../../../../../hooks/suite';
+import { type WalletParams } from '../../../../../types/wallet';
+import { AppNavigationTooltip } from '../../../AppNavigation/AppNavigationTooltip';
 
 export const HeaderActions = () => {
     const goToWithAnalytics = useGoToWithAnalytics();

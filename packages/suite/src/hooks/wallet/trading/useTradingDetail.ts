@@ -11,11 +11,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { throwError } from '@trezor/utils';
 
-import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
-import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import type { TradingDetailContextValues } from 'src/types/trading/tradingDetail';
-
 import { useTradingFormAccount } from './form/useTradingFormAccount';
+import { useServerEnvironment } from './useServerEnviroment';
+import { useTradingWatchTrade } from './useTradingWatchTrade';
+import type { TradingDetailContextValues } from '../../../types/trading/tradingDetail';
 
 /**
  * Suite-specific wrapper around the common useTradingDetail hook

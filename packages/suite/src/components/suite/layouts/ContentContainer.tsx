@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
+import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH } from '../../../constants/suite/layout';
 
 export const ContentContainer = styled.div<{ $isContentStatic?: boolean }>`
     position: relative;

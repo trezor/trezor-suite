@@ -19,8 +19,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
-import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
+import { earnFlowToEventTypeMap } from '../../../../../constants/suite/staking';
+import { getEarnRouteParams } from '../../../utils/getEarnRouteParams';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;

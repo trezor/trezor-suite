@@ -7,7 +7,7 @@ import { TrafficLightOffset } from '@suite/macos';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Column, Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../hooks/suite';
 
 type SwitchDeviceModalProps = {
     children?: React.ReactNode;

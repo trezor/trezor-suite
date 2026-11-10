@@ -2,8 +2,8 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Column, H2 } from '@trezor/components';
 
-import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../hooks/suite';
+import { DeviceConfirmImage } from '../../../DeviceConfirmImage';
 
 interface TransactionReviewFollowDeviceProps {
     isSigned: boolean;

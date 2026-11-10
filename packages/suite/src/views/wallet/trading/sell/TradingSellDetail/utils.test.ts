@@ -1,13 +1,12 @@
 import { type SellTradeStatus } from 'invity-api';
 
-import { type TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/utils';
-
 import {
     type SellDetailStatusStep,
     getSellDetailHeaderMessages,
     getSellDetailProgress,
     getSellDetailStatusStep,
 } from './utils';
+import { type TradingDetailProgress } from '../../common/TradingDetail/utils';
 
 describe('getSellDetailHeaderMessages', () => {
     it.each<SellTradeStatus>([

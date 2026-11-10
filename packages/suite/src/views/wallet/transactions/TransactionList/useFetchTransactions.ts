@@ -9,7 +9,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { getSynchronize } from '@trezor/utils';
 
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
+import { type Account, type WalletAccountTransaction } from '../../../../types/wallet';
 
 const getPaging = (network: Account['networkType'], txFetched: number, txTotal: number) => {
     const perPage = getTxsPerPage(network);

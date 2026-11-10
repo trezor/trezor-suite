@@ -5,7 +5,7 @@ import { Banner } from '@trezor/components';
 import { HELP_CENTER_XLM_URL, HELP_CENTER_XRP_URL } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
 
-import type { Account } from 'src/types/wallet/index';
+import type { Account } from '../../../../types/wallet/index';
 
 interface ReserveBannerProps {
     account: Account | undefined;

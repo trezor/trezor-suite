@@ -31,9 +31,8 @@ import { PROTO } from '@trezor/connect';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import protocolReducer from 'src/reducers/suite/protocolReducer';
-
 import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
+import protocolReducer from '../../../reducers/suite/protocolReducer';
 
 const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },

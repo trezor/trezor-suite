@@ -1,7 +1,7 @@
 import { Box, ProgressBar } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
-import { useDiscovery } from 'src/hooks/suite';
+import { useDiscovery } from '../../hooks/suite';
 
 export const DiscoveryProgress = () => {
     const { discovery, isDiscoveryRunning, calculateProgress } = useDiscovery();

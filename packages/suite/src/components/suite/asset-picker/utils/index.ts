@@ -1,7 +1,6 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
-
+import { type TokensWithRates } from '../../../../utils/wallet/tokenUtils';
 import { type AccountWithOptionalLabel, type AccountWithTokensOption } from '../types';
 
 interface CreateHiddenTokensOptionProps {

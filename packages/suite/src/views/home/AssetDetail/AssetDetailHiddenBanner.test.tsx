@@ -16,11 +16,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { AssetDetailHiddenBanner } from './AssetDetailHiddenBanner';
 import { mockExtraDependenciesForReducers } from '../../../../mocks/mockExtraDependenciesForReducers';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../support/test-utils/hooksHelper';
 
 const networkIcon = mockNetworkIcon();
 

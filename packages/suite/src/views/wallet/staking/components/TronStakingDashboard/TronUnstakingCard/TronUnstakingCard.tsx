@@ -16,10 +16,9 @@ import {
     Text,
 } from '@trezor/components';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 import { TronUnstakingRow } from './TronUnstakingRow';
+import { BaseCurrencyValue, FormattedCryptoAmount } from '../../../../../../components/suite';
+import { useSelector } from '../../../../../../hooks/suite';
 
 const HUG_CONTENT_COL_WIDTH = { width: '1%' };
 const COL_WIDTHS = [{}, HUG_CONTENT_COL_WIDTH];

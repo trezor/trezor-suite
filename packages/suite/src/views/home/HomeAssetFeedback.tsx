@@ -19,7 +19,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../hooks/suite';
 
 export const HomeAssetFeedback = () => {
     const isClosed = useSelector(selectIsHomeAssetTableFeedbackClosed);

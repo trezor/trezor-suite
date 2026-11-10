@@ -51,16 +51,16 @@ jest.mock('@suite/router', () => ({
     useAnchor: () => ({ anchorRef: undefined }),
     selectRouterAnchor: () => undefined,
 }));
-jest.mock('src/components/dashboard', () => ({
+jest.mock('../../../dashboard', () => ({
     DashboardSection: ({ children }: PropsWithChildren) => children,
 }));
-jest.mock('src/hooks/suite', () => ({
+jest.mock('../../../../hooks/suite', () => ({
     useSelector: (selector: (state: MockSuiteState) => unknown) => selector(mockInitialAppState),
 }));
-jest.mock('src/hooks/suite/useLayoutSize', () => ({
+jest.mock('../../../../hooks/suite/useLayoutSize', () => ({
     useLayoutSize: () => ({ isBelowLaptop: true }),
 }));
-jest.mock('src/hooks/suite/useMessageSystemYield', () => ({
+jest.mock('../../../../hooks/suite/useMessageSystemYield', () => ({
     useMessageSystemYield: () => ({ isDisabled: false }),
 }));
 jest.mock('@suite-common/earn-stablecoin-api', () => ({

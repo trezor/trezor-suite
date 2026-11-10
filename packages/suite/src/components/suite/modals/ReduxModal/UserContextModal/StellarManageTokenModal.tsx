@@ -27,10 +27,10 @@ import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useSelector } from 'src/hooks/suite';
-import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
-import { useFees } from 'src/hooks/wallet/form/useFees';
+import { useSelector } from '../../../../../hooks/suite';
+import { useComposedLevelsPlaceholder } from '../../../../../hooks/wallet/form/useComposedLevelsPlaceholder';
+import { useFees } from '../../../../../hooks/wallet/form/useFees';
+import { Fees } from '../../../../wallet/Fees/Fees';
 
 type StellarManageTokenModalProps =
     | {

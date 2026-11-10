@@ -9,14 +9,14 @@ import { isMacOs } from '@trezor/env-utils';
 import { LockFilledIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useBioAuthDesktopApi } from '../../../hooks/suite/useBioAuthDesktopApi';
 import {
     Body,
     Columns,
     MainContent,
     PageWrapper,
     Wrapper,
-} from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
-import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
+} from '../layouts/SuiteLayout/SuiteLayout';
 
 const Container = styled.div`
     display: flex;

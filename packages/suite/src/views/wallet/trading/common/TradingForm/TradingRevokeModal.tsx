@@ -1,6 +1,6 @@
-import { RevokeModal } from 'src/components/wallet/Allowance/RevokeModal';
-import { useTradingAllowanceModal } from 'src/hooks/wallet/trading/allowance/useTradingAllowanceModal';
-import { type GetTradingExchangeCryptoInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
+import { RevokeModal } from '../../../../../components/wallet/Allowance/RevokeModal';
+import { useTradingAllowanceModal } from '../../../../../hooks/wallet/trading/allowance/useTradingAllowanceModal';
+import { type GetTradingExchangeCryptoInfo } from '../../../../../hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 
 type TradingRevokeModalProps = {
     isOpen: boolean;

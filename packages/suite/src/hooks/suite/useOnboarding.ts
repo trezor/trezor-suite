@@ -8,11 +8,10 @@ import { UI_REQUESTS } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { type GoToSuiteOptions } from 'src/actions/onboarding/onboardingActions';
-import { selectOnboarding } from 'src/selectors/onboarding/onboardingSelectors';
-import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
-
+import * as onboardingActions from '../../actions/onboarding/onboardingActions';
+import { type GoToSuiteOptions } from '../../actions/onboarding/onboardingActions';
+import { selectOnboarding } from '../../selectors/onboarding/onboardingSelectors';
+import { type AnyPath, type AnyStepId, type BackupMedium } from '../../types/onboarding';
 import { parseStepId } from '../../utils/onboarding/steps';
 
 export const useOnboarding = () => {

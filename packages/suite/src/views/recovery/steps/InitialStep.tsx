@@ -5,7 +5,7 @@ import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { Card, Paragraph, StepList } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { CheckItem } from 'src/components/suite';
+import { CheckItem } from '../../../components/suite';
 
 const enterSeedInstructionsMap: Record<DeviceModelInternal, TranslationKey> = {
     [DeviceModelInternal.T1B1]: 'TR_SEED_WORDS_ENTER_COMPUTER',

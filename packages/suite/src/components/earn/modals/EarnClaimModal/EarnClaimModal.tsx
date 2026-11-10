@@ -17,16 +17,16 @@ import { InfoIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useCardanoStaking } from 'src/hooks/earn/useCardanoStaking';
-import { useClaimForm } from 'src/hooks/earn/useClaimForm';
-import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
+import { useCardanoStaking } from '../../../../hooks/earn/useCardanoStaking';
+import { useClaimForm } from '../../../../hooks/earn/useClaimForm';
+import { useEarnDeviceStatus } from '../../../../hooks/earn/useEarnDeviceStatus';
+import { useSelector } from '../../../../hooks/suite';
+import { useMessageSystemStaking } from '../../../../hooks/suite/useMessageSystemStaking';
+import { CRYPTO_INPUT } from '../../../../types/earn/earnFormFields';
+import { BaseCurrencyValue } from '../../../suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '../../../suite/FormattedCryptoAmount';
+import { SolanaStakingLimitBanner } from '../../../suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
+import { Fees } from '../../../wallet/Fees/Fees';
 
 type EarnClaimModalProps = {
     onCancel?: () => void;

@@ -15,7 +15,7 @@ import {
 } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
-import { useGuide } from 'src/hooks/guide';
+import { useGuide } from '../../hooks/guide';
 
 const MASCOT_SOURCE_COLOR = '#1E5736';
 

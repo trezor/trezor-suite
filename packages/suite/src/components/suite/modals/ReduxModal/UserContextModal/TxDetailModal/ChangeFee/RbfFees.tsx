@@ -1,7 +1,7 @@
 import { getNetwork } from '@suite-common/wallet-config';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { useRbfContext } from '../../../../../../../hooks/wallet/useRbfForm';
+import { Fees } from '../../../../../../wallet/Fees/Fees';
 
 // wrapper for shareable Fees component
 export const RbfFees = () => {

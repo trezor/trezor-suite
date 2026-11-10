@@ -16,10 +16,9 @@ import {
 import { Box, Column, Modal, SubTabs } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { TradingOffersModalEmpty } from './TradingOffersModalEmpty';
 import { TradingOffersModalGroup } from './TradingOffersModalGroup';
+import { useSelector } from '../../../../../hooks/suite';
 
 type ExchangeProviderFilter = 'all' | 'cex' | 'dex';
 

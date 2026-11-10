@@ -4,9 +4,8 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
-
 import { getAssetPickerItemHeight } from './assetPickerItemHeights';
+import { type TokensWithRates } from '../../../../utils/wallet/tokenUtils';
 import { type AssetGroupOption, type AssetGroupsOption, type AssetRowOption } from '../types';
 
 import { createAccountOption, createHiddenTokensOption, createTokenOption } from './index';

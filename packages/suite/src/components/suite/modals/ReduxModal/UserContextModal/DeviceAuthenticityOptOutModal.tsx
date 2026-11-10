@@ -6,8 +6,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { QuestionFilledIcon, ShieldWarningIcon, WarningFilledIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
-import { CheckItem } from 'src/components/suite/CheckItem';
+import { toggleDeviceAuthenticityCheck } from '../../../../../actions/suite/suiteActions';
+import { CheckItem } from '../../../CheckItem';
 
 type DeviceAuthenticityOptOutModalProps = {
     onCancel: () => void;

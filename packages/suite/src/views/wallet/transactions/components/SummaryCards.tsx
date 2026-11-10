@@ -10,13 +10,12 @@ import { Grid } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedDate, HiddenPlaceholder } from 'src/components/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { type Account } from 'src/types/wallet';
-import { type AggregatedAccountHistory, type GraphRange } from 'src/types/wallet/graph';
-import { type FiatValueMap, sumFiatValueMap } from 'src/utils/wallet/graph';
-
 import { InfoCard } from './InfoCard';
+import { FormattedDate, HiddenPlaceholder } from '../../../../components/suite';
+import { useLayoutSize } from '../../../../hooks/suite/useLayoutSize';
+import { type Account } from '../../../../types/wallet';
+import { type AggregatedAccountHistory, type GraphRange } from '../../../../types/wallet/graph';
+import { type FiatValueMap, sumFiatValueMap } from '../../../../utils/wallet/graph';
 
 const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {

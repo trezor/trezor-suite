@@ -19,7 +19,7 @@ import {
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useApplicationLogs } from 'src/utils/suite/logsUtils';
+import { useApplicationLogs } from '../../../../../utils/suite/logsUtils';
 
 // The height sits on the scrolling element rather than on the log, so that the log spans the
 // whole scrollable content and the scroll shadow sentinels inside it land on its very edges.

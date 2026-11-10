@@ -24,11 +24,6 @@ import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useSelector } from 'src/hooks/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
 import { EarnStakingActionButtons } from './EarnStakingActionButtons';
 import { EarnStakingCurrentRewards } from './EarnStakingCurrentRewards';
 import { EarnStakingOutdatedProvider } from './EarnStakingOutdatedProvider';
@@ -37,6 +32,10 @@ import { EarnStakingRateTooltip } from './EarnStakingRateTooltip';
 import { EarnStakingRemainingVotes } from './EarnStakingRemainingVotes';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
+import { useStakingRate } from '../../../../hooks/earn/useStakingRate';
+import { useSelector } from '../../../../hooks/suite';
+import { useLayoutSize } from '../../../../hooks/suite/useLayoutSize';
+import { useMessageSystemStaking } from '../../../../hooks/suite/useMessageSystemStaking';
 
 interface EarnStakingAccountRowProps {
     account: Account;

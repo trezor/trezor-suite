@@ -24,13 +24,12 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { TradingTransactionsList } from './TradingTransactionsList';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../support/test-utils/hooksHelper';
 
 const networkIcon = mockNetworkIcon();
 

@@ -5,12 +5,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { throwError } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import {
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from '../../components/suite/layouts/SuiteLayout/Sidebar/consts';
+import { useSelector } from '../../hooks/suite';
 
 type ResponsiveContextType = {
     sidebarWidth: number;

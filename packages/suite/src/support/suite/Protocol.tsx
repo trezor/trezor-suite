@@ -6,8 +6,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import * as protocolActions from 'src/actions/suite/protocolActions';
-import { useSelector } from 'src/hooks/suite';
+import * as protocolActions from '../../actions/suite/protocolActions';
+import { useSelector } from '../../hooks/suite';
 
 const Protocol = () => {
     const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);

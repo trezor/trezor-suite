@@ -7,12 +7,11 @@ import {
 import { HandCoinsIcon, PiggyBankIcon, WalletIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-
 import {
     type EarnInANutshellHighlight,
     EarnInANutshellHighlights,
 } from './EarnInANutshellHighlights';
+import { useFormatApy } from '../../../../../hooks/earn/useFormatApy';
 
 interface UpdateEarnInANutshellHighlightsProps {
     networkType: StakingNetworkType;

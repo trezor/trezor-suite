@@ -12,7 +12,7 @@ import { type FeeLevel } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type SendContextValues } from 'src/types/wallet/sendForm';
+import { type SendContextValues } from '../../../types/wallet/sendForm';
 
 export type FeesFormValues = Pick<
     FormState,

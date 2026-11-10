@@ -19,9 +19,9 @@ import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevicePill, TokenIcon } from '@trezor/product-components';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../hooks/suite';
+import { ConnectCallSource } from '../../../ConnectCallSource';
+import { ConnectModalBackdrop } from '../../../ConnectModalBackdrop';
 
 const MessageText = styled.pre`
     font-family: monospace;

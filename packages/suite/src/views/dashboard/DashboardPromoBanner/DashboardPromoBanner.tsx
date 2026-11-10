@@ -9,12 +9,11 @@ import { type Feature as MessageFeature } from '@suite-common/suite-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
-
 import { BannerCarousel, type CarouselBanner } from './BannerCarousel';
 import { type DashboardBannerType, isDashboardBannerType } from './dashboardBannerTypes';
 import { DASHBOARD_BANNERS } from './dashboardBanners';
+import { useSelector } from '../../../hooks/suite';
+import { selectDiscoveryOverallStatus } from '../../../utils/wallet/selectDiscoveryOverallStatus';
 import { selectShouldShowOnboardingFeedbackBanner } from '../OnboardingFeedbackBanner/onboardingFeedbackBannerSelectors';
 import { bannerAnimationConfig } from '../banner-animations';
 

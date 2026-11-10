@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
 import { Modal } from '@trezor/components';
 
-import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/components/SecurityCheckButton';
-import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/components/SecurityCheckFail';
-import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/components/ctas';
+import { SecurityCheckButton } from '../../../../components/suite/SecurityCheck/components/SecurityCheckButton';
+import { SecurityCheckFail } from '../../../../components/suite/SecurityCheck/components/SecurityCheckFail';
+import { AuthenticateDeviceSupportButton } from '../../../../components/suite/SecurityCheck/components/ctas';
 
 type AuthenticateDeviceFailStepProps = {
     handleClose: () => void;

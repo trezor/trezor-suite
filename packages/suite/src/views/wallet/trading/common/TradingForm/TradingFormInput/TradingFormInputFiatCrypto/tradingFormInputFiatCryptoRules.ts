@@ -19,7 +19,7 @@ import {
     validateMin,
     validateNetworkReserve,
     validateReserveOrBalance,
-} from 'src/utils/suite/validation';
+} from '../../../../../../../utils/suite/validation';
 
 type FiatInputRulesProps = {
     translationString: TranslationFunction;

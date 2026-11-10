@@ -6,7 +6,7 @@ import { getOsFamily, getUserAgent } from '@suite-common/suite-utils';
 import { Column, Modal, Paragraph, Select, Spinner } from '@trezor/components';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 
-import type { ForegroundAppProps } from 'src/types/suite';
+import type { ForegroundAppProps } from '../../../types/suite';
 
 type Installer = {
     label: string;

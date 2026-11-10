@@ -16,9 +16,9 @@ import { MagnifyingGlassIcon } from '@trezor/icons';
 import { CardList } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingTradeBuySellType } from 'src/types/trading/trading';
-import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+import { useTradingFormContext } from '../../../../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { type TradingTradeBuySellType } from '../../../../../../../types/trading/trading';
+import { type TradingBuySellFormProps } from '../../../../../../../types/trading/tradingForm';
 
 interface CountrySelectModalProps {
     onClose: () => void;

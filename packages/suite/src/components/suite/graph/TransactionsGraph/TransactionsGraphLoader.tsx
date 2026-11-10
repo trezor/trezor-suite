@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react';
 
-import type { TransactionsGraphProps } from 'src/components/suite/graph/types';
+import type { TransactionsGraphProps } from '../types';
 
 type TransactionsGraphLoaderProps = TransactionsGraphProps;
 

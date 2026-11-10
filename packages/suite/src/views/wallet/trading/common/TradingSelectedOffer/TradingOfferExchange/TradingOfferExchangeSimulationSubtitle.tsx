@@ -3,7 +3,7 @@ import { isCrossChainTrade, selectTradingExchangeSelectedQuote } from '@suite-co
 import { Icon, Row, Spinner, Text } from '@trezor/components';
 import { ShieldCheckIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../../hooks/suite';
 
 const ICON_SIZE = 16;
 const SIMULATION_PROVIDER = 'Blockaid';

@@ -14,10 +14,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { GearSixIcon, GiftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-import { selectIsReferralAvailable } from 'src/views/refer-a-friend/referralSelectors';
-
 import { NavigationItem } from './NavigationItem';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
+import { selectIsReferralAvailable } from '../../../../../views/refer-a-friend/referralSelectors';
 
 const SETTINGS_ROUTES: Route['name'][] = [
     'settings-index',

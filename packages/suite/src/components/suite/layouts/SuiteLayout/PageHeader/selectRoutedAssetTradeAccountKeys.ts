@@ -19,7 +19,7 @@ import { createWeakMapSelector } from '@trezor/redux-utils';
 import {
     type RoutedAssetState,
     selectRoutedAssetKey,
-} from 'src/views/home/AssetDetail/selectRoutedAssetKey';
+} from '../../../../../views/home/AssetDetail/selectRoutedAssetKey';
 
 type RoutedAssetTradeState = RoutedAssetState & DebugRootState & TokenDefinitionsRootState;
 

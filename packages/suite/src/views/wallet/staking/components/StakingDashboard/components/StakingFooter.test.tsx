@@ -7,16 +7,15 @@ import { messages } from '@suite/intl';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkType } from '@suite-common/wallet-config';
 
-import { useGuideOpenNode } from 'src/hooks/guide';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { StakingFooter } from './StakingFooter';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../mocks/mockInitialAppState';
+import { useGuideOpenNode } from '../../../../../../hooks/guide';
+import { renderWithProviders } from '../../../../../../support/test-utils/hooksHelper';
 
-jest.mock('src/hooks/guide', () => ({
+jest.mock('../../../../../../hooks/guide', () => ({
     useGuideOpenNode: jest.fn(),
 }));
 

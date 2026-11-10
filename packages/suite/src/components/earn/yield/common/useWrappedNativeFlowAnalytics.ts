@@ -6,7 +6,7 @@ import { type EvmPendingTxStatus, type WrappedNativeFlowType } from '@suite-comm
 import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
+import { useEarnDeviceStatus } from '../../../../hooks/earn/useEarnDeviceStatus';
 
 // Wrap and unwrap share one attribute schema, so one payload type serves both events.
 type WrappedNativeFlowPayload = EventInstance<typeof events.yieldWrapEvent>['payload'];

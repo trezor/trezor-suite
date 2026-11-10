@@ -3,7 +3,7 @@ import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { HiddenPlaceholder } from 'src/components/suite';
+import { HiddenPlaceholder } from '../../../../components/suite';
 
 interface TradingFiatAmountProps {
     amount?: BaseCurrencyAmount;

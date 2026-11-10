@@ -21,10 +21,9 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 
-import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
-
 import { useTradingComposeTransaction } from './useTradingComposeTransaction';
 import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
+import { getComposeAddressPlaceholder } from '../../../../../utils/wallet/trading/tradingUtils';
 
 const STALE_ADDRESS = 'stale-btc-placeholder';
 const BTC_PLACEHOLDER = 'btc-placeholder-address';
@@ -40,7 +39,7 @@ jest.mock('@suite/intl', () => ({
 
 let mockComposedLevels: PrecomposedLevels | undefined;
 
-jest.mock('src/hooks/wallet/form/useCompose', () => ({
+jest.mock('../../../form/useCompose', () => ({
     useCompose: () => ({
         isLoading: false,
         composeRequest: jest.fn(),
@@ -50,12 +49,12 @@ jest.mock('src/hooks/wallet/form/useCompose', () => ({
     }),
 }));
 
-jest.mock('src/hooks/wallet/form/useFees', () => ({
+jest.mock('../../../form/useFees', () => ({
     useFees: () => ({ changeFeeLevel: jest.fn(), selectedFee: 'normal' }),
 }));
 
-jest.mock('src/utils/wallet/trading/tradingUtils', () => ({
-    ...jest.requireActual('src/utils/wallet/trading/tradingUtils'),
+jest.mock('../../../../../utils/wallet/trading/tradingUtils', () => ({
+    ...jest.requireActual('../../../../../utils/wallet/trading/tradingUtils'),
     getComposeAddressPlaceholder: jest.fn(),
 }));
 

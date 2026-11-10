@@ -1,12 +1,11 @@
 import { Column } from '@trezor/components';
 
-import { useMessageSystemEarnDashboard } from 'src/hooks/suite/useMessageSystemEarnDashboard';
-
 import { EarnDashboardDisabledSection } from './common/EarnDashboardDisabledSection';
 import { EarnDashboardHeader } from './common/EarnDashboardHeader/EarnDashboardHeader';
 import { EarnStakingTable } from './staking/EarnStakingTable';
 import { useReportEarnDashboardReadyEvent } from './useReportEarnDashboardReadyEvent';
 import { EarnYieldTable } from './yield/EarnYieldTable';
+import { useMessageSystemEarnDashboard } from '../../../hooks/suite/useMessageSystemEarnDashboard';
 
 export const EarnDashboard = () => {
     const stakingDashboard = useMessageSystemEarnDashboard('staking');

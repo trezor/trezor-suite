@@ -20,15 +20,15 @@ import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
-import { useTradingStellarActivation } from 'src/hooks/wallet/trading/useTradingStellarActivation';
-import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingFormApproval } from 'src/views/wallet/trading/common/TradingForm/TradingFormApproval';
-import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
-import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
-import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+import { selectExchangeQuoteThunk } from '../../../../actions/wallet/trading/exchange/selectExchangeQuoteThunk';
+import { useTradingFormContext } from '../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingExchangeCryptoAndProviderInfo } from '../../../../hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
+import { useTradingStellarActivation } from '../../../../hooks/wallet/trading/useTradingStellarActivation';
+import { getTradingFirstOutput } from '../../../../utils/wallet/trading/tradingUtils';
+import { TradingFormApproval } from '../common/TradingForm/TradingFormApproval';
+import { TradingFormOfferConfirmButton } from '../common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { useTradingFormOfferCommon } from '../common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
+import { useReceiveAddressModalControls } from '../common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingFormOfferExchangeActions = () => {
     const { dispatch } = useServices(injectDispatch);

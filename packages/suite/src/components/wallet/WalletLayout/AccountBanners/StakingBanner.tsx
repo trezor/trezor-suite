@@ -7,10 +7,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { EarnEthBannerView } from 'src/components/wallet/StakingBanner/EarnEthBannerView';
-import { StakingBannerView } from 'src/components/wallet/StakingBanner/StakingBannerView';
-import { useStakingBanner } from 'src/components/wallet/StakingBanner/useStakingBanner';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../hooks/suite';
+import { EarnEthBannerView } from '../../StakingBanner/EarnEthBannerView';
+import { StakingBannerView } from '../../StakingBanner/StakingBannerView';
+import { useStakingBanner } from '../../StakingBanner/useStakingBanner';
 
 type StakingBannerProps = {
     account: Account;

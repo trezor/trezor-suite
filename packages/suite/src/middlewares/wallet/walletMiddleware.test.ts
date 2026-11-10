@@ -30,11 +30,10 @@ import {
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { updateWindowVisibility } from 'src/actions/suite/windowActions';
-import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
-
 import * as fixtures from './__fixtures__/walletMiddleware';
+import walletMiddleware from './walletMiddleware';
 import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
+import { updateWindowVisibility } from '../../actions/suite/windowActions';
 
 const accountsReducer = prepareAccountsReducer(mockExtraDependenciesForReducers);
 const blockchainReducer = prepareBlockchainReducer(mockExtraDependenciesForReducers);

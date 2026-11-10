@@ -28,10 +28,6 @@ import {
 import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
-import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { useSelector } from 'src/hooks/suite';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-
 import { AddressDisplay } from './AddressDisplay';
 import { Analytics } from './Analytics';
 import { AutoEject } from './AutoEject';
@@ -59,6 +55,9 @@ import { TestnetNetworks } from './TestnetNetworks';
 import { Theme } from './Theme';
 import { TorOnionLinks } from './TorOnionLinks';
 import { VersionWithUpdate } from './VersionWithUpdate';
+import { SettingsLayout } from '../../../components/settings/SettingsLayout';
+import { useSelector } from '../../../hooks/suite';
+import { useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 type SettingsGeneralProps = {
     torSettings?: ReactNode;

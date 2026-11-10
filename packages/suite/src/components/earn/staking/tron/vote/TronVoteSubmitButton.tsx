@@ -8,10 +8,9 @@ import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 
-import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
+import { useEarnDeviceStatus } from '../../../../../hooks/earn/useEarnDeviceStatus';
+import { useSelector } from '../../../../../hooks/suite';
+import { useMessageSystemStaking } from '../../../../../hooks/suite/useMessageSystemStaking';
 import { useTronStakeContext } from '../TronStakeContext';
 import {
     getRemainingVotes,

@@ -51,16 +51,15 @@ import { noopCreateLogger } from '@trezor/logger';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
+import fixtures from './__fixtures__/suiteActions';
+import { SUITE } from './constants';
 import suiteReducer, {
     type SuiteRootState,
     type SuiteState,
     suiteInitialState,
-} from 'src/reducers/suite/suiteReducer';
-import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
-
-import fixtures from './__fixtures__/suiteActions';
-import { SUITE } from './constants';
+} from '../../reducers/suite/suiteReducer';
+import { discardMockedConnectInitActions } from '../../utils/suite/storage';
+import { markDeviceAsRecentlyConnectedThunk } from '../wallet/markDeviceAsRecentlyConnectedThunk';
 
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {

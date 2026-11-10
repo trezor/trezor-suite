@@ -6,12 +6,12 @@ import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Column, InfoItem, type StepListItemState } from '@trezor/components';
 
-import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
-import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
-import { TradingDetailTransactionIdRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
-import { TradingDetailTxId } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';
-import { getTxEstimatedTimeSeconds } from 'src/views/wallet/trading/common/TradingDetail/utils';
+import { TradingDetailStep } from './TradingDetailStep';
+import { TradingDetailTransactionIdRow } from './TradingDetailTransactionIdRow';
+import { TradingDetailTxId } from './TradingDetailTxId';
+import { getTxEstimatedTimeSeconds } from './utils';
+import { useConnectedDateFnsLocale, useSelector } from '../../../../../hooks/suite';
+import { type Account } from '../../../../../types/wallet';
 
 const getTitleId = (state: StepListItemState): TranslationKey =>
     state === 'active'

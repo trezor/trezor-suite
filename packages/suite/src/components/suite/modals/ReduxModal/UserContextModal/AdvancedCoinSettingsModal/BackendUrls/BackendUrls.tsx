@@ -4,9 +4,9 @@ import { selectBlockchainUrlBySymbol } from '@suite-common/wallet-core';
 import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
 import { PlusIcon, TrashIcon } from '@trezor/icons';
 
-import { useDefaultUrls } from 'src/hooks/settings/backends';
-import { type BackendsForm } from 'src/hooks/settings/backends/useBackendsForm';
-import { useSelector } from 'src/hooks/suite';
+import { useDefaultUrls } from '../../../../../../../hooks/settings/backends';
+import { type BackendsForm } from '../../../../../../../hooks/settings/backends/useBackendsForm';
+import { useSelector } from '../../../../../../../hooks/suite';
 
 type BackendUrlsProps = {
     symbol: NetworkSymbol;

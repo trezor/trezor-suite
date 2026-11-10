@@ -11,7 +11,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     globalSendReceiveFiltersActions,
     globalSendReceiveFiltersSelectors,
-} from 'src/slices/wallet/globalSendReceiveFilters';
+} from '../../../../../../../../slices/wallet/globalSendReceiveFilters';
 
 export interface UseNetworkFilterProps {
     modal?: NonNullable<GlobalSendReceiveType>;

@@ -23,22 +23,21 @@ import { ArrowsDownUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { BaseCurrencyInput } from './BaseCurrencyInput';
+import { SendMaxSwitch } from './SendMaxSwitch';
+import { BaseCurrencyValue } from '../../../../../components/suite';
+import { useLayoutSize, useSelector } from '../../../../../hooks/suite';
+import { useSendFormContext } from '../../../../../hooks/wallet';
+import { useBitcoinAmountUnit } from '../../../../../hooks/wallet/useBitcoinAmountUnit';
 import {
     validateDecimals,
     validateInteger,
     validateMin,
     validateNetworkReserve,
     validateReserveOrBalance,
-} from 'src/utils/suite/validation';
-import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingNetworkReserveBanner } from 'src/views/wallet/trading/common/TradingForm/TradingNetworkReserveBanner';
-
-import { BaseCurrencyInput } from './BaseCurrencyInput';
-import { SendMaxSwitch } from './SendMaxSwitch';
+} from '../../../../../utils/suite/validation';
+import { getFeeInUnits } from '../../../../../utils/wallet/trading/tradingUtils';
+import { TradingNetworkReserveBanner } from '../../../trading/common/TradingForm/TradingNetworkReserveBanner';
 
 interface AmountProps {
     output: Partial<Output>;

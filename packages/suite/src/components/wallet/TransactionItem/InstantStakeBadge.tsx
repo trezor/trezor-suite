@@ -8,8 +8,8 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Row } from '@trezor/components';
 import { LightningIcon } from '@trezor/icons';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { type WalletAccountTransaction } from '../../../types/wallet';
+import { FormattedCryptoAmount } from '../../suite';
 
 const getTranslationId = (instantStakeType: StakeType) => {
     switch (instantStakeType) {

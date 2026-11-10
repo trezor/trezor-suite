@@ -23,21 +23,20 @@ import { Button, Card, Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { useSelector } from 'src/hooks/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
-
 import { EarnYieldClaimRewardsBanner } from './EarnYieldClaimRewardsBanner';
 import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountModal';
 import { EarnYieldTableBody } from './EarnYieldTableBody';
+import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
+import { useYieldTableData } from './hooks/useYieldTableData';
+import { useSelector } from '../../../../hooks/suite';
+import { useLayoutSize } from '../../../../hooks/suite/useLayoutSize';
+import { useMessageSystemYield } from '../../../../hooks/suite/useMessageSystemYield';
+import { DashboardSection } from '../../../dashboard';
 import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { getYieldOpportunityAnchor } from '../../utils/getYieldOpportunityAnchor';
 import { useMerklRewards } from '../../yield/claim/hooks';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 import { type YieldDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';
-import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
-import { useYieldTableData } from './hooks/useYieldTableData';
 
 const emptyVaults: YieldDtoV2[] = [];
 

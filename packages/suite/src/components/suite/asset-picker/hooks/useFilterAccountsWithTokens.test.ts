@@ -3,14 +3,9 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
-import {
-    createAccountOption,
-    createHiddenTokensOption,
-    createTokenOption,
-} from 'src/components/suite/asset-picker/utils';
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
-
+import { type TokensWithRates } from '../../../../utils/wallet/tokenUtils';
 import { type AccountWithOptionalLabel, type AccountWithTokensOption } from '../types';
+import { createAccountOption, createHiddenTokensOption, createTokenOption } from '../utils';
 import { filterAccountsWithTokens } from './useFilterAccountsWithTokens';
 
 const ethSymbol = asNetworkSymbol('eth');

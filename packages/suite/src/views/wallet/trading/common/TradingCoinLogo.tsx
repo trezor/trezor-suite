@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { cryptoIdToNetworkSymbol, parseCryptoId } from '@suite-common/trading';
 import { TokenIcon } from '@trezor/product-components';
 
-import { type TradingCoinLogoProps } from 'src/types/trading/trading';
+import { type TradingCoinLogoProps } from '../../../../types/trading/trading';
 
 const Wrapper = styled.div``;
 

@@ -20,7 +20,7 @@ type CryptoInfoFormValues = Pick<
 
 const mockGetValues = jest.fn<CryptoInfoFormValues, []>();
 
-jest.mock('src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
+jest.mock('./useTradingCommonForm', () => ({
     useTradingFormContext: () => ({ getValues: mockGetValues }),
 }));
 

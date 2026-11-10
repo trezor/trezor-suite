@@ -5,11 +5,10 @@ import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Banner, Column, H3 } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
-
 import { PassphraseInputCard } from './PassphraseInputCard';
+import { useSelector } from '../../../../../hooks/suite';
+import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseWalletConfirmationProps = {
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;

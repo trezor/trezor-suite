@@ -4,16 +4,15 @@ import { BASE_CURRENCY_ZERO, toFiatCurrency } from '@suite-common/wallet-utils';
 import type { FiatRatesBySymbol, StaticSessionId } from '@trezor/connect';
 import { BigNumber, typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 
-import type { GraphState } from 'src/reducers/wallet/graphReducer';
+import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
+import { getGraphDataForInterval } from './utils';
+import { sumFiatValueMapInPlace } from './utilsShared';
+import type { GraphState } from '../../../reducers/wallet/graphReducer';
 import {
     type AggregatedAccountHistory,
     type AggregatedDashboardHistory,
     type GraphData,
-} from 'src/types/wallet/graph';
-
-import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';
-import { getGraphDataForInterval } from './utils';
-import { sumFiatValueMapInPlace } from './utilsShared';
+} from '../../../types/wallet/graph';
 
 const calcFiatValueMap = (amount: string, rates: FiatRatesBySymbol): FiatValueMap =>
     typedObjectFromEntries(

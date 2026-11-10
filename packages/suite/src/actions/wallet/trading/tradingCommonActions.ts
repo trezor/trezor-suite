@@ -22,7 +22,7 @@ import {
 import { PROTO } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
+import { submitRequestForm as envSubmitRequestForm } from '../../../utils/suite/env';
 
 type FormState = {
     cryptoInput?: string;

@@ -4,15 +4,14 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { convertTaprootXpub } from '@trezor/utils';
 
-import { showXpubThunk } from 'src/actions/wallet/publicKeyActions';
-import { useSelector } from 'src/hooks/suite';
-
 import {
     ConfirmValueModal,
     type ConfirmValueModalProps,
 } from './ConfirmValueModal/ConfirmValueModal';
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
+import { showXpubThunk } from '../../../../actions/wallet/publicKeyActions';
+import { useSelector } from '../../../../hooks/suite';
 
 export const ConfirmXpubModal = (
     props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'>,

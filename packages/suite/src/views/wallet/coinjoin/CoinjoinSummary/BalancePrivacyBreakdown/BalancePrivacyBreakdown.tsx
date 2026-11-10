@@ -10,9 +10,8 @@ import { isZero } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { CheckIcon, PauseIcon, ShuffleIcon, XIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { CryptoAmountWithHeader } from './CryptoAmountWithHeader';
+import { useSelector } from '../../../../../hooks/suite';
 
 const BalanceContainer = styled.div`
     display: flex;

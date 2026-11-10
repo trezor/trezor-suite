@@ -3,13 +3,12 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useSeededCardanoVotingDelegation } from 'src/hooks/earn/useCardanoAccountVotingDelegation';
-
 import {
     BASE_VOTING_PREFERENCE_OPTIONS,
     VotingPreferenceCard,
     type VotingPreferenceOption,
 } from './VotingPreferenceCard';
+import { useSeededCardanoVotingDelegation } from '../../../../../hooks/earn/useCardanoAccountVotingDelegation';
 
 const KEEP_CURRENT_OPTION: VotingPreferenceOption = {
     type: 'current',

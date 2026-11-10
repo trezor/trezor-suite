@@ -7,8 +7,7 @@ import { type YieldFlowStepId } from '@suite-common/wallet-core';
 import { Column, IconCircle, Row, StepList, Text } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
 
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-
+import { useLayoutSize } from '../../../../hooks/suite/useLayoutSize';
 import { type YieldFlowStepView, getYieldFlowSteps } from '../yieldFlowUtils';
 
 const EditableTitle = styled.span`

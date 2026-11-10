@@ -5,9 +5,8 @@ import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-
+import { BaseCurrencyValue } from '../../../../suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '../../../../suite/FormattedCryptoAmount';
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
 

@@ -2,14 +2,13 @@ import { Form } from '@suite/form';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { Card, Column } from '@trezor/components';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
-
 import { CardanoStakeWarningBanner } from './CardanoStakeWarningBanner';
 import { ConfirmStakeModal } from './ConfirmStakeModal';
 import { EarnAvailableBalance } from './EarnAvailableBalance';
 import { StakeInputs } from './StakeInputs';
 import { StakeRegistrationDepositCard } from './StakeRegistrationDepositCard';
+import { useStakeFormContext } from '../../../../../hooks/earn/useStakeForm';
+import { Fees } from '../../../../wallet/Fees/Fees';
 import { CardanoVotingPreference } from '../../shared/VotingDelegations/CardanoVotingPreference';
 
 type StakeFormProps = {

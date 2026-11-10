@@ -14,15 +14,14 @@ import { Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { zIndices } from '@trezor/theme';
 
-import { HEADER_HEIGHT } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
-
 import { AssetDetailActions } from './AssetDetailActions';
 import { DashboardSendReceive } from './GlobalSendReceive/DashboardSendReceive';
 import { HeaderActions } from './HeaderActions';
 import { HeaderDropdown } from './HeaderDropdown';
 import { PageName } from './PageNames/PageName';
 import { TradeActions } from './TradeActions';
+import { HEADER_HEIGHT } from '../../../../../constants/suite/layout';
+import { useSelector } from '../../../../../hooks/suite';
 
 const Container = styled.div<{ $expandable?: boolean }>`
     position: sticky;

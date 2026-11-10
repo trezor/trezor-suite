@@ -15,8 +15,8 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';
-import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
+import { useServerEnvironment } from './useServerEnviroment';
+import { requestSellTradeThunk } from '../../../actions/wallet/trading/sell/requestSellTradeThunk';
 
 export const useTradingSellConfirm = () => {
     const { dispatch } = useServices(injectDispatch);

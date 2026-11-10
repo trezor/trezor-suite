@@ -22,11 +22,10 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { type StaticSessionId } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { AssetDetailMenu } from './AssetDetailMenu';
 import { mockExtraDependenciesForReducers } from '../../../../../mocks/mockExtraDependenciesForReducers';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../support/test-utils/hooksHelper';
 
 const networkIcon = mockNetworkIcon();
 

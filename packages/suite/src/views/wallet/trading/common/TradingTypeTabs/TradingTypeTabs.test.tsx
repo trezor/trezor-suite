@@ -14,13 +14,12 @@ import {
 import { mock } from '@trezor/dependency-injection';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { TradingTypeTabs } from './TradingTypeTabs';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../support/test-utils/hooksHelper';
 
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },

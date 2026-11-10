@@ -17,7 +17,7 @@ import { type IconCircleIntent, type IconComponent } from '@trezor/components';
 import { CheckIcon, SpinnerGapIcon, WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/trading/buyUtils';
+import { getStatusMessage as getBuyStatusMessage } from '../../../../../../utils/wallet/trading/buyUtils';
 
 export type TradingTransactionSide =
     | { type: 'crypto'; amount: string; cryptoId: CryptoId }

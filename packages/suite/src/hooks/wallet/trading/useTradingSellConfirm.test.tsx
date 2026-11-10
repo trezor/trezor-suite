@@ -18,7 +18,7 @@ import { type WithServices } from '@trezor/redux-utils';
 
 import { useTradingSellConfirm } from './useTradingSellConfirm';
 
-jest.mock('src/hooks/wallet/trading/useServerEnviroment', () => ({
+jest.mock('./useServerEnviroment', () => ({
     useServerEnvironment: jest.fn(),
 }));
 
@@ -27,7 +27,7 @@ const mockRequestSellTradeThunk = jest.fn((args: unknown) => ({
     args,
 }));
 
-jest.mock('src/actions/wallet/trading/sell/requestSellTradeThunk', () => ({
+jest.mock('../../../actions/wallet/trading/sell/requestSellTradeThunk', () => ({
     requestSellTradeThunk: (args: unknown) => mockRequestSellTradeThunk(args),
 }));
 

@@ -4,7 +4,7 @@ import { injectDesktopApi } from '@suite/desktop-app-api';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { open, setView } from 'src/actions/suite/guideActions';
+import { open, setView } from '../../actions/suite/guideActions';
 
 // Opens the in-app guide on the right view when triggered from the desktop application
 // menu (Help → Support & feedback / Keyboard shortcuts).

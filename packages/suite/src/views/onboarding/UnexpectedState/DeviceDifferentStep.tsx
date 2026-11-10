@@ -4,7 +4,7 @@ import { selectDeviceInternalModel } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from '../../../hooks/suite';
 
 export const DeviceDifferentStep = () => {
     const { resetOnboarding, enableOnboardingReducer } = useOnboarding();

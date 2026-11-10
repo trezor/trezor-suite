@@ -9,12 +9,12 @@ import { type TradingType, useBoundTradingAccount } from '@suite-common/trading'
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
-import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
-import { TradingBuyFormWrapper } from 'src/views/wallet/trading/buy/TradingBuyFormWrapper';
-import { TradingDisabled } from 'src/views/wallet/trading/common/TradingDisabled';
-import { TradingTypeTabs } from 'src/views/wallet/trading/common/TradingTypeTabs/TradingTypeTabs';
-import { TradingExchangeFormWrapper } from 'src/views/wallet/trading/exchange/TradingExchangeFormWrapper';
-import { TradingSellFormWrapper } from 'src/views/wallet/trading/sell/TradingSellFormWrapper';
+import { useMessageSystemTrading } from '../../../../../hooks/suite/useMessageSystemTrading';
+import { TradingBuyFormWrapper } from '../../buy/TradingBuyFormWrapper';
+import { TradingExchangeFormWrapper } from '../../exchange/TradingExchangeFormWrapper';
+import { TradingSellFormWrapper } from '../../sell/TradingSellFormWrapper';
+import { TradingDisabled } from '../TradingDisabled';
+import { TradingTypeTabs } from '../TradingTypeTabs/TradingTypeTabs';
 
 type TradingFormEmbedProps = {
     type: TradingType;

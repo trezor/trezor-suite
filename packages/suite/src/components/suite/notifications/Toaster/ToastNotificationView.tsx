@@ -6,9 +6,8 @@ import { type IconComponent, Toast } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type ToastNotificationVariant } from 'src/types/suite';
-
 import { mapNotificationActionsToToastActions, notificationVariantToIntentMap } from './utils';
+import { type ToastNotificationVariant } from '../../../../types/suite';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 export type ToastNotificationViewProps = {

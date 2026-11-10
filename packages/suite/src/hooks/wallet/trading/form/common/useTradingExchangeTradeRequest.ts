@@ -12,9 +12,9 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useSelector } from 'src/hooks/suite';
-import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
+import { submitRequestFormThunk } from '../../../../../actions/wallet/trading/tradingCommonActions';
+import { createQuoteLink } from '../../../../../utils/wallet/trading/exchangeUtils';
+import { useSelector } from '../../../../suite';
 
 export const useTradingExchangeTradeRequest = (account: Account | undefined) => {
     const { desktopApi, analytics, dispatch } = useServices(

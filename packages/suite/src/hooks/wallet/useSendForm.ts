@@ -27,17 +27,6 @@ import { useDidUpdate } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { throwError } from '@trezor/utils';
 
-import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
-import {
-    getSendFormDraftThunk,
-    removeSendFormDraftThunk,
-    saveSendFormDraftThunk,
-    signAndPushSendFormTransactionThunk,
-} from 'src/actions/wallet/send/sendFormThunks';
-import { useSelector } from 'src/hooks/suite';
-import { selectProtocol } from 'src/selectors/suite/protocolSelectors';
-import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
-
 import { useFees } from './form/useFees';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
@@ -46,6 +35,16 @@ import { useSendFormCompose } from './useSendFormCompose';
 import { useSendFormFields } from './useSendFormFields';
 import { useSendFormImport } from './useSendFormImport';
 import { useSendFormOutputs } from './useSendFormOutputs';
+import { fillSendForm, resetProtocol } from '../../actions/suite/protocolActions';
+import {
+    getSendFormDraftThunk,
+    removeSendFormDraftThunk,
+    saveSendFormDraftThunk,
+    signAndPushSendFormTransactionThunk,
+} from '../../actions/wallet/send/sendFormThunks';
+import { selectProtocol } from '../../selectors/suite/protocolSelectors';
+import { type SendContextValues, type UseSendFormState } from '../../types/wallet/sendForm';
+import { useSelector } from '../suite';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';

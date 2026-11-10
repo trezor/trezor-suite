@@ -45,7 +45,7 @@ jest.mock('@trezor/components', () => {
         }),
     };
 });
-jest.mock('src/hooks/suite', () => ({
+jest.mock('../../../../../../hooks/suite', () => ({
     useSelector: (selector: (state: object) => unknown) =>
         selector({ modal: { context: MODAL_CONTEXT_NONE } }),
 }));
@@ -54,10 +54,10 @@ jest.mock('@suite-common/wallet-core', () => ({
     selectVotingDelegationOption: () => ({ type: 'abstain' }),
     selectStakeVotingDelegation: () => ({ accountKey: mockAccount.key }),
 }));
-jest.mock('src/hooks/suite/useMessageSystemStaking', () => ({
+jest.mock('../../../../../../hooks/suite/useMessageSystemStaking', () => ({
     useMessageSystemStaking: () => ({ isVotingDisabled: false }),
 }));
-jest.mock('src/hooks/wallet/useChangeDelegateForm', () => ({
+jest.mock('../../../../../../hooks/wallet/useChangeDelegateForm', () => ({
     ChangeDelegateFormContext: jest.requireActual('react').createContext(null),
     useChangeDelegateForm: () => ({
         methods: {},
@@ -68,11 +68,11 @@ jest.mock('src/hooks/wallet/useChangeDelegateForm', () => ({
         signTx: mockSignTx,
     }),
 }));
-jest.mock('src/components/earn', () => ({
+jest.mock('../../../../../earn', () => ({
     BASE_VOTING_PREFERENCE_OPTIONS: [],
     VotingPreferenceCard: () => null,
 }));
-jest.mock('src/components/wallet/Fees/Fees', () => ({ Fees: () => null }));
+jest.mock('../../../../../wallet/Fees/Fees', () => ({ Fees: () => null }));
 jest.mock('./CurrentVotingPreference', () => ({ CurrentVotingPreference: () => null }));
 
 describe('change delegate submit analytics', () => {

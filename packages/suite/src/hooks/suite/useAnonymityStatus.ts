@@ -1,7 +1,7 @@
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
 
-import { AnonymityStatus } from 'src/constants/suite/coinjoin';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from './useSelector';
+import { AnonymityStatus } from '../../constants/suite/coinjoin';
 
 const getAnonymityStatus = (targetAnonymity: number) => {
     if (targetAnonymity < AnonymityStatus.Bad) {

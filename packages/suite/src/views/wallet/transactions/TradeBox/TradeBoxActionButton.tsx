@@ -9,7 +9,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { type Account } from 'src/types/wallet';
+import { type Account } from '../../../../types/wallet';
 
 // All action buttons share a fixed minimum so the row reads as a uniform group.
 const ACTION_BUTTON_MIN_WIDTH = 76;

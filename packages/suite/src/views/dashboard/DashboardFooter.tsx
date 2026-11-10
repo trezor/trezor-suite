@@ -10,11 +10,10 @@ import { QrCode } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
 
-import { useGuide } from 'src/hooks/guide';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-
 import { ReferralButton } from './ReferralButton';
 import { StoreBadge } from '../../components/suite/StoreBadge';
+import { useGuide } from '../../hooks/guide';
+import { useLayoutSize } from '../../hooks/suite/useLayoutSize';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
 
 const Container = styled.footer`

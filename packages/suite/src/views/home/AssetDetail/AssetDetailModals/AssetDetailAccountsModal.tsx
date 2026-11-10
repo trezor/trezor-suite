@@ -8,12 +8,11 @@ import { CardList } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AssetsModal } from 'src/components/suite/asset-picker/components';
-import { useSelector } from 'src/hooks/suite';
-
 import { AssetDetailAccountListItem } from './AssetDetailAccountListItem';
 import { AssetDetailAssetDescription } from './AssetDetailAssetDescription';
 import { ASSET_DETAIL_MODAL_MAX_HEIGHT } from './constants';
+import { AssetsModal } from '../../../../components/suite/asset-picker/components';
+import { useSelector } from '../../../../hooks/suite';
 
 type AssetDetailAccountsModalProps = {
     assetKey: WalletAssetKey;

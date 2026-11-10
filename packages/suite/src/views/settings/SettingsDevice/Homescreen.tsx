@@ -10,7 +10,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
+import { ChangeHomescreenButtons } from './Homescreen/ChangeHomescreenButtons';
+import { HomescreenSettingsTitle } from './Homescreen/HomescreenSettingsTitle';
+import { applySettingsThunk } from '../../../actions/settings/deviceSettingsActions';
 import {
     ImageValidationError,
     convertImage,
@@ -19,10 +21,7 @@ import {
     imagePathToHex,
     isHomescreenSupportedOnDevice,
     validateImage,
-} from 'src/utils/suite/homescreen';
-
-import { ChangeHomescreenButtons } from './Homescreen/ChangeHomescreenButtons';
-import { HomescreenSettingsTitle } from './Homescreen/HomescreenSettingsTitle';
+} from '../../../utils/suite/homescreen';
 
 const HiddenInput = styled.input`
     display: none;

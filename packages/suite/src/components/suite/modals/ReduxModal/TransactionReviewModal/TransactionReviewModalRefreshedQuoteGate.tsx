@@ -9,7 +9,7 @@ import {
 import { type ExchangeIssue, useExchangeIssue } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 
-import { TRADING_DEX_SOURCE_ORIGIN } from 'src/constants/wallet/trading/txSimulation';
+import { TRADING_DEX_SOURCE_ORIGIN } from '../../../../../constants/wallet/trading/txSimulation';
 
 type TransactionReviewModalRefreshedQuoteGateProps = {
     account: Account | undefined;

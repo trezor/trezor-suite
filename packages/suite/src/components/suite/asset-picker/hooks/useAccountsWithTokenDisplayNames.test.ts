@@ -13,8 +13,7 @@ import {
 } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
 
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
-
+import { type TokensWithRates } from '../../../../utils/wallet/tokenUtils';
 import { type AccountWithTokensOption } from '../types';
 import {
     getAccountsWithTokenDisplayNames,

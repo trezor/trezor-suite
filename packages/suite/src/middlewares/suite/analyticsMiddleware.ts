@@ -29,12 +29,12 @@ import {
 } from '@trezor/device-utils';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
-import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { type SuiteRootState } from '../../reducers/suite/suiteReducer';
 import {
     type GetSuiteReadyPayloadState,
     getSuiteReadyPayload,
     redactAnchor,
-} from 'src/utils/suite/analytics';
+} from '../../utils/suite/analytics';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:

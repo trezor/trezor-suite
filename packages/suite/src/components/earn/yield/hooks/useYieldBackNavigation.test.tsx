@@ -32,10 +32,10 @@ import { YieldFlowComplete } from '../common/YieldFlowComplete';
 
 let mockResolvedFlowKey: string | null = 'test-yield-flow';
 
-jest.mock('src/hooks/suite/useLayoutSize', () => ({
+jest.mock('../../../../hooks/suite/useLayoutSize', () => ({
     useLayoutSize: () => ({ isBelowMobile: false }),
 }));
-jest.mock('src/components/earn/common/EarnFlowFeedbackCard', () => ({
+jest.mock('../../common/EarnFlowFeedbackCard', () => ({
     EarnFlowFeedbackCard: () => null,
 }));
 jest.mock('@suite/intl', () => ({ Translation: () => null }));

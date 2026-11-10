@@ -10,11 +10,10 @@ import type { YieldFlowFormValues } from '@suite-common/wallet-core';
 import { Banner, Card, Column, Row, Text, TextButton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useSelector } from 'src/hooks/suite';
-import { validateDecimals } from 'src/utils/suite/validation';
-
 import { YieldAmountInputAddon } from './YieldAmountInputAddon';
+import { useSelector } from '../../../../hooks/suite';
+import { validateDecimals } from '../../../../utils/suite/validation';
+import { BaseCurrencyValue } from '../../../suite/BaseCurrencyValue';
 
 const FIAT_DECIMALS = 2;
 // Amount inputs never need the 255-char default; cap them so a long value can't stretch the field

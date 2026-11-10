@@ -8,20 +8,6 @@ import {
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
-import { useTradingDetailMissingTradeRedirect } from 'src/hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { TradingDetailLayout } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
-import { TradingDetailProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
-import { TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
-import { TradingDetailSendingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSendingStep';
-import { TradingDetailTransactionIdRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
-import {
-    getTradingDetailStepState,
-    processingHeaderMessages,
-} from 'src/views/wallet/trading/common/TradingDetail/utils';
-
 import { TradingExchangeDetailPaymentKYC } from './TradingExchangeDetailPaymentKYC';
 import { TradingExchangeDetailPaymentReturned } from './TradingExchangeDetailPaymentReturned';
 import { TradingExchangeDetailPaymentSuccessful } from './TradingExchangeDetailPaymentSuccessful';
@@ -31,6 +17,19 @@ import {
     getExchangeDetailProgress,
     getExchangeDetailStatusStep,
 } from './utils';
+import { useSelector } from '../../../../../hooks/suite';
+import { useTradingDetailContext } from '../../../../../hooks/wallet/trading/useTradingDetail';
+import { useTradingDetailMissingTradeRedirect } from '../../../../../hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
+import { type TradingGetCryptoQuoteAmountProps } from '../../../../../types/trading/trading';
+import { TradingDetailLayout } from '../../common/TradingDetail/TradingDetailLayout';
+import { TradingDetailProcessingStep } from '../../common/TradingDetail/TradingDetailProcessingStep';
+import { TradingDetailProgress } from '../../common/TradingDetail/TradingDetailProgress';
+import { TradingDetailSendingStep } from '../../common/TradingDetail/TradingDetailSendingStep';
+import { TradingDetailTransactionIdRow } from '../../common/TradingDetail/TradingDetailTransactionIdRow';
+import {
+    getTradingDetailStepState,
+    processingHeaderMessages,
+} from '../../common/TradingDetail/utils';
 
 export const TradingExchangeDetailContent = () => {
     const accounts = useSelector(selectAccounts);

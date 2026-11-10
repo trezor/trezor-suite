@@ -9,9 +9,8 @@ import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@tre
 import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-
 import { useNavigateToAccountRoute } from './useNavigateToAccountRoute';
+import { useLayoutSize } from '../../../../hooks/suite/useLayoutSize';
 
 type WrappedNativeFlowCompleteProps = {
     account: Account;

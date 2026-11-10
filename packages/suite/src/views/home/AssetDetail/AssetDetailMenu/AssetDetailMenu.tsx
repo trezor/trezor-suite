@@ -43,16 +43,15 @@ import {
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
-import { UnhideAssetModal } from 'src/views/dashboard/HiddenTokens/UnhideAssetModal';
-import { AssetDetailAccountsModal } from 'src/views/home/AssetDetail/AssetDetailModals/AssetDetailAccountsModal';
-import { AssetDetailSignVerifyModal } from 'src/views/home/AssetDetail/AssetDetailModals/AssetDetailSignVerifyModal';
-
 import { AssetDetailMenuAddressField } from './AssetDetailMenuAddressField';
 import { AssetDetailMenuNetworkRow } from './AssetDetailMenuNetworkRow';
 import { selectWalletAssetSignVerifyAccounts } from './assetDetailMenuSelectors';
 import { getAssetAddressFields } from './getAssetAddressFields';
+import { useSelector } from '../../../../hooks/suite';
+import { getTokenAddressTranslationId } from '../../../../utils/wallet/tokenUtils';
+import { UnhideAssetModal } from '../../../dashboard/HiddenTokens/UnhideAssetModal';
+import { AssetDetailAccountsModal } from '../AssetDetailModals/AssetDetailAccountsModal';
+import { AssetDetailSignVerifyModal } from '../AssetDetailModals/AssetDetailSignVerifyModal';
 
 type AssetDetailMenuProps = {
     assetKey: WalletAssetKey;

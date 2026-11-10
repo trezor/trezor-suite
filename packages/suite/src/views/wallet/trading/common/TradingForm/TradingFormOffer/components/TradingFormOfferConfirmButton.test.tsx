@@ -3,9 +3,8 @@ import { IntlProvider } from 'react-intl';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ThemeProvider } from 'src/support/suite/ThemeProvider';
-
 import { TradingFormOfferConfirmButton } from './TradingFormOfferConfirmButton';
+import { ThemeProvider } from '../../../../../../../support/suite/ThemeProvider';
 
 describe('TradingFormOfferConfirmButton', () => {
     it.each([

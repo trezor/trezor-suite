@@ -15,13 +15,12 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { AssetSendReceive } from './AssetSendReceive';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../../support/test-utils/hooksHelper';
 
 const mockStartSend = jest.fn();
 const mockStartReceive = jest.fn();

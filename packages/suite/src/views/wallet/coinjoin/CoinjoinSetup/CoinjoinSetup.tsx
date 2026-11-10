@@ -8,11 +8,10 @@ import { Banner, Card, Radio, motionAnimation, motionEasing } from '@trezor/comp
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { AnonymityLevelSetup } from './AnonymityLevelSetup';
 import { MaxMiningFeeSetup } from './MaxMiningFeeSetup';
 import { SkipRoundsSetup } from './SkipRoundsSetup';
+import { useSelector } from '../../../../hooks/suite';
 
 const SetupOptions = styled.div`
     display: flex;

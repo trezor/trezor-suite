@@ -4,7 +4,7 @@ import { UNIT_LABELS, UNIT_OPTIONS } from '@suite-common/suite-constants';
 import { type PROTO } from '@trezor/connect';
 import { SectionItem } from '@trezor/product-components';
 
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { useBitcoinAmountUnit } from '../../../hooks/wallet/useBitcoinAmountUnit';
 
 export const BitcoinAmountUnit = () => {
     const { bitcoinAmountUnit, setBitcoinAmountUnits } = useBitcoinAmountUnit();

@@ -18,15 +18,13 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 import { TREZOR_FORUM_URL } from '@trezor/urls';
 
-import { setView } from 'src/actions/suite/guideActions';
-import {
-    GuideContent,
-    GuideHeader,
-    GuideSectionHeadline,
-    GuideViewWrapper,
-} from 'src/components/guide';
-import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
-import { useSelector } from 'src/hooks/suite';
+import { GuideContent } from './GuideContent';
+import { GuideHeader } from './GuideHeader';
+import { GuideSectionHeadline } from './GuideSectionHeadline';
+import { GuideViewWrapper } from './GuideViewWrapper';
+import { SupportConsentPopover } from './SupportConsentPopover';
+import { setView } from '../../actions/suite/guideActions';
+import { useSelector } from '../../hooks/suite';
 
 type StatusTextProps = { id: TranslationKey };
 

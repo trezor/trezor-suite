@@ -1,8 +1,7 @@
 import { Card, Column } from '@trezor/components';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
-
 import { useTronStakeContext } from './TronStakeContext';
+import { Fees } from '../../../wallet/Fees/Fees';
 
 export const TronStakeFees = () => {
     const { account, fees } = useTronStakeContext();

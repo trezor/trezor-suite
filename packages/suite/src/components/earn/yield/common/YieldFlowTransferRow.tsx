@@ -3,9 +3,8 @@ import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-
 import { YieldTokenValue } from './YieldTokenValue';
+import { useLayoutSize } from '../../../../hooks/suite/useLayoutSize';
 
 type YieldFlowTransferRowProps = {
     inputLabelId: TranslationId;

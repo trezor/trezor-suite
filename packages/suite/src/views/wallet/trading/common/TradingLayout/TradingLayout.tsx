@@ -4,10 +4,10 @@ import { selectRouteName } from '@suite/router';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column, Row } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
-import { TradingLayoutNavigation } from 'src/views/wallet/trading/common/TradingLayout/TradingLayoutNavigation';
-import { useTradingPageHeader } from 'src/views/wallet/trading/common/TradingLayout/useTradingPageHeader';
+import { TradingLayoutNavigation } from './TradingLayoutNavigation';
+import { useTradingPageHeader } from './useTradingPageHeader';
+import { useSelector } from '../../../../../hooks/suite';
+import { DiscoveryWarning } from '../../../staking/components/StakingDashboard/components/DiscoveryWarning';
 
 export const TradingLayout = ({ children }: PropsWithChildren) => {
     const routeName = useSelector(selectRouteName);

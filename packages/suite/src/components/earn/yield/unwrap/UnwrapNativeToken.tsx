@@ -22,10 +22,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { submitUnwrapNativeTokenThunk } from 'src/actions/wallet/unwrapNativeTokenThunks';
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
-
+import { submitUnwrapNativeTokenThunk } from '../../../../actions/wallet/unwrapNativeTokenThunks';
+import { useSelector } from '../../../../hooks/suite';
+import { useMessageSystemWrappedNative } from '../../../../hooks/suite/useMessageSystemWrappedNative';
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';

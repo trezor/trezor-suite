@@ -15,10 +15,10 @@ import {
 } from '@trezor/product-components';
 import { usePreviousDefined } from '@trezor/react-utils';
 
-import { WebUsbButton } from 'src/components/suite';
-import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { useSelector } from 'src/hooks/suite';
-import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
+import { useSelector } from '../../hooks/suite';
+import { selectHasTransportOfType } from '../../selectors/suite/suiteSelectors';
+import { WebUsbButton } from '../suite';
+import { DeviceConfirmImage } from '../suite/DeviceConfirmImage';
 
 type RebootDeviceGraphicsProps = {
     device?: Device | TrezorDevice;

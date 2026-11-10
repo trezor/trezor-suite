@@ -11,8 +11,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { FolderOpenIcon, PlusCircleFilledIcon, PlusIcon, XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type AcquiredDevice, type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
+import { useSelector } from '../../../../hooks/suite';
+import {
+    type AcquiredDevice,
+    type ForegroundAppProps,
+    type TrezorDevice,
+} from '../../../../types/suite';
 
 interface AddWalletButtonProps {
     device: TrezorDevice;

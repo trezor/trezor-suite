@@ -4,7 +4,7 @@ import {
     createReducerWithExtraDeps,
 } from '@trezor/redux-utils';
 
-import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
+import { bioAuthActions } from '../../actions/suite/bioAuthActions';
 
 export interface BioAuthState {
     /** enabled by user settings */

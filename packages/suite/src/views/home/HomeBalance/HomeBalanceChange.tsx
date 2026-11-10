@@ -3,10 +3,9 @@ import { type ReactNode } from 'react';
 import { Row, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from 'src/components/suite';
-import { TrendBadge } from 'src/components/suite/Ticker/TrendBadge';
-
 import { FiatChangeAmount } from './FiatChangeAmount';
+import { HiddenPlaceholder } from '../../../components/suite';
+import { TrendBadge } from '../../../components/suite/Ticker/TrendBadge';
 
 type HomeBalanceChangeProps = {
     /** What the change is over, e.g. "7d". */

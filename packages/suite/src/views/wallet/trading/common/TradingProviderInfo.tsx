@@ -4,8 +4,8 @@ import {
 } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 
-import { type TradingGetProvidersInfoProps } from 'src/types/trading/trading';
-import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';
+import { TradingIcon } from './TradingIcon';
+import { type TradingGetProvidersInfoProps } from '../../../../types/trading/trading';
 
 export type TradingProviderInfoProps = {
     exchange?: string;

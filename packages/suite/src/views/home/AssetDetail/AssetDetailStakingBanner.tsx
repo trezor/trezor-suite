@@ -6,10 +6,9 @@ import {
 import { type WalletAssetKey, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { isStakingBannerAccounts } from 'src/components/wallet/StakingBanner/useStakingBanner';
-import { useSelector } from 'src/hooks/suite';
-
 import { AssetDetailAccountsStakingBanner } from './AssetDetailAccountsStakingBanner';
+import { isStakingBannerAccounts } from '../../../components/wallet/StakingBanner/useStakingBanner';
+import { useSelector } from '../../../hooks/suite';
 
 const NO_ACCOUNTS: readonly Account[] = [];
 

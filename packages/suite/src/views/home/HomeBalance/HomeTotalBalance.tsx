@@ -2,9 +2,8 @@ import { memo } from 'react';
 
 import { type BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from 'src/components/suite';
-
 import { FiatAmountHeadline } from './FiatAmountHeadline';
+import { HiddenPlaceholder } from '../../../components/suite';
 
 type HomeTotalBalanceProps = {
     fiatValue: BigNumber | undefined;

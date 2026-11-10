@@ -16,13 +16,12 @@ import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
-import { useSelector } from 'src/hooks/suite';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
-import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
-
+import { BannerPoints } from '../../../../../../components/wallet/WalletLayout/AccountBanners/BannerPoints';
+import { useSelector } from '../../../../../../hooks/suite';
+import { useTradingAssetDecimals } from '../../../../../../hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { type TradingExchangeProvidersInfoProps } from '../../../../../../types/trading/trading';
 import { TradingUtilsProviderKyc } from '../../TradingUtils/TradingUtilsProviderKyc';
+import { formatCryptoAmountAsAmount } from '../../formatCryptoAmountAsAmount';
 import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
 import { TradingExchangeMevProtectionInfoItem } from '../TradingInfo/TradingExchangeMevProtectionInfoItem';
 import { TradingExchangeMinimumReceivedInfoItem } from '../TradingInfo/TradingExchangeMinimumReceivedInfoItem';

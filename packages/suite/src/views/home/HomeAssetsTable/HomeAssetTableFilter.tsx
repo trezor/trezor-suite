@@ -21,9 +21,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretRightIcon, CheckIcon, FunnelSimpleIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { HomeAssetSmallBalancesLabel } from './HomeAssetSmallBalancesLabel';
+import { useSelector } from '../../../hooks/suite';
 
 type HomeAssetTableFilterProps = {
     grouping: HomeAssetGrouping;

@@ -90,21 +90,20 @@ import { parseStaticSessionId } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils/';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
-import { type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { type GraphState } from 'src/reducers/wallet/graphReducer';
-import { selectGraph } from 'src/reducers/wallet/graphReducer';
+import { STORAGE } from './constants';
+import { type SuiteState } from '../../reducers/suite/suiteReducer';
+import { type GraphState } from '../../reducers/wallet/graphReducer';
+import { selectGraph } from '../../reducers/wallet/graphReducer';
 import {
     selectEvmSettings,
     selectSeenDisconnectNotificationForDeviceIds,
-} from 'src/selectors/suite/suiteSelectors';
-import { type DbDep } from 'src/storage/createDb';
-import type { TrezorDevice } from 'src/types/suite';
-import type { Account } from 'src/types/wallet';
-import { type GraphData } from 'src/types/wallet/graph';
-import { serializeCoinjoinAccount, serializeDevice } from 'src/utils/suite/storage';
-import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
-
-import { STORAGE } from './constants';
+} from '../../selectors/suite/suiteSelectors';
+import { type DbDep } from '../../storage/createDb';
+import type { TrezorDevice } from '../../types/suite';
+import type { Account } from '../../types/wallet';
+import { type GraphData } from '../../types/wallet/graph';
+import { serializeCoinjoinAccount, serializeDevice } from '../../utils/suite/storage';
+import { deviceGraphDataFilterFn } from '../../utils/wallet/graph';
 
 type SaveExplorerParams = {
     symbol: NetworkSymbol;

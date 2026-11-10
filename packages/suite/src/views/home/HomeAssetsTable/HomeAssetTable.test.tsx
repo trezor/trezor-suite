@@ -28,10 +28,9 @@ import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
 import { getWrappedNativeToken } from '@trezor/network-ethereum/constants';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { HomeAssetTable } from './HomeAssetTable';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../support/test-utils/hooksHelper';
 
 jest.mock('@suite-common/earn-stablecoin-api', () => ({
     ...jest.requireActual('@suite-common/earn-stablecoin-api'),

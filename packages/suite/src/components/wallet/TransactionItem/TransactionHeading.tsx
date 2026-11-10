@@ -8,11 +8,10 @@ import { getTxHeaderSymbol } from '@suite-common/wallet-utils';
 import { BlurWrapper, Row, TextButton, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
-
 import { InstantStakeBadge } from './InstantStakeBadge';
 import { TransactionHeader } from './TransactionHeader';
+import { useSelector } from '../../../hooks/suite';
+import { type WalletAccountTransaction } from '../../../types/wallet';
 
 const getPhishingTooltipTranslationId = (detectorId?: PhishingDetectorId) => {
     switch (detectorId) {

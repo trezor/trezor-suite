@@ -10,19 +10,19 @@ import { useServices } from '@trezor/dependency-injection';
 import { InputWithOptions } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
-import { useSelector } from 'src/hooks/suite';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
-import { validateStakingMax } from 'src/utils/suite/staking';
+import { useStakeFormContext } from '../../../../../hooks/earn/useStakeForm';
+import { useSelector } from '../../../../../hooks/suite';
+import { CRYPTO_INPUT, FIAT_INPUT } from '../../../../../types/earn/earnFormFields';
+import { validateStakingMax } from '../../../../../utils/suite/staking';
 import {
     validateCryptoLimits,
     validateDecimals,
     validateFiatLimits,
     validateMin,
     validateReserveOrBalance,
-} from 'src/utils/suite/validation';
-import { type FormPercentButtonValue } from 'src/views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
+} from '../../../../../utils/suite/validation';
+import { type FormPercentButtonValue } from '../../../../../views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
+import { BaseCurrencyValue } from '../../../../suite/BaseCurrencyValue';
 
 export const StakeInputs = () => {
     // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled

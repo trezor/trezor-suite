@@ -1,7 +1,7 @@
 import { Button, type ButtonProps } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 
 type SecurityCheckButtonProps = Omit<ButtonProps, 'minWidth' | 'maxWidth' | 'size' | 'width'>;
 

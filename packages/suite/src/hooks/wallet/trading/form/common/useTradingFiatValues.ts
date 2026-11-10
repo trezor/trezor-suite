@@ -6,7 +6,7 @@ import {
     useTradingFiatValues as useCommonTradingFiatValues,
 } from '@suite-common/trading';
 
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { useBitcoinAmountUnit } from '../../../useBitcoinAmountUnit';
 
 type SuiteTradingFiatRatesProps = Omit<TradingFiatRatesProps, 'shouldSendInSats'>;
 

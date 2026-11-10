@@ -4,10 +4,6 @@ import styled from 'styled-components';
 
 import { Modal } from '@trezor/components';
 
-import { GuideButton, GuideRouter } from 'src/components/guide';
-import { SuiteBanners } from 'src/components/suite/banners';
-import { DiscoveryProgress } from 'src/components/wallet';
-
 import { AddPassphraseWalletFlow } from './AddPassphraseWalletFlow';
 import { AnchorHighlightHandler } from './AnchorHighlightHandler';
 import { AppScrollArea } from './AppScrollArea';
@@ -20,6 +16,9 @@ import { ScrollProvider } from './ScrollProvider';
 import { Sidebar } from './Sidebar/Sidebar';
 import { SwitchDeviceLayer } from './SwitchDeviceLayer';
 import { useResponsiveContextOnChange } from './useResponsiveContextOnChange';
+import { GuideButton, GuideRouter } from '../../../guide';
+import { DiscoveryProgress } from '../../../wallet';
+import { SuiteBanners } from '../../banners';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 
 export const Wrapper = styled.div`

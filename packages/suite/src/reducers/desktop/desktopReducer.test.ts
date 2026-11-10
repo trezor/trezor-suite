@@ -1,6 +1,6 @@
 import type { HandshakeElectron } from '@suite/desktop-app-api';
 
-import * as SUITE from 'src/actions/suite/constants/suiteConstants';
+import * as SUITE from '../../actions/suite/constants/suiteConstants';
 
 import { desktopReducer } from './index';
 

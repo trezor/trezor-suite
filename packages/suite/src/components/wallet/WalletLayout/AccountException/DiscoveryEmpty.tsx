@@ -4,7 +4,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CloudIcon, GearIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AccountExceptionLayout } from 'src/components/wallet';
+import { AccountExceptionLayout } from '../../AccountExceptionLayout';
 
 /**
  * Handler for invalid wallet setting, no coins in discovery

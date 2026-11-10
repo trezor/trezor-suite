@@ -3,10 +3,10 @@ import { type CoinExtraField, type CryptoId } from 'invity-api';
 import { useTranslation } from '@suite/intl';
 import { type TradingTradeBuyExchangeType } from '@suite-common/trading';
 
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
-import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { getBuyReceiveExtraFieldDescription } from 'src/utils/wallet/trading/tradingUtils';
+import { useTradingFormContext } from '../../../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { type useTradingReceiveAddress } from '../../../../../../hooks/wallet/trading/form/useTradingReceiveAddress';
+import { isTradingExchangeContext } from '../../../../../../utils/wallet/trading/tradingTypingUtils';
+import { getBuyReceiveExtraFieldDescription } from '../../../../../../utils/wallet/trading/tradingUtils';
 
 type TradingReceiveAddressValues = {
     cryptoId: CryptoId;

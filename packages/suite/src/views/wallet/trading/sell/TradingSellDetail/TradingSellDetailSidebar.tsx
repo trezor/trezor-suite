@@ -5,13 +5,13 @@ import type {
 } from '@suite-common/trading';
 import { Card, Column, Divider } from '@trezor/components';
 
-import type { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import type { Account } from 'src/types/wallet';
-import { TradingDetailAssetRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailAssetRow';
-import { TradingDetailFiatRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailFiatRow';
-import { TradingDetailSidebarSection } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSidebarSection';
-import { TradingDetailTradeInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTradeInfo';
-import { TradingPaymentMethodInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingPaymentMethodInfoItem';
+import type { TradingGetCryptoQuoteAmountProps } from '../../../../../types/trading/trading';
+import type { Account } from '../../../../../types/wallet';
+import { TradingDetailAssetRow } from '../../common/TradingDetail/TradingDetailAssetRow';
+import { TradingDetailFiatRow } from '../../common/TradingDetail/TradingDetailFiatRow';
+import { TradingDetailSidebarSection } from '../../common/TradingDetail/TradingDetailSidebarSection';
+import { TradingDetailTradeInfo } from '../../common/TradingDetail/TradingDetailTradeInfo';
+import { TradingPaymentMethodInfoItem } from '../../common/TradingSelectedOffer/TradingInfo/TradingPaymentMethodInfoItem';
 
 type TradingSellDetailSidebarProps = {
     sendAccount?: Account;

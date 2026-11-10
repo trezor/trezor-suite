@@ -14,10 +14,9 @@ import { UI_EVENTS } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { PassphraseWalletExistsFlow } from './PassphraseWalletExistsFlow';
 import { PassphraseWalletIsNotExistFlow } from './PassphraseWalletIsNotExistFlow';
+import { useSelector } from '../../../../../hooks/suite';
 import { DiscoveryLoader } from '../../ModalSwitcher/DiscoveryLoader';
 import { PassphraseDuplicateModal } from '../UserContextModal/PassphraseDuplicateModal';
 import { PassphraseMismatchModal } from '../UserContextModal/PassphraseMismatchModal';

@@ -3,7 +3,7 @@ import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/co
 import { XIcon } from '@trezor/icons';
 import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
 
-import { useSendFormContext } from 'src/hooks/wallet';
+import { useSendFormContext } from '../../../../../hooks/wallet';
 
 type SolanaMemoProps = {
     close: () => void;

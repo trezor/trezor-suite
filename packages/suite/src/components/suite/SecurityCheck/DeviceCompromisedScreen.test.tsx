@@ -11,10 +11,9 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { DeviceCompromisedScreen } from './DeviceCompromisedScreen';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../support/test-utils/hooksHelper';
 
 const networkIcon = mockNetworkIcon();
 

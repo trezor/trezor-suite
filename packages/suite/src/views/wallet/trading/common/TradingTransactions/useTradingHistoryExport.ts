@@ -12,7 +12,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
+import { getExportedFileName } from '../../../../../utils/wallet/exportTransactionsUtils';
 
 const CSV_MIME_TYPE = 'text/csv;charset=utf-8';
 const CSV_FILE_NAME = 'trade_history';

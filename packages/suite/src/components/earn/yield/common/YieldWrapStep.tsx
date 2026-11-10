@@ -8,11 +8,10 @@ import type {
 import { Box, Button, Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-
 import { TruncatedAmount } from './TruncatedAmount';
 import { YieldAmountCard, type YieldAmountCardFiatToggleProps } from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
+import { FormattedCryptoAmount } from '../../../suite/FormattedCryptoAmount';
 
 type YieldWrapStepProps = {
     token: YieldFlowDisplayToken;

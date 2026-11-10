@@ -1,8 +1,7 @@
 import { PaymentMethodIcon } from '@suite/trading';
 import { CardList, Column, Row } from '@trezor/components';
 
-import { type TradingTradeDetailBuySellType } from 'src/types/trading/trading';
-
+import { type TradingTradeDetailBuySellType } from '../../../../../../../types/trading/trading';
 import { TradingQuoteAmount } from '../../../TradingQuoteAmount';
 import { TradingRequestedAmountShortfallNote } from '../../../TradingRequestedAmountShortfallNote';
 

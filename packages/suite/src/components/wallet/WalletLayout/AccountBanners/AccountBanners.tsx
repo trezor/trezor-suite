@@ -9,9 +9,6 @@ import {
 } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
-
 import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';
 import { BackendDisconnected } from './BackendDisconnected';
@@ -23,6 +20,8 @@ import { StakingBanner } from './StakingBanner';
 import { StellarLimitedHistoryBanner } from './StellarLimitedHistoryBanner';
 import { TaprootBanner } from './TaprootBanner';
 import { TorDisconnected } from './TorDisconnected';
+import { useSelector } from '../../../../hooks/suite';
+import { type Account } from '../../../../types/wallet';
 
 type AccountBannersProps = {
     account?: Account;

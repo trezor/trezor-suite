@@ -8,7 +8,7 @@ import {
 } from '@suite-common/suite-sync';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../../../../hooks/suite';
 
 export function useAccountsOptions() {
     const baseAccounts = useSelector(selectAllAccountsToList);

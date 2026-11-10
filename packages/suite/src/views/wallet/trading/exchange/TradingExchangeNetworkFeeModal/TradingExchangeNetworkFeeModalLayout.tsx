@@ -4,11 +4,13 @@ import { type Account } from '@suite-common/wallet-types';
 import { Banner, Column, Modal } from '@trezor/components';
 import { WarningCircleIcon } from '@trezor/icons';
 
-import { FeeLevels } from 'src/components/wallet/Fees/CollapsibleFees/FeeLevels/FeeLevels';
-import { useFeeLevels } from 'src/components/wallet/Fees/CollapsibleFees/FeeLevels/useFeeLevels';
-import { FeesContext, type FeesContextType } from 'src/components/wallet/Fees/context/FeesContext';
-
 import { TradingExchangeNetworkFeeModalTotal } from './TradingExchangeNetworkFeeModalTotal';
+import { FeeLevels } from '../../../../../components/wallet/Fees/CollapsibleFees/FeeLevels/FeeLevels';
+import { useFeeLevels } from '../../../../../components/wallet/Fees/CollapsibleFees/FeeLevels/useFeeLevels';
+import {
+    FeesContext,
+    type FeesContextType,
+} from '../../../../../components/wallet/Fees/context/FeesContext';
 
 type TradingExchangeNetworkFeeModalLayoutProps = {
     account: Account;

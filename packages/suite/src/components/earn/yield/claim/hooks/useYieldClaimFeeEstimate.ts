@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { calculateTotalGasCost, formatNetworkAmount } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '../../../../../hooks/suite';
 
 const getClaimCalldata = (accountRewards: YieldAccountRewards | undefined): string | null => {
     if (!accountRewards || accountRewards.rewards.length === 0) {

@@ -6,12 +6,11 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
-import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
-import { useSelector } from 'src/hooks/suite';
-import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
-
 import { ForegroundAppModal } from './ForegroundAppModal';
+import { useSelector } from '../../../../hooks/suite';
+import { usePreferredModal } from '../../../../hooks/suite/usePreferredModal';
+import { ConnectionGlobalModalManager } from '../../../connection/ConnectionGlobalModalManager';
+import { ThpGlobalModalManager } from '../../../connection/thp/ThpGlobalModalManager';
 import { WipedBleDeviceNeedsManualOsRemovalModalManager } from '../../bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
 import { ReduxModal } from '../ReduxModal/ReduxModal';
 

@@ -14,11 +14,11 @@ import { Card, Column, H2, Text } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { type TradingOfferBuyProps } from 'src/types/trading/tradingForm';
-import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
-import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { type TradingGetCryptoQuoteAmountProps } from '../../../../../../types/trading/trading';
+import { type TradingOfferBuyProps } from '../../../../../../types/trading/tradingForm';
+import { TradingFormOfferConfirmButton } from '../../TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { TradingKYCWarning } from '../../TradingKYCWarning';
+import { TradingSelectedOfferInfo } from '../TradingSelectedOfferInfo';
 
 export const TradingOfferBuy = ({
     selectedQuote,

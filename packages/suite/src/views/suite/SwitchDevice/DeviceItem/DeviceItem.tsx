@@ -24,11 +24,10 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     addDeviceIdToSeenDisconnectNotification,
     setRecentlyDisconnectedDevice,
-} from 'src/actions/suite/suiteActions';
-import { useSelector } from 'src/hooks/suite';
-import { selectRecentlyDisconnectedDevice } from 'src/selectors/suite/suiteSelectors';
-import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
-
+} from '../../../../actions/suite/suiteActions';
+import { useSelector } from '../../../../hooks/suite';
+import { selectRecentlyDisconnectedDevice } from '../../../../selectors/suite/suiteSelectors';
+import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from '../../../../types/suite';
 import { CardWithDevice } from '../CardWithDevice';
 import { AddWalletButton } from './AddWalletButton';
 import { WalletInstance } from './WalletInstance';

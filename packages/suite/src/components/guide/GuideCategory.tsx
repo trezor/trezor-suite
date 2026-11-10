@@ -5,17 +5,15 @@ import { CardList } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setView } from 'src/actions/suite/guideActions';
-import {
-    GuideCategories,
-    GuideContent,
-    GuideHeader,
-    GuideNode,
-    GuideViewWrapper,
-} from 'src/components/guide';
-import { useSelector } from 'src/hooks/suite';
-import { selectGuideCurrentNode } from 'src/selectors/suite/guideSelectors';
-import { getNodeTitle } from 'src/utils/suite/guide';
+import { GuideCategories } from './GuideCategories';
+import { GuideContent } from './GuideContent';
+import { GuideHeader } from './GuideHeader';
+import { GuideNode } from './GuideNode';
+import { GuideViewWrapper } from './GuideViewWrapper';
+import { setView } from '../../actions/suite/guideActions';
+import { useSelector } from '../../hooks/suite';
+import { selectGuideCurrentNode } from '../../selectors/suite/guideSelectors';
+import { getNodeTitle } from '../../utils/suite/guide';
 
 const Section = styled.div`
     margin-bottom: 20px;

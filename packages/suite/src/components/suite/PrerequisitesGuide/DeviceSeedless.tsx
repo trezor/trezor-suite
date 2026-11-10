@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { TrezorBodyIcon } from '@trezor/icons';
 
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { TroubleshootingTips } from '../troubleshooting/TroubleshootingTips';
 
 // Seedless devices are not supported by Trezor Suite
 export const DeviceSeedless = () => (

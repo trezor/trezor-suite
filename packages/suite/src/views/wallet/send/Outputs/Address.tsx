@@ -54,16 +54,15 @@ import {
 } from '@trezor/urls';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
-import { InputError } from 'src/components/wallet';
-import { type InputErrorProps } from 'src/components/wallet/InputError';
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { useReportEnsResolutionToAnalytics } from 'src/hooks/wallet/useReportEnsResolutionToAnalytics';
-import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
-import { captureSentryMessage } from 'src/utils/suite/sentry';
-
 import { DevAddressBook } from './DevAddressBook';
+import { AccountLabelForOwnAddress } from '../../../../components/suite/labeling/AccountLabelForOwnAddress';
+import { InputError } from '../../../../components/wallet';
+import { type InputErrorProps } from '../../../../components/wallet/InputError';
+import { useSelector } from '../../../../hooks/suite';
+import { useSendFormContext } from '../../../../hooks/wallet';
+import { useReportEnsResolutionToAnalytics } from '../../../../hooks/wallet/useReportEnsResolutionToAnalytics';
+import { selectIsSuiteOnline } from '../../../../selectors/suite/suiteSelectors';
+import { captureSentryMessage } from '../../../../utils/suite/sentry';
 
 const autocorrectTranslationKeys: Record<NonNullable<AddressCorrection>['type'], TranslationKey> = {
     lowercase: 'TR_CONVERTED_TO_LOWERCASE',

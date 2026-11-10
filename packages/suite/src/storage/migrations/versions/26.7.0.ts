@@ -1,6 +1,6 @@
 import { createMigration } from '@suite/idb-migration-utils';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '../../definitions';
 
 // Extract discreetMode from walletSettings into its own object store
 export default createMigration<SuiteDBSchema>('26.7.0', async (db, tx) => {

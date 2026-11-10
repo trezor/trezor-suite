@@ -3,9 +3,8 @@ import styled from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
 
-import { HEADER_HEIGHT } from 'src/constants/suite/layout';
-
 import { ReactToastifyStyles } from './ReactToastifyStyles';
+import { HEADER_HEIGHT } from '../../../../constants/suite/layout';
 
 const StyledToastContainer = styled(ToastContainer)`
     --toastify-font-family: var(--font-sans);

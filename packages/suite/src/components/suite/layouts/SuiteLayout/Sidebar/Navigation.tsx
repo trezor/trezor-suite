@@ -18,9 +18,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { AppWindowIcon, BellIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
 const EARN_ROUTES: Route['name'][] = [
     'suite-earn',

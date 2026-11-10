@@ -16,13 +16,12 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from './VotingPreferenceCard';
 import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../support/test-utils/hooksHelper';
 
 const stakeReducer = prepareStakeReducer({});
 

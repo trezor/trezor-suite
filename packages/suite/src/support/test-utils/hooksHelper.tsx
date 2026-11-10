@@ -18,8 +18,7 @@ import userEvent from '@testing-library/user-event';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
 import { ServicesProvider } from '@trezor/dependency-injection';
 
-import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
-
+import { ConnectedThemeProvider } from '../suite/ConnectedThemeProvider';
 import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
 
 const testQueryClient = new QueryClient({

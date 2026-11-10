@@ -6,11 +6,10 @@ import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { validateDecimals } from 'src/utils/suite/validation';
-
 import { type CustomFeeBasicProps } from './CustomFeeBasicProps';
 import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
+import { useSelector } from '../../../../../hooks/suite';
+import { validateDecimals } from '../../../../../utils/suite/validation';
 import { DustPreventionNotice } from '../../DustPreventionNotice';
 import { useFeesContext } from '../../context/FeesContext';
 

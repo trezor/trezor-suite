@@ -2,9 +2,8 @@ import { useMemo } from 'react';
 
 import { selectCoinjoinAccounts } from '@suite/coinjoin';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { CoinjoinStatusBar } from './CoinjoinStatusBar';
+import { useSelector } from '../../../../../hooks/suite';
 
 export const CoinjoinBars = () => {
     const coinjoinAccounts = useSelector(selectCoinjoinAccounts);

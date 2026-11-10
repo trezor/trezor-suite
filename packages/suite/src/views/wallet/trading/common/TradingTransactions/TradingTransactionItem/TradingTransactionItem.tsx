@@ -1,14 +1,13 @@
 import { Card, Icon, Row, Text } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
 
-import { FormattedDate } from 'src/components/suite';
-
 import { TradingTransactionSideAmount } from './TradingTransactionSideAmount';
 import { TradingTransactionStatusIcon } from './TradingTransactionStatusIcon';
 import {
     type TradingTransactionSide,
     type TradingTransactionStatusData,
 } from './tradingTransactionItemUtils';
+import { FormattedDate } from '../../../../../../components/suite';
 
 const dateFormat = {
     year: 'numeric',

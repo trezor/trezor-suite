@@ -8,10 +8,9 @@ import { isInteger } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { InputError } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
-
 import { FEE_LIMIT } from './constants';
+import { useSelector } from '../../../../../hooks/suite';
+import { InputError } from '../../../InputError';
 import { useFeesContext } from '../../context/FeesContext';
 
 export const CustomFeeTron = () => {

@@ -4,6 +4,8 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column } from '@trezor/components';
 
+import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
+import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
 import {
     AssetGroupLabel,
     AssetGroupSpace,
@@ -12,22 +14,22 @@ import {
     AssetRowToken,
     AssetsModal,
     ExpandableAssetRowGroup,
-} from 'src/components/suite/asset-picker/components';
-import { useExpandableGroups, useSearchFilter } from 'src/components/suite/asset-picker/hooks';
+} from '../../../../../../../../components/suite/asset-picker/components';
+import {
+    useExpandableGroups,
+    useSearchFilter,
+} from '../../../../../../../../components/suite/asset-picker/hooks';
 import {
     type AccountWithOptionalLabel,
     type AssetGroupOption,
     type AssetPickerListItem,
     type AssetRowOption,
-} from 'src/components/suite/asset-picker/types';
+} from '../../../../../../../../components/suite/asset-picker/types';
 import {
     type AssetGroupKey,
     getAssetGroupKey,
-} from 'src/components/suite/asset-picker/utils/assetGroupKey';
-import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
-
-import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
-import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
+} from '../../../../../../../../components/suite/asset-picker/utils/assetGroupKey';
+import { getAssetPickerItemHeight } from '../../../../../../../../components/suite/asset-picker/utils/assetPickerItemHeights';
 import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
 
 const MODAL_WIDTH = 480;

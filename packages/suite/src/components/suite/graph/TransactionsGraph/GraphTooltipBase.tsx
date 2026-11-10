@@ -6,8 +6,8 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Translation } from '@suite/intl';
 import { Row, Text, intermediaryTheme } from '@trezor/components';
 
-import { FormattedDate } from 'src/components/suite/FormattedDate';
-import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
+import { type CommonAggregatedHistory, type GraphRange } from '../../../../types/wallet/graph';
+import { FormattedDate } from '../../FormattedDate';
 
 // Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;

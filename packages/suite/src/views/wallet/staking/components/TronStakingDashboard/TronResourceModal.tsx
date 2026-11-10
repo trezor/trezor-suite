@@ -9,12 +9,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
 import {
     TronResourceBreakdownRow,
     type TronResourceBreakdownRowProps,
 } from './TronResourceBreakdownRow';
+import { useMessageSystemStaking } from '../../../../../hooks/suite/useMessageSystemStaking';
 
 interface TronResourceModalProps {
     account: Account;

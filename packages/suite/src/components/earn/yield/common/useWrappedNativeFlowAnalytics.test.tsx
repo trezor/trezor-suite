@@ -14,7 +14,7 @@ const mockReport = jest.fn();
 let mockDevice = { connected: true, available: true };
 
 jest.mock('@suite/device', () => ({ useDevice: () => ({ device: mockDevice }) }));
-jest.mock('src/hooks/suite', () => ({
+jest.mock('../../../../hooks/suite', () => ({
     useSelector: (selector: (state: object) => unknown) =>
         selector({ modal: { context: MODAL_CONTEXT_NONE } }),
 }));

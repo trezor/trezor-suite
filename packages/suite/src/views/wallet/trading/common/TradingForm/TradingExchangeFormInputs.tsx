@@ -21,22 +21,22 @@ import {
 import { useFetchFees } from '@suite-common/wallet-core';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 
-import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
-import { TradingFormInputBaseCurrencyAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
-import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
-import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
-import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
-
+import { useIsFeeRefetchDisabled } from '../../../../../components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useSelectedTradingAsset } from '../../../../../hooks/wallet/trading/form/common/useSelectedTradingAsset';
+import { useTradingAssetDecimals } from '../../../../../hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingFormContext } from '../../../../../hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from '../../../../../hooks/wallet/useBitcoinAmountUnit';
+import { TradingBalance } from '../TradingBalance';
+import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
+import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
+import { useTradingQuoteAmounts } from '../hooks/useTradingQuoteAmounts';
+import { useTradingSelectedQuote } from '../hooks/useTradingSelectedQuote';
 import { TradingExchangeAssetsSwitchButton } from './TradingExchangeAssetsSwitchButton/TradingExchangeAssetsSwitchButton';
 import { TradingFormCard } from './TradingFormCard';
-import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import { TradingFormInputBuyAsset } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
+import { TradingFormInputBaseCurrencyAmount } from './TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
+import { TradingFormInputCryptoAmount } from './TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
 import { TradingFormInputSellAsset } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';
 import { TradingFractionButtons } from './TradingFractionButtons';
@@ -49,7 +49,6 @@ import {
     getTradingAmountInputStyle,
 } from './tradingFormInputsUtils';
 import { useTradingExchangeAssetSelect } from './useTradingExchangeAssetSelect';
-import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();

@@ -8,8 +8,8 @@ import { parseTransactionDateKey } from '@suite-common/wallet-utils';
 import { Grid, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount, HiddenPlaceholder, Sign } from 'src/components/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { FormattedCryptoAmount, HiddenPlaceholder, Sign } from '../../../../../components/suite';
+import { useLayoutSize } from '../../../../../hooks/suite/useLayoutSize';
 
 type DayHeaderProps = {
     dateKey: string;

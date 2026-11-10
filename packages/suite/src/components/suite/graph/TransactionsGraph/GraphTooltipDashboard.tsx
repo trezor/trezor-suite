@@ -3,9 +3,8 @@ import { type TooltipProps } from 'recharts';
 import { useFormatters } from '@suite-common/formatters';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 
-import type { FiatGraphProps } from 'src/components/suite/graph/types';
-import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
-
+import { type CommonAggregatedHistory, type GraphRange } from '../../../../types/wallet/graph';
+import type { FiatGraphProps } from '../types';
 import { GraphTooltipBase } from './GraphTooltipBase';
 
 interface GraphTooltipDashboardProps extends TooltipProps<number, any> {

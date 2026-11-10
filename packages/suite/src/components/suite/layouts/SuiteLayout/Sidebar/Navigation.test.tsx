@@ -28,8 +28,6 @@ import { type TransactionNotification } from '@suite-common/toast-notifications'
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { BottomNavigation } from './BottomNavigation';
 import { Navigation } from './Navigation';
 import { SIDEBAR_MIN_WIDTH } from './consts';
@@ -38,6 +36,7 @@ import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../support/test-utils/hooksHelper';
 
 type TranslationMockProps = { id: string };
 
@@ -46,7 +45,7 @@ jest.mock('@suite/intl', () => ({
     Translation: ({ id }: TranslationMockProps) => <span>{id}</span>,
 }));
 
-jest.mock('src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu', () => ({
+jest.mock('../../../../wallet/WalletLayout/AccountsMenu/AccountsMenu', () => ({
     AccountsMenu: () => <div data-testid="accounts-menu" />,
 }));
 

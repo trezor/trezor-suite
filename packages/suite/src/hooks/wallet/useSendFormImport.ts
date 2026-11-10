@@ -22,8 +22,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { unique } from '@trezor/utils';
 
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { type UseSendFormState } from 'src/types/wallet/sendForm';
+import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
+import { type UseSendFormState } from '../../types/wallet/sendForm';
 
 type useSendFormImportProps = {
     network: UseSendFormState['network'];

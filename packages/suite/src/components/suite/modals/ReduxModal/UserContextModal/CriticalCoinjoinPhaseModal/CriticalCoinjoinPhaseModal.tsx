@@ -4,12 +4,11 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
-import { useSelector } from 'src/hooks/suite';
-
 import { AutoStopButton } from './AutoStopButton';
 import { CoinjoinPhaseProgress } from './CoinjoinPhaseProgress';
+import { SESSION_PHASE_MESSAGES } from '../../../../../../constants/suite/coinjoin';
+import { useCoinjoinSessionPhase } from '../../../../../../hooks/coinjoin';
+import { useSelector } from '../../../../../../hooks/suite';
 
 type CriticalCoinjoinPhaseModalProps = {
     relatedAccountKey: AccountKey;

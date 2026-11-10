@@ -51,9 +51,9 @@ import {
 import { NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
-import { useSelector } from 'src/hooks/suite';
+import { ConnectAppIcon } from '../../../components/suite/ConnectAppIcon';
+import { ConnectProcessLabel } from '../../../components/suite/ConnectProcessLabel';
+import { useSelector } from '../../../hooks/suite';
 // The remove button sits next to the permission text and is only revealed when
 // the row is hovered or a child receives keyboard focus, to reduce clutter.
 // Mirrors the reveal styling of EditableText's ActionsContainer.

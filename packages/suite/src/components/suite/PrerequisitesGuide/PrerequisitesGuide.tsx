@@ -9,11 +9,10 @@ import {
 } from '@suite-common/suite-utils';
 import { Column, Illustration, Paragraph, Text, motionEasing } from '@trezor/components';
 
-import { getMessageId } from 'src/components/suite/getMessageId';
-import { useSelector } from 'src/hooks/suite';
-import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
-
 import { BannerAndTroubleshooting } from './BannerAndTroubleshooting';
+import { useSelector } from '../../../hooks/suite';
+import { selectPrerequisite } from '../../../selectors/suite/suiteSelectors';
+import { getMessageId } from '../getMessageId';
 
 type PrerequisitesGuideProps = {
     showDeviceImage?: boolean;

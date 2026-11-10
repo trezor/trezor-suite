@@ -11,11 +11,10 @@ import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
-import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
-import { useSelector } from 'src/hooks/suite';
-import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
+import { useEarnDeviceStatus } from '../../../../../hooks/earn/useEarnDeviceStatus';
+import { useSelector } from '../../../../../hooks/suite';
+import { useFirmwareUpgradeModal } from '../../../../../hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemStaking } from '../../../../../hooks/suite/useMessageSystemStaking';
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronClaimSubmitButton = () => {

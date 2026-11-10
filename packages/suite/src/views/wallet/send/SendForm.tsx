@@ -14,18 +14,17 @@ import { selectBaseCurrency, selectFees, selectSendRaw } from '@suite-common/wal
 import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
-import { ConfirmEvmExplanationModal } from 'src/components/suite/modals/ConfirmEvmExplanationModal';
-import { WalletLayout } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
-import { SendContext, type UseSendFormProps, useSendForm } from 'src/hooks/wallet/useSendForm';
-import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
-
 import { Options } from './Options/Options';
 import { Outputs } from './Outputs/Outputs';
 import { SendFees } from './SendFees';
 import { SendHeader } from './SendHeader';
 import { SendRaw } from './SendRaw';
 import { TotalSent } from './TotalSent/TotalSent';
+import { ConfirmEvmExplanationModal } from '../../../components/suite/modals/ConfirmEvmExplanationModal';
+import { WalletLayout } from '../../../components/wallet';
+import { useSelector } from '../../../hooks/suite';
+import { SendContext, type UseSendFormProps, useSendForm } from '../../../hooks/wallet/useSendForm';
+import { selectIsSuiteOnline } from '../../../selectors/suite/suiteSelectors';
 
 const FormGrid = styled.div`
     gap: 16px;

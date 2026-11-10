@@ -2,11 +2,10 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-import { type AggregatedAccountHistory, type GraphRange } from 'src/types/wallet/graph';
-
 import { TransactionsGraph } from './TransactionsGraph';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../support/test-utils/hooksHelper';
+import { type AggregatedAccountHistory, type GraphRange } from '../../../../types/wallet/graph';
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();

@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
 import { InfoItem, Text } from '@trezor/components';
 
-import { type TradingGetProvidersInfoProps } from 'src/types/trading/trading';
-import { TradingProviderInfo } from 'src/views/wallet/trading/common/TradingProviderInfo';
+import { type TradingGetProvidersInfoProps } from '../../../../../../types/trading/trading';
+import { TradingProviderInfo } from '../../TradingProviderInfo';
 
 type TradingProviderInfoItemProps = {
     exchange: string | undefined;

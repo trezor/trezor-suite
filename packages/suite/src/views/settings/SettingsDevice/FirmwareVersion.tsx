@@ -8,7 +8,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type AcquiredDevice } from 'src/types/suite';
+import { type AcquiredDevice } from '../../../types/suite';
 
 type GetButtonLabelIdParams = { device: AcquiredDevice };
 

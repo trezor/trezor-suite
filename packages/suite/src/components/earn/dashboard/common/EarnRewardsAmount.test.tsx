@@ -6,10 +6,9 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import { EarnRewardsAmount } from './EarnRewardsAmount';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../support/test-utils/hooksHelper';
 
 const ethereum = asNetworkSymbol('eth');
 const usdc = toTokenSymbol('USDC');

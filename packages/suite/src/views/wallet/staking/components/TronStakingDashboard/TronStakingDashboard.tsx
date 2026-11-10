@@ -10,13 +10,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { useNow } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
 import { TronResourcesCard } from './TronResourcesCard/TronResourcesCard';
 import { TronStakedCard } from './TronStakedCard';
 import { TronUnstakingCard } from './TronUnstakingCard/TronUnstakingCard';
 import { TronVotingRewardsCard } from './TronVotingRewardsCard';
 import { TronWithdrawReadyBanner } from './TronWithdrawReadyBanner';
+import { useSelector } from '../../../../../hooks/suite';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
 import { Transactions } from '../StakingDashboard/components/Transactions';

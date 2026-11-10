@@ -2,10 +2,9 @@ import { type BackupState, canContinue } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Modal, Paragraph } from '@trezor/components';
 
-import { useOnboarding } from 'src/hooks/suite';
-
 import { BackupStepDescription } from './BackupStepDescription';
 import { AfterBackupCheckboxes } from '../../components/backup';
+import { useOnboarding } from '../../hooks/suite';
 
 type BackupStep3FinishedProps = {
     onCancel: () => void;

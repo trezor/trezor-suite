@@ -13,26 +13,16 @@ const path = require('path');
  * conventions that only this package's tooling knows about, so every test that renders its
  * components needs the settings below, no matter which package the test lives in.
  *
- * 1. The `src/` import alias (the main problem).
- *    Modules in @trezor/suite import each other as `src/...` (e.g. `from 'src/hooks/suite'`)
- *    instead of with relative paths. The alias is not part of the package; each tool maps it
- *    separately: TypeScript via `paths` in tsconfig.json, webpack via `resolve.alias` in
- *    webpack/createBaseConfig.ts, and Jest via the `moduleNameMapper` entry below. A test in
- *    another package that renders a @trezor/suite component would otherwise fail to resolve
- *    `src/...` inside @trezor/suite files, because `src` would mean nothing there.
- *    The fix is to replace these imports with relative ones inside @trezor/suite; afterwards
- *    this entry can be removed.
- *
- * 2. Media asset imports.
+ * 1. Media asset imports.
  *    Components import SVG, WebP and MP4 files directly. Jest cannot parse them, so they map to
  *    stub modules.
  *
- * 3. A browser-like environment.
+ * 2. A browser-like environment.
  *    Components render into a DOM (jsdom), Lottie animations draw on a canvas that jsdom does
  *    not implement (jest-canvas-mock), and jest.setup.js adds the remaining browser APIs and
  *    polyfills the components expect.
  *
- * 4. The Suite version.
+ * 3. The Suite version.
  *    Firmware checks in rendered components compare against `process.env.VERSION`, which the
  *    app build sets from `suiteVersion`.
  *
@@ -45,7 +35,6 @@ module.exports = {
     setupFiles: [require.resolve('jest-canvas-mock')],
     setupFilesAfterEnv: [path.join(__dirname, 'jest.setup.js')],
     moduleNameMapper: {
-        '^src/(.+)': path.join(__dirname, 'src/$1'),
         '\\.(mp4)$': path.join(__dirname, '__mocks__/import-mp4.js'),
         '\\.(svg|webp)$': path.join(__dirname, '__mocks__/import-svg.js'),
     },

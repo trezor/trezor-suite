@@ -5,8 +5,8 @@ import { type ExchangeTrade } from 'invity-api';
 import { Translation } from '@suite/intl';
 import { Button, Column, Row, Switch } from '@trezor/components';
 
-import { useGuideOpenNode } from 'src/hooks/guide';
-import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
+import { useGuideOpenNode } from '../../../../../../hooks/guide';
+import { DESTINATION_TAG_GUIDE_PATH } from '../../../../send/Options/MiscNetworkOptions/DestinationTag';
 
 interface TradingExtraFieldProps {
     inputComponent: ReactNode;

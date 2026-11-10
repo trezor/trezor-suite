@@ -8,8 +8,6 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormStateTradingCryptoCurrency } from '@suite-common/wallet-types';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-
 import {
     TransactionReviewOutputAssets,
     type TransactionReviewOutputAssetsProps,
@@ -18,6 +16,7 @@ import {
     type MockSuiteState,
     mockInitialAppState,
 } from '../../../../../../../mocks/mockInitialAppState';
+import { renderWithProviders } from '../../../../../../support/test-utils/hooksHelper';
 
 const networkIcon = mockNetworkIcon();
 

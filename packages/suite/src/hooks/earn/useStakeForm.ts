@@ -28,13 +28,12 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { isChanged, throwError } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
-import { useSelector } from 'src/hooks/suite';
-import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
-import type { AmountLimitProps } from 'src/utils/suite/validation';
-
 import { useCardanoStaking } from './useCardanoStaking';
+import { signTransactionThunk } from '../../actions/wallet/stakeActions';
 import { type StakeContextValues } from '../../components/earn/forms/StakeFormContext';
+import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '../../types/earn/earnFormFields';
+import type { AmountLimitProps } from '../../utils/suite/validation';
+import { useSelector } from '../suite';
 import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
 

@@ -6,13 +6,12 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { addDeviceIdToSeenDisconnectNotification } from '../../actions/suite/suiteActions';
+import { useSelector } from '../../hooks/suite';
 import {
     selectRecentlyDisconnectedDevice,
     selectSeenDisconnectNotificationForDeviceIds,
-} from 'src/selectors/suite/suiteSelectors';
-
-import { addDeviceIdToSeenDisconnectNotification } from '../../actions/suite/suiteActions';
+} from '../../selectors/suite/suiteSelectors';
 
 export const useNotificationForDisconnectedDevice = () => {
     const { dispatch } = useServices(injectDispatch);

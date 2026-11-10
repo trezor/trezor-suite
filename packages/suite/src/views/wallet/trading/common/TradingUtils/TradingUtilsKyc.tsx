@@ -11,7 +11,7 @@ import {
     KYC_NO_REFUND,
     KYC_REQUIRED,
     KYC_YES_REFUND,
-} from 'src/constants/wallet/trading/kyc';
+} from '../../../../../constants/wallet/trading/kyc';
 
 type TradingUtilsKycProps = {
     kycType?: ExchangeKYCType;

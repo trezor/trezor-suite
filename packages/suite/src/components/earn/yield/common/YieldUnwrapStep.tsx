@@ -4,14 +4,13 @@ import { Translation } from '@suite/intl';
 import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { Button, Column, Row } from '@trezor/components';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-
 import {
     YieldAmountCard,
     type YieldAmountCardFiatToggleProps,
     type YieldApproxFiat,
 } from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
+import { FormattedCryptoAmount } from '../../../suite/FormattedCryptoAmount';
 
 type YieldUnwrapStepProps = {
     tokenSymbol: string;

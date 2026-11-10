@@ -99,7 +99,7 @@ function createMigrationFile({ semver, revision, versionString }: VersionInfo) {
     const template = `\
 import { createMigration } from '@suite/idb-migration-utils';
 
-import { SuiteDBSchema } from 'src/storage/definitions';
+import { SuiteDBSchema } from '../../definitions';
 
 export default createMigration<SuiteDBSchema>("${versionString}", (db, tx) => {
     // ⚠️  TODO: implement migration logic for v${versionString}
