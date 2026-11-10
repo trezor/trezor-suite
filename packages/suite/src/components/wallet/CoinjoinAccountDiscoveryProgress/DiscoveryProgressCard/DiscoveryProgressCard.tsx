@@ -6,7 +6,7 @@ import { Card, Column, H3, LottieAnimation, ProgressBar, useMediaQuery } from '@
 import { typography, typographyStylesBase } from '@trezor/theme';
 import { localizeNumber } from '@trezor/utils';
 
-import { useCoinjoinAccountLoadingProgress } from '#src/hooks/coinjoin';
+import { useCoinjoinAccountLoadingProgress } from '#src/hooks/coinjoin/useCoinjoinAccountLoadingProgress';
 import { useSelector } from '#src/hooks/suite';
 
 import { DiscoveryCaption } from './DiscoveryCaption';
