@@ -14,8 +14,8 @@ import {
     getTronCuratedPositionTargets,
     getTronCuratedPositionUnlocks,
 } from './utils';
-import { getStakingPositionStatus } from '../../utils/getStakingPositionStatus';
-import { isPositiveStakingAmount } from '../../utils/stakingAmounts';
+import { getStakingPositionStatus } from '../../../utils/getStakingPositionStatus';
+import { isPositiveStakingAmount } from '../../../utils/stakingAmounts';
 
 // The staking contract types of wallet-core tronStakingConstants.ts.
 // Blockbook truncates the unlock and withdraw times to seconds.

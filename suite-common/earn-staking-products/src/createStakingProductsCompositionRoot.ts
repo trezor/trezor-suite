@@ -18,8 +18,8 @@ import { createEverstakePooledProduct } from './products/ethereum/everstake-pool
 import { createSolanaExternalDelegationProduct } from './products/solana/external/product';
 import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/messageSystemFeatures';
 import { createSolanaNativeDelegationProduct } from './products/solana/native/product';
-import { createTronCuratedProduct } from './products/tron/createTronCuratedProduct';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './products/tron/tronCuratedProductMessageSystemFeatures';
+import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './products/tron/curated/messageSystemFeatures';
+import { createTronCuratedProduct } from './products/tron/curated/product';
 import { everstakeProvider } from './providers/everstake';
 import { fivebinariesProvider } from './providers/fivebinaries';
 import { luganodesProvider } from './providers/luganodes';

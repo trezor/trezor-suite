@@ -4,8 +4,8 @@ export {
     type CreateCardanoExternalDelegationProductParams,
 } from './products/cardano/external/product';
 export {
-    type CardanoNativeDelegationProductDeps,
     createCardanoNativeDelegationProduct,
+    type CardanoNativeDelegationProductDeps,
     type CreateCardanoNativeDelegationProductParams,
 } from './products/cardano/native/product';
 export {
@@ -30,7 +30,7 @@ export {
     createTronCuratedProduct,
     type CreateTronCuratedProductParams,
     type TronCuratedProductDeps,
-} from './products/tron/createTronCuratedProduct';
+} from './products/tron/curated/product';
 export { curatedProvider } from './providers/curated';
 export { everstakeProvider } from './providers/everstake';
 export { externalProvider } from './providers/external';

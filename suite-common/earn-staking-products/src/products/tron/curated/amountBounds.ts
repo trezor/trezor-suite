@@ -11,7 +11,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TRON_RESOURCES, TRON_STAKE_RESERVE } from './constants';
-import { TRON_CURATED_PRODUCT_LIMITS } from './tronCuratedProductLimits';
+import { TRON_CURATED_PRODUCT_LIMITS } from './limits';
 import { isTronResource } from './utils';
 import {
     NO_STAKING_AMOUNT_BOUNDS,
@@ -19,7 +19,7 @@ import {
     ZERO_STAKING_AMOUNT,
     sumStakingAmounts,
     toStakingAmount,
-} from '../../utils/stakingAmounts';
+} from '../../../utils/stakingAmounts';
 
 type GetUnstakeableAmountParams = {
     position: StakingPosition | null;

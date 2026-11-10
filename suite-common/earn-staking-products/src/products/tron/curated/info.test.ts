@@ -7,13 +7,10 @@ import {
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import {
-    type TronCuratedProductInfoDeps,
-    fetchTronCuratedProductInfo,
-} from './tronCuratedProductInfo';
+import { type TronCuratedProductInfoDeps, fetchTronCuratedProductInfo } from './info';
 import { getTronRepresentatives } from './utils';
-import { luganodesProvider } from '../../providers/luganodes';
-import { p2pProvider } from '../../providers/p2p';
+import { luganodesProvider } from '../../../providers/luganodes';
+import { p2pProvider } from '../../../providers/p2p';
 
 const representatives = getTronRepresentatives({
     networkSymbol: asNetworkSymbol('trx'),

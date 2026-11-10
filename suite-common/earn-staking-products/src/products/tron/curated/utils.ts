@@ -17,20 +17,22 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TRON_RESOURCES, TRON_STAKING_OPERATIONS_BY_TRON_CONTRACT_TYPE } from './constants';
-import { tronStakingListsSchema, tronUnstakingBatchSchema, tronVoteSchema } from './schema';
 import {
     type ParsedTronStakingInfo,
     type ParsedTronUnstakingBatch,
     type ParsedTronVote,
     type TronRepresentative,
     type TronResource,
+    tronStakingListsSchema,
+    tronUnstakingBatchSchema,
+    tronVoteSchema,
 } from './types';
-import { externalProvider } from '../../providers/external';
+import { externalProvider } from '../../../providers/external';
 import {
     ZERO_STAKING_AMOUNT,
     isPositiveStakingAmount,
     sumStakingAmounts,
-} from '../../utils/stakingAmounts';
+} from '../../../utils/stakingAmounts';
 
 export const isTronResource = (value: StakingOptionValue): value is TronResource =>
     TRON_RESOURCES.some(resource => resource === value);

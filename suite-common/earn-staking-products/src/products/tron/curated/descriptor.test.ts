@@ -1,9 +1,9 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createTronCuratedProductDescriptor } from './tronCuratedProductDescriptor';
-import { TRON_CURATED_PRODUCT_LIMITS } from './tronCuratedProductLimits';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './tronCuratedProductMessageSystemFeatures';
+import { createTronCuratedProductDescriptor } from './descriptor';
+import { TRON_CURATED_PRODUCT_LIMITS } from './limits';
+import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 
 describe('createTronCuratedProductDescriptor', () => {
     it('builds the trx:trx:curated:native product', () => {
