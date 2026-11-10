@@ -1,3 +1,4 @@
+import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getPotentialStakingRewards } from '@suite-common/wallet-core';
@@ -21,9 +22,20 @@ export const AssetDetailStakingRewardsBanner = ({
     const { rate } = useStakingRate({ symbol: networkSymbol, accountKey: accounts.at(0)?.key });
     const formattedRate = useFormattedEarnRate(rate);
     const { CryptoAmountFormatter } = useFormatters();
+    const { isDiscreetMode } = useDiscreetMode();
 
     const symbol = getNetworkDisplaySymbol(networkSymbol);
     const rewards = getPotentialStakingRewards(accounts, rate ?? null);
+    const formattedRewards = CryptoAmountFormatter.format(rewards.toFixed(), {
+        symbol: networkSymbol,
+        isBalance: true,
+        withSymbol: false,
+        isEllipsisAppended: false,
+        maxDisplayedDecimals: 8,
+    });
+    const displayedRewards = isDiscreetMode
+        ? redactNumericalSubstring(formattedRewards)
+        : formattedRewards;
     const isAprRate = getStakingRateLabelType(networkSymbol) === 'apr';
 
     return (
@@ -51,13 +63,7 @@ export const AssetDetailStakingRewardsBanner = ({
                                 : 'moduleAssets.assetDetailScreen.stakingBanner.descriptionWithRewards'
                         }
                         values={{
-                            potentialRewards: CryptoAmountFormatter.format(rewards.toFixed(), {
-                                symbol: networkSymbol,
-                                isBalance: true,
-                                withSymbol: false,
-                                isEllipsisAppended: false,
-                                maxDisplayedDecimals: 8,
-                            }),
+                            potentialRewards: displayedRewards,
                             symbol,
                         }}
                     />
