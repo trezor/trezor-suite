@@ -893,6 +893,8 @@ export type WireOutMessage =
 export type MessageKey = keyof MessageType;
 
 export type MessagePayload<T extends MessageKey = MessageKey> = MessageType[T];
+export type MessagePayload1<T extends WireInMessage = WireInMessage> = MessageType[T];
+export type MessagePayload2<T extends WireOutMessage = WireOutMessage> = MessageType[T];
 
 export type MessageResponse<T extends MessageKey = MessageKey> = T extends any
     ? {
