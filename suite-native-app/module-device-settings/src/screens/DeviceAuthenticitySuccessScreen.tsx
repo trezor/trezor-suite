@@ -1,9 +1,13 @@
+import { useSelector } from 'react-redux';
+
+import { selectDeviceName } from '@suite-common/device';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 
 export const DeviceAuthenticitySuccessScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
+    const deviceName = useSelector(selectDeviceName);
 
     return (
         <Screen
@@ -16,7 +20,10 @@ export const DeviceAuthenticitySuccessScreen = () => {
                         title={<Translation id="moduleDeviceSettings.authenticity.success.title" />}
                         titleVariant="headline-md"
                         subtitle={
-                            <Translation id="moduleDeviceSettings.authenticity.success.subtitle" />
+                            <Translation
+                                id="moduleDeviceSettings.authenticity.success.subtitle"
+                                values={{ deviceName }}
+                            />
                         }
                     />
                 </Box>

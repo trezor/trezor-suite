@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { selectDeviceName } from '@suite-common/device';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -14,6 +17,8 @@ export const DeviceAuthenticitySuccessScreen = ({
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes.DeviceAuthenticitySuccess
 >) => {
+    const deviceName = useSelector(selectDeviceName);
+
     const handleContinueButtonPress = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
     };
@@ -29,7 +34,10 @@ export const DeviceAuthenticitySuccessScreen = ({
                         }
                         titleVariant="headline-md"
                         subtitle={
-                            <Translation id="moduleDeviceOnboarding.deviceAuthenticitySuccessScreen.subtitle" />
+                            <Translation
+                                id="moduleDeviceOnboarding.deviceAuthenticitySuccessScreen.subtitle"
+                                values={{ deviceName }}
+                            />
                         }
                     />
                 </Box>
