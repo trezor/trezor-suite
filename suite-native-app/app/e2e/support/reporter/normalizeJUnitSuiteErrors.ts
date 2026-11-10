@@ -1,53 +1,23 @@
-export type JUnitProperty = { $: { name: string; value: string } };
-export type JUnitProperties = { property?: JUnitProperty[] };
-
 type JUnitTestCase = {
     $: { name: string; classname?: string };
-    failure?: string[];
     error?: string[];
-    skipped?: unknown[];
-    properties?: JUnitProperties[];
+    failure?: string[];
 };
 
 export type JUnitTestSuite = {
     $?: { name?: string; tests?: string; failures?: string; errors?: string; skipped?: string };
     testcase?: JUnitTestCase[];
-    properties?: JUnitProperties[];
 };
 
+/**
+ * jest-junit writes <error> only for a suite that failed to run: a testcase with the full Jest
+ * message followed by a duplicate <failure> with just the error. Currents treats <error> as
+ * passed, so the suite is reduced to a single <failure> with the full message.
+ */
 export const normalizeJUnitSuiteErrors = (suite: JUnitTestSuite): void => {
-    const errorTestCases = suite.testcase?.filter(testCase => testCase.error !== undefined) ?? [];
-    if (errorTestCases.length === 0) return;
+    const errorTestCase = suite.testcase?.find(testCase => testCase.error !== undefined);
+    if (errorTestCase?.error === undefined) return;
 
-    // The jest-junit reporter emits an error and a duplicate failure when a suite cannot load.
-    const suiteErrors = errorTestCases.filter(
-        testCase => testCase.$.classname === 'Test suite failed to run',
-    );
-    const testCases = (suite.testcase ?? []).filter(
-        testCase =>
-            testCase.error !== undefined ||
-            testCase.failure === undefined ||
-            !suiteErrors.some(
-                suiteError =>
-                    suiteError.$.name === testCase.$.name &&
-                    suiteError.$.classname === testCase.$.classname,
-            ),
-    );
-
-    testCases.forEach(testCase => {
-        if (testCase.error === undefined) return;
-
-        // Currents only recognizes <failure>; the original <error> holds the full Jest stack.
-        testCase.failure = [...testCase.error, ...(testCase.failure ?? [])];
-        delete testCase.error;
-    });
-
-    suite.testcase = testCases;
-    suite.$ = {
-        ...suite.$,
-        tests: String(testCases.length),
-        failures: String(testCases.filter(testCase => testCase.failure !== undefined).length),
-        errors: '0',
-        skipped: String(testCases.filter(testCase => testCase.skipped !== undefined).length),
-    };
+    suite.testcase = [{ $: errorTestCase.$, failure: errorTestCase.error }];
+    suite.$ = { ...suite.$, tests: '1', failures: '1', errors: '0' };
 };
