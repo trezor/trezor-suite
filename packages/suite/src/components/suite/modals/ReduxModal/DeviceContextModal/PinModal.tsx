@@ -1,12 +1,12 @@
 import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import { selectDeviceButtonRequests, usePin } from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Modal } from '@trezor/components';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { PinMatrix } from '#src/components/suite/PinMatrix/PinMatrix';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type TrezorDevice } from '#src/types/suite';
 
 type PinModalProps = {
     device: TrezorDevice;

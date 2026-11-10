@@ -1,14 +1,13 @@
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import { type AcquiredDevice } from '#src/types/suite';
 
 type GetButtonLabelIdParams = { device: AcquiredDevice };
 

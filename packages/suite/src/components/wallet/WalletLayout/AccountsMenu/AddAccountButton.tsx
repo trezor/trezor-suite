@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useDiscovery } from '#src/hooks/suite/useDiscovery';
-import { type TrezorDevice } from '#src/types/suite';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     if (device && !device.connected) {

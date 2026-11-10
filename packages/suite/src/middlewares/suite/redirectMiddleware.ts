@@ -16,9 +16,8 @@ import {
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Dispatch } from '@trezor/redux-utils';
-
-import { type TrezorDevice } from '#src/types/suite';
 
 type RedirectMiddlewareState = GotoThunkState & DeviceRootState;
 

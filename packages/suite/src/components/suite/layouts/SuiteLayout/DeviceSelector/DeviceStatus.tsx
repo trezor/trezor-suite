@@ -1,10 +1,10 @@
 import { selectDeviceLabelOrNameById } from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { type DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type TrezorDevice } from '#src/types/suite';
 import { DeviceDetail } from '#src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { DeviceStatusText } from '#src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 

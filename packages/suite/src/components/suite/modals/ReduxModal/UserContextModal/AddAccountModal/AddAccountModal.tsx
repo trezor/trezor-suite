@@ -8,6 +8,7 @@ import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -34,7 +35,6 @@ import { AddAccountBannerAboutNetworks } from '#src/components/suite/modals/Redu
 import { useAvailableNetworkSymbols } from '#src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
 import { useAccountSearch } from '#src/hooks/suite/useAccountSearch';
-import { type TrezorDevice } from '#src/types/suite';
 import { type Account } from '#src/types/wallet';
 import { NoNetworkSearchResults } from '#src/views/settings/SettingsCoins/NoNetworkSearchResults';
 import { useNetworkSettingsSearch } from '#src/views/settings/SettingsCoins/useNetworkSettingsSearch';

@@ -1,6 +1,7 @@
 import { type CoinExtraField, type CryptoId } from 'invity-api';
 
 import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type TradingType, cryptoIdToNetwork } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -15,7 +16,6 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type TrezorDevice } from '#src/types/suite';
 import {
     type TradingGetAmountLabelsProps,
     type TradingGetAmountLabelsReturnProps,
