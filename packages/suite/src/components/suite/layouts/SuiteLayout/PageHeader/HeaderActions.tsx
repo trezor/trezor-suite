@@ -10,7 +10,7 @@ import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
 import { AppNavigationTooltip } from '#src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from '#src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { TradeActions } from '#src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type WalletParams } from '#src/types/wallet';
 
 import { HeaderDropdown } from './HeaderDropdown';

@@ -7,7 +7,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { getIsDeviceConnectedViaBluetooth, getIsThpDevice } from '@suite-common/suite-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import {
     ConnectedCableForgetFlow,

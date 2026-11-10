@@ -10,7 +10,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
-import { useConnectedDateFnsLocale } from '#src/hooks/suite';
+import { useConnectedDateFnsLocale } from '#src/hooks/suite/useConnectedDateFnsLocale';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
 const AUTO_LOCK_TIMES = {

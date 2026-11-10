@@ -16,8 +16,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useSelector } from '#src/hooks/suite';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type ClaimCardProps = {
     account: Account;

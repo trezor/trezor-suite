@@ -1,6 +1,6 @@
 import { selectCustomBackends, selectEnabledNetworks } from '@suite-common/wallet-core';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const useEnabledBackends = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);

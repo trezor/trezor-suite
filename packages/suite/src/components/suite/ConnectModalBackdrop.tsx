@@ -5,7 +5,7 @@ import {
     type ModalBackdropProps,
 } from '@trezor/components/src/components/Modal/ModalBackdrop';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ConnectAppBar } from './ConnectAppBar';
 

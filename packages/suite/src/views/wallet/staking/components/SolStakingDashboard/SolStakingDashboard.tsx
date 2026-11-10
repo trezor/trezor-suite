@@ -19,7 +19,8 @@ import { useCurrentRef } from '@trezor/react-utils';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { usePagination } from '#src/hooks/general/usePagination';
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { RewardsList } from './Rewards/RewardsList';

@@ -21,7 +21,7 @@ import { OnboardingProgressBar } from '#src/components/onboarding/OnboardingProg
 import { SuiteBanners } from '#src/components/suite/banners/SuiteBanners/SuiteBanners';
 import { ReduxModal } from '#src/components/suite/modals/ReduxModal/ReduxModal';
 import { MAX_ONBOARDING_WIDTH } from '#src/constants/suite/layout';
-import { useFilteredModal } from '#src/hooks/suite';
+import { useFilteredModal } from '#src/hooks/suite/useFilteredModal';
 
 import {
     OnboardingCancelButtonContext,

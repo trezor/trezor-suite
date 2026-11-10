@@ -13,7 +13,7 @@ import { Column, Text } from '@trezor/components';
 import { TruncatedAmount } from '#src/components/earn/yield/common/TruncatedAmount';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { HOME_ASSET_BALANCE_MAX_WIDTH, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
 

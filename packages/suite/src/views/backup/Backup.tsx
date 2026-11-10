@@ -9,7 +9,7 @@ import { Column, Image, Modal, Text } from '@trezor/components';
 import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import type { ForegroundAppProps } from '#src/types/suite';
 
 import { BackupStep1Initial } from './BackupStep1Initial';

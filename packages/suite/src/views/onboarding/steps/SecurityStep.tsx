@@ -17,7 +17,8 @@ import { resetDeviceThunk } from '#src/actions/settings/deviceSettingsActions';
 import { BackupSeedCards } from '#src/components/backup/BackupSeedCards';
 import { SkipStepConfirmation } from '#src/components/onboarding/SkipStepConfirmation';
 import { ConfirmActionModal } from '#src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
-import { useOnboarding, useSelector } from '#src/hooks/suite';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type SecurityStepStatus = 'initial' | 'in-progress' | 'skipping-backup' | 'finished';
 

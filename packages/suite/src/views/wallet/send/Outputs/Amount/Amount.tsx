@@ -24,7 +24,8 @@ import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSendFormContext } from '#src/hooks/wallet';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 import {

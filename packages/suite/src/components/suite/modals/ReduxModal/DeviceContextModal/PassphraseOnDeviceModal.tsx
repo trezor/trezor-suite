@@ -10,7 +10,7 @@ import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { DeviceConfirmImage } from '#src/components/suite/DeviceConfirmImage';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import type { TrezorDevice } from '#src/types/suite';
 
 const ImageWrapper = styled.div`

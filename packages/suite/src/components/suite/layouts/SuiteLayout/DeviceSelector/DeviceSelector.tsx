@@ -13,7 +13,7 @@ import { zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from '#src/actions/suite/suiteActions';
 import { openSwitchDeviceDialogThunk } from '#src/actions/wallet/addWalletThunk';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectRecentlyConnectedDevice } from '#src/selectors/suite/suiteSelectors';
 import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
 

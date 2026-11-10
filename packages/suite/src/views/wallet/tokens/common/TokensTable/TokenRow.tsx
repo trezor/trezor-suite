@@ -28,7 +28,7 @@ import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmou
 import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
 import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { StellarManageTokenModal } from '#src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TokenRowActions } from './TokenRowActions';
 import { useTokenYieldBadge } from './hooks/useTokenYieldBadge';

@@ -57,7 +57,8 @@ import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useLayoutSize } from '#src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { type Account } from '#src/types/wallet';
 import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 

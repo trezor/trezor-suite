@@ -5,7 +5,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { closeEvmExplanationBanner } from '#src/actions/suite/suiteActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectEvmSettings } from '#src/selectors/suite/suiteSelectors';
 import { type Account } from '#src/types/wallet';
 

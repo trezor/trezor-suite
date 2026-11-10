@@ -16,7 +16,7 @@ import { StepList } from '@trezor/components';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EarnInfoRow } from './EarnInfoRow';
 

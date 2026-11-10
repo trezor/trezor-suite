@@ -30,7 +30,7 @@ import { NumberInput } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSendFormContext } from '#src/hooks/wallet';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 import { validateDecimals } from '#src/utils/suite/validation';

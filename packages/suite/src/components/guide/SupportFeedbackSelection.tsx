@@ -20,7 +20,7 @@ import { TREZOR_FORUM_URL } from '@trezor/urls';
 
 import { setView } from '#src/actions/suite/guideActions';
 import { SupportConsentPopover } from '#src/components/guide/SupportConsentPopover';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { GuideContent } from './GuideContent';
 import { GuideHeader } from './GuideHeader';

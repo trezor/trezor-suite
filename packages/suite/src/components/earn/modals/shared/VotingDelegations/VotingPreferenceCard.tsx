@@ -33,7 +33,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
 import { InputError } from '#src/components/wallet/InputError';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export type VotingPreferenceOption = {
     type: VotingDelegationOption['type'];

@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { type TradingType, selectTradingProviderByNameAndTradeType } from '@suite-common/trading';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { TradingDetailContext, useTradingDetail } from '#src/hooks/wallet/trading/useTradingDetail';
 import { TradingContainer } from '#src/views/wallet/trading/common/TradingContainer';
 

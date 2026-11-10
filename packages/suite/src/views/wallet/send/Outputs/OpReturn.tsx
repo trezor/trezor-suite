@@ -7,7 +7,7 @@ import { Column, Flex, IconButton, Row, Text, Textarea, Tooltip } from '@trezor/
 import { XIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from '#src/components/guide/OpenGuideFromTooltip';
-import { useLayoutSize } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useSendFormContext } from '#src/hooks/wallet';
 
 type OpReturnProps = { outputId: number };

@@ -18,7 +18,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { prepareTxPlan } from '#src/actions/wallet/stake/stakeFormCardanoActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const COMPOSE_ERROR_REASONS = [
     'UTXO_BALANCE_INSUFFICIENT',

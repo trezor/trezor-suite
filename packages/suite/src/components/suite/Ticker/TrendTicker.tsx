@@ -9,7 +9,7 @@ import { Skeleton } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { NoRatesTooltip } from './NoRatesTooltip';
 import { TrendBadge, calculatePercentageDifference } from './TrendBadge';

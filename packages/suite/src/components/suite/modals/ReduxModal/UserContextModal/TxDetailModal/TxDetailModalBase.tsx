@@ -21,7 +21,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';

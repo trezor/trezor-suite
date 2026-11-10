@@ -20,7 +20,7 @@ import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { FiatAmountHeadline } from '#src/views/home/HomeBalance/FiatAmountHeadline';
 
 import { AssetDetailPriceChange } from './AssetDetailPriceChange';

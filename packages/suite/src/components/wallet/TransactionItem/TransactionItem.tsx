@@ -29,7 +29,7 @@ import { OutlineHighlight } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { SUBPAGE_NAV_HEIGHT } from '#src/constants/suite/layout';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type WalletAccountTransaction } from '#src/types/wallet';
 
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';

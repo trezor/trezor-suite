@@ -5,7 +5,7 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { ExchangeInfoNotification } from '@trezor/product-components';
 
 import type { NotificationViewProps } from '#src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import type { NotificationRendererProps } from './NotificationRendererProps';
 import { FormattedCryptoAmount } from '../../FormattedCryptoAmount';

@@ -6,7 +6,7 @@ import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { Card, Column, Divider } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import type { TradingExchangeProvidersInfoProps } from '#src/types/trading/trading';
 import type { Account } from '#src/types/wallet';

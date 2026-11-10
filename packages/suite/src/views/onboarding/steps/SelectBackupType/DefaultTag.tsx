@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Badge, Text } from '@trezor/components';
 
-import { useLayoutSize } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 export const DefaultTag = () => {
     const { isBelowTablet } = useLayoutSize();

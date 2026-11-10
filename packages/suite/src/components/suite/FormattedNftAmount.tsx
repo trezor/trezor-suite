@@ -11,7 +11,7 @@ import { Box, Column, Row, Text } from '@trezor/components';
 import { type TokenTransfer } from '@trezor/connect';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { Sign } from './Sign';
 

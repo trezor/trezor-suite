@@ -9,7 +9,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailAccountListItem } from './AssetDetailAccountListItem';
 import { AssetDetailAssetDescription } from './AssetDetailAssetDescription';

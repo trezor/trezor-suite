@@ -21,7 +21,7 @@ import { type Color } from '@trezor/theme';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 import { useStakingRate } from '#src/hooks/earn/useStakingRate';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailEarnLegendSquare } from './AssetDetailEarnLegendSquare';
 

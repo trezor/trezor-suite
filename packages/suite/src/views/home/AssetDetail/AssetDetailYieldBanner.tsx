@@ -19,7 +19,7 @@ import { PiggyBankIcon, XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetDetailYieldBannerProps = {
     assetKey: WalletAssetKey;

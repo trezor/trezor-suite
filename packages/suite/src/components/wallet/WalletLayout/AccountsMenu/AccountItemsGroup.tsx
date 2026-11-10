@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
 import { type Account } from '#src/types/wallet';
 

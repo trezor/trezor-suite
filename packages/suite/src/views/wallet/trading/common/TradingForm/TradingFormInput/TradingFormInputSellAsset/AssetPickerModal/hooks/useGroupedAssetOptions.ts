@@ -6,7 +6,7 @@ import { useFreshRef } from '@trezor/react-utils';
 
 import { type AccountWithTokensOption } from '#src/components/suite/asset-picker/types';
 import { type AssetGroupKey } from '#src/components/suite/asset-picker/utils/assetGroupKey';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 import { buildGroupedAssetOptions } from '../utils/buildGroupedAssetOptions';

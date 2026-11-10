@@ -12,7 +12,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { Pagination } from '#src/components/wallet/Pagination';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 import { LoadOlderHistory } from './LoadOlderHistory';

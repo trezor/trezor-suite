@@ -17,7 +17,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { Error } from '#src/components/suite/Error';
 import { useCoinjoinSessionBlockers } from '#src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { Tile, type TileProps } from './Tile';
 

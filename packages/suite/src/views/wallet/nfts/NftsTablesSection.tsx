@@ -3,7 +3,7 @@ import { selectNftDefinitions } from '@suite-common/token-definitions';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Banner, Column, H3 } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getTokens } from '#src/utils/wallet/tokenUtils';
 
 import NftsTable from './NftsTable/NftsTable';

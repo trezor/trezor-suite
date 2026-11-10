@@ -7,8 +7,9 @@ import { Button, Card, Column, Grid, H3, Paragraph, Tooltip } from '@trezor/comp
 import { InfoIcon } from '@trezor/icons';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { DiscoveryWarning } from '../DiscoveryWarning';
 import { EmptyStakingCardFeature } from './EmptyStakingCardFeature';

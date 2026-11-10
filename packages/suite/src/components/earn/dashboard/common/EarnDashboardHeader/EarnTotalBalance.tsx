@@ -9,7 +9,7 @@ import { useCurrencyAmountParts } from '@suite-common/formatters';
 import { Row, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const TabularNumbers = styled.span`
     font-variant-numeric: tabular-nums;

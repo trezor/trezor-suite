@@ -2,7 +2,8 @@ import { Translation } from '@suite/intl';
 import { selectHomeAssetTotals } from '@suite-common/assets';
 import { Card, Column, Skeleton, Text } from '@trezor/components';
 
-import { useDiscovery, useSelector } from '#src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { HomeBalanceChange } from './HomeBalanceChange';
 import { HomeTotalBalance } from './HomeTotalBalance';

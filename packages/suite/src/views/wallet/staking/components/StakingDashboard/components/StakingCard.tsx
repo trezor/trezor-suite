@@ -35,8 +35,9 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';

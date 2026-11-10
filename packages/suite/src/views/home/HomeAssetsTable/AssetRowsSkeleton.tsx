@@ -1,7 +1,7 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { Card, Column, Row, Skeleton } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const SKELETON_ROW_COUNT = 3;
 

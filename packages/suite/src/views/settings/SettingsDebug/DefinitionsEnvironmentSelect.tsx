@@ -5,7 +5,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const options: { label: string; value: DefinitionsChannel }[] = [
     { label: 'Production', value: 'production' },

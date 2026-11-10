@@ -2,7 +2,8 @@ import { Translation } from '@suite/intl';
 import { selectHasHiddenWalletAssets } from '@suite-common/assets';
 import { Column } from '@trezor/components';
 
-import { useDiscovery, useSelector } from '#src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { AssetRowsSkeleton } from '#src/views/home/HomeAssetsTable/AssetRowsSkeleton';
 import { NoTokens } from '#src/views/wallet/tokens/common/NoTokens';
 

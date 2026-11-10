@@ -12,7 +12,7 @@ import {
 import { Card, Column, InfoItem, Skeleton } from '@trezor/components';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSendFormContext } from '#src/hooks/wallet';
 
 import { CardanoSentTokenInfo } from './CardanoSentTokenInfo';

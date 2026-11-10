@@ -20,7 +20,8 @@ import {
     Timerange,
 } from '@trezor/components';
 
-import { useConnectedDateFnsLocale, useGraph } from '#src/hooks/suite';
+import { useConnectedDateFnsLocale } from '#src/hooks/suite/useConnectedDateFnsLocale';
+import { useGraph } from '#src/hooks/suite/useGraph';
 import { type GraphRange } from '#src/types/wallet/graph';
 
 const END_OF_TODAY = endOfToday();

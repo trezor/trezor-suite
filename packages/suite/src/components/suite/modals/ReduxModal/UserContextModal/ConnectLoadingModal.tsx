@@ -3,7 +3,7 @@ import { Card, Column, Modal, Row, Spinner } from '@trezor/components';
 
 import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const ConnectLoadingModal = () => {
     const popupCall = useSelector(selectConnectPopupCall);

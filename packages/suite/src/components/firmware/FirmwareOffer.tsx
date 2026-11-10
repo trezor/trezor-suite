@@ -13,7 +13,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { ArrowRightIcon } from '@trezor/icons';
 
 import { MarkdownWithComponents } from '#src/components/suite/MarkdownWithComponents';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type FirmwareOfferProps = {
     isCustomFirmware?: boolean;

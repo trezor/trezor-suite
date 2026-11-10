@@ -13,7 +13,7 @@ import { typography } from '@trezor/theme';
 
 import { StatusLight } from '#src/components/suite/StatusLight';
 import { useBackendReconnection } from '#src/hooks/settings/backends/useBackendReconnection';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const CoinSection = styled.div`
     display: flex;

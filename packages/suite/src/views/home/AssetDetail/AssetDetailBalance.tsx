@@ -18,7 +18,7 @@ import { Card, Column, Row, Skeleton, Text, TextButton } from '@trezor/component
 import { ArrowRightIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailAccountsModal } from './AssetDetailModals/AssetDetailAccountsModal';
 
