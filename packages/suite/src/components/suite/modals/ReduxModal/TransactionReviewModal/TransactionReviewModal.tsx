@@ -26,7 +26,7 @@ import {
     signTransactionThunk,
 } from '#src/actions/wallet/stakeActions';
 import { cancelSignTronFreezeTxThunk } from '#src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';

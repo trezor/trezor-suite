@@ -20,7 +20,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
 import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
-import { useConnectedDateFnsLocale, useSelector } from '#src/hooks/suite';
+import { useConnectedDateFnsLocale } from '#src/hooks/suite/useConnectedDateFnsLocale';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
 import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';

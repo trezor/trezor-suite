@@ -1,6 +1,6 @@
 import { selectSelectedAccountKey } from '@suite/account';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { DiscoveryProgressCard } from './DiscoveryProgressCard/DiscoveryProgressCard';
 

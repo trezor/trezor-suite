@@ -35,7 +35,7 @@ import { NetworkSettingsSearchInput } from '#src/components/suite/NetworkList/Ne
 import { AddAccountBannerAboutNetworks } from '#src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from '#src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
-import { useAccountSearch } from '#src/hooks/suite';
+import { useAccountSearch } from '#src/hooks/suite/useAccountSearch';
 import { NoNetworkSearchResults } from '#src/views/settings/SettingsCoins/NoNetworkSearchResults';
 import { useNetworkSettingsSearch } from '#src/views/settings/SettingsCoins/useNetworkSettingsSearch';
 

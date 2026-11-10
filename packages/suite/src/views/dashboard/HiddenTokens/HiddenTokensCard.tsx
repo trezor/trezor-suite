@@ -5,7 +5,7 @@ import { type HiddenTokenReason, selectHiddenWalletAssetKeys } from '@suite-comm
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, Card, Column, Divider, Row, Text, VirtualizedList } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import {
     HIDDEN_TOKEN_BALANCE_WIDTH,

@@ -6,7 +6,7 @@ import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { type AccountWithOptionalLabel, type AccountWithTokensOption } from '../types';
 

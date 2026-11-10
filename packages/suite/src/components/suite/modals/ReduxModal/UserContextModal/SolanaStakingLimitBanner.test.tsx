@@ -19,7 +19,7 @@ jest.mock('@trezor/network-solana/runtime', () => ({
             claim: claimMock,
         }),
 }));
-jest.mock('#src/hooks/suite', () => ({
+jest.mock('#src/hooks/suite/useSelector', () => ({
     useSelector: () => 'https://solana.example',
 }));
 jest.mock('@suite/intl', () => ({

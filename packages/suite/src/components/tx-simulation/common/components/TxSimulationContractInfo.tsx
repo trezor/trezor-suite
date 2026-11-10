@@ -6,7 +6,7 @@ import { type Network, getExplorerUrl } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { CollapsibleBox, Column, H4, Link, Row, Text } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
 interface TxSimulationContractInfoProps {

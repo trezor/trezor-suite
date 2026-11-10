@@ -21,7 +21,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
 import { setView } from '#src/actions/suite/guideActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { GuideContent } from './GuideContent';
 import { GuideHeader } from './GuideHeader';

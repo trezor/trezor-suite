@@ -16,7 +16,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { EyeIcon, EyeSlashIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetDetailHiddenBannerProps = {
     assetKey: WalletAssetKey;

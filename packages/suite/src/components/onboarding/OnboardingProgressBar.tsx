@@ -8,7 +8,8 @@ import {
 } from '@suite/settings';
 import { StepList, type StepListItemState, Text } from '@trezor/components';
 
-import { useOnboarding, useSelector } from '#src/hooks/suite';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { stepCategories } from '../../config/onboarding/steps';
 import { isStepCategoryUsed } from '../../utils/onboarding/steps';

@@ -20,7 +20,7 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Column } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { DayHeader } from './DayHeader';
 

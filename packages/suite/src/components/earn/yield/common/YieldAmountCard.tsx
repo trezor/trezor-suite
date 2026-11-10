@@ -11,7 +11,7 @@ import { Banner, Card, Column, Row, Text, TextButton } from '@trezor/components'
 import { NumberInput } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { validateDecimals } from '#src/utils/suite/validation';
 
 import { YieldAmountInputAddon } from './YieldAmountInputAddon';

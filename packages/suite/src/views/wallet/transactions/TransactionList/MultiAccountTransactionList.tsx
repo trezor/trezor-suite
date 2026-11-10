@@ -29,7 +29,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { Pagination } from '#src/components/wallet/Pagination';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { LoadOlderHistory } from './LoadOlderHistory';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';

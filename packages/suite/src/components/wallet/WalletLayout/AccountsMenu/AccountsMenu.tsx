@@ -4,8 +4,8 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Column, useScrollShadow } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
 import { ReduxAccountSearchProvider } from '#src/hooks/suite/useAccountSearch';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
 import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 

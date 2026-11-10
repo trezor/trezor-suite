@@ -11,7 +11,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { validateDecimals, validateMin } from '#src/utils/suite/validation';
 
 import { TronCurrencySwitchButton } from '../TronCurrencySwitchButton';

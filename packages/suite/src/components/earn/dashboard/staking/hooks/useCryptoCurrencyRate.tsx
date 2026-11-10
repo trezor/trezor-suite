@@ -2,7 +2,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const useCryptoCurrentRate = (symbol: NetworkSymbol) => {
     const baseCurrency = useSelector(selectBaseCurrency);

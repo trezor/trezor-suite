@@ -3,7 +3,7 @@ import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { PassphraseModal } from '#src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseModal';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const HIDDEN_WALLET_TERMINAL_STATUSES: ReadonlySet<DiscoveryStatus['status']> = new Set([
     'cancelled',

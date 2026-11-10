@@ -9,7 +9,7 @@ import {
 } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { ContentFlex } from '#src/support/suite/ContentFlex';
 
 type SecurityCheckLayoutProps = {

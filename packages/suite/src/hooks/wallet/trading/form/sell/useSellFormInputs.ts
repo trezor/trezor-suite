@@ -15,7 +15,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingCryptoAssetChange } from '#src/hooks/wallet/trading/form/common/useTradingCryptoAssetChange';
 import { useTradingFiatCryptoAmount } from '#src/hooks/wallet/trading/form/common/useTradingFiatCryptoAmount';
 import { useTradingSendAssetBalance } from '#src/hooks/wallet/trading/form/common/useTradingSendAssetBalance';

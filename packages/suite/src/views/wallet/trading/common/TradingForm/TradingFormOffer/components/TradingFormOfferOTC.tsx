@@ -18,8 +18,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
 import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 import {

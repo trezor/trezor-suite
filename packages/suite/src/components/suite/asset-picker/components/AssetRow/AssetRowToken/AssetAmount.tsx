@@ -9,7 +9,7 @@ import { asAmountUnit } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export type AssetAmountProps = {
     networkSymbol: NetworkSymbol;

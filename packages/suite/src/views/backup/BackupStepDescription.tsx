@@ -2,7 +2,7 @@ import { selectBackupStatus } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { isArrayMember } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
 

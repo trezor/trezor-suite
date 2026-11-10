@@ -14,7 +14,9 @@ import {
     type NavigationItem,
     SubpageNavigation,
 } from '#src/components/suite/layouts/SuiteLayout/SubpageNavigation';
-import { useDiscovery, useLayout, useSelector } from '#src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useLayout } from '#src/hooks/suite/useLayout';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { AccountHeaderProvider } from '#src/support/suite/AccountHeaderProvider';
 import { SettingsLoading } from '#src/views/settings/SettingsLoader';
 

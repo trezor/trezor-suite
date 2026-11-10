@@ -11,7 +11,7 @@ import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { DeviceConfirmImage } from '#src/components/suite/DeviceConfirmImage';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const ImageWrapper = styled.div`
     display: flex;

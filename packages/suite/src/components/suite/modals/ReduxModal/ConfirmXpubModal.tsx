@@ -5,7 +5,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { getFirmwareDescriptor } from '@suite-common/wallet-utils';
 
 import { showXpubThunk } from '#src/actions/wallet/publicKeyActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import {
     ConfirmValueModal,

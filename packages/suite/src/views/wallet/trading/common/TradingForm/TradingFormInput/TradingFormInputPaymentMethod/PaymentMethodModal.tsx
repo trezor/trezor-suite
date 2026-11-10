@@ -10,7 +10,7 @@ import {
 import { Modal } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     type TradingTradeBuySellType,

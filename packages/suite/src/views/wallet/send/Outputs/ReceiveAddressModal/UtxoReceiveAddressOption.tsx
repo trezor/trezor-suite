@@ -10,8 +10,8 @@ import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { CoinBalance } from '#src/components/suite/CoinBalance';
-import { useSelector } from '#src/hooks/suite';
 import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface UtxoReceiveAddressOptionProps {
     account: Account;

@@ -26,7 +26,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { Loading } from '#src/components/suite/Loading';
 import { PinMatrix } from '#src/components/suite/PinMatrix/PinMatrix';
 import { WordInputAdvanced } from '#src/components/suite/WordInputAdvanced';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import type { ForegroundAppProps } from '#src/types/suite';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';

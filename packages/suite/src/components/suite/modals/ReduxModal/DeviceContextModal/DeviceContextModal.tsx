@@ -7,7 +7,7 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import TrezorConnect, { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ConfirmActionModal } from './ConfirmActionModal';
 import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';

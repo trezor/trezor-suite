@@ -5,7 +5,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { AnchorIcon, KeyIcon, PencilLineIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const items = [
     {

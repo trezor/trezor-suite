@@ -2,7 +2,7 @@ import { useDevice } from '@suite/device';
 import { openGithubIssue } from '@suite/github';
 import { SectionItem } from '@trezor/product-components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectActiveTransports } from '#src/selectors/suite/suiteSelectors';
 
 export const GithubIssue = () => {

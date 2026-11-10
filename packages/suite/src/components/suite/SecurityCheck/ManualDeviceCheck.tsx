@@ -39,7 +39,8 @@ import {
 } from '@trezor/urls';
 
 import { Hologram } from '#src/components/onboarding/Hologram';
-import { useLayoutSize, useOnboarding } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
 import { selectIsOnboardingActive } from '#src/reducers/onboarding/onboardingReducer';
 import { ContentFlex, useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 

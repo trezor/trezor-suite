@@ -25,9 +25,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useStakingRate } from '#src/hooks/earn/useStakingRate';
-import { useSelector } from '#src/hooks/suite';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EarnStakingActionButtons } from './EarnStakingActionButtons';
 import { EarnStakingCurrentRewards } from './EarnStakingCurrentRewards';

@@ -9,7 +9,7 @@ import { type TradingType } from '@suite-common/trading';
 import { Column } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingFormOfferBuyActions } from '#src/views/wallet/trading/buy/TradingFormOfferBuyActions';
 import { TradingUtilsTorWarning } from '#src/views/wallet/trading/common/TradingUtils/TradingUtilsTorWarning';

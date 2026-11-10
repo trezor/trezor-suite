@@ -10,7 +10,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { toggleDeviceAuthenticityCheck } from '#src/actions/suite/suiteActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type DeviceAuthenticityOptOutProps = {
     isDeviceAuthenticityCheckSupported: boolean;

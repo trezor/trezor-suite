@@ -11,8 +11,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_ADA_STAKING_UPDATE_PROVIDER } from '@trezor/urls';
 
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
-import { useSelector } from '#src/hooks/suite';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface NewProviderCardProps {
     account: Account;

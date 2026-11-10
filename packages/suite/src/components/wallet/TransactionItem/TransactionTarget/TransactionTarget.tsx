@@ -39,7 +39,7 @@ import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { Sign } from '#src/components/suite/Sign';
 import { AccountLabelForOwnAddress } from '#src/components/suite/labeling/AccountLabelForOwnAddress';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';

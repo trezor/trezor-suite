@@ -17,7 +17,7 @@ import {
 import { Box } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import {
     NoDeviceEshopSidebarBanner,

@@ -11,7 +11,8 @@ import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { Metadata } from '#src/components/suite/Metadata';
-import { useLayout, useSelector } from '#src/hooks/suite';
+import { useLayout } from '#src/hooks/suite/useLayout';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { AutoStart } from '#src/views/settings/SettingsGeneral/AutoStart';
 
 import { ErrorPage } from '../ErrorPage';

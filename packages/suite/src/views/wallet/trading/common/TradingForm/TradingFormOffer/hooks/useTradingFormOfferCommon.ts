@@ -1,7 +1,7 @@
 import { type TradingType, selectTradingSendAccount } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getSelectedCryptoId } from '#src/utils/wallet/trading/tradingTypingUtils';
 import { useTradingQuoteAmounts } from '#src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';

@@ -20,7 +20,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSolanaSubscribeBlocks } from '#src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingAmountUnitSync } from '#src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
 import { useTradingComposeTransaction } from '#src/hooks/wallet/trading/form/common/useTradingComposeTransaction';

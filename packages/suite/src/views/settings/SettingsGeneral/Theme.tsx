@@ -8,7 +8,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type ThemeColorVariant } from '@trezor/theme';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getOsTheme } from '#src/utils/suite/env';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';

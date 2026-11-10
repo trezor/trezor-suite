@@ -11,7 +11,7 @@ import { MagnifyingGlassIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { setTransactionHistoryPrefill } from '#src/actions/suite/suiteActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectTransactionHistoryPrefill } from '#src/selectors/suite/suiteSelectors';
 
 import { ExportAction } from './ExportAction';

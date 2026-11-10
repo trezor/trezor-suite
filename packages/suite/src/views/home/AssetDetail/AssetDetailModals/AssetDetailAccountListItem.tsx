@@ -5,7 +5,7 @@ import { CardList, Column, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { HOME_ASSET_LINE_GAP } from '#src/views/home/HomeAssetsTable/homeAssetTableLayout';
 
 import { AssetDetailAccountIdentity } from './AssetDetailAccountIdentity';

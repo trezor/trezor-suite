@@ -10,7 +10,7 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 

@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { CardList, CollapsibleBox, Column, Text } from '@trezor/components';
 import { arrayPartition } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ReceiveAccountItem } from './ReceiveAccountItem';
 

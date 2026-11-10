@@ -10,7 +10,7 @@ import { TokenIcon } from '@trezor/product-components';
 import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { FiatHeader } from '#src/components/wallet/FiatHeader';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 
 type AccountOverviewBalanceSkeletonProps = {

@@ -6,7 +6,7 @@ import { PlusIcon, TrashIcon } from '@trezor/icons';
 
 import { type BackendsForm } from '#src/hooks/settings/backends/useBackendsForm';
 import { useDefaultUrls } from '#src/hooks/settings/backends/useDefaultUrls';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type BackendUrlsProps = {
     symbol: NetworkSymbol;

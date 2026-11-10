@@ -9,7 +9,7 @@ import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet
 import { useFreshRef } from '@trezor/react-utils';
 
 import { type AssetRowOption } from '#src/components/suite/asset-picker/types';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { buildSellAssetRows } from '../utils/buildSellAssetRows';
 

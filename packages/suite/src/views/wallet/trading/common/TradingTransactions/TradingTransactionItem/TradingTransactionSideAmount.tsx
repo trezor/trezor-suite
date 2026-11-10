@@ -6,7 +6,7 @@ import { selectShouldShowNetworkIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { TradingCoinLogo } from '#src/views/wallet/trading/common/TradingCoinLogo';
 
 import { type TradingTransactionSide } from './tradingTransactionItemUtils';

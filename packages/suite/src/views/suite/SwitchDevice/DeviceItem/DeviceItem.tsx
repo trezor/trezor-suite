@@ -26,7 +26,7 @@ import {
     addDeviceIdToSeenDisconnectNotification,
     setRecentlyDisconnectedDevice,
 } from '#src/actions/suite/suiteActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectRecentlyDisconnectedDevice } from '#src/selectors/suite/suiteSelectors';
 import type { ForegroundAppProps } from '#src/types/suite';
 

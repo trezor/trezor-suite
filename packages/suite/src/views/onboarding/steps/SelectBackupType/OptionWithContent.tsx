@@ -7,7 +7,7 @@ import { type BackupType } from '@suite-common/suite-types';
 import { Icon, Radio, Row, Text, Tooltip, variables } from '@trezor/components';
 import { CaretDownIcon, RecoverySeedIcon } from '@trezor/icons';
 
-import { useLayoutSize } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { typesToLabelMap } from './typesToLabelMap';
 

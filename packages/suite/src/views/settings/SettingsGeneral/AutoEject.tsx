@@ -11,7 +11,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { setAutoEjectEnabledThunk } from '#src/actions/suite/autoEjectThunks';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AutoEjectConfirmationModalProps = {
     onCancel: () => void;

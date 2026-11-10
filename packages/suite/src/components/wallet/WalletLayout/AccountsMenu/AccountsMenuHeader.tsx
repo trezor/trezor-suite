@@ -13,7 +13,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { CollapsedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { useAccountSearch, useSelector } from '#src/hooks/suite';
+import { useAccountSearch } from '#src/hooks/suite/useAccountSearch';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';

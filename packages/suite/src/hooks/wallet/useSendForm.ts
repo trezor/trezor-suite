@@ -34,7 +34,7 @@ import {
     saveSendFormDraftThunk,
     signAndPushSendFormTransactionThunk,
 } from '#src/actions/wallet/send/sendFormThunks';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectProtocol } from '#src/selectors/suite/protocolSelectors';
 import { type SendContextValues, type UseSendFormState } from '#src/types/wallet/sendForm';
 

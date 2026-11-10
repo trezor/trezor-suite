@@ -14,8 +14,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
-import { useDiscovery, useSelector } from '#src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
 import { useOpenSuiteDesktop } from '#src/hooks/suite/useOpenSuiteDesktop';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectPrerequisite } from '#src/selectors/suite/suiteSelectors';
 import { SwitchDeviceContent } from '#src/views/suite/SwitchDevice/SwitchDevice';
 

@@ -8,7 +8,7 @@ import { isUtxoBased } from '@suite-common/wallet-utils';
 import { CloudIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from '#src/components/wallet/AccountExceptionLayout';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface NoTransactionsProps {
     account: Account;

@@ -3,7 +3,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
 
 import { DeviceStatus } from './DeviceStatus';

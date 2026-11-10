@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type TruncatedAmountProps = {
     children: ReactNode;

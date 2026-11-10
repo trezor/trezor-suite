@@ -17,7 +17,7 @@ import {
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_UDEV,
 } from '#src/components/suite/troubleshooting/tips/troubleshootingTipItems';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from '#src/selectors/suite/suiteSelectors';
 
 import { AnimationCard } from './AnimationCard';

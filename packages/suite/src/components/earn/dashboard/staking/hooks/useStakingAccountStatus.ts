@@ -12,7 +12,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export type StakingAccountStatus =
     | 'insufficient-funds'

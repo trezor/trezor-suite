@@ -7,7 +7,7 @@ import { Box, Row, Text } from '@trezor/components';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type LegendSquareProps = {
     color: Color;

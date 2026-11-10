@@ -6,7 +6,7 @@ import { Column, Divider, InfoItem, Row, Skeleton, Text } from '@trezor/componen
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useCancelTxContext } from '#src/hooks/wallet/useCancelTxContext';
 
 import { CancelTransactionCard } from './CancelTransactionCard';

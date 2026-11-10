@@ -11,7 +11,7 @@ import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { beginOnboardingTutorialThunk } from '#src/actions/onboarding/onboardingActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const DeviceTutorialStep = () => {
     const device = useSelector(selectSelectedDevice);
