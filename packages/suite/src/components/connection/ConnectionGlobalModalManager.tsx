@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 
 import { selectIsConnectionModalOpen, setConnectionModal } from '@suite/device';
 import { selectThpStep } from '@suite-common/thp';
+import { ModalSkeleton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -28,7 +29,7 @@ export const ConnectionGlobalModalManager = () => {
 
     return (
         <ConnectionGlobalModalProvider>
-            <Suspense fallback={null}>
+            <Suspense fallback={<ModalSkeleton />}>
                 <ConnectDeviceGlobalModal onCancel={closeConnectionModal} />
             </Suspense>
         </ConnectionGlobalModalProvider>

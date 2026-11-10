@@ -5,6 +5,7 @@ import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
+import { ModalSkeleton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
@@ -27,7 +28,7 @@ const Inner = ({ modal }: InnerProps) => {
         case 'redux-modal':
             // ReduxModal's switches load their modals lazily; this is their only render site.
             return (
-                <Suspense fallback={null}>
+                <Suspense fallback={<ModalSkeleton />}>
                     <ReduxModal {...modal.payload} />
                 </Suspense>
             );

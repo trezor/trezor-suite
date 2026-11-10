@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 
 import { selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
+import { ModalSkeleton } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite';
 
@@ -20,7 +21,7 @@ export const WipedBleDeviceNeedsManualOsRemovalModalManager = () => {
     }
 
     return (
-        <Suspense fallback={null}>
+        <Suspense fallback={<ModalSkeleton />}>
             <UnpairBluetoothDeviceFromOsModal
                 skipToggleModalConnection={wasBluetoothDeviceWiped.skipToggleModalConnection}
             />

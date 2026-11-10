@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 
 import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
 import { selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
+import { ModalSkeleton } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite';
 
@@ -17,7 +18,7 @@ export const ThpGlobalModalManager = () => {
     }
 
     return (
-        <Suspense fallback={null}>
+        <Suspense fallback={<ModalSkeleton />}>
             <ThpStepModal
                 device={device}
                 thpStep={thpStep}
