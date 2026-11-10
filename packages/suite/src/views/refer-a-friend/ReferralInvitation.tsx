@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Box, Button, Card, Column, Flex, H3, Link, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
+import { DATA_PRIVACY_URL, TREZOR_TOS_REFER_A_FRIEND_URL, TREZOR_TOS_URL } from '@trezor/urls';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
@@ -91,19 +92,11 @@ export const ReferralInvitation = ({
                 <Translation
                     id="TR_REFERRAL_TERMS"
                     values={{
-                        privacyPolicy: chunks => (
-                            <Link href="https://data.trezor.io/legal/privacy-policy.html">
-                                {chunks}
-                            </Link>
-                        ),
+                        privacyPolicy: chunks => <Link href={DATA_PRIVACY_URL}>{chunks}</Link>,
                         programTerms: chunks => (
-                            <Link href="https://trezor.io/terms-of-use#refer-a-friend">
-                                {chunks}
-                            </Link>
+                            <Link href={TREZOR_TOS_REFER_A_FRIEND_URL}>{chunks}</Link>
                         ),
-                        generalTerms: chunks => (
-                            <Link href="https://trezor.io/terms-of-use">{chunks}</Link>
-                        ),
+                        generalTerms: chunks => <Link href={TREZOR_TOS_URL}>{chunks}</Link>,
                     }}
                 />
             </Paragraph>
