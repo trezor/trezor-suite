@@ -29,7 +29,7 @@ import { type StaticSessionId } from '@trezor/connect';
 
 import { type StorageLoadAction } from '#src/actions/suite/storageLifecycleActions';
 
-import type { BioAuthState } from '../reducers/bioAuth';
+import type { BioAuthState } from '../reducers/bioAuth/bioAuthReducer';
 import { type TrezorDevice } from '../types/suite';
 
 export const storageLoadReducers = {
