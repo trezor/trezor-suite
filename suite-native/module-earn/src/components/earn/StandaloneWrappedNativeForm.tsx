@@ -159,7 +159,5 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         </Screen>
     );
 
-    return (
-        <TokenMetadataProvider sources={metadataSources}>{content}</TokenMetadataProvider>
-    );
+    return <TokenMetadataProvider sources={metadataSources}>{content}</TokenMetadataProvider>;
 };

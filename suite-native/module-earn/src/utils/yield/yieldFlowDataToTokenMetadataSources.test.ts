@@ -13,7 +13,13 @@ describe('yieldFlowDataToTokenMetadataSources', () => {
             vault: {
                 ...vault,
                 token: { ...vault.token, address: VAULT_TOKEN_ADDRESS },
-                outputToken: { ...vault.outputToken, address: RECEIPT_TOKEN_ADDRESS },
+                outputToken: {
+                    address: RECEIPT_TOKEN_ADDRESS,
+                    symbol: 'trWETH',
+                    name: 'Trezor Wrapped Ether',
+                    decimals: 18,
+                    network: 'ethereum',
+                },
             },
             token: { ...defaults.token, contractAddress: VAULT_TOKEN_ADDRESS.toLowerCase() },
             receiptToken: {

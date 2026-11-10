@@ -30,7 +30,7 @@ export const yieldFlowDataToTokenMetadataSources = (
         ? [token.contractAddress, vault.token.address]
         : [];
     const receiptContracts = receiptToken.contractAddress
-        ? [receiptToken.contractAddress, vault.outputToken.address]
+        ? [receiptToken.contractAddress, vault.outputToken?.address]
         : [];
 
     return [
@@ -43,7 +43,7 @@ export const yieldFlowDataToTokenMetadataSources = (
                     decimals: token.decimals,
                 }),
                 ...toTokenMetadataForContracts(receiptContracts, {
-                    name: vault.outputToken.name,
+                    name: vault.outputToken?.name,
                     symbol: receiptToken.symbol,
                     decimals: receiptToken.decimals,
                 }),

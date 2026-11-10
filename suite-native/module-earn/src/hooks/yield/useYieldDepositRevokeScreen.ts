@@ -345,5 +345,6 @@ export const useYieldDepositRevokeScreen = () => {
         tokenContract: route.params.tokenContract,
         tokenSymbol,
         vaultTokenName,
+        yieldFlowData,
     };
 };
