@@ -9,12 +9,12 @@ import {
     TransactionBuilder,
     nativeToScVal,
     rpc,
-    scValToNative,
     xdr,
 } from '@stellar/stellar-sdk';
 
 import { BigNumber, arrayChunk, resolveAfter } from '@trezor/utils';
 
+import { tryScValToNative } from './rpc/decode';
 import { readSorobanInclusionFee } from './rpc/fees';
 import { getStellarRpcServer } from './rpc/server';
 import {
@@ -83,7 +83,7 @@ const simulateContractRead = async (
 
     const retval = simulation.result?.retval;
 
-    return retval ? scValToNative(retval) : undefined;
+    return retval ? tryScValToNative(retval) : undefined;
 };
 
 /** Reads `balance(holder)` as a base-unit string, `undefined` when it cannot be read. */
@@ -261,11 +261,11 @@ const readLedgerBalance = (value: unknown): string | undefined => {
 
 const readLedgerMetadata = (instance: xdr.ScContractInstance): Sep41Metadata | undefined => {
     const stored = instance.storage?.find(
-        entry => scValToNative(entry.key) === SEP41_METADATA_STORAGE_KEY,
+        entry => tryScValToNative(entry.key) === SEP41_METADATA_STORAGE_KEY,
     );
     if (!stored) return undefined;
 
-    const metadata: unknown = scValToNative(stored.val);
+    const metadata = tryScValToNative(stored.val);
     if (metadata == null || typeof metadata !== 'object') return undefined;
 
     // `soroban-token-sdk` names the field `decimal`, singular.
@@ -296,7 +296,7 @@ const parseLedgerEntries = (entries: rpc.Api.LedgerEntryResult[]) => {
             if (data.val.type !== 'scvContractInstance') return;
             result.metadata = readLedgerMetadata(data.val.value);
         } else {
-            result.balance = readLedgerBalance(scValToNative(data.val));
+            result.balance = readLedgerBalance(tryScValToNative(data.val));
         }
 
         byContract.set(contract, result);

@@ -170,6 +170,28 @@ describe(readContractTokenTransfers.name, () => {
         expect(transfer?.amount).toBe('15');
     });
 
+    it('skips an event whose value cannot be decoded and keeps the other transfers', async () => {
+        // The keys `u32 1` and `symbol "1"` decode to the same property, which the SDK rejects.
+        const collidingKeys = xdr.ScVal.scvMap([
+            new xdr.ScMapEntry({ key: xdr.ScVal.scvU32(1), val: i128(1n) }),
+            new xdr.ScMapEntry({ key: symbol('1'), val: i128(2n) }),
+        ]);
+        const { server } = mockServer([
+            [
+                transferEvent({ value: collidingKeys, txHash: 'undecodable' }),
+                transferEvent({ txHash: 'readable', ledger: 101 }),
+            ],
+        ]);
+
+        const transfers = await readContractTokenTransfers({
+            server,
+            account: ACCOUNT,
+            contractIds: [CONTRACT],
+        });
+
+        expect(transfers.map(({ txHash }) => txHash)).toEqual(['readable']);
+    });
+
     it('skips failed calls and events whose parties are not addresses', async () => {
         const { server } = mockServer([
             [
