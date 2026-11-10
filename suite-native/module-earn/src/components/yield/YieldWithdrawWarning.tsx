@@ -1,8 +1,8 @@
-import { useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { TokenSymbol } from '@suite-native/tokens';
 
 type YieldWithdrawWarningProps = {
     isAmountTooHigh: boolean;
@@ -19,8 +19,18 @@ export const YieldWithdrawWarning = ({
     networkSymbol,
     tokenContract,
 }: YieldWithdrawWarningProps) => {
-    const token = useTokenMetadata(networkSymbol, tokenContract);
-    const vaultTokenSymbol = tokenContract ? token?.symbol : getNetworkDisplaySymbol(networkSymbol);
+    const vaultTokenSymbol = tokenContract ? (
+        // Nested Text does not inherit the info banner's text style.
+        <TokenSymbol
+            networkSymbol={networkSymbol}
+            contractAddress={tokenContract}
+            variant="body-sm"
+            color="contentInfo"
+        />
+    ) : (
+        getNetworkDisplaySymbol(networkSymbol)
+    );
+
     if (isAmountTooHigh) {
         return (
             <BannerInline

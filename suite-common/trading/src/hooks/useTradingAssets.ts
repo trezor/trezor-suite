@@ -9,7 +9,6 @@ import {
     type NetworkConfigWithoutTestnets,
     type NetworkSymbol,
     asNetworkSymbol,
-    getDisplaySymbol,
     getMainnets,
     getNetwork,
     getNetworkDisplaySymbolName,
@@ -155,7 +154,7 @@ export function createAssetTokenOption<
         contractAddress: token.contract,
         symbol: token.symbol!,
         name: token.name!,
-        displaySymbol: getDisplaySymbol(token.symbol!, token.contract),
+        displaySymbol: token.symbol!,
 
         networkSymbol,
         networkName: network.name,
