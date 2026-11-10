@@ -1,6 +1,8 @@
 import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { TokenSymbol } from '@suite/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, type AllowanceLimitType } from '@suite-common/wallet-types';
 import { Banner, CardList, Column, Modal } from '@trezor/components';
@@ -88,6 +90,13 @@ export const ApproveModal = ({
     if (!token?.symbol || isSending) return null;
 
     const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const symbolLabel = (
+        <TokenSymbol
+            networkSymbol={account.symbol}
+            tokenContract={toTokenAddress(token.contract)}
+            isTruncated
+        />
+    );
     const currentLimit =
         preapprovedAmount && preapprovedAmount !== '0' ? preapprovedAmount : undefined;
     const hasCurrentLimit = currentLimit !== undefined;
@@ -100,8 +109,8 @@ export const ApproveModal = ({
                 onCancel={handleCancel}
                 intent="brand"
                 width={480}
-                heading={<Translation id={heading} values={{ displaySymbol }} />}
-                description={<Translation id={description} values={{ displaySymbol }} />}
+                heading={<Translation id={heading} values={{ displaySymbol: symbolLabel }} />}
+                description={<Translation id={description} values={{ displaySymbol: symbolLabel }} />}
                 bottomContent={
                     <>
                         <Modal.Button

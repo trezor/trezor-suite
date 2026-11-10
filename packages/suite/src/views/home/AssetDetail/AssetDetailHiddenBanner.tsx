@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { TokenSymbol } from '@suite/token';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
@@ -63,7 +64,15 @@ export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerPro
             description={
                 <Translation
                     id="TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION"
-                    values={{ asset: displaySymbol }}
+                    values={{
+                        asset: (
+                            <TokenSymbol
+                                networkSymbol={symbol}
+                                tokenContract={contractAddress}
+                                isTruncated
+                            />
+                        ),
+                    }}
                 />
             }
             rightContent={

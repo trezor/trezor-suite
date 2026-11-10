@@ -17831,6 +17831,7 @@ __metadata:
     "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.3.0"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"

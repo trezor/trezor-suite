@@ -184,9 +184,6 @@ export const getNetworkDisplaySymbol = (symbol: NetworkSymbol): string =>
     getNetwork(symbol).displaySymbol;
 
 export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {
-    const MAX_SYMBOL_LENGTH = 10;
-    const isTokenSymbolLong = coinSymbol.length > MAX_SYMBOL_LENGTH;
-
     const symbol = coinSymbol.toLowerCase();
 
     // TODO: L2 networks - Base, Arbitrum, Optimism native tokens
@@ -194,7 +191,7 @@ export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | 
         return getNetworkDisplaySymbol(symbol);
     }
 
-    return isTokenSymbolLong ? `${coinSymbol.slice(0, MAX_SYMBOL_LENGTH)}...` : coinSymbol;
+    return coinSymbol;
 };
 
 export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol): string => {

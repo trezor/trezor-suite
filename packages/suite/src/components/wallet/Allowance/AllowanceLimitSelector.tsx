@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { TokenSymbol } from '@suite/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { type AllowanceLimitType } from '@suite-common/wallet-types';
 import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -75,12 +77,21 @@ export const AllowanceLimitSelector = ({
     const displaySymbol = token.symbol
         ? getDisplaySymbol(token.symbol, token.contract)
         : token.name;
+    const symbolLabel = token.symbol ? (
+        <TokenSymbol
+            networkSymbol={networkSymbol}
+            tokenContract={toTokenAddress(token.contract)}
+            isTruncated
+        />
+    ) : (
+        token.name
+    );
 
     const providerKind: ProviderKind = provider.kind ?? 'provider';
 
     const translationValues = {
         value: subunitsToUnits({ value: displayAmount, decimals: token.decimals }).toString(),
-        send: displaySymbol,
+        send: symbolLabel,
         provider: provider.name,
     };
 
@@ -103,7 +114,7 @@ export const AllowanceLimitSelector = ({
                         <Icon as={WarningIcon} size={16} />
                         <Translation
                             id={UNLIMITED_WARNING_ID[providerKind]}
-                            values={{ send: displaySymbol }}
+                            values={{ send: symbolLabel }}
                         />
                     </Row>
                 </Text>
