@@ -115,6 +115,9 @@ jobs:
       currents-project-id: "Og0NOQ"
       currents-ci-build-id: "nightly-web-run-${{ github.run_id }}-${{ github.run_attempt }}"
       enable-coverage: "true"
+      # The full run with coverage takes about 40 minutes, so a few slow or retried tests used to push
+      # all groups over the default 45 minutes and leave the coverage map without data.
+      timeout-minutes: 60
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
@@ -129,6 +132,12 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Require finished web e2e jobs
+        if: needs.run-e2e-suite-web-tests.result == 'cancelled'
+        run: |
+          echo "::error title=Web e2e jobs cancelled::The web e2e jobs were cancelled (usually by their timeout), so they uploaded no per-test coverage map."
+          exit 1
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 

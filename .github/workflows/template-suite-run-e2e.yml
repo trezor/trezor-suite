@@ -78,6 +78,11 @@ on:
         description: "Name of the artifact to download (e.g. desktop app build)"
         required: false
         type: string
+      timeout-minutes:
+        description: "Job timeout in minutes. A job that hits it is cancelled and skips the log and coverage map uploads."
+        required: false
+        default: 45
+        type: number
     secrets:
       currents-record-key:
         description: "Currents record key for reporting"
@@ -101,7 +106,7 @@ on:
 jobs:
   run-e2e-tests:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: ${{ inputs.timeout-minutes }}
     env:
       CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id || format('pr-run-{0}-{1}-{2}', inputs.target, github.run_id, github.run_attempt) }}
       CURRENTS_MACHINE_ID: ${{ inputs.target }}-group-${{ inputs.test-group }}
