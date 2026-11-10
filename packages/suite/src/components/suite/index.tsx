@@ -76,5 +76,6 @@ export {
     MarkdownWithComponents,
     getMessageId,
 };
-export * from './graph';
+export { GraphRangeSelector } from './graph/GraphRangeSelector';
+export { GraphSkeleton } from './graph/GraphSkeleton';
 export * from './notifications';
