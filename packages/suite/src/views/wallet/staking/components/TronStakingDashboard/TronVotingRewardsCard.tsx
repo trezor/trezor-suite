@@ -19,9 +19,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from 'src/components/suite';
-import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from '#src/components/suite';
+import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 import { useTronRewardsClaimCoolDown } from './hooks/useTronRewardsClaimCoolDown';
 

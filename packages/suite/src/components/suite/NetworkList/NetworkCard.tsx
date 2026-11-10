@@ -6,7 +6,7 @@ import { Box, Card, Column, IconButton, Row, StatusBadge, Text } from '@trezor/c
 import { SlidersIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 import { RepresentativeAssetIconSet } from './RepresentativeAssetIconSet';
 import { type BackendStatus } from './getBackendStatus';

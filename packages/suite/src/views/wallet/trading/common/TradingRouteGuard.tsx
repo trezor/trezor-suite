@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { selectIsRegionRestricted } from '@suite/regions';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { TradingRestricted } from './TradingRestricted';
 

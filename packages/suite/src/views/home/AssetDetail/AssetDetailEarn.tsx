@@ -18,10 +18,10 @@ import { ArrowRightIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type Color } from '@trezor/theme';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useSelector } from 'src/hooks/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
+import { useStakingRate } from '#src/hooks/earn/useStakingRate';
+import { useSelector } from '#src/hooks/suite';
 
 import { AssetDetailEarnLegendSquare } from './AssetDetailEarnLegendSquare';
 

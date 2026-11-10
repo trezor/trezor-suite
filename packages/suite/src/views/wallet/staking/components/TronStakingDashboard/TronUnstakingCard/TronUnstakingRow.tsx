@@ -1,7 +1,7 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, type Padding, Table, Text } from '@trezor/components';
 
-import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from 'src/components/suite';
+import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from '#src/components/suite';
 
 const CELL_PADDING = { vertical: 12, horizontal: 20 } satisfies Padding;
 

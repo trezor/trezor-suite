@@ -8,8 +8,8 @@ import { CardList } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AssetsModal } from 'src/components/suite/asset-picker/components';
-import { useSelector } from 'src/hooks/suite';
+import { AssetsModal } from '#src/components/suite/asset-picker/components';
+import { useSelector } from '#src/hooks/suite';
 
 import { AssetDetailAccountListItem } from './AssetDetailAccountListItem';
 import { AssetDetailAssetDescription } from './AssetDetailAssetDescription';

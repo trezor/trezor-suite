@@ -21,8 +21,8 @@ import { type WithServices, createThunk } from '@trezor/redux-utils';
 import {
     type SelectAccountLabelsForSearchState,
     selectAccountLabelsForSearch,
-} from 'src/selectors/suite/selectAccountLabelsForSearch';
-import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
+} from '#src/selectors/suite/selectAccountLabelsForSearch';
+import { formatData, getExportedFileName } from '#src/utils/wallet/exportTransactionsUtils';
 
 type ExportTransactionsThunkParams = {
     account: Account;

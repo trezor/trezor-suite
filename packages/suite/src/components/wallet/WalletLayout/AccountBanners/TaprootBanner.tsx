@@ -6,8 +6,8 @@ import { getBip43Type } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
+import { useSelector } from '#src/hooks/suite';
+import { type Account } from '#src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';

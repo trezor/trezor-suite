@@ -4,8 +4,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column, H4, IconCircle, Paragraph, Row, Text } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 
-import { ItemClickableContainer } from 'src/components/suite/asset-picker/components/AssetRow/ItemClickableContainer';
-import { useDiscovery } from 'src/hooks/suite';
+import { ItemClickableContainer } from '#src/components/suite/asset-picker/components/AssetRow/ItemClickableContainer';
+import { useDiscovery } from '#src/hooks/suite';
 
 import { GlobalReceiveAccountListItem } from '../components/GlobalReceiveAccountListItem';
 import { GLOBAL_RECEIVE_LIST_HEIGHT } from '../constants';

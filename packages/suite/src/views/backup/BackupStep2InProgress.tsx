@@ -1,6 +1,6 @@
 import { Modal } from '@trezor/components';
 
-import { Loading } from 'src/components/suite';
+import { Loading } from '#src/components/suite';
 
 import { BackupStepDescription } from './BackupStepDescription';
 

@@ -3,7 +3,7 @@ import { useTranslation } from '@suite/intl';
 import { selectIsLabelingAvailable } from '@suite/metadata';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 export const useExampleCSV = (): string => {
     const { account, network } = useSelector(selectFullSelectedAccount);

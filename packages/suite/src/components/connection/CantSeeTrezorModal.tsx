@@ -8,17 +8,17 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
-import { type TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTipsItem';
-import { TroubleshootingTipsList } from 'src/components/suite/troubleshooting/TroubleshootingTipsList';
+import { type TroubleshootingTipsItem } from '#src/components/suite/troubleshooting/TroubleshootingTipsItem';
+import { TroubleshootingTipsList } from '#src/components/suite/troubleshooting/TroubleshootingTipsList';
 import {
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_DEVICE_TURNED_ON_UNLOCKED,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_UDEV,
-} from 'src/components/suite/troubleshooting/tips';
-import { useSelector } from 'src/hooks/suite';
-import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
+} from '#src/components/suite/troubleshooting/tips';
+import { useSelector } from '#src/hooks/suite';
+import { selectHasTransportOfType } from '#src/selectors/suite/suiteSelectors';
 
 import { AnimationCard } from './AnimationCard';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';

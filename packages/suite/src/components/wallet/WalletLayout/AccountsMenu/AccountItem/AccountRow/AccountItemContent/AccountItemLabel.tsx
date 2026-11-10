@@ -4,7 +4,7 @@ import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
 
-import { type AccountItemType } from 'src/types/wallet';
+import { type AccountItemType } from '#src/types/wallet';
 
 type AccountItemLabelProps = {
     account: Account;

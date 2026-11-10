@@ -15,7 +15,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
 
 /**
  * A Modal that allows user to set the `safety_checks` feature of connected Trezor.

@@ -9,8 +9,8 @@ import {
 } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
+import { useSelector } from '#src/hooks/suite';
+import { type Account } from '#src/types/wallet';
 
 import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';

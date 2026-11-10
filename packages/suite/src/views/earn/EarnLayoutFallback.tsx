@@ -2,8 +2,8 @@ import { Translation } from '@suite/intl';
 import { Column, Spinner } from '@trezor/components';
 import { CloudIcon } from '@trezor/icons';
 
-import { EarnException } from 'src/components/earn';
-import { type EarnLayoutFallbackState } from 'src/types/earn/earnLayout';
+import { EarnException } from '#src/components/earn';
+import { type EarnLayoutFallbackState } from '#src/types/earn/earnLayout';
 
 type EarnLayoutFallbackProps = {
     layoutState: EarnLayoutFallbackState;

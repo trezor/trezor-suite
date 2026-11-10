@@ -14,9 +14,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
+import { useSelector } from '#src/hooks/suite';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 type ClaimCardProps = {
     account: Account;

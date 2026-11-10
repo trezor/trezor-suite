@@ -14,11 +14,11 @@ import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
-import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
-import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useIsFeeRefetchDisabled } from '#src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
+import { useMessageSystemWrappedNative } from '#src/hooks/suite/useMessageSystemWrappedNative';
+import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
 
 import { useYieldDepositContext } from './useYieldDepositContext';
 import { YieldActionStep } from '../common/YieldActionStep';

@@ -5,11 +5,11 @@ import { Translation } from '@suite/intl';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorBodyIcon } from '@trezor/icons';
 
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import { TroubleshootingTips } from '#src/components/suite/troubleshooting/TroubleshootingTips';
 import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
-} from 'src/components/suite/troubleshooting/tips';
+} from '#src/components/suite/troubleshooting/tips';
 
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
 import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTipsItem';

@@ -19,8 +19,8 @@ import { Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useSelector } from 'src/hooks/suite';
+import { useCoinjoinSessionBlockers } from '#src/hooks/coinjoin/useCoinjoinSessionBlockers';
+import { useSelector } from '#src/hooks/suite';
 
 import {
     CoinjoinProgressContent,

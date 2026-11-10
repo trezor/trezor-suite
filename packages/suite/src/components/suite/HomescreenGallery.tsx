@@ -13,9 +13,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
-import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
-import { imagePathToHex } from 'src/utils/suite/homescreen';
+import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
+import { getDefaultHomeScreenImage, getHomescreens } from '#src/constants/suite/homescreens';
+import { imagePathToHex } from '#src/utils/suite/homescreen';
 
 type HomescreensType = ReturnType<typeof getHomescreens>;
 type AnyImageName = HomescreensType[keyof HomescreensType][number];

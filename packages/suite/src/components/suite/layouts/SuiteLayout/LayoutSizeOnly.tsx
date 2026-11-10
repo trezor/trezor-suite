@@ -1,6 +1,6 @@
 import { type ReactNode, memo } from 'react';
 
-import { useLayoutSize } from 'src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite';
 
 interface LayoutSizeOnlyProps {
     children: ReactNode;

@@ -14,14 +14,14 @@ import { RepeatIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
-import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
-import { HiddenPlaceholder } from 'src/components/suite';
-import { TransactionsGraphLoader } from 'src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
-import { useSelector } from 'src/hooks/suite';
-import { selectGraph } from 'src/reducers/wallet/graphReducer';
-import { type Account } from 'src/types/wallet';
-import { type AggregatedDashboardHistory } from 'src/types/wallet/graph';
-import { getMinMaxValueFromData, prepareGraphDataAsync } from 'src/utils/wallet/graph';
+import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
+import { HiddenPlaceholder } from '#src/components/suite';
+import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
+import { useSelector } from '#src/hooks/suite';
+import { selectGraph } from '#src/reducers/wallet/graphReducer';
+import { type Account } from '#src/types/wallet';
+import { type AggregatedDashboardHistory } from '#src/types/wallet/graph';
+import { getMinMaxValueFromData, prepareGraphDataAsync } from '#src/utils/wallet/graph';
 
 const Wrapper = styled.div`
     display: flex;

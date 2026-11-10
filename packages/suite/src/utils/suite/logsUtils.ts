@@ -5,11 +5,11 @@ import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 import {
     type SuiteLogsApplicationInfoRootState,
     selectRedactedDesktopApplicationInfo,
-} from 'src/selectors/suite/logsSelectors';
+} from '#src/selectors/suite/logsSelectors';
 
 type UseApplicationLogsParams = { hideSensitiveInfo: boolean };
 

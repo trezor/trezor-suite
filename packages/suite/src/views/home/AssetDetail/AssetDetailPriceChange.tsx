@@ -2,8 +2,8 @@ import { Translation } from '@suite/intl';
 import { Row, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
-import { TrendBadge } from 'src/components/suite/Ticker/TrendBadge';
-import { FiatChangeAmount } from 'src/views/home/HomeBalance/FiatChangeAmount';
+import { TrendBadge } from '#src/components/suite/Ticker/TrendBadge';
+import { FiatChangeAmount } from '#src/views/home/HomeBalance/FiatChangeAmount';
 
 type AssetDetailPriceChangeProps = {
     change: BigNumber;

@@ -22,8 +22,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
-import { type SendContextValues } from 'src/types/wallet/sendForm';
+import { type TradingSellExchangeFormProps } from '#src/types/trading/tradingForm';
+import { type SendContextValues } from '#src/types/wallet/sendForm';
 
 type UseExchangeDexQuoteProps = {
     account: Account | undefined;

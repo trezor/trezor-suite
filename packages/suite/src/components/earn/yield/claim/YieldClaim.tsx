@@ -22,11 +22,11 @@ import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
-import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
-import { useSelector } from 'src/hooks/suite';
-import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
-import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
+import { claimMerklRewardsThunk } from '#src/actions/wallet/stablecoin-yield';
+import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
+import { useSelector } from '#src/hooks/suite';
+import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
 
 import { YieldClaimFeeWarning } from './YieldClaimFeeWarning';
 import { YieldRewardsList } from './YieldRewardsList';

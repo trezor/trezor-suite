@@ -2,8 +2,8 @@ import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 
-import { type Account } from 'src/types/wallet';
-import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
+import { type Account } from '#src/types/wallet';
+import { createQuoteLink } from '#src/utils/wallet/trading/sellUtils';
 
 import * as fixtures from './__fixtures__/sellUtils';
 

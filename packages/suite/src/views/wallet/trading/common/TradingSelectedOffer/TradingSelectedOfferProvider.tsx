@@ -9,12 +9,12 @@ import {
 import { Column, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     isTradingBuyContext,
     isTradingExchangeContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
+} from '#src/utils/wallet/trading/tradingTypingUtils';
 
 import { TradingOffersModalBuy } from '../TradingOffers/TradingOffersModalBuy';
 import { TradingOffersModalExchange } from '../TradingOffers/TradingOffersModalExchange';

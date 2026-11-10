@@ -23,10 +23,10 @@ import { CheckCircleIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Pagination } from 'src/components/wallet/Pagination';
-import { useSelector } from 'src/hooks/suite';
+import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
+import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
+import { Pagination } from '#src/components/wallet/Pagination';
+import { useSelector } from '#src/hooks/suite';
 
 import { SelectAccountRow } from './SelectAccountRow';
 

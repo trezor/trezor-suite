@@ -8,7 +8,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { LightningIcon, XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 // Temporary: it only announces the table while the asset-first experiment runs, and goes with it.
 // Its own banner rather than the shared one: that is edged and inset, this sits flush on the card

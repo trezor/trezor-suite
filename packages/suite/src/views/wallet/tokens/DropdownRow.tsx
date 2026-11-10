@@ -7,7 +7,7 @@ import { Badge, Icon, Row, Text, type TextProps } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { HiddenPlaceholder } from 'src/components/suite';
+import { HiddenPlaceholder } from '#src/components/suite';
 
 const IconWrapper = styled.div<{ $isActive: boolean }>`
     transition: transform 0.2s ease-in-out;

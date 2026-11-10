@@ -11,9 +11,9 @@ import {
 } from '@suite-common/trading';
 import { CardList, Column, Skeleton, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { isTradingExchangeContext } from '#src/utils/wallet/trading/tradingTypingUtils';
 
 import { TradingQuoteAmount } from '../TradingQuoteAmount';
 import { TradingRequestedAmountShortfallNote } from '../TradingRequestedAmountShortfallNote';

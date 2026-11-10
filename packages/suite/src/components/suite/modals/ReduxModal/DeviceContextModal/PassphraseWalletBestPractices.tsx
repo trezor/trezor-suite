@@ -5,8 +5,8 @@ import { Banner, Button, Column, H3, Icon, List, Paragraph, Text } from '@trezor
 import { CopyIcon, EyeSlashIcon, NewspaperIcon, WarningCircleIcon } from '@trezor/icons';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
+import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseWalletBestPracticesProps = {
     onCancel: () => void;

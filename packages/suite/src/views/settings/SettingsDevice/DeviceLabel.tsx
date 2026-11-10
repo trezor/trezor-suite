@@ -5,9 +5,9 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { SectionItem } from '@trezor/product-components';
 
-import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
-import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';
+import { ChangeDeviceLabelForm } from '#src/components/suite/ChangeDeviceLabelForm';
+import { MAX_LABEL_LENGTH } from '#src/constants/suite/device';
+import { useChangeDeviceLabel } from '#src/hooks/suite/useChangeDeviceLabel';
 
 type DeviceLabelProps = {
     isDeviceLocked: boolean;

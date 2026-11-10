@@ -14,7 +14,7 @@ import {
 } from '@suite-common/trading';
 import { Banner, Column, Modal } from '@trezor/components';
 
-import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
+import { useTradingExchangeTradeActions } from '#src/hooks/wallet/trading/useTradingExchangeTradeActions';
 
 import { TradingOfferExchangeSlippageInput } from './TradingOfferExchangeSlippageInput';
 import { TradingOfferExchangeSlippageSummary } from './TradingOfferExchangeSlippageSummary';

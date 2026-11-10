@@ -6,7 +6,7 @@ import { Icon, type IconComponent } from '@trezor/components';
 import { TrendDownIcon, TrendUpIcon } from '@trezor/icons';
 import { type Color, typography } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 const PercentageWrapper = styled.div<{ $color: Color }>`
     ${typography['body-sm-strong']}

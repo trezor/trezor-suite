@@ -7,7 +7,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { LastUpdateTooltip } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 
 import { NoRatesTooltip } from './NoRatesTooltip';
 

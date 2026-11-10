@@ -2,7 +2,7 @@ import { type TradeableAssetBalance, type TradingAssetOption } from '@suite-comm
 import { Row } from '@trezor/components';
 import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { AssetDetails } from '../AssetDetails';
 import { AssetAmount } from '../AssetRowToken/AssetAmount';

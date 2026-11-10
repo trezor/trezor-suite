@@ -2,9 +2,9 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { close, open } from 'src/actions/suite/guideActions';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectIsGuideOpen } from 'src/selectors/suite/guideSelectors';
+import { close, open } from '#src/actions/suite/guideActions';
+import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { selectIsGuideOpen } from '#src/selectors/suite/guideSelectors';
 
 import { usePreferredModal } from '../suite';
 

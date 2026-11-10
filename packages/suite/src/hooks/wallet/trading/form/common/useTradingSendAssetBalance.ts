@@ -13,9 +13,9 @@ import {
 } from '@suite-common/wallet-types';
 import { isErc4626, isZero } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
-import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingFiatValues } from '#src/hooks/wallet/trading/form/common/useTradingFiatValues';
+import { getFeeInUnits } from '#src/utils/wallet/trading/tradingUtils';
 
 import { useTradingAssetDecimals } from './useTradingAssetDecimals';
 

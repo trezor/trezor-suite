@@ -9,8 +9,8 @@ import {
 } from '@suite-common/trading';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { useSelector } from '#src/hooks/suite';
+import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
 
 export const useTradingQuoteAmounts = (
     quote: TradingTradeType | undefined,

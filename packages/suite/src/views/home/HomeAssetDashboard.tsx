@@ -9,8 +9,8 @@ import {
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from 'src/hooks/suite';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+import { useSelector } from '#src/hooks/suite';
+import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { HomeAssetEmptyState } from './HomeAssetEmptyState';
 import { HomeAssetFeedback } from './HomeAssetFeedback';

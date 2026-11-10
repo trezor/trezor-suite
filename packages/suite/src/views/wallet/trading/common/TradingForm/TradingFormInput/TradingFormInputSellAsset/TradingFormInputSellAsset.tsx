@@ -4,7 +4,7 @@ import { type CryptoId } from 'invity-api';
 
 import { type TranslationKey } from '@suite/intl';
 
-import { useTradingAssetPickerModal } from 'src/hooks/wallet/trading/form/common/useTradingAssetPickerModal';
+import { useTradingAssetPickerModal } from '#src/hooks/wallet/trading/form/common/useTradingAssetPickerModal';
 
 import {
     AssetOptionsProvider,

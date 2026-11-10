@@ -4,8 +4,8 @@ import { useWatch } from 'react-hook-form';
 import { asAmountUnit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { useSendFormContext } from 'src/hooks/wallet/useSendForm';
+import { FormattedCryptoAmount } from '#src/components/suite';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 export const CardanoSentTokenInfo = () => {
     const {

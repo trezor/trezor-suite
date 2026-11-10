@@ -11,12 +11,12 @@ import {
     AssetGroupSpace,
     AssetRowAsset,
     AssetsList,
-} from 'src/components/suite/asset-picker/components';
+} from '#src/components/suite/asset-picker/components';
 import {
     ASSET_ROW_GROUP_LABEL_HEIGHT,
     ASSET_ROW_HEIGHT,
     ASSET_ROW_HEIGHTS_BY_SIZE,
-} from 'src/components/suite/asset-picker/constants';
+} from '#src/components/suite/asset-picker/constants';
 
 import { GLOBAL_RECEIVE_LIST_HEIGHT, GLOBAL_RECEIVE_LIST_MIN_HEIGHT } from '../constants';
 

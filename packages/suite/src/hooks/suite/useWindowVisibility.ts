@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { updateWindowVisibility } from 'src/actions/suite/windowActions';
+import { updateWindowVisibility } from '#src/actions/suite/windowActions';
 
 export const useWindowVisibility = () => {
     const { dispatch } = useServices(injectDispatch);

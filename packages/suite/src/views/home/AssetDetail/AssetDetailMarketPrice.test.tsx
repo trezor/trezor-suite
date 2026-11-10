@@ -17,7 +17,7 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
 import { ETH, type PendingRateStatus, getEthAssetState } from './assetDetailTestState';

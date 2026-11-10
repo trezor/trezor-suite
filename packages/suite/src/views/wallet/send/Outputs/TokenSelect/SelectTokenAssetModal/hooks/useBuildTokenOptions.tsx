@@ -4,20 +4,20 @@ import { type TokenDefinitions, selectCoinDefinitions } from '@suite-common/toke
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
+import { type AccountWithTokensOption } from '#src/components/suite/asset-picker/types';
 import {
     createAccountOption,
     createHiddenTokensOption,
     createTokenOption,
-} from 'src/components/suite/asset-picker/utils';
-import { useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
+} from '#src/components/suite/asset-picker/utils';
+import { useSelector } from '#src/hooks/suite';
+import { type Account } from '#src/types/wallet';
 import {
     type EnahncedTokenInfoWithFiat,
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
-} from 'src/utils/wallet/tokenUtils';
+} from '#src/utils/wallet/tokenUtils';
 
 const buildTokenOptions = (
     account: Account,

@@ -8,8 +8,8 @@ import {
 import { Row, TextButton, type TextButtonProps } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 
-import { getTradingProviderName } from 'src/views/wallet/trading/common/TradingDetail/utils';
-import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';
+import { getTradingProviderName } from '#src/views/wallet/trading/common/TradingDetail/utils';
+import { TradingIcon } from '#src/views/wallet/trading/common/TradingIcon';
 
 type TradingDetailProviderStatusLinkProps = {
     provider?: TradingProviderInfo;

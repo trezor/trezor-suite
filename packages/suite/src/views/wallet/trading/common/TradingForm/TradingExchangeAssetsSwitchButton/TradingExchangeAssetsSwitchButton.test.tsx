@@ -20,10 +20,10 @@ import { type Account } from '@suite-common/wallet-types';
 import {
     BTC_ACCOUNT,
     XRP_ACCOUNT,
-} from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/accounts';
-import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-import { type TradingFormContextValues } from 'src/types/trading/tradingForm';
+} from '#src/actions/wallet/trading/__fixtures__/tradingCommonActions/accounts';
+import { TradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
+import { type TradingFormContextValues } from '#src/types/trading/tradingForm';
 
 import { TradingExchangeAssetsSwitchButton } from './TradingExchangeAssetsSwitchButton';
 import {

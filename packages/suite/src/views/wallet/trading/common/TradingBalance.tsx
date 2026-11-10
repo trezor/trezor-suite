@@ -7,7 +7,7 @@ import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
+import { BaseCurrencyValue, HiddenPlaceholder } from '#src/components/suite';
 
 type TradingBalanceProps = {
     balance: string | undefined;

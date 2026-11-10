@@ -24,10 +24,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, isChanged, throwError } from '@trezor/utils';
 
-import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
-import { useSelector } from 'src/hooks/suite';
-import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
-import type { AmountLimitProps } from 'src/utils/suite/validation';
+import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
+import { useSelector } from '#src/hooks/suite';
+import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '#src/types/earn/earnFormFields';
+import type { AmountLimitProps } from '#src/utils/suite/validation';
 
 import {
     type WithdrawalContextValues as WithdrawalContextValuesBase,

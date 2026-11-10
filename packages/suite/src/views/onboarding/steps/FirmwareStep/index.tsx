@@ -16,9 +16,9 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { CircuitryIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
-import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
-import { useOnboarding } from 'src/hooks/suite';
+import { FirmwareInstallationProgressCheck } from '#src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
+import { ThpPairingStep } from '#src/components/onboarding/ThpPairingStep/ThpPairingStep';
+import { useOnboarding } from '#src/hooks/suite';
 
 import { FirmwareInitialStep } from './FirmwareInitialStep';
 import { FirmwareInstallationStep } from './FirmwareInstallationStep';

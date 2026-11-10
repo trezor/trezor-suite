@@ -4,9 +4,9 @@ import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { Button, Text } from '@trezor/components';
 
-import { PoweredByBadge } from 'src/components/earn';
-import { getStakingGuideLink } from 'src/components/earn/utils/getStakingGuideLink';
-import { useGuideOpenNode } from 'src/hooks/guide';
+import { PoweredByBadge } from '#src/components/earn';
+import { getStakingGuideLink } from '#src/components/earn/utils/getStakingGuideLink';
+import { useGuideOpenNode } from '#src/hooks/guide';
 
 const Wrapper = styled.div`
     display: flex;

@@ -5,10 +5,10 @@ import { events } from '@suite-common/analytics';
 import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPairingPin';
-import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';
-import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';
-import { useSelector } from 'src/hooks/suite';
+import { BluetoothPairingPin } from '#src/components/suite/bluetooth/BluetoothPairingPin';
+import { BluetoothScanningList } from '#src/components/suite/bluetooth/BluetoothScanningList';
+import { BluetoothSelectedDevice } from '#src/components/suite/bluetooth/BluetoothSelectedDevice';
+import { useSelector } from '#src/hooks/suite';
 
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
 

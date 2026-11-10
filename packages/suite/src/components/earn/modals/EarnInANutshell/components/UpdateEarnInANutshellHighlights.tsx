@@ -7,7 +7,7 @@ import {
 import { HandCoinsIcon, PiggyBankIcon, WalletIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 import {
     type EarnInANutshellHighlight,

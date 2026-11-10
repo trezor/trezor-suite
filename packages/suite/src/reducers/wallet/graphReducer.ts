@@ -3,7 +3,7 @@ import { produce } from 'immer';
 
 import { accountsActions } from '@suite-common/wallet-core';
 
-import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
+import { storageLoad } from '#src/actions/suite/storageLifecycleActions';
 import {
     accountGraphFail,
     accountGraphStart,
@@ -11,10 +11,10 @@ import {
     aggregatedGraphStart,
     aggregatedGraphSuccess,
     setSelectedRange,
-} from 'src/actions/wallet/graphActions';
-import { SETTINGS } from 'src/config/suite';
-import { type Account } from 'src/types/wallet';
-import { type AccountIdentifier, type GraphData, type GraphRange } from 'src/types/wallet/graph';
+} from '#src/actions/wallet/graphActions';
+import { SETTINGS } from '#src/config/suite';
+import { type Account } from '#src/types/wallet';
+import { type AccountIdentifier, type GraphData, type GraphRange } from '#src/types/wallet/graph';
 
 export interface GraphState {
     data: GraphData[];

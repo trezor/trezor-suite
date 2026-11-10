@@ -4,7 +4,7 @@ import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
 import { Badge, Card, Paragraph, Row, TextButton } from '@trezor/components';
 
-import { MarkdownWithComponents } from 'src/components/suite';
+import { MarkdownWithComponents } from '#src/components/suite';
 
 type State = { status: 'loading' } | { status: 'loaded'; changelog: string } | { status: 'error' };
 

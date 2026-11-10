@@ -6,15 +6,15 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Spinner } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,
-} from 'src/types/trading/tradingForm';
+} from '#src/types/trading/tradingForm';
 import {
     TRADING_AMOUNT_PLACEHOLDER,
     getTradingAmountInputStyle,
-} from 'src/views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
+} from '#src/views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
 
 type TradingFormInputAmountPlaceholderProps = {
     name: TradingFormInputFiatCryptoProps['cryptoInputName' | 'fiatInputName'];

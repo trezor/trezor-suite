@@ -34,9 +34,9 @@ import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
-import { TransactionReviewOutputAssets } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
-import { useSelector } from 'src/hooks/suite';
-import type { Account } from 'src/types/wallet';
+import { TransactionReviewOutputAssets } from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
+import { useSelector } from '#src/hooks/suite';
+import type { Account } from '#src/types/wallet';
 
 import {
     type OutputElementLine,

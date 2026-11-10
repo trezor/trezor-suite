@@ -17,15 +17,15 @@ import {
 import { buildCurrencyOptions, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { type TradingAllFormProps } from '#src/types/trading/tradingForm';
 import {
     getSelectedTradingCurrency,
     isTradingBuyContext,
     isTradingExchangeContext,
     isTradingSellContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
+} from '#src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormInputCurrency = () => {
     const context = useTradingFormContext();

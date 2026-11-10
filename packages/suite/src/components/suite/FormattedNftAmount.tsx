@@ -11,8 +11,8 @@ import { Box, Column, Row, Text } from '@trezor/components';
 import { type TokenTransfer } from '@trezor/connect';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { HiddenPlaceholder, Sign } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { HiddenPlaceholder, Sign } from '#src/components/suite';
+import { useSelector } from '#src/hooks/suite';
 
 export interface FormattedNftAmountProps {
     transfer: TokenTransfer;

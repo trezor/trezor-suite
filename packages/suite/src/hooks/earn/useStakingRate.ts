@@ -7,7 +7,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getTronVotes, selectAccountByKey, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 interface UseStakingRateProps {
     symbol?: NetworkSymbol;

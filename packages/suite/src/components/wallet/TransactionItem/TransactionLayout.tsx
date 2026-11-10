@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Card, Column, Flex, Grid, InfoSegments, Row, Text } from '@trezor/components';
 
-import { useLayoutSize } from 'src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite';
 
 type TransactionLayoutProps = {
     timestamp: ReactNode;

@@ -4,7 +4,7 @@ import { Card, IconButton, Row, Text } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { AllowanceAmount } from 'src/components/wallet/Allowance/AllowanceAmount';
+import { AllowanceAmount } from '#src/components/wallet/Allowance/AllowanceAmount';
 
 type YieldApprovedAmountCardProps = {
     token: YieldFlowDisplayToken;

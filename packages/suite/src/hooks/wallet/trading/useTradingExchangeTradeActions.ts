@@ -27,12 +27,12 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
-import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { type TradingExchangeConfirmTradeProps } from 'src/types/trading/tradingForm';
+import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingExchangeTradeRequest } from '#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
+import { useTradingFormAccount } from '#src/hooks/wallet/trading/form/useTradingFormAccount';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { type TradingExchangeConfirmTradeProps } from '#src/types/trading/tradingForm';
 
 export const useTradingExchangeTradeActions = () => {
     const { dispatch } = useServices(injectDispatch);

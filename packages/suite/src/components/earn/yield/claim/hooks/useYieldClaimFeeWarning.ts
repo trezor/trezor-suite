@@ -2,7 +2,7 @@ import { type YieldClaimFeeWarning, getClaimFeeWarning } from '@suite-common/ear
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 
 import { useYieldClaimFeeEstimate } from './useYieldClaimFeeEstimate';
 

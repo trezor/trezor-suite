@@ -19,9 +19,9 @@ import {
 import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
-import { type RbfContextValues, useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite';
+import { type RbfContextValues, useRbfContext } from '#src/hooks/wallet/useRbfForm';
 
 type AmountRowProps = {
     labelTranslationKey: TranslationKey;

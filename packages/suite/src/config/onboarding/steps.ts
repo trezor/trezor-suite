@@ -2,8 +2,8 @@ import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/device-authent
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
-import * as STEP from 'src/constants/onboarding/steps';
-import { type Step, type StepCategory } from 'src/types/onboarding';
+import * as STEP from '#src/constants/onboarding/steps';
+import { type Step, type StepCategory } from '#src/types/onboarding';
 
 const commonPrerequisites: Step['prerequisites'] = [
     'no-transport',

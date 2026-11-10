@@ -11,8 +11,8 @@ import { TrendUpIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { getBorderRadiusCssValue } from '@trezor/theme';
 
-import { getYieldOpportunityAnchor } from 'src/components/earn/utils/getYieldOpportunityAnchor';
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
+import { getYieldOpportunityAnchor } from '#src/components/earn/utils/getYieldOpportunityAnchor';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 // The badge itself is not interactive, so a button carries the click and the focus ring.
 const BadgeButton = styled.button`

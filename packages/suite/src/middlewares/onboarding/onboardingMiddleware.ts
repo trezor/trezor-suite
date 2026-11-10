@@ -16,9 +16,9 @@ import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
 import { type PROTO, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import { type GoToNextStepThunkState } from 'src/actions/onboarding/onboardingActions';
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
+import { type GoToNextStepThunkState } from '#src/actions/onboarding/onboardingActions';
+import * as onboardingActions from '#src/actions/onboarding/onboardingActions';
+import { selectIsOnboardingActive } from '#src/reducers/onboarding/onboardingReducer';
 
 type OnboardingMiddlewareState = GoToNextStepThunkState &
     RecoveryRootState &

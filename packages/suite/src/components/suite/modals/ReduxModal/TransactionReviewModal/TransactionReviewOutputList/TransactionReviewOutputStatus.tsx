@@ -1,7 +1,7 @@
 import { DotIndicator, Icon } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
 
-import { type TransactionReviewOutputElementProps } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
+import { type TransactionReviewOutputElementProps } from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
 
 type TransactionReviewOutputStatusProps = {
     state: TransactionReviewOutputElementProps['state'];

@@ -4,7 +4,7 @@ import {
     type StorageCorruptedPayload,
     type StorageErrorPayload,
     type StorageLoadPayload,
-} from 'src/storage/StorageLoadPayload';
+} from '#src/storage/StorageLoadPayload';
 
 import { STORAGE } from './constants';
 

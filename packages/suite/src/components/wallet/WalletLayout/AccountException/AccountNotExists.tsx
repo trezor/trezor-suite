@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { CloudIcon } from '@trezor/icons';
 
-import { AccountExceptionLayout } from 'src/components/wallet';
+import { AccountExceptionLayout } from '#src/components/wallet';
 
 /**
  * Handler for invalid router params

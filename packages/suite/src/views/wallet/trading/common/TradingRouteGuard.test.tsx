@@ -7,7 +7,7 @@ import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-sy
 import { type Localization } from '@suite-common/suite-types';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingRouteGuard } from './TradingRouteGuard';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';

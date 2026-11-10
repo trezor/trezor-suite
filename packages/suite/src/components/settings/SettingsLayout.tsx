@@ -13,10 +13,10 @@ import {
     type NavigationItem,
     PageHeader,
     SubpageNavigation,
-} from 'src/components/suite/layouts/SuiteLayout';
-import { useDiscovery, useLayout, useSelector } from 'src/hooks/suite';
-import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
-import { SettingsLoading } from 'src/views/settings/SettingsLoader';
+} from '#src/components/suite/layouts/SuiteLayout';
+import { useDiscovery, useLayout, useSelector } from '#src/hooks/suite';
+import { AccountHeaderProvider } from '#src/support/suite/AccountHeaderProvider';
+import { SettingsLoading } from '#src/views/settings/SettingsLoader';
 
 type SettingsLayoutProps = {
     title?: string;

@@ -3,7 +3,7 @@ import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/route
 import { type ReloadAppDep } from '@suite-common/suite-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import { type DbDep } from 'src/storage/createDb';
+import { type DbDep } from '#src/storage/createDb';
 
 import { removeDatabaseThunk } from './storageActions';
 

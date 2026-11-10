@@ -9,7 +9,7 @@ import {
 import { type TradingAssetOption } from '@suite-common/trading';
 import { Button, Column, H4, Link, Paragraph, Row, Skeleton } from '@trezor/components';
 
-import { useDiscovery } from 'src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite';
 
 import { GlobalReceiveAssetList } from '../components/GlobalReceiveAssetList';
 import { GLOBAL_RECEIVE_LIST_HEIGHT } from '../constants';

@@ -7,8 +7,8 @@ import {
     type TransactionReviewOutput,
 } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
-import { DisplayMode } from 'src/types/suite';
+import { useSelector } from '#src/hooks/suite';
+import { DisplayMode } from '#src/types/suite';
 
 type UseDisplayModeProps = {
     type: TransactionReviewOutput['type'];

@@ -3,7 +3,7 @@ import { type TradingAssetOption } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, H4, Paragraph, Spinner } from '@trezor/components';
 
-import { AssetsModal } from 'src/components/suite/asset-picker/components';
+import { AssetsModal } from '#src/components/suite/asset-picker/components';
 
 import { GlobalSendReceiveAssetDescription } from '../../components/GlobalSendReceiveAssetDescription';
 import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';

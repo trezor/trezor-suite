@@ -1,8 +1,8 @@
 import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
-import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { type Account } from 'src/types/wallet';
+import { useStakingRate } from '#src/hooks/earn/useStakingRate';
+import { type Account } from '#src/types/wallet';
 
 type TradeBoxYieldBadge = {
     apy: number;

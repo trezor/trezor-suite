@@ -20,8 +20,8 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { selectSuiteLifecycleStatus } from 'src/selectors/suite/suiteSelectors';
+import { useSelector } from '#src/hooks/suite';
+import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
 
 /**
  * Normalized incoming message from either the web or webextension popup link.

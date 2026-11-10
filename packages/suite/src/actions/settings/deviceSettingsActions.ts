@@ -25,7 +25,7 @@ import {
     DEFAULT_PASSPHRASE_PROTECTION,
     DEFAULT_SKIP_BACKUP,
     DEFAULT_STRENGTH,
-} from 'src/constants/suite/device';
+} from '#src/constants/suite/device';
 
 type ApplySettingsThunkState = DeviceRootState;
 

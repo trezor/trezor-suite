@@ -25,12 +25,12 @@ import { CaretDownIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
-import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { selectSendFormPrefill } from 'src/selectors/suite/suiteSelectors';
-import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
+import { setSendFormPrefill } from '#src/actions/suite/suiteActions';
+import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from '#src/components/suite';
+import { useSelector } from '#src/hooks/suite';
+import { useSendFormContext } from '#src/hooks/wallet';
+import { selectSendFormPrefill } from '#src/selectors/suite/suiteSelectors';
+import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
 import { SelectTokenAssetModal } from './SelectTokenAssetModal/SelectTokenAssetModal';
 

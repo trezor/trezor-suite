@@ -9,8 +9,8 @@ import { StarFourIcon } from '@trezor/icons';
 import { typography, typographyStylesBase } from '@trezor/theme';
 import { localizeNumber } from '@trezor/utils';
 
-import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
-import { useSelector } from 'src/hooks/suite';
+import { useCoinjoinAccountLoadingProgress } from '#src/hooks/coinjoin';
+import { useSelector } from '#src/hooks/suite';
 
 import { RotatingFacts } from './RotatingFacts';
 

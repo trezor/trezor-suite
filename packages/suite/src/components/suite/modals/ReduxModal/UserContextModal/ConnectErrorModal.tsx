@@ -12,12 +12,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useDiscovery, useSelector } from 'src/hooks/suite';
-import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
-import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
-import { SwitchDeviceContent } from 'src/views/suite/SwitchDevice/SwitchDevice';
+import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
+import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
+import { useDiscovery, useSelector } from '#src/hooks/suite';
+import { useOpenSuiteDesktop } from '#src/hooks/suite/useOpenSuiteDesktop';
+import { selectPrerequisite } from '#src/selectors/suite/suiteSelectors';
+import { SwitchDeviceContent } from '#src/views/suite/SwitchDevice/SwitchDevice';
 
 export const ConnectSelectDeviceModal = () => {
     const { dispatch } = useServices(injectDispatch);

@@ -4,9 +4,9 @@ import { selectTradingCoinSymbolByCryptoId } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { ExchangeInfoNotification } from '@trezor/product-components';
 
-import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
-import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
-import { useSelector } from 'src/hooks/suite';
+import type { NotificationRendererProps } from '#src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
+import type { NotificationViewProps } from '#src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
+import { useSelector } from '#src/hooks/suite';
 
 import { FormattedCryptoAmount } from '../../FormattedCryptoAmount';
 import { AccountLabeling } from '../../labeling/AccountLabeling';

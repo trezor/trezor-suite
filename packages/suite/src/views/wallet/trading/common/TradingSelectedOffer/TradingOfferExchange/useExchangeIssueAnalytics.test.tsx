@@ -5,7 +5,7 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 
-import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderHookWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { getTradingExchangeIssue, useExchangeIssueAnalytics } from './useExchangeIssueAnalytics';
 import {

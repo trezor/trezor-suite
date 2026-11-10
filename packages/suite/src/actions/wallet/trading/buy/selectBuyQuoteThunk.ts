@@ -16,7 +16,7 @@ import {
 } from '@suite-common/trading';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import { createQuoteLink } from 'src/utils/wallet/trading/buyUtils';
+import { createQuoteLink } from '#src/utils/wallet/trading/buyUtils';
 
 import { submitRequestFormThunk } from '../tradingCommonActions';
 

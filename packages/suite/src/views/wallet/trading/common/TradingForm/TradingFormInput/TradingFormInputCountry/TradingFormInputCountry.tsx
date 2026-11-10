@@ -8,13 +8,13 @@ import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
 import { Flag, GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { FakeSelect } from 'src/components/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingTradeBuySellType } from 'src/types/trading/trading';
+import { FakeSelect } from '#src/components/suite';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { type TradingTradeBuySellType } from '#src/types/trading/trading';
 import {
     type TradingBuySellFormProps,
     type TradingFormInputDefaultProps,
-} from 'src/types/trading/tradingForm';
+} from '#src/types/trading/tradingForm';
 
 import { CountrySelectModal } from './CountrySelectModal';
 

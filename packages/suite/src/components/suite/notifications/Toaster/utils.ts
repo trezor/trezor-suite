@@ -1,7 +1,7 @@
 import { type TranslationFunction } from '@suite/intl';
 import { type ToastAction, type ToastIntent } from '@trezor/components';
 
-import { type ToastNotificationVariant } from 'src/types/suite';
+import { type ToastNotificationVariant } from '#src/types/suite';
 
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 

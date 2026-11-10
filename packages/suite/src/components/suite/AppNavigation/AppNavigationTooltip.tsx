@@ -4,7 +4,7 @@ import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { Tooltip } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 interface AppNavigationTooltipProps {
     children: ReactNode;

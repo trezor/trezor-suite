@@ -11,17 +11,17 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
-import { GraphRangeSelector, HiddenPlaceholder } from 'src/components/suite';
-import { TransactionsGraphLoader } from 'src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
-import { useSelector } from 'src/hooks/suite';
-import { selectGraph, selectGraphSelectedRange } from 'src/reducers/wallet/graphReducer';
-import { type Account } from 'src/types/wallet';
+import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
+import { GraphRangeSelector, HiddenPlaceholder } from '#src/components/suite';
+import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
+import { useSelector } from '#src/hooks/suite';
+import { selectGraph, selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';
+import { type Account } from '#src/types/wallet';
 import {
     aggregateBalanceHistory,
     getGraphDataForInterval,
     getMinMaxValueFromData,
-} from 'src/utils/wallet/graph';
+} from '#src/utils/wallet/graph';
 
 import { SummaryCards } from './SummaryCards';
 

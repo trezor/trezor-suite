@@ -31,8 +31,8 @@ import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
+import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
+import { type TradingVerifyFormProps } from '#src/types/trading/tradingVerify';
 
 import { useAccountAddressDictionary } from '../../useAccounts';
 

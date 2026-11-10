@@ -7,7 +7,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CommandIcon, LifebuoyIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setView } from 'src/actions/suite/guideActions';
+import { setView } from '#src/actions/suite/guideActions';
 import {
     GuideCategories,
     GuideContent,
@@ -15,9 +15,9 @@ import {
     GuideSearch,
     GuideSectionHeadline,
     GuideViewWrapper,
-} from 'src/components/guide';
-import { useSelector } from 'src/hooks/suite';
-import { selectGuideIndexNode } from 'src/selectors/suite/guideSelectors';
+} from '#src/components/guide';
+import { useSelector } from '#src/hooks/suite';
+import { selectGuideIndexNode } from '#src/selectors/suite/guideSelectors';
 
 import { GuideItem } from './GuideItem';
 

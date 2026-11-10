@@ -15,7 +15,7 @@ import {
 import type { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
 import type { FirmwareHashCheckError } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 import { SecurityCheckFail } from './components/SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './components/checklistItems';

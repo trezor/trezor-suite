@@ -10,13 +10,13 @@ import {
 import { Modal } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useSelector } from '#src/hooks/suite';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     type TradingTradeBuySellType,
     type TradingTradeDetailBuySellType,
-} from 'src/types/trading/trading';
-import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+} from '#src/types/trading/trading';
+import { type TradingBuySellFormProps } from '#src/types/trading/tradingForm';
 
 import { PaymentMethodModalItem } from './PaymentMethodModalItem';
 

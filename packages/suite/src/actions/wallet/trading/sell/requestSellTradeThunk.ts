@@ -11,7 +11,7 @@ import {
 } from '@suite-common/trading';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import { buildSellReturnUrl } from 'src/utils/wallet/trading/buildSellReturnUrl';
+import { buildSellReturnUrl } from '#src/utils/wallet/trading/buildSellReturnUrl';
 
 import { submitRequestFormThunk } from '../tradingCommonActions';
 

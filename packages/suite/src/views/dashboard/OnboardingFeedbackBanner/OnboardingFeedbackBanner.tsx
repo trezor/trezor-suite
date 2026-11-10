@@ -23,8 +23,8 @@ import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { ContentFlex, useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 import { selectShouldShowOnboardingFeedbackBanner } from './onboardingFeedbackBannerSelectors';
 import { bannerAnimationConfig } from '../banner-animations';

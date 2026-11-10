@@ -22,15 +22,15 @@ import {
 import { DEVICE, TRANSPORT, isTransportEventOfType } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
-import { PROTOCOL } from 'src/actions/suite/constants';
-import { type GetSuiteReadyPayloadState, getSuiteReadyPayload } from 'src/utils/suite/analytics';
+import { PROTOCOL } from '#src/actions/suite/constants';
+import { type GetSuiteReadyPayloadState, getSuiteReadyPayload } from '#src/utils/suite/analytics';
 import {
     addSentryBreadcrumb,
     captureSentryMessage,
     setSentryContext,
     setSentryTag,
     withSentryScope,
-} from 'src/utils/suite/sentry';
+} from '#src/utils/suite/sentry';
 
 type SentryMiddlewareState = GetSuiteReadyPayloadState & RouterRootState;
 

@@ -21,7 +21,7 @@ import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploade
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
+import { allowSentryReport, setSentryUser } from '#src/utils/suite/sentry';
 
 type SendReportProps = {
     sendReport: boolean;

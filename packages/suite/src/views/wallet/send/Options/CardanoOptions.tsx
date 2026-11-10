@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { Button, Row } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 
-import { useSendFormContext } from 'src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet';
 
 export const CardanoOptions = () => {
     const { addOutput } = useSendFormContext();

@@ -27,7 +27,7 @@ import {
     getSellActiveAmount,
     getSellActiveAmountField,
     isSellQuotesFetchAllowed,
-} from 'src/utils/wallet/trading/sellQuotesRequestUtils';
+} from '#src/utils/wallet/trading/sellQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
 

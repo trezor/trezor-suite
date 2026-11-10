@@ -9,9 +9,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { MinusIcon, PlusIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
-import { useSelector } from 'src/hooks/suite';
+import { AppNavigationTooltip } from '#src/components/suite/AppNavigation/AppNavigationTooltip';
+import { HeaderActionButton } from '#src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
+import { useSelector } from '#src/hooks/suite';
 
 type TradeActionsSource = {
     from: TradeNavigateEventFrom;

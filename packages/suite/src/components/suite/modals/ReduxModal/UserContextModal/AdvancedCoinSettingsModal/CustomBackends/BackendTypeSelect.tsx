@@ -9,7 +9,7 @@ import { getDefaultBackendType } from '@suite-common/wallet-utils';
 import { Select } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite';
 
 const Capitalize = styled.span`
     text-transform: capitalize;

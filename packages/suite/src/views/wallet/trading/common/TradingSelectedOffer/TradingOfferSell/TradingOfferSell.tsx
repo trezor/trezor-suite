@@ -23,15 +23,15 @@ import { useServices } from '@trezor/dependency-injection';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
-import { useTradingSellBankAccountSelection } from 'src/hooks/wallet/trading/useTradingSellBankAccountSelection';
-import { useTradingSellConfirmFees } from 'src/hooks/wallet/trading/useTradingSellConfirmFees';
-import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
-import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { type TradingOfferSellProps } from 'src/types/trading/tradingForm';
-import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
-import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { useTradingSellBankAccountSelection } from '#src/hooks/wallet/trading/useTradingSellBankAccountSelection';
+import { useTradingSellConfirmFees } from '#src/hooks/wallet/trading/useTradingSellConfirmFees';
+import { useTradingSellTradeActions } from '#src/hooks/wallet/trading/useTradingSellTradeActions';
+import { useTradingWatchTrade } from '#src/hooks/wallet/trading/useTradingWatchTrade';
+import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
+import { type TradingOfferSellProps } from '#src/types/trading/tradingForm';
+import { TradingFormOfferConfirmButton } from '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { TradingKYCWarning } from '#src/views/wallet/trading/common/TradingKYCWarning';
+import { TradingSelectedOfferInfo } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 
 import { TradingOfferSellSendButton } from './TradingOfferSellSendButton';
 import { TradingOfferSellWaitingForProvider } from './TradingOfferSellWaitingForProvider';

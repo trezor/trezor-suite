@@ -8,7 +8,7 @@ import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-confi
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { NewProviderCard } from './NewProviderCard';
 import {
