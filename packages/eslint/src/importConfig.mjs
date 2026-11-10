@@ -123,7 +123,6 @@ export const importConfig = [
                         { pattern: '@suite-common/**', group: 'internal' },
                         { pattern: '@suite/**', group: 'internal' },
                         { pattern: '@suite-app/**', group: 'internal' },
-                        { pattern: 'src/**', group: 'internal', position: 'after' },
                         { pattern: '#src/**', group: 'internal', position: 'after' },
                     ],
                     pathGroupsExcludedImportTypes: ['internal', 'react'],
