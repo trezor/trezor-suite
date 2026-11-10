@@ -15,7 +15,6 @@ export { Main } from './Main';
 export { Preloader } from './Preloader/Preloader';
 
 export { AppsEmbeddingPage } from './pages/AppsEmbeddingPage';
-export { AssetDetailPage } from './pages/AssetDetailPage';
 export { ConnectPopupPage } from './pages/ConnectPopupPage';
 export { NftsPage } from './pages/NftsPage';
 export { NotificationPage } from './pages/NotificationPage';

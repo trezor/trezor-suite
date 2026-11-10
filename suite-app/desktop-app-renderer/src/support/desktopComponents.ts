@@ -3,7 +3,6 @@ import { type ComponentType } from 'react';
 import { type PageName } from '@suite/router';
 import {
     AppsEmbeddingPage,
-    AssetDetailPage,
     ConnectPopupPage,
     NftsPage,
     NotificationPage,
@@ -17,6 +16,7 @@ import {
     WalletDetailsPage,
     WalletSendPage,
 } from '@suite-app/app';
+import { AssetDetailPage } from '@suite-app/module-assets';
 import {
     EarnClaimPage,
     EarnDepositPage,

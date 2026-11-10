@@ -11212,7 +11212,6 @@ __metadata:
     "@sentry/webpack-plugin": "npm:^5.4.1"
     "@suite-app/suite-sync": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
-    "@suite-common/assets": "workspace:*"
     "@suite-common/bip329": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
@@ -11393,6 +11392,7 @@ __metadata:
   dependencies:
     "@sentry/electron": "npm:^7.20.1"
     "@suite-app/app": "workspace:*"
+    "@suite-app/module-assets": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-home": "workspace:*"
     "@suite-app/module-settings": "workspace:*"
@@ -11451,6 +11451,19 @@ __metadata:
     openpgp: "npm:^6.3.2"
     usb: "npm:^3.2.1"
     usb-legacy: "npm:usb@2.19.1"
+  languageName: unknown
+  linkType: soft
+
+"@suite-app/module-assets@workspace:*, @suite-app/module-assets@workspace:suite-app/module-assets":
+  version: 0.0.0-use.local
+  resolution: "@suite-app/module-assets@workspace:suite-app/module-assets"
+  dependencies:
+    "@suite-common/assets": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/suite": "workspace:*"
+    react: "npm:19.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11634,6 +11647,7 @@ __metadata:
     "@rolldown/plugin-babel": "npm:^0.2.1"
     "@sentry/browser": "npm:10.75.2"
     "@suite-app/app": "workspace:*"
+    "@suite-app/module-assets": "workspace:*"
     "@suite-app/module-earn": "workspace:*"
     "@suite-app/module-home": "workspace:*"
     "@suite-app/module-settings": "workspace:*"
