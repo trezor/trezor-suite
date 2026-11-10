@@ -1,0 +1,32 @@
+{
+    "name": "@suite-app/module-earn",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "exports": {
+        ".": "./src/index.ts",
+        "./pages/*": "./src/pages/*.tsx"
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite/account": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/icons": "workspace:*",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/suite": "workspace:*",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
+    }
+}

@@ -152,9 +152,6 @@
         { "path": "../../packages/icons" },
         { "path": "../../packages/logger" },
         {
-            "path": "../../networks/ethereum/network-ethereum-suite-common"
-        },
-        {
             "path": "../../packages/product-components"
         },
         { "path": "../../packages/redux-utils" },

@@ -35,88 +35,88 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ),
     ),
     'suite-earn': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnPage').then(
+        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnPage').then(
             ({ EarnPage }) => ({
                 default: EarnPage,
             }),
         ),
     ),
     'earn-yield-deposit': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnDepositPage').then(
+        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnDepositPage').then(
             ({ EarnDepositPage }) => ({
                 default: EarnDepositPage,
             }),
         ),
     ),
     'earn-yield-withdraw': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnWithdrawPage').then(
+        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnWithdrawPage').then(
             ({ EarnWithdrawPage }) => ({
                 default: EarnWithdrawPage,
             }),
         ),
     ),
     'earn-yield-claim': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnClaimPage').then(
+        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnClaimPage').then(
             ({ EarnClaimPage }) => ({
                 default: EarnClaimPage,
             }),
         ),
     ),
     'earn-yield-unwrap': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnUnwrapPage').then(
+        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnUnwrapPage').then(
             ({ EarnUnwrapPage }) => ({
                 default: EarnUnwrapPage,
             }),
         ),
     ),
     'earn-yield-wrap': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnWrapPage').then(
+        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnWrapPage').then(
             ({ EarnWrapPage }) => ({
                 default: EarnWrapPage,
             }),
         ),
     ),
     'earn-tron': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnTronRedirectPage').then(
-            ({ EarnTronRedirectPage }) => ({
-                default: EarnTronRedirectPage,
-            }),
-        ),
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronRedirectPage'
+        ).then(({ EarnTronRedirectPage }) => ({
+            default: EarnTronRedirectPage,
+        })),
     ),
     'earn-tron-stake': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnTronStakePage').then(
-            ({ EarnTronStakePage }) => ({
-                default: EarnTronStakePage,
-            }),
-        ),
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronStakePage'
+        ).then(({ EarnTronStakePage }) => ({
+            default: EarnTronStakePage,
+        })),
     ),
     'earn-tron-vote': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnTronVotePage').then(
+        import(/* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronVotePage').then(
             ({ EarnTronVotePage }) => ({
                 default: EarnTronVotePage,
             }),
         ),
     ),
     'earn-tron-unstake': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnTronUnstakePage').then(
-            ({ EarnTronUnstakePage }) => ({
-                default: EarnTronUnstakePage,
-            }),
-        ),
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronUnstakePage'
+        ).then(({ EarnTronUnstakePage }) => ({
+            default: EarnTronUnstakePage,
+        })),
     ),
     'earn-tron-withdraw': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnTronWithdrawPage').then(
-            ({ EarnTronWithdrawPage }) => ({
-                default: EarnTronWithdrawPage,
-            }),
-        ),
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronWithdrawPage'
+        ).then(({ EarnTronWithdrawPage }) => ({
+            default: EarnTronWithdrawPage,
+        })),
     ),
     'earn-tron-claim': lazy(() =>
-        import(/* webpackChunkName: "earn" */ '@suite-app/app/pages/EarnTronClaimPage').then(
-            ({ EarnTronClaimPage }) => ({
-                default: EarnTronClaimPage,
-            }),
-        ),
+        import(
+            /* webpackChunkName: "earn" */ '@suite-app/module-earn/pages/EarnTronClaimPage'
+        ).then(({ EarnTronClaimPage }) => ({
+            default: EarnTronClaimPage,
+        })),
     ),
     'apps-embedding-index': lazy(() =>
         import(
@@ -174,9 +174,9 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ),
     ),
     'wallet-staking': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/WalletStakingPage').then(
-            ({ WalletStakingPage }) => ({ default: WalletStakingPage }),
-        ),
+        import(
+            /* webpackChunkName: "wallet" */ '@suite-app/module-earn/pages/WalletStakingPage'
+        ).then(({ WalletStakingPage }) => ({ default: WalletStakingPage })),
     ),
     'wallet-sign-verify': lazy(() =>
         import(

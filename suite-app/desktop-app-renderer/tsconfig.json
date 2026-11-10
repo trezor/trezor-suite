@@ -9,6 +9,7 @@
     ],
     "references": [
         { "path": "../app" },
+        { "path": "../module-earn" },
         { "path": "../module-sign-verify" },
         { "path": "../module-trading" },
         {
