@@ -7,6 +7,7 @@ import type { BankAccount, SellFiatTrade } from 'invity-api';
 import { selectTradingSellFormStep } from '@suite-common/trading';
 import { AnimatedVStack, AnimatedView, BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { TradingPreviewInfoCard } from '../../general/TradingPreview/TradingPreviewInfoCard';
 import { SellFromAccountCard } from '../SellFromAccountCard';
@@ -25,6 +26,7 @@ export const SellCompletionView = ({
     shouldShowFee,
 }: SellCompletionViewProps) => {
     const formStep = useSelector(selectTradingSellFormStep);
+    const providerConfirmationStatus = useSelector(selectTradingProviderConfirmationStatus);
     const [selectedBankAccountIban, setSelectedBankAccountIban] = useState<string>();
 
     const [firstBankAccount] = quote.bankAccounts ?? [];
@@ -36,6 +38,10 @@ export const SellCompletionView = ({
         ? selectedBankAccountIban
         : firstBankAccount?.bankAccount;
     const isTxnError = !!txnErrorString;
+
+    const isFeeInfoVisible =
+        shouldShowFee && !quote.error && providerConfirmationStatus === 'confirmation_success';
+    const isErrorBannerVisible = isTxnError && !isFeeInfoVisible;
     const isBankAccountPickerVisible = formStep === 'BANK_ACCOUNT' && !!displayedBankAccountIban;
 
     const handleBankAccountSelect = (bankAccount: BankAccount) => {
@@ -44,7 +50,7 @@ export const SellCompletionView = ({
 
     return (
         <AnimatedVStack spacing="sp16" layout={LinearTransition}>
-            {isTxnError && (
+            {isErrorBannerVisible && (
                 <AnimatedView>
                     <BannerInline intent="critical" title={txnErrorString} />
                 </AnimatedView>
@@ -54,11 +60,7 @@ export const SellCompletionView = ({
                 quote={quote}
                 tradingType="sell"
                 fiatAmountLabel={<Translation id="moduleTrading.tradingSellPreviewScreen.youGet" />}
-                feeRow={
-                    shouldShowFee ? (
-                        <SellCompletionFeeInfo quote={quote} isTxnError={isTxnError} />
-                    ) : undefined
-                }
+                feeRow={isFeeInfoVisible ? <SellCompletionFeeInfo quote={quote} /> : undefined}
             />
             {isBankAccountPickerVisible && (
                 <SellBankAccountPicker

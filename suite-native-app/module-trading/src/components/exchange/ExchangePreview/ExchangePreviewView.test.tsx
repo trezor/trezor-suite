@@ -89,17 +89,38 @@ describe('ExchangePreviewView', () => {
         expect(getByText('ERROR_MESSAGE')).toBeOnTheScreen();
     });
 
-    it('should render txnErrorString but no fee picker when isTxnError is true', async () => {
+    it('should keep the fee picker and leave the error to it when isTxnError is true', async () => {
         const { getByText, queryByText } = await renderExchangePreviewView({
             txnErrorString: 'txnErrorString',
         });
 
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeOnTheScreen();
+        expect(queryByText('txnErrorString')).toBeNull();
+    });
+
+    it('should render txnErrorString but no fee picker when the quote has an error', async () => {
+        const { getByText, queryByText } = await renderExchangePreviewView({
+            quote: { ...mercuryoFixedWorstQuote, error: 'Quote error' },
+            txnErrorString: 'txnErrorString',
+        });
+
         expect(getByText('txnErrorString')).toBeOnTheScreen();
         expect(
             queryByText(getTranslation('transactionManagement.fees.description.title.general')),
         ).toBeNull();
+    });
+
+    it('should render txnErrorString for quotes with EIP-712 sign data', async () => {
+        const { getByText } = await renderExchangePreviewView({
+            quote: oneInchFusionPlusWithEip712SignDataQuote,
+            txnErrorString: 'txnErrorString',
+        });
+
+        expect(getByText('txnErrorString')).toBeOnTheScreen();
     });
 
     it('should render EIP-712 info with provider name when quote has EIP-712 sign data', async () => {

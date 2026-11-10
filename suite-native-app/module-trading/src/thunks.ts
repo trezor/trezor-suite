@@ -191,6 +191,7 @@ export const composeTradingTransactionThunk = createThunk<
                 const feeLevels = response.payload;
                 dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
 
+                const formDraftKey = getFormDraftKeyByTradeType(tradeType);
                 const selectedLevel = feeLevels[selectedFeeLevel];
                 if (selectedLevel && isFinalPrecomposedTransaction(selectedLevel)) {
                     const composed = (await dispatch(
@@ -216,8 +217,6 @@ export const composeTradingTransactionThunk = createThunk<
                         }),
                     );
 
-                    const formDraftKey = getFormDraftKeyByTradeType(tradeType);
-
                     // Store the form state in trading draft so it's available for FeeSelector
                     dispatch(
                         formDraftActions.storeDraft({
@@ -234,6 +233,11 @@ export const composeTradingTransactionThunk = createThunk<
                                 }),
                             },
                         }),
+                    );
+                } else {
+                    // Store the form state in trading draft so it's available for FeeSelector retry with lower fee
+                    dispatch(
+                        formDraftActions.storeDraft({ key: formDraftKey, formDraft: formState }),
                     );
                 }
 

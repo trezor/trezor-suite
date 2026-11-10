@@ -4,12 +4,18 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedLevels, asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { act, renderWithStoreProvider, userEvent, waitFor } from '@suite-native/test-utils-store';
+import {
+    act,
+    renderWithStoreProvider,
+    userEvent,
+    waitFor,
+    within,
+} from '@suite-native/test-utils-store';
 import {
     createPrecomposedTxFinal,
     exchangeQuotes,
@@ -117,7 +123,7 @@ jest.mock('../hooks/general/useCloseTradingFlow', () => ({
 }));
 const mockNavigate = jest.fn();
 
-const createStore = (quote?: ExchangeTrade) =>
+const createStore = (quote?: ExchangeTrade, feeLevels: GeneralPrecomposedLevels = {}) =>
     createTradingTestStore({
         tradeType: 'exchange',
         overrides: {
@@ -138,6 +144,7 @@ const createStore = (quote?: ExchangeTrade) =>
                         totalSpent: '100000',
                         bytes: 100,
                     }),
+                    feeLevels,
                 },
             },
         },
@@ -559,12 +566,26 @@ describe('TradingExchangePreviewScreen', () => {
     });
 
     describe('Error String Fallback Logic', () => {
-        it('should use txnErrorString when provided', async () => {
+        it('should leave a fee error to the accessible fee selector', async () => {
             mockTxnErrorString = 'Transaction error occurred';
 
-            const { result } = await renderTradingExchangePreviewScreen();
+            const testStore = createStore(mercuryoFixedWorstQuote, {
+                normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+            });
+            const { result } = await renderTradingExchangePreviewScreen(false, testStore);
 
-            expect(result.getByText('Transaction error occurred')).toBeOnTheScreen();
+            expect(result.queryByText('Transaction error occurred')).toBeNull();
+            expect(result.getByTestId('@transactionManagement/fee-selector-row')).toBeOnTheScreen();
+            expect(
+                within(
+                    result.getByTestId('@transactionManagement/fee-unavailable-alert'),
+                ).getByText(
+                    getTranslation(
+                        'transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee',
+                        { networkDisplaySymbol: 'ETH' },
+                    ),
+                ),
+            ).toBeOnTheScreen();
         });
 
         it('should fall back to quote.error when txnErrorString is null', async () => {

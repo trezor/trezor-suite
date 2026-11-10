@@ -9,13 +9,12 @@ import { TradeInfo } from '../../general/TradeInfo/TradeInfo';
 
 export type ExchangeInfoProps = {
     quote?: ExchangeTrade;
-    isTxnError: boolean;
 } & PropsWithChildren;
 
-export const ExchangeInfo = ({ quote, isTxnError, children }: ExchangeInfoProps) => {
+export const ExchangeInfo = ({ quote, children }: ExchangeInfoProps) => {
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
 
-    if (!fromAccount || !quote?.send || isTxnError) {
+    if (!fromAccount || !quote?.send) {
         return null;
     }
 

@@ -46,6 +46,9 @@ export const ExchangePreviewView = memo(
         const isTxnError = !!txnErrorString;
         const hasEIP712SignData = hasEip712SignData(quote);
 
+        const isExchangeInfoVisible = !hasEIP712SignData && !quote?.error;
+        const isErrorBannerVisible = isTxnError && !isExchangeInfoVisible;
+
         return (
             <VStack spacing="sp16">
                 <LastErrorMessage tradingType="exchange" />
@@ -57,7 +60,7 @@ export const ExchangePreviewView = memo(
                         }
                     />
                 )}
-                {isTxnError && (
+                {isErrorBannerVisible && (
                     <AnimatedView layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
                         <BannerInline intent="critical" title={txnErrorString} />
                     </AnimatedView>
@@ -65,15 +68,16 @@ export const ExchangePreviewView = memo(
                 <AnimatedVStack layout={LinearTransition} spacing="sp16">
                     <ExchangeFromAccountTradePreviewCard quote={quote} />
                     <ExchangeToAccountTradePreviewCard quote={quote} />
-                    {hasEIP712SignData ? (
+                    {hasEIP712SignData && (
                         <ExchangeEIP712Info exchange={quote?.exchange}>
                             <ExchangeSlippagePicker
                                 quote={quote}
                                 onSlippageConfirmed={onSlippageConfirmed}
                             />
                         </ExchangeEIP712Info>
-                    ) : (
-                        <ExchangeInfo quote={quote} isTxnError={isTxnError}>
+                    )}
+                    {isExchangeInfoVisible && (
+                        <ExchangeInfo quote={quote}>
                             <ExchangeSlippagePicker
                                 quote={quote}
                                 onSlippageConfirmed={onSlippageConfirmed}

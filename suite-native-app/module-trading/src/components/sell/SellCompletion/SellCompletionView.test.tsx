@@ -7,6 +7,7 @@ import {
     eth1NormalAccount,
     getSellTrade,
 } from '@suite-native/trading-fixtures';
+import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { BANK_ACCOUNT_ITEM_TEST_ID } from './BankAccount/SellBankAccountItem';
 import { SellCompletionView, type SellCompletionViewProps } from './SellCompletionView';
@@ -15,6 +16,8 @@ import {
     type TradingTestPreloadedState,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+const FEE_SELECTOR_ROW_TEST_ID = '@transactionManagement/fee-selector-row';
 
 describe('SellCompletionView', () => {
     const getSellTradeWithBankAccounts = () => ({
@@ -28,6 +31,7 @@ describe('SellCompletionView', () => {
 
     const getOverrides = (
         formStep?: TradingSellStepType,
+        providerConfirmationStatus: ProviderConfirmationStatus = 'confirmation_success',
     ): PreloadedStatePartial<TradingTestPreloadedState> => ({
         wallet: {
             trading: {
@@ -45,7 +49,7 @@ describe('SellCompletionView', () => {
                     ...(formStep !== undefined && { formStep }),
                 },
                 trades: [getSellTradeWithBankAccounts()],
-                providerConfirmationStatus: 'confirmation_success',
+                providerConfirmationStatus,
             },
         },
     });
@@ -53,6 +57,7 @@ describe('SellCompletionView', () => {
     const renderSellCompletionView = (
         props: Partial<SellCompletionViewProps> = {},
         formStep?: TradingSellStepType,
+        providerConfirmationStatus?: ProviderConfirmationStatus,
     ) =>
         renderWithTradingProvider(
             <SellCompletionView
@@ -63,7 +68,7 @@ describe('SellCompletionView', () => {
             />,
             {
                 tradeType: 'sell',
-                overrides: getOverrides(formStep),
+                overrides: getOverrides(formStep, providerConfirmationStatus),
                 services: { networks: mockNetworksServices() },
             },
         );
@@ -89,6 +94,38 @@ describe('SellCompletionView', () => {
         });
 
         expect(getByText('Transaction error occurred')).toBeOnTheScreen();
+    });
+
+    it('renders the fee selector and leaves the transaction error to it', async () => {
+        const { getByTestId, queryByText } = await renderSellCompletionView({
+            txnErrorString: 'Transaction error occurred',
+            shouldShowFee: true,
+        });
+
+        expect(getByTestId(FEE_SELECTOR_ROW_TEST_ID)).toBeOnTheScreen();
+        expect(queryByText('Transaction error occurred')).toBeNull();
+    });
+
+    it('renders the transaction error but no fee selector when the quote has an error', async () => {
+        const { getByText, queryByTestId } = await renderSellCompletionView({
+            quote: { ...banxaBankTransferSellQuote, error: 'Quote error' },
+            txnErrorString: 'Transaction error occurred',
+            shouldShowFee: true,
+        });
+
+        expect(getByText('Transaction error occurred')).toBeOnTheScreen();
+        expect(queryByTestId(FEE_SELECTOR_ROW_TEST_ID)).toBeNull();
+    });
+
+    it('renders the transaction error but no fee selector until the provider confirms the trade', async () => {
+        const { getByText, queryByTestId } = await renderSellCompletionView(
+            { txnErrorString: 'Transaction error occurred', shouldShowFee: true },
+            undefined,
+            'window_closed_with_success',
+        );
+
+        expect(getByText('Transaction error occurred')).toBeOnTheScreen();
+        expect(queryByTestId(FEE_SELECTOR_ROW_TEST_ID)).toBeNull();
     });
 
     it('renders bank accounts during the bank account step', async () => {
