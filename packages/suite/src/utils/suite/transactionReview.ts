@@ -1,9 +1,7 @@
+import { type ReactNode } from 'react';
+
 import { type ExtendedMessageDescriptor } from '@suite/intl';
-import {
-    type NetworkSymbol,
-    getDisplaySymbol,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
@@ -14,6 +12,8 @@ type GetTransactionReviewModalActionTranslationParams = {
     stakeType: StakeFormState['stakeType'] | null;
     precomposedForm: FormState | StakeFormState;
     approvalToken: TokenInfo | undefined;
+    /** The approval token's symbol as rendered by the caller, which masks URLs in it. */
+    approvalTokenSymbolLabel: ReactNode;
     routeName?: string;
     isBumpFeeRbfAction: boolean;
     isCancelRbfAction: boolean;
@@ -26,6 +26,7 @@ export const getTransactionReviewModalActionTranslation = ({
     stakeType,
     precomposedForm,
     approvalToken,
+    approvalTokenSymbolLabel,
     routeName,
     isBumpFeeRbfAction,
     isCancelRbfAction,
@@ -70,11 +71,7 @@ export const getTransactionReviewModalActionTranslation = ({
     // from the calldata rather than from the originating form or route.
     if (txPurpose === 'approve' || txPurpose === 'revoke') {
         const isApprove = txPurpose === 'approve';
-        const displaySymbol = approvalToken?.symbol
-            ? getDisplaySymbol(approvalToken.symbol, approvalToken.contract)
-            : undefined;
-
-        if (source === 'button' || !displaySymbol) {
+        if (source === 'button' || !approvalToken?.symbol) {
             return { id: isApprove ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE' };
         }
 
@@ -82,7 +79,7 @@ export const getTransactionReviewModalActionTranslation = ({
             id: isApprove
                 ? 'TR_APPROVAL_APPROVE_TOKEN_SPENDING'
                 : 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
-            values: { displaySymbol },
+            values: { displaySymbol: approvalTokenSymbolLabel },
         };
     }
 

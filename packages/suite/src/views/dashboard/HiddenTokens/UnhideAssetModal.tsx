@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { TokenSymbol } from '@suite/token';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
@@ -70,7 +71,20 @@ export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModa
             }
         >
             <H3>
-                <Translation id="TR_HOME_ASSET_UNHIDE_TITLE" values={{ asset: displaySymbol }} />
+                <Translation
+                    id="TR_HOME_ASSET_UNHIDE_TITLE"
+                    values={{
+                        asset:
+                            symbol && contractAddress ? (
+                                <TokenSymbol
+                                    networkSymbol={symbol}
+                                    tokenContract={contractAddress}
+                                />
+                            ) : (
+                                displaySymbol
+                            ),
+                    }}
+                />
             </H3>
             <Paragraph intent="neutral" priority="secondary" margin={{ top: 8 }}>
                 <Translation
