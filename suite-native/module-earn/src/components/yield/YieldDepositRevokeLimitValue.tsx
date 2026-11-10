@@ -3,7 +3,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenIcon } from '@suite-native/tokens';
+import { TokenIcon, TokenSymbol as TokenSymbolComponent } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldFormattedAmount } from './YieldFormattedAmount';
@@ -59,7 +59,12 @@ export const YieldDepositRevokeLimitValue = ({
                 >
                     <>
                         <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />{' '}
-                        {tokenSymbol}
+                        <TokenSymbolComponent
+                            networkSymbol={networkSymbol}
+                            contractAddress={tokenContract}
+                            variant="body-sm-strong"
+                            color="contentPrimary"
+                        />
                     </>
                 </Text>
             ) : null}

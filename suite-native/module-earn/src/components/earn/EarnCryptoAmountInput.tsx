@@ -11,6 +11,7 @@ import { Input, type InputType, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
+import { TokenSymbol } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -94,7 +95,15 @@ export const EarnCryptoAmountInput = ({
             hasError={!isDisabled && hasError}
             rightIcon={
                 <Text color={isDisabled ? 'contentSecondary' : 'contentPrimary'}>
-                    {displaySymbol ?? formatter.format(symbol)}
+                    {tokenContract ? (
+                        <TokenSymbol
+                            networkSymbol={symbol}
+                            contractAddress={tokenContract}
+                            color={isDisabled ? 'contentSecondary' : 'contentPrimary'}
+                        />
+                    ) : (
+                        (displaySymbol ?? formatter.format(symbol))
+                    )}
                 </Text>
             }
         />
