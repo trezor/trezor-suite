@@ -138,9 +138,11 @@ export const useWrappedNativeTokenFees = ({
     );
 
     return {
+        getCustomFeeLevel: fees.getCustomFeeLevel,
         formDraft: fees.formDraft,
         formDraftKey: fees.formDraftKey,
         hasFeeEstimationError: fees.hasFeeEstimationError,
+        isComposingFeeLevels: fees.isFeePreparing,
         isFeePreparing: fees.isFeePreparing,
         isFeeReady: fees.isFeeReady,
         preparedAction,
