@@ -271,6 +271,17 @@ describe(createDesktopApiBridge.name, () => {
             expect(spy).toHaveBeenCalledWith('handshake/client');
         });
 
+        it('DesktopApi.getSystemLocale', async () => {
+            const spy = jest
+                .spyOn(ipcRenderer, 'invoke')
+                .mockImplementation(() => Promise.resolve());
+            await api.getSystemLocale();
+            expect(spy).toHaveBeenCalledWith('system/get-locale');
+
+            // @ts-expect-error no expected params
+            api.getSystemLocale(true);
+        });
+
         it('DesktopApi.loadModules', async () => {
             const spy = jest
                 .spyOn(ipcRenderer, 'invoke')
