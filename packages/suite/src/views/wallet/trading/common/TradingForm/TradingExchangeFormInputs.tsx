@@ -35,7 +35,7 @@ import { useTradingSelectedQuote } from '#src/views/wallet/trading/common/hooks/
 import { TradingExchangeAssetsSwitchButton } from './TradingExchangeAssetsSwitchButton/TradingExchangeAssetsSwitchButton';
 import { TradingFormCard } from './TradingFormCard';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
-import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
+import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInputBalance';
 import { TradingFormInputBuyAsset } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
 import { TradingFormInputSellAsset } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 import { TradingFormSection } from './TradingFormSection';

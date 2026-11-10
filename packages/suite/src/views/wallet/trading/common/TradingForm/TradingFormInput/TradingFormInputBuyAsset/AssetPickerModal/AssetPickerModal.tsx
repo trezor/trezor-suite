@@ -14,7 +14,8 @@ import {
     type TradingAssetListItem,
     useBuildTradingAssetOptions,
 } from './hooks/useBuildTradingAssetOptions';
-import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
+import { AssetListWrapper } from '../../TradingFormInputAssetPicker/AssetListWrapper/AssetListWrapper';
+import { AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker/AssetPickerSearchHeader/AssetPickerSearchHeader';
 
 const getItemHeight = () => ASSET_ROW_HEIGHT;
 

@@ -27,7 +27,8 @@ import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/uti
 
 import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
 import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
-import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
+import { AssetListWrapper } from '../../TradingFormInputAssetPicker/AssetListWrapper/AssetListWrapper';
+import { AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker/AssetPickerSearchHeader/AssetPickerSearchHeader';
 
 const MODAL_WIDTH = 480;
 

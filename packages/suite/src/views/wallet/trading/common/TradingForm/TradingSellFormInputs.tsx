@@ -33,7 +33,7 @@ import { TradingFormInputPaymentMethod } from '#src/views/wallet/trading/common/
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
-import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
+import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInputBalance';
 import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 import {
     TradingFormInputSellAsset,
