@@ -138,7 +138,7 @@ describe('Yield withdraw fee selection', () => {
         expect(mockCompose).toHaveBeenCalledTimes(2);
     });
 
-    it('rebuilds the confirmed Custom level when the withdrawal amount changes', async () => {
+    it('rebuilds the confirmed Custom level after clearing and re-entering the withdrawal amount', async () => {
         const { result, rerender, store } = await renderFees();
         await settle();
         await act(() =>
@@ -156,6 +156,10 @@ describe('Yield withdraw fee selection', () => {
                 }),
             ),
         );
+        await rerender({ ...initialProps, amount: '' });
+        expect(result.current.formDraft).toBeUndefined();
+        expect(result.current.isWithdrawFeeReady).toBe(false);
+
         await rerender({ ...initialProps, amount: '2' });
         await settle();
         expect(result.current.formDraft).toMatchObject({
