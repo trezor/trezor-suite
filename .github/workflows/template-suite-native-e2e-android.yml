@@ -205,9 +205,12 @@ jobs:
           set -euo pipefail
           LOG_DIR="suite-native-app/app/crash-reports"
           mkdir -p "$LOG_DIR/tombstones"
-          # Crashpad databases are directories; preserve their minidumps and metadata.
+          # Crashpad databases also exist on healthy runs; only collect those with crash dumps.
           find /tmp "$HOME/.android/avd" -name "emu-crash*.db" -print0 2>/dev/null \
             | while IFS= read -r -d '' db; do
+              if [[ -d "$db" && -z "$(find "$db" -type f -name '*.dmp' -print -quit)" ]]; then
+                continue
+              fi
               cp -r "$db" "$LOG_DIR/$(basename "$db")" || true
               if [[ -f "$db" ]]; then
                 sqlite3 "$db" "SELECT * FROM Crash;" > "$LOG_DIR/$(basename "$db" .db)-report.txt" 2>&1 || true
