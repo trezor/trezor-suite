@@ -25,7 +25,7 @@ export const PortfolioAssetsListFooter = ({
             <PortfolioAssetsLoadingSkeleton isFirst={isListEmpty} isLast={!isFoldable} />
         )}
         <PortfolioAssetsShowMore isExpanded={isListExpanded} onPress={onShowMorePress} />
-        <PortfolioAssetsFeedback />
+        {!isListEmpty && <PortfolioAssetsFeedback />}
         <Box paddingHorizontal="sp16" paddingTop="sp64">
             <ReferralButton />
         </Box>

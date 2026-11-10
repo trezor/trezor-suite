@@ -152,6 +152,9 @@ export const messages = {
                 subtitle:
                     'Your balance is now 0. Receive crypto from another wallet or buy some to fill it up again.',
             },
+            smallBalancesEmptyState: {
+                title: 'You only hold small balances right now.',
+            },
         },
         graphIgnoredNetworks:
             "{networksString} and all related tokens are included in your portfolio balance, but aren't currently supported in the graph.",

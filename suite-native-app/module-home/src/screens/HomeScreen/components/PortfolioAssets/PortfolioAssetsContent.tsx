@@ -6,8 +6,10 @@ import { FlashList } from '@shopify/flash-list';
 import {
     HOME_ASSET_ROW_LIMIT,
     type HomeAssetTableState,
+    selectAreHomeAssetSmallBalancesDisplayed,
     selectIsHomeAssetTableFoldable,
     selectIsHomeAssetTableMenuAvailable,
+    selectSmallBalanceSummary,
 } from '@suite-common/assets';
 import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
 import {
@@ -25,6 +27,7 @@ import { PortfolioAssetNetworkHeader } from './PortfolioAssetNetworkHeader';
 import { PortfolioAssetsEmptyState } from './PortfolioAssetsEmptyState';
 import { PortfolioAssetsListFooter } from './PortfolioAssetsListFooter';
 import { PortfolioAssetsListHeader } from './PortfolioAssetsListHeader';
+import { PortfolioAssetsSmallBalancesEmptyState } from './PortfolioAssetsSmallBalancesEmptyState';
 import { PortfolioAssetsViewOptionsSheet } from './PortfolioAssetsViewOptionsSheet';
 import {
     type PortfolioAssetListEntry,
@@ -60,6 +63,10 @@ export const PortfolioAssetsContent = () => {
         selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
     );
     const isAssetListLoading = useSelector(selectIsAssetListLoading);
+    const hasSmallBalances = useSelector(
+        (state: HomeAssetTableState) => selectSmallBalanceSummary(state) !== undefined,
+    );
+    const areSmallBalancesDisplayed = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
     const isMenuAvailable = useSelector(selectIsHomeAssetTableMenuAvailable);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const { dispatch } = useServices(injectDispatch);
@@ -100,6 +107,15 @@ export const PortfolioAssetsContent = () => {
         dispatch(setAreHomeAssetSmallBalancesShown(areShown));
     };
 
+    const showSmallBalances = () => changeSmallBalances(true);
+
+    const emptyState =
+        hasSmallBalances && !areSmallBalancesDisplayed ? (
+            <PortfolioAssetsSmallBalancesEmptyState onShowSmallBalancesPress={showSmallBalances} />
+        ) : (
+            <PortfolioAssetsEmptyState />
+        );
+
     return (
         <Box flex={1}>
             <FlashList
@@ -121,7 +137,7 @@ export const PortfolioAssetsContent = () => {
                         onViewOptionsPress={openModal}
                     />
                 }
-                ListEmptyComponent={isEmptyStateVisible ? <PortfolioAssetsEmptyState /> : null}
+                ListEmptyComponent={isEmptyStateVisible ? emptyState : null}
                 ListFooterComponent={
                     <PortfolioAssetsListFooter
                         isListExpanded={isListExpanded}
