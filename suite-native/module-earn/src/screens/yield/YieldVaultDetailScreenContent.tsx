@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -247,7 +248,7 @@ export const YieldVaultDetailScreenContent = ({
         vault,
     ]);
 
-    return (
+    const content = (
         <>
             <VStack spacing="sp16" marginTop="sp16" paddingHorizontal="sp16">
                 <Box>
@@ -422,5 +423,29 @@ export const YieldVaultDetailScreenContent = ({
                 vault={vault}
             />
         </>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens: [
+                        yieldToken,
+                        ...(vault?.token.address
+                            ? [
+                                  {
+                                      contract: toTokenAddress(vault.token.address),
+                                      symbol: vault.token.symbol,
+                                      decimals: vault.token.decimals,
+                                  },
+                              ]
+                            : []),
+                    ],
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type EarnListRootState,
     selectYieldClaimAccountItems,
@@ -30,6 +31,7 @@ import { useServices } from '@trezor/dependency-injection';
 
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../../hooks/yield/useStablecoinYieldFirmwareUpdateAlert';
+import { yieldClaimAccountItemsToTokenMetadataSources } from '../../utils/yield/yieldClaimAccountItemsToTokenMetadataSources';
 import { EarnClaimTokenIconSet } from '../earn/EarnClaimTokenIconSet';
 
 export const YieldClaimRewardsSummaryCard = () => {
@@ -122,7 +124,7 @@ export const YieldClaimRewardsSummaryCard = () => {
         });
     };
 
-    return (
+    const content = (
         <>
             {positions.length > 0 && <CardDivider horizontalPadding={0} />}
 
@@ -209,5 +211,13 @@ export const YieldClaimRewardsSummaryCard = () => {
                 onDismiss={onClaimSelectionDismiss}
             />
         </>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={yieldClaimAccountItemsToTokenMetadataSources(claimAccountItems)}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

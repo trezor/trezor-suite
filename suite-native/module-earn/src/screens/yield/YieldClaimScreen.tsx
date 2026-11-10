@@ -6,6 +6,8 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { getClaimFeeWarning } from '@suite-common/earn-stablecoin';
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -250,7 +252,7 @@ export const YieldClaimScreen = () => {
 
     const accountLabel = customAccountLabel ?? getNetwork(account.symbol).name;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -378,5 +380,22 @@ export const YieldClaimScreen = () => {
                 />
             )}
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[
+                {
+                    networkSymbol: account.symbol,
+                    tokens:
+                        accountRewards?.rewards.map(reward => ({
+                            ...reward.token,
+                            contract: toTokenAddress(reward.token.address),
+                        })) ?? [],
+                },
+            ]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

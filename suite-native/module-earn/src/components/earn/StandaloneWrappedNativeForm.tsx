@@ -1,4 +1,5 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { BannerFull, Box, Button, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -46,12 +47,13 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         spentTokenContract,
         submit,
         wrappedTokenContract,
+        wrappedTokenMetadata,
         wrappedTokenSymbol,
     } = controller;
 
     const messages = wrappedNativeFlowMessages[flowType].form;
 
-    return (
+    const content = (
         <Screen
             header={
                 <YieldFlowScreenHeader
@@ -155,5 +157,13 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                 title={<Translation id={messages.pendingTransactionTitle} />}
             />
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={[{ networkSymbol: account.symbol, tokens: [wrappedTokenMetadata] }]}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

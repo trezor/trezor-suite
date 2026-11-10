@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type YieldRootState,
     selectYieldSessionByFlowKey,
@@ -28,6 +29,7 @@ import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScr
 import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
 import { getYieldDepositCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
 type NavigationProps = StackNavigationProps<
@@ -127,7 +129,7 @@ export const YieldDepositCompleteScreen = () => {
         return null;
     }
 
-    return (
+    const content = (
         <>
             <EarnCompleteScreenContent
                 type="deposit"
@@ -146,5 +148,11 @@ export const YieldDepositCompleteScreen = () => {
                 vault={vault}
             />
         </>
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

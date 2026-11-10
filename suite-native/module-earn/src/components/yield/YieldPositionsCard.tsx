@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type EarnListRootState,
     selectYieldClaimListItems,
@@ -50,7 +51,7 @@ export const YieldPositionsCard = () => {
 
     if (!isPositionsVisible && !isClaimRewardsVisible) return null;
 
-    return (
+    const content = (
         <>
             <Card noPadding borderColor="borderNeutral">
                 <VStack spacing={0}>
@@ -86,5 +87,22 @@ export const YieldPositionsCard = () => {
                 onClose={closeYieldPositionsSheet}
             />
         </>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={positions.map(item => ({
+                networkSymbol: item.networkSymbol,
+                tokens: [
+                    {
+                        contract: item.tokenContractAddress,
+                        symbol: item.tokenSymbol,
+                        decimals: item.token?.decimals,
+                    },
+                ],
+            }))}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

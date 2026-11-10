@@ -1,4 +1,5 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -17,6 +18,7 @@ import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHea
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { useYieldDepositApprovalController } from '../../hooks/yield/controllers/useYieldDepositApprovalController';
 import { getYieldTokenContract } from '../../utils/yield/yieldFiatAmountUtils';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldDepositApprovalScreen = () => {
     const controller = useYieldDepositApprovalController();
@@ -53,7 +55,7 @@ export const YieldDepositApprovalScreen = () => {
         ? undefined
         : tokenSymbol;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -188,5 +190,11 @@ export const YieldDepositApprovalScreen = () => {
                 tokenSymbol={tokenSymbol}
             />
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

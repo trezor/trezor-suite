@@ -1,4 +1,5 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     AnimatedDoubleInput,
     Box,
@@ -33,6 +34,7 @@ import {
 } from '../../constants';
 import { useYieldWithdrawController } from '../../hooks/yield/controllers/useYieldWithdrawController';
 import { getYieldTokenContract } from '../../utils/yield/yieldFiatAmountUtils';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 const withdrawFormCardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderNeutral,
@@ -76,7 +78,7 @@ export const YieldWithdrawScreen = () => {
     } = controller;
     const { account } = yieldFlowData;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -286,5 +288,11 @@ export const YieldWithdrawScreen = () => {
                 />
             )}
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };
