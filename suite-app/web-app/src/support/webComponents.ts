@@ -125,7 +125,7 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     ),
     'suite-connect-popup': lazy(() =>
         import(
-            /* webpackChunkName: "connect-popup" */ '@suite-app/app/pages/ConnectPopupPage'
+            /* webpackChunkName: "connect-popup" */ '@suite-app/module-connect-popup/pages/ConnectPopupPage'
         ).then(({ ConnectPopupPage }) => ({ default: ConnectPopupPage })),
     ),
     'notifications-index': lazy(() =>

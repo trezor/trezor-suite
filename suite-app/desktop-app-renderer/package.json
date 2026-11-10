@@ -21,6 +21,7 @@
         "@suite-app/module-activity-center": "workspace:*",
         "@suite-app/module-assets": "workspace:*",
         "@suite-app/module-coinjoin": "workspace:*",
+        "@suite-app/module-connect-popup": "workspace:*",
         "@suite-app/module-earn": "workspace:*",
         "@suite-app/module-home": "workspace:*",
         "@suite-app/module-receive": "workspace:*",
