@@ -12,6 +12,7 @@ import {
     type CardanoAction,
     type ComposeActionContext,
     type StakeFormState,
+    type StakeType,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect, { type CardanoCertificate, PROTO } from '@trezor/connect';
@@ -506,11 +507,12 @@ describe('composeTransactionThunk', () => {
         account: Account,
         option: VotingDelegationOption,
         selectedFee: StakeFormState['selectedFee'] = 'normal',
+        stakeType: StakeType = 'change-delegate',
     ) => {
         const formValues = {
             ...getStakeFormsDefaultValues({
                 address: account.descriptor,
-                stakeType: 'change-delegate',
+                stakeType,
             }),
             selectedFee,
             feePerUnit: '50',
@@ -594,6 +596,24 @@ describe('composeTransactionThunk', () => {
             normal: expect.objectContaining({ type: 'final', fee: '174301' }),
             custom: expect.objectContaining({ type: 'final', fee: '174301' }),
         });
+    });
+
+    // Recurring bug: https://github.com/trezor/trezor-suite/issues/23004
+    it('stakes only the available balance when the account also has unclaimed rewards', async () => {
+        const fee = '174301';
+        cardanoComposeTransactionMock.mockResolvedValue({
+            success: true,
+            payload: [{ type: 'final', fee, totalSpent: fee }],
+        });
+        const accountWithRewards: Account = {
+            ...createStakeReadyAccount(),
+            balance: '11000000',
+            availableBalance: '10000000',
+        };
+
+        const levels = await compose(accountWithRewards, { type: 'abstain' }, 'normal', 'stake');
+
+        expect(levels?.normal).toEqual(expect.objectContaining({ type: 'final', fee }));
     });
 
     it('returns nothing when the current delegation is kept, as there is nothing to compose', async () => {
