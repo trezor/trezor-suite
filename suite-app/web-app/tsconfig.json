@@ -6,6 +6,7 @@
     "include": ["."],
     "references": [
         { "path": "../app" },
+        { "path": "../module-sign-verify" },
         {
             "path": "../../suite-common/suite-utils"
         },
