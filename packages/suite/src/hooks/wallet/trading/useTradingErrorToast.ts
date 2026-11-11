@@ -4,7 +4,7 @@ import { type TradingError, isSilentSendRejection } from '@suite-common/trading'
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { getTradingErrorTranslation } from 'src/utils/wallet/trading/tradingErrorUtils';
+import { getTradingErrorTranslation } from '#src/utils/wallet/trading/tradingErrorUtils';
 
 export const useTradingErrorToast = () => {
     const { dispatch } = useServices(injectDispatch);
