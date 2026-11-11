@@ -1,5 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MotionConfig } from 'framer-motion';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
@@ -110,7 +111,14 @@ describe('DashboardPromoBanner targeting', () => {
                 services: () => ({ analytics: mockDesktopAnalytics() }),
             });
 
-            renderWithProviders(services, <DashboardPromoBanner />);
+            // Each slide change waits for a real 0.6 s exit animation, which pushed this test
+            // past Jest's 5 s timeout on busy CI runners.
+            renderWithProviders(
+                services,
+                <MotionConfig skipAnimations>
+                    <DashboardPromoBanner />
+                </MotionConfig>,
+            );
 
             expect(screen.getAllByRole('button', { name: /Show promo banner/ })).toHaveLength(
                 expectedBanners.length,
