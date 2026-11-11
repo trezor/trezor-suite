@@ -2,38 +2,48 @@
 
 Network-specific packages are organized by network "families". The goal is to keep all logic related to one coin family in a single folder, with packages separated by technical layer. Technical-layer packages have a predefined suffix and public API, so they can be imported from the rest of the monorepo. Optional packages may use a custom suffix, but must only be imported from within their network's directory.
 
-Every package name must start with `network-`, followed by the network name (for example, `bitcoin`) and either a predefined technical-layer suffix or a custom suffix. Its directory must have the same name and be located directly under the corresponding network directory.
+Every package name must start with `network-`, followed by the family name (for example, `bitcoin`) and either a predefined technical-layer suffix or a custom suffix. Its directory must have the same name and be located directly under the corresponding family directory.
+
+The decisions behind this structure are in [ADR-003: Network modularization](../docs/adr/003-network-modularization.md).
 
 ## Technical layers
 
-| Layer        | Package                                  |
-| ------------ | ---------------------------------------- |
-| Connect      | `@trezor/network-<network>-connect`      |
-| Suite        | `@trezor/network-<network>-suite`        |
-| Suite Common | `@trezor/network-<network>-suite-common` |
-| Suite Native | `@trezor/network-<network>-suite-native` |
+A technical layer is an environment in which a network is needed. It is defined by where its code runs and what that code may depend on. Each layer has its own contract in `networks/network-module/`, as described in [ADR-003](../docs/adr/003-network-modularization.md#6-each-technical-layer-has-its-own-network-module-contract).
 
-Suite and Suite Native packages may depend on Suite Common. Suite Common must remain platform-independent and must not depend on Suite or Suite Native.
+| Layer        | Package                                 |
+| ------------ | --------------------------------------- |
+| Assets       | `@trezor/network-<family>-assets`       |
+| Connect      | `@trezor/network-<family>-connect`      |
+| Suite Common | `@trezor/network-<family>-suite-common` |
+| Suite        | `@trezor/network-<family>-suite`        |
+| Suite Native | `@trezor/network-<family>-suite-native` |
+
+Packages may build on lower layers of the same family, but never on higher ones. Every layer may use the family's types package, `@trezor/network-<family>-types`, and its assets. Suite and Suite Native packages may depend on Suite Common. Suite Common must remain platform-independent and must not depend on Suite or Suite Native.
 
 All the 3rd party dependencies related to a network should be defined inside that network's directory. Moreover, currently they're defined only inside general, no-suffix packages, e.g. `network-cardano` (previously coins packages) and dynamically exported.
 
-The complete structure for Bitcoin illustrates all four layers alongside optional internal packages:
+The complete structure for Bitcoin illustrates all five layers alongside the general, types and optional internal packages:
 
 ```
 networks/
 ├── README.md
+├── network-module/                    → contracts only, no implementations
 ├── bitcoin/
+│   ├── network-bitcoin/               → @trezor/network-bitcoin (general)
+│   ├── network-bitcoin-types/         → @trezor/network-bitcoin-types
+│   ├── network-bitcoin-assets/        → @trezor/network-bitcoin-assets
 │   ├── network-bitcoin-connect/       → @trezor/network-bitcoin-connect
-│   ├── network-bitcoin-suite/         → @trezor/network-bitcoin-suite
 │   ├── network-bitcoin-suite-common/  → @trezor/network-bitcoin-suite-common
+│   ├── network-bitcoin-suite/         → @trezor/network-bitcoin-suite
 │   ├── network-bitcoin-suite-native/  → @trezor/network-bitcoin-suite-native
 │   ├── network-bitcoin-bip32/         → @trezor/network-bitcoin-bip32 (custom/internal)
 │   └── network-bitcoin-coinjoin/      → @trezor/network-bitcoin-coinjoin (custom/internal)
-└── <network>/
-    ├── network-<network>-connect/
-    ├── network-<network>-suite/
-    ├── network-<network>-suite-common/
-    └── network-<network>-suite-native/
+└── <family>/
+    ├── network-<family>-assets/
+    ├── network-<family>-connect/
+    ├── network-<family>-suite-common/
+    ├── network-<family>-suite/
+    └── network-<family>-suite-native/
 ```
 
 ## Custom package structure
@@ -47,7 +57,7 @@ reexported in `runtime/index.ts` so this code is loaded on-demand, for security 
 Each general network package follows a consistent three-entrypoint layout:
 
 ```
-networks/<network>/network-<network>/src/
+networks/<family>/network-<family>/src/
   constants/   – Static values, custom enums and helpers without 3rd party dependencies
   types/       – TypeScript type definitions (incl. reexported by using `export type`)
   runtime/     – Dynamically exported utilities, helpers, reexported functions…
