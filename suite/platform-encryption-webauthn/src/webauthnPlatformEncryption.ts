@@ -70,7 +70,11 @@ const createCredential = async (): Promise<
                     { type: 'public-key', alg: -7 },
                     { type: 'public-key', alg: -257 },
                 ],
-                authenticatorSelection: { residentKey: 'required', userVerification: 'preferred' },
+                authenticatorSelection: {
+                    residentKey: 'discouraged',
+                    userVerification: 'discouraged',
+                },
+                attestation: 'none',
                 extensions: { prf: {} },
             },
         });
@@ -109,7 +113,7 @@ const deriveKey = async ({
                 rpId: window.location.hostname,
                 challenge: getRandomBytes(CHALLENGE_LENGTH),
                 allowCredentials: [{ type: 'public-key', id: credentialId }],
-                userVerification: 'preferred',
+                userVerification: 'discouraged',
                 extensions: { prf: { eval: { first: salt } } },
             },
         });

@@ -10,7 +10,7 @@ const RELYING_PARTY_NAME = 'Trezor Suite debug';
 const PRF_SALT = new TextEncoder().encode('trezor-suite-webauthn-debug');
 const REQUEST_TIMEOUT_MS = 60_000;
 const WAITING_MESSAGE =
-    'Waiting for the authenticator, touch the security key if one is plugged in...';
+    'Waiting for the authenticator. In the desktop app no dialog opens: plug in a USB security key, it starts blinking, then touch it. Touch ID, Windows Hello and passkeys are not available in Electron.';
 
 const bytesToHex = (bytes: Uint8Array<ArrayBuffer>): string =>
     Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
@@ -75,9 +75,10 @@ export const Webauthn = () => {
                         { type: 'public-key', alg: -257 },
                     ],
                     authenticatorSelection: {
-                        residentKey: 'required',
-                        userVerification: 'preferred',
+                        residentKey: 'discouraged',
+                        userVerification: 'discouraged',
                     },
+                    attestation: 'none',
                     extensions: { prf: {} },
                 },
             });
@@ -122,7 +123,7 @@ export const Webauthn = () => {
                     allowCredentials: credentialId
                         ? [{ type: 'public-key', id: credentialId }]
                         : [],
-                    userVerification: 'preferred',
+                    userVerification: 'discouraged',
                     extensions: { prf: { eval: { first: PRF_SALT } } },
                 },
             });
