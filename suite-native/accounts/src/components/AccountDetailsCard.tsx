@@ -7,8 +7,8 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import { BannerFull, Card, ErrorMessage, VStack } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { Translation, useTranslate } from '@suite-native/intl';
+import { TokenSymbol, type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 import { AccountsListItem } from './AccountsList/AccountsListItem';
 import { TokenReceiveCard } from './TokenReceiveCard';
@@ -39,9 +39,22 @@ export const AccountDetailsCard = ({ accountKey, tokenContract }: AccountDetails
 
     return (
         <VStack spacing="sp16">
-            {isDefiToken && (
+            {token && isDefiToken && (
                 <BannerFull
-                    title={translate('moduleSend.defi.banner.title', { token: token?.symbol })}
+                    title={
+                        <Translation
+                            id="moduleSend.defi.banner.title"
+                            values={{
+                                token: (
+                                    <TokenSymbol
+                                        networkSymbol={account.symbol}
+                                        contractAddress={token.contract}
+                                        color="contentInfo"
+                                    />
+                                ),
+                            }}
+                        />
+                    }
                     description={translate('moduleSend.defi.banner.description')}
                     iconName="info"
                     intent="info"

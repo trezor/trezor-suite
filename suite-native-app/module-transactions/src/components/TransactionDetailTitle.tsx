@@ -1,8 +1,11 @@
 import { getNativeWrapTxKind } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import {
+    TokenIcon,
+    type TypedTokenTransfer,
+    type WalletAccountTransaction,
+} from '@suite-native/tokens';
 import {
     TransactionName,
     UnstakeTransactionDetailTitle,
@@ -57,7 +60,6 @@ export const TransactionDetailTitle = ({
             <TokenIcon
                 networkSymbol={transaction.symbol}
                 contractAddress={tokenTransfer?.contract}
-                tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
                 showNetworkIcon
             />
             <Text variant="body-md-strong" numberOfLines={2} style={applyStyle(titleTextStyle)}>
