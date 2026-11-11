@@ -171,7 +171,7 @@ describe('useAllowanceTransaction', () => {
             result.current.selectLimitType('unlimited');
         });
 
-        expect(callbacks.onSelectLimitType).toHaveBeenCalledWith('unlimited');
+        expect(callbacks.onSelectLimitType).toHaveBeenCalledWith('unlimited', 'normal');
         expect(result.current.limitType).toBe('unlimited');
         expect(
             isAllowanceUnlimited({
@@ -223,7 +223,7 @@ describe('useAllowanceTransaction', () => {
             sending = result.current.confirmAndSend();
         });
 
-        expect(callbacks.onConfirm).toHaveBeenCalledWith('minimal');
+        expect(callbacks.onConfirm).toHaveBeenCalledWith('minimal', 'normal');
         expect(callbacks.onSendStart).toHaveBeenCalledTimes(1);
         await waitFor(() => expect(result.current.isSending).toBe(true));
         expect(mockSignAndPush).toHaveBeenCalledWith(

@@ -12,6 +12,7 @@ import {
     type AllowanceLimitType,
     type AllowanceStepState,
     type AllowanceStepVariant,
+    type FeeLevelLabel,
 } from '@suite-common/wallet-types';
 import { formatNetworkAmount, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Spinner } from '@trezor/components';
@@ -82,10 +83,18 @@ export const TradingExchangeApprovalStepCard = ({
 
     const transactionType = variant === 'revoke' ? 'revoke' : 'approve';
 
-    const reportAction = (action: 'continue' | 'limit-exact' | 'limit-unlimited') => {
+    const reportAction = (
+        action: 'continue' | 'limit-exact' | 'limit-unlimited' | 'fee-change',
+        selectedFee: FeeLevelLabel | undefined,
+    ) => {
         analytics.report({
             type: events.tradeApprovalEvent.name,
-            payload: { type: `${transactionType}-modal`, action, ...getCryptoInfo() },
+            payload: {
+                type: `${transactionType}-modal`,
+                action,
+                ...getCryptoInfo(),
+                selectedFee,
+            },
         });
     };
 
@@ -109,9 +118,9 @@ export const TradingExchangeApprovalStepCard = ({
         tokenContractAddress,
         spender,
         shouldShowApprovalToast: false,
-        onSelectLimitType: nextLimitType =>
-            reportAction(LIMIT_TYPE_ANALYTICS_ACTION[nextLimitType]),
-        onConfirm: () => reportAction('continue'),
+        onSelectLimitType: (nextLimitType, selectedFee) =>
+            reportAction(LIMIT_TYPE_ANALYTICS_ACTION[nextLimitType], selectedFee),
+        onConfirm: (_limitType, selectedFee) => reportAction('continue', selectedFee),
         onSent: txid =>
             confirmPendingApproval({
                 trade: quote,
@@ -143,6 +152,7 @@ export const TradingExchangeApprovalStepCard = ({
 
     const onConfirmFee = (feeValues: AllowanceFeeValues) => {
         setAllowanceFeeValues(methods, feeValues);
+        reportAction('fee-change', feeValues.selectedFee);
         composeRequest();
     };
 

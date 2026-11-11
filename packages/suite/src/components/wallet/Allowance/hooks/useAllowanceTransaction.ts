@@ -6,6 +6,7 @@ import {
     type Account,
     type AllowanceLimitType,
     type AllowanceTransactionType,
+    type FeeLevelLabel,
 } from '@suite-common/wallet-types';
 import { asAmountSubunit, findToken, getAllowanceAmountForLimit } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
@@ -21,8 +22,8 @@ export type UseAllowanceTransactionParams = {
     account: Account;
     tokenContractAddress: string;
     spender: string;
-    onSelectLimitType?: (limitType: AllowanceLimitType) => void;
-    onConfirm?: (limitType: AllowanceLimitType) => void;
+    onSelectLimitType?: (limitType: AllowanceLimitType, selectedFee: FeeLevelLabel) => void;
+    onConfirm?: (limitType: AllowanceLimitType, selectedFee: FeeLevelLabel) => void;
     onSendStart?: () => void;
     onSent: (txid: string) => void;
     onSendFailed?: () => void;
@@ -126,15 +127,15 @@ export const useAllowanceTransaction = ({
     const selectLimitType = useCallback(
         (nextLimitType: AllowanceLimitType) => {
             setLimitType(nextLimitType);
-            callbacksRef.current.onSelectLimitType?.(nextLimitType);
+            callbacksRef.current.onSelectLimitType?.(nextLimitType, selectedFee);
         },
-        [callbacksRef],
+        [callbacksRef, selectedFee],
     );
 
     const confirmAndSend = useCallback(async () => {
         if (!composedTransaction || !isTokenResolved) return;
 
-        callbacksRef.current.onConfirm?.(limitType);
+        callbacksRef.current.onConfirm?.(limitType, selectedFee);
         callbacksRef.current.onSendStart?.();
         setIsSending(true);
 
@@ -150,7 +151,7 @@ export const useAllowanceTransaction = ({
         }
 
         callbacksRef.current.onSendFailed?.();
-    }, [composedTransaction, isTokenResolved, send, limitType, callbacksRef]);
+    }, [composedTransaction, isTokenResolved, send, limitType, selectedFee, callbacksRef]);
 
     const handleCancel = useCallback(() => {
         callbacksRef.current.onCancel?.();
