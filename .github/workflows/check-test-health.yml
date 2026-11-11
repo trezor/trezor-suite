@@ -20,7 +20,14 @@ on:
       - ".github/workflows/release*"
       - ".github/workflows/template*"
       - "**.md"
+  schedule:
+    - cron: "0 5 * * 1-5"
   workflow_dispatch:
+    inputs:
+      unquarantine:
+        description: "Also unquarantine recovered tests, as the scheduled run does"
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}

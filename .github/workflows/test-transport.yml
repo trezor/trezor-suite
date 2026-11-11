@@ -46,28 +46,20 @@ jobs:
       - name: Run E2E tests (bridge:emu)
         run: yarn workspace @trezor/transport-test test:e2e:bridge:emu
 
-  extract-branch:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-latest
-    outputs:
-      branch: ${{ steps.extract_branch.outputs.branch }}
-    steps:
-      - name: Extract branch name
-        id: extract_branch
-        run: |
-          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
-
   build-deploy:
     permissions:
       id-token: write
       contents: read
-    needs: [extract-branch]
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name
+        id: branch
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
-          ref: ${{ needs.extract-branch.outputs.branch }}
+          ref: ${{ steps.branch.outputs.branch }}
 
       - name: Install dependencies
         uses: ./.github/actions/minimal-yarn-install
@@ -87,7 +79,7 @@ jobs:
       - name: Upload transport tester
         shell: bash
         env:
-          DEPLOY_PATH: s3://dev.suite.sldev.cz/transport-test/${{ needs.extract-branch.outputs.branch }}
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/transport-test/${{ steps.branch.outputs.branch }}
         run: |
           echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
           mkdir -p tmp_build_directory
