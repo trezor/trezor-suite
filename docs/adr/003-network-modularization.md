@@ -310,9 +310,10 @@ suite-native-app/module-sign-verify/        # Renders the native SignVerify feat
 
 ### 1. A fine-grained network API interpreted by a Suite engine
 
-Networks describe themselves with flags, configuration objects or form schemas, and shared pages
-render from them. We explicitly reject such a fine-grained network API that a Suite engine
-interprets into UI:
+Networks describe a feature to Suite, and one shared Suite UI renders it. The description can be
+data, such as flags, configuration objects or form schemas, or a headless port that every network
+implements in the same shape, such as a sign-verify hook. Either way, Suite owns the UI and has to
+interpret what each network provides. We explicitly reject this:
 
 - **It grows with every network.** Even when each network keeps its own types, the shared engine
   that renders them must handle the union of all network differences. Each new quirk needs engine
@@ -324,6 +325,11 @@ interprets into UI:
   which can break every other network.
 - **It forces a common shape.** Product and design cannot give a network a different flow without
   extending the engine first.
+- **It separates logic and UI by technology.** We have seen this before with HTML and CSS: the
+  interface between them, made of class names, selectors and the DOM structure the styles relied
+  on, became large and fragile, and the industry moved to styles colocated with components. We keep
+  logic headless inside each module instead; see
+  [Logic and UI are separated inside the module](#logic-and-ui-are-separated-inside-the-module).
 
 #### The abstraction can be lowered later but not raised
 
@@ -428,17 +434,6 @@ touches them.
 Suite owns, for example, the Send form, and networks fill slots such as a fee selector or extra
 fields. This still forces one form shape; the slot list grows with every network that does not fit.
 Such shared parts are useful as lego that modules choose to use, not as the contract.
-
-### 4. A headless port per feature at the Suite boundary
-
-Every network implements the same headless interface, such as a sign-verify hook, and Suite builds
-one UI on top of it. This keeps logic and UI apart, but the port has to be one shared shape for all
-networks, and Suite needs a shared UI to interpret it: the rejected
-[Suite engine that interprets a network API](#1-a-fine-grained-network-api-interpreted-by-a-suite-engine).
-We have seen this pattern before with HTML and CSS: the interface between them, made of class names,
-selectors and the DOM structure the styles relied on, became large and fragile, and the industry
-moved to styles colocated with components. We keep logic headless inside each module instead; see
-[Logic and UI are separated inside the module](#logic-and-ui-are-separated-inside-the-module).
 
 ## Consequences
 
