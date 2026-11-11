@@ -3,23 +3,28 @@ import {
     STAKING_OPERATION_ERROR_CODES,
     StakingAdapterError,
     type StakingAmountBounds,
+    type StakingProductLimits,
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
 import { getMaxStakeAmount } from '../../../utils/getMaxStakeAmount';
 import { getCardanoAmountBounds } from '../amountBounds';
-import { CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS } from './limits';
+
+export type GetCardanoEverstakeNativeProductAmountBoundsParams = GetAmountBoundsParams & {
+    limits: StakingProductLimits;
+};
 
 export const getCardanoEverstakeNativeProductAmountBounds = ({
     account,
     position,
     operation,
-}: GetAmountBoundsParams): StakingAmountBounds => {
+    limits,
+}: GetCardanoEverstakeNativeProductAmountBoundsParams): StakingAmountBounds => {
     switch (operation) {
         case 'stake':
             return {
-                min: CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS.minStakeAmount,
-                max: getMaxStakeAmount(account.balance, CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS),
+                min: limits.minStakeAmount,
+                max: getMaxStakeAmount(account.balance, limits),
             };
         case 'unstake':
         case 'claim':

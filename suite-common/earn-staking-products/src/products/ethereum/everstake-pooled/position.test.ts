@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
+import { getEverstakePoolDeployment } from './deployments';
 import { createEthereumEverstakePooledProductDescriptor } from './descriptor';
 import { getEthereumEverstakePooledProductPosition } from './position';
 import { everstakeProvider } from '../../../providers/everstake';
@@ -23,8 +24,17 @@ type EthereumParsedData = NonNullable<StakingTransaction['ethereumSpecific']>['p
 const ETH_POOL_ADDRESS = '0xD523794C879D9eC028960a231F866758e405bE34';
 const THOD_POOL_ADDRESS = '0x7967AcFc9EB46cA2d20076B61B05e224F2d0B8b3';
 
-const eth = createEthereumEverstakePooledProductDescriptor(asNetworkSymbol('eth'));
-const thod = createEthereumEverstakePooledProductDescriptor(asNetworkSymbol('thod'));
+const createDescriptor = (symbol: string) => {
+    const networkSymbol = asNetworkSymbol(symbol);
+
+    return createEthereumEverstakePooledProductDescriptor({
+        networkSymbol,
+        deployment: getEverstakePoolDeployment(networkSymbol),
+    });
+};
+
+const eth = createDescriptor('eth');
+const thod = createDescriptor('thod');
 
 const amount = (value: string) => stakingAmountSchema.parse(value);
 

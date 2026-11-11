@@ -7,8 +7,11 @@ import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-stak
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { getCardanoEverstakeNativeProductAmountBounds } from './amountBounds';
+import { CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS } from './limits';
 
 const ADA = '000000';
+
+const limits = CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS;
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('ada'), balance: `1000${ADA}` });
 
@@ -40,6 +43,7 @@ describe('getCardanoEverstakeNativeProductAmountBounds', () => {
                 position: null,
                 operation: 'stake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '0', max });
     });
@@ -54,6 +58,7 @@ describe('getCardanoEverstakeNativeProductAmountBounds', () => {
                 position: null,
                 operation: 'stake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '0', max: `72000000${ADA}` });
     });
@@ -69,6 +74,7 @@ describe('getCardanoEverstakeNativeProductAmountBounds', () => {
                 position,
                 operation,
                 options: {},
+                limits,
             }),
         ).toEqual({ min: amount, max: amount });
     });
@@ -80,6 +86,7 @@ describe('getCardanoEverstakeNativeProductAmountBounds', () => {
                 position,
                 operation,
                 options: {},
+                limits,
             }),
         ).toThrow(new StakingAdapterError(STAKING_OPERATION_ERROR_CODES.notSupported));
     });

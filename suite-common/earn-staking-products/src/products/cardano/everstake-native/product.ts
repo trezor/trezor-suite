@@ -53,7 +53,7 @@ export const createCardanoEverstakeNativeProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getCardanoEverstakeNativeProductAmountBounds(params);
+        getCardanoEverstakeNativeProductAmountBounds({ ...params, limits: descriptor.limits });
 
     const operations = createUnimplementedStakingOperations();
 

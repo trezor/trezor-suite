@@ -1,15 +1,24 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
+import { getEverstakePoolDeployment } from './deployments';
 import { createEthereumEverstakePooledProductDescriptor } from './descriptor';
-import { ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS } from './limits';
+
+const createDescriptor = (symbol: string) => {
+    const networkSymbol = asNetworkSymbol(symbol);
+
+    return createEthereumEverstakePooledProductDescriptor({
+        networkSymbol,
+        deployment: getEverstakePoolDeployment(networkSymbol),
+    });
+};
 
 describe('createEthereumEverstakePooledProductDescriptor', () => {
     it.each([
-        { symbol: 'eth', id: 'eth:eth:everstake:pooled' },
-        { symbol: 'thod', id: 'thod:thod:everstake:pooled' },
-    ])('builds the $id product', ({ symbol, id }) => {
-        const descriptor = createEthereumEverstakePooledProductDescriptor(asNetworkSymbol(symbol));
+        { symbol: 'eth', id: 'eth:eth:everstake:pooled', minStakeAmount: '10000000000000000' },
+        { symbol: 'thod', id: 'thod:thod:everstake:pooled', minStakeAmount: '100000000000000000' },
+    ])('builds the $id product', ({ symbol, id, minStakeAmount }) => {
+        const descriptor = createDescriptor(symbol);
 
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
         expect(descriptor).toMatchObject({
@@ -21,7 +30,7 @@ describe('createEthereumEverstakePooledProductDescriptor', () => {
             operations: ['stake', 'unstake', 'withdraw'],
             exclusivity: 'none',
             rateKind: 'apy',
-            limits: ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS,
+            limits: { minStakeAmount, minStakeAmountForDashboard: minStakeAmount },
             options: [{ key: 'instant', kind: 'boolean' }],
             consentKey: 'staking:everstake',
             platforms: {
@@ -32,22 +41,8 @@ describe('createEthereumEverstakePooledProductDescriptor', () => {
         });
     });
 
-    it('keeps the legacy limits in wei', () => {
-        expect(ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS).toEqual({
-            minStakeAmount: '10000000000000000',
-            maxStakeAmount: '1000000000000000000000000',
-            minWithdrawalAmount: '5000000000000000',
-            feeBufferBalance: '5000000000000000',
-            minBalanceForStaking: '15000000000000000',
-            minStakeAmountForDashboard: '10000000000000000',
-        });
-    });
-
     it('maps the mainnet operations onto the existing message-system keys', () => {
-        expect(
-            createEthereumEverstakePooledProductDescriptor(asNetworkSymbol('eth'))
-                .messageSystemFeatures,
-        ).toEqual({
+        expect(createDescriptor('eth').messageSystemFeatures).toEqual({
             stake: 'eth.staking.stake',
             unstake: 'eth.staking.unstake',
             withdraw: 'eth.staking.claim',
@@ -55,9 +50,6 @@ describe('createEthereumEverstakePooledProductDescriptor', () => {
     });
 
     it('gives Hoodi no message-system keys', () => {
-        expect(
-            createEthereumEverstakePooledProductDescriptor(asNetworkSymbol('thod'))
-                .messageSystemFeatures,
-        ).toEqual({});
+        expect(createDescriptor('thod').messageSystemFeatures).toEqual({});
     });
 });

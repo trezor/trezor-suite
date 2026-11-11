@@ -8,8 +8,11 @@ import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-stak
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { getTronNativeProductAmountBounds } from './amountBounds';
+import { TRON_NATIVE_PRODUCT_LIMITS } from './limits';
 
 const TRX = '000000';
+
+const limits = TRON_NATIVE_PRODUCT_LIMITS;
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('trx'), balance: `500${TRX}` });
 
@@ -54,6 +57,7 @@ describe('getTronNativeProductAmountBounds', () => {
                 position: null,
                 operation: 'stake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: `1${TRX}`, max });
     });
@@ -69,6 +73,7 @@ describe('getTronNativeProductAmountBounds', () => {
                 position: null,
                 operation: 'stake',
                 options: {},
+                limits,
             }).max,
         ).toBe('49500000');
     });
@@ -83,6 +88,7 @@ describe('getTronNativeProductAmountBounds', () => {
                 position,
                 operation: 'unstake',
                 options: { resource },
+                limits,
             }),
         ).toEqual({ min: '1', max });
     });
@@ -94,6 +100,7 @@ describe('getTronNativeProductAmountBounds', () => {
                 position,
                 operation: 'unstake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '1', max: `700${TRX}` });
     });
@@ -105,6 +112,7 @@ describe('getTronNativeProductAmountBounds', () => {
                 position,
                 operation: 'unstake',
                 options: { resource: 'storage' },
+                limits,
             }),
         ).toEqual({ min: '1', max: '0' });
     });
@@ -116,6 +124,7 @@ describe('getTronNativeProductAmountBounds', () => {
                 position,
                 operation: 'vote',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '0', max: `1100${TRX}` });
     });
@@ -130,6 +139,7 @@ describe('getTronNativeProductAmountBounds', () => {
                 },
                 operation: 'vote',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '0', max: `1100${TRX}` });
     });
@@ -139,7 +149,13 @@ describe('getTronNativeProductAmountBounds', () => {
         { operation: 'claim', amount: '1500000' },
     ] as const)('takes the whole amount for a $operation', ({ operation, amount: expected }) => {
         expect(
-            getTronNativeProductAmountBounds({ account, position, operation, options: {} }),
+            getTronNativeProductAmountBounds({
+                account,
+                position,
+                operation,
+                options: {},
+                limits,
+            }),
         ).toEqual({ min: expected, max: expected });
     });
 
@@ -152,6 +168,7 @@ describe('getTronNativeProductAmountBounds', () => {
                     position: null,
                     operation,
                     options: {},
+                    limits,
                 }),
             ).toEqual({ min: '1', max: '0' });
         },
@@ -166,6 +183,7 @@ describe('getTronNativeProductAmountBounds', () => {
                     position: { ...position, operations: ['stake'] },
                     operation,
                     options: {},
+                    limits,
                 }),
             ).toEqual({ min: '1', max: '0' });
         },
@@ -178,6 +196,7 @@ describe('getTronNativeProductAmountBounds', () => {
                 position,
                 operation: 'redelegate',
                 options: {},
+                limits,
             }),
         ).toThrow(new StakingAdapterError(STAKING_OPERATION_ERROR_CODES.notSupported));
     });

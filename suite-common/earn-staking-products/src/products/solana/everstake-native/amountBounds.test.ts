@@ -7,10 +7,13 @@ import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-stak
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { getSolanaEverstakeNativeProductAmountBounds } from './amountBounds';
+import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS } from './limits';
 
 const SOL = '000000000';
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('sol') });
+
+const limits = SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS;
 
 const position = mockStakingPosition({
     balances: {
@@ -40,6 +43,7 @@ describe('getSolanaEverstakeNativeProductAmountBounds', () => {
                 position: null,
                 operation: 'stake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: `1${SOL}`, max });
     });
@@ -51,6 +55,7 @@ describe('getSolanaEverstakeNativeProductAmountBounds', () => {
                 position,
                 operation: 'unstake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '1', max: `5${SOL}` });
     });
@@ -62,6 +67,7 @@ describe('getSolanaEverstakeNativeProductAmountBounds', () => {
                 position,
                 operation: 'withdraw',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: `15${SOL.slice(1)}`, max: `15${SOL.slice(1)}` });
     });
@@ -75,6 +81,7 @@ describe('getSolanaEverstakeNativeProductAmountBounds', () => {
                     position: null,
                     operation,
                     options: {},
+                    limits,
                 }),
             ).toEqual({ min: '1', max: '0' });
         },
@@ -89,6 +96,7 @@ describe('getSolanaEverstakeNativeProductAmountBounds', () => {
                     position: { ...position, operations: ['stake'] },
                     operation,
                     options: {},
+                    limits,
                 }),
             ).toEqual({ min: '1', max: '0' });
         },
@@ -101,6 +109,7 @@ describe('getSolanaEverstakeNativeProductAmountBounds', () => {
                 position,
                 operation,
                 options: {},
+                limits,
             }),
         ).toThrow(new StakingAdapterError(STAKING_OPERATION_ERROR_CODES.notSupported));
     });

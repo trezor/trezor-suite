@@ -7,7 +7,7 @@ import type {
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { getEthereumEverstakePooledProductAmountBounds } from './amountBounds';
-import { EVERSTAKE_POOL_ADDRESSES } from './constants';
+import { getEverstakePoolDeployment } from './deployments';
 import { createEthereumEverstakePooledProductDescriptor } from './descriptor';
 import { getEthereumEverstakePooledProductPosition } from './position';
 import {
@@ -26,13 +26,14 @@ export const createEthereumEverstakePooledProduct = ({
     networkSymbol,
     ...deps
 }: CreateEthereumEverstakePooledProductParams): StakingProductAdapter => {
-    const descriptor = createEthereumEverstakePooledProductDescriptor(networkSymbol);
+    const deployment = getEverstakePoolDeployment(networkSymbol);
 
-    const poolAddress = EVERSTAKE_POOL_ADDRESSES[networkSymbol];
+    const descriptor = createEthereumEverstakePooledProductDescriptor({
+        networkSymbol,
+        deployment,
+    });
 
-    if (poolAddress === undefined) {
-        throw new Error(`Everstake has no pool contract on ${networkSymbol}`);
-    }
+    const { poolAddress } = deployment;
 
     const fetchProductInfo = (params: FetchProductInfoParams) =>
         fetchEthereumEverstakePooledProductInfo(deps, params);
@@ -45,7 +46,7 @@ export const createEthereumEverstakePooledProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getEthereumEverstakePooledProductAmountBounds(params);
+        getEthereumEverstakePooledProductAmountBounds({ ...params, limits: descriptor.limits });
 
     const operations = createUnimplementedStakingOperations();
 

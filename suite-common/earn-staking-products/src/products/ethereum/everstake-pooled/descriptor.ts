@@ -5,13 +5,20 @@ import {
 } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
-import { ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS } from './limits';
+import { type EverstakePoolDeployment } from './deployments';
+import { createEthereumEverstakePooledProductLimits } from './limits';
 import { ETHEREUM_EVERSTAKE_POOLED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 import { everstakeProvider } from '../../../providers/everstake';
 
-export const createEthereumEverstakePooledProductDescriptor = (
-    networkSymbol: NetworkSymbol,
-): StakingProductDescriptor => {
+export type CreateEthereumEverstakePooledProductDescriptorParams = {
+    networkSymbol: NetworkSymbol;
+    deployment: EverstakePoolDeployment;
+};
+
+export const createEthereumEverstakePooledProductDescriptor = ({
+    networkSymbol,
+    deployment,
+}: CreateEthereumEverstakePooledProductDescriptorParams): StakingProductDescriptor => {
     const product = {
         networkSymbol,
         asset: { kind: 'native' },
@@ -25,7 +32,7 @@ export const createEthereumEverstakePooledProductDescriptor = (
         operations: ['stake', 'unstake', 'withdraw'],
         exclusivity: 'none',
         rateKind: 'apy',
-        limits: ETHEREUM_EVERSTAKE_POOLED_PRODUCT_LIMITS,
+        limits: createEthereumEverstakePooledProductLimits(deployment),
         options: [{ key: 'instant', kind: 'boolean' }],
         consentKey: 'staking:everstake',
         platforms: {
