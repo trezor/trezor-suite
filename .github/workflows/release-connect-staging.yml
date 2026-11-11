@@ -1,4 +1,4 @@
-name: "[Release] connect v10 staging"
+name: "[Release] connect staging"
 
 permissions:
   contents: read
@@ -7,15 +7,15 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
-  # Version should have been bumped by now thanks to ./scripts/ci/connect-release-init-npm.js
   extract-version:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.set-version.outputs.version }}
+      major: ${{ steps.set-version.outputs.major }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -33,6 +33,7 @@ jobs:
         run: |
           VERSION="$(node ./scripts/ci/get-connect-version.js)"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "major=${VERSION%%.*}" >> "$GITHUB_OUTPUT"
 
   check-version-match:
     runs-on: ubuntu-latest
@@ -46,7 +47,7 @@ jobs:
           branch_ref: "${{ github.ref }}"
           extracted_version: "${{ needs.extract-version.outputs.version }}"
 
-  # This job deploys to staging-connect.trezor.io/10.x.x
+  # This job deploys to staging-connect.trezor.io/<major>.x.x
   deploy-staging-semantic-version:
     permissions:
       id-token: write
@@ -55,7 +56,6 @@ jobs:
     environment: staging-connect
     name: "Deploying to staging-connect.trezor.io/${{ needs.extract-version.outputs.version }}"
     runs-on: ubuntu-latest
-    # Branch should have been created by workflow .github/workflows/release-connect-v10-init.yml
     if: startsWith(github.ref, 'refs/heads/release/connect/')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -67,7 +67,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Build and deploy to staging-connect.trezor.io/10.x.x
+      - name: Build and deploy to staging-connect.trezor.io/${{ needs.extract-version.outputs.version }}
         uses: ./.github/actions/release-connect
         with:
           awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_connect_staging_deploy"
@@ -78,17 +78,16 @@ jobs:
           uploadArtifacts: "true"
           nodeEnv: "production"
 
-  # This job deploys to staging-connect.trezor.io/10
-  deploy-staging-v10:
+  # This job deploys to staging-connect.trezor.io/<major>
+  deploy-staging-latest:
     permissions:
       id-token: write
       contents: read
     needs: [extract-version, check-version-match]
     environment: staging-connect
-    name: "Deploying to staging-connect.trezor.io/10"
+    name: "Deploying to staging-connect.trezor.io/${{ needs.extract-version.outputs.major }}"
     runs-on: ubuntu-latest
-    # Branch should have been created by workflow .github/workflows/release-connect-v10-init.yml
-    # Only stable releases update the floating /10 alias; prereleases only publish /<version>.
+    # Only stable releases update the floating /<major> alias; prereleases only publish /<version>.
     if: ${{ startsWith(github.ref, 'refs/heads/release/connect/') && !contains(needs.extract-version.outputs.version, '-') }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -100,13 +99,13 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Build and deploy to staging-connect.trezor.io/10
+      - name: Build and deploy to staging-connect.trezor.io/${{ needs.extract-version.outputs.major }}
         uses: ./.github/actions/release-connect
         with:
           awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_connect_staging_deploy"
           awsRegion: "eu-central-1"
           serverHostname: "staging-connect.trezor.io"
-          serverPath: "10"
+          serverPath: ${{ needs.extract-version.outputs.major }}
           nodeEnv: "production"
           # don't upload artifacts in both jobs, this causes a conflict
           buildArtifacts: "false"

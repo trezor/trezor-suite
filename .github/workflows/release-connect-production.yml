@@ -1,4 +1,4 @@
-name: "[Release] connect v10 production"
+name: "[Release] connect production"
 
 permissions:
   contents: read
@@ -16,7 +16,7 @@ on:
           - stable
 
 concurrency:
-  group: ${{ github.workflow }}-${{ inputs.deploymentType }}
+  group: ${{ github.workflow }}-${{ github.ref_name }}-${{ inputs.deploymentType }}
   cancel-in-progress: false
 
 env:
@@ -27,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.set-version.outputs.version }}
+      major: ${{ steps.set-version.outputs.major }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -44,6 +45,7 @@ jobs:
         run: |
           VERSION="$(node ./scripts/ci/get-connect-version.js)"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "major=${VERSION%%.*}" >> "$GITHUB_OUTPUT"
 
   check-version-match:
     runs-on: ubuntu-latest
@@ -58,18 +60,18 @@ jobs:
           extracted_version: "${{ needs.extract-version.outputs.version }}"
 
   # set the rollback
-  sync-rollback-connect-v10:
+  sync-rollback-connect:
     permissions:
       id-token: write
       contents: read
     needs: [extract-version, check-version-match]
-    # Only stable deploys move the /10 alias, so only they should refresh the /10 rollback snapshot.
+    # Only stable deploys move the /<major> alias, so only they should refresh the /<major> rollback snapshot.
     if: startsWith(github.ref, 'refs/heads/release/connect/') && github.event.inputs.deploymentType == 'stable'
     environment: production-connect
     name: "Backing up current production version ${{ needs.extract-version.outputs.version }} to rollback bucket"
     runs-on: ubuntu-latest
     env:
-      LATEST_VERSION: 10
+      LATEST_VERSION: ${{ needs.extract-version.outputs.major }}
     steps:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
@@ -88,7 +90,7 @@ jobs:
     needs: [extract-version, check-version-match]
     if: startsWith(github.ref, 'refs/heads/release/connect/')
     environment: production-connect
-    name: "Deploying to connect.trezor.io/10.x.x"
+    name: "Deploying to connect.trezor.io/${{ needs.extract-version.outputs.version }}"
     runs-on: ubuntu-latest
     env:
       CURRENT_VERSION: ${{ needs.extract-version.outputs.version }}
@@ -105,18 +107,18 @@ jobs:
           aws cloudfront create-invalidation --distribution-id ${{ env.CONNECT_CLOUDFRONT_DISTRIBUTION_ID }} --paths '/*'
 
   # From staging move it to production
-  deploy-production-v10:
+  deploy-production-latest:
     permissions:
       id-token: write
       contents: read
     # We deploy to production only if rollback sync was successful.
-    needs: [extract-version, check-version-match, sync-rollback-connect-v10]
+    needs: [extract-version, check-version-match, sync-rollback-connect]
     if: startsWith(github.ref, 'refs/heads/release/connect/') && github.event.inputs.deploymentType == 'stable'
     environment: production-connect
-    name: "Deploying to connect.trezor.io/10/"
+    name: "Deploying to connect.trezor.io/${{ needs.extract-version.outputs.major }}/"
     runs-on: ubuntu-latest
     env:
-      LATEST_VERSION: 10
+      LATEST_VERSION: ${{ needs.extract-version.outputs.major }}
     steps:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
