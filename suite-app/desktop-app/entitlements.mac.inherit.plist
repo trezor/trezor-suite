@@ -12,5 +12,9 @@
     <true/>
     <key>com.apple.security.device.bluetooth</key>
     <true/>
+    <key>keychain-access-groups</key>
+    <array>
+      <string>C3P22XVH2C.io.trezor.TrezorSuite.webauthn</string>
+    </array>
   </dict>
 </plist>

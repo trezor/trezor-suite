@@ -7,7 +7,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { isMacOs } from '@trezor/env-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
-import { rendererServerPort } from './config';
+import { rendererServerPort, webauthnKeychainAccessGroup } from './config';
 import { handshakeAndHangDetect } from './handshake-and-hang-detect';
 import { ipcMain } from './ipcMain';
 import { processStatePatch, restartApp } from './libs/app-utils';
@@ -110,6 +110,15 @@ export const createDesktopMainApp =
         app.commandLine.appendSwitch('gtk-version', '3');
 
         await app.whenReady();
+
+        if (isMacOs()) {
+            app.configureWebAuthn({
+                touchID: {
+                    keychainAccessGroup: webauthnKeychainAccessGroup,
+                    promptReason: 'verify your identity on $1',
+                },
+            });
+        }
 
         const rendererToken = deps.randomBytes(32).toString('hex');
         const rendererServer = isDevEnv
