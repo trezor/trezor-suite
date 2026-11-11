@@ -18,6 +18,7 @@ import { useYieldDepositApprovalController } from './useYieldDepositApprovalCont
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
 import { mockYieldFlowScreenBaseResult } from '../../../../mocks/mockYieldFlowScreenBaseResult';
 import { mockYieldPendingTransactionResult } from '../../../../mocks/mockYieldPendingTransactionResult';
+import { YieldFlowExitAnalyticsProvider } from '../../../components/yield/YieldFlowExitAnalyticsProvider';
 import { useYieldApprovalFees } from '../useYieldApprovalFees';
 import { useYieldDepositForm } from '../useYieldDepositForm';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
@@ -34,6 +35,7 @@ jest.mock('@react-navigation/native', () => ({
     useFocusEffect: jest.fn(),
     useNavigation: () => ({
         addListener: mockBeforeRemove,
+        getParent: () => ({ addListener: mockBeforeRemove }),
         isFocused: () => true,
         navigate: jest.fn(),
         getState: () => ({ routes: mockNavigationRoutes }),
@@ -118,6 +120,7 @@ const renderApprovalController = () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
 
     return renderHookWithStoreProvider(useYieldDepositApprovalController, {
+        wrapper: YieldFlowExitAnalyticsProvider,
         services: { ...services, store },
     }).then(view => ({ ...view, services, dispatchSpy }));
 };
@@ -182,7 +185,7 @@ describe('useYieldDepositApprovalController', () => {
         );
     });
 
-    it('reports leaving Approval while its transaction is pending', async () => {
+    it('reports leaving the approval flow while its transaction is pending', async () => {
         useYieldPendingTransactionMock.mockReturnValue(
             mockYieldPendingTransactionResult({
                 pendingTransaction: { type: 'approve', txid: '0xpending', amount: '5' },

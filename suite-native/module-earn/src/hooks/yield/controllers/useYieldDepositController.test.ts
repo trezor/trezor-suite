@@ -50,8 +50,9 @@ jest.mock('../useRefreshYieldDepositAllowanceOnIdle', () => ({
 jest.mock('../useReturnToYieldDepositWrapStep', () => ({
     useReturnToYieldDepositWrapStep: () => jest.fn(),
 }));
-jest.mock('../../earn/useNavigateBackAnalytics', () => ({
-    useNavigateBackAnalytics: jest.fn(),
+jest.mock('../useYieldFlowAnalytics', () => ({
+    ...jest.requireActual('../useYieldFlowAnalytics'),
+    useYieldFormExitAnalytics: jest.fn(),
 }));
 
 const useYieldFlowScreenBaseMock = jest.mocked(useYieldFlowScreenBase);

@@ -1,4 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
+
+import { useIsFocused } from '@react-navigation/native';
 
 import { type EventInstance, events } from '@suite-common/analytics';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -6,8 +8,8 @@ import { type YieldPositionFlowType } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 
+import { YieldFlowExitAnalyticsContext } from '../../contexts/YieldFlowExitAnalyticsContext';
 import { useEarnDeviceStatus } from '../earn/useEarnDeviceStatus';
-import { useNavigateBackAnalytics } from '../earn/useNavigateBackAnalytics';
 
 type YieldFlowAnalyticsContext = {
     networkSymbol: NetworkSymbol | undefined;
@@ -84,6 +86,7 @@ type UseYieldFormExitAnalyticsParams = {
     networkSymbol?: NetworkSymbol;
     vaultId?: string;
     isEnabled: boolean;
+    isCompleted?: boolean;
 };
 
 export const useYieldFormExitAnalytics = ({
@@ -91,14 +94,14 @@ export const useYieldFormExitAnalytics = ({
     networkSymbol,
     vaultId,
     isEnabled,
+    isCompleted = false,
 }: UseYieldFormExitAnalyticsParams) => {
-    const form = flowType === 'deposit' ? 'deposit-form' : 'withdraw-form';
+    const trackFlow = useContext(YieldFlowExitAnalyticsContext);
+    const isFocused = useIsFocused();
 
-    useNavigateBackAnalytics(
-        {
-            type: events.yieldNavigateEvent.name,
-            payload: { action: 'cancel', from: form, to: 'earn-dashboard', networkSymbol, vaultId },
-        },
-        isEnabled,
-    );
+    useEffect(() => {
+        if (isEnabled && (isFocused || isCompleted)) {
+            trackFlow?.({ flowType, networkSymbol, vaultId, isCompleted });
+        }
+    }, [flowType, networkSymbol, vaultId, isCompleted, isEnabled, isFocused, trackFlow]);
 };
