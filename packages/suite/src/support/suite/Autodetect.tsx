@@ -12,7 +12,7 @@ import { type Locale } from '@suite-common/locale';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getOsTheme, watchOsTheme } from '#src/utils/suite/env';
 import { getOsLocale, watchOsLocale } from '#src/utils/suite/l10n';
 

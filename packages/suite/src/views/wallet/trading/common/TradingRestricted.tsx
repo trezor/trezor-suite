@@ -5,7 +5,8 @@ import { Banner } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
-import { useLayout, useSelector } from '#src/hooks/suite';
+import { useLayout } from '#src/hooks/suite/useLayout';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const TradingRestricted = () => {
     const language = useSelector(selectLanguage);

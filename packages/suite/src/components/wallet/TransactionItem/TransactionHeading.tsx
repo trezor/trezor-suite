@@ -8,7 +8,7 @@ import { getTxHeaderSymbol } from '@suite-common/wallet-utils';
 import { BlurWrapper, Row, TextButton, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type WalletAccountTransaction } from '#src/types/wallet';
 
 import { InstantStakeBadge } from './InstantStakeBadge';

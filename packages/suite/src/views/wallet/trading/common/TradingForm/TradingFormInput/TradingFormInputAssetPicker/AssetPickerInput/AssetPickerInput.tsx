@@ -15,7 +15,7 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetPickerInputContent } from './AssetPickerInputContent';
 

@@ -28,7 +28,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling';
 import type { NotificationViewProps } from '#src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import type { NotificationRendererProps } from './NotificationRendererProps';
 

@@ -24,8 +24,8 @@ import { Fees } from '#src/components/wallet/Fees/Fees';
 import { useCardanoStaking } from '#src/hooks/earn/useCardanoStaking';
 import { useClaimForm } from '#src/hooks/earn/useClaimForm';
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
-import { useSelector } from '#src/hooks/suite';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT } from '#src/types/earn/earnFormFields';
 
 type EarnClaimModalProps = {

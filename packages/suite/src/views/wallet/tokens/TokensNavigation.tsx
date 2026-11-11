@@ -31,7 +31,7 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 import { arrayPartition } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type GetTokensOutputType, getTokens } from '#src/utils/wallet/tokenUtils';
 
 type SubTabConfig = {

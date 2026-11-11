@@ -23,7 +23,7 @@ import { TronStakeConsentModal } from '#src/components/earn/staking/tron/TronSta
 import { TronVoteConsentModal } from '#src/components/earn/staking/tron/vote/TronVoteConsentModal';
 import { ConnectPopupTxSimulationModal } from '#src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModal';
 import { EarnYieldTxSimulationModal } from '#src/components/tx-simulation/earn-stablecoin/EarnYieldTxSimulationModal';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';

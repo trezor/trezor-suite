@@ -1,6 +1,6 @@
 import { selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { UnpairBluetoothDeviceFromOsModal } from './UnpairBluetoothDeviceFromOsModal';
 

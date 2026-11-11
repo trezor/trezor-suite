@@ -4,7 +4,7 @@ import { selectLanguage } from '@suite/settings';
 import { Feature, selectFeatureMessageContent } from '@suite-common/message-system';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const useCoinjoinSessionBlockers = (
     accountKey: AccountKey,

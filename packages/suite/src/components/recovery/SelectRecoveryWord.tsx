@@ -2,7 +2,7 @@ import { selectRecoveryWordRequestInputType } from '@suite/modal';
 
 import { WordInput } from '#src/components/suite/WordInput';
 import { WordInputAdvanced } from '#src/components/suite/WordInputAdvanced';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const SelectRecoveryWord = () => {
     const recoveryWordRequestInputType = useSelector(selectRecoveryWordRequestInputType);

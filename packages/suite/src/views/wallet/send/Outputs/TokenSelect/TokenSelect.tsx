@@ -29,7 +29,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { setSendFormPrefill } from '#src/actions/suite/suiteActions';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSendFormContext } from '#src/hooks/wallet';
 import { selectSendFormPrefill } from '#src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';

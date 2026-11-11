@@ -16,7 +16,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
 import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { HomeAssetApyBadge } from './HomeAssetApyBadge';
 import { HomeAssetBalance } from './HomeAssetBalance';

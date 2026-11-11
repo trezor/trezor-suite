@@ -14,7 +14,7 @@ import {
     type NavigationItem,
     SubpageNavigation,
 } from '#src/components/suite/layouts/SuiteLayout/SubpageNavigation';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type WalletParams } from '#src/types/wallet';
 
 type AccountNavigationProps = {

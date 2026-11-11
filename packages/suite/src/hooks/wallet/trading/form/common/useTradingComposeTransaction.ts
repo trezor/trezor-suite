@@ -33,7 +33,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, noop } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useCompose } from '#src/hooks/wallet/form/useCompose';
 import { useFees } from '#src/hooks/wallet/form/useFees';
 import {

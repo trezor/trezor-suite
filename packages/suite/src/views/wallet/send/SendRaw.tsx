@@ -15,7 +15,7 @@ import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { OpenGuideFromTooltip } from '#src/components/guide/OpenGuideFromTooltip';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type Account } from '#src/types/wallet';
 
 const INPUT_NAME = 'rawTx';

@@ -4,7 +4,7 @@ import { selectRouteName } from '@suite/router';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column, Row } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { DiscoveryWarning } from '#src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
 import { TradingLayoutNavigation } from '#src/views/wallet/trading/common/TradingLayout/TradingLayoutNavigation';
 import { useTradingPageHeader } from '#src/views/wallet/trading/common/TradingLayout/useTradingPageHeader';

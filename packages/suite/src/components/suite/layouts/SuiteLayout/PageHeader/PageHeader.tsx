@@ -15,7 +15,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from '#src/constants/suite/layout';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailActions } from './AssetDetailActions';
 import { DashboardSendReceive } from './GlobalSendReceive/DashboardSendReceive';

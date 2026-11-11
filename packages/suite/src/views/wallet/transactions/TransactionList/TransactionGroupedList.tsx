@@ -8,7 +8,7 @@ import {
 
 import { CoinjoinBatchItem } from '#src/components/wallet/TransactionItem/CoinjoinBatchItem';
 import { TransactionItem } from '#src/components/wallet/TransactionItem/TransactionItem';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';

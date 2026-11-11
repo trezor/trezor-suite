@@ -14,7 +14,7 @@ import { Skeleton, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/compo
 import { isArrayMember } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type BaseCurrencyProps = {
     isLoading?: boolean;

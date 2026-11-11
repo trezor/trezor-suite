@@ -17,7 +17,7 @@ import { typography } from '@trezor/theme';
 
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectGraph } from '#src/reducers/wallet/graphReducer';
 import { type Account } from '#src/types/wallet';
 import { type AggregatedDashboardHistory } from '#src/types/wallet/graph';

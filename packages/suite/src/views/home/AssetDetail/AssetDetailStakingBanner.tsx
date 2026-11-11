@@ -7,7 +7,7 @@ import { type WalletAssetKey, isSupportedStakingNetworkSymbol } from '@suite-com
 import { type Account } from '@suite-common/wallet-types';
 
 import { isStakingBannerAccounts } from '#src/components/wallet/StakingBanner/useStakingBanner';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailAccountsStakingBanner } from './AssetDetailAccountsStakingBanner';
 

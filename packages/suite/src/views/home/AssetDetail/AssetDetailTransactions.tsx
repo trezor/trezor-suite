@@ -9,7 +9,7 @@ import {
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type WalletAccountTransaction } from '#src/types/wallet';
 import { MultiAccountTransactionList } from '#src/views/wallet/transactions/TransactionList/MultiAccountTransactionList';
 

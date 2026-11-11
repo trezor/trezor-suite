@@ -78,9 +78,10 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill, setTransactionHistoryPrefill } from '#src/actions/suite/suiteActions';
 import { getEarnRouteParams } from '#src/components/earn/utils/getEarnRouteParams';
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
 import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useMessageSystemWrappedNative } from '#src/hooks/suite/useMessageSystemWrappedNative';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
 import type { TokensTableType } from './types';

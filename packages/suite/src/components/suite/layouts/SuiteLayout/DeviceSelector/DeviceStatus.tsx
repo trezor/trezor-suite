@@ -3,7 +3,7 @@ import { Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/compone
 import { type DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type TrezorDevice } from '#src/types/suite';
 import { DeviceDetail } from '#src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { DeviceStatusText } from '#src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';

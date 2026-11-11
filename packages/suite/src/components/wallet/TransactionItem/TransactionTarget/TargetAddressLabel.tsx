@@ -9,7 +9,7 @@ import { type ArrayElement } from '@trezor/type-utils';
 
 import { AccountLabelForOwnAddress } from '#src/components/suite/labeling/AccountLabelForOwnAddress';
 import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type WalletAccountTransaction } from '#src/types/wallet';
 
 type TargetAddressLabelProps = {

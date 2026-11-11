@@ -12,7 +12,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { addToken } from '#src/actions/wallet/tokenActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type Account } from '#src/types/wallet';
 
 type AddTokenModalProps = {

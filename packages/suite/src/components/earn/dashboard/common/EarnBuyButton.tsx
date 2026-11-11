@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
 import { Button } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type EarnBuyButtonProps = {
     onClick: (event: MouseEvent<HTMLButtonElement>) => void;

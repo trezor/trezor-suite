@@ -33,7 +33,7 @@ import { NetworkSettingsSearchInput } from '#src/components/suite/NetworkList/Ne
 import { AddAccountBannerAboutNetworks } from '#src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from '#src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
-import { useAccountSearch } from '#src/hooks/suite';
+import { useAccountSearch } from '#src/hooks/suite/useAccountSearch';
 import { type TrezorDevice } from '#src/types/suite';
 import { type Account } from '#src/types/wallet';
 import { NoNetworkSearchResults } from '#src/views/settings/SettingsCoins/NoNetworkSearchResults';

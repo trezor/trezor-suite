@@ -10,7 +10,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { rerunRecoveryThunk } from '#src/actions/onboarding/onboardingActions';
 import { TroubleshootingTips } from '#src/components/suite/troubleshooting/TroubleshootingTips';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const DeviceRecoveryMode = () => {
     const recoveryStatus = useSelector(selectRecoveryStatus);

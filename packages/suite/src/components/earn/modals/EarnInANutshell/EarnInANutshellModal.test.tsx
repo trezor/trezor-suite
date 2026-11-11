@@ -11,7 +11,7 @@ import { type Dispatch, type DispatchDep } from '@trezor/redux-utils';
 import { EarnInANutshellModal } from './EarnInANutshellModal';
 
 let mockIsConfirmed = true;
-jest.mock('#src/hooks/suite', () => ({ useSelector: () => mockIsConfirmed }));
+jest.mock('#src/hooks/suite/useSelector', () => ({ useSelector: () => mockIsConfirmed }));
 jest.mock('./StakingEarnInANutshellModal', () => ({ StakingEarnInANutshellModal: () => null }));
 jest.mock('./UpdateEarnInANutshellModal', () => ({ UpdateEarnInANutshellModal: () => null }));
 jest.mock('./YieldEarnInANutshellModal', () => ({ YieldEarnInANutshellModal: () => null }));

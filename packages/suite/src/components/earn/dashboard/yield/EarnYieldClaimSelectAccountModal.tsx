@@ -26,7 +26,7 @@ import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const getRewardTokenAmounts = ({ rewards }: YieldAccountRewards) => {
     const tokenAmounts = new Map<string, { amount: BigNumber; decimals: number; symbol: string }>();

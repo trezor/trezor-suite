@@ -14,7 +14,7 @@ import {
 } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 

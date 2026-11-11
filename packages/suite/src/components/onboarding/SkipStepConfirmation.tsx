@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { Modal } from '@trezor/components';
 
 import * as STEP from '#src/constants/onboarding/steps';
-import { useOnboarding } from '#src/hooks/suite';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
 import { type AnyStepId } from '#src/types/onboarding';
 
 type SkipStepConfirmationProps = {

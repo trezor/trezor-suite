@@ -7,7 +7,7 @@ import { Card, Column, IconButton, Row, Select, Tooltip } from '@trezor/componen
 import { XIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from '#src/components/guide/OpenGuideFromTooltip';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSendFormContext } from '#src/hooks/wallet';
 
 import { LocktimeBlockHeight, inputName as blockHeightInputName } from './LocktimeBlockHeight';

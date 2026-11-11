@@ -45,7 +45,7 @@ jest.mock('@trezor/components', () => {
         }),
     };
 });
-jest.mock('#src/hooks/suite', () => ({
+jest.mock('#src/hooks/suite/useSelector', () => ({
     useSelector: (selector: (state: object) => unknown) =>
         selector({ modal: { context: MODAL_CONTEXT_NONE } }),
 }));

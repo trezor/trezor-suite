@@ -11,7 +11,7 @@ import {
 } from '@suite-common/trading';
 import { Box, Modal } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TradingOffersModalGroup } from './TradingOffersModalGroup';
 

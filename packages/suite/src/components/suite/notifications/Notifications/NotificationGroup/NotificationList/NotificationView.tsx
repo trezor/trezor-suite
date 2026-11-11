@@ -15,7 +15,7 @@ import { type ButtonPriority } from '@trezor/components/src/components/buttons/t
 import { CaretRightIcon } from '@trezor/icons';
 
 import { FormattedDateWithBullet } from '#src/components/suite/FormattedDateWithBullet';
-import { useLayoutSize } from '#src/hooks/suite';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import type { ToastNotificationVariant } from '#src/types/suite';
 import { getNotificationIcon } from '#src/utils/suite/notification';
 

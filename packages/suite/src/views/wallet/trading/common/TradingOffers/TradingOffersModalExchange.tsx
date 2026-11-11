@@ -16,7 +16,7 @@ import {
 import { Box, Column, Modal, SubTabs } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TradingOffersModalEmpty } from './TradingOffersModalEmpty';
 import { TradingOffersModalGroup } from './TradingOffersModalGroup';

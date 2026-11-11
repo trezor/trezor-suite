@@ -11,8 +11,8 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { CoinBalance } from '#src/components/suite/CoinBalance';
 import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling';
-import { useSelector } from '#src/hooks/suite';
 import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { TradingReceiveOptionRow } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
 import { useReceiveAddressModalControls } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 

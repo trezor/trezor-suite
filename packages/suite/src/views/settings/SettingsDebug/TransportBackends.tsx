@@ -3,8 +3,8 @@ import { Checkbox } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 
-import { useSelector } from '#src/hooks/suite';
 import { useBridgeDesktopApi } from '#src/hooks/suite/useBridgeDesktopApi';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectTransportOfType } from '#src/selectors/suite/suiteSelectors';
 
 export const TransportBackends = () => {

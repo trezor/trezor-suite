@@ -10,7 +10,7 @@ import {
     createHiddenTokensOption,
     createTokenOption,
 } from '#src/components/suite/asset-picker/utils/assetOptions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type Account } from '#src/types/wallet';
 import {
     type EnahncedTokenInfoWithFiat,

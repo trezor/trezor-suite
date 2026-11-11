@@ -6,7 +6,7 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Spinner } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,

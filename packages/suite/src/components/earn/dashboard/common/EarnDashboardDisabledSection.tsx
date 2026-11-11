@@ -3,11 +3,11 @@ import { EarnAnchor, isEarnYieldRowAnchor, selectRouterAnchor, useAnchor } from 
 import { Banner } from '@trezor/components';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
-import { useSelector } from '#src/hooks/suite';
 import {
     type EarnDashboardType,
     useMessageSystemEarnDashboard,
 } from '#src/hooks/suite/useMessageSystemEarnDashboard';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type EarnDashboardDisabledSectionProps = {
     type: EarnDashboardType;

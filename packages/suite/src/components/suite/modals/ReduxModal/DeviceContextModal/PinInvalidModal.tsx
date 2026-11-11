@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Modal } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type PinInvalidModalProps = { onCancel: () => void };
 

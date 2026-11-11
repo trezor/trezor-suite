@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { selectCurrentCoinjoinSession } from '@suite/coinjoin';
 import { Paragraph, Range, type RangeProps, Row } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { SliderInput, type SliderInputProps } from './SliderInput';
 

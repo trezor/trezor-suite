@@ -23,7 +23,7 @@ import { goToNextStepThunk, updateAnalytics } from '#src/actions/onboarding/onbo
 import { SelectRecoveryType } from '#src/components/recovery/SelectRecoveryType';
 import { SelectRecoveryWord } from '#src/components/recovery/SelectRecoveryWord';
 import { SelectWordCount } from '#src/components/recovery/SelectWordCount';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import RecoveryStepBox from './RecoveryStepBox';
 

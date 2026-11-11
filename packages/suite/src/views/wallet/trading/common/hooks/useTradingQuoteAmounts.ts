@@ -9,7 +9,7 @@ import {
 } from '@suite-common/trading';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
 
 export const useTradingQuoteAmounts = (

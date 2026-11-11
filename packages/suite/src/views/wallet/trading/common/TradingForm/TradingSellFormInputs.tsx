@@ -19,7 +19,7 @@ import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useIsFeeRefetchDisabled } from '#src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useSelectedTradingAsset } from '#src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';

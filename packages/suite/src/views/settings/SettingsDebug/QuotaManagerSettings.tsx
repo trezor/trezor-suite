@@ -18,7 +18,7 @@ import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 export const QuotaManagerSettings = () => {

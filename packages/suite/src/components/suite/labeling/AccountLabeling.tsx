@@ -5,7 +5,7 @@ import { findAccountDevice } from '@suite-common/wallet-utils';
 import { type BadgeProps, type FlexProps } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type Account as WalletAccount } from '#src/types/wallet';
 
 import { WalletLabeling } from './WalletLabeling';

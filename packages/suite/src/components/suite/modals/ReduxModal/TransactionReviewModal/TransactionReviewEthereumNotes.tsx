@@ -16,7 +16,7 @@ import { Note, Text } from '@trezor/components';
 import { CheckCircleIcon, GasPumpIcon } from '@trezor/icons';
 
 import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type Account } from '#src/types/wallet';
 
 type TransactionReviewEthereumState = SendRootState &

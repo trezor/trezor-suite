@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Column, H3, Spinner } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 
