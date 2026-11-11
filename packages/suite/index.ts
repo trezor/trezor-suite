@@ -209,6 +209,7 @@ export { TrezorConnectLogs as DebugTrezorConnectLogs } from './src/views/setting
 export { TriggerHighlight as DebugTriggerHighlight } from './src/views/settings/SettingsDebug/TriggerHighlight';
 export { TriggerToast as DebugTriggerToast } from './src/views/settings/SettingsDebug/TriggerToast';
 export { WipeData as DebugWipeData } from './src/views/settings/SettingsDebug/WipeData';
+export { Webauthn as DebugWebauthn } from './src/views/settings/SettingsDebug/Webauthn';
 export { DeviceBanner } from './src/components/settings/DeviceBanner';
 export { selectHasActiveTransport } from './src/selectors/suite/suiteSelectors';
 export { getHowToGetFromBootloaderInstructionsMap } from './src/utils/device/bootloader';

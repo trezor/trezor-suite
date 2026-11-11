@@ -46,6 +46,7 @@ import {
     DebugTrezorConnectLogs,
     DebugTriggerHighlight,
     DebugTriggerToast,
+    DebugWebauthn,
     DebugWipeData,
     SettingsLayout,
     TriggerActivityNotification,
@@ -178,6 +179,7 @@ export const SettingsDebugPage = () => {
             <SuiteSyncSettings onError={handleWipeSuiteSyncLabelsError} />
             <DebugQuotaManagerSettings />
             <DebugPlatformEncryption />
+            <DebugWebauthn />
         </SettingsLayout>
     );
 };
