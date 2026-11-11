@@ -1,7 +1,8 @@
 import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { TokenSymbol } from '@suite/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { REVOKE_ALLOWANCE_AMOUNT } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { shouldShowRevokeAllowanceBanner } from '@suite-common/wallet-utils';
@@ -84,7 +85,13 @@ export const RevokeModal = ({
     // when the signing fails, so the user can retry or cancel.
     if (!token?.symbol || isSending) return null;
 
-    const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const symbolLabel = (
+        <TokenSymbol
+            networkSymbol={account.symbol}
+            tokenContract={toTokenAddress(token.contract)}
+            isTruncated
+        />
+    );
     const currentLimit =
         preapprovedAmount && preapprovedAmount !== '0' ? preapprovedAmount : undefined;
 
@@ -103,9 +110,11 @@ export const RevokeModal = ({
                 onCancel={handleCancel}
                 intent="brand"
                 width={480}
-                heading={<Translation id={heading} values={{ displaySymbol }} />}
+                heading={<Translation id={heading} values={{ displaySymbol: symbolLabel }} />}
                 description={
-                    !showRevokeBanner && <Translation id={description} values={{ displaySymbol }} />
+                    !showRevokeBanner && (
+                        <Translation id={description} values={{ displaySymbol: symbolLabel }} />
+                    )
                 }
                 bottomContent={
                     <>
@@ -132,7 +141,7 @@ export const RevokeModal = ({
                             description={
                                 <Translation
                                     id="TR_APPROVAL_MODAL_REVOKE_BANNER"
-                                    values={{ displaySymbol }}
+                                    values={{ displaySymbol: symbolLabel }}
                                 />
                             }
                         />
@@ -149,7 +158,7 @@ export const RevokeModal = ({
                                 label="TR_APPROVAL_LIMIT"
                                 networkSymbol={account.symbol}
                                 contractAddress={token.contract}
-                                symbol={displaySymbol}
+                                symbol={token.symbol}
                                 decimals={token.decimals}
                                 amount={currentLimit}
                                 isRevoked

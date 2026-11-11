@@ -1,8 +1,9 @@
 import { Translation } from '@suite/intl';
+import { TokenIcon, TokenSymbol } from '@suite/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type AllowanceLimitType, type AllowanceTransactionType } from '@suite-common/wallet-types';
 import { Icon, Row } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { AllowanceAmount } from './AllowanceAmount';
 import { AllowanceStepRow } from './AllowanceStepRow';
@@ -25,18 +26,16 @@ export const AllowanceStepLimitRows = ({
     currentLimitAmount,
     onEditLimit,
 }: AllowanceStepLimitRowsProps) => {
+    const tokenContract = toTokenAddress(token.contractAddress);
+    const tokenIcon = (
+        <TokenIcon symbol={token.networkSymbol} contractAddress={tokenContract} size={20} />
+    );
+
     if (transactionType === 'revoke') {
         return (
             <AllowanceStepRow
                 label="TR_APPROVAL_LIMIT"
-                icon={
-                    <TokenIcon
-                        symbol={token.networkSymbol}
-                        contractAddress={token.contractAddress}
-                        size={20}
-                        placeholder={token.symbol}
-                    />
-                }
+                icon={tokenIcon}
                 data-testid="@approval-step/limit"
             >
                 <Row gap={8}>
@@ -44,9 +43,14 @@ export const AllowanceStepLimitRows = ({
                         amount={limitAmount}
                         decimals={token.decimals}
                         contractAddress={token.contractAddress}
+                        networkSymbol={token.networkSymbol}
                         typographyStyle="body-sm"
                     />
-                    <Icon as={ArrowRightIcon} size={16} />0 {token.symbol}
+                    <Icon as={ArrowRightIcon} size={16} />0{' '}
+                    <TokenSymbol
+                        networkSymbol={token.networkSymbol}
+                        tokenContract={tokenContract}
+                    />
                 </Row>
             </AllowanceStepRow>
         );
@@ -59,14 +63,7 @@ export const AllowanceStepLimitRows = ({
             {hasCurrentLimit && (
                 <AllowanceStepRow
                     label="TR_APPROVAL_CURRENT_LIMIT"
-                    icon={
-                        <TokenIcon
-                            symbol={token.networkSymbol}
-                            contractAddress={token.contractAddress}
-                            size={20}
-                            placeholder={token.symbol}
-                        />
-                    }
+                    icon={tokenIcon}
                     data-testid="@approval-step/current-limit"
                 >
                     <AllowanceAmount
@@ -74,20 +71,14 @@ export const AllowanceStepLimitRows = ({
                         symbol={token.symbol}
                         decimals={token.decimals}
                         contractAddress={token.contractAddress}
+                        networkSymbol={token.networkSymbol}
                         typographyStyle="body-sm"
                     />
                 </AllowanceStepRow>
             )}
             <AllowanceStepRow
                 label={hasCurrentLimit ? 'TR_APPROVAL_NEW_LIMIT' : 'TR_APPROVAL_LIMIT'}
-                icon={
-                    <TokenIcon
-                        symbol={token.networkSymbol}
-                        contractAddress={token.contractAddress}
-                        size={20}
-                        placeholder={token.symbol}
-                    />
-                }
+                icon={tokenIcon}
                 onEdit={onEditLimit}
                 data-testid="@approval-step/limit"
             >
@@ -99,6 +90,7 @@ export const AllowanceStepLimitRows = ({
                         symbol={token.symbol}
                         decimals={token.decimals}
                         contractAddress={token.contractAddress}
+                        networkSymbol={token.networkSymbol}
                         typographyStyle="body-sm"
                     />
                 )}
