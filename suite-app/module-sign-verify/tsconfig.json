@@ -3,8 +3,12 @@
     "compilerOptions": { "outDir": "./libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../networks" },
         { "path": "../../suite/account" },
-        { "path": "../../suite/sign-verify" },
+        { "path": "../../suite/device" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/suite" },
         { "path": "../../packages/requirements" }
     ]

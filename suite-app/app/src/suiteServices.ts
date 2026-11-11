@@ -3,6 +3,7 @@ import { type BluetoothDep } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type MetadataMigrationDep } from '@suite/metadata-migration';
 import { type SuiteRouterHistoryDep } from '@suite/router';
+import { type GetSignVerifyDep } from '@suite-app/networks';
 import { type TransportsDep } from '@suite-common/connect-init';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { type TransactionRetrieverDep } from '@suite-common/wallet-core';
@@ -16,4 +17,5 @@ export type SuiteServices = CommonServices &
     SuiteRouterHistoryDep &
     TransportsDep &
     BluetoothDep &
-    TransactionRetrieverDep;
+    TransactionRetrieverDep &
+    GetSignVerifyDep;

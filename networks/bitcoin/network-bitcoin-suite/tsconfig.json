@@ -1,0 +1,27 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../../suite-common/sign-verify"
+        },
+        {
+            "path": "../../../suite-common/wallet-types"
+        },
+        { "path": "../../../suite/intl" },
+        { "path": "../../../suite/sign-verify" },
+        {
+            "path": "../../../packages/dependency-injection"
+        },
+        { "path": "../network-bitcoin-types" },
+        {
+            "path": "../../network-module/suite/suite-types"
+        },
+        {
+            "path": "../../network-module/network-module-types"
+        },
+        {
+            "path": "../../../packages/redux-utils"
+        }
+    ]
+}

@@ -10,7 +10,7 @@ type SignVerifyTabsProps = {
     page: SignVerifyPage;
     canVerify: boolean;
     outcome: SignVerifyOutcome;
-    onPageChange: (page: SignVerifyPage) => void;
+    onPageChange?: (page: SignVerifyPage) => void;
 };
 
 export const SignVerifyTabs = ({ page, canVerify, outcome, onPageChange }: SignVerifyTabsProps) => (
@@ -18,7 +18,7 @@ export const SignVerifyTabs = ({ page, canVerify, outcome, onPageChange }: SignV
         <Tabs activeItemId={page} size="large">
             <Tabs.Item
                 id="sign"
-                onClick={() => onPageChange('sign')}
+                onClick={() => onPageChange?.('sign')}
                 data-testid="@sign-verify/navigation/sign"
             >
                 <Translation id="TR_SIGN" />
@@ -26,7 +26,7 @@ export const SignVerifyTabs = ({ page, canVerify, outcome, onPageChange }: SignV
             {canVerify && (
                 <Tabs.Item
                     id="verify"
-                    onClick={() => onPageChange('verify')}
+                    onClick={() => onPageChange?.('verify')}
                     data-testid="@sign-verify/navigation/verify"
                 >
                     <Translation id="TR_VERIFY" />

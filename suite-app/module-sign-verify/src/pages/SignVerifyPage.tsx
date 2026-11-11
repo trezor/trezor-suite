@@ -1,5 +1,7 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { SignVerify } from '@suite/sign-verify';
+import { useDevice } from '@suite/device';
+import { injectGetSignVerify } from '@suite-app/networks';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ConnectDeviceGenericPromo,
     WalletLayout,
@@ -9,25 +11,34 @@ import {
 
 export const SignVerifyPage = () => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
+
+    const { getSignVerify } = useServices(injectGetSignVerify);
+    const { device } = useDevice();
+
     const { account } = selectedAccount;
 
     if (account === undefined) {
         return null;
     }
 
+    const signVerify = getSignVerify(account);
+
+    // The menu offers Sign & Verify only on networks that have it, so this is reached only by a
+    // direct link to the page.
+    if (signVerify === null) {
+        return null;
+    }
+
+    const { Component, title } = signVerify;
+    const isDeviceConnected = device?.connected && device?.available;
+
     return (
-        <SignVerify
-            account={account}
-            network={selectedAccount.network}
-            renderShell={({ title, isDeviceConnected, children }) => (
-                <WalletLayout title={title} isSubpage account={selectedAccount}>
-                    <WalletSubpageHeading title={title} />
+        <WalletLayout title={title} isSubpage account={selectedAccount}>
+            <WalletSubpageHeading title={title} />
 
-                    {!isDeviceConnected && <ConnectDeviceGenericPromo />}
+            {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
-                    {children}
-                </WalletLayout>
-            )}
-        />
+            <Component account={account} />
+        </WalletLayout>
     );
 };

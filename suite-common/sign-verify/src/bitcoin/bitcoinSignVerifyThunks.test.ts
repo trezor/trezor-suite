@@ -32,8 +32,8 @@ describe('Bitcoin sign/verify thunks', () => {
     let dispatch: jest.Mock;
     let deps: { services: { analytics: ReturnType<typeof mockAnalytics> } };
 
-    // The thunks only read the selected device and the address display type, so a state literal
-    // is enough — no store, no middleware.
+    // The thunks only read the selected device, so a state literal is enough — no store, no
+    // middleware.
     const getState = () => createState(CONNECTED_DEVICE);
 
     beforeEach(() => {
