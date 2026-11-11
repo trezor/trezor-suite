@@ -9,9 +9,10 @@ interface SafetyChecksProps {
 }
 
 export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
-    const { open, isLoading } = useModalLoader();
+    const { open, preload, isLoading } = useModalLoader();
 
     const handleClick = () => open({ type: 'safety-checks' });
+    const handlePreload = () => preload('safety-checks');
 
     return (
         <Anchor anchorId={SettingsAnchor.SafetyChecks}>
@@ -26,6 +27,8 @@ export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
                         <SectionItem.Button
                             intent="brand"
                             onClick={handleClick}
+                            onMouseEnter={handlePreload}
+                            onFocus={handlePreload}
                             isLoading={isLoading}
                             data-testid="@settings/device/safety-checks-button"
                             isDisabled={isDeviceLocked}

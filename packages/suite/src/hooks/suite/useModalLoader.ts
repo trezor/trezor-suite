@@ -64,5 +64,17 @@ export const useModalLoader = () => {
         [dispatch, loadModalChunk],
     );
 
-    return { open, isLoading: isPending };
+    /**
+     * Fetches a modal's chunk before the click that needs it, so an opener that was hovered or
+     * tabbed to usually has nothing left to wait for.
+     *
+     * A failed preload is deliberately silent: webpack drops a chunk it could not fetch from its
+     * registry, so the click requests it again, and the mutation above owns the retries and the
+     * error toast.
+     */
+    const preload = useCallback((type: UserContextPayload['type']) => {
+        getModalChunkLoader(type)?.().catch(() => undefined);
+    }, []);
+
+    return { open, preload, isLoading: isPending };
 };
