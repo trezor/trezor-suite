@@ -7,6 +7,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { preloadForegroundApp } from '#src/components/suite/modals/ModalSwitcher/lazyForegroundApps';
+
 interface CheckRecoverySeedProps {
     isDeviceLocked: boolean;
 }
@@ -20,6 +22,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
 
     const handleClick = () =>
         dispatch(gotoThunk({ routeName: 'recovery-index', params: { cancelable: true } }));
+    const handlePreload = () => preloadForegroundApp('recovery');
 
     if (needsBackup) return null;
 
@@ -39,6 +42,8 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
                         <SectionItem.Button
                             data-testid="@settings/device/check-seed-button"
                             onClick={handleClick}
+                            onMouseEnter={handlePreload}
+                            onFocus={handlePreload}
                             isDisabled={isDeviceLocked}
                             intent="brand"
                             tooltip={{
