@@ -109,6 +109,7 @@ export const TradingExchangeApprovalStepCard = ({
         isSending,
         composedTransaction,
         canSubmit,
+        selectedFee,
         methods,
         selectLimitType,
         confirmAndSend,
@@ -120,9 +121,9 @@ export const TradingExchangeApprovalStepCard = ({
         tokenContractAddress,
         spender,
         shouldShowApprovalToast: false,
-        onSelectLimitType: (nextLimitType, selectedFee) =>
-            reportAction(LIMIT_TYPE_ANALYTICS_ACTION[nextLimitType], selectedFee),
-        onConfirm: (_limitType, selectedFee) => reportAction('continue', selectedFee),
+        onSelectLimitType: (nextLimitType, feeLevel) =>
+            reportAction(LIMIT_TYPE_ANALYTICS_ACTION[nextLimitType], feeLevel),
+        onConfirm: (_limitType, feeLevel) => reportAction('continue', feeLevel),
         onSent: txid =>
             confirmPendingApproval({
                 trade: quote,
@@ -154,7 +155,11 @@ export const TradingExchangeApprovalStepCard = ({
 
     const onConfirmFee = (feeValues: AllowanceFeeValues) => {
         setAllowanceFeeValues(methods, feeValues);
-        reportAction('fee-change', feeValues.selectedFee);
+
+        if (feeValues.selectedFee !== selectedFee) {
+            reportAction('fee-change', feeValues.selectedFee);
+        }
+
         composeRequest();
     };
 
