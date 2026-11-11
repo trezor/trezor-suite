@@ -5,9 +5,9 @@ export {
     type CreateCardanoEverstakeNativeProductParams,
 } from './products/cardano/everstake-native/product';
 export {
-    createCardanoExternalProduct,
-    type CreateCardanoExternalProductParams,
-} from './products/cardano/external/product';
+    createCardanoExternalNativeProduct,
+    type CreateCardanoExternalNativeProductParams,
+} from './products/cardano/external-native/product';
 export {
     createCardanoFivebinariesRetiredProduct,
     type CreateCardanoFivebinariesRetiredProductParams,

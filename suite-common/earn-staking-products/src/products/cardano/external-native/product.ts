@@ -11,25 +11,25 @@ import { externalProvider } from '../../../providers/external';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../info';
 import { getCardanoProductPosition } from '../position';
-import { getCardanoExternalProductAmountBounds } from './amountBounds';
-import { createCardanoExternalProductDescriptor } from './descriptor';
+import { getCardanoExternalNativeProductAmountBounds } from './amountBounds';
+import { createCardanoExternalNativeProductDescriptor } from './descriptor';
 
-export type CreateCardanoExternalProductParams = {
+export type CreateCardanoExternalNativeProductParams = {
     networkSymbol: NetworkSymbol;
     managedProviders: readonly StakingProvider[];
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createCardanoExternalProduct = ({
+export const createCardanoExternalNativeProduct = ({
     networkSymbol,
     managedProviders,
     messageSystemFeatures,
-}: CreateCardanoExternalProductParams): StakingProductAdapter => {
+}: CreateCardanoExternalNativeProductParams): StakingProductAdapter => {
     const managedPoolIds = managedProviders.flatMap(
         provider => provider.identities[networkSymbol] ?? [],
     );
 
-    const descriptor = createCardanoExternalProductDescriptor({
+    const descriptor = createCardanoExternalNativeProductDescriptor({
         networkSymbol,
         messageSystemFeatures,
     });
@@ -47,7 +47,7 @@ export const createCardanoExternalProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getCardanoExternalProductAmountBounds(params);
+        getCardanoExternalNativeProductAmountBounds(params);
 
     const operations = createUnimplementedStakingOperations();
 

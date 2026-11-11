@@ -29,7 +29,7 @@ import {
     type CardanoEverstakeNativeProductDeps,
     createCardanoEverstakeNativeProduct,
 } from './everstake-native/product';
-import { createCardanoExternalProduct } from './external/product';
+import { createCardanoExternalNativeProduct } from './external-native/product';
 import { createCardanoFivebinariesRetiredProduct } from './fivebinaries-retired/product';
 import {
     CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
@@ -70,7 +70,7 @@ const products: Record<CardanoProductKey, StakingProductAdapter> = {
         provider: fivebinariesProvider,
         messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
     }),
-    external: createCardanoExternalProduct({
+    external: createCardanoExternalNativeProduct({
         networkSymbol: asNetworkSymbol('ada'),
         managedProviders: [everstakeProvider, fivebinariesProvider],
         messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
