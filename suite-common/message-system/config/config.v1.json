@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-11-09T12:00:00+00:00",
-    "sequence": 164,
+    "timestamp": "2026-11-11T10:03:46+00:00",
+    "sequence": 165,
     "actions": [
         {
             "conditions": [
@@ -2073,6 +2073,57 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "devices": [
+                        {
+                            "model": "T2B1",
+                            "firmware": ">=2.13.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": ">=2.13.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "f55abfa1-30ae-4b9b-a9d7-f79d2df00010",
+                "priority": 80,
+                "dismissible": true,
+                "variant": "info",
+                "category": "banner",
+                "content": {
+                    "en": "Your Trezor Safe 3 has a new menu and updated button controls. See what's changed before your next transaction.",
+                    "cs": "Váš Trezor Safe 3 má novou nabídku a upravené ovládání tlačítky. Před další transakcí se podívejte, co se změnilo.",
+                    "es": "Tu Trezor Safe 3 tiene un nuevo menú y controles de botones actualizados. Descubre qué ha cambiado antes de tu próxima transacción.",
+                    "de": "Ihr Trezor Safe 3 hat ein neues Menü und eine überarbeitete Tastenbedienung. Sehen Sie sich vor Ihrer nächsten Transaktion an, was sich geändert hat.",
+                    "fr": "Votre Trezor Safe 3 dispose d'un nouveau menu et de commandes de boutons mises à jour. Découvrez ce qui a changé avant votre prochaine transaction.",
+                    "pt": "Seu Trezor Safe 3 tem um novo menu e controles de botões atualizados. Veja o que mudou antes da sua próxima transação."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/guides/trezor-devices/trezor-safe-3/new-menu-navigation-on-the-trezor-safe-3",
+                    "label": {
+                        "en": "Learn more",
+                        "cs": "Zjistit více",
+                        "es": "Más información",
+                        "de": "Mehr erfahren",
+                        "fr": "En savoir plus",
+                        "pt": "Saiba mais"
+                    }
+                }
             }
         }
     ],
