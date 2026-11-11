@@ -12,6 +12,7 @@ import {
     Modal,
     Paragraph,
     Row,
+    Spinner,
     Switch,
     Text,
     useScrollShadow,
@@ -34,6 +35,14 @@ const ScrollContainer = styled.div`
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
         height: 280px;
     }
+`;
+
+// Stands in for the log inside its own box, so the modal keeps its size when the log lands.
+const LogPlaceholder = styled.div`
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 `;
 
 const LogWrapper = styled.pre`
@@ -78,9 +87,6 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
         document.body.removeChild(element);
     };
 
-    // usually takes less than 100 ms, so it's ok to delay display without a loader component
-    if (applicationLogs === null) return null;
-
     return (
         <Modal
             onCancel={onCancel}
@@ -88,7 +94,11 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
             description={<Translation id="LOG_DESCRIPTION" />}
             data-testid="@modal/application-log"
             bottomContent={
-                <Modal.Button onClick={download} data-testid="@log/export-button">
+                <Modal.Button
+                    onClick={download}
+                    isDisabled={applicationLogs === null}
+                    data-testid="@log/export-button"
+                >
                     <Translation id="TR_EXPORT_TO_FILE" />
                 </Modal.Button>
             }
@@ -97,10 +107,16 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
                 <ShadowContainer>
                     <ShadowTop />
                     <ScrollContainer ref={scrollElementRef}>
-                        <LogWrapper data-testid="@log/content">
-                            <ScrollSentinels />
-                            <Text typographyStyle="body-xs">{applicationLogs}</Text>
-                        </LogWrapper>
+                        {applicationLogs === null ? (
+                            <LogPlaceholder data-testid="@log/loading">
+                                <Spinner size={32} />
+                            </LogPlaceholder>
+                        ) : (
+                            <LogWrapper data-testid="@log/content">
+                                <ScrollSentinels />
+                                <Text typographyStyle="body-xs">{applicationLogs}</Text>
+                            </LogWrapper>
+                        )}
                     </ScrollContainer>
                     <ShadowBottom />
                 </ShadowContainer>
