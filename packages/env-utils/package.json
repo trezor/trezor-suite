@@ -51,5 +51,6 @@
         "react-native": {
             "optional": true
         }
-    }
+    },
+    "author": "Trezor <info@trezor.io>"
 }

@@ -11,6 +11,8 @@ import { requireConnectClosureUnifiedFields } from './requireConnectClosureUnifi
 const RELEASE = {
     version: '10.0.1',
     repository: { type: 'git', url: 'git://github.com/trezor/trezor-suite.git' },
+    bugs: { url: 'https://github.com/trezor/trezor-suite/issues' },
+    author: 'Trezor <info@trezor.io>',
 };
 
 const WORKSPACES = [
@@ -64,7 +66,12 @@ describe(requireConnectClosureUnifiedFields.name, () => {
     });
 
     it('reports a closure package that differs from @trezor/connect or lacks the field', async () => {
-        writePackage('packages/utils', { name: '@trezor/utils', version: '1.0.0' });
+        writePackage('packages/utils', {
+            name: '@trezor/utils',
+            ...RELEASE,
+            version: '1.0.0',
+            repository: undefined,
+        });
 
         const errors = await requireConnectClosureUnifiedFields.verify(context);
 
