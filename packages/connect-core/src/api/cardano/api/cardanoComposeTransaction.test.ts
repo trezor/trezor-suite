@@ -94,4 +94,10 @@ describe('cardanoComposeTransaction', () => {
             expect.objectContaining({ type: 'nonfinal', deposit: '3000000', feePerByte: '0' }),
         ]);
     });
+
+    it('composes with the defaults without protocol params', async () => {
+        await createMethod().run();
+
+        expect(getCardanoProtocolParams).toHaveBeenCalledWith(undefined, DEFAULT_PROTOCOL_PARAMS);
+    });
 });

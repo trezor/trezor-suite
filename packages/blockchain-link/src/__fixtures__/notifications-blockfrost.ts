@@ -85,6 +85,13 @@ const notifyBlocks = [
             blockHeight: 1,
         },
     },
+    {
+        description: 'block notification with its epoch',
+        method: 'subscribe',
+        notifications: [{ id: '2', data: { hash: 'ijkl', height: 3, epoch: 656 } }],
+        notificationsCount: 1,
+        result: { blockHash: 'ijkl', blockHeight: 3, epoch: 656 },
+    },
 ] as const;
 
 const notifyAddresses = [

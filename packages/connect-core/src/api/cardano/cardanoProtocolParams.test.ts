@@ -71,6 +71,17 @@ describe('getCardanoProtocolParams', () => {
         );
     });
 
+    it('warns about a drift only once per epoch', () => {
+        getCardanoProtocolParams(mockLiveParams(710), defaults);
+        getCardanoProtocolParams(mockLiveParams(710), defaults);
+
+        expect(warn).toHaveBeenCalledTimes(1);
+
+        getCardanoProtocolParams(mockLiveParams(711), defaults);
+
+        expect(warn).toHaveBeenCalledTimes(2);
+    });
+
     it('does not warn when live parameters match the defaults', () => {
         expect(getCardanoProtocolParams({ epoch: 704, ...defaults }, defaults)).toEqual(defaults);
         expect(warn).not.toHaveBeenCalled();
