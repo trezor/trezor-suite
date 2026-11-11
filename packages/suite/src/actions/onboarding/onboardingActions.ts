@@ -35,7 +35,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { ONBOARDING } from '#src/actions/onboarding/constants';
+import * as ONBOARDING from '#src/actions/onboarding/constants/onboarding';
 import { stepCategories } from '#src/config/onboarding/steps';
 import * as STEP from '#src/constants/onboarding/steps';
 import { type OnboardingRootState } from '#src/reducers/onboarding/onboardingState';
