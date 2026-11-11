@@ -14,12 +14,9 @@ export const tradeableAssetsToTokenMetadataSources = (
                       networkSymbol,
                       tokens: [
                           {
-                              // `symbol` is deliberately omitted. `asset.symbol` is already
-                              // truncated for display, which would hide a URL from masking.
-                              // The context inherits the full catalog symbol for this contract
-                              // from the parent `TradingMetadataProvider` instead.
                               contract: asset.contractAddress,
                               name: asset.name,
+                              symbol: asset.symbol,
                               decimals: asset.decimals,
                           },
                       ],

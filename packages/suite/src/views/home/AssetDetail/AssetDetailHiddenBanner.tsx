@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
+import { TokenSymbol } from '@suite/token';
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetHiddenReason,
     selectWalletAssetSymbol,
 } from '@suite-common/assets';
@@ -27,7 +27,6 @@ export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerPro
     const hiddenReason = useSelector(state => selectWalletAssetHiddenReason(state, assetKey));
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
 
     if (symbol === undefined || contractAddress === undefined || hiddenReason === undefined) {
         return null;
@@ -63,7 +62,15 @@ export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerPro
             description={
                 <Translation
                     id="TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION"
-                    values={{ asset: displaySymbol }}
+                    values={{
+                        asset: (
+                            <TokenSymbol
+                                networkSymbol={symbol}
+                                tokenContract={contractAddress}
+                                isTruncated
+                            />
+                        ),
+                    }}
                 />
             }
             rightContent={
