@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -6,7 +6,10 @@ import { isPending } from '@suite-common/wallet-utils';
 
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
-import { selectTransactionByAccountKeyAndTxid } from '../transactions/transactionsSelectors';
+import {
+    selectAccountTransactionByNonce,
+    selectTransactionByAccountKeyAndTxid,
+} from '../transactions/transactionsSelectors';
 
 export type UseAllowanceTxTrackingParams = {
     accountKey: AccountKey | null;
@@ -34,12 +37,40 @@ export type AllowanceTransactionStatus =
           isFailed: true;
       };
 
-export const useAllowanceTxTracking = ({ accountKey }: UseAllowanceTxTrackingParams) => {
-    const [approvalTxid, setApprovalTxid] = useState<string | null>(null);
+type TrackingRootState = TransactionsRootState & AccountsRootState;
 
-    const transaction = useSelector((state: TransactionsRootState & AccountsRootState) =>
+export const useAllowanceTxTracking = ({ accountKey }: UseAllowanceTxTrackingParams) => {
+    const [approvalTxid, setTrackedTxid] = useState<string | null>(null);
+    const [trackedNonce, setTrackedNonce] = useState<number | undefined>(undefined);
+
+    const transaction = useSelector((state: TrackingRootState) =>
         approvalTxid ? selectTransactionByAccountKeyAndTxid(state, accountKey, approvalTxid) : null,
     );
+
+    const replacement = useSelector((state: TrackingRootState) =>
+        approvalTxid && !transaction
+            ? selectAccountTransactionByNonce(state, accountKey, trackedNonce)
+            : null,
+    );
+
+    const nonce = transaction?.ethereumSpecific?.nonce;
+
+    useEffect(() => {
+        if (nonce !== undefined) {
+            setTrackedNonce(nonce);
+        }
+    }, [nonce]);
+
+    useEffect(() => {
+        if (replacement) {
+            setTrackedTxid(replacement.txid);
+        }
+    }, [replacement]);
+
+    const setApprovalTxid = (txid: string | null) => {
+        setTrackedTxid(txid);
+        setTrackedNonce(undefined);
+    };
 
     const status = useMemo<AllowanceTransactionStatus>(() => {
         const baseRetValue: AllowanceTransactionStatus = {

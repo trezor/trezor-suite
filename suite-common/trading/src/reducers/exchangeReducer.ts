@@ -11,6 +11,8 @@ import { cloneObject } from '@trezor/utils';
 
 import { TRADING_EXCHANGE_PREFIX } from '../constants';
 import {
+    type TradingExchangeAllowance,
+    type TradingExchangeAllowanceRead,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
     type TradingExchangeStepType,
@@ -19,6 +21,7 @@ import {
     type ApprovalFlowState,
     type ApprovalFlowStepType,
 } from '../utils/exchange/approvalFlowUtils';
+import { isSameExchangeAllowanceKey } from '../utils/exchange/exchangeAllowanceUtils';
 
 export interface ExchangeInfo {
     providerInfos: Record<string, ExchangeProviderInfo>;
@@ -45,6 +48,7 @@ export interface TradingExchangeState {
     formStep: TradingExchangeStepType;
     transactionId?: string;
     lastErrorMessage?: string;
+    allowance: TradingExchangeAllowance | undefined;
 }
 
 export const exchangeInitialState: TradingExchangeState = {
@@ -64,6 +68,7 @@ export const exchangeInitialState: TradingExchangeState = {
     dexQuoteApprovalPrefetchLoadingQuoteId: undefined,
     amountLimits: undefined,
     formStep: 'RECEIVING_ADDRESS',
+    allowance: undefined,
 };
 
 const tradingExchangeSlice = createSlice({
@@ -198,6 +203,37 @@ const tradingExchangeSlice = createSlice({
             action: PayloadAction<string | undefined>,
         ) {
             state.lastErrorMessage = action.payload;
+        },
+        startAllowanceRead(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAllowanceRead>,
+        ) {
+            const amount =
+                state.allowance && isSameExchangeAllowanceKey(state.allowance, action.payload)
+                    ? state.allowance.amount
+                    : undefined;
+
+            state.allowance = { ...action.payload, status: 'loading', amount };
+        },
+        setAllowance(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAllowanceRead & { amount: string }>,
+        ) {
+            if (state.allowance?.requestId !== action.payload.requestId) {
+                return;
+            }
+
+            state.allowance = { ...action.payload, status: 'loaded' };
+        },
+        setAllowanceError(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAllowanceRead & { errorMessage: string }>,
+        ) {
+            if (state.allowance?.requestId !== action.payload.requestId) {
+                return;
+            }
+
+            state.allowance = { ...action.payload, status: 'error', amount: undefined };
         },
     },
 });

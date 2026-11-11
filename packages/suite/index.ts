@@ -255,6 +255,7 @@ export { ApprovalRequiredBadge } from './src/components/wallet/Allowance/Approva
 export { getTradingExchangeCryptoInfo } from './src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 export { TradingExchangeApprovalStepCard } from './src/views/wallet/trading/exchange/TradingExchangeApproval/TradingExchangeApprovalStepCard';
 export { useTradingExchangeApprovalFlow } from './src/views/wallet/trading/exchange/TradingExchangeApproval/useTradingExchangeApprovalFlow';
+export { TradingExchangeAllowance } from './src/views/wallet/trading/exchange/TradingExchangeAllowance/TradingExchangeAllowance';
 export { useTradingExchangeConfirm } from './src/hooks/wallet/trading/useTradingExchangeConfirm';
 export { TradingOfferExchange } from './src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchange';
 export { TradingExchangeDetailContent } from './src/views/wallet/trading/exchange/TradingExchangeDetail/TradingExchangeDetailContent';

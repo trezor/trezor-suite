@@ -14,6 +14,7 @@ import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 
 import {
@@ -54,6 +55,7 @@ import {
     selectTradingDisplayComposedFee,
     selectTradingExchange,
     selectTradingExchangeActiveTrade,
+    selectTradingExchangeAllowance,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeCexQuotes,
@@ -71,6 +73,7 @@ import {
     selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
+    selectTradingExchangeSelectedQuoteAllowance,
     selectTradingExchangeSelectedQuoteIsDex,
     selectTradingExchangeSelectedQuoteSwapSlippage,
     selectTradingExchangeSellCryptoIds,
@@ -2866,4 +2869,68 @@ describe('tradingSelectors', () => {
             expect(selectTradingIsSlip24SellAllowed(state, accountBtc as any, false)).toBe(false);
         });
     });
+});
+
+describe('exchange allowance selectors', () => {
+    const ACCOUNT_KEY = mockAccountKey({ descriptor: 'owner' });
+    const USDT_CONTRACT = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+    const SPENDER = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
+    const APPROVE_CALLDATA = buildApprovalTransactionData({ spender: SPENDER, amount: '1' });
+    const allowance = {
+        accountKey: ACCOUNT_KEY,
+        tokenContractAddress: USDT_CONTRACT,
+        spender: SPENDER,
+        requestId: 'read-1',
+        status: 'loaded' as const,
+        amount: '50',
+    };
+    const selectedQuote: ExchangeTrade = {
+        send: `ethereum--${USDT_CONTRACT}` as CryptoId,
+        status: 'APPROVAL_REQ',
+        dexTx: { from: '0xowner', to: USDT_CONTRACT, value: '0', data: APPROVE_CALLDATA },
+    };
+
+    const createState = (
+        exchange: Partial<TradingRootState['wallet']['trading']['exchange']>,
+    ): TradingRootState => ({
+        wallet: {
+            trading: {
+                ...initialState,
+                exchange: { ...initialState.exchange, allowance, selectedQuote, ...exchange },
+            },
+        },
+    });
+
+    it('selectTradingExchangeAllowance returns the tracked allowance', () => {
+        expect(selectTradingExchangeAllowance(createState({}))).toBe(allowance);
+    });
+
+    it('selectTradingExchangeSelectedQuoteAllowance returns the allowance matching the quote', () => {
+        expect(selectTradingExchangeSelectedQuoteAllowance(createState({}), ACCOUNT_KEY)).toBe(
+            allowance,
+        );
+    });
+
+    it.each<[string, Partial<TradingRootState['wallet']['trading']['exchange']>, AccountKey]>([
+        ['another account', {}, mockAccountKey({ descriptor: 'other' })],
+        [
+            'another spender',
+            { allowance: { ...allowance, spender: '0x1111111111111111111111111111111111111111' } },
+            ACCOUNT_KEY,
+        ],
+        [
+            'a quote without approve calldata',
+            { selectedQuote: { ...selectedQuote, dexTx: undefined } },
+            ACCOUNT_KEY,
+        ],
+        ['no quote', { selectedQuote: undefined }, ACCOUNT_KEY],
+        ['no tracked allowance', { allowance: undefined }, ACCOUNT_KEY],
+    ])(
+        'selectTradingExchangeSelectedQuoteAllowance is undefined for %s',
+        (_description, exchange, accountKey) => {
+            expect(
+                selectTradingExchangeSelectedQuoteAllowance(createState(exchange), accountKey),
+            ).toBeUndefined();
+        },
+    );
 });

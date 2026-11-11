@@ -163,6 +163,17 @@ export const selectTransactionByAccountKeyAndTxid = createMemoizedSelector(
     },
 );
 
+export const selectAccountTransactionByNonce = createMemoizedSelector(
+    [
+        selectAccountTransactions,
+        (_state, _accountKey: AccountKey | null, nonce: number | undefined) => nonce,
+    ],
+    (transactions, nonce) =>
+        nonce === undefined
+            ? null
+            : (transactions.find(tx => tx.ethereumSpecific?.nonce === nonce) ?? null),
+);
+
 export const selectTransactionBlockTimeById = createMemoizedSelector(
     [selectTransactionByAccountKeyAndTxid],
     transaction => (transaction?.blockTime ? transaction.blockTime * 1000 : null),

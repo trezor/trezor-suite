@@ -132,6 +132,12 @@ describe('tradingPageHeaderUtils', () => {
             ['wallet-trading-sell-confirm', undefined, 'wallet-trading-sell'],
             ['wallet-trading-exchange-confirm', undefined, 'wallet-trading-exchange'],
             ['wallet-trading-exchange-approval', undefined, 'wallet-trading-exchange'],
+            ['wallet-trading-exchange-allowance', undefined, 'wallet-trading-exchange'],
+            [
+                'wallet-trading-exchange-allowance',
+                'wallet-trading-transactions',
+                'wallet-trading-exchange',
+            ],
         ] as const)(
             'returns the section form for %s regardless of the previous route',
             (route, prevRoute, expected) => {
@@ -168,6 +174,7 @@ describe('tradingPageHeaderUtils', () => {
             'wallet-trading-buy',
             'wallet-trading-concierge',
             'wallet-trading-buy-confirm',
+            'wallet-trading-exchange-allowance',
         ] as const)('returns TR_NAV_TRADE for %s', route => {
             expect(getTradingHeaderTitle(route)).toBe('TR_NAV_TRADE');
         });
