@@ -16,6 +16,7 @@ export interface BannerFlagsState {
     isTradingExperiencePromoBannerClosed: boolean; // promo banner on Home dashboard introducing the new trading experience
     isTs7PromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to buy Trezor Safe 7
     closedEarnBannerSymbols: NetworkSymbol[]; // networks for which the promo earn banner in account view was closed
+    closedTokenYieldBannerKeys: string[]; // tokens for which the yield banner in asset detail was closed
     closedHolidayPromoBannerKeys: BlackFridayHolidayBannerType[];
 }
 
@@ -34,6 +35,7 @@ export const bannerFlagsInitialState: BannerFlagsState = {
     isTradingExperiencePromoBannerClosed: false,
     isTs7PromoBannerClosed: false,
     closedEarnBannerSymbols: [],
+    closedTokenYieldBannerKeys: [],
     closedHolidayPromoBannerKeys: [],
 };
 
@@ -78,6 +80,11 @@ export const bannerFlagsSlice = createSlice({
                 state.closedEarnBannerSymbols.push(action.payload);
             }
         },
+        setIsTokenYieldBannerClosed: (state: BannerFlagsState, action: PayloadAction<string>) => {
+            if (!state.closedTokenYieldBannerKeys.includes(action.payload)) {
+                state.closedTokenYieldBannerKeys.push(action.payload);
+            }
+        },
     },
     extraReducers: builder => {
         builder
@@ -107,6 +114,7 @@ export const bannerFlagsPersistWhitelist: Array<keyof BannerFlagsState> = [
     'isTradingExperiencePromoBannerClosed',
     'isTs7PromoBannerClosed',
     'closedEarnBannerSymbols',
+    'closedTokenYieldBannerKeys',
     'closedHolidayPromoBannerKeys',
 ];
 
@@ -143,6 +151,11 @@ export const selectIsTs7PromoBannerClosed = (state: BannerFlagsSliceRootState) =
 export const selectIsEarnBannerClosed = (state: BannerFlagsSliceRootState, symbol: NetworkSymbol) =>
     state.bannerFlags.closedEarnBannerSymbols.includes(symbol);
 
+export const selectIsTokenYieldBannerClosed = (
+    state: BannerFlagsSliceRootState,
+    bannerKey: string,
+) => state.bannerFlags.closedTokenYieldBannerKeys.includes(bannerKey);
+
 export const {
     setHolidayPromoBannerClosed,
     setIsStellarLimitedHistoryBannerClosed,
@@ -154,6 +167,7 @@ export const {
     setIsTradingExperiencePromoBannerClosed,
     setIsTs7PromoBannerClosed,
     setIsEarnBannerClosed,
+    setIsTokenYieldBannerClosed,
 } = bannerFlagsSlice.actions;
 
 export const bannerFlagsReducer = bannerFlagsSlice.reducer;

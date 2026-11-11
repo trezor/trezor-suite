@@ -70,7 +70,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         from: {
             description:
-                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen, `deposit-legal-modal` = consents screen and `claim-select-account-modal` = claim account sheet (named after their desktop counterparts); `choose-account-sheet`, `enable-network-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only as an origin, `account-defi-tokens` is desktop-only; `account-tokens` = yield badge on the account Tokens tab or the token row actions there, `account-defi-tokens` also covers the yield badge and token row actions on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box, `asset-detail-banner` = ETH or token yield banner on the Home asset detail (desktop-only)',
+                'Origin of the navigation. On mobile, `deposit-in-a-nutshell-modal` = How yield works screen, `deposit-legal-modal` = consents screen and `claim-select-account-modal` = claim account sheet (named after their desktop counterparts); `choose-account-sheet`, `enable-network-sheet`, `account-detail` and `insufficient-balance-screen` are mobile-only as an origin, `account-defi-tokens` is desktop-only; `account-tokens` = yield badge on the account Tokens tab or the token row actions there, `account-defi-tokens` also covers the yield badge and token row actions on the DeFi tab, `account-tradebox` = yield badge or Earn button in the account trade box, `asset-detail-banner` = ETH or token yield banner on the Home asset detail on desktop, token yield banner on the asset detail on mobile',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -87,7 +87,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
                 },
                 {
                     version: '26.11.0',
-                    notes: 'added `asset-detail-banner` value (desktop)',
+                    notes: 'added `asset-detail-banner` value',
                 },
                 {
                     version: '26.11.0',

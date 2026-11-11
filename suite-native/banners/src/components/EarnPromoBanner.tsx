@@ -24,6 +24,7 @@ interface EarnPromoBannerProps {
     title: ReactNode;
     description: ReactNode;
     onExplore?: () => void;
+    onClose?: () => void;
 }
 
 export const EarnPromoBanner = ({
@@ -31,6 +32,7 @@ export const EarnPromoBanner = ({
     title,
     description,
     onExplore,
+    onClose,
 }: EarnPromoBannerProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { dispatch } = useServices(injectDispatch);
@@ -58,7 +60,8 @@ export const EarnPromoBanner = ({
                     priority="secondary"
                     size="small"
                     iconName="x"
-                    onPress={onCloseClick}
+                    onPress={onClose ?? onCloseClick}
+                    testID="@earn/promo-banner/close"
                 />
             </HStack>
         </BannerFull>
