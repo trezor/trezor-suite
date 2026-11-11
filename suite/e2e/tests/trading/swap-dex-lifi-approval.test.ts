@@ -13,9 +13,6 @@ const ethSymbol = asNetworkSymbol('eth');
 const ethereumChainId = 1;
 
 const approvalAmount = '60';
-const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
-// The toast shows the approved amount compactly, and a stablecoin reads money-like.
-const compactApprovalAmount = '60.00';
 const approvalFees = {
     gasLimit: '120000',
     maxFeePerGas: '2.67674454',
