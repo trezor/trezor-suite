@@ -8,7 +8,7 @@ import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createCardanoEverstakeNativeProduct } from './products/cardano/everstake-native/product';
-import { createCardanoExternalProduct } from './products/cardano/external/product';
+import { createCardanoExternalNativeProduct } from './products/cardano/external-native/product';
 import { createCardanoFivebinariesRetiredProduct } from './products/cardano/fivebinaries-retired/product';
 import {
     CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
@@ -89,7 +89,7 @@ const createCardanoStakingProducts = (): readonly StakingProductAdapter[] => {
     // owns exactly the pools the products above do not.
     return [
         ...managedProducts,
-        createCardanoExternalProduct({
+        createCardanoExternalNativeProduct({
             networkSymbol: asNetworkSymbol('ada'),
             managedProviders: managedProducts.map(({ descriptor }) =>
                 getStakingProvider(descriptor.providerId),

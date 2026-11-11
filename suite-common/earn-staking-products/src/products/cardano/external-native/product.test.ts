@@ -18,12 +18,12 @@ import { everstakeProvider } from '../../../providers/everstake';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
 import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../info';
 import { CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
-import { createCardanoExternalProduct } from './product';
+import { createCardanoExternalNativeProduct } from './product';
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('ada') });
 
 const createExternalProduct = (managedProviders = [everstakeProvider, fivebinariesProvider]) =>
-    createCardanoExternalProduct({
+    createCardanoExternalNativeProduct({
         networkSymbol: asNetworkSymbol('ada'),
         managedProviders,
         messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
@@ -36,7 +36,7 @@ const getStakedBalance = (product: StakingProductAdapter, scenario: CardanoStaki
         transactions: [],
     })?.balances.staked ?? null;
 
-describe('createCardanoExternalProduct', () => {
+describe('createCardanoExternalNativeProduct', () => {
     it('builds the external product', () => {
         expect(createExternalProduct().descriptor.id).toBe('ada:ada:external:native');
     });
