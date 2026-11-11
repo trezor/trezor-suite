@@ -299,7 +299,8 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         this.dispatch(
             notificationsActions.addToast({
                 type: 'connect-popup-success',
-                appName: this.source.manifest.appName,
+                // The toast has no origin to fall back to, so an empty name is replaced here.
+                appName: this.source.manifest.appName || this.source.origin,
             }),
         );
     }
