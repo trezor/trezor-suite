@@ -138,6 +138,9 @@
         { "path": "../../suite-common/tokens" },
         { "path": "../../suite-common/trading" },
         {
+            "path": "../../suite-common/transaction-details"
+        },
+        {
             "path": "../../suite-common/transaction-search"
         },
         {

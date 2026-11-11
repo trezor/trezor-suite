@@ -98,6 +98,7 @@
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/trading": "workspace:*",
+        "@suite-common/transaction-details": "workspace:*",
         "@suite-common/transaction-search": "workspace:*",
         "@suite-common/transfer-uri": "workspace:*",
         "@suite-common/tx-simulation": "workspace:^",

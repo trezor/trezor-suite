@@ -4,7 +4,7 @@ import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
-import { type Explorer, getNetwork } from '@suite-common/wallet-config';
+import { type Explorer } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import {
     selectAccountByKey,
@@ -78,7 +78,6 @@ export const TxDetailModalBase = ({
         selectTransactionConfirmations(state, tx.txid, accountKey),
     );
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
-    const network = getNetwork(account.symbol);
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
 
@@ -126,7 +125,6 @@ export const TxDetailModalBase = ({
                     explorerUrl={getExplorerUrl(explorer, 'tx')!}
                     explorerUrlQueryString={explorer.queryString}
                     tx={tx}
-                    network={network}
                     confirmations={confirmations}
                     nonceStatus={nonceStatus}
                     nextNonce={nextNonce}
