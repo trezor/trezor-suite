@@ -1201,16 +1201,13 @@ export const selectTradingSendAccount = createMemoizedFormAccountSelector(
     (tradeSendAccount, formAccount) => tradeSendAccount ?? formAccount,
 );
 
+const selectTradingExchangeSendAccountTransactions = (
+    state: TradingFormAccountRootState & TransactionsRootState,
+) => selectAccountTransactions(state, selectTradingSendAccount(state, 'exchange')?.key ?? null);
+
 export const selectTradingExchangePendingApprovalTxid =
     createMemoizedFormAccountTransactionsSelector(
-        [
-            state =>
-                selectAccountTransactions(
-                    state,
-                    selectTradingSendAccount(state, 'exchange')?.key ?? null,
-                ),
-            selectTradingExchangeSelectedQuote,
-        ],
+        [selectTradingExchangeSendAccountTransactions, selectTradingExchangeSelectedQuote],
         findPendingApprovalTxid,
     );
 
@@ -1218,15 +1215,17 @@ export const selectTradingExchangeApprovalFlowSteps = createMemoizedFormAccountT
     [
         selectTradingExchangeApprovalFlow,
         selectTradingExchangeSelectedQuote,
+        selectTradingExchangeSendAccountTransactions,
         selectTradingExchangePendingApprovalTxid,
     ],
-    (approvalFlow, selectedQuote, pendingApprovalTxid) =>
-        getApprovalFlowStepStatuses(
-            approvalFlow?.steps ?? [],
-            selectedQuote,
-            approvalFlow?.completedSteps,
-            !!pendingApprovalTxid,
-        ),
+    (approvalFlow, selectedQuote, transactions, pendingApprovalTxid) =>
+        getApprovalFlowStepStatuses({
+            steps: approvalFlow?.steps ?? [],
+            quote: selectedQuote,
+            sentTxids: approvalFlow?.sentTxids ?? {},
+            transactions,
+            hasPendingApprovalTx: !!pendingApprovalTxid,
+        }),
 );
 
 export const selectSelectedTradingAsset = createMemoizedFormAccountSelector(
