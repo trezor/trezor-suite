@@ -214,7 +214,19 @@ export class BackendManager {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const preferred: string = thisPreferred[coinInfo.shortcut];
 
-        const url = preferred ? [preferred] : (custom?.url ?? coinInfo.blockchainLink?.url ?? []);
+        const configured = custom?.url ?? coinInfo.blockchainLink?.url ?? [];
+        const type = custom?.type ?? coinInfo.blockchainLink?.type;
+        // An evm-rpc backend sends its requests over HTTP and keeps a WebSocket for subscriptions
+        // only, so pinning it to the preferred HTTP url must not take the WebSocket away.
+        const subscriptionUrls =
+            type === 'evm-rpc'
+                ? configured.filter(
+                      serverUrl =>
+                          serverUrl !== preferred &&
+                          (serverUrl.startsWith('ws://') || serverUrl.startsWith('wss://')),
+                  )
+                : [];
+        const url = preferred ? [preferred, ...subscriptionUrls] : configured;
 
         const patchedBlockchainLink: CoinInfo['blockchainLink'] = {
             ...coinInfo.blockchainLink,

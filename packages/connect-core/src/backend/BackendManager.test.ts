@@ -48,6 +48,35 @@ describe('backend/BackendManager', () => {
         expectNoMessage();
     });
 
+    it('pins later backends to the preferred url', async () => {
+        await manager.getOrConnect({ coinInfo, postMessage });
+        const backend = await manager.getOrConnect({ coinInfo, postMessage, identity: 'other' });
+
+        expect(backend.coinInfo.blockchainLink?.url).toEqual(['BTC']);
+    });
+
+    it('keeps the WebSocket url of an evm-rpc backend pinned to its preferred url', async () => {
+        const evmCoinInfo = {
+            shortcut: 'ARC',
+            blockchainLink: { type: 'evm-rpc', url: ['https://arc', 'wss://arc'] },
+        } as CoinInfo;
+        const { getInfo } = BlockchainLink.prototype;
+        jest.spyOn(BlockchainLink.prototype, 'getInfo').mockImplementation(async function (
+            this: BlockchainLink,
+        ) {
+            return { ...(await getInfo.call(this)), url: 'https://arc' };
+        });
+
+        await manager.getOrConnect({ coinInfo: evmCoinInfo, postMessage });
+        const backend = await manager.getOrConnect({
+            coinInfo: evmCoinInfo,
+            postMessage,
+            identity: 'watched',
+        });
+
+        expect(backend.coinInfo.blockchainLink?.url).toEqual(['https://arc', 'wss://arc']);
+    });
+
     it('reconnect backend after disconnection', async () => {
         const backend1 = await manager.getOrConnect({ coinInfo, postMessage });
         expectExactMessages('blockchain-connect');
