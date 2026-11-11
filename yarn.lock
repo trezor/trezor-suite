@@ -12749,8 +12749,10 @@ __metadata:
     "@suite-common/tokens": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
   languageName: unknown
@@ -16198,11 +16200,11 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
   languageName: unknown

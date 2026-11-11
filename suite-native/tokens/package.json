@@ -23,10 +23,10 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.0"
     },
