@@ -14,25 +14,25 @@ import { everstakeProvider } from '../../../providers/everstake';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
 import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../info';
 import { CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
-import { createCardanoFivebinariesRetiredProduct } from './product';
+import { createCardanoFivebinariesNativeProduct } from './product';
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('ada') });
 
 const createFiveBinariesProduct = () =>
-    createCardanoFivebinariesRetiredProduct({
+    createCardanoFivebinariesNativeProduct({
         networkSymbol: asNetworkSymbol('ada'),
         provider: fivebinariesProvider,
         messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
     });
 
-describe('createCardanoFivebinariesRetiredProduct', () => {
+describe('createCardanoFivebinariesNativeProduct', () => {
     it('builds the FiveBinaries product', () => {
         expect(createFiveBinariesProduct().descriptor.id).toBe('ada:ada:fivebinaries:native');
     });
 
     it('refuses a provider that is not retired', () => {
         expect(() =>
-            createCardanoFivebinariesRetiredProduct({
+            createCardanoFivebinariesNativeProduct({
                 networkSymbol: asNetworkSymbol('ada'),
                 provider: everstakeProvider,
                 messageSystemFeatures: {},

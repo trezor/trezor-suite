@@ -8,7 +8,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { getCardanoAmountBounds } from '../amountBounds';
 
-export const getCardanoFivebinariesRetiredProductAmountBounds = ({
+export const getCardanoFivebinariesNativeProductAmountBounds = ({
     position,
     operation,
 }: GetAmountBoundsParams): StakingAmountBounds => {

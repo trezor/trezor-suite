@@ -21,7 +21,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createCardanoEverstakeNativeProductDescriptor } from './everstake-native/descriptor';
 import { createCardanoExternalNativeProductDescriptor } from './external-native/descriptor';
-import { createCardanoFivebinariesRetiredProductDescriptor } from './fivebinaries-retired/descriptor';
+import { createCardanoFivebinariesNativeProductDescriptor } from './fivebinaries-native/descriptor';
 import { CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 import { getCardanoProductPosition } from './position';
 import { everstakeProvider } from '../../providers/everstake';
@@ -40,7 +40,7 @@ const everstake = createCardanoEverstakeNativeProductDescriptor({
     provider: everstakeProvider,
     messageSystemFeatures: {},
 });
-const fiveBinaries = createCardanoFivebinariesRetiredProductDescriptor({
+const fiveBinaries = createCardanoFivebinariesNativeProductDescriptor({
     networkSymbol,
     provider: fivebinariesProvider,
     messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,

@@ -9,7 +9,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createCardanoEverstakeNativeProduct } from './products/cardano/everstake-native/product';
 import { createCardanoExternalNativeProduct } from './products/cardano/external-native/product';
-import { createCardanoFivebinariesRetiredProduct } from './products/cardano/fivebinaries-retired/product';
+import { createCardanoFivebinariesNativeProduct } from './products/cardano/fivebinaries-native/product';
 import {
     CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
     CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
@@ -78,7 +78,7 @@ const createCardanoStakingProducts = (): readonly StakingProductAdapter[] => {
             messageSystemFeatures: CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
             ...cardanoStakingApi,
         }),
-        createCardanoFivebinariesRetiredProduct({
+        createCardanoFivebinariesNativeProduct({
             networkSymbol: asNetworkSymbol('ada'),
             provider: fivebinariesProvider,
             messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,

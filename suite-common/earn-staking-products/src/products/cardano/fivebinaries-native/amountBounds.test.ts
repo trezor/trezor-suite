@@ -6,7 +6,7 @@ import {
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { getCardanoFivebinariesRetiredProductAmountBounds } from './amountBounds';
+import { getCardanoFivebinariesNativeProductAmountBounds } from './amountBounds';
 
 const ADA = '000000';
 
@@ -23,14 +23,14 @@ const position = mockStakingPosition({
     operations: ['unstake', 'claim', 'vote'],
 });
 
-describe('getCardanoFivebinariesRetiredProductAmountBounds', () => {
+describe('getCardanoFivebinariesNativeProductAmountBounds', () => {
     it.each([
         { operation: 'unstake', amount: `1000${ADA}` },
         { operation: 'claim', amount: `1${ADA}` },
         { operation: 'vote', amount: '0' },
     ] as const)('bounds a $operation by the stake key', ({ operation, amount }) => {
         expect(
-            getCardanoFivebinariesRetiredProductAmountBounds({
+            getCardanoFivebinariesNativeProductAmountBounds({
                 account,
                 position,
                 operation,
@@ -41,7 +41,7 @@ describe('getCardanoFivebinariesRetiredProductAmountBounds', () => {
 
     it.each(['stake', 'withdraw', 'redelegate'] as const)('does not support %s', operation => {
         expect(() =>
-            getCardanoFivebinariesRetiredProductAmountBounds({
+            getCardanoFivebinariesNativeProductAmountBounds({
                 account,
                 position,
                 operation,
