@@ -8,6 +8,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { preloadForegroundApp } from '#src/components/suite/modals/ModalSwitcher/lazyForegroundApps';
 import { type AcquiredDevice } from '#src/types/suite';
 
 type GetButtonLabelIdParams = { device: AcquiredDevice };
@@ -48,6 +49,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const handleUpdate = () => {
         dispatch(gotoThunk({ routeName: 'firmware-index', params: { cancelable: true } }));
     };
+    const handlePreload = () => preloadForegroundApp('firmware');
 
     return (
         <Anchor anchorId={SettingsAnchor.FirmwareVersion}>
@@ -88,6 +90,8 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                         <SectionItem.Button
                             intent="brand"
                             onClick={handleUpdate}
+                            onMouseEnter={handlePreload}
+                            onFocus={handlePreload}
                             data-testid="@settings/device/update-button"
                             isDisabled={isDeviceLocked}
                             tooltip={{

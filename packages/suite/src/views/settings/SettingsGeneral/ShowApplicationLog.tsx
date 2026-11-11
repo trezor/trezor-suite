@@ -5,9 +5,10 @@ import { SectionItem } from '@trezor/product-components';
 import { useModalLoader } from '#src/hooks/suite/useModalLoader';
 
 export const ShowApplicationLog = () => {
-    const { open, isLoading } = useModalLoader();
+    const { open, preload, isLoading } = useModalLoader();
 
     const handleClick = () => open({ type: 'application-log' });
+    const handlePreload = () => preload('application-log');
 
     return (
         <Anchor anchorId={SettingsAnchor.ShowLog}>
@@ -21,6 +22,8 @@ export const ShowApplicationLog = () => {
                     actions={
                         <SectionItem.Button
                             onClick={handleClick}
+                            onMouseEnter={handlePreload}
+                            onFocus={handlePreload}
                             isLoading={isLoading}
                             intent="brand"
                             data-testid="@settings/show-log-button"

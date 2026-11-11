@@ -19,9 +19,10 @@ export const ChangeHomescreenButtons = ({
     isSupportedHomescreen,
     onImageUploadClick,
 }: ChangeHomescreenButtonsParams) => {
-    const { open, isLoading } = useModalLoader();
+    const { open, preload, isLoading } = useModalLoader();
     const { device } = useDevice();
     const openGallery = () => open({ type: 'device-background-gallery' });
+    const preloadGallery = () => preload('device-background-gallery');
 
     const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
     const hasGallery = getHomescreens(isBitcoinOnlyFirmware)[deviceModelInternal].length > 0;
@@ -47,6 +48,8 @@ export const ChangeHomescreenButtons = ({
                 >
                     <Button
                         onClick={openGallery}
+                        onMouseEnter={preloadGallery}
+                        onFocus={preloadGallery}
                         isLoading={isLoading}
                         data-testid="@settings/device/homescreen-gallery"
                         key="@settings/device/homescreen-gallery"
