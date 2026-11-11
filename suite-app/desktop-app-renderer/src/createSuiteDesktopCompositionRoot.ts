@@ -2,6 +2,7 @@ import { createMemoryHistory } from 'history';
 
 import { createElectronDesktopApi } from '@suite/desktop-app-api-electron';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
+import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
     createHydrateReduxStore,
     createReduxStore,
@@ -20,7 +21,10 @@ type SuiteDesktopCompositionRoot = { app: DesktopApp };
 export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot => {
     const desktopApi = createElectronDesktopApi();
     const history = createMemoryHistory();
-    const platformEncryption = createElectronPlatformEncryption({ desktopApi });
+    const platformEncryption =
+        window.location.protocol === 'file:'
+            ? createElectronPlatformEncryption({ desktopApi })
+            : createWebauthnPlatformEncryption();
     const reloadApp = desktopApi.appRestart;
 
     // The desktop renderer can't construct node-only transports (`usb`/`dgram`), so each factory

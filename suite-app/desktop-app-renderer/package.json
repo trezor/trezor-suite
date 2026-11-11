@@ -27,6 +27,7 @@
         "@suite/github": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/platform-encryption-electron": "workspace:*",
+        "@suite/platform-encryption-webauthn": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/sentry": "workspace:*",
         "@suite/tor-desktop": "workspace:*",

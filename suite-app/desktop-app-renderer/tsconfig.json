@@ -25,6 +25,9 @@
         {
             "path": "../../suite/platform-encryption-electron"
         },
+        {
+            "path": "../../suite/platform-encryption-webauthn"
+        },
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../../suite/tor-desktop" },
