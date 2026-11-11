@@ -5,7 +5,9 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
+import { TokenSymbol } from '@suite/token';
 import type { DeviceRootState } from '@suite-common/device';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type SerializedTx,
     type WalletCoreCompoundRootState,
@@ -217,6 +219,12 @@ export const TransactionReviewModalBodyInner = ({
             stakeType,
             precomposedForm,
             approvalToken: precomposedTx.token,
+            approvalTokenSymbolLabel: precomposedTx.token && (
+                <TokenSymbol
+                    networkSymbol={symbol}
+                    tokenContract={toTokenAddress(precomposedTx.token.contract)}
+                />
+            ),
             routeName,
             isBumpFeeRbfAction,
             isCancelRbfAction,

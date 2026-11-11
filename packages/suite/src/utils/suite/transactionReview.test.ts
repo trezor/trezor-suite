@@ -44,6 +44,7 @@ const getTranslation = ({
         stakeType: null,
         precomposedForm,
         approvalToken,
+        approvalTokenSymbolLabel: approvalToken?.symbol,
         routeName,
         isBumpFeeRbfAction,
         isCancelRbfAction: false,

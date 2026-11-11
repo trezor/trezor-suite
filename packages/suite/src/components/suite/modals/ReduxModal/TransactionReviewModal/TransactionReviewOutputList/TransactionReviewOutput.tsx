@@ -573,11 +573,13 @@ const getOutputLines = ({
                 typeof token?.decimals === 'number' &&
                 isAllowanceUnlimited({ amount: value, decimals: token.decimals, isSubunit: true });
             const isApprovalTx = evmTxType === 'approve';
-            const type = isMaxApproval || !isApprovalTx ? 'data' : 'amount';
+            const getType = (): OutputElementLine['type'] => {
+                if (!isApprovalTx && token?.symbol) return 'token-symbol';
+
+                return isMaxApproval || !isApprovalTx ? 'data' : 'amount';
+            };
             const getValue = () => {
-                if (!isApprovalTx && token?.symbol) {
-                    return token.symbol;
-                }
+                if (!isApprovalTx && token?.symbol) return token.symbol;
 
                 return isMaxApproval ? translationString('TR_APPROVE_AMOUNT_UNLIMITED', {}) : value;
             };
@@ -592,7 +594,7 @@ const getOutputLines = ({
                     ),
                     value: getValue(),
                     token,
-                    type,
+                    type: getType(),
                 },
                 {
                     id: 'approve-chain',

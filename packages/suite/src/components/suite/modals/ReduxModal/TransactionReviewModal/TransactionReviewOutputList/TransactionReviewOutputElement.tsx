@@ -4,7 +4,8 @@ import styled, { css } from 'styled-components';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
-import { type TokenAddress } from '@suite-common/tokens';
+import { TokenSymbol } from '@suite/token';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -134,6 +135,7 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: 
                         value={formattedValue}
                         symbol={token?.symbol ?? symbol}
                         contractAddress={token?.contract}
+                        networkSymbol={symbol}
                         isTabular={false}
                     />
                     {shallDisplayBaseCurrency && isFiatVisible && (
@@ -155,6 +157,19 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: 
         }
         case 'default':
             return <Text>{value}</Text>;
+        case 'token-symbol':
+            return (
+                <Text>
+                    {token ? (
+                        <TokenSymbol
+                            networkSymbol={symbol}
+                            tokenContract={toTokenAddress(token.contract)}
+                        />
+                    ) : (
+                        value
+                    )}
+                </Text>
+            );
         default:
             return exhaustive(type);
     }
@@ -164,7 +179,7 @@ export type OutputElementLine = {
     id: string;
     value: string;
     token?: TokenInfo;
-    type: 'default' | 'address' | 'safe-address' | 'note' | 'data' | 'amount';
+    type: 'default' | 'address' | 'safe-address' | 'note' | 'data' | 'amount' | 'token-symbol';
     label?: ReactNode;
     isChunked?: boolean;
 };
