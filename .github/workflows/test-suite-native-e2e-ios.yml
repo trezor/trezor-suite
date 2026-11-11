@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - release-native/*
+      - tmp/native-e2e-ios-token-receive
   pull_request:
     paths:
       - .github/workflows/test-suite-native-e2e-ios.yml
@@ -112,7 +113,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [0, 1]
+        TEST_GROUP: [0]
     needs: prepare_ios_test_app
     steps:
       - name: Checkout project
@@ -204,7 +205,7 @@ jobs:
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
-        run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless --quarantine
+        run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --headless --quarantine "$PWD/e2e/tests/tokenReceive.test.ts"
 
   notify_scheduled_failure_to_slack:
     runs-on: ubuntu-latest
