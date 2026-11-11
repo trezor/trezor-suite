@@ -13,6 +13,7 @@ type Attributes = {
         | 'limit-unlimited'
         | 'revoke'
         | 'approve'
+        | 'fee-change'
     >;
 
     sendCryptoLabel?: AttributeDef<string>;
@@ -37,12 +38,21 @@ export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> =
         type: {
             description:
                 'The type of approval interaction: `approve-modal` for token approval, `exchange-form` for exchange form action, `revoke-modal` for token revocation',
-            changelog: [{ version: '25.9.0', notes: 'added' }],
+            changelog: [
+                { version: '25.9.0', notes: 'added' },
+                { version: '26.12.0', notes: 'reported from the approval steps' },
+            ],
         },
         action: {
             description:
-                'The user action performed: `continue` to proceed, `cancel` to abort, `refresh` to refresh, `swap` to execute swap, `limit-exact` for minimal token approval amount, `limit-unlimited` for infinite token approval amount, `revoke` to revoke, `approve` to approve',
-            changelog: [{ version: '25.9.0', notes: 'added' }],
+                'The user action performed: `continue` to proceed, `cancel` to abort, `refresh` to refresh, `swap` to execute swap, `limit-exact` for minimal token approval amount, `limit-unlimited` for infinite token approval amount, `revoke` to revoke, `approve` to approve, `fee-change` to change the approval or revoke transaction fee level',
+            changelog: [
+                { version: '25.9.0', notes: 'added' },
+                {
+                    version: '26.12.0',
+                    notes: 'added `fee-change`; `exchange-form` reports `approve` when starting the approval steps',
+                },
+            ],
         },
         sendCryptoLabel: {
             description: 'User-friendly label or name of the cryptocurrency being sent',
@@ -71,8 +81,15 @@ export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> =
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         selectedFee: {
-            description: 'The selected transaction fee level or custom gas price',
-            changelog: [{ version: '25.9.0', notes: 'added' }],
+            description:
+                'The selected fee level; in the approval steps the fee level of the approval or revoke transaction',
+            changelog: [
+                { version: '25.9.0', notes: 'added' },
+                {
+                    version: '26.12.0',
+                    notes: 'approval steps report the approval or revoke transaction fee level',
+                },
+            ],
         },
         exchangeName: {
             description: 'The name of the DEX exchange or trading provider being used',
