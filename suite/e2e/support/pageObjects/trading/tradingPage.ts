@@ -163,6 +163,18 @@ export class TradingPage {
     }
 
     /**
+     * The form resets to its defaults once its section's catalog and the coin info have landed,
+     * roughly 2s after it becomes interactive, which clears anything typed before.
+     */
+    @step()
+    async waitForFormReset(sectionCatalogPath: string) {
+        await this.page.expectReduxObjectNotToBeEmpty(sectionCatalogPath, { timeout: 30_000 });
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins', {
+            timeout: 30_000,
+        });
+    }
+
+    /**
      * Fills the buy form with the specified amount and configuration.
      * Asset should be selected beforehand using asset picker.
      *
@@ -201,10 +213,7 @@ export class TradingPage {
         countrySubdivision,
         selectReceiveAddress,
     }: FillBuyFormParams) {
-        // The form resets to its defaults once buyInfo lands, roughly 2s after it becomes interactive
-        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.buy.buyInfo', {
-            timeout: 30_000,
-        });
+        await this.waitForFormReset('wallet.trading.buy.buyInfo');
 
         const inputField = wantCrypto ? this.inputs.cryptoAmount : this.inputs.fiatAmount;
         await expect(inputField).toHaveValue('');
@@ -267,10 +276,7 @@ export class TradingPage {
         fiatCurrencyCode = 'eur',
         country = 'CZ',
     }: FillSellFormParams) {
-        // The form resets to its defaults once sellInfo lands, roughly 2s after it becomes interactive
-        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.sell.sellInfo', {
-            timeout: 30_000,
-        });
+        await this.waitForFormReset('wallet.trading.sell.sellInfo');
         await this.inputs.selectCountryOfResidence(country);
         await this.inputs.selectFiatCurrency(fiatCurrencyCode);
         const isFiatRateLoadingFlag = `wallet.fiat.current.${networkSymbolOrTokenId}-${fiatCurrencyCode}.isLoading`;

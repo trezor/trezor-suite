@@ -31,6 +31,7 @@ import { type TradingSellFormContextProps } from '#src/types/trading/tradingForm
 import { useSellFormInputs } from './useSellFormInputs';
 import { useSellQuotes } from './useSellQuotes';
 import { useTradingSellFormDefaultValues } from './useTradingSellFormDefaultValues';
+import { useIsTradingCoinInfoSettled } from '../common/useIsTradingCoinInfoSettled';
 import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
@@ -49,6 +50,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     const isLoading = useSelector(selectTradingSellIsLoading);
     const savedFormValues = useSelector(selectTradingSellFormValues);
     const sellInfo = useSelector(selectTradingSellInfo);
+    const isCoinInfoSettled = useIsTradingCoinInfoSettled();
     const amountLimits = useSelector(selectTradingSellAmountLimits);
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
@@ -163,7 +165,8 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
-        isInfoReady: !!sellInfo,
+        // The default asset is built from the coin info, which can arrive after the sell catalog.
+        isInfoReady: !!sellInfo && isCoinInfoSettled,
         reset,
         defaultValues: initialValues,
     });

@@ -189,7 +189,7 @@ describe('handleExchangeRequestThunk', () => {
             sendStringAmount: '0.0015',
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(1);
-        expect(state.isLoading).toBe(false);
+        expect(state.exchange.isLoading).toBe(false);
     });
 
     it('should successfully request quotes, save them, but not call composeRequestCallback', async () => {
@@ -228,7 +228,7 @@ describe('handleExchangeRequestThunk', () => {
             sendStringAmount: '0.0015',
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(0);
-        expect(state.isLoading).toBe(false);
+        expect(state.exchange.isLoading).toBe(false);
     });
 
     describe('should not save quotes when', () => {
@@ -342,7 +342,7 @@ describe('handleExchangeRequestThunk', () => {
 
             expect(state.exchange.quotesRequest).toBeUndefined();
             expect(state.exchange.quotes.length).toEqual(0);
-            expect(state.isLoading).toBe(false);
+            expect(state.exchange.isLoading).toBe(false);
             await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
         });
     });
@@ -362,7 +362,7 @@ describe('handleExchangeRequestThunk', () => {
 
         expect(state.exchange.quotes.length).toEqual(0);
         expect(state.exchange.quotesRequest).toBeUndefined();
-        expect(state.isLoading).toBe(false);
+        expect(state.exchange.isLoading).toBe(false);
     });
 
     it('should request and save quotes with the resolved fromAddress', async () => {
@@ -495,7 +495,7 @@ describe('handleExchangeRequestThunk', () => {
 
         expect(state.exchange.quotes.length).toEqual(0);
         expect(state.exchange.quotesRequest).toBeUndefined();
-        expect(state.isLoading).toBe(false);
+        expect(state.exchange.isLoading).toBe(false);
         expect(quotesResponse).toEqual([]);
     });
 });

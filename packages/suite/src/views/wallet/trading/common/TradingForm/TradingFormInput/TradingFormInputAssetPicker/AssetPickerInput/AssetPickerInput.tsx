@@ -6,16 +6,18 @@ import {
     type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     type TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    TRADING_SECTION_CATALOGS,
     type TradingBuyFormProps,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
-    selectTradingLoadingAndTimestamp,
+    useTradingCatalogStatus,
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 
 import { AssetPickerInputContent } from './AssetPickerInputContent';
 
@@ -47,7 +49,8 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
     const { watch } = useFormContext<TradingFormValues>();
     const value = watch(name);
     const { translationString } = useTranslation();
-    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
+    const { type } = useTradingFormContext();
+    const { isLoading } = useTradingCatalogStatus(TRADING_SECTION_CATALOGS[type]);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isBusy = isLoading || isDiscoveryRunning;
 

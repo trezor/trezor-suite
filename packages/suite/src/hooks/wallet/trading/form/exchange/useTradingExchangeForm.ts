@@ -46,6 +46,7 @@ import { useExchangeApproval } from './useExchangeApproval';
 import { useExchangeDexQuote } from './useExchangeDexQuote';
 import { useExchangeFormInputs } from './useExchangeFormInputs';
 import { useExchangeQuotes } from './useExchangeQuotes';
+import { useIsTradingCoinInfoSettled } from '../common/useIsTradingCoinInfoSettled';
 import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
@@ -68,6 +69,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const exchangeProviders = useSelector(selectTradingExchangeProviders);
+    const isCoinInfoSettled = useIsTradingCoinInfoSettled();
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
@@ -223,7 +225,8 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
-        isInfoReady: !!exchangeProviders,
+        // The default assets are built from the coin info, which can arrive after the swap catalog.
+        isInfoReady: !!exchangeProviders && isCoinInfoSettled,
         reset,
         defaultValues: initialValues,
     });
