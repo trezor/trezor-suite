@@ -8,6 +8,7 @@ import {
     type NetworkSymbol,
     getNetworkDisplaySymbol,
     getNetworkFeatures,
+    getNetworkType,
 } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isNftMatchesSearch, isNftToken, isTokenMatchesSearch } from '@suite-common/wallet-utils';
@@ -42,9 +43,10 @@ export const getTokens = <T extends TokenInfo = TokenInfo>({
         ? tokens.filter(token => isNftToken(token))
         : tokens.filter(token => !isNftToken(token));
 
-    const hasDefinitions = getNetworkFeatures(symbol).includes(
-        isNft ? 'nft-definitions' : 'coin-definitions',
-    );
+    // Stellar trustlines require explicit activation, so unknown tokens cannot be airdropped as spam.
+    const hasDefinitions =
+        getNetworkType(symbol) !== 'stellar' &&
+        getNetworkFeatures(symbol).includes(isNft ? 'nft-definitions' : 'coin-definitions');
 
     const shownWithBalance: T[] = [];
     const shownWithoutBalance: T[] = [];
