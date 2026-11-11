@@ -4,7 +4,6 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import {
     type HomeAssetTableState,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetHiddenReason,
     selectWalletAssetKey,
 } from '@suite-common/assets';
@@ -15,6 +14,7 @@ import {
     selectAreCoinDefinitionsLoaded,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
@@ -29,9 +29,6 @@ export const AssetDetailHiddenBanner = () => {
     );
     const hiddenReason = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetHiddenReason(state, assetKey),
-    );
-    const displaySymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetDisplaySymbol(state, assetKey),
     );
     const areCoinDefinitionsLoaded = useSelector((state: TokenDefinitionsRootState) =>
         selectAreCoinDefinitionsLoaded(state, networkSymbol),
@@ -82,7 +79,18 @@ export const AssetDetailHiddenBanner = () => {
             description={
                 <Translation
                     id="moduleAssets.assetDetailScreen.hiddenBanner.hiddenDescription"
-                    values={{ asset: displaySymbol }}
+                    values={{
+                        asset: (
+                            // Nested Text does not inherit the banner's text style.
+                            <AssetSymbol
+                                isTruncated
+                                networkSymbol={networkSymbol}
+                                contractAddress={tokenContract}
+                                variant="body-sm"
+                                color="contentInfo"
+                            />
+                        ),
+                    }}
                 />
             }
             primaryButtonLabel={

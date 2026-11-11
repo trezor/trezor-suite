@@ -13,7 +13,6 @@ import {
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type WalletAssetKey, selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
@@ -30,8 +29,10 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokenIcon, TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { AssetSymbol } from './AssetSymbol';
 
 const rowStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
@@ -104,19 +105,13 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
                     <HStack flex={1} alignItems="center" spacing="sp8">
                         <Box flexShrink={1}>
-                            {contractAddress ? (
-                                <TokenSymbol
-                                    isTruncated
-                                    networkSymbol={symbol}
-                                    contractAddress={contractAddress}
-                                    variant="body-sm"
-                                    numberOfLines={1}
-                                />
-                            ) : (
-                                <Text variant="body-sm" numberOfLines={1}>
-                                    {getNetworkDisplaySymbol(symbol)}
-                                </Text>
-                            )}
+                            <AssetSymbol
+                                isTruncated
+                                networkSymbol={symbol}
+                                contractAddress={contractAddress}
+                                variant="body-sm"
+                                numberOfLines={1}
+                            />
                         </Box>
                         <AssetYieldRateBadge
                             networkSymbol={symbol}

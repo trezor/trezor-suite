@@ -32,7 +32,6 @@ jest.mock('@suite-native/toasts', () => ({
 jest.mock('@suite-common/assets', () => ({
     selectWalletAssetKey: () => 'asset-key',
     selectWalletAssetHiddenReason: jest.fn(),
-    selectWalletAssetDisplaySymbol: () => 'SCAM',
 }));
 
 const ETH = asNetworkSymbol('eth');
