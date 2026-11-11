@@ -42,10 +42,9 @@ const RIPPLE_CRYPTO_ID = 'ripple' as CryptoId;
 const BITCOIN_SELL_ASSET: TradingAssetSellOption = {
     id: BITCOIN_CRYPTO_ID,
     isNativeToken: true,
-    name: 'Bitcoin',
+    displayName: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: BTC_SYMBOL,
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: BTC_SYMBOL,
@@ -55,10 +54,9 @@ const BITCOIN_SELL_ASSET: TradingAssetSellOption = {
 const XRP_ASSET: TradingAssetOption = {
     id: RIPPLE_CRYPTO_ID,
     isNativeToken: true,
-    name: 'XRP',
+    displayName: 'XRP',
     coingeckoId: 'ripple',
     contractAddress: null,
-    symbol: XRP_SYMBOL,
     displaySymbol: 'XRP',
     networkName: 'XRP',
     networkSymbol: XRP_SYMBOL,

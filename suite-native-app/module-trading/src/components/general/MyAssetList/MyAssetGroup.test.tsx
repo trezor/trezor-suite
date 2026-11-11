@@ -44,7 +44,7 @@ describe('MyAssetGroup', () => {
 
     it('renders all assets when expanded', async () => {
         const testID = '@trading/my-asset-group';
-        const { getByTestId, getByText } = await renderWithStoreProvider(
+        const { getByTestId, getByLabelText } = await renderWithStoreProvider(
             <MyAssetGroup
                 assets={assets}
                 onAssetSelect={jest.fn()}
@@ -59,14 +59,14 @@ describe('MyAssetGroup', () => {
         expect(getByTestId(`${testID}/toggle`).props.accessibilityState).toEqual({
             expanded: true,
         });
-        expect(getByText('Token 1')).toBeOnTheScreen();
-        expect(getByText('Token 2')).toBeOnTheScreen();
-        expect(getByText('Token 3')).toBeOnTheScreen();
+        expect(getByLabelText('Token 1')).toBeOnTheScreen();
+        expect(getByLabelText('Token 2')).toBeOnTheScreen();
+        expect(getByLabelText('Token 3')).toBeOnTheScreen();
     });
 
     it('does not select a non-tradeable asset', async () => {
         const onAssetSelect = jest.fn();
-        const { getByText } = await renderWithStoreProvider(
+        const { getByLabelText, getByText } = await renderWithStoreProvider(
             <MyAssetGroup
                 assets={[createAsset(1, false)]}
                 onAssetSelect={onAssetSelect}
@@ -77,7 +77,7 @@ describe('MyAssetGroup', () => {
         );
 
         await fireEvent.press(getByText('Non-tradeable'));
-        await fireEvent.press(getByText('Token 1'));
+        await fireEvent.press(getByLabelText('Token 1'));
 
         expect(onAssetSelect).not.toHaveBeenCalled();
     });

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Translation } from '@suite/intl';
 import {
     parseCryptoId,
+    selectTradingCoins,
     selectTradingExchangeFormValues,
     selectTradingExchangeProviders,
 } from '@suite-common/trading';
@@ -23,19 +24,21 @@ export const TradingExchangeApprovalPage = () => {
         useTradingExchangeApprovalFlow();
     const formValues = useSelector(selectTradingExchangeFormValues);
     const exchangeProviders = useSelector(selectTradingExchangeProviders);
+    const coins = useSelector(selectTradingCoins);
 
     if (isFlowMissing || !account || !quote?.send) {
         return null;
     }
 
-    const { contractAddress: tokenContractAddress } = parseCryptoId(quote.send);
-    const sendSymbol = formValues?.sendCryptoSelect?.displaySymbol ?? '';
+    const sendCryptoId = quote.send;
+    const { contractAddress: tokenContractAddress } = parseCryptoId(sendCryptoId);
 
     const getCryptoInfo = () =>
         getTradingExchangeCryptoInfo({
             values: formValues ?? {},
             quoteExchange: quote.exchange,
             exchangeProviders,
+            coins,
         });
 
     return (
@@ -65,7 +68,9 @@ export const TradingExchangeApprovalPage = () => {
                                     />
                                 }
                                 addon={
-                                    type === 'swap' && <ApprovalRequiredBadge symbol={sendSymbol} />
+                                    type === 'swap' && (
+                                        <ApprovalRequiredBadge cryptoId={sendCryptoId} />
+                                    )
                                 }
                                 data-testid={`@approval-step/${type}`}
                             />

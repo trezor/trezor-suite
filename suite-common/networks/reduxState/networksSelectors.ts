@@ -49,14 +49,22 @@ export const selectNetworkConfigs = createMemoizedSelector(
  * network, so the name never mentions the network; screens show the network separately (network
  * icon, network line or network badge). Do not put the network back into this name.
  */
-export const selectNativeTokenName = (state: NetworksRootState, symbol: NetworkSymbol) => {
-    const network = selectNetworkConfig(state, symbol);
+export const getNativeTokenName = (
+    getNetworkConfig: (
+        symbol: NetworkSymbol,
+    ) => Pick<NetworkMetadata, 'name' | 'displaySymbolName' | 'settlementLayer'> | null | undefined,
+    symbol: NetworkSymbol,
+) => {
+    const network = getNetworkConfig(symbol);
     const nativeTokenNetwork = network?.settlementLayer
-        ? selectNetworkConfig(state, network.settlementLayer)
+        ? getNetworkConfig(network.settlementLayer)
         : network;
 
     return nativeTokenNetwork?.displaySymbolName || nativeTokenNetwork?.name;
 };
+
+export const selectNativeTokenName = (state: NetworksRootState, symbol: NetworkSymbol) =>
+    getNativeTokenName(networkSymbol => selectNetworkConfig(state, networkSymbol), symbol);
 
 const NETWORKS_WITH_NATIVE_TOKEN_NAME_ALIASES: readonly NetworkSymbol[] = [
     'pol',

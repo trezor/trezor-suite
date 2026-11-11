@@ -99,6 +99,7 @@ import {
     isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
+import { coinInfoToTokenMetadata } from '../utils/coinInfoToTokenMetadata';
 import {
     findPendingApprovalTxid,
     getApprovalFlowStepStatuses,
@@ -237,11 +238,7 @@ export const selectTradingTokenMetadataSources = createMemoizedSelector(
             if (!network || !contractAddress) continue;
 
             const tokens = tokensByNetwork.get(network.symbol) ?? [];
-            tokens.push({
-                contract: toTokenAddress(contractAddress),
-                name: coin.name,
-                symbol: coin.symbol.toUpperCase(),
-            });
+            tokens.push(coinInfoToTokenMetadata(toTokenAddress(contractAddress), coin));
             tokensByNetwork.set(network.symbol, tokens);
         }
 

@@ -10,7 +10,6 @@ import { BigNumber, getIndexOrThrow } from '@trezor/utils';
 
 import {
     buildGlobalReceiveAssetOptions,
-    getGlobalReceiveAssetDescriptionValues,
     getGlobalReceiveAssetSections,
 } from './globalReceiveAssetUtils';
 
@@ -38,8 +37,7 @@ const createAsset = ({
 }: CreateAssetParams): TradingAssetOption =>
     ({
         id: id as CryptoId,
-        name,
-        displaySymbolName: name,
+        displayName: name,
         displaySymbol,
         contractAddress,
         isNativeToken,
@@ -99,21 +97,6 @@ const bridgedEthereum = createAsset({
     contractAddress: '0x-bridged-eth',
     networkName: 'Arbitrum One',
     networkSymbol: 'arb',
-});
-
-describe(getGlobalReceiveAssetDescriptionValues.name, () => {
-    it('omits the network for a native asset', () => {
-        expect(getGlobalReceiveAssetDescriptionValues(bitcoin)).toEqual({
-            assetName: 'Bitcoin',
-        });
-    });
-
-    it('includes the network for a token', () => {
-        expect(getGlobalReceiveAssetDescriptionValues(ethereumUSDC)).toEqual({
-            assetName: 'USD Coin',
-            networkName: 'Ethereum',
-        });
-    });
 });
 
 describe(getGlobalReceiveAssetSections.name, () => {
@@ -450,7 +433,7 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
             'USDC',
         ]);
         expect(tokens[3]).toMatchObject({
-            name: 'Wrapped SOL',
+            displayName: 'Wrapped SOL',
             isNativeToken: false,
             contractAddress: wrappedSolToken.address,
         });
@@ -478,9 +461,9 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
             ],
         });
 
-        expect(assets.filter(asset => !asset.isNativeToken).map(asset => asset.name)).toEqual([
-            'USD Coin',
-        ]);
+        expect(
+            assets.filter(asset => !asset.isNativeToken).map(asset => asset.displayName),
+        ).toEqual(['USD Coin']);
     });
 
     it('uses token IDs compatible with the local balance lookup', () => {
@@ -499,7 +482,7 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
         });
 
         expect(result.myAssets).toEqual([
-            { asset: expect.objectContaining({ name: 'Wrapped SOL' }), balance },
+            { asset: expect.objectContaining({ displayName: 'Wrapped SOL' }), balance },
         ]);
     });
 });

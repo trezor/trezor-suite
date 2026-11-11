@@ -35,10 +35,9 @@ const ETH_SYMBOL = asNetworkSymbol('eth');
 const BITCOIN_ASSET: TradingAssetOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
-    name: 'Bitcoin',
+    displayName: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: BTC_SYMBOL,
     displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: BTC_SYMBOL,

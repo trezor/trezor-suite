@@ -76,22 +76,19 @@ type TradingAssetOptionBase = {
     coingeckoId: NonNullable<SuiteCommonNetworkConfig['coingeckoId']>;
     networkName: SuiteCommonNetworkConfig['name'];
     networkSymbol: NetworkSymbol;
-    displaySymbolName?: string;
+    /** Only for asset search; render the label with `AssetName`. */
+    displayName: string;
+    /** Only for asset search; render the label with `AssetSymbol`. */
+    displaySymbol: string;
 };
 
 export type TradingAssetOptionNativeToken = TradingAssetOptionBase & {
     isNativeToken: true;
-    name: SuiteCommonNetworkConfig['name'];
-    symbol: NetworkSymbol;
-    displaySymbol: SuiteCommonNetworkConfig['displaySymbol'];
     contractAddress: null | typeof constants.CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
 
 export type TradingAssetOptionWithContractAddress = TradingAssetOptionBase & {
     isNativeToken: false;
-    name: string;
-    symbol: string;
-    displaySymbol: string;
     contractAddress: TokenAddress;
 };
 

@@ -50,8 +50,7 @@ const FORM_VALUES: TradingExchangeFormProps = {
     sendCryptoSelect: {
         id: 'bitcoin' as CryptoId,
         isNativeToken: true,
-        name: 'Bitcoin',
-        symbol: btcSymbol,
+        displayName: 'Bitcoin',
         coingeckoId: 'bitcoin',
         displaySymbol: 'BTC',
         contractAddress: null,
@@ -62,8 +61,7 @@ const FORM_VALUES: TradingExchangeFormProps = {
     receiveCryptoSelect: {
         id: 'ethereum' as CryptoId,
         isNativeToken: true,
-        name: 'Ethereum',
-        symbol: ethSymbol,
+        displayName: 'Ethereum',
         coingeckoId: 'ethereum',
         displaySymbol: 'ETH',
         contractAddress: null,
