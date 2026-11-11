@@ -9,7 +9,7 @@ import { storageError } from '#src/actions/suite/storageLifecycleActions';
 
 import type { Db } from './Db';
 import type { SuiteDBSchema } from './definitions';
-import { runLegacyMigrations } from './migrations';
+import { runLegacyMigrations } from './migrations/runLegacyMigrations';
 import * as migrations from './migrations/versions';
 
 const LAST_LEGACY_VERSION = 57;
