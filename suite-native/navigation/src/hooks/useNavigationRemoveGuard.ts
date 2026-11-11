@@ -1,3 +1,5 @@
+import { useCallback, useRef } from 'react';
+
 import { type NavigationAction, useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import {
@@ -10,6 +12,7 @@ type OnBlockedParams = {
     action: NavigationAction;
     /** Resumes the original action once, without triggering this route's guard again. */
     continueNavigation: () => void;
+    forceNavigation: (navigate: () => void) => void;
 };
 
 export type UseNavigationRemoveGuardParams = {
@@ -24,6 +27,8 @@ export type UseNavigationRemoveGuardParams = {
 /**
  * Blocks selected screen-removal attempts until continueNavigation is called explicitly.
  * Other removal actions continue automatically.
+ *
+ * Returns forceNavigation, which runs a new navigation without this guard.
  */
 export const useNavigationRemoveGuard = ({
     isEnabled = true,
@@ -31,9 +36,24 @@ export const useNavigationRemoveGuard = ({
     onBlocked,
 }: UseNavigationRemoveGuardParams = {}) => {
     const navigation = useNavigation();
+    const isForcingNavigationRef = useRef(false);
+
+    const forceNavigation = useCallback((navigate: () => void) => {
+        const wasForcingNavigation = isForcingNavigationRef.current;
+        isForcingNavigationRef.current = true;
+
+        try {
+            navigate();
+        } finally {
+            isForcingNavigationRef.current = wasForcingNavigation;
+        }
+    }, []);
 
     usePreventRemove(isEnabled, ({ data }) => {
-        if (!matchesNavigationRemoveAction(actionTypes, data.action)) {
+        if (
+            isForcingNavigationRef.current ||
+            !matchesNavigationRemoveAction(actionTypes, data.action)
+        ) {
             navigation.dispatch(data.action);
 
             return;
@@ -51,6 +71,9 @@ export const useNavigationRemoveGuard = ({
                 hasContinued = true;
                 navigation.dispatch(data.action);
             },
+            forceNavigation,
         });
     });
+
+    return { forceNavigation };
 };
