@@ -451,6 +451,6 @@ Such shared parts are useful as lego that modules choose to use, not as the cont
    consistency is enforced.
 5. **Testing needs no special treatment.** Modules, lego and pages are tested as usual, like any
    other code in the repository.
-6. **Revisit if modules converge.** A default implementation in lego covers a feature whose modules
-   are alike, see [Code duplication is solved with lego](#4-code-duplication-is-solved-with-lego).
-   If that becomes the norm for most features, revisit this ADR.
+6. **Revisit as modularization progresses.** Modularization is a living process. We revisit this ADR
+   whenever we modularize another feature or network, and iterate on it as we learn where the
+   abstraction boundary really is.
