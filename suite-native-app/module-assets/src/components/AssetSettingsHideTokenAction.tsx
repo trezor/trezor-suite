@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import {
     type HomeAssetTableState,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetHiddenReason,
     selectWalletAssetKey,
 } from '@suite-common/assets';
@@ -17,6 +16,7 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { useServices } from '@trezor/dependency-injection';
@@ -40,9 +40,6 @@ export const AssetSettingsHideTokenAction = ({
     );
     const hiddenReason = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetHiddenReason(state, assetKey),
-    );
-    const displaySymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetDisplaySymbol(state, assetKey),
     );
     const areCoinDefinitionsLoaded = useSelector((state: TokenDefinitionsRootState) =>
         selectAreCoinDefinitionsLoaded(state, networkSymbol),
@@ -97,7 +94,17 @@ export const AssetSettingsHideTokenAction = ({
             title: (
                 <Translation
                     id="moduleAssets.assetDetailScreen.settings.showUnrecognizedTokenAlert.title"
-                    values={{ asset: displaySymbol }}
+                    values={{
+                        asset: (
+                            // Nested Text does not inherit the alert title's text style.
+                            <AssetSymbol
+                                isTruncated
+                                networkSymbol={networkSymbol}
+                                contractAddress={tokenContract}
+                                variant="headline-sm"
+                            />
+                        ),
+                    }}
                 />
             ),
             description: (

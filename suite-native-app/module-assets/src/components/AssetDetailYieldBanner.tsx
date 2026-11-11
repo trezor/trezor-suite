@@ -5,7 +5,6 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 import { events } from '@suite-common/analytics';
 import {
     type HomeAssetTableState,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetKey,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
@@ -13,6 +12,7 @@ import {
 import { useYieldVaultApy } from '@suite-common/earn-stablecoin';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { Box } from '@suite-native/atoms';
 import {
     type BannerFlagsSliceRootState,
@@ -33,9 +33,6 @@ export const AssetDetailYieldBanner = () => {
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
     const assetKey = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
-    );
-    const displaySymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetDisplaySymbol(state, assetKey),
     );
     const tokenSymbol = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetTokenSymbol(state, assetKey),
@@ -59,7 +56,7 @@ export const AssetDetailYieldBanner = () => {
 
     if (
         tokenContract === undefined ||
-        displaySymbol === undefined ||
+        assetKey === undefined ||
         isBannerClosed ||
         apy === null ||
         !isApyAvailable(apy)
@@ -94,13 +91,34 @@ export const AssetDetailYieldBanner = () => {
                 title={
                     <Translation
                         id="earn.promoStakeBanner.title"
-                        values={{ apy: formattedApy, symbol: displaySymbol }}
+                        values={{
+                            apy: formattedApy,
+                            symbol: (
+                                // Nested Text does not inherit the banner's text style.
+                                <AssetSymbol
+                                    isTruncated
+                                    networkSymbol={networkSymbol}
+                                    contractAddress={tokenContract}
+                                    color="contentBrand"
+                                />
+                            ),
+                        }}
                     />
                 }
                 description={
                     <Translation
                         id="moduleAssets.assetDetailScreen.yieldBanner.description"
-                        values={{ symbol: displaySymbol }}
+                        values={{
+                            symbol: (
+                                <AssetSymbol
+                                    isTruncated
+                                    networkSymbol={networkSymbol}
+                                    contractAddress={tokenContract}
+                                    variant="body-sm"
+                                    color="contentBrand"
+                                />
+                            ),
+                        }}
                     />
                 }
                 onExplore={goToEarn}
