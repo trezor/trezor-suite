@@ -128,6 +128,7 @@ export interface BlockEvent {
         blockHeight: number;
         blockHash: string;
         evmData?: EthereumGasData | null;
+        epoch?: number; // cardano only
     };
 }
 
