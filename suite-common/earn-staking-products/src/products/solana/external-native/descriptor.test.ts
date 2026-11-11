@@ -1,14 +1,14 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createSolanaExternalProductDescriptor } from './descriptor';
+import { createSolanaExternalNativeProductDescriptor } from './descriptor';
 
 describe('createSolanaExternalDelegationDescriptor', () => {
     it.each([
         { symbol: 'sol', id: 'sol:sol:external:native' },
         { symbol: 'dsol', id: 'dsol:dsol:external:native' },
     ])('builds the read-only $id product', ({ symbol, id }) => {
-        const descriptor = createSolanaExternalProductDescriptor(asNetworkSymbol(symbol));
+        const descriptor = createSolanaExternalNativeProductDescriptor(asNetworkSymbol(symbol));
 
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
         expect(descriptor).toEqual({

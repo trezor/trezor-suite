@@ -24,7 +24,7 @@ import {
     type SolanaEverstakeNativeProductDeps,
     createSolanaEverstakeNativeProduct,
 } from './everstake-native/product';
-import { createSolanaExternalProduct } from './external/product';
+import { createSolanaExternalNativeProduct } from './external-native/product';
 import { everstakeProvider } from '../../providers/everstake';
 
 // The oracle is the P0.1 characterization suites in wallet-core
@@ -53,7 +53,7 @@ const createProducts = (symbol: string): SolanaProducts => {
                 getStakingStats: () => Promise.resolve(stats),
             }),
         }),
-        createSolanaExternalProduct({
+        createSolanaExternalNativeProduct({
             networkSymbol: asNetworkSymbol(symbol),
             managedProviders: [everstakeProvider],
         }),

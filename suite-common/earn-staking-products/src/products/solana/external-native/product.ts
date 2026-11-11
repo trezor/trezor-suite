@@ -10,23 +10,23 @@ import { externalProvider } from '../../../providers/external';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 import { SOLANA_EXTERNAL_PRODUCT_INFO } from '../info';
 import { getSolanaProductPosition } from '../position';
-import { getSolanaExternalProductAmountBounds } from './amountBounds';
-import { createSolanaExternalProductDescriptor } from './descriptor';
+import { getSolanaExternalNativeProductAmountBounds } from './amountBounds';
+import { createSolanaExternalNativeProductDescriptor } from './descriptor';
 
-export type CreateSolanaExternalProductParams = {
+export type CreateSolanaExternalNativeProductParams = {
     networkSymbol: NetworkSymbol;
     managedProviders: readonly StakingProvider[];
 };
 
-export const createSolanaExternalProduct = ({
+export const createSolanaExternalNativeProduct = ({
     networkSymbol,
     managedProviders,
-}: CreateSolanaExternalProductParams): StakingProductAdapter => {
+}: CreateSolanaExternalNativeProductParams): StakingProductAdapter => {
     const managedVoteAccounts = managedProviders.flatMap(
         provider => provider.identities[networkSymbol] ?? [],
     );
 
-    const descriptor = createSolanaExternalProductDescriptor(networkSymbol);
+    const descriptor = createSolanaExternalNativeProductDescriptor(networkSymbol);
 
     const fetchProductInfo = () => Promise.resolve(SOLANA_EXTERNAL_PRODUCT_INFO);
 
@@ -40,7 +40,7 @@ export const createSolanaExternalProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getSolanaExternalProductAmountBounds(params);
+        getSolanaExternalNativeProductAmountBounds(params);
 
     const operations = createUnimplementedStakingOperations();
 

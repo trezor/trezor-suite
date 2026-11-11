@@ -23,9 +23,9 @@ export {
     type SolanaEverstakeNativeProductDeps,
 } from './products/solana/everstake-native/product';
 export {
-    createSolanaExternalProduct,
-    type CreateSolanaExternalProductParams,
-} from './products/solana/external/product';
+    createSolanaExternalNativeProduct,
+    type CreateSolanaExternalNativeProductParams,
+} from './products/solana/external-native/product';
 export {
     createTronCuratedProduct,
     type CreateTronCuratedProductParams,

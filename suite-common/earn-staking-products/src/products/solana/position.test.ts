@@ -18,7 +18,7 @@ import {
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createSolanaEverstakeNativeProductDescriptor } from './everstake-native/descriptor';
-import { createSolanaExternalProductDescriptor } from './external/descriptor';
+import { createSolanaExternalNativeProductDescriptor } from './external-native/descriptor';
 import { SOLANA_EXTERNAL_PRODUCT_INFO } from './info';
 import { getSolanaProductPosition } from './position';
 import { everstakeProvider } from '../../providers/everstake';
@@ -31,7 +31,7 @@ const everstake = createSolanaEverstakeNativeProductDescriptor({
     provider: everstakeProvider,
     messageSystemFeatures: {},
 });
-const external = createSolanaExternalProductDescriptor(asNetworkSymbol('sol'));
+const external = createSolanaExternalNativeProductDescriptor(asNetworkSymbol('sol'));
 
 const productInfo = mockStakingProductInfo({ rate: 6.24, targets: [] });
 

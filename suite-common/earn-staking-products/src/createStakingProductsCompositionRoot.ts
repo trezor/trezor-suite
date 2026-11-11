@@ -17,7 +17,7 @@ import {
 import { createEthereumEverstakePooledProduct } from './products/ethereum/everstake-pooled/product';
 import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/solana/everstake-native/messageSystemFeatures';
 import { createSolanaEverstakeNativeProduct } from './products/solana/everstake-native/product';
-import { createSolanaExternalProduct } from './products/solana/external/product';
+import { createSolanaExternalNativeProduct } from './products/solana/external-native/product';
 import { TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/tron/curated/messageSystemFeatures';
 import { createTronCuratedProduct } from './products/tron/curated/product';
 import { everstakeProvider } from './providers/everstake';
@@ -51,7 +51,7 @@ const createSolanaStakingProducts = (): readonly StakingProductAdapter[] => {
             messageSystemFeatures: SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
             ...solanaStakingApi,
         }),
-        createSolanaExternalProduct({
+        createSolanaExternalNativeProduct({
             networkSymbol: asNetworkSymbol('sol'),
             managedProviders: [everstakeProvider],
         }),
@@ -61,7 +61,7 @@ const createSolanaStakingProducts = (): readonly StakingProductAdapter[] => {
             messageSystemFeatures: {},
             ...solanaStakingApi,
         }),
-        createSolanaExternalProduct({
+        createSolanaExternalNativeProduct({
             networkSymbol: asNetworkSymbol('dsol'),
             managedProviders: [everstakeProvider],
         }),
