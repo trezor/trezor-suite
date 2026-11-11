@@ -8,13 +8,7 @@ import { type TransientProps, makePropsTransient } from '../../utils/transientPr
 export const textWraps = ['normal', 'balance', 'pretty', 'nowrap'];
 export type TextWrap = (typeof textWraps)[number];
 
-export const textCase = [
-    'uppercase',
-    'lowercase',
-    'titlecase',
-    'capitalize',
-    'small-caps',
-] as const;
+export const textCase = ['uppercase', 'lowercase', 'titlecase', 'capitalize'] as const;
 export type TextCase = (typeof textCase)[number];
 
 export const wordBreaks = ['normal', 'break-all', 'keep-all', 'inherit', 'unset'] as const;
@@ -29,6 +23,7 @@ export type TextProps = {
     align?: UIAlignment;
     ellipsisLineCount?: number;
     case?: TextCase;
+    isAllCaps?: boolean;
     wordBreak?: WordBreak;
     overflowWrap?: OverflowWrap;
 };
@@ -58,10 +53,6 @@ const getCaseStyles = ($case: TextCase | undefined) => {
                 }
             `;
 
-        case 'small-caps':
-            return css`
-                font-variant: all-small-caps;
-            `;
         default:
             return css`
                 text-transform: ${$case};
@@ -75,6 +66,7 @@ export const withTextProps = ({
     $align,
     $ellipsisLineCount = 0,
     $case,
+    $isAllCaps,
     $wordBreak,
     $overflowWrap,
 }: TransientTextProps) => css`
@@ -102,6 +94,12 @@ export const withTextProps = ({
                   ${typography[$typographyStyle]}
               `
             : ''
+    }
+    ${
+        $isAllCaps &&
+        css`
+            font-variant-caps: all-small-caps;
+        `
     }
     ${
         $align &&
@@ -180,6 +178,12 @@ const getStorybookType = (key: TextPropsKeys) => {
                     type: 'select',
                 },
             };
+        case 'isAllCaps':
+            return {
+                control: {
+                    type: 'boolean',
+                },
+            };
         default:
             return {
                 control: {
@@ -213,6 +217,7 @@ export const getTextPropsStory = (allowedTextProps: Array<TextPropsKeys>) => {
                 ? { ellipsisLineCount: undefined }
                 : {}),
             ...(allowedTextProps.includes('case') ? { case: undefined } : {}),
+            ...(allowedTextProps.includes('isAllCaps') ? { isAllCaps: false } : {}),
             ...(allowedTextProps.includes('overflowWrap') ? { overflowWrap: undefined } : {}),
         },
         argTypes,

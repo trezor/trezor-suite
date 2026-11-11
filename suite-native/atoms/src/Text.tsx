@@ -25,6 +25,7 @@ export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProp
     color?: Color;
     priority?: TextPriority;
     textAlign?: TextStyle['textAlign'];
+    isAllCaps?: boolean;
     style?: NativeStyleObject;
     ref?: Ref<TextInstance>;
 }
@@ -53,6 +54,7 @@ const variantToMaxFontSizeMultiplier = {
     'body-md': TEXT_MAX_FONT_MULTIPLIER,
     'body-sm-strong': TEXT_MAX_FONT_MULTIPLIER,
     'body-sm': TEXT_MAX_FONT_MULTIPLIER,
+    'body-xs-strong': TEXT_MAX_FONT_MULTIPLIER,
     'body-xs': TEXT_MAX_FONT_MULTIPLIER,
 } as const satisfies Record<NativeTypographyStyle, number>;
 
@@ -86,11 +88,24 @@ const textStyle = prepareNativeStyle<TextStyleProps>(
     }),
 );
 
+type AllCapsStyleProps = Pick<TextStyle, 'fontVariant'>;
+
+// Native small-caps only substitutes lowercase glyphs, so the display transform
+// also lets existing capitals use the font's small-cap glyphs.
+const allCapsStyle = prepareNativeStyle<AllCapsStyleProps>((_, { fontVariant = [] }) => ({
+    textTransform: 'lowercase',
+    fontVariant:
+        typeof fontVariant === 'string'
+            ? `${fontVariant} small-caps`
+            : [...fontVariant, 'small-caps'],
+}));
+
 export const Text = ({
     variant = 'body-md',
     color = 'contentPrimary',
     priority = 'primary',
     textAlign = 'left',
+    isAllCaps = false,
     style = {},
     children,
     ref,
@@ -104,6 +119,7 @@ export const Text = ({
             style={mergeNativeStyleObjects([
                 applyStyle(textStyle, { variant, color, priority, textAlign }),
                 style,
+                isAllCaps ? applyStyle(allCapsStyle, { fontVariant: style.fontVariant }) : {},
             ])}
             maxFontSizeMultiplier={maxFontSizeMultiplier}
             {...otherProps}
