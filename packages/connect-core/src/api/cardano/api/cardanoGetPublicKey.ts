@@ -91,7 +91,10 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
                 serializedPath: getSerializedPath(batch.address_n),
                 publicKey: message.node.public_key,
                 xpub: message.xpub,
-                displayablePublicKey: message.xpub,
+                // Firmware before 2.6.1 shows the public key without the chain code.
+                displayablePublicKey: this.getDevice().atLeast('2.6.1')
+                    ? message.xpub
+                    : message.node.public_key,
                 node: message.node,
             });
 
