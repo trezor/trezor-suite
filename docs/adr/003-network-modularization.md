@@ -306,19 +306,6 @@ suite-app/sign-verify-page/                 # Renders the SignVerify feature
 suite-native-app/module-sign-verify/        # Renders the native SignVerify feature
 ```
 
-## Practical steps
-
-> [!NOTE]
-> This list grows as modularization progresses.
-
-1. Introduce the desktop/web feature contract in `@trezor/network-module-suite-types` with Sign &
-   Verify as its first slot.
-2. Move the per-network Sign & Verify UI into `@trezor/network-<family>-suite` packages and extract
-   shared parts into `@suite/sign-verify`.
-3. Repeat for mobile with `@trezor/network-module-suite-native-types`.
-4. Continue feature by feature, such as Receive and Send, removing the corresponding `networkType`
-   branches from shared code.
-
 ## Rejected alternatives
 
 ### 1. A fine-grained network API interpreted by a Suite engine
