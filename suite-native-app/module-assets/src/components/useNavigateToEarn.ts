@@ -1,23 +1,15 @@
-import { CommonActions, type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import {
-    AppTabsRoutes,
-    type AssetsStackParamList,
-    type AssetsStackRoutes,
-    EarnStackRoutes,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 
-type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>;
+import { useResetToEarn } from './useResetToEarn';
 
 export const useNavigateToEarn = () => {
     const { networkSymbol } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const navigation = useNavigation<NavigationProps>();
+    const resetToEarn = useResetToEarn();
     const { analytics } = useServices(injectNativeAnalytics);
 
     return () => {
@@ -30,21 +22,6 @@ export const useNavigateToEarn = () => {
                 networkSymbol,
             },
         });
-        // Reset to a single AppTabs route instead of stacking another navigator or presenting Earn
-        // with a back transition.
-        navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: RootStackRoutes.AppTabs,
-                        params: {
-                            screen: AppTabsRoutes.EarnStack,
-                            params: { screen: EarnStackRoutes.Earn },
-                        },
-                    },
-                ],
-            }),
-        );
+        resetToEarn();
     };
 };

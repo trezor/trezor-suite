@@ -2514,6 +2514,9 @@ export const messages = {
                     'Stake your balance and earn ~{potentialRewards} {symbol} yearly at the current APR.',
                 description: 'Make your {symbol} work for you. Start staking to earn rewards.',
             },
+            yieldBanner: {
+                description: 'Deposit your {symbol} in a yield vault and earn rewards on it.',
+            },
             hiddenBanner: {
                 suspiciousTitle: 'Flagged as suspicious',
                 suspiciousDescription:
