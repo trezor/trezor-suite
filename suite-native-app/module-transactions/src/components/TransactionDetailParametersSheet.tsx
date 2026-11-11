@@ -130,7 +130,7 @@ export const TransactionDetailParametersSheet = ({
                             justifyContent="flex-end"
                         >
                             <ClipboardCopyMenu onCopy={handleClickCopy} style={{ flexShrink: 1 }}>
-                                <Text numberOfLines={1}>
+                                <Text numberOfLines={1} ellipsizeMode="middle">
                                     <TransactionIdFormatter value={transaction.txid} />
                                 </Text>
                             </ClipboardCopyMenu>

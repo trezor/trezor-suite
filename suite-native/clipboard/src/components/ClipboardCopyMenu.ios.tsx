@@ -57,7 +57,9 @@ export const ClipboardCopyMenu = ({
                     ))}
                 </ContextMenu.Items>
                 <ContextMenu.Trigger>
-                    <RNHostView matchContents>{children}</RNHostView>
+                    <RNHostView matchContents boundedByHost>
+                        {children}
+                    </RNHostView>
                 </ContextMenu.Trigger>
             </ContextMenu>
         </Host>

@@ -91,7 +91,12 @@ export const TransactionDetailSheet = ({
                 title={title}
                 subtitleContent={
                     <ClipboardCopyMenu value={transactionId}>
-                        <Text variant="body-sm" color="contentSecondary">
+                        <Text
+                            variant="body-sm"
+                            color="contentSecondary"
+                            numberOfLines={1}
+                            ellipsizeMode="middle"
+                        >
                             <Translation
                                 id="transactions.TransactionDetailScreen.sheetSubtitle"
                                 values={{ transactionId }}
