@@ -37,6 +37,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { type BlockchainRootState, selectConsensusBranchId } from '../blockchain/blockchainReducer';
 import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
@@ -288,7 +289,9 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-type SignBitcoinSendFormTransactionThunkState = TransactionsRootState & WalletSettingsRootState;
+type SignBitcoinSendFormTransactionThunkState = TransactionsRootState &
+    WalletSettingsRootState &
+    BlockchainRootState;
 
 export const signBitcoinSendFormTransactionThunk = createThunk<
     SignedTransaction,
@@ -387,6 +390,11 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
 
         if (selectedAccount.unlockPath) {
             signEnhancement.unlockPath = selectedAccount.unlockPath;
+        }
+
+        // Of Suite's networks, only Zcash takes a branch ID; firmware rejects it for the others.
+        if (selectedAccount.symbol === 'zec') {
+            signEnhancement.branchId = selectConsensusBranchId(getState(), selectedAccount.symbol);
         }
 
         if (isArrayMember(selectedAccount.symbol, BITCOIN_ONLY_SYMBOLS)) {

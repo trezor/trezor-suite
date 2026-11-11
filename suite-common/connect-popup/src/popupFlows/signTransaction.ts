@@ -1,4 +1,5 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { selectConsensusBranchId } from '@suite-common/wallet-core';
 import { type FormOptions, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { getOriginalTxids, getPreviousTxids } from '@trezor/connect-common';
@@ -45,13 +46,19 @@ export class SignTransaction extends AbstractSignTransactionFlow<'signTransactio
             }),
             super.preCall(txSigningPrecomposed),
         ]);
-        const { account } = this.payload;
+        const { account, coin, branchId } = this.payload;
+        // Of Suite's networks, only Zcash takes a branch ID; firmware rejects it for the others.
+        const consensusBranchId =
+            coin === 'zec'
+                ? selectConsensusBranchId(this.getState(), asNetworkSymbol(coin))
+                : undefined;
 
         // Pushed by postCall instead.
         return {
             ...this.payload,
             push: false,
             account: transactions ? { ...account, transactions } : account,
+            branchId: branchId ?? consensusBranchId,
         };
     }
 
