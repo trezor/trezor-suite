@@ -3,7 +3,6 @@ import { Keyboard } from 'react-native';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { events } from '@suite-common/analytics';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -31,8 +30,7 @@ import { BigNumber } from '@trezor/utils';
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
 import { isAmountInputValueValid } from '../../../utils/yield/yieldFiatAmountUtils';
 import { getYieldWithdrawAmountValidationError } from '../../../utils/yield/yieldWithdrawUtils';
-import { useNavigateBackAnalytics } from '../../earn/useNavigateBackAnalytics';
-import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
+import { useYieldFlowAnalytics, useYieldFormExitAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingSheet } from '../useYieldPendingSheet';
 import { useYieldPendingTransactionDetails } from '../useYieldPendingTransactionDetails';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
@@ -86,15 +84,12 @@ export const useYieldWithdrawController = () => {
         vaultId: vault?.id,
     });
 
-    useNavigateBackAnalytics({
-        type: events.yieldNavigateEvent.name,
-        payload: {
-            action: 'cancel',
-            from: 'withdraw-form',
-            to: 'earn-dashboard',
-            networkSymbol: account?.symbol,
-            vaultId: vault?.id,
-        },
+    useYieldFormExitAnalytics({
+        flowType: 'withdraw',
+        networkSymbol: account?.symbol,
+        vaultId: vault?.id,
+        isEnabled: resolutionStatus === 'resolved',
+        isCompleted: session?.step === 'complete' || session?.step === 'unwrap',
     });
 
     const activeInputToken = flowData

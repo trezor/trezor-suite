@@ -98,6 +98,8 @@ export const useYieldWrappedNativeStep = ({
         networkSymbol: account?.symbol,
         vaultId: vault?.id,
         isEnabled: !!account && !!flowKey,
+        // Unwrap is optional and follows a completed withdrawal.
+        isCompleted: step === 'unwrap' || session?.step === 'complete',
     });
     const isAmountReady = isValid && !!amountValue;
     const isFeeSectionDisplayed = isAmountReady && !isStepPending;
