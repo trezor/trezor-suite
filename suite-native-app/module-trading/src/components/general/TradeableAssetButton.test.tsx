@@ -13,7 +13,7 @@ const scamTokenAddress = `0x${'1'.repeat(40)}` as TokenAddress;
 
 const scamTokenAsset: TradeableAsset = {
     ...usdcAsset,
-    symbol: 'SCAMSITE.I...',
+    symbol: 'SCAMSITE.IO',
     cryptoId: `ethereum--${scamTokenAddress}` as TradeableAsset['cryptoId'],
     contractAddress: scamTokenAddress,
 };
