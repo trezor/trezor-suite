@@ -6,6 +6,7 @@ import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
+    asNetworkSymbol,
     getNetworkOptional,
     isNetworkSymbol,
     isNetworkUsingExternalBackend,
@@ -38,6 +39,7 @@ import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions
 import {
     type BlockchainRootState,
     selectBlockchainState,
+    selectCardanoProtocolParameters,
     selectCustomBackends,
     selectIsCustomBackendConfigured,
     selectNetworkBlockchainInfo,
@@ -378,6 +380,37 @@ export const onBlockMinedThunk = createThunk<
 
     return dispatch(syncAccountsWithBlockchainThunk(symbol));
 });
+
+type UpdateCardanoProtocolParametersThunkState = BlockchainRootState;
+
+// Cardano protocol parameters can change only at an epoch boundary, so they're read again for
+// a block of another epoch. Other blocks dispatch no actions, as this runs for every block.
+export const updateCardanoProtocolParametersThunk = createThunk<
+    void,
+    BlockchainBlock,
+    { state: UpdateCardanoProtocolParametersThunkState }
+>(
+    `${BLOCKCHAIN_MODULE_PREFIX}/updateCardanoProtocolParametersThunk`,
+    async (block, { dispatch }) => {
+        const symbol = asNetworkSymbol(block.coin.shortcut.toLowerCase());
+        const response = await TrezorConnect.blockchainGetInfo({ coin: asCoinSymbol(symbol) });
+
+        if (!response.success) return;
+
+        dispatch(blockchainActions.setCardanoProtocolParameters({ ...response.payload, symbol }));
+    },
+    {
+        condition: ({ coin, epoch }, { getState }) => {
+            const symbol = coin.shortcut.toLowerCase();
+
+            return (
+                epoch !== undefined &&
+                isNetworkSymbol(symbol) &&
+                epoch !== selectCardanoProtocolParameters(getState(), symbol)?.epoch
+            );
+        },
+    },
+);
 
 type OnBlockchainNotificationThunkState = DeviceRootState &
     SyncAccountsWithBlockchainThunkState &
