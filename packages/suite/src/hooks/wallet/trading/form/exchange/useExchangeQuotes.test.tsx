@@ -83,11 +83,8 @@ jest.mock('@suite-common/trading', () => {
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
-    name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: btcSymbol,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: btcSymbol,
     accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
@@ -96,11 +93,8 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
 const ETH_SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'ethereum' as CryptoId,
     isNativeToken: true,
-    name: 'Ethereum',
     coingeckoId: 'ethereum',
     contractAddress: null,
-    symbol: ethSymbol,
-    displaySymbol: 'ETH',
     networkName: 'Ethereum',
     networkSymbol: ethSymbol,
     accountKey: mockAccountKey({ descriptor: '0xsender', symbol: ethSymbol }),
@@ -109,11 +103,8 @@ const ETH_SEND_CRYPTO_SELECT: TradingAssetSellOption = {
 const USDT_SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
     isNativeToken: false,
-    name: 'Tether USD',
     coingeckoId: 'ethereum',
     contractAddress: toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7'),
-    symbol: 'usdt',
-    displaySymbol: 'USDT',
     networkName: 'Ethereum',
     networkSymbol: ethSymbol,
     accountKey: mockAccountKey({ descriptor: '0xsender', symbol: ethSymbol }),
@@ -122,11 +113,8 @@ const USDT_SEND_CRYPTO_SELECT: TradingAssetSellOption = {
 const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
     id: 'ethereum' as CryptoId,
     isNativeToken: true,
-    name: 'Ethereum',
     coingeckoId: 'ethereum',
     contractAddress: null,
-    symbol: ethSymbol,
-    displaySymbol: 'ETH',
     networkName: 'Ethereum',
     networkSymbol: ethSymbol,
 };

@@ -1,40 +1,9 @@
 import { type ReactNode } from 'react';
 
-import {
-    type TokenMetadata,
-    TokenMetadataProvider,
-    type TokenMetadataSource,
-} from '@suite-common/token';
-import { type RankedTokenStructure } from '@suite-common/token-definitions';
-import { toTokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
+import { TokenMetadataProvider } from '@suite-common/token';
 
+import { rankedTokenDefinitionsToTokenMetadataSources } from '../globalReceiveAssetUtils';
 import { useRankedTokenDefinitions } from '../hooks/useRankedTokenDefinitions';
-
-const rankedTokenDefinitionsToTokenMetadataSources = (
-    definitions: RankedTokenStructure,
-): TokenMetadataSource[] => {
-    const networkSymbolsByPlatform = new Map(
-        getMainnets().map(network => [network.coingeckoId, network.symbol]),
-    );
-    const tokensByNetwork = new Map<NetworkSymbol, TokenMetadata[]>();
-
-    for (const token of definitions) {
-        const networkSymbol = networkSymbolsByPlatform.get(token.assetPlatformId);
-        if (!networkSymbol) continue;
-
-        const tokens = tokensByNetwork.get(networkSymbol) ?? [];
-        tokens.push({
-            contract: toTokenAddress(token.address),
-            name: token.name,
-            symbol: token.symbol.toUpperCase(),
-            isRecognized: true,
-        });
-        tokensByNetwork.set(networkSymbol, tokens);
-    }
-
-    return Array.from(tokensByNetwork, ([networkSymbol, tokens]) => ({ networkSymbol, tokens }));
-};
 
 type ReceiveTokenMetadataProviderProps = {
     children: ReactNode;

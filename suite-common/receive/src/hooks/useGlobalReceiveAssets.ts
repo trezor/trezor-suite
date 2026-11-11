@@ -82,7 +82,10 @@ export const useGlobalReceiveAssets = ({
             }),
         [definitions, supportedMainnets],
     );
-    const assetSearchIndex = useMemo(() => buildGlobalReceiveAssetSearchIndex(assets), [assets]);
+    const assetSearchIndex = useMemo(
+        () => buildGlobalReceiveAssetSearchIndex(assets, definitions ?? []),
+        [assets, definitions],
+    );
     const assetIdsWithHistory = useMemo(
         () =>
             getGlobalReceiveAssetIdsWithHistory({

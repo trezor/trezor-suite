@@ -56,10 +56,11 @@ type TestRootState = DeviceRootState &
     TransactionsRootState &
     WalletSettingsRootState;
 
+const wrappedSolAddress = 'So11111111111111111111111111111111111111112';
 const definitions: RankedTokenStructure = [
     {
         assetPlatformId: 'solana',
-        address: 'So11111111111111111111111111111111111111112',
+        address: wrappedSolAddress,
         symbol: 'wsol',
         name: 'Wrapped SOL',
         marketCap: 0,
@@ -182,7 +183,7 @@ describe('useGlobalReceiveAssets', () => {
         expect(first.result.current.catalogStatus).toBe('loading');
         await waitFor(() => expect(first.result.current.catalogStatus).toBe('ready'));
         expect(first.result.current.assets).toContainEqual(
-            expect.objectContaining({ name: 'Wrapped SOL', displaySymbol: 'WSOL' }),
+            expect.objectContaining({ contractAddress: wrappedSolAddress }),
         );
         expect(first.services.store.getActions()).toEqual([]);
         first.unmount();
@@ -211,16 +212,18 @@ describe('useGlobalReceiveAssets', () => {
 
         rerender({ search: 'WrÁppéd', networkSymbols: [] });
         expect(result.current.otherAssets).toEqual([
-            expect.objectContaining({ asset: expect.objectContaining({ name: 'Wrapped SOL' }) }),
+            expect.objectContaining({
+                asset: expect.objectContaining({ contractAddress: wrappedSolAddress }),
+            }),
         ]);
 
         rerender({ search: 'wsol', networkSymbols: [asNetworkSymbol('eth')] });
         expect(result.current.otherAssets).toEqual([]);
 
         rerender({ search: '', networkSymbols: [asNetworkSymbol('sol')] });
-        expect(result.current.otherAssets.map(({ asset }) => asset.displaySymbol)).toEqual([
-            'SOL',
-            'WSOL',
+        expect(result.current.otherAssets.map(({ asset }) => asset.id)).toEqual([
+            'solana',
+            `solana--${wrappedSolAddress}`,
         ]);
 
         rerender({ search: 'no matching asset', networkSymbols: [] });

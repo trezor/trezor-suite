@@ -118,11 +118,7 @@ const renderListItem = (asset?: TradingAssetOption) => {
 
 describe('an account in the receive list', () => {
     it('shows what the account holds of the token being received', () => {
-        const usdt = createAssetTokenOption(ETH, {
-            contract: USDT,
-            symbol: 'USDT',
-            name: 'Tether USD',
-        });
+        const usdt = createAssetTokenOption(ETH, USDT);
 
         const { container } = renderListItem(usdt);
 
@@ -132,11 +128,7 @@ describe('an account in the receive list', () => {
     });
 
     it('shows no token at all for an account that holds none of it yet', () => {
-        const usdc = createAssetTokenOption(ETH, {
-            contract: USDC,
-            symbol: 'USDC',
-            name: 'USD Coin',
-        });
+        const usdc = createAssetTokenOption(ETH, USDC);
 
         const { container } = renderListItem(usdc);
 

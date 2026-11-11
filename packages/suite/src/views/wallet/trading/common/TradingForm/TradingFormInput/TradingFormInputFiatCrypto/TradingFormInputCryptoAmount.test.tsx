@@ -62,11 +62,8 @@ const XRP_SYMBOL = asNetworkSymbol('xrp');
 const BITCOIN_ASSET: TradingAssetOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
-    name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: BTC_SYMBOL,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: BTC_SYMBOL,
 };
@@ -74,11 +71,8 @@ const BITCOIN_ASSET: TradingAssetOption = {
 const ETHEREUM_ASSET: TradingAssetOption = {
     id: 'ethereum' as CryptoId,
     isNativeToken: true,
-    name: 'Ethereum',
     coingeckoId: 'ethereum',
     contractAddress: null,
-    symbol: ETH_SYMBOL,
-    displaySymbol: 'ETH',
     networkName: 'Ethereum',
     networkSymbol: ETH_SYMBOL,
 };
@@ -91,11 +85,8 @@ const BITCOIN_SELL_ASSET: TradingAssetSellOption = {
 const XRP_ASSET: TradingAssetOption = {
     id: 'ripple' as CryptoId,
     isNativeToken: true,
-    name: 'XRP',
     coingeckoId: 'ripple',
     contractAddress: null,
-    symbol: XRP_SYMBOL,
-    displaySymbol: 'XRP',
     networkName: 'XRP',
     networkSymbol: XRP_SYMBOL,
 };

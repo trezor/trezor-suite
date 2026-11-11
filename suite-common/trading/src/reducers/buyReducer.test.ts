@@ -26,10 +26,7 @@ const FORM_VALUES: TradingBuyFormProps = {
     cryptoSelect: {
         id: 'bitcoin' as CryptoId,
         isNativeToken: true,
-        name: 'Bitcoin',
-        symbol: btcSymbol,
         coingeckoId: 'bitcoin',
-        displaySymbol: 'BTC',
         contractAddress: null,
         networkName: 'Bitcoin',
         networkSymbol: btcSymbol,

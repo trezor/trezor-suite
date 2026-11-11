@@ -99,11 +99,8 @@ describe('handleSellRequestThunk', () => {
             sendCryptoSelect: {
                 id: 'bitcoin' as CryptoId,
                 isNativeToken: true,
-                name: 'Bitcoin',
                 coingeckoId: 'bitcoin',
                 contractAddress: null,
-                symbol: btcSymbol,
-                displaySymbol: 'BTC',
                 networkName: 'Bitcoin',
                 networkSymbol: btcSymbol,
                 accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),

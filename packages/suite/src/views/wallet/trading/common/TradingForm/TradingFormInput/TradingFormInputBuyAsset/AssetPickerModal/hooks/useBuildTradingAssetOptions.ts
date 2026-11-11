@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { useTokenMetadataByNetwork } from '@suite-common/token';
 import {
     type TradeableAssetBalance,
-    type TradeableAssetSearchFields,
     type TradingAssetOption,
     buildTradeableAssetSearchIndex,
     filterTradeableAssetsBySearch,
+    getTradingAssetSearchFields,
     orderTradeableAssetsByOwnership,
     selectTradeableAssetBalances,
     usePreferredCurrencyUsdThreshold,
@@ -25,14 +26,6 @@ export type TradingAssetListItem = {
 
 const getAssetCryptoId = (asset: TradingAssetOption) => asset.id;
 
-const getAssetSearchFields = (asset: TradingAssetOption): TradeableAssetSearchFields => ({
-    name: asset.displaySymbolName ?? asset.name,
-    symbol: asset.displaySymbol,
-    networkName: asset.networkName,
-    networkSymbol: asset.networkSymbol,
-    contractAddress: asset.contractAddress ?? '',
-});
-
 export interface UseBuildTradingAssetOptionsProps {
     search: string;
     networkSymbol: NetworkSymbol | undefined;
@@ -47,6 +40,7 @@ export function useBuildTradingAssetOptions({
     const balances = useSelector(selectTradeableAssetBalances);
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const preferredCurrencyUsdThreshold = usePreferredCurrencyUsdThreshold();
+    const tokensByNetwork = useTokenMetadataByNetwork();
 
     const includedAssets = useMemo(
         () => buildAssetOptions({ includedCryptoIds }).assets,
@@ -57,9 +51,9 @@ export function useBuildTradingAssetOptions({
         () =>
             buildTradeableAssetSearchIndex({
                 assets: includedAssets,
-                getSearchFields: getAssetSearchFields,
+                getSearchFields: asset => getTradingAssetSearchFields(asset, tokensByNetwork),
             }),
-        [includedAssets],
+        [includedAssets, tokensByNetwork],
     );
 
     const orderedAssets = useMemo(
