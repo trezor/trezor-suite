@@ -123,7 +123,13 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
                     xpub,
                     rootFingerprint: publicKey.root_fingerprint,
                 }),
-            displayablePublicKey: xpubSegwit ?? xpub,
+            // The string firmware puts on the screen: the descriptor for a taproot script type when
+            // it sends one (core 2.7.0+, legacy 1.14.0+), otherwise the xpub serialized for the
+            // script type.
+            displayablePublicKey:
+                params.script_type === 'SPENDTAPROOT' && publicKey.descriptor
+                    ? publicKey.descriptor
+                    : publicKey.xpub,
             ...(xpubSegwit !== undefined && { xpubSegwit }),
         };
 
@@ -134,7 +140,6 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             });
             response.xpubSegwit = taprootXpubSegwit;
             response.descriptorChecksum = checksum;
-            response.displayablePublicKey = taprootXpubSegwit;
         }
 
         return response;
