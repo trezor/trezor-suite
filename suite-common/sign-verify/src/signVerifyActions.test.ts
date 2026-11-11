@@ -1,49 +1,105 @@
 import { events } from '@suite-common/analytics';
 import { deviceInitialState } from '@suite-common/device';
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { asGetter, mock } from '@trezor/dependency-injection';
+import {
+    type ClosedSignMessageParams,
+    type MessageSigning,
+    type MessageSigningDefinition,
+    type MessageSigningError,
+    type OpenNetwork,
+    defineMessageSigning,
+} from '@trezor/network-module-suite-common-types';
+import { mockSuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types/mocks';
+import { err, ok } from '@trezor/type-utils';
 
 import {
     type SignVerifyRootState,
+    type SignVerifyThunkExtra,
     showAddressThunk,
     signThunk,
     verifyThunk,
 } from './signVerifyActions';
 
-const PATH = 'PATH';
+const PATH = "m/84'/0'/0'/0/0";
 const ADDRESS = 'ADDRESS';
 const MESSAGE = 'MESSAGE';
 const SIGNATURE = 'SIGNATURE';
-const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
-const LEGACY_ACCOUNT = mockWalletAccount({
-    symbol: asNetworkSymbol('btc'),
-    accountType: 'legacy',
-});
-const ETHEREUM_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const CANCELLED: MessageSigningError = { code: 'Method_Cancel', message: 'Cancelled' };
+const FAILED: MessageSigningError = { code: 'Failure_UnknownCode', message: 'Unknown error' };
 
+const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+const LEGACY_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc'), accountType: 'legacy' });
 const CONNECTED_DEVICE = mockSuiteDevice({ connected: true, available: true });
+
+type TestAccount = { readonly hasChoice: boolean };
+type TestFormat = 'default' | 'electrum';
+
+const LABEL = { id: 'TR_TEST', defaultMessage: 'Test' };
+
+const createMessageSigning = (
+    overrides: Partial<MessageSigningDefinition<TestAccount, TestFormat>>,
+) =>
+    defineMessageSigning<TestAccount, TestFormat>({
+        labels: { title: LABEL },
+        addressSelection: 'pick',
+        outputs: ['signature'],
+        toAccount: account => ({ hasChoice: account.accountType !== 'legacy' }),
+        formats: {
+            kind: 'signature',
+            label: LABEL,
+            options: { default: LABEL, electrum: LABEL },
+            getAvailable: account => (account.hasChoice ? ['default', 'electrum'] : []),
+        },
+        getSignAddressGroups: () => [],
+        sign: () => Promise.resolve(ok({ signature: SIGNATURE, address: ADDRESS })),
+        ...overrides,
+    });
+
+const createNetwork = (messageSigning: MessageSigning | undefined): OpenNetwork => ({
+    family: 'test',
+    symbol: asNetworkSymbol('btc'),
+    context: { symbol: asNetworkSymbol('btc'), backend: 'blockbook' },
+    config: mockSuiteCommonNetworkConfig(),
+    capabilities: { messageSigning },
+});
+
+const createExtra = (messageSigning: MessageSigning | undefined) => {
+    const extra: SignVerifyThunkExtra = {
+        services: {
+            analytics: mockAnalytics(),
+            networks: mockNetworksServices({
+                getNetwork: asGetter(() => createNetwork(messageSigning)),
+            }),
+        },
+    };
+
+    return extra;
+};
 
 const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootState => ({
     device: { ...deviceInitialState, selectedDevice },
     wallet: { settings: initialWalletSettingsState },
 });
 
-describe('Sign/Verify actions', () => {
-    let dispatch: jest.Mock;
-    let deps: { services: { analytics: ReturnType<typeof mockAnalytics> } };
+const getConnectedState = () => createState(CONNECTED_DEVICE);
 
-    // The thunks only read the selected device and the address display type, so a state literal
-    // is enough — no store, no middleware.
-    const getState = () => createState(CONNECTED_DEVICE);
+const getElectrumFormat = (messageSigning: MessageSigning, account: Account) =>
+    messageSigning.getFormatChoice(account)?.options.find(({ format }) => format === 'electrum')
+        ?.format;
+
+describe('sign/verify thunks', () => {
+    let dispatch: jest.Mock;
 
     beforeEach(() => {
         dispatch = jest.fn();
-        deps = { services: { analytics: mockAnalytics() } };
     });
 
     const dispatchedToastTypes = () =>
@@ -51,300 +107,173 @@ describe('Sign/Verify actions', () => {
             .map(([action]) => action?.payload?.type)
             .filter((type): type is string => typeof type === 'string');
 
-    it('showAddress', async () => {
-        testMocks.setTrezorConnectFixtures({
-            success: true,
-            payload: { address: ADDRESS },
+    it('signs through the capability of the account network with the selected device', async () => {
+        const sign = mock<
+            (
+                params: ClosedSignMessageParams<TestAccount, TestFormat>,
+            ) => ReturnType<MessageSigning['sign']>
+        >(() => Promise.resolve(ok({ signature: SIGNATURE, address: ADDRESS })));
+        const messageSigning = createMessageSigning({ sign });
+        const extra = createExtra(messageSigning);
+
+        const result = await signThunk({
+            account: ACCOUNT,
+            path: PATH,
+            message: MESSAGE,
+            isHex: true,
+            format: getElectrumFormat(messageSigning, ACCOUNT),
+        })(dispatch, getConnectedState, extra);
+
+        expect(result).toEqual({ signature: SIGNATURE, address: ADDRESS });
+        expect(sign).toHaveBeenCalledWith(
+            expect.objectContaining({
+                device: CONNECTED_DEVICE,
+                path: PATH,
+                message: MESSAGE,
+                isHex: true,
+                format: 'electrum',
+            }),
+        );
+        expect(dispatchedToastTypes()).toEqual(['sign-message-success']);
+        expect(extra.services.analytics.report).toHaveBeenCalledWith({
+            type: events.coinSignMessageEvent.name,
+            payload: { status: 'success', symbol: 'btc', hex: true, signatureFormat: 'electrum' },
         });
-        const res = await showAddressThunk(ACCOUNT, ADDRESS, PATH)(dispatch, getState);
-        expect(res).toStrictEqual({ address: ADDRESS });
     });
 
-    it('sign', async () => {
-        testMocks.setTrezorConnectFixtures({
-            success: true,
+    it('reports no signature format for an account that had no choice', async () => {
+        const extra = createExtra(createMessageSigning({}));
+
+        await signThunk({ account: LEGACY_ACCOUNT, path: PATH, message: MESSAGE, isHex: false })(
+            dispatch,
+            getConnectedState,
+            extra,
+        );
+
+        expect(extra.services.analytics.report).toHaveBeenCalledWith({
+            type: events.coinSignMessageEvent.name,
+            payload: { status: 'success', symbol: 'btc', hex: false },
+        });
+    });
+
+    it('reports a cancelled sign and shows the error', async () => {
+        const extra = createExtra(
+            createMessageSigning({ sign: () => Promise.resolve(err(CANCELLED)) }),
+        );
+
+        const result = await signThunk({
+            account: ACCOUNT,
+            path: PATH,
+            message: MESSAGE,
+            isHex: false,
+        })(dispatch, getConnectedState, extra);
+
+        expect(result).toBe(false);
+        expect(dispatchedToastTypes()).toEqual(['sign-message-error']);
+        expect(extra.services.analytics.report).toHaveBeenCalledWith({
+            type: events.coinSignMessageEvent.name,
             payload: {
+                status: 'cancelled',
+                error: 'Method_Cancel',
+                symbol: 'btc',
+                hex: false,
+                signatureFormat: 'trezor',
+            },
+        });
+    });
+
+    it('does not reach the network without a connected device', async () => {
+        const sign = mock<MessageSigning['sign']>();
+        const extra = createExtra({ ...createMessageSigning({}), sign });
+
+        const result = await signThunk({
+            account: ACCOUNT,
+            path: PATH,
+            message: MESSAGE,
+            isHex: false,
+        })(dispatch, () => createState(undefined), extra);
+
+        expect(result).toBe(false);
+        expect(sign).not.toHaveBeenCalled();
+        expect(dispatchedToastTypes()).toEqual(['sign-message-error']);
+    });
+
+    it('refuses an account whose network does not sign messages', async () => {
+        const extra = createExtra(undefined);
+
+        const result = await signThunk({
+            account: ACCOUNT,
+            path: PATH,
+            message: MESSAGE,
+            isHex: false,
+        })(dispatch, getConnectedState, extra);
+
+        expect(result).toBe(false);
+        expect(dispatchedToastTypes()).toEqual(['sign-message-error']);
+    });
+
+    it('verifies through the capability', async () => {
+        const extra = createExtra(createMessageSigning({ verify: () => Promise.resolve(ok()) }));
+
+        const result = await verifyThunk({
+            account: ACCOUNT,
+            address: ADDRESS,
+            message: MESSAGE,
+            signature: SIGNATURE,
+            isHex: false,
+        })(dispatch, getConnectedState, extra);
+
+        expect(result).toBe('verified');
+        expect(dispatchedToastTypes()).toEqual(['verify-message-success']);
+    });
+
+    it('tells a verification cancelled on the device apart from a failed one', async () => {
+        const verifyWith = (error: MessageSigningError) =>
+            verifyThunk({
+                account: ACCOUNT,
                 address: ADDRESS,
+                message: MESSAGE,
                 signature: SIGNATURE,
-            },
-        });
-        const res = await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
-        expect(res).toStrictEqual({ address: ADDRESS, signature: SIGNATURE });
+                isHex: false,
+            })(
+                dispatch,
+                getConnectedState,
+                createExtra(createMessageSigning({ verify: () => Promise.resolve(err(error)) })),
+            );
+
+        await expect(verifyWith(CANCELLED)).resolves.toBe('cancelled');
+        await expect(verifyWith(FAILED)).resolves.toBe('failed');
+        expect(dispatchedToastTypes()).toEqual([
+            'verify-message-cancelled',
+            'verify-message-error',
+        ]);
     });
 
-    it('verify', async () => {
-        testMocks.setTrezorConnectFixtures({
-            success: true,
-            payload: { message: MESSAGE },
-        });
-        const res = await verifyThunk(
-            ACCOUNT,
-            ADDRESS,
-            MESSAGE,
-            SIGNATURE,
-        )(dispatch, getState, deps);
-        expect(res).toStrictEqual('verified');
+    it('fails verification on a network that cannot verify', async () => {
+        const result = await verifyThunk({
+            account: ACCOUNT,
+            address: ADDRESS,
+            message: MESSAGE,
+            signature: SIGNATURE,
+            isHex: false,
+        })(dispatch, getConnectedState, createExtra(createMessageSigning({})));
+
+        expect(result).toBe('failed');
     });
 
-    describe('hex format', () => {
-        const connect = () => testMocks.getTrezorConnectMock();
-
-        it('hands the message to the device as hex when the switch is on', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: true,
-                payload: { address: ADDRESS, signature: SIGNATURE },
-            });
-
-            await signThunk(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
-
-            expect(connect().signMessage).toHaveBeenLastCalledWith(
-                expect.objectContaining({ message: MESSAGE, hex: true, no_script_type: false }),
-            );
-        });
-
-        it('hands it over as text when the switch is off', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: true,
-                payload: { address: ADDRESS, signature: SIGNATURE },
-            });
-
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
-
-            expect(connect().signMessage).toHaveBeenLastCalledWith(
-                expect.objectContaining({ message: MESSAGE, hex: false }),
-            );
-        });
-
-        it('verifies against the same reading of the message', async () => {
-            testMocks.setTrezorConnectFixtures({ success: true, payload: { message: MESSAGE } });
-
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
-
-            expect(connect().verifyMessage).toHaveBeenLastCalledWith(
-                expect.objectContaining({
-                    address: ADDRESS,
-                    message: MESSAGE,
-                    signature: SIGNATURE,
-                    hex: true,
-                }),
-            );
-        });
-
-        it('reports which reading was used', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: true,
-                payload: { address: ADDRESS, signature: SIGNATURE },
-            });
-
-            await signThunk(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
-
-            expect(deps.services.analytics.report).toHaveBeenCalledWith(
-                expect.objectContaining({ payload: expect.objectContaining({ hex: true }) }),
-            );
-        });
-    });
-
-    describe('analytics', () => {
-        it('reports a successful sign with the input format and the signature format', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: true,
-                payload: { address: ADDRESS, signature: SIGNATURE },
-            });
-
-            await signThunk(ACCOUNT, PATH, MESSAGE, true, true)(dispatch, getState, deps);
-
-            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.services.analytics.report).toHaveBeenCalledWith({
-                type: events.coinSignMessageEvent.name,
-                payload: {
-                    status: 'success',
-                    symbol: 'btc',
-                    hex: true,
-                    signatureFormat: 'electrum',
-                },
-            });
-        });
-
-        it.each([
-            ['an account signing in a single format', ETHEREUM_ACCOUNT],
-            ['an account not offered the choice', LEGACY_ACCOUNT],
-        ])('leaves the signature format out for %s', async (_name, account) => {
-            testMocks.setTrezorConnectFixtures({
-                success: true,
-                payload: { address: ADDRESS, signature: SIGNATURE },
-            });
-
-            await signThunk(account, PATH, MESSAGE)(dispatch, getState, deps);
-
-            expect(deps.services.analytics.report).toHaveBeenCalledWith({
-                type: events.coinSignMessageEvent.name,
-                payload: { status: 'success', symbol: account.symbol, hex: false },
-            });
-        });
-
-        it('reports a failed sign with the error code', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: false,
-                error: { message: 'Signing failed', code: 'Failure_DataError' },
-            });
-
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
-
-            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.services.analytics.report).toHaveBeenCalledWith({
-                type: events.coinSignMessageEvent.name,
-                payload: {
-                    status: 'error',
-                    error: 'Failure_DataError',
-                    symbol: 'btc',
-                    hex: false,
-                    signatureFormat: 'trezor',
-                },
-            });
-        });
-
-        it.each(['Method_Cancel', 'Failure_ActionCancelled'])(
-            'reports a sign rejected with %s as cancelled',
-            async code => {
-                testMocks.setTrezorConnectFixtures({
-                    success: false,
-                    error: { message: 'Cancelled', code },
-                });
-
-                await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
-
-                expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
-                expect(deps.services.analytics.report).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        type: events.coinSignMessageEvent.name,
-                        payload: expect.objectContaining({ status: 'cancelled', error: code }),
-                    }),
-                );
-            },
+    it('shows the address on the device', async () => {
+        const extra = createExtra(
+            createMessageSigning({
+                showAddress: ({ address, path }) => Promise.resolve(ok({ address, path })),
+            }),
         );
 
-        it('reports a sign that never reached the device as an error', async () => {
-            const getStateWithoutDevice = () => createState(undefined);
-
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getStateWithoutDevice, deps);
-
-            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.services.analytics.report).toHaveBeenCalledWith({
-                type: events.coinSignMessageEvent.name,
-                payload: {
-                    status: 'error',
-                    error: 'Device not found',
-                    symbol: 'btc',
-                    hex: false,
-                    signatureFormat: 'trezor',
-                },
-            });
-        });
-
-        it('reports a successful verify', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: true,
-                payload: { message: MESSAGE },
-            });
-
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
-
-            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.services.analytics.report).toHaveBeenCalledWith({
-                type: events.coinVerifyMessageEvent.name,
-                payload: { status: 'success', symbol: 'btc', hex: true },
-            });
-        });
-
-        it('reports a failed verify with the error code', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: false,
-                error: { message: 'Invalid signature', code: 'Failure_DataError' },
-            });
-
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
-
-            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.services.analytics.report).toHaveBeenCalledWith({
-                type: events.coinVerifyMessageEvent.name,
-                payload: {
-                    status: 'error',
-                    error: 'Failure_DataError',
-                    symbol: 'btc',
-                    hex: false,
-                },
-            });
-        });
-
-        it('reports a verify rejected on the device as cancelled', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: false,
-                error: { message: 'Cancelled', code: 'Failure_ActionCancelled' },
-            });
-
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
-
-            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.services.analytics.report).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    payload: expect.objectContaining({ status: 'cancelled' }),
-                }),
-            );
-        });
-
-        it.each(['Method_Cancel', 'Failure_ActionCancelled'])(
-            'settles a verify rejected with %s as cancelled, not as a failure',
-            async code => {
-                testMocks.setTrezorConnectFixtures({
-                    success: false,
-                    error: { message: 'Cancelled', code },
-                });
-
-                const result = await verifyThunk(
-                    ACCOUNT,
-                    ADDRESS,
-                    MESSAGE,
-                    SIGNATURE,
-                )(dispatch, getState, deps);
-
-                expect(result).toBe('cancelled');
-                // Said out loud, but as a cancellation — never as a failed verification.
-                expect(dispatchedToastTypes()).toEqual(['verify-message-cancelled']);
-            },
+        const result = await showAddressThunk({ account: ACCOUNT, address: ADDRESS, path: PATH })(
+            dispatch,
+            getConnectedState,
+            extra,
         );
 
-        it('settles a signature that does not verify as failed, and says so', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: false,
-                error: { message: 'Invalid signature', code: 'Failure_DataError' },
-            });
-
-            const result = await verifyThunk(
-                ACCOUNT,
-                ADDRESS,
-                MESSAGE,
-                SIGNATURE,
-            )(dispatch, getState, deps);
-
-            expect(result).toBe('failed');
-            expect(dispatchedToastTypes()).toEqual(['verify-message-error']);
-        });
-
-        it('never reports the message, the address or the signature', async () => {
-            testMocks.setTrezorConnectFixtures({
-                success: true,
-                payload: { address: ADDRESS, signature: SIGNATURE },
-            });
-
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
-
-            const reported = JSON.stringify(deps.services.analytics.report.mock.calls);
-
-            expect(reported).not.toContain(MESSAGE);
-            expect(reported).not.toContain(ADDRESS);
-            expect(reported).not.toContain(SIGNATURE);
-            expect(reported).not.toContain(PATH);
-        });
+        expect(result).toEqual({ address: ADDRESS, path: PATH });
     });
 });

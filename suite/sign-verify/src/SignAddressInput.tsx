@@ -1,9 +1,8 @@
 import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
-import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
-import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Box, Row, Select, type SelectProps, Text } from '@trezor/components';
+import type { SignAddressGroup } from '@trezor/network-module-suite-common-types';
 
 import { type AddressItem, useSignAddressOptions } from './useSignAddressOptions';
 
@@ -21,20 +20,21 @@ const wrappedValueComponents = { SingleValue: WrappingSingleValue };
 const singleAddressComponents = { ...wrappedValueComponents, DropdownIndicator: () => null };
 
 type SignAddressInputProps = {
-    account?: Account;
-    touchedAddresses: ReceiveInfo[];
+    addressGroups: readonly SignAddressGroup[];
+    /** A fixed address is shown, not chosen. */
+    isAddressFixed: boolean;
 } & SelectProps;
 
 export const SignAddressInput = ({
-    account,
-    touchedAddresses,
+    addressGroups,
+    isAddressFixed,
     value,
     onChange,
     ...selectProps
 }: SignAddressInputProps) => {
-    const { getValue, groupedOptions } = useSignAddressOptions(account, touchedAddresses);
+    const { getValue, groupedOptions } = useSignAddressOptions(addressGroups);
 
-    const hasMultipleAddresses = !!account && isUtxoBased(account);
+    const hasMultipleAddresses = !isAddressFixed;
 
     const formatOptionLabel = (option: AddressItem) => (
         <Row gap={4}>

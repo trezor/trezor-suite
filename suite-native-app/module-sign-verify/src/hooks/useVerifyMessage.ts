@@ -38,7 +38,9 @@ export const useVerifyMessage = () => {
             return 'cancelled';
         }
 
-        const result = await dispatch(verifyThunk(account, address, message, signature));
+        const result = await dispatch(
+            verifyThunk({ account, address, message, signature, isHex: false }),
+        );
 
         navigation.goBack();
 

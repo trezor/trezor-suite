@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { isVerifySupported } from '@suite-common/sign-verify';
+import { useMessageSigning } from '@suite-common/sign-verify';
 import type { Account } from '@suite-common/wallet-types';
 import { Badge, HStack, type SubTabItem, SubTabs, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -17,6 +17,7 @@ type SignAndVerifyFormsProps = {
 };
 
 export const SignAndVerifyForms = ({ account }: SignAndVerifyFormsProps) => {
+    const canVerify = useMessageSigning(account)?.canVerify ?? false;
     const tabs = useMemo(() => {
         const signTab: SubTabItem<Tab> = {
             value: 'sign',
@@ -27,8 +28,8 @@ export const SignAndVerifyForms = ({ account }: SignAndVerifyFormsProps) => {
             label: <Translation id="signAndVerify.tabs.verify" />,
         };
 
-        return isVerifySupported(account) ? [signTab, verifyTab] : [signTab];
-    }, [account]);
+        return canVerify ? [signTab, verifyTab] : [signTab];
+    }, [canVerify]);
     const [activeTab, setActiveTab] = useState<Tab>('sign');
 
     const signMessageForm = useSignMessageForm(account);

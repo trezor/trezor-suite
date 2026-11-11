@@ -5,3 +5,4 @@ export * from './components/Translation';
 export { useDateFnsLocale } from './hooks/useDateFnsLocale';
 export * from './hooks/useTranslation';
 export * from './IntlProviderForTests';
+export * from './components/CapabilityLabel';

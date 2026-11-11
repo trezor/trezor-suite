@@ -31,8 +31,13 @@
         "react-intl": "^12.1.4"
     },
     "devDependencies": {
+        "@suite-common/networks": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@testing-library/dom": "^10.4.2",
-        "@testing-library/react": "^16.3.3"
+        "@testing-library/react": "^16.3.3",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/network-module-types": "workspace:*"
     }
 }

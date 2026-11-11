@@ -1,16 +1,14 @@
-import { useSelector } from 'react-redux';
-
 import { Translation } from '@suite/intl';
-import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
-import { type Account } from '@suite-common/wallet-types';
 import { Input } from '@trezor/components';
+import type { SignAddressGroup } from '@trezor/network-module-suite-common-types';
 
 import { CopyFieldButton } from './CopyFieldButton';
 import { SignAddressInput } from './SignAddressInput';
 import { type SignVerifyFormFields } from './useSignVerifyForm';
 
 type SignVerifyAddressFieldProps = {
-    account: Account;
+    addressGroups: readonly SignAddressGroup[];
+    isAddressFixed: boolean;
     isSignPage: boolean;
     isCompleted: boolean;
     address?: string;
@@ -24,7 +22,8 @@ type SignVerifyAddressFieldProps = {
 };
 
 export const SignVerifyAddressField = ({
-    account,
+    addressGroups,
+    isAddressFixed,
     isSignPage,
     isCompleted,
     address,
@@ -36,10 +35,6 @@ export const SignVerifyAddressField = ({
     hasAddressError,
     onCopy,
 }: SignVerifyAddressFieldProps) => {
-    const touchedAddresses = useSelector((state: ReceiveRootState) =>
-        selectTouchedAddresses(state, account.key),
-    );
-
     if (isCompleted) {
         return (
             <Input
@@ -63,8 +58,8 @@ export const SignVerifyAddressField = ({
             <SignAddressInput
                 name="path"
                 label={<Translation id="TR_ADDRESS" />}
-                account={account}
-                touchedAddresses={touchedAddresses}
+                addressGroups={addressGroups}
+                isAddressFixed={isAddressFixed}
                 hasError={hasPathError}
                 bottomText={pathError || null}
                 data-testid="@sign-verify/sign-address"

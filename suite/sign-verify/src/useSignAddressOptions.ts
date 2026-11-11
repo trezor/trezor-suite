@@ -1,150 +1,42 @@
 import { useMemo } from 'react';
 
-import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
-import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
-import { getStakingPath } from '@suite-common/wallet-utils';
+import { useCapabilityLabelText } from '@suite/intl';
+import type { SignAddressGroup } from '@trezor/network-module-suite-common-types';
 
 export type AddressItem = {
     label: string;
     value: string;
 };
 
-export const useSignAddressOptions = (
-    account: Account | undefined,
-    touchedAddresses: ReceiveInfo[],
-) => {
-    const reduceAddresses = (
-        addresses: { address: string; path: string }[],
-        category: ExtendedMessageDescriptor['id'],
-    ) =>
-        addresses.reduce(
-            (prev, { address, path }) => ({
-                ...prev,
-                [path]: {
-                    path,
-                    address,
-                    category,
-                },
-            }),
-            {},
-        );
+// The derivation branch the group's addresses share, such as `m/0/i` for external addresses.
+const getGroupPathLabel = (group: SignAddressGroup) => {
+    const pathSegment = group.addresses[0]?.path.split('/').at(-2);
 
-    const signAddresses = useMemo(() => {
-        switch (account?.networkType) {
-            case 'bitcoin':
-                return {
-                    ...reduceAddresses(
-                        touchedAddresses.length
-                            ? touchedAddresses
-                            : (account.addresses?.unused || []).slice(0, 1),
-                        'TR_ADDRESSES_FRESH',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.used?.slice().reverse() || [],
-                        'TR_ADDRESSES_USED',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.change?.slice().reverse() || [],
-                        'TR_ADDRESSES_CHANGE',
-                    ),
-                };
-            case 'cardano': {
-                const stakingPath = getStakingPath(account);
+    return pathSegment === undefined ? '' : ` m/${pathSegment}/i`;
+};
 
-                return {
-                    ...reduceAddresses(
-                        [
-                            {
-                                path: stakingPath,
-                                address: account.misc.staking.address,
-                            },
-                        ],
-                        'TR_STAKING_STAKE_ADDRESS',
-                    ),
-                    ...reduceAddresses(
-                        touchedAddresses.length
-                            ? touchedAddresses
-                            : (account.addresses?.unused || []).slice(0, 1),
-                        'TR_ADDRESSES_FRESH',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.used?.slice().reverse() || [],
-                        'TR_ADDRESSES_USED',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.change?.slice().reverse() || [],
-                        'TR_ADDRESSES_CHANGE',
-                    ),
-                };
-            }
-            case 'ethereum':
-                return {
-                    [account.path]: {
-                        path: account.path,
-                        address: account.descriptor,
-                        category: '',
-                    },
-                };
-            default:
-                return {};
-        }
-    }, [account, touchedAddresses]);
+export const useSignAddressOptions = (groups: readonly SignAddressGroup[]) => {
+    const getLabelText = useCapabilityLabelText();
 
-    const { translationString } = useTranslation();
-
-    const groupedOptions = useMemo(() => {
-        const signAddressesValues = Object.values(signAddresses);
-        const groupedAddresses = signAddressesValues.reduce<{
-            [category: string]: AddressItem[];
-        }>(
-            (grouped, { address, path, category }) => ({
-                ...grouped,
-                [category]: [
-                    ...(grouped[category] || []),
-                    {
-                        label: address,
-                        value: path,
-                    },
-                ],
-            }),
-            {},
-        );
-
-        return Object.entries(groupedAddresses).map(([label, options]) => {
-            if (!label) {
-                return { label: '', options };
-            }
-
-            const translatedLabel = translationString(label as ExtendedMessageDescriptor['id']);
-
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const firstOption: (typeof options)[number] = options[0];
-            const pathParts = firstOption.value.split('/');
-            const lastSegmentIndex = pathParts.length - 2;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const pathSegment: string = pathParts[lastSegmentIndex];
-            const pathLabel = `m/${pathSegment}/i`;
-
-            return {
-                label: `${translatedLabel} ${pathLabel}`,
-                options,
-            };
-        });
-    }, [signAddresses, translationString]);
+    const groupedOptions = useMemo(
+        () =>
+            groups.map(group => ({
+                label: group.label ? `${getLabelText(group.label)}${getGroupPathLabel(group)}` : '',
+                options: group.addresses.map(({ address, path }) => ({
+                    label: address,
+                    value: path,
+                })),
+            })),
+        [groups, getLabelText],
+    );
 
     const getValue = (path: string): AddressItem | null => {
-        const address = signAddresses[path];
+        const address = groups
+            .flatMap(group => group.addresses)
+            .find(candidate => candidate.path === path);
 
-        return address
-            ? {
-                  label: address.address,
-                  value: address.path,
-              }
-            : null;
+        return address ? { label: address.address, value: address.path } : null;
     };
 
-    return {
-        groupedOptions,
-        getValue,
-    };
+    return { groupedOptions, getValue };
 };

@@ -14,9 +14,6 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../../suite-native/accounts" },
         { "path": "../../suite-native/atoms" },
         { "path": "../../suite-native/device" },
@@ -30,6 +27,9 @@
         },
         {
             "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/network-module/suite-common/suite-common-types"
         },
         { "path": "../../packages/redux-utils" },
         {

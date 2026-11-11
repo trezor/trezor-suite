@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/networks" },
-        { "path": "../../suite-common/receive" },
         {
             "path": "../../suite-common/sign-verify"
         },
@@ -16,9 +15,6 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../address" },
         { "path": "../device" },
         { "path": "../forms" },
@@ -29,6 +25,9 @@
         },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/icons" },
+        {
+            "path": "../../networks/network-module/suite-common/suite-common-types"
+        },
         { "path": "../../packages/redux-utils" }
     ]
 }

@@ -1,19 +1,12 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import {
-    getHasSelectableSignatureFormat,
-    isVerifySupported,
-    signThunk,
-    verifyThunk,
-} from '@suite-common/sign-verify';
-import { type Network } from '@suite-common/wallet-config';
+import { CapabilityLabel, Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { type MessageSigningController } from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
+import type { SignFormatKind } from '@trezor/network-module-suite-common-types';
 
 import { FormatSwitch } from './FormatSwitch';
 import { SignVerifyAddressField } from './SignVerifyAddressField';
@@ -25,17 +18,35 @@ import { type SignVerifyOutcome, type SignVerifyPage } from './types';
 import { useSignVerifyCopyValue } from './useSignVerifyCopyValue';
 import { type SignVerifyFields, useSignVerifyForm } from './useSignVerifyForm';
 
-type SignVerifyFormProps = {
+/**
+ * How desktop presents each kind of format choice. A signature format only matters until the
+ * message is signed; a public key format explains the key shown next to the signature, so it stays.
+ * The test ids are the ones the e2e suites already address.
+ */
+const formatSwitchPresentation = {
+    signature: { isShownWhenSigned: false, testId: '@sign-verify/format' },
+    publicKey: { isShownWhenSigned: true, testId: '@sign-verify/cardano-pubkey-format' },
+} as const satisfies Record<SignFormatKind, { isShownWhenSigned: boolean; testId: string }>;
+
+/** Rich-text tags used by catalog messages that families reference, such as format tooltips. */
+const richTextValues = {
+    FormatDescription: (chunks: ReactNode) => <p>{chunks}</p>,
+    span: (chunks: ReactNode) => <strong>{chunks}</strong>,
+};
+
+export type SignVerifyFormProps = {
     account: Account;
-    network?: Network;
+    signing: MessageSigningController;
     page: SignVerifyPage;
     onPageChange: (page: SignVerifyPage) => void;
 };
 
-export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVerifyFormProps) => {
+/**
+ * The form every network gets unless the app overrides it: it renders from the network's message
+ * signing and never branches on the network itself.
+ */
+export const SignVerifyForm = ({ account, signing, page, onPageChange }: SignVerifyFormProps) => {
     const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
-
-    const { dispatch } = useServices(injectDispatch);
 
     const isSignPage = page === 'sign';
 
@@ -50,9 +61,8 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         hexField,
         addressField,
         pathField,
-        isElectrumField,
-        cardanoPubKeyCoseField,
-    } = useSignVerifyForm(isSignPage, account);
+        formatField,
+    } = useSignVerifyForm(isSignPage, account, signing);
 
     const { isLocked } = useDevice();
     const { translationString } = useTranslation();
@@ -60,6 +70,12 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
 
     const isCompleted = outcome === 'signed' || outcome === 'verified';
     const hasFailedVerification = outcome === 'failed';
+    const { formatChoice } = signing;
+    const formatPresentation = formatChoice && formatSwitchPresentation[formatChoice.kind];
+    const isFormatSwitchShown =
+        isSignPage &&
+        formatPresentation !== null &&
+        (formatPresentation.isShownWhenSigned || !isCompleted);
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
@@ -91,19 +107,17 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
     };
 
     const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex, isElectrum, cardanoPubKeyCose } = data;
+        const { address, path, message, signature, hex, format } = data;
 
         if (isSignPage && path !== undefined) {
-            const result = await dispatch(
-                signThunk(account, path, message, hex, isElectrum, cardanoPubKeyCose),
-            );
+            const result = await signing.sign({ path, message, isHex: hex, format });
 
             if (result) {
-                formSetSignature(result);
+                formSetSignature({ signature: result.signature, pubKey: result.publicKey });
                 setOutcome('signed');
             }
         } else if (signature !== undefined) {
-            const result = await dispatch(verifyThunk(account, address, message, signature, hex));
+            const result = await signing.verify({ address, message, signature, isHex: hex });
 
             // Cancelling on the device leaves the form exactly as it was, the way a cancelled
             // signing does: nothing was verified, and nothing failed to verify either.
@@ -113,55 +127,39 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         }
     };
 
-    const signFormatsDiffer = getHasSelectableSignatureFormat(account);
-    const canVerify = isVerifySupported(account);
-    const isCardano = network?.networkType === 'cardano';
-
     return (
         <Card>
             <SignVerifyTabs
                 page={page}
-                canVerify={canVerify}
+                canVerify={signing.canVerify}
                 outcome={outcome}
                 onPageChange={onPageChange}
             />
             <form onSubmit={formSubmit(onSubmit)}>
                 <Column gap={16} margin={{ bottom: 32 }}>
-                    {isSignPage && signFormatsDiffer && !isCompleted && (
+                    {isFormatSwitchShown && formatChoice !== null && (
                         <FormatSwitch
-                            options={[
-                                { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
-                                {
-                                    value: true,
-                                    label: <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />,
-                                },
-                            ]}
+                            label={<CapabilityLabel label={formatChoice.label} />}
+                            options={formatChoice.options.map(option => ({
+                                value: option.format,
+                                label: <CapabilityLabel label={option.label} />,
+                            }))}
                             tooltip={
-                                <Translation
-                                    id="TR_FORMAT_TOOLTIP"
-                                    values={{
-                                        FormatDescription: chunks => <p>{chunks}</p>,
-                                        span: chunks => <strong>{chunks}</strong>,
-                                    }}
-                                />
+                                formatChoice.tooltip && (
+                                    <CapabilityLabel
+                                        label={formatChoice.tooltip}
+                                        values={richTextValues}
+                                    />
+                                )
                             }
-                            data-testid="@sign-verify/format"
-                            {...isElectrumField}
-                        />
-                    )}
-                    {isSignPage && isCardano && (
-                        <FormatSwitch
-                            options={[
-                                { value: false, label: <Translation id="TR_PUBLIC_KEY_RAW" /> },
-                                { value: true, label: <Translation id="TR_PUBLIC_KEY_COSE" /> },
-                            ]}
                             isDisabled={isCompleted}
-                            data-testid="@sign-verify/cardano-pubkey-format"
-                            {...cardanoPubKeyCoseField}
+                            data-testid={formatSwitchPresentation[formatChoice.kind].testId}
+                            {...formatField}
                         />
                     )}
                     <SignVerifyAddressField
-                        account={account}
+                        addressGroups={signing.addressGroups}
+                        isAddressFixed={signing.isAddressFixed}
                         isSignPage={isSignPage}
                         isCompleted={isCompleted}
                         address={formValues.address}
@@ -191,7 +189,7 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                         registration={register('signature')}
                         onCopy={copyValue}
                     />
-                    {isSignPage && isCardano && (
+                    {isSignPage && signing.hasPublicKeyOutput && (
                         <SignVerifyPubKeyField
                             pubKey={formValues.pubKey}
                             isCompleted={isCompleted}

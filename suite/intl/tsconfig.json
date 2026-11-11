@@ -12,8 +12,21 @@
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/network-module/suite-common/suite-common-types"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
         }
     ]
 }

@@ -18,7 +18,6 @@ export const SignVerifyPage = () => {
     return (
         <SignVerify
             account={account}
-            network={selectedAccount.network}
             renderShell={({ title, isDeviceConnected, children }) => (
                 <WalletLayout title={title} isSubpage account={selectedAccount}>
                     <WalletSubpageHeading title={title} />

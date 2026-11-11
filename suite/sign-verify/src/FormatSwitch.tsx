@@ -1,29 +1,30 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { Box, Row, SelectBar, Text, Tooltip } from '@trezor/components';
 
 const FORMAT_SWITCH_WIDTH = 360;
 
-type FormatSwitchProps = {
-    options: { value: boolean; label: ReactNode }[];
-    selectedOption?: boolean;
-    onChange: (value: boolean) => void;
+type FormatSwitchProps<TValue extends string> = {
+    label: ReactNode;
+    options: { value: TValue; label: ReactNode }[];
+    selectedOption?: TValue;
+    onChange: (value: TValue) => void;
     isDisabled?: boolean;
     tooltip?: ReactNode;
     'data-testid': string;
 };
 
-export const FormatSwitch = ({
+export const FormatSwitch = <TValue extends string>({
+    label: labelContent,
     options,
     tooltip,
     isDisabled,
     'data-testid': dataTestId,
     ...field
-}: FormatSwitchProps) => {
+}: FormatSwitchProps<TValue>) => {
     const label = (
         <Text case="capitalize" intent="neutral" priority="secondary" typographyStyle="body-md">
-            <Translation id="TR_FORMAT" />
+            {labelContent}
         </Text>
     );
 

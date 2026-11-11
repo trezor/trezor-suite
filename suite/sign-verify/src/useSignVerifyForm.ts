@@ -5,10 +5,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { yup } from '@suite/forms';
 import { type AddressValidator, injectAddressValidator } from '@suite-common/networks';
-import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
+import { MAX_LENGTH_MESSAGE, type MessageSigningController } from '@suite-common/sign-verify';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
+import type { SignFormat } from '@trezor/network-module-suite-common-types';
 
 export type SignVerifyFormFields = ReturnType<typeof useSignVerifyForm>;
 
@@ -25,9 +26,9 @@ export type SignVerifyFields = {
     hex: boolean;
     path?: string;
     signature?: string;
-    isElectrum?: boolean;
+    /** One of the formats the network offered; absent when it offered no choice. */
+    format?: SignFormat;
     pubKey?: string;
-    cardanoPubKeyCose?: boolean;
 };
 
 const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
@@ -59,23 +60,25 @@ const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
         then: schema => schema.required(),
     }),
     hex: yup.boolean().required(),
-    isElectrum: yup.boolean(),
+    format: yup.mixed<SignFormat>(),
     pubKey: yup.string(),
-    cardanoPubKeyCose: yup.boolean(),
 });
 
 const DEFAULT_VALUES: SignVerifyFields = {
     message: '',
     address: '',
-    isElectrum: false,
+    format: undefined,
     path: '',
     signature: '',
     hex: false,
     pubKey: '',
-    cardanoPubKeyCose: false,
 };
 
-export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
+export const useSignVerifyForm = (
+    isSignPage: boolean,
+    account: Account,
+    signing: MessageSigningController,
+) => {
     const { addressValidator } = useServices(injectAddressValidator);
     const { register, handleSubmit, formState, reset, setValue, clearErrors, control, trigger } =
         useForm<SignVerifyFields, SignVerifyContext>({
@@ -106,13 +109,9 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         control,
         name: 'hex',
     });
-    const { field: isElectrumField } = useController({
+    const { field: formatField } = useController({
         control,
-        name: 'isElectrum',
-    });
-    const { field: cardanoPubKeyCoseField } = useController({
-        control,
-        name: 'cardanoPubKeyCose',
+        name: 'format',
     });
 
     useEffect(() => {
@@ -126,29 +125,22 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
             setValue('signature', '');
             setValue('pubKey', '');
         }
-    }, [
-        setValue,
-        isSignPage,
-        formValues.address,
-        formValues.message,
-        formValues.isElectrum,
-        formValues.cardanoPubKeyCose,
-    ]);
+    }, [setValue, isSignPage, formValues.address, formValues.message, formValues.format]);
+
+    // The network decides the starting format and, for a fixed-address network, the address
+    // itself; the form only keeps what the user changes from there.
+    const { fixedAddress, formatChoice } = signing;
+    const defaultFormat = formatChoice?.options[0]?.format;
 
     useEffect(() => {
-        const overrideValues =
-            isSignPage && account?.networkType === 'ethereum'
-                ? {
-                      path: account.path,
-                      address: account.descriptor,
-                  }
-                : {};
-
         reset({
             ...DEFAULT_VALUES,
-            ...overrideValues,
+            format: defaultFormat,
+            ...(isSignPage && fixedAddress !== undefined
+                ? { path: fixedAddress.path, address: fixedAddress.address }
+                : {}),
         });
-    }, [reset, isSignPage, account?.key, account?.networkType, account?.path, account?.descriptor]);
+    }, [reset, isSignPage, account.key, defaultFormat, fixedAddress]);
     type FormSetSignatureParams = { signature: string; pubKey?: string };
 
     return {
@@ -180,15 +172,11 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
                 pathField.onChange(addr?.path || '');
                 addressField.onChange(addr?.address || '');
             },
-            isDisabled: account?.networkType === 'ethereum',
+            isDisabled: signing.isAddressFixed,
         },
-        isElectrumField: {
-            selectedOption: isElectrumField.value,
-            onChange: isElectrumField.onChange,
-        },
-        cardanoPubKeyCoseField: {
-            selectedOption: cardanoPubKeyCoseField.value,
-            onChange: cardanoPubKeyCoseField.onChange,
+        formatField: {
+            selectedOption: formatField.value,
+            onChange: formatField.onChange,
         },
     };
 };

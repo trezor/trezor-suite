@@ -1,42 +1,62 @@
-import { type ReactNode, useState } from 'react';
+import { type ComponentType, type ReactNode, useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { isVerifySupported } from '@suite-common/sign-verify';
-import { type Network } from '@suite-common/wallet-config';
+import { type TranslationKey, isTranslationKey } from '@suite/intl';
+import { useMessageSigning } from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 
-import { SignVerifyForm } from './SignVerifyForm';
+import { SignVerifyForm, type SignVerifyFormProps } from './SignVerifyForm';
 import { type SignVerifyPage } from './types';
 
+/**
+ * What a network's own sign & verify UI receives. It gets the same `signing` as the default form,
+ * so it never reimplements the operations, and the default form itself, so it can wrap or extend
+ * it instead of replacing everything.
+ */
+export type SignVerifyOverrideProps = SignVerifyFormProps & {
+    DefaultForm: ComponentType<SignVerifyFormProps>;
+};
+
+/** Optional per-family replacements of the default form, chosen by the app that renders it. */
+export type SignVerifyOverrides = Readonly<
+    Partial<Record<string, ComponentType<SignVerifyOverrideProps>>>
+>;
+
 type SignVerifyShellProps = {
-    title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
+    title: TranslationKey;
     isDeviceConnected: boolean | undefined;
     children: ReactNode;
 };
 
 type SignVerifyProps = {
     account: Account;
-    network?: Network;
     renderShell: (props: SignVerifyShellProps) => ReactNode;
+    overrides?: SignVerifyOverrides;
 };
 
-export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) => {
+export const SignVerify = ({ account, renderShell, overrides }: SignVerifyProps) => {
     const [page, setPage] = useState<SignVerifyPage>('sign');
     const { device } = useDevice();
+    const signing = useMessageSigning(account);
+
+    // The page is only reachable for accounts whose network can sign, see the wallet menu.
+    if (signing === undefined) {
+        return null;
+    }
+
+    const formProps: SignVerifyFormProps = { account, signing, page, onPageChange: setPage };
+    const Override = overrides?.[signing.family];
+    // Each tab of each account is a form of its own: keying it throws away everything the previous
+    // one was in the middle of, including the outcome it had reached.
+    const formKey = `${page}-${account.key}`;
 
     return renderShell({
-        title: isVerifySupported(account) ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
+        title: isTranslationKey(signing.title.id) ? signing.title.id : 'TR_NAV_SIGN_VERIFY',
         isDeviceConnected: device?.connected && device?.available,
-        children: (
-            // Each tab of each account is a form of its own: keying it throws away everything the
-            // previous one was in the middle of, including the outcome it had reached.
-            <SignVerifyForm
-                key={`${page}-${account.key}`}
-                account={account}
-                network={network}
-                page={page}
-                onPageChange={setPage}
-            />
+        children: Override ? (
+            <Override key={formKey} {...formProps} DefaultForm={SignVerifyForm} />
+        ) : (
+            <SignVerifyForm key={formKey} {...formProps} />
         ),
     });
 };
