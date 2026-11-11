@@ -263,22 +263,6 @@ export const SKIP = [
     'TxInput', // declared in TxInputType patch
     'TxOutput', // declared in TxOutputType patch
     'StellarSCValMapEntry', // inlined into the StellarSCVal patch (see StellarSCVal.ts)
-    // not implemented
-    'DebugSwipeDirection',
-    'DebugLinkDecision',
-    'DebugLinkLayout',
-    'DebugLinkReseedRandom',
-    'DebugLinkRecordScreen',
-    'DebugLinkGetState',
-    'DebugLinkState',
-    'DebugLinkStop',
-    'DebugLinkLog',
-    'DebugLinkMemoryRead',
-    'DebugLinkMemory',
-    'DebugLinkMemoryWrite',
-    'DebugLinkFlashErase',
-    'DebugLinkEraseSdCard',
-    'DebugLinkWatchLayout',
     // currently not used, needs patching
     'EthereumABIValueInfo',
     'EthereumABITupleInfo',
