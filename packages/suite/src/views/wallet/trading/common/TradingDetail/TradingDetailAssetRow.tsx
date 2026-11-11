@@ -133,11 +133,11 @@ export const TradingDetailAssetRow = ({
                                 testId={cryptoAmountTestId}
                             />
                         </Text>
-                        {currencyInfo?.symbol && (
+                        {currencyInfo?.networkSymbol && (
                             <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                                 <BaseCurrencyValue
                                     amount={amount}
-                                    symbol={currencyInfo.symbol}
+                                    symbol={currencyInfo.networkSymbol}
                                     rateType="current"
                                     tokenAddress={currencyInfo.contractAddress}
                                     showApproximationIndicator

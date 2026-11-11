@@ -19,7 +19,7 @@ export const ApproximateInstantEthAmount = ({
     if (!hasDecimals) {
         return (
             <Row>
-                ~<FormattedCryptoAmount value={value} symbol={symbol} />
+                ~<FormattedCryptoAmount value={value} networkSymbol={symbol} />
             </Row>
         );
     }
@@ -27,9 +27,9 @@ export const ApproximateInstantEthAmount = ({
     const trimmedAmount = new BigNumber(value).toFixed(DEFAULT_MAX_DECIMAL_PLACES, 1);
 
     return (
-        <Tooltip content={<FormattedCryptoAmount value={value} symbol={symbol} />}>
+        <Tooltip content={<FormattedCryptoAmount value={value} networkSymbol={symbol} />}>
             <Row>
-                ~<FormattedCryptoAmount value={trimmedAmount} symbol={symbol} />
+                ~<FormattedCryptoAmount value={trimmedAmount} networkSymbol={symbol} />
             </Row>
         </Tooltip>
     );

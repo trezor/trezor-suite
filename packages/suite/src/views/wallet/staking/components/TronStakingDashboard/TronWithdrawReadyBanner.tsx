@@ -74,7 +74,7 @@ export const TronWithdrawReadyBanner = ({ account, nowSeconds }: TronWithdrawRea
                             amount: (
                                 <FormattedCryptoAmount
                                     value={withdrawableAmount}
-                                    symbol={account.symbol}
+                                    networkSymbol={account.symbol}
                                 />
                             ),
                         }}

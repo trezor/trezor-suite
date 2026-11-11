@@ -55,7 +55,11 @@ export const CryptoAmountWithHeader = ({
             {headerIcon && headerIcon} {header}
         </Header>
 
-        <CryptoAmount value={formatNetworkAmount(value, symbol)} symbol={symbol} $color={color} />
+        <CryptoAmount
+            value={formatNetworkAmount(value, symbol)}
+            networkSymbol={symbol}
+            $color={color}
+        />
         <BaseCurrencyValue
             amount={formatNetworkAmount(value, symbol)}
             symbol={symbol}

@@ -29,7 +29,7 @@ export const TronClaimAmount = () => {
                             typographyStyle="body-md-strong"
                             data-testid="@staking/tron-claim/amount"
                         >
-                            <FormattedCryptoAmount value={reward} symbol={account.symbol} />
+                            <FormattedCryptoAmount value={reward} networkSymbol={account.symbol} />
                         </Text>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             <BaseCurrencyValue

@@ -43,7 +43,7 @@ export const WrapTxAmount = ({ transaction, wrapped }: WrapTxAmountProps) => {
     return (
         <FormattedCryptoAmount
             value={amount}
-            symbol={wrapped ? (getWrappedNativeSymbol(symbol) ?? symbol) : symbol}
+            networkSymbol={wrapped ? (getWrappedNativeSymbol(symbol) ?? symbol) : symbol}
         />
     );
 };

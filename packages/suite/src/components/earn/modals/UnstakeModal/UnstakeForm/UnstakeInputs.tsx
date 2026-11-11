@@ -196,7 +196,7 @@ export const UnstakeInputs = () => {
                             <Column alignItems="flex-end">
                                 <FormattedCryptoAmount
                                     value={autocompoundBalance}
-                                    symbol={symbol}
+                                    networkSymbol={symbol}
                                 />
                                 <Text typographyStyle="body-sm">
                                     <BaseCurrencyValue
@@ -233,7 +233,7 @@ export const UnstakeInputs = () => {
                                       <Column alignItems="flex-end">
                                           <FormattedCryptoAmount
                                               value={restakedReward}
-                                              symbol={symbol}
+                                              networkSymbol={symbol}
                                           />
                                           <Text intent="brand">
                                               <BaseCurrencyValue

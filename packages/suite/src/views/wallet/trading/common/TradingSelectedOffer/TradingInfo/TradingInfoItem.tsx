@@ -143,7 +143,7 @@ export const TradingInfoItem = ({
                                 data-testid={`${testIdPrefix}-amount-skeleton`}
                             >
                                 <Skeleton width={110} animate={shouldAnimateSkeleton} />
-                                {currencyInfo?.symbol && (
+                                {currencyInfo?.networkSymbol && (
                                     <Skeleton
                                         width={70}
                                         height={16}
@@ -155,7 +155,7 @@ export const TradingInfoItem = ({
                             <Column alignItems="flex-end">
                                 <TradingCryptoAmount amount={amount} cryptoId={currency} />
 
-                                {currencyInfo?.symbol && (
+                                {currencyInfo?.networkSymbol && (
                                     <Text
                                         intent="neutral"
                                         priority="secondary"
@@ -163,7 +163,7 @@ export const TradingInfoItem = ({
                                     >
                                         <BaseCurrencyValue
                                             amount={amount}
-                                            symbol={currencyInfo.symbol}
+                                            symbol={currencyInfo.networkSymbol}
                                             rateType="current"
                                             tokenAddress={currencyInfo.contractAddress}
                                             showApproximationIndicator

@@ -6,8 +6,8 @@ import { type ExchangeTrade } from 'invity-api';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type SlippageFormValues,
+    cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingExchangeReceiveAccountKey,
-    useTradingUtils,
 } from '@suite-common/trading';
 import { Column, Divider, Row, Text, TextButton } from '@trezor/components';
 import { ArrowLineUpRightIcon } from '@trezor/icons';
@@ -33,7 +33,6 @@ export const TradingOfferExchangeSlippageSummary = ({
     // `useWatch` or out of render.
     'use no memo';
 
-    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { getAssetDecimals } = useTradingAssetDecimals();
     const { watch, formState } = useFormContext<SlippageFormValues>();
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
@@ -43,7 +42,7 @@ export const TradingOfferExchangeSlippageSummary = ({
 
     const decimals = getAssetDecimals({ accountKey: receiveAccountKey, cryptoId: receive });
 
-    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(receive);
+    const { networkSymbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(receive);
 
     const previewSlippage =
         !formState.errors.slippage && slippageValue !== ''
@@ -91,7 +90,7 @@ export const TradingOfferExchangeSlippageSummary = ({
                             <Text typographyStyle={isSummaryRow ? 'body-md-strong' : 'body-md'}>
                                 <FormattedCryptoAmount
                                     value={value}
-                                    symbol={coinSymbol}
+                                    networkSymbol={networkSymbol}
                                     contractAddress={contractAddress}
                                 />
                             </Text>

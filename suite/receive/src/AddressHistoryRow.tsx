@@ -216,7 +216,7 @@ export const AddressHistoryRow = ({
                 </Row>
                 <Text typographyStyle="body-sm">
                     {item.received ? (
-                        <AmountComponent value={item.received} symbol={account.symbol} />
+                        <AmountComponent value={item.received} networkSymbol={account.symbol} />
                     ) : (
                         <Text intent="neutral" priority="secondary">
                             <Translation id="RECEIVE_TABLE_NOT_USED" />

@@ -51,7 +51,7 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
                         data-testid="@trading/quote/maximum-fee-amount"
                         disableHiddenPlaceholder
                         value={txMaxFee}
-                        symbol={networkSymbol}
+                        networkSymbol={networkSymbol}
                     />
                 </Text>
 

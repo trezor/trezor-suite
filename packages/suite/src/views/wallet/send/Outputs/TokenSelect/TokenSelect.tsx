@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
-import { AssetName } from '@suite/assets';
+import { AssetIcon, AssetName, AssetSymbol } from '@suite/assets';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
@@ -18,7 +18,6 @@ import {
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill } from '#src/actions/suite/suiteActions';
@@ -95,6 +94,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         () => account.tokens?.find(token => token.contract === tokenContractAddress),
         [account.tokens, tokenContractAddress],
     );
+    const selectedTokenAddress = selectedToken ? toTokenAddress(selectedToken.contract) : undefined;
 
     const hasNoStandardTokens = !account.tokens?.filter(token => !isNftToken(token))?.length;
     const onOpenTokensModal = !hasNoStandardTokens ? () => setIsTokensModalActive(true) : undefined;
@@ -122,17 +122,15 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
             >
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={12}>
-                        {selectedToken ? (
-                            <TokenIcon
+                        {selectedTokenAddress ? (
+                            <AssetIcon
                                 networkSymbol={account.symbol}
-                                contractAddress={selectedToken?.contract}
+                                contractAddress={selectedTokenAddress}
                                 size={24}
-                                placeholder={selectedToken?.symbol || account.symbol}
-                                placeholderWithTooltip={false}
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <TokenIcon networkSymbol={account.symbol} size={40} showNetworkIcon />
+                            <AssetIcon networkSymbol={account.symbol} size={40} showNetworkIcon />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
@@ -143,11 +141,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 >
                                     <AssetName
                                         networkSymbol={account.symbol}
-                                        contractAddress={
-                                            selectedToken
-                                                ? toTokenAddress(selectedToken.contract)
-                                                : undefined
-                                        }
+                                        contractAddress={selectedTokenAddress}
                                     />
                                 </Text>
                             </Row>
@@ -162,9 +156,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             value={
                                                 selectedToken?.balance || account.formattedBalance
                                             }
-                                            symbol={selectedToken?.symbol ?? account.symbol}
-                                            contractAddress={selectedToken?.contract}
-                                            tokenDecimals={selectedToken?.decimals}
+                                            networkSymbol={account.symbol}
+                                            contractAddress={selectedTokenAddress}
                                             isCompact
                                             data-testid={tokenInputName}
                                         />
@@ -244,7 +237,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             <Translation
                                 id="TR_DEFI_YIELD_TOKEN_BANNER_TITLE"
                                 values={{
-                                    token: selectedToken?.symbol ?? account.symbol,
+                                    token: (
+                                        <AssetSymbol
+                                            networkSymbol={account.symbol}
+                                            contractAddress={selectedTokenAddress}
+                                        />
+                                    ),
                                 }}
                             />
                         }

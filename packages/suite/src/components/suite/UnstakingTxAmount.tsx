@@ -38,7 +38,7 @@ export const UnstakingTxAmount = ({ transaction }: UnstakingTxAmountProps) => {
                     value: asAmountSubunit(new BigNumber(unstakeAmount)),
                     symbol,
                 })}
-                symbol={symbol}
+                networkSymbol={symbol}
             />
         </>
     );

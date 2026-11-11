@@ -1,5 +1,6 @@
 export { selectTokenByNetworkAndContract } from './tokenMetadataSelectors';
 export { TokenMetadataProvider } from './TokenMetadataProvider';
+export { TransactionTokenMetadataProvider } from './TransactionTokenMetadataProvider';
 export { getTokenDisplayName, getTokenDisplaySymbol, truncateTokenSymbol } from './tokenDisplay';
 export { useTokenMetadata } from './useTokenMetadata';
 export { useTokenMetadataSources } from './useTokenMetadataSources';

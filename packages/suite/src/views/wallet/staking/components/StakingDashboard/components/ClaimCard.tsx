@@ -59,7 +59,7 @@ export const ClaimCard = ({ account }: ClaimCardProps) => {
                 <FormattedCryptoAmount
                     data-testid="@staking/can-claim"
                     value={claimableAmount}
-                    symbol={account.symbol}
+                    networkSymbol={account.symbol}
                 />
             </Paragraph>
             <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">

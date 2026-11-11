@@ -38,7 +38,7 @@ const AmountItem = ({ labelTranslationKey, shouldSendInSats, amount, symbol }: A
             <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                 <Translation id={labelTranslationKey} />
             </Text>
-            <FormattedCryptoAmount value={value} symbol={symbol} />
+            <FormattedCryptoAmount value={value} networkSymbol={symbol} />
         </Column>
     );
 };

@@ -44,7 +44,7 @@ export const InfoCard = (props: InfoCardProps) => {
                                 data-testid="@wallet/transactions/summary-card/value"
                                 signValue={bigValue}
                                 value={bigValue.abs().toFixed()}
-                                symbol={props.symbol}
+                                networkSymbol={props.symbol}
                             />
                         )}
 

@@ -1,7 +1,7 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
+import { cryptoIdToNetwork } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { Card, Column, Divider } from '@trezor/components';
@@ -37,7 +37,6 @@ export const TradingExchangeDetailSidebar = ({
 }: TradingExchangeDetailSidebarProps) => {
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
-    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { getAssetDecimals } = useTradingAssetDecimals();
     const sendNetwork = cryptoIdToNetwork(trade.send);
     const isMevProtectionSupported = sendNetwork?.features.includes('mev-protection') ?? false;
@@ -47,8 +46,6 @@ export const TradingExchangeDetailSidebar = ({
 
     const provider = trade.exchange ? providers?.[trade.exchange] : undefined;
     const rateType = provider?.isFixedRate ? 'fixed' : 'floating';
-    const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
-        cryptoIdToSymbolAndContractAddress(trade.receive);
     const swapSlippage = trade.isDex ? trade.swapSlippage : undefined;
     const { receiveStringAmount } = trade;
     const decimals = getAssetDecimals({ accountKey: receiveAccount?.key, cryptoId: trade.receive });
@@ -115,8 +112,7 @@ export const TradingExchangeDetailSidebar = ({
                         {trade.isDex && !!minimumYouGetAmount && (
                             <TradingExchangeMinimumReceivedInfoItem
                                 minimumYouGetAmount={minimumYouGetAmount}
-                                symbol={receiveCoinSymbol}
-                                contractAddress={receiveContractAddress}
+                                cryptoId={trade.receive}
                             />
                         )}
 

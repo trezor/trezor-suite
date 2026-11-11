@@ -4,8 +4,6 @@ import {
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
-    selectWalletAssetTokenDecimals,
-    selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Column, Text } from '@trezor/components';
@@ -27,12 +25,6 @@ export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalancePr
     );
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, isHidden),
-    );
-    const tokenSymbol = useSelector(state =>
-        selectWalletAssetTokenSymbol(state, assetKey, isHidden),
-    );
-    const tokenDecimals = useSelector(state =>
-        selectWalletAssetTokenDecimals(state, assetKey, isHidden),
     );
     const amount = useSelector(state => selectWalletAssetAmount(state, assetKey, isHidden));
 
@@ -57,9 +49,8 @@ export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalancePr
                 <TruncatedAmount>
                     <FormattedCryptoAmount
                         value={amount}
-                        symbol={tokenSymbol ?? networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={contractAddress}
-                        tokenDecimals={tokenDecimals}
                         isCompact
                     />
                 </TruncatedAmount>

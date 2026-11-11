@@ -99,7 +99,7 @@ export const IOItem = ({
                                                     ? formatNetworkAmount(amount, symbol)
                                                     : amount
                                             }
-                                            symbol={symbol}
+                                            networkSymbol={networkSymbol}
                                             contractAddress={contractAddress}
                                         />
                                     </Text>

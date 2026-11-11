@@ -51,7 +51,7 @@ export const AmountComponent = ({
         return (
             <FormattedCryptoAmount
                 value={convertAmountSubunitsToUnits(transfer.amount, transfer.decimals)}
-                symbol={transfer.symbol}
+                networkSymbol={networkSymbol}
                 contractAddress={transfer.contract}
                 signValue={operation}
                 signGrayscale={signGrayscale}

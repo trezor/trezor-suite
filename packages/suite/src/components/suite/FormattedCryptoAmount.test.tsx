@@ -3,7 +3,9 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
@@ -12,6 +14,29 @@ import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { type MockSuiteState, mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
 const bitcoin = asNetworkSymbol('btc');
+const ethereum = asNetworkSymbol('eth');
+const TOKEN = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
+
+const getStateWithToken = (symbol: string): MockSuiteState => ({
+    ...mockInitialAppState,
+    wallet: {
+        ...mockInitialAppState.wallet,
+        accounts: [
+            mockWalletAccount({
+                symbol: ethereum,
+                tokens: [mockAccountToken({ symbol, contract: TOKEN, decimals: 6 })],
+            }),
+        ],
+    },
+});
+
+const renderTokenAmount = (element: React.ReactElement, state: MockSuiteState) => {
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
+        preloadedState: state,
+    });
+
+    renderWithProviders(services, element);
+};
 
 const renderAmount = (element: React.ReactElement, areSatsDisplayed = false) => {
     const { services } = createTestCompositionRoot<void, MockSuiteState>({
@@ -44,7 +69,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value={value}
-                    symbol={bitcoin}
+                    networkSymbol={bitcoin}
                     isCompact
                     data-testid="@amount"
                 />,
@@ -57,7 +82,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.009"
-                    symbol="USDC"
+                    networkSymbol="USDC"
                     contractAddress="0xa0b8"
                     isCompact
                     tokenDecimals={6}
@@ -72,7 +97,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1234.5678"
-                    symbol="USDT"
+                    networkSymbol="USDT"
                     isCompact
                     tokenDecimals={6}
                     data-testid="@amount"
@@ -88,7 +113,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.000009"
-                    symbol={bitcoin}
+                    networkSymbol={bitcoin}
                     showApproximation
                     data-testid="@amount"
                 />,
@@ -101,7 +126,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.000009"
-                    symbol={bitcoin}
+                    networkSymbol={bitcoin}
                     showApproximation
                     data-testid="@amount"
                 />,
@@ -118,7 +143,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.001005309106970022"
-                    symbol={asNetworkSymbol('eth')}
+                    networkSymbol={asNetworkSymbol('eth')}
                     data-testid="@amount"
                 />,
             );
@@ -130,7 +155,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1.234567891234"
-                    symbol="DAI"
+                    networkSymbol="DAI"
                     tokenDecimals={18}
                     data-testid="@amount"
                 />,
@@ -143,7 +168,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1.234567891234567"
-                    symbol="WETH"
+                    networkSymbol="WETH"
                     tokenDecimals={6}
                     data-testid="@amount"
                 />,
@@ -156,7 +181,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1.234567891234567"
-                    symbol="WETH"
+                    networkSymbol="WETH"
                     data-testid="@amount"
                 />,
             );
@@ -171,7 +196,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1.2345678901234"
-                    symbol={symbol}
+                    networkSymbol={symbol}
                     contractAddress="0xdead"
                     tokenDecimals={6}
                     data-testid="@amount"
@@ -185,12 +210,59 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.123456789"
-                    symbol={bitcoin}
+                    networkSymbol={bitcoin}
                     data-testid="@amount"
                 />,
             );
 
             expect(screen.getByTestId('@amount')).toHaveTextContent('0.12345678…');
+        });
+    });
+
+    describe('token symbol', () => {
+        it.each([
+            { symbol: 'USDC', expected: 'USDC' },
+            { symbol: 'LONGTOKENSYMBOL', expected: 'LONGTOKENS...' },
+        ])('renders $symbol from the token metadata as $expected', ({ symbol, expected }) => {
+            renderTokenAmount(
+                <FormattedCryptoAmount
+                    value="1"
+                    networkSymbol={ethereum}
+                    contractAddress={TOKEN}
+                    data-testid="@amount"
+                />,
+                getStateWithToken(symbol),
+            );
+
+            expect(screen.getByTestId('@amount-with-symbol')).toHaveTextContent(`1 ${expected}`);
+        });
+
+        it('takes the decimals from the token metadata', () => {
+            renderTokenAmount(
+                <FormattedCryptoAmount
+                    value="1.2345678901234"
+                    networkSymbol={ethereum}
+                    contractAddress={TOKEN}
+                    data-testid="@amount"
+                />,
+                getStateWithToken('USDC'),
+            );
+
+            expect(screen.getByTestId('@amount')).toHaveTextContent('1.234567…');
+        });
+
+        it('shows an unknown token when no metadata is found', () => {
+            renderTokenAmount(
+                <FormattedCryptoAmount
+                    value="1"
+                    networkSymbol={ethereum}
+                    contractAddress={TOKEN}
+                    data-testid="@amount"
+                />,
+                mockInitialAppState,
+            );
+
+            expect(screen.getByTestId('@amount-with-symbol')).toHaveTextContent('1 Unknown token');
         });
     });
 });

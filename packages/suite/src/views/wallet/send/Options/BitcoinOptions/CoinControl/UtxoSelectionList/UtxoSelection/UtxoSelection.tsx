@@ -227,7 +227,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                         <Text textWrap="nowrap" margin={{ left: 'auto' }}>
                             <FormattedCryptoAmount
                                 value={formatNetworkAmount(utxo.amount, account.symbol)}
-                                symbol={account.symbol}
+                                networkSymbol={account.symbol}
                             />
                         </Text>
                     </Row>

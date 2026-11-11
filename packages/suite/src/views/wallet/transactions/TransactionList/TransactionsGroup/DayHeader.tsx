@@ -73,7 +73,7 @@ export const DayHeader = ({
                             signValue={totalAmount}
                             signGrayscale
                             value={absoluteTotalAmount}
-                            symbol={symbol}
+                            networkSymbol={symbol}
                         />
                     </Text>
                     <Text {...commonTextProps} align="end">

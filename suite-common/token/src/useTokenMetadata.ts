@@ -14,18 +14,19 @@ import { selectTokenByNetworkAndContract } from './tokenMetadataSelectors';
  * Native-coin inputs have no contract and therefore no token metadata.
  */
 export const useTokenMetadata = (
-    networkSymbol: NetworkSymbol,
+    networkSymbol: NetworkSymbol | undefined,
     contractAddress: TokenAddress | undefined,
 ): TokenMetadata | null => {
     const { tokensByNetwork } = useContext(TokenMetadataContext);
     const accountToken = useSelector((state: AccountsRootState) =>
-        contractAddress
+        networkSymbol && contractAddress
             ? selectTokenByNetworkAndContract(state, networkSymbol, contractAddress)
             : null,
     );
-    const contextToken = contractAddress
-        ? tokensByNetwork.get(networkSymbol)?.get(contractAddress)
-        : undefined;
+    const contextToken =
+        networkSymbol && contractAddress
+            ? tokensByNetwork.get(networkSymbol)?.get(contractAddress)
+            : undefined;
 
     if (!accountToken || !contextToken) {
         return accountToken ?? contextToken ?? null;

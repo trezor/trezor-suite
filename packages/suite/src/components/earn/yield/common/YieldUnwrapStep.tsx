@@ -58,7 +58,7 @@ export const YieldUnwrapStep = ({
                 value: (
                     <FormattedCryptoAmount
                         value={tokenBalance}
-                        symbol={tokenSymbol}
+                        networkSymbol={tokenSymbol}
                         tokenDecimals={tokenDecimals}
                     />
                 ),
