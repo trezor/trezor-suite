@@ -11,10 +11,12 @@ import {
 import { EvmInsufficientGasWarning } from '@suite/tx-simulation/src/evm';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { type ConnectCallSource as ConnectCallSourceType } from '@suite-common/connect-popup';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     TX_METHODS_WITH_FEES,
     areTxSimulationMethods,
     getTxSimulationDisclaimerKey,
+    getTxSimulationTokenSources,
     isTxSimulationResultWithMethods,
     useTxSimulation,
 } from '@suite-common/tx-simulation';
@@ -160,11 +162,18 @@ export function ConnectPopupTxSimulationModalInner({
                                     onError={setHasRenderFailure}
                                     resetKey={txSimulationQuery.data}
                                 >
-                                    <TxSimulationSuccessResult
-                                        result={txSimulationQuery.data}
-                                        network={network}
-                                        targetContract={targetContract}
-                                    />
+                                    <TokenMetadataProvider
+                                        sources={getTxSimulationTokenSources(
+                                            txSimulationQuery.data,
+                                            network.symbol,
+                                        )}
+                                    >
+                                        <TxSimulationSuccessResult
+                                            result={txSimulationQuery.data}
+                                            network={network}
+                                            targetContract={targetContract}
+                                        />
+                                    </TokenMetadataProvider>
                                     <TxSimulationDisclaimer
                                         result={txSimulationQuery.data}
                                         isAccepted={disclaimerAccepted}

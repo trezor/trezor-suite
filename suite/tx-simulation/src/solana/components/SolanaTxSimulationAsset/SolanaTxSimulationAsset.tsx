@@ -1,5 +1,6 @@
+import { AssetValue } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { type SolanaAssetDiff, getSolanaAssetDiffLabel } from '@suite-common/tx-simulation';
+import { type SolanaAssetDiff, getSolanaAssetDiffValue } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
@@ -32,7 +33,12 @@ export function SolanaTxSimulationAsset({ assetDiff, network }: SolanaTxSimulati
                     <Translation
                         id="TR_SIMULATION_SENDING_ASSET"
                         values={{
-                            amount: getSolanaAssetDiffLabel(assetDiff, sent, network.symbol),
+                            amount: (
+                                <AssetValue
+                                    {...getSolanaAssetDiffValue(assetDiff, sent)}
+                                    networkSymbol={network.symbol}
+                                />
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>
@@ -50,7 +56,12 @@ export function SolanaTxSimulationAsset({ assetDiff, network }: SolanaTxSimulati
                     <Translation
                         id="TR_SIMULATION_RECEIVING_ASSET"
                         values={{
-                            amount: getSolanaAssetDiffLabel(assetDiff, received, network.symbol),
+                            amount: (
+                                <AssetValue
+                                    {...getSolanaAssetDiffValue(assetDiff, received)}
+                                    networkSymbol={network.symbol}
+                                />
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>

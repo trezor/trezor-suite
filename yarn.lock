@@ -12843,6 +12843,7 @@ __metadata:
     "@blockaid/client": "npm:1.8.0"
     "@scure/base": "npm:^2.0.0"
     "@suite-common/react-query": "workspace:^"
+    "@suite-common/tokens": "workspace:*"
     "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -16708,10 +16709,12 @@ __metadata:
   resolution: "@suite-native/tx-simulation@workspace:suite-native/tx-simulation"
   dependencies:
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/token": "workspace:*"
     "@suite-common/tx-simulation": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/assets": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/clipboard": "workspace:*"
     "@suite-native/icons": "workspace:*"
@@ -16890,7 +16893,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/assets@workspace:suite/assets":
+"@suite/assets@workspace:*, @suite/assets@workspace:suite/assets":
   version: 0.0.0-use.local
   resolution: "@suite/assets@workspace:suite/assets"
   dependencies:
@@ -17955,6 +17958,7 @@ __metadata:
     "@suite-common/tx-simulation": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite/assets": "workspace:*"
     "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
@@ -20082,6 +20086,7 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/token": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/tokens": "workspace:*"
     "@suite-common/trading": "workspace:*"

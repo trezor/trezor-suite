@@ -1,21 +1,35 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { type SolanaAssetDiff, type StellarAssetDiff } from '../types';
-import { getSolanaAssetDiffLabel, getStellarAssetDiffLabel } from './getAssetDiffTransferLabel';
+import {
+    type NetworkTxSimulationResult,
+    type SolanaAssetDiff,
+    type StellarAssetDiff,
+} from '../types';
+import {
+    getSolanaAssetDiffValue,
+    getStellarAssetDiffValue,
+    getTxSimulationTokenSources,
+} from './getAssetDiffTransferLabel';
 
 const asSolanaDiff = (diff: unknown) => diff as SolanaAssetDiff;
 const asStellarDiff = (diff: unknown) => diff as StellarAssetDiff;
 
-describe('getSolanaAssetDiffLabel', () => {
+const toPlain = ({ amount, contractAddress }: ReturnType<typeof getSolanaAssetDiffValue>) => ({
+    amount: amount.toFixed(),
+    contractAddress,
+});
+
+describe('getSolanaAssetDiffValue', () => {
     it('converts the raw value with the asset decimals', () => {
         const diff = asSolanaDiff({
             asset: { type: 'SOL', symbol: 'SOL', decimals: 9 },
             out: { value: 0.004110331, raw_value: 4110331, summary: 'Lost approximately 0.42$' },
         });
 
-        expect(getSolanaAssetDiffLabel(diff, diff.out!, asNetworkSymbol('sol'))).toBe(
-            '0.004110331 SOL',
-        );
+        expect(toPlain(getSolanaAssetDiffValue(diff, diff.out!))).toEqual({
+            amount: '0.004110331',
+            contractAddress: undefined,
+        });
     });
 
     it('keeps small amounts out of exponential notation', () => {
@@ -24,9 +38,10 @@ describe('getSolanaAssetDiffLabel', () => {
             in: { value: 1.515e-6, raw_value: 1515 },
         });
 
-        expect(getSolanaAssetDiffLabel(diff, diff.in!, asNetworkSymbol('sol'))).toBe(
-            '0.000001515 WSOL',
-        );
+        expect(toPlain(getSolanaAssetDiffValue(diff, diff.in!))).toEqual({
+            amount: '0.000001515',
+            contractAddress: 'So111',
+        });
     });
 
     it('falls back to the network symbol when the asset has none', () => {
@@ -35,20 +50,24 @@ describe('getSolanaAssetDiffLabel', () => {
             in: { value: 1, raw_value: 1 },
         });
 
-        expect(getSolanaAssetDiffLabel(diff, diff.in!, asNetworkSymbol('dsol'))).toBe('1 dSOL');
+        expect(toPlain(getSolanaAssetDiffValue(diff, diff.in!))).toEqual({
+            amount: '1',
+            contractAddress: undefined,
+        });
     });
 });
 
-describe('getStellarAssetDiffLabel', () => {
+describe('getStellarAssetDiffValue', () => {
     it('converts the stroop count instead of the rounded value', () => {
         const diff = asStellarDiff({
             asset: { type: 'ASSET', code: 'USDC', issuer: 'GA5Z' },
             out: { value: 12.5, raw_value: 125000001 },
         });
 
-        expect(getStellarAssetDiffLabel(diff, diff.out!, asNetworkSymbol('xlm'))).toBe(
-            '12.5000001 USDC',
-        );
+        expect(toPlain(getStellarAssetDiffValue(diff, diff.out!))).toEqual({
+            amount: '12.5000001',
+            contractAddress: 'USDC-GA5Z',
+        });
     });
 
     it('keeps amounts Blockaid rounds down to zero', () => {
@@ -57,18 +76,22 @@ describe('getStellarAssetDiffLabel', () => {
             in: { value: 0, raw_value: 4 },
         });
 
-        expect(getStellarAssetDiffLabel(diff, diff.in!, asNetworkSymbol('xlm'))).toBe(
-            '0.0000004 yBTC',
-        );
+        expect(toPlain(getStellarAssetDiffValue(diff, diff.in!))).toEqual({
+            amount: '0.0000004',
+            contractAddress: 'yBTC-GBUY',
+        });
     });
 
-    it('prefers the contract symbol', () => {
+    it('identifies a contract token by its address', () => {
         const diff = asStellarDiff({
             asset: { type: 'CONTRACT', symbol: 'AQUA', name: 'Aquarius', address: 'CBQ' },
             in: { value: 3, raw_value: 30000000 },
         });
 
-        expect(getStellarAssetDiffLabel(diff, diff.in!, asNetworkSymbol('xlm'))).toBe('3 AQUA');
+        expect(toPlain(getStellarAssetDiffValue(diff, diff.in!))).toEqual({
+            amount: '3',
+            contractAddress: 'CBQ',
+        });
     });
 
     it('falls back to the network symbol for the native asset without a code', () => {
@@ -77,6 +100,32 @@ describe('getStellarAssetDiffLabel', () => {
             in: { value: 7, raw_value: 70000000 },
         });
 
-        expect(getStellarAssetDiffLabel(diff, diff.in!, asNetworkSymbol('xlm'))).toBe('7 XLM');
+        expect(toPlain(getStellarAssetDiffValue(diff, diff.in!))).toEqual({
+            amount: '7',
+            contractAddress: undefined,
+        });
+    });
+});
+
+describe('getTxSimulationTokenSources', () => {
+    it('lists the simulated tokens and leaves out the network coin', () => {
+        const result = {
+            method: 'stellarSignTransaction',
+            payload: {
+                simulation: {
+                    status: 'Success',
+                    account_summary: {
+                        account_assets_diffs: [
+                            { asset: { type: 'ASSET', code: 'USDC', issuer: 'GA5Z' } },
+                            { asset: { type: 'NATIVE' } },
+                        ],
+                    },
+                },
+            },
+        } as unknown as NetworkTxSimulationResult;
+
+        expect(getTxSimulationTokenSources(result, asNetworkSymbol('xlm'))).toEqual([
+            { networkSymbol: 'xlm', tokens: [{ contract: 'USDC-GA5Z', symbol: 'USDC' }] },
+        ]);
     });
 });
