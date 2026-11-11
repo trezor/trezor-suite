@@ -2600,11 +2600,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@currents/mcp@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "@currents/mcp@npm:2.6.1"
+"@currents/mcp@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "@currents/mcp@npm:2.7.0"
   dependencies:
-    "@modelcontextprotocol/sdk": "npm:^1.28.0"
+    "@modelcontextprotocol/sdk": "npm:^1.29.0"
     commander: "npm:^12.1.0"
     pino: "npm:^9.9.5"
     pino-pretty: "npm:^13.1.1"
@@ -2612,7 +2612,7 @@ __metadata:
   bin:
     currents-mcp-http: dist/http.mjs
     mcp: dist/index.mjs
-  checksum: 10/2776a1a61cfb08f59a9fbe2f6157f2174cf19ba0e56b627dea18c452d9f05fe23777e7e27fafd3377dbc9982513b3b60a655a264e884287e28f686c0308570c7
+  checksum: 10/6f4288118ee78ce518f31fb513ce8c2c3b366a7b06f852181c70df638465ef7c43fc3b67123a2900cf41546718fb0ba743d313743ea69c8afd3b88cd208d88b3
   languageName: node
   linkType: hard
 
@@ -5849,9 +5849,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@modelcontextprotocol/sdk@npm:^1.26.0, @modelcontextprotocol/sdk@npm:^1.28.0":
-  version: 1.32.1
-  resolution: "@modelcontextprotocol/sdk@npm:1.32.1"
+"@modelcontextprotocol/sdk@npm:^1.26.0, @modelcontextprotocol/sdk@npm:^1.29.0":
+  version: 1.32.2
+  resolution: "@modelcontextprotocol/sdk@npm:1.32.2"
   dependencies:
     "@hono/node-server": "npm:^1.19.9 || ^2.0.5"
     ajv: "npm:^8.17.1"
@@ -5878,7 +5878,7 @@ __metadata:
       optional: true
     zod:
       optional: false
-  checksum: 10/0078f2782a70d4a73dd49269d01d4d5c4c5a405934ec7a9f496d0007b38dbb518a4cfa742953b46d77dcebf4f2ce5ab0cc68b4fdc9338ddb4e93315c7d3dde16
+  checksum: 10/94f3dcadc817ed7e8c58fed0a7a0d921cebe31f38b936abffcb13106204a6afea9f7526eee18650299e0d9df0c90e5c2d30f0990fa4048652d3bb7859f1a7234
   languageName: node
   linkType: hard
 
@@ -19603,7 +19603,7 @@ __metadata:
     "@anthropic-ai/claude-agent-sdk": "npm:0.3.218"
     "@anthropic-ai/claude-code": "npm:2.1.218"
     "@anthropic-ai/sdk": "npm:0.117.1"
-    "@currents/mcp": "npm:^2.6.1"
+    "@currents/mcp": "npm:^2.7.0"
     "@currents/playwright": "npm:^2.5.2"
     "@octokit/rest": "npm:^22.0.1"
     "@opencode-ai/sdk": "npm:1.18.23"
