@@ -392,7 +392,7 @@ const onCallDevice = async (
             device.eventNames().forEach(e => device.removeAllListeners(e as keyof DeviceEvents));
 
             closePopup(context);
-            cleanup(context);
+            cleanup(context, device);
 
             if (method) {
                 method.dispose();
@@ -412,8 +412,8 @@ const onCallDevice = async (
  * @returns {void}
  * @memberof Core
  */
-const cleanup = ({ uiPromises, logger }: CoreContext) => {
-    uiPromises.clear();
+const cleanup = ({ uiPromises, logger }: CoreContext, device?: Device) => {
+    uiPromises.clear(device);
     logger.debug('Cleanup...');
 };
 

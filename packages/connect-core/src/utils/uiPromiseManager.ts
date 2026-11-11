@@ -6,6 +6,7 @@ import type {
     UiPromiseCreator,
     UiPromiseResponse,
 } from '../events/ui-promise';
+import type { IDevice } from '../types/idevice';
 
 export const createUiPromiseManager = () => {
     let _uiPromises: AnyUiPromise[] = [];
@@ -65,8 +66,9 @@ export const createUiPromiseManager = () => {
         _uiPromises = [];
     };
 
-    const clear = () => {
-        _uiPromises = [];
+    // Clears the promises of the given device, or all of them without one.
+    const clear = (device?: IDevice) => {
+        _uiPromises = device ? _uiPromises.filter(p => p.device !== device) : [];
     };
 
     return { exists, create, resolve, rejectAll, clear };
