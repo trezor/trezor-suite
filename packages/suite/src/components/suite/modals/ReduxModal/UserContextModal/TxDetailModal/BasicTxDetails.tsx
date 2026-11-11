@@ -119,7 +119,7 @@ export const BasicTxDetails = ({
         <Card>
             <Row gap={12}>
                 <IconWrapper>
-                    <TokenIcon symbol={tx.symbol} size={48} showNetworkIcon />
+                    <TokenIcon networkSymbol={tx.symbol} size={48} showNetworkIcon />
                     <NestedIconWrapper>
                         <Icon
                             size={14}

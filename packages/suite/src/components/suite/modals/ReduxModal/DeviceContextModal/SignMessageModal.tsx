@@ -104,7 +104,7 @@ export const SignMessageModal = ({
                     <Row columnGap={16} rowGap={4} flexWrap="wrap" margin={{ top: 8 }}>
                         {network && (
                             <Row gap={4}>
-                                <TokenIcon size={16} symbol={network.symbol} />
+                                <TokenIcon size={16} networkSymbol={network.symbol} />
                                 {account ? (
                                     <AccountLabel
                                         account={account}

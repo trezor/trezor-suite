@@ -160,7 +160,7 @@ export const YieldPageHeader = ({
                 <IdentityIcon>
                     <TokenIcon
                         placeholder={vault?.token?.symbol || vault?.token?.name || ''}
-                        symbol={networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={vault?.token?.address}
                         showNetworkIcon
                         size={32}
@@ -174,7 +174,7 @@ export const YieldPageHeader = ({
         if (!hasVaultIdentity && routeParams?.symbol) {
             return (
                 <IdentityIcon>
-                    <TokenIcon symbol={routeParams.symbol} size={32} isBordered={false} />
+                    <TokenIcon networkSymbol={routeParams.symbol} size={32} isBordered={false} />
                 </IdentityIcon>
             );
         }

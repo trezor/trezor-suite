@@ -29,7 +29,8 @@ const Row = styled.span`
     display: flex;
 `;
 
-const getIcon = (symbol?: NetworkSymbol) => symbol && <TokenIcon symbol={symbol} size={24} />;
+const getIcon = (symbol?: NetworkSymbol) =>
+    symbol && <TokenIcon networkSymbol={symbol} size={24} />;
 
 export const CoinProtocolRenderer = ({
     render,

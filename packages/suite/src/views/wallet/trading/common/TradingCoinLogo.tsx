@@ -22,7 +22,7 @@ export const TradingCoinLogo = ({
     return (
         <Wrapper className={className}>
             <TokenIcon
-                symbol={networkSymbol}
+                networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
                 size={size}
                 placeholder={networkId.toUpperCase()}

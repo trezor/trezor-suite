@@ -36,7 +36,7 @@ export const EarnAccountCell = ({
                 {iconToken ? (
                     <TokenIcon
                         placeholder={iconToken.symbol || iconToken.name || ''}
-                        symbol={networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={iconToken.address ?? null}
                         showNetworkIcon={showAssetNetworkIcon}
                         size={32}
@@ -45,7 +45,7 @@ export const EarnAccountCell = ({
                         wrappedTokenIcon="network"
                     />
                 ) : (
-                    <TokenIcon symbol={networkSymbol} size={32} isTransparent={true} />
+                    <TokenIcon networkSymbol={networkSymbol} size={32} isTransparent={true} />
                 )}
             </Column>
 

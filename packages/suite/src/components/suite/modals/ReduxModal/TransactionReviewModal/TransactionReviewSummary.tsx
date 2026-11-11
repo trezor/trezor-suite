@@ -79,7 +79,7 @@ export const TransactionReviewSummary = ({
             <Row justifyContent="space-between">
                 <Row columnGap={16} rowGap={4} flexWrap="wrap">
                     <Row gap={4}>
-                        <TokenIcon size={16} symbol={symbol} />
+                        <TokenIcon size={16} networkSymbol={symbol} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge

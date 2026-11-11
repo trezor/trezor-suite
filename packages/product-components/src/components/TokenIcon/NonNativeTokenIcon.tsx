@@ -67,7 +67,7 @@ type NonNativeTokenIconProps = TokenIconProps & {
 };
 
 export const NonNativeTokenIcon = ({
-    symbol,
+    networkSymbol,
     contractAddress,
     coingeckoId,
     size = 32,
@@ -88,8 +88,8 @@ export const NonNativeTokenIcon = ({
     // Resolves synchronously except for the first XLM token after a cold start,
     // so most icons render in the first frame without a placeholder flash.
     const contractAddressArray = useAsyncMemo(
-        () => getTokenLogoIdentifiers(symbol, contractAddress),
-        [symbol, contractAddress, getTokenLogoIdentifiers],
+        () => getTokenLogoIdentifiers(networkSymbol, contractAddress),
+        [networkSymbol, contractAddress, getTokenLogoIdentifiers],
     );
 
     const { coingeckoId: coingeckoIdLogo, contractAddresses } = useSelector(
@@ -261,8 +261,8 @@ export const NonNativeTokenIcon = ({
 
     return (
         <Container $size={size} {...frameProps}>
-            {showNetworkIcon && symbol && hasNetworkIcon(symbol) ? (
-                <NetworkIconBadge networkSymbol={symbol} parentSize={size}>
+            {showNetworkIcon && networkSymbol && hasNetworkIcon(networkSymbol) ? (
+                <NetworkIconBadge networkSymbol={networkSymbol} parentSize={size}>
                     {logo}
                 </NetworkIconBadge>
             ) : (

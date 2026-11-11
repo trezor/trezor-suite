@@ -50,13 +50,13 @@ export function TopAssets({
                                 <TokenIcon
                                     size={logoSize}
                                     // @ts-expect-error
-                                    symbol={asset.symbol}
+                                    networkSymbol={asset.symbol}
                                     showNetworkIcon
                                 />
                             ) : (
                                 <TokenIcon
                                     size={logoSize}
-                                    symbol={asset.networkSymbol}
+                                    networkSymbol={asset.networkSymbol}
                                     contractAddress={asset.contractAddress}
                                     placeholder={asset.displaySymbol}
                                 />

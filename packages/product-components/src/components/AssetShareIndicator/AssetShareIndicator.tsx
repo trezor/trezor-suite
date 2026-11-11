@@ -108,7 +108,7 @@ const ProgressCircle = ({
 };
 
 export const AssetShareIndicator = ({
-    symbol,
+    networkSymbol,
     networkColor,
     size = 32,
     percentageShare,
@@ -116,7 +116,7 @@ export const AssetShareIndicator = ({
     ...rest
 }: AssetShareIndicatorProps) => (
     <Container>
-        <TokenIcon symbol={symbol} size={size} {...rest} />
+        <TokenIcon networkSymbol={networkSymbol} size={size} {...rest} />
         <ProgressCircle
             networkColor={networkColor}
             size={size}

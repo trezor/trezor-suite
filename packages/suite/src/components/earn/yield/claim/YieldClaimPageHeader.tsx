@@ -39,7 +39,7 @@ export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => 
                         flex="1"
                         overflow="hidden"
                     >
-                        <TokenIcon symbol={account.symbol} size={isBelowMobile ? 24 : 32} />
+                        <TokenIcon networkSymbol={account.symbol} size={isBelowMobile ? 24 : 32} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge

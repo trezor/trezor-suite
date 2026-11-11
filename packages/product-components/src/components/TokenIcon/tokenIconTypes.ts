@@ -8,7 +8,7 @@ export const allowedTokenIconFrameProps = ['margin'] as const satisfies FramePro
 export type AllowedFrameProps = Pick<FrameProps, (typeof allowedTokenIconFrameProps)[number]>;
 
 export interface TokenIconProps extends AllowedFrameProps {
-    symbol: NetworkSymbol;
+    networkSymbol: NetworkSymbol;
     contractAddress?: string | null;
     size?: TokenIconSize;
     showNetworkIcon?: boolean;

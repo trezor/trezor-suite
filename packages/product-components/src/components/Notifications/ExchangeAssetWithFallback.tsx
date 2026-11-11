@@ -22,7 +22,7 @@ export const ExchangeAssetWithFallback = ({ asset }: ExchangeAssetWithFallbackPr
             <TokenIcon
                 size={20}
                 contractAddress={asset.contractAddress}
-                symbol={asset.symbol}
+                networkSymbol={asset.symbol}
                 placeholder={displaySymbol}
             />
         )

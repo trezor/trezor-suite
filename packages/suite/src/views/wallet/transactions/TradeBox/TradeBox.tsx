@@ -43,7 +43,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         gap={isBelowMobile ? 16 : 40}
                     >
                         <AssetDetailLink symbol={account.symbol} gap={12}>
-                            <TokenIcon size={40} symbol={account.symbol} showNetworkIcon />
+                            <TokenIcon size={40} networkSymbol={account.symbol} showNetworkIcon />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
                                 typographyStyle="body-md-strong"

@@ -45,7 +45,7 @@ export const TransactionIcon = ({
     if (shouldDisplayAssetLogo({ notificationType, token }) && token) {
         return (
             <TokenIcon
-                symbol={symbol}
+                networkSymbol={symbol}
                 contractAddress={token.contract ?? null}
                 placeholder={token.symbol ?? token.name ?? symbol}
                 size={20}
@@ -54,5 +54,5 @@ export const TransactionIcon = ({
         );
     }
 
-    return <TokenIcon symbol={symbol} size={20} />;
+    return <TokenIcon networkSymbol={symbol} size={20} />;
 };
