@@ -1,4 +1,6 @@
 import { createSocket } from 'dgram';
+// WORKAROUND(usb@3.2.1): only cancelPendingRead needs the device type.
+import type { UsbDevice } from 'usb/index';
 
 export class ServiceTimeout extends Error {
     constructor() {
@@ -15,6 +17,46 @@ export type ServiceTransport = {
 // node-usb cannot cancel an expired transfer: it stays submitted and swallows the next report.
 // Keep one native read outstanding for the whole session and time reads out in JS instead.
 const NATIVE_READ_TIMEOUT = 0x7fffffff;
+
+// WORKAROUND(usb@3.2.1) begin: revert this whole commit after upgrading to usb >= 3.3.0.
+//
+// usb@3.2.1 cannot close a session while the native read above is still pending:
+// 1. releaseInterface() and close() need an exclusive borrow of the native device, but the
+//    pending nativeTransferIn() holds a shared one, so both are refused ("cannot be borrowed
+//    mutably while another borrow is active"). clearHalt() is the only call that cancels the
+//    read with a shared borrow. It also sends CLEAR_FEATURE(ENDPOINT_HALT), which the firmware
+//    handles by resetting the endpoint's data toggle only.
+// 2. Once clearHalt() has cancelled the read, the endpoint worker thread blocks waiting for its
+//    next command before it performs the clear, so that clearHalt() never settles by itself.
+//    Another clearHalt() wakes the worker, which then answers every queued one.
+// usb@3.3.0 ("Fix active transfer close and release cleanup") lets releaseInterface() and
+// close() run during a transfer and cancel it, so the plain release in close() suffices there.
+// 3.3.0 was published on 2026-11-08 and is held back only by the 14-day npmMinimalAgeGate.
+const WAKE_INTERVAL = 50;
+const WAKE_ATTEMPTS = 20;
+
+const cancelPendingRead = async (
+    device: Pick<UsbDevice, 'clearHalt'>,
+    endpointNumber: number,
+    reader: Promise<void>,
+) => {
+    const first = device.clearHalt('in', endpointNumber);
+    let parked = true;
+    first.then(
+        () => (parked = false),
+        () => (parked = false),
+    );
+    const clears = [first];
+    // The first clearHalt() cancels the read at once, ending the reader.
+    await reader;
+    for (let attempt = 0; parked && attempt < WAKE_ATTEMPTS; attempt++) {
+        clears.push(device.clearHalt('in', endpointNumber));
+        await new Promise(resolve => setTimeout(resolve, WAKE_INTERVAL));
+    }
+    // Each clearHalt() borrows the device until it settles, so releasing must wait for all.
+    await Promise.allSettled(clears);
+};
+// WORKAROUND(usb@3.2.1) end
 
 const createReportQueue = () => {
     const reports: Buffer[] = [];
@@ -175,6 +217,9 @@ export const openServiceTransport = async (devicePath: string): Promise<ServiceT
             queue.push(Buffer.from(data));
         }
     })();
+    // WORKAROUND(usb@3.2.1): close() must know whether a native read is still pending.
+    let reading = true;
+    reader.then(() => (reading = false));
 
     return {
         read: queue.read,
@@ -185,6 +230,8 @@ export const openServiceTransport = async (devicePath: string): Promise<ServiceT
         close: async () => {
             closing = true;
             queue.fail(new Error('WARD service closed'));
+            // WORKAROUND(usb@3.2.1): its release cannot cancel the read; see cancelPendingRead.
+            if (reading) await cancelPendingRead(device, input.endpointNumber, reader);
             try {
                 // Releasing the interface cancels the outstanding read.
                 await device.releaseInterface(iface.interfaceNumber);

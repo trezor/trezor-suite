@@ -7,6 +7,14 @@ import { ServiceTimeout, openServiceTransport } from './serviceTransport';
 const mockUsbDevice = () => {
     const calls: unknown[] = [];
     const reads: { resolve: (data: Uint8Array) => void; reject: (error: Error) => void }[] = [];
+    // WORKAROUND(usb@3.2.1) begin: a pending read blocks release and close, and a clearHalt()
+    // that cancels a read stays parked until the next clearHalt() wakes the endpoint worker.
+    const parkedClears: (() => void)[] = [];
+    const borrowed = () =>
+        reads.length
+            ? Promise.reject(new Error('The same native value cannot be borrowed mutably'))
+            : Promise.resolve();
+    // WORKAROUND(usb@3.2.1) end
     const alternate: USBAlternateInterface = {
         alternateSetting: 0,
         interfaceClass: 0xff,
@@ -41,6 +49,7 @@ const mockUsbDevice = () => {
         | 'close'
         | 'claimInterface'
         | 'releaseInterface'
+        | 'clearHalt' // WORKAROUND(usb@3.2.1)
         | 'selectConfiguration'
         | 'selectAlternateInterface'
         | 'nativeTransferIn'
@@ -58,7 +67,7 @@ const mockUsbDevice = () => {
         close: () => {
             calls.push('close');
 
-            return Promise.resolve();
+            return borrowed(); // WORKAROUND(usb@3.2.1)
         },
         claimInterface: iface => {
             calls.push(['claim', iface]);
@@ -67,10 +76,25 @@ const mockUsbDevice = () => {
         },
         releaseInterface: iface => {
             calls.push(['release', iface]);
+            // WORKAROUND(usb@3.2.1): 3.3.0 cancels pending reads here instead.
+            if (reads.length) return borrowed();
             reads.splice(0).forEach(read => read.reject(new Error('Cancelled')));
 
             return Promise.resolve();
         },
+        // WORKAROUND(usb@3.2.1) begin
+        clearHalt: (direction, endpoint) => {
+            calls.push(['clearHalt', direction, endpoint]);
+            if (!reads.length) {
+                parkedClears.splice(0).forEach(resolve => resolve());
+
+                return Promise.resolve();
+            }
+            reads.splice(0).forEach(read => read.reject(new Error('Cancelled')));
+
+            return new Promise(resolve => parkedClears.push(resolve));
+        },
+        // WORKAROUND(usb@3.2.1) end
         selectConfiguration: value => {
             calls.push(['configuration', value]);
 
@@ -114,7 +138,9 @@ it('claims only the WARD interface without resetting the active wallet configura
         await transport.write(Buffer.alloc(64));
         await transport.close();
 
-        expect(usb.calls.filter(call => !Array.isArray(call) || call[0] !== 'read')).toEqual([
+        // WORKAROUND(usb@3.2.1): clearHalt calls are checked by their own test.
+        const halts = ['read', 'clearHalt'];
+        expect(usb.calls.filter(call => !Array.isArray(call) || !halts.includes(call[0]))).toEqual([
             'open',
             ['claim', 3],
             ['write', 4, 64],
@@ -144,6 +170,26 @@ it('keeps a report that arrives after a read timed out', async () => {
         usb.restore();
     }
 });
+
+// WORKAROUND(usb@3.2.1) begin
+it('cancels the pending read and wakes the parked endpoint worker before releasing', async () => {
+    const usb = mockUsbDevice();
+    try {
+        const transport = await openServiceTransport('usb:test-device');
+        await transport.close();
+
+        expect(usb.outstandingReads()).toBe(0);
+        expect(usb.calls.slice(-4)).toEqual([
+            ['clearHalt', 'in', 4],
+            ['clearHalt', 'in', 4],
+            ['release', 3],
+            'close',
+        ]);
+    } finally {
+        usb.restore();
+    }
+});
+// WORKAROUND(usb@3.2.1) end
 
 it.each(['udp:localhost:65529', 'udp:localhost:0', 'udp:localhost:word', 'wallet:1'])(
     'refuses an invalid service selector %s',
