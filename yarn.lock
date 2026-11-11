@@ -17832,6 +17832,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/product-components": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@types/react": "npm:19.3.0"
     react: "npm:19.3.0"
