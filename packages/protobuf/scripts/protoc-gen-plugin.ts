@@ -259,15 +259,17 @@ const sortTypeItems = (types: TypeItem[]) => {
     types.push(...result);
 };
 
+type SchemaWireMessages = {
+    wireMessages: Set<string>;
+    wireIn: Set<string>;
+    wireOut: Set<string>;
+};
+
 type SchemaContext = {
     files: string[];
     owners: Map<string, string>;
     internalMessages: Set<string>;
-    messageType: {
-        wireMessages: Set<string>;
-        wireIn: Set<string>;
-        wireOut: Set<string>;
-    };
+    messageType: SchemaWireMessages;
 };
 
 // Step 1: collect all messages, enums and extensions from the schema.
@@ -334,6 +336,22 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
         });
     };
 
+    const collectWireMessage = (name: string, proto: AnyDesc['proto']) => {
+        const [isWireIn, isWireDebugIn, isWireOut, isWireDebugOut] = findOptions(proto, [
+            'wire_in',
+            'wire_debug_in',
+            'wire_out',
+            'wire_debug_out',
+        ]);
+        if (isWireIn || isWireDebugIn) {
+            wireIn.add(name);
+        }
+        if (isWireOut || isWireDebugOut) {
+            wireOut.add(name);
+        }
+        wireMessages.add(name);
+    };
+
     for (const [name, desc] of messages) {
         if (SKIP.includes(name)) {
             continue;
@@ -348,14 +366,7 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
 
         const isMessageType = findMessageType(name);
         if (isMessageType) {
-            const [isWireIn, isWireOut] = findOptions(isMessageType.proto, ['wire_in', 'wire_out']);
-            if (isWireIn) {
-                wireIn.add(name);
-            }
-            if (isWireOut) {
-                wireOut.add(name);
-            }
-            wireMessages.add(name);
+            collectWireMessage(name, isMessageType.proto);
 
             continue;
         }
@@ -371,17 +382,8 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
                     `wire_type ${wireTypeOption.data[0]} for message '${name}' not found in MessageType/ThpMessageType`,
                 );
             }
-            const [isWireIn, isWireOut] = findOptions(wiredMessageType.proto, [
-                'wire_in',
-                'wire_out',
-            ]);
-            if (isWireIn) {
-                wireIn.add(name);
-            }
-            if (isWireOut) {
-                wireOut.add(name);
-            }
-            wireMessages.add(name);
+
+            collectWireMessage(name, wiredMessageType.proto);
         }
     }
 
@@ -389,7 +391,11 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
         files,
         owners,
         internalMessages,
-        messageType: { wireIn, wireOut, wireMessages },
+        messageType: {
+            wireIn,
+            wireOut,
+            wireMessages,
+        },
     };
 };
 
