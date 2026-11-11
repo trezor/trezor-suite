@@ -26,6 +26,8 @@ export type CommonButtonProps = {
     isDisabled?: boolean;
     isInverse?: boolean;
     onClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
+    onMouseEnter?: ButtonHTMLAttributes<HTMLButtonElement>['onMouseEnter'];
+    onFocus?: ButtonHTMLAttributes<HTMLButtonElement>['onFocus'];
     type?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
     href?: AnchorHTMLAttributes<HTMLAnchorElement>['href'];
     target?: AnchorHTMLAttributes<HTMLAnchorElement>['target'];
